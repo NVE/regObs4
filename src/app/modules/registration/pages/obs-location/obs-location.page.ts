@@ -10,7 +10,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
-import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -119,7 +119,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     );
   }
 
-  async onLocationTimeSet(event: [ObsLocationEditModel, string]) {
+  async onLocationTimeSet(event: LocationTime) {
 
     if (!this.draft) {
       this.draft = this.draftService.create(this.geoHazard);
@@ -129,27 +129,27 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.navController.navigateRoot('registration/edit/' + this.draft.uuid);
   }
 
-  private async setLocationTimeAndSaveDraft([loc, time]: [ObsLocationEditModel, string]) {
+  private async setLocationTimeAndSaveDraft({location, datetime}: LocationTime) {
     if (this.draft === undefined) {
       return;
     }
 
-    if (loc !== undefined) {
+    if (location !== undefined) {
       this.draft = {
         ...this.draft,
         registration: {
           ...this.draft.registration,
-          ObsLocation: loc
+          ObsLocation: location
         }
       }
     }
 
-    if (time !== undefined) {
+    if (datetime !== undefined) {
       this.draft = {
         ...this.draft,
         registration: {
           ...this.draft.registration,
-          DtObsTime: time
+          DtObsTime: datetime
         }
       }
     }

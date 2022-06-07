@@ -29,6 +29,11 @@ import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import moment from 'moment';
 
+export interface LocationTime {
+  location: ObsLocationEditModel,
+  datetime: string,
+}
+
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
   shadowUrl: 'leaflet/marker-shadow.png',
@@ -58,7 +63,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
-  @Output() locationTimeSet = new EventEmitter<[ObsLocationEditModel, string]>();
+  @Output() locationTimeSet = new EventEmitter<LocationTime>();
   @Input() showPreviousUsedLocations = true;
   @Input() showUserPosition = true;
   @Input() confirmLocationText = 'REGISTRATION.OBS_LOCATION.CONFIRM_TEXT';
@@ -359,7 +364,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (this.setObsTime) {
      obsTime = this.localDate || moment().toISOString(true);
     }
-    this.locationTimeSet.emit([obsLocation, obsTime]);
+    let locationTime = {location: obsLocation, datetime: obsTime}
+    this.locationTimeSet.emit(locationTime);
   }
 
   getLocation(): ObsLocationEditModel {
