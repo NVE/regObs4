@@ -1,42 +1,28 @@
-<div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
+<div [ngClass]="{'open': true, 'details-small':!setObsTime }">
   <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
     [center]="locationMarker.getLatLng()"></app-map>
   <ion-grid class="bottom-info ion-no-padding">
     <ion-row>
       <ion-col class="confirm-button-col">
-        <ion-button [disabled]="isSaveDisabled" expand="block" color="varsom-orange" (click)="confirmLocation()">{{ confirmLocationText | translate
+        <ion-button expand="block" color="varsom-orange" (click)="confirm()">{{ confirmLocationText | translate
           }}</ion-button>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-no-padding">
-      <ion-col class="show-details-col ion-no-padding ion-text-center">
-        <ion-button color="dark" size="small" fill="clear" (click)="toggleDetails()">
-          <ng-container *ngIf="!showDetails">
-            <ion-icon slot="start" name="chevron-up"></ion-icon>
-            {{'REGISTRATION.OBS_LOCATION.SHOW_DETAILS' | translate}}
-          </ng-container>
-          <ng-container *ngIf="showDetails">
-            <ion-icon slot="start" name="chevron-down"></ion-icon>
-            {{'REGISTRATION.OBS_LOCATION.HIDE_DETAILS' | translate}}
-          </ng-container>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row class="details-row" *ngIf="showDetails">
+    <ion-row class="details-row">
       <ion-col>
         <ion-grid class="ion-no-padding">
           <ion-row>
             <ion-col class="ion-no-padding ion-text-center" size="2">
               <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
-              <ng-container *ngIf="showFromMarkerInDetails">
-                <svg class="dotted-line" width="4px" height="15px" viewBox="0 0 4 15">
-                  <line x1="1" x2="1" y1="2" y2="14" stroke="#000" stroke-width="2" stroke-linecap="round"
+              <ng-container *ngIf="setObsTime">
+                <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
+                  <line x1="1" x2="1" y1="2" y2="26" stroke="#000" stroke-width="2" stroke-linecap="round"
                     stroke-dasharray="1,4"></line>
                 </svg>
                 <ion-label class="distance-label small-text ion-no-margin">{{
                   distanceToObservationText }}</ion-label>
-                <svg class="dotted-line" width="4px" height="15px" viewBox="0 0 4 15">
-                  <line x1="1" x2="1" y1="2" y2="14" stroke="#000" stroke-width="2" stroke-linecap="round"
+                <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
+                  <line x1="1" x2="1" y1="2" y2="26" stroke="#000" stroke-width="2" stroke-linecap="round"
                     stroke-dasharray="1,4"></line>
                 </svg>
                 <div class="leaflet-usermarker" *ngIf="!fromMarker"></div>
@@ -47,7 +33,7 @@
               <ion-grid class="ion-no-padding">
                 <ion-row class="padding-bottom">
                   <ion-col size="12" class="ion-no-padding padding-right">
-                    <ion-grid class="arrow-box" (click)="editLocation()">
+                    <ion-grid class="arrow-box box" (click)="editLocation()">
                       <ion-icon class="edit-icon" name="create" *ngIf="canEditLocationName"></ion-icon>
                       <ion-row>
                         <ion-col class="ion-no-padding">
@@ -67,7 +53,7 @@
                       <ion-row>
                         <ion-col class="ion-no-padding">
                           <ion-label class="small-text ion-no-margin">
-                            <span>{{ locationMarker.getLatLng().lat | number:'0.3'
+                            <span *ngIf="!isLoading && locationMarker">{{ locationMarker.getLatLng().lat | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
                               {{ locationMarker.getLatLng().lng | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</span>
@@ -82,10 +68,20 @@
                     </ion-grid>
                   </ion-col>
                 </ion-row>
-                <ion-row *ngIf="showFromMarkerInDetails">
+                <ion-row *ngIf="setObsTime">
                   <ion-col size="12" class="ion-no-padding padding-right">
-                    <ion-label class="ion-no-margin arrow-box detail-header block ion-text-uppercase">{{fromLocationText
-                      | translate}}</ion-label>
+                    <ion-label class="ion-no-margin box detail-header block ion-text-uppercase">
+                      <ion-item>
+                        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+                          doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
+                          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="localDate" [max]="maxDate">
+                        </ion-datetime>
+                        <ion-button slot="end" fill="outline" color="medium" (click)="setToNow()">
+                          <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" |
+                          translate}}
+                        </ion-button>
+                      </ion-item>
+                    </ion-label>
                   </ion-col>
                 </ion-row>
               </ion-grid>

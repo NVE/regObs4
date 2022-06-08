@@ -351,11 +351,11 @@
     "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Bekräfta position",
+      "CONFIRM_TEXT": "Bekräfta position och tid",
       "CURRENT_LOCATION": "Aktuella position",
       "HIDE_DETAILS": "Dölj detaljer",
       "SHOW_DETAILS": "Visa detaljer",
-      "TITLE": "Observerad plats"
+      "TITLE": "Observationspunkt och -tid"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Datum och tid",

@@ -81,6 +81,6 @@ export class SetDamageLocationPage implements OnInit {
   }
 
   ok() {
-    this.setLocationInMapComponent.confirmLocation();
+    this.setLocationInMapComponent.confirm();
   }
 }

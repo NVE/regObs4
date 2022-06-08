@@ -215,7 +215,7 @@ export class SetAvalanchePositionPage implements OnInit {
     }
   }
 
-  async onLocationSet(event: ObsLocationEditModel) {
+  async onLocationSet([event, _]: [ObsLocationEditModel, string]) {
     if (this.startIsActive) {
       this.start = L.latLng(event.Latitude, event.Longitude);
       if (this.end) {
@@ -236,6 +236,6 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   ok() {
-    this.setLocationInMapComponent.confirmLocation();
+    this.setLocationInMapComponent.confirm();
   }
 }

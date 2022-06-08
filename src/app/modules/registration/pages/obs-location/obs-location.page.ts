@@ -10,7 +10,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
-import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -29,7 +29,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   draft: RegistrationDraft;
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
-  isSaveDisabled = false;
   @ViewChild(SetLocationInMapComponent)
   setLocationInMapComponent: SetLocationInMapComponent;
 
@@ -120,42 +119,42 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     );
   }
 
-  async onLocationSet(event: ObsLocationEditModel) {
-    this.ngZone.run(() => {
-      this.isSaveDisabled = true;
-    });
+  async onLocationTimeSet(event: LocationTime) {
 
     if (!this.draft) {
       this.draft = this.draftService.create(this.geoHazard);
     }
 
-    await this.setLocationAndSaveDraft(event);
-
-    if (this.draft.registration.DtObsTime) {
-      this.navController.navigateForward(
-        'registration/edit/' + this.draft.uuid
-      );
-    } else {
-      this.navController.navigateForward(
-        'registration/set-time/' + this.draft.uuid
-      );
-    }
+    await this.setLocationTimeAndSaveDraft(event);
+    this.navController.navigateRoot('registration/edit/' + this.draft.uuid);
   }
 
-  private async setLocationAndSaveDraft(loc: ObsLocationEditModel) {
-    if (loc === undefined || this.draft === undefined) {
+  private async setLocationTimeAndSaveDraft({location, datetime}: LocationTime) {
+    if (this.draft === undefined) {
       return;
     }
 
-    // Save updated draft with new obs location
-    await this.draftService.save({
-      ...this.draft,
-      registration: {
-        ...this.draft.registration,
-        ObsLocation: loc
+    if (location !== undefined) {
+      this.draft = {
+        ...this.draft,
+        registration: {
+          ...this.draft.registration,
+          ObsLocation: location
+        }
       }
-    });
+    }
 
-    this.isSaveDisabled = false;
+    if (datetime !== undefined) {
+      this.draft = {
+        ...this.draft,
+        registration: {
+          ...this.draft.registration,
+          DtObsTime: datetime
+        }
+      }
+    }
+
+    // Save updated draft with new obs location
+    await this.draftService.save(this.draft);
   }
 }

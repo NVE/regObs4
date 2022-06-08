@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
   <app-set-location-in-map *ngIf="isLoaded" [geoHazard]="geoHazard" [locationMarker]="locationMarker"
-    (locationSet)="onLocationSet($event)" [selectedLocation]="selectedLocation" [allowEditLocationName]="true"
-    [isSaveDisabled]="isSaveDisabled">
+    (locationTimeSet)="onLocationTimeSet($event)" [selectedLocation]="selectedLocation"
+    [allowEditLocationName]="true" [setObsTime]="true" [localDate]="draft?.registration?.DtObsTime">
   </app-set-location-in-map>
 </ion-content>

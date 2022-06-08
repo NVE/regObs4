@@ -405,11 +405,11 @@
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Confirm location",
+      "CONFIRM_TEXT": "Confirm location and time",
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",
       "SHOW_DETAILS": "Show details",
-      "TITLE": "Observed Location"
+      "TITLE": "Observed Location and Time"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",

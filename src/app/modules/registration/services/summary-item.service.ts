@@ -126,28 +126,18 @@ export class SummaryItemService {
     // This is used internally by getPreviousAndNext to get all the hrefs
     const userGroupsToUse = userGroups ? userGroups : [];
     const attachmentsToUse = attachments ? attachments : [];
+    const reg = draft.registration
 
+    const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
+    const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
     const summaryItems: ISummaryItem[] = [
       {
         uuid: draft.uuid,
         href: '/registration/obs-location',
         queryParams: { geoHazard: draft.registration.GeoHazardTID },
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: draft.registration.ObsLocation
-          ? draft.registration.ObsLocation.LocationName || draft.registration.ObsLocation.LocationDescription
-          : '',
-        hasData: !isEmpty(draft.registration.ObsLocation)
-      },
-      {
-        uuid: draft.uuid,
-        href: '/registration/set-time',
-        title: 'REGISTRATION.OVERVIEW.DATE_AND_TIME',
-        subTitle: draft.registration.DtObsTime
-          ? await this.dateHelperService.formatDateString(
-            draft.registration.DtObsTime
-          )
-          : '',
-        hasData: !!draft.registration.DtObsTime
+        subTitle: [locSummary, timeSummary].join(' — '),
+        hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime
       },
       ...(await this.getGeoHazardItems(draft, attachmentsToUse))
     ];
