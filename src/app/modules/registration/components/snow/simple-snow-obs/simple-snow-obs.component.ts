@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { DangerObsEditModel } from 'src/app/modules/common-regobs-api';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'SimpleSnowObsComponent';
 
 /**
  * Simplified snow registration schema.
@@ -15,7 +20,30 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 export class SimpleSnowObsComponent implements OnInit {
    @Input() draft: RegistrationDraft;
 
-   constructor(private draftRepository: DraftRepositoryService) {
+   /**
+    * Return TID's from snow danger sign obserations in the draft
+    */
+   get dangerSignTIDs(): number[] {
+     const tids: number[] = [];
+     const dangerObservations = this.draft.registration.DangerObs;
+     dangerObservations?.filter((obs) => obs.GeoHazardTID == GeoHazard.Snow).map((obs) => tids.push(obs.DangerSignTID));
+     return tids;
+   }
+
+   /**
+    * Maps danger sign TID's to complete snow danger sign observations in the draft
+    */
+   set dangerSignTIDs(dangerSignTIDs: number[]) {
+     const dangerObservations: DangerObsEditModel[] = [];
+     if (dangerSignTIDs != null) {
+       for (const tid of dangerSignTIDs) {
+         dangerObservations.push({ DangerSignTID: tid, GeoHazardTID: GeoHazard.Snow });
+       }
+     }
+     this.draft.registration.DangerObs = dangerObservations;
+   }
+
+   constructor(private draftRepository: DraftRepositoryService, private logger: LoggingService) {
    }
 
    async ngOnInit(): Promise<void> {
@@ -28,7 +56,13 @@ export class SimpleSnowObsComponent implements OnInit {
    }
 
    async save(): Promise<void> {
+     this.logger.debug(`Save draft. SnowSurfaceTID = ${this.draft.registration.SnowSurfaceObservation?.SnowSurfaceTID}. `, DEBUG_TAG);
+
      this.draftRepository.save(this.draft);
+   }
+
+   filterDangerSignTIDs = (dangerSignTID: number): boolean => {
+     return dangerSignTID !== 1; //we don't ewant to shown "No danger sign observed"
    }
 }
 
