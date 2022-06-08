@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { enterZone } from 'src/app/core/helpers/observable-helper';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
@@ -11,6 +11,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
 /**
  * Use this to choose a KDV element, for example snow surface.
  * Shows a horizontal scroll with icons for all KDV elements. Click on an icon to select or deselect.
+ * Expects to find one icon for each KDV element in /assets/icon/kdvElement/<kdvKey>/<KDV element ID>.svg`
  */
 @Component({
   selector: 'app-kdv-icon-select',
@@ -25,11 +26,17 @@ export class KdvIconSelectComponent {
   /**
    * Bind this to the field where you want to save the selection.
    * It is the ID of the KDV element that will be stored.
-   * If multiselect is set, the value field will be handled as an array.
+   * If multiselect is set, the value field will be treated as an array.
    */
   @Input() value: number|number[];
   @Input() multiSelect = false;
-  @Output() valueChange = new EventEmitter();
+  @Input() showZeroValues = false;
+
+  /**
+   * You may control which KDV element IDs to show with this function
+   */
+  @Input() filter: (number) => boolean;
+  @Output() valueChange = new EventEmitter<number|number[]>();
 
   kdvElements$: Observable<KdvElement[]>;
 
@@ -38,7 +45,20 @@ export class KdvIconSelectComponent {
   ngOnInit() {
     this.kdvElements$ = this.kdvService
       .getKdvRepositoryByKeyObservable(this.kdvKey)
-      .pipe(enterZone(this.ngZone));
+      .pipe(
+        map(elements => elements.filter(element => this.isVisible(element))),
+        enterZone(this.ngZone)
+      );
+  }
+
+  private isVisible(item: KdvElement): boolean {
+    if (this.filter !== undefined && !this.filter(item.Id)) {
+      return false;
+    }
+    if (!this.showZeroValues) {
+      return item.Id % 100 !== 0;
+    }
+    return true;
   }
 
   getImageSrc(element: KdvElement): string {
@@ -78,7 +98,7 @@ export class KdvIconSelectComponent {
       }
     }
     this.logger.debug(`Value change on ${this.kdvKey}: ${this.value}`, DEBUG_TAG);
-    this.valueChange.emit();
+    this.valueChange.emit(this.value);
   }
 
 }
