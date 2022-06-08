@@ -23,9 +23,14 @@
     </ion-item>
 
     <ion-item>
-        <ion-label>
-            TODO: Faretegn
-        </ion-label>
+      <app-kdv-icon-select 
+      title="REGISTRATION.DANGER_OBS.TITLE" 
+      kdvKey="Snow_DangerSignKDV"
+      [(value)]="dangerSignTIDs"
+      (valueChange)="save()"
+      multiSelect="true"
+      [filter]="filterDangerSignTIDs">
+      </app-kdv-icon-select>
     </ion-item>
     <ion-item>
         <app-edit-images
