@@ -38,7 +38,7 @@ export function draftHasNotChanged(previous: RegistrationDraft, current: Registr
     return false;
   }
 
-  const currSchema = getRegistationPropertyForModel(current.registration, 10)
+  const currSchema = getRegistationPropertyForModel(current.registration, 10);
 
   const preTids = getRegistrationsWithData(previous).sort((a, b) => a - b);
   const curTids = getRegistrationsWithData(current).sort((a, b) => a - b);
@@ -126,7 +126,7 @@ export class SummaryItemService {
     // This is used internally by getPreviousAndNext to get all the hrefs
     const userGroupsToUse = userGroups ? userGroups : [];
     const attachmentsToUse = attachments ? attachments : [];
-    const reg = draft.registration
+    const reg = draft.registration;
 
     const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
     const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
