@@ -57,12 +57,15 @@ export class SimpleSnowObsComponent implements OnInit {
 
    async save(): Promise<void> {
      this.logger.debug(`Save draft. SnowSurfaceTID = ${this.draft.registration.SnowSurfaceObservation?.SnowSurfaceTID}. `, DEBUG_TAG);
-
      this.draftRepository.save(this.draft);
    }
 
+   filterSnowSurfaceTIDs = (tid: number): boolean => {
+     return tid !== 108; //we don't want to show "Other"
+   }
+
    filterDangerSignTIDs = (dangerSignTID: number): boolean => {
-     return dangerSignTID !== 1; //we don't ewant to shown "No danger sign observed"
+     return ![1, 99].includes(dangerSignTID); //we don't ewant to show "No danger sign observed" and "Other"
    }
 }
 
