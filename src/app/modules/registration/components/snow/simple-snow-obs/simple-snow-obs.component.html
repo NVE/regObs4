@@ -10,7 +10,8 @@
         title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" 
         kdvKey="Snow_SnowSurfaceKDV"
         [(value)]="draft.registration.SnowSurfaceObservation.SnowSurfaceTID"
-        (valueChange)="save()">
+        (valueChange)="save()"
+        [filter]="filterSnowSurfaceTIDs">
         </app-kdv-icon-select>
     </ion-item>
     <ion-item>
