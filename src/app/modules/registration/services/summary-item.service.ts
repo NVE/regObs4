@@ -113,6 +113,20 @@ export class SummaryItemService {
     );
   }
 
+  async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem> {
+    const reg = draft.registration;
+    const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
+    const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
+    return {
+      uuid: draft.uuid,
+      href: '/registration/obs-location',
+      queryParams: { geoHazard: draft.registration.GeoHazardTID },
+      title: 'REGISTRATION.OBS_LOCATION.TITLE',
+      subTitle: [locSummary, timeSummary].join(' — '),
+      hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime
+    };
+  }
+
   private async getSummaryItems(
     draft: RegistrationDraft,
     userGroups?: ObserverGroupDto[],
@@ -126,19 +140,11 @@ export class SummaryItemService {
     // This is used internally by getPreviousAndNext to get all the hrefs
     const userGroupsToUse = userGroups ? userGroups : [];
     const attachmentsToUse = attachments ? attachments : [];
-    const reg = draft.registration;
 
-    const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
-    const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
+    const locationAndTimeItem = await this.getLocationAndTimeSummaryItem(draft);
+
     const summaryItems: ISummaryItem[] = [
-      {
-        uuid: draft.uuid,
-        href: '/registration/obs-location',
-        queryParams: { geoHazard: draft.registration.GeoHazardTID },
-        title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: [locSummary, timeSummary].join(' — '),
-        hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime
-      },
+      locationAndTimeItem,
       ...(await this.getGeoHazardItems(draft, attachmentsToUse))
     ];
 

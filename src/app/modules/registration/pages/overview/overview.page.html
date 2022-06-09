@@ -16,18 +16,18 @@
       [draft]="draft"
     ></app-failed-registration>
 
-    <span *ngIf="userSetting.simpleSnowObservations">TODO: Hvordan er det her nå?</span>
-    <div *ngIf="showSnowObsModeSelector$ | async">
-      <ion-label>
-        {{'SETTINGS.SIMPLE_SNOW_OBS_MODE' | translate}}
-      </ion-label>
-      <ion-toggle [(ngModel)]="userSetting.simpleSnowObservations" (ionChange)="saveUserSettings()"></ion-toggle>
+    <div class="header">
+      <div *ngIf="userSetting.simpleSnowObservations">TODO: Hvordan er det her nå?</div>
+      <div *ngIf="showSnowObsModeSelector$ | async">
+        <ion-label>{{'SETTINGS.SIMPLE_SNOW_OBS_MODE' | translate}}</ion-label>
+        <ion-toggle [(ngModel)]="userSetting.simpleSnowObservations" (ionChange)="saveUserSettings()"></ion-toggle>
+      </div>
     </div>
-    
+
     <app-simple-snow-obs *ngIf="userSetting.simpleSnowObservations" [draft]="draft"></app-simple-snow-obs>
 
     <!-- Standard mode -->
-    <ion-list *ngIf="!userSetting.simpleSnowObservations" lines="full">
+    <ion-list lines="full">
       <!-- "Summary" items for each form -->
       <app-summary-item
         [readonly]="draftHasStatusSync(draft)"

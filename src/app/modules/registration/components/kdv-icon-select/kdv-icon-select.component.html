@@ -4,7 +4,6 @@
       
       <div class="a" *ngFor="let element of kdvElements" (click)="onClick(element)">
         <div class="item" [ngClass]="isSelected(element) ? 'selected' : 'deselected'">
-            <!-- TODO: Kun vise elementet hvis vi finner et bilde? -->
             <svg-icon src="{{ getImageSrc(element) }}"
           [svgStyle]="{'width.px':70, 'height.px':45, 'transparency': 50  }"></svg-icon>
           <ion-label class="item-text">{{ element.Id + '-' + element.Name }}</ion-label>

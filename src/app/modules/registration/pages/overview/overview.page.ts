@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { map, Observable, takeUntil } from 'rxjs';
+import { combineLatest, from, map, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
@@ -30,7 +30,6 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   summaryItems$: Observable<Array<ISummaryItem>>;
   draft$: Observable<RegistrationDraft>;
   userSetting: UserSetting;
-  simpleSnowObsMode: boolean;
   showSnowObsModeSelector$: Observable<boolean>;
 
   constructor(
@@ -47,7 +46,6 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   ngOnInit() {
     const uuid = this.activatedRoute.snapshot.params['id'];
     this.draft$ = this.draftService.getDraft$(uuid);
-    this.summaryItems$ = this.summaryItemService.getSummaryItems$(uuid);
     this.userGroupService.updateUserGroups();
 
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$))
@@ -60,6 +58,21 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     this.showSnowObsModeSelector$ = this.draft$.pipe(
       map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow)
     );
+
+    //TODO: Hvorfor oppdateres ikke summaryItems$ når jeg endrer på lokasjon eller tid?
+    this.summaryItems$ = combineLatest([this.draft$, this.userSettingService.userSetting$]).pipe(
+      switchMap(([draft, userSetting]) => {
+        if (userSetting.simpleSnowObservations) {
+          return from(this.getLocationAndTimeSummaryItem(draft));
+        } else {
+          return this.summaryItemService.getSummaryItems$(uuid);
+        }
+      })
+    );
+  }
+
+  private async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem[]> {
+    return [await this.summaryItemService.getLocationAndTimeSummaryItem(draft)];
   }
 
   draftHasStatusSync(draft: RegistrationDraft): boolean {

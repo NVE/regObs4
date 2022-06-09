@@ -1,3 +1,15 @@
 ion-list {
   padding-bottom: 10px;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  vertical-align: text-bottom;
+}
+
+.header ion-toggle {
+  vertical-align: bottom;
+  padding-bottom: 4px;
+}

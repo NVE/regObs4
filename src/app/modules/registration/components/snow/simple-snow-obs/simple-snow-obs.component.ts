@@ -64,8 +64,8 @@ export class SimpleSnowObsComponent implements OnInit {
      return tid !== 108; //we don't want to show "Other"
    }
 
-   filterDangerSignTIDs = (dangerSignTID: number): boolean => {
-     return ![1, 99].includes(dangerSignTID); //we don't ewant to show "No danger sign observed" and "Other"
+   filterDangerSignTIDs = (tid: number): boolean => {
+     return ![1, 99].includes(tid); //we don't want to show "No danger sign observed" and "Other"
    }
 }
 
