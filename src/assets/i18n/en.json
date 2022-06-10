@@ -432,7 +432,9 @@
       "DATE_AND_TIME": "Date and Time",
       "MY_OBSERVATION": "My observation",
       "SHARE_WITH_GROUP": "Share with group",
-      "TITLE": "Observation"
+      "TITLE": "Observation",
+      "HEADER_QUESTION":"What is it like right now?",
+      "SIMPLE_TOGGLE": "Simple observation"
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",

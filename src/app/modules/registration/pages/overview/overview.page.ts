@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { combineLatest, from, map, Observable, of, switchMap, takeUntil } from 'rxjs';
+import { combineLatest, from, map, Observable, switchMap, takeUntil } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';

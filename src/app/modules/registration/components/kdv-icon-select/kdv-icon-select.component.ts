@@ -101,4 +101,23 @@ export class KdvIconSelectComponent {
     this.valueChange.emit(this.value);
   }
 
+  count(): number {
+    if (this.multiSelect) {
+      const values = this.value as number[];
+      return values.length;
+    }
+    if (this.value == null) {
+      return 0;
+    }
+    return 1;
+  }
+
+  clear(): void {
+    if (this.multiSelect) {
+      this.value = [];
+    } else {
+      this.value = null;
+    }
+    this.valueChange.emit(this.value);
+  }
 }
