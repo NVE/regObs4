@@ -1,14 +1,17 @@
-<div class="app" *ngIf="kdvElements$ | async as kdvElements">
-    <div class="title">{{ title | translate}}</div>
-    <div class="faretegn">
-      
-      <div class="a" *ngFor="let element of kdvElements" (click)="onClick(element)">
+<div class="component" *ngIf="kdvElements$ | async as kdvElements">
+    <div class="header">
+      <span class="title">{{ title | translate}}</span>
+      <span *ngIf="multiSelect">{{ 'REGISTRATION.SELECTION_COUNT' | translate: {count: count()} }}</span>
+      <ion-button (click)="clear()" color="dark" size="small" fill="clear">
+        {{"DIALOGS.RESET" | translate}}
+      </ion-button>
+    </div>
+    <div class="list">
+      <div class="element" *ngFor="let element of kdvElements" (click)="onClick(element)">
         <div class="item" [ngClass]="isSelected(element) ? 'selected' : 'deselected'">
-            <svg-icon src="{{ getImageSrc(element) }}"
-          [svgStyle]="{'width.px':70, 'height.px':45, 'transparency': 50  }"></svg-icon>
+          <img class="image" [src]="getImageSrc(element)">
           <ion-label class="item-text">{{ element.Id + '-' + element.Name }}</ion-label>
         </div>
-        <!--div *ngIf="isSelected(element)" class="selected"></div-->
         <svg-icon *ngIf="isSelected(element)" class="checkmark" src="/assets/icon/checked.svg"
         [svgStyle]="{'width.px':22, 'height.px':22  }"></svg-icon>
     </div>

@@ -7,6 +7,14 @@ ion-list {
   justify-content: space-between;
   align-items: baseline;
   vertical-align: text-bottom;
+  padding: 4px 4px 10px 16px;
+  color: var(--ion-color-primary);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.question {
+  font-weight: 600 !important;
 }
 
 .header ion-toggle {

@@ -428,7 +428,9 @@
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
       "SHARE_WITH_GROUP": "Del med gruppe",
-      "TITLE": "Observasjon"
+      "TITLE": "Observasjon",
+      "HEADER_QUESTION": "Hvordan er det her nå?",
+      "SIMPLE_TOGGLE": "Enkel observasjon"
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
@@ -441,6 +443,7 @@
       "NO": "Nei, forkast",
       "YES": "Ja, lagre"
     },
+    "SELECTION_COUNT": "{{ count }} valgt",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekreft skadepunkt",
@@ -699,7 +702,6 @@
     "RESET": "Tilbakestill app",
     "RESETTING": "App tilbakestilles. Vennligst vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",
-    "SIMPLE_SNOW_OBS_MODE": "Enkel observasjon",
     "SIZE_OF_TILES_CACHE": "Størrelse på kartblad lagret på telefonen",
     "TILES_CACHE_SIZE": "Antall kartblad lagret på telefonen",
     "TITLE": "Innstillinger",
