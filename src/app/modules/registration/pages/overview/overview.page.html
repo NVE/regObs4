@@ -17,16 +17,15 @@
     ></app-failed-registration>
 
     <div class="header">
-      <div *ngIf="userSetting.simpleSnowObservations">TODO: Hvordan er det her nå?</div>
+      <ion-label *ngIf="userSetting.simpleSnowObservations" class="question">{{"REGISTRATION.OVERVIEW.HEADER_QUESTION" | translate}}</ion-label>
       <div *ngIf="showSnowObsModeSelector$ | async">
-        <ion-label>{{'SETTINGS.SIMPLE_SNOW_OBS_MODE' | translate}}</ion-label>
+        <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE_TOGGLE' | translate}}</ion-label>
         <ion-toggle [(ngModel)]="userSetting.simpleSnowObservations" (ionChange)="saveUserSettings()"></ion-toggle>
       </div>
     </div>
 
     <app-simple-snow-obs *ngIf="userSetting.simpleSnowObservations" [draft]="draft"></app-simple-snow-obs>
 
-    <!-- Standard mode -->
     <ion-list lines="full">
       <!-- "Summary" items for each form -->
       <app-summary-item

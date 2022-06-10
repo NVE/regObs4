@@ -38,8 +38,6 @@ export function draftHasNotChanged(previous: RegistrationDraft, current: Registr
     return false;
   }
 
-  const currSchema = getRegistationPropertyForModel(current.registration, 10);
-
   const preTids = getRegistrationsWithData(previous).sort((a, b) => a - b);
   const curTids = getRegistrationsWithData(current).sort((a, b) => a - b);
 
