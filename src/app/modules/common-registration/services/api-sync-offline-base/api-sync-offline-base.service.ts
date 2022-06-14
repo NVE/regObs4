@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { map, switchMap, shareReplay, catchError, concatMap, take, timeout } from 'rxjs/operators';
@@ -12,14 +12,15 @@ import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.mode
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { getCacheAge } from '../cache-age';
 
-export const API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG = new InjectionToken<ApiSyncOfflineBaseServiceOptions>(
-  'ApiSyncOfflineBaseServiceOptions.config'
-);
 export interface ApiSyncOfflineBaseServiceOptions {
   useLangKeyAsDbKey: boolean;
   validSeconds: number;
   offlineTableKey?: string | number;
 }
+
+// As we can use cached data anyway, use a short timeout here to avoid blank screen issues if fetching new data takes
+// a long time
+const FETCH_NEW_DATA_TIMEOUT = 2000;
 
 @Injectable()
 export abstract class ApiSyncOfflineBaseService<T> {
@@ -131,7 +132,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
    */
   private getUpdatedDataAndSaveResultIfSuccess(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedData(appMode, langKey).pipe(
-      timeout(2000),
+      timeout(FETCH_NEW_DATA_TIMEOUT),
       switchMap((data) =>
         this.saveDataToOfflineDb(appMode, langKey, data).pipe(
           catchError((err) => {
