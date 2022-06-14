@@ -181,6 +181,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
       registration: {
         GeoHazardTID: draft.registration.GeoHazardTID,
         DtObsTime: draft.registration.DtObsTime,
+        ObsLocation: draft.registration.ObsLocation,
+        Attachments: draft.registration.Attachments,
         SnowSurfaceObservation: this.getSimpleSnowSurfaceObservation(draft),
         DangerObs: this.filterSnowDangerObs(draft)
 
@@ -193,7 +195,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
   private getSimpleSnowSurfaceObservation(draft: RegistrationDraft): SnowSurfaceEditModel {
     if (draft.registration.SnowSurfaceObservation == null) {
-      return undefined;
+      return {};
     }
     return {
       SnowSurfaceTID: draft.registration.SnowSurfaceObservation.SnowSurfaceTID,
