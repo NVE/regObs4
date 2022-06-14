@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { combineLatest, from, map, Observable, switchMap, takeUntil } from 'rxjs';
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { combineLatest, firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +11,14 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSetting } from 'src/app/core/models/user-settings.model';
+import { getRegistrationName } from 'src/app/modules/common-registration/registration.helpers';
+import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertController, IonToggle } from '@ionic/angular';
+
+const DEBUG_TAG = 'OverviewPage';
 
 /**
  * Overview page for a registration. If you edit an existing registration you start on this page.
@@ -38,7 +46,11 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     private summaryItemService: SummaryItemService,
     private userGroupService: UserGroupService,
     private userSettingService: UserSettingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private logger: LoggingService,
+    private translateService: TranslateService,
+    private alertController: AlertController,
+    private draftRepository: DraftRepositoryService
   ) {
     super();
   }
@@ -79,8 +91,133 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     return draft?.syncStatus === SyncStatus.Sync || draft?.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
   }
 
-  saveUserSettings() {
-    this.userSettingService.saveUserSettings(this.userSetting);
+  async changeMode(event: CustomEvent) {
+    if (event.detail.checked === true) {
+      //user wants to change mode to simple
+      const draft = await firstValueFrom(this.draft$);
+      if (this.draftContainsDataNotAvailableForSimpleMode(draft)) {
+        const okToConvertToSimple = await this.requestConvertToSimple();
+        if (okToConvertToSimple) {
+          const simpleDraft = this.clearDataNotAvailableInSimpleSnowObs(draft);
+          this.draftRepository.save(simpleDraft);
+          this.userSetting.simpleSnowObservations = true;
+        } else {
+          //user canceled convert to simple, so unset toggle and abort
+          const target: IonToggle = event.target as unknown as IonToggle;
+          target.checked = false; //unset toggle
+          return;
+        }
+      } else {
+        //draft is compatible with simple mode, so change to simple mode
+        this.userSetting.simpleSnowObservations = true;
+      }
+    } else if (this.userSetting.simpleSnowObservations === true) {
+      //user want to change mode to standard
+      this.userSetting.simpleSnowObservations = false;
+    }
+    this.userSettingService.saveUserSettings(this.userSetting); //save mode
+  }
+
+  private async requestConvertToSimple(): Promise<boolean> {
+    let resolveFunction: (confirm: boolean) => void;
+    const promise = new Promise<boolean>(resolve => {
+      resolveFunction = resolve;
+    });
+    const translations = await firstValueFrom(this.translateService
+      .get([
+        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER',
+        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE',
+        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES',
+        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL',
+      ]));
+    const alert = await this.alertController.create({
+      header: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER'],
+      message: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE'],
+      buttons: [
+        {
+          text: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL'],
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => resolveFunction(false)
+        },
+        {
+          text: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES'],
+          handler: () => resolveFunction(true)
+        }
+      ]
+    });
+    await alert.present();
+    return promise;
+  }
+
+  private draftContainsDataNotAvailableForSimpleMode(draft: RegistrationDraft): boolean {
+    for (const registrationTid of this.getRegistrationTidsNotAvailableInSimpleSnowObs()) {
+      const propName = getRegistrationName(registrationTid);
+      const property = draft.registration[propName];
+      if (!isEmpty(property)) {
+        this.logger.debug(`Draft ${draft.uuid}. RegistrationTID: ${propName} has data. Not available in simple mode`);
+        return true;
+      }
+    }
+    //TODO: Check attachments?
+    return false;
+  }
+
+  private getRegistrationTidsForSimpleSnowObs(): RegistrationTid[] {
+    //TODO: Legg inn TID for skiføre her
+    return [RegistrationTid.DangerObs, RegistrationTid.SnowSurfaceObservation];
+  }
+
+  private getRegistrationTidsNotAvailableInSimpleSnowObs(): RegistrationTid[] {
+    const allTids = Object.values(RegistrationTid) as RegistrationTid[];
+    const simpleTids = this.getRegistrationTidsForSimpleSnowObs();
+    return allTids.filter((tid) => !simpleTids.includes(tid));
+  }
+
+  private clearDataNotAvailableInSimpleSnowObs(draft: RegistrationDraft): RegistrationDraft {
+    this.logger.debug(`Converting draft ${draft.uuid} to simple mode...`, DEBUG_TAG, draft);
+    const result: RegistrationDraft = {
+      ...draft,
+      registration: {
+        GeoHazardTID: draft.registration.GeoHazardTID,
+        DtObsTime: draft.registration.DtObsTime,
+        SnowSurfaceObservation: this.getSimpleSnowSurfaceObservation(draft),
+        DangerObs: this.filterSnowDangerObs(draft)
+
+        //TODO: Ta med skiføre
+      }
+    };
+    this.logger.debug(`Draft ${draft.uuid} converted to simple mode`, DEBUG_TAG, draft);
+    return result;
+  }
+
+  private getSimpleSnowSurfaceObservation(draft: RegistrationDraft): SnowSurfaceEditModel {
+    if (draft.registration.SnowSurfaceObservation == null) {
+      return undefined;
+    }
+    return {
+      SnowSurfaceTID: draft.registration.SnowSurfaceObservation.SnowSurfaceTID,
+      SnowDepth: draft.registration.SnowSurfaceObservation.SnowDepth,
+      NewSnowDepth24: draft.registration.SnowSurfaceObservation.NewSnowDepth24
+    };
+  }
+
+  private filterSnowDangerObs(draft: RegistrationDraft): DangerObsEditModel[] {
+    const result: DangerObsEditModel[] = [];
+    if (draft.registration.DangerObs == null) {
+      return [];
+    }
+    const snowDangerObses = draft.registration.DangerObs.filter(obs => obs.GeoHazardTID == GeoHazard.Snow);
+    for (const dangerObs of snowDangerObses) {
+      if (dangerObs.GeoHazardTID == GeoHazard.Snow) {
+        const snowObs: DangerObsEditModel = {
+          GeoHazardTID: GeoHazard.Snow,
+          DangerSignTID: dangerObs.DangerSignTID
+        };
+        result.push(snowObs);
+      }
+    }
+    return result;
   }
 
   //If conflict or registration is gone, re-sumbit or cancelling is handled by the failed-registration-component

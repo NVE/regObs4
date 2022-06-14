@@ -17,10 +17,10 @@
     ></app-failed-registration>
 
     <div class="header">
-      <ion-label *ngIf="userSetting.simpleSnowObservations" class="question">{{"REGISTRATION.OVERVIEW.HEADER_QUESTION" | translate}}</ion-label>
+      <ion-label *ngIf="userSetting.simpleSnowObservations" class="question">{{"REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate}}</ion-label>
       <div *ngIf="showSnowObsModeSelector$ | async">
-        <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE_TOGGLE' | translate}}</ion-label>
-        <ion-toggle [(ngModel)]="userSetting.simpleSnowObservations" (ionChange)="saveUserSettings()"></ion-toggle>
+        <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}</ion-label>
+        <ion-toggle [ngModel]="userSetting.simpleSnowObservations" (ionChange)="changeMode($event)"></ion-toggle>
       </div>
     </div>
 
