@@ -416,8 +416,17 @@
       "MY_OBSERVATION": "My observation",
       "SHARE_WITH_GROUP": "Share with group",
       "TITLE": "Observation",
-      "HEADER_QUESTION":"What is it like right now?",
-      "SIMPLE_TOGGLE": "Simple observation"
+      "SIMPLE": {
+        "HEADER_QUESTION":"What is it like right now?",
+        "TOGGLE": "Simple observation",
+        "CONFIRM": {
+          "HEADER": "Change to simple mode",
+          "MESSAGE": "The observation contains data not relevant for simple mode. Would you like to delete data we can't show?",
+          "YES": "Delete data and change to simple mode",
+          "CANCEL": "Cancel"  
+        }
+      }
+
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",

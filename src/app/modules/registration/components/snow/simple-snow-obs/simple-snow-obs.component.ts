@@ -5,8 +5,6 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const DEBUG_TAG = 'SimpleSnowObsComponent';
-
 /**
  * Simplified snow registration schema.
  * This is a compound form of a few elements from different snow schemas
@@ -56,7 +54,6 @@ export class SimpleSnowObsComponent implements OnInit {
    }
 
    async save(): Promise<void> {
-     this.logger.debug(`Save draft. SnowSurfaceTID = ${this.draft.registration.SnowSurfaceObservation?.SnowSurfaceTID}. `, DEBUG_TAG);
      this.draftRepository.save(this.draft);
    }
 
