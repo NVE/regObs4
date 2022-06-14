@@ -29,8 +29,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     super(
       offlineDbService,
       logger,
-      userSettingService
-    );
+      userSettingService);
   }
 
   protected getDebugTag(): string {
