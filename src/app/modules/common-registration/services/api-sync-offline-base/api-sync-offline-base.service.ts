@@ -18,10 +18,6 @@ export interface ApiSyncOfflineBaseServiceOptions {
   offlineTableKey?: string | number;
 }
 
-// As we can use cached data anyway, use a short timeout here to avoid blank screen issues if fetching new data takes
-// a long time
-const FETCH_NEW_DATA_TIMEOUT = 2000;
-
 @Injectable()
 export abstract class ApiSyncOfflineBaseService<T> {
   public readonly data$: Observable<T>;
@@ -35,6 +31,10 @@ export abstract class ApiSyncOfflineBaseService<T> {
     validSeconds: getCacheAge(),
     useLangKeyAsDbKey: true
   }
+
+  // As we can use cached data anyway, use a short timeout here to avoid blank screen issues if fetching new data takes
+  // a long time
+  protected FETCH_NEW_DATA_TIMEOUT = 2000;
 
   constructor(
     protected offlineDbService: OfflineDbService,
@@ -132,7 +132,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
    */
   private getUpdatedDataAndSaveResultIfSuccess(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedData(appMode, langKey).pipe(
-      timeout(FETCH_NEW_DATA_TIMEOUT),
+      timeout(this.FETCH_NEW_DATA_TIMEOUT),
       switchMap((data) =>
         this.saveDataToOfflineDb(appMode, langKey, data).pipe(
           catchError((err) => {
