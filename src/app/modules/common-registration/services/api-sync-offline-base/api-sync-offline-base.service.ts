@@ -38,7 +38,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   constructor(
     protected offlineDbService: OfflineDbService,
     protected logger: LoggingService,
-    protected userSettingService: UserSettingService,
+    protected userSettingService: UserSettingService
   ) {
     this.data$ = this.getDataObservable().pipe(shareReplay(1));
   }
