@@ -433,8 +433,16 @@
       "MY_OBSERVATION": "Min observasjon",
       "SHARE_WITH_GROUP": "Del med gruppe",
       "TITLE": "Observasjon",
-      "HEADER_QUESTION": "Hvordan er det her nå?",
-      "SIMPLE_TOGGLE": "Enkel observasjon"
+      "SIMPLE": {
+        "HEADER_QUESTION": "Hvordan er det her nå?",
+        "TOGGLE": "Enkel observasjon",
+        "CONFIRM": {
+          "HEADER": "Bytt til enkel modus",
+          "MESSAGE": "Observasjonen inneholder data som ikke kan vises i enkel modus. Vil du slette data vi ikke kan vise?",
+          "YES": "Slett data og bytt til enkel",
+          "CANCEL": "Avbryt"  
+        }
+      }
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
