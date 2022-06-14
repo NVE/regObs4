@@ -14,7 +14,6 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 const KDV_ASSETS_FOLDER = '/assets/json';
-const CACHE_AGE = 43200; // 12 hours
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +27,10 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     protected userSettingService: UserSettingService
   ) {
     super(
-      {
-        useLangKeyAsDbKey: true,
-        validSeconds: CACHE_AGE
-      },
       offlineDbService,
       logger,
-      userSettingService);
+      userSettingService
+    );
   }
 
   protected getDebugTag(): string {
