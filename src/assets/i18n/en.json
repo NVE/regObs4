@@ -452,6 +452,7 @@
       "NO": "No, discard",
       "YES": "Yes, save"
     },
+    "SELECTION_COUNT": "{{ count }} selected",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",
