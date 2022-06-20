@@ -1,16 +1,16 @@
 /* eslint-disable */
 export interface AvalancheActivityObs2EditModel {
-  EstimatedNumTID?: number;
-  DtStart?: string;
+  AvalCauseTID?: number;
+  AvalPropagationTID?: number;
+  AvalTriggerSimpleTID?: number;
+  AvalancheExtTID?: number;
+  Comment?: string;
+  DestructiveSizeTID?: number;
   DtEnd?: string;
-  ValidExposition?: string;
+  DtStart?: string;
+  EstimatedNumTID?: number;
   ExposedHeight1?: number;
   ExposedHeight2?: number;
   ExposedHeightComboTID?: number;
-  AvalancheExtTID?: number;
-  AvalCauseTID?: number;
-  AvalTriggerSimpleTID?: number;
-  DestructiveSizeTID?: number;
-  AvalPropagationTID?: number;
-  Comment?: string;
+  ValidExposition?: string;
 }

@@ -1,15 +1,15 @@
 /* eslint-disable */
 export interface AtAGlanceViewModel {
-  RegId?: number;
-  GeoHazardTID?: number;
-  DtObsTime?: string;
-  NickName?: string;
   CompetenceLevelTID?: number;
-  Title?: string;
+  DtObsTime?: string;
+  FirstAttachmentId?: number;
+  FormNames?: Array<string>;
+  GeoHazardTID?: number;
   Latitude?: number;
   Longitude?: number;
-  UtmNorth?: number;
+  NickName?: string;
+  RegId?: number;
+  Title?: string;
   UtmEast?: number;
-  FormNames?: Array<string>;
-  FirstAttachmentId?: number;
+  UtmNorth?: number;
 }

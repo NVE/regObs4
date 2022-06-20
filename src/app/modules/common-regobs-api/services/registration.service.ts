@@ -29,6 +29,7 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Get registration by regId.
    * @param params The `RegistrationService.RegistrationGetParams` containing the following parameters:
    *
    * - `regId`: Registration Id
@@ -38,14 +39,14 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationGetResponse(params: RegistrationService.RegistrationGetParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
 
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Registration/${params.regId}/${params.langKey}`,
+      this.rootUrl + `/Registration/${encodeURIComponent(String(params.regId))}/${encodeURIComponent(String(params.langKey))}`,
       __body,
       {
         headers: __headers,
@@ -61,6 +62,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Get registration by regId.
    * @param params The `RegistrationService.RegistrationGetParams` containing the following parameters:
    *
    * - `regId`: Registration Id
@@ -76,6 +78,8 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Get a registration in CAAML format
+   *
    * CAAML (Canadian Avalanche Association Markup Language) is a standard
    * for the electronic representation of information pertinent to avalanche
    * safety operations. See http://caaml.org/.
@@ -83,13 +87,13 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationGetCaamlResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Registration/Caaml/${regId}`,
+      this.rootUrl + `/Registration/Caaml/${encodeURIComponent(String(regId))}`,
       __body,
       {
         headers: __headers,
@@ -105,6 +109,8 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Get a registration in CAAML format
+   *
    * CAAML (Canadian Avalanche Association Markup Language) is a standard
    * for the electronic representation of information pertinent to avalanche
    * safety operations. See http://caaml.org/.
@@ -118,6 +124,7 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Generate a preview figure for a snow profile registration.
    * @param params The `RegistrationService.RegistrationPlotPreviewPngParams` containing the following parameters:
    *
    * - `width`:
@@ -134,16 +141,16 @@ class RegistrationService extends __BaseService {
    */
   RegistrationPlotPreviewPngResponse(params: RegistrationService.RegistrationPlotPreviewPngParams): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     if (params.width != null) __params = __params.set('width', params.width.toString());
     __body = params.registration;
     if (params.height != null) __params = __params.set('height', params.height.toString());
     if (params.format != null) __params = __params.set('format', params.format.toString());
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Registration/PlotPreviewPng',
+      this.rootUrl + `/Registration/PlotPreviewPng`,
       __body,
       {
         headers: __headers,
@@ -159,6 +166,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Generate a preview figure for a snow profile registration.
    * @param params The `RegistrationService.RegistrationPlotPreviewPngParams` containing the following parameters:
    *
    * - `width`:
@@ -180,6 +188,7 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Update registration
    * @param params The `RegistrationService.RegistrationInsertOrUpdateParams` containing the following parameters:
    *
    * - `registration`: Registration data
@@ -196,16 +205,16 @@ class RegistrationService extends __BaseService {
    */
   RegistrationInsertOrUpdateResponse(params: RegistrationService.RegistrationInsertOrUpdateParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = params.registration;
 
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
     if (params.ignoreVersionCheck != null) __params = __params.set('ignoreVersionCheck', params.ignoreVersionCheck.toString());
     if (params.externalReferenceId != null) __params = __params.set('externalReferenceId', params.externalReferenceId.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'PUT',
-      this.rootUrl + `/Registration/${params.id}`,
+      this.rootUrl + `/Registration/${encodeURIComponent(String(params.id))}`,
       __body,
       {
         headers: __headers,
@@ -221,6 +230,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Update registration
    * @param params The `RegistrationService.RegistrationInsertOrUpdateParams` containing the following parameters:
    *
    * - `registration`: Registration data
@@ -242,16 +252,17 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Delete registration
    * @param id undefined
    */
   RegistrationDeleteResponse(id: number): __Observable<__StrictHttpResponse<null>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'DELETE',
-      this.rootUrl + `/Registration/${id}`,
+      this.rootUrl + `/Registration/${encodeURIComponent(String(id))}`,
       __body,
       {
         headers: __headers,
@@ -267,6 +278,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Delete registration
    * @param id undefined
    */
   RegistrationDelete(id: number): __Observable<null> {
@@ -276,6 +288,8 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Create a new registration. The purpose is to send in one or more forms.
+   *
    * Example critera for creating a new registration with one form.
    *
    *     {
@@ -309,14 +323,14 @@ class RegistrationService extends __BaseService {
    */
   RegistrationInsertResponse(params: RegistrationService.RegistrationInsertParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = params.registration;
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
     if (params.externalReferenceId != null) __params = __params.set('externalReferenceId', params.externalReferenceId.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Registration',
+      this.rootUrl + `/Registration`,
       __body,
       {
         headers: __headers,
@@ -332,6 +346,8 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Create a new registration. The purpose is to send in one or more forms.
+   *
    * Example critera for creating a new registration with one form.
    *
    *     {
@@ -370,6 +386,7 @@ class RegistrationService extends __BaseService {
   }
 
   /**
+   * Validate registration data.
    * @param params The `RegistrationService.RegistrationValidateParams` containing the following parameters:
    *
    * - `registration`: Registration data
@@ -382,14 +399,14 @@ class RegistrationService extends __BaseService {
    */
   RegistrationValidateResponse(params: RegistrationService.RegistrationValidateParams): __Observable<__StrictHttpResponse<RegistrationEditModel>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = params.registration;
 
     if (params.externalReferenceId != null) __params = __params.set('externalReferenceId', params.externalReferenceId.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Registration/Validate/${params.id}`,
+      this.rootUrl + `/Registration/Validate/${encodeURIComponent(String(params.id))}`,
       __body,
       {
         headers: __headers,
@@ -405,6 +422,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
+   * Validate registration data.
    * @param params The `RegistrationService.RegistrationValidateParams` containing the following parameters:
    *
    * - `registration`: Registration data
@@ -422,7 +440,7 @@ class RegistrationService extends __BaseService {
   }
 }
 
-namespace RegistrationService {
+module RegistrationService {
 
   /**
    * Parameters for RegistrationGet
@@ -533,4 +551,4 @@ namespace RegistrationService {
   }
 }
 
-export { RegistrationService };
+export { RegistrationService }

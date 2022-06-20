@@ -2,14 +2,9 @@
 export interface ObsLocationEditModel {
 
   /**
-   * ObsLocationID
+   * Latitude
    */
-  ObsLocationID?: number;
-
-  /**
-   * Navn på stedet
-   */
-  LocationName?: string;
+  Latitude: number;
 
   /**
    * Beskriver stedet.
@@ -17,14 +12,19 @@ export interface ObsLocationEditModel {
   LocationDescription?: string;
 
   /**
-   * Latitude
+   * Navn på stedet
    */
-  Latitude: number;
+  LocationName?: string;
 
   /**
    * Longitude
    */
   Longitude: number;
+
+  /**
+   * ObsLocationID
+   */
+  ObsLocationID?: number;
 
   /**
    * Kildehenvisning på hvordan koordinaten er satt. (GPS i tlf, klikk i kart, osv). Verdier gitt i UTMSourceKD

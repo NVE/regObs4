@@ -1,6 +1,12 @@
 /* eslint-disable */
 export interface AttachmentEditModel {
+
+  /**
+   * Hvilken himmelretning peker bilde. Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
+   */
+  Aspect?: number;
   AttachmentId?: number;
+  AttachmentMimeType?: string;
 
   /**
    * Last opp attachment på forhånd og sett AttachmentUploadId
@@ -8,9 +14,9 @@ export interface AttachmentEditModel {
   AttachmentUploadId?: string;
 
   /**
-   * Navn på fotograf.
+   * Kommentarfelt for bildet. F.eks for å beskrive det.
    */
-  Photographer?: string;
+  Comment?: string;
 
   /**
    * Rettigheter til bilde.
@@ -18,28 +24,22 @@ export interface AttachmentEditModel {
   Copyright?: string;
 
   /**
-   * Hvilken himmelretning peker bilde. Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
-   */
-  Aspect?: number;
-
-  /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
    */
   GeoHazardTID?: number;
 
   /**
-   * Hva er bildet av. Dette feltet relaterer bildet til en observasjonstype. Feks værobservasjon, faretegn, osv. The RegistrationKD unique identifier
-   */
-  RegistrationTID?: number;
-
-  /**
-   * Kommentarfelt for bildet. F.eks for å beskrive det.
-   */
-  Comment?: string;
-  AttachmentMimeType?: string;
-
-  /**
    * Om bildet skal vises først i registreringen, eller ikke
    */
   IsMainAttachment?: boolean;
+
+  /**
+   * Navn på fotograf.
+   */
+  Photographer?: string;
+
+  /**
+   * Hva er bildet av. Dette feltet relaterer bildet til en observasjonstype. Feks værobservasjon, faretegn, osv. The RegistrationKD unique identifier
+   */
+  RegistrationTID?: number;
 }

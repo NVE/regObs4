@@ -1,5 +1,10 @@
 /* eslint-disable */
 export interface IceThicknessLayerViewModel {
+
+  /**
+   * Comment
+   */
+  Comment?: string;
   IceLayerName?: string;
 
   /**
@@ -11,9 +16,4 @@ export interface IceThicknessLayerViewModel {
    * IceLayerThickness
    */
   IceLayerThickness?: number;
-
-  /**
-   * Comment
-   */
-  Comment?: string;
 }

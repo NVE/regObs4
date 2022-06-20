@@ -3,6 +3,11 @@ import { UrlEditModel } from './url-edit-model';
 export interface GeneralObservationEditModel {
 
   /**
+   * Kommentarfelt for å skrive utfyllende tekst
+   */
+  Comment?: string;
+
+  /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is).
    */
   GeoHazardTID?: number;
@@ -16,10 +21,5 @@ export interface GeneralObservationEditModel {
    * Overskriften (hovedpoenget).
    */
   ObsHeader?: string;
-
-  /**
-   * Kommentarfelt for å skrive utfyllende tekst
-   */
-  Comment?: string;
   Urls?: Array<UrlEditModel>;
 }
