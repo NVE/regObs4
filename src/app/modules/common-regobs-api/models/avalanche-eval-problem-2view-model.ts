@@ -1,53 +1,40 @@
 /* eslint-disable */
 export interface AvalancheEvalProblem2ViewModel {
-  AvalProbabilityName?: string;
-  AvalTriggerSimpleName?: string;
-  AvalCauseDepthName?: string;
-  ExposedHeightComboName?: string;
-  AvalancheExtName?: string;
-  AvalCauseName?: string;
-  DestructiveSizeName?: string;
-  AvalPropagationName?: string;
-  AvalCauseAttributeLightName?: string;
-  AvalCauseAttributeThinName?: string;
-  AvalCauseAttributeSoftName?: string;
   AvalCauseAttributeCrystalName?: string;
-
-  /**
-   * Sannsynlighet for skred. The AvalProbabilityKD unique identifier
-   */
-  AvalProbabilityTID?: number;
-  AvalPropagationTID?: number;
-
-  /**
-   * The AvalTriggerSimpleKD unique identifier
-   */
-  AvalTriggerSimpleTID?: number;
+  AvalCauseAttributeCrystalTID?: number;
+  AvalCauseAttributeLightName?: string;
+  AvalCauseAttributeLightTID?: number;
+  AvalCauseAttributeSoftName?: string;
+  AvalCauseAttributeSoftTID?: number;
+  AvalCauseAttributeThinName?: string;
+  AvalCauseAttributeThinTID?: number;
+  AvalCauseDepthName?: string;
 
   /**
    * Hvor dypt ligger det overnevnte svake laget? The AvalCauseDepthKD unique identifier
    */
   AvalCauseDepthTID?: number;
+  AvalCauseName?: string;
 
   /**
-   * Velg utsatte retninger
+   * Hvilket svakt lag løsner skredet på? The AvalCauseKD unique identifier
    */
-  ValidExposition?: string;
+  AvalCauseTID?: number;
+  AvalProbabilityName?: string;
 
   /**
-   * Øverste høyde på “utsatt høyde” symbolet.
+   * Sannsynlighet for skred. The AvalProbabilityKD unique identifier
    */
-  ExposedHeight1?: number;
+  AvalProbabilityTID?: number;
+  AvalPropagationName?: string;
+  AvalPropagationTID?: number;
+  AvalTriggerSimpleName?: string;
 
   /**
-   * Nederste høyde på “utsatt høyde” symbolet.
+   * The AvalTriggerSimpleKD unique identifier
    */
-  ExposedHeight2?: number;
-
-  /**
-   * Hvilket symbol brukes? Er utsatt tereng over ExposedHeight2 eller under den? The ExposedHeightComboKD unique identifier
-   */
-  ExposedHeightComboTID?: number;
+  AvalTriggerSimpleTID?: number;
+  AvalancheExtName?: string;
 
   /**
    * Skredtype. I appen er dette 1. felt under skredproblem. The AvalancheExtKD unique identifier
@@ -58,18 +45,31 @@ export interface AvalancheEvalProblem2ViewModel {
    * Kommentar til skredproblemet
    */
   Comment?: string;
-
-  /**
-   * Hvilket svakt lag løsner skredet på? The AvalCauseKD unique identifier
-   */
-  AvalCauseTID?: number;
-  AvalCauseAttributeLightTID?: number;
-  AvalCauseAttributeThinTID?: number;
-  AvalCauseAttributeSoftTID?: number;
-  AvalCauseAttributeCrystalTID?: number;
+  DestructiveSizeName?: string;
 
   /**
    * Sannsynlig tilleggsbelastning for å utløse skred. The DestructiveSizeKD unique identifier
    */
   DestructiveSizeTID?: number;
+
+  /**
+   * Øverste høyde på “utsatt høyde” symbolet.
+   */
+  ExposedHeight1?: number;
+
+  /**
+   * Nederste høyde på “utsatt høyde” symbolet.
+   */
+  ExposedHeight2?: number;
+  ExposedHeightComboName?: string;
+
+  /**
+   * Hvilket symbol brukes? Er utsatt tereng over ExposedHeight2 eller under den? The ExposedHeightComboKD unique identifier
+   */
+  ExposedHeightComboTID?: number;
+
+  /**
+   * Velg utsatte retninger
+   */
+  ValidExposition?: string;
 }

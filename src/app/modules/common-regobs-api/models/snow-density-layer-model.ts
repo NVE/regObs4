@@ -1,22 +1,22 @@
 /* eslint-disable */
 export interface SnowDensityLayerModel {
-  Depth?: number;
-
-  /**
-   * thickness in m
-   */
-  Thickness?: number;
+  Comment?: string;
 
   /**
    * Density in kg/m^3
    */
   Density?: number;
-  Comment?: string;
+  Depth?: number;
+  SortOrder?: number;
+
+  /**
+   * thickness in m
+   */
+  Thickness?: number;
+  WaterEquivalent?: number;
 
   /**
    * Weight in KG
    */
   Weight?: number;
-  WaterEquivalent?: number;
-  SortOrder?: number;
 }

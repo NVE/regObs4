@@ -1,7 +1,7 @@
 /* eslint-disable */
 export interface ForecastRegionSubRegionDto {
   Id?: number;
-  Text?: string;
   RegionType?: string;
   SortOrder?: number;
+  Text?: string;
 }

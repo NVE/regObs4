@@ -1,35 +1,23 @@
 /* eslint-disable */
 export interface AvalancheObsViewModel {
-  DestructiveSizeName?: string;
-  AvalancheTriggerName?: string;
-  AvalancheName?: string;
-  TerrainStartZoneName?: string;
-  AvalCauseName?: string;
-
-  /**
-   * Tid da skredet gikk.
-   */
-  DtAvalancheTime: string;
 
   /**
    * Eksposisjon
    */
   Aspect?: number;
+  AvalCauseName?: string;
 
   /**
-   * Høyde i løsneområde
+   * Skredutløser. The AvalCauseTID unique identifier
    */
-  HeightStartZone?: number;
+  AvalCauseTID?: number;
+  AvalancheName?: string;
 
   /**
-   * Høyde i stoppområdet
+   * Skredtype. The AvalancheKD unique identifier
    */
-  HeightStopZone?: number;
-
-  /**
-   * Størrelse. The DestructiveSizeKD unique identifier
-   */
-  DestructiveSizeTID?: number;
+  AvalancheTID?: number;
+  AvalancheTriggerName?: string;
 
   /**
    * Skredutløser. The AvalancheTriggerKD unique identifier
@@ -37,29 +25,20 @@ export interface AvalancheObsViewModel {
   AvalancheTriggerTID?: number;
 
   /**
-   * Skredtype. The AvalancheKD unique identifier
+   * Comment
    */
-  AvalancheTID?: number;
+  Comment?: string;
+  DestructiveSizeName?: string;
 
   /**
-   * Terrengtype i løsneområdet. The TerrainStartZoneKD unique identifier
+   * Størrelse. The DestructiveSizeKD unique identifier
    */
-  TerrainStartZoneTID?: number;
+  DestructiveSizeTID?: number;
 
   /**
-   * SnowLine
+   * Tid da skredet gikk.
    */
-  SnowLine?: number;
-
-  /**
-   * ValidExposition
-   */
-  ValidExposition?: string;
-
-  /**
-   * Skredutløser. The AvalCauseTID unique identifier
-   */
-  AvalCauseTID?: number;
+  DtAvalancheTime: string;
 
   /**
    * Bruddhøyde
@@ -72,9 +51,19 @@ export interface AvalancheObsViewModel {
   FractureWidth?: number;
 
   /**
-   * Skredbanenavn
+   * Høyde i løsneområde
    */
-  Trajectory?: string;
+  HeightStartZone?: number;
+
+  /**
+   * Høyde i stoppområdet
+   */
+  HeightStopZone?: number;
+
+  /**
+   * SnowLine
+   */
+  SnowLine?: number;
 
   /**
    * StartLat
@@ -95,9 +84,20 @@ export interface AvalancheObsViewModel {
    * StopLong
    */
   StopLong?: number;
+  TerrainStartZoneName?: string;
 
   /**
-   * Comment
+   * Terrengtype i løsneområdet. The TerrainStartZoneKD unique identifier
    */
-  Comment?: string;
+  TerrainStartZoneTID?: number;
+
+  /**
+   * Skredbanenavn
+   */
+  Trajectory?: string;
+
+  /**
+   * ValidExposition
+   */
+  ValidExposition?: string;
 }

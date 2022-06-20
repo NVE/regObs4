@@ -2,9 +2,9 @@
 export interface SnowCoverObsViewModel {
 
   /**
-   * DepthHoarThickness
+   * Comment.
    */
-  DepthHoarThickness?: number;
+  Comment?: string;
 
   /**
    * CriticalLayerExists
@@ -15,6 +15,7 @@ export interface SnowCoverObsViewModel {
    * CriticalLayerLocation
    */
   CriticalLayerLocation?: number;
+  CriticalLayerName?: string;
 
   /**
    * The CriticalLayerKD unique identifier
@@ -22,13 +23,12 @@ export interface SnowCoverObsViewModel {
   CriticalLayerTID?: number;
 
   /**
+   * DepthHoarThickness
+   */
+  DepthHoarThickness?: number;
+
+  /**
    * SnowPilotRef
    */
   SnowPilotRef?: string;
-
-  /**
-   * Comment.
-   */
-  Comment?: string;
-  CriticalLayerName?: string;
 }

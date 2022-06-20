@@ -2,9 +2,14 @@
 export interface SnowSurfaceEditModel {
 
   /**
-   * Total snødybde i cm. Vi ønsker et gjennomsnitt for området.
+   * Kommentarfelt for å skrive utfyllende tekst om observasjonen.
    */
-  SnowDepth?: number;
+  Comment?: string;
+
+  /**
+   * Grense lagdelt snø (moh)
+   */
+  HeightLimitLayeredSnow?: number;
 
   /**
    * Nysnødybde i cm. Vi ønsker et gjennomsnitt for området
@@ -17,9 +22,14 @@ export interface SnowSurfaceEditModel {
   NewSnowLine?: number;
 
   /**
-   * Overflatefuktighet
+   * Skiføre
    */
-  SurfaceWaterContentTID?: number;
+  SkiConditionsTID?: number;
+
+  /**
+   * Total snødybde i cm. Vi ønsker et gjennomsnitt for området.
+   */
+  SnowDepth?: number;
 
   /**
    * Hvor mye har vinden transportert snøen? Valg fra nedtrekksmeny. The SnowDriftKD unique identifier
@@ -27,22 +37,17 @@ export interface SnowSurfaceEditModel {
   SnowDriftTID?: number;
 
   /**
+   * Snøgrense (moh)
+   */
+  SnowLine?: number;
+
+  /**
    * Snødekkehardhet
    */
   SnowSurfaceTID?: number;
 
   /**
-   * Kommentarfelt for å skrive utfyllende tekst om observasjonen.
+   * Overflatefuktighet
    */
-  Comment?: string;
-
-  /**
-   * Grense lagdelt snø (moh)
-   */
-  HeightLimitLayeredSnow?: number;
-
-  /**
-   * Snøgrense (moh)
-   */
-  SnowLine?: number;
+  SurfaceWaterContentTID?: number;
 }

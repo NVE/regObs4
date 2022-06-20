@@ -2,18 +2,9 @@
 export interface SnowSurfaceViewModel {
 
   /**
-   * Obsolete - Only in View Model
+   * Kommentarfelt for å skrive utfyllende tekst om observasjonen.
    */
-  SnowWindDepth24?: number;
-  SurfaceWaterContentName?: string;
-  SnowDriftName?: string;
-  SnowSurfaceName?: string;
-
-  /**
-   * Obsolete - Only in View Model
-   */
-  SurfaceRougnessTID?: number;
-  SurfaceRougnessName?: string;
+  Comment?: string;
 
   /**
    * Obsolete - Only in View Model
@@ -21,9 +12,9 @@ export interface SnowSurfaceViewModel {
   FootPenetration?: number;
 
   /**
-   * Total snødybde i cm. Vi ønsker et gjennomsnitt for området.
+   * Grense lagdelt snø (moh)
    */
-  SnowDepth?: number;
+  HeightLimitLayeredSnow?: number;
 
   /**
    * Nysnødybde i cm. Vi ønsker et gjennomsnitt for området
@@ -34,11 +25,14 @@ export interface SnowSurfaceViewModel {
    * Nysnøgrensa. Hvor faller nedbør som snø? Meter over havet.
    */
   NewSnowLine?: number;
+  SkiConditionsName?: string;
+  SkiConditionsTID?: number;
 
   /**
-   * Overflatefuktighet
+   * Total snødybde i cm. Vi ønsker et gjennomsnitt for området.
    */
-  SurfaceWaterContentTID?: number;
+  SnowDepth?: number;
+  SnowDriftName?: string;
 
   /**
    * Hvor mye har vinden transportert snøen? Valg fra nedtrekksmeny. The SnowDriftKD unique identifier
@@ -46,22 +40,30 @@ export interface SnowSurfaceViewModel {
   SnowDriftTID?: number;
 
   /**
+   * Snøgrense (moh)
+   */
+  SnowLine?: number;
+  SnowSurfaceName?: string;
+
+  /**
    * Snødekkehardhet
    */
   SnowSurfaceTID?: number;
 
   /**
-   * Kommentarfelt for å skrive utfyllende tekst om observasjonen.
+   * Obsolete - Only in View Model
    */
-  Comment?: string;
+  SnowWindDepth24?: number;
+  SurfaceRougnessName?: string;
 
   /**
-   * Grense lagdelt snø (moh)
+   * Obsolete - Only in View Model
    */
-  HeightLimitLayeredSnow?: number;
+  SurfaceRougnessTID?: number;
+  SurfaceWaterContentName?: string;
 
   /**
-   * Snøgrense (moh)
+   * Overflatefuktighet
    */
-  SnowLine?: number;
+  SurfaceWaterContentTID?: number;
 }

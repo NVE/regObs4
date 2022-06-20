@@ -36,14 +36,14 @@ class GeoCodeService extends __BaseService {
    */
   GeoCodeLocationInfoResponse(params: GeoCodeService.GeoCodeLocationInfoParams): __Observable<__StrictHttpResponse<GeoLocationInfo>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
     if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
     if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
     if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/GeoCode/LocationInfo',
+      this.rootUrl + `/GeoCode/LocationInfo`,
       __body,
       {
         headers: __headers,
@@ -76,6 +76,8 @@ class GeoCodeService extends __BaseService {
   }
 
   /**
+   * Get preformatted geolocation info.
+   *
    * The response contains a header and one to three lines of geolocation info, depending on what kind of geolocation info the API has available.
    * The header may be empty if no geolocation info is available, but at least the position is always returned (line 1).
    *
@@ -105,15 +107,15 @@ class GeoCodeService extends __BaseService {
    */
   GeoCodeLocationSummaryResponse(params: GeoCodeService.GeoCodeLocationSummaryParams): __Observable<__StrictHttpResponse<GeoLocationSummary>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
     if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
     if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
     if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/GeoCode/LocationSummary',
+      this.rootUrl + `/GeoCode/LocationSummary`,
       __body,
       {
         headers: __headers,
@@ -129,6 +131,8 @@ class GeoCodeService extends __BaseService {
     );
   }
   /**
+   * Get preformatted geolocation info.
+   *
    * The response contains a header and one to three lines of geolocation info, depending on what kind of geolocation info the API has available.
    * The header may be empty if no geolocation info is available, but at least the position is always returned (line 1).
    *
@@ -163,7 +167,7 @@ class GeoCodeService extends __BaseService {
   }
 }
 
-namespace GeoCodeService {
+module GeoCodeService {
 
   /**
    * Parameters for GeoCodeLocationInfo
@@ -201,4 +205,4 @@ namespace GeoCodeService {
   }
 }
 
-export { GeoCodeService };
+export { GeoCodeService }
