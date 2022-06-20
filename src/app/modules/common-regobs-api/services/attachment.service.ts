@@ -26,15 +26,15 @@ class AttachmentService extends __BaseService {
    * @return OK
    */
   AttachmentPostResponse(file: Blob): __Observable<__StrictHttpResponse<string>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
-    const __formData = new FormData();
+    let __formData = new FormData();
     __body = __formData;
     if (file != null) { __formData.append('file', file as string | Blob);}
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Attachment/Upload',
+      this.rootUrl + `/Attachment/Upload`,
       __body,
       {
         headers: __headers,
@@ -60,6 +60,7 @@ class AttachmentService extends __BaseService {
   }
 
   /**
+   * Get Attachment file by id
    * @param params The `AttachmentService.AttachmentGetParams` containing the following parameters:
    *
    * - `id`: Attachment id
@@ -67,14 +68,14 @@ class AttachmentService extends __BaseService {
    * - `format`: Image format. For video, use Raw. Possible image formats: Raw, Original, Large, Medium, Thumbnail
    */
   AttachmentGetResponse(params: AttachmentService.AttachmentGetParams): __Observable<__StrictHttpResponse<null>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
 
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Attachment/${params.format}/${params.id}`,
+      this.rootUrl + `/Attachment/${encodeURIComponent(String(params.format))}/${encodeURIComponent(String(params.id))}`,
       __body,
       {
         headers: __headers,
@@ -90,6 +91,7 @@ class AttachmentService extends __BaseService {
     );
   }
   /**
+   * Get Attachment file by id
    * @param params The `AttachmentService.AttachmentGetParams` containing the following parameters:
    *
    * - `id`: Attachment id
@@ -103,7 +105,7 @@ class AttachmentService extends __BaseService {
   }
 }
 
-namespace AttachmentService {
+module AttachmentService {
 
   /**
    * Parameters for AttachmentGet
@@ -122,4 +124,4 @@ namespace AttachmentService {
   }
 }
 
-export { AttachmentService };
+export { AttachmentService }

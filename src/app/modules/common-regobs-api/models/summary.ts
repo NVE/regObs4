@@ -2,8 +2,8 @@
 import { AdaptiveElement } from './adaptive-element';
 import { RegObsGenericValue } from './reg-obs-generic-value';
 export interface Summary {
-  RegistrationTID?: number;
-  RegistrationName?: string;
   AdaptiveElements?: Array<AdaptiveElement>;
+  RegistrationName?: string;
+  RegistrationTID?: number;
   Summaries?: Array<RegObsGenericValue>;
 }

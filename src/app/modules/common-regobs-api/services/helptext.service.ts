@@ -22,18 +22,20 @@ class HelptextService extends __BaseService {
   }
 
   /**
+   * Get a list of helptext objects.
+   *
    * Used by the app and regobs.no web for displaying help texts.
    * @param langKey Specify 1 for norwegian or 2 for english
    * @return OK
    */
   HelptextGetResponse(langKey: number): __Observable<__StrictHttpResponse<Array<HelptextDto>>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
     if (langKey != null) __params = __params.set('langKey', langKey.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/HelpText',
+      this.rootUrl + `/HelpText`,
       __body,
       {
         headers: __headers,
@@ -49,6 +51,8 @@ class HelptextService extends __BaseService {
     );
   }
   /**
+   * Get a list of helptext objects.
+   *
    * Used by the app and regobs.no web for displaying help texts.
    * @param langKey Specify 1 for norwegian or 2 for english
    * @return OK
@@ -60,7 +64,7 @@ class HelptextService extends __BaseService {
   }
 }
 
-namespace HelptextService {
+module HelptextService {
 }
 
-export { HelptextService };
+export { HelptextService }

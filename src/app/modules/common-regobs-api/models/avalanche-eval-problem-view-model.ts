@@ -1,21 +1,21 @@
 /* eslint-disable */
 export interface AvalancheEvalProblemViewModel {
-  AvalancheEvalProblemID?: number;
-  AvalProbabilityTID?: number;
-  AvalProbabilityName?: string;
-  AvalTriggerSimpleTID?: number;
-  AvalTriggerSimpleName?: string;
-  DestructiveSizeExtTID?: number;
-  DestructiveSizeExtName?: string;
-  AvalancheExtTID?: number;
-  AvalancheExtName?: string;
-  AvalCauseTID?: number;
-  AvalCauseName?: string;
-  AvalCauseExtTID?: number;
   AvalCauseExtName?: string;
-  AvalReleaseHeightTID?: number;
+  AvalCauseExtTID?: number;
+  AvalCauseName?: string;
+  AvalCauseTID?: number;
+  AvalProbabilityName?: string;
+  AvalProbabilityTID?: number;
   AvalReleaseHeightName?: string;
+  AvalReleaseHeightTID?: number;
+  AvalTriggerSimpleName?: string;
+  AvalTriggerSimpleTID?: number;
+  AvalancheEvalProblemID?: number;
+  AvalancheExtName?: string;
+  AvalancheExtTID?: number;
   AvalancheProbabilityAutoText?: string;
   AvalancheProblemAutoText?: string;
   Comment?: string;
+  DestructiveSizeExtName?: string;
+  DestructiveSizeExtTID?: number;
 }

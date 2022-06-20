@@ -1,19 +1,19 @@
 /* eslint-disable */
 export interface AvalancheEvaluationViewModel {
-  RegID?: number;
-  CanPublish?: boolean;
-  AvalancheDangerTID?: number;
   AvalancheDangerName?: string;
-  ValidExposition?: string;
-  ValidHeightRelative?: string;
-  ValidHeightFrom?: number;
-  ValidHeigtTo?: number;
-  AvalancheProblemTID1?: number;
-  AvalancheProblemName1?: string;
-  AvalancheProblemTID2?: number;
-  AvalancheProblemName2?: string;
-  AvalancheProblemTID3?: number;
-  AvalancheProblemName3?: string;
+  AvalancheDangerTID?: number;
   AvalancheEvaluation1?: string;
+  AvalancheProblemName1?: string;
+  AvalancheProblemName2?: string;
+  AvalancheProblemName3?: string;
+  AvalancheProblemTID1?: number;
+  AvalancheProblemTID2?: number;
+  AvalancheProblemTID3?: number;
+  CanPublish?: boolean;
   Comment?: string;
+  RegID?: number;
+  ValidExposition?: string;
+  ValidHeightFrom?: number;
+  ValidHeightRelative?: string;
+  ValidHeigtTo?: number;
 }

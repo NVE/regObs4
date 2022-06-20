@@ -23,6 +23,11 @@ class LocationService extends __BaseService {
   }
 
   /**
+   * Returns a list of locations within the given radius from the given coordinates.
+   * For an unauthenticated client, it only returns public ice locations.
+   * For an authenticated client, it returns public locations as well as the
+   * authenticated user's private locations.
+   * Empty list if no registrations found.
    * @param params The `LocationService.LocationWithinRadiusParams` containing the following parameters:
    *
    * - `radius`:
@@ -39,16 +44,16 @@ class LocationService extends __BaseService {
    */
   LocationWithinRadiusResponse(params: LocationService.LocationWithinRadiusParams): __Observable<__StrictHttpResponse<Array<ObsLocationsResponseDtoV2>>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
     if (params.radius != null) __params = __params.set('radius', params.radius.toString());
     if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
     if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
     if (params.returnCount != null) __params = __params.set('returnCount', params.returnCount.toString());
-    (params.geoHazardTypeIds || []).forEach(val => {if (val != null) __params = __params.append('geoHazardTypeIds', val.toString());});
-    const req = new HttpRequest<any>(
+    (params.geoHazardTypeIds || []).forEach(val => {if (val != null) __params = __params.append('geoHazardTypeIds', val.toString())});
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/Location/WithinRadius',
+      this.rootUrl + `/Location/WithinRadius`,
       __body,
       {
         headers: __headers,
@@ -64,6 +69,11 @@ class LocationService extends __BaseService {
     );
   }
   /**
+   * Returns a list of locations within the given radius from the given coordinates.
+   * For an unauthenticated client, it only returns public ice locations.
+   * For an authenticated client, it returns public locations as well as the
+   * authenticated user's private locations.
+   * Empty list if no registrations found.
    * @param params The `LocationService.LocationWithinRadiusParams` containing the following parameters:
    *
    * - `radius`:
@@ -95,13 +105,13 @@ class LocationService extends __BaseService {
    */
   LocationGetResponse(params: LocationService.LocationGetParams): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Location/${params.locationId}`,
+      this.rootUrl + `/Location/${encodeURIComponent(String(params.locationId))}`,
       __body,
       {
         headers: __headers,
@@ -132,7 +142,7 @@ class LocationService extends __BaseService {
   }
 }
 
-namespace LocationService {
+module LocationService {
 
   /**
    * Parameters for LocationWithinRadius
@@ -154,4 +164,4 @@ namespace LocationService {
   }
 }
 
-export { LocationService };
+export { LocationService }

@@ -1,14 +1,40 @@
 /* eslint-disable */
 export interface CompressionTestViewModel {
-  CompressionTestName?: string;
-  PropagationName?: string;
-  StabilityEvalName?: string;
+
+  /**
+   * Comment
+   */
+  Comment?: string;
   ComprTestFractureName?: string;
+
+  /**
+   * The ComprTestFractureKD unique identifier
+   */
+  ComprTestFractureTID?: number;
+  CompressionTestName?: string;
 
   /**
    * The CompressionTestKDV unique identifier
    */
   CompressionTestTID?: number;
+
+  /**
+   * FractureDepth
+   */
+  FractureDepth?: number;
+  IncludeInSnowProfile?: boolean;
+  PropagationName?: string;
+
+  /**
+   * The PropagationKD unique identifier
+   */
+  PropagationTID?: number;
+  StabilityEvalName?: string;
+
+  /**
+   * The StabilityEvalKD unique identifier
+   */
+  StabilityEvalTID?: number;
 
   /**
    * TapsFracture
@@ -19,30 +45,4 @@ export interface CompressionTestViewModel {
    * TapsFullPropagation
    */
   TapsFullPropagation?: number;
-
-  /**
-   * The PropagationKD unique identifier
-   */
-  PropagationTID?: number;
-
-  /**
-   * FractureDepth
-   */
-  FractureDepth?: number;
-
-  /**
-   * The StabilityEvalKD unique identifier
-   */
-  StabilityEvalTID?: number;
-
-  /**
-   * The ComprTestFractureKD unique identifier
-   */
-  ComprTestFractureTID?: number;
-
-  /**
-   * Comment
-   */
-  Comment?: string;
-  IncludeInSnowProfile?: boolean;
 }

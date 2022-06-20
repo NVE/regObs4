@@ -1,21 +1,21 @@
 /* eslint-disable */
 export interface StratProfileLayerViewModel {
-  GrainFormPrimaryTName?: string;
-  GrainFormSecondaryTName?: string;
-  HardnessTName?: string;
-  HardnessBottomTName?: string;
-  WetnessTName?: string;
+  Comment?: string;
+  CriticalLayerTID?: number;
   CriticalLayerTName?: string;
   DepthTop?: number;
-  Thickness?: number;
   GrainFormPrimaryTID?: number;
+  GrainFormPrimaryTName?: string;
   GrainFormSecondaryTID?: number;
+  GrainFormSecondaryTName?: string;
   GrainSizeAvg?: number;
   GrainSizeAvgMax?: number;
-  HardnessTID?: number;
   HardnessBottomTID?: number;
-  WetnessTID?: number;
-  CriticalLayerTID?: number;
-  Comment?: string;
+  HardnessBottomTName?: string;
+  HardnessTID?: number;
+  HardnessTName?: string;
   SortOrder?: number;
+  Thickness?: number;
+  WetnessTID?: number;
+  WetnessTName?: string;
 }
