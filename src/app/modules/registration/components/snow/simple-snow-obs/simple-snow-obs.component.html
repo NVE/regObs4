@@ -1,10 +1,13 @@
 <ion-list lines="full">
     <ion-item class="summary-item">
-        <ion-label class="ion-padding-vertical ion-padding-end">
-            TODO: Føre. Legg til skiføre når vi kan hente Skiføre-KDV fra API'et
-        </ion-label>
+        <app-kdv-icon-select 
+        title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS" 
+        kdvKey="Snow_SkiConditionsKDV"
+        [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"
+        (valueChange)="save()"
+        [filter]="filterSnowSurfaceTIDs">
+        </app-kdv-icon-select>
     </ion-item>
-    
     <ion-item>
         <app-kdv-icon-select 
         title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" 
