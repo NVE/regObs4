@@ -1,7 +1,7 @@
-import { Injectable, Inject, InjectionToken } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { map, switchMap, shareReplay, catchError, concatMap, take } from 'rxjs/operators';
+import { map, switchMap, shareReplay, catchError, concatMap, take, timeout } from 'rxjs/operators';
 import { OfflineSyncMeta } from '../../models/offline-sync-meta.interface';
 import moment from 'moment';
 import { OfflineDbService } from '../offline-db/offline-db.service';
@@ -10,10 +10,8 @@ import { RxDocument } from 'rxdb';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { getCacheAge } from '../cache-age';
 
-export const API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG = new InjectionToken<ApiSyncOfflineBaseServiceOptions>(
-  'ApiSyncOfflineBaseServiceOptions.config'
-);
 export interface ApiSyncOfflineBaseServiceOptions {
   useLangKeyAsDbKey: boolean;
   validSeconds: number;
@@ -29,8 +27,16 @@ export abstract class ApiSyncOfflineBaseService<T> {
     return this.isUpdatingSubject.asObservable();
   }
 
+  protected options: ApiSyncOfflineBaseServiceOptions = {
+    validSeconds: getCacheAge(),
+    useLangKeyAsDbKey: true
+  }
+
+  // As we can use cached data anyway, use a short timeout here to avoid blank screen issues if fetching new data takes
+  // a long time
+  protected FETCH_NEW_DATA_TIMEOUT = 2000;
+
   constructor(
-    @Inject(API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG) protected options: ApiSyncOfflineBaseServiceOptions,
     protected offlineDbService: OfflineDbService,
     protected logger: LoggingService,
     protected userSettingService: UserSettingService
@@ -98,7 +104,6 @@ export abstract class ApiSyncOfflineBaseService<T> {
   private getOfflineDataAndReturnIfDataIsUpToDate(appMode: AppMode, langKey: LangKey): Observable<T> {
     return this.getOfflineData(appMode, langKey).pipe(
       map((offlineMeta) => {
-        console.log("langkey is", langKey);
         // Check if offline data is newer than 24 hours
         if (this.isValid(offlineMeta)) {
           return offlineMeta.data;
@@ -127,6 +132,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
    */
   private getUpdatedDataAndSaveResultIfSuccess(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedData(appMode, langKey).pipe(
+      timeout(this.FETCH_NEW_DATA_TIMEOUT),
       switchMap((data) =>
         this.saveDataToOfflineDb(appMode, langKey, data).pipe(
           catchError((err) => {

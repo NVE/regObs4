@@ -11,7 +11,6 @@ import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
-const CACHE_AGE = 43200; // 12 hours
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
 @Injectable({
@@ -26,10 +25,6 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     protected userSettingService: UserSettingService
   ) {
     super(
-      {
-        useLangKeyAsDbKey: true,
-        validSeconds: CACHE_AGE
-      },
       offlineDbService,
       logger,
       userSettingService
