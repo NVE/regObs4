@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { enterZone } from 'src/app/core/helpers/observable-helper';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { LangKey } from 'src/app/modules/common-core/models';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvElement } from 'src/app/modules/common-regobs-api';
@@ -39,10 +41,18 @@ export class KdvIconSelectComponent {
   @Output() valueChange = new EventEmitter<number|number[]>();
 
   kdvElements$: Observable<KdvElement[]>;
+  lang$: Observable<string>;
 
-  constructor(private kdvService: KdvService, private ngZone: NgZone, private logger: LoggingService) {}
+  constructor(
+    private userSettings: UserSettingService,
+    private kdvService: KdvService,
+    private ngZone: NgZone,
+    private logger: LoggingService
+  ) {}
 
   ngOnInit() {
+    this.lang$ = this.userSettings.language$
+      .pipe(map(langKey => LangKey[langKey]));
     this.kdvElements$ = this.kdvService
       .getKdvRepositoryByKeyObservable(this.kdvKey)
       .pipe(
