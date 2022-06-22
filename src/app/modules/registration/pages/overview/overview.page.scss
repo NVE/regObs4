@@ -2,22 +2,44 @@ ion-list {
   padding-bottom: 10px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  vertical-align: text-bottom;
-  padding: 4px 4px 10px 16px;
-  color: var(--ion-color-primary);
-  font-size: 12px;
-  font-weight: 400;
+@media screen and (max-width: 345px) {
+  .question {
+    display: none;
+  }
 }
 
-.question {
-  font-weight: 600 !important;
-}
+ion-grid.header {
+  --ion-grid-padding: 0;
+  --ion-grid-padding-xs: 0;
+  --ion-grid-padding-sm: 0;
+  --ion-grid-padding-md: 0;
+  --ion-grid-padding-lg: 0;
+  --ion-grid-padding-xl: 0;
 
-.header ion-toggle {
-  vertical-align: bottom;
-  padding-bottom: 4px;
+  .question ion-label {
+    font-weight: 600;
+  }
+
+  ion-grid, ion-row, ion-col {
+    padding: 0;
+  }
+
+  .simple-obs-toggle {
+    ion-label {
+      text-align: right;
+    }
+  }
+
+  ion-label {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 100%;
+    text-overflow: unset;
+  }
+
+  ion-item {
+    --background: inherit;
+    --border-style: none;
+  }
 }

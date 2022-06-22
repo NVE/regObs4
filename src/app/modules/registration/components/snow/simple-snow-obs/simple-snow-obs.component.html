@@ -1,14 +1,12 @@
 <ion-list lines="full">
-    <ion-item class="summary-item">
-        <app-kdv-icon-select 
+        <!-- <app-kdv-icon-select 
         title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS" 
         kdvKey="Snow_SkiConditionsKDV"
         [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"
         (valueChange)="save()"
         [filter]="filterSnowSurfaceTIDs">
-        </app-kdv-icon-select>
-    </ion-item>
-    <ion-item>
+        </app-kdv-icon-select> -->
+      
         <app-kdv-icon-select 
         title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" 
         kdvKey="Snow_SnowSurfaceKDV"
@@ -16,17 +14,14 @@
         (valueChange)="save()"
         [filter]="filterSnowSurfaceTIDs">
         </app-kdv-icon-select>
-    </ion-item>
-    <ion-item>
+
         <app-edit-images
         [registrationTid]="22"
         [geoHazard]="draft.registration.GeoHazardTID"
         [draftUuid]="draft.uuid"
         [(existingAttachments)]="draft.registration.Attachments"
       ></app-edit-images>
-    </ion-item>
 
-    <ion-item>
       <app-kdv-icon-select 
       title="REGISTRATION.DANGER_OBS.TITLE" 
       kdvKey="Snow_DangerSignKDV"
@@ -35,22 +30,37 @@
       multiSelect="true"
       [filter]="filterDangerSignTIDs">
       </app-kdv-icon-select>
-    </ion-item>
-    <ion-item>
+
         <app-edit-images
         [registrationTid]="13"
         [geoHazard]="draft.registration.GeoHazardTID"
         [draftUuid]="draft.uuid"
         [(existingAttachments)]="draft.registration.Attachments"
       ></app-edit-images>
-    </ion-item>
-    <ion-item>
-        <app-numeric-input [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
-title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH" [min]="0" [max]="999" [decimalPlaces]="0"
-[convertRatio]="100" suffix="cm" (valueChange)="save()"></app-numeric-input>
 
-        <app-numeric-input [(value)]="draft.registration.SnowSurfaceObservation.SnowDepth"
-  title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH" [min]="0" [max]="9999" [decimalPlaces]="0"
-  [convertRatio]="100" suffix="cm" (valueChange)="save()"></app-numeric-input>
-    </ion-item>
+      <div class="inline">
+        <app-numeric-input
+          [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
+          title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
+          [min]="0"
+          [max]="999"
+          [decimalPlaces]="0"
+          [convertRatio]="100"
+          suffix="cm"
+          (valueChange)="save()"
+        ></app-numeric-input>
+
+        <app-numeric-input
+          [(value)]="draft.registration.SnowSurfaceObservation.SnowDepth"
+          title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
+          [min]="0"
+          [max]="9999"
+          [decimalPlaces]="0"
+          [convertRatio]="100"
+          suffix="cm"
+          (valueChange)="save()"
+        ></app-numeric-input>
+      </div>
+
+
 </ion-list>
