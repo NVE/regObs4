@@ -15,7 +15,6 @@ ion-item.header {
     vertical-align: middle;
     font-weight: 600;
     font-size: 14px;
-    // line-height: 16px;
     color: var(--ion-text-color-heading);
   }
 
@@ -34,6 +33,9 @@ ion-item.container {
   --padding-end: 0;
   --inner-padding-start: 0;
   --inner-padding-end: 0;
+
+  // Content has a 4 px padding-top to adjust for check marks position above
+  // buttons
   margin-top: -4px;
   
   .content {
