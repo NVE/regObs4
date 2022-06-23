@@ -26,7 +26,7 @@ import { AppEventAction } from '../../../modules/analytics/enums/app-event-actio
 import { ImageLocation } from '../../img-swiper/image-location.model';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
-import { catchError, switchMap, take, timeout } from 'rxjs/operators';
+import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { firstValueFrom, Observable, of, TimeoutError } from 'rxjs';
@@ -35,6 +35,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { Router } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -167,7 +168,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   updateImages(): void {
-    this.attachments = getAllAttachmentsFromViewModel(this.obs)
+    this.attachments = getAllAttachmentsFromViewModel(this.obs);
   }
 
   getImageUrl(
@@ -213,9 +214,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   private async getBaseUrl() {
-    const userSetings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const userSetings = await firstValueFrom(this.userSettingService.userSetting$);
     return settings.services.regObs.webUrl[userSetings.appMode];
   }
 
@@ -266,6 +265,9 @@ export class ObservationListCardComponent implements OnChanges {
         let msg: string;
         if (error instanceof TimeoutError) {
           msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms, using cached obs`;
+        } else if (error instanceof HttpErrorResponse && error.status === 410) {
+          msg = 'Obs was deleted from Regobs';
+          this.obs = null;
         } else {
           msg = 'An unknown error occured while fetching obs before edit, using cached obs';
         }
@@ -284,6 +286,9 @@ export class ObservationListCardComponent implements OnChanges {
         //we don't have a local working copy of this regstration yet, so fetch it and save as draft
         this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
         const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
+        if (registrationFromServer === null) {
+          return; //TODO: Handle registration gone
+        }
         await this.draftRepository.saveAsDraft(registrationFromServer);
       } else {
         this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
