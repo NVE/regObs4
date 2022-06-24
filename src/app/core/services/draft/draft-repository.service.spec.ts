@@ -8,6 +8,7 @@ import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
+import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -320,4 +321,58 @@ describe('DraftRepositoryService', () => {
     // As we deleted the draft, the subscription should be closed
     expect(sub.closed).toBe(true);
   }));
+
+  it('saveAsDraft works', async () => {
+    const viewModel: RegistrationViewModel = {
+      RegId: 42,
+      ExternalReferenceId: 'externalReferenceId',
+      DtObsTime: 'obsTime',
+      GeoHazardTID: GeoHazard.Ice,
+      GeneralObservation: {
+        Comment: 'comment',
+        GeoHazardTID: GeoHazard.Ice
+      }
+    };
+    await service.saveAsDraft(viewModel);
+
+    //the copy should be saved in the database
+    expect(database.store.size).toBe(1);
+    expect(database.store.has('drafts.TEST.externalReferenceId')).toBeTrue();
+
+    //check that the draft contains a copy of the viewModel
+    const draft = await service.load('externalReferenceId');
+    expect(draft.regId).toEqual(42);
+    expect(draft.registration.GeneralObservation).toEqual({
+      Comment: 'comment',
+      GeoHazardTID: GeoHazard.Ice
+    });
+  });
+
+  it('copyViewModelAndSave works', async () => {
+    const viewModel: RegistrationViewModel = {
+      RegId: 42,
+      ExternalReferenceId: 'externalReferenceId',
+      DtObsTime: 'obsTime',
+      GeoHazardTID: GeoHazard.Ice,
+      GeneralObservation: {
+        Comment: 'comment',
+        GeoHazardTID: GeoHazard.Ice
+      }
+    };
+    await service.copyViewModelAndSave(viewModel, 'uuid');
+
+    //the copy should be saved in the database
+    expect(database.store.size).toBe(1);
+    expect(database.store.has('drafts.TEST.uuid')).toBeTrue();
+
+    const draft = await service.load('uuid');
+
+    expect(draft.regId).toBeNull(); //this is a new observation, so the regId should be null
+
+    //check that the draft contains a copy of the viewModel
+    expect(draft.registration.GeneralObservation).toEqual({
+      Comment: 'comment',
+      GeoHazardTID: GeoHazard.Ice
+    });
+  });
 });

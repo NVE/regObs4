@@ -12,7 +12,7 @@ import {
   RegistrationViewModel,
   Summary
 } from 'src/app/modules/common-regobs-api/models';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
@@ -36,10 +36,16 @@ import { Router } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
 
+/**
+ * Registration card.
+ * Shows key info from one registration.
+ * If the user has access to edit the registration, an edit button is visible
+ */
 @Component({
   selector: 'app-observation-list-card',
   templateUrl: './observation-list-card.component.html',
@@ -77,7 +83,9 @@ export class ObservationListCardComponent implements OnChanges {
     private registrationService: RegistrationService,
     private draftRepository: DraftRepositoryService,
     private router: Router,
-    private logger: LoggingService
+    private logger: LoggingService,
+    private alertController: AlertController,
+    private translateService: TranslateService
   ) {}
 
   private async load() {
@@ -267,29 +275,32 @@ export class ObservationListCardComponent implements OnChanges {
           msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms, using cached obs`;
         } else if (error instanceof HttpErrorResponse && error.status === 410) {
           msg = 'Obs was deleted from Regobs';
-          this.obs = null;
         } else {
           msg = 'An unknown error occured while fetching obs before edit, using cached obs';
         }
         this.logger.error(error, DEBUG_TAG, msg);
-        return of(this.obs);
+        return of(null);
       })
     );
   }
 
   async edit() {
     this.isLoadingObsForEdit = true;
+    const uuid = this.obs.ExternalReferenceId;
     try {
-      const uuid = this.obs.ExternalReferenceId;
       const draft = await this.draftRepository.load(uuid);
       if (!draft) {
-        //we don't have a local working copy of this regstration yet, so fetch it and save as draft
+        //we don't have a local working copy of this registration yet, so fetch it and save as draft
         this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
         const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
         if (registrationFromServer === null) {
-          return; //TODO: Handle registration gone
+          const continueEditing = await this.confirmEditDespiteNoFreshRegistrationFromServer();
+          if (!continueEditing) {
+            this.isLoadingObsForEdit = false;
+            return;
+          }
         }
-        await this.draftRepository.saveAsDraft(registrationFromServer);
+        await this.draftRepository.saveAsDraft(this.obs); //save cached copy from card as draft
       } else {
         this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
       }
@@ -297,6 +308,36 @@ export class ObservationListCardComponent implements OnChanges {
       this.isLoadingObsForEdit = false;
       this.cdr.markForCheck();
     }
-    this.router.navigate(['registration', 'edit', this.obs.ExternalReferenceId]);
+    this.router.navigate(['registration', 'edit', uuid]);
+  }
+
+  private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {
+    let resolveFunction: (confirm: boolean) => void;
+    const promise = new Promise<boolean>(resolve => {
+      resolveFunction = resolve;
+    });
+    const toTranslate = [
+      'DIALOGS.CANCEL',
+      'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
+      'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
+      'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON'];
+    const translations = await firstValueFrom(this.translateService.get(toTranslate));
+    const alert = await this.alertController.create({
+      header: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER'],
+      message: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE'],
+      buttons: [
+        {
+          text: translations['DIALOGS.CANCEL'],
+          role: 'cancel',
+          handler: () => resolveFunction(false)
+        },
+        {
+          text: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON'],
+          handler: () => resolveFunction(true)
+        }
+      ]
+    });
+    await alert.present();
+    return promise;
   }
 }
