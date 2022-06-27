@@ -272,11 +272,11 @@ export class ObservationListCardComponent implements OnChanges {
       catchError(error => {
         let msg: string;
         if (error instanceof TimeoutError) {
-          msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms, using cached obs`;
+          msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms`;
         } else if (error instanceof HttpErrorResponse && error.status === 410) {
           msg = 'Obs was deleted from Regobs';
         } else {
-          msg = 'An unknown error occured while fetching obs before edit, using cached obs';
+          msg = 'An unknown error occured while fetching obs before edit';
         }
         this.logger.error(error, DEBUG_TAG, msg);
         return of(null);
