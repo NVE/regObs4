@@ -16,6 +16,7 @@ export declare const enum RegistrationDraftErrorCode {
   AttachmentError = 10,
   RegistrationError = 20,
   ConflictError = 25,
+  GoneError = 27,
   ServerError = 30,
   Unknown = 40,
 }

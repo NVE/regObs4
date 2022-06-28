@@ -345,7 +345,14 @@
       "TITLE": "Innsending feilet",
       "CONFLICT": "Mens du jobbet har observasjonen blitt endret et annet sted.<br/>Vil du forkaste dine endringer eller vil du sende inn og overskrive endringene som ble gjort et annet sted?",
       "ABANDON": "Forkast mine endringer",
-      "OVERWRITE": "Send inn og overskriv"
+      "OVERWRITE": "Send inn og overskriv",
+      "GONE": "Denne observasjonen er slettet i Regobs. <br/>Vil du forkaste dine endringer eller vil du sende inn kladden som en ny observasjon?",
+      "SUBMIT_NEW": "Send inn som ny observasjon"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "HEADER": "Synkronisering feilet",
+      "MESSAGE": "Vi fikk ikke til å hente en fersk utgave av observasjonen fra Regobs. Du kan likevel redigere denne, men det er en sjanse for å støte på konflikter når du prøver å sende den inn hvis flere har jobbet med samme observasjon eller du har jobbet med observasjonen på flere enheter.",
+      "CONFIRM_BUTTON": "Rediger observasjon"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat fra observasjonen",

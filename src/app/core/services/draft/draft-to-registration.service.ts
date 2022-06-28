@@ -201,6 +201,9 @@ function handleError(error: Error): {code: RegistrationDraftErrorCode; message: 
     } else if (error.status === HttpStatusCode.Conflict) {
       code = RegistrationDraftErrorCode.ConflictError;
       message = error.message || `Registration conflict ${error.status} - ${error.statusText}`;
+    } else if (error.status === HttpStatusCode.Gone) {
+      code = RegistrationDraftErrorCode.GoneError;
+      message = error.message || `Registration is deleted in Regobs ${error.status} - ${error.statusText}`;
     } else if (error.status > HttpStatusCode.BadRequest) {
       code = RegistrationDraftErrorCode.ServerError;
       message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
