@@ -38,6 +38,10 @@ export class FailedRegistrationComponent {
     return this.draft.error.code === RegistrationDraftErrorCode.ConflictError;
   }
 
+  get goneError() {
+    return this.draft.error.code === RegistrationDraftErrorCode.GoneError;
+  }
+
   get registrationError() {
     return this.draft.error.code === RegistrationDraftErrorCode.RegistrationError;
   }
@@ -45,7 +49,6 @@ export class FailedRegistrationComponent {
   get unknownError() {
     return (
       this.draft.error.code === RegistrationDraftErrorCode.AttachmentError ||
-      this.draft.error.code === RegistrationDraftErrorCode.ConflictError ||
       this.draft.error.code === RegistrationDraftErrorCode.Unknown
     );
   }

@@ -5,7 +5,7 @@ import { UserGroupService } from '../../../../core/services/user-group/user-grou
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { SummaryItemService } from '../../services/summary-item.service';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { RegistrationDraft, RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
@@ -34,6 +34,12 @@ export class OverviewPage implements OnInit {
 
   draftHasStatusSync(draft: RegistrationDraft): boolean {
     return draft?.syncStatus === SyncStatus.Sync || draft?.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
+  }
+
+  //If conflict or registration is gone, re-sumbit or cancelling is handled by the failed-registration-component
+  hideSendButton(draft: RegistrationDraft): boolean {
+    return this.draftHasStatusSync(draft)
+    && [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft?.error?.code);
   }
 
   trackByFunction(index: number, item: ISummaryItem) {
