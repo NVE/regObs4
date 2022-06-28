@@ -6,7 +6,7 @@
   </ion-list-header>
   <app-version-conflict *ngIf="conflictError" [draft]="draft"></app-version-conflict>
   <app-gone-registration *ngIf="goneError" [draft]="draft"></app-gone-registration>
-  <ng-container *ngIf="!conflictError">
+  <ng-container *ngIf="!(conflictError || goneError)">
     <ion-item>
       <ion-label class="ion-text-wrap" *ngIf="networkError">
         {{'REGISTRATION.FAILED.SUBTITLE' | translate}}
