@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { DamageObsEditModel, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
-import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
@@ -72,7 +72,7 @@ export class SetDamageLocationPage implements OnInit {
     this.swipeBackService.enableSwipeBack();
   }
 
-  async onLocationSet(event: ObsLocationEditModel) {
+  async onLocationSet(event: LocationTime) {
     this.modalController.dismiss(event);
   }
 
