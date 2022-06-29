@@ -34,7 +34,7 @@ export class LoginPage implements OnInit {
     return this.regobsAuthService.logout();
   }
 
-  async openMyPage(): Promise<void> {
+  async openMyPage(tag: string = ""): Promise<void> {
     const myPageUrl = await this.userSettingService.appMode$
       .pipe(
         map((appMode) => settings.authConfig[appMode].myPageUrl),
@@ -45,7 +45,7 @@ export class LoginPage implements OnInit {
       .pipe(take(1))
       .toPromise();
     this.externalLinkService.openExternalLink(
-      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}`
+      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}#${tag}`
     );
   }
 
