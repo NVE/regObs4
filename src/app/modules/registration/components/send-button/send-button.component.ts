@@ -80,8 +80,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
       this.cdr.detectChanges();
       try {
         // Redirect user to log in if not authenticated
-        const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
-        if (!loggedInUser.isLoggedIn) {
+        if (!(await this.isLoggedIn())) {
           this.regobsAuthService.signIn();
           return;
         }
@@ -186,7 +185,16 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     await alert.present();
   }
 
-  private navigateToMyObservations(): void {
-    this.navController.navigateRoot('my-observations');
+  private async navigateToMyObservations(): Promise<void> {
+    if ((await this.isLoggedIn())) {
+      this.navController.navigateRoot('my-observations');
+    } else {
+      this.navController.navigateRoot('/');
+    }
+  }
+
+  private async isLoggedIn(): Promise<boolean> {
+    const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
+    return loggedInUser.isLoggedIn;
   }
 }

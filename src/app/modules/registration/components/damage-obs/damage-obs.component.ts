@@ -100,7 +100,7 @@ export class DamageObsComponent implements OnInit {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      const obs: ObsLocationEditModel = result.data;
+      const obs: ObsLocationEditModel = result.data.location;
       this.damageObs.DamagePosition = {
         Latitude: obs.Latitude,
         Longitude: obs.Longitude

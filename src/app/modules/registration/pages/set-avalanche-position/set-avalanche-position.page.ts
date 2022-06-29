@@ -10,7 +10,7 @@ import { ModalController } from '@ionic/angular';
 import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
-import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
@@ -215,18 +215,18 @@ export class SetAvalanchePositionPage implements OnInit {
     }
   }
 
-  async onLocationSet([event, _]: [ObsLocationEditModel, string]) {
+  async onLocationSet({location}: LocationTime) {
     if (this.startIsActive) {
-      this.start = L.latLng(event.Latitude, event.Longitude);
+      this.start = L.latLng(location.Latitude, location.Longitude);
       if (this.end) {
         this.map.panTo(this.end);
       } else {
-        this.end = L.latLng(event.Latitude, event.Longitude);
+        this.end = L.latLng(location.Latitude, location.Longitude);
       }
       this.startIsActive = false;
       this.updateMarkers();
     } else {
-      this.end = L.latLng(event.Latitude, event.Longitude);
+      this.end = L.latLng(location.Latitude, location.Longitude);
       this.modalController.dismiss({ start: this.start, end: this.end });
     }
   }

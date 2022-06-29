@@ -345,7 +345,14 @@
       "TITLE": "Submission failed",
       "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
       "ABANDON": "Cancel my work",
-      "OVERWRITE": "Submit and overwrite"
+      "OVERWRITE": "Submit and overwrite",
+      "GONE": "This observation is deleted in Regobs. <br/>Would you like to abandon your changes or submit the draft as a new observation?",
+      "SUBMIT_NEW": "Submit as new observation"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "HEADER": "Synchronization failed",
+      "MESSAGE": "We couldn't fetch a fresh copy of this observation from Regobs. You may still edit this, but there is a chance of conflict when you submit the observation later if the same observation has been changed elsewhere.",
+      "CONFIRM_BUTTON": "Edit observation"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notes for observation",

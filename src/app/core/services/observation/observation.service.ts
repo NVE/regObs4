@@ -190,7 +190,7 @@ export class ObservationService {
     await this.updateCacheAndSave(newObservations, observation.GeoHazardTID);
   }
 
-  private async deleteFetchedObservation(regId: number) {
+  async deleteFetchedObservation(regId: number) {
     const cachedObservations = await firstValueFrom(this.observations$);
 
     const index = cachedObservations.findIndex(obs => obs.RegId === regId);

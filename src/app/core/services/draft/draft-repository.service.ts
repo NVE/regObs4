@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, 
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { getAllAttachmentsFromEditModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
-import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -134,22 +134,51 @@ export class DraftRepositoryService {
 
   /**
    * Create and save a draft from a registration already sent to server
-   * @param registrationViewModel the registration you like to edit
+   * @param viewModel the registration you like to edit
    */
-  async saveAsDraft(registrationViewModel: RegistrationViewModel) {
-    if (!registrationViewModel.RegId) {
-      throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
-    }
+  async saveAsDraft(viewModel: RegistrationViewModel) {
+    this.throwIfMissingRegId(viewModel.RegId);
+    await this.cloneAndSave(viewModel, viewModel.ExternalReferenceId, viewModel.RegId);
+  }
 
-    const registration = cloneDeep(viewModelToEditModel(registrationViewModel));
+  /**
+   * Create and save a copy of a registration already sent to server
+   * The copy will have a new uuid and no regId
+   * @param draft the registration you like to copy
+   * @param uuid a unique GUID
+   */
+  async copyDraftAndSave(draft: RegistrationDraft, uuid: string) {
+    this.throwIfMissingRegId(draft.regId);
+    await this.cloneAndSave(draft.registration, uuid, null);
+  }
+
+  /**
+   * Create and save a copy of a registration already sent to server
+   * The copy will have a new uuid and no regId
+   * @param viewModel the registration you like to copy
+   * @param uuid a unique GUID
+   */
+  async copyViewModelAndSave(viewModel: RegistrationViewModel, uuid: string) {
+    this.throwIfMissingRegId(viewModel.RegId);
+    await this.cloneAndSave(viewModel, uuid, null);
+  }
+
+  private async cloneAndSave(viewModel: RegistrationViewModel, uuid: string, regId: number) {
+    const registration = cloneDeep(viewModelToEditModel(viewModel));
 
     const draft: RegistrationDraft = {
-      uuid: registrationViewModel.ExternalReferenceId,
-      regId: registrationViewModel.RegId,
+      uuid: uuid,
+      regId: regId,
       syncStatus: SyncStatus.Draft,
       registration: registration
     };
     await this.save(draft);
+  }
+
+  private throwIfMissingRegId(regId: number) {
+    if (!regId) {
+      throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
+    }
   }
 
   /**
