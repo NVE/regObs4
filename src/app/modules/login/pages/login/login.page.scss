@@ -4,3 +4,12 @@
     margin-right: 0px;
     height: var(--ion-button-height);
 }
+
+.delete-button {
+    --color: red;
+    --border-color: red;
+}
+
+ion-list > * {
+    margin-bottom: 10px;
+}

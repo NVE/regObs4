@@ -108,6 +108,7 @@
     "LOGIN": "Logga in",
     "LOGOUT": "Logga ut",
     "MY_PROFILE": "Min profil",
+    "DELETE_PROFILE": "Radera profil och mina data",
     "PASSWORD": "lösenord",
     "SERVICE_UNAVAILABLE": "Fel vid anslutning till tjänsten. Har du mobilnätverk? Vänta några minuter och försök igen.",
     "TITLE": "Logga in",
