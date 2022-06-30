@@ -44,9 +44,11 @@ export class LoginPage implements OnInit {
     const currentLangKey = await this.userSettingService.language$
       .pipe(take(1))
       .toPromise();
+    var locale = this.getSupportedMyPageLocales(currentLangKey);
+    // Adds random URL parameter to force WebView reload in case of changed tag in URL.
     var rand = Math.random();
     this.externalLinkService.openExternalLink(
-      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}&rand=${rand}#${tag}`
+      `${myPageUrl}?Culture=${locale}&rand=${rand}#${tag}`
     );
   }
 
