@@ -44,8 +44,9 @@ export class LoginPage implements OnInit {
     const currentLangKey = await this.userSettingService.language$
       .pipe(take(1))
       .toPromise();
+    var rand = Math.random();
     this.externalLinkService.openExternalLink(
-      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}#${tag}`
+      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}&rand=${rand}#${tag}`
     );
   }
 
