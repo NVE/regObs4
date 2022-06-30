@@ -117,6 +117,7 @@
     "LOGIN": "Log in",
     "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
+    "DELETE_PROFILE": "Delete profile and my data",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
     "TITLE": "Log in",
