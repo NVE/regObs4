@@ -34,7 +34,7 @@ export class LoginPage implements OnInit {
     return this.regobsAuthService.logout();
   }
 
-  async openMyPage(tag: string = ""): Promise<void> {
+  async openMyPage(tag = ''): Promise<void> {
     const myPageUrl = await this.userSettingService.appMode$
       .pipe(
         map((appMode) => settings.authConfig[appMode].myPageUrl),
