@@ -106,7 +106,7 @@
     "LOGIN": "Logg inn",
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
-    "DELETE_PROFILE": "Slett profil",
+    "DELETE_PROFILE": "Slett profil og mine data",
     "PASSWORD": "Passord",
     "SERVICE_UNAVAILABLE": "Det er problem med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må vakne og treng ein sterk kopp kaffe først. Gi den nokre minutt å prøv igjen.",
     "TITLE": "Logg inn",
