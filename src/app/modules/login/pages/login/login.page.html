@@ -19,6 +19,10 @@
       <ion-icon slot="start" name="push-outline"></ion-icon>
       {{'LOGIN.MY_PROFILE' | translate }}
     </ion-button>
+    <ion-button type="button" fill="outline" expand="block" (click)="openMyPage('user-data')" class="delete-button">
+      <ion-icon slot="start" name="push-outline"></ion-icon>
+      {{'LOGIN.DELETE_PROFILE' | translate }}
+    </ion-button>
     <ion-button class="logout-button" expand="block" type="submit" color="varsom-orange" (click)="logout()">
       {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
   </ion-list>
