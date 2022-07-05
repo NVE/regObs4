@@ -207,6 +207,9 @@
     "TITLE": "Min side",
     "USER": "Bruker"
   },
+  "OBSERVATION_FILTER": {
+    "TITLE": "Observasjonsfilter"
+  },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
     "FORMS": "Skjemaer",
