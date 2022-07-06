@@ -57,9 +57,7 @@ import { NgxFileDropModule } from 'ngx-file-drop';
     NumericInputModalPageModule,
     CompressionTestListComponent,
     KdvSelectComponent,
-    BlobImageComponent,
-    // TODO: Trenger vi eksportere NgxFileDropModule?
-    NgxFileDropModule
+    BlobImageComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
