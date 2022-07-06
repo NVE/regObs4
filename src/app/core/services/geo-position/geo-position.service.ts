@@ -203,16 +203,18 @@ export class GeoPositionService implements OnDestroy {
 
   public async requestPositionFromBrowser() : Promise<void> {
     if (!this.geoLocationSupported) {
-      this.gpsPositionLog.next(this.createPositionError('Geoposition is not supported'));
-      this.createToast('Geoposition is not supported');
+      const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.UNSUPPORTED');
+      this.gpsPositionLog.next(this.createPositionError(errorMessage));
+      this.createToast(errorMessage);
     } else {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (pos && pos.coords) {
             this.currentPosition.next(pos);
           } else {
-            this.gpsPositionLog.next(this.createPositionError('Invalid Geoposition'));
-            this.createToast('Invalid geoposition');
+            const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.INVALID');
+            this.gpsPositionLog.next(this.createPositionError('Empty position data or no coords'));
+            this.createToast(errorMessage);
           }
         },
         (err) => {
@@ -223,7 +225,6 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-  // TODO: All calls to createToast does not await - problem or not?
   private async createToast( message?: string){
     const toast = await this.toastController.create({
       message: message,
@@ -245,7 +246,6 @@ export class GeoPositionService implements OnDestroy {
       key = 'PositionUnavailable';
     }
     if (key) {
-      // TODO: Check that keys exists in translations
       const errorMessage: string = this.translateService.instant(
         `GEOLOCATION.POSITION_ERROR.${key}`
       );
@@ -382,7 +382,6 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private async checkPermissions() : Promise<boolean> {
-    // TODO: https://www.devhybrid.com/ionic-4-requesting-user-permissions/ - UPDATE - Link is broken
     try {
       if (isAndroidOrIos(this.platform)) {
         this.checkPermissionsApp();
@@ -468,25 +467,6 @@ export class GeoPositionService implements OnDestroy {
       })
     );
   }
-
-  // private requestDeviceOrientationPermission(): Promise<boolean> {
-  // TODO: iOS 13 ask for permission every time, and from localhost.
-  // this needs to be better supported before turning on
-  // or use another native plugin than depricated
-  // https://github.com/apache/cordova-plugin-device-orientation
-  // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
-  // https://github.com/apache/cordova-plugin-device-orientation/issues/52
-
-  // const doe = <any>DeviceOrientationEvent;
-  // if (typeof doe.requestPermission === 'function') {
-  //   // iOS 13+
-  //   const response = await doe.requestPermission();
-  //   return response === 'granted';
-  // } else {
-  //   // non iOS 13+
-  // return Promise.resolve(true);
-  // }
-  // }
 
   private getAbsoluteHeading(event: DeviceOrientationEvent) {
     return event.alpha !== undefined && event.absolute

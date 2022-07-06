@@ -80,7 +80,9 @@
     "POSITION_ERROR": {
       "PermissionDenied": "For å hente posisjonen din må du endre innstillinger i nettleseren",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
-      "Timeout": "Det tok for lang tid å få tak i posisjonen din"
+      "Timeout": "Det tok for lang tid å få tak i posisjonen din",
+      "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
+      "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
     }
   },
   "GEOLOCATION_SERVICE": {
