@@ -1,5 +1,5 @@
 import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { ActionSheetController, PopoverController } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,8 +45,6 @@ export class SelectComponent implements OnInit {
 
   constructor(
     private actionSheetController: ActionSheetController,
-    // TODO: What is popoverController used for? Delete if not in use
-    private popoverController: PopoverController,
     private translateService: TranslateService,
     public platform: Platform
   ) {}
