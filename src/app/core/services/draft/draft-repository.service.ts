@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, 
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { getAllAttachmentsFromEditModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
-import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -118,10 +118,12 @@ export class DraftRepositoryService {
   * @param geoHazard the geo hazard you have observed
   * @returns the registration
   */
-  create(geoHazard: GeoHazard): RegistrationDraft {
+  async create(geoHazard: GeoHazard): Promise<RegistrationDraft> {
+    const simpleMode = await this.useSimpleMode(geoHazard);
     const draft: RegistrationDraft = {
       uuid: uuidv4(),
       syncStatus: SyncStatus.Draft,
+      simpleMode,
       registration: {
         GeoHazardTID: geoHazard,
         DtObsTime: null,
@@ -130,6 +132,17 @@ export class DraftRepositoryService {
       }
     };
     return draft;
+  }
+
+  /**
+   * @returns true if user prefer simple mode for snow registrations
+   */
+  private async useSimpleMode(geoHazard: GeoHazard): Promise<boolean> {
+    if (geoHazard === GeoHazard.Snow) {
+      const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
+      return userSetting.simpleSnowObservations;
+    }
+    return false;
   }
 
   /**
@@ -147,7 +160,8 @@ export class DraftRepositoryService {
       uuid: registrationViewModel.ExternalReferenceId,
       regId: registrationViewModel.RegId,
       syncStatus: SyncStatus.Draft,
-      registration: registration
+      registration: registration,
+      simpleMode: false
     };
     await this.save(draft);
   }

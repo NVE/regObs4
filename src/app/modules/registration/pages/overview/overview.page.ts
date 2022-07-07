@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { combineLatest, firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
+import { firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
@@ -71,10 +71,9 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
       map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow)
     );
 
-    //TODO: Hvorfor oppdateres ikke summaryItems$ når jeg endrer på lokasjon eller tid?
-    this.summaryItems$ = combineLatest([this.draft$, this.userSettingService.userSetting$]).pipe(
-      switchMap(([draft, userSetting]) => {
-        if (userSetting.simpleSnowObservations) {
+    this.summaryItems$ = this.draft$.pipe(
+      switchMap((draft) => {
+        if (draft.simpleMode && draft.simpleMode === true) {
           return from(this.getLocationAndTimeSummaryItem(draft));
         } else {
           return this.summaryItemService.getSummaryItems$(uuid);
@@ -92,30 +91,42 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   async changeMode(event: CustomEvent) {
-    if (event.detail.checked === true) {
-      //user wants to change mode to simple
-      const draft = await firstValueFrom(this.draft$);
-      if (this.draftContainsDataNotAvailableForSimpleMode(draft)) {
-        const okToConvertToSimple = await this.requestConvertToSimple();
-        if (okToConvertToSimple) {
-          const simpleDraft = this.clearDataNotAvailableInSimpleSnowObs(draft);
-          this.draftRepository.save(simpleDraft);
-          this.userSetting.simpleSnowObservations = true;
+    const draft = await firstValueFrom(this.draft$);
+    if (event.detail.checked != draft.simpleMode) {
+      //we only want to change mode if toogle value is different than current mode
+      if (event.detail.checked === true) {
+        //user wants to change mode to simple
+        if (this.draftContainsDataNotAvailableForSimpleMode(draft)) {
+          const okToConvertToSimple = await this.requestConvertToSimple();
+          if (okToConvertToSimple) {
+            const simpleDraft = {
+              ...this.clearDataNotAvailableInSimpleSnowObs(draft),
+            };
+            this.saveDraftAndSimpleModeSetting(simpleDraft, true);
+          } else {
+            //user canceled convert to simple, so unset toggle and abort
+            const target: IonToggle = event.target as unknown as IonToggle;
+            target.checked = false; //unset toggle
+          }
         } else {
-          //user canceled convert to simple, so unset toggle and abort
-          const target: IonToggle = event.target as unknown as IonToggle;
-          target.checked = false; //unset toggle
-          return;
+          //draft is compatible with simple mode, so change to simple mode
+          this.saveDraftAndSimpleModeSetting(draft, true);
         }
-      } else {
-        //draft is compatible with simple mode, so change to simple mode
-        this.userSetting.simpleSnowObservations = true;
+      } else if (draft.simpleMode && draft.simpleMode === true) {
+        //user want to change mode to standard
+        this.saveDraftAndSimpleModeSetting(draft, false);
       }
-    } else if (this.userSetting.simpleSnowObservations === true) {
-      //user want to change mode to standard
-      this.userSetting.simpleSnowObservations = false;
     }
-    this.userSettingService.saveUserSettings(this.userSetting); //save mode
+  }
+
+  private async saveDraftAndSimpleModeSetting(draft: RegistrationDraft, simpleMode: boolean): Promise<void> {
+    const draftToSave: RegistrationDraft = {
+      ...draft,
+      simpleMode
+    };
+    this.draftRepository.save(draftToSave); //save mode on draft
+    this.userSetting.simpleSnowObservations = simpleMode;
+    this.userSettingService.saveUserSettings(this.userSetting); //save default mode for new registrations
   }
 
   private async requestConvertToSimple(): Promise<boolean> {
