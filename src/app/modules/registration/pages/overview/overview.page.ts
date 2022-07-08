@@ -68,12 +68,12 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
       });
 
     this.showSnowObsModeSelector$ = this.draft$.pipe(
-      map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow)
+      map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow && !this.syncFailed(draft))
     );
 
     this.summaryItems$ = this.draft$.pipe(
       switchMap((draft) => {
-        if (draft.simpleMode === true) {
+        if (this.showSimpleMode(draft)) {
           return from(this.getLocationAndTimeSummaryItem(draft));
         } else {
           return this.summaryItemService.getSummaryItems$(uuid);
@@ -82,8 +82,19 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     );
   }
 
+  private syncFailed(draft: RegistrationDraft): boolean {
+    return draft.error && this.draftHasStatusSync(draft);
+  }
+
   private async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem[]> {
     return [await this.summaryItemService.getLocationAndTimeSummaryItem(draft)];
+  }
+
+  showSimpleMode(draft: RegistrationDraft): boolean {
+    if (this.syncFailed(draft)) {
+      return false;
+    }
+    return draft.simpleMode === true;
   }
 
   draftHasStatusSync(draft: RegistrationDraft): boolean {
