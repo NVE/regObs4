@@ -73,7 +73,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
     this.summaryItems$ = this.draft$.pipe(
       switchMap((draft) => {
-        if (draft.simpleMode && draft.simpleMode === true) {
+        if (draft.simpleMode === true) {
           return from(this.getLocationAndTimeSummaryItem(draft));
         } else {
           return this.summaryItemService.getSummaryItems$(uuid);
@@ -112,7 +112,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
           //draft is compatible with simple mode, so change to simple mode
           this.saveDraftAndSimpleModeSetting(draft, true);
         }
-      } else if (draft.simpleMode && draft.simpleMode === true) {
+      } else if (draft.simpleMode === true) {
         //user want to change mode to standard
         this.saveDraftAndSimpleModeSetting(draft, false);
       }

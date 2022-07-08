@@ -72,5 +72,5 @@ export interface RegistrationDraft {
    * @returns true if the draft was made in simple mode
    * Simple mode means that the user have fewer choices.
    */
-  readonly simpleMode?: boolean;
+  readonly simpleMode: boolean;
 }

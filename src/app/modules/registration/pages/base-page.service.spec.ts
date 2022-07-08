@@ -20,6 +20,7 @@ describe('BasePageService', () => {
   const avalancheObsDraft: RegistrationDraft = {
     uuid: 'draft',
     syncStatus: SyncStatus.Draft,
+    simpleMode: false,
     registration: {
       GeoHazardTID: 10,
       DtObsTime: 'obsTime',
@@ -81,6 +82,7 @@ describe('BasePageService', () => {
     const expectedEmptyDraft: RegistrationDraft = {
       uuid: 'draft',
       syncStatus: SyncStatus.Draft,
+      simpleMode: false,
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'obsTime'
