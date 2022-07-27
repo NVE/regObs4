@@ -15,6 +15,7 @@ import * as L from 'leaflet';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { Capacitor } from '@capacitor/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -71,7 +72,8 @@ export class MapCenterInfoComponent extends NgDestoryBase {
     geoPositionService: GeoPositionService,
     private helperService: HelperService,
     private cdr: ChangeDetectorRef,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private externalLinkService: ExternalLinkService,
   ) {
     super();
 
@@ -168,4 +170,26 @@ export class MapCenterInfoComponent extends NgDestoryBase {
     });
     toast.present();
   }
+<<<<<<< HEAD
+=======
+
+  private copyToClipBoardWeb(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  loadYr(lat, lon) {
+    const url = `https://www.yr.no/nb/søk?lat=${lat}&lon=${lon}`;
+    this.externalLinkService.openExternalLink(url);
+  }
+>>>>>>> 4c588ab2... Just testing RO-1816
 }
