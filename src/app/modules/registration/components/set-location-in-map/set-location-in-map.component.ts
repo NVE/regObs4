@@ -454,7 +454,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       {id: 0, text: "Exact"},
       {id: 100, text: "100 m"},
       {id: 500, text: "500 m"},
-      {id: 1000, text: "1000"},
+      {id: 1000, text: "1000 m"},
       {id: -1, text: "More than 1 km"}
     ];
   }
