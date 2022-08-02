@@ -356,7 +356,11 @@
       "CURRENT_LOCATION": "Aktuella position",
       "HIDE_DETAILS": "Dölj detaljer",
       "SHOW_DETAILS": "Visa detaljer",
-      "TITLE": "Observationspunkt och -tid"
+      "TITLE": "Observationspunkt och -tid",
+      "SOURCE": "Källa",
+      "EXACT": "Exakt",
+      "MORETHANONEKM": "Mer än 1 km",
+      "UNCERTAINTY": "Osäkerhet i position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Datum och tid",

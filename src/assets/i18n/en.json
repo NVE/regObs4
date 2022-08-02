@@ -422,7 +422,11 @@
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",
       "SHOW_DETAILS": "Show details",
-      "TITLE": "Observed Location and Time"
+      "TITLE": "Observed Location and Time",
+      "SOURCE": "Source",
+      "EXACT": "Exact",
+      "MORETHANONEKM": "More than 1 km",
+      "UNCERTAINTY": "Uncertainty in position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",

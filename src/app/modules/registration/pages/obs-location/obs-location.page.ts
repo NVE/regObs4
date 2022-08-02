@@ -129,17 +129,21 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.navController.navigateRoot('registration/edit/' + this.draft.uuid);
   }
 
-  private async setLocationTimeAndSaveDraft({location, datetime}: LocationTime) {
+  private async setLocationTimeAndSaveDraft(
+    {location, datetime, source, spatialAccuracy}: LocationTime
+  ) {
     if (this.draft === undefined) {
       return;
     }
 
     if (location !== undefined) {
+      location.Uncertainty = spatialAccuracy;
       this.draft = {
         ...this.draft,
         registration: {
           ...this.draft.registration,
-          ObsLocation: location
+          ObsLocation: location,
+          SourceTID: source,
         }
       }
     }
