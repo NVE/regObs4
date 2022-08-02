@@ -24,6 +24,7 @@ app-map {
 
   .bottom-info {
     max-width: 600px;
+    gap: 0;
   }
 
   .confirm-button-col {
@@ -65,9 +66,17 @@ app-map {
   align-items: center;
 }
 
+.flex-align-start {
+  align-items: start;
+}
+
 .horizontal-dist-box {
   width: 189px;
   padding: 10px 0;
+}
+
+.vertical-dist-box {
+  height: 189px;
 }
 
 .details-row {

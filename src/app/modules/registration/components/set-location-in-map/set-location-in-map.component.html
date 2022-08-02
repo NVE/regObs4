@@ -23,8 +23,8 @@
       </div>
       <div *ngIf="setObsTime" class="details-row flex-row flex-grow">
         <div *ngIf="!isDesktop" class="ion-no-padding ion-text-center">
-          <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
-          <ng-container>
+          <div class="vertical-dist-box flex-col flex-center flex-space">
+            <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
             <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
               <line x1="1" x2="1" y1="2" y2="26" stroke="#000" stroke-width="2" stroke-linecap="round"
                 stroke-dasharray="1,4"></line>
@@ -38,10 +38,10 @@
             <div class="leaflet-usermarker" *ngIf="!fromMarker">
               <svg-icon *ngIf="fromMarker" [src]="fromMarkerIconUrl"></svg-icon>
             </div>
-          </ng-container>
+          </div>
         </div>
         <div class="flex-col flex-grow">
-          <div class="flex-row" (click)="editLocation()">
+          <div class="flex-row flex-align-start" (click)="editLocation()">
             <div class="flex-grow">
               <ng-container *ngIf="!editLocationName else editLocationTemplate">
                 <ng-container *ngIf="selectedLocation else viewInfoTemplate">
