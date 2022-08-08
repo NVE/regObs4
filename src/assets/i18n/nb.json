@@ -195,7 +195,7 @@
     "EDIT": "Rediger",
     "MY_COMPETENCE": "Min kompetanse",
     "MY_GROUPS": "Mine grupper",
-    "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
+    "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe inntil 48 timer etter den er sendt inn.<br/>For å endre gruppenavn, gruppebeskrivelse og medlemmer, <a href=\"mailto:regobs@nve.no\">ta kontakt</a>.",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine bilder",
     "NICKNAME": "Mitt kallenavn",
