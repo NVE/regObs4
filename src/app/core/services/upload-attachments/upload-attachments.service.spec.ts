@@ -42,6 +42,7 @@ describe('UploadAttachmentsService', () => {
     const draft: RegistrationDraft = {
       uuid: '12345-abc',
       syncStatus: SyncStatus.Sync,
+      simpleMode: false,
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'test',
@@ -111,6 +112,7 @@ describe('UploadAttachmentsService', () => {
     const draft: RegistrationDraft = {
       uuid: '12345-abc',
       syncStatus: SyncStatus.Sync,
+      simpleMode: false,
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'test',
@@ -205,6 +207,7 @@ describe('UploadAttachmentsService', () => {
     const draft: RegistrationDraft = {
       uuid: regUuid,
       syncStatus: SyncStatus.Sync,
+      simpleMode: false,
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'test',
