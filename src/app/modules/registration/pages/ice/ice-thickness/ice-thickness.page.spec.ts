@@ -16,6 +16,7 @@ describe('IceThicknessPage', () => {
       },
       uuid: null,
       syncStatus: null,
+      simpleMode: false,
     };
   });
 

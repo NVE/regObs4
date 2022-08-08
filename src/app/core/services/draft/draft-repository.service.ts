@@ -118,10 +118,12 @@ export class DraftRepositoryService {
   * @param geoHazard the geo hazard you have observed
   * @returns the registration
   */
-  create(geoHazard: GeoHazard): RegistrationDraft {
+  async create(geoHazard: GeoHazard): Promise<RegistrationDraft> {
+    const simpleMode = await this.useSimpleMode(geoHazard);
     const draft: RegistrationDraft = {
       uuid: uuidv4(),
       syncStatus: SyncStatus.Draft,
+      simpleMode,
       registration: {
         GeoHazardTID: geoHazard,
         DtObsTime: null,
@@ -130,6 +132,17 @@ export class DraftRepositoryService {
       }
     };
     return draft;
+  }
+
+  /**
+   * @returns true if user prefer simple mode for snow registrations
+   */
+  private async useSimpleMode(geoHazard: GeoHazard): Promise<boolean> {
+    if (geoHazard === GeoHazard.Snow) {
+      const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
+      return userSetting.simpleSnowObservations;
+    }
+    return false;
   }
 
   /**
@@ -170,7 +183,8 @@ export class DraftRepositoryService {
       uuid: uuid,
       regId: regId,
       syncStatus: SyncStatus.Draft,
-      registration: registration
+      registration: registration,
+      simpleMode: false
     };
     await this.save(draft);
   }

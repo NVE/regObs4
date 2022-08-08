@@ -10,6 +10,7 @@ describe('SummaryItemService', () => {
     const draftV1: RegistrationDraft = {
       uuid: 'draft',
       syncStatus: SyncStatus.Draft,
+      simpleMode: false,
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'obsTime',
