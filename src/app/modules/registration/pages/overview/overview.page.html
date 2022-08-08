@@ -45,6 +45,7 @@
       <app-summary-item
         [readonly]="draftHasStatusSync(draft)"
         *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction"
+        [simpleObsMode]="userSetting.simpleSnowObservations"
         [item]="item"
       ></app-summary-item>
     </ion-list>

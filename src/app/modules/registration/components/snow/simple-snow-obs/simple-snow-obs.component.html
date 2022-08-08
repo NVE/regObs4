@@ -38,7 +38,7 @@
         [(existingAttachments)]="draft.registration.Attachments"
       ></app-edit-images>
 
-      <div class="inline">
+      <div class="inline numeric-side-by-side">
         <app-numeric-input
           [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
           title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
@@ -46,7 +46,9 @@
           [max]="999"
           [decimalPlaces]="0"
           [convertRatio]="100"
+          placeholder="&nbsp;"
           suffix="cm"
+          simpleObsMode="true"
           (valueChange)="save()"
         ></app-numeric-input>
 
@@ -57,7 +59,9 @@
           [max]="9999"
           [decimalPlaces]="0"
           [convertRatio]="100"
+          placeholder="&nbsp;"
           suffix="cm"
+          simpleObsMode="true"
           (valueChange)="save()"
         ></app-numeric-input>
       </div>
