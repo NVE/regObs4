@@ -16,6 +16,7 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
 export class SummaryItemComponent implements OnChanges, OnInit {
   @Input() item: ISummaryItem;
   @Input() readonly = false;
+  @Input() simpleObsMode = false;
 
   private attachments = new ReplaySubject<ExistingOrNewAttachment[]>(1);
 

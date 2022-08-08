@@ -25,6 +25,7 @@ export class NumericInputComponent {
   @Input() convertRatio: number;
   @Input() readonly = false;
   @Input() color = 'medium';
+  @Input() simpleObsMode = false;
 
   private isOpen = false;
 
