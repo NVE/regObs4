@@ -94,7 +94,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     if (this.syncFailed(draft)) {
       return false;
     }
-    return draft.simpleMode === true;
+    return draft.simpleMode;
   }
 
   draftHasStatusSync(draft: RegistrationDraft): boolean {
@@ -105,7 +105,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     const draft = await firstValueFrom(this.draft$);
     if (event.detail.checked != draft.simpleMode) {
       //we only want to change mode if toogle value is different than current mode
-      if (event.detail.checked === true) {
+      if (event.detail.checked) {
         //user wants to change mode to simple
         if (this.draftContainsDataNotAvailableForSimpleMode(draft)) {
           const okToConvertToSimple = await this.requestConvertToSimple();
@@ -123,7 +123,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
           //draft is compatible with simple mode, so change to simple mode
           this.saveDraftAndSimpleModeSetting(draft, true);
         }
-      } else if (draft.simpleMode === true) {
+      } else if (draft.simpleMode) {
         //user want to change mode to standard
         this.saveDraftAndSimpleModeSetting(draft, false);
       }
