@@ -10,14 +10,10 @@
 </ion-header>
 <ng-container *ngIf="draft$ | async as draft">
   <ion-content>
-
     <!-- Simple snow obs header-->
-    <ion-grid class="header">
+    <ion-grid *ngIf="showSnowObsModeSelector$ | async" class="header">
       <ion-row>
-        <ion-col
-          *ngIf="userSetting.simpleSnowObservations"
-          class="question"
-        >
+        <ion-col *ngIf="draft.simpleMode" class="question">
           <ion-item>
             <ion-label>
               {{"REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate}}
@@ -28,7 +24,7 @@
           <ion-item>
             <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}</ion-label>
             <ion-toggle
-              [ngModel]="userSetting.simpleSnowObservations"
+              [ngModel]="draft.simpleMode"
               (ionChange)="changeMode($event)"
             ></ion-toggle>
           </ion-item>
@@ -42,7 +38,7 @@
       [draft]="draft"
     ></app-failed-registration>
 
-    <app-simple-snow-obs *ngIf="userSetting.simpleSnowObservations" [draft]="draft"></app-simple-snow-obs>
+    <app-simple-snow-obs *ngIf="showSimpleMode(draft)" [draft]="draft"></app-simple-snow-obs>
 
     <ion-list lines="full">
       <!-- "Summary" items for each form -->

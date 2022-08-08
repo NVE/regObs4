@@ -21,6 +21,7 @@ describe('DraftToRegistrationService', () => {
   const draft: RegistrationDraft = {  // Default test draft
     uuid: 'abc',
     syncStatus: SyncStatus.Sync,
+    simpleMode: false,
     registration: {
       GeoHazardTID: 10,
       DtObsTime: 'Test'
