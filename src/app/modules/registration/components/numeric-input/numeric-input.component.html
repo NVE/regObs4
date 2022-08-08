@@ -1,8 +1,18 @@
 <ion-item button="true" tabindex="0" (click)="openPicker()" (keyup.enter)="openPicker()">
-  <ion-label *ngIf="title" [color]="color" position="stacked" class="ion-text-uppercase">{{ title | translate}}
+  <ion-label
+    *ngIf="title"
+    [color]="color"
+    position="stacked"
+    [ngClass]="{'ion-text-uppercase': !simpleObsMode, 'simple-mode-title': simpleObsMode}">
+    {{ title | translate}}
   </ion-label>
-  <ion-text class="ion-align-self-start" *ngIf="displayValue else ph">{{ displayValue }}</ion-text>
+  <ion-text
+    [ngClass]="{'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode}"
+    *ngIf="displayValue else ph">
+    {{ displayValue }}</ion-text>
 </ion-item>
 <ng-template #ph>
-  <ion-text class="ion-align-self-start" [color]="color">{{ placeholder | translate }}</ion-text>
+  <ion-text
+  [ngClass]="{'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode}"
+  [color]="color">{{ placeholder | translate }}</ion-text>
 </ng-template>
