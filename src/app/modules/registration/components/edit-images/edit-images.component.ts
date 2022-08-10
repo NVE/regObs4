@@ -5,7 +5,6 @@ import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/n
 import { settings } from '../../../../../settings';
 import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
@@ -117,7 +116,6 @@ export class EditImagesComponent implements OnInit {
 
   async getPicture(sourceType: PictureSourceType) {
     if (!this.platform.is('hybrid')) {
-      // await this.addDummyImage();
       //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
       return true;
     }
@@ -179,12 +177,6 @@ export class EditImagesComponent implements OnInit {
       });
       toast.present();
     });
-  }
-
-  private async addDummyImage() {
-    const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl('/assets/images/dummyregobsimage.jpeg');
-    const blob = DataUrlHelper.convertDataURIToBinary(dummyImage);
-    await this.addImage(new Blob([blob]), 'image/jpeg');
   }
 
   async addImage(data: Blob, mimeType: string) {
