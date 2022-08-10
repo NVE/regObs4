@@ -5,15 +5,13 @@ import {
   Output,
   ViewChild,
   OnChanges,
-  SimpleChanges,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   OnDestroy
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
-import { Subject, interval, race } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { ImageLocation } from './image-location.model';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { BreakpointService } from '../../core/services/breakpoint.service';
@@ -60,7 +58,6 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
 
   moreThanFourPics = false;
 
-  swiper: any;
   state:
     | 'loading'
     | 'empty'
@@ -161,27 +158,13 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     return 1;
   }
 
-  slidesLoaded(el: any) {
-    this.swiper = el.target.swiper;
-    // TODO: Dette (tror jeg) fører til at img-swiperen ikke fungerer
-    // if (this.shouldMoveMap) {
-    //   this.activeIndex = 1;
-    //   interval(100)
-    //     .pipe(takeUntil(race(this.ngDestroy$, this.touchStart$)))
-    //     .subscribe(() => {
-    //       this.moveMapInSwiperToLeftOutsideView();
-    //     });
-    // }
+  slidesLoaded() {
     this.state = 'swiper-ready';
     this.updateUi();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.state = 'loading';
-    if (this.swiper) {
-      this.swiper.destroy();
-      this.swiper = undefined;
-    }
     this.updateUi();
     setTimeout(() => this.init(), 0);
   }
@@ -238,12 +221,6 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
       header: this.attachments[index].RegistrationName,
       description: this.attachments[index].Comment
     }));
-  }
-
-  private moveMapInSwiperToLeftOutsideView() {
-    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
-      this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
-    }
   }
 
   getImageIndex(img: AttachmentViewModel) {
