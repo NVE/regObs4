@@ -1,6 +1,9 @@
 ion-list {
-  padding-top: 0px;
-  padding-bottom: 0px;
+  width: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: auto;
+  max-height: 100vh;
 
   ion-list-header {
     font-size: var(--h3-font-size);
