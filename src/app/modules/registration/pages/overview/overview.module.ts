@@ -9,6 +9,7 @@ import { SaveAsDraftRouteGuard } from '../save-as-draft.guard';
 import { VersionConflictComponent } from '../../components/version-conflict/version-conflict.component';
 import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
 import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
+import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
     OverviewPage,
     SendButtonComponent,
     SummaryItemComponent,
+    ThumbnailsComponent,
     FailedRegistrationComponent,
     VersionConflictComponent,
     SimpleSnowObsComponent,
