@@ -3,6 +3,7 @@
   margin-right: 0px;
   height: var(--ion-button-height);
   max-width: 310px;
+  --border-radius: 0;
 }
 
 .grid-container {
@@ -85,4 +86,13 @@ ion-col {
   .margin-mobile {
     margin-bottom: 8px;
   }
+}
+
+.flex {
+  display: flex;
+  gap: 20px;
+}
+
+.flex > div > ion-button {
+  width: 250px;
 }

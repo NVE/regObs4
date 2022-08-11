@@ -26,17 +26,23 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
-      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+    <ion-row class="flex">
+      <div>
         <ion-button class="button ion-text-uppercase" type="button" fill="outline" expand="block" (click)="openMyPage()">
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
             {{'MY_PROFILE.MY_NVE_ACCOUNT' | translate }}
         </ion-button>
-      </ion-col>
-      <ion-col size="6" size-sm="5" size-md="4" size-lg="3">
-        <ion-button class="button ion-text-uppercase logout" type="submit" fill="clear" (click)="logout()">
+      </div>
+      <div>
+        <ion-button class="button ion-text-uppercase delete-button" type="button" fill="outline" expand="block" (click)="openMyPage()">
+          <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
+          {{'LOGIN.DELETE_PROFILE' | translate }}
+        </ion-button>
+      </div>
+      <div>
+        <ion-button class="button ion-text-uppercase logout" type="submit" fill="outline" (click)="logout()">
           {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
-      </ion-col>
+      </div>
     </ion-row>
 
     <!-- TODO: edit functionality in api v5. 
