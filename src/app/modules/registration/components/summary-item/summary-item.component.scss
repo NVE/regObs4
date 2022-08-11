@@ -5,3 +5,8 @@ ro-blob-image, app-remote-image, img {
     margin-right: 5px;
     display: inline-block;
 }
+
+.summary-item:hover {
+  cursor: pointer;
+  --background: var(--ion-color-varsom-blue-light-3);
+}

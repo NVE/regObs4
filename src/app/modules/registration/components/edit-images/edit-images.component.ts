@@ -5,13 +5,17 @@ import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/n
 import { settings } from '../../../../../settings';
 import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import {
+  ALLOWED_ATTACHMENT_FILE_TYPES,
+  DropZoneService
+} from './drop-zone.service';
+import { NgxFileDropEntry } from 'ngx-file-drop';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -38,6 +42,10 @@ export class EditImagesComponent implements OnInit {
   @Input() attachmentType: AttachmentType = 'Attachment';
   @Input() ref?: string;
 
+  isHybrid: boolean;
+  accept = ALLOWED_ATTACHMENT_FILE_TYPES;
+  selectedFile: Blob = null;
+
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
@@ -57,9 +65,12 @@ export class EditImagesComponent implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
+    private dropZoneService: DropZoneService
   ) {}
 
   ngOnInit() {
+    this.isHybrid = this.platform.is('hybrid');
+
     this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
       this.draftUuid,
       { ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
@@ -105,7 +116,7 @@ export class EditImagesComponent implements OnInit {
 
   async getPicture(sourceType: PictureSourceType) {
     if (!this.platform.is('hybrid')) {
-      await this.addDummyImage();
+      //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
       return true;
     }
     try {
@@ -168,12 +179,6 @@ export class EditImagesComponent implements OnInit {
     });
   }
 
-  private async addDummyImage() {
-    const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl('/assets/images/dummyregobsimage.jpeg');
-    const blob = DataUrlHelper.convertDataURIToBinary(dummyImage);
-    await this.addImage(new Blob([blob]), 'image/jpeg');
-  }
-
   async addImage(data: Blob, mimeType: string) {
     await this.newAttachmentService.addAttachment(
       this.draftUuid,
@@ -204,4 +209,17 @@ export class EditImagesComponent implements OnInit {
   trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
     return attachment.id;
   }
+
+  async dropped(droppedFiles: NgxFileDropEntry[]): Promise<void> {
+    for (const droppedFile of droppedFiles) {
+      try {
+        const file = await this.dropZoneService.getFile(droppedFile);
+        this.addImage(file, MIME_TYPE);
+      } catch (err) {
+        this.logger.error(err, 'Could not add attachment');
+        this.showErrorToast('Could not add image');  // TODO: Add better error message
+      }
+    }
+  }
+
 }

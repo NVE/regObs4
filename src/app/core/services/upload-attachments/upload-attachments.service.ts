@@ -6,6 +6,7 @@ import { NewAttachmentService } from 'src/app/modules/common-registration/regist
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
+import { UserSettingService } from '../user-setting/user-setting.service';
 
 const DEBUG_TAG = 'UploadAttachmentsService';
 
@@ -37,7 +38,8 @@ export class UploadAttachmentsService {
     private httpClient: HttpClient,
     private newAttachmentService: NewAttachmentService,
     private apiAttachmentService: ApiAttachmentService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private userSettings: UserSettingService
   ) {}
 
   /**
@@ -56,9 +58,12 @@ export class UploadAttachmentsService {
   async uploadAllAttachments(draft: RegistrationDraft): Promise<AttachmentUploadEditModel[]> {
     const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
 
+    // TODO: What about existing attachments? Do we need to set default metadata on those as well?
+    const attachmentsWithDefaultSettingsMetadata = await this.setCopyrightAndPhotographer(attachments);
+
     // Some attachments may already be uploaded
-    const alreadyUploaded = attachments.filter(a => a.AttachmentUploadId != null);
-    const attachmentsToUpload = attachments.filter(a => a.AttachmentUploadId == null);
+    const alreadyUploaded = attachmentsWithDefaultSettingsMetadata.filter(a => a.AttachmentUploadId != null);
+    const attachmentsToUpload = attachmentsWithDefaultSettingsMetadata.filter(a => a.AttachmentUploadId == null);
 
     // Error handling
     // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
@@ -91,6 +96,33 @@ export class UploadAttachmentsService {
       ...alreadyUploaded,
       ...uploadedAttachments
     ];
+  }
+
+  // TODO: Add test
+  private async setCopyrightAndPhotographer(attachments: AttachmentUploadEditModel[]) {
+    const userSettings = await firstValueFrom(this.userSettings.userSetting$);
+
+    const setCopyright = userSettings.copyright == null ? a => a :
+      (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
+        if (attachment.Copyright == null) {
+          return {
+            ...attachment,
+            Copyright: userSettings.copyright
+          };
+        }
+      };
+
+    const setPhotographer = userSettings.photographer == null ? a => a :
+      (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
+        if (attachment.Photographer == null) {
+          return {
+            ...attachment,
+            Photographer: userSettings.photographer
+          };
+        }
+      };
+
+    return attachments.map(a => setPhotographer(setCopyright(a)));
   }
 
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel) {

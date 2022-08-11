@@ -4,6 +4,8 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { AppMode } from 'src/app/modules/common-core/models';
+import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
+import { BreakpointService } from '../../../../core/services/breakpoint.service';
 
 @Component({
   selector: 'app-header',
@@ -22,6 +24,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isFullscreen$: Observable<boolean>;
   private subscriptions: Subscription[] = [];
 
+  splitPaneClosed = true;
+  isDesktop: boolean;
+
   get tripRunning$() {
     return this.tripLoggerService.getLegacyTripAsObservable();
   }
@@ -38,11 +43,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private breakpointService: BreakpointService
   ) {}
 
   ngOnInit() {
     this.isFullscreen$ = this.fullscreenService.isFullscreen$;
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
     this.subscriptions.push(
       this.tripLoggerService.isTripRunning$.subscribe((val) => {
         this.ngZone.run(() => {

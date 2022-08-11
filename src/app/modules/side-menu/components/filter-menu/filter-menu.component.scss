@@ -1,0 +1,19 @@
+.resetFiltersButton {
+  font-size: 17px;
+}
+
+.toggleAllTypesButton {
+  font-size: 17px;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0;
+}
+
+ion-list {
+  width: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: auto;
+  max-height: 100vh;
+}

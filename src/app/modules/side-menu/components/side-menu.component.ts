@@ -17,6 +17,7 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
+import { SelectInterface } from '@ionic/core';
 
 @Component({
   selector: 'app-side-menu',
@@ -39,6 +40,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     ...lang,
     langKey: LangKey[lang.lang]
   }));
+  popupType: SelectInterface;
+  isIosOrAndroid: boolean;
+  isMobileWeb: boolean;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
@@ -58,6 +62,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
+    this.isMobileWeb = this.platform.is('mobileweb');
     this.lastUpdateSubscription = this.observationService
       .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
@@ -104,34 +111,44 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async contactUs() {
-    const translations = await this.translateService
-      .get('MENU.CONTACT_SUBJECT')
-      .toPromise();
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      subject: translations,
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get('MENU.CONTACT_SUBJECT')
+        .toPromise();
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        subject: translations,
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.location.href = 'mailto:regobs@nve.no';
+    }
   }
 
   async contactError() {
-    const translations = await this.translateService
-      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
-      .toPromise();
-    const appVersion = await this.appVersionService.getAppVersion();
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      subject:
-        `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
-          this.platform.is('ios') ? 'ios' : ''
-        }` +
-        `${this.platform.is('android') ? 'android' : ''}` +
-        ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
-      body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
+        .toPromise();
+      const appVersion = await this.appVersionService.getAppVersion();
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        subject:
+          `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
+            this.platform.is('ios') ? 'ios' : ''
+          }` +
+          `${this.platform.is('android') ? 'android' : ''}` +
+          ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
+        body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.open(
+        'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu'
+      );
+    }
   }
 
   changeLanguage() {

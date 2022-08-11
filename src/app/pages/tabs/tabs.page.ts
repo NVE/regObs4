@@ -73,11 +73,13 @@ export class TabsPage implements OnInit, OnDestroy {
         });
       });
 
-    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
-      });
-    });
+    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe(
+      (val) => {
+        this.ngZone.run(() => {
+          this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
+        });
+      }
+    );
   }
 
   ngOnDestroy(): void {

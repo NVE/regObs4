@@ -80,7 +80,9 @@
     "POSITION_ERROR": {
       "PermissionDenied": "For å hente posisjonen din må du endre innstillinger i nettleseren",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
-      "Timeout": "Det tok for lang tid å få tak i posisjonen din"
+      "Timeout": "Det tok for lang tid å få tak i posisjonen din",
+      "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
+      "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
     }
   },
   "GEOLOCATION_SERVICE": {
@@ -196,7 +198,7 @@
     "EDIT": "Rediger",
     "MY_COMPETENCE": "Min kompetanse",
     "MY_GROUPS": "Mine grupper",
-    "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
+    "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe inntil 48 timer etter den er sendt inn.<br/>For å endre gruppenavn, gruppebeskrivelse og medlemmer, <a href=\"mailto:regobs@nve.no\">ta kontakt</a>.",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine bilder",
     "NICKNAME": "Mitt kallenavn",
@@ -207,6 +209,9 @@
     "SAVE": "Lagre",
     "TITLE": "Min side",
     "USER": "Bruker"
+  },
+  "OBSERVATION_FILTER": {
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",

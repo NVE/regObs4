@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NavController, AlertController, LoadingController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController, Platform } from '@ionic/angular';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
@@ -12,6 +12,7 @@ import { LogLevel } from '../../modules/shared/services/logging/log-level.model'
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -28,6 +29,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   version: AppVersion;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
+  isDesktopView: boolean;
+  isDesktopPlatform: boolean;
 
   get appModeOptions() {
     const options: SelectOption[] = [
@@ -53,10 +56,18 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private appResetService: AppResetService,
     private navController: NavController,
-    private fileLoggingService: FileLoggingService
+    private fileLoggingService: FileLoggingService,
+    private breakpointService: BreakpointService,
+    private platform: Platform
   ) {}
 
   async ngOnInit() {
+    if (this.platform.is('desktop')) {
+      this.isDesktopPlatform = true;
+    }
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktopView = isDesktop;
+    });
     this.versionClicks = 0;
     this.subscriptions.push(
       this.userSettingService.userSetting$.subscribe((val) => {

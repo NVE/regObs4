@@ -18,6 +18,11 @@ import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registrat
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss']
 })
+/**
+ * Show key info from selected registration on top of the map.
+ * To show this, klick on a registrations icon in the map.
+ * Also include an image slider if registration contain images.
+ */
 export class MapItemBarComponent implements OnInit, OnDestroy {
   visible: boolean;
   topHeader: string;

@@ -22,7 +22,7 @@ import {
   Geolocation, Position, WatchPositionCallback,
 } from '@capacitor/geolocation';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';
@@ -79,11 +79,17 @@ export class GeoPositionService implements OnDestroy {
     return this.gpsPositionLog.asObservable();
   }
 
+  get geoLocationSupported(): boolean {
+    const locationSupport = !!(navigator && navigator.geolocation && navigator.geolocation.watchPosition);
+    return locationSupport;
+  }
+
   constructor(
     private deviceOrientation: DeviceOrientation,
     private platform: Platform,
     private loggingService: LoggingService,
     private alertController: AlertController,
+    private toastController: ToastController,
     private translateService: TranslateService
   ) {
     this.startGeolocationTrackingSubscription();
@@ -181,6 +187,71 @@ export class GeoPositionService implements OnDestroy {
       status,
       highAccuracyEnabled: this.highAccuracyEnabled.value
     });
+  }
+
+  public async choosePositionMethod(nameForTrackingComponent: string) : Promise<void> {
+    if (isAndroidOrIos(this.platform)) {
+      this.startTrackingComponent(nameForTrackingComponent, true);
+    } else {
+      try {
+        this.requestPositionFromBrowser();
+      } catch (err) {
+        this.gpsPositionLog.next(this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied));
+      }
+    }
+  }
+
+  public async requestPositionFromBrowser() : Promise<void> {
+    if (!this.geoLocationSupported) {
+      const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.UNSUPPORTED');
+      this.gpsPositionLog.next(this.createPositionError(errorMessage));
+      this.createToast(errorMessage);
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (pos && pos.coords) {
+            this.currentPosition.next(pos);
+          } else {
+            const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.INVALID');
+            this.gpsPositionLog.next(this.createPositionError('Empty position data or no coords'));
+            this.createToast(errorMessage);
+          }
+        },
+        (err) => {
+          this.geolocationError(err);
+        },
+        POSITION_OPTIONS_DEFAULT
+      );
+    }
+  }
+
+  private async createToast( message?: string){
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 6000
+    });
+    await toast.present();
+  }
+
+  private async geolocationError( error: PositionError) {
+    let key: string;
+    switch (error.code) {
+    case GeoPositionErrorCode.PermissionDenied:
+      key = 'PermissionDenied';
+      break;
+    case GeoPositionErrorCode.Timeout:
+      key = 'Timeout';
+      break;
+    default:
+      key = 'PositionUnavailable';
+    }
+    if (key) {
+      const errorMessage: string = this.translateService.instant(
+        `GEOLOCATION.POSITION_ERROR.${key}`
+      );
+      this.gpsPositionLog.next(this.createPositionError(errorMessage, error.code));
+      this.createToast(errorMessage);
+    }
   }
 
   public async startTrackingComponent(
@@ -310,35 +381,39 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-
-  private async checkPermissions(): Promise<boolean> {
-    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
+  private async checkPermissions() : Promise<boolean> {
     try {
-      const currentPermissions = await Geolocation.checkPermissions();
-      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
-      const authorized = currentPermissions.location === 'granted';
-      if (!authorized) {
-        if (this.platform.is('ios')) {
-          await this.showPermissionDeniedError();
-          return false;
-        }
-        // location is not authorized, request new. This only works on Android
-        const newPermissionsAfterRequest = await Geolocation.requestPermissions();
-        this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
-        if (newPermissionsAfterRequest?.location === 'denied') {
-          await this.showPermissionDeniedError();
-          return false;
-        }
+      if (isAndroidOrIos(this.platform)) {
+        this.checkPermissionsApp();
       }
-      return true;
     } catch (err) {
       this.loggingService.error(
         err,
         DEBUG_TAG,
         'Error asking for location permissions'
       );
-      return true; // continute anyway on error
+      return true; // continue anyway on error
     }
+  }
+
+  private async checkPermissionsApp() : Promise<boolean> {
+    const currentPermissions = await Geolocation.checkPermissions();
+    this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
+    const authorized = currentPermissions.location === 'granted';
+    if (!authorized) {
+      if (this.platform.is('ios')) {
+        await this.showPermissionDeniedError();
+        return false;
+      }
+      // location is not authorized, request new. This only works on Android
+      const newPermissionsAfterRequest = await Geolocation.requestPermissions();
+      this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
+      if (newPermissionsAfterRequest?.location === 'denied') {
+        await this.showPermissionDeniedError();
+        return false;
+      }
+    }
+    return true;
   }
 
   private async showPermissionDeniedError() {
@@ -392,25 +467,6 @@ export class GeoPositionService implements OnDestroy {
       })
     );
   }
-
-  // private requestDeviceOrientationPermission(): Promise<boolean> {
-  // TODO: iOS 13 ask for permission every time, and from localhost.
-  // this needs to be better supported before turning on
-  // or use another native plugin than depricated
-  // https://github.com/apache/cordova-plugin-device-orientation
-  // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
-  // https://github.com/apache/cordova-plugin-device-orientation/issues/52
-
-  // const doe = <any>DeviceOrientationEvent;
-  // if (typeof doe.requestPermission === 'function') {
-  //   // iOS 13+
-  //   const response = await doe.requestPermission();
-  //   return response === 'granted';
-  // } else {
-  //   // non iOS 13+
-  // return Promise.resolve(true);
-  // }
-  // }
 
   private getAbsoluteHeading(event: DeviceOrientationEvent) {
     return event.alpha !== undefined && event.absolute

@@ -21,7 +21,7 @@
       </ion-item>
 
       <!-- Start / stop trip -->
-      <ng-container *ngIf="geoHazardInfo.showTrip">
+      <ng-container *ngIf="geoHazardInfo.showTrip && isIosOrAndroid">
         <ion-item *ngIf="tripStarted$ | async else startTrip" (click)="startOrStopTrip(true)">
           <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
           <ion-label>{{'TRIP.STOP_TRIP' | translate }}</ion-label>
@@ -32,7 +32,6 @@
     <div class="backdrop" click="closeMenu()"></div>
   </ion-fab-list>
 </ion-fab>
-
 <ng-template #startTrip>
   <ion-item (click)="startOrStopTrip(false)">
     <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>

@@ -8,12 +8,12 @@ import { HttpConnectivityInterceptor } from 'ngx-connectivity';
 import { NewAttachmentService } from './services/add-new-attachment/new-attachment.service';
 import { throwError } from 'rxjs';
 import { RegobsRegistrationPipesModule } from './registration.pipes';
-import { OfflineDbNewAttachmentService } from './services/add-new-attachment/offline-db-new-attachment.service';
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
 import { isPlatform } from '@ionic/angular';
 import { RegobsApiModuleWithConfig } from '../common-regobs-api';
+import { LocalStorageAttachmentService } from './services/add-new-attachment/local-storage.attachment.service';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -75,7 +75,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: isPlatform('hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
+          useClass: isPlatform('hybrid') ? FileAttachmentService : LocalStorageAttachmentService
         },
         TranslateService
       ]
@@ -100,7 +100,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: OfflineDbNewAttachmentService
+          useClass: LocalStorageAttachmentService
         },
         { provide: KdvElementsService, useFactory: getFakeKdvElementsService },
         { provide: HelpTextApiService, useFactory: getFakeHelpTextApiService }
