@@ -4,6 +4,8 @@
     <p *ngIf="item.subTitle" [ngClass]="{'simple-mode-sub': simpleObsMode}">
       {{ item.subTitle | translate }}
     </p>
+    <app-thumbnails attachments="item.attachments" draftUuid="item.uuid" readonly="readonly">
+    </app-thumbnails>
     <p class="images">
       <ro-blob-image 
         *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew"
