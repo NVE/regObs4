@@ -10,6 +10,7 @@ import { VersionConflictComponent } from '../../components/version-conflict/vers
 import { GoneRegistrationComponent } from '../../components/gone-registration/gone-registration.component';
 import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
 import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
+import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     OverviewPage,
     SendButtonComponent,
     SummaryItemComponent,
+    ThumbnailsComponent,
     FailedRegistrationComponent,
     VersionConflictComponent,
     GoneRegistrationComponent,
