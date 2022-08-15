@@ -93,7 +93,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
   isDesktop: boolean;
-  spatialAccuracyOptions: SelectOption[];
+  spatialAccuracyOptions: SelectOption[] = [];
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
@@ -121,7 +121,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private translateService: TranslateService
   ) {
     this.setToNow();
-    this.spatialAccuracyOptions = this.getTranslatedAccuracies();
+    this.setTranslatedAccuracies();
   }
 
   async ngOnInit(): Promise<void> {
@@ -449,13 +449,18 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return moment().minutes(59).toISOString(true);
   }
 
-  getTranslatedAccuracies(): SelectOption[] {
-    return [
-      {id: 0, text: "Exact"},
-      {id: 100, text: "100 m"},
-      {id: 500, text: "500 m"},
-      {id: 1000, text: "1000 m"},
-      {id: -1, text: "More than 1 km"}
-    ];
+  setTranslatedAccuracies() {
+    this.translateService.get([
+      'REGISTRATION.OBS_LOCATION.EXACT',
+      'REGISTRATION.OBS_LOCATION.MORETHANONEKM',
+    ]).subscribe((translations) =>
+      this.spatialAccuracyOptions = [
+        {id: 0, text: translations['REGISTRATION.OBS_LOCATION.EXACT']},
+        {id: 100, text: "100 m"},
+        {id: 500, text: "500 m"},
+        {id: 1000, text: "1000 m"},
+        {id: -1, text: translations['REGISTRATION.OBS_LOCATION.MORETHANONEKM']}
+      ]
+    );
   }
 }
