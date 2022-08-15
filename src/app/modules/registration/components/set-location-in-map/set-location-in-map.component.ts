@@ -98,7 +98,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
   locationName: string;
-  
+
   maxDate: string;
 
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
@@ -131,7 +131,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     L.Marker.prototype.options.icon = defaultIcon;
 
     if (!this.localDate) {
-      this.setToNow()
+      this.setToNow();
     }
 
     const locationMarkerIcon = L.icon({
@@ -299,7 +299,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             this.isLoading = false;
           });
         },
-        (_) => {
+        () => {
           this.ngZone.run(() => {
             this.viewInfo = null;
             this.isLoading = false;
@@ -377,15 +377,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const obsLocation = this.getLocation();
     let obsTime: string = undefined;
     if (this.setObsTime) {
-     obsTime = this.localDate || moment().toISOString(true);
+      obsTime = this.localDate || moment().toISOString(true);
     }
-    let source: number = undefined;
-    let locationTime = {
+    const locationTime = {
       location: obsLocation,
-      datetime: obsTime, 
+      datetime: obsTime,
       source: this.sourceTid,
       spatialAccuracy: this.spatialAccuracy,
-    }
+    };
     this.locationTimeSet.emit(locationTime);
   }
 
@@ -456,9 +455,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     ]).subscribe((translations) =>
       this.spatialAccuracyOptions = [
         {id: 0, text: translations['REGISTRATION.OBS_LOCATION.EXACT']},
-        {id: 100, text: "100 m"},
-        {id: 500, text: "500 m"},
-        {id: 1000, text: "1000 m"},
+        {id: 100, text: '100 m'},
+        {id: 500, text: '500 m'},
+        {id: 1000, text: '1000 m'},
         {id: -1, text: translations['REGISTRATION.OBS_LOCATION.MORETHANONEKM']}
       ]
     );
