@@ -6,6 +6,9 @@ import { NewAttachmentService } from 'src/app/modules/common-registration/regist
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 
+/**
+ * Show thumbnails of all images for given registration.
+ */
 @Component({
   selector: 'app-thumbnails',
   templateUrl: './thumbnails.component.html',
@@ -13,9 +16,8 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThumbnailsComponent implements OnChanges, OnInit {
-  @Input() attachments: any; //attachments for given draft registration
+  @Input() attachments: ExistingOrNewAttachment[]; //attachments for given draft registration
   @Input() draftUuid: string;
-  @Input() readonly = false;
 
   private attachmentsSubject = new ReplaySubject<ExistingOrNewAttachment[]>(1);
 
@@ -23,8 +25,7 @@ export class ThumbnailsComponent implements OnChanges, OnInit {
   existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
   constructor(
-    private navController: NavController,
-    private newAttachmentService: NewAttachmentService,
+    private newAttachmentService: NewAttachmentService
   ) {}
 
   ngOnInit(): void {
@@ -53,15 +54,6 @@ export class ThumbnailsComponent implements OnChanges, OnInit {
   ngOnChanges() {
     if (this.attachments != null) {
       this.attachmentsSubject.next(this.attachments);
-    }
-  }
-
-  edit() {
-    if (!this.readonly) {
-      //TODO: Show edit images modal
-      // this.navController.navigateForward([this.item.href, this.item.uuid], {
-      //   queryParams: this.item.queryParams
-      // });
     }
   }
 }

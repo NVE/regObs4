@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{ 'CLOSE' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ "REGISTRATION.OVERVIEW.SIMPLE.IMAGES_MODAL_TITLE" | translate: {postfix: modalTitlePostfix | translate | lowercase} }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<app-edit-images
+  [registrationTid]="registrationTid"
+  [geoHazard]="geoHazard"
+  [draftUuid]="draftUuid"
+  [(existingAttachments)]="existingAttachments"
+></app-edit-images>

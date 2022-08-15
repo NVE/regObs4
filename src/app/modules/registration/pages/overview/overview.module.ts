@@ -11,6 +11,8 @@ import { GoneRegistrationComponent } from '../../components/gone-registration/go
 import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
 import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
 import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.component';
+import { EditImagesPage } from '../../components/edit-images/edit-images.page';
+import { ImagesEditorComponent } from '../../components/snow/simple-snow-obs/images-editor/images-editor.component';
 
 const routes: Routes = [
   {
@@ -31,6 +33,8 @@ const routes: Routes = [
     VersionConflictComponent,
     GoneRegistrationComponent,
     SimpleSnowObsComponent,
+    ImagesEditorComponent,
+    EditImagesPage,
     KdvIconSelectComponent
   ]
 })
