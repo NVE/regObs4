@@ -80,6 +80,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
+  @Input() sourceTid: number;
+  @Input() spatialAccuracy: number;
 
   private map: L.Map;
   followMode = false;
@@ -91,8 +93,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
   isDesktop: boolean;
-  sourceTid: number;
-  spatialAccuracy: number;
   spatialAccuracyOptions: SelectOption[];
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
