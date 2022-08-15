@@ -28,10 +28,15 @@ import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import moment from 'moment';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 
 export interface LocationTime {
   location: ObsLocationEditModel,
   datetime: string,
+  source: number,
+  spatialAccuracy: number,
 }
 
 const defaultIcon = L.icon({
@@ -75,6 +80,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
+  @Input() sourceTid: number;
+  @Input() spatialAccuracy: number;
 
   private map: L.Map;
   followMode = false;
@@ -85,11 +92,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
+  isDesktop: boolean;
+  spatialAccuracyOptions: SelectOption[] = [];
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
   locationName: string;
-  
+
   maxDate: string;
 
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
@@ -107,16 +116,22 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private mapSearchService: MapSearchService,
     private geoPositionService: GeoPositionService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private breakpointService: BreakpointService,
+    private translateService: TranslateService
   ) {
     this.setToNow();
+    this.setTranslatedAccuracies();
   }
 
   async ngOnInit(): Promise<void> {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
     L.Marker.prototype.options.icon = defaultIcon;
 
     if (!this.localDate) {
-      this.setToNow()
+      this.setToNow();
     }
 
     const locationMarkerIcon = L.icon({
@@ -284,7 +299,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             this.isLoading = false;
           });
         },
-        (_) => {
+        () => {
           this.ngZone.run(() => {
             this.viewInfo = null;
             this.isLoading = false;
@@ -362,9 +377,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const obsLocation = this.getLocation();
     let obsTime: string = undefined;
     if (this.setObsTime) {
-     obsTime = this.localDate || moment().toISOString(true);
+      obsTime = this.localDate || moment().toISOString(true);
     }
-    let locationTime = {location: obsLocation, datetime: obsTime}
+    const locationTime = {
+      location: obsLocation,
+      datetime: obsTime,
+      source: this.sourceTid,
+      spatialAccuracy: this.spatialAccuracy,
+    };
     this.locationTimeSet.emit(locationTime);
   }
 
@@ -372,7 +392,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const obsLocation: ObsLocationEditModel = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
-      Uncertainty: 0,
       UTMSourceTID: UtmSource.SelectedInMap
     };
     if (
@@ -427,5 +446,20 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
     return moment().minutes(59).toISOString(true);
+  }
+
+  setTranslatedAccuracies() {
+    this.translateService.get([
+      'REGISTRATION.OBS_LOCATION.EXACT',
+      'REGISTRATION.OBS_LOCATION.MORETHANONEKM',
+    ]).subscribe((translations) =>
+      this.spatialAccuracyOptions = [
+        {id: 0, text: translations['REGISTRATION.OBS_LOCATION.EXACT']},
+        {id: 100, text: '100 m'},
+        {id: 500, text: '500 m'},
+        {id: 1000, text: '1000 m'},
+        {id: -1, text: translations['REGISTRATION.OBS_LOCATION.MORETHANONEKM']}
+      ]
+    );
   }
 }

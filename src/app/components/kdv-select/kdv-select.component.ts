@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription } from 'rxjs';
-import { SelectOption } from '../../../shared/components/input/select/select-option.model';
+import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 
@@ -30,6 +30,7 @@ export class KdvSelectComponent implements OnInit, OnDestroy {
   @Input() useDescription: boolean;
   @Input() filter: (number) => boolean;
   @Input() getIconFunc: (kdvElement: KdvElement) => string;
+  @Input() obsLocMode: boolean = false;
   private kdvelements: KdvElement[] = [];
 
   private subscription: Subscription;

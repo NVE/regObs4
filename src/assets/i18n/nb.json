@@ -422,7 +422,11 @@
       "CURRENT_LOCATION": "Nåværende posisjon",
       "HIDE_DETAILS": "Skjul detaljer",
       "SHOW_DETAILS": "Vis detaljer",
-      "TITLE": "Observasjonspunkt og -tid"
+      "TITLE": "Observasjonspunkt og -tid",
+      "SOURCE": "Kildeangivelse",
+      "EXACT": "Eksakt",
+      "MORETHANONEKM": "Mer enn 1 km",
+      "UNCERTAINTY": "Usikkerhet i posisjon"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",

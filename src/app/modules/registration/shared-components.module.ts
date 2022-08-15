@@ -21,7 +21,7 @@ import { NumericInputComponent } from './components/numeric-input/numeric-input.
 import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-modal/numeric-input-modal.module';
 import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
-import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
+import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.component';
 import { BlobImageComponent } from './components/blob-image/blob-image.component';
 import { NgxFileDropModule } from 'ngx-file-drop';
 
