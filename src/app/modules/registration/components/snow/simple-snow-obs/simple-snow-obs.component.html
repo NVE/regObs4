@@ -14,13 +14,13 @@
         (valueChange)="save()"
         [filter]="filterSnowSurfaceTIDs">
         </app-kdv-icon-select>
-
-        <app-edit-images
-        [registrationTid]="22"
-        [geoHazard]="draft.registration.GeoHazardTID"
-        [draftUuid]="draft.uuid"
-        [(existingAttachments)]="draft.registration.Attachments"
-      ></app-edit-images>
+      Antall vedlegg: {{ (snowSurfaceAttachments$ | async).length }}
+      <app-images-editor 
+          [draft]="draft"   
+          registrationTid="22" 
+          modalTitlePostfix="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
+          [attachments]="snowSurfaceAttachments$ | async"
+        ></app-images-editor>
 
       <app-kdv-icon-select 
       title="REGISTRATION.DANGER_OBS.TITLE" 
@@ -31,12 +31,12 @@
       [filter]="filterDangerSignTIDs">
       </app-kdv-icon-select>
 
-        <app-edit-images
+      <app-images-editor 
+        [draft]="draft"
         [registrationTid]="13"
-        [geoHazard]="draft.registration.GeoHazardTID"
-        [draftUuid]="draft.uuid"
-        [(existingAttachments)]="draft.registration.Attachments"
-      ></app-edit-images>
+        modalTitlePostfix="REGISTRATION.DANGER_OBS.TITLE"
+        [attachments]="dangerSignAttachments$ | async"
+      ></app-images-editor>
 
       <div class="inline numeric-side-by-side">
         <app-numeric-input

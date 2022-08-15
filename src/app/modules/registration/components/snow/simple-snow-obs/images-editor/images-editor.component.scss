@@ -1,0 +1,14 @@
+.inline {
+  display: flex;
+  flex-wrap: nowrap;
+  background-color: white;
+}
+
+ion-label {
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 100%;
+  text-overflow: unset;
+}

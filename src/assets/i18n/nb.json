@@ -437,7 +437,8 @@
           "MESSAGE": "Observasjonen inneholder data som ikke kan vises i enkel modus. Vil du slette data vi ikke kan vise?",
           "YES": "Slett data og bytt til enkel",
           "CANCEL": "Avbryt"  
-        }
+        },
+        "IMAGES_MODAL_TITLE": "Bilder av {{postfix}}"
       }
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",

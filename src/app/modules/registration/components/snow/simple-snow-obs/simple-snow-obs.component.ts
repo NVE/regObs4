@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { ModalController } from '@ionic/angular';
+import { map, Observable } from 'rxjs';
+import { RegistrationDraft, RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { SummaryItemService } from '../../../services/summary-item.service';
 
 /**
  * Simplified snow registration schema.
@@ -17,6 +21,9 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 })
 export class SimpleSnowObsComponent implements OnInit {
    @Input() draft: RegistrationDraft;
+
+   snowSurfaceAttachments$: Observable<ExistingOrNewAttachment[]>;
+   dangerSignAttachments$: Observable<ExistingOrNewAttachment[]>;
 
    /**
     * Return TID's from snow danger sign obserations in the draft
@@ -41,8 +48,10 @@ export class SimpleSnowObsComponent implements OnInit {
      this.draft.registration.DangerObs = dangerObservations;
    }
 
-   constructor(private draftRepository: DraftRepositoryService, private logger: LoggingService) {
-   }
+   constructor(
+    private draftRepository: DraftRepositoryService,
+    private summaryItemService: SummaryItemService
+   ) {}
 
    async ngOnInit(): Promise<void> {
      if (this.draft.registration.SnowSurfaceObservation == null) {
@@ -51,6 +60,14 @@ export class SimpleSnowObsComponent implements OnInit {
      if (this.draft.registration.DangerObs == null) {
        this.draft.registration.DangerObs = [];
      }
+
+     const attachments$ = this.summaryItemService.createAttachments$(this.draft.uuid);
+     this.dangerSignAttachments$ = attachments$.pipe(
+       map(attachments => attachments.filter(attachment => attachment.attachment.RegistrationTID === 13))
+     );
+     this.snowSurfaceAttachments$ = attachments$.pipe(
+       map(attachments => attachments.filter(attachment => attachment.attachment.RegistrationTID === 22))
+     );
    }
 
    async save(): Promise<void> {
