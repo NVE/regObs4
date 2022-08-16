@@ -33,6 +33,7 @@ npx cap run android
 ```
 
 [More info](https://ionicframework.com/docs/building/android)
+We use Capacitor (and not Cordova) to build the native app.
 A few tips on development environment setup on Windows:
 
 - Android SDK and Gradle cache may give you authorization trouble if installed in your user profile folder.
