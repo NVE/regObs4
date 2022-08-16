@@ -14,10 +14,9 @@
         (valueChange)="save()"
         [filter]="filterSnowSurfaceTIDs">
         </app-kdv-icon-select>
-      Antall vedlegg: {{ (snowSurfaceAttachments$ | async).length }}
       <app-images-editor 
           [draft]="draft"   
-          registrationTid="22" 
+          [registrationTid]="22" 
           modalTitlePostfix="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
           [attachments]="snowSurfaceAttachments$ | async"
         ></app-images-editor>
