@@ -1,5 +1,4 @@
 <!-- show a list of small images that is attached to a registration draft. Images not uploaded first and then images already uploaded -->
-antall vedlegg: {{ attachments?.length }}
 <p class="images">
   <ro-blob-image 
     *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew"

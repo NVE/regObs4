@@ -1,7 +1,5 @@
-uuid = {{ draftUuid }}
 <div class="images">
 
-  eksisterende: 
   <!-- Existing attachments -->
   <div class="image-wrapper" *ngFor="let attachment of filteredExistingImages; trackBy: trackExisting">
     <app-remote-image [attachment]="attachment" preferSize="Large"
@@ -19,7 +17,6 @@ uuid = {{ draftUuid }}
     ></app-text-comment>
   </div>
 
-  nye:
   <!-- New attachments -->
   <div class="image-wrapper" *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew">
     <!-- <img [src]="convertFileSrc(image.PictureImageBase64)" /> -->
