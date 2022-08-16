@@ -19,7 +19,7 @@ npm install --legacy-peer-deps
 Run app in browser:
 
 ```
-ionic serve
+npm run start
 ```
 
 [More info](https://ionicframework.com/docs/building/running)
