@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  OnDestroy
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -23,7 +17,7 @@ export class BlobImageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.blobUrl = URL.createObjectURL(this.imgBlob);
-    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
+    this.imgSrc = this.sanitizer.bypassSecurityTrustStyle(`url(${this.blobUrl})`);
   }
 
   ngOnDestroy(): void {
