@@ -1,5 +1,5 @@
 <ion-item class="container" (click)="showImagesEditorModal()">
   <ion-icon name="camera"></ion-icon>
   <ion-label>{{ 'REGISTRATION.ADD_IMAGES' | translate }}</ion-label>
-  <app-thumbnails [attachments]="attachments" [draftUuid]="draft.uuid"></app-thumbnails>
+    <app-thumbnails [attachments]="attachments$ | async" [draftUuid]="draft.uuid"></app-thumbnails>
 </ion-item>
