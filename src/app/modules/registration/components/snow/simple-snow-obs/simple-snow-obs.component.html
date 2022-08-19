@@ -14,11 +14,11 @@
         (valueChange)="save()"
         [filter]="filterSnowSurfaceTIDs">
         </app-kdv-icon-select>
-      <app-images-editor 
+      <app-edit-images-bar 
           [draft]="draft"   
           [registrationTid]="22" 
           modalTitlePostfix="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
-        ></app-images-editor>
+        ></app-edit-images-bar>
 
       <app-kdv-icon-select 
       title="REGISTRATION.DANGER_OBS.TITLE" 
@@ -29,11 +29,11 @@
       [filter]="filterDangerSignTIDs">
       </app-kdv-icon-select>
 
-      <app-images-editor 
+      <app-edit-images-bar 
         [draft]="draft"
         [registrationTid]="13"
         modalTitlePostfix="REGISTRATION.DANGER_OBS.TITLE"
-      ></app-images-editor>
+      ></app-edit-images-bar>
 
       <div class="inline numeric-side-by-side">
         <app-numeric-input

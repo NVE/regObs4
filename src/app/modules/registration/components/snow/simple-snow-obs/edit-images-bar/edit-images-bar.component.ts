@@ -9,19 +9,19 @@ import { SummaryItemService } from 'src/app/modules/registration/services/summar
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { EditImagesPage } from '../../../edit-images/edit-images.page';
 
-const DEBUG_TAG = 'ImagesEditorComponent';
+const DEBUG_TAG = 'EditImagesBarComponent';
 
 /**
  * Show thumbnails of all images for given registration.
  * If you click the component, show a modal to add or edit images
  */
 @Component({
-  selector: 'app-images-editor',
-  templateUrl: './images-editor.component.html',
-  styleUrls: ['./images-editor.component.scss'],
+  selector: 'app-edit-images-bar',
+  templateUrl: './edit-images-bar.component.html',
+  styleUrls: ['./edit-images-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImagesEditorComponent {
+export class EditImagesBarComponent {
    @Input() draft: RegistrationDraft;
    @Input() registrationTid: number;
    @Input() modalTitlePostfix: string; //used to build the title in the modal
@@ -44,7 +44,7 @@ export class ImagesEditorComponent {
      );
    }
 
-   async showImagesEditorModal(): Promise<void> {
+   async showEditImagesPage(): Promise<void> {
      const modal = await this.modalController.create({
        component: EditImagesPage,
        componentProps: {

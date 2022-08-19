@@ -12,7 +12,7 @@ import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/si
 import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
 import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.component';
 import { EditImagesPage } from '../../components/edit-images/edit-images.page';
-import { ImagesEditorComponent } from '../../components/snow/simple-snow-obs/images-editor/images-editor.component';
+import { EditImagesBarComponent } from '../../components/snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
 
 const routes: Routes = [
   {
@@ -33,7 +33,7 @@ const routes: Routes = [
     VersionConflictComponent,
     GoneRegistrationComponent,
     SimpleSnowObsComponent,
-    ImagesEditorComponent,
+    EditImagesBarComponent,
     EditImagesPage,
     KdvIconSelectComponent
   ]
