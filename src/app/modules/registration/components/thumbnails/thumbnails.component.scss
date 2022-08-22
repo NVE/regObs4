@@ -1,8 +1,30 @@
-:host ::ng-deep div.image-preview {
+$images-margin: 8px;
+
+ro-blob-image {
   width: 48px;
   height: 48px;
-  margin-left: 5px;
-  display: inline-block;
-  background-size: cover;
-  background-position: center;
+  margin-left: $images-margin;
+}
+
+.images {
+  display: flex;
+
+  ro-blob-image {
+    &:nth-of-type(1n + 4) {
+      display: none;
+      visibility: hidden;
+    }
+  }
+
+  &-overflow {
+    width: 48px;
+    height: 48px;
+    margin-left: $images-margin;
+    background: var(--images-overflow-background);
+    color: var(--ion-text-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
