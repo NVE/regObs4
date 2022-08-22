@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 
@@ -38,7 +33,7 @@ export class RemoteImageComponent implements OnInit {
     } else {
       imageUrl = this.attachment.Url;
     }
-    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+    this.imgSrc = this.sanitizer.bypassSecurityTrustStyle(`url(${imageUrl})`);
   }
 
   onError() {

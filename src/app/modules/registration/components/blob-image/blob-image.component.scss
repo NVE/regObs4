@@ -1,5 +1,12 @@
-img{
+img {
   height: inherit;
   width: inherit;
   object-fit: cover;
+}
+
+.image-preview {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 1;
 }
