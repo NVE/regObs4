@@ -1,14 +1,8 @@
-ro-blob-image, app-remote-image, img {
-  max-width: 48px;
-  max-height: 48px;
-  margin-right: 5px;
-  display: inline-block;
-}
-
-:host ::ng-deep .reg-thumbnail {
+:host ::ng-deep div.image-preview {
   width: 48px;
   height: 48px;
-  margin-right: 5px;
+  margin-left: 5px;
   display: inline-block;
   background-size: cover;
+  background-position: center;
 }

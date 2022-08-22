@@ -29,3 +29,10 @@ ion-icon {
 .container {
   display: inline-block;
 }
+
+.image-preview {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 1;
+}
