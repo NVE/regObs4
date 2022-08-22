@@ -31,20 +31,5 @@ module.exports = {
         code: 120
       }
     ]
-  },
-  overrides: [
-    {
-      files: ['*.component.html'],
-      parser: '@angular-eslint/template-parser',
-      rules: {
-        '@typescript-eslint/dot-notation': 'off',
-        '@typescript-eslint/no-implied-eval': 'off',
-        '@typescript-eslint/no-throw-literal': 'off',
-        strict: 'off',
-        'import/first': 'off',
-        'lines-around-directive': 'off'
-      },
-      plugins: ['@angular-eslint/template']
-    }
-  ]
+  }
 };
