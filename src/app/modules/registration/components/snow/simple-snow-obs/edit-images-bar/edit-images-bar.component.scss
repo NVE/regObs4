@@ -12,3 +12,7 @@ ion-label {
   line-height: 100%;
   text-overflow: unset;
 }
+
+:host ::ng-deep div.ngx-file-drop__content {
+  height: 30px;
+}
