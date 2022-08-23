@@ -1,12 +1,11 @@
-<div (error)='onError()' *ngIf='showImage'
-     [style.background-image]='this.imgSrc'
-     class='image-preview'></div>
-<div *ngIf='!showImage' [class]='{error: true, large: largeFallback}'>
-  <ion-icon name='image'></ion-icon>
-  <p *ngIf='withFallbackText'>
-    {{'REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE' | translate}}
+<div (error)="onError()" *ngIf="showImage" [style.background-image]="this.imgSrc" class="image-preview"></div>
+<svg-icon *ngIf="isThumbnail" src="/assets/icon/edit-circle.svg"></svg-icon>
+<div *ngIf="!showImage" [class]="{ error: true, large: largeFallback }">
+  <ion-icon name="image"></ion-icon>
+  <p *ngIf="withFallbackText">
+    {{ 'REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE' | translate }}
   </p>
-  <p *ngIf='withFallbackText'>
-    {{'REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE_NET_Q' | translate}}
+  <p *ngIf="withFallbackText">
+    {{ 'REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE_NET_Q' | translate }}
   </p>
 </div>

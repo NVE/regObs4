@@ -9,6 +9,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class BlobImageComponent implements OnInit, OnDestroy {
   @Input() imgBlob: Blob;
+  @Input() isThumbnail = false;
 
   imgSrc: SafeUrl;
   private blobUrl: string;
