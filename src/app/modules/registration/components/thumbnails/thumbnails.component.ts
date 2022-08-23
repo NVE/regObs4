@@ -1,7 +1,10 @@
 import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
-import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
-import { AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
+import { map, distinctUntilChanged, Observable, ReplaySubject, combineLatest } from 'rxjs';
+import {
+  AttachmentUploadEditModel,
+  AttachmentUploadEditModelWithBlob,
+  ExistingOrNewAttachment
+} from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
@@ -24,22 +27,26 @@ export class ThumbnailsComponent implements OnChanges, OnInit {
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
   existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
-  constructor(
-    private newAttachmentService: NewAttachmentService
-  ) {}
+  totalImagesCount: Observable<number>;
+
+  constructor(private newAttachmentService: NewAttachmentService) {}
 
   ngOnInit(): void {
     this.newAttachments$ = this.attachmentsSubject.pipe(
-      map(attachments => attachments.filter(a => a.type === 'new')),
-      map(attachments => attachments.map(a => a.attachment as AttachmentUploadEditModel)),
+      map((attachments) => attachments.filter((a) => a.type === 'new')),
+      map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
       distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
       this.newAttachmentService.addBlobs(this.draftUuid)
     );
 
     this.existingAttachments$ = this.attachmentsSubject.pipe(
-      map(attachments => attachments.filter(a => a.type === 'existing')),
-      map(attachments => attachments.map(a => a.attachment as RemoteOrLocalAttachmentEditModel)),
+      map((attachments) => attachments.filter((a) => a.type === 'existing')),
+      map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
       distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
+    );
+
+    this.totalImagesCount = combineLatest([this.newAttachments$, this.existingAttachments$]).pipe(
+      map((attachments) => attachments[0].length + attachments[1].length)
     );
   }
 
