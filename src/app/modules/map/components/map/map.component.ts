@@ -11,6 +11,7 @@ import {
   ElementRef,
   ViewChild
 } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { timer, Subject, from, BehaviorSubject, combineLatest } from 'rxjs';
@@ -87,7 +88,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showMapSearch = true;
   @Input() showFullscreenToggle = true;
   @Input() showGpsCenter = true;
-  @Input() showUserLocation = true;
+  @Input() showUserLocation = Capacitor.isNativePlatform();
   @Input() showScale = true;
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng;
