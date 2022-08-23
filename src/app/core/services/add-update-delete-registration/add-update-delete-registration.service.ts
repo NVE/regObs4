@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
+import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
+import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft } from '../draft/draft-model';
@@ -21,7 +23,8 @@ export class AddUpdateDeleteRegistrationService {
   constructor(
     private uploadAttachmentsService: UploadAttachmentsService,
     private regobsApiRegistrationService: RegistrationService,
-    private userSettings: UserSettingService
+    private userSettings: UserSettingService,
+    private analytics: AnalyticService
   ) {}
 
   private changedRegistrations = new Subject<RegistrationViewModel>();
@@ -62,6 +65,9 @@ export class AddUpdateDeleteRegistrationService {
       langKey,
       externalReferenceId: draft.uuid
     }));
+
+    // Track observation type in GA
+    this.analytics.trackDimension(AppCustomDimension.observationType, draft.simpleMode ? 'simple' : 'normal');
 
     this.changedRegistrations.next(result);
     return result;
