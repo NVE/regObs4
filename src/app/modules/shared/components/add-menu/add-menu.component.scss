@@ -17,6 +17,11 @@ ion-fab-list {
     }
 }
 
+.add-menu-list {
+    max-height: calc(70vh - 50px);
+    overflow: scroll;
+}
+
 .backdrop {
     position: fixed;
     top: 0;
