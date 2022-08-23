@@ -20,6 +20,7 @@ export class RemoteImageComponent implements OnInit {
   @Input() preferSize: keyof RemoteOrLocalAttachmentEditModel['UrlFormats'] = 'Thumbnail';
   @Input() largeFallback = false;
   @Input() withFallbackText = false;
+  @Input() isThumbnail = false;
 
   imgSrc: SafeUrl;
   showImage = true;

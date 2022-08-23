@@ -1,6 +1,6 @@
 $images-margin: 8px;
 
-ro-blob-image {
+ro-blob-image, app-remote-image {
   width: 48px;
   height: 48px;
   margin-left: $images-margin;
@@ -8,9 +8,17 @@ ro-blob-image {
 
 .images {
   display: flex;
+  margin: 8px 0;
 
-  ro-blob-image {
-    &:nth-of-type(1n + 4) {
+  & ::ng-deep .image-preview {
+    border-radius: 2px;
+  }
+
+  ro-blob-image,
+  app-remote-image {
+    position: relative;
+
+    &:nth-child(1n + 4) {
       display: none;
     }
   }
