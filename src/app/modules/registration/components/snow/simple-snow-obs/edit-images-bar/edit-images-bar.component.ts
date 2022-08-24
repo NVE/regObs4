@@ -22,54 +22,56 @@ const DEBUG_TAG = 'EditImagesBarComponent';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditImagesBarComponent {
-   @Input() draft: RegistrationDraft;
-   @Input() registrationTid: number;
-   @Input() modalTitlePostfix: string; //used to build the title in the modal
-   @Input() readonly = false;
+  @Input() draft: RegistrationDraft;
+  @Input() registrationTid: number;
+  @Input() modalTitlePostfix: string; //used to build the title in the modal
+  @Input() readonly = false;
 
-   attachments$: Observable<ExistingOrNewAttachment[]>;
+  attachments$: Observable<ExistingOrNewAttachment[]>;
 
-   constructor(
+  constructor(
     private modalController: ModalController,
     private summaryItemService: SummaryItemService,
     private draftRepository: DraftRepositoryService,
     private logger: LoggingService
-   ) {
-   }
+  ) {}
 
-   ngOnInit() {
-     this.attachments$ = this.summaryItemService.createAttachments$(this.draft.uuid).pipe(
-       map(attachments => attachments.filter(
-         existingOrNewAttachment => existingOrNewAttachment.attachment.RegistrationTID === this.registrationTid))
-     );
-   }
+  ngOnInit() {
+    this.attachments$ = this.summaryItemService
+      .createAttachments$(this.draft.uuid)
+      .pipe(
+        map((attachments) =>
+          attachments.filter((existingOrNewAttachment) => existingOrNewAttachment.attachment.RegistrationTID === this.registrationTid)
+        )
+      );
+  }
 
-   async showEditImagesPage(): Promise<void> {
-     const modal = await this.modalController.create({
-       component: EditImagesPage,
-       componentProps: {
-         registrationTid: this.registrationTid,
-         geoHazard: this.draft.registration.GeoHazardTID,
-         draftUuid: this.draft.uuid,
-         modalTitlePostfix: this.modalTitlePostfix,
-         existingAttachments: this.draft.registration.Attachments
-       }
-     });
-     await modal.present();
+  async showEditImagesPage(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: EditImagesPage,
+      componentProps: {
+        registrationTid: this.registrationTid,
+        geoHazard: this.draft.registration.GeoHazardTID,
+        draftUuid: this.draft.uuid,
+        modalTitlePostfix: this.modalTitlePostfix,
+        existingAttachments: this.draft.registration.Attachments
+      },
+      cssClass: 'edit-images-page-modal'
+    });
+    await modal.present();
 
-     const { data } = await modal.onWillDismiss();
-     if (data != null && (!deepEqual(data.existingAttachments, this.draft.registration.Attachments))) {
-       this.logger.debug(
-         'Existing (remote) attachments changed, saving draft...',
-         DEBUG_TAG,
-         {'changed': data.existingAttachments},
-         {'original': this.draft.registration.Attachments}
-       );
-       this.draft.registration.Attachments = data.existingAttachments;
-       this.draftRepository.save(this.draft);
-     } else {
-       this.logger.debug('Existing (remote) attachments not changed', DEBUG_TAG);
-     }
-   }
+    const { data } = await modal.onWillDismiss();
+    if (data != null && !deepEqual(data.existingAttachments, this.draft.registration.Attachments)) {
+      this.logger.debug(
+        'Existing (remote) attachments changed, saving draft...',
+        DEBUG_TAG,
+        { changed: data.existingAttachments },
+        { original: this.draft.registration.Attachments }
+      );
+      this.draft.registration.Attachments = data.existingAttachments;
+      this.draftRepository.save(this.draft);
+    } else {
+      this.logger.debug('Existing (remote) attachments not changed', DEBUG_TAG);
+    }
+  }
 }
-
