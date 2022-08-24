@@ -51,10 +51,11 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       this.langKey = langKey;
     });
-    this.userSettingService.currentGeoHazard$.subscribe(() => this.resetAndLoadObservations(true));
-    this.userSettingService.daysBack$.subscribe(() => this.resetAndLoadObservations(true));
-  }
 
+    this.observationService.observations$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.loadObservations();
+    });
+  }
 
   refresh(cancelPromise: Promise<unknown>): void {
     this.resetAndLoadObservations(true, cancelPromise);
