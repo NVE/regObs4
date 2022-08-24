@@ -10,10 +10,6 @@
     <param name="android-package" value="io.sqlc.SQLitePlugin"/>
   </feature>
 
-  <feature name="Clipboard">
-    <param name="android-package" value="com.verso.cordova.clipboard.Clipboard"/>
-  </feature>
-
   <feature name="CordovaHttpPlugin">
     <param name="android-package" value="com.silkimen.cordovahttp.CordovaHttpPlugin"/>
   </feature>
@@ -58,10 +54,6 @@
 
   <feature name="ShortcutsPlugin">
     <param name="android-package" value="com.plugins.shortcuts.ShortcutsPlugin"/>
-  </feature>
-
-  <feature name="SocialSharing">
-    <param name="android-package" value="nl.xservices.plugins.SocialSharing"/>
   </feature>
 
   <feature name="DiskSpacePlugin">

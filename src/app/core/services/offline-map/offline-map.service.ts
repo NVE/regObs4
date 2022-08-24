@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -101,7 +101,7 @@ export class OfflineMapService {
     const readDirResult = await Filesystem.readdir({
       path: await this.getRootFileUrl()
     });
-    const packageNames = await this.getFolderNameWithCompleteFiles(
+    const packageNames = await this.getFolderNamesWithCompleteFiles(
       readDirResult.files
     );
     this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
@@ -132,12 +132,12 @@ export class OfflineMapService {
     );
   }
 
-  private async getFolderNameWithCompleteFiles(folders: string[]): Promise<string[]> {
+  private async getFolderNamesWithCompleteFiles(folders: FileInfo[]): Promise<string[]> {
     return (
       await Promise.all(
-        folders.map((folder: string) =>
-          this.hasCompleteFile(folder).then((result) =>
-            result ? folder : null
+        folders.map((folder: FileInfo) =>
+          this.hasCompleteFile(folder.name).then((result) =>
+            result ? folder.name : null
           )
         )
       )
@@ -523,11 +523,15 @@ export class OfflineMapService {
     }
   }
 
+  /**
+   * @returns name of sub folders in given map package folder
+   */
   private async getMapsInPackageFolder(packageName: string): Promise<string[]> {
     const path = await this.getMapPackageFileUrl(packageName);
-    const filenames = await (await Filesystem.readdir({ path })).files;
-    //TODO: Hack, assumes that all files in folder is a directory unless it has name 'COMPLETE'
-    return filenames.filter((filename) => filename != 'COMPLETE');
+    const fileOrFolderInfos = (await Filesystem.readdir({ path })).files;
+    return fileOrFolderInfos
+      .filter(fileInfo => fileInfo.type === 'directory') //assumes that all sub folders contain maps
+      .map(folderInfo => folderInfo.name);
   }
 
   /**
@@ -789,7 +793,8 @@ export class OfflineMapService {
         path: '',
         directory: dataDirectory
       });
-      if (!readDirResult.files.includes(ROOT_MAP_DIR)) {
+      if (readDirResult.files.filter(fileInfo => fileInfo.name === ROOT_MAP_DIR).length === 0) {
+        //no root folder yet, so create it
         await Filesystem.mkdir({
           path: ROOT_MAP_DIR,
           directory: dataDirectory
