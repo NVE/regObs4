@@ -53,7 +53,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     });
 
     this.observationService.observations$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      this.loadObservations();
+      this.resetAndLoadObservations();
     });
   }
 
