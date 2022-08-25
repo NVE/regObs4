@@ -24,8 +24,6 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="FadeSplashScreenDuration" value="300" />
     <preference name="AndroidLaunchMode" value="singleTask" />
-    <preference name="StatusBarStyle" value="lightcontent" />
-    <preference name="StatusBarBackgroundColor" value="#99044962" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <preference name="KeyboardResize" value="true" />
     <preference name="KeyboardResizeMode" value="ionic" />

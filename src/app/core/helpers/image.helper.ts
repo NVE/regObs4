@@ -1,5 +1,5 @@
 import { Observable, from, of } from 'rxjs';
-import { map, switchMap, concatMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { fromWorker } from 'observable-webworker';
 
 export class ImageHelper {

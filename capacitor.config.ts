@@ -28,8 +28,6 @@ const config: CapacitorConfig = {
       SplashScreenDelay: '3000',
       FadeSplashScreenDuration: '300',
       AndroidLaunchMode: 'singleTask',
-      StatusBarStyle: 'lightcontent',
-      StatusBarBackgroundColor: '#99044962',
       KeyboardDisplayRequiresUserAction: 'false',
       KeyboardResize: 'true',
       KeyboardResizeMode: 'ionic',
