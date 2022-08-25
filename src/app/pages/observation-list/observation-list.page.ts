@@ -51,11 +51,16 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       this.langKey = langKey;
     });
+
+    this.observationService.observations$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.resetAndLoadObservations();
+    });
   }
 
   refresh(cancelPromise: Promise<unknown>): void {
     this.resetAndLoadObservations(true, cancelPromise);
   }
+
 
   ionViewWillEnter(): void {
     this.content.scrollToTop();
