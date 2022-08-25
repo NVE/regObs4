@@ -7,7 +7,10 @@
       "source.fixAll.eslint": true
     },
     "editor.formatOnSave": true,
-    "editor.rulers": [120]
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.rulers": [
+      120
+    ]
   },
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
@@ -15,13 +18,24 @@
       "source.fixAll.eslint": true
     },
     "editor.formatOnSave": true,
-    "editor.rulers": [120]
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.rulers": [
+      120
+    ]
   },
   "[json]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    },
-    "editor.formatOnSave": true
-}
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "vscode.css-language-features",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
+  }
 }
