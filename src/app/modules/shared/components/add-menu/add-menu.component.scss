@@ -20,6 +20,13 @@ ion-fab-list {
 .add-menu-list {
     max-height: calc(70vh - 50px);
     overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+//hide scrollbar for chrome, safari, opera
+.add-menu-list::-webkit-scrollbar {
+    display: none;
 }
 
 .backdrop {
