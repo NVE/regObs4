@@ -72,6 +72,9 @@
 </ion-content>
 
 <ng-template #downloadPackage>
+  <ion-row [ngStyle]="{opacity: 0}">
+    <ion-col size="4">ghostrow</ion-col>
+  </ion-row>
   <ion-row>
     <ion-col>
       <ion-button [disabled]="isCheckingAvailableDiskspace" (click)="startDownload()" expand="block"

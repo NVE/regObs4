@@ -1,6 +1,12 @@
 .map-container {
   padding: 16px;
-  height: 75%;
+  height: 68%;
+}
+
+@media screen and (max-height:768px) {
+  .map-container {
+    height: 60%;
+  }
 }
 
 .right {
