@@ -437,9 +437,9 @@
           "MESSAGE": "The observation contains data not relevant for simple mode. Would you like to delete data we can't show?",
           "YES": "Delete data and change to simple mode",
           "CANCEL": "Cancel"  
-        }
+        },
+        "IMAGES_MODAL_TITLE": "Images of {{registrationType}}"
       }
-
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",

@@ -438,7 +438,7 @@
           "YES": "Slett data og bytt til enkel",
           "CANCEL": "Avbryt"  
         },
-        "IMAGES_MODAL_TITLE": "Bilder av {{postfix}}"
+        "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}"
       }
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
