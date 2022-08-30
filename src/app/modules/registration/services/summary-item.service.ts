@@ -38,8 +38,8 @@ export function draftHasNotChanged(previous: RegistrationDraft, current: Registr
     return false;
   }
 
-  const preTids = getRegistrationsWithData(previous).sort((a, b) => a - b);
-  const curTids = getRegistrationsWithData(current).sort((a, b) => a - b);
+  const preTids = getRegistrationsWithData(previous);
+  const curTids = getRegistrationsWithData(current);
 
   // Check if we have any new or removed forms
   if (preTids.length !== curTids.length) {
@@ -108,26 +108,6 @@ export class SummaryItemService {
       }),
       // Get summary items
       switchMap(inputs => from(this.getSummaryItems(...inputs)))
-    );
-  }
-
-  /**
-   * @param uuid the uuid of the draft you like to see attachments for
-   * @returns an observable array of both new attachments and already uploaded attachments for given draft uuid
-   */
-  createAttachments$(uuid: string): Observable<ExistingOrNewAttachment[]> {
-    const draft$ = this.draftService.getDraft$(uuid).pipe(distinctUntilChanged(draftHasNotChanged));
-    const newAttachments$ = this.newAttachmentService.getAttachments(uuid).pipe(
-      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id'))
-    );
-    return combineLatest([draft$, newAttachments$]).pipe(
-      map(([draft, newAttachments]) => {
-        const existingAttachments = getAllAttachmentsFromEditModel(draft.registration);
-        return [
-          ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
-          ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
-        ];
-      })
     );
   }
 

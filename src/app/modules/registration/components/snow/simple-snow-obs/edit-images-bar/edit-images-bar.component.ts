@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import deepEqual from 'fast-deep-equal';
-import { map, Observable } from 'rxjs';
+import { map, Observable, distinctUntilChanged, combineLatest } from 'rxjs';
+import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
-import { SummaryItemService } from 'src/app/modules/registration/services/summary-item.service';
+import { getAllAttachmentsFromEditModel } from 'src/app/modules/common-registration/registration.helpers';
+import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType } from 'src/app/modules/common-registration/registration.models';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { SummaryItemService, draftHasNotChanged } from 'src/app/modules/registration/services/summary-item.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { EditImagesPage } from '../../../edit-images/edit-images.page';
 
@@ -33,17 +36,16 @@ export class EditImagesBarComponent {
     private modalController: ModalController,
     private summaryItemService: SummaryItemService,
     private draftRepository: DraftRepositoryService,
-    private logger: LoggingService
+    private logger: LoggingService,
+    private newAttachmentService: NewAttachmentService
   ) {}
 
   ngOnInit() {
-    this.attachments$ = this.summaryItemService
-      .createAttachments$(this.draft.uuid)
-      .pipe(
-        map((attachments) =>
-          attachments.filter((existingOrNewAttachment) => existingOrNewAttachment.attachment.RegistrationTID === this.registrationTid)
-        )
-      );
+    this.attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.draft.uuid).pipe(
+      map((attachments) =>
+        attachments.filter((existingOrNewAttachment) => existingOrNewAttachment.attachment.RegistrationTID === this.registrationTid)
+      )
+    );
   }
 
   async showEditImagesPage(): Promise<void> {
@@ -73,5 +75,26 @@ export class EditImagesBarComponent {
     } else {
       this.logger.debug('Existing (remote) attachments not changed', DEBUG_TAG);
     }
+  }
+
+  /**
+   * @returns an observable array of both new attachments and already uploaded attachments for given draft uuid
+   */
+  private getNewAndExistingAttachmentsForDraft$(uuid: string): Observable<ExistingOrNewAttachment[]> {
+    const draft$ = this.draftRepository.getDraft$(uuid).pipe(
+      distinctUntilChanged(draftHasNotChanged)
+    );
+    const newAttachments$ = this.newAttachmentService.getAttachments(uuid).pipe(
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id'))
+    );
+    return combineLatest([draft$, newAttachments$]).pipe(
+      map(([draft, newAttachments]) => {
+        const existingAttachments = getAllAttachmentsFromEditModel(draft.registration);
+        return [
+          ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
+          ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
+        ];
+      })
+    );
   }
 }
