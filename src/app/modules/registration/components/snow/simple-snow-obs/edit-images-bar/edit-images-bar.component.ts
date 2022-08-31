@@ -8,11 +8,22 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { getAllAttachmentsFromEditModel } from 'src/app/modules/common-registration/registration.helpers';
 import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { SummaryItemService, draftHasNotChanged } from 'src/app/modules/registration/services/summary-item.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { EditImagesPage } from '../../../edit-images/edit-images.page';
 
 const DEBUG_TAG = 'EditImagesBarComponent';
+
+/**
+ * Compares two versions of a draft and returns true if existing (remote) attachments has changed
+ */
+function existingAttachmentsHasNotChanged(previous: RegistrationDraft, current: RegistrationDraft, registrationTid: number) {
+  const preExistingAttachments = getAllAttachmentsFromEditModel(previous.registration, registrationTid);
+  const curExistingAttachments = getAllAttachmentsFromEditModel(current.registration, registrationTid);
+
+  // Check if existing attachments has changed
+  const changed = attachmentsComparator(preExistingAttachments, curExistingAttachments, 'AttachmentId');
+  return changed;
+}
 
 /**
  * Show thumbnails of all images for given registration.
@@ -34,18 +45,13 @@ export class EditImagesBarComponent {
 
   constructor(
     private modalController: ModalController,
-    private summaryItemService: SummaryItemService,
     private draftRepository: DraftRepositoryService,
     private logger: LoggingService,
     private newAttachmentService: NewAttachmentService
   ) {}
 
   ngOnInit() {
-    this.attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.draft.uuid).pipe(
-      map((attachments) =>
-        attachments.filter((existingOrNewAttachment) => existingOrNewAttachment.attachment.RegistrationTID === this.registrationTid)
-      )
-    );
+    this.attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.draft.uuid);
   }
 
   async showEditImagesPage(): Promise<void> {
@@ -82,14 +88,14 @@ export class EditImagesBarComponent {
    */
   private getNewAndExistingAttachmentsForDraft$(uuid: string): Observable<ExistingOrNewAttachment[]> {
     const draft$ = this.draftRepository.getDraft$(uuid).pipe(
-      distinctUntilChanged(draftHasNotChanged)
+      distinctUntilChanged((prev, curr) => existingAttachmentsHasNotChanged(prev, curr, this.registrationTid))
     );
-    const newAttachments$ = this.newAttachmentService.getAttachments(uuid).pipe(
-      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id'))
+    const newAttachments$ = this.newAttachmentService.getAttachments(uuid, { registrationTid: this.registrationTid }).pipe(
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
     );
     return combineLatest([draft$, newAttachments$]).pipe(
       map(([draft, newAttachments]) => {
-        const existingAttachments = getAllAttachmentsFromEditModel(draft.registration);
+        const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, this.registrationTid);
         return [
           ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
           ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
