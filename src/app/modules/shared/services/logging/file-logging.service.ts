@@ -485,15 +485,15 @@ export class FileLoggingService {
       }
     }
 
-    async sendLogsByEmail(): Promise<void> {
+    async sendLogsByEmail(topic = 'Regobs-app-logger', body = ''): Promise<void> {
       const fileEntries = await this.getLogFiles();
       const filePaths: string[] = fileEntries.map(entry => entry.toURL());
       const attachments = filePaths;
       const email: EmailComposerOptions = {
         to: settings.errorEmailAddress,
         attachments,
-        subject: 'Regobs-app-logger',
-        body: '',
+        subject: topic,
+        body,
         isHtml: true
       };
       this.emailComposer.open(email);

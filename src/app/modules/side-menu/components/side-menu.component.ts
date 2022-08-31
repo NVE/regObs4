@@ -18,6 +18,8 @@ import { DataMarshallService } from 'src/app/core/services/data-marshall/data-ma
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { SelectInterface } from '@ionic/core';
+import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
+
 
 @Component({
   selector: 'app-side-menu',
@@ -58,7 +60,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private dataMarshallService: DataMarshallService,
     private externalLinkService: ExternalLinkService,
-    public observerTrips: ObserverTripsService
+    public observerTrips: ObserverTripsService,
+    private fileLoggingService: FileLoggingService
   ) {}
 
   async ngOnInit() {
@@ -111,19 +114,10 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async contactUs() {
-    if (isAndroidOrIos(this.platform)) {
-      const translations = await this.translateService
-        .get('MENU.CONTACT_SUBJECT')
-        .toPromise();
-      const email: EmailComposerOptions = {
-        to: settings.errorEmailAddress,
-        subject: translations,
-        isHtml: true
-      };
-      this.emailComposer.open(email);
-    } else {
-      window.location.href = 'mailto:regobs@nve.no';
-    }
+    const translations = await this.translateService
+      .get('MENU.CONTACT_SUBJECT')
+      .toPromise();
+    this.fileLoggingService.sendLogsByEmail(translations);
   }
 
   async contactError() {
@@ -132,18 +126,10 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
         .toPromise();
       const appVersion = await this.appVersionService.getAppVersion();
-      const email: EmailComposerOptions = {
-        to: settings.errorEmailAddress,
-        subject:
-          `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
-            this.platform.is('ios') ? 'ios' : ''
-          }` +
+      const subject = `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${this.platform.is('ios') ? 'ios' : ''}` +
           `${this.platform.is('android') ? 'android' : ''}` +
-          ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
-        body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
-        isHtml: true
-      };
-      this.emailComposer.open(email);
+          ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`;
+      this.fileLoggingService.sendLogsByEmail(subject, translations['MENU.ERROR_REPORT_DESCRIPTION']);
     } else {
       window.open(
         'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu'
