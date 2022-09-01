@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/turf';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, distinctUntilKeyChanged, firstValueFrom, from, mapTo, Observable, of, ReplaySubject, skipWhile, switchMap, withLatestFrom } from 'rxjs';
+import { defer, distinctUntilChanged, distinctUntilKeyChanged, firstValueFrom, from, map, mapTo, Observable, of, ReplaySubject, shareReplay, skipWhile, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -11,7 +11,7 @@ const msOneWeek = 604800000;
 const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
 const toggleKey = 'REGOBS_OBSTRIPS_ON';
 const dataModifiedKey = 'REGOBS_OBSTRIPS_CHANGED_DATE';
-const isUnauthorizedKey = 'REGOBS_OBSTRIPS_UNAUTHORIZED';
+const isAuthorizedKey = 'REGOBS_OBSTRIPS_AUTHORIZED';
 
 const shouldUpdate = (mTime: number) => {
   const msSinceUpdate = Date.now() - mTime;
@@ -19,6 +19,12 @@ const shouldUpdate = (mTime: number) => {
 };
 
 const DEBUG_TAG = 'ObserverTrips';
+
+enum AuthorizedState {
+  Authorized,
+  NotAuthorized,
+  Unknown
+}
 
 /**
  * Provides geojson data for observer trips, and a toggle mechanism that can be used to show/hide data.
@@ -32,12 +38,14 @@ const DEBUG_TAG = 'ObserverTrips';
 export class ObserverTripsService {
 
   geojson: Observable<FeatureCollection | null>;
-  canShow = new BehaviorSubject(false);
-  toggleOn = new BehaviorSubject(false);
 
-  // To avoid requesting the dataset each time an unauthorized user starts the app
-  // we cache that the user is unauthorized.
-  private isUnauthorized = new ReplaySubject(1);
+  toggledOn = new ReplaySubject<boolean>(1);
+  private authorizedState = new Subject<AuthorizedState>();
+  isAuthorized: Observable<boolean> = this.authorizedState.pipe(
+    map(state => state === AuthorizedState.Authorized),
+    distinctUntilChanged(),
+    tap((isAuthorized) => this.logger.debug('Authorized', DEBUG_TAG, isAuthorized))
+  )
 
   constructor(
     private tripService: TripService,
@@ -45,141 +53,151 @@ export class ObserverTripsService {
     private dbService: DatabaseService,
     authService: RegobsAuthService
   ) {
-    this.geojson = combineLatest([
-      authService.loggedInUser$.pipe(distinctUntilKeyChanged('isLoggedIn')),
-      this.toggleOn.pipe(distinctUntilChanged()),
-    ]).pipe(
-      // Do not emit anything until we get a logged in user object,
-      // no need to try fetching data before user has logged in.
-      skipWhile(([user]) => !user.isLoggedIn),
-      withLatestFrom(this.isUnauthorized),
-      switchMap(([[user, isToggledOn], isUnauthorized]) => {
-        if (isUnauthorized === true) {
-          if (!user.isLoggedIn) {
-            // User has been logged out and may now log in with a valid user, so remove unauthorized cache
-            return from(this.removeUnauthorized());
-          }
+    let hasInitializedStateFromDb = false;
+
+    const getGeojsonWhenToggledOnAndAuthorized$ = this.toggledOn.pipe(
+      withLatestFrom(this.authorizedState),
+      switchMap(([toggledOn, authorized]) => {
+        this.logger.debug('Toggle / auth state', DEBUG_TAG, { toggledOn, authorized });
+        if (!toggledOn || authorized === AuthorizedState.NotAuthorized) {
           return of(null);
+        } else if (authorized === AuthorizedState.Unknown) {
+          return defer(() => from(this.fetchData()));
+        } else {
+          return defer(() => from(this.getData()));
         }
-
-        if (isToggledOn === false && this.canShow.value === true) {
-          return of(null);
-        }
-
-        // If user is logged in, try to read data from cache, or fetch data.
-        if (user.isLoggedIn) {
-          return from(this.getData());
-        }
-
-        // If user has logged out, clear data.
-        return from(this.clear()).pipe(mapTo(null));
       }),
     );
 
-    this.doInitChecks();
+    this.geojson = authService.loggedInUser$.pipe(
+      distinctUntilKeyChanged('isLoggedIn'),
+      // Allow multiple subscribers
+      shareReplay(1),
+      // Do not do anything until we have a logged in user
+      skipWhile(user => !user.isLoggedIn),
+
+      // First time user has logged in, initialize state from DB
+      tap(() => {
+        if (!hasInitializedStateFromDb) {
+          this.readStateFromDb();
+          hasInitializedStateFromDb = true;
+        }
+      }),
+
+      switchMap(user => user.isLoggedIn ?
+        // User is logged in, read data from database or fetch new data
+        getGeojsonWhenToggledOnAndAuthorized$ :
+        // If user logs out, clear data and return null
+        defer(() => from(this.clear())).pipe(mapTo(null))
+      )
+    );
   }
 
   async toggle() {
-    const toggled = !this.toggleOn.value;
+    const toggled = !await firstValueFrom(this.toggledOn);
     await this.dbService.set(toggleKey, toggled);
-    this.toggleOn.next(toggled);
+    this.toggledOn.next(toggled);
   }
 
-  private async setUnauthorized() {
-    this.logger.debug('Set unauthorized', DEBUG_TAG);
-    await this.dbService.set(isUnauthorizedKey, true);
-    this.isUnauthorized.next(true);
-  }
+  private async readStateFromDb(): Promise<void> {
+    // State to read from DB
+    let authorizedState = AuthorizedState.Unknown;
+    let toggledOnState = true;  // Assume toggled on if not saved in DB
 
-  private async removeUnauthorized() {
-    this.logger.debug('Remove unauthorized', DEBUG_TAG);
-    await this.dbService.remove(isUnauthorizedKey);
-    this.isUnauthorized.next(null);
-  }
-
-  private async checkToggle() {
-    this.logger.debug('Checking on/off', DEBUG_TAG);
-    const toggledOn = !!await this.dbService.get<boolean>(toggleKey);
-    this.logger.debug('Toggled on?', DEBUG_TAG, toggledOn);
-    this.toggleOn.next(toggledOn);
-  }
-
-  private async doInitChecks() {
-    this.logger.debug('Checking unauthorized', DEBUG_TAG);
-    const isUnauthorized = await this.dbService.get<boolean>(isUnauthorizedKey);
-    if (isUnauthorized == null) {
-      this.checkToggle();
+    const isAuthorizedDb = await this.readFromDb<boolean>(isAuthorizedKey);
+    if (isAuthorizedDb === false) {
+      authorizedState = AuthorizedState.NotAuthorized;
+    } else if (isAuthorizedDb === true) {
+      authorizedState = AuthorizedState.Authorized;
+      toggledOnState = (await this.readFromDb<boolean>(toggleKey)) === false ? false : true;
     }
-    this.logger.debug('isUnauthorized', DEBUG_TAG, isUnauthorized);
-    this.isUnauthorized.next(isUnauthorized || null);
+
+    this.logger.debug('Read state from db', DEBUG_TAG, { authorizedState, toggledOnState });
+    this.authorizedState.next(authorizedState);
+    this.toggledOn.next(toggledOnState);
+  }
+
+  private async readFromDb<T>(key: string): Promise<T | null> {
+    let value: T | null;
+    try {
+      value = await this.dbService.get<T>(key);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, `Failed to read ${key} from DB`);
+      value = null;
+    }
+    return value;
   }
 
   private async clear() {
-    this.canShow.next(false);
     this.logger.debug('Removing data', DEBUG_TAG);
     await this.dbService.remove(dataKey);
     await this.dbService.remove(dataModifiedKey);
+    await this.dbService.remove(isAuthorizedKey);
+    await this.dbService.remove(toggleKey);
+    this.authorizedState.next(AuthorizedState.Unknown);
   }
 
-  private async read() {
-    this.logger.debug('Reading data from storage', DEBUG_TAG, dataKey);
+  private readGeojsonFromDb(): Promise<FeatureCollection | null> {
+    this.logger.debug('Reading geojson from db', DEBUG_TAG);
     return this.dbService.get<FeatureCollection>(dataKey);
   }
 
-  private async readLastModified() {
-    this.logger.debug('Reading mtime from storage', DEBUG_TAG, dataModifiedKey);
-    return this.dbService.get<number>(dataModifiedKey);
-  }
-
-  private async save(data: FeatureCollection) {
-    this.logger.debug('Saving data', DEBUG_TAG);
-    await this.dbService.set(dataKey, data);
-    await this.dbService.set(dataModifiedKey, Date.now());
-  }
-
   private async getData(): Promise<FeatureCollection | null> {
-    let geojson = await this.read();
-    const modifiedTime = await this.readLastModified();
-    const couldReadGeojson = geojson != null;
-    this.logger.debug('Read result', DEBUG_TAG, { couldReadGeojson, modifiedTime });
+    const lastModified = await this.readFromDb<number>(dataModifiedKey) || 0;
 
-    let tryUpdate = true;
-    if (couldReadGeojson && modifiedTime) {
-      tryUpdate = shouldUpdate(modifiedTime);
-    }
-
-    this.logger.debug('Should update?', DEBUG_TAG, tryUpdate);
-    if (tryUpdate) {
-      const data = await this.fetchData();
-      if (data != null) {
-        geojson = data;
-        await this.save(data);
+    // Either try to update data if data is not fresh enough, or try to read data from database if fresh enough.
+    // Try the opposite as a fallback if first priority fails.
+    if (shouldUpdate(lastModified)) {
+      this.logger.debug('Has outdated geojson, will try to update', DEBUG_TAG);
+      let geojson: FeatureCollection | null;
+      try {
+        geojson = await this.fetchData();
+      } catch (error) {
+        geojson = null;
+      }
+      if (geojson == null) {
+        geojson = await this.readGeojsonFromDb();
+      }
+      return geojson;
+    } else {
+      try {
+        return await this.readGeojsonFromDb();
+      } catch (error) {
+        return this.fetchData();
       }
     }
-
-    this.canShow.next(geojson != null);
-    return geojson;
   }
 
-  private async fetchData() {
+  private async fetchData(): Promise<FeatureCollection | null> {
     this.logger.debug('Fetching', DEBUG_TAG);
 
-    let data: any;
+    let data: FeatureCollection;
     try {
       data = await firstValueFrom(this.tripService.TripGet());
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.logger.debug('User does not have access to observertrips', DEBUG_TAG);
-          await this.setUnauthorized();
+          this.authorizedState.next(AuthorizedState.NotAuthorized);
+          await this.dbService.set(isAuthorizedKey, false);  // Persist so we know on next startup
           return null;
         }
       }
+
       this.logger.error(error, DEBUG_TAG, 'Could not fetch observertrips');
       return null;
     }
 
+    if (data == null || data.features == null) {
+      this.logger.error(new Error('Got invalid obstur data'), DEBUG_TAG);
+      return null;
+    }
+
     this.logger.debug('Got observer trips response', DEBUG_TAG);
+    await this.dbService.set(dataKey, data);
+    await this.dbService.set(dataModifiedKey, Date.now());
+    await this.dbService.set(isAuthorizedKey, true);
+    this.authorizedState.next(AuthorizedState.Authorized);
     return data;
   }
 }
