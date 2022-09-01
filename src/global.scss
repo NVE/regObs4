@@ -639,6 +639,19 @@ ion-select-popover ion-list ion-item ion-radio {
   margin-left: 8px;
 }
 
-.edit-images-page-modal .ion-page {
+ngx-file-drop div.ngx-file-drop__content {
+  justify-content: flex-start !important;
+}
 
+app-simple-snow-obs app-edit-images div.ngx-file-drop__content {
+  height: 30px !important;
+}
+
+
+app-edit-images .images {
+  margin-bottom: auto;
+}
+
+app-thumbnails .images .image-preview {
+  border-radius: 2px;
 }

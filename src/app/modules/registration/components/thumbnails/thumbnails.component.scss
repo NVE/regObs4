@@ -10,10 +10,6 @@ ro-blob-image, app-remote-image {
   display: flex;
   margin: 8px 0;
 
-  & ::ng-deep .image-preview {
-    border-radius: 2px;
-  }
-
   ro-blob-image,
   app-remote-image {
     position: relative;

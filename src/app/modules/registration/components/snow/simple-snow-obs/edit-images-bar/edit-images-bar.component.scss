@@ -13,10 +13,6 @@ ion-label {
   text-overflow: unset;
 }
 
-:host ::ng-deep div.ngx-file-drop__content {
-  height: 30px;
-}
-
 app-edit-images {
   width: 100%
 }
