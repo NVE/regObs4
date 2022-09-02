@@ -48,11 +48,6 @@
     <param name="ios-package" value="SecureStorage"/>
   </feature>
 
-  <feature name="SocialSharing">
-    <param name="ios-package" value="SocialSharing"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   <feature name="DiskSpacePlugin">
     <param name="ios-package" value="DiskSpacePlugin"/>
     <param name="onload" value="true"/>
