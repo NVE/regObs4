@@ -238,6 +238,7 @@
     },
     "BACK_TO_OBSERVATION": "Tillbaka till min observation",
     "CONFIRM_RESET": "Är du säker på att du vill återställa alla fält?",
+    "COPIED_TO_CLIPBOARD": "Kopierade till urklipp",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",

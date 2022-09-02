@@ -279,6 +279,7 @@
     },
     "BACK_TO_OBSERVATION": "Back to observation",
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard",
     "DANGER_OBS": {
       "AREA": "Area",
       "COMMENT": "Comment",

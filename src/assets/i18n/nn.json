@@ -261,6 +261,7 @@
     },
     "BACK_TO_OBSERVATION": "Tilbake til observasjonen min",
     "CONFIRM_RESET": "Er du sikker på at du vil nullstille alle felt?",
+    "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavla",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
