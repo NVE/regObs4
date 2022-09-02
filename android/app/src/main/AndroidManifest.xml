@@ -1,10 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="no.nve.regobs4" android:versionName="4.7.0" android:versionCode="220506328">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="no.nve.regobs4" android:versionName="4.7.2" android:versionCode="220902425">
 
   <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/AppTheme">
 
-    <activity
-            android:exported="true"
- android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:name="no.nve.regobs4.MainActivity" android:label="@string/title_activity_main" android:theme="@style/AppTheme.NoActionBarLaunch" android:launchMode="singleTask">
+    <activity android:exported="true" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:name="no.nve.regobs4.MainActivity" android:label="@string/title_activity_main" android:theme="@style/AppTheme.NoActionBarLaunch" android:launchMode="singleTask">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
