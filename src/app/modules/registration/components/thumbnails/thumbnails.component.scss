@@ -1,0 +1,33 @@
+$images-margin: 8px;
+
+ro-blob-image, app-remote-image {
+  width: 48px;
+  height: 48px;
+  margin-left: $images-margin;
+}
+
+.images {
+  display: flex;
+  margin: 8px 0;
+
+  ro-blob-image,
+  app-remote-image {
+    position: relative;
+
+    &:nth-child(1n + 4) {
+      display: none;
+    }
+  }
+
+  &-overflow {
+    width: 48px;
+    height: 48px;
+    margin-left: $images-margin;
+    background: var(--images-overflow-background);
+    color: var(--ion-text-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

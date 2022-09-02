@@ -432,7 +432,18 @@
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
       "SHARE_WITH_GROUP": "Del med gruppe",
-      "TITLE": "Observasjon"
+      "TITLE": "Observasjon",
+      "SIMPLE": {
+        "HEADER_QUESTION": "Hvordan er det her nå?",
+        "TOGGLE": "Enkel observasjon",
+        "CONFIRM": {
+          "HEADER": "Bytt til enkel modus",
+          "MESSAGE": "Observasjonen inneholder data som ikke kan vises i enkel modus. Vil du slette data vi ikke kan vise?",
+          "YES": "Slett data og bytt til enkel",
+          "CANCEL": "Avbryt"  
+        },
+        "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}"
+      }
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
@@ -445,6 +456,7 @@
       "NO": "Nei, forkast",
       "YES": "Ja, lagre"
     },
+    "SELECTION_COUNT": "{{ count }} valgt",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekreft skadepunkt",
@@ -616,6 +628,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysnø siste 24t (cm)",
         "NEW_SNOW_LINE": "Nysnøgrense (moh)",
+        "SKI_CONDITIONS": "Skiføre",
         "SNOW_DEPTH": "Total snødybde (cm)",
         "SNOW_DRIFT": "Snøfokk",
         "SNOW_LINE": "Snøgrense (moh)",

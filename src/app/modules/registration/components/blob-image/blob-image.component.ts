@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  OnDestroy
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -15,6 +9,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class BlobImageComponent implements OnInit, OnDestroy {
   @Input() imgBlob: Blob;
+  @Input() isThumbnail = false;
 
   imgSrc: SafeUrl;
   private blobUrl: string;
@@ -23,7 +18,7 @@ export class BlobImageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.blobUrl = URL.createObjectURL(this.imgBlob);
-    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
+    this.imgSrc = this.sanitizer.bypassSecurityTrustStyle(`url(${this.blobUrl})`);
   }
 
   ngOnDestroy(): void {

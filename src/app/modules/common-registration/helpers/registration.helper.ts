@@ -83,11 +83,11 @@ export function getAllAttachmentsFromViewModel(
   registrationTid?: RegistrationTid
 ): AttachmentViewModel[] {
   const snowProfile = getSnowProfileAttachments(viewModel, registrationTid);
-  let attachments = getAllAttachmentsFromEditModel(viewModel, registrationTid);
+  const attachments = getAllAttachmentsFromEditModel(viewModel, registrationTid);
   if (snowProfile) {
     attachments.unshift(snowProfile);
   }
-  return attachments
+  return attachments;
 }
 
 export function getAllAttachmentsFromEditModel(

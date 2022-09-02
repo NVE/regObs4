@@ -1,0 +1,18 @@
+<!-- If there are no attachments we skip the modal and save the user an extra click. -->
+<ng-container *ngIf="attachments$ | async as attachments">
+  <ion-item *ngIf="attachments.length == 0">
+    <app-edit-images
+      [registrationTid]="registrationTid"
+      [geoHazard]="draft.registration.GeoHazardTID"
+      [draftUuid]="draft.uuid"
+      [(existingAttachments)]="draft.registration.Attachments"
+    ></app-edit-images>
+  </ion-item>
+
+  <!-- Show thumbnails of attachments if there are any -->
+  <ion-item *ngIf="attachments?.length > 0" (click)="showEditImagesPage()">
+    <ion-icon name="camera"></ion-icon>
+    <ion-label>{{ 'REGISTRATION.ADD_IMAGES' | translate }}</ion-label>
+    <app-thumbnails [attachments]="attachments" [draftUuid]="draft.uuid"></app-thumbnails>
+  </ion-item>
+</ng-container>

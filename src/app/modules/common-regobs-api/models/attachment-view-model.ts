@@ -1,31 +1,17 @@
 /* eslint-disable */
 export interface AttachmentViewModel {
+
+  /**
+   * Hvilken himmelretning peker bilde. Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
+   */
+  Aspect?: number;
   AttachmentId?: number;
+  AttachmentMimeType?: string;
 
   /**
-   * GeoHazard name
+   * Kommentarfelt for bildet. F.eks for å beskrive det.
    */
-  GeoHazardName?: string;
-
-  /**
-   * Registration name
-   */
-  RegistrationName?: string;
-
-  /**
-   * Urls in different formats
-   */
-  UrlFormats?: {Raw?: string, Original?: string, Thumbnail?: string, Large?: string, Medium?: string};
-
-  /**
-   * Full original image url
-   */
-  Url?: string;
-
-  /**
-   * Navn på fotograf.
-   */
-  Photographer?: string;
+  Comment?: string;
 
   /**
    * Rettigheter til bilde.
@@ -33,9 +19,9 @@ export interface AttachmentViewModel {
   Copyright?: string;
 
   /**
-   * Hvilken himmelretning peker bilde. Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
+   * GeoHazard name
    */
-  Aspect?: number;
+  GeoHazardName?: string;
 
   /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
@@ -43,18 +29,32 @@ export interface AttachmentViewModel {
   GeoHazardTID?: number;
 
   /**
+   * Om bildet skal vises først i registreringen, eller ikke
+   */
+  IsMainAttachment?: boolean;
+
+  /**
+   * Navn på fotograf.
+   */
+  Photographer?: string;
+
+  /**
+   * Registration name
+   */
+  RegistrationName?: string;
+
+  /**
    * Hva er bildet av. Dette feltet relaterer bildet til en observasjonstype. Feks værobservasjon, faretegn, osv. The RegistrationKD unique identifier
    */
   RegistrationTID?: number;
 
   /**
-   * Kommentarfelt for bildet. F.eks for å beskrive det.
+   * Full original image url
    */
-  Comment?: string;
-  AttachmentMimeType?: string;
+  Url?: string;
 
   /**
-   * Om bildet skal vises først i registreringen, eller ikke
+   * Urls in different formats
    */
-  IsMainAttachment?: boolean;
+  UrlFormats?: {Raw?: string, Original?: string, Thumbnail?: string, Large?: string, Medium?: string};
 }

@@ -1,22 +1,22 @@
 /* eslint-disable */
-import { ObserverGroupDto } from './observer-group-dto';
 import { ObserverCompetenceDto } from './observer-competence-dto';
+import { ObserverGroupDto } from './observer-group-dto';
 export interface MyPageData {
-  Guid?: string;
-  NickName?: string;
-  Email?: string;
-  MobPhoneNr?: string;
-  FirstName?: string;
-  LastName?: string;
-  WorkPlace?: string;
   Adrnr?: number;
-  DtRegTime?: string;
-  MemberOfGroups?: Array<ObserverGroupDto>;
-  PendingInvitationsToGroups?: Array<ObserverGroupDto>;
   Competence?: Array<ObserverCompetenceDto>;
-  NumberOfObservations?: number;
-  MainGeohazardTID?: number;
-  LastRegistrationDate?: string;
   DefaultMunicipality?: string;
+  DtRegTime?: string;
+  Email?: string;
+  FirstName?: string;
+  Guid?: string;
+  LastName?: string;
+  LastRegistrationDate?: string;
+  MainGeohazardTID?: number;
+  MemberOfGroups?: Array<ObserverGroupDto>;
+  MobPhoneNr?: string;
+  NickName?: string;
+  NumberOfObservations?: number;
+  PendingInvitationsToGroups?: Array<ObserverGroupDto>;
   Roles?: Array<string>;
+  WorkPlace?: string;
 }

@@ -10,17 +10,42 @@
 </ion-header>
 <ng-container *ngIf="draft$ | async as draft">
   <ion-content>
+    <!-- Simple snow obs header-->
+    <ion-grid *ngIf="showSnowObsModeSelector$ | async" class="header">
+      <ion-row>
+        <ion-col *ngIf="draft.simpleMode" class="question">
+          <ion-item>
+            <ion-label>
+              {{"REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate}}
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col class="simple-obs-toggle">
+          <ion-item>
+            <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}</ion-label>
+            <ion-toggle
+              [ngModel]="draft.simpleMode"
+              (ionChange)="changeMode($event)"
+            ></ion-toggle>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
     <!-- Error info if posting the registration failed -->
     <app-failed-registration
       *ngIf="draft.error && draftHasStatusSync(draft)"
       [draft]="draft"
     ></app-failed-registration>
 
+    <app-simple-snow-obs *ngIf="showSimpleMode(draft)" [draft]="draft"></app-simple-snow-obs>
+
     <ion-list lines="full">
       <!-- "Summary" items for each form -->
       <app-summary-item
         [readonly]="draftHasStatusSync(draft)"
         *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction"
+        [simpleObsMode]="userSetting.simpleSnowObservations"
         [item]="item"
       ></app-summary-item>
     </ion-list>

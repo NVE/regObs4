@@ -1,13 +1,13 @@
 /* eslint-disable */
-import { StratProfileEditModel } from './strat-profile-edit-model';
-import { SnowTempModel } from './snow-temp-model';
 import { SnowDensityModel } from './snow-density-model';
+import { SnowTempModel } from './snow-temp-model';
+import { StratProfileEditModel } from './strat-profile-edit-model';
 export interface SnowProfileEditModel {
-  StratProfile?: StratProfileEditModel;
   Comment?: string;
-  IsProfileToGround?: boolean;
   Exposition?: number;
+  IsProfileToGround?: boolean;
   SlopeAngle?: number;
-  SnowTemp?: SnowTempModel;
   SnowDensity?: Array<SnowDensityModel>;
+  SnowTemp?: SnowTempModel;
+  StratProfile?: StratProfileEditModel;
 }

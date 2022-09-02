@@ -2,9 +2,9 @@
 export interface DangerObsEditModel {
 
   /**
-   * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
+   * Kommentarfelt for å skrive utfyllende tekst om faretegnet.
    */
-  GeoHazardTID?: number;
+  Comment?: string;
 
   /**
    * Faretegn er listet i tabellen DangerSignKD. The DangerSignKD unique identifier
@@ -12,7 +12,7 @@ export interface DangerObsEditModel {
   DangerSignTID?: number;
 
   /**
-   * Kommentarfelt for å skrive utfyllende tekst om faretegnet.
+   * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
    */
-  Comment?: string;
+  GeoHazardTID?: number;
 }

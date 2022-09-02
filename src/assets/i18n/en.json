@@ -432,7 +432,18 @@
       "DATE_AND_TIME": "Date and Time",
       "MY_OBSERVATION": "My observation",
       "SHARE_WITH_GROUP": "Share with group",
-      "TITLE": "Observation"
+      "TITLE": "Observation",
+      "SIMPLE": {
+        "HEADER_QUESTION":"What is it like right now?",
+        "TOGGLE": "Simple observation",
+        "CONFIRM": {
+          "HEADER": "Change to simple mode",
+          "MESSAGE": "The observation contains data not relevant for simple mode. Would you like to delete data we can't show?",
+          "YES": "Delete data and change to simple mode",
+          "CANCEL": "Cancel"  
+        },
+        "IMAGES_MODAL_TITLE": "Images of {{registrationType}}"
+      }
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",
@@ -445,6 +456,7 @@
       "NO": "No, discard",
       "YES": "Yes, save"
     },
+    "SELECTION_COUNT": "{{ count }} selected",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",
@@ -616,6 +628,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snow without hazardous layering",
         "NEW_SNOW_DEPTH": "New snow 24h (cm)",
         "NEW_SNOW_LINE": "Fresh snow line (masl)",
+        "SKI_CONDITIONS": "Ski conditions",
         "SNOW_DEPTH": "Snow depth (cm)",
         "SNOW_DRIFT": "Snow drift",
         "SNOW_LINE": "Snowline (masl)",
