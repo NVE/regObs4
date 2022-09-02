@@ -77,10 +77,14 @@ export class DraftRepositoryService {
    * @returns true if draft does not contain any data
    */
   async isDraftEmpty(draft: RegistrationDraft) {
-    const anyObservations = hasAnyObservations(draft);
-    const anyExistingAttatchments = draft.registration.Attachments?.length > 0;
-    const anyNewAttachments = (await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid)))?.length > 0;
-    return !anyObservations && !anyExistingAttatchments && !anyNewAttachments;
+    if (draft.registration.Attachments?.length > 0) {
+      return false; //we have image metadata for an already uploaded image
+    }
+    if (hasAnyObservations(draft)) {
+      return false; //at least one form contain data
+    }
+    const attachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
+    return attachments.length === 0; //no new images added
   }
 
   /**
