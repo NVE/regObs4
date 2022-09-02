@@ -186,7 +186,6 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   private getRegistrationTidsForSimpleSnowObs(): RegistrationTid[] {
-    //TODO: Legg inn TID for skiføre her
     return [RegistrationTid.DangerObs, RegistrationTid.SnowSurfaceObservation];
   }
 
