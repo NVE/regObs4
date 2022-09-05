@@ -427,7 +427,9 @@
       "SOURCE": "Source",
       "EXACT": "Exact",
       "MORETHANONEKM": "More than 1 km",
-      "UNCERTAINTY": "Uncertainty in position"
+      "UNCERTAINTY": "Uncertainty in position",
+      "NAME_LOCATION": "Name location",
+      "NAME_LOCATION_TOOLTIP": "Naming a location makes it possible to create a time series at the same observation point"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",

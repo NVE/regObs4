@@ -23,13 +23,13 @@
       </div>
       <div *ngIf="setObsTime" class="details-row flex-row flex-grow">
         <div *ngIf="!isDesktop" class="ion-no-padding ion-text-center">
-          <div class="vertical-dist-box flex-col flex-center flex-space">
+          <div class="vertical-dist-box">
             <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
             <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
               <line x1="1" x2="1" y1="2" y2="26" stroke="#000" stroke-width="2" stroke-linecap="round"
                 stroke-dasharray="1,4"></line>
             </svg>
-            <ion-label class="distance-label small-text ion-no-margin">{{
+            <ion-label class="small-text ion-no-margin">{{
               distanceToObservationText }}</ion-label>
             <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
               <line x1="1" x2="1" y1="2" y2="26" stroke="#000" stroke-width="2" stroke-linecap="round"
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="flex-col flex-grow">
-          <div class="flex-row flex-align-start" (click)="editLocation()">
+          <div class="flex-row flex-align-start location-name-container">
             <div class="flex-grow">
               <ion-row>
                 <ion-col class="ion-no-padding">
@@ -66,9 +66,10 @@
                 </span>
               </ion-label>
             </div>
-            <div *ngIf="canEditLocationName" class="box edit-button">
-              <ion-icon class="edit-icon" name="edit" ></ion-icon>&nbsp;Endre navn
-            </div>
+            <button type="button" *ngIf="canEditLocationName" class="box edit-button edit-name-button" (click)="editLocation()">
+              <ion-icon class="edit-icon" name="edit"></ion-icon>&nbsp;{{'REGISTRATION.OBS_LOCATION.NAME_LOCATION' | translate}}
+              <span class="tooltip">{{'REGISTRATION.OBS_LOCATION.NAME_LOCATION_TOOLTIP' | translate}}</span>
+              </button>
           </div>
           <div class="flex-row">
             <div class="flex-grow box edit-button no-padding">
