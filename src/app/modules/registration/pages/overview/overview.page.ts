@@ -136,7 +136,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
       simpleMode
     };
     this.draftRepository.save(draftToSave); //save mode on draft
-    this.userSetting.simpleSnowObservations = simpleMode;
+    this.userSetting.preferCompleteSnowObservations = !simpleMode;
     this.userSettingService.saveUserSettings(this.userSetting); //save default mode for new registrations
   }
 

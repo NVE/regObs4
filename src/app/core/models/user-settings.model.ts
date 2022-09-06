@@ -26,8 +26,8 @@ export interface UserSetting {
   photographer?: string;
 
   /**
-   * true = use simple snow obs schema
-   * false/undefined = use full/complete snow obs schemas
+   * true = use full/complete snow obs schemas
+   * false/undefined = use simple snow obs schema
    */
-   simpleSnowObservations: boolean;
+   preferCompleteSnowObservations: boolean;
 }
