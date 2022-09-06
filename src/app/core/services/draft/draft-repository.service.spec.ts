@@ -97,7 +97,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
-      simpleSnowObservations: false
+      preferCompleteSnowObservations: true
     });
     const completeSnowDraft = await service.create(GeoHazard.Snow);
     expect(completeSnowDraft.simpleMode).toBeFalse();

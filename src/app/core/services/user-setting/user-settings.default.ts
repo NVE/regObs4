@@ -26,5 +26,5 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   consentForSendingAnalyticsDialogCompleted: false,
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
-  simpleSnowObservations: true
+  preferCompleteSnowObservations: false
 });

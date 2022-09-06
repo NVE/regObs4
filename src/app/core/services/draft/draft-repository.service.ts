@@ -145,7 +145,7 @@ export class DraftRepositoryService {
   private async useSimpleMode(geoHazard: GeoHazard): Promise<boolean> {
     if (geoHazard === GeoHazard.Snow) {
       const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
-      return userSetting.simpleSnowObservations;
+      return !userSetting.preferCompleteSnowObservations;
     }
     return false;
   }
