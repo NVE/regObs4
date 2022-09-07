@@ -145,9 +145,10 @@
     "CONTACT_REGOBS": "Contact us",
     "CONTACT_REGOBS_ERROR": "Report error",
     "CONTACT_SUBJECT": "Contact from app",
+    "CONTACT_DESCRIPTION": "We have attached log files. You can remove them if you do not wish to send us logs.",
     "DAYS_BACK": "Days back",
     "DAY_BACK": "Day back",
-    "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach.",
+    "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach. We have attached logs which may help us in troubleshooting. You can remove these if you wish.",
     "ERROR_REPORT_SUBJECT": "Error report from",
     "GENERAL": "General",
     "HIDE_OBSERVATIONS": "Hide observations",
@@ -316,7 +317,7 @@
         }
       }
     },
-     "DIRT": {
+    "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Landslide trigger",
         "DAMAGE_EXTENT": "Damage extent",
@@ -437,13 +438,13 @@
       "SHARE_WITH_GROUP": "Share with group",
       "TITLE": "Observation",
       "SIMPLE": {
-        "HEADER_QUESTION":"What is it like right now?",
+        "HEADER_QUESTION": "What is it like right now?",
         "TOGGLE": "Simple observation",
         "CONFIRM": {
           "HEADER": "Change to simple mode",
           "MESSAGE": "The observation contains data not relevant for simple mode. Would you like to delete data we can't show?",
           "YES": "Delete data and change to simple mode",
-          "CANCEL": "Cancel"  
+          "CANCEL": "Cancel"
         },
         "IMAGES_MODAL_TITLE": "Images of {{registrationType}}"
       }

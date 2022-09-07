@@ -3,22 +3,21 @@ import { ObservationService } from '../../../core/services/observation/observati
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
-import { Subscription } from 'rxjs';
-import { Platform, NavController } from '@ionic/angular';
+import { firstValueFrom, Subscription } from 'rxjs';
+import { NavController } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import {
-  EmailComposer,
-  EmailComposerOptions
+  EmailComposer
 } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
+import { Capacitor } from '@capacitor/core';
 
 
 @Component({
@@ -55,7 +54,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
     private appVersionService: AppVersionService,
-    private platform: Platform,
     private navController: NavController,
     private ngZone: NgZone,
     private dataMarshallService: DataMarshallService,
@@ -65,9 +63,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
-    this.isIosOrAndroid = isAndroidOrIos(this.platform);
-    this.isMobileWeb = this.platform.is('mobileweb');
+    this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
     this.lastUpdateSubscription = this.observationService
       .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
@@ -82,7 +78,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         });
       }
     );
-    this.offlineMapsAvailable = isAndroidOrIos(this.platform);
+    this.offlineMapsAvailable = Capacitor.isNativePlatform();
   }
 
   saveUserSettings() {
@@ -114,20 +110,21 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async contactUs() {
-    const translations = await this.translateService
-      .get('MENU.CONTACT_SUBJECT')
-      .toPromise();
-    this.fileLoggingService.sendLogsByEmail(translations);
+    const translations = await firstValueFrom(this.translateService.get([
+      'MENU.CONTACT_SUBJECT', 'MENU.CONTACT_DESCRIPTION'
+    ]));
+    const subject = translations['MENU.CONTACT_SUBJECT'];
+    const body = translations['MENU.CONTACT_DESCRIPTION'];
+    this.fileLoggingService.sendLogsByEmail(subject, body);
   }
 
   async contactError() {
-    if (isAndroidOrIos(this.platform)) {
-      const translations = await this.translateService
-        .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
-        .toPromise();
+    if (Capacitor.isNativePlatform()) {
+      const translations = await firstValueFrom(this.translateService.get([
+        'MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'
+      ]));
       const appVersion = await this.appVersionService.getAppVersion();
-      const subject = `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${this.platform.is('ios') ? 'ios' : ''}` +
-          `${this.platform.is('android') ? 'android' : ''}` +
+      const subject = `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${Capacitor.getPlatform()}` +
           ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`;
       this.fileLoggingService.sendLogsByEmail(subject, translations['MENU.ERROR_REPORT_DESCRIPTION']);
     } else {
