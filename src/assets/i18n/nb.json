@@ -427,7 +427,9 @@
       "SOURCE": "Kildeangivelse",
       "EXACT": "Eksakt",
       "MORETHANONEKM": "Mer enn 1 km",
-      "UNCERTAINTY": "Usikkerhet i posisjon"
+      "UNCERTAINTY": "Usikkerhet i posisjon",
+      "NAME_LOCATION": "Navngi sted",
+      "NAME_LOCATION_TOOLTIP": "Å navngi stedet gjør det mulig å lage en tidsserie på samme observasjonspunkt"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
