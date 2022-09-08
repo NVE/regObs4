@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="no.nve.regobs4" android:versionName="4.7.2" android:versionCode="220902425">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="no.nve.regobs4" android:versionName="4.7.2" android:versionCode="220908456">
 
   <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/AppTheme">
 
