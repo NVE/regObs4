@@ -25,14 +25,14 @@ import java.util.Map;
 public class RegobsPlugin extends Plugin {
 
     private final Unzipper unzipper = new Unzipper();
-    private Map<Long, ProgressMonitor> progressPerFileRef = new HashMap();
+    private Map<Long, ProgressMonitor> unzipProgressPerFileRef = new HashMap();
 
     @PluginMethod()
     public void downloadAndUnzip(PluginCall call) {
         String downloadUrl = call.getString("downloadUrl");
         String destinationPath = call.getString("destinationPath");
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
-        request.setTitle("Downloading " + downloadUrl);  //set title for notification in status_bar
+        request.setTitle(getFilename(downloadUrl)); //set title for notification in status_bar
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  //flag for if you want to show notification in status or not
         Context context = getContext();
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "test.zip");
@@ -56,19 +56,26 @@ public class RegobsPlugin extends Plugin {
         call.resolve(ret);
     }
 
+    private String getFilename(String url) {
+        return url.substring(url.lastIndexOf('/')+1);
+    }
+
     @PluginMethod
     public void getStatus(PluginCall call) {
         JSObject result = new JSObject();
-        result.put("status", "UNKNOWN_FILEREF_MAYBE_STILL_DOWNLOADING?"); //TODO: Hva hvis vi ikke har startet å pakke ut?
-
         Integer fileRef = call.getInt("fileReference");
         if (fileRef != null) {
-            ProgressMonitor progressMonitor = progressPerFileRef.get(fileRef.longValue());
+            ProgressMonitor progressMonitor = unzipProgressPerFileRef.get(fileRef.longValue());
             if (progressMonitor != null) {
                 result.put("progress", progressMonitor.getPercentDone());
+                result.put("task", "unzip");
                 if (progressMonitor.getResult() != null) {
                     result.put("status", progressMonitor.getResult().toString());
                 }
+            } else {
+                result.put("progress", 0);
+                result.put("task", "download");
+                result.put("status", "We don't support download progress yet");
             }
         }
         call.resolve(result);
@@ -82,10 +89,10 @@ public class RegobsPlugin extends Plugin {
         call.resolve(ret);
     }
 
-    private void openDownloadedAttachment(final Context context, final long downloadId, String destinationPath, PluginCall call) {
+    private void openDownloadedAttachment(final Context context, final long fileReference, String destinationPath, PluginCall call) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
-        query.setFilterById(downloadId);
+        query.setFilterById(fileReference);
         Cursor cursor = downloadManager.query(query);
         if (cursor.moveToFirst()) {
             int downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
@@ -94,14 +101,15 @@ public class RegobsPlugin extends Plugin {
             if ((downloadStatus == DownloadManager.STATUS_SUCCESSFUL) && downloadLocalUri != null) {
                 Uri uri = Uri.parse(downloadLocalUri);
                 String filename = uri.getLastPathSegment();
-                unzipWithZip4j(uri.getPath(), destinationPath, downloadId, call);
+                unzipWithZip4j(uri.getPath(), destinationPath, fileReference, call);
             }
         }
         cursor.close();
     }
 
-    private void unzipWithZip4j(String zipFilePath, String destinationPath, final long downloadId, PluginCall call) {
+    private void unzipWithZip4j(String zipFilePath, String destinationPath, final long fileReference, PluginCall call) {
         ProgressMonitor progressMonitor = unzipper.unzipFile(zipFilePath, destinationPath, call);
-        progressPerFileRef.put(downloadId, progressMonitor);
+        unzipProgressPerFileRef.put(fileReference, progressMonitor);
+        //TODO: Clean monitor from map when done to avoid memory leak
     }
 }

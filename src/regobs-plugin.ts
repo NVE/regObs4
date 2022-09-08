@@ -3,6 +3,7 @@ import { registerPlugin } from '@capacitor/core';
 export interface Status {
   progress: number;
   status: string;
+  task: 'download'|'unzip';
 }
 
 export interface RegobsPlugin {

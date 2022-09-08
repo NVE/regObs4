@@ -70,23 +70,6 @@ public class Unzipper {
 
             ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
 
-            while (!progressMonitor.getState().equals(ProgressMonitor.State.READY)) {
-                System.out.println("Percentage done: " + progressMonitor.getPercentDone());
-                System.out.println("Current file: " + progressMonitor.getFileName());
-                System.out.println("Current task: " + progressMonitor.getCurrentTask());
-            }
-
-            ProgressMonitor.Result progressResult = progressMonitor.getResult();
-            if (progressResult != null) {
-                if (progressResult.equals(ProgressMonitor.Result.SUCCESS)) {
-                    System.out.println("Successfully added folder to zip");
-                } else if (progressResult.equals(ProgressMonitor.Result.ERROR)) {
-                    System.out.println("Error occurred. Error message: " + progressMonitor.getException().getMessage());
-                } else if (progressResult.equals(ProgressMonitor.Result.CANCELLED)) {
-                    System.out.println("Task cancelled");
-                }
-            }
-
             zipFile.extractAll(destination);
             zipFile.close();
             return progressMonitor;

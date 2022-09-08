@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { AlertController, Platform } from '@ionic/angular';
@@ -216,7 +217,7 @@ export class OfflineMapService {
     const parts = offlineMapPackage.compoundPackageMetadata.getParts();
 
     // Start recursive download and unzip
-    this.downloadAndUnzipPartNative(
+    this.downloadAndUnzipPart(
       parts[0],
       parts,
       offlineMapPackage,
@@ -262,7 +263,8 @@ export class OfflineMapService {
         downloadUrl: part.url,
         destinationPath: destinationPath
       });
-      this.loggingService.debug(`Started native download of part ${partNumber}/${parts.length} : ${part.name}, 
+      const numParts = parts.length;
+      this.loggingService.debug(`Started native download of part ${partNumber+1}/${numParts} : ${part.name}, 
       fileRef = ${result.fileReference}`, DEBUG_TAG);
 
       const done = new Subject<void>();
@@ -271,12 +273,24 @@ export class OfflineMapService {
         takeUntil(done))
         .subscribe(async () => {
           const status = await RegobsNative.getStatus({fileReference: result.fileReference});
+          this.loggingService.debug(`Status fileref: ${result.fileReference}: ${status.progress}%: ${status.status}`, DEBUG_TAG);
           if (status.progress >= 100) {
             done.next();
             done.complete();
             this.onUnzipStepComplete(parts, mapPackage, partNumber);
+          } else {
+            const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
+            if (part)
+              this.onProgress(mapPackage, {
+                step: ProgressStep.extractZip,
+                percentage: this.calculateTotalProgress(status.progress, partNumber, numParts, partOfStep),
+                description: await firstValueFrom(this.translateService.get(
+                  'OFFLINE_MAP.STATUS.UNZIP_PART_X_OF_Y', {
+                    n: partNumber + 1,
+                    totalParts: numParts
+                  }))
+              });
           }
-          await this.reportDownloadProgress(mapPackage, status.progress, partNumber, parts.length);
         });
     } catch(err) {
       (err) => this.onUnzipOrDownloadError(mapPackage, err, true);
@@ -289,30 +303,34 @@ export class OfflineMapService {
     mapPackage: OfflineMapPackage,
     partNumber: number,
   ) {
-    this.downloadSubscription = this.backgroundDownloadService
-      .download(part.url)
-      .pipe(
-        finalize(() => {
-          if (this.cancel) {
-            this.onCancelled(mapPackage);
-          }
-        })
-      )
-      .subscribe(
-        async (downloadProgress) => {
-          switch (downloadProgress.state) {
-          case 'IN_PROGRESS':
-            await this.reportDownloadProgress(mapPackage, downloadProgress.progress, partNumber, parts.length);
-            break;
-          case 'DONE':
-            await this.handleUnzip(mapPackage, downloadProgress.content, part, partNumber, parts);
-            break;
-          default:
-            break;
-          }
-        },
-        (err) => this.onUnzipOrDownloadError(mapPackage, err, true)
-      );
+    if (Capacitor.getPlatform() === 'android') {
+      this.downloadAndUnzipPartNative(part, parts, mapPackage, partNumber);
+    } else {
+      this.downloadSubscription = this.backgroundDownloadService
+        .download(part.url)
+        .pipe(
+          finalize(() => {
+            if (this.cancel) {
+              this.onCancelled(mapPackage);
+            }
+          })
+        )
+        .subscribe(
+          async (downloadProgress) => {
+            switch (downloadProgress.state) {
+            case 'IN_PROGRESS':
+              await this.reportDownloadProgress(mapPackage, downloadProgress.progress, partNumber, parts.length);
+              break;
+            case 'DONE':
+              await this.handleUnzip(mapPackage, downloadProgress.content, part, partNumber, parts);
+              break;
+            default:
+              break;
+            }
+          },
+          (err) => this.onUnzipOrDownloadError(mapPackage, err, true)
+        );
+    }
   }
 
   private async handleUnzip(
@@ -374,6 +392,7 @@ export class OfflineMapService {
       totalPartsOfWork;
     const progressForTotalParts =
       currentProgress / totalPartsOfWork + currentPartOfWork;
+    this.loggingService.debug(`calculateTotalProgress: currentProgress = ${currentProgress}, part ${currentPart+1}/${totalParts}, step: ${partOfStep}, totalProgress = ${progressForTotalParts}`);
     return progressForTotalParts;
   }
 
@@ -386,7 +405,7 @@ export class OfflineMapService {
     const nextPart = partNumber + 1;
     const totalParts = parts.length;
     if (nextPart < totalParts) {
-      this.downloadAndUnzipPartNative(
+      this.downloadAndUnzipPart(
         parts[nextPart],
         parts,
         mapPackage,
