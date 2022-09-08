@@ -145,9 +145,10 @@
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss fra app",
+    "CONTACT_DESCRIPTION": "Vi har lagt ved loggfiler. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "DAYS_BACK": "Dager tilbake",
     "DAY_BACK": "Dag tilbake",
-    "ERROR_REPORT_DESCRIPTION": "Vennligs beskriv feilen. Dersom du har skjermbilder, kan du legge de ved.",
+    "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
     "HIDE_OBSERVATIONS": "Skjul observasjoner",
@@ -443,7 +444,7 @@
           "HEADER": "Bytt til enkel modus",
           "MESSAGE": "Observasjonen inneholder data som ikke kan vises i enkel modus. Vil du slette data vi ikke kan vise?",
           "YES": "Slett data og bytt til enkel",
-          "CANCEL": "Avbryt"  
+          "CANCEL": "Avbryt"
         },
         "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}"
       }
