@@ -12,6 +12,7 @@ import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
 const KDV_ASSETS_FOLDER = '/assets/json';
 
@@ -37,7 +38,15 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
   }
 
   public getKdvRepositoryByKeyObservable(key: KdvKey): Observable<KdvElement[]> {
-    return this.data$.pipe(map((val) => val.KdvRepositories[key]));
+    return this.data$.pipe(
+      map((kdvElementsresponse) => {
+        const kdvsForGivenKey = kdvElementsresponse.KdvRepositories[key];
+        if (!kdvsForGivenKey) {
+          this.logger.log(`No KDVs for '${key}', returning empty array`, null, LogLevel.Warning, this.getDebugTag());
+          return [];
+        }
+        return kdvsForGivenKey;
+      }));
   }
 
   public getViewRepositoryByKeyObservable(key: KdvViewRepositoryKey): Observable<unknown> {
