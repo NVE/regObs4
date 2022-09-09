@@ -220,7 +220,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.observationTripLayers = null;
   }
 
-  // TODO: Lages det flere lag / click handlers hvis man toggler av og på flere ganger?
   private async showOrHideObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
     if (geojson == null) {
       this.removeObserverTripMapLayers(map);
@@ -287,7 +286,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.showObserverTrips) {
-      this.observerTripsService.geojson.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
+      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
         this.showOrHideObserverTripsLayer(map, geojson);
       });
     }

@@ -8,10 +8,10 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { DatabaseService } from '../database/database.service';
 
 const msOneWeek = 604800000;
-const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
-const toggleKey = 'REGOBS_OBSTRIPS_ON';
-const dataModifiedKey = 'REGOBS_OBSTRIPS_CHANGED_DATE';
-const isAuthorizedKey = 'REGOBS_OBSTRIPS_AUTHORIZED';
+export const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
+export const toggledOnKey = 'REGOBS_OBSTRIPS_ON';
+export const dataModifiedKey = 'REGOBS_OBSTRIPS_CHANGED_DATE';
+export const isAuthorizedKey = 'REGOBS_OBSTRIPS_AUTHORIZED';
 
 const shouldUpdate = (mTime: number) => {
   const msSinceUpdate = Date.now() - mTime;
@@ -37,7 +37,7 @@ enum AuthorizedState {
 })
 export class ObserverTripsService {
 
-  geojson: Observable<FeatureCollection | null>;
+  geojson$: Observable<FeatureCollection | null>;
 
   toggledOn = new ReplaySubject<boolean>(1);
   private authorizedState = new Subject<AuthorizedState>();
@@ -69,13 +69,12 @@ export class ObserverTripsService {
       }),
     );
 
-    this.geojson = authService.loggedInUser$.pipe(
+    this.geojson$ = authService.loggedInUser$.pipe(
       distinctUntilKeyChanged('isLoggedIn'),
       // Allow multiple subscribers
       shareReplay(1),
       // Do not do anything until we have a logged in user
       skipWhile(user => !user.isLoggedIn),
-
       // First time user has logged in, initialize state from DB
       tap(() => {
         if (!hasInitializedStateFromDb) {
@@ -83,7 +82,6 @@ export class ObserverTripsService {
           hasInitializedStateFromDb = true;
         }
       }),
-
       switchMap(user => user.isLoggedIn ?
         // User is logged in, read data from database or fetch new data
         getGeojsonWhenToggledOnAndAuthorized$ :
@@ -95,7 +93,7 @@ export class ObserverTripsService {
 
   async toggle() {
     const toggled = !await firstValueFrom(this.toggledOn);
-    await this.dbService.set(toggleKey, toggled);
+    await this.dbService.set(toggledOnKey, toggled);
     this.toggledOn.next(toggled);
   }
 
@@ -109,7 +107,7 @@ export class ObserverTripsService {
       authorizedState = AuthorizedState.NotAuthorized;
     } else if (isAuthorizedDb === true) {
       authorizedState = AuthorizedState.Authorized;
-      toggledOnState = (await this.readFromDb<boolean>(toggleKey)) === false ? false : true;
+      toggledOnState = (await this.readFromDb<boolean>(toggledOnKey)) === false ? false : true;
     }
 
     this.logger.debug('Read state from db', DEBUG_TAG, { authorizedState, toggledOnState });
@@ -133,7 +131,7 @@ export class ObserverTripsService {
     await this.dbService.remove(dataKey);
     await this.dbService.remove(dataModifiedKey);
     await this.dbService.remove(isAuthorizedKey);
-    await this.dbService.remove(toggleKey);
+    await this.dbService.remove(toggledOnKey);
     this.authorizedState.next(AuthorizedState.Unknown);
   }
 
