@@ -1,15 +1,15 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
-import { firstValueFrom, Subject } from 'rxjs';
-import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
+import { combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 
 const DEBUG_TAG = 'SendButtonComponent';
 const DELETE_OBS_TIMEOUT_MS = 5000;
@@ -20,19 +20,12 @@ const DELETE_OBS_TIMEOUT_MS = 5000;
   styleUrls: ['./send-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
+export class SendButtonComponent implements OnInit, OnChanges {
   @Input() draft: RegistrationDraft;
 
-  isEmpty = true;
-
-  get isDisabled(): boolean {
-    return this.isEmpty || this.isSending || this.isLoggingIn;
-  }
-
-  isSending = false;
-  isLoggingIn = false;
-
-  private ngDestroy$ = new Subject<void>();
+  isDisabled$: Observable<boolean>;
+  private isSending = new Subject<boolean>();
+  private hasChanges = new Subject<void>();
 
   constructor(
     private draftService: DraftRepositoryService,
@@ -40,57 +33,51 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     private translateService: TranslateService,
     private navController: NavController,
     private regobsAuthService: RegobsAuthService,
-    private cdr: ChangeDetectorRef,
-    private ngZone: NgZone,
     private draftToRegistrationService: DraftToRegistrationService,
     private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private logger: LoggingService
-  ) {}
+    private logger: LoggingService,
+    private newAttachmentService: NewAttachmentService,
+  ) {
+
+  }
 
   ngOnInit(): void {
-    this.isSending = false;
-    this.isLoggingIn = false;
-    this.regobsAuthService.isLoggingIn$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.isLoggingIn = val;
-          this.cdr.detectChanges();
-        });
-      });
+    const isEmpty$ = combineLatest([
+      this.newAttachmentService.getAttachments(this.draft.uuid).pipe(map((attachments => attachments.length === 0))),
+      this.hasChanges.pipe(
+        startWith(null),
+        switchMap(() => this.draftService.isDraftEmpty(this.draft)),
+      )
+    ]).pipe(
+      map(([noAttachments, registrationEmpty]) => noAttachments && registrationEmpty),
+    );
+
+    this.isDisabled$ = combineLatest([
+      this.regobsAuthService.isLoggingIn$.pipe(startWith(false)),
+      this.isSending.pipe(startWith(false)),
+      isEmpty$
+    ]).pipe(
+      map(([isLoggingIn, isSending, isEmpty]) => isLoggingIn || isSending || isEmpty)
+    );
   }
 
-  ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
-    if (changes.draft?.currentValue) {
-      this.draftService.isDraftEmpty(changes.draft.currentValue).then((isEmpty) => {
-        this.isEmpty = isEmpty;
-        this.cdr.detectChanges();
-      });
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.ngDestroy$.next();
-    this.ngDestroy$.complete();
+  ngOnChanges(): void {
+    this.hasChanges.next();
   }
 
   async send(): Promise<void> {
-    if (!this.isSending) {
-      this.isSending = true;
-      this.cdr.detectChanges();
-      try {
-        // Redirect user to log in if not authenticated
-        if (!(await this.isLoggedIn())) {
-          this.regobsAuthService.signIn();
-          return;
-        }
-
-        this.draftToRegistrationService.markDraftAsReadyToSubmit(this.draft);
-        this.navigateToMyObservations();
-      } finally {
-        this.isSending = false;
-        this.cdr.detectChanges();
+    this.isSending.next(true);
+    try {
+      // Redirect user to log in if not authenticated
+      if (!(await this.isLoggedIn())) {
+        this.regobsAuthService.signIn();
+        return;
       }
+
+      this.draftToRegistrationService.markDraftAsReadyToSubmit(this.draft);
+      this.navigateToMyObservations();
+    } finally {
+      this.isSending.next(false);
     }
   }
 
