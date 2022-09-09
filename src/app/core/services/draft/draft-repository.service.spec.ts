@@ -73,11 +73,53 @@ describe('DraftRepositoryService', () => {
     const draft = await service.create(GeoHazard.Ice);
     expect(draft.uuid.length).toBeGreaterThan(0);
     expect(draft.syncStatus).toBe(SyncStatus.Draft);
+    expect(draft.simpleMode).toBe(false);
     expect(draft.registration.GeoHazardTID).toBe(GeoHazard.Ice);
     expect(draft.lastSavedTime).toBe(undefined); //not saved yet
     expect(draft.registration.DtObsTime).toBe(null);
     expect(draft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
     expect(draft.registration.Attachments).toEqual([]);
+  });
+
+  it('create() should choose simple mode for snow registrations if simple mode setting is set', async () => {
+    const snowDraft = await service.create(GeoHazard.Snow);
+    expect(snowDraft.simpleMode).toBeTrue();
+
+    //verify that drafts for other geo hazards don't have simple mode
+    const iceDraft = await service.create(GeoHazard.Ice);
+    expect(iceDraft.simpleMode).toBeFalse();
+    const soilDraft = await service.create(GeoHazard.Soil);
+    expect(soilDraft.simpleMode).toBeFalse();
+    const waterDraft = await service.create(GeoHazard.Water);
+    expect(waterDraft.simpleMode).toBeFalse();
+
+    //deselect simple mode setting => snow drafts should now be created with complete mode, not simple
+    userSettingService.saveUserSettings({
+      ...await firstValueFrom(userSettingService.userSetting$),
+      appMode: AppMode.Test,
+      preferCompleteSnowObservations: true
+    });
+    const completeSnowDraft = await service.create(GeoHazard.Snow);
+    expect(completeSnowDraft.simpleMode).toBeFalse();
+  });
+
+  it('load() should be backward compatible with database model before simpleMode was added', async () => {
+    const uuid = 'DRAFT_WITHOUT_SIMPLE_MODE';
+    const oldDraftRecord = {
+      UUID: uuid,
+      syncStatus: SyncStatus.Draft,
+      lastSavedTime: new Date().getMilliseconds(),
+      registration: {
+        GeoHazardTID: GeoHazard.Snow,
+        DtObsTime: null,
+        ObsLocation: { Latitude: 0, Longitude: 0 },
+        Attachments: []
+      }
+    };
+    database.set(`drafts.TEST.${uuid}`, oldDraftRecord);
+
+    const loadedDraft = await service.load(uuid);
+    expect(loadedDraft.simpleMode).toBeUndefined();
   });
 
   it('save() should store a draft', async () => {
@@ -92,6 +134,7 @@ describe('DraftRepositoryService', () => {
     const savedDraft = await database.get(`drafts.TEST.${draft.uuid}`);
     expect(savedDraft.uuid).toEqual(draft.uuid);
     expect(savedDraft.syncStatus).toBe(SyncStatus.Draft);
+    expect(savedDraft.simpleMode).toBeTrue();
     expect(savedDraft.registration.GeoHazardTID).toBe(GeoHazard.Snow);
     expect(savedDraft.registration.DtObsTime).toBe('2022-02-13 08:00');
     expect(savedDraft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });

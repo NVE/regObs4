@@ -15,7 +15,6 @@ import { switchMap, take, concatMap, catchError, filter } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 import { AuthService } from 'ionic-appauth';
-import { StatusBar, Style } from '@capacitor/status-bar';
 import { NavigationError, Router, RouterEvent } from '@angular/router';
 import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
@@ -95,7 +94,9 @@ export class AppComponent {
             of(this.lockScreenOrientation()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))
             ),
-            from(this.dbHelperService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))),
+            from(this.dbHelperService.init()).pipe(
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))
+            ),
             of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
               catchError((err) =>
                 this.loggingService.error(
@@ -103,40 +104,6 @@ export class AppComponent {
                   DEBUG_TAG,
                   'Could not configure logging'
                 )
-              )
-            ),
-            from(StatusBar.setStyle({ style: Style.Dark })).pipe(
-              catchError((err) => {
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set styleLightContent'
-                );
-                return of(void null);
-              }
-              )
-            ),
-            from(StatusBar.setBackgroundColor({ color: '#99044962'})).pipe(
-              catchError((err) => {
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set backgroundColorByHexString'
-                );
-                return of(void null);
-              }
-              )
-            ),
-            from(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
-              catchError((err) =>
-              {
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set overlaysWebView'
-                );
-                return of(void null);
-              }
               )
             ),
             from(this.offlineImageService.cleanupOldItems()).pipe(

@@ -234,6 +234,7 @@
     },
     "BACK_TO_OBSERVATION": "Retour à l'observation",
     "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser tous les champs ?",
+    "COPIED_TO_CLIPBOARD": "Copié dans le presse-papier",
     "DANGER_OBS": {
       "AREA": "Localisation",
       "COMMENT": "Commentaire",

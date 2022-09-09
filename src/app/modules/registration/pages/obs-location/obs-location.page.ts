@@ -2,9 +2,7 @@ import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { NavController } from '@ionic/angular';
 import {
-  ObsLocationsResponseDtoV2,
-  ObsLocationEditModel
-} from 'src/app/modules/common-regobs-api/models';
+  ObsLocationsResponseDtoV2} from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
@@ -12,10 +10,8 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 
 @Component({
   selector: 'app-obs-location',
@@ -33,7 +29,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
-  private loggedInUser: LoggedInUser;
 
   constructor(
     private draftService: DraftRepositoryService,
@@ -43,7 +38,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private swipeBackService: SwipeBackService,
     private userSettingService: UserSettingService,
-    private regobsAuthService: RegobsAuthService
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -84,11 +78,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         Id: obsLocation.ObsLocationID
       };
     }
-    this.subscription = this.regobsAuthService.loggedInUser$.subscribe(
-      (val) => {
-        this.loggedInUser = val;
-      }
-    );
 
     this.ngZone.run(() => {
       this.isLoaded = true;
@@ -120,9 +109,8 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   async onLocationTimeSet(event: LocationTime) {
-
     if (!this.draft) {
-      this.draft = this.draftService.create(this.geoHazard);
+      this.draft = await this.draftService.create(this.geoHazard);
     }
 
     await this.setLocationTimeAndSaveDraft(event);
@@ -145,7 +133,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
           ObsLocation: location,
           SourceTID: source,
         }
-      }
+      };
     }
 
     if (datetime !== undefined) {
@@ -155,7 +143,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
           ...this.draft.registration,
           DtObsTime: datetime
         }
-      }
+      };
     }
 
     // Save updated draft with new obs location

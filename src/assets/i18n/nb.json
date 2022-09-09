@@ -145,9 +145,10 @@
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss fra app",
+    "CONTACT_DESCRIPTION": "Vi har lagt ved loggfiler. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "DAYS_BACK": "Dager tilbake",
     "DAY_BACK": "Dag tilbake",
-    "ERROR_REPORT_DESCRIPTION": "Vennligs beskriv feilen. Dersom du har skjermbilder, kan du legge de ved.",
+    "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
     "HIDE_OBSERVATIONS": "Skjul observasjoner",
@@ -279,6 +280,7 @@
     },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
+    "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -426,13 +428,26 @@
       "SOURCE": "Kildeangivelse",
       "EXACT": "Eksakt",
       "MORETHANONEKM": "Mer enn 1 km",
-      "UNCERTAINTY": "Usikkerhet i posisjon"
+      "UNCERTAINTY": "Usikkerhet i posisjon",
+      "NAME_LOCATION": "Navngi sted",
+      "NAME_LOCATION_TOOLTIP": "Å navngi stedet gjør det mulig å lage en tidsserie på samme observasjonspunkt"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
       "SHARE_WITH_GROUP": "Del med gruppe",
-      "TITLE": "Observasjon"
+      "TITLE": "Observasjon",
+      "SIMPLE": {
+        "HEADER_QUESTION": "Hvordan er det her nå?",
+        "TOGGLE": "Enkel observasjon",
+        "CONFIRM": {
+          "HEADER": "Bytt til enkel modus",
+          "MESSAGE": "Observasjonen inneholder data som ikke kan vises i enkel modus. Vil du slette data vi ikke kan vise?",
+          "YES": "Slett data og bytt til enkel",
+          "CANCEL": "Avbryt"
+        },
+        "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}"
+      }
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
@@ -445,6 +460,7 @@
       "NO": "Nei, forkast",
       "YES": "Ja, lagre"
     },
+    "SELECTION_COUNT": "{{ count }} valgt",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekreft skadepunkt",
@@ -616,6 +632,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysnø siste 24t (cm)",
         "NEW_SNOW_LINE": "Nysnøgrense (moh)",
+        "SKI_CONDITIONS": "Skiføre",
         "SNOW_DEPTH": "Total snødybde (cm)",
         "SNOW_DRIFT": "Snøfokk",
         "SNOW_LINE": "Snøgrense (moh)",

@@ -1,8 +1,12 @@
 /* eslint-disable */
 import { UrlViewModel } from './url-view-model';
 export interface GeneralObservationViewModel {
+
+  /**
+   * Kommentarfelt for å skrive utfyllende tekst
+   */
+  Comment?: string;
   GeoHazardName?: string;
-  Urls?: Array<UrlViewModel>;
 
   /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is).
@@ -18,9 +22,5 @@ export interface GeneralObservationViewModel {
    * Overskriften (hovedpoenget).
    */
   ObsHeader?: string;
-
-  /**
-   * Kommentarfelt for å skrive utfyllende tekst
-   */
-  Comment?: string;
+  Urls?: Array<UrlViewModel>;
 }

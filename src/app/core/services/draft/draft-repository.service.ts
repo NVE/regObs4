@@ -73,13 +73,18 @@ export class DraftRepositoryService {
     );
   }
 
+  /**
+   * @returns true if draft does not contain any data
+   */
   async isDraftEmpty(draft: RegistrationDraft) {
-    if (hasAnyObservations(draft)) {
-      return false;
+    if (draft.registration.Attachments?.length > 0) {
+      return false; //we have image metadata for an already uploaded image
     }
-
+    if (hasAnyObservations(draft)) {
+      return false; //at least one form contain data
+    }
     const attachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
-    return attachments.length === 0;
+    return attachments.length === 0; //no new images added
   }
 
   /**
@@ -118,10 +123,12 @@ export class DraftRepositoryService {
   * @param geoHazard the geo hazard you have observed
   * @returns the registration
   */
-  create(geoHazard: GeoHazard): RegistrationDraft {
+  async create(geoHazard: GeoHazard): Promise<RegistrationDraft> {
+    const simpleMode = await this.useSimpleMode(geoHazard);
     const draft: RegistrationDraft = {
       uuid: uuidv4(),
       syncStatus: SyncStatus.Draft,
+      simpleMode,
       registration: {
         GeoHazardTID: geoHazard,
         DtObsTime: null,
@@ -130,6 +137,17 @@ export class DraftRepositoryService {
       }
     };
     return draft;
+  }
+
+  /**
+   * @returns true if user prefer simple mode for snow registrations
+   */
+  private async useSimpleMode(geoHazard: GeoHazard): Promise<boolean> {
+    if (geoHazard === GeoHazard.Snow) {
+      const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
+      return !userSetting.preferCompleteSnowObservations;
+    }
+    return false;
   }
 
   /**
@@ -170,7 +188,8 @@ export class DraftRepositoryService {
       uuid: uuid,
       regId: regId,
       syncStatus: SyncStatus.Draft,
-      registration: registration
+      registration: registration,
+      simpleMode: false
     };
     await this.save(draft);
   }

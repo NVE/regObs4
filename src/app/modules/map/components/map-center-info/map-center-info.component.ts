@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { ToastController, Platform } from '@ionic/angular';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { ToastController } from '@ionic/angular';
+import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
@@ -66,10 +66,8 @@ export class MapCenterInfoComponent extends NgDestoryBase {
   constructor(
     mapService: MapService,
     private mapSearchService: MapSearchService,
-    private clipboard: Clipboard,
     private toastController: ToastController,
     private translateService: TranslateService,
-    private platform: Platform,
     geoPositionService: GeoPositionService,
     private helperService: HelperService,
     private cdr: ChangeDetectorRef,
@@ -158,20 +156,10 @@ export class MapCenterInfoComponent extends NgDestoryBase {
       );
   }
 
-  private useNativeClipboardPlugin() {
-    return (
-      this.platform.is('hybrid') &&
-      (this.platform.is('android') || this.platform.is('ios'))
-    );
-  }
-
   async copyToClipboard(): Promise<void> {
     const textToCopy = `${this.mapCenter.lat}, ${this.mapCenter.lng}`;
-    if (this.useNativeClipboardPlugin()) {
-      await this.clipboard.copy(textToCopy);
-    } else {
-      this.copyToClipBoardWeb(textToCopy);
-    }
+    await Clipboard.write({ string: textToCopy});
+
     const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD'));
     const toast = await this.toastController.create({
       message: toastText,
@@ -179,19 +167,5 @@ export class MapCenterInfoComponent extends NgDestoryBase {
       duration: 2000
     });
     toast.present();
-  }
-
-  private copyToClipBoardWeb(val: string) {
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
   }
 }

@@ -12,10 +12,10 @@ import {
   RegistrationViewModel,
   Summary
 } from 'src/app/modules/common-regobs-api/models';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { Clipboard } from '@capacitor/clipboard';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as utils from '@nano-sql/core/lib/utilities';
 import * as L from 'leaflet';
@@ -37,6 +37,8 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { Share } from '@capacitor/share';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -76,7 +78,6 @@ export class ObservationListCardComponent implements OnChanges {
     private modalController: ModalController,
     private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
-    private socialSharing: SocialSharing,
     private cdr: ChangeDetectorRef,
     private analyticService: AnalyticService,
     private regobsAuthService: RegobsAuthService,
@@ -85,6 +86,7 @@ export class ObservationListCardComponent implements OnChanges {
     private router: Router,
     private logger: LoggingService,
     private alertController: AlertController,
+    private toastController: ToastController,
     private translateService: TranslateService
   ) {}
 
@@ -245,6 +247,14 @@ export class ObservationListCardComponent implements OnChanges {
     this.externalLinkService.openExternalLink(url);
   }
 
+  private async canShareNative(): Promise<boolean> {
+    if (!Capacitor.isNativePlatform()) {
+      return false;
+    }
+    const canShareResult = await Share.canShare();
+    return canShareResult.value;
+  }
+
   async share(): Promise<void> {
     const baseUrl = await this.getBaseUrl();
     const url = this.getRegistrationUrl(baseUrl);
@@ -254,7 +264,20 @@ export class ObservationListCardComponent implements OnChanges {
       url,
       this.obs.RegId
     );
-    this.socialSharing.share(null, null, null, url);
+    if (await this.canShareNative()) {
+      Share.share({
+        url
+      });
+    } else {
+      Clipboard.write({ string: url});
+      const toastText = await firstValueFrom(this.translateService.get('REGISTRATION.COPIED_TO_CLIPBOARD'));
+      const toast = await this.toastController.create({
+        message: toastText,
+        mode: 'md',
+        duration: 2000
+      });
+      toast.present();
+    }
   }
 
   private async checkIfUserCanEdit(): Promise<boolean> {

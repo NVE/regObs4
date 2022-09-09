@@ -208,6 +208,7 @@
     },
     "BACK_TO_OBSERVATION": "Nazaj na opažanje",
     "CONFIRM_RESET": "Ali ste prepričani, da želite ponastaviti vsa polja?",
+    "COPIED_TO_CLIPBOARD": "Kopirano v odložišče",
     "DANGER_OBS": {
       "AREA": "Območje",
       "COMMENT": "Komentar",

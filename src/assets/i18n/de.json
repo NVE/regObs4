@@ -207,6 +207,7 @@
       "URL": "Url"
     },
     "BACK_TO_OBSERVATION": "Zurück zu Beobachtung",
+    "COPIED_TO_CLIPBOARD": "In die Zwischenablage kopiert",
     "CONFIRM_RESET": "Möchten Sie wirklich alle Felder zurücksetzen?",
     "DANGER_OBS": {
       "AREA": "Bereich",

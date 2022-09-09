@@ -148,6 +148,12 @@ steps:
     provisioningProfileName: 'regobs-dist-2022-11-25'
     teamId: '43L5B5X2PE'
 
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '11'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
 - task: Gradle@2
   displayName: 'Create Android app bundle'
   inputs:

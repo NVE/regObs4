@@ -1,6 +1,5 @@
 import { UserSetting } from '../../models/user-settings.model';
 import { GeoHazard, LangKey, AppMode } from 'src/app/modules/common-core/models';
-import { settings } from '../../../../settings';
 import { TopoMap } from '../../models/topo-map.enum';
 
 export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
@@ -26,5 +25,6 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   consentForSendingAnalytics: true,
   consentForSendingAnalyticsDialogCompleted: false,
   featureToggeGpsDebug: false,
-  featureToggleDeveloperMode: false
+  featureToggleDeveloperMode: false,
+  preferCompleteSnowObservations: false
 });

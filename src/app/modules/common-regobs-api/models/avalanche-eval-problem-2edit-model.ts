@@ -1,5 +1,19 @@
 /* eslint-disable */
 export interface AvalancheEvalProblem2EditModel {
+  AvalCauseAttributeCrystalTID?: number;
+  AvalCauseAttributeLightTID?: number;
+  AvalCauseAttributeSoftTID?: number;
+  AvalCauseAttributeThinTID?: number;
+
+  /**
+   * Hvor dypt ligger det overnevnte svake laget? The AvalCauseDepthKD unique identifier
+   */
+  AvalCauseDepthTID?: number;
+
+  /**
+   * Hvilket svakt lag løsner skredet på? The AvalCauseKD unique identifier
+   */
+  AvalCauseTID?: number;
 
   /**
    * Sannsynlighet for skred. The AvalProbabilityKD unique identifier
@@ -13,14 +27,19 @@ export interface AvalancheEvalProblem2EditModel {
   AvalTriggerSimpleTID?: number;
 
   /**
-   * Hvor dypt ligger det overnevnte svake laget? The AvalCauseDepthKD unique identifier
+   * Skredtype. I appen er dette 1. felt under skredproblem. The AvalancheExtKD unique identifier
    */
-  AvalCauseDepthTID?: number;
+  AvalancheExtTID?: number;
 
   /**
-   * Velg utsatte retninger
+   * Kommentar til skredproblemet
    */
-  ValidExposition?: string;
+  Comment?: string;
+
+  /**
+   * Sannsynlig tilleggsbelastning for å utløse skred. The DestructiveSizeKD unique identifier
+   */
+  DestructiveSizeTID?: number;
 
   /**
    * Øverste høyde på “utsatt høyde” symbolet.
@@ -38,26 +57,7 @@ export interface AvalancheEvalProblem2EditModel {
   ExposedHeightComboTID?: number;
 
   /**
-   * Skredtype. I appen er dette 1. felt under skredproblem. The AvalancheExtKD unique identifier
+   * Velg utsatte retninger
    */
-  AvalancheExtTID?: number;
-
-  /**
-   * Kommentar til skredproblemet
-   */
-  Comment?: string;
-
-  /**
-   * Hvilket svakt lag løsner skredet på? The AvalCauseKD unique identifier
-   */
-  AvalCauseTID?: number;
-  AvalCauseAttributeLightTID?: number;
-  AvalCauseAttributeThinTID?: number;
-  AvalCauseAttributeSoftTID?: number;
-  AvalCauseAttributeCrystalTID?: number;
-
-  /**
-   * Sannsynlig tilleggsbelastning for å utløse skred. The DestructiveSizeKD unique identifier
-   */
-  DestructiveSizeTID?: number;
+  ValidExposition?: string;
 }

@@ -1,0 +1,14 @@
+<!-- show a list of small images that is attached to a registration draft. Images not uploaded first and then images already uploaded -->
+<div class="images">
+  <ro-blob-image
+    isThumbnail="true"
+    *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew"
+    [imgBlob]="attachment.blob"
+  ></ro-blob-image>
+  <app-remote-image
+    isThumbnail="true"
+    *ngFor="let attachment of existingAttachments$ | async; trackBy: trackExisting"
+    [attachment]="attachment"
+  ></app-remote-image>
+  <span class="images-overflow" *ngIf="(totalImagesCount | async) - 3 > 0">+{{ (totalImagesCount | async) - 3 }} </span>
+</div>

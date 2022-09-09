@@ -1,23 +1,23 @@
 /* eslint-disable */
 export interface AvalancheActivityObs2ViewModel {
-  EstimatedNumName?: string;
-  ExposedHeightComboName?: string;
-  AvalancheExtName?: string;
   AvalCauseName?: string;
-  AvalTriggerSimpleName?: string;
-  DestructiveSizeName?: string;
+  AvalCauseTID?: number;
   AvalPropagationName?: string;
-  EstimatedNumTID?: number;
-  DtStart?: string;
+  AvalPropagationTID?: number;
+  AvalTriggerSimpleName?: string;
+  AvalTriggerSimpleTID?: number;
+  AvalancheExtName?: string;
+  AvalancheExtTID?: number;
+  Comment?: string;
+  DestructiveSizeName?: string;
+  DestructiveSizeTID?: number;
   DtEnd?: string;
-  ValidExposition?: string;
+  DtStart?: string;
+  EstimatedNumName?: string;
+  EstimatedNumTID?: number;
   ExposedHeight1?: number;
   ExposedHeight2?: number;
+  ExposedHeightComboName?: string;
   ExposedHeightComboTID?: number;
-  AvalancheExtTID?: number;
-  AvalCauseTID?: number;
-  AvalTriggerSimpleTID?: number;
-  DestructiveSizeTID?: number;
-  AvalPropagationTID?: number;
-  Comment?: string;
+  ValidExposition?: string;
 }

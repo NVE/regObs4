@@ -142,8 +142,10 @@ export class EditImagesComponent implements OnInit {
       const arrayBuffer = await this.getArrayBuffer(imageUrl);
       await this.addImage(new Blob([arrayBuffer]), MIME_TYPE);
     } catch (err) {
-      this.logger.log('User could not add image, most likely no access or invalid image', err, LogLevel.Warning, DEBUG_TAG);
-      this.showErrorToast('Could not save image. Do you have enough space?'); //TODO: Vis bedre feilmelding og på flere språk
+      if (err != 'No Image Selected'){
+        this.logger.log('User could not add image, most likely no access or invalid image', err, LogLevel.Warning, DEBUG_TAG);
+        this.showErrorToast('Could not save image. Do you have enough space?'); //TODO: Vis bedre feilmelding og på flere språk
+      }
     }
     return true;
   }

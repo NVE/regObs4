@@ -158,19 +158,9 @@ git push develop
 git push master
 ```
 
-# How to run lint and format on save using vscode
+# Linting and formatting
 
-Guide taken from: https://dev.to/dreiv/using-eslint-and-prettier-with-vscode-in-an-angular-project-42ib
-
-Install the following Visual Studio Code extensions:
-
-```
-- dbaeumer.vscode-eslint
-- esbenp.prettier-vscode
-```
-
-Vs code settings is checked in to source control:
-.vscode/settings.json
+We use eslint for linting and formatting. Rules are specified in .eslintrc.js.
 
 To run lint manually and autofix, run:
 

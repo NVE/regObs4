@@ -9,7 +9,6 @@ import { BackgroundDownloadService } from './core/services/background-download/b
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 // import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
 import { Zip } from '@ionic-native/zip/ngx';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { ErrorHandler, LOCALE_ID, APP_INITIALIZER, NgZone } from '@angular/core';
@@ -24,7 +23,6 @@ import { DataMarshallService } from './core/services/data-marshall/data-marshall
 import { AuthGuard } from './core/guards/auth.guard';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
@@ -105,7 +103,6 @@ export const APP_PROVIDERS = [
   File,
   AndroidPermissions,
   Zip,
-  Clipboard,
   Camera,
   InAppBrowser,
   SafariViewController,
@@ -114,7 +111,6 @@ export const APP_PROVIDERS = [
   EmailComposer,
   Keyboard,
   SQLite,
-  SocialSharing,
   Network,
   ScreenOrientation,
   Diagnostic,

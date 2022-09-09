@@ -38,10 +38,8 @@ export function draftHasNotChanged(previous: RegistrationDraft, current: Registr
     return false;
   }
 
-  const currSchema = getRegistationPropertyForModel(current.registration, 10)
-
-  const preTids = getRegistrationsWithData(previous).sort((a, b) => a - b);
-  const curTids = getRegistrationsWithData(current).sort((a, b) => a - b);
+  const preTids = getRegistrationsWithData(previous);
+  const curTids = getRegistrationsWithData(current);
 
   // Check if we have any new or removed forms
   if (preTids.length !== curTids.length) {
@@ -113,6 +111,20 @@ export class SummaryItemService {
     );
   }
 
+  async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem> {
+    const reg = draft.registration;
+    const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
+    const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
+    return {
+      uuid: draft.uuid,
+      href: '/registration/obs-location',
+      queryParams: { geoHazard: draft.registration.GeoHazardTID },
+      title: 'REGISTRATION.OBS_LOCATION.TITLE',
+      subTitle: [locSummary, timeSummary].join(' — '),
+      hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime
+    };
+  }
+
   private async getSummaryItems(
     draft: RegistrationDraft,
     userGroups?: ObserverGroupDto[],
@@ -126,19 +138,11 @@ export class SummaryItemService {
     // This is used internally by getPreviousAndNext to get all the hrefs
     const userGroupsToUse = userGroups ? userGroups : [];
     const attachmentsToUse = attachments ? attachments : [];
-    const reg = draft.registration
 
-    const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
-    const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
+    const locationAndTimeItem = await this.getLocationAndTimeSummaryItem(draft);
+
     const summaryItems: ISummaryItem[] = [
-      {
-        uuid: draft.uuid,
-        href: '/registration/obs-location',
-        queryParams: { geoHazard: draft.registration.GeoHazardTID },
-        title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: [locSummary, timeSummary].join(' — '),
-        hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime
-      },
+      locationAndTimeItem,
       ...(await this.getGeoHazardItems(draft, attachmentsToUse))
     ];
 

@@ -38,6 +38,9 @@ class SearchService extends __BaseService {
   }
 
   /**
+   * Returns a list of complete registrations that matches your filter. Empty list if no registrations found.
+   * Use POST /Search/AtAGlance for faster search.
+   *
    * Example critera for returning the 10 newest registrations:
    * <code>
    *     { "NumberOfRecords": 10 }
@@ -47,13 +50,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Search',
+      this.rootUrl + `/Search`,
       __body,
       {
         headers: __headers,
@@ -69,6 +72,9 @@ class SearchService extends __BaseService {
     );
   }
   /**
+   * Returns a list of complete registrations that matches your filter. Empty list if no registrations found.
+   * Use POST /Search/AtAGlance for faster search.
+   *
    * Example critera for returning the 10 newest registrations:
    * <code>
    *     { "NumberOfRecords": 10 }
@@ -84,6 +90,9 @@ class SearchService extends __BaseService {
   }
 
   /**
+   * Returns a list of complete registrations that were registered by the logged in user.
+   * Empty list if no registrations found.
+   *
    * Example critera for returning the 10 newest registrations:
    * <code>
    *     { "NumberOfRecords": 10 }
@@ -92,13 +101,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchPostSearchMyRegistrationsResponse(criteria: SearchCriteriaExclUserRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Search/MyRegistrations',
+      this.rootUrl + `/Search/MyRegistrations`,
       __body,
       {
         headers: __headers,
@@ -114,6 +123,9 @@ class SearchService extends __BaseService {
     );
   }
   /**
+   * Returns a list of complete registrations that were registered by the logged in user.
+   * Empty list if no registrations found.
+   *
    * Example critera for returning the 10 newest registrations:
    * <code>
    *     { "NumberOfRecords": 10 }
@@ -128,17 +140,18 @@ class SearchService extends __BaseService {
   }
 
   /**
+   * Returns search result count
    * @param criteria Search criteria
    * @return OK
    */
   SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Search/Count',
+      this.rootUrl + `/Search/Count`,
       __body,
       {
         headers: __headers,
@@ -154,6 +167,7 @@ class SearchService extends __BaseService {
     );
   }
   /**
+   * Returns search result count
    * @param criteria Search criteria
    * @return OK
    */
@@ -164,6 +178,8 @@ class SearchService extends __BaseService {
   }
 
   /**
+   * Returns relevant search criteria for the specified geo hazard types and language.
+   * This can help you to find the right criteria to use in the other search methods.
    * @param params The `SearchService.SearchGetSearchCriteriaParams` containing the following parameters:
    *
    * - `langKey`: NO = 1, EN = 2, DE = 3, SL = 4, SV = 5, IT = 6, NN = 7
@@ -173,14 +189,14 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchGetSearchCriteriaResponse(params: SearchService.SearchGetSearchCriteriaParams): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
 
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Search/SearchCriteria/${params.geoHazards}/${params.langKey}`,
+      this.rootUrl + `/Search/SearchCriteria/${encodeURIComponent(String(params.geoHazards))}/${encodeURIComponent(String(params.langKey))}`,
       __body,
       {
         headers: __headers,
@@ -196,6 +212,8 @@ class SearchService extends __BaseService {
     );
   }
   /**
+   * Returns relevant search criteria for the specified geo hazard types and language.
+   * This can help you to find the right criteria to use in the other search methods.
    * @param params The `SearchService.SearchGetSearchCriteriaParams` containing the following parameters:
    *
    * - `langKey`: NO = 1, EN = 2, DE = 3, SL = 4, SV = 5, IT = 6, NN = 7
@@ -211,17 +229,20 @@ class SearchService extends __BaseService {
   }
 
   /**
+   * Please use GET /Search/SearchCriteria instead.
+   * Returns relevant search criteria for the specified geo hazard types and language.
+   * This can help you to find the right criteria to use in the other search methods.
    * @param request A request for relevant search criteria
    * @return OK
    */
   SearchSearchCriteriaResponse(request: SearchSideBarRequestDto): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = request;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Search/SearchCriteria',
+      this.rootUrl + `/Search/SearchCriteria`,
       __body,
       {
         headers: __headers,
@@ -237,6 +258,9 @@ class SearchService extends __BaseService {
     );
   }
   /**
+   * Please use GET /Search/SearchCriteria instead.
+   * Returns relevant search criteria for the specified geo hazard types and language.
+   * This can help you to find the right criteria to use in the other search methods.
    * @param request A request for relevant search criteria
    * @return OK
    */
@@ -247,17 +271,19 @@ class SearchService extends __BaseService {
   }
 
   /**
+   * Simplified search for registrations. Returns less data per registration, so faster than /Search
+   * Returns empty list if no registrations found.
    * @param criteria Search criteria
    * @return OK
    */
   SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Search/AtAGlance',
+      this.rootUrl + `/Search/AtAGlance`,
       __body,
       {
         headers: __headers,
@@ -273,6 +299,8 @@ class SearchService extends __BaseService {
     );
   }
   /**
+   * Simplified search for registrations. Returns less data per registration, so faster than /Search
+   * Returns empty list if no registrations found.
    * @param criteria Search criteria
    * @return OK
    */
@@ -283,7 +311,7 @@ class SearchService extends __BaseService {
   }
 }
 
-namespace SearchService {
+module SearchService {
 
   /**
    * Parameters for SearchGetSearchCriteria
@@ -302,4 +330,4 @@ namespace SearchService {
   }
 }
 
-export { SearchService };
+export { SearchService }

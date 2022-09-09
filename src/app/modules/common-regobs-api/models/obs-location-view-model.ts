@@ -1,41 +1,14 @@
 /* eslint-disable */
 export interface ObsLocationViewModel {
-
-  /**
-   * ObsLocationID
-   */
-  ObsLocationID?: number;
+  CountryId?: number;
+  CountryName?: string;
+  ForecastRegionName?: string;
 
   /**
    * Anngir varslingsregion stedet tilhører. Varslingsregioner gitt i ForecastRegionKD. The ForecastRegionKD unique identifier
    */
   ForecastRegionTID?: number;
-  ForecastRegionName?: string;
   Height?: number;
-  MunicipalName?: string;
-
-  /**
-   * Kommune nr stedet tilhører
-   */
-  MunicipalNo?: string;
-  CountryId?: number;
-  CountryName?: string;
-  UTMSourceName?: string;
-
-  /**
-   * Read-only generert tittel
-   */
-  Title?: string;
-
-  /**
-   * Navn på stedet
-   */
-  LocationName?: string;
-
-  /**
-   * Beskriver stedet.
-   */
-  LocationDescription?: string;
 
   /**
    * Latitude
@@ -43,9 +16,36 @@ export interface ObsLocationViewModel {
   Latitude: number;
 
   /**
+   * Beskriver stedet.
+   */
+  LocationDescription?: string;
+
+  /**
+   * Navn på stedet
+   */
+  LocationName?: string;
+
+  /**
    * Longitude
    */
   Longitude: number;
+  MunicipalName?: string;
+
+  /**
+   * Kommune nr stedet tilhører
+   */
+  MunicipalNo?: string;
+
+  /**
+   * ObsLocationID
+   */
+  ObsLocationID?: number;
+
+  /**
+   * Read-only generert tittel
+   */
+  Title?: string;
+  UTMSourceName?: string;
 
   /**
    * Kildehenvisning på hvordan koordinaten er satt. (GPS i tlf, klikk i kart, osv). Verdier gitt i UTMSourceKD

@@ -2,6 +2,11 @@
 export interface IceThicknessLayerEditModel {
 
   /**
+   * Comment
+   */
+  Comment?: string;
+
+  /**
    * The IceLayerKD unique identifier
    */
   IceLayerTID?: number;
@@ -10,9 +15,4 @@ export interface IceThicknessLayerEditModel {
    * IceLayerThickness
    */
   IceLayerThickness?: number;
-
-  /**
-   * Comment
-   */
-  Comment?: string;
 }

@@ -198,6 +198,7 @@
     },
     "BACK_TO_OBSERVATION": "Torna all'osservazione",
     "CONFIRM_RESET": "Sei sicuro che vuoi reimpostare tutti i campi?",
+    "COPIED_TO_CLIPBOARD": "Copiato negli appunti",
     "DANGER_OBS": {
       "AREA": "Area",
       "COMMENT": "Commento",

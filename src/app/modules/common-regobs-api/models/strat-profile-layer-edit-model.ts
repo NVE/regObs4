@@ -1,15 +1,15 @@
 /* eslint-disable */
 export interface StratProfileLayerEditModel {
+  Comment?: string;
+  CriticalLayerTID?: number;
   DepthTop?: number;
-  Thickness?: number;
   GrainFormPrimaryTID?: number;
   GrainFormSecondaryTID?: number;
   GrainSizeAvg?: number;
   GrainSizeAvgMax?: number;
-  HardnessTID?: number;
   HardnessBottomTID?: number;
-  WetnessTID?: number;
-  CriticalLayerTID?: number;
-  Comment?: string;
+  HardnessTID?: number;
   SortOrder?: number;
+  Thickness?: number;
+  WetnessTID?: number;
 }

@@ -22,6 +22,8 @@ class KdvElementsService extends __BaseService {
   }
 
   /**
+   * Returns id, name, and description for data types. This is most often used in input fields, dropdowns etc. KDVElements that belong to a geo hazard are prefixed with the corresponding hazard (Snow_, Ice_, Water_, Landslide_).
+   * If a type is missing in given language, we will fill the holes with equivalent types in English (if they exists)
    * @param params The `KdvElementsService.KdvElementsGetKdvsParams` containing the following parameters:
    *
    * - `sortOrder`: False returns data types sorted by id
@@ -34,14 +36,14 @@ class KdvElementsService extends __BaseService {
    */
   KdvElementsGetKdvsResponse(params: KdvElementsService.KdvElementsGetKdvsParams): __Observable<__StrictHttpResponse<KdvElementsResponseDto>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
     if (params.sortOrder != null) __params = __params.set('sortOrder', params.sortOrder.toString());
     if (params.langkey != null) __params = __params.set('langkey', params.langkey.toString());
     if (params.isActive != null) __params = __params.set('isActive', params.isActive.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/KdvElements',
+      this.rootUrl + `/KdvElements`,
       __body,
       {
         headers: __headers,
@@ -57,6 +59,8 @@ class KdvElementsService extends __BaseService {
     );
   }
   /**
+   * Returns id, name, and description for data types. This is most often used in input fields, dropdowns etc. KDVElements that belong to a geo hazard are prefixed with the corresponding hazard (Snow_, Ice_, Water_, Landslide_).
+   * If a type is missing in given language, we will fill the holes with equivalent types in English (if they exists)
    * @param params The `KdvElementsService.KdvElementsGetKdvsParams` containing the following parameters:
    *
    * - `sortOrder`: False returns data types sorted by id
@@ -74,7 +78,7 @@ class KdvElementsService extends __BaseService {
   }
 }
 
-namespace KdvElementsService {
+module KdvElementsService {
 
   /**
    * Parameters for KdvElementsGetKdvs
@@ -98,4 +102,4 @@ namespace KdvElementsService {
   }
 }
 
-export { KdvElementsService };
+export { KdvElementsService }

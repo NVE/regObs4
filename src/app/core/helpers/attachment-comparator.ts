@@ -13,6 +13,9 @@ export function attachmentsComparator<T extends AttachmentEditModel>(
   current: T[],
   key: keyof T
 ): boolean {
+  if (previous.length === 0 && current.length === 0) {
+    return true;
+  }
   if (previous.length !== current.length) {
     return false;
   }

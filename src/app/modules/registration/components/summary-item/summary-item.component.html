@@ -1,19 +1,11 @@
 <ion-item class="summary-item" (click)="navigate()" [detail]="!readonly" *ngIf="!(readonly && !item.hasData)">
-  <ion-label class="ion-padding-vertical ion-padding-end">
+  <ion-label class="ion-padding-vertical ion-padding-end" [ngClass]="{'simple-mode-title': simpleObsMode}">
     <h2>{{ item.title | translate}}</h2>
-    <p *ngIf="item.subTitle">
+    <p *ngIf="item.subTitle" [ngClass]="{'simple-mode-sub': simpleObsMode}">
       {{ item.subTitle | translate }}
     </p>
-    <p class="images">
-      <ro-blob-image 
-        *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew"
-        [imgBlob]="attachment.blob"
-      ></ro-blob-image>
-      <app-remote-image
-        *ngFor="let attachment of existingAttachments$ | async; trackBy: trackExisting"
-        [attachment]="attachment"
-      ></app-remote-image>
-    </p>
+    <app-thumbnails [attachments]="item.attachments" [draftUuid]="item.uuid">
+    </app-thumbnails>
   </ion-label>
   <ion-icon *ngIf="item.hasData && !readonly" slot="end" color="success" name="checkmark-circle"></ion-icon>
 </ion-item>

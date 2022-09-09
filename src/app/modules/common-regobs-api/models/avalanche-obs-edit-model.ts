@@ -2,34 +2,14 @@
 export interface AvalancheObsEditModel {
 
   /**
-   * Tid da skredet gikk.
-   */
-  DtAvalancheTime: string;
-
-  /**
    * Eksposisjon
    */
   Aspect?: number;
 
   /**
-   * Høyde i løsneområde
+   * Skredutløser. The AvalCauseTID unique identifier
    */
-  HeightStartZone?: number;
-
-  /**
-   * Høyde i stoppområdet
-   */
-  HeightStopZone?: number;
-
-  /**
-   * Størrelse. The DestructiveSizeKD unique identifier
-   */
-  DestructiveSizeTID?: number;
-
-  /**
-   * Skredutløser. The AvalancheTriggerKD unique identifier
-   */
-  AvalancheTriggerTID?: number;
+  AvalCauseTID?: number;
 
   /**
    * Skredtype. The AvalancheKD unique identifier
@@ -37,24 +17,24 @@ export interface AvalancheObsEditModel {
   AvalancheTID?: number;
 
   /**
-   * Terrengtype i løsneområdet. The TerrainStartZoneKD unique identifier
+   * Skredutløser. The AvalancheTriggerKD unique identifier
    */
-  TerrainStartZoneTID?: number;
+  AvalancheTriggerTID?: number;
 
   /**
-   * SnowLine
+   * Comment
    */
-  SnowLine?: number;
+  Comment?: string;
 
   /**
-   * ValidExposition
+   * Størrelse. The DestructiveSizeKD unique identifier
    */
-  ValidExposition?: string;
+  DestructiveSizeTID?: number;
 
   /**
-   * Skredutløser. The AvalCauseTID unique identifier
+   * Tid da skredet gikk.
    */
-  AvalCauseTID?: number;
+  DtAvalancheTime: string;
 
   /**
    * Bruddhøyde
@@ -67,9 +47,19 @@ export interface AvalancheObsEditModel {
   FractureWidth?: number;
 
   /**
-   * Skredbanenavn
+   * Høyde i løsneområde
    */
-  Trajectory?: string;
+  HeightStartZone?: number;
+
+  /**
+   * Høyde i stoppområdet
+   */
+  HeightStopZone?: number;
+
+  /**
+   * SnowLine
+   */
+  SnowLine?: number;
 
   /**
    * StartLat
@@ -92,7 +82,17 @@ export interface AvalancheObsEditModel {
   StopLong?: number;
 
   /**
-   * Comment
+   * Terrengtype i løsneområdet. The TerrainStartZoneKD unique identifier
    */
-  Comment?: string;
+  TerrainStartZoneTID?: number;
+
+  /**
+   * Skredbanenavn
+   */
+  Trajectory?: string;
+
+  /**
+   * ValidExposition
+   */
+  ValidExposition?: string;
 }

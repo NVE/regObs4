@@ -32,12 +32,12 @@ class AccountService extends __BaseService {
    * @return OK
    */
   AccountGetObserverResponse(): __Observable<__StrictHttpResponse<ObserverResponseDto>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
-    const req = new HttpRequest<any>(
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/Account/GetObserver',
+      this.rootUrl + `/Account/GetObserver`,
       __body,
       {
         headers: __headers,
@@ -65,12 +65,12 @@ class AccountService extends __BaseService {
    * @return Observer Groups
    */
   AccountGetObserverGroupsResponse(): __Observable<__StrictHttpResponse<Array<ObserverGroupDto>>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
-    const req = new HttpRequest<any>(
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/Account/Groups',
+      this.rootUrl + `/Account/Groups`,
       __body,
       {
         headers: __headers,
@@ -95,17 +95,18 @@ class AccountService extends __BaseService {
   }
 
   /**
+   * Use GET Account/Groups instead
    * @param guid undefined
    * @return Observer Groups
    */
   AccountGetAccountGroupsByGuidResponse(guid: string): __Observable<__StrictHttpResponse<Array<ObserverGroupDto>>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
 
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Account/Groups/${guid}`,
+      this.rootUrl + `/Account/Groups/${encodeURIComponent(String(guid))}`,
       __body,
       {
         headers: __headers,
@@ -121,6 +122,7 @@ class AccountService extends __BaseService {
     );
   }
   /**
+   * Use GET Account/Groups instead
    * @param guid undefined
    * @return Observer Groups
    */
@@ -136,12 +138,12 @@ class AccountService extends __BaseService {
    */
   AccountGetMyPageDataResponse(langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8): __Observable<__StrictHttpResponse<MyPageData>> {
     let __params = this.newParams();
-    const __headers = new HttpHeaders();
-    const __body: any = null;
+    let __headers = new HttpHeaders();
+    let __body: any = null;
     if (langKey != null) __params = __params.set('langKey', langKey.toString());
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + '/Account/Mypage',
+      this.rootUrl + `/Account/Mypage`,
       __body,
       {
         headers: __headers,
@@ -167,17 +169,18 @@ class AccountService extends __BaseService {
   }
 
   /**
+   * Set nickname for an observer
    * @param observerPatchRequestDto undefined
    * @return OK
    */
   AccountUpdateObserverResponse(observerPatchRequestDto: ObserverPatchRequestDto): __Observable<__StrictHttpResponse<{}>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = observerPatchRequestDto;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'PUT',
-      this.rootUrl + '/Account/UpdateObserver',
+      this.rootUrl + `/Account/UpdateObserver`,
       __body,
       {
         headers: __headers,
@@ -193,6 +196,7 @@ class AccountService extends __BaseService {
     );
   }
   /**
+   * Set nickname for an observer
    * @param observerPatchRequestDto undefined
    * @return OK
    */
@@ -203,7 +207,7 @@ class AccountService extends __BaseService {
   }
 }
 
-namespace AccountService {
+module AccountService {
 }
 
-export { AccountService };
+export { AccountService }

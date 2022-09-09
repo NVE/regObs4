@@ -41,6 +41,8 @@
         title="REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW" [min]="0" [max]="8848" [decimalPlaces]="0"
         suffix="{{ 'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate }}"
         placeholder="REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER"></app-numeric-input>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS" kdvKey="Snow_SkiConditionsKDV"
+        [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"></app-kdv-select>
 
       <ion-list-header class="ion-text-uppercase">
         <ion-label>

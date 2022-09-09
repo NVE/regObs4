@@ -2,11 +2,11 @@
 import { AttachmentViewModel } from './attachment-view-model';
 import { LatLng } from './lat-lng';
 export interface DamageObsViewModel {
-  GeoHazardName?: string;
-  DamageTypeName?: string;
   Attachments?: Array<AttachmentViewModel>;
-  GeoHazardTID?: number;
-  DamageTypeTID: number;
-  DamagePosition?: LatLng;
   Comment?: string;
+  DamagePosition?: LatLng;
+  DamageTypeName?: string;
+  DamageTypeTID: number;
+  GeoHazardName?: string;
+  GeoHazardTID?: number;
 }

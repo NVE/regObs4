@@ -72,30 +72,36 @@ app-map {
 
 .horizontal-dist-box {
   width: 189px;
-  padding: 10px 0;
+  padding-top: 24px;
 }
 
 .vertical-dist-box {
-  height: 189px;
+  display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    gap: 4px;
+    align-items: center;
 }
 
 .details-row {
-  margin: 0 15px 12px 15px;
+  margin: 15px 15px 12px 15px;
 
   .dotted-line {
     width: 100%;
   }
 
-  .obs-location-marker {
-    margin-top: 10px;
-    display: inline-block;
+.obs-location-marker {
+  margin-top: 10px;
+  height: 28px;
+  display: inline-block;
   }
 
-  .distance-label {
-    padding-top: 3px;
-    padding-bottom: 3px;
-  }
-
+.distance-label {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+  
   ion-spinner {
     height: 20px;
   }
@@ -139,10 +145,12 @@ app-map {
   -moz-box-shadow: 1px 1px 5px 0px black;
   box-shadow: 1px 1px 5px 0px black;
   display: inline-block;
-  transform: translateY(-9px) translateX(-2px);
-  margin-top: 10px;
+  transform: translateX(-2px);
 }
 
+.location-name-container {
+  min-height: 46px;
+}
 .leaflet-usermarker:before {
   content: "";
   position: absolute;
@@ -156,7 +164,6 @@ app-map {
 
 .box {
   border: 2px solid #d7d6d6;
-  z-index: 20;
   padding: 10px 15px;
 }
 
@@ -179,7 +186,36 @@ app-map {
   padding-left: 0;
 }
 
+.edit-name-button {
+  font-size: inherit;
+  height: 100%;
+  max-height: 46px;
+
+}
+
+.tooltip {
+  opacity: 0;
+  width: 290px;
+  background-color: #444444;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  bottom: -57px;
+    right: -50%;
+  z-index: 30;
+  transition: opacity 0.5s;
+}
+
+.edit-name-button:hover .tooltip {
+  opacity: 0.8;
+}
 .edit-button {
   display: flex;
   align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  position: relative;
+  color: #000;
 }

@@ -139,7 +139,14 @@ const routes: Routes = [
       import(
         './pages/snow/avalanche-evaluation/avalanche-evaluation.module'
       ).then((m) => m.AvalancheEvaluationPageModule)
-  }
+  },
+  {
+    path: 'registration/:id',
+    loadChildren: () =>
+      import('src/app/pages/view-observation/view-observation.module').then(
+        (m) => m.ViewObservationPageModule
+      ),
+  },
 ];
 
 @NgModule({

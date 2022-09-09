@@ -1,10 +1,10 @@
 /* eslint-disable */
-import { LatLng } from './lat-lng';
 import { AttachmentEditModel } from './attachment-edit-model';
+import { LatLng } from './lat-lng';
 export interface DamageObsEditModel {
-  GeoHazardTID?: number;
-  DamageTypeTID: number;
-  DamagePosition?: LatLng;
-  Comment?: string;
   Attachments?: Array<AttachmentEditModel>;
+  Comment?: string;
+  DamagePosition?: LatLng;
+  DamageTypeTID: number;
+  GeoHazardTID?: number;
 }
