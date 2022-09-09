@@ -14,19 +14,30 @@ import { HelperService } from '../../../../core/services/helpers/helper.service'
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
 import { Position } from '@capacitor/geolocation';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import {
   ObsLocationsResponseDtoV2,
-  ObsLocationDto
-} from '../../../regobs-api/models';
+  ObsLocationEditModel
+} from 'src/app/modules/common-regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import moment from 'moment';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
+
+export interface LocationTime {
+  location: ObsLocationEditModel,
+  datetime: string,
+  source: number,
+  spatialAccuracy: number,
+}
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -57,7 +68,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
-  @Output() locationSet = new EventEmitter<ObsLocationDto>();
+  @Output() locationTimeSet = new EventEmitter<LocationTime>();
   @Input() showPreviousUsedLocations = true;
   @Input() showUserPosition = true;
   @Input() confirmLocationText = 'REGISTRATION.OBS_LOCATION.CONFIRM_TEXT';
@@ -66,24 +77,29 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() mapReady = new EventEmitter<L.Map>();
   @Input() showPolyline = true;
-  @Input() showFromMarkerInDetails = true;
   @Input() allowEditLocationName = false;
-  @Input() isSaveDisabled = false;
+  @Input() setObsTime = false;
+  @Input() localDate: string;
+  @Input() sourceTid: number;
+  @Input() spatialAccuracy: number;
 
   private map: L.Map;
   followMode = false;
   private userposition: Position;
   private pathLine: L.Polyline;
-  showDetails = false;
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
+  isDesktop: boolean;
+  spatialAccuracyOptions: SelectOption[] = [];
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
   locationName: string;
+
+  maxDate: string;
 
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
@@ -100,11 +116,23 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private mapSearchService: MapSearchService,
     private geoPositionService: GeoPositionService,
-    private locationService: LocationService
-  ) {}
+    private locationService: LocationService,
+    private breakpointService: BreakpointService,
+    private translateService: TranslateService
+  ) {
+    this.setToNow();
+    this.setTranslatedAccuracies();
+  }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
     L.Marker.prototype.options.icon = defaultIcon;
+
+    if (!this.localDate) {
+      this.setToNow();
+    }
 
     const locationMarkerIcon = L.icon({
       iconUrl: this.locationMarkerIconUrl,
@@ -143,7 +171,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  private getLocationsObservable() {
+  private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
     return this.mapService.mapView$.pipe(
       filter(
         (mapView) =>
@@ -166,7 +194,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2) {
+  private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2): void {
     const existing = this.locations.some((location) => loc.Id === location.Id);
     if (!existing) {
       this.locations.push(loc);
@@ -178,7 +206,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMapReady(m: L.Map) {
+  onMapReady(m: L.Map): void {
     this.map = m;
     this.locationMarker.setZIndexOffset(100).addTo(this.map);
     if (this.fromMarker) {
@@ -232,13 +260,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
-  private setLocationMarkerLatLng(latLng: L.LatLngExpression) {
+  private setLocationMarkerLatLng(latLng: L.LatLngExpression): void {
     this.locationMarker.setLatLng(latLng);
     this.updatePathAndDistance();
     this.updateMapViewInfo();
   }
 
-  private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
+  private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2): void {
     this.ngZone.run(() => {
       this.mapService.followMode = false;
       this.selectedLocation = location;
@@ -249,11 +277,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         )
       );
       this.map.panTo(this.locationMarker.getLatLng());
-      this.showDetails = true;
     });
   }
 
-  private moveLocationMarkerToCenter() {
+  private moveLocationMarkerToCenter(): void {
     this.mapService.followMode = false;
     this.selectedLocation = null;
     const center = this.map.getCenter();
@@ -261,10 +288,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
-  private updateMapViewInfo() {
+  private updateMapViewInfo(): void {
     const latLng = this.locationMarker.getLatLng();
     this.mapSearchService
-      .getViewInfo({ center: latLng, bounds: null, zoom: 0 }, this.geoHazard)
+      .getViewInfo(latLng, this.geoHazard)
       .subscribe(
         (val) => {
           this.ngZone.run(() => {
@@ -272,7 +299,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             this.isLoading = false;
           });
         },
-        (_) => {
+        () => {
           this.ngZone.run(() => {
             this.viewInfo = null;
             this.isLoading = false;
@@ -293,7 +320,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  updatePathAndDistance() {
+  updatePathAndDistance(): void {
     const from = this.fromMarker
       ? this.fromMarker.getLatLng()
       : this.userposition
@@ -337,13 +364,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleDetails() {
-    this.ngZone.run(() => {
-      this.showDetails = !this.showDetails;
-    });
-  }
-
-  getLocationName(location: LocationName) {
+  getLocationName(location: LocationName): string {
     if (location) {
       return location.adminName !== location.name
         ? `${location.name} / ${location.adminName}`
@@ -352,16 +373,25 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  confirmLocation() {
+  confirm(): void {
     const obsLocation = this.getLocation();
-    this.locationSet.emit(obsLocation);
+    let obsTime: string = undefined;
+    if (this.setObsTime) {
+      obsTime = this.localDate || moment().toISOString(true);
+    }
+    const locationTime = {
+      location: obsLocation,
+      datetime: obsTime,
+      source: this.sourceTid,
+      spatialAccuracy: this.spatialAccuracy,
+    };
+    this.locationTimeSet.emit(locationTime);
   }
 
-  getLocation(): ObsLocationDto {
-    const obsLocation: ObsLocationDto = {
+  getLocation(): ObsLocationEditModel {
+    const obsLocation: ObsLocationEditModel = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
-      Uncertainty: 0,
       UTMSourceTID: UtmSource.SelectedInMap
     };
     if (
@@ -387,7 +417,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return obsLocation;
   }
 
-  editLocation() {
+  editLocation(): void {
     if (this.canEditLocationName) {
       this.editLocationName = true;
       setTimeout(() => {
@@ -398,11 +428,38 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLocationEditComplete() {
+  onLocationEditComplete(): void {
     if (this.editLocationNameInput.value?.toString().length === 0) {
       // User has deleted all text
       this.editLocationName = false;
       this.updateMapViewInfo();
     }
+  }
+
+  setToNow() {
+    const now = moment().toISOString(true);
+    this.maxDate = this.getMaxDateForNow();
+    this.localDate = now;
+  }
+
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
+  }
+
+  setTranslatedAccuracies() {
+    this.translateService.get([
+      'REGISTRATION.OBS_LOCATION.EXACT',
+      'REGISTRATION.OBS_LOCATION.MORETHANONEKM',
+    ]).subscribe((translations) =>
+      this.spatialAccuracyOptions = [
+        {id: 0, text: translations['REGISTRATION.OBS_LOCATION.EXACT']},
+        {id: 100, text: '100 m'},
+        {id: 500, text: '500 m'},
+        {id: 1000, text: '1000 m'},
+        {id: -1, text: translations['REGISTRATION.OBS_LOCATION.MORETHANONEKM']}
+      ]
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from '../../../regobs-api/models';
+import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -14,14 +14,14 @@ import { IonCheckbox } from '@ionic/angular';
 export class GroupPage extends BasePage {
   groups: ObserverGroupDto[] = [];
 
-  get firstGroup() {
+  get firstGroup(): ObserverGroupDto {
     return this.groups[0];
   }
 
-  get isSelected() {
+  get isSelected(): boolean {
     return (
       this.groups.length > 0 &&
-      this.groups[0].Id === this.registration.request.ObserverGroupID
+      this.groups[0].Id === this.draft.registration.ObserverGroupID
     );
   }
 
@@ -34,33 +34,47 @@ export class GroupPage extends BasePage {
     super(null, basePageService, activatedRoute);
   }
 
-  async onInit() {
+  async onInit(): Promise<void> {
     const groups = await this.userGroupService.getUserGroups();
     this.ngZone.run(() => {
       this.groups = groups;
     });
   }
 
-  onReset() {
-    this.ngZone.run(() => {
-      this.registration.request.ObserverGroupID = undefined;
-    });
-  }
+  async reset() {
+    const pleaseReset = await super.reset();
 
-  checkedChanged(event: CustomEvent) {
-    const checkBox = (<any>event.target) as IonCheckbox;
-    if (checkBox.checked) {
-      this.registration.request.ObserverGroupID = this.firstGroup.Id;
-    } else {
-      this.registration.request.ObserverGroupID = undefined;
+    if (pleaseReset) {
+      this.groupChanged(null);
     }
+
+    return pleaseReset;
   }
 
-  isEmpty() {
-    return (
-      this.registration &&
-      (this.registration.request.ObserverGroupID === undefined ||
-        this.registration.request.ObserverGroupID === null)
+  groupChanged(ObserverGroupID: RegistrationEditModel['ObserverGroupID']) {
+    this.draft = {
+      ...this.draft,
+      registration: {
+        ...this.draft.registration,
+        ObserverGroupID
+      }
+    };
+  }
+
+  checkedChanged(event: CustomEvent): void {
+    const checkBox = (<any>event.target) as IonCheckbox;
+    let ObserverGroupID: RegistrationEditModel['ObserverGroupID'] = null;
+    if (checkBox.checked) {
+      ObserverGroupID = this.firstGroup.Id;
+    }
+    this.groupChanged(ObserverGroupID);
+  }
+
+  isEmpty(): Promise<boolean> {
+    return Promise.resolve(
+      this.draft &&
+      (this.draft.registration.ObserverGroupID === undefined ||
+        this.draft.registration.ObserverGroupID === null)
     );
   }
 }

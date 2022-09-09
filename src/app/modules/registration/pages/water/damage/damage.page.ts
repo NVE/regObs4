@@ -1,16 +1,20 @@
 import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { KdvService } from '../../../../../core/services/kdv/kdv.service';
-import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
-import { KdvElement } from '../../../../regobs-api/models';
+import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 const NO_DAMAGE_VISIBLE = 7;
 
+/**
+ * Form to register damage observations caused by water.
+ * Contains sub forms for specific damage types, see DamageObsComponent
+ */
 @Component({
   selector: 'app-damage',
   templateUrl: './damage.page.html',
@@ -21,17 +25,11 @@ export class DamagePage extends BasePage {
   checked: boolean;
 
   get isChecked() {
-    if (
-      !this.registration ||
-      !this.registration.request ||
-      !this.registration.request.DamageObs ||
-      this.registration.request.DamageObs.length === 0
-    ) {
+    if (this.draft?.registration?.DamageObs?.length === 0) {
       return this.checked;
     }
     return (
-      this.registration &&
-      this.registration.request.DamageObs.filter(
+      this.draft?.registration?.DamageObs.filter(
         (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
       ).length > 0
     );
@@ -40,13 +38,13 @@ export class DamagePage extends BasePage {
   set isChecked(val: boolean) {
     this.checked = val;
     if (val === false) {
-      this.registration.request.DamageObs = [
+      this.draft.registration.DamageObs = [
         {
           DamageTypeTID: NO_DAMAGE_VISIBLE
         }
       ];
     } else {
-      this.registration.request.DamageObs = this.registration.request.DamageObs.filter(
+      this.draft.registration.DamageObs = this.draft.registration.DamageObs.filter(
         (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
       );
     }
@@ -64,9 +62,9 @@ export class DamagePage extends BasePage {
   }
 
   onInit() {
-    const geoHazardName = GeoHazard[this.registration.geoHazard];
+    const geoHazardName = GeoHazard[this.draft.registration.GeoHazardTID];
     this.kdvSubscription = this.kdvService
-      .getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV`)
+      .getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV` as KdvKey)
       .pipe(map((val) => val.filter((x) => x.Id !== NO_DAMAGE_VISIBLE)))
       .subscribe((kdvElements) => {
         this.ngZone.run(() => {

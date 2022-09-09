@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 
 @Pipe({

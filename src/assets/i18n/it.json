@@ -5,11 +5,6 @@
     "LINK_TEXT": "Vai a abonner.varsom.no",
     "TITLE": "Varsom Abonner"
   },
-  "ADD_MENU": {
-    "DRAFT": "Bozza",
-    "NEW_OBSERVATION": "Nouvo",
-    "NEW_TRIP": "Nouova escursione"
-  },
   "ALERT": {
     "CANCEL": "Annulla",
     "DEFAULT_HEADER": "Ops!",
@@ -69,6 +64,7 @@
     "SW": "SO",
     "W": "O"
   },
+  "DRAFT": "Bozza",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Registrando percorso"
   },
@@ -147,6 +143,7 @@
       "ARC_GIS": "ESRI World Topo (mondo)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norvegia)",
       "KARTVERKET": "Kartverket (Norvegia)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (mondo)"
     },
     "TIME_FRAME": "Periodo di tempo",
@@ -170,14 +167,13 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Tutte le osservazioni",
     "FORMS": "Moduli",
-    "GO_TO_OBSERVATION": "Vai all'osservazione",
     "IN_MAP_VIEW": "Vedi osservazioni nella mappa",
     "NO_OBSERVATIONS": "Nessune osservazioni",
     "NO_OBSERVATIONS_TEXT": "Non vi sono osservazioni in questa sezione di mappa. Prova a cambiare sezione o aumentare il periodo di tempo usato per ricercare osservazioni.",
     "OBSERVATIONS": "Osservazioni"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Mappa offline"
+    "OFFLINE_MAP_PAGE_TITLE": "Mappa offline"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Autorizzazione a locazione rifiutata",
@@ -202,6 +198,7 @@
     },
     "BACK_TO_OBSERVATION": "Torna all'osservazione",
     "CONFIRM_RESET": "Sei sicuro che vuoi reimpostare tutti i campi?",
+    "COPIED_TO_CLIPBOARD": "Copiato negli appunti",
     "DANGER_OBS": {
       "AREA": "Area",
       "COMMENT": "Commento",
@@ -511,8 +508,8 @@
         "COMMENT_PLACEHOLDER": "Come è stato il tempo le ultime 24 ore? Per esempio: Ha nevicato? Ci sono state variazioni in temperatura? Dove è stato il limito do congielamento?",
         "FROM_EAST": "E - dall'est",
         "FROM_NORTH": "N - dal nord",
+        "FROM_NORTH_EAST": "NE - dal nordest",
         "FROM_NORTH_WEST": "NO - da nordovest",
-        "FROM_NOTRH_EAST": "NE - dal nordest",
         "FROM_SOUTH": "S - dal sud",
         "FROM_SOUTH_EAST": "SE - dal sudest",
         "FROM_SOUTH_WEST": "SO - dal sudovest",
@@ -579,7 +576,7 @@
     "LANGUAGE": "Lingua",
     "NORWAY_ONLY": "Solo in Norvegiese",
     "NUMBER_OF_TILES_IN_CACHE": "Massimo numero di tessere di mappa nella memoria",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Puoi leggere di più sul nostro utilizzo di data nella nostra tutela della riservatezza.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Puoi leggere di più sul nostro utilizzo di data nella nostra <a href=\"{{legalUrl}}\" target=\"_blank\">tutela della riservatezza</a>.",
     "RESET": "Resetta l'app",
     "RESETTING": "Resettando, prega attendere...",
     "SHOW_ADVANCED": "Mostra impostazioni avanzate",
@@ -681,7 +678,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Zone di deposito medie (25% di valanghe correranno più lungo)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Zone di deposito lunghe (5% di valanghe correranno più lungo). Valanghe con una zona di deposito ancora più lunga di che è indicato nella mappa sono possibili.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Mappa con colorazione di inclinazione e zone di deposito",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "La mappa è generata la computer e può contenere errori. Terreno ripido o zone di deposito non incidata sulla mappa può essere presente. La mappa è un stumento per pianeggamento, e deve essere usato con occhio critico.",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Ghiaccio debole"
   },
   "TABS": {

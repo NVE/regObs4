@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserSetting } from '../../models/user-settings.model';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard } from '../../models/geo-hazard.enum';
-import { AppMode } from '../../models/app-mode.enum';
+import { GeoHazard, LangKey, AppMode } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';
@@ -18,7 +17,6 @@ import {
   concatMap,
   filter
 } from 'rxjs/operators';
-import { LangKey } from '../../models/langKey';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
@@ -34,7 +32,6 @@ import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
 import frData from '@angular/common/locales/fr';
-import { UserSettingsPage } from 'src/app/pages/user-settings/user-settings.page';
 import { SupportTile } from '../../models/support-tile.model';
 
 const DEBUG_TAG = 'UserSettingService';
@@ -59,6 +56,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   >;
   public readonly showObservations$: Observable<boolean>;
   public readonly userSetting$: Observable<UserSetting>;
+  public readonly daysBackForCurrentGeoHazard$: Observable<number>;
 
   private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
   // private userSettingsReady = new BehaviorSubject(false);
@@ -81,6 +79,15 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
   get supportTilesWithSubTiles$() {
     return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us, false)));
+  }
+
+  get legalUrl() {
+    const language = this.userSettingInMemory.value.language;
+    if (language == LangKey.nb || language == LangKey.nn) {
+      return settings.legalUrl.nb;
+    } else {
+      return settings.legalUrl.en;
+    }
   }
 
   constructor(
@@ -143,7 +150,6 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
     this.daysBack$ = this.userSetting$.pipe(
       map((val) => val.observationDaysBack),
-      distinctUntilChanged(equal),
       tap((val) =>
         this.loggingService?.debug('Days back changed to:', DEBUG_TAG, val)
       ),
@@ -155,6 +161,17 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       distinctUntilChanged(),
       shareReplay(1)
     );
+
+    this.daysBackForCurrentGeoHazard$ = combineLatest([
+      this.daysBack$,
+      this.currentGeoHazard$
+    ]).pipe(map(([daysBack, currentGeoHazard]) => {
+        const geoHazard = currentGeoHazard[0];
+        const daysBackForCurrentGeoHazard = daysBack.find(
+          (x) => x.geoHazard === geoHazard
+        );
+        return daysBackForCurrentGeoHazard?.daysBack;
+    })), tap((val) => this.loggingService.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val));
   }
 
   public init() {

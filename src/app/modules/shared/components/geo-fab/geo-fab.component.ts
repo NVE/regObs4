@@ -18,7 +18,7 @@ import {
 } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable, Subject } from 'rxjs';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import {
   CustomAnimation,
@@ -30,7 +30,7 @@ import { map, take } from 'rxjs/operators';
 const GEOHAZARD_TYPES = [
   [GeoHazard.Snow],
   [GeoHazard.Ice],
-  [GeoHazard.Water, GeoHazard.Dirt]
+  [GeoHazard.Water, GeoHazard.Soil]
 ];
 @Component({
   selector: 'app-geo-fab',

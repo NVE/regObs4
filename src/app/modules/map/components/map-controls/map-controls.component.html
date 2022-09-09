@@ -1,5 +1,6 @@
 <div class="map-controls" [ngClass]="{'fullscreen': (fullscreen$ | async) }">
-  <app-map-search></app-map-search>
-  <app-fullscreen-toggle></app-fullscreen-toggle>
-  <app-gps-center></app-gps-center>
+  <app-map-search *ngIf="showMapSearch"></app-map-search>
+  <app-fullscreen-toggle *ngIf="showFullscreenToggle"></app-fullscreen-toggle>
+  <app-gps-center *ngIf="showGpsCenter"></app-gps-center>
+  <app-map-zoom></app-map-zoom>
 </div>

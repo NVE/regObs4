@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({
@@ -14,7 +13,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 export class WeatherPage extends BasePage {
   windDirectionOptions: SelectOption[] = [
     { id: 0, text: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH' },
-    { id: 45, text: 'REGISTRATION.SNOW.WEATHER.FROM_NOTRH_EAST' },
+    { id: 45, text: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH_EAST' },
     { id: 90, text: 'REGISTRATION.SNOW.WEATHER.FROM_EAST' },
     { id: 135, text: 'REGISTRATION.SNOW.WEATHER.FROM_SOUTH_EAST' },
     { id: 180, text: 'REGISTRATION.SNOW.WEATHER.FROM_SOUTH' },

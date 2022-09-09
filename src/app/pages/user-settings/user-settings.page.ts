@@ -1,13 +1,8 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import {
-  NavController,
-  AlertController,
-  LoadingController
-} from '@ionic/angular';
-import { LangKey } from '../../core/models/langKey';
-import { KdvService } from '../../core/services/kdv/kdv.service';
+import { NavController, AlertController, LoadingController, Platform } from '@ionic/angular';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
@@ -16,8 +11,8 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
-import { settings } from '../../../settings';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -29,20 +24,13 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
-  LangKey = LangKey;
   showAdvanced = false;
   isUpdating = false;
   version: AppVersion;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
-  supportedLanguages: {
-    lang: string;
-    name: string;
-    langKey: LangKey;
-  }[] = settings.language.supportedLanguages.map((lang) => ({
-    ...lang,
-    langKey: LangKey[lang.lang]
-  }));
+  isDesktopView: boolean;
+  isDesktopPlatform: boolean;
 
   get appModeOptions() {
     const options: SelectOption[] = [
@@ -68,10 +56,18 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private appResetService: AppResetService,
     private navController: NavController,
-    private fileLoggingService: FileLoggingService
+    private fileLoggingService: FileLoggingService,
+    private breakpointService: BreakpointService,
+    private platform: Platform
   ) {}
 
   async ngOnInit() {
+    if (this.platform.is('desktop')) {
+      this.isDesktopPlatform = true;
+    }
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktopView = isDesktop;
+    });
     this.versionClicks = 0;
     this.subscriptions.push(
       this.userSettingService.userSetting$.subscribe((val) => {
@@ -99,10 +95,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   versionClick() {
     this.versionClicks++;
-    if (
-      this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE &&
-      !this.userSettings.featureToggleDeveloperMode
-    ) {
+    if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE && !this.userSettings.featureToggleDeveloperMode) {
       this.userSettings.featureToggleDeveloperMode = true;
       this.updateSettings();
     }
@@ -118,12 +111,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   async updateDropdowns() {
     this.isUpdating = true;
-    // TODO: Show loading with cancel
-    const updated = await this.kdvService.updateKdvElementsForLanguage(
-      this.userSettings.appMode,
-      this.userSettings.language
-    );
-    await this.showKdvElementsUpdated(updated);
+    this.kdvService.update();
+    await this.showKdvElementsUpdated(true);
     this.ngZone.run(() => {
       this.isUpdating = false;
     });
@@ -135,16 +124,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   async showKdvElementsUpdated(ok: boolean) {
     const translations = await this.translateService
-      .get([
-        'SETTINGS.DROPDOWNS_UPDATED',
-        'SETTINGS.DROPDOWNS_FAILED',
-        'ALERT.OK'
-      ])
+      .get(['SETTINGS.DROPDOWNS_UPDATED', 'SETTINGS.DROPDOWNS_FAILED', 'ALERT.OK'])
       .toPromise();
     const alert = await this.alertController.create({
-      message: ok
-        ? translations['SETTINGS.DROPDOWNS_UPDATED']
-        : translations['SETTINGS.DROPDOWNS_FAILED'],
+      message: ok ? translations['SETTINGS.DROPDOWNS_UPDATED'] : translations['SETTINGS.DROPDOWNS_FAILED'],
       buttons: [translations['ALERT.OK']]
     });
     alert.present();
@@ -152,9 +135,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async confirmReset() {
-    const translations = await this.translateService
-      .get(['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL'])
-      .toPromise();
+    const translations = await this.translateService.get(['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
     const alert = await this.alertController.create({
       message: translations['SETTINGS.CONFIRM_RESET'],
       buttons: [
@@ -172,9 +153,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async reset() {
-    const message = await this.translateService
-      .get('SETTINGS.RESETTING')
-      .toPromise();
+    const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
     const loading = await this.loadingController.create({
       message
     });
@@ -184,12 +163,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     try {
       await this.doReset();
     } catch (err) {
-      this.loggingService.log(
-        'Could not reset db',
-        err,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
+      this.loggingService.log('Could not reset db', err, LogLevel.Warning, DEBUG_TAG);
     }
     this.ngZone.run(() => {
       this.isUpdating = false;

@@ -6,10 +6,11 @@ import {
   EventEmitter,
   NgZone
 } from '@angular/core';
-import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { KdvElement } from '../../../regobs-api/models';
-import { Subscription, Observable } from 'rxjs';
+import { KdvElement } from 'src/app/modules/common-regobs-api/models';
+import { Observable } from 'rxjs';
 import { enterZone } from '../../../../core/helpers/observable-helper';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 
 @Component({
   selector: 'app-kdv-radiobutton-list',
@@ -18,7 +19,7 @@ import { enterZone } from '../../../../core/helpers/observable-helper';
 })
 export class KdvRadiobuttonListComponent implements OnInit {
   @Input() title: string;
-  @Input() kdvKey: string;
+  @Input() kdvKey: KdvKey;
   @Input() value: number;
   @Input() useDescription: boolean;
   @Input() showZeroValues = false;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component,  Input } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
 
@@ -7,12 +7,13 @@ import { Observable } from 'rxjs';
   templateUrl: './map-controls.component.html',
   styleUrls: ['./map-controls.component.scss']
 })
-export class MapControlsComponent implements OnInit {
+export class MapControlsComponent {
+  @Input() showMapSearch = true;
+  @Input() showFullscreenToggle = true;
+  @Input() showGpsCenter = true;
   fullscreen$: Observable<boolean>;
 
   constructor(private fullscreenService: FullscreenService) {
     this.fullscreen$ = fullscreenService.isFullscreen$;
   }
-
-  ngOnInit() {}
 }

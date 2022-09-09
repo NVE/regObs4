@@ -1,0 +1,47 @@
+img {
+  height: inherit;
+  width: inherit;
+  object-fit: cover;
+}
+
+ion-icon {
+  font-size: 64px;
+}
+
+.error {
+  width: inherit;
+  min-width: 110px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #eee;
+  outline: 5px dashed white;
+  outline-offset: -15px;
+  //margin-bottom: 5px;
+}
+
+.large {
+  height: 100vw;
+}
+
+.container {
+  display: inline-block;
+}
+
+.image-preview {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+svg-icon {
+  position: absolute;
+  top: 4px;
+  right: 3px;
+  width: 16px;
+  aspect-ratio: 1;
+}

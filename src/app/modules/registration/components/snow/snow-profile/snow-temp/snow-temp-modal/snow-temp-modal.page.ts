@@ -1,16 +1,14 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import {
-  TempProfileObsDto,
-  TempObsDto
-} from '../../../../../../regobs-api/models';
+  SnowTempObsModel,
+} from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
-import { IRegistration } from '../../../../../models/registration.model';
-import { RegistrationService } from '../../../../../services/registration.service';
 import cloneDeep from 'clone-deep';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ThrowStmt } from '@angular/compiler';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-temp-modal',
@@ -18,63 +16,53 @@ import { ThrowStmt } from '@angular/compiler';
   styleUrls: ['./snow-temp-modal.page.scss']
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
-  @Input() regId: string;
+  @Input() uuid: string;
   private layerModal: HTMLIonModalElement;
-  private initialRegistrationClone: IRegistration;
-  private reg: IRegistration;
+  private initialRegistrationClone: RegistrationDraft;
+  private draft: RegistrationDraft;
 
   private ngDestroy$ = new Subject<void>();
 
   get tempProfile() {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowTemp
-    ) {
-      return this.reg.request.SnowProfile2.SnowTemp;
+    if (this.draft?.registration?.SnowProfile2?.SnowTemp) {
+      return this.draft.registration.SnowProfile2.SnowTemp;
     }
-
     return {};
   }
 
   get hasLayers() {
-    return (
-      this.tempProfile &&
-      this.tempProfile.Layers &&
-      this.tempProfile.Layers.length > 0
-    );
+    return (this.tempProfile?.Layers?.length > 0);
   }
 
   constructor(
     private modalController: ModalController,
-    private registrationService: RegistrationService,
+    private draftRepository: DraftRepositoryService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+    this.draftRepository
+      .getDraft$(this.uuid)
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((reg) => {
+      .subscribe((draft) => {
         this.ngZone.run(() => {
           if (!this.initialRegistrationClone) {
-            this.initialRegistrationClone = cloneDeep(reg);
+            this.initialRegistrationClone = cloneDeep(draft);
           }
-          this.reg = reg;
-          if (!this.reg.request.SnowProfile2) {
-            this.reg.request.SnowProfile2 = {};
+          this.draft = draft;
+          if (!this.draft.registration.SnowProfile2) {
+            this.draft.registration.SnowProfile2 = {};
           }
-          if (!this.reg.request.SnowProfile2.SnowTemp) {
-            this.reg.request.SnowProfile2.SnowTemp = {};
+          if (!this.draft.registration.SnowProfile2.SnowTemp) {
+            this.draft.registration.SnowProfile2.SnowTemp = {};
           }
-          if (!this.reg.request.SnowProfile2.SnowTemp.Layers) {
-            this.reg.request.SnowProfile2.SnowTemp.Layers = [];
+          if (!this.draft.registration.SnowProfile2.SnowTemp.Layers) {
+            this.draft.registration.SnowProfile2.SnowTemp.Layers = [];
           }
           this.sortLayers();
         });
       });
-    this.initialRegistrationClone = cloneDeep(this.reg);
+    this.initialRegistrationClone = cloneDeep(this.draft);
   }
 
   ngOnDestroy(): void {
@@ -87,9 +75,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(
-      this.initialRegistrationClone
-    );
+    await this.draftRepository.save(this.initialRegistrationClone);
     this.modalController.dismiss();
   }
 
@@ -100,12 +86,12 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
     );
   }
 
-  async addOrEditLayer(index: number, layer: TempProfileObsDto) {
+  async addOrEditLayer(index: number, layer: SnowTempObsModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowTempLayerModalPage,
         componentProps: {
-          reg: this.reg,
+          draft: this.draft,
           layer,
           index
         }

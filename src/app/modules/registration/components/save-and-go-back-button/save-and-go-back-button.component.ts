@@ -1,40 +1,23 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { IRegistration } from '../../models/registration.model';
-import { RegistrationTid } from '../../models/registrationTid.enum';
-import { RegistrationService } from '../../services/registration.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-save-and-go-back-button',
   templateUrl: './save-and-go-back-button.component.html',
-  styleUrls: ['./save-and-go-back-button.component.scss']
+  styleUrls: ['./save-and-go-back-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SaveAndGoBackButtonComponent implements OnInit {
-  @Input() registration: IRegistration;
-  @Input() registrationTid: RegistrationTid;
+export class SaveAndGoBackButtonComponent {
+  @Input() draft: RegistrationDraft;
   @Output() reset = new EventEmitter();
-  @Input() isEmpty: boolean;
-
-  get isEmptyRegistrationEmpty() {
-    if (this.isEmpty !== undefined) {
-      return this.isEmpty;
-    } else {
-      return this.registrationService.isEmpty(
-        this.registration,
-        this.registrationTid
-      );
-    }
-  }
 
   constructor(
     private navContoller: NavController,
-    private registrationService: RegistrationService
   ) {}
 
-  async ngOnInit() {}
-
   async goBack() {
-    this.navContoller.navigateBack('registration/edit/' + this.registration.id);
+    this.navContoller.navigateBack('registration/edit/' + this.draft.uuid);
   }
 
   doReset() {

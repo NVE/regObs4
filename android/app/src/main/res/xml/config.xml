@@ -10,10 +10,6 @@
     <param name="android-package" value="io.sqlc.SQLitePlugin"/>
   </feature>
 
-  <feature name="Clipboard">
-    <param name="android-package" value="com.verso.cordova.clipboard.Clipboard"/>
-  </feature>
-
   <feature name="CordovaHttpPlugin">
     <param name="android-package" value="com.silkimen.cordovahttp.CordovaHttpPlugin"/>
   </feature>
@@ -60,10 +56,6 @@
     <param name="android-package" value="com.plugins.shortcuts.ShortcutsPlugin"/>
   </feature>
 
-  <feature name="SocialSharing">
-    <param name="android-package" value="nl.xservices.plugins.SocialSharing"/>
-  </feature>
-
   <feature name="DiskSpacePlugin">
     <param name="android-package" value="com.sqli.cordova.diskSpace.DiskSpacePlugin"/>
     <param name="onload" value="true"/>
@@ -83,8 +75,6 @@
   <preference name="SplashScreenDelay" value="3000" />
   <preference name="FadeSplashScreenDuration" value="300" />
   <preference name="AndroidLaunchMode" value="singleTask" />
-  <preference name="StatusBarStyle" value="lightcontent" />
-  <preference name="StatusBarBackgroundColor" value="#99044962" />
   <preference name="KeyboardDisplayRequiresUserAction" value="false" />
   <preference name="KeyboardResize" value="true" />
   <preference name="KeyboardResizeMode" value="ionic" />

@@ -1,0 +1,24 @@
+.images {
+  padding-top: var(--images-padding-top, 0px);
+  padding-bottom: var(--images-padding-bottom, 0px);
+  background: var(--images-background, inherit);
+
+  .image-wrapper {
+    position: relative;
+    padding-bottom: var(--image-wrapper-padding-bottom, 0px);
+    margin-left: var(--image-wrapper-margin-left, 0px);
+    margin-right: var(--image-wrapper-margin-right, 0px);
+    background: var(--image-wrapper-background, inherit);
+
+    app-text-comment {
+      display: block;
+      margin-top: -5px;
+      --ion-item-background: var(--image-comment-background, #fff);
+    }
+
+    ion-fab-button {
+      padding: 8px;
+      margin: unset;
+    }
+  }
+}

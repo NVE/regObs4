@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DamageObsDto, ObsLocationDto } from '../../../regobs-api/models';
+import { DamageObsEditModel, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
-import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
@@ -15,7 +15,7 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
   styleUrls: ['./set-damage-location.page.scss']
 })
 export class SetDamageLocationPage implements OnInit {
-  @Input() damageObs: DamageObsDto;
+  @Input() damageObs: DamageObsEditModel;
   @Input() geoHazard: GeoHazard;
   @Input() fromLatLng: L.LatLng;
   fromMarker: L.Marker;
@@ -72,7 +72,7 @@ export class SetDamageLocationPage implements OnInit {
     this.swipeBackService.enableSwipeBack();
   }
 
-  async onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: LocationTime) {
     this.modalController.dismiss(event);
   }
 
@@ -81,6 +81,6 @@ export class SetDamageLocationPage implements OnInit {
   }
 
   ok() {
-    this.setLocationInMapComponent.confirmLocation();
+    this.setLocationInMapComponent.confirm();
   }
 }

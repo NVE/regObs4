@@ -1,15 +1,19 @@
-import { Directive, OnInit } from '@angular/core';
-import { RegistrationTid } from '../models/registrationTid.enum';
+import { Directive } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
-import { IRegistration } from '../models/registration.model';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
-import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
+import { take, takeUntil, map, switchMap, tap, skip } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { createEmptyRegistration } from '../../common-registration/registration.helpers';
 
+/**
+ * Base page for a registration form, eg. danger sign
+ */
 @Directive()
-export abstract class BasePage extends NgDestoryBase implements OnInit {
-  registration: IRegistration;
+export abstract class BasePage extends NgDestoryBase {
+  draft: RegistrationDraft;
   basePageService: BasePageService;
   registrationTid: RegistrationTid;
   activatedRoute: ActivatedRoute;
@@ -25,47 +29,67 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     this.registrationTid = registrationTid;
   }
 
-  ngOnInit() {}
-
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
-    this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(
-      id
-    )
+
+    const draft$ = this.basePageService.draftRepository.getDraft$(id);
+
+    // The first time we get a registration object, run some additional logic
+    draft$.pipe(
+      take(1),
+      map((draft) => {
+        // Seems like this class is also used by the set datetime page,
+        // where we don't have a registrationTid
+        if (this.registrationTid != null) {
+          return createEmptyRegistration(draft, this.registrationTid);
+        }
+        return draft;
+      }),
+      tap((reg) => {
+        this.draft = reg;
+      }),
+      switchMap(() => this.createInitObservable()),
+    ).subscribe();
+
+    // Update registration data eg. when navigating back from subforms
+    draft$
       .pipe(
-        take(1),
-        map((reg) => {
-          this.basePageService.createDefaultProps(reg, this.registrationTid);
-          return reg;
-        }),
-        tap((reg) => {
-          this.registration = reg;
-        }),
-        switchMap(() => this.createInitObservable()),
+        skip(1),
         takeUntil(this.ngDestroy$)
       )
-      .subscribe();
+      .subscribe((draft) => {
+        this.draft = draft;
+      });
   }
 
-  onInit?(): void | Promise<any>;
+  /**
+   * Implement this to initialize the registration
+   */
+  onInit?(): void | Promise<unknown>;
 
-  onBeforeLeave?(): void | Promise<any>;
+  /**
+   * Implement this to cleanup when the page closes
+   */
+  onBeforeLeave?(): void | Promise<unknown>;
 
-  onReset?(): void;
-
+  /**
+   * Implement this to do form validation
+   */
   isValid?(): boolean | Promise<boolean>;
 
   // NOTE: Remember to add canDeactivate: [CanDeactivateRouteGuard] in page module
-  async canLeave() {
+  async canLeave(): Promise<boolean> {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
-    if (!this.isEmpty() && !valid) {
-      return this.basePageService.confirmLeave(
-        this.registration,
-        this.registrationTid,
-        () => (this.onReset ? this.onReset() : null)
-      );
+    const isEmpty = await this.isEmpty();
+    if (!isEmpty && !valid) {
+      const pleaseLeave = await this.basePageService.confirmLeave();
+      if (pleaseLeave) {
+        await this.delete();
+      } else {
+        return false; //user wants to stay
+      }
     }
     return true;
   }
@@ -77,53 +101,54 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     return of({});
   }
 
+  /**
+   * Save automatically when you leave the page. Will also run onBeforeLeave() hook if you have any
+   * If registration is empty, it will be deleted.
+   */
   async ionViewWillLeave() {
     if (this.onBeforeLeave) {
       await Promise.resolve(this.onBeforeLeave());
     }
-    await this.save(true);
+    if (await this.isEmpty()) {
+      await this.delete();
+    }
+    await this.save();
   }
 
-  save(clean = false) {
-    return this.basePageService.RegistrationService.saveRegistrationAsync(
-      this.registration,
-      clean
-    );
+  async save() {
+    //also empty registrations is saved in order to make it possible to add images to empty registrations
+    await this.basePageService.draftRepository.save({ ...this.draft, syncStatus: SyncStatus.Draft });
   }
 
   getSaveFunc() {
     return () => this.save();
   }
 
-  isEmpty() {
-    return this.basePageService.RegistrationService.isEmpty(
-      this.registration,
-      this.registrationTid
-    );
+  async isEmpty(registrationType = this.registrationTid): Promise<boolean> {
+    return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
-  reset() {
-    return this.basePageService.confirmReset(
-      this.registration,
-      this.registrationTid,
-      () => (this.onReset ? this.onReset() : null)
-    );
+  /**
+   * Reset the registration if the user confirms.
+   * @returns {boolean} true if the user wants to reset
+   */
+  async reset(): Promise<boolean> {
+    const pleaseReset = await this.basePageService.confirmDelete();
+    if (pleaseReset) {
+      await this.delete();
+
+      // Create a new empty form / registration
+      this.draft = createEmptyRegistration(this.draft, this.registrationTid);
+    }
+
+    return pleaseReset;
   }
 
-  getResolvedUrl(): string {
-    return (
-      '/' +
-      this.activatedRoute.snapshot.pathFromRoot
-        .map((v) => v.url.map((segment) => segment.toString()).join('/'))
-        .filter((path) => !!path)
-        .join('/')
-    );
+  /**
+   * Delete the registration behind the form and save the draft.
+   * You may override this if your form contains other data.
+   */
+  protected async delete() {
+    this.draft = await this.basePageService.delete(this.draft, [this.registrationTid]);
   }
-
-  // getConfiguredUrl(): string {
-  //     return '/' + this.activatedRoute.snapshot.pathFromRoot
-  //         .filter(v => v.routeConfig)
-  //         .map(v => v.routeConfig.path)
-  //         .join('/');
-  // }
 }

@@ -1,16 +1,19 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
-import { IRegistration } from '../../models/registration.model';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
 import { ISummaryItem } from '../summary-item/summary-item.model';
 
+/**
+ * Used to navigate from one registration form to previous or next form
+ */
 @Component({
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',
   styleUrls: ['./navigation-buttons.component.scss']
 })
 export class NavigationButtonsComponent implements OnInit {
-  @Input() registration: IRegistration;
+  @Input() draft: RegistrationDraft;
   next: ISummaryItem;
   previous: ISummaryItem;
 
@@ -22,10 +25,7 @@ export class NavigationButtonsComponent implements OnInit {
 
   async ngOnInit() {
     const currentUrl = this.router.url;
-    const prevAndNext = await this.summaryItemService.getPreviousAndNext(
-      this.registration,
-      currentUrl
-    );
+    const prevAndNext = await this.summaryItemService.getPreviousAndNext(this.draft, currentUrl);
     this.ngZone.run(() => {
       if (prevAndNext.next) {
         this.next = prevAndNext.next;
@@ -37,14 +37,10 @@ export class NavigationButtonsComponent implements OnInit {
   }
 
   goBack() {
-    this.summaryItemService.navigateTo(
-      this.registration,
-      this.previous,
-      'back'
-    );
+    this.summaryItemService.navigateTo(this.draft, this.previous, 'back');
   }
 
   goForward() {
-    this.summaryItemService.navigateTo(this.registration, this.next, 'forward');
+    this.summaryItemService.navigateTo(this.draft, this.next, 'forward');
   }
 }

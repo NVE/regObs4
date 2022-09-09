@@ -10,10 +10,6 @@
     <param name="ios-package" value="SQLitePlugin"/>
   </feature>
 
-  <feature name="Clipboard">
-    <param name="ios-package" value="CDVClipboard"/>
-  </feature>
-
   <feature name="CordovaHttpPlugin">
     <param name="ios-package" value="CordovaHttpPlugin"/>
   </feature>
@@ -52,11 +48,6 @@
     <param name="ios-package" value="SecureStorage"/>
   </feature>
 
-  <feature name="SocialSharing">
-    <param name="ios-package" value="SocialSharing"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   <feature name="DiskSpacePlugin">
     <param name="ios-package" value="DiskSpacePlugin"/>
     <param name="onload" value="true"/>
@@ -76,8 +67,6 @@
   <preference name="SplashScreenDelay" value="3000" />
   <preference name="FadeSplashScreenDuration" value="300" />
   <preference name="AndroidLaunchMode" value="singleTask" />
-  <preference name="StatusBarStyle" value="lightcontent" />
-  <preference name="StatusBarBackgroundColor" value="#99044962" />
   <preference name="KeyboardDisplayRequiresUserAction" value="false" />
   <preference name="KeyboardResize" value="true" />
   <preference name="KeyboardResizeMode" value="ionic" />

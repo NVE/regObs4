@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { SaveAndGoBackButtonComponent } from './components/save-and-go-back-button/save-and-go-back-button.component';
 import { TextCommentComponent } from './components/text-comment/text-comment.component';
-import { AddPictureItemComponent } from './components/add-picture-item/add-picture-item.component';
+import { EditImagesComponent } from './components/edit-images/edit-images.component';
 import { KdvRadiobuttonListComponent } from './components/kdv-radiobutton-list/kdv-radiobutton-list.component';
 import { NavigationButtonsComponent } from './components/navigation-buttons/navigation-buttons.component';
 import { SetLocationInMapComponent } from './components/set-location-in-map/set-location-in-map.component';
@@ -21,20 +21,23 @@ import { NumericInputComponent } from './components/numeric-input/numeric-input.
 import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-modal/numeric-input-modal.module';
 import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
-import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
+import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.component';
+import { BlobImageComponent } from './components/blob-image/blob-image.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   imports: [
     SharedModule,
     MapModule,
     HelpModalPageModule,
-    NumericInputModalPageModule
+    NumericInputModalPageModule,
+    NgxFileDropModule
   ],
   exports: [
     SharedModule,
     MapModule,
     SaveAndGoBackButtonComponent,
-    AddPictureItemComponent,
+    EditImagesComponent,
     TextCommentComponent,
     KdvRadiobuttonListComponent,
     NavigationButtonsComponent,
@@ -53,11 +56,12 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NumericInputComponent,
     NumericInputModalPageModule,
     CompressionTestListComponent,
-    KdvSelectComponent
+    KdvSelectComponent,
+    BlobImageComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
-    AddPictureItemComponent,
+    EditImagesComponent,
     TextCommentComponent,
     KdvRadiobuttonListComponent,
     NavigationButtonsComponent,
@@ -74,7 +78,8 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     YesNoSelectComponent,
     NumericInputComponent,
     CompressionTestListComponent,
-    KdvSelectComponent
+    KdvSelectComponent,
+    BlobImageComponent
   ]
 })
 export class SharedComponentsModule {}

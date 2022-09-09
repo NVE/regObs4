@@ -8,6 +8,6 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <app-observation-list-card *ngIf="obs" [obs]="obs"></app-observation-list-card>
+<ion-content *ngIf="registrationViewModel$ | async as registration">
+  <app-observation-list-card [obs]="registration"></app-observation-list-card>
 </ion-content>

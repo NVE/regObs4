@@ -7,11 +7,14 @@ import moment from 'moment';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
+/**
+ * Håndterer spinnere og status på når sist oppdatering har skjedd.
+ * Trenger nye data og hentes? osv.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class DataLoadService {
-  constructor() {}
 
   async startLoading(id: string, totalItems?: number) {
     const existingItem = await this.getState(id);

@@ -19,7 +19,7 @@ npm install --legacy-peer-deps
 Run app in browser:
 
 ```
-ionic serve
+npm run start
 ```
 
 [More info](https://ionicframework.com/docs/building/running)
@@ -33,6 +33,7 @@ npx cap run android
 ```
 
 [More info](https://ionicframework.com/docs/building/android)
+We use Capacitor (and not Cordova) to build the native app.
 A few tips on development environment setup on Windows:
 
 - Android SDK and Gradle cache may give you authorization trouble if installed in your user profile folder.
@@ -56,7 +57,7 @@ C:\gradle\gradle-6.7.1\bin
 ```
 
 - You have to uninstall the regular RegObs app from your phone in order to debug
-- This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+- This may be helpful for device connection problems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
 #### Error: package android.support.v4.content does not exist
 [More info] https://github.com/ionic-team/capacitor/issues/2822
@@ -135,6 +136,8 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 
 - Gå til https://appstoreconnect.apple.com/
 - Bruk + øverst til venstre for "Opprett ny utgave". Det kan ta et par dager før du får godkjent den nye versjonen.
+- Oppdater versjonsnotater - engelsk og norsk
+- Velg riktig bygg
 - Når versjonen er godkjent, kan du sende den til produksjon
 
 ### Produksjonssette på Google Play
@@ -142,6 +145,7 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 - For å rulle videre fra beta til produksjon, logg på https://play.google.com/console/
 - Siste versjon av appen finner du under "Tester/Åpen testing"
 - Velg "Kopier utgaven til et annet spor"
+- Oppdater versjonsnotater hvis nødvendig - engelsk og norsk
 - Pass på at 100% av brukerne får tilgang. Mulig du må endre andelen fra 20 til 100% etterpå.
 
 ### Flette inn release-greina
@@ -154,19 +158,9 @@ git push develop
 git push master
 ```
 
-# How to run lint and format on save using vscode
+# Linting and formatting
 
-Guide taken from: https://dev.to/dreiv/using-eslint-and-prettier-with-vscode-in-an-angular-project-42ib
-
-Install the following Visual Studio Code extensions:
-
-```
-- dbaeumer.vscode-eslint
-- esbenp.prettier-vscode
-```
-
-Vs code settings is checked in to source control:
-.vscode/settings.json
+We use eslint for linting and formatting. Rules are specified in .eslintrc.js.
 
 To run lint manually and autofix, run:
 
@@ -199,14 +193,11 @@ ncu -u
 ```
 
 # How to update models from Regobs API
-
-Models are automatically updated on build.
-To test models from test API, change api endpoint in ng-swagger-gen.json
-npm script generate-swagger-api-module is called from build script.
-
+Check the api endpoint named "swagger" in ng-swagger-gen.json is the endpoint you like to base the models on.
 ```
-npm run build
+npm run generate-swagger-api-module
 ```
+Revert changes in regobs-api.module.ts
 
 # How to update regions and polygons
 

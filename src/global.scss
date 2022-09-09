@@ -1,24 +1,25 @@
 // http://ionicframework.com/docs/theming/
-@import "~@ionic/angular/css/normalize.css";
-@import "~@ionic/angular/css/structure.css";
-@import "~@ionic/angular/css/typography.css";
-@import "~@ionic/angular/css/core.css";
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/core.css';
 
-@import "~@ionic/angular/css/padding.css";
-@import "~@ionic/angular/css/float-elements.css";
-@import "~@ionic/angular/css/text-alignment.css";
-@import "~@ionic/angular/css/text-transformation.css";
-@import "~@ionic/angular/css/flex-utils.css";
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
 
-@import "app/core/helpers/leaflet/user-marker/user-marker.scss";
+@import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
 
 /* Font for arrows */
 @font-face {
-  font-family: "Custom Arrows";
+  font-family: 'Custom Arrows';
   font-style: normal;
   font-weight: 400;
-  src: url("/assets/fonts/Calibri.woff") format("woff2"), url("/assets/fonts/Calibri.woff") format("woff"),
-    url("/assets/fonts/Calibri.ttf") format("truetype"); /* Safari, Android, iOS */
+  src: url('/assets/fonts/Calibri.woff') format('woff2'),
+  url('/assets/fonts/Calibri.woff') format('woff'),
+  url('/assets/fonts/Calibri.ttf') format('truetype'); /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
 }
 
@@ -85,7 +86,7 @@
   --ion-text-color-heading: #222222;
   --ion-text-color-heading-white-pages: var(--ion-color-varsom-blue-dark-2);
   --ion-color-step-600: var(--ion-text-color-heading);
-  --ion-font-family: "Custom Arrows", "Source Sans Pro";
+  --ion-font-family: 'Custom Arrows', 'Source Sans Pro';
   --ion-color-varsom-test-header: #700cef;
   --ion-color-varsom-demo-header: var(--ion-color-danger);
   --background-color-menu: #f7f7f7;
@@ -100,6 +101,8 @@
   --geo-color-snow: #468eb3;
   --geo-color-dirt: #735e2f;
   --fab-fullscreen-top: calc(10px + var(--ion-safe-area-top, 0px));
+  --border-radius-large: 16px;
+  --images-overflow-background: #ececec;
 }
 
 .ion-color-varsom-orange {
@@ -133,22 +136,27 @@
   --ion-color-base: var(--ion-color-warninglevel-0) !important;
   --ion-color-contrast: #fff;
 }
+
 .ion-color-warninglevel-1 {
   --ion-color-base: var(--ion-color-warninglevel-1) !important;
   --ion-color-contrast: #fff;
 }
+
 .ion-color-warninglevel-2 {
   --ion-color-base: var(--ion-color-warninglevel-2) !important;
   --ion-color-contrast: #fff;
 }
+
 .ion-color-warninglevel-3 {
   --ion-color-base: var(--ion-color-warninglevel-3) !important;
   --ion-color-contrast: #fff;
 }
+
 .ion-color-warninglevel-4 {
   --ion-color-base: var(--ion-color-warninglevel-4) !important;
   --ion-color-contrast: #fff;
 }
+
 .ion-color-warninglevel-5 {
   --ion-color-base: var(--ion-color-warninglevel-5) !important;
   --ion-color-contrast: #fff;
@@ -188,8 +196,8 @@ ion-item {
     }
   }
 
-  ion-button[slot="end"],
-  ion-icon[slot="end"] {
+  ion-button[slot='end'],
+  ion-icon[slot='end'] {
     align-self: center;
   }
 
@@ -209,10 +217,12 @@ ion-list {
       font-weight: var(--list-header-font-weight);
       text-transform: uppercase;
     }
+
     &.subheader {
       text-transform: none;
       color: var(--ion-color-medium);
     }
+
     ion-label {
       margin-bottom: 10px;
       margin-top: 10px;
@@ -222,6 +232,7 @@ ion-list {
   &.list-ios {
     background: var(--ion-background-color);
   }
+
   &.list-md {
     padding-top: 0px;
     background: var(--ion-background-color);
@@ -232,6 +243,7 @@ ion-list {
   /* https://github.com/ionic-team/ionic/issues/17233 */
   overflow-y: scroll !important;
 }
+
 .sc-ion-action-sheet-ios-h,
 .sc-ion-action-sheet-md-h {
   --ion-background-color: var(--ion-item-background);
@@ -254,6 +266,7 @@ ion-alert {
   button.full-width {
     width: 100%;
   }
+
   button.normal-weight {
     font-weight: 400 !important;
   }
@@ -264,7 +277,7 @@ ion-radio-group {
     margin: 10px 8px 10px 0;
   }
 
-  .in-item[slot="start"] {
+  .in-item[slot='start'] {
     margin-right: 20px;
   }
 
@@ -282,6 +295,7 @@ ion-button {
   &.button-full:not(.button-round) {
     --border-radius: 2px;
   }
+
   text-transform: inherit;
   font-size: var(--ion-button-font-size, 15px);
   letter-spacing: inherit;
@@ -322,15 +336,19 @@ ion-toolbar {
   &.app-header-color {
     --ion-text-color: #fff;
     --ion-color-primary: #fff;
+
     &.trip-running {
       --background: var(--ion-color-success);
     }
+
     &.prod {
       --background: var(--ion-color-varsom-blue);
     }
+
     &.demo {
       --background: var(--ion-color-varsom-demo-header);
     }
+
     &.test {
       --background: var(--ion-color-varsom-test-header);
     }
@@ -442,10 +460,10 @@ ion-toast {
 .shadow-marker {
   // filter: drop-shadow(5px 0px 5px #000);
   &:after {
-    content: "";
+    content: '';
     width: 42px;
     height: 42px;
-    background: url("/leaflet/marker-shadow.png") no-repeat;
+    background: url('/leaflet/marker-shadow.png') no-repeat;
     background-size: 100%;
     top: 0px;
     right: -9px;
@@ -463,6 +481,7 @@ ion-toast {
 
   > * {
     width: 100%;
+
     &:last-child {
       margin-top: auto;
     }
@@ -473,6 +492,7 @@ ion-toast {
   .swiper-pagination-bullets {
     bottom: 25px;
   }
+
   .swiper-pagination-bullet {
     height: 12px;
     width: 12px;
@@ -495,6 +515,7 @@ ion-toast {
 .summary-item {
   ion-label {
     margin: 0 !important;
+
     p {
       line-height: 23px;
       font-size: 13px;
@@ -516,3 +537,132 @@ ion-toast {
   float: left;
   margin-right: 8px;
 }
+
+@media only screen and (min-width: 950px) {
+  ion-card {
+    max-width: 1200px;
+    border-radius: var(--border-radius-large) !important;
+    margin: 16px auto 0 !important;
+  }
+
+  ion-item-divider {
+    margin: 0 auto;
+    margin-bottom: 8px;
+  }
+}
+
+.drop-zone {
+  height: 100%;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  position: relative;
+  border: 2px dashed gray;
+  border-radius: 3px;
+  padding: 8px;
+
+  &:hover {
+    background-color: darkgrey;
+  }
+
+  .drop-zone-content {
+    padding: 8px;
+
+    .mat-icon {
+      color: black;
+    }
+
+    div {
+      color: lightgreen;
+      text-align: center;
+    }
+  }
+
+  button {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+ion-select-popover ion-list ion-item ion-radio {
+  --color: transparent;
+  --color-checked: transparent;
+}
+
+@media only screen and (min-width: 768px) {
+  .sc-ion-modal-md-h {
+    --width: 100%;
+    --height: 100%;
+  }
+
+  .editCopyrightModal {
+    --width: 500px;
+    --height: 250px;
+  }
+
+  ion-item {
+    --background-hover: var(--ion-color-varsom-blue-light-2);
+    --background-hover-opacity: 0.5;
+    cursor: pointer;
+  }
+}
+
+.textOverlay {
+  bottom: 0;
+  width: 100%;
+  text-align: left;
+  display: flex;
+}
+
+.sc-ion-popover-md-h {
+  --width: 350px;
+  --backdrop-opacity: var(--ion-backdrop-opacity, 0);
+}
+
+.padding-medium {
+  padding-left: 8px;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.native-input.sc-ion-input-md {
+  margin-left: 8px;
+}
+
+/*
+ + Stilsetting for små bilder i enkel snøobservasjon for å unngå deprecated "::ng-deep".
+ */
+
+// Stil for tredjeparts "drag-n-drop"-komponent på web.
+ngx-file-drop div.ngx-file-drop__content {
+  justify-content: flex-start !important;
+}
+
+// Overskrive "drag-n-drop"-området i enkel observasjon (ikke i modal).
+app-simple-snow-obs app-edit-images div.ngx-file-drop__content {
+  height: 30px !important;
+}
+
+// Sørger for at bildene holder seg i toppen av skjermen mens
+// opplastningskomponenten holder seg i bunn.
+app-edit-images .images {
+  margin-bottom: auto;
+}
+
+app-thumbnails .images .image-preview {
+  border-radius: 2px;
+}
+
+/*
+ - Stilsetting for små bilder i enkel snøobservasjon.
+ */

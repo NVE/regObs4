@@ -1,12 +1,16 @@
 {
-  "i18n-ally.localesPaths": "node_modules/@varsom-regobs-common/translations/app/i18n",
+  "i18n-ally.localesPaths": "src/assets/i18n",
+  "i18n-ally.keystyle": "nested",
   "[javascript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
     "editor.formatOnSave": true,
-    "editor.rulers": [120]
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.rulers": [
+      120
+    ]
   },
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
@@ -14,14 +18,24 @@
       "source.fixAll.eslint": true
     },
     "editor.formatOnSave": true,
-    "editor.rulers": [120]
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.rulers": [
+      120
+    ]
   },
   "[json]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    },
-    "editor.formatOnSave": true
-},
-"i18n-ally.keystyle": "nested"
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "vscode.css-language-features",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
+  }
 }

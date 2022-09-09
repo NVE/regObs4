@@ -1,49 +1,36 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
-import { IRegistration } from '../../../../models/registration.model';
-import { RegistrationService } from '../../../../services/registration.service';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-temp',
   templateUrl: './snow-temp.component.html',
   styleUrls: ['./snow-temp.component.scss']
 })
-export class SnowTempComponent implements OnInit {
-  @Input() reg: IRegistration;
+export class SnowTempComponent {
+  @Input() draft: RegistrationDraft;
   private snowTempModal: HTMLIonModalElement;
 
   get tempProfile() {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowTemp
-    ) {
-      return this.reg.request.SnowProfile2.SnowTemp;
-    }
-    return {};
+    return this.draft.registration.SnowProfile2.SnowTemp;
   }
 
   get isEmpty() {
-    return IsEmptyHelper.isEmpty(this.tempProfile);
+    return isEmpty(this.tempProfile);
   }
 
-  constructor(
-    private modalContoller: ModalController,
-    private registrationService: RegistrationService
-  ) {}
-
-  ngOnInit() {}
+  constructor(private modalContoller: ModalController, private draftService: DraftRepositoryService) {}
 
   async openModal() {
     if (!this.snowTempModal) {
-      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
+      await this.draftService.save(this.draft); // Save registration before open modal page
       this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {
-          regId: this.reg.id
+          uuid: this.draft.uuid
         }
       });
       this.snowTempModal.present();

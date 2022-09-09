@@ -70,6 +70,9 @@ import 'src/global-polyfill';
  */
 // import 'intl/locale-data/jsonp/en';
 
+import 'zone.js/dist/zone-patch-rxjs';
+(window as any).global = window;
+
 // https://github.com/ionic-team/capacitor/issues/1564
 class FileReaderA extends window.FileReader {
   constructor() {
@@ -78,5 +81,9 @@ class FileReaderA extends window.FileReader {
     return zoneOriginalInstance || this;
   }
 }
-
 window.FileReader = FileReaderA;
+
+//TODO: Remove this when we upgrade rxdb
+//It is needed by the library generate-function which is used by our version of rxdb
+//To make it to work we had to install the library 'util' and create this polyfill:
+(window as any).process = { env: { DEBUG: undefined }, };

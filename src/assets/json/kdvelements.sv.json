@@ -22,8 +22,13 @@
         "Description": null
       },
       {
-        "Id": 212,
-        "Name": "Snötäcke med mycket vatten",
+        "Id": 204,
+        "Name": "Ytvatten i terrängen",
+        "Description": null
+      },
+      {
+        "Id": 205,
+        "Name": "Otillräcklig dränering",
         "Description": null
       },
       {
@@ -37,26 +42,6 @@
         "Description": null
       },
       {
-        "Id": 230,
-        "Name": "Erosion längs bäckar/älvar",
-        "Description": null
-      },
-      {
-        "Id": 214,
-        "Name": "Bäckar hittar nya vägar",
-        "Description": null
-      },
-      {
-        "Id": 204,
-        "Name": "Ytvatten i terrängen",
-        "Description": null
-      },
-      {
-        "Id": 205,
-        "Name": "Otillräcklig dränering",
-        "Description": null
-      },
-      {
         "Id": 208,
         "Name": "Sprickor/krypning i terräng",
         "Description": null
@@ -64,6 +49,16 @@
       {
         "Id": 209,
         "Name": "Observerat jordskred",
+        "Description": null
+      },
+      {
+        "Id": 212,
+        "Name": "Snötäcke med mycket vatten",
+        "Description": null
+      },
+      {
+        "Id": 214,
+        "Name": "Bäckar hittar nya vägar",
         "Description": null
       },
       {
@@ -75,6 +70,11 @@
         "Id": 223,
         "Name": "\"Lutande träd\"",
         "Description": "Träd som böjs"
+      },
+      {
+        "Id": 230,
+        "Name": "Erosion längs bäckar/älvar",
+        "Description": null
       },
       {
         "Id": 299,
@@ -89,6 +89,11 @@
         "Description": null
       },
       {
+        "Id": 211,
+        "Name": "Människor",
+        "Description": null
+      },
+      {
         "Id": 220,
         "Name": "Väg",
         "Description": null
@@ -99,18 +104,13 @@
         "Description": null
       },
       {
-        "Id": 260,
-        "Name": "Bebyggelse",
-        "Description": null
-      },
-      {
-        "Id": 211,
-        "Name": "Människor",
-        "Description": null
-      },
-      {
         "Id": 251,
         "Name": "Skogs- och jordbruksareal",
+        "Description": null
+      },
+      {
+        "Id": 260,
+        "Name": "Bebyggelse",
         "Description": null
       },
       {
@@ -141,11 +141,6 @@
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Stenras",
-        "Description": null
-      },
-      {
         "Id": 6,
         "Name": "Stenslag",
         "Description": null
@@ -163,6 +158,11 @@
       {
         "Id": 10,
         "Name": "Kvicklera-skred",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Stenras",
         "Description": null
       }
     ],
@@ -284,11 +284,6 @@
         "Description": null
       },
       {
-        "Id": 714,
-        "Name": "Isfiskare",
-        "Description": null
-      },
-      {
         "Id": 711,
         "Name": "Skridskoåkare",
         "Description": null
@@ -304,8 +299,8 @@
         "Description": null
       },
       {
-        "Id": 719,
-        "Name": "Person skadad av islossning",
+        "Id": 714,
+        "Name": "Isfiskare",
         "Description": null
       },
       {
@@ -324,9 +319,24 @@
         "Description": null
       },
       {
-        "Id": 725,
-        "Name": "Sparkstötting",
+        "Id": 719,
+        "Name": "Person skadad av islossning",
         "Description": null
+      },
+      {
+        "Id": 720,
+        "Name": "Snöskoter på isen",
+        "Description": null
+      },
+      {
+        "Id": 721,
+        "Name": "Bil på isen",
+        "Description": null
+      },
+      {
+        "Id": 722,
+        "Name": "ATV",
+        "Description": "All Terrain Vehicle"
       },
       {
         "Id": 723,
@@ -339,18 +349,8 @@
         "Description": null
       },
       {
-        "Id": 720,
-        "Name": "Snöskoter på isen",
-        "Description": null
-      },
-      {
-        "Id": 722,
-        "Name": "ATV",
-        "Description": "All Terrain Vehicle"
-      },
-      {
-        "Id": 721,
-        "Name": "Bil på isen",
+        "Id": 725,
+        "Name": "Sparkstötting",
         "Description": null
       },
       {
@@ -389,6 +389,21 @@
         "Description": null
       },
       {
+        "Id": 775,
+        "Name": "Anchor ice dam",
+        "Description": null
+      },
+      {
+        "Id": 776,
+        "Name": "Frazil ice plugging",
+        "Description": null
+      },
+      {
+        "Id": 777,
+        "Name": "Ispropp",
+        "Description": null
+      },
+      {
         "Id": 790,
         "Name": "Annat",
         "Description": null
@@ -406,11 +421,6 @@
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Is längs land",
-        "Description": null
-      },
-      {
         "Id": 2,
         "Name": "Delvis istäckt vid mätpunkten",
         "Description": null
@@ -421,13 +431,13 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "Hela sjön istäckt",
+        "Id": 10,
+        "Name": "Islossning längs land",
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Islossning längs land",
+        "Id": 11,
+        "Name": "Is längs land",
         "Description": null
       },
       {
@@ -436,13 +446,18 @@
         "Description": null
       },
       {
-        "Id": 41,
-        "Name": "Drivande kravis på älven",
+        "Id": 21,
+        "Name": "Hela sjön istäckt",
         "Description": null
       },
       {
         "Id": 40,
         "Name": "Isrörelse i älv",
+        "Description": null
+      },
+      {
+        "Id": 41,
+        "Name": "Drivande kravis på älven",
         "Description": null
       },
       {
@@ -458,14 +473,14 @@
         "Description": null
       },
       {
-        "Id": 2,
-        "Name": "Förr ingen is, nu vid stranden",
-        "Description": "Ingen is hittills den här säsongen. Idag är längs land."
-      },
-      {
         "Id": 1,
         "Name": "Isfritt, nu först vid mätplats",
         "Description": "Ingen is på mätplatsen före idag. Det kan ha varit is längs stranden. Mätplatsen är vanligtvis något ute på vattnet."
+      },
+      {
+        "Id": 2,
+        "Name": "Förr ingen is, nu vid stranden",
+        "Description": "Ingen is hittills den här säsongen. Idag är längs land."
       },
       {
         "Id": 3,
@@ -539,32 +554,32 @@
       {
         "Id": 0,
         "Name": "Ej angivet",
-        "Description": ""
+        "Description": null
       },
       {
         "Id": 10,
         "Name": "Ej åkbar",
-        "Description": ""
+        "Description": null
       },
       {
         "Id": 20,
         "Name": "Tvivelaktiga förhållanden",
-        "Description": ""
+        "Description": null
       },
       {
         "Id": 30,
         "Name": "Normala förhållanden",
-        "Description": ""
+        "Description": null
       },
       {
         "Id": 40,
         "Name": "Mycket goda förhållanden",
-        "Description": ""
+        "Description": null
       },
       {
         "Id": 50,
         "Name": "Drömförhållanden",
-        "Description": ""
+        "Description": null
       }
     ],
     "Ice_IceCapacityKDV": [
@@ -626,6 +641,11 @@
         "Description": null
       },
       {
+        "Id": 60,
+        "Name": "Isnedfall",
+        "Description": null
+      },
+      {
         "Id": 99,
         "Name": "Annat (skriv kommentar)",
         "Description": null
@@ -653,11 +673,6 @@
         "Description": null
       },
       {
-        "Id": 4,
-        "Name": "Färska sprickor",
-        "Description": null
-      },
-      {
         "Id": 5,
         "Name": "Stort snöfall",
         "Description": "Används i elrapp"
@@ -678,6 +693,16 @@
         "Description": null
       },
       {
+        "Id": 14,
+        "Name": "Shooting cracks",
+        "Description": null
+      },
+      {
+        "Id": 15,
+        "Name": "Glide cracks",
+        "Description": null
+      },
+      {
         "Id": 99,
         "Name": "Annat (skriv kommentar)",
         "Description": null
@@ -695,13 +720,13 @@
         "Description": null
       },
       {
-        "Id": 113,
-        "Name": "Offpistskidåkning",
+        "Id": 112,
+        "Name": "Skidåkning i anläggning",
         "Description": null
       },
       {
-        "Id": 112,
-        "Name": "Skidåkning i anläggning",
+        "Id": 113,
+        "Name": "Offpistskidåkning",
         "Description": null
       },
       {
@@ -725,13 +750,13 @@
         "Description": null
       },
       {
-        "Id": 130,
-        "Name": "Snöskoteråkning",
+        "Id": 120,
+        "Name": "Väg",
         "Description": null
       },
       {
-        "Id": 120,
-        "Name": "Väg",
+        "Id": 130,
+        "Name": "Snöskoteråkning",
         "Description": null
       },
       {
@@ -757,23 +782,23 @@
         "Description": null
       },
       {
-        "Id": 12,
-        "Name": "Torr lössnölavin",
-        "Description": null
-      },
-      {
         "Id": 11,
         "Name": "Våt lössnölavin",
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Torr flaklavin",
+        "Id": 12,
+        "Name": "Torr lössnölavin",
         "Description": null
       },
       {
         "Id": 21,
         "Name": "Våt flaklavin",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Torr flaklavin",
         "Description": null
       },
       {
@@ -908,24 +933,24 @@
         "Description": "Facetterad snö nära marken"
       },
       {
-        "Id": 19,
-        "Name": "Fasetterad snö under skare",
-        "Description": "Fasetterad snö under skare"
-      },
-      {
         "Id": 18,
         "Name": "Facetterad snö över skare",
         "Description": "Facetterad snö över skare"
       },
       {
-        "Id": 22,
-        "Name": "Ackumulering av vatten över lager",
-        "Description": "Ackumulering av vatten över lager"
+        "Id": 19,
+        "Name": "Fasetterad snö under skare",
+        "Description": "Fasetterad snö under skare"
       },
       {
         "Id": 20,
         "Name": "Smälter nära marken",
         "Description": "Smälter nära marken"
+      },
+      {
+        "Id": 22,
+        "Name": "Ackumulering av vatten över lager",
+        "Description": "Ackumulering av vatten över lager"
       },
       {
         "Id": 24,
@@ -1075,6 +1100,11 @@
         "Description": null
       },
       {
+        "Id": 22,
+        "Name": "Naturligt utlöst",
+        "Description": null
+      },
+      {
         "Id": 30,
         "Name": "Mycket svårt att utlösa",
         "Description": null
@@ -1092,11 +1122,6 @@
       {
         "Id": 60,
         "Name": "Mycket lätt att utlösa",
-        "Description": null
-      },
-      {
-        "Id": 22,
-        "Name": "Naturligt utlöst",
         "Description": null
       }
     ],
@@ -1299,16 +1324,6 @@
         "Description": null
       },
       {
-        "Id": 26,
-        "Name": "Mänskligt utlöst",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Utlöst av snöskoter",
-        "Description": null
-      },
-      {
         "Id": 22,
         "Name": "Fjärrutlöst",
         "Description": null
@@ -1321,6 +1336,16 @@
       {
         "Id": 25,
         "Name": "Utlöst med sprängämnen",
+        "Description": null
+      },
+      {
+        "Id": 26,
+        "Name": "Mänskligt utlöst",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Utlöst av snöskoter",
         "Description": null
       },
       {
@@ -1393,18 +1418,8 @@
         "Description": null
       },
       {
-        "Id": 101,
-        "Name": "Väldigt mycket lös snö (> 30 cm)",
-        "Description": null
-      },
-      {
-        "Id": 102,
-        "Name": "Mycket lös snö (10-30 cm)",
-        "Description": null
-      },
-      {
-        "Id": 103,
-        "Name": "Viss lös snö (10-30 cm)",
+        "Id": 50,
+        "Name": "Ytliga facetter",
         "Description": null
       },
       {
@@ -1418,13 +1433,23 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Ytliga facetter",
+        "Id": 101,
+        "Name": "Väldigt mycket lössnö (> 30 cm)",
         "Description": null
       },
       {
-        "Id": 107,
-        "Name": "Skare",
+        "Id": 102,
+        "Name": "Mycket lössnö (10-30 cm)",
+        "Description": null
+      },
+      {
+        "Id": 103,
+        "Name": "Lite lössnö (1-10 cm)",
+        "Description": null
+      },
+      {
+        "Id": 104,
+        "Name": "Våt lössnö",
         "Description": null
       },
       {
@@ -1438,8 +1463,8 @@
         "Description": null
       },
       {
-        "Id": 104,
-        "Name": "Våt lössnö",
+        "Id": 107,
+        "Name": "Skare",
         "Description": null
       },
       {
@@ -1536,26 +1561,6 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "ECTPV",
-        "Description": null
-      },
-      {
-        "Id": 22,
-        "Name": "ECTP",
-        "Description": null
-      },
-      {
-        "Id": 23,
-        "Name": "ECTN",
-        "Description": null
-      },
-      {
-        "Id": 24,
-        "Name": "ECTX",
-        "Description": null
-      },
-      {
         "Id": 5,
         "Name": "LBT",
         "Description": null
@@ -1583,6 +1588,26 @@
       {
         "Id": 15,
         "Name": "CTN",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "ECTPV",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "ECTP",
+        "Description": null
+      },
+      {
+        "Id": 23,
+        "Name": "ECTN",
+        "Description": null
+      },
+      {
+        "Id": 24,
+        "Name": "ECTX",
         "Description": null
       }
     ],
@@ -2006,6 +2031,38 @@
       {
         "Id": 13,
         "Name": "Hela lagret",
+        "Description": null
+      }
+    ],
+    "Snow_SkiConditionsKDV": [
+      {
+        "Id": 0,
+        "Name": "Ej angivet",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Dåligt",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Ok",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Bra",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Mycket bra",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Perfekt",
         "Description": null
       }
     ],
@@ -2514,13 +2571,13 @@
         "Description": null
       },
       {
-        "Id": 25,
-        "Name": "Evakuering",
+        "Id": 20,
+        "Name": "Endast materiell skada",
         "Description": null
       },
       {
-        "Id": 20,
-        "Name": "Endast materiell skada",
+        "Id": 25,
+        "Name": "Evakuering",
         "Description": null
       },
       {
@@ -2561,6 +2618,11 @@
         "Description": "Okänd kompetens om snö."
       },
       {
+        "Id": 105,
+        "Name": "A",
+        "Description": "Automatiserad service."
+      },
+      {
         "Id": 110,
         "Name": "*",
         "Description": "Observatören har grundläggande färdigheter för att bedöma lavinfaran. Observatören är inte utbildad i hur regObs och Varsom kommunicerar lavinfara."
@@ -2584,11 +2646,6 @@
         "Id": 150,
         "Name": "*****",
         "Description": "Observatören tillhör en varningstjänst."
-      },
-      {
-        "Id": 105,
-        "Name": "A",
-        "Description": "Automatiserad service."
       },
       {
         "Id": 200,
@@ -2795,26 +2852,6 @@
         "Description": null
       },
       {
-        "Id": 60,
-        "Name": "Privat tur",
-        "Description": null
-      },
-      {
-        "Id": 55,
-        "Name": "Undervisning och kurser",
-        "Description": null
-      },
-      {
-        "Id": 70,
-        "Name": "Guidning",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Uppdrag för arbetsgivaren",
-        "Description": null
-      },
-      {
         "Id": 20,
         "Name": "Vanligt uppdrag för lavinvarningstjänsten",
         "Description": null
@@ -2827,6 +2864,26 @@
       {
         "Id": 40,
         "Name": "Beställt uppdrag för lavinvarningstjänsten",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Uppdrag för arbetsgivaren",
+        "Description": null
+      },
+      {
+        "Id": 55,
+        "Name": "Undervisning och kurser",
+        "Description": null
+      },
+      {
+        "Id": 60,
+        "Name": "Privat tur",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Guidning",
         "Description": null
       }
     ],
@@ -2929,19 +2986,153 @@
         "Description": null
       },
       {
-        "Id": 61,
-        "Name": "Underkänd av datahanteraren",
+        "Id": 52,
+        "Name": "Raderad av admin",
         "Description": null
       },
       {
-        "Id": 52,
-        "Name": "Raderad av admin",
+        "Id": 61,
+        "Name": "Underkänd av datahanteraren",
         "Description": null
       },
       {
         "Id": 101,
         "Name": "För administrativt bruk",
         "Description": "Observation eller grupp har en admin-funktion. Det är dold som om det raderades."
+      }
+    ],
+    "RegistrationKDV": [
+      {
+        "Id": 10,
+        "Name": "Anteckningar",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Olycka / tillbud",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Tecken på fara",
+        "Description": null
+      },
+      {
+        "Id": 14,
+        "Name": "Skador",
+        "Description": "Gäller alla geohazards. Används bara för vatten för närvarande."
+      },
+      {
+        "Id": 21,
+        "Name": "Väder",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Snötäcke",
+        "Description": null
+      },
+      {
+        "Id": 25,
+        "Name": "Test",
+        "Description": null
+      },
+      {
+        "Id": 26,
+        "Name": "Lavinaktivitet",
+        "Description": null
+      },
+      {
+        "Id": 31,
+        "Name": "Bedömning av lavinfara",
+        "Description": null
+      },
+      {
+        "Id": 32,
+        "Name": "Lavinproblem",
+        "Description": null
+      },
+      {
+        "Id": 33,
+        "Name": "Lavinaktivitet",
+        "Description": null
+      },
+      {
+        "Id": 36,
+        "Name": "Snöprofil",
+        "Description": "Snöprofil"
+      },
+      {
+        "Id": 50,
+        "Name": "istjocklek",
+        "Description": null
+      },
+      {
+        "Id": 51,
+        "Name": "Istäckningsgrad",
+        "Description": null
+      },
+      {
+        "Id": 62,
+        "Name": "Vattennivå",
+        "Description": "Ny vattennivå för översvämningsdatabasprojekt"
+      },
+      {
+        "Id": 71,
+        "Name": "Jordskred",
+        "Description": null
+      },
+      {
+        "Id": 80,
+        "Name": "Händelser",
+        "Description": "Händelser"
+      },
+      {
+        "Id": 81,
+        "Name": "Laviner och tecken på fara",
+        "Description": "Laviner och tecken på fara"
+      },
+      {
+        "Id": 82,
+        "Name": "Snötäcke och väder",
+        "Description": "Snötäcke och väder"
+      },
+      {
+        "Id": 83,
+        "Name": "Bedömningar och problem",
+        "Description": "Bedömningar och problem"
+      }
+    ],
+    "SourceKDV": [
+      {
+        "Id": 0,
+        "Name": "Ej angivet",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Jag har sett detta",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Jag har hört detta",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Jag har läst i nyheterna",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Jag har sett bild/webkamera",
+        "Description": null
+      },
+      {
+        "Id": 23,
+        "Name": "Antagen/simulerad",
+        "Description": null
       }
     ]
   },
@@ -3095,6 +3286,183 @@
         "AvalancheExtTID": 25,
         "AvalCauseTID": 22
       }
-    ]
+    ],
+    "RegistrationTypesV": {
+      "10": [
+        {
+          "Id": 80,
+          "Name": "Händelser",
+          "SubTypes": [
+            {
+              "Id": 26,
+              "Name": "Lavinaktivitet",
+              "SortOrder": 12
+            },
+            {
+              "Id": 11,
+              "Name": "Olycka / tillbud",
+              "SortOrder": 97
+            }
+          ],
+          "SortOrder": 80
+        },
+        {
+          "Id": 81,
+          "Name": "Laviner och tecken på fara",
+          "SubTypes": [
+            {
+              "Id": 13,
+              "Name": "Tecken på fara",
+              "SortOrder": 10
+            },
+            {
+              "Id": 26,
+              "Name": "Lavinaktivitet",
+              "SortOrder": 12
+            },
+            {
+              "Id": 33,
+              "Name": "Lavinaktivitet",
+              "SortOrder": 13
+            }
+          ],
+          "SortOrder": 81
+        },
+        {
+          "Id": 82,
+          "Name": "Snötäcke och väder",
+          "SubTypes": [
+            {
+              "Id": 22,
+              "Name": "Snötäcke",
+              "SortOrder": 14
+            },
+            {
+              "Id": 21,
+              "Name": "Väder",
+              "SortOrder": 14
+            },
+            {
+              "Id": 25,
+              "Name": "Test",
+              "SortOrder": 16
+            },
+            {
+              "Id": 36,
+              "Name": "Snöprofil",
+              "SortOrder": 36
+            }
+          ],
+          "SortOrder": 82
+        },
+        {
+          "Id": 83,
+          "Name": "Bedömningar och problem",
+          "SubTypes": [
+            {
+              "Id": 32,
+              "Name": "Lavinproblem",
+              "SortOrder": 17
+            },
+            {
+              "Id": 31,
+              "Name": "Bedömning av lavinfara",
+              "SortOrder": 18
+            }
+          ],
+          "SortOrder": 83
+        },
+        {
+          "Id": 10,
+          "Name": "Anteckningar",
+          "SubTypes": [],
+          "SortOrder": 98
+        }
+      ],
+      "20": [
+        {
+          "Id": 13,
+          "Name": "Tecken på fara",
+          "SubTypes": [],
+          "SortOrder": 10
+        },
+        {
+          "Id": 71,
+          "Name": "Jordskred",
+          "SubTypes": [],
+          "SortOrder": 71
+        },
+        {
+          "Id": 10,
+          "Name": "Anteckningar",
+          "SubTypes": [],
+          "SortOrder": 98
+        }
+      ],
+      "60": [
+        {
+          "Id": 13,
+          "Name": "Tecken på fara",
+          "SubTypes": [],
+          "SortOrder": 10
+        },
+        {
+          "Id": 14,
+          "Name": "Skador",
+          "SubTypes": [],
+          "SortOrder": 14
+        },
+        {
+          "Id": 62,
+          "Name": "Vattennivå",
+          "SubTypes": [],
+          "SortOrder": 62
+        },
+        {
+          "Id": 11,
+          "Name": "Olycka / tillbud",
+          "SubTypes": [],
+          "SortOrder": 97
+        },
+        {
+          "Id": 10,
+          "Name": "Anteckningar",
+          "SubTypes": [],
+          "SortOrder": 98
+        }
+      ],
+      "70": [
+        {
+          "Id": 51,
+          "Name": "Istäckningsgrad",
+          "SubTypes": [],
+          "SortOrder": 7
+        },
+        {
+          "Id": 50,
+          "Name": "istjocklek",
+          "SubTypes": [],
+          "SortOrder": 8
+        },
+        {
+          "Id": 13,
+          "Name": "Tecken på fara",
+          "SubTypes": [],
+          "SortOrder": 10
+        },
+        {
+          "Id": 11,
+          "Name": "Olycka / tillbud",
+          "SubTypes": [],
+          "SortOrder": 97
+        },
+        {
+          "Id": 10,
+          "Name": "Anteckningar",
+          "SubTypes": [],
+          "SortOrder": 98
+        }
+      ]
+    }
   }
 }

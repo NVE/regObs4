@@ -9,8 +9,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheActivityObs2"
-    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="draft && avalancheActivities"
+    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
@@ -18,7 +18,7 @@
         </ion-label>
       </ion-list-header>
       <ion-item detail="true" (click)="addOrEditAvalancheActivity(i)"
-        *ngFor="let avalancheActivity of registration.request.AvalancheActivityObs2; let i = index">
+        *ngFor="let avalancheActivity of avalancheActivities; let i = index">
         <ion-label>{{ getEstimatedNumber(avalancheActivity) |
           translate }}<span *ngIf="avalancheActivity.EstimatedNumTID !== 1"> {{ getCause(avalancheActivity) | translate
             |
@@ -34,8 +34,13 @@
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()"></app-add-picture-item>
+      <app-edit-images
+        [registrationTid]="registrationTid"
+        [geoHazard]="draft.registration.GeoHazardTID"
+        [draftUuid]="draft.uuid"
+        [(existingAttachments)]="draft.registration.Attachments"
+        [onBeforeAdd]="getSaveFunc()"
+      ></app-edit-images>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

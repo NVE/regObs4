@@ -5,6 +5,6 @@ import { BasePage } from './base.page';
 @Injectable()
 export class CanDeactivateRouteGuard implements CanDeactivate<BasePage> {
   async canDeactivate(component: BasePage): Promise<boolean> {
-    return component.canLeave();
+    return await component.canLeave();
   }
 }

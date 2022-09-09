@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
@@ -11,12 +11,17 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
-import { switchMap, take, concatMap, catchError } from 'rxjs/operators';
+import { switchMap, take, concatMap, catchError, filter } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
-import { StatusBar, Style } from '@capacitor/status-bar';
+import { AuthService } from 'ionic-appauth';
+import { NavigationError, Router, RouterEvent } from '@angular/router';
+import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
+import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
+import { BreakpointService } from './core/services/breakpoint.service';
 
 const DEBUG_TAG = 'AppComponent';
+const ROUTER_DEBUG_TAG = 'Router';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +29,7 @@ const DEBUG_TAG = 'AppComponent';
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;
+  isDesktop: boolean;
 
   constructor(
     private platform: Platform,
@@ -35,27 +41,43 @@ export class AppComponent {
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
-    private fileLoggingService: FileLoggingService
+    private fileLoggingService: FileLoggingService,
+    private auth: AuthService,
+    private router: Router,
+    private draftToRegService: DraftToRegistrationService,
+    private breakpointService: BreakpointService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
   }
 
   initializeApp(): void {
+    this.platform.ready().then(() => {
+      this.breakpointService.onResize(this.platform.width());
+    });
+
     from(this.fileLoggingService.init({})).pipe(switchMap(() =>
       this.getUserSettings()
         .pipe(this.initServices())))
-      .subscribe(() => {
+      .subscribe({ next: () => {
         this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
         this.afterAppInitialized();
-      }, (err) => {
+      }, error: (err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
         this.afterAppInitialized();
-      });
+      }});
   }
 
-  afterAppInitialized() {
+  private afterAppInitialized() {
     SplashScreen.hide();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private onResize(event) {
+    this.breakpointService.onResize(event.target.innerWidth);
   }
 
   private lockScreenOrientation() {
@@ -70,18 +92,10 @@ export class AppComponent {
         concatMap((userSettings) =>
           forkJoin([
             of(this.lockScreenOrientation()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not lock lockScreenOrientation'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))
             ),
             from(this.dbHelperService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(err, DEBUG_TAG, 'Could not init db')
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))
             ),
             of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
               catchError((err) =>
@@ -90,40 +104,6 @@ export class AppComponent {
                   DEBUG_TAG,
                   'Could not configure logging'
                 )
-              )
-            ),
-            from(StatusBar.setStyle({ style: Style.Dark })).pipe(
-              catchError((err) => {
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set styleLightContent'
-                );
-                return of(void null);
-              }
-              )
-            ),
-            from(StatusBar.setBackgroundColor({ color: '#99044962'})).pipe(
-              catchError((err) => {
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set backgroundColorByHexString'
-                );
-                return of(void null);
-              }
-              )
-            ),
-            from(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
-              catchError((err) =>
-              {
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set overlaysWebView'
-                );
-                return of(void null);
-              }
               )
             ),
             from(this.offlineImageService.cleanupOldItems()).pipe(
@@ -136,11 +116,14 @@ export class AppComponent {
               )
             ),
             of(this.shortcutService.init()).pipe(
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init shortcutService'))
+            ),
+            from(this.auth.init()).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,
                   DEBUG_TAG,
-                  'Could not init shortcutService'
+                  'Could not init auth service'
                 )
               )
             ),
@@ -153,14 +136,37 @@ export class AppComponent {
                 )
               )
             ),
+            of ( this.initRouteNavigationLogger()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init route navigation logging'
+                )
+              )
+            ),
+            of(this.draftToRegService.createSubscriptions()).pipe(
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start draftToRegService'))
+            )
           ])
         )
       );
   }
 
   private getUserSettings() {
-    return from(this.platform.ready()).pipe(
-      switchMap(() => this.userSettings.userSetting$.pipe(take(1)))
-    );
+    return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
+  }
+
+  private async initRouteNavigationLogger(): Promise<void> {
+    this.router.events.pipe(
+      filter((e): e is RouterEvent => e instanceof RouterEvent)
+    ).subscribe((event) => {
+      const eventInfo = removeOauthTokenFromUrl(event.toString());
+      if (event instanceof NavigationError) {
+        this.loggingService.error(event.error, ROUTER_DEBUG_TAG, eventInfo);
+      } else {
+        this.loggingService.debug(eventInfo);
+      }
+    });
   }
 }

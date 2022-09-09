@@ -2,20 +2,20 @@ import {
   Component,
   Input,
   OnChanges,
-  SimpleChanges,
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
+  AttachmentViewModel,
   RegistrationViewModel,
   Summary
-} from '../../../modules/regobs-api/models';
-import { ModalController } from '@ionic/angular';
+} from 'src/app/modules/common-regobs-api/models';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { Clipboard } from '@capacitor/clipboard';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as utils from '@nano-sql/core/lib/utilities';
 import * as L from 'leaflet';
@@ -26,9 +26,28 @@ import { AppEventAction } from '../../../modules/analytics/enums/app-event-actio
 import { ImageLocation } from '../../img-swiper/image-location.model';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
-import { take } from 'rxjs/operators';
+import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
+import { firstValueFrom, Observable, of, TimeoutError } from 'rxjs';
+import { RegistrationService } from 'src/app/modules/common-regobs-api';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { Router } from '@angular/router';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Share } from '@capacitor/share';
+import { Capacitor } from '@capacitor/core';
 
+const DEBUG_TAG = 'ObservationListCardComponent';
+const FETCH_OBS_TIMEOUT_MS = 5000;
+
+/**
+ * Registration card.
+ * Shows key info from one registration.
+ * If the user has access to edit the registration, an edit button is visible
+ */
 @Component({
   selector: 'app-observation-list-card',
   templateUrl: './observation-list-card.component.html',
@@ -49,24 +68,29 @@ export class ObservationListCardComponent implements OnChanges {
   imageDecription = '';
   competenceLevel: number;
   geoHazard: GeoHazard;
+  userCanEdit = false;
+  isLoadingObsForEdit = false;
 
-  imageUrls: string[] = [];
-  imageHeaders: string[] = [];
-  imageDescriptions: string[] = [];
+  attachments: AttachmentViewModel[] = [];
   location: ImageLocation;
 
   constructor(
     private modalController: ModalController,
     private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
-    private socialSharing: SocialSharing,
     private cdr: ChangeDetectorRef,
     private analyticService: AnalyticService,
-    private regobsAuthService: RegobsAuthService
+    private regobsAuthService: RegobsAuthService,
+    private registrationService: RegistrationService,
+    private draftRepository: DraftRepositoryService,
+    private router: Router,
+    private logger: LoggingService,
+    private alertController: AlertController,
+    private toastController: ToastController,
+    private translateService: TranslateService
   ) {}
 
   private async load() {
-    const baseUrl = await this.getBaseUrl();
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
     this.header = this.obs.ObsLocation.Title;
     this.location = this.getLocation(this.obs);
@@ -74,9 +98,9 @@ export class ObservationListCardComponent implements OnChanges {
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
     this.competenceLevel = getStarCount(this.obs.Observer.CompetenceLevelName);
-    this.updateImages(baseUrl);
+    this.updateImages();
     this.loaded = true;
-
+    this.userCanEdit = await this.checkIfUserCanEdit();
     this.cdr.markForCheck();
   }
 
@@ -110,30 +134,12 @@ export class ObservationListCardComponent implements OnChanges {
     if (obs.LandSlideObs) {
       return {
         start:
-          obs.LandSlideObs.UTMEastStart && obs.LandSlideObs.UTMNorthStart
-            ? L.utm({
-              y: obs.LandSlideObs.UTMNorthStart,
-              x: obs.LandSlideObs.UTMEastStart,
-              zone:
-                  obs.LandSlideObs.UTMZoneStart > 0
-                    ? obs.LandSlideObs.UTMZoneStart
-                    : 33,
-              band: 'W',
-              southHemi: false
-            }).latLng()
+          obs.LandSlideObs.StartLat && obs.LandSlideObs.StartLong
+            ? L.latLng(obs.LandSlideObs.StartLat, obs.LandSlideObs.StartLong)
             : undefined,
         stop:
-          obs.LandSlideObs.UTMEastStop && obs.LandSlideObs.UTMNorthStop
-            ? L.utm({
-              y: obs.LandSlideObs.UTMNorthStop,
-              x: obs.LandSlideObs.UTMEastStop,
-              zone:
-                  obs.LandSlideObs.UTMZoneStart > 0
-                    ? obs.LandSlideObs.UTMZoneStart
-                    : 33, // TODO: Bug, UTMZoneStop is 0
-              band: 'W',
-              southHemi: false
-            }).latLng()
+          obs.LandSlideObs.StopLat && obs.LandSlideObs.StopLong
+            ? L.latLng(obs.LandSlideObs.StopLat, obs.LandSlideObs.StopLong)
             : undefined
       };
     }
@@ -160,7 +166,7 @@ export class ObservationListCardComponent implements OnChanges {
 
   getGeoHazardCircleIcon(geoHazard: GeoHazard): string {
     switch (geoHazard) {
-    case GeoHazard.Dirt:
+    case GeoHazard.Soil:
       return '/assets/icon/dirt_circle.svg';
     case GeoHazard.Ice:
       return '/assets/icon/ice_circle.svg';
@@ -171,20 +177,15 @@ export class ObservationListCardComponent implements OnChanges {
     }
   }
 
-  updateImages(baseUrl: string): void {
-    this.imageHeaders = this.obs.Attachments.map((x) => x.RegistrationName);
-    this.imageDescriptions = this.obs.Attachments.map((x) => x.Comment);
-    this.imageUrls = this.obs.Attachments.map((x) =>
-      this.getImageUrl(baseUrl, x.AttachmentFileName)
-    );
+  updateImages(): void {
+    this.attachments = getAllAttachmentsFromViewModel(this.obs);
   }
 
   getImageUrl(
-    baseUrl: string,
-    filename: string,
-    size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large'
+    attachment: AttachmentViewModel,
+    size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Large'
   ): string {
-    return `${baseUrl}/Attachments/${size}/${filename}`;
+    return attachment.UrlFormats[size] || attachment.Url;
   }
 
   getRegistrationNames(): string {
@@ -192,18 +193,18 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
-    const image = this.obs.Attachments[event.index];
-    const baseUrl = await this.getBaseUrl();
+    const attachments = getAllAttachmentsFromViewModel(this.obs);
+    const image = attachments[event.index] as AttachmentViewModel & {Href: string};
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
         imgSrc: `${this.getImageUrl(
-          baseUrl,
-          image.AttachmentFileName,
-          'original'
+          image,
+          'Original'
         )}?r=${utils.uuid()}`,
-        header: this.obs.Attachments[event.index].RegistrationName,
-        description: this.obs.Attachments[event.index].Comment
+        header: image.RegistrationName,
+        description: image.Comment,
+        href: image.Href,
       }
     });
     modal.present();
@@ -223,14 +224,12 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   private async getBaseUrl() {
-    const userSetings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const userSetings = await firstValueFrom(this.userSettingService.userSetting$);
     return settings.services.regObs.webUrl[userSetings.appMode];
   }
 
   private getRegistrationUrl(baseUrl: string, loginHint?: string) {
-    return `${baseUrl}/Registration/${this.obs.RegID}${
+    return `${baseUrl}/Registration/${this.obs.RegId}${
       loginHint ? `?login_hint=${loginHint}` : ''
     }`;
   }
@@ -243,9 +242,17 @@ export class ObservationListCardComponent implements OnChanges {
       AppEventCategory.Observations,
       AppEventAction.Click,
       url,
-      this.obs.RegID
+      this.obs.RegId
     );
     this.externalLinkService.openExternalLink(url);
+  }
+
+  private async canShareNative(): Promise<boolean> {
+    if (!Capacitor.isNativePlatform()) {
+      return false;
+    }
+    const canShareResult = await Share.canShare();
+    return canShareResult.value;
   }
 
   async share(): Promise<void> {
@@ -255,8 +262,105 @@ export class ObservationListCardComponent implements OnChanges {
       AppEventCategory.Observations,
       AppEventAction.Share,
       url,
-      this.obs.RegID
+      this.obs.RegId
     );
-    this.socialSharing.share(null, null, null, url);
+    if (await this.canShareNative()) {
+      Share.share({
+        url
+      });
+    } else {
+      Clipboard.write({ string: url});
+      const toastText = await firstValueFrom(this.translateService.get('REGISTRATION.COPIED_TO_CLIPBOARD'));
+      const toast = await this.toastController.create({
+        message: toastText,
+        mode: 'md',
+        duration: 2000
+      });
+      toast.present();
+    }
+  }
+
+  private async checkIfUserCanEdit(): Promise<boolean> {
+    const observer = await firstValueFrom(this.regobsAuthService.myPageData$);
+    const editMode = await firstValueFrom(getObserverEditCheckObservable(this.obs, observer));
+    return editMode === 'EDIT_OWN_REGISTRATION' || editMode === 'EDIT_AS_MODERATOR';
+  }
+
+  private fetchRegistrationBeforeEdit(
+    regId: RegistrationService.RegistrationGetParams['regId']
+  ): Observable<RegistrationViewModel> {
+    return this.userSettingService.language$.pipe(
+      switchMap(langKey => this.registrationService.RegistrationGet({ regId, langKey })),
+      timeout(FETCH_OBS_TIMEOUT_MS),
+      catchError(error => {
+        let msg: string;
+        if (error instanceof TimeoutError) {
+          msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms`;
+        } else if (error instanceof HttpErrorResponse && error.status === 410) {
+          msg = 'Obs was deleted from Regobs';
+        } else {
+          msg = 'An unknown error occured while fetching obs before edit';
+        }
+        this.logger.error(error, DEBUG_TAG, msg);
+        return of(null);
+      })
+    );
+  }
+
+  async edit() {
+    this.isLoadingObsForEdit = true;
+    const uuid = this.obs.ExternalReferenceId;
+    try {
+      const draft = await this.draftRepository.load(uuid);
+      if (!draft) {
+        //we don't have a local working copy of this registration yet, so fetch it and save as draft
+        this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
+        if (registrationFromServer === null) {
+          const continueEditing = await this.confirmEditDespiteNoFreshRegistrationFromServer();
+          if (!continueEditing) {
+            this.isLoadingObsForEdit = false;
+            return;
+          }
+        }
+        await this.draftRepository.saveAsDraft(this.obs); //save cached copy from card as draft
+      } else {
+        this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+      }
+    } finally {
+      this.isLoadingObsForEdit = false;
+      this.cdr.markForCheck();
+    }
+    this.router.navigate(['registration', 'edit', uuid]);
+  }
+
+  private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {
+    let resolveFunction: (confirm: boolean) => void;
+    const promise = new Promise<boolean>(resolve => {
+      resolveFunction = resolve;
+    });
+    const toTranslate = [
+      'DIALOGS.CANCEL',
+      'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
+      'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
+      'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON'];
+    const translations = await firstValueFrom(this.translateService.get(toTranslate));
+    const alert = await this.alertController.create({
+      header: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER'],
+      message: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE'],
+      buttons: [
+        {
+          text: translations['DIALOGS.CANCEL'],
+          role: 'cancel',
+          handler: () => resolveFunction(false)
+        },
+        {
+          text: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON'],
+          handler: () => resolveFunction(true)
+        }
+      ]
+    });
+    await alert.present();
+    return promise;
   }
 }

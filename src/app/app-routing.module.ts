@@ -37,10 +37,7 @@ const routes: Routes = [
   },
   {
     path: 'view-observation/:id',
-    loadChildren: () =>
-      import('./pages/view-observation/view-observation.module').then(
-        (m) => m.ViewObservationPageModule
-      )
+    redirectTo: 'registration/:id'
   },
   {
     path: 'observation-list',
@@ -59,7 +56,7 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () =>
-      import('./modules/login/login.module').then((m) => m.LoginModule)
+      import('./modules/login/user-information.module').then((m) => m.UserInformationModule)
   },
   {
     path: 'registration',
@@ -67,6 +64,10 @@ const routes: Routes = [
       import('./modules/registration/registration.module').then(
         (m) => m.RegistrationModule
       )
+  },
+  {
+    path: 'Registration',
+    redirectTo: 'registration'
   },
   {
     path: 'legacy-trip',

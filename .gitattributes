@@ -1,63 +1,27 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Source code
-*.bash            text eol=lf
-*.bat             text eol=crlf
-*.cmd             text eol=crlf
-*.css             text diff=css
-*.htm             text diff=html
-*.html            text diff=html
-*.ini             text
-*.js              text
-*.json            text
-*.ps1             text eol=crlf
-*.py              text diff=python
-*.sass            text
-*.scss            text diff=css
-*.ts              text
-*.tsx             text
-*.xml             text
-*.xhtml           text diff=html
-*.cs     diff=csharp
-
-# Documentation
-*.md              text diff=markdown
-*.txt             text
-readme            text
-*README*          text
-
-# Configs
-*.cnf             text
-*.conf            text
-*.config          text
-.editorconfig     text
-.env              text
-.gitattributes    text
-.gitconfig        text
-*.lock            text -diff
-package.json      text eol=lf
-package-lock.json text -diff
-pnpm-lock.yaml    text eol=lf -diff
-.prettierrc       text
-yarn.lock         text -diff
-*.yaml            text
-*.yml             text
-
-# Graphics
-*.jpg             binary
-*.png             binary
-# SVG treated as an asset (binary) by default.
-*.svg             text
-# If you want to treat it as binary,
-# use the following line instead.
-# *.svg           binary
-
-# RC files (like .babelrc or .eslintrc)
-*.*rc             text
-
-# Ignore files (like .npmignore or .gitignore)
-*.*ignore         text
+# Do not convert LF til CR-LF for these files, or else Git think they are changed every time you do cap sync on Windows
+android\capacitor.settings.gradle text eol=lf
+android\app\capacitor.build.gradle text eol=lf
+android\app\src\main\assets\capacitor.config.json text eol=lf
+android\app\src\main\assets\capacitor.plugins.json text eol=lf
+android\app\src\main\res\xml\config.xml text eol=lf
 
 # Language files. When we download files from lokalise, they only get <LF> as line break character
-src/assets/i18n/*.json            text eol=lf
+src/assets/i18n/*.json text eol=lf
+
+# Custom for Visual Studio
+*.cs     diff=csharp
+
+# Standard to msysgit
+*.doc	 diff=astextplain
+*.DOC	 diff=astextplain
+*.docx diff=astextplain
+*.DOCX diff=astextplain
+*.dot  diff=astextplain
+*.DOT  diff=astextplain
+*.pdf  diff=astextplain
+*.PDF	 diff=astextplain
+*.rtf	 diff=astextplain
+*.RTF	 diff=astextplain

@@ -1,11 +1,18 @@
 /* eslint-disable max-len */
-export const settings = {
+
+import { NORWAY_BOUNDS } from './app/core/helpers/leaflet/norway-bounds';
+import { SVALBARD_BOUNDS } from './app/core/helpers/leaflet/svalbard-bounds';
+import { MapLayerZIndex } from './app/core/models/maplayer-zindex.enum';
+import { ISettings } from './settings.model';
+
+
+export const settings: ISettings = {
   authConfig: {
     TEST: {
       client_id: '13270815-7def-4800-8fc9-178dd517f574',
       server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
-      end_session_redirect_url: 'regobs://callback',
+      end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
@@ -16,7 +23,7 @@ export const settings = {
       client_id: '7149f248-5e18-4feb-8a0c-e988dc021977',
       server_host: 'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
-      end_session_redirect_url: 'regobs://callback',
+      end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
@@ -27,7 +34,7 @@ export const settings = {
       client_id: 'a0b10e50-f942-4619-a9ab-cf5c900a98d5',
       server_host: 'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
-      end_session_redirect_url: 'regobs://callback',
+      end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',
@@ -41,16 +48,16 @@ export const settings = {
       Snow: [0, 1, 2, 3, 7, 7 * 2],
       Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
       Water: [0, 1, 2, 3, 7, 7 * 2],
-      Dirt: [0, 1, 2, 3, 7, 7 * 2]
+      Soil: [0, 1, 2, 3, 7, 7 * 2]
     },
     timeZone: 'Europe/Oslo'
   },
   services: {
     regObs: {
       apiUrl: {
-        PROD: 'https://api.regobs.no/app_v4',
-        DEMO: 'https://demo-api.regobs.no/app_v4',
-        TEST: 'https://test-api.regobs.no/app_v4'
+        PROD: 'https://api.regobs.no/v5',
+        DEMO: 'https://demo-api.regobs.no/v5',
+        TEST: 'https://test-api.regobs.no/v5'
         // 'TEST': 'http://localhost:40001'
       },
       serviceUrl: {
@@ -82,7 +89,7 @@ export const settings = {
         },
         featureName: 'omradeID'
       },
-      Dirt: {
+      Soil: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
         webUrl: {
           nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
@@ -115,27 +122,103 @@ export const settings = {
   },
   map: {
     tiles: {
-      cacheFolder: 'tilescache',
-      cacheSize: 0,
-      cacheSaveBufferThrottleTimeMs: 50,
-      cacheSaveBufferIdleInterval: 2000,
-      tileImageFormat: 'image/png',
-      embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
       defaultZoom: 5,
-      embeddedUrlMaxZoomWorld: 0,
-      embeddedUrlMaxZoomNorway: 0,
       minZoom: 2,
       minZoomSupportMaps: 5,
       maxZoom: 18,
-      zoomInPosition: 15,
       zoomLevelObservationList: 12,
       edgeBufferTiles: 0,
-      detectRetina: false,
       updateWhenIdle: false,
-      statensKartverkMapUrl: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
-      geoDataLandskapMapUrl: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
-      openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-      arcGisOnlineTopoMapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+
+      topoMapLayers: {
+        'statensKartverk': {
+          url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            bounds: [
+              [57.98808405905049, 4.626617431640625],
+              [71.15939141681443, 30.816650390624996]
+            ]
+          },
+          supportsOffline: true
+        },
+        'npolarBasiskart': {
+          url: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            bounds: [
+              [73.7357239, 7.4670978],
+              [81.1569081, 36.0502348]
+            ],
+            maxNativeZoom: 13,
+          },
+          supportsOffline: true
+        },
+        'geoDataLandskap': {
+          url: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+          }
+        },
+        'openTopo': {
+          url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            // subdomains: [] ?
+          }
+        },
+        'arcGisOnline': {
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+          }
+        }
+      },
+
+      topoMaps: {
+        'mixArcGisOnline': [
+          {
+            layer: 'arcGisOnline',
+            options: {
+              zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer
+            },
+            excludeBounds: [
+              NORWAY_BOUNDS,
+              SVALBARD_BOUNDS
+            ]
+          },
+          {
+            layer: 'npolarBasiskart',
+          },
+          {
+            layer: 'statensKartverk',
+          }
+        ],
+        'mixOpenTopo': [
+          {
+            layer: 'openTopo',
+            options: {
+              zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer
+            },
+            excludeBounds: [
+              NORWAY_BOUNDS,
+              SVALBARD_BOUNDS
+            ]
+          },
+          {
+            layer: 'npolarBasiskart',
+          },
+          {
+            layer: 'statensKartverk',
+          }
+        ],
+        'geoDataLandskap': [
+          {
+            layer: 'geoDataLandskap',
+          }
+        ]
+      },
+
       supportTiles: [
         {
           name: 'steepness',
@@ -196,9 +279,11 @@ export const settings = {
     },
     search: {
       no: {
-        url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok',
+        url: 'https://ws.geonorge.no/stedsnavn/v1/navn',
         maxResults: 20,
-        exactFirst: true
+        exactFirst: true,
+        coordinateSystem: 4326,
+        resultFields: 'metadata.totaltAntallTreff,navn.skrivemåte,navn.navneobjekttype,navn.stedsnummer,navn.representasjonspunkt.øst,navn.representasjonspunkt.nord,navn.fylker.fylkesnavn,navn.kommuner.kommunenavn'
       },
       geonames: {
         url: 'https://secure.geonames.org',
@@ -207,31 +292,11 @@ export const settings = {
       },
       searchHistorySize: 5
     },
-    bounds: {
-      svalbard: {
-        bbox: [
-          [80.493155, 3.157765],
-          [80.309405, 21.685119],
-          [76.337433, 18.003936],
-          [76.465943, 4.879966]
-        ]
-      }
-    },
-    mapSearchZoomToLevel: 14,
+    mapSearchZoomToLevel: 13,
     unknownMapCenter: [59.911197, 10.741059],
-    flyToOnGpsZoom: 14,
+    flyToOnGpsZoom: 13,
     maxClusterRadius: 60 // 30,
   },
-  snowRegionsGeoJsonName: 'omradeNavn',
-  cordovaNotAvailable: 'cordova_not_available',
-  gps: {
-    highAccuracyPositionOptions: {
-      enableHighAccuracy: true,
-      timeout: 20 * 1000, // 20 sec
-      maximumAge: Infinity // Start with latest cached value
-    }
-  },
-  offlineAssetsFolder: 'assets',
   dateFormats: {
     angular: {
       date: 'dd.MM.yyyy',
@@ -272,5 +337,9 @@ export const settings = {
       { lang: 'sl', name: 'Slovenski' },
       { lang: 'fr', name: 'Français' },
     ]
+  },
+  legalUrl: {
+    en: 'https://www.varsom.no/en/about/regobs/regobs-terms-of-service/',
+    nb: 'https://varsom.no/om-varsom/regobs/regobs-brukervilkar/',
   }
 };

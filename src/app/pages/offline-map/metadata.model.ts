@@ -1,5 +1,5 @@
 import type { BBox, Feature, Polygon } from 'geojson';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 
 type XYZ = [number, number, number];
 
@@ -70,11 +70,11 @@ export class CompoundPackage {
     return CompoundPackage.GetNameFromXYZ(x, y, z);
   }
 
-  getLastModified(): Moment {
+  getLastModified(): Date {
     if (this.metadata.maps.length === 0) {
       return null;
     }
-    return moment.max(this.metadata.maps.map(p => moment(p.lastModified)));
+    return moment.max(this.metadata.maps.map(p => moment(p.lastModified))).toDate();
   }
 
   getParts(): Part[] {

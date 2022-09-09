@@ -1,18 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonFab, NavController } from '@ionic/angular';
+import { IonFab, NavController, Platform } from '@ionic/angular';
 import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
-import { IRegistration } from '../../../registration/models/registration.model';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { LangKey } from '../../../../core/models/langKey';
-import { RegistrationService } from '../../../registration/services/registration.service';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -27,66 +27,60 @@ export class AddMenuComponent implements OnInit {
   drafts$: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
   geoHazardInfo$: Observable<{
     geoHazards: GeoHazard[];
-    showSpace: boolean;
     showTrip: boolean;
   }>;
   tripStarted$: Observable<boolean>;
   showSpace$: Observable<boolean>;
+  isIosOrAndroid: boolean;
 
   constructor(
-    private registrationService: RegistrationService,
+    private draftService: DraftRepositoryService,
     private navController: NavController,
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
-    private geoHelperService: GeoHelperService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,
-        showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
         showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0
       })),
       setObservableTimeout()
     );
-    this.drafts$ = this.registrationService.drafts$.pipe(
-      tap((drafts) =>
-        this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)
-      ),
+
+    this.drafts$ = this.draftService.drafts$.pipe(
+      tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
+      map((drafts) => drafts.filter(d => d.syncStatus === SyncStatus.Draft)),
       switchMap((drafts) =>
         drafts.length > 0
           ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft)))
           : of([])
       ),
-      tap((drafts) =>
-        this.loggingService.debug(
-          'Converted drafts has changed to',
-          DEBUG_TAG,
-          drafts
-        )
-      ),
+      tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
       setObservableTimeout()
     );
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
 
   private convertDraftToDate(
-    draft: IRegistration
+    draft: RegistrationDraft
   ): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
-    return from(this.getDate(draft.changed)).pipe(
-      map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date }))
+    return from(this.getDate(draft.lastSavedTime)).pipe(
+      map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
     );
   }
 
   getName(geoHazard: GeoHazard): string {
-    return this.geoHelperService.getTranslationKey(geoHazard);
+    return GeoHazard[geoHazard];
   }
 
   getDate(timestamp: number): Promise<string> {
-    return this.dateHelperService.formatDate(moment.unix(timestamp));
+    return this.dateHelperService.formatDate(moment(timestamp));
   }
 
   closeAndNavigate(url: string): void {

@@ -1,19 +1,16 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
 import { Subject } from 'rxjs';
-import { map, take, switchMap } from 'rxjs/operators';
+import { map, take, switchMap, takeUntil } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { LangKey } from 'src/app/modules/common-core/models';
 
 const PAGE_SIZE = 10;
 const MAX_OBSERVATION_COUNT = 100;
@@ -24,13 +21,14 @@ const MAX_OBSERVATION_COUNT = 100;
   styleUrls: ['./observation-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ObservationListPage implements OnInit {
+export class ObservationListPage extends NgDestoryBase implements OnInit {
   visibleObservations: RegistrationViewModel[];
   allObservations: RegistrationViewModel[];
   loaded = false;
   cancelSubject: Subject<unknown>;
   private pageIndex = 0;
   private total: number;
+  private langKey: LangKey;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -42,16 +40,27 @@ export class ObservationListPage implements OnInit {
     private observationService: ObservationService,
     private dataMarshallService: DataMarshallService,
     private cdr: ChangeDetectorRef,
-    private mapService: MapService
-  ) {}
+    private mapService: MapService,
+    private userSettingService: UserSettingService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.cancelSubject = this.dataMarshallService.observableCancelSubject;
+    this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
+      this.langKey = langKey;
+    });
+
+    this.observationService.observations$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.resetAndLoadObservations();
+    });
   }
 
   refresh(cancelPromise: Promise<unknown>): void {
     this.resetAndLoadObservations(true, cancelPromise);
   }
+
 
   ionViewWillEnter(): void {
     this.content.scrollToTop();
@@ -63,17 +72,12 @@ export class ObservationListPage implements OnInit {
     this.visibleObservations = undefined;
   }
 
-  private async resetAndLoadObservations(
-    forceUpdate = false,
-    cancelPromise: Promise<unknown> = undefined
-  ): Promise<void> {
+  private async resetAndLoadObservations(forceUpdate = false, cancelPromise: Promise<unknown> = undefined): Promise<void> {
     this.loaded = false;
     this.visibleObservations = undefined;
     this.cdr.detectChanges();
     if (forceUpdate) {
-      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(
-        cancelPromise
-      );
+      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
     }
     this.loadObservations();
   }
@@ -97,9 +101,7 @@ export class ObservationListPage implements OnInit {
       .pipe(
         switchMap((mapView: IMapView) =>
           this.observationService.observations$.pipe(
-            map((observations) =>
-              this.filterObservationsWithinViewBounds(observations, mapView)
-            ),
+            map((observations) => this.filterObservationsWithinViewBounds(observations, mapView)),
             map((observations) => observations.slice(0, MAX_OBSERVATION_COUNT))
           )
         ),
@@ -111,11 +113,9 @@ export class ObservationListPage implements OnInit {
   loadNextPage(event: CustomEvent<IonInfiniteScroll>): void {
     this.pageIndex += 1;
     const startIndex = this.pageIndex * PAGE_SIZE;
-    this.visibleObservations.push(
-      ...this.allObservations.slice(startIndex, startIndex + PAGE_SIZE)
-    );
+    this.visibleObservations.push(...this.allObservations.slice(startIndex, startIndex + PAGE_SIZE));
 
-    const target: IonInfiniteScroll = (event.target as unknown) as IonInfiniteScroll;
+    const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
     target.complete();
     if (this.visibleObservations.length >= this.total) {
       target.disabled = true; //we have reached the end, so no need to load more pages from now
@@ -130,23 +130,13 @@ export class ObservationListPage implements OnInit {
     return MAX_OBSERVATION_COUNT;
   }
 
-  private filterObservationsWithinViewBounds(
-    observations: RegistrationViewModel[],
-    view: IMapView
-  ) {
+  private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {
     return observations.filter(
-      (observation) =>
-        !view ||
-        view.bounds.contains(
-          L.latLng(
-            observation.ObsLocation.Latitude,
-            observation.ObsLocation.Longitude
-          )
-        )
+      (observation) => !view || view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude))
     );
   }
 
   private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
-    return obs ? this.observationService.uniqueObservation(obs) : undefined;
+    return obs ? this.observationService.uniqueObservation(obs, this.langKey) : undefined;
   }
 }

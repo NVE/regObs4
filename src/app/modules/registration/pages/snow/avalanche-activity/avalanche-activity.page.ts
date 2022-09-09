@@ -1,16 +1,16 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { Component, NgZone } from '@angular/core';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ModalController } from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
 import {
-  AvalancheActivityObs2Dto,
+  AvalancheActivityObs2EditModel,
   KdvElement
-} from '../../../../regobs-api/models';
-import { KdvService } from '../../../../../core/services/kdv/kdv.service';
+} from 'src/app/modules/common-regobs-api/models';
 import { Subscription, combineLatest } from 'rxjs';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-avalanche-activity',
@@ -38,6 +38,10 @@ export class AvalancheActivityPage extends BasePage {
     this.estimatedNumber = [];
   }
 
+  get avalancheActivities(): AvalancheActivityObs2EditModel[] {
+    return this.draft.registration.AvalancheActivityObs2;
+  }
+
   onInit() {
     this.kdvSubscription = combineLatest([
       this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
@@ -58,10 +62,8 @@ export class AvalancheActivityPage extends BasePage {
     const modal = await this.modalController.create({
       component: AvalancheActivityModalPage,
       componentProps: {
-        avalancheActivity: this.registration.request.AvalancheActivityObs2[
-          index
-        ],
-        dtObsTime: this.registration.request.DtObsTime
+        avalancheActivity: this.avalancheActivities[index],
+        dtObsTime: this.draft.registration.DtObsTime
       }
     });
     modal.present();
@@ -69,24 +71,20 @@ export class AvalancheActivityPage extends BasePage {
     this.ngZone.run(() => {
       if (result.data) {
         if (result.data.delete) {
-          this.registration.request.AvalancheActivityObs2.splice(index, 1);
+          this.avalancheActivities.splice(index, 1);
         } else {
-          const avalancheActivityObs: AvalancheActivityObs2Dto = result.data;
+          const avalancheActivityObs: AvalancheActivityObs2EditModel = result.data;
           if (index !== undefined) {
-            this.registration.request.AvalancheActivityObs2[
-              index
-            ] = avalancheActivityObs;
+            this.avalancheActivities[index] = avalancheActivityObs;
           } else {
-            this.registration.request.AvalancheActivityObs2.push(
-              avalancheActivityObs
-            );
+            this.avalancheActivities.push(avalancheActivityObs);
           }
         }
       }
     });
   }
 
-  getCause(avalancheActivityObs: AvalancheActivityObs2Dto) {
+  getCause(avalancheActivityObs: AvalancheActivityObs2EditModel) {
     const cause = this.avalancheCause.find(
       (c) => c.Id === avalancheActivityObs.AvalancheExtTID
     );
@@ -97,7 +95,7 @@ export class AvalancheActivityPage extends BasePage {
     }
   }
 
-  getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2Dto) {
+  getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2EditModel) {
     const kdvalue = this.estimatedNumber.find(
       (c) => c.Id === avalancheActivityObs.EstimatedNumTID
     );

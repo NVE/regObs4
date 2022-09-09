@@ -1,0 +1,61 @@
+<ion-list class="ion-no-margin">
+  <ion-list-header color="varsom-blue" class="ion-no-margin">
+    <ion-label>{{'OBSERVATION_FILTER.TITLE' | translate}}</ion-label>
+  </ion-list-header>
+  <app-observations-days-back></app-observations-days-back>
+  <app-update-observations></app-update-observations>
+  <div *ngIf="!isIosOrAndroid">
+    <!-- Dette er på prototypestadiet, så vi skjuler dette i appen foreløpig -->
+    <!-- TODO: Oversettelser på all tekst -->
+    <ion-list-header color="varsom-blue" class="ion-no-margin">
+      <ion-label>
+        Observasjonstype
+      </ion-label>
+    </ion-list-header>
+    <!-- TODO: Checkboxer må endre seg basert på hvilken naturfare som er valgt! Se på eksisterende funksjonalitet i side-menu.component -->
+    <ion-item>
+      <ion-checkbox checked="true" [(ngModel)]="masterCheck" [indeterminate]="isIndeterminate" (click)="checkMaster($event)" color="varsom-dark-blue" mode="md">
+      </ion-checkbox>
+      <ion-label class="ion-padding-start">Alle</ion-label>
+      <ion-button class="toggleAllTypesButton" (click)="toggleAllObservationTypes()" fill="clear">
+        <ion-icon [name]="showObservationTypes ? 'chevron-up-circle-outline' : 'chevron-down-circle-outline' "></ion-icon>
+      </ion-button>
+    </ion-item>
+      <ng-container *ngIf="this.showObservationTypes">
+        <ion-item>
+          <ion-list lines="none">
+            <!-- TODO: Hente ut riktige observasjonstyper i checkboxer -->
+            <ion-item *ngFor="let type of filteredObservationTypes">
+              <ion-checkbox [(ngModel)]="type.isChecked" (ionChange)="checkEvent()" color="varsom-dark-blue" mode="md"></ion-checkbox>
+              <ion-label class="ion-padding-start">{{type.value}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-item>
+      </ng-container>
+
+    <ion-list-header color="varsom-blue" class="ion-no-margin">
+      <ion-label>
+        Observatør
+      </ion-label>
+    </ion-list-header>
+    <!-- TODO: Legg til eller hente kompetanser i menyen. Husk at på snø er det en spesiell kompetanse A -->
+    <ion-item>
+      <ion-label class="no-margin-bottom" color="dark" position="stacked">Kompetanse</ion-label>
+      <ion-select placeholder="Alle kompetansenivå" [interface]="popupType">
+        <ion-select-option>
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
+    <ion-item>
+      <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
+      <ion-searchbar mode="ios" class="ion-no-padding" placeholder="Søk på observatørnavn"></ion-searchbar>
+    </ion-item>
+
+    <!-- TODO: Implementere reset filter funksjonalitet -->
+    <ion-item>
+      <ion-button class="resetFiltersButton" type="button" fill="clear"><ion-icon src="./assets/icon/reset-button.svg">
+        </ion-icon>Tilbakestill filtere</ion-button>
+    </ion-item>
+  </div>
+</ion-list>

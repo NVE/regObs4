@@ -1,5 +1,5 @@
 import { settings } from './settings';
-import { AppMode } from './app/core/models/app-mode.enum';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { nSQL } from '@nano-sql/core';
 import { getMode } from '@nano-sql/adapter-sqlite-cordova';
 import {
@@ -14,10 +14,10 @@ import {
 export class NanoSql {
   public static readonly TABLES = {
     OBSERVATION: {
-      name: 'observation',
+      name: 'observationV2',
       instancePerAppMode: true,
       model: {
-        'RegID:int': { pk: true },
+        'RegId:int': { pk: true },
         'GeoHazardTID:int': {},
         'LangKey:int': {},
         '*:any': {}
@@ -163,15 +163,6 @@ export class NanoSql {
       },
       indexes: {}
     },
-    KDV_ELEMENTS: {
-      name: 'kdvelements',
-      instancePerAppMode: true,
-      model: {
-        'langKey:int': { pk: true },
-        '*:any': {}
-      },
-      indexes: {}
-    },
     OBSERVER_GROUPS: {
       name: 'groups',
       instancePerAppMode: true,
@@ -183,15 +174,6 @@ export class NanoSql {
       indexes: {
         'userId:string': {}
       }
-    },
-    HELP_TEXTS: {
-      name: 'helptexts',
-      instancePerAppMode: true,
-      model: {
-        'langKey:int': { pk: true },
-        '*:any': {}
-      },
-      indexes: {}
     }
   };
 
@@ -243,10 +225,7 @@ export class NanoSql {
     return tables;
   }
 
-  static async init(
-    dbName: string = settings.db.nanoSql.dbName,
-    dbMode?: string
-  ): Promise<void> {
+  static async init(dbName: string = settings.db.nanoSql.dbName, dbMode?: string): Promise<void> {
     await nSQL().createDatabase({
       id: dbName,
       mode: dbMode || getMode(),
@@ -265,10 +244,7 @@ export class NanoSql {
             {
               name: 'configTableSystem',
               priority: 1000,
-              call: (
-                inputArgs: { res: InanoSQLTable; query: InanoSQLQuery },
-                complete
-              ) => {
+              call: (inputArgs: { res: InanoSQLTable; query: InanoSQLQuery }, complete) => {
                 inputArgs.res.id = inputArgs.res.name;
                 complete(inputArgs);
               }
@@ -285,26 +261,17 @@ export class NanoSql {
     return nSQL(`${name}_${appMode}`);
   }
 
-  static async resetDb(
-    onError?: (tableName: string, ex: Error) => void
-  ): Promise<void[]> {
+  static async resetDb(onError?: (tableName: string, ex: Error) => void): Promise<void[]> {
     // try {
     //     await nSQL().dropDatabase(settings.db.nanoSql.dbName);
     //     await this.init();
     // } catch (err) {
     //     console.log(err);
     // }
-    return Promise.all(
-      NanoSql.getTableModels().map((tableConfig) =>
-        this.resetTable(tableConfig, onError)
-      )
-    );
+    return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
   }
 
-  static async resetTable(
-    tableConfig: InanoSQLTableConfig,
-    onError?: (tableName: string, ex: Error) => void
-  ): Promise<void> {
+  static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void): Promise<void> {
     if (tableConfig.name === 'offlinemaptiles') {
       await this.dropAndRecreateTable(tableConfig, onError);
     } else {
@@ -312,10 +279,7 @@ export class NanoSql {
     }
   }
 
-  private static async deleteAllRowsInTable(
-    tableConfig: InanoSQLTableConfig,
-    onError?: (tableName: string, ex: Error) => void
-  ) {
+  private static async deleteAllRowsInTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
     try {
       await nSQL(tableConfig.name).query('delete').exec();
     } catch (ex) {
@@ -325,10 +289,7 @@ export class NanoSql {
     }
   }
 
-  private static async dropAndRecreateTable(
-    tableConfig: InanoSQLTableConfig,
-    onError?: (tableName: string, ex: Error) => void
-  ) {
+  private static async dropAndRecreateTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
     try {
       await nSQL(tableConfig.name).query('drop').exec();
     } catch (ex) {

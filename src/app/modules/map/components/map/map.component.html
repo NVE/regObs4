@@ -1,3 +1,27 @@
-<div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
+<div
+  *ngIf="loaded"
+  leaflet
+  [leafletOptions]="options"
+  (leafletMapReady)="onLeafletMapReady($event)"
+>
 </div>
-<app-map-controls *ngIf="showMapControls"></app-map-controls>
+<app-map-controls
+  [showMapSearch]="showMapSearch"
+  [showFullscreenToggle]="showFullscreenToggle"
+  [showGpsCenter]="showGpsCenter"
+></app-map-controls>
+
+<div
+  #observerTripsContainer
+  class="observer-trip-backdrop"
+  style="display: none;"
+  (click)="removeObserverTripDescription()"
+  *ngIf="showObserverTrips"
+>
+  <div class="observer-trip-desc">
+    <div>
+      <strong>Obsturbeskrivelse{{ observationTripName ? ' ' + observationTripName : '' }}:</strong>
+    </div>
+    <div>{{ observationTripDescription }}</div>
+  </div>
+</div>

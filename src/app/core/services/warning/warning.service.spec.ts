@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { TestBed, inject } from '@angular/core/testing';
 import { WarningService } from './warning.service';
 import { HttpClient } from '@angular/common/http';
@@ -8,8 +9,7 @@ import { Platform } from '@ionic/angular';
 import { HTTP } from '@ionic-native/http/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
-import { GeoHazard } from '../../models/geo-hazard.enum';
-import { LangKey } from '../../models/langKey';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import moment from 'moment';
 import { IWarningApiResult } from './warning-api-result.interface';
 
@@ -69,7 +69,7 @@ describe('WarningService', () => {
     const warningResult = [];
     const result = service.aggregateWarningRegions(
       warningResult,
-      GeoHazard.Dirt,
+      GeoHazard.Soil,
       LangKey.nb,
       moment()
     );
@@ -115,7 +115,7 @@ describe('WarningService', () => {
     const now = moment('2019-03-23T17:00:00');
     const result = service.aggregateWarningRegions(
       warningResult,
-      GeoHazard.Dirt,
+      GeoHazard.Soil,
       LangKey.nb,
       now
     );
@@ -130,7 +130,7 @@ describe('WarningService', () => {
     const now = moment('2019-03-23T17:00:00');
     const result = service.aggregateWarningRegions(
       warningResult,
-      GeoHazard.Dirt,
+      GeoHazard.Soil,
       LangKey.nb,
       now
     );
@@ -150,7 +150,7 @@ describe('WarningService', () => {
     const now = moment('2019-03-23T17:00:00');
     const result = service.aggregateWarningRegions(
       warningResult,
-      GeoHazard.Dirt,
+      GeoHazard.Soil,
       LangKey.nb,
       now
     );

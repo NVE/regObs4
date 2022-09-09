@@ -1,21 +1,20 @@
 import {
   Component,
-  OnInit,
   Input,
   EventEmitter,
   Output,
   ViewChild,
   OnChanges,
-  SimpleChanges,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   OnDestroy
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
-import { Subject, interval, race } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { ImageLocation } from './image-location.model';
+import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 
 @Component({
   selector: 'app-img-swiper',
@@ -23,25 +22,42 @@ import { ImageLocation } from './image-location.model';
   styleUrls: ['./img-swiper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() imgUrl: string[] = [];
+export class ImgSwiperComponent implements OnChanges, OnDestroy {
+  @Input() attachments: AttachmentViewModel[] = [];
   @Input() showLabels = true;
-  @Input() imgComments: string[] = [];
-  @Input() imgHeaders: string[] = [];
+  @Input() location: ImageLocation;
+  @Input() withFallbackText = true;
+  @Input() small = false;
+  @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
   @Output() imgClick: EventEmitter<{
     index: number;
     imgUrl: string;
   }> = new EventEmitter();
-  @Input() location: ImageLocation;
-  @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
+  isDesktop: boolean;
+  slideOptions;
 
-  slideOptions = {
-    autoplay: false,
-    slidesPerView: 'auto',
-    zoom: false
-  };
+  ngOnInit() {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
+    this.slideOptions = {
+      autoplay: false,
+      slidesPerView: 'auto',
+      zoom: false,
+      breakpoints: {
+        800: {
+          slidesPerView: this.checkAmountOfPictures(),
+          spaceBetween: 0
+        }
+      },
+      keyboard: {
+        enabled: true
+      }
+    };
+  }
 
-  swiper: any;
+  moreThanFourPics = false;
+
   state:
     | 'loading'
     | 'empty'
@@ -91,11 +107,11 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get shouldMoveMap() {
-    return this.location && this.imgUrl && this.imgUrl.length > 0;
+    return this.location && this.attachments && this.attachments.length > 0 && !this.isDesktop;
   }
 
   get imageLength() {
-    return this.imgUrl ? this.imgUrl.length : 0;
+    return this.attachments ? this.attachments.length : 0;
   }
 
   get imageIndex() {
@@ -103,46 +119,52 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
       this.slides[this.activeIndex] &&
       this.slides[this.activeIndex].type === 'image'
     ) {
-      return this.getImageIndex(this.slides[this.activeIndex].img as string);
+      return this.getImageIndex(this.slides[this.activeIndex].img as AttachmentViewModel);
     }
     return 0;
   }
 
   get showIndex() {
-    if (this.imgUrl && this.imgUrl.length > 1) {
+    if (this.attachments && this.attachments.length > 1) {
       return this.location ? this.activeIndex > 0 : true;
     }
     return false;
   }
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnInit() {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private breakpointService: BreakpointService
+  ) {}
 
   ngOnDestroy(): void {
     this.cdr.detach();
   }
 
-  slidesLoaded(el: any) {
-    this.swiper = el.target.swiper;
-    if (this.shouldMoveMap) {
-      this.activeIndex = 1;
-      interval(100)
-        .pipe(takeUntil(race(this.ngDestroy$, this.touchStart$)))
-        .subscribe(() => {
-          this.moveMapInSwiperToLeftOutsideView();
-        });
+  checkAmountOfPictures(): number {
+    if (this.attachments.length === 3 && !this.location) {
+      this.moreThanFourPics = false;
+      return 3;
     }
+    if (this.attachments.length >= 3) {
+      this.moreThanFourPics = true;
+      return 3;
+    }
+    if (this.attachments.length === 2) {
+      return 3;
+    }
+    if (this.attachments.length === 1) {
+      return 2;
+    }
+    return 1;
+  }
+
+  slidesLoaded() {
     this.state = 'swiper-ready';
     this.updateUi();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.state = 'loading';
-    if (this.swiper) {
-      this.swiper.destroy();
-      this.swiper = undefined;
-    }
     this.updateUi();
     setTimeout(() => this.init(), 0);
   }
@@ -169,11 +191,11 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private calculateNewState() {
-    if (this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+    if (this.location && (!this.attachments || this.attachments.length === 0)) {
       return 'singlemap';
-    } else if (!this.location && this.imgUrl && this.imgUrl.length === 1) {
+    } else if (!this.location && this.attachments && this.attachments.length === 1) {
       return 'singleimage';
-    } else if (!this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+    } else if (!this.location && (!this.attachments || this.attachments.length === 0)) {
       return 'empty';
     } else {
       return 'loading-swiper';
@@ -193,30 +215,26 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getImageSlides(): ImgSwiperSlide[] {
-    return (this.imgUrl || []).map((img, index) => ({
+    return (this.attachments || []).map((img, index) => ({
       type: 'image',
       img,
-      header: this.imgHeaders[index],
-      description: this.imgComments[index]
+      header: this.attachments[index].RegistrationName,
+      description: this.attachments[index].Comment
     }));
   }
 
-  private moveMapInSwiperToLeftOutsideView() {
-    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
-      this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
+  getImageIndex(img: AttachmentViewModel) {
+    if (this.attachments) {
+      return this.attachments.indexOf(img);
+    } else {
+      return -1;
     }
   }
 
-  getImageIndex(src: string) {
-    return this.imgUrl && this.imgUrl.length > 0
-      ? this.imgUrl.indexOf(src)
-      : -1;
-  }
-
-  onImageClick(imgUrlSrc: string) {
-    const index = this.getImageIndex(imgUrlSrc);
+  onImageClick(img: AttachmentViewModel) {
+    const index = this.getImageIndex(img);
     if (index >= 0) {
-      this.imgClick.emit({ index, imgUrl: imgUrlSrc });
+      this.imgClick.emit({ index, imgUrl: img.Url });
     }
   }
 
@@ -239,5 +257,29 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   async onSlideTransitionEnd() {
     this.activeIndex = await this.getSwiperIndex();
     this.updateUi();
+  }
+
+  next() {
+    this.slider.slideNext();
+    this.updateUi();
+  }
+
+  prev() {
+    this.slider.slidePrev();
+    this.updateUi();
+  }
+
+  isPreviousImgAvailable(): boolean {
+    if (this.location) {
+      return this.activeIndex >= 1;
+    }
+    return this.activeIndex >= 1;
+  }
+
+  isNextImgAvailable() {
+    if (this.location) {
+      return this.activeIndex + 1 < this.attachments.length;
+    }
+    return this.activeIndex + 2 < this.attachments.length;
   }
 }

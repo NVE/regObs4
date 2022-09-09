@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { IceThicknessLayerDto } from '../../../../../regobs-api/models';
+import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 
 @Component({
   selector: 'app-ice-layer',
@@ -8,14 +8,14 @@ import { IceThicknessLayerDto } from '../../../../../regobs-api/models';
   styleUrls: ['./ice-layer.page.scss']
 })
 export class IceLayerPage implements OnInit {
-  @Input() iceThicknessLayer: IceThicknessLayerDto;
+  @Input() iceThicknessLayer: IceThicknessLayerEditModel;
 
   isNew = false;
   get isValid() {
     return this.layerCopy.IceLayerThickness !== undefined;
   }
 
-  layerCopy: IceThicknessLayerDto; // Using object copy so cancel does not change input object
+  layerCopy: IceThicknessLayerEditModel; // Using object copy so cancel does not change input object
 
   constructor(
     private modalController: ModalController,

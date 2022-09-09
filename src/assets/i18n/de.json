@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonnent"
   },
   "ADD_MENU": {
-    "DRAFT": "Entwurf",
-    "NEW_OBSERVATION": "Neue",
-    "NEW_TRIP": "Neue Tour"
+    "DRAFT_TITLE_SOIL": "Entwurf: Boden beobachtung",
+    "DRAFT_TITLE_ICE": "Entwurf: Eis beobachtung",
+    "DRAFT_TITLE_SNOW": "Entwurf: Schnee beobachtung",
+    "DRAFT_TITLE_WATER": "Entwurf: Wasser beobachtung",
+    "NEW_SOIL_OBSERVATION": "Neue boden beobachtung",
+    "NEW_ICE_OBSERVATION": "Neue eis beobachtung",
+    "NEW_SNOW_OBSERVATION": "Neue schnee beobachtung",
+    "NEW_WATER_OBSERVATION": "Neue wasser beobachtung"
   },
   "ALERT": {
     "CANCEL": "Abbruch",
@@ -69,6 +74,7 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Entwurf",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
   },
@@ -147,6 +153,7 @@
       "ARC_GIS": "ESRI World Topo (weltweit)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norway)",
       "KARTVERKET": "Kartverket (Norway)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (weltweit)"
     },
     "TIME_FRAME": "Zeitraum",
@@ -170,14 +177,13 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle Beobachtungen",
     "FORMS": "Form",
-    "GO_TO_OBSERVATION": "Gehe zu Beobachtung",
     "IN_MAP_VIEW": "Beobachtungen in Kartenansicht",
     "NO_OBSERVATIONS": "Keine Beobachtungen",
     "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten.",
     "OBSERVATIONS": "Beobachtungen"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline-Karte"
+    "OFFLINE_MAP_PAGE_TITLE": "Offline-Karte"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Standortinformation nicht zugelassen",
@@ -201,6 +207,7 @@
       "URL": "Url"
     },
     "BACK_TO_OBSERVATION": "Zurück zu Beobachtung",
+    "COPIED_TO_CLIPBOARD": "In die Zwischenablage kopiert",
     "CONFIRM_RESET": "Möchten Sie wirklich alle Felder zurücksetzen?",
     "DANGER_OBS": {
       "AREA": "Bereich",
@@ -243,6 +250,7 @@
     },
     "DRAFTS": "Meine Entwürfe",
     "DRAFTS_DESCRIPTION": "Diese Beobachtungen sind in Bearbeitung und noch nicht übermittelt.",
+    "EDIT": "Beobachtung bearbeiten",
     "EMAIL": {
       "BODY": "Hallo! Ich habe Probleme beim Versenden dieser Registrierung. Können Sie mir helfen?",
       "SUBJECT": "Registrierung fehlgeschlagen"
@@ -511,8 +519,8 @@
         "COMMENT_PLACEHOLDER": "Wie war das Wetter in den letzten 24 Stunden? Beispiel: Hat es geschneit? Gab es Temperaturänderungen? In welcher Höhe lag der Gefrierpunkt?",
         "FROM_EAST": "O - von Osten",
         "FROM_NORTH": "N - von Norden",
+        "FROM_NORTH_EAST": "NO - von Nordosten",
         "FROM_NORTH_WEST": "NW - von Nordwesten",
-        "FROM_NOTRH_EAST": "NO - von Nordosten",
         "FROM_SOUTH": "S - von Süden",
         "FROM_SOUTH_EAST": "SO - von Südosten",
         "FROM_SOUTH_WEST": "SW - von Südwesten",
@@ -579,7 +587,7 @@
     "LANGUAGE": "Sprache",
     "NORWAY_ONLY": "Nur in Norwegen",
     "NUMBER_OF_TILES_IN_CACHE": "Speichergröße für Offlinkacheln",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Informationen zur Verwendung von Daten finden Sie in unseren Datenschutzbestimmungen.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Informationen zur Verwendung von Daten finden Sie in unseren <a href=\"{{legalUrl}}\" target=\"_blank\">Datenschutzbestimmungen</a>.",
     "RESET": "App zurücksetzen",
     "RESETTING": "App wird zurückgesetzt. Bitte warten...",
     "SHOW_ADVANCED": "Erweiterte Einstellungen zeigen",

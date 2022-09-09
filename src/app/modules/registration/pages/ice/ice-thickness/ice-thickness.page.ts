@@ -1,12 +1,11 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { ModalController } from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
-import { IceThicknessLayerDto } from '../../../../regobs-api/models';
+import { IceThicknessEditModel, IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { NumberHelper } from '../../../../../core/helpers/number-helper';
 
 @Component({
   selector: 'app-ice-thickness',
@@ -14,8 +13,11 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
   styleUrls: ['./ice-thickness.page.scss']
 })
 export class IceThicknessPage extends BasePage {
-  iceHeightBefore: boolean = undefined;
-  iceHeightAfter: boolean = undefined;
+  isWaterBefore: boolean = undefined;
+  isWaterAfter: boolean = undefined;
+  waterHeightBefore: number = undefined;
+  waterHeightAfter: number = undefined;
+  waterDepthAfter: number = undefined;
 
   constructor(
     basePageService: BasePageService,
@@ -26,73 +28,92 @@ export class IceThicknessPage extends BasePage {
     super(RegistrationTid.IceThickness, basePageService, activatedRoute);
   }
 
+  get iceThickness(): IceThicknessEditModel {
+    return this.draft.registration.IceThickness;
+  }
+
   onInit() {
-    if (!this.registration.request.IceThickness.IceThicknessLayer) {
-      this.registration.request.IceThickness.IceThicknessLayer = [];
+    const iceThickness = this.iceThickness;
+
+    if (!iceThickness.IceThicknessLayers) {
+      iceThickness.IceThicknessLayers = [];
     }
-    if (this.registration.request.IceThickness.IceHeightBefore < 0) {
-      this.registration.request.IceThickness.IceHeightBefore =
-        this.registration.request.IceThickness.IceHeightBefore * -1;
-      this.iceHeightBefore = true;
-    } else if (this.registration.request.IceThickness.IceHeightBefore === 0) {
-      this.iceHeightBefore = false;
+
+    if (iceThickness.IceHeightBefore < 0) {
+      this.isWaterBefore = true;
+      this.waterHeightBefore = -iceThickness.IceHeightBefore;
+    } else if (iceThickness.IceHeightBefore === 0) {
+      this.isWaterBefore = false;
     }
-    if (this.registration.request.IceThickness.IceHeightAfter > 0) {
-      this.iceHeightAfter = false;
-    } else if (this.registration.request.IceThickness.IceHeightAfter < 0) {
-      this.registration.request.IceThickness.IceHeightAfter =
-        this.registration.request.IceThickness.IceHeightAfter * -1;
-      this.iceHeightAfter = true;
+
+
+    if (iceThickness.IceHeightAfter < 0) {
+      this.isWaterAfter = true;
+      this.waterHeightAfter = -iceThickness.IceHeightAfter;
+    } else if (iceThickness.IceHeightAfter >= 0) {
+      this.isWaterAfter = false;
+      this.waterDepthAfter = iceThickness.IceHeightAfter;
     }
   }
 
-  onBeforeLeave() {
-    if (this.registration) {
-      if (this.iceHeightBefore === undefined) {
-        this.registration.request.IceThickness.IceHeightBefore = undefined;
-      } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
-        this.registration.request.IceThickness.IceHeightBefore =
-          this.registration.request.IceThickness.IceHeightBefore * -1;
-      } else {
-        this.registration.request.IceThickness.IceHeightBefore = 0;
-      }
-      if (this.iceHeightAfter === undefined) {
-        this.registration.request.IceThickness.IceHeightAfter = undefined;
-      } else if (
-        this.iceHeightAfter === true &&
-        NumberHelper.isNumeric(
-          this.registration.request.IceThickness.IceHeightAfter
-        )
-      ) {
-        this.registration.request.IceThickness.IceHeightAfter =
-          this.registration.request.IceThickness.IceHeightAfter * -1;
-      }
+  makeValidBeforeAfter() {
+    const iceThickness = this.iceThickness;
+
+    if (this.isWaterBefore === undefined) {
+      iceThickness.IceHeightBefore = undefined;
+    } else if (this.isWaterBefore && this.waterHeightBefore > 0) {
+      iceThickness.IceHeightBefore = -this.waterHeightBefore;
+    } else {
+      iceThickness.IceHeightBefore = 0;
+    }
+
+    if (this.isWaterAfter === undefined) {
+      iceThickness.IceHeightAfter = undefined;
+    } else if (this.isWaterAfter && !isNaN(this.waterHeightAfter)) {
+      iceThickness.IceHeightAfter = -this.waterHeightAfter;
+    } else if (!this.isWaterAfter && !isNaN(this.waterDepthAfter)) {
+      iceThickness.IceHeightAfter = this.waterDepthAfter;
+    } else {
+      iceThickness.IceHeightAfter = 0;
     }
   }
 
-  isEmpty() {
+  isValid() {
+    const checkBefore = Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore)
+        || Boolean(this.isWaterBefore) == false;
+    const checkAfter = this.isWaterAfter && !isNaN(this.waterHeightAfter)
+        || this.isWaterAfter == false && !isNaN(this.waterDepthAfter)
+        || this.isWaterAfter == undefined;
+
+    const valid = checkBefore && checkAfter;
+    if (valid) {
+      this.makeValidBeforeAfter();
+    }
+    return valid;
+  }
+
+  async isEmpty(): Promise<boolean> {
     return (
-      this.basePageService.RegistrationService.isEmpty(
-        this.registration,
-        this.registrationTid
-      ) &&
-      this.iceHeightAfter === undefined &&
-      this.iceHeightBefore === undefined
+      (await super.isEmpty()) &&
+      this.isWaterAfter === undefined &&
+      this.isWaterBefore === undefined
     );
   }
 
   onReset() {
-    this.iceHeightAfter = undefined;
-    this.iceHeightBefore = undefined;
-    this.registration.request.IceThickness.IceThicknessLayer = [];
+    this.isWaterAfter = undefined;
+    this.isWaterBefore = undefined;
+    this.waterHeightBefore = undefined;
+    this.waterHeightAfter = undefined;
+    this.waterDepthAfter = undefined;
+    this.iceThickness.IceThicknessLayers = [];
   }
 
   async addOrEditThicknessLayer(index?: number) {
     const modal = await this.modalController.create({
       component: IceLayerPage,
       componentProps: {
-        iceThicknessLayer: this.registration.request.IceThickness
-          .IceThicknessLayer[index]
+        iceThicknessLayer: this.iceThickness.IceThicknessLayers[index]
       }
     });
     modal.present();
@@ -101,7 +122,7 @@ export class IceThicknessPage extends BasePage {
       if (result.data.delete) {
         this.removeLayerAtIndex(index);
       } else {
-        const iceThicknessLayerCopy: IceThicknessLayerDto = result.data;
+        const iceThicknessLayerCopy: IceThicknessLayerEditModel = result.data;
         if (index !== undefined) {
           this.setIceThicknessLayer(index, iceThicknessLayerCopy);
         } else {
@@ -114,7 +135,7 @@ export class IceThicknessPage extends BasePage {
   onIceThicknessReorder(event: CustomEvent) {
     this.ngZone.run(() => {
       this.reorderList(
-        this.registration.request.IceThickness.IceThicknessLayer,
+        this.iceThickness.IceThicknessLayers,
         event.detail.from,
         event.detail.to
       );
@@ -126,36 +147,32 @@ export class IceThicknessPage extends BasePage {
     array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
   }
 
-  setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerDto) {
+  setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerEditModel) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer[
-        index
-      ] = iceThicknessLayer;
+      this.iceThickness.IceThicknessLayers[index] = iceThicknessLayer;
     });
     this.calculateIceThicknessSum();
   }
 
-  addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerDto) {
+  addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerEditModel) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer.push(
-        iceThicknessLayer
-      );
+      this.iceThickness.IceThicknessLayers.push(iceThicknessLayer);
     });
     this.calculateIceThicknessSum();
   }
 
   calculateIceThicknessSum() {
     const newSum = (
-      this.registration.request.IceThickness.IceThicknessLayer || []
+      this.iceThickness.IceThicknessLayers || []
     ).reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessSum = newSum;
+      this.iceThickness.IceThicknessSum = newSum;
     });
   }
 
   removeLayerAtIndex(index: number) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer.splice(index, 1);
+      this.iceThickness.IceThicknessLayers.splice(index, 1);
     });
     this.calculateIceThicknessSum();
   }

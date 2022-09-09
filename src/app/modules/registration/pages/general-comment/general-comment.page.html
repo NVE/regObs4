@@ -9,15 +9,15 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.GeneralObservation"
-    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="draft && draft.registration.GeneralObservation"
+    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}
         </ion-label>
       </ion-list-header>
-      <app-text-comment [(value)]="registration.request.GeneralObservation.ObsComment"
+      <app-text-comment [(value)]="draft.registration.GeneralObservation.ObsComment"
         title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
@@ -25,9 +25,13 @@
           {{"REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item *ngIf="registration.request.Picture" [(images)]="registration.request.Picture"
-        [registrationTid]="registrationTid" (imagesChange)="save()" [onBeforeAdd]="getSaveFunc()">
-      </app-add-picture-item>
+      <app-edit-images
+        [registrationTid]="registrationTid"
+        [geoHazard]="draft.registration.GeoHazardTID"
+        [draftUuid]="draft.uuid"
+        [(existingAttachments)]="draft.registration.Attachments"
+        [onBeforeAdd]="getSaveFunc()"
+      ></app-edit-images>
       <ion-item-divider>
         <ion-label class="ion-text-wrap">
           {{'REGISTRATION.GENERAL_COMMENT.DESCRIPTION' | translate}}
@@ -38,7 +42,7 @@
           {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-web-url-item [(weburls)]="registration.request.GeneralObservation.Urls"></app-add-web-url-item>
+      <app-add-web-url-item [(weburls)]="draft.registration.GeneralObservation.Urls"></app-add-web-url-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

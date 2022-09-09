@@ -1,15 +1,15 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
+import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
-import { RegistrationService } from '../../../../../services/registration.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IRegistration } from '../../../../../models/registration.model';
 import cloneDeep from 'clone-deep';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-density-modal',
@@ -17,67 +17,59 @@ import cloneDeep from 'clone-deep';
   styleUrls: ['./snow-density-modal.page.scss']
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
-  @Input() regId: string;
+  @Input() uuid: string;
   useCylinder: boolean;
   private layerModal: HTMLIonModalElement;
   private ngDestroy$ = new Subject<void>();
-  private reg: IRegistration;
-  private initialRegistrationClone: IRegistration;
+  private draft: RegistrationDraft;
+  private initialDraftClone: RegistrationDraft;
 
   get profile() {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowDensity &&
-      this.reg.request.SnowProfile2.SnowDensity.length > 0
-    ) {
-      return this.reg.request.SnowProfile2.SnowDensity[0];
+    if (this.draft?.registration?.SnowProfile2?.SnowDensity?.length > 0) {
+      return this.draft.registration.SnowProfile2.SnowDensity[0];
     }
     return {};
   }
 
   get hasLayers() {
-    return (
-      this.profile && this.profile.Layers && this.profile.Layers.length > 0
-    );
+    return this.profile?.Layers?.length > 0;
   }
 
   constructor(
     private modalController: ModalController,
-    private registrationService: RegistrationService,
+    private draftRepository: DraftRepositoryService,
     private ngZone: NgZone
   ) {}
 
-  ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+  async ngOnInit() {
+    this.draftRepository
+      .getDraft$(this.uuid)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(async () => {
-          if (!this.initialRegistrationClone) {
-            this.initialRegistrationClone = cloneDeep(reg);
+          if (!this.initialDraftClone) {
+            this.initialDraftClone = cloneDeep(reg);
           }
-          this.reg = reg;
-          if (!this.reg.request.SnowProfile2) {
-            this.reg.request.SnowProfile2 = {};
+          this.draft = reg;
+          if (!this.draft.registration.SnowProfile2) {
+            this.draft.registration.SnowProfile2 = {};
           }
-          if (!this.reg.request.SnowProfile2.SnowDensity) {
-            this.reg.request.SnowProfile2.SnowDensity = [];
+          if (!this.draft.registration.SnowProfile2.SnowDensity) {
+            this.draft.registration.SnowProfile2.SnowDensity = [];
           }
-          if (!this.reg.request.SnowProfile2.SnowDensity[0]) {
-            this.reg.request.SnowProfile2.SnowDensity[0] = {};
+          if (!this.draft.registration.SnowProfile2.SnowDensity[0]) {
+            this.draft.registration.SnowProfile2.SnowDensity[0] = {};
           }
-          if (!this.reg.request.SnowProfile2.SnowDensity[0].Layers) {
-            this.reg.request.SnowProfile2.SnowDensity[0].Layers = [];
+          if (!this.draft.registration.SnowProfile2.SnowDensity[0].Layers) {
+            this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
           }
           if (this.useCylinder === undefined) {
             this.useCylinder =
-              !!this.reg.request.SnowProfile2.SnowDensity[0].CylinderDiameter ||
-              !!this.reg.request.SnowProfile2.SnowDensity[0].TareWeight ||
-              this.reg.request.SnowProfile2.SnowDensity[0].Layers.length ===
+              !!this.draft.registration.SnowProfile2.SnowDensity[0].CylinderDiameter ||
+              !!this.draft.registration.SnowProfile2.SnowDensity[0].TareWeight ||
+              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length ===
                 0 ||
-              this.reg.request.SnowProfile2.SnowDensity[0].Layers.some(
+              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some(
                 (l) => !!l.Weight
               );
           }
@@ -96,9 +88,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(
-      this.initialRegistrationClone
-    );
+    await this.draftRepository.save(this.initialDraftClone);
     this.modalController.dismiss();
   }
 
@@ -113,12 +103,12 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     );
   }
 
-  async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
+  async addOrEditLayer(index: number, layer: SnowDensityLayerModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowDensityLayerModalPage,
         componentProps: {
-          reg: this.reg,
+          draft: this.draft,
           layer: layer,
           useCylinder: this.useCylinder,
           cylinderDiameterInM: this.profile.CylinderDiameter,
@@ -144,7 +134,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   recalculateLayers() {
     if (this.useCylinder && this.hasLayers) {
-      this.profile.Layers.forEach((layer: DensityProfileLayerDto) => {
+      this.profile.Layers.forEach((layer: SnowDensityLayerModel) => {
         layer.Density = HydrologyHelper.calculateDensity(
           layer.Weight,
           layer.Thickness,
@@ -157,7 +147,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   async recalculateLayersAndSave() {
     this.recalculateLayers();
-    await this.registrationService.saveRegistrationAsync(this.reg);
+    await this.draftRepository.save(this.draft);
   }
 
   getWaterEquivalent(density: number, depth: number) {

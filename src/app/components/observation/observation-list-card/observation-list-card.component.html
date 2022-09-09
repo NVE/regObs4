@@ -30,17 +30,17 @@
             {{obs.Observer.NickName}}
             <app-competence [competenceLevel]="competenceLevel"></app-competence>
           </div>
-          <div class="card-icon-item" *ngIf="obs.Observer.ObserverGroupName">
+          <div class="card-icon-item" *ngIf="obs.ObserverGroupName">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/usergroup.svg"
               [svgStyle]="{'width.px':16, 'height.px':16  }"></svg-icon>
-            {{obs.Observer.ObserverGroupName}}
+            {{obs.ObserverGroupName }}
           </div>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12" class="ion-no-padding">
-          <app-img-swiper [location]="location" [imgUrl]="imageUrls" [imgHeaders]="imageHeaders"
-            [imgComments]="imageDescriptions" (imgClick)="openImage($event)" (locationClick)="openLocation($event)">
+          <app-img-swiper [location]="location" [attachments]="attachments"
+          (imgClick)="openImage($event)" (locationClick)="openLocation($event)">
           </app-img-swiper>
         </ion-col>
       </ion-row>
@@ -64,11 +64,13 @@
       </ion-row>
     </ion-grid>
     <ion-item class="ion-no-padding" color="light">
-      <ion-button mode="ios" fill="clear" class="link-title" (click)="openWeb()">
-        {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
+      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit">
+        <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
+        {{'REGISTRATION.EDIT' | translate}}
       </ion-button>
+      <ion-spinner slot="start" name="dots" *ngIf="isLoadingObsForEdit"></ion-spinner>
       <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
-        ID: {{ obs.RegID }}
+        ID: {{ obs.RegId }}
         <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
       </ion-button>
     </ion-item>

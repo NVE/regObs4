@@ -9,18 +9,22 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.CompressionTest"
-    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
-    <app-compression-test-list [(tests)]="registration.request.CompressionTest"></app-compression-test-list>
+  <app-registration-content-wrapper *ngIf="draft && draft.registration.CompressionTest"
+    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
+    <app-compression-test-list [(tests)]="draft.registration.CompressionTest"></app-compression-test-list>
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
-      </app-add-picture-item>
+      <app-edit-images
+        [registrationTid]="registrationTid"
+        [geoHazard]="draft.registration.GeoHazardTID"
+        [draftUuid]="draft.uuid"
+        [(existingAttachments)]="draft.registration.Attachments"
+        [onBeforeAdd]="getSaveFunc()"
+      ></app-edit-images>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

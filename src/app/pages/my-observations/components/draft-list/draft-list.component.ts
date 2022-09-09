@@ -6,9 +6,9 @@ import {
   Output
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { IRegistration } from 'src/app/modules/registration/models/registration.model';
-import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-draft-list',
@@ -18,14 +18,26 @@ import { RegistrationService } from 'src/app/modules/registration/services/regis
 })
 export class DraftListComponent implements OnInit {
   @Output() isEmpty = new EventEmitter<boolean>();
-  registrations$: Observable<IRegistration[]>;
   private ngDestroy$: Subject<void>;
 
-  constructor(private registrationService: RegistrationService) {}
+  public drafts$: Observable<RegistrationDraft[]>
+
+  constructor(
+    draftService: DraftRepositoryService,
+  ) {
+    this.drafts$ = draftService.drafts$;
+  }
 
   ngOnInit(): void {
     this.ngDestroy$ = new Subject();
-    this.registrations$ = this.createRegistration$();
+
+    this.drafts$.pipe(
+      takeUntil(this.ngDestroy$),
+      map((drafts) => drafts.length === 0),
+      distinctUntilChanged(),
+    ).subscribe((isEmpty) => {
+      this.isEmpty.emit(isEmpty);
+    });
   }
 
   ngOnDestroy(): void {
@@ -33,13 +45,7 @@ export class DraftListComponent implements OnInit {
     this.ngDestroy$.complete();
   }
 
-  private createRegistration$(): Observable<IRegistration[]> {
-    return this.registrationService.registrations$.pipe(
-      tap((regs) => this.isEmpty.emit(regs.length === 0))
-    );
-  }
-
-  trackByIdFunc(_: unknown, obs: IRegistration): string {
-    return obs ? obs.id : undefined;
+  trackByIdFunc(_: unknown, draft: RegistrationDraft): string {
+    return draft.uuid;
   }
 }

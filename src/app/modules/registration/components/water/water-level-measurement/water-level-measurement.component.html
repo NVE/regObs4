@@ -30,9 +30,17 @@
     {{'REGISTRATION.WATER.WATER_LEVEL.DT_REQUIRED_TEXT' | translate}}
   </ion-label>
 </ion-item>
-<app-add-picture-item iconColor="primary" icon="add-circle-outline" title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
+<app-edit-images 
+  iconColor="primary" 
+  icon="add-circle-outline" 
+  title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"
-  [(images)]="waterLevelMeasurement.Pictures" [registrationTid]="registrationTid" (imagesChange)="triggerChange()">
-</app-add-picture-item>
+  [registrationTid]="registrationTid"
+  [geoHazard]="geoHazard"
+  [draftUuid]="registrationId"
+  [(existingAttachments)]="waterLevelMeasurement.Attachments"
+  [ref]="ref"
+  [attachmentType]="'WaterLevelMeasurementAttachment'"
+></app-edit-images>
 <app-text-comment [(value)]="waterLevelMeasurement.Comment" placeholder="{{'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"></app-text-comment>

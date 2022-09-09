@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Based on https://github.com/SmartMoveSystems/ionicLogFileAppender
  * SmartMove Ionic rolling log file appender
@@ -484,15 +485,15 @@ export class FileLoggingService {
       }
     }
 
-    async sendLogsByEmail(): Promise<void> {
+    async sendLogsByEmail(topic = 'Regobs-app-logger', body = ''): Promise<void> {
       const fileEntries = await this.getLogFiles();
       const filePaths: string[] = fileEntries.map(entry => entry.toURL());
       const attachments = filePaths;
       const email: EmailComposerOptions = {
         to: settings.errorEmailAddress,
         attachments,
-        subject: 'Regobs-app-logger',
-        body: '',
+        subject: topic,
+        body,
         isHtml: true
       };
       this.emailComposer.open(email);
@@ -537,7 +538,6 @@ class LogProviderConfig implements ILogProviderConfig {
     constructor(fields: any) {
       // Quick and dirty extend/assign fields to this model
       for (const f in fields) {
-        // @ts-ignore
         this[f] = fields[f];
       }
     }

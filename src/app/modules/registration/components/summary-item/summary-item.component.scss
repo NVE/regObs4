@@ -1,7 +1,25 @@
 
-app-base64-image, img {
-    max-width: 100px;
+ro-blob-image, app-remote-image, img {
+    max-width: 110px;
     max-height: 100px;
-    padding-right: 5px;
+    margin-right: 5px;
     display: inline-block;
+}
+
+.summary-item:hover {
+  cursor: pointer;
+  --background: var(--ion-color-varsom-blue-light-3);
+}
+
+
+.simple-mode-title > h2 {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.simple-mode-sub {
+    font-weight: 400;
+    font-size: 18px;
+    color: #333;
 }

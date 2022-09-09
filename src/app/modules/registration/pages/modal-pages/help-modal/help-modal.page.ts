@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -6,12 +6,10 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './help-modal.page.html',
   styleUrls: ['./help-modal.page.scss']
 })
-export class HelpModalPage implements OnInit {
+export class HelpModalPage {
   @Input() helpText: string;
 
   constructor(private modalController: ModalController) {}
-
-  ngOnInit() {}
 
   close() {
     this.modalController.dismiss();

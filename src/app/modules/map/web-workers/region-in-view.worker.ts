@@ -17,7 +17,7 @@ import {
   BBox,
   Coord
 } from '@turf/turf';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import avalancheRegions from './../../../../assets/json/varslingsomraader.json';
@@ -96,7 +96,7 @@ implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
         const featureName =
           mapView.geoHazards[0] === GeoHazard.Snow
             ? settings.services.warning.Snow.featureName
-            : settings.services.warning.Dirt.featureName;
+            : settings.services.warning.Soil.featureName;
         regionsInViewBounds = featuresInViewBounds.map((f) =>
           f.properties[featureName].toString()
         );

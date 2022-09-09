@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppMode } from '../../../../core/models/app-mode.enum';
+import { AppMode } from 'src/app/modules/common-core/models';
 import * as Sentry from '@sentry/browser';
 import { AppVersionService } from '../../../../core/services/app-version/app-version.service';
 import { settings } from '../../../../../settings';
@@ -8,12 +8,26 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { LoggingService } from './logging.service';
 import { LogLevel } from './log-level.model';
 import { FileLoggingService } from './file-logging.service';
+import { AppVersion } from 'src/app/core/models/app-version.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SentryService implements LoggingService {
-  constructor(private appVersionService: AppVersionService, private fileLoggingService: FileLoggingService) {}
+
+  private versionInfo: AppVersion;
+
+  constructor(
+    appVersionService: AppVersionService,
+    private fileLoggingService: FileLoggingService
+  ) {
+    this.versionInfo = appVersionService.getAppVersion();
+    this.log(
+      `Version = ${this.versionInfo.version}, build = ${this.versionInfo.buildNumber}`,
+      null,
+      LogLevel.Info
+    );
+  }
 
   error(
     error: Error,
@@ -29,7 +43,6 @@ export class SentryService implements LoggingService {
   }
 
   configureLogging(appMode: AppMode) {
-    const appVersion = this.appVersionService.getAppVersion();
     Sentry.init({
       dsn: environment.production ? settings.sentryDsn : null,
       transport: Sentry.Transports.FetchTransport,
@@ -40,8 +53,8 @@ export class SentryService implements LoggingService {
             ? 'demo regObs'
             : 'test regObs',
       enabled: environment.production,
-      release: appVersion.version,
-      dist: appVersion.revision
+      release: this.versionInfo.version,
+      dist: this.versionInfo.revision
     });
   }
 
@@ -74,9 +87,7 @@ export class SentryService implements LoggingService {
     tag?: string,
     ...optionalParams: any[]
   ) {
-    if (this.fileLoggingService.isReady()) {
-      this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
-    }
+    this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
     if (
       message &&
       (level === LogLevel.Warning ||

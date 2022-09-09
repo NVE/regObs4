@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Utkast",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_SOIL": "Utkast: Jordobservation",
+    "DRAFT_TITLE_ICE": "Utkast: Isobservation",
+    "DRAFT_TITLE_SNOW": "Utkast: Snöobservation",
+    "DRAFT_TITLE_WATER": "Utkast: Vattenobservation",
+    "NEW_SOIL_OBSERVATION": "Ny jordobservation",
+    "NEW_ICE_OBSERVATION": "Ny isobservation",
+    "NEW_SNOW_OBSERVATION": "Ny snöobservation",
+    "NEW_WATER_OBSERVATION": "Ny vattenobservation"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -20,6 +25,7 @@
     "UNDO": "Ångra",
     "WARNING": "Varning"
   },
+  "CLOSE": "Stäng",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Lägg till egna observationer",
     "SELECT_GEO_HAZARD": "Välj en naturfara",
@@ -69,6 +75,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Utkast",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Registrerar tur"
   },
@@ -86,6 +93,8 @@
     "LINE_1": "Använd varningar, observationer och kartor på egen risk. Det kan finnas fel och information kan saknas.",
     "LINE_2": "En prognos är ett planeringsverktyg och kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering. Förhållandena kan vara komplexa och skiljer sig från prognosen.",
     "LINE_3": "Data på Regobs har producerats av användarna och är tillgängliga «som de är». Datan kan innehålla fel och utelämnanden. NVE lämnar inga garanterar för fel och utelämnanden i uppgifterna.",
+    "LINE_4": "När du publicerar bilder på observationer i Regobs accepterar du att bilderna kan återanvändas (licensierat under <a href='https://data.norge.no/nlod/no/'>Norsk lisens for offentlige data</a>).",
+    "LINE_5": "Läs mer i våra <a href=\"{{legalUrl}}\" target=\"_blank\">användarvillkor</a>.",
     "OK": "Okej, jag accepterar",
     "TERMS": "Data på Regobs har producerats av användarna och är tillgängliga \"som de är\". Datan kan innehålla fel och utelämnanden. NVE garanterar inte informationens aktualitet och tar inget ansvar för att data kan ge felaktig eller vilseledande information. Antalet stjärnor (1-5) beskriver kompetensnivån för leverantören av observationer. Utan stjärnor är kompetensen okänd eller låg."
   },
@@ -99,6 +108,7 @@
     "LOGIN": "Logga in",
     "LOGOUT": "Logga ut",
     "MY_PROFILE": "Min profil",
+    "DELETE_PROFILE": "Radera profil och mina data",
     "PASSWORD": "lösenord",
     "SERVICE_UNAVAILABLE": "Fel vid anslutning till tjänsten. Har du mobilnätverk? Vänta några minuter och försök igen.",
     "TITLE": "Logga in",
@@ -125,8 +135,9 @@
     "CONTACT_REGOBS": "Kontakta oss",
     "CONTACT_REGOBS_ERROR": "Rapportera fel",
     "CONTACT_SUBJECT": "Kontakta oss från appen",
+    "CONTACT_DESCRIPTION": "Vi har bifogat loggfiler. Du kan ta bort dem om du inte önskar sända dem till oss.",
     "DAYS_BACK": "Dagar tillbaka",
-    "ERROR_REPORT_DESCRIPTION": "Vänligen beskriv ditt problem nedan. Om du har skärmdumpar vänligen bifoga.",
+    "ERROR_REPORT_DESCRIPTION": "Vänligen beskriv ditt problem nedan. Om du har skärmdumpar vänligen bifoga. Vi har lagt till loggfiler som kan hjälpa oss att felsöka problemet. Du kan ta bort dessa om du så önskar.",
     "ERROR_REPORT_SUBJECT": "Felrapport från",
     "GENERAL": "Generell",
     "HIDE_OBSERVATIONS": "Dölj observationer",
@@ -147,6 +158,7 @@
       "ARC_GIS": "ESRI World Topo (värld)",
       "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (värld)"
     },
     "TIME_FRAME": "Period",
@@ -170,14 +182,35 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alla observationer",
     "FORMS": "Formulär",
-    "GO_TO_OBSERVATION": "Gå till observation",
     "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
     "OBSERVATIONS": "Observationer"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kartor"
+    "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
+    "DOWNLOAD_ERROR_MESSAGE": "Nedladdningen misslyckades. Är du ansluten till internet?",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedladdning",
+      "DELETE_BUTTON": "Radera",
+      "DOWNLOAD_BUTTON": "Ladda ned",
+      "HEADER": "Kartpaket {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Nedladdat {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Producerat:",
+      "PACKAGE_SIZE": "Storlek:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Försök igen"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekartor",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
+      "DOWNLOAD_ERROR": "Nedladdningen misslyckades",
+      "UNZIP_ERROR": "Uppackning av filer misslyckades",
+      "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
@@ -206,6 +239,7 @@
     },
     "BACK_TO_OBSERVATION": "Tillbaka till min observation",
     "CONFIRM_RESET": "Är du säker på att du vill återställa alla fält?",
+    "COPIED_TO_CLIPBOARD": "Kopierade till urklipp",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -247,6 +281,7 @@
     },
     "DRAFTS": "Utkast",
     "DRAFTS_DESCRIPTION": "Dessa observationer är under arbete och har inte skickas in.",
+    "EDIT": "Redigera observation",
     "EMAIL": {
       "BODY": "Hej! Jag har problem med att skicka in den här registreringen. Kan du hjälpa mig?",
       "SUBJECT": "Registreringen misslyckades"
@@ -270,7 +305,7 @@
       "DESCRIPTION": "Du kan ladda upp foton från det område du har observerat eller foton på andra saker som du tycker är relevant.",
       "SUBTITLE": "Observationsbilder",
       "TAKE_NEW_PHOTO": "Ta ett nytt foto",
-      "TITLE": "Anteckningar"
+      "TITLE": "Bild och anteckning"
     },
     "GROUP": {
       "SUBTITLE": "Dela observation med",
@@ -313,15 +348,21 @@
       "TITLE": "Olycka / tillbud"
     },
     "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Bilden kunde inte laddas ned från regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Är du online?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Bekräfta position",
+      "CONFIRM_TEXT": "Bekräfta position och tid",
       "CURRENT_LOCATION": "Aktuella position",
       "HIDE_DETAILS": "Dölj detaljer",
       "SHOW_DETAILS": "Visa detaljer",
-      "TITLE": "Observerad plats"
+      "TITLE": "Observationspunkt och -tid",
+      "SOURCE": "Källa",
+      "EXACT": "Exakt",
+      "MORETHANONEKM": "Mer än 1 km",
+      "UNCERTAINTY": "Osäkerhet i position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Datum och tid",
@@ -409,7 +450,7 @@
         "TITLE": "Lavinproblem",
         "TOP": "Toppen",
         "UNKNOWN_TYPE": "Okänd lavinorsak",
-        "VALID_EXPOSITION": "Vädersträck",
+        "VALID_EXPOSITION": "Väderstreck",
         "WEAK_LAYER": "Svagt lager",
         "WEAK_LAYER_DEPTH": "Djup svagt lager"
       },
@@ -431,11 +472,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "EAST": "O",
         "GENERATING_PREVIEW": "Genererar förhandsvisning ..",
         "IS_PROFILE_TO_GROUND": "Är profilen grävd till marken?",
+        "NORTH": "N",
+        "NORTH_EAST": "NO",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Förhandsvisning",
         "PREVIEW_ERROR": "Det gick inte att generera förhandsvisning",
         "PREVIEW_ITEM": "Se snöprofil",
+        "SLOPE_ANGLE": "Lutning",
+        "SLOPE_ANGLE_PLACEHOLDER": "Endast hela grader",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinderdiameter (cm)",
@@ -463,6 +510,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SO",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Lägg till lager",
           "ADD_LAYER_BOTTOM": "Lägg till lager i botten",
@@ -491,7 +541,9 @@
         },
         "SUBFORMS": "Underformulär ",
         "SUPERIOR": "Huvudsaklig",
-        "TITLE": "Snöprofil"
+        "TITLE": "Snöprofil",
+        "VALID_EXPOSITION": "Väderstreck",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snöytan",
@@ -515,10 +567,10 @@
         "COMMENT_PLACEHOLDER": "Hur har vädret varit det senaste dygnet? Exempel: Har det varit snöfall? Har det skett temperaturförändringar? På vilken höjd har fryspunkten varit?",
         "FROM_EAST": "O - från ost",
         "FROM_NORTH": "N - från nord",
+        "FROM_NORTH_EAST": "NO - från nordost",
         "FROM_NORTH_WEST": "NV - från nordväst",
-        "FROM_NOTRH_EAST": "No - från nordost",
         "FROM_SOUTH": "S - från syd",
-        "FROM_SOUTH_EAST": "So - från sydost",
+        "FROM_SOUTH_EAST": "SO - från sydost",
         "FROM_SOUTH_WEST": "SV - från sydväst",
         "FROM_WEST": "V - från väst",
         "NOT_GIVEN": "Ej angivet",
@@ -583,7 +635,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Endast i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maximalt antal kartblad offline",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan läsa om vår användning av data i vår sekretesspolicy.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan läsa om vår användning av data i vår <a href=\"{{legalUrl}}\" target=\"_blank\">sekretesspolicy</a>.",
     "RESET": "Återställ app",
     "RESETTING": "App återställs. Vänta ...",
     "SHOW_ADVANCED": "Visa avancerade inställningar",
@@ -684,11 +736,11 @@
     "STEEPNESS_MAP_DESCRIPTION": "Lutningskarta",
     "STEEPNESS_MAP_DISCLAMER": "<i>Endast</i> för turplanering. Kartan produceras automatiskt och kan ha fel och information kan saknas, t.ex. brant terräng visas inte.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Temakartan är endast tillgänglig offline med utloppszoner aktiverade.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kort utloppszon (50% av lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medel utloppszon (25% oav lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszoner för laviner",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszon för laviner",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
   },
   "TABS": {

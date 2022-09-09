@@ -1,0 +1,20 @@
+img {
+  height: inherit;
+  width: inherit;
+  object-fit: cover;
+}
+
+.image-preview {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 1;
+}
+
+svg-icon {
+  position: absolute;
+  top: 4px;
+  right: 3px;
+  width: 16px;
+  aspect-ratio: 1;
+}

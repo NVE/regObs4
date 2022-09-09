@@ -1,21 +1,20 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { RegistrationTid } from '../../models/registrationTid.enum';
-import { IRegistration } from '../../models/registration.model';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
+/**
+ * Component with helptext, next / last form, save and go back buttons. Used to wrap every registration form.
+ */
 @Component({
   selector: 'app-registration-content-wrapper',
   templateUrl: './registration-content-wrapper.component.html',
   styleUrls: ['./registration-content-wrapper.component.scss']
 })
-export class RegistrationContentWrapperComponent implements OnInit {
-  @Input() registration: IRegistration;
+export class RegistrationContentWrapperComponent {
+  @Input() draft: RegistrationDraft;
   @Input() registrationTid: RegistrationTid;
   @Output() reset = new EventEmitter();
   @Input() isEmpty: boolean;
-
-  constructor() {}
-
-  ngOnInit() {}
 
   emitReset() {
     this.reset.emit();

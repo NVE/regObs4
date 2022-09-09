@@ -1,40 +1,30 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  NgZone,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { combineLatest, Observable, of } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  finalize,
-  map,
-  pairwise,
-  skip,
-  switchMap,
-  take,
-  tap
-} from 'rxjs/operators';
-import {
-  enterZone,
-  toPromiseWithCancel
-} from 'src/app/core/helpers/observable-helper';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
+import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
-import { RegistrationViewModel } from 'src/app/modules/regobs-api/models';
+import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
 
+const DEBUG_TAG = 'SentListComponent';
 const PAGE_SIZE = 10;
 const MAX_REGISTRATIONS_COUNT = 100;
+
+const getUniqueRegistrations = (regs: RegistrationViewModel[]) => {
+  const regIds = new Set();
+  return regs.filter(reg => {
+    if (regIds.has(reg.RegId)) {
+      return false;
+    }
+    regIds.add(reg.RegId);
+    return true;
+  });
+};
 
 @Component({
   selector: 'app-sent-list',
@@ -42,7 +32,7 @@ const MAX_REGISTRATIONS_COUNT = 100;
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SentListComponent implements OnInit {
+export class SentListComponent implements OnDestroy {
   loadedRegistrations: RegistrationViewModel[] = [];
   loaded = false;
   refreshFunc = this.refresh.bind(this);
@@ -50,79 +40,72 @@ export class SentListComponent implements OnInit {
   loadingMore = false;
   pageIndex: number;
   myObservationsUrl$: Observable<string>;
+  private ngDestroy$ = new Subject<void>();
 
   constructor(
+    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private registrationService: RegistrationService,
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
+
+    addUpdateDeleteRegistrationService.changedRegistrations$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((newRegistration) => {
+        const regsWithoutNewRegistration = this.loadedRegistrations
+          .filter(reg => reg.RegId !== newRegistration.RegId);
+
+        this.loadedRegistrations = [
+          newRegistration,
+          ...regsWithoutNewRegistration
+        ];
+
+        this.isEmpty.next(false);
+        this.changeDetectorRef.detectChanges();
+      });
   }
 
-  async ngOnInit(): Promise<void> {
-    this.initRegistrationSubscription();
-    this.registrationService.registrations$
-      .pipe(
-        map((regs) => regs.length),
-        pairwise(),
-        map(([lastCount, newCount]) => newCount - lastCount),
-        distinctUntilChanged(),
-        filter((diff) => diff < 0), //only fetch observations when num drafts decrease
-        debounceTime(500) //wait a bit in case multiple observations were shipped
-      )
-      .subscribe(() => this.initRegistrationSubscription());
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
-  async refresh(cancelPromise: Promise<void>): Promise<void> {
-    await this.registrationService.syncRegistrations(cancelPromise);
+  async refresh(cancelPromise?: Promise<void>): Promise<void> {
     await this.initRegistrationSubscription(cancelPromise);
   }
 
-  private async initRegistrationSubscription(
-    cancel?: Promise<void>
-  ): Promise<void> {
+  private async initRegistrationSubscription(cancel?: Promise<void>): Promise<void> {
+    this.loadedRegistrations = [];
     this.loaded = false;
     this.changeDetectorRef.detectChanges();
     this.pageIndex = 0;
     try {
-      const result = await toPromiseWithCancel(
-        this.getMyRegistrations$(0),
-        cancel,
-        20000
-      );
-      this.loadedRegistrations = result;
+      const result = await toPromiseWithCancel(this.getMyRegistrations$(0), cancel, 20000);
+      // Since this.loadedRegistrations can be modified by the draftToRegService subscription above as well,
+      // add results to the end and filter unique observations in case the my-observations request returns after a
+      // new registration has been added
+      this.loadedRegistrations = getUniqueRegistrations([
+        ...this.loadedRegistrations,
+        ...result
+      ]);
+      this.isEmpty.emit(this.loadedRegistrations.length === 0);
     } catch (error) {
-      this.loggingService.debug(
-        'Could not load my registrations',
-        'SentListComponent.initRegistrationSubscription()',
-        error
-      );
+      this.loggingService.debug('Could not load my registrations', DEBUG_TAG, error);
     } finally {
       this.loaded = true;
       this.changeDetectorRef.detectChanges();
     }
   }
 
-  private getMyRegistrations$(
-    pageNumber: number
-  ): Observable<RegistrationViewModel[]> {
-    return combineLatest([
-      this.userSettingService.appModeAndLanguage$,
-      this.regobsAuthService.loggedInUser$
-    ]).pipe(
-      switchMap(([[appMode, langKey], loggedInUser]) => {
+  private getMyRegistrations$(pageNumber: number): Observable<RegistrationViewModel[]> {
+    return combineLatest([this.userSettingService.language$, this.regobsAuthService.loggedInUser$]).pipe(
+      switchMap(([langKey, loggedInUser]) => {
         if (loggedInUser.isLoggedIn) {
-          return this.observationService.getObservationsForCurrentUser(
-            appMode,
-            loggedInUser.user,
-            langKey,
-            pageNumber,
-            PAGE_SIZE
-          );
+          return this.observationService.getObservationsForCurrentUser(langKey, pageNumber, PAGE_SIZE);
         }
         return of([]);
       }),
@@ -142,9 +125,11 @@ export class SentListComponent implements OnInit {
         })
       )
       .subscribe((nextPage) => {
-        this.loadedRegistrations = this.loadedRegistrations.concat(nextPage);
+        // Filter unique registrations as the paging indexes can be a bit off when a new registration has been
+        // submitted after the first page has loaded
+        this.loadedRegistrations = getUniqueRegistrations(this.loadedRegistrations.concat(nextPage));
         this.pageIndex += 1;
-        const target: IonInfiniteScroll = (event.target as unknown) as IonInfiniteScroll;
+        const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
         target.complete();
         if (nextPage.length < PAGE_SIZE || this.maxCountReached) {
           target.disabled = true; //we have reached the end, so no need to load more pages from now
@@ -154,7 +139,7 @@ export class SentListComponent implements OnInit {
   }
 
   trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
-    return obs ? obs.RegID.toString() : undefined;
+    return obs ? obs.RegId.toString() : undefined;
   }
 
   get maxCountReached(): boolean {
@@ -167,9 +152,7 @@ export class SentListComponent implements OnInit {
 
   private createMyObservationsUrl$(): Observable<string> {
     return this.userSettingService.userSetting$.pipe(
-      map(
-        (userSettings) => settings.services.regObs.webUrl[userSettings.appMode]
-      ),
+      map((userSettings) => settings.services.regObs.webUrl[userSettings.appMode]),
       distinctUntilChanged(),
       enterZone(this.ngZone)
     );

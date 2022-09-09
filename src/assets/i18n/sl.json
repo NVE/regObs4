@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Osnutek",
-    "NEW_OBSERVATION": "Novo",
-    "NEW_TRIP": "Nova pot"
+    "DRAFT_TITLE_SOIL": "Osnutek: Zemlja opažanje",
+    "DRAFT_TITLE_ICE": "Osnutek: Led opažanje",
+    "DRAFT_TITLE_SNOW": "Osnutek: Sneg opažanje",
+    "DRAFT_TITLE_WATER": "Osnutek: Voda opažanje",
+    "NEW_SOIL_OBSERVATION": "Novo zemlja opažanje",
+    "NEW_ICE_OBSERVATION": "Novo led opažanje",
+    "NEW_SNOW_OBSERVATION": "Novo sneg opažanje",
+    "NEW_WATER_OBSERVATION": "Novo voda opažanje"
   },
   "ALERT": {
     "CANCEL": "Prekliči",
@@ -69,6 +74,7 @@
     "SW": "JZ",
     "W": "Z"
   },
+  "DRAFT": "Osnutek",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Beleženje poti"
   },
@@ -147,6 +153,7 @@
       "ARC_GIS": "ESRI World Topo (svet)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norveška)",
       "KARTVERKET": "Kartverket (Norveška)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (svet)"
     },
     "TIME_FRAME": "Obdobje",
@@ -170,14 +177,13 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Vsa opažanja",
     "FORMS": "Obrazci",
-    "GO_TO_OBSERVATION": "Pojdi na opažanje",
     "IN_MAP_VIEW": "Opažanja na prikazanem delu zemljevida",
     "NO_OBSERVATIONS": "Brez opažanj",
     "NO_OBSERVATIONS_TEXT": "Na prikazanem delu zemljevida ni vnešenih opažanj. Poskusite spremeniti območje ali razširite željeno časovno obdobje za opažanja.",
     "OBSERVATIONS": "Opažanja"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Zemljevid brez povezave"
+    "OFFLINE_MAP_PAGE_TITLE": "Zemljevid brez povezave"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Dovoljenje za lokacijo zavrnjeno",
@@ -202,6 +208,7 @@
     },
     "BACK_TO_OBSERVATION": "Nazaj na opažanje",
     "CONFIRM_RESET": "Ali ste prepričani, da želite ponastaviti vsa polja?",
+    "COPIED_TO_CLIPBOARD": "Kopirano v odložišče",
     "DANGER_OBS": {
       "AREA": "Območje",
       "COMMENT": "Komentar",
@@ -511,8 +518,8 @@
         "COMMENT_PLACEHOLDER": "Kakšno je bilo vreme v preteklih 24 urah? Primer: Je padal sneg? Je bilo opaziti spremembe v temperaturi? Na kateri višini poteka ničelna izoterma?",
         "FROM_EAST": "V - iz vzhoda",
         "FROM_NORTH": "S - iz severa",
+        "FROM_NORTH_EAST": "SV - iz severovzhoda",
         "FROM_NORTH_WEST": "SZ - iz severozahoda",
-        "FROM_NOTRH_EAST": "SV - iz severovzhoda",
         "FROM_SOUTH": "J - iz juga",
         "FROM_SOUTH_EAST": "JV - iz jugovzhoda",
         "FROM_SOUTH_WEST": "JZ - iz jugozahoda",
@@ -579,7 +586,7 @@
     "LANGUAGE": "Jezik",
     "NORWAY_ONLY": "Samo na Norveškem",
     "NUMBER_OF_TILES_IN_CACHE": "Največje število listov zemljevidov brez povezave v predpomnilniku",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "O naši uporabi podatkov lahko preberete v naši politiki zasebnosti.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "O naši uporabi podatkov lahko preberete v naši <a href=\"{{legalUrl}}\" target=\"_blank\">politiki zasebnosti</a>.",
     "RESET": "Ponastavi aplikacijo",
     "RESETTING": "Aplikacija se ponastavlja. Prosimo počakajte ...",
     "SHOW_ADVANCED": "Pokaži napredne nastavitve",
@@ -687,7 +694,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Srednje dolgo območje izteka (25% plazov sega dlje)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Dolgo območje izteka (5% plazov sega dlje)\nNekateri plazovi lahko imajo obsežnejše območje izteka, kot je označeno na zemljevidih.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Zemljevid naklona površja in območij izteka",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "Namenjeno <i>samo</i> načrtovanju poti. Ta zemljevid je ustvarjen samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij in območij izteka, ki niso prikazana.\n<br/>\n<br/>\nBarve označujejo območja iztekov plazov:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Zemljevid oslabitve ledu"
   },
   "TABS": {

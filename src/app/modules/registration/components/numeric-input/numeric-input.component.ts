@@ -1,10 +1,8 @@
 import {
   Component,
-  OnInit,
   Input,
   Output,
   EventEmitter,
-  OnChanges
 } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
 import { ModalController } from '@ionic/angular';
@@ -14,7 +12,7 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss']
 })
-export class NumericInputComponent implements OnInit {
+export class NumericInputComponent {
   @Input() decimalPlaces = 0;
   @Input() min = -100000;
   @Input() max = 100000;
@@ -26,20 +24,20 @@ export class NumericInputComponent implements OnInit {
   @Input() placeholder: string;
   @Input() convertRatio: number;
   @Input() readonly = false;
+  @Input() color = 'medium';
+  @Input() simpleObsMode = false;
 
   private isOpen = false;
 
-  get displayValue() {
+  get displayValue(): string {
     const converted = this.convert(this.value, 'from');
-    if (converted !== undefined) {
+    if (converted != null) {
       return converted.toLocaleString();
     }
     return undefined;
   }
 
   constructor(private modalController: ModalController) {}
-
-  ngOnInit() {}
 
   async openPicker() {
     if (!this.isOpen && !this.readonly) {
@@ -67,10 +65,9 @@ export class NumericInputComponent implements OnInit {
     }
   }
 
-  private convert(val: number, direction: 'from' | 'to') {
+  private convert(val: number, direction: 'from' | 'to'): number {
     if (
-      val === undefined ||
-      val === null ||
+      val == null ||
       val === 0 ||
       this.convertRatio === undefined
     ) {

@@ -10,7 +10,7 @@ export class MapItemMarker extends L.Marker {
   }
 
   get id(): number {
-    return this._item.RegID;
+    return this._item.RegId;
   }
 
   get isSelected(): boolean {

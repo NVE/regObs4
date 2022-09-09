@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Draft",
-    "NEW_OBSERVATION": "New",
-    "NEW_TRIP": "New trip"
+    "DRAFT_TITLE_SOIL": "Draft: Soil observation",
+    "DRAFT_TITLE_ICE": "Draft: Ice observation",
+    "DRAFT_TITLE_SNOW": "Draft: Snow observation",
+    "DRAFT_TITLE_WATER": "Draft: Water observation",
+    "NEW_SOIL_OBSERVATION": "New soil observation",
+    "NEW_ICE_OBSERVATION": "New ice observation",
+    "NEW_SNOW_OBSERVATION": "New snow observation",
+    "NEW_WATER_OBSERVATION": "New water observation"
   },
   "ALERT": {
     "CANCEL": "Cancel",
@@ -20,6 +25,7 @@
     "UNDO": "Undo",
     "WARNING": "Warning"
   },
+  "CLOSE": "Close",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Add your observations",
     "SELECT_GEO_HAZARD": "Select geo hazard",
@@ -69,11 +75,14 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Draft",
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "To fetch your position you need to alter your browser settings",
       "PositionUnavailable": "Not able fetch your position",
-      "Timeout": "It took to long time to fetch your position"
+      "Timeout": "It took to long time to fetch your position",
+      "INVALID": "Invalid position data",
+      "UNSUPPORTED": "Positioning is not supported on this unit"
     }
   },
   "GEOLOCATION_SERVICE": {
@@ -93,7 +102,8 @@
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
     "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
     "LINE_3": "Data on Regobs is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
-    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/no/'>NLOD</a>).",
+    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
+    "LINE_5": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
     "OK": "Ok, I accept",
     "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. The information may contain errors and omissions. NVE makes no guarantee for the quality or accuracy of the information which is found on Regobs and does not take responsibility for data which is incorrect or misleading. The number of stars besides a username (1-5) indicates the level of competence of the person providing observations. Without stars, competence is unknown or low."
   },
@@ -104,12 +114,13 @@
     "FORGOT_PASSWORD": "Forgot password",
     "IS_LOGGING_IN": "Logging in...",
     "LOGGED_IN_AS": "Logged in as",
-    "LOGIN": "Login",
-    "LOGOUT": "Logout",
+    "LOGIN": "Log in",
+    "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
+    "DELETE_PROFILE": "Delete profile and my data",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
-    "TITLE": "Login",
+    "TITLE": "Log in",
     "UNAUTHORIZED": "Wrong username or password. Please retry.",
     "UNKNOWN_ERROR": "Error while logging in. Message from server:"
   },
@@ -134,9 +145,10 @@
     "CONTACT_REGOBS": "Contact us",
     "CONTACT_REGOBS_ERROR": "Report error",
     "CONTACT_SUBJECT": "Contact from app",
+    "CONTACT_DESCRIPTION": "We have attached log files. You can remove them if you do not wish to send us logs.",
     "DAYS_BACK": "Days back",
     "DAY_BACK": "Day back",
-    "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach.",
+    "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach. We have attached logs which may help us in troubleshooting. You can remove these if you wish.",
     "ERROR_REPORT_SUBJECT": "Error report from",
     "GENERAL": "General",
     "HIDE_OBSERVATIONS": "Hide observations",
@@ -158,6 +170,7 @@
       "ARC_GIS": "ESRI World Topo (world)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norway)",
       "KARTVERKET": "Kartverket (Norway)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (world)"
     },
     "TIME_FRAME": "Period",
@@ -198,10 +211,12 @@
     "TITLE": "My profile",
     "USER": "User"
   },
+  "OBSERVATION_FILTER": {
+    "TITLE": "Observation filter"
+  },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
-    "GO_TO_OBSERVATION": "Go to observation",
     "IN_MAP_VIEW": "Observations in map view",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
@@ -210,10 +225,33 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "TITLE": "Offline Map",
-    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?"
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
+      "DELETE_BUTTON": "Delete",
+      "DOWNLOAD_BUTTON": "Download",
+      "HEADER": "Map package {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Downloaded {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Produced:",
+      "PACKAGE_SIZE": "Size:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Try again"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offline map",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} free",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
+      "DOWNLOAD_ERROR": "Download error",
+      "UNZIP_ERROR": "Unzip error",
+      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",
@@ -242,6 +280,7 @@
     },
     "BACK_TO_OBSERVATION": "Back to observation",
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard",
     "DANGER_OBS": {
       "AREA": "Area",
       "COMMENT": "Comment",
@@ -261,8 +300,23 @@
       "RIGHT_HERE": "Right here",
       "TITLE": "Danger Sign"
     },
-    "DELETE": "Delete observation",
-    "DELETE_CONFIRM": "Are you sure?",
+    "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Delete draft",
+        "HEADER": "Delete draft",
+        "MESSAGE_NEW": "This observation is not sent to Regobs yet. Do you want to delete it?",
+        "MESSAGE_EDIT": "Discard changes?"
+      },
+      "SUBMITTED_REGISTRATION": {
+        "BUTTON": "Delete observation from Regobs",
+        "HEADER": "Delete observation",
+        "MESSAGE": "Do you want to delete this observation from Regobs?",
+        "FAILED": {
+          "HEADER": "Delete failed",
+          "MESSAGE": "We were not able to delete the observation from Regobs. Please check your network connection and try again."
+        }
+      }
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Landslide trigger",
@@ -283,6 +337,7 @@
     },
     "DRAFTS": "My drafts",
     "DRAFTS_DESCRIPTION": "These observations are in progress and not submitted.",
+    "EDIT": "Edit observation",
     "EMAIL": {
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
       "SUBJECT": "Registration failed"
@@ -295,7 +350,17 @@
       "REFERENCE": "Reference",
       "SEND_EMAIL": "Send to us by email",
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
-      "TITLE": "Submission failed"
+      "TITLE": "Submission failed",
+      "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
+      "ABANDON": "Cancel my work",
+      "OVERWRITE": "Submit and overwrite",
+      "GONE": "This observation is deleted in Regobs. <br/>Would you like to abandon your changes or submit the draft as a new observation?",
+      "SUBMIT_NEW": "Submit as new observation"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "HEADER": "Synchronization failed",
+      "MESSAGE": "We couldn't fetch a fresh copy of this observation from Regobs. You may still edit this, but there is a chance of conflict when you submit the observation later if the same observation has been changed elsewhere.",
+      "CONFIRM_BUTTON": "Edit observation"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notes for observation",
@@ -306,7 +371,7 @@
       "DESCRIPTION": "You can upload photos of the area you have observed or photos of other things you might find relevant.",
       "SUBTITLE": "Observation images",
       "TAKE_NEW_PHOTO": "Take a new photo",
-      "TITLE": "Notes"
+      "TITLE": "Images and notes"
     },
     "GROUP": {
       "SUBTITLE": "Share observation with",
@@ -349,21 +414,40 @@
       "TITLE": "Accident / Incident"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Confirm location",
+      "CONFIRM_TEXT": "Confirm location and time",
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",
       "SHOW_DETAILS": "Show details",
-      "TITLE": "Observed Location"
+      "TITLE": "Observed Location and Time",
+      "SOURCE": "Source",
+      "EXACT": "Exact",
+      "MORETHANONEKM": "More than 1 km",
+      "UNCERTAINTY": "Uncertainty in position",
+      "NAME_LOCATION": "Name location",
+      "NAME_LOCATION_TOOLTIP": "Naming a location makes it possible to create a time series at the same observation point"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",
       "MY_OBSERVATION": "My observation",
       "SHARE_WITH_GROUP": "Share with group",
-      "TITLE": "Observation"
+      "TITLE": "Observation",
+      "SIMPLE": {
+        "HEADER_QUESTION": "What is it like right now?",
+        "TOGGLE": "Simple observation",
+        "CONFIRM": {
+          "HEADER": "Change to simple mode",
+          "MESSAGE": "The observation contains data not relevant for simple mode. Would you like to delete data we can't show?",
+          "YES": "Delete data and change to simple mode",
+          "CANCEL": "Cancel"
+        },
+        "IMAGES_MODAL_TITLE": "Images of {{registrationType}}"
+      }
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",
@@ -376,6 +460,7 @@
       "NO": "No, discard",
       "YES": "Yes, save"
     },
+    "SELECTION_COUNT": "{{ count }} selected",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",
@@ -467,11 +552,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
+        "NORTH": "N",
+        "NORTH_EAST": "NE",
+        "NORTH_WEST": "NW",
         "PREVIEW": "Preview",
         "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
+        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinder bore diameter (cm)",
@@ -499,6 +590,9 @@
           "TEMPERATURE": "Temperature (°C)",
           "TITLE": "Temperature Profile"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SW",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Add layer",
           "ADD_LAYER_BOTTOM": "Add layer to bottom",
@@ -527,7 +621,9 @@
         },
         "SUBFORMS": "Subforms",
         "SUPERIOR": "Main",
-        "TITLE": "Snow Profile"
+        "TITLE": "Snow Profile",
+        "VALID_EXPOSITION": "Aspect",
+        "WEST": "W"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Describe the snow surface",
@@ -536,6 +632,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snow without hazardous layering",
         "NEW_SNOW_DEPTH": "New snow 24h (cm)",
         "NEW_SNOW_LINE": "Fresh snow line (masl)",
+        "SKI_CONDITIONS": "Ski conditions",
         "SNOW_DEPTH": "Snow depth (cm)",
         "SNOW_DRIFT": "Snow drift",
         "SNOW_LINE": "Snowline (masl)",
@@ -551,8 +648,8 @@
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",
+        "FROM_NORTH_EAST": "NE - from north-east",
         "FROM_NORTH_WEST": "NW - from north-west",
-        "FROM_NOTRH_EAST": "NE - from north-east",
         "FROM_SOUTH": "S - from south",
         "FROM_SOUTH_EAST": "SE - from south-east",
         "FROM_SOUTH_WEST": "SW - from south-west",
@@ -619,7 +716,7 @@
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our privacy policy.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our <a href=\"{{legalUrl}}\" target=\"_blank\">privacy policy</a>.",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",
@@ -723,14 +820,14 @@
     "NO_OPACITY": "Solid",
     "READ_MORE": "Read more about maps",
     "STEEPNESS_COLOR_INFO": "Colors indicate the slope angle of the terrain",
-    "STEEPNESS_MAP_DESCRIPTION": "Slope angle shading map",
+    "STEEPNESS_MAP_DESCRIPTION": "Slope angle map",
     "STEEPNESS_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain or runouts not displaying correctly.",
     "STEEPNESS_OFFLINE_DISCLAMER": "The map layer is only available offline with avalanche outlets activated.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts than displayed as runout zones in the map.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche outlet zones",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche runout zones",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },
   "TABS": {

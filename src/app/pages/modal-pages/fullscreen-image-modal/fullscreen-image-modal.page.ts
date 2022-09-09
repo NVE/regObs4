@@ -12,6 +12,7 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   @Input() imgSrc: string;
   @Input() header: string;
   @Input() description: string;
+  @Input() href?: string;
 
   constructor(
     private modalController: ModalController,

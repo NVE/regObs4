@@ -1,13 +1,9 @@
 <ion-item class="no-border">
   <ion-label color="dark" position="stacked">{{'MENU.TIME_FRAME' | translate}}</ion-label>
-  <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="action-sheet" (ionChange)="save()"
+  <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [interface]="popupType" (ionChange)="save()"
     [(ngModel)]="selectedDaysBack">
     <ion-select-option *ngFor="let item of daysBackOptions" [value]="item.val">
-      <ng-container *ngIf="item.text"> {{ item.text | translate }}</ng-container>
-      <ng-container *ngIf="!item.text && item.val < 28">{{ item.val }} {{'MENU.DAYS_BACK' | translate | lowercase}}
-      </ng-container>
-      <ng-container *ngIf="!item.text && item.val >= 28">{{ (item.val / 7) }} {{'MENU.WEEKS_BACK' | translate |
-        lowercase}}</ng-container>
+      <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
     </ion-select-option>
   </ion-select>
 </ion-item>

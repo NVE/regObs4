@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -6,10 +6,8 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './support-map-info.page.html',
   styleUrls: ['./support-map-info.page.scss']
 })
-export class SupportMapInfoPage implements OnInit {
+export class SupportMapInfoPage {
   constructor(private modalController: ModalController) {}
-
-  ngOnInit() {}
 
   close() {
     this.modalController.dismiss();

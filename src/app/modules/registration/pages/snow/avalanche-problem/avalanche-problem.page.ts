@@ -3,16 +3,22 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { ItemReorderEventDetail } from '@ionic/core';
 import {
-  AvalancheEvalProblem2Dto,
+  AvalancheEvalProblem2EditModel,
   KdvElement
-} from '../../../../regobs-api/models';
+} from 'src/app/modules/common-regobs-api/models';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
-import { KdvService } from '../../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
+import { ArrayHelper } from 'src/app/core/helpers/array-helper';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
+/**
+ * Start page / CRUD page for avalanche problems.
+ * Shows list of registered problems and offers to add new problems, edit exising problems or delete problems.
+ * You can also add pictures connected to avalanche problems.
+ */
 @Component({
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',
@@ -52,41 +58,26 @@ export class AvalancheProblemPage extends BasePage {
   }
 
   async addOrEditAvalancheProblem(index?: number) {
-    if (
-      this.registration &&
-      this.registration.request &&
-      this.registration.request.AvalancheEvalProblem2
-    ) {
+    if (this.draft?.registration?.AvalancheEvalProblem2) {
       const modal = await this.modalController.create({
         component: AvalancheProblemModalPage,
         componentProps: {
-          avalancheEvalProblem: this.registration.request.AvalancheEvalProblem2[
-            index
-          ]
+          avalancheEvalProblem: this.draft.registration.AvalancheEvalProblem2[index]
         }
       });
       modal.present();
       const result = await modal.onDidDismiss();
       this.ngZone.run(() => {
-        if (
-          this.registration &&
-          this.registration.request &&
-          this.registration.request.AvalancheEvalProblem2
-        ) {
+        if (this.draft?.registration?.AvalancheEvalProblem2) {
           if (result.data) {
             if (result.data.delete) {
-              this.registration.request.AvalancheEvalProblem2.splice(index, 1);
+              this.draft.registration.AvalancheEvalProblem2.splice(index, 1);
             } else {
-              const avalancheEvalProblem: AvalancheEvalProblem2Dto =
-                result.data;
+              const avalancheEvalProblem: AvalancheEvalProblem2EditModel = result.data;
               if (index !== undefined) {
-                this.registration.request.AvalancheEvalProblem2[
-                  index
-                ] = avalancheEvalProblem;
+                this.draft.registration.AvalancheEvalProblem2[index] = avalancheEvalProblem;
               } else {
-                this.registration.request.AvalancheEvalProblem2.push(
-                  avalancheEvalProblem
-                );
+                this.draft.registration.AvalancheEvalProblem2.push(avalancheEvalProblem);
               }
             }
           }
@@ -95,7 +86,7 @@ export class AvalancheProblemPage extends BasePage {
     }
   }
 
-  getDescription(avalancheEvalProblem: AvalancheEvalProblem2Dto) {
+  getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel): string {
     const cause = this.avalancheCause.find(
       (c) => c.Id === avalancheEvalProblem.AvalCauseTID
     );
@@ -104,5 +95,14 @@ export class AvalancheProblemPage extends BasePage {
     } else {
       return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
     }
+  }
+
+  onProblemReorder(event: CustomEvent<ItemReorderEventDetail>): void {
+    this.draft.registration.AvalancheEvalProblem2 = ArrayHelper.reorderList(
+      this.draft.registration.AvalancheEvalProblem2,
+      event.detail.from,
+      event.detail.to
+    );
+    event.detail.complete();
   }
 }

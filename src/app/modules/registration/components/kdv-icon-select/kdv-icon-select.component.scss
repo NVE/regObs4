@@ -1,0 +1,130 @@
+
+ion-item.header {
+  /* top | right | bottom | left */
+  --border-style: solid solid none solid;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  ion-label {
+    display: inline;
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ion-text-color-heading);
+  }
+
+  ion-button, .n-selected {
+    font-size: 14px;
+    font-weight: 400;
+    color: #808080;
+    --color: #808080;
+  }
+}
+
+ion-item.container {
+  /* top | right | bottom | left */
+  --border-style: none solid none solid;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+
+  // Content has a 4 px padding-top to adjust for check marks position above
+  // buttons
+  margin-top: -4px;
+  
+  .content {
+    padding-top: 4px;
+    display: flex;
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 5px;
+    gap: 12px;
+    padding-bottom: 12px;
+
+    &::-webkit-scrollbar {
+      height: 3px;
+      background-color: #E3EBEE;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: #A4BEC6;
+    }
+  }
+
+  .element {
+    position: relative;
+
+    &:first-child {
+      margin-left: 16px;
+    }
+
+    &:last-child {
+      margin-right: 16px;
+    }
+  }
+
+  @media screen and (min-height: 1000px) {
+    .content {
+      flex-wrap: wrap;
+      padding: 12px;
+    }
+
+    .element {
+  
+      &:first-child {
+        margin-left: 0;
+      }
+  
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.checkmark {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
+.kdv-item {
+  width: 70px;
+  background: #FFFFFF;
+}
+
+.item-text {
+  width: 70px;
+  text-overflow: unset;
+  white-space: normal;
+  word-wrap: break-word;
+  font-style: normal;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  color: var(--ion-color-varsom-blue);
+}
+
+.image {
+  width: 70px;
+  height: 45px;
+}
+
+.selected {
+  opacity: 1;
+}
+
+.deselected {
+  opacity: 0.6;
+}

@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Kladd",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_SOIL": "Kladd: Jordobservasjon",
+    "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
+    "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_WATER": "Kladd: Vatnobservasjon",
+    "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
+    "NEW_ICE_OBSERVATION": "Ny isobservasjon",
+    "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_WATER_OBSERVATION": "Ny vatnobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -20,6 +25,7 @@
     "UNDO": "Angre",
     "WARNING": "Varsel"
   },
+  "CLOSE": "Lukk",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til eigne observasjonar",
     "SELECT_GEO_HAZARD": "Vel naturfare",
@@ -69,6 +75,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Kladd",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur føregår"
   },
@@ -99,6 +106,7 @@
     "LOGIN": "Logg inn",
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
+    "DELETE_PROFILE": "Slett profil og mine data",
     "PASSWORD": "Passord",
     "SERVICE_UNAVAILABLE": "Det er problem med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må vakne og treng ein sterk kopp kaffe først. Gi den nokre minutt å prøv igjen.",
     "TITLE": "Logg inn",
@@ -150,6 +158,7 @@
       "ARC_GIS": "ESRI World Topo (verden)",
       "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
     "TIME_FRAME": "Tidsrom",
@@ -193,7 +202,6 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjonar",
     "FORMS": "Skjema",
-    "GO_TO_OBSERVATION": "Gå til observasjon",
     "IN_MAP_VIEW": "Observasjonar i kartutsnittet",
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
@@ -202,7 +210,33 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kart"
+    "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
+    "DISKSPACE_ERROR_MESSAGE": "Beklagar, du har ikkje nok plass tilgjengeleg på telefonen til å lagre kartpakka. Frigjer plass og prøv på nytt.",
+    "DOWNLOAD_ERROR_MESSAGE": "Klarte ikkje laste ned kartpakke. Pass på at du har ei stabil og god internett-kobling.",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned",
+      "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Produsert:",
+      "PACKAGE_SIZE": "Storleik:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Prøv på nytt"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakkar",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} pakke",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Lastar ned {{n}} av {{totalParts}}",
+      "DOWNLOAD_ERROR": "Nedlasting feilet",
+      "UNZIP_ERROR": "Utpakking feilet",
+      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nekta.",
@@ -227,6 +261,7 @@
     },
     "BACK_TO_OBSERVATION": "Tilbake til observasjonen min",
     "CONFIRM_RESET": "Er du sikker på at du vil nullstille alle felt?",
+    "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavla",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -268,6 +303,7 @@
     },
     "DRAFTS": "Mine kladdar",
     "DRAFTS_DESCRIPTION": "Desse observasjonane er under arbeid og er ikkje sendt inn.",
+    "EDIT": "Rediger observasjon",
     "EMAIL": {
       "BODY": "Hei! Eg har problem med å sende inn denne registreringa. Kan de hjelpe meg?",
       "SUBJECT": "Registrering feilet"
@@ -280,7 +316,10 @@
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på e-post",
       "SUBTITLE": "Manglar nettverk eller innsending tok for lang tid. Vi prøvar igjen om ei stund og håper nettverket har betra seg. ",
-      "TITLE": "Innsendinga misslykkast"
+      "TITLE": "Innsendinga misslykkast",
+      "CONFLICT": "Mens du jobba har observasjonen blitt endra ein annan plass.<br/>Vil du forkaste dine endringar eller vil du sende inn og overskrive endringene som blei gjort den andre plassen?",
+      "ABANDON": "Forkast mine endringar",
+      "OVERWRITE": "Send inn og overskriv"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat frå observasjonen",
@@ -291,7 +330,7 @@
       "DESCRIPTION": "Her kan du laste opp bilete av område eller andre relevante observasjonar,",
       "SUBTITLE": "Bilete av observasjonen",
       "TAKE_NEW_PHOTO": "Ta eit nytt bilete",
-      "TITLE": "Notat"
+      "TITLE": "Bilde og notat"
     },
     "GROUP": {
       "SUBTITLE": "Del observasjon med",
@@ -338,11 +377,12 @@
     "IN_FULL_CM": "I heile centimeter",
     "NONE": "Ingen valt",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Stadfest observasjonspunkt",
+      "CONFIRM_TEXT": "Stadfest observasjonspunkt og -tid",
       "CURRENT_LOCATION": "Noværande posisjon",
       "HIDE_DETAILS": "Skjul detaljar",
       "SHOW_DETAILS": "Vis detaljar",
-      "TITLE": "Observasjonspunkt"
+      "TITLE": "Observasjonspunkt og -tid",
+      "SOURCE": "Kjelde"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
@@ -452,11 +492,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Testar"
         },
+        "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererar førehandvising",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
+        "NORTH": "N",
+        "NORTH_EAST": "NØ",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvising",
         "PREVIEW_ERROR": "Klarte ikkje generere førehandsvising",
         "PREVIEW_ITEM": "Sjå snøprofil",
+        "SLOPE_ANGLE": "Helning",
+        "SLOPE_ANGLE_PLACEHOLDER": "Kun heile gradar",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
@@ -484,6 +530,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SØ",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Legg til eit nytt lag",
           "ADD_LAYER_BOTTOM": "Legg til eit nytt lag nedst",
@@ -512,7 +561,9 @@
         },
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordna",
-        "TITLE": "Snøprofil"
+        "TITLE": "Snøprofil",
+        "VALID_EXPOSITION": "Eksposisjon",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
@@ -534,10 +585,10 @@
         "CLOUD_COVER": "Skydekke (%)",
         "COMMENT_HEADER": "Beskriv vêret",
         "COMMENT_PLACEHOLDER": "Korleis har vêret vore det siste døgnet? T.d.: Har det vore byger? Har det vore temperatuendringar? Kvar går nullisotermen?",
-        "FROM_EAST": "A - frå aust",
+        "FROM_EAST": "Ø - frå aust",
         "FROM_NORTH": "N - frå nord",
+        "FROM_NORTH_EAST": "NØ - frå nordaust",
         "FROM_NORTH_WEST": "NV - frå nordvest",
-        "FROM_NOTRH_EAST": "NA - frå nordaust",
         "FROM_SOUTH": "S - frå sør",
         "FROM_SOUTH_EAST": "SØ - frå søraust",
         "FROM_SOUTH_WEST": "SV - frå sørvest",
@@ -604,7 +655,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Berre i Noreg",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt tal på offline kartblad. ",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i personvernerklæringa.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæringa</a>.",
     "RESET": "Reset app",
     "RESETTING": "Appen resetjast. Vær vennleg å vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillingar",
@@ -708,11 +759,12 @@
     "STEEPNESS_COLOR_INFO": "Fargar gir hellingen til terrenget (grader):",
     "STEEPNESS_MAP_DESCRIPTION": "Hellingskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "Offline støttekart er berre tilgjengeleg med både helning og utløpsområder.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Hellingskart med utløp",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Fargar på utløp for snøskred:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
   },
   "TABS": {

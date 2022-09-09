@@ -1,15 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {
-  StratProfileLayerDto,
+  StratProfileLayerEditModel,
   KdvElement
-} from '../../../../../../regobs-api/models';
+} from 'src/app/modules/common-regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
-import { IRegistration } from '../../../../../models/registration.model';
-import { RegistrationService } from '../../../../../services/registration.service';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import cloneDeep from 'clone-deep';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
@@ -21,12 +21,12 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
   styleUrls: ['./strat-profile-layer-modal.page.scss']
 })
 export class StratProfileLayerModalPage implements OnInit {
-  @Input() layer: StratProfileLayerDto;
-  @Input() reg: IRegistration;
+  @Input() layer: StratProfileLayerEditModel;
+  @Input() draft: RegistrationDraft;
   @Input() index: number;
 
   addNew: boolean;
-  private initialRegistationState: IRegistration;
+  private initialRegistationState: RegistrationDraft;
 
   grainSizeInterfaceOptions: any;
   showMore = false;
@@ -35,19 +35,12 @@ export class StratProfileLayerModalPage implements OnInit {
   wetnessFilter: (id: number) => boolean;
 
   get hasLayers() {
-    return (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.StratProfile &&
-      this.reg.request.SnowProfile2.StratProfile.Layers &&
-      this.reg.request.SnowProfile2.StratProfile.Layers.length > 0
-    );
+    return this.draft?.registration?.SnowProfile2?.StratProfile?.Layers?.length > 0;
   }
 
   get layerLenght() {
     return this.hasLayers
-      ? this.reg.request.SnowProfile2.StratProfile.Layers.length
+      ? this.draft.registration.SnowProfile2.StratProfile.Layers.length
       : 0;
   }
 
@@ -86,11 +79,11 @@ export class StratProfileLayerModalPage implements OnInit {
   constructor(
     private modalController: ModalController,
     private translateService: TranslateService,
-    private registrationService: RegistrationService
+    private draftRepository: DraftRepositoryService
   ) {}
 
   ngOnInit() {
-    this.initialRegistationState = cloneDeep(this.reg);
+    this.initialRegistationState = cloneDeep(this.draft);
     this.initLayer();
     this.translateService
       .get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE')
@@ -121,21 +114,21 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async save() {
-    await this.registrationService.saveRegistrationAsync(this.reg);
+    await this.draftRepository.save(this.draft);
   }
 
   async ok(gotoIndex?: number) {
-    if (!this.reg.request.SnowProfile2) {
-      this.reg.request.SnowProfile2 = {};
+    if (!this.draft.registration.SnowProfile2) {
+      this.draft.registration.SnowProfile2 = {};
     }
-    if (!this.reg.request.SnowProfile2.StratProfile) {
-      this.reg.request.SnowProfile2.StratProfile = {};
+    if (!this.draft.registration.SnowProfile2.StratProfile) {
+      this.draft.registration.SnowProfile2.StratProfile = {};
     }
-    if (!this.reg.request.SnowProfile2.StratProfile.Layers) {
-      this.reg.request.SnowProfile2.StratProfile.Layers = [];
+    if (!this.draft.registration.SnowProfile2.StratProfile.Layers) {
+      this.draft.registration.SnowProfile2.StratProfile.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.reg.request.SnowProfile2.StratProfile.Layers.splice(
+      this.draft.registration.SnowProfile2.StratProfile.Layers.splice(
         this.index,
         0,
         this.layer
@@ -145,7 +138,7 @@ export class StratProfileLayerModalPage implements OnInit {
 
     if (gotoIndex !== undefined) {
       this.index = this.index + gotoIndex;
-      this.layer = this.reg.request.SnowProfile2.StratProfile.Layers[
+      this.layer = this.draft.registration.SnowProfile2.StratProfile.Layers[
         this.index
       ];
       this.initLayer();
@@ -155,24 +148,16 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(
-      this.initialRegistationState
-    );
+    await this.draftRepository.save(this.initialRegistationState);
     this.modalController.dismiss();
   }
 
   async delete() {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.StratProfile &&
-      this.reg.request.SnowProfile2.StratProfile.Layers &&
-      this.reg.request.SnowProfile2.StratProfile.Layers.length > 0
-    ) {
-      this.reg.request.SnowProfile2.StratProfile.Layers = this.reg.request.SnowProfile2.StratProfile.Layers.filter(
-        (l) => l !== this.layer
-      );
+    if (this.hasLayers) {
+      this.draft.registration.SnowProfile2.StratProfile.Layers =
+        this.draft.registration.SnowProfile2.StratProfile.Layers.filter(
+          (l) => l !== this.layer
+        );
       await this.save();
     }
     this.modalController.dismiss();

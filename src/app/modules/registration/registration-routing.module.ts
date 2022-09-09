@@ -10,13 +10,6 @@ const routes: Routes = [
       )
   },
   {
-    path: 'registration/set-time/:id',
-    loadChildren: () =>
-      import('./pages/set-time/set-time.module').then(
-        (m) => m.SetTimePageModule
-      )
-  },
-  {
     path: 'registration/new/:geoHazard',
     loadChildren: () =>
       import('./pages/obs-location/obs-location.module').then(
@@ -146,7 +139,14 @@ const routes: Routes = [
       import(
         './pages/snow/avalanche-evaluation/avalanche-evaluation.module'
       ).then((m) => m.AvalancheEvaluationPageModule)
-  }
+  },
+  {
+    path: 'registration/:id',
+    loadChildren: () =>
+      import('src/app/pages/view-observation/view-observation.module').then(
+        (m) => m.ViewObservationPageModule
+      ),
+  },
 ];
 
 @NgModule({

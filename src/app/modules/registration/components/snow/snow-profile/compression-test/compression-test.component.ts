@@ -1,44 +1,43 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from '../../../../models/registration.model';
-import { RegistrationService } from '../../../../services/registration.service';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-compression-test',
   templateUrl: './compression-test.component.html',
   styleUrls: ['./compression-test.component.scss']
 })
-export class CompressionTestComponent implements OnInit {
-  @Input() reg: IRegistration;
+export class CompressionTestComponent {
+  @Input() draft: RegistrationDraft;
   private compressionTestListModal: HTMLIonModalElement;
 
-  get connectedTests() {
+  get connectedTests(): CompressionTestEditModel[] {
     return this.tests.filter((t) => t.IncludeInSnowProfile === true);
   }
 
-  get tests() {
-    return this.reg.request.CompressionTest || [];
+  get tests(): CompressionTestEditModel[] {
+    return this.draft.registration.CompressionTest || [];
   }
 
-  get isEmpty() {
+  get isEmpty(): boolean {
     return this.connectedTests.length === 0;
   }
 
   constructor(
     private modalContoller: ModalController,
-    private registrationService: RegistrationService
+    private draftService: DraftRepositoryService
   ) {}
 
-  ngOnInit() {}
-
-  async openModal() {
+  async openModal(): Promise<void> {
     if (!this.compressionTestListModal) {
-      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
+      await this.draftService.save(this.draft); // Save registration before open modal page
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {
-          regId: this.reg.id
+          uuid: this.draft.uuid
         }
       });
       this.compressionTestListModal.present();

@@ -11,6 +11,8 @@ import { SummaryComponent } from '../../components/observation/summary/summary.c
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SelectComponent } from './components/input/select/select.component';
 import { GeoFabComponent } from './components/geo-fab/geo-fab.component';
+import { ShowFilterCriteriaComponent } from '../side-menu/components/show-filter-criteria/show-filter-criteria.component';
+import { CheckDaysOrWeeksBackComponent } from '../side-menu/components/check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { GeoNameComponent } from './components/geo-name/geo-name.component';
 import { GeoSelectComponent } from './components/geo-select/geo-select.component';
 import { FormatDatePipe } from './pipes/format-date/format-date.pipe';
@@ -21,11 +23,14 @@ import { AddMenuComponent } from './components/add-menu/add-menu.component';
 import { ExternalLinkComponent } from './components/external-link/external-link.component';
 import { RefreshWithCancelComponent } from './components/refresh-with-cancel/refresh-with-cancel.component';
 import { HeaderComponent } from './components/header/header.component';
-import { OfflineImageComponent } from './components/offline-image/offline-image.component';
 import { CompetenceComponent } from '../../components/competence/competence.component';
 import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { AbsPipe } from './pipes/abs.pipe';
+import { RemoteImageComponent } from './components/remote-image/remote-image.component';
+import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -42,7 +47,6 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
   declarations: [
     ShadowCssDirective,
     AddMenuComponent,
-    OfflineImageComponent,
     ExternalLinkComponent,
     GeoIconComponent,
     GeoSelectComponent,
@@ -57,7 +61,12 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     SelectComponent,
     GeoFabComponent,
     GeoNameComponent,
-    CompetenceComponent
+    CompetenceComponent,
+    AbsPipe,
+    RemoteImageComponent,
+    EditPictureInfoModalComponent,
+    ShowFilterCriteriaComponent,
+    CheckDaysOrWeeksBackComponent
   ],
   exports: [
     CommonModule,
@@ -70,7 +79,6 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     AngularSvgIconModule,
     MapImageModule,
     AddMenuComponent,
-    OfflineImageComponent,
     ExternalLinkComponent,
     GeoIconComponent,
     GeoSelectComponent,
@@ -86,7 +94,12 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     GeoFabComponent,
     CompetenceComponent,
     AuthModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    AbsPipe,
+    RemoteImageComponent,
+    EditPictureInfoModalComponent,
+    ShowFilterCriteriaComponent,
+    CheckDaysOrWeeksBackComponent
   ]
 })
 export class SharedModule {}
