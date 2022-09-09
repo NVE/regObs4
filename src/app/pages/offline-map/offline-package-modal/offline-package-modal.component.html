@@ -57,13 +57,11 @@
           <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.CANCEL_DOWNLOAD_BUTTON' | translate }}</ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="packageStatus.error">
+      <ion-row class="buttons-container" *ngIf="packageStatus.error">
         <ion-col>
           <ion-button expand="block" color="varsom-orange" (click)="startDownload()">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.TRY_AGAIN_BUTTON' | translate }}</ion-button>
         </ion-col>
-      </ion-row>
-      <ion-row *ngIf="!!packageStatus.downloadComplete || packageStatus.error">
-        <ion-col>
+        <ion-col *ngIf="!!packageStatus.downloadComplete || packageStatus.error">
           <ion-button (click)="delete()" expand="block" color="danger">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON' | translate }}</ion-button>
         </ion-col>
       </ion-row>
@@ -72,7 +70,7 @@
 </ion-content>
 
 <ng-template #downloadPackage>
-  <ion-row [ngStyle]="{opacity: 0}">
+  <ion-row aria-hidden="true" [ngStyle]="{opacity: 0}">
     <ion-col size="4">ghostrow</ion-col>
   </ion-row>
   <ion-row>
