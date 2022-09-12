@@ -258,43 +258,62 @@ export class OfflineMapService {
     const folder = await this.getRootFileUrl();
     const destinationPath = `${folder}/${mapPackage.name}/${part.name}`;
 
+    if (this.cancel) {
+      this.onCancelled(mapPackage);
+      return;
+    }
     try {
       const result = await RegobsNative.downloadAndUnzip({
         downloadUrl: part.url,
         destinationPath: destinationPath
       });
       const numParts = parts.length;
-      this.loggingService.debug(`Started native download of part ${partNumber+1}/${numParts} : ${part.name}, 
-      fileRef = ${result.fileReference}`, DEBUG_TAG);
+      this.loggingService.debug(`Started native download of part ${partNumber+1}/${numParts} : ${part.name}, fileRef = ${result.fileReference}`, DEBUG_TAG);
+      this.reportProgress(mapPackage, 0, partNumber, parts.length, 'Downloading');
+      this.startStatusWatch(part, parts, mapPackage, partNumber, result.fileReference);
 
-      const done = new Subject<void>();
-      //check status regularly
-      interval(5000).pipe(
-        takeUntil(done))
-        .subscribe(async () => {
-          const status = await RegobsNative.getStatus({fileReference: result.fileReference});
-          this.loggingService.debug(`Status fileref: ${result.fileReference}: ${status.progress}%: ${status.status}`, DEBUG_TAG);
-          if (status.progress >= 100) {
-            done.next();
-            done.complete();
-            this.onUnzipStepComplete(parts, mapPackage, partNumber);
-          } else {
-            const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
-            if (part)
-              this.onProgress(mapPackage, {
-                step: ProgressStep.extractZip,
-                percentage: this.calculateTotalProgress(status.progress, partNumber, numParts, partOfStep),
-                description: await firstValueFrom(this.translateService.get(
-                  'OFFLINE_MAP.STATUS.UNZIP_PART_X_OF_Y', {
-                    n: partNumber + 1,
-                    totalParts: numParts
-                  }))
-              });
-          }
-        });
     } catch(err) {
       (err) => this.onUnzipOrDownloadError(mapPackage, err, true);
     }
+  }
+
+  private startStatusWatch(
+    part: Part,
+    parts: Part[],
+    mapPackage: OfflineMapPackage,
+    partNumber: number,
+    fileReference: number) {
+
+    const done = new Subject<void>();
+    //check status regularly
+    interval(2000).pipe(
+      takeUntil(done))
+      .subscribe(async () => {
+        if (this.cancel) {
+          RegobsNative.cancel({ fileReference });
+          done.next();
+          done.complete();
+          this.onCancelled(mapPackage);
+        } else {
+          const status = await RegobsNative.getStatus({ fileReference });
+          this.loggingService.debug(`Status fileref: ${fileReference}: ${status.progress}: ${status.status}`, DEBUG_TAG);
+          if (status.progress >= 1) {
+            done.next();
+            done.complete();
+            this.onUnzipStepComplete(parts, mapPackage, partNumber);
+          } else if (status.status === 'ERROR') {
+            done.next();
+            done.complete();
+            const isDownloading = status.task === 'download';
+            this.onUnzipOrDownloadError(mapPackage, null, isDownloading);
+          } else {
+            if (part) {
+              const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
+              this.reportProgress(mapPackage, status.progress, partNumber, parts.length, partOfStep);
+            }
+          }
+        }
+      });
   }
 
   private downloadAndUnzipPart(
@@ -319,7 +338,7 @@ export class OfflineMapService {
           async (downloadProgress) => {
             switch (downloadProgress.state) {
             case 'IN_PROGRESS':
-              await this.reportDownloadProgress(mapPackage, downloadProgress.progress, partNumber, parts.length);
+              await this.reportProgress(mapPackage, downloadProgress.progress, partNumber, parts.length, 'Downloading');
               break;
             case 'DONE':
               await this.handleUnzip(mapPackage, downloadProgress.content, part, partNumber, parts);
@@ -362,28 +381,39 @@ export class OfflineMapService {
     );
   }
 
-  private async reportDownloadProgress(mapPackage: OfflineMapPackage,
+  private async reportProgress(
+    mapPackage: OfflineMapPackage,
     progress: number,
     partNumber: number,
-    totalParts: number): Promise<void> {
+    totalParts: number,
+    taskType: 'Downloading' | 'Unzipping'): Promise<void> {
 
+    let messageKey = 'OFFLINE_MAP.STATUS.DOWNLOADING_PART_X_OF_Y';
+    if (taskType === 'Unzipping') {
+      messageKey = 'OFFLINE_MAP.STATUS.UNZIP_PART_X_OF_Y';
+    }
     this.onProgress(mapPackage, {
       step: ProgressStep.download,
-      percentage: this.calculateTotalProgress(progress, partNumber, totalParts, 'Downloading'),
+      percentage: this.calculateTotalProgress(progress, partNumber, totalParts, taskType),
       description: await firstValueFrom(this.translateService.get(
-        'OFFLINE_MAP.STATUS.DOWNLOADING_PART_X_OF_Y', {
+        messageKey, {
           n: partNumber + 1,
           totalParts
         }))
     });
   }
 
+  /**
+   * @param currentProgress progress of current part
+   * @param currentPart first part = 0, second = 1...
+   * @param totalParts num parts
+   */
   public calculateTotalProgress(
     currentProgress: number,
     currentPart: number,
     totalParts: number,
     partOfStep: 'Downloading' | 'Unzipping'
-  ) {
+  ): number {
     const stepsForEachPart = 2; // Download and unzip
     const totalPartsOfWork = totalParts * stepsForEachPart;
     const currentPartOfWork =
@@ -392,7 +422,7 @@ export class OfflineMapService {
       totalPartsOfWork;
     const progressForTotalParts =
       currentProgress / totalPartsOfWork + currentPartOfWork;
-    this.loggingService.debug(`calculateTotalProgress: currentProgress = ${currentProgress}, part ${currentPart+1}/${totalParts}, step: ${partOfStep}, totalProgress = ${progressForTotalParts}`);
+    this.loggingService.debug(`calculateTotalProgress: currentProgress = ${currentProgress}, part ${currentPart+1}/${totalParts}, step: ${partOfStep}, totalProgress = ${progressForTotalParts}`, DEBUG_TAG);
     return progressForTotalParts;
   }
 

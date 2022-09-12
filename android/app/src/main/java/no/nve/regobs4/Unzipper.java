@@ -1,6 +1,5 @@
 package no.nve.regobs4;
 
-import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
 
 import net.lingala.zip4j.ZipFile;
@@ -9,9 +8,6 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Unzipper {
 

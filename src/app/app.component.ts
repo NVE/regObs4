@@ -19,8 +19,6 @@ import { NavigationError, Router, RouterEvent } from '@angular/router';
 import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
-import { RegobsNative } from 'src/regobs-plugin';
-import { Directory } from '@capacitor/filesystem';
 
 const DEBUG_TAG = 'AppComponent';
 const ROUTER_DEBUG_TAG = 'Router';
@@ -49,21 +47,11 @@ export class AppComponent {
     private draftToRegService: DraftToRegistrationService,
     private breakpointService: BreakpointService
   ) {
-    this.testNative();
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
       this.isDesktop = isDesktop;
     });
-  }
-
-  async testNative() {
-    const destinationPath = `${Directory.Data}/testmaps`;
-    const fromNative = await RegobsNative.echo({
-      downloadUrl: 'https://offlinemap.blob.core.windows.net/statens-kartverk-nov-21/statensKartverk_8-14_143_55_1.zip',
-      destinationPath: destinationPath
-    });
-    this.loggingService.debug('Result from native', 'NATIVE_TEST', fromNative);
   }
 
   initializeApp(): void {

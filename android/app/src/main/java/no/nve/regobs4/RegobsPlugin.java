@@ -34,7 +34,7 @@ public class RegobsPlugin extends Plugin {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
         request.setTitle(getFilename(downloadUrl)); //set title for notification in status_bar
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  //flag for if you want to show notification in status or not
-        Context context = getContext();
+        final Context context = getContext();
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "test.zip");
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadedFileId = downloadManager.enqueue(request);
@@ -45,7 +45,7 @@ public class RegobsPlugin extends Plugin {
             public void onReceive(Context context, Intent intent) {
                 long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
                 if (downloadedFileId == reference) {
-                    openDownloadedAttachment(context, downloadedFileId, destinationPath, call);
+                    handleDownloadedFile(context, downloadedFileId, destinationPath, call);
                 }
             }
         };
@@ -67,44 +67,66 @@ public class RegobsPlugin extends Plugin {
         if (fileRef != null) {
             ProgressMonitor progressMonitor = unzipProgressPerFileRef.get(fileRef.longValue());
             if (progressMonitor != null) {
-                result.put("progress", progressMonitor.getPercentDone());
+                //unzipping has started
+                result.put("progress", progressMonitor.getPercentDone() / 100);
                 result.put("task", "unzip");
                 if (progressMonitor.getResult() != null) {
                     result.put("status", progressMonitor.getResult().toString());
                 }
             } else {
-                result.put("progress", 0);
+                //unzipping has not started so report download progress
+                final Context context = getContext();
+                double downloadProgress = this.getDownloadProgress(context, fileRef);
+                result.put("progress", downloadProgress);
                 result.put("task", "download");
-                result.put("status", "We don't support download progress yet");
             }
         }
         call.resolve(result);
     }
 
     @PluginMethod()
-    public void echo(PluginCall call) {
-        String downloadUrl = call.getString("downloadUrl");
-        JSObject ret = new JSObject();
-        ret.put("value", downloadUrl);
-        call.resolve(ret);
+    public void cancel(PluginCall call) {
+        Integer fileRef = call.getInt("fileReference");
+        if (fileRef != null) {
+            final Context context = getContext();
+            DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            downloadManager.remove(fileRef.longValue());
+        }
+        ProgressMonitor progressMonitor = unzipProgressPerFileRef.get(fileRef.longValue());
+        if (progressMonitor != null) {
+            progressMonitor.setCancelAllTasks(true);
+        }
     }
 
-    private void openDownloadedAttachment(final Context context, final long fileReference, String destinationPath, PluginCall call) {
+    private void handleDownloadedFile(final Context context, final long fileReference, String destinationPath, PluginCall call) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(fileReference);
         Cursor cursor = downloadManager.query(query);
         if (cursor.moveToFirst()) {
-            int downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-            String downloadLocalUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-            String downloadMimeType = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE));
+            int downloadStatus = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+            String downloadLocalUri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
             if ((downloadStatus == DownloadManager.STATUS_SUCCESSFUL) && downloadLocalUri != null) {
                 Uri uri = Uri.parse(downloadLocalUri);
-                String filename = uri.getLastPathSegment();
                 unzipWithZip4j(uri.getPath(), destinationPath, fileReference, call);
             }
         }
         cursor.close();
+    }
+
+    private double getDownloadProgress(final Context context, final long fileReference) {
+        double progress = 0;
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(fileReference);
+        Cursor cursor = downloadManager.query(query);
+        if (cursor.moveToFirst()) {
+            int downloadedBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+            int totalBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+            progress = downloadedBytes / totalBytes;
+        }
+        cursor.close();
+        return progress;
     }
 
     private void unzipWithZip4j(String zipFilePath, String destinationPath, final long fileReference, PluginCall call) {
