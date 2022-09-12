@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="offline-package-map-wrapper">
   <div class="map-container" *ngIf="center">
     <app-map
       [offlinePackageMode]="true"
@@ -21,7 +21,7 @@
       (mapReady)="showTileOnMap($event)"
     ></app-map>
   </div>
-  <ion-grid>
+  <ion-grid class="footer-container">
 
     <ion-row>
       <ion-col size="4">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_PRODUCED_DATE' | translate }}</ion-col>

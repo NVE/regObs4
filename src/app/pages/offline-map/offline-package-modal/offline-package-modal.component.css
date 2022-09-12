@@ -1,12 +1,5 @@
 .map-container {
-  padding: 16px;
-  height: 68%;
-}
-
-@media screen and (max-height:768px) {
-  .map-container {
-    height: 60%;
-  }
+  flex-grow: 1;
 }
 
 .right {
@@ -21,5 +14,16 @@
   .buttons-container ion-col {
     flex-basis: 100%;
   }
-  
+}
+
+/*targeting map-conatiner wrapper which is in a shadow-root. look 'part' attribute*/
+::part(scroll){
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-container {
+  margin-top: auto;
+  flex-grow: 0;
+  width: 100%;
 }
