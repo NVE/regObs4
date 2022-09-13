@@ -45,6 +45,7 @@ export class EditImagesComponent implements OnInit {
   isHybrid: boolean;
   accept = ALLOWED_ATTACHMENT_FILE_TYPES;
   selectedFile: Blob = null;
+  aboutToDrop = false;
 
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
 

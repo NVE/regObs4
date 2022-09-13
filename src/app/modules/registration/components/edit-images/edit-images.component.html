@@ -40,11 +40,16 @@
   <ion-label>{{ title | translate }}</ion-label>
 </ion-item>
 
-<div class="file-drop" *ngIf="!isHybrid">
-  <ngx-file-drop dropZoneLabel="Drop files here" [accept]="accept" dropZoneClassName="drop-zone" (onFileDrop)="dropped($event)">
+<ion-item class="file-drop" *ngIf="!isHybrid">
+  <ngx-file-drop style="width:100%;" dropZoneLabel="Drop files here" [accept]="accept" dropZoneClassName="drop-zone"
+    (onFileDrop)="dropped($event)">
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-      <input type="file" />
-      <button type="button" (click)="openFileSelector()"></button>
+      <button type="button" (click)="openFileSelector()">
+        <ion-item [ngClass]="{'grey': aboutToDrop}" (dragenter)="aboutToDrop = true" (dragleave)="aboutToDrop=false">
+          <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
+          <ion-label>{{ title | translate }}</ion-label>
+        </ion-item>
+      </button>
     </ng-template>
   </ngx-file-drop>
-</div>
+</ion-item>
