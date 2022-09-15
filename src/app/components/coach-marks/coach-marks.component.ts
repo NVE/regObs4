@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, from, merge } from 'rxjs';
 import {
@@ -16,7 +16,6 @@ import {
   EASE_IN_OUT_BACK,
   EASE_IN_OUT
 } from '../../core/animations/custom.animation';
-import { enterZone } from '../../core/helpers/observable-helper';
 
 @Component({
   selector: 'app-coach-marks',
@@ -52,21 +51,19 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
   hideSubject = new Subject<boolean>();
 
   constructor(
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone
+    private userSettingService: UserSettingService
   ) {}
 
   ngOnInit() {
     this.showCoachMarks$ = merge(
       this.getShowGeoSelectObservable(),
       this.hideSubject
-    ).pipe(enterZone(this.ngZone));
+    );
     this.getShowGeoSelectObservable()
       .pipe(
         takeUntil(this.ngDestroy$),
         filter((val) => val),
-        delay(2000),
-        enterZone(this.ngZone)
+        delay(2000)
       )
       .subscribe(() => {
         this.isOpen = true;
@@ -82,6 +79,8 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
 
   async hide() {
     this.hideSubject.next(false);
+
+    //split the method, add logic to save showSimpleObsInfo
     const currentSettings = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();

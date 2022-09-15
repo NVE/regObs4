@@ -126,7 +126,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
       const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
       this.userSettingService.saveUserSettings({
         ...userSettings,
-        completedStartWizard: true
+        completedStartWizard: true,
+        showSimpleObsOnboarding: true
       });
       this.navController.navigateRoot('/');
     } else {

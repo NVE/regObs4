@@ -7,7 +7,10 @@ ion-list {
     display: none;
   }
 }
-
+//removed z-index as the backdrop for snow-simple-obs would not cover the entire screen (unless moved to app-overview component which is too high in a stack
+ion-content::part(scroll) {
+  z-index: unset;
+}
 ion-grid.header {
   --ion-grid-padding: 0;
   --ion-grid-padding-xs: 0;

@@ -1,0 +1,63 @@
+.coachmark-backdrop {
+    background: var(--backdrop-background);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+
+    .toggle-wrapper {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: calc(15px + env(safe-area-inset-right));
+        top: calc(45px + env(safe-area-inset-bottom));
+    }
+
+    .toggle-coachmark {
+        position: absolute;
+        top: calc(55px + env(safe-area-inset-top));
+        right: 190px;
+    }
+
+    .toggle-coachmark-text {
+        position: absolute;
+        top: 56px;
+        right: -18px;
+        transform: rotate(-5.72deg);
+        width: 245px;
+        text-align: center;
+    }
+
+    .select-ski-conditions {
+        position: absolute;
+        top: 100px;
+        width: 100%;
+    }
+
+    .ski-conditions-coachmark {
+        position: absolute;
+        top: calc(240px + env(safe-area-inset-top));
+        left: 125px;
+    }
+
+    .ski-conditions-coachmark-text {
+        position: absolute;
+        top: 56px;
+        left: 15px;
+        transform: rotate(6.28deg);
+        width: 260px;
+        text-align: center;
+    }
+
+    @media only screen and (max-width:450px) {
+        .toggle-coachmark-text {
+            right: -120px;
+        }
+
+        .ski-conditions-coachmark {
+            left: 40px;
+        }
+    }
+}

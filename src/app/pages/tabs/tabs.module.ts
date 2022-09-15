@@ -7,6 +7,7 @@ import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { ObservationListPageModule } from '../observation-list/observation-list.module';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { CoachMarksComponent } from '../../components/coach-marks/coach-marks.component';
+import { SharedComponentsModule } from 'src/app/modules/registration/shared-components.module';
 
 @NgModule({
   imports: [
