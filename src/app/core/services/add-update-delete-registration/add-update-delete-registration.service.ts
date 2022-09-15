@@ -59,6 +59,11 @@ export class AddUpdateDeleteRegistrationService {
     const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
     const langKey = await firstValueFrom(this.userSettings.language$);
 
+    // Track simple / complete obs registration
+    if (draft.simpleMode) {
+      (registration as any).__is_simple_obs = true;
+    }
+
     // Send registration to regobs
     const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
       registration,
@@ -96,6 +101,11 @@ export class AddUpdateDeleteRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
     const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
     const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+
+    // Track simple / complete obs registration
+    if (draft.simpleMode) {
+      (registration as any).__is_simple_obs = true;
+    }
 
     // Send registration to regobs
     const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
