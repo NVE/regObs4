@@ -59,10 +59,12 @@ export class ObserverTripsService {
       withLatestFrom(this.authorizedState),
       switchMap(([toggledOn, authorized]) => {
         this.logger.debug('Toggle / auth state', DEBUG_TAG, { toggledOn, authorized });
-        if (!toggledOn || authorized === AuthorizedState.NotAuthorized) {
+        if (authorized === AuthorizedState.NotAuthorized) {
           return of(null);
         } else if (authorized === AuthorizedState.Unknown) {
           return defer(() => from(this.fetchData()));
+        } else if (!toggledOn) {
+          return of(null);
         } else {
           return defer(() => from(this.getData()));
         }
@@ -100,14 +102,12 @@ export class ObserverTripsService {
   private async readStateFromDb(): Promise<void> {
     // State to read from DB
     let authorizedState = AuthorizedState.Unknown;
-    let toggledOnState = true;  // Assume toggled on if not saved in DB
-
+    const toggledOnState = (await this.readFromDb<boolean>(toggledOnKey)) === true;
     const isAuthorizedDb = await this.readFromDb<boolean>(isAuthorizedKey);
     if (isAuthorizedDb === false) {
       authorizedState = AuthorizedState.NotAuthorized;
     } else if (isAuthorizedDb === true) {
       authorizedState = AuthorizedState.Authorized;
-      toggledOnState = (await this.readFromDb<boolean>(toggledOnKey)) === false ? false : true;
     }
 
     this.logger.debug('Read state from db', DEBUG_TAG, { authorizedState, toggledOnState });
@@ -131,7 +131,6 @@ export class ObserverTripsService {
     await this.dbService.remove(dataKey);
     await this.dbService.remove(dataModifiedKey);
     await this.dbService.remove(isAuthorizedKey);
-    await this.dbService.remove(toggledOnKey);
     this.authorizedState.next(AuthorizedState.Unknown);
   }
 
