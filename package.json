@@ -70,7 +70,7 @@
     "@ionic-native/screen-orientation": "^5.36.0",
     "@ionic-native/sqlite": "^5.36.0",
     "@ionic-native/zip": "^5.36.0",
-    "@ionic/angular": "^5.7.0",
+    "@ionic/angular": "^6.2.7",
     "@ionic/storage-angular": "^3.0.6",
     "@mapbox/leaflet-pip": "^1.1.0",
     "@nano-sql/adapter-sqlite-cordova": "2.1.2",

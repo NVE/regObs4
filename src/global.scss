@@ -668,5 +668,14 @@ app-thumbnails .images .image-preview {
 }
 
 /*
- - Stilsetting for små bilder i enkel snøobservasjon.
+  + Stilsetting for custom datepicker wrapper-komponent
  */
+
+ion-modal {
+  &#datetime-picker-modal {
+    --min-width: 90vw;
+    --width: fit-content;
+    --max-height: 50vh;
+    align-items: flex-end;
+  }
+}

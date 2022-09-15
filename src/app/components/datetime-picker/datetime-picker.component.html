@@ -1,0 +1,38 @@
+<!--
+<ion-datetime-button datetime='datetime'></ion-datetime-button>
+<ion-modal [keepContentsMounted]='true'>
+  <ng-template>
+    <ion-datetime class='no-left-padding' color='medium'
+                  doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
+                  [(ngModel)]='localDate' [max]='maxDate' id='datetime' [firstDayOfWeek]='1'
+                  [showDefaultButtons]='true' [locale]='locale'>
+    </ion-datetime>
+  </ng-template>
+</ion-modal>
+-->
+
+<ion-button id='open-modal' expand='block'>{{localDate}}</ion-button>
+
+<ion-modal id='datetime-picker-modal' #modal trigger='open-modal'
+           (willDismiss)='onWillDismiss($event)'>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot='start'>
+          <ion-button (click)='cancel()'>{{'DIALOGS.CANCEL' | translate}}</ion-button>
+        </ion-buttons>
+        <ion-title></ion-title>
+        <ion-buttons slot='end'>
+          <ion-button (click)='confirm()' [strong]='true'>{{'DIALOGS.OK' | translate}}</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class='ion-padding'>
+      <ion-datetime class='no-left-padding' color='medium'
+                    [value]='localDate' (ionChange)='updateTempDateTime($event)' [max]='maxDate' id='datetime'
+                    [firstDayOfWeek]='1'
+                    [locale]='locale'>
+      </ion-datetime>
+    </ion-content>
+  </ng-template>
+</ion-modal>

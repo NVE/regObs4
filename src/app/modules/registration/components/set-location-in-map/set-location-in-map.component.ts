@@ -29,7 +29,7 @@ import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import moment from 'moment';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 
 export interface LocationTime {
@@ -101,6 +101,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   maxDate: string;
 
+  locale: string;
+
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
   get canEditLocationName() {
@@ -122,6 +124,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   ) {
     this.setToNow();
     this.setTranslatedAccuracies();
+    this.locale = translateService.currentLang;
   }
 
   async ngOnInit(): Promise<void> {
@@ -163,6 +166,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.translateService.onLangChange.subscribe((params: LangChangeEvent) => {
+      this.locale = params.lang;
+    });
     this.updateMapViewInfo();
   }
 
@@ -383,7 +389,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       location: obsLocation,
       datetime: obsTime,
       source: this.sourceTid,
-      spatialAccuracy: this.spatialAccuracy,
+      spatialAccuracy: this.spatialAccuracy
     };
     this.locationTimeSet.emit(locationTime);
   }
@@ -451,15 +457,19 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   setTranslatedAccuracies() {
     this.translateService.get([
       'REGISTRATION.OBS_LOCATION.EXACT',
-      'REGISTRATION.OBS_LOCATION.MORETHANONEKM',
+      'REGISTRATION.OBS_LOCATION.MORETHANONEKM'
     ]).subscribe((translations) =>
       this.spatialAccuracyOptions = [
-        {id: 0, text: translations['REGISTRATION.OBS_LOCATION.EXACT']},
-        {id: 100, text: '100 m'},
-        {id: 500, text: '500 m'},
-        {id: 1000, text: '1000 m'},
-        {id: -1, text: translations['REGISTRATION.OBS_LOCATION.MORETHANONEKM']}
+        { id: 0, text: translations['REGISTRATION.OBS_LOCATION.EXACT'] },
+        { id: 100, text: '100 m' },
+        { id: 500, text: '500 m' },
+        { id: 1000, text: '1000 m' },
+        { id: -1, text: translations['REGISTRATION.OBS_LOCATION.MORETHANONEKM'] }
       ]
     );
+  }
+
+  updateDateTime(dateTime: string) {
+    this.localDate = dateTime;
   }
 }
