@@ -1,6 +1,5 @@
-import { discardPeriodicTasks, fakeAsync, flush, flushMicrotasks, resetFakeAsyncZone, tick } from '@angular/core/testing';
-import { BehaviorSubject, firstValueFrom, of, ReplaySubject, timeout } from 'rxjs';
-import { TestScheduler } from 'rxjs/testing';
+import { fakeAsync, resetFakeAsyncZone, tick } from '@angular/core/testing';
+import { firstValueFrom, of, ReplaySubject, timeout } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
@@ -35,6 +34,44 @@ describe('ObserverTripsService', () => {
     service = new ObserverTripsService(tripService, loggerService, dbService, authService);
   });
 
+  it('should emit null if obsturer is toggled off and save toggle state to db', fakeAsync(async () => {
+    database = {
+      [isAuthorizedKey]: true,
+      [toggledOnKey]: true,
+      [dataKey]: { features: true },
+      [dataModifiedKey]: Date.now()
+    };
+
+    loggedInUser.next({ isLoggedIn: true });
+
+    // Check that geojson is not null when toggle is on
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let geojson: any = 'NONE_EMITTED_YET';
+    service.geojson$.subscribe(newVal => geojson = newVal);
+
+    tick(100);
+
+    expect(geojson.features).toBeTrue();
+
+    await service.toggle();
+
+    tick(100);
+
+    // Toggle state should have been saved to db
+    expect(dbServiceSetSpy).toHaveBeenCalledTimes(1);
+    expect(dbServiceSetSpy).toHaveBeenCalledWith(toggledOnKey, false);
+    expect(database[toggledOnKey]).toBe(false);
+
+    // Emitted geojson$ value should be null
+    expect(geojson).toBeNull();
+
+    // geojson$ should emit data when toggled on again
+    await service.toggle();
+    tick(100);
+    expect(database[toggledOnKey]).toBe(true);
+    expect(geojson.features).toBeTrue();
+  }));
+
   it('should not fetch data if it has valid data saved in database', fakeAsync(async () => {
     database = {
       [isAuthorizedKey]: true,
@@ -46,19 +83,6 @@ describe('ObserverTripsService', () => {
     loggedInUser.next({ isLoggedIn: true });
 
     const geojson = await firstValueFrom(service.geojson$);
-
-    // Let stuff happen
-    tick(100);
-
-    // It should not be needed to write anything to the db in this scenario
-    expect(dbServiceSetSpy).toHaveBeenCalledTimes(0);
-
-    // Check that service checks the authorized value and reads data from database
-    // TODO: Remove
-    const dbArgs = dbServiceGetSpy.calls.allArgs();
-    expect(dbArgs).toContain([isAuthorizedKey]);
-    expect(dbArgs).toContain([dataKey]);
-    expect(dbArgs).toContain([dataModifiedKey]);
 
     // Check that tripService was not called
     expect(tripService.TripGet).toHaveBeenCalledTimes(0);
@@ -82,9 +106,6 @@ describe('ObserverTripsService', () => {
     // Something must subscribe for stuff to happen
     const geojson = await firstValueFrom(service.geojson$);
 
-    // Let time pass
-    tick(100);
-
     // Check that tripService was called to fetch new data
     expect(tripService.TripGet).toHaveBeenCalledTimes(1);
     expect(geojson.features).toHaveSize(2);
@@ -92,7 +113,6 @@ describe('ObserverTripsService', () => {
   }));
 
   it('should use old data if fetching new data fails', fakeAsync(async () => {
-    // "as null" because TripGet return type is Observable<null> but it returns an observable with geojson data
     tripService.TripGet.and.throwError('Failed to fetch new data');
 
     database = {
@@ -107,9 +127,6 @@ describe('ObserverTripsService', () => {
     // Something must subscribe for stuff to happen
     const geojson = await firstValueFrom(service.geojson$);
 
-    // Let time pass
-    tick(100);
-
     // Check that tripService was called to try fetching new data
     expect(tripService.TripGet).toHaveBeenCalledTimes(1);
     expect(geojson.features[0].type).toBe('OldFeature1');
@@ -122,7 +139,7 @@ describe('ObserverTripsService', () => {
     // Let some time pass
     tick(100);
 
-    // But nothing else should have happened
+    // Should not have called any dependencies as we are not logged in
     expect(tripService.TripGet).toHaveBeenCalledTimes(0);
     expect(dbServiceGetSpy).toHaveBeenCalledTimes(0);
 
