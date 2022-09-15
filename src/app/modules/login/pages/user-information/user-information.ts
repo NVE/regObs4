@@ -91,7 +91,7 @@ export class UserInformation implements OnInit {
     return this.regobsAuthService.logout();
   }
 
-  async openMyPage(): Promise<void> {
+  async openMyPage(tag = ''): Promise<void> {
     const myPageUrl = await this.userSettingService.appMode$
       .pipe(
         map((appMode) => settings.authConfig[appMode].myPageUrl),
@@ -101,8 +101,9 @@ export class UserInformation implements OnInit {
     const currentLangKey = await this.userSettingService.language$
       .pipe(take(1))
       .toPromise();
+    const locale = this.getSupportedMyPageLocales(currentLangKey);
     this.externalLinkService.openExternalLink(
-      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}`
+      `${myPageUrl}/SubPage?Culture=${locale}&tag=${tag}`
     );
   }
 
