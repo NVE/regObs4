@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, from, merge } from 'rxjs';
 import {
   map,
@@ -15,12 +15,12 @@ import {
   CustomAnimation,
   EASE_IN_OUT_BACK,
   EASE_IN_OUT
-} from '../../core/animations/custom.animation';
+} from '../../../core/animations/custom.animation';
 
 @Component({
-  selector: 'app-coach-marks',
-  templateUrl: './coach-marks.component.html',
-  styleUrls: ['./coach-marks.component.scss'],
+  selector: 'app-coach-marks-main-screen',
+  templateUrl: './coach-marks-main-screen.component.html',
+  styleUrls: ['./coach-marks-main-screen.component.scss', '../coachmark-backdrop.scss'],
   animations: [
     trigger(
       'geo-coachmark-animation',
@@ -44,7 +44,7 @@ import {
     )
   ]
 })
-export class CoachMarksComponent implements OnInit, OnDestroy {
+export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   showCoachMarks$: Observable<boolean>;
   isOpen = false;
   ngDestroy$ = new Subject<void>();

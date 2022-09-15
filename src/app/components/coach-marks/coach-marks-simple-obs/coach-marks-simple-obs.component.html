@@ -1,5 +1,4 @@
 <div class="coachmark-backdrop" *ngIf="isVisible$ | async" (click)="clickBackdrop()">
-
     <div *ngIf="click == 0; else showSkiConditionsCoach">
         <div class="toggle-wrapper" @element-animation>
             <ion-label style="color:#FFF; font-size:12px;">{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}

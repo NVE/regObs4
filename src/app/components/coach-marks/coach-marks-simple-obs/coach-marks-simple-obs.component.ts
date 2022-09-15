@@ -7,7 +7,7 @@ import { trigger } from '@angular/animations';
 @Component({
   selector: 'app-coach-marks-simple-obs',
   templateUrl: './coach-marks-simple-obs.component.html',
-  styleUrls: ['./coach-marks-simple-obs.component.scss'],
+  styleUrls: ['./coach-marks-simple-obs.component.scss', '../coachmark-backdrop.scss'],
   animations: [ trigger(
     'coachmark-animation',
     CustomAnimation.createEnterScaleInAnimation(500, 500, EASE_IN_OUT, 0.9)
