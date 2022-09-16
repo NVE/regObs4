@@ -6,7 +6,7 @@ import android.os.Bundle;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        registerPlugin(RegobsPlugin.class);
+        registerPlugin(DownloadAndUnzipPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

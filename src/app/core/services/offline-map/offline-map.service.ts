@@ -9,7 +9,7 @@ import moment from 'moment';
 import { BehaviorSubject, firstValueFrom, from, interval, Observable, Subject, Subscription } from 'rxjs';
 import { finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
-import { RegobsNative } from 'src/regobs-plugin';
+import { DownloadAndUnzip } from 'src/download-and-unzip-plugin';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
@@ -263,7 +263,7 @@ export class OfflineMapService {
       return;
     }
     try {
-      const result = await RegobsNative.downloadAndUnzip({
+      const result = await DownloadAndUnzip.downloadAndUnzip({
         downloadUrl: part.url,
         destinationPath: destinationPath
       });
@@ -290,12 +290,12 @@ export class OfflineMapService {
       takeUntil(done))
       .subscribe(async () => {
         if (this.cancel) {
-          RegobsNative.cancel({ fileReference });
+          DownloadAndUnzip.cancelJob({ fileReference });
           done.next();
           done.complete();
           this.onCancelled(mapPackage);
         } else {
-          const status = await RegobsNative.getStatus({ fileReference });
+          const status = await DownloadAndUnzip.getJobStatus({ fileReference });
           this.loggingService.debug(`Status fileref: ${fileReference}: ${status.progress}: ${status.status}`, DEBUG_TAG);
           if (status.progress >= 1) {
             done.next();
