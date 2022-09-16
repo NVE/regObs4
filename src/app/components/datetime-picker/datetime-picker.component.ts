@@ -12,10 +12,11 @@ export class DatetimePickerComponent implements OnInit {
   @Input() localDate: string;
   @Input() locale = 'nb-no';
   @Input() maxDate: string;
-
+  @Input() dateFormat = 'dd. MMM yyyy HH:mm';
 
   @Output() localDateChange = new EventEmitter<string>();
-  tempDate: string;
+
+  private tempDate: string;
 
   @ViewChild(IonModal) modal: IonModal;
 
