@@ -4,7 +4,7 @@ import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-d
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
-import { RegistrationDraft } from '../draft/draft-model';
+import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments } from '../draft/draft-model';
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { addAttachmentToRegistration } from './attachmentHelpers';
@@ -58,15 +58,11 @@ export class AddUpdateDeleteRegistrationService {
     const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
     const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
     const langKey = await firstValueFrom(this.userSettings.language$);
-
-    // Track simple / complete obs registration
-    if (draft.simpleMode) {
-      (registration as any).__is_simple_obs = true;
-    }
+    const registrationWithMeta = this.addMetadata(registration, draft);
 
     // Send registration to regobs
     const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
-      registration,
+      registration: registrationWithMeta,
       langKey,
       externalReferenceId: draft.uuid
     }));
@@ -101,15 +97,11 @@ export class AddUpdateDeleteRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
     const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
     const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
-
-    // Track simple / complete obs registration
-    if (draft.simpleMode) {
-      (registration as any).__is_simple_obs = true;
-    }
+    const registrationWithMeta = this.addMetadata(registration, draft);
 
     // Send registration to regobs
     const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
-      registration,
+      registration: registrationWithMeta,
       langKey,
       externalReferenceId: draft.uuid,
       id: draft.regId,
@@ -156,6 +148,24 @@ export class AddUpdateDeleteRegistrationService {
       ...draft,
       registration
     };
+  }
+
+  private addMetadata(registration: RegistrationEditModelWithRemoteOrLocalAttachments, draft: RegistrationDraft) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const metadata: any = {};
+
+    // Track if a registration has been edited/created using simple mode
+    // See https://nveprojects.atlassian.net/browse/RO-1779
+    if (draft.simpleMode) {
+      metadata.__is_simple_obs = true;
+    }
+
+    const regWithMeta = {
+      ...registration,
+      ...metadata
+    };
+
+    return regWithMeta as RegistrationEditModelWithRemoteOrLocalAttachments;
   }
 
 }
