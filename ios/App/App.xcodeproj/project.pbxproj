@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01A5D50E28D4BF5800C23C31 /* DownloadAndUnzipPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A5D50C28D4BF5800C23C31 /* DownloadAndUnzipPlugin.swift */; };
+		01A5D50F28D4BF5800C23C31 /* DownloadAndUnzipPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A5D50D28D4BF5800C23C31 /* DownloadAndUnzipPlugin.m */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -15,13 +17,13 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		69096B612750076300183268 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 69096B632750076300183268 /* InfoPlist.strings */; };
-		69A0EED2281BE20F00FF6913 /* RegobsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69A0EED1281BE20F00FF6913 /* RegobsPlugin.swift */; };
-		69A0EED5281BE2A600FF6913 /* RegobsPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A0EED4281BE2A600FF6913 /* RegobsPlugin.m */; };
 		69A0EED9281BF17800FF6913 /* Regobs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69A0EED8281BF17800FF6913 /* Regobs.swift */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01A5D50C28D4BF5800C23C31 /* DownloadAndUnzipPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadAndUnzipPlugin.swift; sourceTree = "<group>"; };
+		01A5D50D28D4BF5800C23C31 /* DownloadAndUnzipPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadAndUnzipPlugin.m; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,9 +40,7 @@
 		69096B672750087900183268 /* nn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nn; path = nn.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		69096B682750089500183268 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		69096B69275008AC00183268 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		69A0EED1281BE20F00FF6913 /* RegobsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegobsPlugin.swift; sourceTree = "<group>"; };
 		69A0EED3281BE2A500FF6913 /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
-		69A0EED4281BE2A600FF6913 /* RegobsPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegobsPlugin.m; sourceTree = "<group>"; };
 		69A0EED8281BF17800FF6913 /* Regobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regobs.swift; sourceTree = "<group>"; };
 		AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
@@ -88,6 +88,8 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				01A5D50D28D4BF5800C23C31 /* DownloadAndUnzipPlugin.m */,
+				01A5D50C28D4BF5800C23C31 /* DownloadAndUnzipPlugin.swift */,
 				69096B632750076300183268 /* InfoPlist.strings */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
@@ -97,8 +99,6 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
-				69A0EED1281BE20F00FF6913 /* RegobsPlugin.swift */,
-				69A0EED4281BE2A600FF6913 /* RegobsPlugin.m */,
 				69A0EED3281BE2A500FF6913 /* App-Bridging-Header.h */,
 				69A0EED8281BF17800FF6913 /* Regobs.swift */,
 			);
@@ -250,9 +250,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69A0EED5281BE2A600FF6913 /* RegobsPlugin.m in Sources */,
 				69A0EED9281BF17800FF6913 /* Regobs.swift in Sources */,
-				69A0EED2281BE20F00FF6913 /* RegobsPlugin.swift in Sources */,
+				01A5D50E28D4BF5800C23C31 /* DownloadAndUnzipPlugin.swift in Sources */,
+				01A5D50F28D4BF5800C23C31 /* DownloadAndUnzipPlugin.m in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -21,20 +21,20 @@ public class DownloadAndUnzipPlugin: CAPPlugin {
         let downloadUrl = call.getString("downloadUrl");
         let destinationPath = call.getString("destinationPath");
 
-        if let url = URL(string: downloadUrl) {
-            regobs.downloadFile(url: url)
-        }
+//        if let url = URL(string: downloadUrl) {
+//            regobs.downloadFile(url: url)
+//        }
                 
-        call.reject(["value": "Denne virker ikke"])
+        call.reject("downloadAndUnzip() virker ikke")
     }
 
     @objc func cancelJob(_ call: CAPPluginCall) {
         let fileReference = call.getString("fileReference");               
-        call.reject(["value": "cancelJob() virker ikke"])
+        call.reject("cancelJob() virker ikke")
     }
 
     @objc func getJobStatus(_ call: CAPPluginCall) {
         let fileReference = call.getString("fileReference");               
-        call.reject(["value": "getJobStatus() virker ikke"])
+        call.reject("getJobStatus() virker ikke")
     }
 }
