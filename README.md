@@ -70,6 +70,8 @@ npx cap open ios
 ```
 npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
 
+[Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
+
 ## Build and release
 
 Use npm to make a release build:
