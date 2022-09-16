@@ -14,7 +14,7 @@ import {
 import { Capacitor } from '@capacitor/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from, BehaviorSubject, combineLatest } from 'rxjs';
+import { timer, Subject, from, BehaviorSubject, combineLatest, race } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
@@ -102,7 +102,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
   observationTripName = '';
   observationTripDescription: string = null;
-  observationTripLayers: L.GeoJSON[];
+  private observationTripLayers: L.GeoJSON[];
+  private removeObserverTripEventHandlers = new Subject<void>();
 
   loaded = false;
   private map: L.Map;
@@ -208,20 +209,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.observerTripsContainer.nativeElement.style.display = 'none';
   }
 
-  private cleanupObserverTrips(map: L.Map) {
+  private removeObserverTripMapLayers(map: L.Map) {
     if (this.observationTripLayers != null) {
       this.observationTripLayers.forEach(l => {
         if (map.hasLayer(l)) {
           map.removeLayer(l);
         }
       });
-      this.observationTripLayers = null;
     }
+    this.observationTripLayers = null;
   }
 
-  private async addObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
+  private async showOrHideObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
     if (geojson == null) {
-      this.cleanupObserverTrips(map);
+      this.removeObserverTripMapLayers(map);
+      this.removeObserverTripEventHandlers.next();
       return;
     }
 
@@ -265,8 +267,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     layerToBindClickHandlerTo.on('click', clickHandler);
     map.on('zoomend', addOrRemoveLayers);
 
-    // Clean up event listeners on destroy
-    this.ngDestroy$.subscribe(() => {
+    // Clean up event listeners on destroy or when toggled off
+    race(
+      this.ngDestroy$,
+      this.removeObserverTripEventHandlers,
+      this.observerTripsService.toggledOn.pipe(filter(toggledOn => !toggledOn))
+    ).pipe(take(1)).subscribe(() => {
       layerToBindClickHandlerTo.off('click', clickHandler);
       map.off('zoomend', addOrRemoveLayers);
     });
@@ -280,8 +286,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.showObserverTrips) {
-      this.observerTripsService.geojson.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
-        this.addObserverTripsLayer(map, geojson);
+      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
+        this.showOrHideObserverTripsLayer(map, geojson);
       });
     }
 
