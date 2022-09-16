@@ -11,6 +11,6 @@
 #import <Foundation/Foundation.h>
 #import <Capacitor/Capacitor.h>
 
-CAP_PLUGIN(RegobsPlugin, "Regobs",
+CAP_PLUGIN(DownloadAndUnzipPlugin, "DownloadAndUnzip",
     CAP_PLUGIN_METHOD(echo, CAPPluginReturnPromise);
 )
