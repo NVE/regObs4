@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { Observable, Subject, from, merge } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 import {
   map,
   distinctUntilChanged,
-  concatMap,
   take,
   takeUntil,
   filter,
@@ -79,8 +78,6 @@ export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
 
   async hide() {
     this.hideSubject.next(false);
-
-    //split the method, add logic to save showSimpleObsInfo
     const currentSettings = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();

@@ -25,7 +25,6 @@ import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { settings } from 'src/settings';
 import { RegobsApiModuleWithConfig } from './modules/common-regobs-api';
 
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
