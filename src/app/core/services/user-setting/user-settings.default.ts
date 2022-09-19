@@ -21,6 +21,7 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   emailReceipt: true,
   topoMap: TopoMap.default,
   showGeoSelectInfo: true,
+  completedSimpleObsOnboarding: false,
   useRetinaMap: false,
   consentForSendingAnalytics: true,
   consentForSendingAnalyticsDialogCompleted: false,

@@ -6,7 +6,8 @@ import { TripPageModule } from '../trip/trip.module';
 import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { ObservationListPageModule } from '../observation-list/observation-list.module';
 import { SharedModule } from '../../modules/shared/shared.module';
-import { CoachMarksComponent } from '../../components/coach-marks/coach-marks.component';
+import { CoachMarksMainScreenComponent } from 'src/app/components/coach-marks/coach-marks-main-screen/coach-marks-main-screen.component';
+import { SharedComponentsModule } from 'src/app/modules/registration/shared-components.module';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { CoachMarksComponent } from '../../components/coach-marks/coach-marks.co
     ObservationListPageModule,
     SharedModule
   ],
-  declarations: [TabsPage, CoachMarksComponent]
+  declarations: [TabsPage, CoachMarksMainScreenComponent ]
 })
 export class TabsPageModule {}
