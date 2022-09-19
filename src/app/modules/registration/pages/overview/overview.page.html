@@ -42,4 +42,5 @@
     </ion-list>
   </ion-content>
   <app-send-button *ngIf="!hideSendButton(draft)" [draft]="draft"></app-send-button>
+  <app-coach-marks-simple-obs *ngIf="showSimpleMode(draft)"></app-coach-marks-simple-obs>
 </ng-container>

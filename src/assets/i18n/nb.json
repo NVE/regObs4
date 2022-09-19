@@ -29,7 +29,9 @@
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til egne observasjoner",
     "SELECT_GEO_HAZARD": "Velg naturfare",
-    "VIEW_WARNINGS": "Se varsler fra varsom.no"
+    "VIEW_WARNINGS": "Se varsler fra varsom.no",
+    "TOGGLE_OBSERVATION": "Bytt mellom enkel og fullstendig observasjon",
+    "SKI_CONDITIONS": "Nå kan du også rapportere skiføre!"
   },
   "COMPETENCE": {
     "UNKNOWN": "Ukjent kompetanse"
