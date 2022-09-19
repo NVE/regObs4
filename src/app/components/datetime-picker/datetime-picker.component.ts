@@ -15,6 +15,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() localDate: string;
   @Input() locale: string;
   @Input() maxDate: string;
+  @Input() minDate: string;
   @Input() dateFormat = 'dd. MMM yyyy HH:mm';
 
   @Output() localDateChange = new EventEmitter<string>();

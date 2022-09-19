@@ -43,11 +43,8 @@
         <ion-label [color]="!draft.registration.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position='stacked'
                    class='ion-text-uppercase'>{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
-        <ion-datetime color='medium' [max]='maxDateStart'
-                      doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-                      [(ngModel)]='draft.registration.LandSlideObs.DtLandSlideTime'
-                      (ionChange)='dtTimeChanged()'>
-        </ion-datetime>
+        <app-datetime-picker [(localDate)]='draft.registration.LandSlideObs.DtLandSlideTime'
+                             (localDateChange)='dtTimeChanged()' [maxDate]='maxDateStart'></app-datetime-picker>
         <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium'
                     (click)='setDtLandSlideTimeToNow()'>
           <ion-icon slot='start' name='time'></ion-icon>
@@ -63,11 +60,9 @@
         <ion-label [color]="!draft.registration.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'"
                    position='stacked' class='ion-text-uppercase'>{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
-        <ion-datetime [min]='minDateEnd' [max]='maxDateEnd' color='medium'
-                      doneText="{{'DIALOGS.OK' | translate}}"
-                      cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)='dtEndTimeChanged()'
-                      [(ngModel)]='draft.registration.LandSlideObs.DtLandSlideTimeEnd'>
-        </ion-datetime>
+        <app-datetime-picker [(localDate)]='draft.registration.LandSlideObs.DtLandSlideTimeEnd'
+                             (localDateChange)='dtEndTimeChanged()'
+                             [maxDate]='maxDateEnd' [minDate]='minDateEnd'></app-datetime-picker>
         <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium'
                     (click)='setDtLandSlideTimeEndToNow()'>
           <ion-icon slot='start' name='time'></ion-icon>

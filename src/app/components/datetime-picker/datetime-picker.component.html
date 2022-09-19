@@ -16,7 +16,7 @@
     </ion-header>
     <ion-content>
       <ion-datetime
-        [value]='localDate' (ionChange)='updateTempDateTime($event)' [max]='maxDate' id='datetime'
+        [value]='localDate' (ionChange)='updateTempDateTime($event)' [max]='maxDate' [min]='minDate' id='datetime'
         [firstDayOfWeek]='1'
         [locale]='locale'>
       </ion-datetime>

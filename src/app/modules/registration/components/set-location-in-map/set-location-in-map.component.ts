@@ -468,8 +468,4 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       ]
     );
   }
-
-  updateDateTime(dateTime: string) {
-    this.localDate = dateTime;
-  }
 }

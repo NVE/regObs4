@@ -76,8 +76,7 @@
           <div class='flex-row'>
             <div class='flex-grow box edit-button no-padding'>
               <ion-icon name='calendar'></ion-icon>&nbsp;
-              <app-datetime-picker [localDate]='localDate'
-                                   (localDateChange)='updateDateTime($event)' [maxDate]='maxDate'></app-datetime-picker>
+              <app-datetime-picker [(localDate)]='localDate' [maxDate]='maxDate'></app-datetime-picker>
             </div>
             <div class='box edit-button' (click)='setToNow()'>
               <ion-icon slot='start' name='clock'></ion-icon>&nbsp;{{"REGISTRATION.SET_TIME.NOW" |
