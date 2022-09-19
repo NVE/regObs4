@@ -262,19 +262,20 @@ export class OfflineMapService {
       this.onCancelled(mapPackage);
       return;
     }
-    try {
-      const result = await DownloadAndUnzip.downloadAndUnzip({
-        downloadUrl: part.url,
-        destinationPath: destinationPath
-      });
+    DownloadAndUnzip.downloadAndUnzip({
+      downloadUrl: part.url,
+      destinationPath: destinationPath
+    }).then(result => {
       const numParts = parts.length;
-      this.loggingService.debug(`Started native download of part ${partNumber+1}/${numParts} : ${part.name}, fileRef = ${result.fileReference}`, DEBUG_TAG);
+      this.loggingService.debug(
+        `Started native download of ${mapPackage.name}, part ${partNumber+1}/${numParts}: ${part.name}, fileRef = ${result.fileReference}`,
+        DEBUG_TAG
+      );
       this.reportProgress(mapPackage, 0, partNumber, parts.length, 'Downloading');
       this.startStatusWatch(part, parts, mapPackage, partNumber, result.fileReference);
-
-    } catch(err) {
-      (err) => this.onUnzipOrDownloadError(mapPackage, err, true);
-    }
+    }).catch(err => {
+      this.onUnzipOrDownloadError(mapPackage, err, true);
+    });
   }
 
   private startStatusWatch(
@@ -290,28 +291,39 @@ export class OfflineMapService {
       takeUntil(done))
       .subscribe(async () => {
         if (this.cancel) {
-          DownloadAndUnzip.cancelJob({ fileReference });
-          done.next();
-          done.complete();
-          this.onCancelled(mapPackage);
+          DownloadAndUnzip.cancelJob({ fileReference })
+            .catch((err) => {
+              this.loggingService.error(err, DEBUG_TAG, `DownloadAndUnzip.cancelJob() failed. FileRef = ${fileReference}`);
+            })
+            .finally(() => {
+              done.next();
+              done.complete();
+              this.onCancelled(mapPackage);
+            });
         } else {
-          const status = await DownloadAndUnzip.getJobStatus({ fileReference });
-          this.loggingService.debug(`Status fileref: ${fileReference}: ${status.progress}: ${status.status}`, DEBUG_TAG);
-          if (status.progress >= 1) {
-            done.next();
-            done.complete();
-            this.onUnzipStepComplete(parts, mapPackage, partNumber);
-          } else if (status.status === 'ERROR') {
-            done.next();
-            done.complete();
-            const isDownloading = status.task === 'download';
-            this.onUnzipOrDownloadError(mapPackage, null, isDownloading);
-          } else {
-            if (part) {
-              const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
-              this.reportProgress(mapPackage, status.progress, partNumber, parts.length, partOfStep);
-            }
-          }
+          DownloadAndUnzip.getJobStatus({ fileReference })
+            .then(status => {
+              if (status.progress >= 1) {
+                done.next();
+                done.complete();
+                this.onUnzipStepComplete(parts, mapPackage, partNumber);
+              } else if (status.status === 'ERROR') {
+                done.next();
+                done.complete();
+                const isDownloading = status.task === 'download';
+                this.onUnzipOrDownloadError(mapPackage, null, isDownloading);
+              } else {
+                if (part) {
+                  const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
+                  this.reportProgress(mapPackage, status.progress, partNumber, parts.length, partOfStep);
+                }
+              }
+            })
+            .catch(err => {
+              done.next();
+              done.complete();
+              this.onUnzipOrDownloadError(mapPackage, err, false);
+            });
         }
       });
   }
@@ -422,7 +434,6 @@ export class OfflineMapService {
       totalPartsOfWork;
     const progressForTotalParts =
       currentProgress / totalPartsOfWork + currentPartOfWork;
-    this.loggingService.debug(`calculateTotalProgress: currentProgress = ${currentProgress}, part ${currentPart+1}/${totalParts}, step: ${partOfStep}, totalProgress = ${progressForTotalParts}`, DEBUG_TAG);
     return progressForTotalParts;
   }
 

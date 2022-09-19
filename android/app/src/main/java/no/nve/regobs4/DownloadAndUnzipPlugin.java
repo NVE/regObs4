@@ -47,9 +47,13 @@ public class DownloadAndUnzipPlugin extends Plugin {
             BroadcastReceiver receiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                    if (downloadedFileId == reference) {
-                        handleDownloadedFile(context, downloadedFileId, destinationPath, call);
+                    try {
+                        long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                        if (downloadedFileId == reference) {
+                            handleDownloadedFile(context, downloadedFileId, destinationPath, call);
+                        }
+                    } catch (RuntimeException exception) {
+                        call.reject(exception.getMessage(), exception);
                     }
                 }
             };
@@ -130,15 +134,20 @@ public class DownloadAndUnzipPlugin extends Plugin {
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(fileReference);
         Cursor cursor = downloadManager.query(query);
-        if (cursor.moveToFirst()) {
-            int downloadStatus = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
-            String downloadLocalUri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-            if ((downloadStatus == DownloadManager.STATUS_SUCCESSFUL) && downloadLocalUri != null) {
-                Uri uri = Uri.parse(downloadLocalUri);
-                unzipWithZip4j(uri.getPath(), destinationPath, fileReference, call);
+        try {
+            if (cursor.moveToFirst()) {
+                int downloadStatus = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+                String downloadLocalUri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                if ((downloadStatus == DownloadManager.STATUS_SUCCESSFUL) && downloadLocalUri != null) {
+                    Uri uri = Uri.parse(downloadLocalUri);
+                    unzipWithZip4j(uri.getPath(), destinationPath, fileReference, call);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
         }
-        cursor.close();
     }
 
     private double getDownloadProgress(final Context context, final long fileReference) {
@@ -147,12 +156,17 @@ public class DownloadAndUnzipPlugin extends Plugin {
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(fileReference);
         Cursor cursor = downloadManager.query(query);
-        if (cursor.moveToFirst()) {
-            int downloadedBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-            int totalBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-            progress = downloadedBytes / totalBytes;
+        try {
+            if (cursor.moveToFirst()) {
+                int downloadedBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                int totalBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                progress = downloadedBytes / totalBytes;
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
         return progress;
     }
 
