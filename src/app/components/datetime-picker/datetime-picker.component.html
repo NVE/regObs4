@@ -1,4 +1,9 @@
-<ion-button fill='clear' id='open-modal' expand='block'>{{localDate | date:dateFormat}}</ion-button>
+<ion-button fill='clear' id='open-modal' expand='block' class='datetimepicker-button'
+            [ngClass]='"datetimepicker-button--"+textAlign'>
+  <div class='datetimepicker-button-inner-wrapper'>
+    {{localDate | date:dateFormat}}
+  </div>
+</ion-button>
 
 <ion-modal id='datetime-picker-modal' #modal trigger='open-modal'
            (willDismiss)='onWillDismiss($event)'>

@@ -685,3 +685,22 @@ ion-modal {
     --background: var(--ion-toolbar-background, var(--ion-background-color, #fff));
   }
 }
+
+.datetimepicker-button {
+  &-inner-wrapper {
+    display: flex;
+    width: 100%;
+  }
+
+  &--left div {
+    justify-content: flex-start;
+  }
+
+  &--center div {
+    justify-content: center;
+  }
+
+  &--right div {
+    justify-content: flex-end;
+  }
+}
