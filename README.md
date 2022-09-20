@@ -5,9 +5,11 @@ Ionic 5 uses Angular 9+ and TypeScript, so all pages and components have been re
 
 ## Installation
 
-1. [Installer node v14.19.0.](https://nodejs.org/download/release/v14.19.0/node-v14.19.0-x64.msi) **Ikke nyere eller
+1. Installer node v14 [Installer node v14.x.x](https://nodejs.org/download/release/latest-v14.x/) (.msi-fil for
+   Windows) **
+   Ikke nyere eller
    eldre versjon**
-2. Sjekk at `npm --version` viser v6.14.16. **Ikke nyere eller eldre versjon**
+2. Sjekk at `npm --version` viser v6.x.x. **Ikke nyere eller eldre versjon**
 3. [Installer git](https://git-scm.com/download/win)
 4. Clone repo (`git clone https://github.com/NVE/regObs4.git`)
 5. Install packages (`npm install`)
