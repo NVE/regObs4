@@ -678,6 +678,15 @@ ion-modal {
     --max-height: 50vh;
     align-items: flex-end;
     padding: 0 20px;
+
+    @media (max-height: 900px) {
+      --max-height: 75vh;
+    }
+
+    @media (max-height: 600px) {
+      // 44px tatt fra min-height i .toolbar-container.
+      --max-height: calc(100vh - 44px);
+    }
   }
 
   ion-datetime {
