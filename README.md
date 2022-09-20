@@ -1,19 +1,17 @@
 # RegObs app v4 (Ionic 5)
 
-This is the regObs app versoin 4. It is based on code from app v3, but rewritten to Ionic 4/5.
+This is the regObs app version 4. It is based on code from app v3, but rewritten to Ionic 4/5.
 Ionic 5 uses Angular 9+ and TypeScript, so all pages and components have been rewritten.
 
 ## Installation
 
-1. Clone repo
-2. Install packages
-   ```
-   npm install 
-   ```
-*Hvis du har npm versjon 7 eller nyere, må du bruke:* 
-```
-npm install --legacy-peer-deps
-```
+1. [Installer node v14.19.0.](https://nodejs.org/download/release/v14.19.0/node-v14.19.0-x64.msi) **Ikke nyere eller
+   eldre versjon**
+2. Sjekk at `npm --version` viser v6.14.16. **Ikke nyere eller eldre versjon**
+3. [Installer git](https://git-scm.com/download/win)
+4. Clone repo (`git clone https://github.com/NVE/regObs4.git`)
+5. Install packages (`npm install`)
+
 ## Debug and test on device
 
 Run app in browser:
@@ -57,17 +55,21 @@ C:\gradle\gradle-6.7.1\bin
 ```
 
 - You have to uninstall the regular RegObs app from your phone in order to debug
-- This may be helpful for device connection problems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+- This may be helpful for device connection
+  problems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
 #### Error: package android.support.v4.content does not exist
+
 [More info] https://github.com/ionic-team/capacitor/issues/2822
 
 ### Debugge på iPhone/iPad: XCode
+
 ```
 npm run build (or ionic build)
 npx cap sync ios
 npx cap open ios
 ```
+
 npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
 
 [Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
@@ -101,18 +103,21 @@ NOTE! Continous build is set up in Azure.
 App blir automatisk publisert til intern testing når man pusher til ny release-branch.
 
 ## Beta-testing
+
 Vi har et åpent beta-test-program hvor eksterne testere kan melde seg inn ved å følge en link.
 
 ### Starte beta-testing i Google Play
+
 - For å rulle videre fra intern testing til beta, logg på https://play.google.com/console/
 - Siste versjon av appen finner du under "Tester/Intern testing"
 - Registrere release notes. Dette kan vi automatisere på sikt.
 - Velg "Kopier utganven til et annet spor"
-- Velg spor "Åpen testing" 
+- Velg spor "Åpen testing"
 - Gå gjennom evt. advarsler (da vi publiserte 4.4.6 var det 3 advarsler som vi ignorerte)
 - Fullfør publisering
 
 ### Starte beta-testing på Apple App Store
+
 - For å rulle videre fra intern testing til beta, logg på https://appstoreconnect.apple.com/
 - Velg Varsom Regobs under My Apps
 - Velg TestFlight
@@ -144,6 +149,7 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 ### Flette inn release-greina
 
 Etter produksjonssetting, må release-greina flettes inn:
+
 ```
 git flow release finish 'vX.Y.Z'
 git push origin --tags
@@ -162,34 +168,49 @@ npm run lint:fix
 ```
 
 # Hvordan oppdatere alle npm-pakker
+
 ## 1. Sjekk hvilke pakker som trenger oppdatering
+
 Installer npm-check-updates globalt og sjekk packages.json:
+
 ```
 npm i -g npm-check-updates
 ncu
 ```
+
 ## 2. Sjekk release notes for pakker med store endringer og oppdater disse først
+
 ## 3. Oppgrader plugins
+
 NB! Cordova plugins må oppdateres ved å først slette dem og legge dem til på nytt:
+
 ```
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
 ```
+
 ## 4. Oppgrader Angular, hvis det trengs
+
 Bruk ng update for enklere migrering, se https://update.angular.io/
+
 ```
 ng update
 ```
+
 ## 5. Oppgrader resten av pakkene
+
 ```
 ncu -u
 ```
 
 # How to update models from Regobs API
+
 Check the api endpoint named "swagger" in ng-swagger-gen.json is the endpoint you like to base the models on.
+
 ```
 npm run generate-swagger-api-module
 ```
+
 Revert changes in regobs-api.module.ts
 
 # How to update regions and polygons
@@ -247,20 +268,24 @@ Vi bruker [Lokalise](https://lokalise.com/) til å håndtere oversettelser.
 
 Disse NPM-skriptene eksisterer som hjelp til å håndtere språkfiler:
 
-Script | Beskrivelse
---- | ---
-`npm run translations:sort` | Sorter nøklene i språkfilene som ligger lokalt fra a - å.
-`npm run translations:upload` | Last opp språkfiler til Lokalise. Overskriver endringer i Lokalse.
-`npm run translations:download` | Last ned språkfiler fra Lokalse. Overskriver lokale endringer.
+| Script                          | Beskrivelse                                                        |
+|---------------------------------|--------------------------------------------------------------------|
+| `npm run translations:sort`     | Sorter nøklene i språkfilene som ligger lokalt fra a - å.          |
+| `npm run translations:upload`   | Last opp språkfiler til Lokalise. Overskriver endringer i Lokalse. |
+| `npm run translations:download` | Last ned språkfiler fra Lokalse. Overskriver lokale endringer.     |
 
-> **Merk:** `translations:upload` overskriver eventuelle endringer som finnes kun i Lokalise. Det tas derfor en "snapshot" i Lokalse før opplastningen skjer, for at man skal ha muligheten til å reversere endringene. Det er også mulig å reversere endringer direkte på en språknøkkel i Lokalise ved å se på historikken der, om det bare er snakk om et par endrede nøkler. Det kan også skjer at Lokalise parser
-språkfilene feil, og da bør man rulle tilbake og prøve manuell upload.
+> **Merk:** `translations:upload` overskriver eventuelle endringer som finnes kun i Lokalise. Det tas derfor en "
+> snapshot" i Lokalse før opplastningen skjer, for at man skal ha muligheten til å reversere endringene. Det er også
+> mulig
+> å reversere endringer direkte på en språknøkkel i Lokalise ved å se på historikken der, om det bare er snakk om et par
+> endrede nøkler. Det kan også skjer at Lokalise parser
+> språkfilene feil, og da bør man rulle tilbake og prøve manuell upload.
 
 `translations:sort` sorterer språkfilene med samme algoritme som brukes når nye tekster
 hentes fra Lokalise. Kan brukes hvis man har gjort endringer i språkfilene og
 vil forsikre seg om at sorteringen er riktig.
 
-For å bruke download / upload npm scripts må du lage fila 
+For å bruke download / upload npm scripts må du lage fila
 `translations/lokalise-api-key.json` med innholdet:
 
 ```
@@ -284,12 +309,12 @@ mellom Lokalse og lokale språkfiler.
 Dette er et forslag til en arbeidsflyt:
 
 1. Oftest er det som en del av en større endring at man trenger å endre språk.
-   I PRen som angår denne endringen kan man legge til / endre språk i 
+   I PRen som angår denne endringen kan man legge til / endre språk i
    engelsk fil - `src/assets/i18n/en.json`.
 
-   På dette stadiet kan man godt prøve å hente tekster fra lokalise med 
-   `npm run translations:download` for å se om det finnes tekster som er 
-   opptadert der. Er det ikke det står man fritt til å også endre andre 
+   På dette stadiet kan man godt prøve å hente tekster fra lokalise med
+   `npm run translations:download` for å se om det finnes tekster som er
+   opptadert der. Er det ikke det står man fritt til å også endre andre
    språkfiler lokalt og hoppe til steg 7 etter at PRen er
    merget inn.
 
@@ -300,7 +325,7 @@ Dette er et forslag til en arbeidsflyt:
 
 4. Last ned nye språkfiler fra Lokalse med `npm run translations:download`.
 
-5. Se over språkfilene. 
+5. Se over språkfilene.
 
    > **Merk!** Når språkfiler lastes ned fra Lokalise merges innholdet inn i de
    > eksisterende språkfilene. **Dette overskriver eventuelle endrede tekster.**
@@ -309,14 +334,13 @@ Dette er et forslag til en arbeidsflyt:
    Commit endringene.
 
 6. Legg til eventuelle oversettelser for andre språk enn engelsk. Dette kan også
-   gjøres i Lokalise etter steg 9., men da må du huske å laste ned og sjekke inn 
+   gjøres i Lokalise etter steg 9., men da må du huske å laste ned og sjekke inn
    endringene etterpå vha `npm run translations:download`.
-   
+
 7. Last opp oppdaterte tekster til Lokalise med `npm run translations:upload -- web <lang>`
 
 8. Sjekk i Lokalise om oppdateringen ser riktig ut. Hvis ikke, bruk snapshot for
    å rulle tilbake.
-
 
 ## Rydde opp i Lokalise
 
