@@ -131,7 +131,9 @@
     "AWAY_FROM": "away",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
     "EAST_SHORT": "E",
-    "NORTH_SHORT": "N"
+    "NORTH_SHORT": "N",
+    "WEATHER_ERROR": "Weather forecast not found!",
+    "WEATHER_FROM": "Weather from"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Away",

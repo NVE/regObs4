@@ -131,7 +131,9 @@
     "AWAY_FROM": "unna",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
     "EAST_SHORT": "Ø",
-    "NORTH_SHORT": "N"
+    "NORTH_SHORT": "N",
+    "WEATHER_ERROR": "Fant ikke værvarsel!",
+    "WEATHER_FROM": "Værvarsel på"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Unna",
