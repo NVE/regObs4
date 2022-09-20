@@ -23,7 +23,10 @@
         <ion-label [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
                    position='stacked' class='ion-text-uppercase'>{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label>
-        <ion-datetime-button datetime='datetime'></ion-datetime-button>
+        <app-datetime-picker
+          [(localDate)]='avalancheObs.DtAvalancheTime'
+          [maxDate]='maxDate'>
+        </app-datetime-picker>
         <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium'
                     (click)='setAvalancheTimeTimeToNow()'>
           <ion-icon slot='start' name='time'></ion-icon>
@@ -121,13 +124,3 @@
   {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' | translate }} {{
   'REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP' | translate }}
 </ng-template>
-<ion-modal [keepContentsMounted]='true'>
-  <ng-template>
-    <ion-datetime color='medium'
-                  doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-                  [(ngModel)]='avalancheObs.DtAvalancheTime'
-                  [max]='maxDate'
-                  id='datetime'>
-    </ion-datetime>
-  </ng-template>
-</ion-modal>

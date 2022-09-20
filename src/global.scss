@@ -673,9 +673,15 @@ app-thumbnails .images .image-preview {
 
 ion-modal {
   &#datetime-picker-modal {
-    --min-width: 90vw;
-    --width: fit-content;
+    --min-width: 350px;
+    --max-width: 450px;
     --max-height: 50vh;
     align-items: flex-end;
+    padding: 0 20px;
+  }
+
+  ion-datetime {
+    max-width: unset;
+    --background: var(--ion-toolbar-background, var(--ion-background-color, #fff));
   }
 }

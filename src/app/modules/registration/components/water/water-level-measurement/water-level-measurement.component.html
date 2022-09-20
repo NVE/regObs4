@@ -13,10 +13,8 @@
   <ion-label color='medium' position='stacked' class='ion-text-uppercase'>
     {{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
   </ion-label>
-  <ion-datetime (ionChange)='dtChanged()' color='medium'
-                doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-                [(ngModel)]='waterLevelMeasurement.DtMeasurementTime' [max]='maxDate'>
-  </ion-datetime>
+  <app-datetime-picker [(localDate)]='waterLevelMeasurement.DtMeasurementTime' (localDateChange)='dtChanged()'
+                       [maxDate]='maxDate'></app-datetime-picker>
   <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium' (click)='setToNow()'>
     <ion-icon slot='start' name='time'></ion-icon>
     {{"REGISTRATION.SET_TIME.NOW" | translate}}
