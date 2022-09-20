@@ -255,15 +255,21 @@ ion-menu {
   }
 }
 
-ion-modal {
-  ion-backdrop {
-    z-index: 0 !important;
-    display: block !important;
-  }
+/* https://ionicframework.com/docs/intro/upgrading-to-ionic-6#modal */
+ion-modal::part(backdrop) {
+  z-index: 0 !important;
+  display: block !important;
 }
 
-.edit-images-page-modal .modal-wrapper app-edit-images {
+/* https://ionicframework.com/docs/intro/upgrading-to-ionic-6#modal */
+ion-modal.edit-images-page-modal app-edit-images {
   margin-bottom: 1rem;
+}
+
+/* https://ionicframework.com/docs/intro/upgrading-to-ionic-6#modal */
+ion-modal.offline-map-modal::part(backdrop) {
+  opacity: 0.3;
+  z-index: 20;
 }
 
 ion-alert {
@@ -367,12 +373,11 @@ ion-toggle {
   min-height: 55px;
 }
 
-.numeric-input-modal {
-  .modal-wrapper {
-    --height: 470px;
-    position: fixed;
-    bottom: 0;
-  }
+/* https://ionicframework.com/docs/intro/upgrading-to-ionic-6#modal */
+ion-modal.numeric-input-modal::part(content) {
+  --height: 470px;
+  position: fixed;
+  bottom: 0;
 }
 
 .leaflet-bottom {

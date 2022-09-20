@@ -23,11 +23,11 @@ const defaultTileStyle = {
 };
 const downloadedTileStyle = {
   ...defaultTileStyle,
-  fillOpacity: filledTileOpacity,
+  fillOpacity: filledTileOpacity
 };
 const errorTileStyle = {
   ...downloadedTileStyle,
-  color: documentStyle.getPropertyValue('--ion-color-danger'),
+  color: documentStyle.getPropertyValue('--ion-color-danger')
 };
 
 type PackageIndex = CompoundPackageMetadata[];
@@ -66,7 +66,7 @@ export class OfflineMapPage extends NgDestoryBase {
     private alertController: AlertController,
     private translateService: TranslateService,
     private zone: NgZone,
-    http: HttpClient,
+    http: HttpClient
   ) {
     super();
     // Download package index from azure
@@ -118,7 +118,7 @@ export class OfflineMapPage extends NgDestoryBase {
       onEachFeature: (feature: CompoundPackageFeature, layer) => {
         this.featureMap.set(feature.id as string, { feature, layer });
         layer.on('click', () => {
-          if(this.packagesOnServer.has(feature.id as string) || this.installedPackages.has(feature.id as string)) {
+          if (this.packagesOnServer.has(feature.id as string) || this.installedPackages.has(feature.id as string)) {
             this.showModal.next(feature);
           }
         });
@@ -150,7 +150,7 @@ export class OfflineMapPage extends NgDestoryBase {
       })
     ).subscribe((itemsWithProgress) => {
       this.zone.runOutsideAngular(() => {
-        for(const item of itemsWithProgress) {
+        for (const item of itemsWithProgress) {
           this.setStyleForProgressOrDownloadedPackage(item);
         }
       });
@@ -160,7 +160,7 @@ export class OfflineMapPage extends NgDestoryBase {
       debounceTime(200),
       withLatestFrom(this.isZooming),
       filter(([, isZooming]) => !isZooming),
-      switchMap(([feature, ]) => from(this.showPackageModal(feature))),
+      switchMap(([feature]) => from(this.showPackageModal(feature))),
       takeUntil(this.ngDestroy$)
     ).subscribe();
 
@@ -174,12 +174,12 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   private setStyleForPackages() {
-    for(const [, item] of this.installedPackages) {
+    for (const [, item] of this.installedPackages) {
       this.setStyleForProgressOrDownloadedPackage(item);
     }
-    for(const [key, ] of this.packagesOnServer) {
+    for (const [key,] of this.packagesOnServer) {
       let style = defaultTileStyle;
-      if(!this.installedPackages.has(key)) {
+      if (!this.installedPackages.has(key)) {
         if (this.failedPackageIds.includes(key)) {
           style = errorTileStyle;
         }
@@ -190,7 +190,7 @@ export class OfflineMapPage extends NgDestoryBase {
 
   private setStyleForFeature(id: string, style: L.PathOptions) {
     const feature = this.featureMap.get(id);
-    if(feature) {
+    if (feature) {
       const polyline = (feature.layer as L.Polyline);
       polyline.setStyle(style);
     }
@@ -216,11 +216,11 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   private getFeatureIdForPackage(map: OfflineMapPackage): string {
-    if(map.compoundPackageMetadata) {
+    if (map.compoundPackageMetadata) {
       return this.getFeaturePropertyId(...map.compoundPackageMetadata.getXYZ());
     }
     const firstMap = Object.keys(map.maps)[0];
-    if(map.maps[firstMap]) {
+    if (map.maps[firstMap]) {
       const rootTile = map.maps[firstMap].rootTile;
       return this.getFeaturePropertyId(rootTile.x, rootTile.y, rootTile.z);
     }
@@ -237,10 +237,11 @@ export class OfflineMapPage extends NgDestoryBase {
         feature: feature,
         packageOnServer: compoundPackage,
         offlinePackageStatus$: this.allPackages$.pipe(
-          map(packages => packages.find(p => p.name === name))),
+          map(packages => packages.find(p => p.name === name)))
       },
       swipeToClose: true,
-      mode: 'ios'
+      mode: 'ios',
+      cssClass: 'offline-map-modal'
     });
     await modal.present();
   }
