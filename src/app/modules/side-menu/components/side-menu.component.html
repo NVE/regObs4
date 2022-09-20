@@ -44,7 +44,7 @@
     </ion-label>
     <ion-toggle [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
   </ion-item>
-  <ion-item *ngIf="observerTrips.canShow | async">
+  <ion-item *ngIf="observerTrips.isAuthorized | async">
     <!-- Obstur icon, has the same style as the map layer -->
     <svg slot="start" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <line x1="2" y1="20.8787" x2="20.8787" y2="2" stroke="#FF0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
@@ -53,7 +53,7 @@
       Vis obsturer
     </ion-label>
     <ion-toggle 
-      [checked]="observerTrips.toggleOn.value"
+      [checked]="observerTrips.toggledOn | async"
       (ionChange)="observerTrips.toggle()"
     ></ion-toggle>
   </ion-item>

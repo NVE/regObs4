@@ -1,10 +1,9 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { Observable, Subject, from, merge } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
+import { Observable, Subject, merge } from 'rxjs';
 import {
   map,
   distinctUntilChanged,
-  concatMap,
   take,
   takeUntil,
   filter,
@@ -15,13 +14,12 @@ import {
   CustomAnimation,
   EASE_IN_OUT_BACK,
   EASE_IN_OUT
-} from '../../core/animations/custom.animation';
-import { enterZone } from '../../core/helpers/observable-helper';
+} from '../../../core/animations/custom.animation';
 
 @Component({
-  selector: 'app-coach-marks',
-  templateUrl: './coach-marks.component.html',
-  styleUrls: ['./coach-marks.component.scss'],
+  selector: 'app-coach-marks-main-screen',
+  templateUrl: './coach-marks-main-screen.component.html',
+  styleUrls: ['./coach-marks-main-screen.component.scss', '../coachmark-backdrop.scss'],
   animations: [
     trigger(
       'geo-coachmark-animation',
@@ -45,28 +43,26 @@ import { enterZone } from '../../core/helpers/observable-helper';
     )
   ]
 })
-export class CoachMarksComponent implements OnInit, OnDestroy {
+export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   showCoachMarks$: Observable<boolean>;
   isOpen = false;
   ngDestroy$ = new Subject<void>();
   hideSubject = new Subject<boolean>();
 
   constructor(
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone
+    private userSettingService: UserSettingService
   ) {}
 
   ngOnInit() {
     this.showCoachMarks$ = merge(
       this.getShowGeoSelectObservable(),
       this.hideSubject
-    ).pipe(enterZone(this.ngZone));
+    );
     this.getShowGeoSelectObservable()
       .pipe(
         takeUntil(this.ngDestroy$),
         filter((val) => val),
-        delay(2000),
-        enterZone(this.ngZone)
+        delay(2000)
       )
       .subscribe(() => {
         this.isOpen = true;

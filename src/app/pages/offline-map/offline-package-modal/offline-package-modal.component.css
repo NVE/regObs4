@@ -1,8 +1,29 @@
 .map-container {
-  padding: 16px;
-  height: calc(100vw - 32px);
+  flex-grow: 1;
 }
 
 .right {
   text-align: right;
+}
+
+.buttons-container {
+  flex-wrap: wrap;
+}
+
+@media only screen and (max-width:765px) {
+  .buttons-container ion-col {
+    flex-basis: 100%;
+  }
+}
+
+/*targeting map-conatiner wrapper which is in a shadow-root. look 'part' attribute*/
+::part(scroll){
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-container {
+  margin-top: auto;
+  flex-grow: 0;
+  width: 100%;
 }

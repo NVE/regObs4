@@ -70,14 +70,7 @@ npx cap open ios
 ```
 npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
 
-[Mer info](https://ionicframework.com/docs/developing/ios)
-Ikke la Xcode signere provisioning profile automatisk, men last den ned fra developer.apple.com og bruk denne i XCode.
-Du må først legge ditt utviklersertifikat inn i Provisioning profile på developer.apple.com.
-Sjekk også at dingsen du skal teste på er registrert i profilen.
-
-Det er bare debug-profil vi trenger i Xcode, fordi release bygges på byggeserver.
-"Active scheme" skal være Varsom Regobs, ikke Cordova.
-Hvis gamle ting henger igjen, kan du slette mappene platforms og plugins.
+[Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
 
 ## Build and release
 

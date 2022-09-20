@@ -208,8 +208,10 @@ app-map {
   transition: opacity 0.5s;
 }
 
+@media(hover: hover) {
 .edit-name-button:hover .tooltip {
   opacity: 0.8;
+}
 }
 .edit-button {
   display: flex;

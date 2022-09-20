@@ -14,6 +14,7 @@ export interface UserSetting {
   emailReceipt: boolean;
   topoMap: TopoMap;
   showGeoSelectInfo: boolean;
+  completedSimpleObsOnboarding: boolean | undefined;
   useRetinaMap: boolean;
   consentForSendingAnalytics: boolean;
   consentForSendingAnalyticsDialogCompleted: boolean;
