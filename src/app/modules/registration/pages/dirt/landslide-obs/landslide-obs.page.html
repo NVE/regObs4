@@ -43,8 +43,8 @@
         <ion-label [color]="!draft.registration.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position='stacked'
                    class='ion-text-uppercase'>{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
-        <app-datetime-picker [(localDate)]='draft.registration.LandSlideObs.DtLandSlideTime'
-                             (localDateChange)='dtTimeChanged()' [maxDate]='maxDateStart'></app-datetime-picker>
+        <app-datetime-picker [(dateTime)]='draft.registration.LandSlideObs.DtLandSlideTime'
+                             (dateTimeChange)='dtTimeChanged()' [maxDate]='maxDateStart'></app-datetime-picker>
         <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium'
                     (click)='setDtLandSlideTimeToNow()'>
           <ion-icon slot='start' name='time'></ion-icon>
@@ -60,8 +60,8 @@
         <ion-label [color]="!draft.registration.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'"
                    position='stacked' class='ion-text-uppercase'>{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
-        <app-datetime-picker [(localDate)]='draft.registration.LandSlideObs.DtLandSlideTimeEnd'
-                             (localDateChange)='dtEndTimeChanged()'
+        <app-datetime-picker [(dateTime)]='draft.registration.LandSlideObs.DtLandSlideTimeEnd'
+                             (dateTimeChange)='dtEndTimeChanged()'
                              [maxDate]='maxDateEnd' [minDate]='minDateEnd'></app-datetime-picker>
         <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium'
                     (click)='setDtLandSlideTimeEndToNow()'>

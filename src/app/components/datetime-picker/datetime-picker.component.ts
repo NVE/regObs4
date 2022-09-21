@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core/components';
+import { OverlayEventDetail, DatetimePresentation } from '@ionic/core/components';
 import { DatetimeChangeEventDetail } from '@ionic/core/dist/types/components/datetime/datetime-interface';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { firstValueFrom } from 'rxjs';
@@ -11,15 +11,26 @@ import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum
   templateUrl: './datetime-picker.component.html',
   styleUrls: ['./datetime-picker.component.scss']
 })
+/**
+ * Component for displaying a date and time picker.
+ * The date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
+ * @param dateTime - string
+ * @param language - string
+ * @param minDate - string
+ * @param maxDate - string
+ * @param dateTimeFormat - string
+ * @param textAlign - 'left' | 'center' | 'right'
+ */
 export class DatetimePickerComponent implements OnInit {
-  @Input() localDate: string;
-  @Input() locale: string;
-  @Input() maxDate: string;
-  @Input() minDate: string;
-  @Input() dateFormat = 'dd. MMM yyyy HH:mm';
+  @Input() dateTime: string; // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
+  @Input() language: string;
+  @Input() minDate: string; // Sets the min date selectable from the date picker
+  @Input() maxDate: string; // Sets the max date selectable from the date picker
+  @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm';
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
+  @Input() presentation: DatetimePresentation = 'date-time';
 
-  @Output() localDateChange = new EventEmitter<string>();
+  @Output() dateTimeChange = new EventEmitter<string>();
 
   private tempDate: string;
 
@@ -29,9 +40,9 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    if (!this.locale) {
+    if (!this.language) {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
-      this.locale = getLangKeyString(userSetting.language);
+      this.language = getLangKeyString(userSetting.language);
     }
   }
 
@@ -49,7 +60,7 @@ export class DatetimePickerComponent implements OnInit {
    */
   onWillDismiss(event: CustomEvent<OverlayEventDetail<string>>) {
     if (event.detail.data && event.detail.role === 'confirm') {
-      this.localDateChange.emit(event.detail.data);
+      this.dateTimeChange.emit(event.detail.data);
     }
   }
 
@@ -62,5 +73,4 @@ export class DatetimePickerComponent implements OnInit {
     if (!event.detail.value || (Array.isArray(event.detail.value))) return false;
     this.tempDate = event.detail.value;
   }
-
 }

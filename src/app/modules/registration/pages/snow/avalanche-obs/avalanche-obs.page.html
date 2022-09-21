@@ -24,7 +24,7 @@
                    position='stacked' class='ion-text-uppercase'>{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label>
         <app-datetime-picker
-          [(localDate)]='avalancheObs.DtAvalancheTime'
+          [(dateTime)]='avalancheObs.DtAvalancheTime'
           [maxDate]='maxDate'>
         </app-datetime-picker>
         <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium'

@@ -16,7 +16,8 @@
     <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
       <ion-label color='medium' position='stacked' class='ion-text-uppercase'>{{
         'DATE' | translate }}</ion-label>
-      <app-datetime-picker [(localDate)]='startDate' [maxDate]='maxDate'></app-datetime-picker>
+      <app-datetime-picker [(dateTime)]='startDate' [maxDate]='maxDate'
+                           dateTimeFormat='dd. MMM yyyy' presentation='date'></app-datetime-picker>
     </ion-item>
     <ion-item *ngIf='dateIsDifferentThanObsTime'>
       <ion-label color='danger' class='ion-text-wrap'>

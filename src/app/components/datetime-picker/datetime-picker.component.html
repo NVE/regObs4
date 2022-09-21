@@ -1,7 +1,7 @@
 <ion-button fill='clear' id='open-modal' expand='block' class='datetimepicker-button'
             [ngClass]='"datetimepicker-button--"+textAlign'>
   <div class='datetimepicker-button-inner-wrapper'>
-    {{localDate | date:dateFormat}}
+    {{dateTime | date:dateTimeFormat}}
   </div>
 </ion-button>
 
@@ -21,9 +21,10 @@
     </ion-header>
     <ion-content>
       <ion-datetime
-        [value]='localDate' (ionChange)='updateTempDateTime($event)' [max]='maxDate' [min]='minDate' id='datetime'
+        [value]='dateTime' (ionChange)='updateTempDateTime($event)' [max]='maxDate' [min]='minDate' id='datetime'
         [firstDayOfWeek]='1'
-        [locale]='locale'>
+        [locale]='language'
+        [presentation]='presentation'>
       </ion-datetime>
     </ion-content>
   </ng-template>
