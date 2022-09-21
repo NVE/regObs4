@@ -30,7 +30,13 @@ const getUniqueRegistrations = (regs: RegistrationViewModel[]) => {
   selector: 'app-sent-list',
   templateUrl: './sent-list.component.html',
   styleUrls: ['./sent-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  // A possible solution to not having custom methods for getting a users own observations.
+  // Not sure if this works, but useFactory can be used as a backup, as a new instance is guaranteed.
+  // providers: [
+  //   { provide: SearchCriteriaService: useClass: UserPageSearchCriteriaService },
+  //   { provide: ObservationService, useClass: ObservationService }
+  // ]
 })
 export class SentListComponent implements OnDestroy {
   loadedRegistrations: RegistrationViewModel[] = [];
