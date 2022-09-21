@@ -17,6 +17,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() maxDate: string;
   @Input() minDate: string;
   @Input() dateFormat = 'dd. MMM yyyy HH:mm';
+  @Input() textAlign: 'left' | 'center' | 'right' = 'left';
 
   @Output() localDateChange = new EventEmitter<string>();
 
