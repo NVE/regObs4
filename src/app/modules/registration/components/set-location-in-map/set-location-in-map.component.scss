@@ -77,11 +77,11 @@ app-map {
 
 .vertical-dist-box {
   display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: space-between;
-    gap: 4px;
-    align-items: center;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  gap: 4px;
+  align-items: center;
 }
 
 .details-row {
@@ -91,17 +91,17 @@ app-map {
     width: 100%;
   }
 
-.obs-location-marker {
-  margin-top: 10px;
-  height: 28px;
-  display: inline-block;
+  .obs-location-marker {
+    margin-top: 10px;
+    height: 28px;
+    display: inline-block;
   }
 
-.distance-label {
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-  
+  .distance-label {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+
   ion-spinner {
     height: 20px;
   }
@@ -141,9 +141,9 @@ app-map {
   background-color: #fff;
   background-size: 100%;
   border-radius: 50%;
-  -webkit-box-shadow: 1px 1px 5px 0px black;
-  -moz-box-shadow: 1px 1px 5px 0px black;
-  box-shadow: 1px 1px 5px 0px black;
+  -webkit-box-shadow: 1px 1px 5px 0 black;
+  -moz-box-shadow: 1px 1px 5px 0 black;
+  box-shadow: 1px 1px 5px 0 black;
   display: inline-block;
   transform: translateX(-2px);
 }
@@ -151,6 +151,7 @@ app-map {
 .location-name-container {
   min-height: 46px;
 }
+
 .leaflet-usermarker:before {
   content: "";
   position: absolute;
@@ -203,16 +204,20 @@ app-map {
   padding: 5px 0;
   position: absolute;
   bottom: -57px;
-    right: -50%;
+  right: -50%;
   z-index: 30;
   transition: opacity 0.5s;
+
+  /* Vi vil ikke at event skal bubble fra span.tooltip til button som ligge wrappet rundt i HTML. */
+  pointer-events: none;
 }
 
 @media(hover: hover) {
-.edit-name-button:hover .tooltip {
-  opacity: 0.8;
+  .edit-name-button:hover .tooltip {
+    opacity: 0.8;
+  }
 }
-}
+
 .edit-button {
   display: flex;
   align-items: center;
