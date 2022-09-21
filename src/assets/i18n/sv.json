@@ -119,7 +119,9 @@
     "ABOVE_SEA_LEVEL": "möh",
     "COPIED_TO_CLIPBOARD": "Kopierade till urklipp",
     "EAST_SHORT": "O",
-    "NORTH_SHORT": "N"
+    "NORTH_SHORT": "N",
+    "WEATHER_ERROR": "Hittade ingen väderprognos!",
+    "WEATHER_FROM": "Väder från"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Iväg",

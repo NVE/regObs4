@@ -3,7 +3,7 @@ import { ToastController } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
-import { catchError, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
@@ -15,6 +15,9 @@ import * as L from 'leaflet';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { Capacitor } from '@capacitor/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
+import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { StrictHttpResponse } from 'src/app/modules/common-regobs-api/strict-http-response';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -71,7 +74,9 @@ export class MapCenterInfoComponent extends NgDestoryBase {
     geoPositionService: GeoPositionService,
     private helperService: HelperService,
     private cdr: ChangeDetectorRef,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private externalLinkService: ExternalLinkService,
+    private http: HttpClient
   ) {
     super();
 
@@ -168,4 +173,42 @@ export class MapCenterInfoComponent extends NgDestoryBase {
     });
     toast.present();
   }
+
+  async loadYr(lat, lon) {
+    interface YrSearch {
+      totalResults: number,
+      _embedded: {
+        location: {
+          id: string
+        }[]
+      }
+    }
+
+    const apiReq = await new HttpRequest(
+      'GET',
+      `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`,
+    );
+    const apiResponse = await firstValueFrom(this.http.request(apiReq).pipe(
+      filter(_r => _r instanceof HttpResponse),
+      map((_r) => (_r as StrictHttpResponse<YrSearch>).body)
+    ));
+
+    if (apiResponse.totalResults) {
+      const id = apiResponse._embedded.location[0].id;
+      const url = {
+        nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
+        nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
+      }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
+      this.externalLinkService.openExternalLink(url);
+    } else {
+      const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.WEATHER_ERROR'));
+      const toast = await this.toastController.create({
+        message: toastText,
+        mode: 'md',
+        duration: 2000
+      });
+      toast.present();
+    }
+  }
 }
+
