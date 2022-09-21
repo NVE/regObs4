@@ -34,7 +34,7 @@ import {Injectable} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import * as _ from 'lodash';
 import {ILogProviderConfig} from './file-logging.config';
-import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
+import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
 
@@ -489,7 +489,7 @@ export class FileLoggingService {
       const fileEntries = await this.getLogFiles();
       const filePaths: string[] = fileEntries.map(entry => entry.toURL());
       const attachments = filePaths;
-      const email: EmailComposerOptions = {
+      const email = {
         to: settings.errorEmailAddress,
         attachments,
         subject: topic,
