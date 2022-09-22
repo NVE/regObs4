@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import JSZip from 'jszip';
 import moment from 'moment';
 import { BehaviorSubject, firstValueFrom, from, interval, Observable, Subject, Subscription } from 'rxjs';
-import { finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { exhaustMap, finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
 import { DownloadAndUnzip } from 'src/download-and-unzip-plugin';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
@@ -262,10 +262,11 @@ export class OfflineMapService {
       this.onCancelled(mapPackage);
       return;
     }
-    DownloadAndUnzip.downloadAndUnzip({
-      downloadUrl: part.url,
-      destinationPath: destinationPath
-    }).then(result => {
+    try {
+      const result = await DownloadAndUnzip.downloadAndUnzip({
+        downloadUrl: part.url,
+        destinationPath: destinationPath
+      });
       const numParts = parts.length;
       this.loggingService.debug(
         `Started native download of ${mapPackage.name}, part ${partNumber+1}/${numParts}: ${part.name}, fileRef = ${result.fileReference}`,
@@ -273,9 +274,9 @@ export class OfflineMapService {
       );
       this.reportProgress(mapPackage, 0, partNumber, parts.length, 'Downloading');
       this.startStatusWatch(part, parts, mapPackage, partNumber, result.fileReference);
-    }).catch(err => {
+    } catch(err) {
       this.onUnzipOrDownloadError(mapPackage, err, true);
-    });
+    }
   }
 
   private startStatusWatch(
@@ -288,44 +289,53 @@ export class OfflineMapService {
     const done = new Subject<void>();
     //check status regularly
     interval(2000).pipe(
-      takeUntil(done))
-      .subscribe(async () => {
-        if (this.cancel) {
-          DownloadAndUnzip.cancelJob({ fileReference })
-            .catch((err) => {
-              this.loggingService.error(err, DEBUG_TAG, `DownloadAndUnzip.cancelJob() failed. FileRef = ${fileReference}`);
-            })
-            .finally(() => {
-              done.next();
-              done.complete();
-              this.onCancelled(mapPackage);
-            });
+      takeUntil(done),
+      exhaustMap(() => from(this.checkStatus(part, parts, mapPackage, partNumber, fileReference, done)))
+    ).subscribe();
+  }
+
+  private async checkStatus(
+    part: Part,
+    parts: Part[],
+    mapPackage: OfflineMapPackage,
+    partNumber: number,
+    fileReference: number,
+    done: Subject<void>) : Promise<void> {
+
+    if (this.cancel) {
+      try {
+        await DownloadAndUnzip.cancelJob({ fileReference });
+      } catch(err) {
+        this.loggingService.error(err, DEBUG_TAG, `DownloadAndUnzip.cancelJob() failed. FileRef = ${fileReference}`);
+      } finally {
+        done.next();
+        done.complete();
+        this.onCancelled(mapPackage);
+      }
+    } else {
+      try {
+        const status = await DownloadAndUnzip.getJobStatus({ fileReference });
+        if (status.progress >= 1) {
+          done.next();
+          done.complete();
+          this.onUnzipStepComplete(parts, mapPackage, partNumber);
+        } else if (status.status === 'ERROR') {
+          done.next();
+          done.complete();
+          const isDownloading = status.task === 'download';
+          this.onUnzipOrDownloadError(mapPackage, null, isDownloading);
         } else {
-          DownloadAndUnzip.getJobStatus({ fileReference })
-            .then(status => {
-              if (status.progress >= 1) {
-                done.next();
-                done.complete();
-                this.onUnzipStepComplete(parts, mapPackage, partNumber);
-              } else if (status.status === 'ERROR') {
-                done.next();
-                done.complete();
-                const isDownloading = status.task === 'download';
-                this.onUnzipOrDownloadError(mapPackage, null, isDownloading);
-              } else {
-                if (part) {
-                  const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
-                  this.reportProgress(mapPackage, status.progress, partNumber, parts.length, partOfStep);
-                }
-              }
-            })
-            .catch(err => {
-              done.next();
-              done.complete();
-              this.onUnzipOrDownloadError(mapPackage, err, false);
-            });
+          if (part) {
+            const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
+            this.reportProgress(mapPackage, status.progress, partNumber, parts.length, partOfStep);
+          }
         }
-      });
+      } catch(err) {
+        done.next();
+        done.complete();
+        this.onUnzipOrDownloadError(mapPackage, err, false);
+      }
+    }
   }
 
   private downloadAndUnzipPart(
