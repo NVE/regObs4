@@ -16,7 +16,7 @@ import { MapImageModule } from '../../../map-image/map-image.module';
     LeafletModule,
     MapImageModule
   ],
-  declarations: [ModalMapImagePage],
-  entryComponents: [ModalMapImagePage]
+  declarations: [ModalMapImagePage]
 })
-export class ModalMapImagePageModule {}
+export class ModalMapImagePageModule {
+}

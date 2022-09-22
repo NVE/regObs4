@@ -4,7 +4,7 @@ import { SetAvalanchePositionPage } from './set-avalanche-position.page';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [SetAvalanchePositionPage],
-  entryComponents: [SetAvalanchePositionPage]
+  declarations: [SetAvalanchePositionPage]
 })
-export class SetAvalanchePositionPageModule {}
+export class SetAvalanchePositionPageModule {
+}

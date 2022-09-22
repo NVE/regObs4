@@ -4,7 +4,7 @@ import { SharedComponentsModule } from '../../../shared-components.module';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [AddOrEditDangerObsModalPage],
-  entryComponents: [AddOrEditDangerObsModalPage]
+  declarations: [AddOrEditDangerObsModalPage]
 })
-export class AddOrEditDangerObsModalPageModule {}
+export class AddOrEditDangerObsModalPageModule {
+}

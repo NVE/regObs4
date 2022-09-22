@@ -5,7 +5,7 @@ import { SharedModule } from '../../../shared/shared.module';
 @NgModule({
   imports: [SharedModule],
   declarations: [SupportMapInfoPage],
-  entryComponents: [SupportMapInfoPage],
   exports: [SupportMapInfoPage]
 })
-export class SupportMapInfoPageModule {}
+export class SupportMapInfoPageModule {
+}
