@@ -37,9 +37,9 @@ public class DownloadAndUnzipPlugin extends Plugin {
             String destinationPath = call.getString("destinationPath");
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
             request.setTitle(getFilename(downloadUrl)); //set title for notification in status_bar
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  //flag for if you want to show notification in status or not
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  //flag for if you want to show notification in status or not
             final Context context = getContext();
-            request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "test.zip");
+            request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "no.nve.regobs");
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             long downloadedFileId = downloadManager.enqueue(request);
 
