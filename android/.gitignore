@@ -94,3 +94,6 @@ capacitor-cordova-android-plugins
 
 # Copied web assets
 app/src/main/assets/public
+
+# Auto generated from Capacitor when running npx cap sync
+capacitor.settings.gradle

@@ -1,13 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Do not convert LF til CR-LF for these files, or else Git think they are changed every time you do cap sync on Windows
-android\capacitor.settings.gradle text eol=lf
-android\app\capacitor.build.gradle text eol=lf
-android\app\src\main\assets\capacitor.config.json text eol=lf
-android\app\src\main\assets\capacitor.plugins.json text eol=lf
-android\app\src\main\res\xml\config.xml text eol=lf
-
 # Language files. When we download files from lokalise, they only get <LF> as line break character
 src/assets/i18n/*.json text eol=lf
 
