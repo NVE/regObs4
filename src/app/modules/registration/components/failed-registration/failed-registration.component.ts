@@ -3,9 +3,8 @@ import {
   Input} from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import {
-  EmailComposer,
-  EmailComposerOptions
-} from '@ionic-native/email-composer/ngx';
+  EmailComposer
+} from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
 import stringify from 'json-stringify-safe';
@@ -81,7 +80,14 @@ export class FailedRegistrationComponent {
       // const attachments = ['base64:registration.json//' + base64string].concat(
       //   pictures
       // );
-      const email: EmailComposerOptions = {
+
+      this.emailComposer.hasAccount().then((isValid: boolean) => {
+        if(!isValid){
+          console.log('valid', 'is not valid');
+        }
+      });
+
+      const email = {
         to: settings.errorEmailAddress,
         attachments,
         subject: translations['REGISTRATION.EMAIL.SUBJECT'],

@@ -489,7 +489,24 @@ export class FileLoggingService {
       const fileEntries = await this.getLogFiles();
       const filePaths: string[] = fileEntries.map(entry => entry.toURL());
       const attachments = filePaths;
+      const app: any = 'gmail';
+      this.emailComposer.hasClient().then(app, (isValid:string) =>{
+        if(isValid){
+          console.log('yes', isValid);
+        }
+      })
+      this.emailComposer.hasAccount().then((isValid: boolean) => {
+        if(!isValid){
+          console.log('valid', 'is not valid');
+        } else console.log('valid', 'isvalid')
+      });
+      var appsReturned: string[];
+      this.emailComposer.getClients().then((apps:[]) => {
+        appsReturned = apps;
+        console.log('apps', apps);
+      });
       const email = {
+        app: 'gmail',
         to: settings.errorEmailAddress,
         attachments,
         subject: topic,
