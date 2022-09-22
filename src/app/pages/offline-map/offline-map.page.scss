@@ -8,17 +8,12 @@
   margin: 16px;
 
   div + div {
-      margin-top: 32px;
+    margin-top: 32px;
   }
 }
 
 .map-container {
   height: 100%;
-}
-
-ion-backdrop {
-  opacity: 0.3;
-  z-index: 20;
 }
 
 #tileCard {
