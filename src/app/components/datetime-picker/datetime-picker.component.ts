@@ -18,19 +18,20 @@ import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum
  * @param language - string
  * @param minDate - string
  * @param maxDate - string
- * @param dateTimeFormat - string
- * @param textAlign - 'left' | 'center' | 'right'
+ * @param dateTimeFormat - string = 'dd. MMM yyyy HH:mm';
+ * @param textAlign - 'left' | 'center' | 'right' = 'left'
+ * @param presentation - DatetimePresentation
  */
 export class DatetimePickerComponent implements OnInit {
   @Input() dateTime: string; // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
-  @Input() language: string;
+  @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
   @Input() minDate: string; // Sets the min date selectable from the date picker
   @Input() maxDate: string; // Sets the max date selectable from the date picker
-  @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm';
+  @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
   @Input() presentation: DatetimePresentation = 'date-time';
 
-  @Output() dateTimeChange = new EventEmitter<string>();
+  @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
 
   private tempDate: string;
 
