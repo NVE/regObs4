@@ -4,10 +4,13 @@ import { LangKey } from 'src/app/modules/common-core/models';
 import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 import { SearchCriteriaService } from '../search-criteria/search-criteria.service';
 
+/**
+ * RegistrationSearchService
+ */
 @Injectable({
   providedIn: 'root'
 })
-export abstract class ObservationBaseService {
+export abstract class RegistrationSearchService {
 
   // NEW, but private..
   // A service that can provide relevant search criteria
