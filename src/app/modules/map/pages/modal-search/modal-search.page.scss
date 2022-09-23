@@ -1,27 +1,33 @@
-.swipeWrapper{
-    width: 100%;
-    height: 100%;
+:host {
+  height: 100%;
+}
+
+.swipeWrapper {
+  width: 100%;
+  height: 100%;
 }
 
 ion-title {
-    padding-right: 0px;
-    padding-left: 0px;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 ion-content {
-    ion-list {
-        padding-bottom: 8px;
-        margin-top: 1px;
-        margin-bottom: 0px;
-        ion-item {
-            ion-label {
-            .search-result-name {
-                padding-right: 10px;
-            }
-            .search-description {
-                font-size: 14px;
-            }
-            }       
+  ion-list {
+    padding-bottom: 8px;
+    margin-top: 1px;
+    margin-bottom: 0;
+
+    ion-item {
+      ion-label {
+        .search-result-name {
+          padding-right: 10px;
         }
+
+        .search-description {
+          font-size: 14px;
+        }
+      }
     }
+  }
 }

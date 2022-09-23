@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, Renderer2, OnDestroy } from '@angular/core';
-import { ModalController, IonInput, DomController } from '@ionic/angular';
+import { ModalController, DomController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
@@ -117,8 +117,8 @@ export class ModalSearchPage implements OnInit, OnDestroy {
 
   isValidLatLngArray(searchValue: string[]) {
     if (searchValue && searchValue.length === 2) {
-      const trimmedLatString = this.trimAndReplaceString(searchValue[0]);
-      const trimmedLngString = this.trimAndReplaceString(searchValue[1]);
+      const trimmedLatString = ModalSearchPage.trimAndReplaceString(searchValue[0]);
+      const trimmedLngString = ModalSearchPage.trimAndReplaceString(searchValue[1]);
       if (
         trimmedLatString &&
         trimmedLatString.length > 0 &&
@@ -137,18 +137,11 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     return null;
   }
 
-  private trimAndReplaceString(input: string) {
+  private static trimAndReplaceString(input: string) {
     if (input === undefined || input === null) {
       return input;
     }
     return input.trim().replace(/,/g, '.');
-  }
-
-  focusInput(event: Event) {
-    const input: IonInput = <any>event.target;
-    setTimeout(() => {
-      (<any>input).setFocus();
-    }, 1000);
   }
 
   closeModal() {
