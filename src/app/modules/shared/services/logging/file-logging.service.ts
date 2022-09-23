@@ -37,6 +37,7 @@ import {ILogProviderConfig} from './file-logging.config';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
 import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
+import { EmailComposerService } from '../email-composer/email-composer.service';
 
  @Injectable({
    providedIn: 'root'
@@ -56,7 +57,8 @@ export class FileLoggingService {
 
     constructor(private file: File,
                 private platform: Platform,
-                private emailComposer: EmailComposer
+                private emailComposer: EmailComposer,
+                private emaiComposerService: EmailComposerService
     ) {
       this.defaultConfig = new LogProviderConfig({
         enableMetaLogging: false,
@@ -489,14 +491,18 @@ export class FileLoggingService {
       const fileEntries = await this.getLogFiles();
       const filePaths: string[] = fileEntries.map(entry => entry.toURL());
       const attachments = filePaths;
-      const email: EmailComposerOptions = {
-        to: settings.errorEmailAddress,
-        attachments,
-        subject: topic,
-        body,
-        isHtml: true
-      };
-      this.emailComposer.open(email);
+
+      const canSend = await this.emaiComposerService.canSendEmail();
+      if(canSend){
+        const email: EmailComposerOptions = {
+          to: settings.errorEmailAddress,
+          attachments,
+          subject: topic,
+          body,
+          isHtml: true
+        };
+        this.emailComposer.open(email);
+      }
     }
 }
 

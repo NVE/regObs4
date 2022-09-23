@@ -109,29 +109,30 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     this.navController.navigateRoot('start-wizard');
   }
 
-  async contactUs() {
-    const translations = await firstValueFrom(this.translateService.get([
-      'MENU.CONTACT_SUBJECT', 'MENU.CONTACT_DESCRIPTION'
-    ]));
-    const subject = translations['MENU.CONTACT_SUBJECT'];
-    const body = translations['MENU.CONTACT_DESCRIPTION'];
-    this.fileLoggingService.sendLogsByEmail(subject, body);
-  }
-
-  async contactError() {
-    if (Capacitor.isNativePlatform()) {
-      const translations = await firstValueFrom(this.translateService.get([
-        'MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'
-      ]));
-      const appVersion = await this.appVersionService.getAppVersion();
-      const subject = `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${Capacitor.getPlatform()}` +
-          ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`;
-      this.fileLoggingService.sendLogsByEmail(subject, translations['MENU.ERROR_REPORT_DESCRIPTION']);
-    } else {
+  async contact(subjectMessage: string, descriptionMessage: string, optional?: string ) {
+    if(Capacitor.isNativePlatform()){
+      const translations = await firstValueFrom(this.translateService.get([subjectMessage, descriptionMessage]));
+      const subject = translations[subjectMessage]  + (optional || '');
+      const body = translations[descriptionMessage];
+      this.fileLoggingService.sendLogsByEmail(subject, body);
+    }  else {
       window.open(
         'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu'
       );
     }
+  }
+
+  async contactUs() {
+    this.contact('MENU.CONTACT_SUBJECT', 'MENU.CONTACT_DESCRIPTION');
+  }
+
+  async contactError() {
+    let optional;
+    if(Capacitor.isNativePlatform()){
+      const appVersion = await this.appVersionService.getAppVersion();
+      optional = ` : ${Capacitor.getPlatform()} ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`;
+    }
+    this.contact('MENU.CONTACT_REGOBS_ERROR', 'MENU.ERROR_REPORT_DESCRIPTION', optional);
   }
 
   changeLanguage() {

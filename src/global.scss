@@ -447,6 +447,9 @@ ion-toast {
   --button-color: var(--ion-color-varsom-blue-light-1);
 }
 
+.toast {
+  transform: translateY(-65px) !important;
+}
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
