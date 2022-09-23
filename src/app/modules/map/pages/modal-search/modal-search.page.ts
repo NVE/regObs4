@@ -29,7 +29,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
 
-  private modalPageWrapper: Element;
   private modalTop: HTMLIonModalElement;
   private swipeOffset = 0;
   private swipePercentage = 0;
@@ -41,7 +40,8 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private renderer: Renderer2,
     private domCtrl: DomController
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.searchField = new UntypedFormControl();
@@ -83,20 +83,23 @@ export class ModalSearchPage implements OnInit, OnDestroy {
 
   private async createGesture() {
     this.modalTop = await this.modalController.getTop();
-    this.gesture = createGesture({
-      el: this.modalTop,
-      gestureName: 'swipe-to-close',
-      direction: 'x',
-      disableScroll: true,
-      onMove: (ev) => this.onMoveHandler(ev),
-      onEnd: (ev) => this.onPanend()
-    });
-
-    this.gesture.enable();
+    if (this.modalTop) {
+      this.gesture = createGesture({
+        el: this.modalTop,
+        gestureName: 'swipe-to-close',
+        direction: 'x',
+        disableScroll: true,
+        onMove: (ev) => this.onMoveHandler(ev),
+        onEnd: () => this.onPanend()
+      });
+      this.gesture.enable();
+    }
   }
 
   ngOnDestroy(): void {
-    this.gesture.destroy();
+    if (this.gesture) {
+      this.gesture.destroy();
+    }
   }
 
   isValidLatLng(searchValue: string) {

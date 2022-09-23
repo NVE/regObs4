@@ -1,5 +1,10 @@
 <ion-fab>
-  <ion-fab-button color="varsom-dark-blue" class="map-control-fab" (click)="presentModal()">
-    <ion-icon name="search"></ion-icon>
-  </ion-fab-button>
+  <ion-button id='open-modal' expand='block' color='varsom-dark-blue' class='map-control-fab'>
+    <ion-icon name='search'></ion-icon>
+  </ion-button>
+  <ion-modal trigger='open-modal'>
+    <ng-template>
+      <app-modal-search></app-modal-search>
+    </ng-template>
+  </ion-modal>
 </ion-fab>

@@ -14,7 +14,10 @@ import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe'
     IonicModule,
     TranslateModule
   ],
-  declarations: [ModalSearchPage, StartsWithHighlightPipe]
+  declarations: [ModalSearchPage, StartsWithHighlightPipe],
+  exports: [
+    ModalSearchPage
+  ]
 })
 export class ModalSearchPageModule {
 }
