@@ -5,12 +5,12 @@ import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules
 import { SearchCriteriaService } from '../search-criteria/search-criteria.service';
 
 /**
- * RegistrationSearchService
+ * SearchRegistrationService
  */
 @Injectable({
   providedIn: 'root'
 })
-export abstract class RegistrationSearchService {
+export abstract class SearchRegistrationService {
 
   // NEW, but private..
   // A service that can provide relevant search criteria
