@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 export interface ObservationTypeFilterItem {
   value: string,
@@ -13,12 +16,14 @@ export interface ObservationTypeFilterItem {
   isChecked: boolean
 }
 
+const DEBUG_TAG = 'FilterMenuComponent';
+
 @Component({
   selector: 'app-filter-menu',
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
 })
-export class FilterMenuComponent implements OnInit {
+export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
@@ -107,9 +112,17 @@ export class FilterMenuComponent implements OnInit {
     }
   ];
 
-
   constructor(private platform: Platform,
-              private userSettingService: UserSettingService) { }
+              private userSettingService: UserSettingService,
+              private searchCriteriaService: SearchCriteriaService,
+              private logger: LoggingService) {
+    super();
+
+    this.searchCriteriaService.searchCriteria$.pipe(
+      takeUntil(this.ngDestroy$),
+      tap(criteria => this.logger.debug('criteria changed', DEBUG_TAG, criteria))
+    ).subscribe();
+  }
 
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
@@ -159,5 +172,8 @@ export class FilterMenuComponent implements OnInit {
     }
   }
 
-
+  setNickName(event) {
+    const nickName = event.target.value.toLowerCase();
+    this.searchCriteriaService.setObserverNickName(nickName);
+  }
 }
