@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
-import { BehaviorSubject, combineLatest, map, Observable, skipWhile, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, skipWhile, tap } from 'rxjs';
 import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import moment from 'moment';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 
 // this is to make the search criteria immutable
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -19,15 +21,20 @@ type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
 type ImmutableObject<T> = { readonly [K in keyof T]: Immutable<T[K]> };
 
 const DEBUG_TAG = 'SearchCriteriaService';
+const URL_PARAM_GEOHAZARD = 'hazard';
+const URL_PARAM_DAYSBACK = 'daysBack';
+const URL_PARAM_NICKNAME = 'nick';
 
 /**
  * Contains current filter for registrations
  * Use this to change which registrations you want to find
+ * Call init(ActivatedRoute) to initialize this service once!
  */
 @Injectable({
   providedIn: 'root'
 })
 export class SearchCriteriaService {
+  private route: ActivatedRoute;
   private searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>(null);
 
   /**
@@ -36,29 +43,32 @@ export class SearchCriteriaService {
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
 
   constructor(
-    private userSettingsService: UserSettingService,
+    private router: Router,
+    private userSettingService: UserSettingService,
     private mapService: MapService,
     private logger: LoggingService
   ) {
     //TODO: Les url og sett kriteria fra denne
     //TODO: Hver gang et filter settes/endres, lagre dette i URL (uten å trigge sideskift)
 
-    this.searchCriteria$ = this.searchCriteria.asObservable();
-
-    this.searchCriteria$.pipe(
-      tap(criteria => this.logger.debug('criteria changed', DEBUG_TAG, criteria))
-    );
-
     this.searchCriteria$ = this.searchCriteria.pipe(
       skipWhile((criteria) => criteria == null),
+      // tap(criteria => this.logger.debug('criteria changed', DEBUG_TAG, criteria))
     );
+  }
+
+  init(route: ActivatedRoute) {
+    if (!Capacitor.isNativePlatform()) {
+      this.setCriteriaFromUrlParams(route);
+    }
 
     //apply current language and geo hazards to search criteria automatically
     //TODO: Er det riktig å sette gjeldende kriteria rett fra innstillingene på denne måten i stedet for at filterpanelet gjør det?
+    //TODO: En ulempe med dette er at vi får to "tics" på searchCriteria$ ved oppstart
     combineLatest([
-      userSettingsService.language$,
-      userSettingsService.currentGeoHazard$,
-      userSettingsService.daysBackForCurrentGeoHazard$
+      this.userSettingService.language$,
+      this.userSettingService.currentGeoHazard$,
+      this.userSettingService.daysBackForCurrentGeoHazard$
     ]).pipe(
       map(([langKey, geoHazards, daysBack]) => {
         const currentCriteria = this.searchCriteria.value;
@@ -73,8 +83,32 @@ export class SearchCriteriaService {
         this.searchCriteria.next(newCriteria);
         //TODO: Sett url-parametre
       }),
-      tap((criteria) => this.logger.debug('criteria changed', DEBUG_TAG, criteria)) //TODO: Hvorfor logger denne tomme kriteria (undefined)?
     ).subscribe();
+  }
+
+
+  private async setCriteriaFromUrlParams(route: ActivatedRoute) {
+    this.route = route;
+    const queryParams = this.route.snapshot.queryParamMap;
+    const geoHazard = queryParams.get(URL_PARAM_GEOHAZARD);
+    if (geoHazard != null) {
+      //TODO: Lagre naturfare i innstillinger, kan med fordel gjøres i samme funksjon som vi lagrer daysBack og etterhvert langKey
+    }
+
+    const daysBack = queryParams.get(URL_PARAM_DAYSBACK);
+    if (daysBack != null) {
+      //TODO: Sjekk om det er et tall
+      await this.saveDaysBackInSettings(parseInt(daysBack));
+    }
+
+    const nickName = queryParams.get(URL_PARAM_NICKNAME);
+    const currentCriteria = this.searchCriteria.value;
+    const newCriteria = {
+      ...cloneDeep(currentCriteria),
+      ObserverNickName: nickName
+    } as SearchCriteriaRequestDto;
+
+    this.searchCriteria.next(newCriteria);
   }
 
   setObsTime(fromTime: string, toTime: string) {
@@ -92,7 +126,18 @@ export class SearchCriteriaService {
     const currentCriteria = this.searchCriteria.value;
     const newCriteria = { ...cloneDeep(currentCriteria), ObserverNickName: nickName } as SearchCriteriaRequestDto;
     this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
+    this.setUrlParam(URL_PARAM_NICKNAME, nickName);
+  }
+
+  private setUrlParam(key: string, value: unknown) {
+    const queryParams: Params = { [key]: value };
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams,
+        queryParamsHandling: 'merge'
+      });
   }
 
   private convertToIsoDate(daysBack: number): string {
@@ -135,7 +180,6 @@ export class SearchCriteriaService {
     //TODO: Sett url-parameter
   }
 
-  //TODO: Er ikke sikkert vi trenger denne, siden vi setter dette filteret automatisk
   private setLangKey(langKey: number) {
     const currentCriteria = this.searchCriteria.value;
     const newCriteria = { ...cloneDeep(currentCriteria), LangKey: langKey } as SearchCriteriaRequestDto;
@@ -143,7 +187,6 @@ export class SearchCriteriaService {
     //TODO: Sett url-parameter
   }
 
-  //TODO: Er ikke sikkert vi trenger denne, siden vi setter dette filteret automatisk
   private setGeoHazards(geoHazards: GeoHazard[]) {
     const currentCriteria = this.searchCriteria.value;
     const newCriteria = { ...cloneDeep(currentCriteria), SelectedGeoHazards: geoHazards } as SearchCriteriaRequestDto;
@@ -151,16 +194,22 @@ export class SearchCriteriaService {
     //TODO: Sett url-parameter
   }
 
-  //TODO: Er ikke sikkert vi trenger denne, siden vi setter dette filteret automatisk
-  private setDaysBack(daysBack: number) {
-    const fromDate = this.convertToIsoDate(daysBack);
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = {
-      ...cloneDeep(currentCriteria),
-      FromDtObsTime: fromDate,
-      ToDtObsTime: null
-    } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
+  private async saveDaysBackInSettings(daysBack: number): Promise<void> {
+    //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
+    const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
+    let changed = false;
+    for (const geoHazard of userSetting.currentGeoHazard) {
+      const existingValue = userSetting.observationDaysBack.find(
+        (x) => x.geoHazard === geoHazard
+      );
+      if (existingValue.daysBack !== daysBack) {
+        existingValue.daysBack = daysBack;
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.userSettingService.saveUserSettings(userSetting);
+    }
   }
+
 }

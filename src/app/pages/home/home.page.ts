@@ -26,6 +26,7 @@ import { enterZone } from '../../core/helpers/observable-helper';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { DOCUMENT } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -59,6 +60,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private fullscreenService: FullscreenService,
     public userSettingService: UserSettingService,
     private ngZone: NgZone,
+    private searchCriteriaService: SearchCriteriaService,
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     @Inject(DOCUMENT) private document: Document
@@ -74,6 +76,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     ).subscribe((newInfoBoxHeight) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
     });
+
+    searchCriteriaService.init(route);
   }
 
   get appname(): string {
