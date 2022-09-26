@@ -1,38 +1,40 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ng-container *ngIf="visibleObservations !== undefined">
-    <ion-list [ngClass]="{ loaded: loaded }" *ngIf="(visibleObservations.length > 0) else empty">
+  <ng-container *ngIf="registrations$ | async as registrations; else skeleton">
+    <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
-      <app-observation-list-card *ngFor="let obs of visibleObservations; trackBy: trackByIdFunc;" [obs]="obs">
+      <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc;" [obs]="obs">
       </app-observation-list-card>
     </ion-list>
     <ion-infinite-scroll (ionInfinite)="loadNextPage($event)" >
       <ion-infinite-scroll-content>
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
-    <ion-row *ngIf="maxCountReached" class="full-grid-row max-count-reached">
+    <ion-row *ngIf="(maxCountReached$ | async) === true" class="full-grid-row max-count-reached">
       <ion-col class="ion-text-center ion-margin-horizontal">
         <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
         <h3 class="ion-text-wrap"> {{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
       </ion-col>
     </ion-row>
   </ng-container>
-  <div class="loading-sceleton" *ngIf="!loaded">
-    <ion-item-divider>
-      <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
-    </ion-item-divider>
-    <app-observation-skeleton></app-observation-skeleton>
-    <app-observation-skeleton></app-observation-skeleton>
-    <app-observation-skeleton></app-observation-skeleton>
-  </div>
+  <ng-template #skeleton>
+    <div class="loading-sceleton">
+      <ion-item-divider>
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      </ion-item-divider>
+      <app-observation-skeleton></app-observation-skeleton>
+      <app-observation-skeleton></app-observation-skeleton>
+      <app-observation-skeleton></app-observation-skeleton>
+    </div>
+  </ng-template>
   <app-geo-fab slot="fixed"></app-geo-fab>
 </ion-content>
 <app-add-menu></app-add-menu>
 <ng-template #empty>
-  <ion-grid *ngIf="loaded" class="full-grid">
+  <ion-grid class="full-grid">
     <ion-row class="full-grid-row">
       <ion-col class="ion-align-self-center">
         <div class="center">
