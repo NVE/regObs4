@@ -35,7 +35,7 @@ const URL_PARAM_NICKNAME = 'nick';
 })
 export class SearchCriteriaService {
   private route: ActivatedRoute;
-  private searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>(null);
+  private searchCriteria: BehaviorSubject<SearchCriteriaRequestDto>;
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -48,44 +48,34 @@ export class SearchCriteriaService {
     private mapService: MapService,
     private logger: LoggingService
   ) {
+    const criteria = this.readUrlParams();
+    this.searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>(criteria);
+
     //TODO: Les url og sett kriteria fra denne
     //TODO: Hver gang et filter settes/endres, lagre dette i URL (uten å trigge sideskift)
 
-    this.searchCriteria$ = this.searchCriteria.pipe(
-      skipWhile((criteria) => criteria == null),
-      // tap(criteria => this.logger.debug('criteria changed', DEBUG_TAG, criteria))
-    );
-  }
-
-  init(route: ActivatedRoute) {
-    if (!Capacitor.isNativePlatform()) {
-      this.setCriteriaFromUrlParams(route);
-    }
-
-    //apply current language and geo hazards to search criteria automatically
-    //TODO: Er det riktig å sette gjeldende kriteria rett fra innstillingene på denne måten i stedet for at filterpanelet gjør det?
-    //TODO: En ulempe med dette er at vi får to "tics" på searchCriteria$ ved oppstart
-    combineLatest([
+    this.searchCriteria$ = combineLatest([
+      this.searchCriteria.asObservable(),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
       this.userSettingService.daysBackForCurrentGeoHazard$
     ]).pipe(
-      map(([langKey, geoHazards, daysBack]) => {
-        const currentCriteria = this.searchCriteria.value;
+      map(([criteria, langKey, geoHazards, daysBack]) => {
         const fromObsTime = this.convertToIsoDate(daysBack);
-        const newCriteria = {
-          ...cloneDeep(currentCriteria),
+        return {
+          ...criteria,
           LangKey: langKey,
           SelectedGeoHazards: geoHazards,
           FromDtObsTime: fromObsTime,
           ToDtObsTime: null
         } as SearchCriteriaRequestDto;
-        this.searchCriteria.next(newCriteria);
-        //TODO: Sett url-parametre
-      }),
-    ).subscribe();
+      })
+    );
   }
 
+  private readUrlParams(): SearchCriteriaRequestDto {
+    return {};
+  }
 
   private async setCriteriaFromUrlParams(route: ActivatedRoute) {
     this.route = route;
@@ -124,7 +114,7 @@ export class SearchCriteriaService {
 
   setObserverNickName(nickName: string) {
     const currentCriteria = this.searchCriteria.value;
-    const newCriteria = { ...cloneDeep(currentCriteria), ObserverNickName: nickName } as SearchCriteriaRequestDto;
+    const newCriteria = { ...currentCriteria, ObserverNickName: nickName } as SearchCriteriaRequestDto;
     this.searchCriteria.next(newCriteria);
     this.setUrlParam(URL_PARAM_NICKNAME, nickName);
   }
