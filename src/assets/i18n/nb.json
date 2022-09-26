@@ -31,6 +31,8 @@
     "SELECT_GEO_HAZARD": "Velg naturfare",
     "VIEW_WARNINGS": "Se varsler fra varsom.no",
     "TOGGLE_OBSERVATION": "Bytt mellom enkel og fullstendig observasjon",
+    "TOGGLE_OBSERVATION_EXTRA_INFO_1": "Slå på for å sende inn observasjoner av situasjonen der du er – enkelt og raskt. Dette er supernyttige data for varslingen og andre brukere.",
+    "TOGGLE_OBSERVATION_EXTRA_INFO_2": "Slå av for å få alle valgene for innsending av observasjoner – som før.",
     "SKI_CONDITIONS": "Nå kan du også rapportere skiføre!"
   },
   "COMPETENCE": {
