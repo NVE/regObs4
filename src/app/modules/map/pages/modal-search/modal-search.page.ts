@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone, Renderer2, OnDestroy } from '@angular/core';
-import { ModalController, DomController } from '@ionic/angular';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
@@ -12,16 +12,15 @@ import {
 } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
-import { createGesture, GestureDetail, Gesture } from '@ionic/core';
 
-const SWIPE_BOUNDRY = 0.3; // More than 30% swipe to right will close modal
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss']
 })
-export class ModalSearchPage implements OnInit, OnDestroy {
+export class ModalSearchPage implements OnInit {
+
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
   searchField: UntypedFormControl;
@@ -29,17 +28,10 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
 
-  private modalTop: HTMLIonModalElement;
-  private swipeOffset = 0;
-  private swipePercentage = 0;
-  private gesture: Gesture;
-
   constructor(
     private modalController: ModalController,
     private mapSearchService: MapSearchService,
     private ngZone: NgZone,
-    private renderer: Renderer2,
-    private domCtrl: DomController
   ) {
   }
 
@@ -69,8 +61,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
         });
       })
     );
-
-    this.createGesture();
   }
 
   doSearch() {
@@ -78,27 +68,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     if (validLatLng) {
       this.mapSearchService.mapSearchItemSelected = validLatLng;
       this.closeModal();
-    }
-  }
-
-  private async createGesture() {
-    this.modalTop = await this.modalController.getTop();
-    if (this.modalTop) {
-      this.gesture = createGesture({
-        el: this.modalTop,
-        gestureName: 'swipe-to-close',
-        direction: 'x',
-        disableScroll: true,
-        onMove: (ev) => this.onMoveHandler(ev),
-        onEnd: () => this.onPanend()
-      });
-      this.gesture.enable();
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.gesture) {
-      this.gesture.destroy();
     }
   }
 
@@ -151,46 +120,5 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   searchItemClicked(item: MapSearchResponse) {
     this.mapSearchService.mapSearchItemSelected = item;
     this.closeModal();
-  }
-
-  onMoveHandler(ev: GestureDetail): boolean | void {
-    const width = this.modalTop.offsetWidth;
-    if (width > 0) {
-      this.swipeOffset = Math.max(ev.deltaX, 0);
-      this.swipePercentage = this.swipeOffset / width;
-      if (this.swipePercentage < SWIPE_BOUNDRY) {
-        this.setPageSwipeAttributes();
-      } else {
-        this.closeModal();
-      }
-    }
-  }
-
-  setPageSwipeAttributes() {
-    if (this.modalTop) {
-      this.domCtrl.write(() => {
-        const opacity = 1.0 - this.swipePercentage;
-        this.renderer.setAttribute(
-          this.modalTop,
-          'data-offset-x',
-          this.swipeOffset.toString()
-        );
-        this.renderer.setAttribute(this.modalTop, 'data-opacity', `${opacity}`);
-        this.renderer.setStyle(
-          this.modalTop,
-          'transform',
-          `translateX(${this.swipeOffset}px)`
-        );
-        this.renderer.setStyle(this.modalTop, 'opacity', `${opacity}`);
-      });
-    }
-  }
-
-  onPanend() {
-    if (this.swipePercentage < SWIPE_BOUNDRY) {
-      this.swipeOffset = 0;
-      this.swipePercentage = 0;
-      this.setPageSwipeAttributes();
-    }
   }
 }
