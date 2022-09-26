@@ -4,7 +4,7 @@ import { SharedComponentsModule } from '../../../../shared-components.module';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [AvalancheActivityModalPage],
-  entryComponents: [AvalancheActivityModalPage]
+  declarations: [AvalancheActivityModalPage]
 })
-export class AvalancheActivityModalPageModule {}
+export class AvalancheActivityModalPageModule {
+}

@@ -5,7 +5,7 @@ import { SnowTempLayerModalPageModule } from '../snow-temp-layer-modal/snow-temp
 
 @NgModule({
   imports: [SharedComponentsModule, SnowTempLayerModalPageModule],
-  declarations: [SnowTempModalPage],
-  entryComponents: [SnowTempModalPage]
+  declarations: [SnowTempModalPage]
 })
-export class SnowTempModalPageModule {}
+export class SnowTempModalPageModule {
+}

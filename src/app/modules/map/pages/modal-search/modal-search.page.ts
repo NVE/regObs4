@@ -3,7 +3,7 @@ import { ModalController, IonInput, DomController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -24,7 +24,7 @@ const SWIPE_BOUNDRY = 0.3; // More than 30% swipe to right will close modal
 export class ModalSearchPage implements OnInit, OnDestroy {
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
-  searchField: FormControl;
+  searchField: UntypedFormControl;
   loading: boolean;
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
@@ -44,7 +44,7 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.searchField = new FormControl();
+    this.searchField = new UntypedFormControl();
     this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable();
     const searchTextObservable = this.searchField.valueChanges.pipe(
       debounceTime(400),

@@ -4,7 +4,7 @@ import { CompressionTestModalPage } from './compression-test-modal.page';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [CompressionTestModalPage],
-  entryComponents: [CompressionTestModalPage]
+  declarations: [CompressionTestModalPage]
 })
-export class CompressionTestModalPageModule {}
+export class CompressionTestModalPageModule {
+}
