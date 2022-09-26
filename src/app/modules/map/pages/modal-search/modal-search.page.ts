@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone, Renderer2, OnDestroy } from '@angular/core';
-import { ModalController, IonInput, DomController } from '@ionic/angular';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
@@ -12,16 +12,15 @@ import {
 } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
-import { createGesture, GestureDetail, Gesture } from '@ionic/core';
 
-const SWIPE_BOUNDRY = 0.3; // More than 30% swipe to right will close modal
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss']
 })
-export class ModalSearchPage implements OnInit, OnDestroy {
+export class ModalSearchPage implements OnInit {
+
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
   searchField: UntypedFormControl;
@@ -29,19 +28,12 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
 
-  private modalPageWrapper: Element;
-  private modalTop: HTMLIonModalElement;
-  private swipeOffset = 0;
-  private swipePercentage = 0;
-  private gesture: Gesture;
-
   constructor(
     private modalController: ModalController,
     private mapSearchService: MapSearchService,
     private ngZone: NgZone,
-    private renderer: Renderer2,
-    private domCtrl: DomController
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.searchField = new UntypedFormControl();
@@ -69,8 +61,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
         });
       })
     );
-
-    this.createGesture();
   }
 
   doSearch() {
@@ -79,24 +69,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
       this.mapSearchService.mapSearchItemSelected = validLatLng;
       this.closeModal();
     }
-  }
-
-  private async createGesture() {
-    this.modalTop = await this.modalController.getTop();
-    this.gesture = createGesture({
-      el: this.modalTop,
-      gestureName: 'swipe-to-close',
-      direction: 'x',
-      disableScroll: true,
-      onMove: (ev) => this.onMoveHandler(ev),
-      onEnd: (ev) => this.onPanend()
-    });
-
-    this.gesture.enable();
-  }
-
-  ngOnDestroy(): void {
-    this.gesture.destroy();
   }
 
   isValidLatLng(searchValue: string) {
@@ -114,8 +86,8 @@ export class ModalSearchPage implements OnInit, OnDestroy {
 
   isValidLatLngArray(searchValue: string[]) {
     if (searchValue && searchValue.length === 2) {
-      const trimmedLatString = this.trimAndReplaceString(searchValue[0]);
-      const trimmedLngString = this.trimAndReplaceString(searchValue[1]);
+      const trimmedLatString = ModalSearchPage.trimAndReplaceString(searchValue[0]);
+      const trimmedLngString = ModalSearchPage.trimAndReplaceString(searchValue[1]);
       if (
         trimmedLatString &&
         trimmedLatString.length > 0 &&
@@ -134,18 +106,11 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     return null;
   }
 
-  private trimAndReplaceString(input: string) {
+  private static trimAndReplaceString(input: string) {
     if (input === undefined || input === null) {
       return input;
     }
     return input.trim().replace(/,/g, '.');
-  }
-
-  focusInput(event: Event) {
-    const input: IonInput = <any>event.target;
-    setTimeout(() => {
-      (<any>input).setFocus();
-    }, 1000);
   }
 
   closeModal() {
@@ -155,46 +120,5 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   searchItemClicked(item: MapSearchResponse) {
     this.mapSearchService.mapSearchItemSelected = item;
     this.closeModal();
-  }
-
-  onMoveHandler(ev: GestureDetail): boolean | void {
-    const width = this.modalTop.offsetWidth;
-    if (width > 0) {
-      this.swipeOffset = Math.max(ev.deltaX, 0);
-      this.swipePercentage = this.swipeOffset / width;
-      if (this.swipePercentage < SWIPE_BOUNDRY) {
-        this.setPageSwipeAttributes();
-      } else {
-        this.closeModal();
-      }
-    }
-  }
-
-  setPageSwipeAttributes() {
-    if (this.modalTop) {
-      this.domCtrl.write(() => {
-        const opacity = 1.0 - this.swipePercentage;
-        this.renderer.setAttribute(
-          this.modalTop,
-          'data-offset-x',
-          this.swipeOffset.toString()
-        );
-        this.renderer.setAttribute(this.modalTop, 'data-opacity', `${opacity}`);
-        this.renderer.setStyle(
-          this.modalTop,
-          'transform',
-          `translateX(${this.swipeOffset}px)`
-        );
-        this.renderer.setStyle(this.modalTop, 'opacity', `${opacity}`);
-      });
-    }
-  }
-
-  onPanend() {
-    if (this.swipePercentage < SWIPE_BOUNDRY) {
-      this.swipeOffset = 0;
-      this.swipePercentage = 0;
-      this.setPageSwipeAttributes();
-    }
   }
 }
