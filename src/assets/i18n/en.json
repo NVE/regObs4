@@ -31,8 +31,7 @@
     "SELECT_GEO_HAZARD": "Select geo hazard",
     "VIEW_WARNINGS": "View warnings from varsom.no",
     "TOGGLE_OBSERVATION": "Switch between simple and full observation",
-    "TOGGLE_OBSERVATION_EXTRA_INFO_1": "Toggle on to send observation there where you are - simple and fast. This is super useful warning data for other users.",
-    "TOGGLE_OBSERVATION_EXTRA_INFO_2": "Toggle off to see all choices for sending an observation - just like before.",
+    "TOGGLE_OBSERVATION_EXTRA_INFO": "Toggle on to send observation there where you are - simple and fast. This is super useful warning data for other users.\n \n Toggle off to see all choices for sending an observation - just like before.",
     "SKI_CONDITIONS": "Now you can also report ski conditions!"
   },
   "COMPETENCE": {

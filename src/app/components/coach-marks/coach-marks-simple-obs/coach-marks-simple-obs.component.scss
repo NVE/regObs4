@@ -1,3 +1,8 @@
+.absolute-center {
+    position: absolute;
+    text-align: center;
+    color: #FFF;
+}
 .coachmark-backdrop {
     .toggle-wrapper {
         display: flex;
@@ -22,31 +27,18 @@
         right: 190px;
     }
 
-    .toggle-coachmark-text {
-        position: absolute;
+.toggle-coachmark-text {
         top: 56px;
         right: -18px;
         transform: rotate(-5.72deg);
         width: 245px;
-        text-align: center;
     }
 
-    .toggle-coachmark-extra-text-1 {
-        position: absolute;
+ .toggle-coachmark-extra-text {
         top: 210px;
         right: -18px;
         width: 245px;
-        color: #FFF;
-        text-align: center;
-    }
-
-    .toggle-coachmark-extra-text-2 {
-        position: absolute;
-        top: 320px;
-        right: -18px;
-        width: 245px;
-        color: #FFF;
-        text-align: center;
+        white-space: pre-line;
     }
 
     .select-ski-conditions {
@@ -62,13 +54,11 @@
         left: 125px;
     }
 
-    .ski-conditions-coachmark-text {
-        position: absolute;
+   .ski-conditions-coachmark-text {
         top: 56px;
         left: 15px;
         transform: rotate(6.28deg);
         width: 260px;
-        text-align: center;
     }
 
     @media only screen and (max-width:450px) {
