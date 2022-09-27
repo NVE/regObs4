@@ -22,7 +22,7 @@
         </div>
       </div>
       <div *ngIf='setObsTime' class='details-row flex-row flex-grow'>
-        <div *ngIf='!isDesktop' class='ion-no-padding ion-text-center'>
+        <div *ngIf='!isDesktop' class='ion-no-padding flex-shrink ion-text-center'>
           <div class='vertical-dist-box'>
             <svg-icon class='obs-location-marker' [src]='locationMarkerIconUrl'></svg-icon>
             <svg class='dotted-line' width='4px' height='27px' viewBox='0 0 4 27'>
@@ -54,7 +54,7 @@
                   </ng-container>
                 </ion-col>
               </ion-row>
-              <ion-label class='small-text ion-no-margin'>
+              <ion-label class='small-text text-nowrap ion-no-margin'>
                 <span *ngIf='!isLoading && locationMarker'>{{ locationMarker.getLatLng().lat | number:'0.3'
                   }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
                   {{ locationMarker.getLatLng().lng | number:'0.3'
