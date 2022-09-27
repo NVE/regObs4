@@ -76,8 +76,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     ).subscribe((newInfoBoxHeight) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
     });
-
-    searchCriteriaService.init(route);
   }
 
   get appname(): string {

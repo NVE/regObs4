@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, skipWhile, tap } from 'rxjs';
-import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
+import { SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import moment from 'moment';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Capacitor } from '@capacitor/core';
+import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 
 // this is to make the search criteria immutable
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -21,21 +19,28 @@ type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
 type ImmutableObject<T> = { readonly [K in keyof T]: Immutable<T[K]> };
 
 const DEBUG_TAG = 'SearchCriteriaService';
-const URL_PARAM_GEOHAZARD = 'hazard';
+const URL_PARAM_GEOHAZARDS = 'hazard';
 const URL_PARAM_DAYSBACK = 'daysBack';
+const URL_PARAM_FROMTIME = 'fromTime';
+const URL_PARAM_TOTIME = 'toTime';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_PAGE = 'page';
+const URL_PARAM_PAGESIZE = 'pageSize';
+
 
 /**
- * Contains current filter for registrations
- * Use this to change which registrations you want to find
- * Call init(ActivatedRoute) to initialize this service once!
+ * Contains current filter for registrations.
+ * Use this to change which registrations you want to find.
+ * Also responsible for saving the filter as query params in the url.
+ * Initializes filter from url query params on startup.
+ * TODO: Vi håndterer ikke alle URL-parametre ennå
  */
 @Injectable({
   providedIn: 'root'
 })
 export class SearchCriteriaService {
-  private route: ActivatedRoute;
   private searchCriteria: BehaviorSubject<SearchCriteriaRequestDto>;
+  private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -43,7 +48,6 @@ export class SearchCriteriaService {
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
 
   constructor(
-    private router: Router,
     private userSettingService: UserSettingService,
     private mapService: MapService,
     private logger: LoggingService
@@ -51,54 +55,79 @@ export class SearchCriteriaService {
     const criteria = this.readUrlParams();
     this.searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>(criteria);
 
-    //TODO: Les url og sett kriteria fra denne
     //TODO: Hver gang et filter settes/endres, lagre dette i URL (uten å trigge sideskift)
 
     this.searchCriteria$ = combineLatest([
       this.searchCriteria.asObservable(),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
-      this.userSettingService.daysBackForCurrentGeoHazard$
+      this.userSettingService.daysBackForCurrentGeoHazard$,
+      this.mapService.mapView$
     ]).pipe(
-      map(([criteria, langKey, geoHazards, daysBack]) => {
+      map(([criteria, langKey, geoHazards, daysBack, mapView]) => {
         const fromObsTime = this.convertToIsoDate(daysBack);
-        return {
+        const extent = this.createExtentCriteria(mapView);
+        const newCriteria = {
           ...criteria,
           LangKey: langKey,
           SelectedGeoHazards: geoHazards,
           FromDtObsTime: fromObsTime,
-          ToDtObsTime: null
+          ToDtObsTime: null,
+          Extent: extent
         } as SearchCriteriaRequestDto;
+        this.setUrlParams(newCriteria);
+        return newCriteria;
       })
     );
   }
 
   private readUrlParams(): SearchCriteriaRequestDto {
-    return {};
-  }
-
-  private async setCriteriaFromUrlParams(route: ActivatedRoute) {
-    this.route = route;
-    const queryParams = this.route.snapshot.queryParamMap;
-    const geoHazard = queryParams.get(URL_PARAM_GEOHAZARD);
-    if (geoHazard != null) {
+    const url = new URL(document.location.href);
+    const geoHazards = url.searchParams.get(URL_PARAM_GEOHAZARDS);
+    if (geoHazards != null) {
       //TODO: Lagre naturfare i innstillinger, kan med fordel gjøres i samme funksjon som vi lagrer daysBack og etterhvert langKey
     }
 
-    const daysBack = queryParams.get(URL_PARAM_DAYSBACK);
-    if (daysBack != null) {
-      //TODO: Sjekk om det er et tall
-      await this.saveDaysBackInSettings(parseInt(daysBack));
+    let fromObsTime: string = null;
+    const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
+    const daysBackNumeric = this.convertToPositiveInteger(daysBack);
+    if (daysBackNumeric != null) {
+      fromObsTime = this.convertToIsoDate(daysBackNumeric);
+      this.saveDaysBackInSettings(daysBackNumeric);
     }
 
-    const nickName = queryParams.get(URL_PARAM_NICKNAME);
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = {
-      ...cloneDeep(currentCriteria),
+    const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
+
+    const criteria = {
+      FromDtObsTime: fromObsTime,
       ObserverNickName: nickName
     } as SearchCriteriaRequestDto;
 
-    this.searchCriteria.next(newCriteria);
+    return criteria;
+  }
+
+  private setUrlParams(criteria: SearchCriteriaRequestDto) {
+    this.setUrlParam(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    this.setUrlParam(URL_PARAM_PAGE, criteria.Offset);
+    this.setUrlParam(URL_PARAM_PAGESIZE, criteria.NumberOfRecords);
+    this.setUrlParam(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
+    this.setUrlParam(URL_PARAM_TOTIME, criteria.ToDtObsTime);
+    this.setUrlParam(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+
+    //TODO:Når skal daysBack overstyre fromObsTime?
+    //Lettest å lagre kun FromDtObsTime, men hvis bruker har valgt daysBack, gir det en mer fleksibel spørring som kan funke over tid
+    //Blir dette riktig? Hvis fromObsTime er satt, fjern daysBack fra url
+  }
+
+  private convertToPositiveInteger(value: string): number {
+    if (typeof value !== 'string') {
+      return null;
+    }
+    const numericValue = Number(value);
+    if (Number.isInteger(numericValue) && numericValue > 0) {
+      return numericValue;
+    }
+    return null;
   }
 
   setObsTime(fromTime: string, toTime: string) {
@@ -109,7 +138,7 @@ export class SearchCriteriaService {
       ToDtObsTime: toTime != null ? toTime : null
     } as SearchCriteriaRequestDto;
     this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
+    this.setUrlParam(URL_PARAM_DAYSBACK, null);
   }
 
   setObserverNickName(nickName: string) {
@@ -120,68 +149,39 @@ export class SearchCriteriaService {
   }
 
   private setUrlParam(key: string, value: unknown) {
-    const queryParams: Params = { [key]: value };
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams,
-        queryParamsHandling: 'merge'
-      });
+    const params = new URLSearchParams(document.location.search);
+    if (value) {
+      params.set(key, '' + value); //TODO: Handle datetime and arrays
+    } else {
+      params.delete(key);
+    }
+    const newRelativePathQuery = window.location.pathname + '?' + params.toString();
+    history.pushState(null, '', newRelativePathQuery);
   }
 
   private convertToIsoDate(daysBack: number): string {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
 
-  //TODO: Trenger også funksjon for å deaktivere denne. Kanskje ha et flagg som setter denne av og på?
-  //Turn on filter by current map extent. The filter will reflect the map extent automatically afterwords
-  setExtentByCurrentMapView() {
-    this.mapService.mapView$.pipe(
-      map((mapView) => {
-        const currentCriteria = this.searchCriteria.value;
-        const extent = {
-          Type: 'MapExtentBounds',
-          BottomRight: mapView.bounds.getSouthEast(),
-          TopLeft: mapView.bounds.getNorthWest()
-        };
-
-        const newCriteria = {
-          ...cloneDeep(currentCriteria),
-          Extent: extent,
-        } as SearchCriteriaRequestDto;
-        this.searchCriteria.next(newCriteria);
-        //TODO: Sett url-parameter
-      })
-    );
+  private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto {
+    if (mapView?.bounds) {
+      const extent = {
+        BottomRight: mapView.bounds.getSouthEast(),
+        TopLeft: mapView.bounds.getNorthWest()
+      } as WithinExtentCriteriaDto;
+      return extent;
+    }
+    return null;
   }
 
-  setNumberOfRecords(numberOfRecords: number) {
+  setPaging(pageIndex: number, pageSize: number) {
     const currentCriteria = this.searchCriteria.value;
-    const newCriteria = { ...cloneDeep(currentCriteria), NumberOfRecords: numberOfRecords } as SearchCriteriaRequestDto;
+    const newCriteria = {
+      ...cloneDeep(currentCriteria),
+      Offset: pageIndex,
+      NumberOfRecords: pageSize
+    } as SearchCriteriaRequestDto;
     this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
-  }
-
-  setOffset(offset: number) {
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = { ...cloneDeep(currentCriteria), Offset: offset } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
-  }
-
-  private setLangKey(langKey: number) {
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = { ...cloneDeep(currentCriteria), LangKey: langKey } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
-  }
-
-  private setGeoHazards(geoHazards: GeoHazard[]) {
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = { ...cloneDeep(currentCriteria), SelectedGeoHazards: geoHazards } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
-    //TODO: Sett url-parameter
   }
 
   private async saveDaysBackInSettings(daysBack: number): Promise<void> {
