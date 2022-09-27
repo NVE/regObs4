@@ -6,7 +6,7 @@ import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
-import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
@@ -70,10 +70,8 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTitle(item: RegistrationViewModel) {
-    const allRegistrationNames: Array<string> = (item.Summaries || []).map((registration) => registration.RegistrationName);
-    const uniqueValues = Array.from(new Set(allRegistrationNames));
-    return uniqueValues.join(', ');
+  getTitle(item: AtAGlanceViewModel) {
+    return item.FormNames.join(', ');
   }
 
   show(item: MapItem) {
@@ -81,16 +79,16 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.id = item.RegId;
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
-      this.name = item.Observer.NickName;
-      this.competenceLevel = getStarCount(item.Observer.CompetenceLevelName);
+      this.name = item.NickName;
+      // this.competenceLevel = getStarCount(item.CompetenceLevelTID);
       this.geoHazard = item.GeoHazardTID;
-      this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
-      this.setDistanceAndType(item);
+      // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
+      // this.setDistanceAndType(item);
       this.attachments = [];
       // Why do we check for AppMode?
-      if (this.appMode) {
-        this.attachments = getAllAttachmentsFromViewModel(item);
-      }
+      // if (this.appMode) {
+      //   this.attachments = getAllAttachmentsFromViewModel(item);
+      // }
       this.visible = true;
       this.publishChange();
     });
@@ -111,29 +109,30 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     this._isVisible.next(this.visible);
   }
 
-  private async setDistanceAndType(item: MapItem) {
-    this.distanceAndType = ''; // set by promise
-    const translations = await this.translateService.get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY']).toPromise();
-    try {
-      const currentPosition = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
-      if (currentPosition) {
-        const distance = L.latLng(item.ObsLocation.Latitude, item.ObsLocation.Longitude).distanceTo(
-          L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude)
-        );
-        this.zone.run(() => {
-          this.distanceAndType =
-            `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} ` +
-            `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
-        });
-      } else {
-        this.zone.run(() => {
-          this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
-        });
-      }
-    } catch {
-      this.zone.run(() => {
-        this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
-      });
-    }
-  }
+  // TODO
+  // private async setDistanceAndType(item: MapItem) {
+  //   this.distanceAndType = ''; // set by promise
+  //   const translations = await this.translateService.get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY']).toPromise();
+  //   try {
+  //     const currentPosition = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
+  //     if (currentPosition) {
+  //       const distance = L.latLng(item.Latitude, item.Longitude).distanceTo(
+  //         L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude)
+  //       );
+  //       this.zone.run(() => {
+  //         this.distanceAndType =
+  //           `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} ` +
+  //           `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
+  //       });
+  //     } else {
+  //       this.zone.run(() => {
+  //         this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+  //       });
+  //     }
+  //   } catch {
+  //     this.zone.run(() => {
+  //       this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+  //     });
+  //   }
+  // }
 }

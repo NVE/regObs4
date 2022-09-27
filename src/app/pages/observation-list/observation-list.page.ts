@@ -1,31 +1,22 @@
 import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
-import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
+import { PagedSearchResult, SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-
-const PAGE_SIZE = 10;
-const MAX_OBSERVATION_COUNT = 100;
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 @Component({
   selector: 'app-observation-list',
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    // TODO: Provide a "MapViewPagedCriteria"
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservationListPage {
+  searchResult: PagedSearchResult<RegistrationViewModel>;
   registrations$: Observable<RegistrationViewModel[]>;
-  private maxCountReached = new BehaviorSubject<boolean>(false);
-  maxCountReached$ = this.maxCountReached.asObservable();
-  private loadedRegistrations = [];
-  private pageIndex = 0;
-  private scroller?: IonInfiniteScroll;
-  private count = MAX_OBSERVATION_COUNT;
+  shouldDisableScroller$: Observable<boolean>;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -33,34 +24,31 @@ export class ObservationListPage {
   trackByIdFunc = this.trackByIdFuncInternal.bind(this);
   refreshFunc = this.refresh.bind(this);
 
-  get maxCount() { return MAX_OBSERVATION_COUNT; }
+  get maxCount() { return PagedSearchResult.MAX_ITEMS; }
 
   constructor(
-    private searchCriteriaService: SearchCriteriaService,
-    private searchRegistrationService: SearchRegistrationService,
+    searchCriteriaService: SearchCriteriaService,
+    searchRegistrationService: SearchRegistrationService,
+    private logger: LoggingService
   ) {
-    this.registrations$ = searchRegistrationService.registrations$.pipe(
-      map(newRegistrations => {
-        // TODO: Select unique registrations - we have a function for that in mypage
-        this.loadedRegistrations.push(...newRegistrations);
-        return this.loadedRegistrations;
-      }),
-      tap(() => this.scroller && this.scroller.complete())
+    this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
+    this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
+    this.shouldDisableScroller$ = combineLatest([
+      this.searchResult.allFetchedForCriteria$,
+      this.searchResult.maxItemsFetched$,
+    ]).pipe(
+      map(([allFetched, maxReached]) => allFetched || maxReached),
+      distinctUntilChanged(),
     );
   }
 
   refresh(cancelPromise: Promise<unknown>): void {
-    this.loadedRegistrations = [];
-    this.maxCountReached.next(false);
-    this.pageIndex = 0;
-    this.searchCriteriaService.setPaging(0, PAGE_SIZE);
-    this.searchRegistrationService.update();
-    this.searchRegistrationService.count()
-      .then(count => this.count = Math.min(count, MAX_OBSERVATION_COUNT))
-      .catch(() => this.count = MAX_OBSERVATION_COUNT);
+    this.logger.debug('Refresh', 'PagedSearchResult');
+    this.searchResult.resetPaging();
   }
 
   ionViewWillEnter(): void {
+    this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
     this.refresh(null);
   }
@@ -69,21 +57,8 @@ export class ObservationListPage {
     // this.loaded = false;
   }
 
-  loadNextPage(event: CustomEvent<IonInfiniteScroll>): void {
-    this.scroller = event.target as unknown as IonInfiniteScroll;
-
-    if (this.loadedRegistrations.length >= MAX_OBSERVATION_COUNT) {
-      this.maxCountReached.next(true);
-    }
-
-    if (this.loadedRegistrations.length >= this.count) {
-      this.scroller.complete();
-      this.scroller.disabled = true;
-      return;
-    }
-
-    this.pageIndex += 1;
-    this.searchCriteriaService.setPaging(this.pageIndex, PAGE_SIZE);
+  loadNextPage(): void {
+    this.searchResult.increasePage();
   }
 
   private trackByIdFuncInternal(_, obs: RegistrationViewModel) {

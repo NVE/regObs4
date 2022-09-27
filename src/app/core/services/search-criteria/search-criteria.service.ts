@@ -1,22 +1,13 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
-import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, skipWhile, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 'rxjs';
 import { SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import moment from 'moment';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
-
-// this is to make the search criteria immutable
-// eslint-disable-next-line @typescript-eslint/ban-types
-type ImmutablePrimitive = undefined | null | boolean | string | number | Function;
-type Immutable<T> =
-  T extends ImmutablePrimitive ? T :
-  T extends Array<infer U> ? ImmutableArray<U> :
-  ImmutableObject<T>;
-type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
-type ImmutableObject<T> = { readonly [K in keyof T]: Immutable<T[K]> };
+import { Immutable } from 'src/app/core/models/immutable';
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARDS = 'hazard';
