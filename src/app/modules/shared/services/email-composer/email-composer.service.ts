@@ -5,35 +5,38 @@ import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 @Injectable()
 export class EmailComposerService {
-
   constructor(
     private emailComposer: EmailComposer,
     private toastController: ToastController,
-    private translateService: TranslateService) {}
+    private translateService: TranslateService
+  ) {}
   async canSendEmail(): Promise<boolean> {
     const platform = Capacitor.getPlatform();
     let canSend;
-    if(platform === 'ios'){
-       canSend = await this.emailComposer.hasAccount().then((isValid: boolean) => isValid);
+    if (platform === 'ios') {
+      canSend = await this.emailComposer
+        .hasAccount()
+        .then((isValid: boolean) => isValid);
     }
-    if(platform === 'android'){
+    if (platform === 'android') {
       canSend = await this.emailComposer.isAvailable();
     }
-    if(!canSend){
-      const toastMessage = await firstValueFrom(this.translateService.get(['MENU.NO_EMAIL_APP']));
+    if (!canSend) {
+      const toastMessage = await firstValueFrom(
+        this.translateService.get(['MENU.NO_EMAIL_APP'])
+      );
       const toast = await this.toastController.create({
         message: toastMessage['MENU.NO_EMAIL_APP'],
         mode: 'md',
         duration: 5000,
-        cssClass: 'toast'
+        cssClass: 'toast',
       });
       toast.present();
     }
-    return(canSend);
+    return canSend;
   }
 }
