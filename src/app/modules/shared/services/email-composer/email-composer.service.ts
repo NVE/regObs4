@@ -7,7 +7,6 @@ import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 @Injectable({
   providedIn: 'root',
 })
-@Injectable()
 export class EmailComposerService {
   constructor(
     private emailComposer: EmailComposer,
