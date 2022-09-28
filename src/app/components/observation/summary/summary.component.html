@@ -22,6 +22,8 @@
   </ng-container>
   <ng-template #TextSummary>
     <span *ngIf="showHeaders">{{ header }}:&nbsp;</span><span>{{ value }}</span>
+    <span *ngIf="('REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS'| translate) === header && value!==null">
+      {{('REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS'| translate | lowercase)}}</span>
   </ng-template>
   <ng-template #UrlSummary>
     <app-external-link [src]="value">{{header}}</app-external-link>
