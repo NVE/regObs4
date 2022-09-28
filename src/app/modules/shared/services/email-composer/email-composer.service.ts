@@ -4,6 +4,7 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,6 +14,7 @@ export class EmailComposerService {
     private toastController: ToastController,
     private translateService: TranslateService
   ) {}
+
   async canSendEmail(): Promise<boolean> {
     const platform = Capacitor.getPlatform();
     let canSend;
