@@ -118,10 +118,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
               private logger: LoggingService) {
     super();
 
-    this.searchCriteriaService.searchCriteria$.pipe(
-      takeUntil(this.ngDestroy$),
-      tap(criteria => this.logger.debug('criteria changed', DEBUG_TAG, criteria))
-    ).subscribe();
+    // this.searchCriteriaService.searchCriteria$.pipe(
+    //   takeUntil(this.ngDestroy$)
+    // ).subscribe();
   }
 
   async ngOnInit() {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import cloneDeep from 'clone-deep';
-import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, tap } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -42,7 +41,7 @@ export class SearchCriteriaService {
   // interessant å logge hvis man får en error feks.
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
-  private searchCriteria: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
+  private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
 
   /**
@@ -57,16 +56,14 @@ export class SearchCriteriaService {
   ) {
     const criteria = this.readUrlParams();
 
-    this.searchCriteria.pipe(
+    this.searchCriteriaChanges.pipe(
       scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []),
     )
       // Log last 10 choices made
       .subscribe(history => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
-    //TODO: Hver gang et filter settes/endres, lagre dette i URL (uten å trigge sideskift)
-
     this.searchCriteria$ = combineLatest([
-      this.searchCriteria.pipe(
+      this.searchCriteriaChanges.pipe(
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
         scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
@@ -157,8 +154,7 @@ export class SearchCriteriaService {
   }
 
   setObserverNickName(nickName: string) {
-    this.searchCriteria.next({ ObserverNickName: nickName });
-    this.setUrlParam(URL_PARAM_NICKNAME, nickName);
+    this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
   private setUrlParam(key: string, value: unknown) {
@@ -169,10 +165,11 @@ export class SearchCriteriaService {
       params.delete(key);
     }
     const newRelativePathQuery = window.location.pathname + '?' + params.toString();
-    history.pushState(null, '', newRelativePathQuery);
+    history.pushState(null, '', newRelativePathQuery); //TODO: Mulig vi burde neste flere url-endringer etter hverandre før vi pusha
   }
 
   private convertToIsoDate(daysBack: number): string {
+    //TODO: Feilhåndtering
     return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
 
@@ -186,16 +183,6 @@ export class SearchCriteriaService {
     }
     return null;
   }
-
-  // setPaging(pageIndex: number, pageSize: number) {
-  //   const currentCriteria = this.searchCriteria.value;
-  //   const newCriteria = {
-  //     ...cloneDeep(currentCriteria),
-  //     Offset: pageIndex,
-  //     NumberOfRecords: pageSize
-  //   } as SearchCriteriaRequestDto;
-  //   this.searchCriteria.next(newCriteria);
-  // }
 
   private async saveDaysBackInSettings(daysBack: number): Promise<void> {
     //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
@@ -214,5 +201,4 @@ export class SearchCriteriaService {
       this.userSettingService.saveUserSettings(userSetting);
     }
   }
-
 }
