@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
-import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, tap } from 'rxjs';
 import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -35,7 +35,14 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   providedIn: 'root'
 })
 export class SearchCriteriaService {
-  private searchCriteria: BehaviorSubject<SearchCriteriaRequestDto>;
+  // Jeg tror searchCriteria må være en ReplaySubject for at vi skal være sikre på at scan fungerer som tenkt,
+  // i tillfelle noen subscriber sent på searchCriteria$, og vi i mellomtiden har oppdatert søkrekriterier via
+  // this.searchCriteria.next(...).
+  // Fordelen med å bruke en replaysubject her er faktisk at historikken for søkrekriteriene huskes, som kan være
+  // interessant å logge hvis man får en error feks.
+  // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
+  // feks gjøre som på linje 60 - 64
+  private searchCriteria: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
 
   /**
@@ -49,30 +56,43 @@ export class SearchCriteriaService {
     private logger: LoggingService
   ) {
     const criteria = this.readUrlParams();
-    this.searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>(criteria);
+
+    this.searchCriteria.pipe(
+      scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []),
+    )
+      // Log last 10 choices made
+      .subscribe(history => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
     //TODO: Hver gang et filter settes/endres, lagre dette i URL (uten å trigge sideskift)
 
     this.searchCriteria$ = combineLatest([
-      this.searchCriteria.asObservable(),
+      this.searchCriteria.pipe(
+        startWith(criteria),
+        // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
+        scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
+      ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
-      this.userSettingService.daysBackForCurrentGeoHazard$,
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(map(daysBack => this.convertToIsoDate(daysBack))),
       this.mapService.mapView$.pipe(map(mapView => this.createExtentCriteria(mapView)))
     ]).pipe(
-      map(([criteria, langKey, geoHazards, daysBack, extent]) => {
-        const fromObsTime = this.convertToIsoDate(daysBack);
-        const newCriteria = {
-          ...criteria,
-          LangKey: langKey,
-          SelectedGeoHazards: geoHazards,
-          FromDtObsTime: fromObsTime,
-          ToDtObsTime: null,
-          Extent: extent
-        } as SearchCriteriaRequestDto;
-        this.setUrlParams(newCriteria);
-        return newCriteria;
-      })
+      // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
+      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => ({
+        ...criteria,
+        LangKey: langKey,
+        SelectedGeoHazards: geoHazards,
+        FromDtObsTime: fromObsTime,
+        ToDtObsTime: null,
+        Extent: extent
+      })),
+      // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
+      // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
+      tap(newCriteria => this.setUrlParams(newCriteria)),
+      // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
+      // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
+      // Uansett kjekt med en shareReplay her, se kommentar over.
+      tap(currentCriteria => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
+      shareReplay(1)
     );
   }
 
@@ -126,20 +146,18 @@ export class SearchCriteriaService {
   }
 
   setObsTime(fromTime: string, toTime: string) {
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = {
-      ...cloneDeep(currentCriteria),
-      FromDtObsTime: fromTime != null ? fromTime : null,
-      ToDtObsTime: toTime != null ? toTime : null
-    } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
-    this.setUrlParam(URL_PARAM_DAYSBACK, null);
+    // const currentCriteria = this.searchCriteria.value;
+    // const newCriteria = {
+    //   ...cloneDeep(currentCriteria),
+    //   FromDtObsTime: fromTime != null ? fromTime : null,
+    //   ToDtObsTime: toTime != null ? toTime : null
+    // } as SearchCriteriaRequestDto;
+    // this.searchCriteria.next(newCriteria);
+    // this.setUrlParam(URL_PARAM_DAYSBACK, null);
   }
 
   setObserverNickName(nickName: string) {
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = { ...currentCriteria, ObserverNickName: nickName } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
+    this.searchCriteria.next({ ObserverNickName: nickName });
     this.setUrlParam(URL_PARAM_NICKNAME, nickName);
   }
 
@@ -169,15 +187,15 @@ export class SearchCriteriaService {
     return null;
   }
 
-  setPaging(pageIndex: number, pageSize: number) {
-    const currentCriteria = this.searchCriteria.value;
-    const newCriteria = {
-      ...cloneDeep(currentCriteria),
-      Offset: pageIndex,
-      NumberOfRecords: pageSize
-    } as SearchCriteriaRequestDto;
-    this.searchCriteria.next(newCriteria);
-  }
+  // setPaging(pageIndex: number, pageSize: number) {
+  //   const currentCriteria = this.searchCriteria.value;
+  //   const newCriteria = {
+  //     ...cloneDeep(currentCriteria),
+  //     Offset: pageIndex,
+  //     NumberOfRecords: pageSize
+  //   } as SearchCriteriaRequestDto;
+  //   this.searchCriteria.next(newCriteria);
+  // }
 
   private async saveDaysBackInSettings(daysBack: number): Promise<void> {
     //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
