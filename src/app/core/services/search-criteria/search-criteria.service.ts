@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 'rxjs';
-import { SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
@@ -18,6 +18,11 @@ const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_PAGE = 'page';
 const URL_PARAM_PAGESIZE = 'pageSize';
 
+
+const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
+  Latitude: latLng.lat,
+  Longitude: latLng.lng
+});
 
 /**
  * Contains current filter for registrations.
@@ -53,11 +58,10 @@ export class SearchCriteriaService {
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
       this.userSettingService.daysBackForCurrentGeoHazard$,
-      this.mapService.mapView$
+      this.mapService.mapView$.pipe(map(mapView => this.createExtentCriteria(mapView)))
     ]).pipe(
-      map(([criteria, langKey, geoHazards, daysBack, mapView]) => {
+      map(([criteria, langKey, geoHazards, daysBack, extent]) => {
         const fromObsTime = this.convertToIsoDate(daysBack);
-        const extent = this.createExtentCriteria(mapView);
         const newCriteria = {
           ...criteria,
           LangKey: langKey,
@@ -156,10 +160,10 @@ export class SearchCriteriaService {
 
   private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto {
     if (mapView?.bounds) {
-      const extent = {
-        BottomRight: mapView.bounds.getSouthEast(),
-        TopLeft: mapView.bounds.getNorthWest()
-      } as WithinExtentCriteriaDto;
+      const extent: WithinExtentCriteriaDto = {
+        BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),
+        TopLeft: latLngToPositionDto(mapView.bounds.getNorthWest())
+      };
       return extent;
     }
     return null;
