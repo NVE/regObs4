@@ -44,6 +44,8 @@ import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
 import { OfflineDbService } from './modules/common-registration/registration.services';
+import { SearchService } from './modules/common-regobs-api';
+import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -176,5 +178,12 @@ export const APP_PROVIDERS = [
     //   : BackgroundDownloadWebService
     // TODO: Implement Download Manager for Android
     useClass: HttpClientDownloadService
+  },
+  {
+    // POC
+    provide: SearchService,
+    useClass: OfflineCapableSearchService
+    // TODO: Override SearchService for offline support on devices
+    // useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService
   }
 ];
