@@ -30,6 +30,8 @@ export class DatetimePickerComponent implements OnInit {
   @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
   @Input() presentation: DatetimePresentation = 'date-time';
+  @Input() datePickerOpen = false;
+  @Output() datePickerOpenChange = new EventEmitter<boolean>();
 
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
 
@@ -47,6 +49,11 @@ export class DatetimePickerComponent implements OnInit {
     }
   }
 
+  openModal() {
+    this.datePickerOpen = true;
+    this.datePickerOpenChange.emit(this.datePickerOpen);
+  }
+
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }
@@ -60,6 +67,9 @@ export class DatetimePickerComponent implements OnInit {
    * @param event - CustomEvent<OverlayEventDetail<string>>
    */
   onWillDismiss(event: CustomEvent<OverlayEventDetail<string>>) {
+    this.datePickerOpen = false;
+    this.datePickerOpenChange.emit(this.datePickerOpen);
+
     if (event.detail.data && event.detail.role === 'confirm') {
       this.dateTimeChange.emit(event.detail.data);
     }
