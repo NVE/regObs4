@@ -35,6 +35,7 @@ import {Platform} from '@ionic/angular';
 import * as _ from 'lodash';
 import {ILogProviderConfig} from './file-logging.config';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
+import { EmailComposerService } from '../email-composer/email-composer.service';
 import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
 
@@ -56,7 +57,8 @@ export class FileLoggingService {
 
     constructor(private file: File,
                 private platform: Platform,
-                private emailComposer: EmailComposer
+                private emailComposer: EmailComposer,
+                private emailComposerService: EmailComposerService
     ) {
       this.defaultConfig = new LogProviderConfig({
         enableMetaLogging: false,
@@ -486,17 +488,20 @@ export class FileLoggingService {
     }
 
     async sendLogsByEmail(topic = 'Regobs-app-logger', body = ''): Promise<void> {
-      const fileEntries = await this.getLogFiles();
-      const filePaths: string[] = fileEntries.map(entry => entry.toURL());
-      const attachments = filePaths;
-      const email: EmailComposerOptions = {
-        to: settings.errorEmailAddress,
-        attachments,
-        subject: topic,
-        body,
-        isHtml: true
-      };
-      this.emailComposer.open(email);
+      const canSend = await this.emailComposerService.canSendEmail();
+      if (canSend) {
+        const fileEntries = await this.getLogFiles();
+        const filePaths: string[] = fileEntries.map((entry) => entry.toURL());
+        const attachments = filePaths;
+        const email: EmailComposerOptions = {
+          to: settings.errorEmailAddress,
+          attachments,
+          subject: topic,
+          body,
+          isHtml: true,
+        };
+        this.emailComposer.open(email);
+      }
     }
 }
 
