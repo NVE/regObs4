@@ -21,7 +21,7 @@ steps:
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple development certificate'
   inputs:
-    certSecureFile: '97b68192-fb52-4819-91fc-098592a6f406'
+    certSecureFile: 'be7635ac-272e-49ca-9c52-329ecd19cfb3'
     certPwd: '$(apple_dev_cert)'
 
 - task: InstallAppleCertificate@2
