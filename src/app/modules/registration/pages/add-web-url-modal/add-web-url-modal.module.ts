@@ -4,7 +4,7 @@ import { AddWebUrlModalPage } from './add-web-url-modal.page';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [AddWebUrlModalPage],
-  entryComponents: [AddWebUrlModalPage]
+  declarations: [AddWebUrlModalPage]
 })
-export class AddWebUrlModalPageModule {}
+export class AddWebUrlModalPageModule {
+}

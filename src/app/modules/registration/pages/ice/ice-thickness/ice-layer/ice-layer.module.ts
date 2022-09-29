@@ -4,7 +4,7 @@ import { IceLayerPage } from './ice-layer.page';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [IceLayerPage],
-  entryComponents: [IceLayerPage]
+  declarations: [IceLayerPage]
 })
-export class IceLayerPageModule {}
+export class IceLayerPageModule {
+}

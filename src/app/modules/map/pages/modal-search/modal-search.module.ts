@@ -15,6 +15,9 @@ import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe'
     TranslateModule
   ],
   declarations: [ModalSearchPage, StartsWithHighlightPipe],
-  entryComponents: [ModalSearchPage]
+  exports: [
+    ModalSearchPage
+  ]
 })
-export class ModalSearchPageModule {}
+export class ModalSearchPageModule {
+}

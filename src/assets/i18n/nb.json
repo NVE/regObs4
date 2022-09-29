@@ -31,6 +31,7 @@
     "SELECT_GEO_HAZARD": "Velg naturfare",
     "VIEW_WARNINGS": "Se varsler fra varsom.no",
     "TOGGLE_OBSERVATION": "Bytt mellom enkel og fullstendig observasjon",
+    "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå på for å sende inn observasjoner av situasjonen der du er – enkelt og raskt. Dette er supernyttige data for varslingen og andre brukere.\n \n Slå av for å få alle valgene for innsending av observasjoner – som før.",
     "SKI_CONDITIONS": "Nå kan du også rapportere skiføre!"
   },
   "COMPETENCE": {
@@ -161,6 +162,7 @@
     "MAP_LEGENDS": "Tegnforklaring for kart",
     "MAP_SETTINGS": "Kartvalg",
     "MAP_SETTINGS_FOR": "Kartvalg for",
+    "NO_EMAIL_APP": "Epost kan ikke sendes, fordi vi ikke får kontakt med epost-appen på telefonen. På Iphone må du ha appen 'Mail'",
     "OPACITY": "Gjennomsiktighet",
     "OTHER": "Annet",
     "SHOW": "Vis",

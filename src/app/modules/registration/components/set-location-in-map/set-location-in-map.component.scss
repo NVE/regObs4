@@ -58,6 +58,9 @@ app-map {
   flex: 1 1 0;
 }
 
+.flex-shrink {
+  flex-shrink: 1;
+}
 .flex-space {
   justify-content: space-between;
 }
@@ -135,6 +138,9 @@ app-map {
   font-size: 12px;
 }
 
+.text-nowrap {
+  white-space: nowrap;
+}
 .leaflet-usermarker {
   width: 18px;
   height: 18px;

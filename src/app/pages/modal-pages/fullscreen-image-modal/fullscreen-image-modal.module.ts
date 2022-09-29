@@ -6,7 +6,7 @@ import { FullscreenImageModalPage } from './fullscreen-image-modal.page';
 
 @NgModule({
   imports: [CommonModule, IonicModule, FormsModule],
-  declarations: [FullscreenImageModalPage],
-  entryComponents: [FullscreenImageModalPage]
+  declarations: [FullscreenImageModalPage]
 })
-export class FullscreenImageModalPageModule {}
+export class FullscreenImageModalPageModule {
+}
