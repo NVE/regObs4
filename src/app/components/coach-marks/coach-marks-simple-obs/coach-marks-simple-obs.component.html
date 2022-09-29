@@ -6,13 +6,16 @@
             <ion-toggle disabled></ion-toggle>
         </div>
         <div class="toggle-coachmark" @coachmark-animation>
-            <ion-text class="coachmark-text toggle-coachmark-text">{{'COACH_MARKS.TOGGLE_OBSERVATION' | translate}}
+            <ion-text class="coachmark-text toggle-coachmark-text absolute-center">
+                {{'COACH_MARKS.TOGGLE_OBSERVATION' | translate}}
             </ion-text>
             <svg width="70" height="50" viewBox="0 0 70 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M1.50001 49C1.50001 49 5 30.2607 27.5 18.5914C50 6.92211 67.8495 7.21169 67.8495 7.21169M67.8495 7.21169L56.0702 18.5914M67.8495 7.21169L52.3998 1.08349"
-                    stroke="white" stroke-width="2" />
+                <path d="M1.50001 49C1.50001 49 5 30.2607 27.5 18.5914C50 6.92211 67.8495 7.21169 67.8495 7.21169M67.8495 7.21169L56.0702 18.5914M67.8495 7.21169L52.3998 1.08349"
+                      stroke="white" stroke-width="2" />
             </svg>
+            <ion-text class="toggle-coachmark-extra-text absolute-center">
+                {{'COACH_MARKS.TOGGLE_OBSERVATION_EXTRA_INFO' | translate}}
+            </ion-text>
         </div>
 
     </div>
@@ -26,7 +29,8 @@
                     d="M29.9616 63.1267C29.9616 63.1267 14.3715 52.2385 10.662 35.6088C6.95254 18.9792 7.73736 2.99999 7.73736 2.99999M7.73736 2.99999L1.05557 16.4296M7.73736 2.99999L14.6969 17.0735"
                     stroke="white" stroke-width="2" />
             </svg>
-            <ion-text class="coachmark-text ski-conditions-coachmark-text">{{'COACH_MARKS.SKI_CONDITIONS' | translate}}
+            <ion-text class="coachmark-text ski-conditions-coachmark-text absolute-center">{{'COACH_MARKS.SKI_CONDITIONS' |
+                translate}}
             </ion-text>
         </div>
     </ng-template>

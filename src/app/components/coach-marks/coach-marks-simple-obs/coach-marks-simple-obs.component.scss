@@ -1,14 +1,20 @@
+.absolute-center {
+    position: absolute;
+    text-align: center;
+    color: #FFF;
+}
 .coachmark-backdrop {
     .toggle-wrapper {
         display: flex;
         align-items: center;
         position: absolute;
-        right: calc(15px + env(safe-area-inset-right));
-        top: calc(45px + env(safe-area-inset-bottom));
+        right: calc(10px + env(safe-area-inset-right));
+        top: calc(55px + env(safe-area-inset-bottom));
 
         ion-toggle {
-                opacity: 1;
-            }
+            opacity: 1;
+            padding: 5px;
+        }
 
         ion-toggle::part(track) {
             box-shadow: 0 0 5px 2px #fff;
@@ -21,13 +27,18 @@
         right: 190px;
     }
 
-    .toggle-coachmark-text {
-        position: absolute;
+.toggle-coachmark-text {
         top: 56px;
         right: -18px;
         transform: rotate(-5.72deg);
         width: 245px;
-        text-align: center;
+    }
+
+ .toggle-coachmark-extra-text {
+        top: 210px;
+        right: -18px;
+        width: 245px;
+        white-space: pre-line;
     }
 
     .select-ski-conditions {
@@ -43,17 +54,17 @@
         left: 125px;
     }
 
-    .ski-conditions-coachmark-text {
-        position: absolute;
+   .ski-conditions-coachmark-text {
         top: 56px;
         left: 15px;
         transform: rotate(6.28deg);
         width: 260px;
-        text-align: center;
     }
 
     @media only screen and (max-width:450px) {
-        .toggle-coachmark-text {
+        .toggle-coachmark-text,
+        .toggle-coachmark-extra-text-1,
+        .toggle-coachmark-extra-text-2 {
             right: -120px;
         }
 
