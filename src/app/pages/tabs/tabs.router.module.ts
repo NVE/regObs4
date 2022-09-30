@@ -5,65 +5,33 @@ import { StartWizardGuard } from '../../core/guards/start-wizard.guard';
 
 const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     canActivate: [StartWizardGuard],
     children: [
       {
         path: '',
-        redirectTo: '/tabs/home',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        loadChildren: () => import('../home/home.module').then((m) => m.HomePageModule)
       },
       {
         path: 'home',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../home/home.module').then((m) => m.HomePageModule)
-          }
-        ]
+        redirectTo: ''
       },
       {
         path: 'trip',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../trip/trip.module').then((m) => m.TripPageModule)
-          }
-        ]
+        loadChildren: () => import('../trip/trip.module').then((m) => m.TripPageModule)
       },
       {
         path: 'observation-list',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../observation-list/observation-list.module').then(
-                (m) => m.ObservationListPageModule
-              )
-          }
-        ]
+        loadChildren: () => import('../observation-list/observation-list.module')
+          .then((m) => m.ObservationListPageModule)
       },
       {
         path: 'warning-list',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../warning-list/warning-list.module').then(
-                (m) => m.WarningListPageModule
-              )
-          }
-        ]
+        loadChildren: () => import('../warning-list/warning-list.module').then((m) => m.WarningListPageModule)
       }
     ]
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/home',
-    pathMatch: 'full'
   }
 ];
 
