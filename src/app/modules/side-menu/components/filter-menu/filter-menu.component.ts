@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { of } from 'rxjs';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -22,6 +22,7 @@ const DEBUG_TAG = 'FilterMenuComponent';
   selector: 'app-filter-menu',
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
@@ -31,6 +32,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   showObservationTypes = false;
   isIndeterminate: boolean;
   masterCheck: boolean;
+  nickName: string;
 
   filteredObservationTypes: ObservationTypeFilterItem[];
 
@@ -115,12 +117,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   constructor(private platform: Platform,
               private userSettingService: UserSettingService,
               private searchCriteriaService: SearchCriteriaService,
+              private cdr: ChangeDetectorRef,
               private logger: LoggingService) {
     super();
-
-    // this.searchCriteriaService.searchCriteria$.pipe(
-    //   takeUntil(this.ngDestroy$)
-    // ).subscribe();
   }
 
   async ngOnInit() {
@@ -130,6 +129,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.userSettingService.currentGeoHazard$.pipe(
       switchMap( currentGeoHazard => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
       .subscribe(items => this.filteredObservationTypes = items);
+
+    this.searchCriteriaService.searchCriteria$.pipe(
+      takeUntil(this.ngDestroy$),
+      tap((criteria) => {
+        this.nickName = criteria.ObserverNickName;
+        this.cdr.markForCheck();
+      })
+    ).subscribe();
   }
 
   filterObservationTypesByGeohazard(currentGeoHazard: GeoHazard[]) {
