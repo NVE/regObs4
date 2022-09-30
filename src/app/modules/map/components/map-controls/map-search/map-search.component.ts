@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-map-search',
@@ -6,4 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./map-search.component.scss']
 })
 export class MapSearchComponent {
+  @Input() mapSearchOpen = false;
+
+  openModal() {
+    this.mapSearchOpen = true;
+  }
 }
