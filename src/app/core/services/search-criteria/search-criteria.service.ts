@@ -9,19 +9,24 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { Immutable } from 'src/app/core/models/immutable';
 
 const DEBUG_TAG = 'SearchCriteriaService';
-const URL_PARAM_GEOHAZARDS = 'hazard';
+const URL_PARAM_GEOHAZARDS = 'hazards';
+const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
 const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMTIME = 'fromTime';
 const URL_PARAM_TOTIME = 'toTime';
 const URL_PARAM_NICKNAME = 'nick';
-const URL_PARAM_PAGE = 'page';
-const URL_PARAM_PAGESIZE = 'pageSize';
-
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
   Longitude: latLng.lng
 });
+
+function commaSeparatedStringToNumberArray(commaSeparatedString : string): number[] {
+  if(commaSeparatedString?.trim().length) {
+    return commaSeparatedString.split(',').filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+  }
+  return [];
+}
 
 /**
  * Contains current filter for registrations.
@@ -93,19 +98,17 @@ export class SearchCriteriaService {
     );
   }
 
+  // build search criteria from url parameters. Some params are stored in user settings
   private readUrlParams(): SearchCriteriaRequestDto {
     const url = new URL(document.location.href);
-    const geoHazards = url.searchParams.get(URL_PARAM_GEOHAZARDS);
-    if (geoHazards != null) {
-      //TODO: Lagre naturfare i innstillinger, kan med fordel gjøres i samme funksjon som vi lagrer daysBack og etterhvert langKey
-    }
 
-    let fromObsTime: string = null;
+    const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
+
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
+    let fromObsTime: string = null;
     if (daysBackNumeric != null) {
       fromObsTime = this.convertToIsoDate(daysBackNumeric);
-      this.saveDaysBackInSettings(daysBackNumeric);
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
@@ -115,13 +118,30 @@ export class SearchCriteriaService {
       ObserverNickName: nickName
     } as SearchCriteriaRequestDto;
 
+    this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
   }
 
+  private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
+    let geoHazards: number[];
+
+    //read old param format used in (old) regobs.no
+    const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
+    if (geoHazardsParamValueOld?.length) {
+      geoHazards = geoHazardsParamValueOld.filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+      this.setUrlParam(URL_PARAM_GEOHAZARDS_OLD, null); //remove old param
+    }
+
+    //read params on new format
+    const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARDS);
+    if (geoHazardsParamValue != null) {
+      geoHazards = commaSeparatedStringToNumberArray(geoHazardsParamValue);
+    }
+    return geoHazards;
+  }
+
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
-    this.setUrlParam(URL_PARAM_NICKNAME, criteria.ObserverNickName);
-    this.setUrlParam(URL_PARAM_PAGE, criteria.Offset);
-    this.setUrlParam(URL_PARAM_PAGESIZE, criteria.NumberOfRecords);
+    this.setUrlParam(URL_PARAM_GEOHAZARDS, criteria.SelectedGeoHazards);
     this.setUrlParam(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
     this.setUrlParam(URL_PARAM_TOTIME, criteria.ToDtObsTime);
     this.setUrlParam(URL_PARAM_NICKNAME, criteria.ObserverNickName);
@@ -160,7 +180,11 @@ export class SearchCriteriaService {
   private setUrlParam(key: string, value: unknown) {
     const params = new URLSearchParams(document.location.search);
     if (value) {
-      params.set(key, '' + value); //TODO: Handle datetime and arrays
+      if (Array.isArray(value)) {
+        params.set(key, value.join(','));
+      } else {
+        params.set(key, '' + value); //TODO: Handle datetime
+      }
     } else {
       params.delete(key);
     }
@@ -184,17 +208,26 @@ export class SearchCriteriaService {
     return null;
   }
 
-  private async saveDaysBackInSettings(daysBack: number): Promise<void> {
+  private async saveGeoHazardsAndDaysBackInSettings(geoHazards: number[], daysBack: number): Promise<void> {
     //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
     const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
     let changed = false;
-    for (const geoHazard of userSetting.currentGeoHazard) {
-      const existingValue = userSetting.observationDaysBack.find(
-        (x) => x.geoHazard === geoHazard
-      );
-      if (existingValue.daysBack !== daysBack) {
-        existingValue.daysBack = daysBack;
+    if (geoHazards != null) {
+      if (geoHazards != userSetting.currentGeoHazard) {
         changed = true;
+        userSetting.currentGeoHazard = geoHazards;
+      }
+    }
+    if (daysBack != null) {
+      for (const geoHazard of userSetting.currentGeoHazard) {
+      //check and eventually set days back for every selected geo hazard
+        const existingValue = userSetting.observationDaysBack.find(
+          (x) => x.geoHazard === geoHazard
+        );
+        if (existingValue.daysBack !== daysBack) {
+          existingValue.daysBack = daysBack;
+          changed = true;
+        }
       }
     }
     if (changed) {
