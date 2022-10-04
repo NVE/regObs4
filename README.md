@@ -1,7 +1,6 @@
-# RegObs app v4 (Ionic 5)
+# Varsom RegObs app v4
 
-This is the regObs app version 4. It is based on code from app v3, but rewritten to Ionic 4/5.
-Ionic 5 uses Angular 9+ and TypeScript, so all pages and components have been rewritten.
+This is the Varsom RegObs app version 4. It is based on code from version 3 but rewritten to Ionic 6.
 
 ## Installation
 
@@ -135,7 +134,7 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 ### Produksjonssette på Apple App Store
 
 - Gå til https://appstoreconnect.apple.com/
-- Bruk + øverst til venstre for "Opprett ny utgave". Det kan ta et par dager før du får godkjent den nye versjonen.
+- Bruk + øverst til venstre for "Opprett ny utgave". Pass på at du faktisk sender den til gjennomgang, det skal stå "waiting for review" i statusfeltet. Det kan ta et par dager før du får godkjent den nye versjonen.
 - Oppdater versjonsnotater - engelsk og norsk
 - Velg riktig bygg
 - Når versjonen er godkjent, kan du sende den til produksjon
