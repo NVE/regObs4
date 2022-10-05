@@ -8,6 +8,7 @@ import moment from 'moment';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { UrlParams } from './url-params';
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
@@ -130,7 +131,7 @@ export class SearchCriteriaService {
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
     if (geoHazardsParamValueOld?.length) {
       geoHazards = geoHazardsParamValueOld.filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
-      this.setUrlParam(URL_PARAM_GEOHAZARDS_OLD, null); //remove old param
+      new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply; //we will create params in new format instead
     }
 
     //read params on new format
@@ -144,10 +145,12 @@ export class SearchCriteriaService {
   }
 
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
-    this.setUrlParam(URL_PARAM_GEOHAZARD, criteria.SelectedGeoHazards);
-    this.setUrlParam(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
-    this.setUrlParam(URL_PARAM_TOTIME, criteria.ToDtObsTime);
-    this.setUrlParam(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    const params = new UrlParams();
+    params.set(URL_PARAM_GEOHAZARD, criteria.SelectedGeoHazards);
+    params.set(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
+    params.set(URL_PARAM_TOTIME, criteria.ToDtObsTime);
+    params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.apply();
 
     //TODO:Når skal daysBack overstyre fromObsTime?
     //Lettest å lagre kun FromDtObsTime, men hvis bruker har valgt daysBack, gir det en mer fleksibel spørring som kan funke over tid
@@ -178,22 +181,6 @@ export class SearchCriteriaService {
 
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
-  }
-
-  private setUrlParam(key: string, value: any) {
-    const params = new URLSearchParams(document.location.search);
-    if (value) {
-      if (Array.isArray(value)) {
-        params.delete(key);
-        value.forEach(v =>  params.append(key, '' + v));
-      } else {
-        params.set(key, value); //TODO: Handle datetime
-      }
-    } else {
-      params.delete(key);
-    }
-    const newRelativePathQuery = window.location.pathname + '?' + params.toString();
-    history.pushState(null, '', newRelativePathQuery); //TODO: Mulig vi burde neste flere url-endringer etter hverandre før vi pusha
   }
 
   private convertToIsoDate(daysBack: number): string {
