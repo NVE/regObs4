@@ -7,9 +7,10 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import moment from 'moment';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { Immutable } from 'src/app/core/models/immutable';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'SearchCriteriaService';
-const URL_PARAM_GEOHAZARDS = 'hazards';
+const URL_PARAM_GEOHAZARD = 'hazard';
 const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
 const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMTIME = 'fromTime';
@@ -23,7 +24,7 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
 
 function commaSeparatedStringToNumberArray(commaSeparatedString : string): number[] {
   if(commaSeparatedString?.trim().length) {
-    return commaSeparatedString.split(',').filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+    return commaSeparatedString.split('|').filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
   }
   return [];
 }
@@ -123,7 +124,7 @@ export class SearchCriteriaService {
   }
 
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
-    let geoHazards: number[];
+    let geoHazards: number[] = [GeoHazard.Snow];
 
     //read old param format used in (old) regobs.no
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
@@ -133,15 +134,17 @@ export class SearchCriteriaService {
     }
 
     //read params on new format
-    const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARDS);
-    if (geoHazardsParamValue != null) {
-      geoHazards = commaSeparatedStringToNumberArray(geoHazardsParamValue);
+    const geoHazardsParamValue = searchParams.getAll(URL_PARAM_GEOHAZARD);
+    if (geoHazardsParamValue?.length > 0) {
+      geoHazards = geoHazardsParamValue.map(stringValue => {
+        return Number(stringValue);
+      });
     }
     return geoHazards;
   }
 
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
-    this.setUrlParam(URL_PARAM_GEOHAZARDS, criteria.SelectedGeoHazards);
+    this.setUrlParam(URL_PARAM_GEOHAZARD, criteria.SelectedGeoHazards);
     this.setUrlParam(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
     this.setUrlParam(URL_PARAM_TOTIME, criteria.ToDtObsTime);
     this.setUrlParam(URL_PARAM_NICKNAME, criteria.ObserverNickName);
@@ -177,13 +180,14 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  private setUrlParam(key: string, value: unknown) {
+  private setUrlParam(key: string, value: any) {
     const params = new URLSearchParams(document.location.search);
     if (value) {
       if (Array.isArray(value)) {
-        params.set(key, value.join(','));
+        params.delete(key);
+        value.forEach(v =>  params.append(key, '' + v));
       } else {
-        params.set(key, '' + value); //TODO: Handle datetime
+        params.set(key, value); //TODO: Handle datetime
       }
     } else {
       params.delete(key);
