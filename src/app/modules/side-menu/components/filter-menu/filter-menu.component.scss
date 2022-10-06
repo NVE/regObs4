@@ -12,7 +12,7 @@
 
 ion-list {
   width: 100%;
-  padding-top: 0;
+  padding-top: env(safe-area-inset-top);
   padding-bottom: 0;
   overflow: auto;
   max-height: 100vh;
