@@ -12,7 +12,7 @@
   <app-registration-content-wrapper *ngIf="draft && incident" [draft]="draft"
     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.IncidentText">
+      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
       </app-text-comment>
       <ion-item-divider>
         <ion-label class="ion-text-wrap">
