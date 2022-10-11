@@ -664,7 +664,8 @@
     "TITLE": "Innstillingar",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyar",
     "USE_IN_WORLD": "Utanfor Noreg",
-    "USE_RETINA_MAP": "Bruk høg oppløysing på kart"
+    "USE_RETINA_MAP": "Bruk høg oppløysing på kart",
+    "SEND_LOGS": "Send loggar til Regobs-teamet"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Klarte ikkje lagre kallenavn. Ver venleg og prøv igjen seinare.",

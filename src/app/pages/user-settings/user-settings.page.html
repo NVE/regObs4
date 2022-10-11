@@ -1,22 +1,22 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/" text=""></ion-back-button>
+  <ion-toolbar appHeaderColor mode='ios'>
+    <ion-buttons slot='start'>
+      <ion-back-button defaultHref='/' text=''></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{"SETTINGS.TITLE" | translate}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding" *ngIf="userSettings">
-  <ion-list lines="full">
+<ion-content class='ion-padding' *ngIf='userSettings'>
+  <ion-list lines='full'>
 
     <!-- Email receipt -->
     <ion-item>
       <ion-label>
         {{'SETTINGS.EMAIL_RECEIPT' | translate}}
       </ion-label>
-      <ion-toggle slot="end" [(ngModel)]="userSettings.emailReceipt" (ngModelChange)="updateSettings()"></ion-toggle>
+      <ion-toggle slot='end' [(ngModel)]='userSettings.emailReceipt' (ngModelChange)='updateSettings()'></ion-toggle>
     </ion-item>
 
     <!-- Allow sending usage data -->
@@ -24,71 +24,71 @@
       <ion-label>
         {{'SETTINGS.ALLOW_ANALYTICS' | translate}}
       </ion-label>
-      <ion-toggle slot="end" [(ngModel)]="userSettings.consentForSendingAnalytics" (ngModelChange)="updateSettings()">
+      <ion-toggle slot='end' [(ngModel)]='userSettings.consentForSendingAnalytics' (ngModelChange)='updateSettings()'>
       </ion-toggle>
     </ion-item>
   </ion-list>
-  
+
   <!-- Toggle advanced settings -->
-  <ion-button (click)="toggleAdvanced()" fill="clear" expand="full">
-    <ion-icon slot="start" [name]="(showAdvanced ? 'chevron-up' : 'chevron-down')"></ion-icon>
-    {{( showAdvanced ? 'SETTINGS.HIDE_ADVANCED' : 'SETTINGS.SHOW_ADVANCED') | translate }}
+  <ion-button (click)='toggleAdvanced()' fill='clear' expand='full'>
+    <ion-icon slot='start' [name]="(showAdvanced ? 'chevron-up' : 'chevron-down')"></ion-icon>
+    {{(showAdvanced ? 'SETTINGS.HIDE_ADVANCED' : 'SETTINGS.SHOW_ADVANCED') | translate }}
   </ion-button>
 
-  <ng-container *ngIf="showAdvanced">
-    <ion-list lines="full">
+  <ng-container *ngIf='showAdvanced'>
+    <ion-list lines='full'>
 
       <!-- App version -->
-      <ion-item (click)="versionClick()">
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{'SETTINGS.APP_VERSION' | translate}}
+      <ion-item (click)='versionClick()'>
+        <ion-label position='stacked' color='medium' class='ion-text-uppercase'>{{'SETTINGS.APP_VERSION' | translate}}
         </ion-label>
-        <ion-text class="ion-align-self-start" class="build-version">
+        <ion-text class='ion-align-self-start' class='build-version'>
           {{version.version }} ({{ version.buildNumber }})
         </ion-text>
-        <ion-text class="build-rev ion-align-self-start" color="medium">
+        <ion-text class='build-rev ion-align-self-start' color='medium'>
           {{ version.revision }} - {{ version.date | formatDate | async }}
         </ion-text>
       </ion-item>
-      
+
       <!-- App mode -->
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.APPMODE" | translate }}
+        <ion-label position='stacked' color='medium' class='ion-text-uppercase'>{{ "SETTINGS.APPMODE" | translate }}
         </ion-label>
-        <app-select [(selectedValue)]="userSettings.appMode" [options]="appModeOptions"
-          (selectedValueChange)="updateSettings()" [showReset]="false"> </app-select>
+        <app-select [(selectedValue)]='userSettings.appMode' [options]='appModeOptions'
+                    (selectedValueChange)='updateSettings()' [showReset]='false'></app-select>
       </ion-item>
-      
+
       <!-- Use high detail maps -->
       <ion-item>
         <ion-label>
           {{'SETTINGS.USE_RETINA_MAP' | translate}}
         </ion-label>
-        <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()">
+        <ion-toggle slot='end' [(ngModel)]='userSettings.useRetinaMap' (ngModelChange)='updateSettings()'>
         </ion-toggle>
       </ion-item>
 
       <!-- GPS Debug -->
-      <ion-item *ngIf="userSettings.featureToggleDeveloperMode">
+      <ion-item *ngIf='userSettings.featureToggleDeveloperMode'>
         <ion-label>
           GPS debug
         </ion-label>
-        <ion-toggle slot="end" [(ngModel)]="userSettings.featureToggeGpsDebug" (ngModelChange)="updateSettings()">
+        <ion-toggle slot='end' [(ngModel)]='userSettings.featureToggeGpsDebug' (ngModelChange)='updateSettings()'>
         </ion-toggle>
       </ion-item>
 
     </ion-list>
 
-    <ion-list lines="none">
-      <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">
-        <ion-icon slot="start" name="refresh"></ion-icon>
+    <ion-list lines='none'>
+      <ion-button expand='block' [disabled]='isUpdating' (click)='updateDropdowns()'>
+        <ion-icon slot='start' name='refresh'></ion-icon>
         {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
       </ion-button>
-      <ion-button expand="block" [disabled]="isUpdating" (click)="sendLogs()">
-        <ion-icon slot="start" name="mail-outline"></ion-icon>
-        Send logger til Regobs Team
+      <ion-button expand='block' [disabled]='isUpdating' (click)='sendLogs()'>
+        <ion-icon slot='start' name='mail-outline'></ion-icon>
+        {{ "SETTINGS.SEND_LOGS" | translate }}
       </ion-button>
-      <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="confirmReset()">
-        <ion-icon slot="start" name="medkit"></ion-icon>
+      <ion-button class='reset-button' color='danger' expand='block' [disabled]='isUpdating' (click)='confirmReset()'>
+        <ion-icon slot='start' name='medkit'></ion-icon>
         {{ "SETTINGS.RESET" | translate }}
       </ion-button>
     </ion-list>
