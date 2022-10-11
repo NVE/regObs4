@@ -204,7 +204,8 @@ export class RegobsAuthService {
         {
           name: 'nick',
           type: 'text',
-          max: 24
+          max: 24,
+          placeholder: translations[headerTextKey]
         }
       ],
       buttons: [
@@ -268,7 +269,7 @@ export class RegobsAuthService {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
-        .map(function (c) {
+        .map(function(c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         })
         .join('')
