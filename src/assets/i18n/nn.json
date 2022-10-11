@@ -247,6 +247,10 @@
       "HEADER": "Om observasjonar",
       "MESSAGE": "Observasjonar brukast på eige ansvar. Dei er registrerast av Regobs sine brukarar og er ikkje kvalitetsjekka. NVE tek ikkje ansvar for feil, manglar og vurderingar som registererast av brukarane. \nKompetansenivået, som visast som stjerner bak navnet, KAN vere ein indikator på truverdigheit. "
     },
+    "ABOUT_OFFLINE_SUPPORT_MAPS": {
+      "HEADER": "Offline-kart",
+      "MESSAGE": "Det valde kartlaget er berre tilgjengeleg online og kan fungera dårleg i område med avgrensa dekning."
+    },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "om kart",
       "MESSAGE": "Bruk karta på eige ansvar og gjer alltid dine eigne vurderingar. Karta kan innehalde feil og manglar. "
