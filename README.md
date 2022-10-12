@@ -303,7 +303,7 @@ har gjort som ikke er relevante for PRen man jobber på. Det kan derfor være lu
 etter at endringene er flettet inn i develop for å synkronisere språk.
 
 Husk at rene endringer kan tas rett i Lokalise, også for engelsk språk,
-for deretter å hente ned oppdaterte tekster via `lokalse:download`. Dette kan
+for deretter å hente ned oppdaterte tekster via `translations:download`. Dette kan
 være like kjapt som å gjøre endringene lokalt om det ikke er noe forskjel
 mellom Lokalse og lokale språkfiler.
 
