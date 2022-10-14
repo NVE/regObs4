@@ -731,7 +731,8 @@
     "TITLE": "Settings",
     "UPDATE_DROPDOWNS": "Update dropdowns",
     "USE_IN_WORLD": "Outside Norway",
-    "USE_RETINA_MAP": "Use high resolution maps"
+    "USE_RETINA_MAP": "Use high resolution maps",
+    "SEND_LOGS": "Send logs to the Regobs-team"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Couldn't save nickname. Please try later.",

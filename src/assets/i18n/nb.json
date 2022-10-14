@@ -731,7 +731,8 @@
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge",
-    "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
+    "USE_RETINA_MAP": "Bruk høy oppløsning på kart",
+    "SEND_LOGS": "Send logger til Regobs-teamet"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
