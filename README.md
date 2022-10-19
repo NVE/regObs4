@@ -8,7 +8,7 @@ This is the Varsom RegObs app version 4. It is based on code from version 3 but 
    Windows) **
    Ikke nyere eller
    eldre versjon**
-2. Sjekk at `npm --version` viser v6.x.x. **Ikke nyere eller eldre versjon**
+2. Oppgrader npm til versjon 8 med `npm i -g npm@8`
 3. [Installer git](https://git-scm.com/download/win)
 4. Clone repo (`git clone https://github.com/NVE/regObs4.git`)
 5. Install packages (`npm install`)
