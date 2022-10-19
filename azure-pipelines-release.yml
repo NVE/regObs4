@@ -27,7 +27,7 @@ steps:
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple App Store distribution certificate'
   inputs:
-    certSecureFile: '6c79d7b9-e447-4254-b436-e656611b3431'
+    certSecureFile: 'a38be812-1d9c-406b-ad7f-2458fa80814f'
     certPwd: '$(apple.dist.cert.password)'
 
 - task: InstallAppleProvisioningProfile@1
