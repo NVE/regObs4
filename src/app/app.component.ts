@@ -17,6 +17,7 @@ import { FileLoggingService } from './modules/shared/services/logging/file-loggi
 import { AuthService } from 'ionic-appauth';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
+import { Keyboard } from '@capacitor/keyboard';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -51,6 +52,10 @@ export class AppComponent {
   }
 
   initializeApp(): void {
+    if (this.platform.is('ios')) {
+      Keyboard.setAccessoryBarVisible({ isVisible: true });
+    }
+
     this.platform.ready().then(() => {
       this.breakpointService.onResize(this.platform.width());
     });
