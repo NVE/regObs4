@@ -8,8 +8,8 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
 import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
@@ -27,7 +27,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;
   private draft: RegistrationDraft;
   private draftInitClone: RegistrationDraft;
-  totalThickness: number;
+  totalThickness: Observable<number>;
   private ngDestroy$ = new Subject<void>();
   private layerModal: HTMLIonModalElement;
 
@@ -56,9 +56,14 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
             this.draftInitClone = cloneDeep(draft);
           }
           this.draft = draft;
-          this.calculate();
         });
       });
+
+    this.totalThickness = this.draftRepository.getDraft$(this.uuid)
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        map(draft => this.calculateTotalThickness(draft))
+      );
   }
 
   ngOnDestroy(): void {
@@ -112,7 +117,6 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         this.layerModal.present();
         await this.layerModal.onDidDismiss();
         this.layerModal = null;
-        this.calculate();
       }
     } else {
       this.regobsAuthService.signIn(); //TODO: Denne redirecter tilbake til snøprofil-sida
@@ -135,12 +139,12 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     }
   }
 
-  private calculate(): void {
-    const layers = this.profile.Layers || [];
+  private calculateTotalThickness(draft: RegistrationDraft): number {
+    const layers = draft?.registration?.SnowProfile2?.StratProfile?.Layers || [];
     const sum = layers
       .filter((x) => x.Thickness !== undefined)
       .map((layer) => layer.Thickness)
       .reduce((pv, cv) => pv + cv, 0);
-    this.totalThickness = sum;
+    return sum;
   }
 }

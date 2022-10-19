@@ -71,10 +71,12 @@
           </ion-label>
         </ion-list-header>
         <ion-item>
-          <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
+          <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+            {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
             | translate}}</ion-label>
           <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
-            <p class="ion-no-margin" *ngIf="totalThickness !== undefined">{{ totalThickness | metersToCm }} cm</p>
+            <p class="ion-no-margin" *ngIf="totalThickness | async as totalThickness">{{ totalThickness | metersToCm }}
+              cm</p>
           </ion-text>
         </ion-item>
       </ng-container>
