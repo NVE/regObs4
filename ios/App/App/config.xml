@@ -67,10 +67,6 @@
   <preference name="SplashScreenDelay" value="3000" />
   <preference name="FadeSplashScreenDuration" value="300" />
   <preference name="AndroidLaunchMode" value="singleTask" />
-  <preference name="KeyboardDisplayRequiresUserAction" value="false" />
-  <preference name="KeyboardResize" value="true" />
-  <preference name="KeyboardResizeMode" value="ionic" />
-  <preference name="HideKeyboardFormAccessoryBar" value="false" />
   <preference name="AndroidPersistentFileLocation" value="Compatibility" />
   <preference name="WKWebViewOnly" value="true" />
   <preference name="ResolveServiceWorkerRequests" value="true" />
