@@ -453,7 +453,8 @@
         "TIME": "Skredtidspunkt (påkrevd)",
         "TITLE": "Skredhending",
         "TRAJECTORY_NAME": "Skredbanenamn",
-        "VALID_EXPOSITION": "Eksposisjon"
+        "VALID_EXPOSITION": "Eksposisjon",
+        "REMOTELY_TRIGGERED": "Fjernutløst"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
