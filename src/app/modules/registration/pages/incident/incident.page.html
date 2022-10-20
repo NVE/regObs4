@@ -10,19 +10,10 @@
 </ion-header>
 <ion-content>
   <app-registration-content-wrapper *ngIf="draft && incident" [draft]="draft"
-    [registrationTid]="registrationTid" (reset)="reset()">
-    <ion-list lines="full">
-      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
-      </app-text-comment>
-      <ion-item-divider>
-        <ion-label class="ion-text-wrap">
-          {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
-        </ion-label>
-      </ion-item-divider>
-      <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
-        [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
-        [(value)]="incident.DamageExtentTID"></app-kdv-select>
+                                    [registrationTid]="registrationTid" (reset)="reset()">
+    <ion-list>
+      <app-incident-component [incident]="incident"
+                              [geoHazard]="draft.registration.GeoHazardTID"></app-incident-component>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
@@ -35,12 +26,6 @@
         [(existingAttachments)]="draft.registration.Attachments"
         [onBeforeAdd]="getSaveFunc()"
       ></app-edit-images>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
-        </ion-label>
-      </ion-list-header>
-      <app-add-web-url-item [(weburls)]="incident.IncidentURLs"></app-add-web-url-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

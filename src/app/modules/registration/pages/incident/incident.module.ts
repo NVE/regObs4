@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IncidentPage } from './incident.page';
 import { SharedComponentsModule } from '../../shared-components.module';
 import { AddWebUrlModalPageModule } from '../add-web-url-modal/add-web-url-modal.module';
+import { RegistrationModule } from '../../registration.module';
 
 const routes: Routes = [
   {
@@ -15,8 +16,10 @@ const routes: Routes = [
   imports: [
     SharedComponentsModule,
     AddWebUrlModalPageModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    RegistrationModule
   ],
   declarations: [IncidentPage]
 })
-export class IncidentPageModule {}
+export class IncidentPageModule {
+}
