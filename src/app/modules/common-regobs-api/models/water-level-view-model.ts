@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface WaterLevelViewModel {
   Comment?: string;
   IsRiver?: boolean;

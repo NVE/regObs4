@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface ObserverCompetenceLevelDto {
   Description?: string;
   Id?: number;

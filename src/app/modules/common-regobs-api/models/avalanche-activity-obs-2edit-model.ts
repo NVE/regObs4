@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AvalancheActivityObs2EditModel {
   AvalCauseTID?: number;
   AvalPropagationTID?: number;

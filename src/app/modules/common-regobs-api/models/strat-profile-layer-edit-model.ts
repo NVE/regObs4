@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface StratProfileLayerEditModel {
   Comment?: string;
   CriticalLayerTID?: number;

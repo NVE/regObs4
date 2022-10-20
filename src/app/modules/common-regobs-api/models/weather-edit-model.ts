@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface WeatherEditModel {
   AirTemperature?: number;
   CloudCover?: number;

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { RegistrationTypeSubTypeDto } from './registration-type-sub-type-dto';
 export interface RegistrationTypeDto {
   Id?: number;

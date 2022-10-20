@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AvalancheObsEditModel {
 
   /**
@@ -55,6 +55,11 @@ export interface AvalancheObsEditModel {
    * Høyde i stoppområdet
    */
   HeightStopZone?: number;
+
+  /**
+   * Ble skredet fjernutløst?
+   */
+  RemotelyTriggered?: boolean;
 
   /**
    * SnowLine

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { AttachmentEditModel } from './attachment-edit-model';
 export interface WaterLevelMeasurementEditModel {
   Attachments?: Array<AttachmentEditModel>;

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { SnowDensityLayerModel } from './snow-density-layer-model';
 export interface SnowDensityModel {
   Comment?: string;

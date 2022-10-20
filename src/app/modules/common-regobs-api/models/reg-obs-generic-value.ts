@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface RegObsGenericValue {
   Header?: string;
   Kind?: 0 | 1 | 2;
