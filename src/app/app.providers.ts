@@ -21,7 +21,6 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { AuthGuard } from './core/guards/auth.guard';
-import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
@@ -109,7 +108,6 @@ export const APP_PROVIDERS = [
   HTTP,
   WebView,
   EmailComposer,
-  Keyboard,
   SQLite,
   Network,
   ScreenOrientation,
