@@ -515,7 +515,8 @@
         "TIME": "Avalanche time (required)",
         "TITLE": "Avalanche Incident",
         "TRAJECTORY_NAME": "Name of avalanche path",
-        "VALID_EXPOSITION": "Aspect"
+        "VALID_EXPOSITION": "Aspect",
+        "REMOTELY_TRIGGERED": "Remotely triggered"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
