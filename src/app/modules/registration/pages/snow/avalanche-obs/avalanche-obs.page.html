@@ -90,6 +90,34 @@
       </app-numeric-input>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [max]="100" [rows]="2"
                         [(value)]="avalancheObs.Trajectory"></app-text-comment>
+      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
+                         [(value)]="incident.HarmedNum"></app-numeric-input>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_TOURIST_TID" kdvKey="LocalTouristKDV"
+                      [(value)]="incident.LocalTouristTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_KNOWLEDGE_TID" kdvKey="LocalKnowledgeKDV"
+                      [(value)]="incident.LocalKnowledgeTID"></app-kdv-select>
+      <ion-item>
+        <ion-label
+          position="stacked"
+          color="medium"
+          class="ion-text-uppercase">
+          {{'REGISTRATION.SNOW.AVALANCHE_OBS.TRAFFIC_OBSTRUCTED' | translate}}
+        </ion-label>
+        <ion-toggle [(ngModel)]="incident.TrafficObstructed"></ion-toggle>
+      </ion-item>
+      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.EVACUATED_NUM"
+                         [(value)]="incident.EvacuatedNum"></app-numeric-input>
+      <ion-item>
+        <ion-label
+          position="stacked"
+          color="medium"
+          class="ion-text-uppercase">
+          {{'REGISTRATION.SNOW.AVALANCHE_OBS.MATERIAL_DAMAGES' | translate}}
+        </ion-label>
+        <ion-toggle [(ngModel)]="incident.MaterialDamages"></ion-toggle>
+      </ion-item>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID" kdvKey="SlopeActivityKDV"
+                      [(value)]="incident.SlopeActivityTID"></app-kdv-select>
       <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheObs.Comment">
       </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
