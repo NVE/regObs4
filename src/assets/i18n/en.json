@@ -516,7 +516,19 @@
         "TITLE": "Avalanche Incident",
         "TRAJECTORY_NAME": "Name of avalanche path",
         "VALID_EXPOSITION": "Aspect",
-        "REMOTELY_TRIGGERED": "Remotely triggered"
+        "REMOTELY_TRIGGERED": "Remotely triggered",
+        "INVOLVED_NUM": "Number involved",
+        "CASUALTIES_NUM": "Number of casualties",
+        "HARMED_NUM": "Number injured",
+        "DEAD_NUM": "Number dead",
+        "SAFETY_GEAR_TID": "Sender/receiver",
+        "LOCAL_TOURIST_TID": "Local or visiting",
+        "LOCAL_KNOWLEDGE_TID": "Knowledge of the area",
+        "RESCUE_TID": "Rescue",
+        "TRAFFIC_OBSTRUCTED": "Traffic obstructed",
+        "EVACUATED_NUM": "Number of evacuees",
+        "MATERIAL_DAMAGES": "Material damages",
+        "SLOPE_ACTIVITY_TID": "Tour phase"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
