@@ -279,6 +279,7 @@
     "OK_I_UNDERSTAND": "OK, jeg skjønner"
   },
   "REGISTRATION": {
+    "CHECK_TO_ANONYMIZE": "Huk av for å anonymisere",
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {
       "TITLE": "Legg til weblenke",

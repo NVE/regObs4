@@ -139,7 +139,8 @@
       </ion-list-header>
       <app-incident-component [incident]="incident"
                               [geoHazard]="draft.registration.GeoHazardTID"
-                              [incidentType]="'Snow'"></app-incident-component>
+                              [incidentType]="'Snow'"
+                              [registration]="this.draft.registration"></app-incident-component>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
