@@ -411,6 +411,10 @@
     "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese media for å kunne legge til bilder fra biblioteket",
+      "UNKNOWN": "Vi fikk ikke til å legge til bildet. Det kan være noe galt med bildefila eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
+    },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",

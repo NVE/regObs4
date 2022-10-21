@@ -411,6 +411,10 @@
     "IMAGES": "Images",
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "To add images from library you need to give the app permission to read media",
+      "UNKNOWN": "Couldn't add image. It may be something wrong with the image file. Please try another image to check"
+    },
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",

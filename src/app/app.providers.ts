@@ -16,7 +16,6 @@ import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -102,7 +101,6 @@ export const APP_PROVIDERS = [
   File,
   AndroidPermissions,
   Zip,
-  Camera,
   InAppBrowser,
   SafariViewController,
   HTTP,
