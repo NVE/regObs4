@@ -67,5 +67,5 @@ export type KdvKey =
   'LocalTouristKDV' |
   'LocalKnowledgeKDV' |
   'RescueKDV' |
-  'SlopeActivityKDV'
+  'Snow_SlopeActivityKDV'
   ;
