@@ -406,6 +406,11 @@
         "ICE_TYPE": "Type is",
         "SLUSH_SNOW_BEFORE_DRILL": "Sørpe før boring (cm)",
         "TITLE": "Istykkelse"
+      },
+      "INCIDENT": {
+        "INVOLVED_NUM": "Antall i turgruppa",
+        "CASUALTIES_NUM": "Antall gjennom isen",
+        "SAFETY_GEAR_TID": "Redningsutstyr"
       }
     },
     "IMAGES": "Bilder",
@@ -417,7 +422,9 @@
       "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Gikk det bra? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
-      "TITLE": "Ulykke / hendelse"
+      "TITLE": "Ulykke / hendelse",
+      "DEAD_NUM": "Antall døde",
+      "RESCUE_TID": "Redning"
     },
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
     "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
@@ -520,11 +527,9 @@
         "INVOLVED_NUM": "Antall involvert",
         "CASUALTIES_NUM": "Antall skredtatte",
         "HARMED_NUM": "Antall skadet",
-        "DEAD_NUM": "Antall døde",
         "SAFETY_GEAR_TID": "Sender/mottaker",
         "LOCAL_TOURIST_TID": "Lokal eller tilreisende",
         "LOCAL_KNOWLEDGE_TID": "Kjennskap i området",
-        "RESCUE_TID": "Redning",
         "TRAFFIC_OBSTRUCTED": "Trafikk hindret",
         "EVACUATED_NUM": "Antall evakuerte",
         "MATERIAL_DAMAGES": "Materielle skader",

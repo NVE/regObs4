@@ -13,7 +13,8 @@
                                     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list>
       <app-incident-component [incident]="incident"
-                              [geoHazard]="draft.registration.GeoHazardTID"></app-incident-component>
+                              [geoHazard]="draft.registration.GeoHazardTID"
+                              [incidentType]="'IceIncident'"></app-incident-component>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}

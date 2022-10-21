@@ -406,6 +406,11 @@
         "ICE_TYPE": "Ice type",
         "SLUSH_SNOW_BEFORE_DRILL": "Slush snow before drilling (cm)",
         "TITLE": "Ice Thickness"
+      },
+      "INCIDENT": {
+        "INVOLVED_NUM": "Number in the tour group",
+        "CASUALTIES_NUM": "Number through the ice",
+        "SAFETY_GEAR_TID": "Rescue equipment"
       }
     },
     "IMAGES": "Images",
@@ -417,7 +422,9 @@
       "COMMENT_PLACEHOLDER": "Why did it happen? Did it go well? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
       "IMAGE_PLACEHOLDER": "+ Add image description",
-      "TITLE": "Accident / Incident"
+      "TITLE": "Accident / Incident",
+      "DEAD_NUM": "Number of dead",
+      "RESCUE_TID": "Rescue"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
     "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
@@ -520,11 +527,9 @@
         "INVOLVED_NUM": "Number involved",
         "CASUALTIES_NUM": "Number of casualties",
         "HARMED_NUM": "Number injured",
-        "DEAD_NUM": "Number dead",
         "SAFETY_GEAR_TID": "Sender/receiver",
         "LOCAL_TOURIST_TID": "Local or visiting",
         "LOCAL_KNOWLEDGE_TID": "Knowledge of the area",
-        "RESCUE_TID": "Rescue",
         "TRAFFIC_OBSTRUCTED": "Traffic obstructed",
         "EVACUATED_NUM": "Number of evacuees",
         "MATERIAL_DAMAGES": "Material damages",

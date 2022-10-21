@@ -7,14 +7,14 @@
 </ion-item-divider>
 <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
                 [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
-<app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
+<app-numeric-input title="REGISTRATION.{{incidentTypeName}}.INVOLVED_NUM"
                    [(value)]="incident.InvolvedNum"></app-numeric-input>
-<app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
+<app-numeric-input title="REGISTRATION.{{incidentTypeName}}.CASUALTIES_NUM"
                    [(value)]="incident.CasualtiesNum"></app-numeric-input>
-<app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM" [(value)]="incident.DeadNum"></app-numeric-input>
-<app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.SAFETY_GEAR_TID" kdvKey="SafetyGearKDV"
+<app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM" [(value)]="incident.DeadNum"></app-numeric-input>
+<app-kdv-select title="REGISTRATION.{{incidentTypeName}}.SAFETY_GEAR_TID" kdvKey="SafetyGearKDV"
                 [(value)]="incident.SafetyGearTID"></app-kdv-select>
-<app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.RESCUE_TID" kdvKey="RescueKDV"
+<app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV"
                 [(value)]="incident.RescueTID"></app-kdv-select>
 <ion-list-header class="ion-text-uppercase">
   <ion-label>
