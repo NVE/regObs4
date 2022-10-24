@@ -9,15 +9,6 @@
                 [(value)]="incident.SafetyGearTID"></app-kdv-select>
 <app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV"
                 [(value)]="incident.RescueTID"></app-kdv-select>
-<ion-item>
-  <ion-label
-    position="stacked"
-    color="medium"
-    class="ion-text-uppercase">
-    {{'REGISTRATION.CHECK_TO_ANONYMIZE' | translate}}
-  </ion-label>
-  <ion-toggle [(ngModel)]="registration.Anonymous"></ion-toggle>
-</ion-item>
 <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
 </app-text-comment>
 <ion-item-divider>

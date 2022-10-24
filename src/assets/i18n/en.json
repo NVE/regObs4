@@ -279,7 +279,10 @@
     "OK_I_UNDERSTAND": "OK, I understand"
   },
   "REGISTRATION": {
-    "CHECK_TO_ANONYMIZE": "Check to anonymize",
+    "ANONYMIZE": {
+      "TITLE": "Anonymize",
+      "CHECK_TO_ANONYMIZE": "Check to anonymize"
+    },
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {
       "TITLE": "Add web url",

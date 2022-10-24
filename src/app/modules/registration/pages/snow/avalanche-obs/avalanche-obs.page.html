@@ -139,8 +139,21 @@
       </ion-list-header>
       <app-incident-component [incident]="incident"
                               [geoHazard]="draft.registration.GeoHazardTID"
-                              [incidentType]="'Snow'"
-                              [registration]="this.draft.registration"></app-incident-component>
+                              [incidentType]="'Snow'"></app-incident-component>
+      <ion-list-header class="ion-text-uppercase">
+        <ion-label>
+          {{ 'REGISTRATION.ANONYMIZE.TITLE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-label
+          position="stacked"
+          color="medium"
+          class="ion-text-uppercase">
+          {{'REGISTRATION.ANONYMIZE.CHECK_TO_ANONYMIZE' | translate}}
+        </ion-label>
+        <ion-toggle [(ngModel)]="this.draft.registration.Anonymous"></ion-toggle>
+      </ion-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
