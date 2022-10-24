@@ -1,10 +1,3 @@
-<app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
-</app-text-comment>
-<ion-item-divider>
-  <ion-label class="ion-text-wrap">
-    {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
-  </ion-label>
-</ion-item-divider>
 <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
                 [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
 <app-numeric-input title="REGISTRATION.{{incidentTypeName}}.INVOLVED_NUM"
@@ -25,6 +18,13 @@
   </ion-label>
   <ion-toggle [(ngModel)]="registration.Anonymous"></ion-toggle>
 </ion-item>
+<app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
+</app-text-comment>
+<ion-item-divider>
+  <ion-label class="ion-text-wrap">
+    {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
+  </ion-label>
+</ion-item-divider>
 <ion-list-header class="ion-text-uppercase">
   <ion-label>
     {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
