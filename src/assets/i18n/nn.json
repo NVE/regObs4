@@ -369,7 +369,8 @@
     "IMAGE_DESCRIPTION": "Skildring av bilete",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi ei skildring av bilete",
     "IMAGE_ERROR": {
-      "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese media for å kunne legge til bilder fra biblioteket",
+      "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
+      "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
       "UNKNOWN": "Vi fikk ikke til å legge til bildet. Det kan være noe galt med bildefila eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
     },
     "INCIDENT": {

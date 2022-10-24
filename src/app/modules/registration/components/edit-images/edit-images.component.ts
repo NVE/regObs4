@@ -143,7 +143,9 @@ export class EditImagesComponent implements OnInit {
       const arrayBuffer = await this.getArrayBuffer(imageUrl);
       await this.addImage(new Blob([arrayBuffer]), MIME_TYPE);
     } catch (err) {
-      if (err.message == 'User denied access to photos') {
+      if (err.message == 'User denied access to camera') {
+        this.showErrorToast('REGISTRATION.IMAGE_ERROR.CAMERA_PERMISSION_MISSING');
+      } else if (err.message == 'User denied access to photos') {
         this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
       // we ignore errors we get if user cancels taking photo or gallery selection
       } else if (['No image picked', 'No Image Selected', 'User cancelled photos app'].indexOf(err.message) === -1) {
