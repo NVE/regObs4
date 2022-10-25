@@ -144,7 +144,9 @@ export class EditImagesComponent implements OnInit {
       this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
     }
     if (photos?.photos?.length > 0) {
-      imageUrls = photos?.photos?.map(photo => photo.path);
+      if (this.checkAndNotifyIfUnsupportedImageFormat(photos.photos.map(photo => photo.format))) {
+        imageUrls = photos.photos.map(photo => photo.path);
+      }
     }
     return imageUrls;
   }
@@ -154,7 +156,9 @@ export class EditImagesComponent implements OnInit {
     if (permissionState?.camera === 'granted') {
       const photo = await Camera.getPhoto(options);
       if (photo) {
-        return [photo.path];
+        if (this.checkAndNotifyIfUnsupportedImageFormat([photo.format])) {
+          return [photo.path];
+        }
       }
     } else {
       this.showErrorToast('REGISTRATION.IMAGE_ERROR.CAMERA_PERMISSION_MISSING');
@@ -174,10 +178,6 @@ export class EditImagesComponent implements OnInit {
         imageUrls = await this.getAlbumImageUrls(options);
       } else {
         imageUrls = await this.takePhotoAndReturnImageUrl(options);
-      }
-      if (!(await this.isImageFormatSupported(imageUrls))) {
-        this.showErrorToast('REGISTRATION.INVALID_IMAGE');
-        return true;
       }
       for (const imageUrl of imageUrls) {
         this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
@@ -207,17 +207,17 @@ export class EditImagesComponent implements OnInit {
     return arrayBuffer;
   }
 
-  private async isImageFormatSupported(imageUrls: string[]): Promise<boolean> {
-    for (const url of imageUrls) {
-      const entry = await this.file.resolveLocalFilesystemUrl(url);
-      if (!(entry.name.endsWith('jpg') || entry.name.endsWith('jpeg'))) {
+  private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
+    formats.forEach(format => {
+      if (!(format === 'jpeg')) {
+        this.showErrorToast('REGISTRATION.INVALID_IMAGE');
         return false;
       }
-    }
+    });
     return true;
   }
 
-  showErrorToast(messageKey: string) {
+  private showErrorToast(messageKey: string) {
     this.translateService.get(messageKey).subscribe(async (translation) => {
       const toast = await this.toastController.create({
         message: translation,
