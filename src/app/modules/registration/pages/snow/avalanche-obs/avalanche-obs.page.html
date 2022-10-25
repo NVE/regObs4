@@ -90,12 +90,6 @@
       </app-numeric-input>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [max]="100" [rows]="2"
                         [(value)]="avalancheObs.Trajectory"></app-text-comment>
-      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
-                         [(value)]="incident.HarmedNum"></app-numeric-input>
-      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_TOURIST_TID" kdvKey="LocalTouristKDV"
-                      [(value)]="incident.LocalTouristTID"></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_KNOWLEDGE_TID" kdvKey="LocalKnowledgeKDV"
-                      [(value)]="incident.LocalKnowledgeTID"></app-kdv-select>
       <ion-item>
         <ion-label
           position="stacked"
@@ -137,6 +131,12 @@
           {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}}
         </ion-label>
       </ion-list-header>
+      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
+                         [(value)]="incident.HarmedNum"></app-numeric-input>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_TOURIST_TID" kdvKey="LocalTouristKDV"
+                      [(value)]="incident.LocalTouristTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_KNOWLEDGE_TID" kdvKey="LocalKnowledgeKDV"
+                      [(value)]="incident.LocalKnowledgeTID"></app-kdv-select>
       <app-incident-component [incident]="incident"
                               [geoHazard]="draft.registration.GeoHazardTID"
                               [incidentType]="'Snow'"></app-incident-component>
