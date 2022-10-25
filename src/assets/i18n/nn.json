@@ -371,7 +371,7 @@
     "IMAGE_ERROR": {
       "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
       "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
-      "UNKNOWN": "Vi fikk ikke til å legge til bildet. Det kan være noe galt med bildefila eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
+      "UNKNOWN": "Vi fekk ikkje til å legge til bildet/bildane. Det kan være noko gale med ein bildefil eller ein annan feil. Prøv gjerne eit anna bilde for å sjekke"
     },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
@@ -381,7 +381,7 @@
       "IMAGE_PLACEHOLDER": "+ Legg til ein beskrivelse av bilete",
       "TITLE": "Ulykke/hending"
     },
-    "INVALID_IMAGE": "Ugyldig biletformat",
+    "INVALID_IMAGE": "Ugyldig biletformat. Bare JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I heile centimeter",
     "NONE": "Ingen valt",

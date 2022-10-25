@@ -414,7 +414,7 @@
     "IMAGE_ERROR": {
       "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
       "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
-      "UNKNOWN": "Vi fikk ikke til å legge til bildet. Det kan være noe galt med bildefila eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
+      "UNKNOWN": "Vi fikk ikke til å legge til bildet/bildene. Det kan være noe galt med en bildefil eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
     },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
@@ -424,7 +424,7 @@
       "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
       "TITLE": "Ulykke / hendelse"
     },
-    "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
+    "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
     "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "IN_CM": "I centimeter",
