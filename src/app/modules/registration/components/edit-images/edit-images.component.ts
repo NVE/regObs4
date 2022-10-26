@@ -135,7 +135,10 @@ export class EditImagesComponent implements OnInit {
   private async getAlbumImageUrls(options: GalleryImageOptions): Promise<string[]> {
     let imageUrls: string[] = [];
     let photos: GalleryPhotos;
-    const permissionState = await Camera.checkPermissions();
+    let permissionState = await Camera.checkPermissions();
+    if (permissionState?.photos != 'granted' && permissionState?.photos != 'limited') {
+      permissionState = await Camera.requestPermissions({permissions: ['photos']});
+    }
     if (permissionState?.photos === 'limited') {
       photos = await Camera.getLimitedLibraryPhotos();
     } else if (permissionState?.photos === 'granted') {
@@ -152,7 +155,10 @@ export class EditImagesComponent implements OnInit {
   }
 
   private async takePhotoAndReturnImageUrl(options: ImageOptions): Promise<string[]> {
-    const permissionState = await Camera.checkPermissions();
+    let permissionState = await Camera.checkPermissions();
+    if (permissionState?.camera !== 'granted') {
+      permissionState = await Camera.requestPermissions({permissions: ['camera']});
+    }
     if (permissionState?.camera === 'granted') {
       const photo = await Camera.getPhoto(options);
       if (photo) {
