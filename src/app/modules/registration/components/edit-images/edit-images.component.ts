@@ -136,12 +136,10 @@ export class EditImagesComponent implements OnInit {
     let imageUrls: string[] = [];
     let photos: GalleryPhotos;
     let permissionState = await Camera.checkPermissions();
-    if (permissionState?.photos != 'granted' && permissionState?.photos != 'limited') {
+    if (!(['granted', 'limited'].includes(permissionState?.photos))) {
       permissionState = await Camera.requestPermissions({permissions: ['photos']});
     }
-    if (permissionState?.photos === 'limited') {
-      photos = await Camera.getLimitedLibraryPhotos();
-    } else if (permissionState?.photos === 'granted') {
+    if (['granted', 'limited'].includes(permissionState?.photos)) {
       photos = await Camera.pickImages(options);
     } else {
       this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
@@ -193,7 +191,7 @@ export class EditImagesComponent implements OnInit {
       }
     } catch (err) {
       // we ignore errors we get if user cancels taking photo or gallery selection
-      if (ERRORS_TO_IGNORE.indexOf(err.message) === -1) {
+      if (!(ERRORS_TO_IGNORE.includes(err.message))) {
         this.logger.log('Unknown error when adding image', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
         this.showErrorToast('REGISTRATION.IMAGE_ERROR.UNKNOWN');
       }
