@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { UrlViewModel } from './url-view-model';
 export interface LandslideViewModel {
   ActivityInfluencedName?: string;

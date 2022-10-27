@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AtAGlanceViewModel {
   CompetenceLevelTID?: number;
   DtObsTime?: string;

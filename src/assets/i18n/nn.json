@@ -453,7 +453,20 @@
         "TIME": "Skredtidspunkt (påkrevd)",
         "TITLE": "Skredhending",
         "TRAJECTORY_NAME": "Skredbanenamn",
-        "VALID_EXPOSITION": "Eksposisjon"
+        "VALID_EXPOSITION": "Eksposisjon",
+        "REMOTELY_TRIGGERED": "Fjernutløst",
+        "INVOLVED_NUM": "Antal involvert",
+        "CASUALTIES_NUM": "Antall skredtatte",
+        "HARMED_NUM": "Antal skadet",
+        "DEAD_NUM": "Antal døde",
+        "SAFETY_GEAR_TID": "Sendar/mottakar",
+        "LOCAL_TOURIST_TID": "Lokal eller tilreisande",
+        "LOCAL_KNOWLEDGE_TID": "Kjenskap i området",
+        "RESCUE_TID": "Redning",
+        "TRAFFIC_OBSTRUCTED": "Trafikk hindra",
+        "EVACUATED_NUM": "Antal evakuerte",
+        "MATERIAL_DAMAGES": "Materielle skadar",
+        "SLOPE_ACTIVITY_TID": "Turfase"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",

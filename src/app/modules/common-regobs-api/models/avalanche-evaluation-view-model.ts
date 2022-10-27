@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AvalancheEvaluationViewModel {
   AvalancheDangerName?: string;
   AvalancheDangerTID?: number;

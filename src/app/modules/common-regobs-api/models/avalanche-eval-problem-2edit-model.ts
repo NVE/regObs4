@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AvalancheEvalProblem2EditModel {
   AvalCauseAttributeCrystalTID?: number;
   AvalCauseAttributeLightTID?: number;

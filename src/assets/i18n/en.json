@@ -279,6 +279,10 @@
     "OK_I_UNDERSTAND": "OK, I understand"
   },
   "REGISTRATION": {
+    "ANONYMIZE": {
+      "TITLE": "Anonymize",
+      "CHECK_TO_ANONYMIZE": "Check to anonymize"
+    },
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {
       "TITLE": "Add web url",
@@ -406,6 +410,11 @@
         "ICE_TYPE": "Ice type",
         "SLUSH_SNOW_BEFORE_DRILL": "Slush snow before drilling (cm)",
         "TITLE": "Ice Thickness"
+      },
+      "INCIDENT": {
+        "INVOLVED_NUM": "Number in the tour group",
+        "CASUALTIES_NUM": "Number through the ice",
+        "SAFETY_GEAR_TID": "Rescue equipment"
       }
     },
     "IMAGES": "Images",
@@ -417,7 +426,9 @@
       "COMMENT_PLACEHOLDER": "Why did it happen? Did it go well? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
       "IMAGE_PLACEHOLDER": "+ Add image description",
-      "TITLE": "Accident / Incident"
+      "TITLE": "Accident / Incident",
+      "DEAD_NUM": "Number of dead",
+      "RESCUE_TID": "Rescue"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
     "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
@@ -515,7 +526,18 @@
         "TIME": "Avalanche time (required)",
         "TITLE": "Avalanche Incident",
         "TRAJECTORY_NAME": "Name of avalanche path",
-        "VALID_EXPOSITION": "Aspect"
+        "VALID_EXPOSITION": "Aspect",
+        "REMOTELY_TRIGGERED": "Remotely triggered",
+        "INVOLVED_NUM": "Number involved",
+        "CASUALTIES_NUM": "Number of casualties",
+        "HARMED_NUM": "Number injured",
+        "SAFETY_GEAR_TID": "Sender/receiver",
+        "LOCAL_TOURIST_TID": "Local or visiting",
+        "LOCAL_KNOWLEDGE_TID": "Knowledge of the area",
+        "TRAFFIC_OBSTRUCTED": "Traffic obstructed",
+        "EVACUATED_NUM": "Number of evacuees",
+        "MATERIAL_DAMAGES": "Material damages",
+        "SLOPE_ACTIVITY_TID": "Tour phase"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",

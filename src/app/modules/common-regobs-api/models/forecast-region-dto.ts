@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { ForecastRegionSubRegionDto } from './forecast-region-sub-region-dto';
 export interface ForecastRegionDto {
   Id?: number;

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { UrlEditModel } from './url-edit-model';
 export interface LandslideEditModel {
 

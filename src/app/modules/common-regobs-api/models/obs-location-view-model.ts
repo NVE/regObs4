@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface ObsLocationViewModel {
   CountryId?: number;
   CountryName?: string;

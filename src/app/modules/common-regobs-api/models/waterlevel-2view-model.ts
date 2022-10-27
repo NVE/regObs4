@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { WaterLevelMeasurementViewModel } from './water-level-measurement-view-model';
 export interface Waterlevel2ViewModel {
   Comment?: string;

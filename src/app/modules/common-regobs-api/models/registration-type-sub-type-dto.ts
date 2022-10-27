@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface RegistrationTypeSubTypeDto {
   Id?: number;
   Name?: string;

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { AttachmentViewModel } from './attachment-view-model';
 import { LatLng } from './lat-lng';
 export interface DamageObsViewModel {

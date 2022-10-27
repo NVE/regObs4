@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { IceThicknessLayerViewModel } from './ice-thickness-layer-view-model';
 export interface IceThicknessViewModel {
 

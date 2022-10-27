@@ -1,0 +1,24 @@
+<app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
+                [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
+<app-numeric-input title="REGISTRATION.{{incidentTypeName}}.INVOLVED_NUM"
+                   [(value)]="incident.InvolvedNum"></app-numeric-input>
+<app-numeric-input title="REGISTRATION.{{incidentTypeName}}.CASUALTIES_NUM"
+                   [(value)]="incident.CasualtiesNum"></app-numeric-input>
+<app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM" [(value)]="incident.DeadNum"></app-numeric-input>
+<app-kdv-select title="REGISTRATION.{{incidentTypeName}}.SAFETY_GEAR_TID" kdvKey="SafetyGearKDV"
+                [(value)]="incident.SafetyGearTID"></app-kdv-select>
+<app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV"
+                [(value)]="incident.RescueTID"></app-kdv-select>
+<app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
+</app-text-comment>
+<ion-item-divider>
+  <ion-label class="ion-text-wrap">
+    {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
+  </ion-label>
+</ion-item-divider>
+<ion-list-header class="ion-text-uppercase">
+  <ion-label>
+    {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
+  </ion-label>
+</ion-list-header>
+<app-add-web-url-item [(weburls)]="incident.IncidentURLs"></app-add-web-url-item>

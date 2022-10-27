@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { ObserverCompetenceDto } from './observer-competence-dto';
 import { ObserverGroupDto } from './observer-group-dto';
 export interface MyPageData {
