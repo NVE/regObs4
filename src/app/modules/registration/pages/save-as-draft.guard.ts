@@ -11,14 +11,19 @@ import { TranslateService } from '@ngx-translate/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
+enum SaveAsDraftRespone {
+  Cancel = 'cancel',
+  Save = 'save',
+}
+
 @Injectable()
-export class SaveAsDraftRouteGuard
-implements CanDeactivate<OverviewPage | ObsLocationPage> {
+export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
     private draftService: DraftRepositoryService,
     private translateService: TranslateService
-  ) {}
+  ) {
+  }
 
   async canDeactivate(
     component: OverviewPage,
@@ -59,15 +64,16 @@ implements CanDeactivate<OverviewPage | ObsLocationPage> {
       buttons: [
         {
           text: translations['REGISTRATION.SAVE_ALERT.NO'],
-          role: 'cancel'
+          role: SaveAsDraftRespone.Cancel
         },
         {
-          text: translations['REGISTRATION.SAVE_ALERT.YES']
+          text: translations['REGISTRATION.SAVE_ALERT.YES'],
+          role: SaveAsDraftRespone.Save
         }
       ]
     });
-    alert.present();
+    await alert.present();
     const result = await alert.onDidDismiss();
-    return result.role !== 'cancel';
+    return result.role === SaveAsDraftRespone.Save;
   }
 }
