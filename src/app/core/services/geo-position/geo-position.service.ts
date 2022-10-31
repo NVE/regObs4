@@ -314,6 +314,7 @@ export class GeoPositionService implements OnDestroy {
 
 
   private async startWatchingPosition(): Promise<void> {
+    await this.checkPermissions();
     const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
       if (err) {
         this.loggingService.log(
@@ -384,7 +385,7 @@ export class GeoPositionService implements OnDestroy {
   private async checkPermissions() : Promise<boolean> {
     try {
       if (isAndroidOrIos(this.platform)) {
-        this.checkPermissionsApp();
+        await this.checkPermissionsApp();
       }
     } catch (err) {
       this.loggingService.error(
@@ -392,6 +393,8 @@ export class GeoPositionService implements OnDestroy {
         DEBUG_TAG,
         'Error asking for location permissions'
       );
+      const errorMessage = this.translateService.instant('GEOLOCATION.POSITION_ERROR.PermissionDenied');
+      this.createToast(errorMessage);
       return true; // continue anyway on error
     }
   }

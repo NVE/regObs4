@@ -81,7 +81,7 @@
   "DRAFT": "Draft",
   "GEOLOCATION": {
     "POSITION_ERROR": {
-      "PermissionDenied": "To fetch your position you need to alter your browser settings",
+      "PermissionDenied": "To fetch your position you need to alter your location settings",
       "PositionUnavailable": "Not able fetch your position",
       "Timeout": "It took to long time to fetch your position",
       "INVALID": "Invalid position data",
