@@ -12,6 +12,7 @@ export type KdvKey =
   'Ice_IceSkateabilityKDV' |
   'Ice_IceCapacityKDV' |
   'Ice_IceProblemKDV' |
+  'Ice_SafetyGearKDV' |
   'Snow_DangerSignKDV' |
   'Snow_ActivityInfluencedKDV' |
   'Snow_AvalancheKDV' |
@@ -41,6 +42,7 @@ export type KdvKey =
   'Snow_HardnessKDV' |
   'Snow_GrainFormKDV' |
   'Snow_CriticalLayerKDV' |
+  'Snow_SafetyGearKDV' |
   'Water_DangerSignKDV' |
   'Water_ActivityInfluencedKDV' |
   'Water_WaterLevelRefKDV' |
