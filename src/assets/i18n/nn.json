@@ -445,7 +445,7 @@
         "DESTRUCTIVE_SIZE": "Storleik",
         "FRACTURE_HEIGTH": "Brothøyde (cm)",
         "FRACTURE_WIDTH": "Brotbreidd (m)",
-        "INCIDENT_DESCRIPTION": "Ulykke eller skade",
+        "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
         "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Kva skjedde og kvifor? Kunne situasjonen vore unngått?",
         "POSITION": "Skredposisjon",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
