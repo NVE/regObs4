@@ -167,6 +167,7 @@
     "OTHER": "Other",
     "SHOW": "Show",
     "SHOWING_OBSERVATIONS": "observations",
+    "DEACTIVATE_OBSERVATIONS": "Displaying observations has been disabled",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
     "SHOW_TRIPS": "Show trips",
