@@ -29,7 +29,6 @@ import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.compo
 import { BlobImageComponent } from './components/blob-image/blob-image.component';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { DatetimePickerComponent } from '../../components/datetime-picker/datetime-picker.component';
-import { IncidentComponent } from '../../components/incident/incident.component';
 
 @NgModule({
   imports: [
@@ -64,8 +63,7 @@ import { IncidentComponent } from '../../components/incident/incident.component'
     CompressionTestListComponent,
     KdvSelectComponent,
     BlobImageComponent,
-    DatetimePickerComponent,
-    IncidentComponent
+    DatetimePickerComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
@@ -88,8 +86,7 @@ import { IncidentComponent } from '../../components/incident/incident.component'
     CompressionTestListComponent,
     KdvSelectComponent,
     BlobImageComponent,
-    DatetimePickerComponent,
-    IncidentComponent
+    DatetimePickerComponent
   ]
 })
 export class SharedComponentsModule {

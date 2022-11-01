@@ -110,8 +110,6 @@
         </ion-label>
         <ion-toggle [(ngModel)]="incident.MaterialDamages"></ion-toggle>
       </ion-item>
-      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID" kdvKey="Snow_SlopeActivityKDV"
-                      [(value)]="incident.SlopeActivityTID"></app-kdv-select>
       <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheObs.Comment">
       </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
@@ -131,15 +129,38 @@
           {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}}
         </ion-label>
       </ion-list-header>
+      <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Snow_ActivityInfluencedKDV"
+                      [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
+      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
+                         [(value)]="incident.InvolvedNum"></app-numeric-input>
+      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
+                         [(value)]="incident.CasualtiesNum"></app-numeric-input>
+      <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM" [(value)]="incident.DeadNum"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
                          [(value)]="incident.HarmedNum"></app-numeric-input>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID" kdvKey="Snow_SlopeActivityKDV"
+                      [(value)]="incident.SlopeActivityTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV"
+                      [(value)]="incident.RescueTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.SAFETY_GEAR_TID" kdvKey="Snow_SafetyGearKDV"
+                      [(value)]="incident.SafetyGearTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_TOURIST_TID" kdvKey="LocalTouristKDV"
                       [(value)]="incident.LocalTouristTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_KNOWLEDGE_TID" kdvKey="LocalKnowledgeKDV"
                       [(value)]="incident.LocalKnowledgeTID"></app-kdv-select>
-      <app-incident-component [incident]="incident"
-                              [geoHazard]="draft.registration.GeoHazardTID"
-                              [incidentType]="'Snow'"></app-incident-component>
+      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment">
+      </app-text-comment>
+      <ion-item-divider>
+        <ion-label class="ion-text-wrap">
+          {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
+        </ion-label>
+      </ion-item-divider>
+      <ion-list-header class="ion-text-uppercase">
+        <ion-label>
+          {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-add-web-url-item [(weburls)]="incident.IncidentURLs"></app-add-web-url-item>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ANONYMIZE.TITLE' | translate}}
