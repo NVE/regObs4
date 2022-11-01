@@ -1,3 +1,5 @@
+# Github actions triggered by happenings on develop branch. Used to build and deploy PR test-apps and beta.regobs.no
+
 name: Azure Static Web Apps CI/CD
 
 on:
@@ -10,10 +12,11 @@ on:
       - develop
 
 jobs:
-  build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+  # Run when a pull request is created or updated
+  build_and_deploy_pull_request:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Build and Deploy Pull Request
     steps:
       - uses: actions/checkout@v2
         with:
@@ -36,6 +39,38 @@ jobs:
           app_location: "/" # App source code path
           # api_location: "api" # Api source code path - optional
           output_location: "www" # Built app content directory - optional
+          app_build_command: "npm run create-version-file && npm run build"
+          ###### End of Repository/Build Configurations ######
+
+  # Run when we push to develop
+  build_and_deploy_develop:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    name: Build and Deploy develop-branch (beta.regobs.no)
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Create apiKey.json file
+        env:
+          REGOBS_API_KEY: ${{secrets.REGOBS_APPTOKEN}}
+        shell: bash
+        run: |
+          echo "{\"apiKey\":\"$REGOBS_API_KEY\"}" > ./src/assets/apikey.json
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_WATER_056410803 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "/" # App source code path
+          # api_location: "api" # Api source code path - optional
+          output_location: "www" # Built app content directory - optional
+          # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
+          app_build_command: "npm run create-version-file && npm run build:prod"
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:

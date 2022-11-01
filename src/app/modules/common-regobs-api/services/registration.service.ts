@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { BaseService as __BaseService } from '../base-service';
@@ -188,7 +188,8 @@ class RegistrationService extends __BaseService {
   }
 
   /**
-   * Update registration
+   * Update registration. Updating existing obsLocation with new values will be possible only
+   * if there is no other registrations connected to that location from before. Otherwise new values are ignored. User don't get any error message.
    * @param params The `RegistrationService.RegistrationInsertOrUpdateParams` containing the following parameters:
    *
    * - `registration`: Registration data
@@ -230,7 +231,8 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
-   * Update registration
+   * Update registration. Updating existing obsLocation with new values will be possible only
+   * if there is no other registrations connected to that location from before. Otherwise new values are ignored. User don't get any error message.
    * @param params The `RegistrationService.RegistrationInsertOrUpdateParams` containing the following parameters:
    *
    * - `registration`: Registration data
@@ -294,8 +296,8 @@ class RegistrationService extends __BaseService {
    *
    *     {
    *         "GeoHazardTID": 20,
-   *         "ObsLocation": {
    *         "DtObsTime": "2021-06-25T13:18:00.000Z",
+   *         "ObsLocation": {
    *             "Latitude": 60.919917123811992,
    *             "Longitude": 7.210167614875667,
    *         },
@@ -352,8 +354,8 @@ class RegistrationService extends __BaseService {
    *
    *     {
    *         "GeoHazardTID": 20,
-   *         "ObsLocation": {
    *         "DtObsTime": "2021-06-25T13:18:00.000Z",
+   *         "ObsLocation": {
    *             "Latitude": 60.919917123811992,
    *             "Longitude": 7.210167614875667,
    *         },

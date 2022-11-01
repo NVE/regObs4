@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AvalancheEvalProblemViewModel {
   AvalCauseExtName?: string;
   AvalCauseExtTID?: number;

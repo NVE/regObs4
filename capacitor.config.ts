@@ -1,4 +1,5 @@
 import { CapacitorConfig } from '@capacitor/cli';
+import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'no.nve.regobs4',
@@ -11,7 +12,12 @@ const config: CapacitorConfig = {
   plugins: {
     'SplashScreen': {
       'launchAutoHide': false
-    }
+    },
+    Keyboard: {
+      resize: KeyboardResize.Ionic,
+      resizeOnFullScreen: true,
+      style: KeyboardStyle.Default
+    },
   },
   cordova: {
     preferences: {
@@ -28,10 +34,6 @@ const config: CapacitorConfig = {
       SplashScreenDelay: '3000',
       FadeSplashScreenDuration: '300',
       AndroidLaunchMode: 'singleTask',
-      KeyboardDisplayRequiresUserAction: 'false',
-      KeyboardResize: 'true',
-      KeyboardResizeMode: 'ionic',
-      HideKeyboardFormAccessoryBar: 'false',
       AndroidPersistentFileLocation: 'Compatibility',
       WKWebViewOnly: 'true',
       ResolveServiceWorkerRequests: 'true',

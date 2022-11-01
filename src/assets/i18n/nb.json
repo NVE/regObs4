@@ -81,7 +81,7 @@
   "DRAFT": "Kladd",
   "GEOLOCATION": {
     "POSITION_ERROR": {
-      "PermissionDenied": "For å hente posisjonen din må du endre innstillinger i nettleseren",
+      "PermissionDenied": "For å hente posisjonen din må du endre lokasjonsinnstillinger",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din",
       "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
@@ -270,7 +270,7 @@
     },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kart",
-      "MESSAGE": "Det valgte kartlaget er kun tilgjengelig online og kan fungere dårlig i områden med begrensa dekning."
+      "MESSAGE": "Det valgte kartlaget er kun tilgjengelig online og kan fungere dårlig i områder med begrenset dekning."
     },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "Om kart",
@@ -279,6 +279,10 @@
     "OK_I_UNDERSTAND": "OK, jeg skjønner"
   },
   "REGISTRATION": {
+    "ANONYMIZE": {
+      "TITLE": "Anonymisering",
+      "CHECK_TO_ANONYMIZE": "Huk av for å anonymisere"
+    },
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {
       "TITLE": "Legg til weblenke",
@@ -406,20 +410,32 @@
         "ICE_TYPE": "Type is",
         "SLUSH_SNOW_BEFORE_DRILL": "Sørpe før boring (cm)",
         "TITLE": "Istykkelse"
+      },
+      "INCIDENT": {
+        "INVOLVED_NUM": "Antall i turgruppa",
+        "CASUALTIES_NUM": "Antall gjennom isen",
+        "SAFETY_GEAR_TID": "Redningsutstyr"
       }
     },
     "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
+      "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
+      "UNKNOWN": "Vi fikk ikke til å legge til bildet/bildene. Det kan være noe galt med en bildefil eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
+    },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
       "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Gikk det bra? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
-      "TITLE": "Ulykke / hendelse"
+      "TITLE": "Ulykke / hendelse",
+      "DEAD_NUM": "Antall døde",
+      "RESCUE_TID": "Redning"
     },
-    "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
+    "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
     "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "IN_CM": "I centimeter",
@@ -507,7 +523,7 @@
         "DESTRUCTIVE_SIZE": "Størrelse",
         "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
         "FRACTURE_WIDTH": "Bruddbredde (m)",
-        "INCIDENT_DESCRIPTION": "Ulykke eller skade",
+        "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
         "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Hva skjedde og hvorfor? Kunne situasjonen vært unngått?",
         "POSITION": "Skredposisjon",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
@@ -515,7 +531,18 @@
         "TIME": "Skredtidspunkt (obligatorisk)",
         "TITLE": "Skredhendelse",
         "TRAJECTORY_NAME": "Skredbanenavn",
-        "VALID_EXPOSITION": "Eksposisjon"
+        "VALID_EXPOSITION": "Eksposisjon",
+        "REMOTELY_TRIGGERED": "Fjernutløst",
+        "INVOLVED_NUM": "Antall involvert",
+        "CASUALTIES_NUM": "Antall skredtatte",
+        "HARMED_NUM": "Antall kun skadet",
+        "SAFETY_GEAR_TID": "Sender/mottaker",
+        "LOCAL_TOURIST_TID": "Lokal eller tilreisende",
+        "LOCAL_KNOWLEDGE_TID": "Kjennskap til området",
+        "TRAFFIC_OBSTRUCTED": "Trafikk hindret",
+        "EVACUATED_NUM": "Antall evakuerte",
+        "MATERIAL_DAMAGES": "Materielle skader",
+        "SLOPE_ACTIVITY_TID": "Turfase"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
@@ -731,7 +758,8 @@
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge",
-    "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
+    "USE_RETINA_MAP": "Bruk høy oppløsning på kart",
+    "SEND_LOGS": "Send logger til Regobs-teamet"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",

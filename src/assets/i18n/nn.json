@@ -247,6 +247,10 @@
       "HEADER": "Om observasjonar",
       "MESSAGE": "Observasjonar brukast på eige ansvar. Dei er registrerast av Regobs sine brukarar og er ikkje kvalitetsjekka. NVE tek ikkje ansvar for feil, manglar og vurderingar som registererast av brukarane. \nKompetansenivået, som visast som stjerner bak navnet, KAN vere ein indikator på truverdigheit. "
     },
+    "ABOUT_OFFLINE_SUPPORT_MAPS": {
+      "HEADER": "Offline-kart",
+      "MESSAGE": "Det valde kartlaget er berre tilgjengeleg online og kan fungera dårleg i område med avgrensa dekning."
+    },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "om kart",
       "MESSAGE": "Bruk karta på eige ansvar og gjer alltid dine eigne vurderingar. Karta kan innehalde feil og manglar. "
@@ -364,6 +368,11 @@
     "IMAGES": "Bilete",
     "IMAGE_DESCRIPTION": "Skildring av bilete",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi ei skildring av bilete",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
+      "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
+      "UNKNOWN": "Vi fekk ikkje til å legge til bildet/bildane. Det kan være noko gale med ein bildefil eller ein annan feil. Prøv gjerne eit anna bilde for å sjekke"
+    },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Skildring",
@@ -372,7 +381,7 @@
       "IMAGE_PLACEHOLDER": "+ Legg til ein beskrivelse av bilete",
       "TITLE": "Ulykke/hending"
     },
-    "INVALID_IMAGE": "Ugyldig biletformat",
+    "INVALID_IMAGE": "Ugyldig biletformat. Bare JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I heile centimeter",
     "NONE": "Ingen valt",
@@ -441,7 +450,7 @@
         "DESTRUCTIVE_SIZE": "Storleik",
         "FRACTURE_HEIGTH": "Brothøyde (cm)",
         "FRACTURE_WIDTH": "Brotbreidd (m)",
-        "INCIDENT_DESCRIPTION": "Ulykke eller skade",
+        "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
         "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Kva skjedde og kvifor? Kunne situasjonen vore unngått?",
         "POSITION": "Skredposisjon",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
@@ -449,7 +458,20 @@
         "TIME": "Skredtidspunkt (påkrevd)",
         "TITLE": "Skredhending",
         "TRAJECTORY_NAME": "Skredbanenamn",
-        "VALID_EXPOSITION": "Eksposisjon"
+        "VALID_EXPOSITION": "Eksposisjon",
+        "REMOTELY_TRIGGERED": "Fjernutløst",
+        "INVOLVED_NUM": "Antal involvert",
+        "CASUALTIES_NUM": "Antall skredtatte",
+        "HARMED_NUM": "Antal kun skadet",
+        "DEAD_NUM": "Antal døde",
+        "SAFETY_GEAR_TID": "Sendar/mottakar",
+        "LOCAL_TOURIST_TID": "Lokal eller tilreisande",
+        "LOCAL_KNOWLEDGE_TID": "Kjenskap til området",
+        "RESCUE_TID": "Redning",
+        "TRAFFIC_OBSTRUCTED": "Trafikk hindra",
+        "EVACUATED_NUM": "Antal evakuerte",
+        "MATERIAL_DAMAGES": "Materielle skadar",
+        "SLOPE_ACTIVITY_TID": "Turfase"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
@@ -656,7 +678,7 @@
     "NORWAY_ONLY": "Berre i Noreg",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt tal på offline kartblad. ",
     "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæringa</a>.",
-    "RESET": "Reset app",
+    "RESET": "Tilbakestill app",
     "RESETTING": "Appen resetjast. Vær vennleg å vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillingar",
     "SIZE_OF_TILES_CACHE": "Storleik til kartblad lagra på telefonen",
@@ -664,7 +686,8 @@
     "TITLE": "Innstillingar",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyar",
     "USE_IN_WORLD": "Utanfor Noreg",
-    "USE_RETINA_MAP": "Bruk høg oppløysing på kart"
+    "USE_RETINA_MAP": "Bruk høg oppløysing på kart",
+    "SEND_LOGS": "Send loggar til Regobs-teamet"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Klarte ikkje lagre kallenavn. Ver venleg og prøv igjen seinare.",

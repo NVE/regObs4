@@ -8,7 +8,7 @@ describe('EditModalComponent', () => {
   let component: EditPictureInfoModalComponent;
   let fixture: ComponentFixture<EditPictureInfoModalComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ EditPictureInfoModalComponent ],
       imports: [IonicModule.forRoot(), TestModule]
@@ -17,7 +17,7 @@ describe('EditModalComponent', () => {
     fixture = TestBed.createComponent(EditPictureInfoModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

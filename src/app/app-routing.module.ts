@@ -8,6 +8,12 @@ const routes: Routes = [
       import('./pages/tabs/tabs.module').then((m) => m.TabsPageModule)
   },
   {
+    // Redirect tabs to '' for backwards compatibility agains old /tabs/home route etc.
+    // Maybe not needed if we don't have any navigation to /tabs/home in our code.
+    path: 'tabs',
+    redirectTo: '',
+  },
+  {
     path: 'my-observations',
     loadChildren: () =>
       import('./pages/my-observations/my-observations.module').then(

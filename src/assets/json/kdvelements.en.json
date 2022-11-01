@@ -22,13 +22,8 @@
         "Description": null
       },
       {
-        "Id": 204,
-        "Name": "Surface runoff",
-        "Description": null
-      },
-      {
-        "Id": 205,
-        "Name": "Insufficient drainage",
+        "Id": 212,
+        "Name": "Snow cover with much water",
         "Description": null
       },
       {
@@ -42,6 +37,26 @@
         "Description": null
       },
       {
+        "Id": 230,
+        "Name": "Erosion along streams/rivers",
+        "Description": null
+      },
+      {
+        "Id": 214,
+        "Name": "Streams find new paths",
+        "Description": null
+      },
+      {
+        "Id": 204,
+        "Name": "Surface runoff",
+        "Description": null
+      },
+      {
+        "Id": 205,
+        "Name": "Insufficient drainage",
+        "Description": null
+      },
+      {
         "Id": 208,
         "Name": "Cracks/creep in terrain",
         "Description": null
@@ -52,16 +67,6 @@
         "Description": null
       },
       {
-        "Id": 212,
-        "Name": "Snow cover with much water",
-        "Description": null
-      },
-      {
-        "Id": 214,
-        "Name": "Streams find new paths",
-        "Description": null
-      },
-      {
         "Id": 222,
         "Name": "Movement at landslide scarp",
         "Description": null
@@ -69,11 +74,6 @@
       {
         "Id": 223,
         "Name": "Leaning trees",
-        "Description": null
-      },
-      {
-        "Id": 230,
-        "Name": "Erosion along streams/rivers",
         "Description": null
       },
       {
@@ -89,11 +89,6 @@
         "Description": null
       },
       {
-        "Id": 211,
-        "Name": "People",
-        "Description": null
-      },
-      {
         "Id": 220,
         "Name": "Roads",
         "Description": null
@@ -104,13 +99,18 @@
         "Description": null
       },
       {
-        "Id": 251,
-        "Name": "Agricultural areas",
+        "Id": 260,
+        "Name": "Buildings",
         "Description": null
       },
       {
-        "Id": 260,
-        "Name": "Buildings",
+        "Id": 211,
+        "Name": "People",
+        "Description": null
+      },
+      {
+        "Id": 251,
+        "Name": "Agricultural areas",
         "Description": null
       },
       {
@@ -141,8 +141,18 @@
         "Description": null
       },
       {
+        "Id": 11,
+        "Name": "Small rock avalanche",
+        "Description": null
+      },
+      {
         "Id": 6,
         "Name": "Rock fall",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Ice fall",
         "Description": null
       },
       {
@@ -158,11 +168,6 @@
       {
         "Id": 10,
         "Name": "Quick clay slide",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Small rock avalanche",
         "Description": null
       }
     ],
@@ -284,6 +289,11 @@
         "Description": null
       },
       {
+        "Id": 714,
+        "Name": "Ice fisher",
+        "Description": null
+      },
+      {
         "Id": 711,
         "Name": "Skating",
         "Description": null
@@ -299,8 +309,8 @@
         "Description": null
       },
       {
-        "Id": 714,
-        "Name": "Ice fisher",
+        "Id": 719,
+        "Name": "Person injured by ice run",
         "Description": null
       },
       {
@@ -319,24 +329,9 @@
         "Description": null
       },
       {
-        "Id": 719,
-        "Name": "Person injured by ice run",
+        "Id": 725,
+        "Name": "Kicksledge",
         "Description": null
-      },
-      {
-        "Id": 720,
-        "Name": "Snowmobiling on the ice",
-        "Description": null
-      },
-      {
-        "Id": 721,
-        "Name": "Car on ice",
-        "Description": null
-      },
-      {
-        "Id": 722,
-        "Name": "ATV",
-        "Description": "All Terrain Vehicle"
       },
       {
         "Id": 723,
@@ -349,8 +344,18 @@
         "Description": null
       },
       {
-        "Id": 725,
-        "Name": "Kicksledge",
+        "Id": 720,
+        "Name": "Snowmobiling on the ice",
+        "Description": null
+      },
+      {
+        "Id": 722,
+        "Name": "ATV",
+        "Description": "All Terrain Vehicle"
+      },
+      {
+        "Id": 721,
+        "Name": "Car on ice",
         "Description": null
       },
       {
@@ -379,18 +384,8 @@
         "Description": null
       },
       {
-        "Id": 773,
-        "Name": "Bulge ice / Aufeis",
-        "Description": null
-      },
-      {
-        "Id": 774,
-        "Name": "Drift ice",
-        "Description": null
-      },
-      {
-        "Id": 775,
-        "Name": "Anchor ice dam",
+        "Id": 777,
+        "Name": "Ice jam",
         "Description": null
       },
       {
@@ -399,8 +394,18 @@
         "Description": "Frazil ice beneath the ice plugs the river."
       },
       {
-        "Id": 777,
-        "Name": "Ice jam",
+        "Id": 775,
+        "Name": "Anchor ice dam",
+        "Description": null
+      },
+      {
+        "Id": 773,
+        "Name": "Bulge ice / Aufeis",
+        "Description": null
+      },
+      {
+        "Id": 774,
+        "Name": "Drift ice",
         "Description": null
       },
       {
@@ -413,6 +418,16 @@
       {
         "Id": 0,
         "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "No lake ice",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Lake ice covered",
         "Description": null
       },
       {
@@ -431,33 +446,23 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Ice breaking up along shore",
-        "Description": null
-      },
-      {
         "Id": 11,
         "Name": "Ice formation along shore",
         "Description": null
       },
       {
-        "Id": 20,
-        "Name": "No lake ice",
-        "Description": null
-      },
-      {
-        "Id": 21,
-        "Name": "Lake ice covered",
-        "Description": null
-      },
-      {
-        "Id": 40,
-        "Name": "River ice run",
+        "Id": 10,
+        "Name": "Ice breaking up along shore",
         "Description": null
       },
       {
         "Id": 41,
         "Name": "Drifting frazil ice on river",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "River ice run",
         "Description": null
       },
       {
@@ -473,14 +478,14 @@
         "Description": null
       },
       {
-        "Id": 1,
-        "Name": "No ice, now first ice at site",
-        "Description": "No ice at site before today. There may have been ice along the shore. \"Site\" is generally a virtual point out on the lake away from the shore."
-      },
-      {
         "Id": 2,
         "Name": "No ice, now first ice at shore",
         "Description": "No ice along the shore before today."
+      },
+      {
+        "Id": 1,
+        "Name": "No ice, now first ice at site",
+        "Description": "No ice at site before today. There may have been ice along the shore. \"Site\" is generally a virtual point out on the lake away from the shore."
       },
       {
         "Id": 3,
@@ -673,6 +678,11 @@
         "Description": null
       },
       {
+        "Id": 14,
+        "Name": "Shooting cracks",
+        "Description": null
+      },
+      {
         "Id": 5,
         "Name": "Large snowfall",
         "Description": "Brukes i elrapp"
@@ -693,13 +703,23 @@
         "Description": null
       },
       {
-        "Id": 14,
-        "Name": "Shooting cracks",
+        "Id": 15,
+        "Name": "Glide cracks",
         "Description": null
       },
       {
-        "Id": 15,
-        "Name": "Glide cracks",
+        "Id": 16,
+        "Name": "Fresh water drainage lines",
+        "Description": null
+      },
+      {
+        "Id": 17,
+        "Name": "Water ponds on snow surface",
+        "Description": null
+      },
+      {
+        "Id": 18,
+        "Name": "Wind with rain",
         "Description": null
       },
       {
@@ -720,13 +740,13 @@
         "Description": null
       },
       {
-        "Id": 112,
-        "Name": "Ski resort",
+        "Id": 113,
+        "Name": "Skiresort, off-piste",
         "Description": null
       },
       {
-        "Id": 113,
-        "Name": "Skiresort, off-piste",
+        "Id": 112,
+        "Name": "Ski resort",
         "Description": null
       },
       {
@@ -750,13 +770,13 @@
         "Description": null
       },
       {
-        "Id": 120,
-        "Name": "Road",
+        "Id": 130,
+        "Name": "Snowmobile",
         "Description": null
       },
       {
-        "Id": 130,
-        "Name": "Snowmobile",
+        "Id": 120,
+        "Name": "Road",
         "Description": null
       },
       {
@@ -782,23 +802,23 @@
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Wet loose-snow avalanche",
-        "Description": null
-      },
-      {
         "Id": 12,
         "Name": "Dry loose-snow avalanche",
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "Wet slab avalanche",
+        "Id": 11,
+        "Name": "Wet loose-snow avalanche",
         "Description": null
       },
       {
         "Id": 22,
         "Name": "Dry slab avalanche",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Wet slab avalanche",
         "Description": null
       },
       {
@@ -933,24 +953,24 @@
         "Description": "Faceted snow near the ground"
       },
       {
-        "Id": 18,
-        "Name": "Faceted snow above a crust",
-        "Description": "Faceted snow above a crust"
-      },
-      {
         "Id": 19,
         "Name": "Faceted snow beneath a crust",
         "Description": "Faceted snow beneath a crust"
       },
       {
-        "Id": 20,
-        "Name": "Melting near the ground",
-        "Description": "Melting near the ground"
+        "Id": 18,
+        "Name": "Faceted snow above a crust",
+        "Description": "Faceted snow above a crust"
       },
       {
         "Id": 22,
         "Name": "Water pooling above snow layers",
         "Description": "Water pooling above snow layers"
+      },
+      {
+        "Id": 20,
+        "Name": "Melting near the ground",
+        "Description": "Melting near the ground"
       },
       {
         "Id": 24,
@@ -1037,17 +1057,17 @@
       },
       {
         "Id": 1,
-        "Name": "Few steep slopes",
+        "Name": "Isolated steep slopes",
         "Description": null
       },
       {
         "Id": 2,
-        "Name": "Some steep slopes",
+        "Name": "Specific steep slopes",
         "Description": null
       },
       {
         "Id": 3,
-        "Name": "Many steep slopes",
+        "Name": "Widespread steep slopes",
         "Description": null
       }
     ],
@@ -1100,11 +1120,6 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Spontaneous release",
-        "Description": null
-      },
-      {
         "Id": 30,
         "Name": "Very difficult to trigger",
         "Description": null
@@ -1122,6 +1137,11 @@
       {
         "Id": 60,
         "Name": "Very easy to trigger",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Spontaneous release",
         "Description": null
       }
     ],
@@ -1324,6 +1344,16 @@
         "Description": null
       },
       {
+        "Id": 26,
+        "Name": "Human triggered",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Triggered by snowmobile",
+        "Description": null
+      },
+      {
         "Id": 22,
         "Name": "Remotely triggered",
         "Description": null
@@ -1336,16 +1366,6 @@
       {
         "Id": 25,
         "Name": "Released by explosives",
-        "Description": null
-      },
-      {
-        "Id": 26,
-        "Name": "Human triggered",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Triggered by snowmobile",
         "Description": null
       },
       {
@@ -1418,21 +1438,6 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Near surface facets",
-        "Description": null
-      },
-      {
-        "Id": 61,
-        "Name": "Surface hoar on a hard surface",
-        "Description": null
-      },
-      {
-        "Id": 62,
-        "Name": "Surface hoar on a soft surface",
-        "Description": null
-      },
-      {
         "Id": 101,
         "Name": "Very much loose snow (>30cm)",
         "Description": null
@@ -1448,8 +1453,23 @@
         "Description": null
       },
       {
-        "Id": 104,
-        "Name": "Wet loose snow",
+        "Id": 61,
+        "Name": "Surface hoar on a hard surface",
+        "Description": null
+      },
+      {
+        "Id": 62,
+        "Name": "Surface hoar on a soft surface",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Near surface facets",
+        "Description": null
+      },
+      {
+        "Id": 107,
+        "Name": "Crust",
         "Description": null
       },
       {
@@ -1463,8 +1483,8 @@
         "Description": null
       },
       {
-        "Id": 107,
-        "Name": "Crust",
+        "Id": 104,
+        "Name": "Wet loose snow",
         "Description": null
       },
       {
@@ -1552,12 +1572,57 @@
         "Id": 3,
         "Name": "Q3",
         "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Sudden planar (SP)",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Sudden collapse (SC)",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Progressive compression (PC)",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Resistant planar (RP)",
+        "Description": null
+      },
+      {
+        "Id": 14,
+        "Name": "Non-planar break (BRK)",
+        "Description": null
       }
     ],
     "Snow_PropagationKDV": [
       {
         "Id": 0,
         "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "ECTPV",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "ECTP",
+        "Description": null
+      },
+      {
+        "Id": 23,
+        "Name": "ECTN",
+        "Description": null
+      },
+      {
+        "Id": 24,
+        "Name": "ECTX",
         "Description": null
       },
       {
@@ -1588,26 +1653,6 @@
       {
         "Id": 15,
         "Name": "CTN",
-        "Description": null
-      },
-      {
-        "Id": 21,
-        "Name": "ECTPV",
-        "Description": null
-      },
-      {
-        "Id": 22,
-        "Name": "ECTP",
-        "Description": null
-      },
-      {
-        "Id": 23,
-        "Name": "ECTN",
-        "Description": null
-      },
-      {
-        "Id": 24,
-        "Name": "ECTX",
         "Description": null
       }
     ],
@@ -2041,18 +2086,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Bad",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Ok",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "Good",
+        "Id": 50,
+        "Name": "Perfect",
         "Description": null
       },
       {
@@ -2061,8 +2096,72 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Perfect",
+        "Id": 30,
+        "Name": "Good",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Ok",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Bad",
+        "Description": null
+      }
+    ],
+    "Snow_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Yes",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Partially",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "No",
+        "Description": null
+      }
+    ],
+    "Snow_SlopeActivityKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Ascending",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Descending",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Stationary",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Traversing",
+        "Description": null
+      },
+      {
+        "Id": 80,
+        "Name": "Other",
         "Description": null
       }
     ],
@@ -2556,38 +2655,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Did not affect anything",
-        "Description": null
-      },
-      {
-        "Id": 13,
-        "Name": "Initiated search and rescue",
-        "Description": null
-      },
-      {
-        "Id": 15,
-        "Name": "Traffic stopped",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Only material damage",
-        "Description": null
-      },
-      {
-        "Id": 25,
-        "Name": "Evacuation",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "No one buried, but close call",
-        "Description": null
-      },
-      {
-        "Id": 28,
-        "Name": "Person buried, but no injuries",
+        "Id": 40,
+        "Name": "People killed",
         "Description": null
       },
       {
@@ -2596,13 +2665,156 @@
         "Description": null
       },
       {
-        "Id": 40,
-        "Name": "People killed",
+        "Id": 28,
+        "Name": "Person buried, but no injuries",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "No one buried, but close call",
+        "Description": null
+      },
+      {
+        "Id": 25,
+        "Name": "Evacuation",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Only material damage",
+        "Description": null
+      },
+      {
+        "Id": 15,
+        "Name": "Traffic stopped",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Initiated search and rescue",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Did not affect anything",
         "Description": null
       },
       {
         "Id": 99,
         "Name": "Other",
+        "Description": null
+      }
+    ],
+    "LocalTouristKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Local",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Lives in region",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Lives in Norway",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Foreign tourist",
+        "Description": null
+      },
+      {
+        "Id": 100,
+        "Name": "Unknown",
+        "Description": null
+      }
+    ],
+    "LocalKnowledgeKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "First time in area",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "2-3 time in area",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "1 week a year i området",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Constantly in area",
+        "Description": null
+      }
+    ],
+    "RescueKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Self",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Companion",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Other group",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Organized",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Other",
+        "Description": null
+      }
+    ],
+    "SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Yes",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Partially",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "No",
         "Description": null
       }
     ],
@@ -2616,11 +2828,6 @@
         "Id": 100,
         "Name": "-",
         "Description": "Unknown for snow."
-      },
-      {
-        "Id": 105,
-        "Name": "A",
-        "Description": "Automatic service"
       },
       {
         "Id": 110,
@@ -2646,6 +2853,11 @@
         "Id": 150,
         "Name": "*****",
         "Description": "Observer is an avalanche forecaster."
+      },
+      {
+        "Id": 105,
+        "Name": "A",
+        "Description": "Automatic service"
       },
       {
         "Id": 200,
@@ -2852,6 +3064,26 @@
         "Description": null
       },
       {
+        "Id": 60,
+        "Name": "Private trip",
+        "Description": null
+      },
+      {
+        "Id": 55,
+        "Name": "Education and course",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Guided trip",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Employed",
+        "Description": null
+      },
+      {
         "Id": 20,
         "Name": "Regular task for avalanche warning service",
         "Description": null
@@ -2864,26 +3096,6 @@
       {
         "Id": 40,
         "Name": "Ordered task for avalanche warning service",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Employed",
-        "Description": null
-      },
-      {
-        "Id": 55,
-        "Name": "Education and course",
-        "Description": null
-      },
-      {
-        "Id": 60,
-        "Name": "Private trip",
-        "Description": null
-      },
-      {
-        "Id": 70,
-        "Name": "Guided trip",
         "Description": null
       }
     ],
@@ -2986,13 +3198,13 @@
         "Description": null
       },
       {
-        "Id": 52,
-        "Name": "Deleted by admin",
+        "Id": 61,
+        "Name": "Disapproved by data admin",
         "Description": null
       },
       {
-        "Id": 61,
-        "Name": "Disapproved by data admin",
+        "Id": 52,
+        "Name": "Deleted by admin",
         "Description": null
       },
       {
@@ -3003,18 +3215,28 @@
     ],
     "RegistrationKDV": [
       {
-        "Id": 10,
-        "Name": "Notes",
+        "Id": 51,
+        "Name": "Ice Cover",
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Incident",
+        "Id": 50,
+        "Name": "Ice Thickness",
         "Description": null
       },
       {
         "Id": 13,
         "Name": "Danger Sign",
+        "Description": null
+      },
+      {
+        "Id": 26,
+        "Name": "Avalanche Observation",
+        "Description": null
+      },
+      {
+        "Id": 33,
+        "Name": "Avalanche Activity",
         "Description": null
       },
       {
@@ -3038,8 +3260,8 @@
         "Description": null
       },
       {
-        "Id": 26,
-        "Name": "Avalanche Observation",
+        "Id": 32,
+        "Name": "Avalanche Problems",
         "Description": null
       },
       {
@@ -3048,29 +3270,9 @@
         "Description": null
       },
       {
-        "Id": 32,
-        "Name": "Avalanche Problems",
-        "Description": null
-      },
-      {
-        "Id": 33,
-        "Name": "Avalanche Activity",
-        "Description": null
-      },
-      {
         "Id": 36,
         "Name": "Snow Profile",
         "Description": "SnowProfile top-node"
-      },
-      {
-        "Id": 50,
-        "Name": "Ice Thickness",
-        "Description": null
-      },
-      {
-        "Id": 51,
-        "Name": "Ice Cover",
-        "Description": null
       },
       {
         "Id": 62,
@@ -3101,6 +3303,16 @@
         "Id": 83,
         "Name": "Evaluations and Problems",
         "Description": "Grupperings type - Vurderinger og problemer"
+      },
+      {
+        "Id": 11,
+        "Name": "Incident",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Notes",
+        "Description": null
       }
     ],
     "SourceKDV": [

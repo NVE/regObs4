@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { AttachmentEditModel } from './attachment-edit-model';
 import { AvalancheActivityObs2EditModel } from './avalanche-activity-obs-2edit-model';
 import { AvalancheEvalProblem2EditModel } from './avalanche-eval-problem-2edit-model';
@@ -18,6 +18,11 @@ import { SnowSurfaceEditModel } from './snow-surface-edit-model';
 import { Waterlevel2EditModel } from './waterlevel-2edit-model';
 import { WeatherEditModel } from './weather-edit-model';
 export interface RegistrationEditModel {
+
+  /**
+   * If set to true, the user's account will not be shown publicly. NVE will still be able to see who sent in the observation.
+   */
+  Anonymous?: boolean;
   Attachments?: Array<AttachmentEditModel>;
   AvalancheActivityObs2?: Array<AvalancheActivityObs2EditModel>;
   AvalancheEvalProblem2?: Array<AvalancheEvalProblem2EditModel>;

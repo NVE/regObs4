@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 export interface AvalancheDangerObsViewModel {
   AvalancheDangerObsID?: number;
   Comment?: string;

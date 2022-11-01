@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { Summary } from './summary';
 import { AttachmentViewModel } from './attachment-view-model';
 import { AvalancheActivityObsViewModel } from './avalanche-activity-obs-view-model';

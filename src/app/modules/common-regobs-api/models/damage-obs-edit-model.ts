@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable */
 import { AttachmentEditModel } from './attachment-edit-model';
 import { LatLng } from './lat-lng';
 export interface DamageObsEditModel {

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
-import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { Camera, CameraResultType, CameraSource, GalleryImageOptions, GalleryPhotos, ImageOptions } from '@capacitor/camera';
 import { settings } from '../../../../../settings';
 import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
@@ -9,7 +9,7 @@ import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import {
   ALLOWED_ATTACHMENT_FILE_TYPES,
@@ -19,6 +19,13 @@ import { NgxFileDropEntry } from 'ngx-file-drop';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
+const ERRORS_TO_IGNORE = [
+  'No image picked',
+  'No images picked',
+  'No Image Selected',
+  'No Images Selected',
+  'User cancelled photos app',
+  'User cancelled camera app'];
 
 @Component({
   selector: 'app-edit-images',
@@ -59,7 +66,6 @@ export class EditImagesComponent implements OnInit {
 
   constructor(
     private translateService: TranslateService,
-    private camera: Camera,
     private platform: Platform,
     private file: File,
     private logger: LoggingService,
@@ -87,24 +93,23 @@ export class EditImagesComponent implements OnInit {
     if (this.onBeforeAdd !== undefined) {
       await Promise.resolve(this.onBeforeAdd());
     }
-    const translations = await this.translateService
+    const translations = await firstValueFrom(this.translateService
       .get([
         'REGISTRATION.GENERAL_COMMENT.ADD_PICTURE',
         'REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO',
         'REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY',
         'DIALOGS.CANCEL'
-      ])
-      .toPromise();
+      ]));
     const actionSheet = await this.actionSheetController.create({
       header: translations['REGISTRATION.GENERAL_COMMENT.ADD_PICTURE'],
       buttons: [
         {
           text: translations['REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO'],
-          handler: () => this.getPicture(this.camera.PictureSourceType.CAMERA)
+          handler: () => this.getImages(CameraSource.Camera)
         },
         {
           text: translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
-          handler: () => this.getPicture(this.camera.PictureSourceType.PHOTOLIBRARY)
+          handler: () => this.getImages(CameraSource.Photos)
         },
         {
           text: translations['DIALOGS.CANCEL'],
@@ -115,37 +120,80 @@ export class EditImagesComponent implements OnInit {
     actionSheet.present();
   }
 
-  async getPicture(sourceType: PictureSourceType) {
+  private getImageOptions(source: CameraSource): ImageOptions {
+    return {
+      quality: settings.images.quality,
+      resultType: CameraResultType.Uri,
+      source: source,
+      height: settings.images.size,
+      width: settings.images.size,
+      correctOrientation: true,
+      saveToGallery: source === CameraSource.Camera
+    };
+  }
+
+  private async getAlbumImageUrls(options: GalleryImageOptions): Promise<string[]> {
+    let imageUrls: string[] = [];
+    let photos: GalleryPhotos;
+    let permissionState = await Camera.checkPermissions();
+    if (!(['granted', 'limited'].includes(permissionState?.photos))) {
+      permissionState = await Camera.requestPermissions({permissions: ['photos']});
+    }
+    if (['granted', 'limited'].includes(permissionState?.photos)) {
+      photos = await Camera.pickImages(options);
+    } else {
+      this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
+    }
+    if (photos?.photos?.length > 0) {
+      if (this.checkAndNotifyIfUnsupportedImageFormat(photos.photos.map(photo => photo.format))) {
+        imageUrls = photos.photos.map(photo => photo.path);
+      }
+    }
+    return imageUrls;
+  }
+
+  private async takePhotoAndReturnImageUrl(options: ImageOptions): Promise<string[]> {
+    let permissionState = await Camera.checkPermissions();
+    if (permissionState?.camera !== 'granted') {
+      permissionState = await Camera.requestPermissions({permissions: ['camera']});
+    }
+    if (permissionState?.camera === 'granted') {
+      const photo = await Camera.getPhoto(options);
+      if (photo) {
+        if (this.checkAndNotifyIfUnsupportedImageFormat([photo.format])) {
+          return [photo.path];
+        }
+      }
+    } else {
+      this.showErrorToast('REGISTRATION.IMAGE_ERROR.CAMERA_PERMISSION_MISSING');
+    }
+    return [];
+  }
+
+  private async getImages(source: CameraSource) {
     if (!this.platform.is('hybrid')) {
       //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
       return true;
     }
+    let imageUrls: string[] = [];
     try {
-      const options: CameraOptions = {
-        quality: settings.images.quality,
-        destinationType: this.camera.DestinationType.FILE_URI,
-        sourceType: sourceType,
-        encodingType: this.camera.EncodingType.JPEG,
-        mediaType: this.camera.MediaType.PICTURE,
-        targetHeight: settings.images.size,
-        targetWidth: settings.images.size,
-        correctOrientation: true,
-        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA
-        // NOTE: saveToPhotoAlbum=true causes a bug in latest cordova cameraplugin
-      };
-      const imageUrl = await this.camera.getPicture(options);
-      if (!(await this.validateImage(imageUrl))) {
-        this.showErrorToast('REGISTRATION.INVALID_IMAGE'); //TODO: Vis bedre feilmelding
-        return true;
+      const options = this.getImageOptions(source);
+      if (source === CameraSource.Photos) {
+        imageUrls = await this.getAlbumImageUrls(options);
+      } else {
+        imageUrls = await this.takePhotoAndReturnImageUrl(options);
       }
-
-      this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
-      const arrayBuffer = await this.getArrayBuffer(imageUrl);
-      await this.addImage(new Blob([arrayBuffer]), MIME_TYPE);
+      for (const imageUrl of imageUrls) {
+        this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
+        //TODO: Hvorfor leser vi bildet inn i et arraybuffer for seinere å lagre det på disken igjen?
+        const arrayBuffer = await this.getArrayBuffer(imageUrl);
+        await this.attachImageToDraft(new Blob([arrayBuffer]), MIME_TYPE);
+      }
     } catch (err) {
-      if (err != 'No Image Selected'){
-        this.logger.log('User could not add image, most likely no access or invalid image', err, LogLevel.Warning, DEBUG_TAG);
-        this.showErrorToast('Could not save image. Do you have enough space?'); //TODO: Vis bedre feilmelding og på flere språk
+      // we ignore errors we get if user cancels taking photo or gallery selection
+      if (!(ERRORS_TO_IGNORE.includes(err.message))) {
+        this.logger.log('Unknown error when adding image', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
+        this.showErrorToast('REGISTRATION.IMAGE_ERROR.UNKNOWN');
       }
     }
     return true;
@@ -163,15 +211,17 @@ export class EditImagesComponent implements OnInit {
     return arrayBuffer;
   }
 
-  private async validateImage(src: string) {
-    if (src) {
-      const entry = await this.file.resolveLocalFilesystemUrl(src);
-      return entry.name.endsWith('jpg');
-    }
-    return false;
+  private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
+    formats.forEach(format => {
+      if (!(format === 'jpeg')) {
+        this.showErrorToast('REGISTRATION.INVALID_IMAGE');
+        return false;
+      }
+    });
+    return true;
   }
 
-  showErrorToast(messageKey: string) {
+  private showErrorToast(messageKey: string) {
     this.translateService.get(messageKey).subscribe(async (translation) => {
       const toast = await this.toastController.create({
         message: translation,
@@ -182,7 +232,7 @@ export class EditImagesComponent implements OnInit {
     });
   }
 
-  async addImage(data: Blob, mimeType: string) {
+  async attachImageToDraft(data: Blob, mimeType: string) {
     await this.newAttachmentService.addAttachment(
       this.draftUuid,
       data,
@@ -217,7 +267,7 @@ export class EditImagesComponent implements OnInit {
     for (const droppedFile of droppedFiles) {
       try {
         const file = await this.dropZoneService.getFile(droppedFile);
-        this.addImage(file, MIME_TYPE);
+        this.attachImageToDraft(file, MIME_TYPE);
       } catch (err) {
         this.logger.error(err, 'Could not add attachment');
         this.showErrorToast('Could not add image');  // TODO: Add better error message
