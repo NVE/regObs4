@@ -14,10 +14,6 @@
     <param name="ios-package" value="CordovaHttpPlugin"/>
   </feature>
 
-  <feature name="Camera">
-    <param name="ios-package" value="CDVCamera"/>
-  </feature>
-
   <feature name="Compass">
     <param name="ios-package" value="CDVCompass"/>
   </feature>
