@@ -420,6 +420,11 @@
     "IMAGES": "Images",
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "You need to give the app permission to read from the photo library",
+      "CAMERA_PERMISSION_MISSING": "You need to give the app permission to use the camera",
+      "UNKNOWN": "Couldn't add image(s). It may be something wrong with the image file(s). Please try another image to check"
+    },
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
@@ -430,7 +435,7 @@
       "DEAD_NUM": "Number of dead",
       "RESCUE_TID": "Rescue"
     },
-    "INVALID_IMAGE": "Sorry, this is an invalid image",
+    "INVALID_IMAGE": "Sorry, only JPEG images is supported",
     "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
     "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "IN_CM": "In centimeter",
