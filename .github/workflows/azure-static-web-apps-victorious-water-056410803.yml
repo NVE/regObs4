@@ -46,7 +46,7 @@ jobs:
   build_and_deploy_develop:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Build and Deploy develop-banch (beta.regobs.no)
     steps:
       - uses: actions/checkout@v2
         with:
