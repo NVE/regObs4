@@ -16,7 +16,7 @@ jobs:
   build_and_deploy_pull_request:
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Build and Deploy Pull Request
     steps:
       - uses: actions/checkout@v2
         with:
@@ -39,13 +39,14 @@ jobs:
           app_location: "/" # App source code path
           # api_location: "api" # Api source code path - optional
           output_location: "www" # Built app content directory - optional
+          app_build_command: "npm run create-version-file && npm run build"
           ###### End of Repository/Build Configurations ######
 
   # Run when we push to develop
   build_and_deploy_develop:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Build and Deploy develop-branch (beta.regobs.no)
     steps:
       - uses: actions/checkout@v2
         with:
@@ -69,7 +70,7 @@ jobs:
           # api_location: "api" # Api source code path - optional
           output_location: "www" # Built app content directory - optional
           # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
-          app_build_command: "npm run build:prod"
+          app_build_command: "npm run create-version-file && npm run build:prod"
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
