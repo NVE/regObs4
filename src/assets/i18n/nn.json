@@ -664,7 +664,7 @@
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å gjere Varsom RegObs betre med å la oss sjå korleis du bruker applikasjonen. ",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne dataen er anonym og kan ikkje knyttast til deg personleg.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Disse dataene er anonymisert og kan ikkje knyttast til deg personleg.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "App-modus",
     "APP_VERSION": "Versjon",

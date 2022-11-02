@@ -735,7 +735,7 @@
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom-appen ved å la oss se hvordan du bruker applikasjonen.",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne dataen er anonym og kan ikke knyttes til deg personlig.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Disse dataene er anonymisert og kan ikke knyttes til deg personlig.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "Appmodus",
     "APP_VERSION": "Versjon",
