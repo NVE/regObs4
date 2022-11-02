@@ -33,7 +33,7 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple App Store distribution provisioning profile'
   inputs:
-    provProfileSecureFile: '7b2faf78-ae23-41e5-8a3e-bdea6b9a0e47'
+    provProfileSecureFile: 'd606c023-431b-448b-b6a8-284e2bf10886'
 
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple Development provisioning profile'
@@ -145,7 +145,7 @@ steps:
     signingOption: 'manual'
     #signingIdentity: 'iPhone Distribution'
     #provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
-    provisioningProfileName: 'regobs-dist-2022-11-25'
+    provisioningProfileName: 'regobs-dist-2023-11-01'
     teamId: '43L5B5X2PE'
 
 - task: JavaToolInstaller@0
