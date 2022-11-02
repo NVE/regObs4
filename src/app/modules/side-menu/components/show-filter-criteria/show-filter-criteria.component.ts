@@ -14,6 +14,7 @@ export class ShowFilterCriteriaComponent implements OnInit {
 
   daysBack$: Observable<{value: number}>;
   isDesktop: boolean;
+  showObservations$: Observable<boolean>;
   currentGeoHazard$: Observable<GeoHazard[]>;
   language$: Observable<LangKey>;
 
@@ -29,5 +30,6 @@ export class ShowFilterCriteriaComponent implements OnInit {
     });
     this.currentGeoHazard$ = this.userSettingService.currentGeoHazard$;
     this.language$ = this.userSettingService.language$;
+    this.showObservations$ = this.userSettingService.showObservations$ ;
   }
 }
