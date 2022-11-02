@@ -459,9 +459,13 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Lägg till nytt test",
         "DISTANCE_FROM_TOP": "Avstånd från toppen (cm)",
+        "X_DISTANCE": "Kapad längd",
+        "Y_DISTANCE": "Kolonnlängd",
         "FRACTURE_TYPE": "Brottyp",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antal slag",
+        "RB_SCORE": "Rutchblock-resultat",
+        "RB_RELEASE": "Utlöst blockandel",
         "TEST_TYPE": "Testtyp",
         "TITLE": "Test"
       },

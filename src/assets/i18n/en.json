@@ -571,9 +571,13 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Add new test",
         "DISTANCE_FROM_TOP": "Distance from top (cm)",
+        "X_DISTANCE": "Cut length",
+        "Y_DISTANCE": "Column length",
         "FRACTURE_TYPE": "Fracture type",
         "STABILITY_EVAL": "Stability",
         "TAPS_FRACTURE": "Number of taps",
+        "RB_SCORE": "Rutchblock score",
+        "RB_RELEASE": "Amount of block released",
         "TEST_TYPE": "Test type",
         "TITLE": "Tests"
       },
