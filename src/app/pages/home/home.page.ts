@@ -80,7 +80,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     if (Capacitor.isNativePlatform()) {
       return 'Varsom';
     }
-    return 'Varsom-observasjoner';
+    return 'Varsom Regobs';
   }
 
   ngAfterViewChecked(): void {
