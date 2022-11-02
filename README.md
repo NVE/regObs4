@@ -90,18 +90,38 @@ If you build without aot, you might get a better error message:
 ng build --aot=false
 ```
 
-Create release branch:
-Example:
+Create release branch. Branch name example: release/v4.7.3
 
+Update version number in package.json manually.
+
+Create build number and copy build/version info to manifest files:
 ```
-git flow release start v4.4.3 develop
+npm run create-version-file
 ```
+Commit changed files and push relase-branch.
 
-Update version number in package.json
-Push relase-branch
+The build will be published to internal testers in Testflight and Google Play automatically.
 
-NOTE! Continous build is set up in Azure.
-App blir automatisk publisert til intern testing når man pusher til ny release-branch.
+You need to add release notes / what to test manually in Appstore connect and Google Play console after the build is published.
+
+## Renew certificates and provisioning profiles
+
+You need certificates to build and publish apps. The Apple certificates last only a year. More info:
+
+[Official doc](https://learn.microsoft.com/en-us/azure/devops/pipelines/apps/mobile/app-signing?view=azure-devops&tabs=apple-install-during-build)
+
+[Detail info about creating Apple certificates](https://medium.com/mobile-devops-ci-cd-ct/steps-to-create-ios-developer-and-distribution-certificates-with-and-without-a-mac-8449b973ef9d)
+
+[Tips on how to create a .p12 file](https://github.com/phonegap/phonegap-docs/blob/master/docs/4-phonegap-build/3-signing/2-ios.html.md)
+
+When you renew an Apple distribution certificate; you need to create a new provisioning profile containing the distribution certificate. You also need to make these changes in build/project files:
+
+| File | Setting |
+|------|---------|
+| azure-pipelines-release.yml | certSecureFile |
+| azure-pipelines-release.yml | provisioningProfileName |
+| azure-pipelines-release.yml | provProfileSecureFile |
+| project.pbxproj | PROVISIONING_PROFILE_SPECIFIER |
 
 ## Beta-testing
 
