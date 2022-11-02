@@ -487,7 +487,7 @@ export class FileLoggingService {
       }
     }
 
-    async sendLogsByEmail(topic = 'Regobs-app-logger', body = ''): Promise<void> {
+    async sendLogsByEmail(topic = 'Varsom-app-logger', body = ''): Promise<void> {
       const canSend = await this.emailComposerService.canSendEmail();
       if (canSend) {
         const fileEntries = await this.getLogFiles();
