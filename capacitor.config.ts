@@ -3,7 +3,7 @@ import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'no.nve.regobs4',
-  appName: 'Varsom Regobs',
+  appName: 'Varsom',
   webDir: 'www',
   bundledWebRuntime: false,
   server: {

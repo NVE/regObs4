@@ -25,6 +25,7 @@ import { RouterPage } from '../../core/helpers/routed-page';
 import { enterZone } from '../../core/helpers/observable-helper';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { DOCUMENT } from '@angular/common';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -73,6 +74,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     ).subscribe((newInfoBoxHeight) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
     });
+  }
+
+  get appname(): string {
+    if (Capacitor.isNativePlatform()) {
+      return 'Varsom';
+    }
+    return 'Varsom Regobs';
   }
 
   ngAfterViewChecked(): void {

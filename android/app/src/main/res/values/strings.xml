@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Varsom Regobs</string>
-    <string name="title_activity_main">Varsom Regobs</string>
+    <string name="app_name">Varsom</string>
+    <string name="title_activity_main">Varsom</string>
     <string name="package_name">no.nve.regobs4</string>
     <string name="custom_url_scheme">no.nve.regobs4</string>
 </resources>
