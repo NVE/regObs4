@@ -112,9 +112,33 @@ export class AvalancheObsPage extends BasePage {
     this.draft = await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
 
+  /**
+   * If InvolvedNum is set then:
+   * CasualtiesNum must be equal to or less than InvolvedNum.
+   * DeadNum must be equal to or less than CasualtiesNum.
+   * All numbers must be >= 0.
+   * CasualtiesNum and DeadNum can be empty.
+   * DtAvalancheTime must be set.
+   */
   isValid() {
     this.showWarning = true;
-    return !!this.avalancheObs.DtAvalancheTime;
+
+    const {
+      InvolvedNum: antallInvolvert,
+      CasualtiesNum: antallSkadet,
+      DeadNum: antallDode
+    } = this.incident;
+
+    let isInvolvedValid = true, isCasualtiesValid = true, isDeadValid = true;
+
+    if (antallInvolvert) {
+      isInvolvedValid = antallInvolvert >= 0;
+      isCasualtiesValid = antallSkadet === undefined || antallSkadet <= antallInvolvert;
+      isDeadValid = antallDode === undefined || antallDode <= antallSkadet;
+    }
+
+    return !!this.avalancheObs.DtAvalancheTime && isInvolvedValid && isCasualtiesValid && isDeadValid;
+
   }
 
   async isEmpty(): Promise<boolean> {

@@ -114,9 +114,13 @@
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
                          [(value)]="incident.InvolvedNum" min="0"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
-                         [(value)]="incident.CasualtiesNum" min="0"></app-numeric-input>
-      <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM" [(value)]="incident.DeadNum"
-                         min="0"></app-numeric-input>
+                         *ngIf="incident.InvolvedNum"
+                         [(value)]="incident.CasualtiesNum" min="0"
+                         [max]="incident.InvolvedNum"></app-numeric-input>
+      <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM"
+                         *ngIf="incident.CasualtiesNum && incident.InvolvedNum"
+                         [(value)]="incident.DeadNum" min="0"
+                         [max]="incident.CasualtiesNum"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
                          [(value)]="incident.HarmedNum" min="0"></app-numeric-input>
       <ion-item>
