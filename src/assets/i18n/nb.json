@@ -576,8 +576,8 @@
         "FRACTURE_TYPE": "Bruddtype",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antall slag",
-        "RB_SCORE": "Rutchblock-resultat",
-        "RB_RELEASE": "Løsnet del av blokk",
+        "RB_SCORE": "Rutschblock-resultat",
+        "RB_RELEASE": "Løsnet prosentdel av blokk",
         "TEST_TYPE": "Test type",
         "TITLE": "Tester"
       },

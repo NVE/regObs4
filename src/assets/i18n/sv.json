@@ -464,8 +464,8 @@
         "FRACTURE_TYPE": "Brottyp",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antal slag",
-        "RB_SCORE": "Rutchblock-resultat",
-        "RB_RELEASE": "Utlöst blockandel",
+        "RB_SCORE": "Rutschblock-resultat",
+        "RB_RELEASE": "Utlöst procentandel av blocket",
         "TEST_TYPE": "Testtyp",
         "TITLE": "Test"
       },

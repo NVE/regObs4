@@ -7,7 +7,13 @@
   <ion-item tabindex="0" detail="true" (click)="addOrEditCompressionTest(i)" (keyup.enter)="addOrEditCompressionTest(i)"
     *ngFor="let compressionTest of tests; let i = index">
     <ion-label>
-      <ng-container *ngIf="compressionTest.PropagationTID">{{compressionTest.PropagationTID | kdvDescription: 'Snow_PropagationKDV' | async}}</ng-container><ng-container *ngIf="compressionTest.TapsFracture > 0">{{compressionTest.TapsFracture}}</ng-container><ng-container *ngIf="compressionTest.FractureDepth > 0">@{{compressionTest.FractureDepth | metersToCm: 0}}cm</ng-container><ng-container>{{ compressionTest.ComprTestFractureTID | kdvDescription: 'Snow_ComprTestFractureKDV' | async }}</ng-container>
+      <ng-container *ngIf="compressionTest.PropagationTID">{{compressionTest.PropagationTID | kdvDescription:
+        'Snow_PropagationKDV' | async}}</ng-container>
+      <ng-container *ngIf="compressionTest.TapsFracture > 0">{{compressionTest.TapsFracture}}</ng-container>
+      <ng-container *ngIf="compressionTest.ComprTestFractureTID"> ({{ compressionTest.ComprTestFractureTID |
+        kdvDescription: 'Snow_ComprTestFractureKDV' | async }})</ng-container>
+      <ng-container *ngIf="compressionTest.FractureDepth > 0"> @{{compressionTest.FractureDepth | metersToCm: 0}}cm
+      </ng-container>
     </ion-label>
     <ion-icon slot="end" name="link" *ngIf="compressionTest.IncludeInSnowProfile"></ion-icon>
   </ion-item>
