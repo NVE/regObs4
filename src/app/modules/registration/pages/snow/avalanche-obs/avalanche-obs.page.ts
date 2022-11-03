@@ -128,19 +128,18 @@ export class AvalancheObsPage extends BasePage {
     this.showWarning = true;
 
     const {
-      InvolvedNum: antallInvolvert,
-      CasualtiesNum: antallSkadet,
-      DeadNum: antallDode
+      InvolvedNum,
+      CasualtiesNum,
+      DeadNum
     } = this.incident;
 
-    if (antallInvolvert) {
-      this.isInvolvedValid = antallInvolvert >= 0;
-      this.isCasualtiesValid = antallSkadet === undefined || antallSkadet <= antallInvolvert;
-      this.isDeadValid = antallDode === undefined || antallDode <= antallSkadet;
+    if (InvolvedNum) {
+      this.isInvolvedValid = InvolvedNum >= 0;
+      this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
+      this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
     }
 
     return !!this.avalancheObs.DtAvalancheTime && this.isInvolvedValid && this.isCasualtiesValid && this.isDeadValid;
-
   }
 
   async isEmpty(): Promise<boolean> {
