@@ -10,11 +10,7 @@ import { ObsLocationPage } from './obs-location/obs-location.page';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-
-enum SaveAsDraftRespone {
-  Cancel = 'cancel',
-  Save = 'save',
-}
+import { PopupResponse } from '../../../core/models/popup-response.enum';
 
 @Injectable()
 export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLocationPage> {
@@ -64,16 +60,16 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
       buttons: [
         {
           text: translations['REGISTRATION.SAVE_ALERT.NO'],
-          role: SaveAsDraftRespone.Cancel
+          role: PopupResponse.CANCEL
         },
         {
           text: translations['REGISTRATION.SAVE_ALERT.YES'],
-          role: SaveAsDraftRespone.Save
+          role: PopupResponse.SAVE
         }
       ]
     });
     await alert.present();
     const result = await alert.onDidDismiss();
-    return result.role === SaveAsDraftRespone.Save;
+    return result.role === PopupResponse.SAVE;
   }
 }

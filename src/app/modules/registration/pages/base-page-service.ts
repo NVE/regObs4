@@ -8,8 +8,10 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { firstValueFrom } from 'rxjs';
+import { PopupResponse } from '../../../core/models/popup-response.enum';
 
 const DEBUG_TAG = 'BasePageService';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +27,8 @@ export class BasePageService {
     private alertController: AlertController,
     private translateService: TranslateService,
     private loggingService: LoggingService
-  ) {}
+  ) {
+  }
 
   /**
    * @returns true if operator confirms to leave an invalid registration form (and lose the data)
@@ -43,6 +46,13 @@ export class BasePageService {
     return this.askForResetConfirmation(leaveText);
   }
 
+  /**
+   * Creates a confirmation dialog with a message and two buttons, one with the translated text for "Cancel"
+   * and the other with the translated text for "Yes".
+   *
+   * @param {string} message - The message to display in the popup.
+   * @returns Promise boolean value based on user button input.
+   */
   private async askForResetConfirmation(message: string): Promise<boolean> {
     const translations = await firstValueFrom(this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']));
     const alert = await this.alertController.create({
@@ -50,17 +60,17 @@ export class BasePageService {
       buttons: [
         {
           text: translations['DIALOGS.CANCEL'],
-          role: 'cancel'
+          role: PopupResponse.CANCEL
         },
         {
-          text: translations['DIALOGS.YES']
+          text: translations['DIALOGS.YES'],
+          role: PopupResponse.SAVE
         }
       ]
     });
     await alert.present();
     const result = await alert.onDidDismiss();
-    const reset: boolean = result.role !== 'cancel';
-    return reset;
+    return result.role === PopupResponse.SAVE;
   }
 
   /**
@@ -76,7 +86,7 @@ export class BasePageService {
       const draftCopy: RegistrationDraft = {
         ...draft,
         registration: {
-          ...draft.registration,
+          ...draft.registration
         }
       };
 
