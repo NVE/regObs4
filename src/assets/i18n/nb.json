@@ -101,10 +101,10 @@
     "TITLE": "Hjelp"
   },
   "LEGAL_TERMS": {
-    "HEADER": "Om data i Varsom-appen",
+    "HEADER": "Om data i Varsom",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
-    "LINE_3": "Data i Varsom-appen produseres av brukerne og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
+    "LINE_3": "Observasjoner produseres av brukerne og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
     "LINE_4": "Når du publiserer bilder på observasjoner aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
     "LINE_5": "Les mer i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkår</a>.",
     "OK": "Ok, jeg aksepterer"
@@ -144,7 +144,7 @@
     "SEARCH_TEXT": "Søk etter sted"
   },
   "MENU": {
-    "ABOUT_REGOBS": "Om data i Varsom-appen",
+    "ABOUT_REGOBS": "Om data i Varsom",
     "AND": "og",
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
@@ -195,7 +195,7 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Du kan se flere på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">din side på web</a>",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
-    "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Med Varsom-appen er det lett å dele observasjoner, bilder og vurderinger med andre.",
+    "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Det er lett å dele observasjoner, bilder og vurderinger med andre.",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
@@ -212,7 +212,7 @@
     "NICKNAME_TEXT": "Kallenavn er et navn som er synlig for alle og vises sammen med observasjoner du gjør",
     "NO_GROUPS": "Du er ikke medlem av noen grupper",
     "PHOTOGRAPHER": "Fotograf",
-    "PUBLISH_PHOTOS": "Når du publiserer bilder i Varsom-appen aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
+    "PUBLISH_PHOTOS": "Når du publiserer bilder på observasjoner aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
     "SAVE": "Lagre",
     "TITLE": "Min side",
     "USER": "Bruker"
@@ -734,7 +734,7 @@
   },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom-appen ved å la oss se hvordan du bruker applikasjonen.",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom ved å la oss se hvordan du bruker applikasjonen.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Disse dataene er anonymisert og kan ikke knyttes til deg personlig.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "Appmodus",
@@ -762,7 +762,7 @@
   },
   "SET_NICK_ALERT": {
     "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
-    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom-appen. Kallenavnet blir vist i dine observasjoner.",
+    "HELP_TEXT": "Du må legge til et kallenavn. Kallenavnet blir vist i dine observasjoner.",
     "INPUT_TEXT": "Skriv inn kallenavn",
     "NICK": "Kallenavn"
   },
@@ -783,8 +783,8 @@
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
     "COMPETENCE_PAGE": {
-      "HEADER": "Bruk Varsom-appen fornuftig!",
-      "LINE_1": "Bruk informasjonen i appen, men gjør også dine egne vurderinger. Se observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+      "HEADER": "Bruk Varsom fornuftig!",
+      "LINE_1": "Bruk informasjonen i Varsom, men gjør også dine egne vurderinger. Se observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
     },
     "I_UNDERSTAND": "Ok, jeg forstår",
     "PAGE_1": {
@@ -802,7 +802,7 @@
     },
     "PAGE_4": {
       "HEADER": "Hva og hvordan?",
-      "LINE_1": "Du velger selv hva du vil se og dele på Varsom-appen. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
+      "LINE_1": "Du velger selv hva du vil se og dele på Varsom. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
     },
     "SKIP_START": "Hopp over"
   },
