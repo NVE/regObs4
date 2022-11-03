@@ -112,13 +112,16 @@
       <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Snow_ActivityInfluencedKDV"
                       [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
+                         [color]="!isInvolvedValid ? 'danger' : 'medium'"
                          [(value)]="incident.InvolvedNum" min="0"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
-                         *ngIf="incident.InvolvedNum"
+                         [readonly]="!incident.InvolvedNum"
+                         [color]="!isCasualtiesValid ? 'danger' : 'medium'"
                          [(value)]="incident.CasualtiesNum" min="0"
                          [max]="incident.InvolvedNum"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM"
-                         *ngIf="incident.CasualtiesNum && incident.InvolvedNum"
+                         [readonly]="!incident.CasualtiesNum || !incident.InvolvedNum"
+                         [color]="!isDeadValid ? 'danger' : 'medium'"
                          [(value)]="incident.DeadNum" min="0"
                          [max]="incident.CasualtiesNum"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"

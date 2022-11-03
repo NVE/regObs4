@@ -60,6 +60,10 @@ export class AvalancheObsPage extends BasePage {
   showWarning = false;
   maxDate: string;
 
+  isInvolvedValid = true;
+  isCasualtiesValid = true;
+  isDeadValid = true;
+
   get avalancheObs(): AvalancheObsEditModel {
     return this.draft.registration.AvalancheObs;
   }
@@ -129,15 +133,13 @@ export class AvalancheObsPage extends BasePage {
       DeadNum: antallDode
     } = this.incident;
 
-    let isInvolvedValid = true, isCasualtiesValid = true, isDeadValid = true;
-
     if (antallInvolvert) {
-      isInvolvedValid = antallInvolvert >= 0;
-      isCasualtiesValid = antallSkadet === undefined || antallSkadet <= antallInvolvert;
-      isDeadValid = antallDode === undefined || antallDode <= antallSkadet;
+      this.isInvolvedValid = antallInvolvert >= 0;
+      this.isCasualtiesValid = antallSkadet === undefined || antallSkadet <= antallInvolvert;
+      this.isDeadValid = antallDode === undefined || antallDode <= antallSkadet;
     }
 
-    return !!this.avalancheObs.DtAvalancheTime && isInvolvedValid && isCasualtiesValid && isDeadValid;
+    return !!this.avalancheObs.DtAvalancheTime && this.isInvolvedValid && this.isCasualtiesValid && this.isDeadValid;
 
   }
 
