@@ -26,12 +26,7 @@ export class CompressionTestModalPage implements OnInit {
   constructor(private modalController: ModalController) {}
 
   ngOnInit() {
-    for (let i = 1; i <= 30; i++) {
-      this.tapsArray.push({
-        id: i,
-        text: i.toString()
-      });
-    }
+    this.tapsArray = this.getTaps(1, 31);
     if (!this.compressionTest) {
       this.compressionTest = {};
       if (this.includeInSnowProfileAsDefault) {
@@ -40,26 +35,53 @@ export class CompressionTestModalPage implements OnInit {
     } else {
       this.showDelete = true;
     }
-    this.checkIfIncludeInSnowProfileShouldBeDisabled();
+    this.checkTestType();
   }
 
-  checkIfIncludeInSnowProfileShouldBeDisabled() {
+  checkTestType() {
     if (this.isLBT()) {
       this.compressionTest.IncludeInSnowProfile = false;
       this.includeInSnowProfileDisabled = true;
       return;
     }
     this.includeInSnowProfileDisabled = false;
+
+    if (this.isCTE()) {
+      this.tapsArray = this.getTaps(1, 11);
+    } else if (this.isCTM()) {
+      this.tapsArray = this.getTaps(11, 21);
+    } else if (this.isCTH()) {
+      this.tapsArray = this.getTaps(21, 31);
+    } else if (this.isRB()) {
+      this.tapsArray = this.getTaps(1, 8);
+    } else {
+      this.tapsArray = this.getTaps(1, 31);
+    }
   }
 
   tapsFractureVisible() {
-    return !(this.isCTNorECTX() || this.isCTVorECTV() || this.isLBT());
+    return !(this.isCTNorECTX() || this.isCTVorECTV() || this.isLBT() || this.isPST() || this.isNull());
+  }
+
+  testFractureVisible() {
+    return !this.isCTNorECTXorRB7() && !this.isPST() && !this.isNull() && !this.isRB();
+  }
+
+  rbReleaseVisible() {
+    return this.isRB() && this.compressionTest.TapsFracture && this.compressionTest.TapsFracture < 7;
   }
 
   isCTNorECTX() {
     return (
       this.compressionTest.PropagationTID === 15 ||
       this.compressionTest.PropagationTID === 24
+    );
+  }
+
+  isCTNorECTXorRB7() {
+    return (
+      this.isCTNorECTX() ||
+      (this.compressionTest.PropagationTID == 41 && this.compressionTest.TapsFracture == 7)
     );
   }
 
@@ -74,6 +96,31 @@ export class CompressionTestModalPage implements OnInit {
     return this.compressionTest.PropagationTID === 5;
   }
 
+  isNull() {
+    return !this.compressionTest.PropagationTID;
+  }
+
+  isPST() {
+    const tid = this.compressionTest.PropagationTID;
+    return 30 <= tid && tid < 40;
+  }
+
+  isCTE() {
+    return this.compressionTest.PropagationTID === 12;
+  }
+
+  isCTM() {
+    return this.compressionTest.PropagationTID === 13;
+  }
+
+  isCTH() {
+    return this.compressionTest.PropagationTID === 14;
+  }
+
+  isRB() {
+    return this.compressionTest.PropagationTID === 41;
+  }
+
   cancel() {
     this.modalController.dismiss();
   }
@@ -84,5 +131,11 @@ export class CompressionTestModalPage implements OnInit {
 
   delete() {
     this.modalController.dismiss({ delete: true });
+  }
+
+  getTaps(from, to) {
+    return [...Array(to).keys()]
+      .slice(from, to)
+      .map((k) => {return {id: k, text: k.toString()};});
   }
 }
