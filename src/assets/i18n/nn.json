@@ -500,9 +500,13 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Legg til ny test",
         "DISTANCE_FROM_TOP": "Avstand fra toppen (cm)",
+        "X_DISTANCE": "Kuttlengde",
+        "Y_DISTANCE": "Søylelengde",
         "FRACTURE_TYPE": "Brottype",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Tal på slag",
+        "RB_SCORE": "Rutschblock-resultat",
+        "RB_RELEASE": "Løsnet prosentdel av blokk",
         "TEST_TYPE": "Test type",
         "TITLE": "Testar"
       },
