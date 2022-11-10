@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="_cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="loaded">
+  <ng-content />
+  <app-modal-save-or-delete-buttons (saveClicked)="_ok()" (deleteClicked)="_delete()" [showDelete]="showDelete" />
+</ion-content>

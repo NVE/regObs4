@@ -7,9 +7,15 @@ import { combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
-import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
+import {
+  AddUpdateDeleteRegistrationService
+} from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import {
+  ConfirmationModalService,
+  PopupResponse
+} from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'SendButtonComponent';
 const DELETE_OBS_TIMEOUT_MS = 5000;
@@ -37,6 +43,7 @@ export class SendButtonComponent implements OnInit, OnChanges {
     private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private logger: LoggingService,
     private newAttachmentService: NewAttachmentService,
+    private confirmationModalService: ConfirmationModalService
   ) {
 
   }
@@ -46,10 +53,10 @@ export class SendButtonComponent implements OnInit, OnChanges {
       this.newAttachmentService.getAttachments(this.draft.uuid).pipe(map((attachments => attachments.length === 0))),
       this.hasChanges.pipe(
         startWith(null),
-        switchMap(() => this.draftService.isDraftEmpty(this.draft)),
+        switchMap(() => this.draftService.isDraftEmpty(this.draft))
       )
     ]).pipe(
-      map(([noAttachments, registrationEmpty]) => noAttachments && registrationEmpty),
+      map(([noAttachments, registrationEmpty]) => noAttachments && registrationEmpty)
     );
 
     this.isDisabled$ = combineLatest([
@@ -81,64 +88,64 @@ export class SendButtonComponent implements OnInit, OnChanges {
     }
   }
 
-  async requestDeleteDraft(): Promise<void> {
+  async requestDeleteDraft(): Promise<boolean> {
     const translations = await firstValueFrom(this.translateService
       .get([
-        'REGISTRATION.DELETE.DRAFT.HEADER',
         'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW',
         'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT',
         'DIALOGS.YES',
         'DIALOGS.NO'
       ]));
-    const alert = await this.alertController.create({
-      header: translations['REGISTRATION.DELETE.DRAFT.HEADER'],
-      message:
-      this.draft.regId
-        ? translations['REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT']
-        : translations['REGISTRATION.DELETE.DRAFT.MESSAGE_NEW'],
-      buttons: [
-        {
-          text: translations['DIALOGS.NO'],
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
-        {
-          text: translations['DIALOGS.YES'],
-          handler: () => {
-            this.deleteDraft();
+
+    const message = this.draft.regId
+      ? 'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT'
+      : 'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW';
+    return await this.confirmationModalService.askForConfirmation({
+      message: message, header: 'REGISTRATION.DELETE.DRAFT.HEADER', opts: {
+        buttons: [
+          {
+            text: translations['DIALOGS.NO'],
+            role: PopupResponse.CANCEL
+          },
+          {
+            text: translations['DIALOGS.YES'],
+            role: PopupResponse.CONFIRM,
+            handler: () => {
+              this.deleteDraft();
+            }
           }
-        }
-      ]
+        ]
+      }
     });
-    await alert.present();
   }
 
-  async requestDeleteFromRegobs(): Promise<void> {
+  async requestDeleteFromRegobs(): Promise<boolean> {
     const translations = await firstValueFrom(this.translateService
       .get([
-        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER',
-        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE',
         'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON',
         'DIALOGS.CANCEL'
       ]));
-    const alert = await this.alertController.create({
-      header: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER'],
-      message: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE'],
-      buttons: [
-        {
-          text: translations['DIALOGS.CANCEL'],
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
-        {
-          text: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON'],
-          handler: () => {
-            this.deleteFromRegobs();
-          }
+    return await this.confirmationModalService.askForConfirmation(
+      {
+        message: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER',
+        header: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE',
+        opts: {
+          buttons: [
+            {
+              text: translations['DIALOGS.CANCEL'],
+              role: PopupResponse.CANCEL
+            },
+            {
+              text: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON'],
+              role: PopupResponse.CONFIRM,
+              handler: () => {
+                this.deleteFromRegobs();
+              }
+            }
+          ]
         }
-      ]
-    });
-    await alert.present();
+      }
+    );
   }
 
   private async deleteDraft(): Promise<void> {

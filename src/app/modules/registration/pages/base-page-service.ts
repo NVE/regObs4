@@ -8,7 +8,9 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { firstValueFrom } from 'rxjs';
-import { PopupResponse } from '../../../core/models/popup-response.enum';
+import {
+  ConfirmationModalService
+} from '../../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'BasePageService';
 
@@ -26,7 +28,8 @@ export class BasePageService {
     private newAttachmentService: NewAttachmentService,
     private alertController: AlertController,
     private translateService: TranslateService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private confirmationModal: ConfirmationModalService
   ) {
   }
 
@@ -34,43 +37,14 @@ export class BasePageService {
    * @returns true if operator confirms to leave an invalid registration form (and lose the data)
    */
   async confirmLeave(): Promise<boolean> {
-    const leaveText = await firstValueFrom(this.translateService.get('REGISTRATION.REQUIRED_FIELDS_MISSING'));
-    return this.askForResetConfirmation(leaveText);
+    return await this.confirmationModal.askForConfirmation({ message: 'REGISTRATION.REQUIRED_FIELDS_MISSING' });
   }
 
   /**
    * @returns true if user confirms to delete registration form
    */
   async confirmDelete(): Promise<boolean> {
-    const leaveText = await firstValueFrom(this.translateService.get('REGISTRATION.CONFIRM_RESET'));
-    return this.askForResetConfirmation(leaveText);
-  }
-
-  /**
-   * Creates a confirmation dialog with a message and two buttons, one with the translated text for "Cancel"
-   * and the other with the translated text for "Yes".
-   *
-   * @param {string} message - The message to display in the popup.
-   * @returns Promise boolean value based on user button input.
-   */
-  private async askForResetConfirmation(message: string): Promise<boolean> {
-    const translations = await firstValueFrom(this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']));
-    const alert = await this.alertController.create({
-      message,
-      buttons: [
-        {
-          text: translations['DIALOGS.CANCEL'],
-          role: PopupResponse.CANCEL
-        },
-        {
-          text: translations['DIALOGS.YES'],
-          role: PopupResponse.SAVE
-        }
-      ]
-    });
-    await alert.present();
-    const result = await alert.onDidDismiss();
-    return result.role === PopupResponse.SAVE;
+    return await this.confirmationModal.askForConfirmation({ message: 'REGISTRATION.CONFIRM_RESET' });
   }
 
   /**
