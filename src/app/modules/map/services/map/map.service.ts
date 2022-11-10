@@ -33,6 +33,8 @@ export class MapService {
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _followModeSubject: BehaviorSubject<boolean>;
   private _followModeObservable: Observable<boolean>;
+  private _showUserLocationSubject: BehaviorSubject<boolean>;
+  private _showUserLocationObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject: Subject<IMapView>;
@@ -78,6 +80,10 @@ export class MapService {
     return this._centerMapToUserObservable;
   }
 
+  get showUserLocation$(): Observable<boolean> {
+    return this._showUserLocationObservable;
+  }
+
   set followMode(val: boolean) {
     this._followModeSubject.next(val);
   }
@@ -86,7 +92,9 @@ export class MapService {
     private userSettingService: UserSettingService,
     private loggingService: LoggingService
   ) {
-    this._followModeSubject = new BehaviorSubject<boolean>(true);
+    this._showUserLocationSubject = new BehaviorSubject<boolean>(true);
+    this._showUserLocationObservable = this._showUserLocationSubject.asObservable();
+    this._followModeSubject = new BehaviorSubject<boolean>(false);
     this._followModeObservable = this._followModeSubject
       .asObservable()
       .pipe(distinctUntilChanged(), shareReplay(1));
@@ -111,12 +119,17 @@ export class MapService {
   centerMapToUser(): void {
     this.followMode = true;
     this._centerMapToUserSubject.next();
+    this.showUserLocation(true);
   }
 
   updateMapView(mapView: IMapView): void {
     if (mapView) {
       this._mapViewSubject.next(mapView);
     }
+  }
+
+  showUserLocation(value: boolean): void {
+    this._showUserLocationSubject.next(value);
   }
 
   sendMapMoveStart(): void {
