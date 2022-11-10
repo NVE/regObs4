@@ -39,8 +39,8 @@
       </ion-row>
       <ion-row>
         <ion-col size="12" class="ion-no-padding">
-          <app-img-swiper [location]="location" [attachments]="attachments"
-          (imgClick)="openImage($event)" (locationClick)="openLocation($event)">
+          <app-img-swiper [location]="location" [attachments]="attachments" (imgClick)="openImage($event)"
+            (locationClick)="openLocation($event)">
           </app-img-swiper>
         </ion-col>
       </ion-row>
@@ -59,12 +59,13 @@
       </ng-container> -->
       <ion-row class="row-padding-start">
         <ion-col size="12">
-          <app-summary [summaries]="summaries" [showHeaders]="false"></app-summary>
+          <app-summary [summaries]="summaries" [showHeaders]="true"></app-summary>
         </ion-col>
       </ion-row>
     </ion-grid>
     <ion-item class="ion-no-padding" color="light">
-      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit">
+      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" slot="start" (click)="edit()"
+        [disabled]="isLoadingObsForEdit">
         <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
         {{'REGISTRATION.EDIT' | translate}}
       </ion-button>
