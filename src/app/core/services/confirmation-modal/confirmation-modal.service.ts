@@ -53,14 +53,12 @@ export class ConfirmationModalService {
       throw new Error('ConfirmationModalService: You must provide at least two buttons');
     }
 
-    if (!opts) {
-      if (!opts.buttons) {
-        opts.buttons = await this.getDefaultButtons();
-      }
+    if (!opts && !opts.buttons) {
+      opts.buttons = await this.getDefaultButtons();
     }
 
     opts.buttons.map((button) => {
-      if (button.role === PopupResponse.CONFIRM) {
+      if (button.role === PopupResponse.CONFIRM && !button.cssClass) {
         button.cssClass = 'alert-button-confirm';
       }
     });
