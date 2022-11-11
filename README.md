@@ -140,7 +140,7 @@ Vi har et 책pent beta-test-program hvor eksterne testere kan melde seg inn ved �
 ### Starte beta-testing p책 Apple App Store
 
 - For 책 rulle videre fra intern testing til beta, logg p책 https://appstoreconnect.apple.com/
-- Velg Varsom Regobs under My Apps
+- Velg Varsom under My Apps
 - Velg TestFlight
 - Under "Test information", legg inn release notes p책 begge spr책k
 - Velg External Groups / Beta Testers

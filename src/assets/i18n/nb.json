@@ -101,14 +101,13 @@
     "TITLE": "Hjelp"
   },
   "LEGAL_TERMS": {
-    "HEADER": "Om data i Varsom Regobs",
+    "HEADER": "Om data i Varsom",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
-    "LINE_3": "Data i Varsom Regobs produseres av brukerne av Regobs og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
-    "LINE_4": "Når du publiserer bilder på observasjoner i Regobs aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
+    "LINE_3": "Observasjoner produseres av brukerne og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
+    "LINE_4": "Når du publiserer bilder på observasjoner aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
     "LINE_5": "Les mer i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkår</a>.",
-    "OK": "Ok, jeg aksepterer",
-    "TERMS": "Data i Varsom Regobs produseres av brukerne av Regobs og foreligger \"som de er\". Data kan inneholde feil og mangler. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
+    "OK": "Ok, jeg aksepterer"
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Endre passord",
@@ -145,7 +144,7 @@
     "SEARCH_TEXT": "Søk etter sted"
   },
   "MENU": {
-    "ABOUT_REGOBS": "Om data i Regobs",
+    "ABOUT_REGOBS": "Om data i Varsom",
     "AND": "og",
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
@@ -196,7 +195,7 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Du kan se flere på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">din side på web</a>",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
-    "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Med Varsom Regobs er det lett å dele observasjoner, bilder og vurderinger med andre.",
+    "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Det er lett å dele observasjoner, bilder og vurderinger med andre.",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
@@ -213,7 +212,7 @@
     "NICKNAME_TEXT": "Kallenavn er et navn som er synlig for alle og vises sammen med observasjoner du gjør",
     "NO_GROUPS": "Du er ikke medlem av noen grupper",
     "PHOTOGRAPHER": "Fotograf",
-    "PUBLISH_PHOTOS": "Når du publiserer bilder i Regobs aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
+    "PUBLISH_PHOTOS": "Når du publiserer bilder på observasjoner aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
     "SAVE": "Lagre",
     "TITLE": "Min side",
     "USER": "Bruker"
@@ -267,7 +266,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observasjoner",
-      "MESSAGE": "Bruk observasjonene på eget ansvar, de produseres av brukerne av Regobs og foreligger «som den er». NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.\nSe observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+      "MESSAGE": "Bruk observasjonene på eget ansvar, de produseres av brukerne og foreligger «som de er». NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.\nSe observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
     },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kart",
@@ -576,9 +575,13 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Legg til ny test",
         "DISTANCE_FROM_TOP": "Avstand fra toppen (cm)",
+        "X_DISTANCE": "Kuttlengde",
+        "Y_DISTANCE": "Søylelengde",
         "FRACTURE_TYPE": "Bruddtype",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antall slag",
+        "RB_SCORE": "Rutschblock-resultat",
+        "RB_RELEASE": "Løsnet prosentdel av blokk",
         "TEST_TYPE": "Test type",
         "TITLE": "Tester"
       },
@@ -618,7 +621,6 @@
           "WATER_EQUIVALENT": "Vannekvivalent",
           "WEIGHT": "Vekt (g)"
         },
-        "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere et snøprofil i Varsom Regobs appen. Men, du kan ta et bilde av et håndtegnet profil eller eksportere et profil fra en tredjeparts app som Ullr Labs Avalanche. På regobs.no kan du senere oppdatere observasjonen med å bruke egne skjema og plot for snøprofiler.",
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Legg til nytt punkt",
           "DEPTH": "Dybde (cm)",
@@ -741,11 +743,11 @@
   },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom Regobs ved å la oss se hvordan du bruker applikasjonen.",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne dataen er anonym og kan ikke knyttes til deg personlig.",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom ved å la oss se hvordan du bruker applikasjonen.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Disse dataene er anonymisert og kan ikke knyttes til deg personlig.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "Appmodus",
-    "APP_VERSION": "App versjon",
+    "APP_VERSION": "Versjon",
     "CONFIRM_RESET": "Er du sikker på du vil tilbakestille app?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikke oppdatere nedtrekksmenyer. Vennligst sjekk om du har nettverk og prøv igjen litt senere.",
@@ -769,7 +771,7 @@
   },
   "SET_NICK_ALERT": {
     "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
-    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet blir vist i dine observasjoner.",
+    "HELP_TEXT": "Du må legge til et kallenavn. Kallenavnet blir vist i dine observasjoner.",
     "INPUT_TEXT": "Skriv inn kallenavn",
     "NICK": "Kallenavn"
   },
@@ -790,8 +792,8 @@
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
     "COMPETENCE_PAGE": {
-      "HEADER": "Bruk Regobs fornuftig!",
-      "LINE_1": "Bruk informasjonen i appen, men gjør også dine egne vurderinger. Se observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+      "HEADER": "Bruk Varsom fornuftig!",
+      "LINE_1": "Bruk informasjonen i Varsom, men gjør også dine egne vurderinger. Se observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
     },
     "I_UNDERSTAND": "Ok, jeg forstår",
     "PAGE_1": {
@@ -809,7 +811,7 @@
     },
     "PAGE_4": {
       "HEADER": "Hva og hvordan?",
-      "LINE_1": "Du velger selv hva du vil se og dele på Varsom Regobs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
+      "LINE_1": "Du velger selv hva du vil se og dele på Varsom. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
     },
     "SKIP_START": "Hopp over"
   },
@@ -853,7 +855,7 @@
     "ICE_LEGEND_TEXT_6": "Rørgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser deler av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunnet reguleringer for kraftproduksjon",
-    "INFO_PAGE": "<h1>Om kart med bratthet og utløp</h1>\nKartene er automatisk generert og kan inneholde feil. Det kan eksistere bratte heng som høydemodellen ikke plukker opp og derfor ikke vises på kartet.\nNoen skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Hvilke hensyn må tas?</h2>\nTilpass egen risiko ved å velge hvor, når og hvordan du ferdes. Varsom Regobs er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger.\n\n<h2>Når er det trygt?</h2>\nAll ferdsel i snødekt skredterreng er forbundet med risiko. \n\n<h2>Lære mer?</h2>\nDu kan lære mer på skredkurs og Snøskredskolen på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kart med bratthet og utløp</h1>\nKartene er automatisk generert og kan inneholde feil. Det kan eksistere bratte heng som høydemodellen ikke plukker opp og derfor ikke vises på kartet.\nNoen skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Hvilke hensyn må tas?</h2>\nTilpass egen risiko ved å velge hvor, når og hvordan du ferdes. Varsom er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger.\n\n<h2>Når er det trygt?</h2>\nAll ferdsel i snødekt skredterreng er forbundet med risiko. \n\n<h2>Lære mer?</h2>\nDu kan lære mer på skredkurs og Snøskredskolen på Varsom.no.",
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
@@ -881,7 +883,7 @@
     "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil automatisk ble stoppet ved midnatt.",
     "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
     "ERROR_POSITION": "Kan ikke starte tur uten GPS posisjon.",
-    "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på Regobs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
+    "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startet",
     "START_TRIP": "Start tur",

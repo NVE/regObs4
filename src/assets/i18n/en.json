@@ -101,14 +101,13 @@
     "TITLE": "Help"
   },
   "LEGAL_TERMS": {
-    "HEADER": "About Varsom Regobs data",
+    "HEADER": "About Varsom data",
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
     "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
-    "LINE_3": "Data on Regobs is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
-    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
+    "LINE_3": "Data in Varsom is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
+    "LINE_4": "When publishing images with observations in Varsom, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
     "LINE_5": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
-    "OK": "Ok, I accept",
-    "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. The information may contain errors and omissions. NVE makes no guarantee for the quality or accuracy of the information which is found on Regobs and does not take responsibility for data which is incorrect or misleading. The number of stars besides a username (1-5) indicates the level of competence of the person providing observations. Without stars, competence is unknown or low."
+    "OK": "Ok, I accept"
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Change password",
@@ -145,7 +144,7 @@
     "SEARCH_TEXT": "Search for location"
   },
   "MENU": {
-    "ABOUT_REGOBS": "About data in Regobs",
+    "ABOUT_REGOBS": "About data in Varsom",
     "AND": "and",
     "CONTACT_REGOBS": "Contact us",
     "CONTACT_REGOBS_ERROR": "Report error",
@@ -196,7 +195,7 @@
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. You may see more at <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">your page on web</a>",
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "NO_OBSERVATIONS": "Share your observations!",
-    "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and assessements with others on Varsom Regobs.",
+    "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and assessements with others on Varsom.",
     "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
     "TITLE": "My observations"
   },
@@ -575,9 +574,13 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Add new test",
         "DISTANCE_FROM_TOP": "Distance from top (cm)",
+        "X_DISTANCE": "Cut length",
+        "Y_DISTANCE": "Column length",
         "FRACTURE_TYPE": "Fracture type",
         "STABILITY_EVAL": "Stability",
         "TAPS_FRACTURE": "Number of taps",
+        "RB_SCORE": "Rutschblock score",
+        "RB_RELEASE": "Percentage of block released",
         "TEST_TYPE": "Test type",
         "TITLE": "Tests"
       },
@@ -617,7 +620,6 @@
           "WATER_EQUIVALENT": "Water Equivalent",
           "WEIGHT": "Weight (g)"
         },
-        "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not have a form for snow profiles in the current version of the Varsom Regobs app. But, you can upload a picture of a hand drawn profile or an export from a third party app like Ullr Labs Avalanche. On regobs.no you may update the profile information with the forms and plots provided there.",
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Add new point",
           "DEPTH": "Depth (cm)",
@@ -740,11 +742,11 @@
   },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Allow sending app usage data",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom by letting us know how you use the application.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "This data is anonymous and cannot be linked to you personally.",
     "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
     "APPMODE": "App mode",
-    "APP_VERSION": "App version",
+    "APP_VERSION": "Version",
     "CONFIRM_RESET": "Are you sure you want to reset app?",
     "COUNTRY": "Country",
     "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
@@ -768,7 +770,7 @@
   },
   "SET_NICK_ALERT": {
     "ERROR": "Couldn't save nickname. Please try later.",
-    "HELP_TEXT": "You need a nickname to use Varsom Regobs. The nickname is shown on your observations.",
+    "HELP_TEXT": "You need a nickname to use Varsom. The nickname is shown on your observations.",
     "INPUT_TEXT": "Please type nickname",
     "NICK": "Nick"
   },
@@ -789,8 +791,8 @@
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk"
     },
     "COMPETENCE_PAGE": {
-      "HEADER": "Use Regobs wisely!",
-      "LINE_1": "Use the information in the app, but also make your own judgments. View the observations in context of the observer's competence that appears as stars by the name."
+      "HEADER": "Use Varsom wisely!",
+      "LINE_1": "Use the information in Varsom, but also make your own judgments. View the observations in context of the observer's competence that appears as stars by the name."
     },
     "I_UNDERSTAND": "Ok, I understand",
     "PAGE_1": {
@@ -808,7 +810,7 @@
     },
     "PAGE_4": {
       "HEADER": "What and how?",
-      "LINE_1": "Choose what to see and share on Regobs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
+      "LINE_1": "Choose what to see and share on Varsom. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
     },
     "SKIP_START": "Skip"
   },
@@ -852,7 +854,7 @@
     "ICE_LEGEND_TEXT_6": "Pipeline",
     "ICE_LEGEND_TEXT_7": "Power plant tunnel",
     "ICE_MAP_DESCRIPTION": "The support map shows parts of watercourses that behave unpredictably throughout the winter due to regulations for power generation",
-    "INFO_PAGE": "<h1>About maps with slope angle and runout zones</h1>\nThe maps are automatically produced and may contain errors. There may be steep terrain, which is not represented in the elevation model and thus not displayed in the maps.\nSome avalanches may have longer runouts than what is displayed as runout zones in the maps.\n\n<h2>What consideration to take?</h2>\nAdjust your risk by choosing where, when and how you travel. Varsom Regobs is a planning tool and its data may differ from the actual situation. Always make your own evaluation.\n \n<h2>When is it safe?</h2>\nAll travel in snow covered avalanche terrain has an element of risk.\n\n<h2>Want to learn more?</h2>\nYou may learn more by taking an avalanche safety course and on Snøskredskolen on Varsom.no.",
+    "INFO_PAGE": "<h1>About maps with slope angle and runout zones</h1>\nThe maps are automatically produced and may contain errors. There may be steep terrain, which is not represented in the elevation model and thus not displayed in the maps.\nSome avalanches may have longer runouts than what is displayed as runout zones in the maps.\n\n<h2>What consideration to take?</h2>\nAdjust your risk by choosing where, when and how you travel. Varsom is a planning tool and its data may differ from the actual situation. Always make your own evaluation.\n \n<h2>When is it safe?</h2>\nAll travel in snow covered avalanche terrain has an element of risk.\n\n<h2>Want to learn more?</h2>\nYou may learn more by taking an avalanche safety course and on Snøskredskolen on Varsom.no.",
     "LOW": "Low",
     "MARITINE_BORDER": "Sea border",
     "MIDDLE": "Intermediate",

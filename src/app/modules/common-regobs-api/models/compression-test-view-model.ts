@@ -29,6 +29,21 @@ export interface CompressionTestViewModel {
    * The PropagationKD unique identifier
    */
   PropagationTID?: number;
+
+  /**
+   * PST X distance (in meters)
+   */
+  PstX?: number;
+
+  /**
+   * PST Y distance (in meters)
+   */
+  PstY?: number;
+
+  /**
+   * Amount of block that released in Rutchblock test
+   */
+  RbRelease?: number;
   StabilityEvalName?: string;
 
   /**
