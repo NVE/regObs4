@@ -89,61 +89,45 @@ export class SendButtonComponent implements OnInit, OnChanges {
   }
 
   async requestDeleteDraft(): Promise<boolean> {
-    const translations = await firstValueFrom(this.translateService
-      .get([
-        'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW',
-        'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT',
-        'DIALOGS.YES',
-        'DIALOGS.NO'
-      ]));
-
-    const message = this.draft.regId
-      ? 'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT'
-      : 'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW';
     return await this.confirmationModalService.askForConfirmation({
-      message: message, header: 'REGISTRATION.DELETE.DRAFT.HEADER', opts: {
-        buttons: [
-          {
-            text: translations['DIALOGS.NO'],
-            role: PopupResponse.CANCEL
-          },
-          {
-            text: translations['DIALOGS.YES'],
-            role: PopupResponse.CONFIRM,
-            handler: () => {
-              this.deleteDraft();
-            }
+      message: this.draft.regId
+        ? 'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT'
+        : 'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW',
+      header: 'REGISTRATION.DELETE.DRAFT.HEADER',
+      buttons: [
+        {
+          text: 'DIALOGS.NO',
+          role: PopupResponse.CANCEL
+        },
+        {
+          text: 'DIALOGS.YES',
+          role: PopupResponse.CONFIRM,
+          handler: () => {
+            this.deleteDraft();
           }
-        ]
-      }
+        }
+      ]
     });
   }
 
   async requestDeleteFromRegobs(): Promise<boolean> {
-    const translations = await firstValueFrom(this.translateService
-      .get([
-        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON',
-        'DIALOGS.CANCEL'
-      ]));
     return await this.confirmationModalService.askForConfirmation(
       {
         message: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER',
         header: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE',
-        opts: {
-          buttons: [
-            {
-              text: translations['DIALOGS.CANCEL'],
-              role: PopupResponse.CANCEL
-            },
-            {
-              text: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON'],
-              role: PopupResponse.CONFIRM,
-              handler: () => {
-                this.deleteFromRegobs();
-              }
+        buttons: [
+          {
+            text: 'DIALOGS.CANCEL',
+            role: PopupResponse.CANCEL
+          },
+          {
+            text: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON',
+            role: PopupResponse.CONFIRM,
+            handler: () => {
+              this.deleteFromRegobs();
             }
-          ]
-        }
+          }
+        ]
       }
     );
   }

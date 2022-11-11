@@ -14,7 +14,6 @@ import {
   ConfirmationModalService,
   PopupResponse
 } from '../../../core/services/confirmation-modal/confirmation-modal.service';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLocationPage> {
@@ -51,26 +50,20 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
   }
 
   async createAlert() {
-    const translations = await firstValueFrom(this.translateService
-      .get([
-        'REGISTRATION.SAVE_ALERT.NO',
-        'REGISTRATION.SAVE_ALERT.YES'
-      ]));
-
     return await this.confirmationModal.askForConfirmation(
       {
-        message: 'REGISTRATION.SAVE_ALERT.MESSAGE', header: 'REGISTRATION.SAVE_ALERT.HEADER', opts: {
-          buttons: [
-            {
-              text: translations['REGISTRATION.SAVE_ALERT.NO'],
-              role: PopupResponse.CANCEL
-            },
-            {
-              text: translations['REGISTRATION.SAVE_ALERT.YES'],
-              role: PopupResponse.CONFIRM
-            }
-          ]
-        }
+        message: 'REGISTRATION.SAVE_ALERT.MESSAGE',
+        header: 'REGISTRATION.SAVE_ALERT.HEADER',
+        buttons: [
+          {
+            text: 'REGISTRATION.SAVE_ALERT.NO',
+            role: PopupResponse.CANCEL
+          },
+          {
+            text: 'REGISTRATION.SAVE_ALERT.YES',
+            role: PopupResponse.CONFIRM
+          }
+        ]
       });
   }
 }

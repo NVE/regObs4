@@ -12,21 +12,22 @@ export enum PopupResponse {
 
 // We use ConfirmationModalButton instead of AlertButton to make sure that the role is set
 export interface ConfirmationModalButton extends AlertButton {
+  text: string;
   role: PopupResponse;
 }
 
-// We use ConfirmationModalButtons to make sure the array has at least two buttons (Yes and Cancel)
+// We use ConfirmationModalButtons to make sure the array has at least two buttons (Confirm and Cancel)
 export type ConfirmationModalButtons = [ConfirmationModalButton, ConfirmationModalButton, ...ConfirmationModalButton[]];
 
 export interface ConfirmationModal extends AlertOptions {
   message: string | IonicSafeString;
-  buttons: ConfirmationModalButtons;
 }
 
 interface AskForConfirmationParams {
-  message: string | Array<string>;
-  header?: string | Array<string>;
-  opts?: Omit<ConfirmationModal, 'message' | 'header'>;
+  message: string;
+  header?: string;
+  buttons?: ConfirmationModalButtons;
+  opts?: Omit<ConfirmationModal, 'message' | 'header' | 'buttons'>;
 }
 
 @Injectable({
@@ -42,34 +43,40 @@ export class ConfirmationModalService {
 
   /**
    * Creates a confirmation dialog with a message and two buttons.
-   *
-   * @param message
-   * @param header
-   * @param opts
+   * If no buttons are provided, default 'Confirm' and 'Cancel'-buttons will be added.
+   * @param message The key of the message to be displayed in the dialog
+   * @param header The key of the header to be displayed in the dialog
+   * @param buttons All the buttons to be displayed in the dialog
+   * @param opts The options to be passed to the dialog
    * @returns Promise boolean value based on user button input.
+   * This promise will resolve to true if the button has the role 'confirm'
+   * and false if the button has the role 'cancel'.
    */
-  async askForConfirmation({ message, header, opts }: AskForConfirmationParams): Promise<boolean> {
-    if (opts && opts.buttons && opts.buttons.length < 2) {
+  async askForConfirmation({ message, header, buttons, opts }: AskForConfirmationParams): Promise<boolean> {
+    if (buttons && buttons.length < 2) {
       throw new Error('ConfirmationModalService: You must provide at least two buttons');
     }
 
-    if (!opts && !opts.buttons) {
-      opts.buttons = await this.getDefaultButtons();
-    }
+    const _buttons = [...(buttons || await this.getDefaultButtons())];
 
-    opts.buttons.map((button) => {
+    const translations = await firstValueFrom(this.translateService.get([
+      message,
+      header,
+      ..._buttons.map(button => button.text)
+    ]));
+
+    _buttons.map(button => {
       if (button.role === PopupResponse.CONFIRM && !button.cssClass) {
         button.cssClass = 'alert-button-confirm';
       }
+      button.text = translations[button.text];
     });
-
-    const _message = await firstValueFrom(this.translateService.get(message));
-    const _header = await firstValueFrom(this.translateService.get(header));
 
     const alert = await this.alertController.create({
       ...opts,
-      message: _message,
-      header: _header,
+      message: translations[message],
+      header: translations[header],
+      buttons: _buttons,
       backdropDismiss: false
     });
 
