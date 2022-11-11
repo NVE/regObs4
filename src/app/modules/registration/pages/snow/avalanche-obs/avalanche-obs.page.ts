@@ -4,13 +4,13 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { createEmptyRegistration } from 'src/app/modules/common-registration/registration.helpers';
-
+import *  as L from 'leaflet';
+import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 
 /**
  * Used to register both avalanche observations and incidents, so this page contains two forms.
@@ -64,6 +64,7 @@ export class AvalancheObsPage extends BasePage {
   isCasualtiesValid = true;
   isDeadValid = true;
   isHarmedValid = true;
+  isErrorMessageHarmAndDead = false;
 
   get avalancheObs(): AvalancheObsEditModel {
     return this.draft.registration.AvalancheObs;
@@ -119,64 +120,29 @@ export class AvalancheObsPage extends BasePage {
 
 
   groupValidate(){
-    console.log('called');
-    this.onCasualtiesNumChange();
-    this.onDeadNumChange();
+    this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
+    this.isDeadValid =  IncidentValidation.onDeadNumChange(this.incident);
     this.onHarmedChange();
-  }
-
-  onCasualtiesNumChange(){
-
-
-    if (
-      (this.incident.InvolvedNum == undefined && this.incident.CasualtiesNum > 0)
-       || (this.incident.CasualtiesNum > this.incident.InvolvedNum)){
-      this.isCasualtiesValid = false;
-    } else {
-      this.isCasualtiesValid = true;
-    }
-  }
-
-  onDeadNumChange(){
-
-    if(
-      (this.incident.InvolvedNum == undefined && this.incident.CasualtiesNum == undefined && this.incident.DeadNum > 0)
-      || (this.incident.DeadNum > this.incident.CasualtiesNum)){
-      this.isDeadValid = false;
-    } else {
-      this.isDeadValid = true;
-    }
   }
 
   //Så den beste sjekken er at summen av døde og skadete ikke må overstige antall involverte eller antall skredtatte.
   onHarmedChange(){
-
-    //if only involved exist make sure harmedNum is not higher than involved
     if (
       (this.incident.InvolvedNum == undefined && this.incident.HarmedNum > 0)
       || (this.incident.HarmedNum > this.incident.InvolvedNum))
     {
       this.isHarmedValid = false;
     }
-    else if((this.incident.DeadNum > 0 && (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum)){
+    else if((this.incident.DeadNum > 0
+      && (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum)){
       this.isHarmedValid = false;
       this.isDeadValid = false;
+      this.isErrorMessageHarmAndDead = true;
     }
     else {
       this.isHarmedValid = true;
+      this.isErrorMessageHarmAndDead = false;
     }
-
-    //if both involved and casualties exist make sure its not higher than casualties and involved ones
-
-
-    //if dead ones exist make sure that sum of hurt and dead is not higher than casualties
-    /*if(
-      //check if involved or casualties exist
-      (this.incident.InvolvedNum == undefined && this.incident.CasualtiesNum == undefined && harmedNum > 0)
-      || (harmedNum > )
-    ) {
-      this.isHarmedValid = false;
-    }*/
 
   }
 
@@ -191,16 +157,13 @@ export class AvalancheObsPage extends BasePage {
   isValid() {
     this.showWarning = true;
 
-    const {
-      InvolvedNum,
-      CasualtiesNum,
-      DeadNum
-    } = this.incident;
+    this.groupValidate();
 
-    this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
-    this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
-
-    return !!this.avalancheObs.DtAvalancheTime && this.isInvolvedValid && this.isCasualtiesValid && this.isDeadValid;
+    return !!this.avalancheObs.DtAvalancheTime
+    && this.isInvolvedValid
+    && this.isCasualtiesValid
+    && this.isDeadValid
+    && this.isHarmedValid;
   }
 
   async isEmpty(): Promise<boolean> {

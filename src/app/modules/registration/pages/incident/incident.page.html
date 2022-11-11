@@ -14,22 +14,23 @@
     <ion-list>
       <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Ice_ActivityInfluencedKDV"
                       [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
-      <app-numeric-input title="REGISTRATION.ICE.INCIDENT.INVOLVED_NUM"
-                         [color]="!isInvolvedValid ? 'danger' : 'medium'"
-                         [min]="0"
-                         [(value)]="incident.InvolvedNum"></app-numeric-input>
+      <app-numeric-input title="REGISTRATION.ICE.INCIDENT.INVOLVED_NUM" [min]="0" [(value)]="incident.InvolvedNum"
+        (valueChange)="groupValidate()">
+      </app-numeric-input>
       <app-numeric-input title="REGISTRATION.ICE.INCIDENT.CASUALTIES_NUM"
                          [color]="!isCasualtiesValid ? 'danger' : 'medium'"
                          [min]="0"
                          [isValid]="isCasualtiesValid"
                          errorMessage="REGISTRATION.ICE.INCIDENT.CASUALTIES_NUM_ERROR_MESSAGE"
-                         [(value)]="incident.CasualtiesNum"></app-numeric-input>
+                         [(value)]="incident.CasualtiesNum"
+                         (valueChange)="groupValidate()"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM"
                          [color]="!isDeadValid ? 'danger' : 'medium'"
                          [min]="0"
                          [isValid]="isDeadValid"
                          errorMessage="REGISTRATION.ICE.INCIDENT.DEAD_NUM_ERROR_MESSAGE"
-                         [(value)]="incident.DeadNum"></app-numeric-input>
+                         [(value)]="incident.DeadNum"
+                         (valueChange)="groupValidate()"></app-numeric-input>
       <app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV"
                       [(value)]="incident.RescueTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.ICE.INCIDENT.SAFETY_GEAR_TID" kdvKey="Ice_SafetyGearKDV"

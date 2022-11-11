@@ -99,19 +99,33 @@
       </ion-list-header>
       <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Snow_ActivityInfluencedKDV"
         [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
-      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
-        [color]="!isInvolvedValid ? 'danger' : 'medium'" [min]="0" [(value)]="incident.InvolvedNum"
-        (valueChange)="groupValidate()"></app-numeric-input>
+      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM" [color]="!isInvolvedValid ? 'danger' : 'medium'"
+        [min]="0" [(value)]="incident.InvolvedNum" (valueChange)="groupValidate()">
+      </app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
-        [color]="!isCasualtiesValid ? 'danger' : 'medium'" [isValid]="isCasualtiesValid"
-        errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM_ERROR_MESSAGE" [min]="0"
-        [(value)]="incident.CasualtiesNum" (valueChange)="groupValidate()"></app-numeric-input>
-      <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM" [color]="!isDeadValid ? 'danger' : 'medium'"
-        [isValid]="isDeadValid" errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM_ERROR_MESSAGE" [min]="0"
-        [(value)]="incident.DeadNum" (valueChange)="groupValidate()"></app-numeric-input>
-      <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
-        [color]="!isHarmedValid ? 'danger' : 'medium'" [(value)]="incident.HarmedNum" (valueChange)="groupValidate()"
-        [min]="0"></app-numeric-input>
+        [color]="!isCasualtiesValid ? 'danger' : 'medium'" 
+        [isValid]="isCasualtiesValid"
+        errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM_ERROR_MESSAGE" 
+        [min]="0"
+        [(value)]="incident.CasualtiesNum" 
+        (valueChange)="groupValidate()">
+      </app-numeric-input>
+      <app-numeric-input
+        title="REGISTRATION.INCIDENT.DEAD_NUM" 
+        [color]="!isDeadValid ? 'danger' : 'medium'"
+        [isValid]="isDeadValid" [errorMessage]="!isErrorMessageHarmAndDead ? 'REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM_ERROR_MESSAGE' : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'" [min]="0"
+        [(value)]="incident.DeadNum" 
+        (valueChange)="groupValidate()">
+      </app-numeric-input>
+      <app-numeric-input 
+        title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
+        [errorMessage]="!isErrorMessageHarmAndDead ? 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM_ERROR_MESSAGE' : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'"
+        [isValid]="isHarmedValid"
+        [color]="!isHarmedValid ? 'danger' : 'medium'" 
+        [(value)]="incident.HarmedNum" 
+        (valueChange)="groupValidate()"
+        [min]="0">
+      </app-numeric-input>
       <ion-item>
         <ion-label position="stacked" color="medium" class="ion-text-uppercase">
           {{'REGISTRATION.SNOW.AVALANCHE_OBS.TRAFFIC_OBSTRUCTED' | translate}}

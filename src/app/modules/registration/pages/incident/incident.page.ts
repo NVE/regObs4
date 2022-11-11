@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
+import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 
 @Component({
   selector: 'app-incident',
@@ -13,8 +14,7 @@ import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
 })
 export class IncidentPage extends BasePage {
 
-  isInvolvedValid = true;
-  isCasualtiesValid = true;
+  isCasualtiesValid= true;
   isDeadValid = true;
 
   get geoHazardName(): string {
@@ -31,6 +31,11 @@ export class IncidentPage extends BasePage {
     super(RegistrationTid.Incident, basePageService, activatedRoute);
   }
 
+  groupValidate(){
+    this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
+    this.isDeadValid =  IncidentValidation.onDeadNumChange(this.incident);
+  }
+
   /**
    * If InvolvedNum is set then:
    * CasualtiesNum must be equal to or less than InvolvedNum.
@@ -39,15 +44,7 @@ export class IncidentPage extends BasePage {
    * CasualtiesNum and DeadNum can be empty.
    */
   isValid() {
-    const {
-      InvolvedNum,
-      CasualtiesNum,
-      DeadNum
-    } = this.incident;
-
-    this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
-    this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
-
-    return this.isInvolvedValid && this.isCasualtiesValid && this.isDeadValid;
+    this.groupValidate();
+    return this.isCasualtiesValid && this.isDeadValid;
   }
 }

@@ -540,6 +540,8 @@
         "CASUALTIES_NUM_ERROR_MESSAGE": "Must be equal or smaller to the Number involved",
         "DEAD_NUM_ERROR_MESSAGE": "Must be equal or smaller than Number of casualties",
         "HARMED_NUM": "Number injured",
+        "HARMED_NUM_ERROR_MESSAGE": "Must be equal or smaller than number involved",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum of dead and injured must be equal or smaller than number casualties",
         "SAFETY_GEAR_TID": "Sender/receiver",
         "LOCAL_TOURIST_TID": "Local or visiting",
         "LOCAL_KNOWLEDGE_TID": "Knowledge of the area",
