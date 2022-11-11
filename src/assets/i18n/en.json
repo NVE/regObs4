@@ -415,6 +415,8 @@
       "INCIDENT": {
         "INVOLVED_NUM": "Number in the tour group",
         "CASUALTIES_NUM": "Number through the ice",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Must be equal or smaller than number in the tour group",
+        "DEAD_NUM_ERROR_MESSAGE": "Must be equal or smaller than number through the ice",
         "SAFETY_GEAR_TID": "Rescue equipment"
       }
     },
@@ -536,6 +538,8 @@
         "REMOTELY_TRIGGERED": "Remotely triggered",
         "INVOLVED_NUM": "Number involved",
         "CASUALTIES_NUM": "Number of casualties",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Must be equal or smaller to the Number involved",
+        "DEAD_NUM_ERROR_MESSAGE": "Must be equal or smaller than Number of casualties",
         "HARMED_NUM": "Number injured",
         "SAFETY_GEAR_TID": "Sender/receiver",
         "LOCAL_TOURIST_TID": "Local or visiting",

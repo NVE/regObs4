@@ -5,7 +5,7 @@
     [color]="color"
     position="stacked"
     [ngClass]="{'ion-text-uppercase': !simpleObsMode, 'simple-mode-title': simpleObsMode}">
-    {{ title | translate}}
+    {{ title | translate}} {{isValid == false ? '('+(errorMessage | translate)+')' : null}}
   </ion-label>
   <ion-text
     [ngClass]="{'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode}"

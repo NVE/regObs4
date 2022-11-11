@@ -63,6 +63,7 @@ export class AvalancheObsPage extends BasePage {
   isInvolvedValid = true;
   isCasualtiesValid = true;
   isDeadValid = true;
+  isHarmedValid = true;
 
   get avalancheObs(): AvalancheObsEditModel {
     return this.draft.registration.AvalancheObs;
@@ -116,6 +117,69 @@ export class AvalancheObsPage extends BasePage {
     this.draft = await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
 
+
+  groupValidate(){
+    console.log('called');
+    this.onCasualtiesNumChange();
+    this.onDeadNumChange();
+    this.onHarmedChange();
+  }
+
+  onCasualtiesNumChange(){
+
+
+    if (
+      (this.incident.InvolvedNum == undefined && this.incident.CasualtiesNum > 0)
+       || (this.incident.CasualtiesNum > this.incident.InvolvedNum)){
+      this.isCasualtiesValid = false;
+    } else {
+      this.isCasualtiesValid = true;
+    }
+  }
+
+  onDeadNumChange(){
+
+    if(
+      (this.incident.InvolvedNum == undefined && this.incident.CasualtiesNum == undefined && this.incident.DeadNum > 0)
+      || (this.incident.DeadNum > this.incident.CasualtiesNum)){
+      this.isDeadValid = false;
+    } else {
+      this.isDeadValid = true;
+    }
+  }
+
+  //Så den beste sjekken er at summen av døde og skadete ikke må overstige antall involverte eller antall skredtatte.
+  onHarmedChange(){
+
+    //if only involved exist make sure harmedNum is not higher than involved
+    if (
+      (this.incident.InvolvedNum == undefined && this.incident.HarmedNum > 0)
+      || (this.incident.HarmedNum > this.incident.InvolvedNum))
+    {
+      this.isHarmedValid = false;
+    }
+    else if((this.incident.DeadNum > 0 && (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum)){
+      this.isHarmedValid = false;
+      this.isDeadValid = false;
+    }
+    else {
+      this.isHarmedValid = true;
+    }
+
+    //if both involved and casualties exist make sure its not higher than casualties and involved ones
+
+
+    //if dead ones exist make sure that sum of hurt and dead is not higher than casualties
+    /*if(
+      //check if involved or casualties exist
+      (this.incident.InvolvedNum == undefined && this.incident.CasualtiesNum == undefined && harmedNum > 0)
+      || (harmedNum > )
+    ) {
+      this.isHarmedValid = false;
+    }*/
+
+  }
+
   /**
    * If InvolvedNum is set then:
    * CasualtiesNum must be equal to or less than InvolvedNum.
@@ -133,11 +197,8 @@ export class AvalancheObsPage extends BasePage {
       DeadNum
     } = this.incident;
 
-    if (InvolvedNum) {
-      this.isInvolvedValid = InvolvedNum >= 0;
-      this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
-      this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
-    }
+    this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
+    this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
 
     return !!this.avalancheObs.DtAvalancheTime && this.isInvolvedValid && this.isCasualtiesValid && this.isDeadValid;
   }

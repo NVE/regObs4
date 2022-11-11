@@ -25,7 +25,9 @@ export class IncidentPage extends BasePage {
     return this.draft.registration.Incident;
   }
 
-  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  constructor(
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute) {
     super(RegistrationTid.Incident, basePageService, activatedRoute);
   }
 
@@ -43,11 +45,8 @@ export class IncidentPage extends BasePage {
       DeadNum
     } = this.incident;
 
-    if (InvolvedNum) {
-      this.isInvolvedValid = InvolvedNum >= 0;
-      this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
-      this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
-    }
+    this.isCasualtiesValid = CasualtiesNum === undefined || CasualtiesNum <= InvolvedNum;
+    this.isDeadValid = DeadNum === undefined || DeadNum <= CasualtiesNum;
 
     return this.isInvolvedValid && this.isCasualtiesValid && this.isDeadValid;
   }

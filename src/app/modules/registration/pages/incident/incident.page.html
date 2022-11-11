@@ -16,17 +16,20 @@
                       [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
       <app-numeric-input title="REGISTRATION.ICE.INCIDENT.INVOLVED_NUM"
                          [color]="!isInvolvedValid ? 'danger' : 'medium'"
-                         [(value)]="incident.InvolvedNum" min="0"></app-numeric-input>
+                         [min]="0"
+                         [(value)]="incident.InvolvedNum"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.ICE.INCIDENT.CASUALTIES_NUM"
-                         [readonly]="!incident.InvolvedNum"
                          [color]="!isCasualtiesValid ? 'danger' : 'medium'"
-                         [(value)]="incident.CasualtiesNum" min="0"
-                         [max]="incident.InvolvedNum"></app-numeric-input>
+                         [min]="0"
+                         [isValid]="isCasualtiesValid"
+                         errorMessage="REGISTRATION.ICE.INCIDENT.CASUALTIES_NUM_ERROR_MESSAGE"
+                         [(value)]="incident.CasualtiesNum"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM"
-                         [readonly]="!incident.CasualtiesNum || !incident.InvolvedNum"
                          [color]="!isDeadValid ? 'danger' : 'medium'"
-                         [(value)]="incident.DeadNum" min="0"
-                         [max]="incident.CasualtiesNum"></app-numeric-input>
+                         [min]="0"
+                         [isValid]="isDeadValid"
+                         errorMessage="REGISTRATION.ICE.INCIDENT.DEAD_NUM_ERROR_MESSAGE"
+                         [(value)]="incident.DeadNum"></app-numeric-input>
       <app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV"
                       [(value)]="incident.RescueTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.ICE.INCIDENT.SAFETY_GEAR_TID" kdvKey="Ice_SafetyGearKDV"

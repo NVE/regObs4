@@ -113,19 +113,27 @@
                       [(value)]="incident.ActivityInfluencedTID"></app-kdv-select>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
                          [color]="!isInvolvedValid ? 'danger' : 'medium'"
-                         [(value)]="incident.InvolvedNum" min="0"></app-numeric-input>
+                         [min]="0"
+                         [(value)]="incident.InvolvedNum"
+                         (valueChange)="groupValidate()"
+                         ></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
-                         [readonly]="!incident.InvolvedNum"
                          [color]="!isCasualtiesValid ? 'danger' : 'medium'"
-                         [(value)]="incident.CasualtiesNum" min="0"
-                         [max]="incident.InvolvedNum"></app-numeric-input>
+                         [isValid]="isCasualtiesValid"
+                         errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM_ERROR_MESSAGE"
+                         [min]="0"
+                         [(value)]="incident.CasualtiesNum" (valueChange)="groupValidate()"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.INCIDENT.DEAD_NUM"
-                         [readonly]="!incident.CasualtiesNum || !incident.InvolvedNum"
                          [color]="!isDeadValid ? 'danger' : 'medium'"
-                         [(value)]="incident.DeadNum" min="0"
-                         [max]="incident.CasualtiesNum"></app-numeric-input>
+                         [isValid]="isDeadValid"
+                         errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM_ERROR_MESSAGE"
+                         [min]="0"
+                         [(value)]="incident.DeadNum" (valueChange)="groupValidate()"></app-numeric-input>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
-                         [(value)]="incident.HarmedNum" min="0"></app-numeric-input>
+                         [color]="!isHarmedValid ? 'danger' : 'medium'" 
+                         [(value)]="incident.HarmedNum"
+                         (valueChange)="groupValidate()"
+                         [min]="0"></app-numeric-input>
       <ion-item>
         <ion-label
           position="stacked"
@@ -136,7 +144,8 @@
         <ion-toggle [(ngModel)]="incident.TrafficObstructed"></ion-toggle>
       </ion-item>
       <app-numeric-input title="REGISTRATION.SNOW.AVALANCHE_OBS.EVACUATED_NUM"
-                         [(value)]="incident.EvacuatedNum" min="0"></app-numeric-input>
+                         [(value)]="incident.EvacuatedNum"
+                         [min]="0"></app-numeric-input>
       <ion-item>
         <ion-label
           position="stacked"
