@@ -22,13 +22,8 @@
         "Description": null
       },
       {
-        "Id": 204,
-        "Name": "Površinski odtok",
-        "Description": null
-      },
-      {
-        "Id": 205,
-        "Name": "Nezadostno odvodnjavanje",
+        "Id": 212,
+        "Name": "Snežna odeja z veliko vode",
         "Description": null
       },
       {
@@ -42,6 +37,26 @@
         "Description": null
       },
       {
+        "Id": 230,
+        "Name": "Erozija ob potokih/rekah",
+        "Description": null
+      },
+      {
+        "Id": 214,
+        "Name": "Potoki najdejo nove poti",
+        "Description": null
+      },
+      {
+        "Id": 204,
+        "Name": "Površinski odtok",
+        "Description": null
+      },
+      {
+        "Id": 205,
+        "Name": "Nezadostno odvodnjavanje",
+        "Description": null
+      },
+      {
         "Id": 208,
         "Name": "Razpoke/drobir na terenu",
         "Description": null
@@ -49,16 +64,6 @@
       {
         "Id": 209,
         "Name": "Opažen zemeljski plaz",
-        "Description": null
-      },
-      {
-        "Id": 212,
-        "Name": "Snežna odeja z veliko vode",
-        "Description": null
-      },
-      {
-        "Id": 214,
-        "Name": "Potoki najdejo nove poti",
         "Description": null
       },
       {
@@ -72,11 +77,6 @@
         "Description": null
       },
       {
-        "Id": 230,
-        "Name": "Erozija ob potokih/rekah",
-        "Description": null
-      },
-      {
         "Id": 299,
         "Name": "Drugi znaki nevarnosti-kateri",
         "Description": null
@@ -84,13 +84,13 @@
     ],
     "Dirt_ActivityInfluencedKDV": [
       {
-        "Id": 200,
-        "Name": "Ni podano",
+        "Id": 0,
+        "Name": "Neznano",
         "Description": null
       },
       {
-        "Id": 211,
-        "Name": "Ljudje",
+        "Id": 200,
+        "Name": "Ni podano",
         "Description": null
       },
       {
@@ -104,18 +104,30 @@
         "Description": null
       },
       {
-        "Id": 251,
-        "Name": "Kmetijske površine",
-        "Description": null
-      },
-      {
         "Id": 260,
         "Name": "Zgradbe",
         "Description": null
       },
       {
+        "Id": 211,
+        "Name": "Ljudje",
+        "Description": null
+      },
+      {
+        "Id": 251,
+        "Name": "Kmetijske površine",
+        "Description": null
+      },
+      {
         "Id": 290,
         "Name": "Drugo",
+        "Description": null
+      }
+    ],
+    "Dirt_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
         "Description": null
       }
     ],
@@ -141,8 +153,18 @@
         "Description": null
       },
       {
+        "Id": 11,
+        "Name": "Kamniti plaz",
+        "Description": null
+      },
+      {
         "Id": 6,
         "Name": "Padanje kamnov",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Ice fall",
         "Description": null
       },
       {
@@ -158,11 +180,6 @@
       {
         "Id": 10,
         "Name": "Blatni tok",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Kamniti plaz",
         "Description": null
       }
     ],
@@ -274,6 +291,11 @@
     ],
     "Ice_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Neznano",
+        "Description": null
+      },
+      {
         "Id": 700,
         "Name": "Ni podano",
         "Description": null
@@ -281,6 +303,11 @@
       {
         "Id": 710,
         "Name": "Pohodništvo",
+        "Description": null
+      },
+      {
+        "Id": 714,
+        "Name": "Ribolov na ledu",
         "Description": null
       },
       {
@@ -299,8 +326,8 @@
         "Description": null
       },
       {
-        "Id": 714,
-        "Name": "Ribolov na ledu",
+        "Id": 719,
+        "Name": "Oseba, ki jo je poškodoval led",
         "Description": null
       },
       {
@@ -319,24 +346,9 @@
         "Description": null
       },
       {
-        "Id": 719,
-        "Name": "Oseba, ki jo je poškodoval led",
+        "Id": 725,
+        "Name": "Potisne sani",
         "Description": null
-      },
-      {
-        "Id": 720,
-        "Name": "Motorne sani na ledu",
-        "Description": null
-      },
-      {
-        "Id": 721,
-        "Name": "Avto na ledu",
-        "Description": null
-      },
-      {
-        "Id": 722,
-        "Name": "ATV",
-        "Description": "Terensko vozilo"
       },
       {
         "Id": 723,
@@ -349,8 +361,18 @@
         "Description": null
       },
       {
-        "Id": 725,
-        "Name": "Potisne sani",
+        "Id": 720,
+        "Name": "Motorne sani na ledu",
+        "Description": null
+      },
+      {
+        "Id": 722,
+        "Name": "ATV",
+        "Description": "Terensko vozilo"
+      },
+      {
+        "Id": 721,
+        "Name": "Avto na ledu",
         "Description": null
       },
       {
@@ -379,6 +401,21 @@
         "Description": null
       },
       {
+        "Id": 777,
+        "Name": "ledeni zamašek",
+        "Description": null
+      },
+      {
+        "Id": 776,
+        "Name": "Frazil ice plugging",
+        "Description": null
+      },
+      {
+        "Id": 775,
+        "Name": "Anchor ice dam",
+        "Description": null
+      },
+      {
         "Id": 773,
         "Name": "Zaledenela površina",
         "Description": null
@@ -389,30 +426,52 @@
         "Description": null
       },
       {
-        "Id": 775,
-        "Name": "Anchor ice dam",
-        "Description": null
-      },
-      {
-        "Id": 776,
-        "Name": "Frazil ice plugging",
-        "Description": null
-      },
-      {
-        "Id": 777,
-        "Name": "ledeni zamašek",
-        "Description": null
-      },
-      {
         "Id": 790,
         "Name": "Drugo",
         "Description": null
+      }
+    ],
+    "Ice_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 710,
+        "Name": "Throw line and ice picks",
+        "Description": "Good self-protection"
+      },
+      {
+        "Id": 720,
+        "Name": "Ice picks",
+        "Description": "Medium self-protection"
+      },
+      {
+        "Id": 730,
+        "Name": "Other safety equipment",
+        "Description": "Medium/weak self-protection"
+      },
+      {
+        "Id": 790,
+        "Name": "No safety equipment",
+        "Description": "No self-protection"
       }
     ],
     "Ice_IceCoverKDV": [
       {
         "Id": 0,
         "Name": "Ni podano",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Jezero brez ledu",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Zaledenelo jezero",
         "Description": null
       },
       {
@@ -431,33 +490,23 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Lomljenje ledu ob obali",
-        "Description": null
-      },
-      {
         "Id": 11,
         "Name": "Zaledenela obala",
         "Description": null
       },
       {
-        "Id": 20,
-        "Name": "Jezero brez ledu",
-        "Description": null
-      },
-      {
-        "Id": 21,
-        "Name": "Zaledenelo jezero",
-        "Description": null
-      },
-      {
-        "Id": 40,
-        "Name": "Tok ledu po reki",
+        "Id": 10,
+        "Name": "Lomljenje ledu ob obali",
         "Description": null
       },
       {
         "Id": 41,
         "Name": "Plavajoči ledeni kosi na reki",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Tok ledu po reki",
         "Description": null
       },
       {
@@ -473,14 +522,14 @@
         "Description": null
       },
       {
-        "Id": 1,
-        "Name": "Brez ledu, prvič opažen led",
-        "Description": "Pred današnjim dnem na območju opažanja ni bilo ledu. Led je morda bil ob obali. \"Območje opažanja\" je v splošnem navidezna točka na jezeru, ki ni ob obali."
-      },
-      {
         "Id": 2,
         "Name": "Brez ledu, prvič led na obali",
         "Description": "Pred današnjim dnem ob obali ni bilo ledu."
+      },
+      {
+        "Id": 1,
+        "Name": "Brez ledu, prvič opažen led",
+        "Description": "Pred današnjim dnem na območju opažanja ni bilo ledu. Led je morda bil ob obali. \"Območje opažanja\" je v splošnem navidezna točka na jezeru, ki ni ob obali."
       },
       {
         "Id": 3,
@@ -673,6 +722,11 @@
         "Description": null
       },
       {
+        "Id": 14,
+        "Name": "Shooting cracks",
+        "Description": null
+      },
+      {
         "Id": 5,
         "Name": "Obilno sneženje",
         "Description": "Uporabljeno v norveški aplikaciji elrapp"
@@ -693,11 +747,6 @@
         "Description": null
       },
       {
-        "Id": 14,
-        "Name": "Shooting cracks",
-        "Description": null
-      },
-      {
         "Id": 15,
         "Name": "Glide cracks",
         "Description": null
@@ -710,6 +759,11 @@
     ],
     "Snow_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Neznano",
+        "Description": null
+      },
+      {
         "Id": 100,
         "Name": "Ni podano",
         "Description": null
@@ -720,13 +774,13 @@
         "Description": null
       },
       {
-        "Id": 112,
-        "Name": "Smučišče",
+        "Id": 113,
+        "Name": "Smučanje izven urejenih prog",
         "Description": null
       },
       {
-        "Id": 113,
-        "Name": "Smučanje izven urejenih prog",
+        "Id": 112,
+        "Name": "Smučišče",
         "Description": null
       },
       {
@@ -750,13 +804,13 @@
         "Description": null
       },
       {
-        "Id": 120,
-        "Name": "Cesta",
+        "Id": 130,
+        "Name": "Motorne sani",
         "Description": null
       },
       {
-        "Id": 130,
-        "Name": "Motorne sani",
+        "Id": 120,
+        "Name": "Cesta",
         "Description": null
       },
       {
@@ -775,15 +829,32 @@
         "Description": null
       }
     ],
+    "Snow_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Everyone in the group",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Some",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "None",
+        "Description": null
+      }
+    ],
     "Snow_AvalancheKDV": [
       {
         "Id": 0,
         "Name": "Ni podano",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Plaz mokrega snega",
         "Description": null
       },
       {
@@ -792,13 +863,18 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "Moker kložast plaz",
+        "Id": 11,
+        "Name": "Plaz mokrega snega",
         "Description": null
       },
       {
         "Id": 22,
         "Name": "Suh kložast plaz",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Moker kložast plaz",
         "Description": null
       },
       {
@@ -933,24 +1009,24 @@
         "Description": "Srež blizu tal"
       },
       {
-        "Id": 18,
-        "Name": "Srež nad skorjo",
-        "Description": "Srež nad skorjo"
-      },
-      {
         "Id": 19,
         "Name": "Srež pod skorjo",
         "Description": "Srež pod skorjo"
       },
       {
-        "Id": 20,
-        "Name": "Taljenje blizu tal",
-        "Description": "Taljenje blizu tal"
+        "Id": 18,
+        "Name": "Srež nad skorjo",
+        "Description": "Srež nad skorjo"
       },
       {
         "Id": 22,
         "Name": "Nabiranje vode med snežnimi plastmi",
         "Description": "Nabiranje vode med snežnimi plastmi"
+      },
+      {
+        "Id": 20,
+        "Name": "Taljenje blizu tal",
+        "Description": "Taljenje blizu tal"
       },
       {
         "Id": 24,
@@ -1100,11 +1176,6 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Spontano proženje",
-        "Description": null
-      },
-      {
         "Id": 30,
         "Name": "Zelo težko sprožiti",
         "Description": null
@@ -1122,6 +1193,11 @@
       {
         "Id": 60,
         "Name": "Zelo lahko sprožiti",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Spontano proženje",
         "Description": null
       }
     ],
@@ -1324,8 +1400,13 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Oddaljeno sproženje",
+        "Id": 26,
+        "Name": "Sprožil človek",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Sprožile snežne sani",
         "Description": null
       },
       {
@@ -1336,16 +1417,6 @@
       {
         "Id": 25,
         "Name": "Sproženo z eksplozivom",
-        "Description": null
-      },
-      {
-        "Id": 26,
-        "Name": "Sprožil človek",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Sprožile snežne sani",
         "Description": null
       },
       {
@@ -1418,21 +1489,6 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Plast oglatih zrn blizu površja snežne odeje",
-        "Description": null
-      },
-      {
-        "Id": 61,
-        "Name": "Površinski srež na trdi podlagi",
-        "Description": null
-      },
-      {
-        "Id": 62,
-        "Name": "Površinski srež na mehki podlagi",
-        "Description": null
-      },
-      {
         "Id": 101,
         "Name": "Ogromno nesprijetega snega (>30cm)",
         "Description": null
@@ -1448,8 +1504,23 @@
         "Description": null
       },
       {
-        "Id": 104,
-        "Name": "Moker nesprijet sneg",
+        "Id": 61,
+        "Name": "Površinski srež na trdi podlagi",
+        "Description": null
+      },
+      {
+        "Id": 62,
+        "Name": "Površinski srež na mehki podlagi",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Plast oglatih zrn blizu površja snežne odeje",
+        "Description": null
+      },
+      {
+        "Id": 107,
+        "Name": "Skorja",
         "Description": null
       },
       {
@@ -1463,8 +1534,8 @@
         "Description": null
       },
       {
-        "Id": 107,
-        "Name": "Skorja",
+        "Id": 104,
+        "Name": "Moker nesprijet sneg",
         "Description": null
       },
       {
@@ -1552,12 +1623,57 @@
         "Id": 3,
         "Name": "Q3 (nepravilen, hrapav prelom)",
         "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Sudden planar (SP)",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Sudden collapse (SC)",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Progressive compression (PC)",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Resistant planar (RP)",
+        "Description": null
+      },
+      {
+        "Id": 14,
+        "Name": "Non-planar break (BRK)",
+        "Description": null
       }
     ],
     "Snow_PropagationKDV": [
       {
         "Id": 0,
         "Name": "Ni podano",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "ECTPV(porušitev med pripravo)",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "ECTP(razpoka napreduje)",
+        "Description": null
+      },
+      {
+        "Id": 23,
+        "Name": "ECTN(razpoka ne napreduje)",
+        "Description": null
+      },
+      {
+        "Id": 24,
+        "Name": "ECTX(ni porušitve)",
         "Description": null
       },
       {
@@ -1591,23 +1707,23 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "ECTPV(porušitev med pripravo)",
+        "Id": 31,
+        "Name": "PST End",
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "ECTP(razpoka napreduje)",
+        "Id": 32,
+        "Name": "PST SF",
+        "Description": ""
+      },
+      {
+        "Id": 33,
+        "Name": "PST Arr",
         "Description": null
       },
       {
-        "Id": 23,
-        "Name": "ECTN(razpoka ne napreduje)",
-        "Description": null
-      },
-      {
-        "Id": 24,
-        "Name": "ECTX(ni porušitve)",
+        "Id": 41,
+        "Name": "RB",
         "Description": null
       }
     ],
@@ -2041,18 +2157,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Bad",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Ok",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "Good",
+        "Id": 50,
+        "Name": "Perfect",
         "Description": null
       },
       {
@@ -2061,8 +2167,55 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Perfect",
+        "Id": 30,
+        "Name": "Good",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Ok",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Bad",
+        "Description": null
+      }
+    ],
+    "Snow_SlopeActivityKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Ascending",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Descending",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Stationary",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Traversing",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Traversing on peak / ridge",
+        "Description": null
+      },
+      {
+        "Id": 80,
+        "Name": "Other",
         "Description": null
       }
     ],
@@ -2110,6 +2263,11 @@
     ],
     "Water_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Neznano",
+        "Description": null
+      },
+      {
         "Id": 600,
         "Name": "Ni podano",
         "Description": null
@@ -2142,6 +2300,13 @@
       {
         "Id": 690,
         "Name": "Drugo",
+        "Description": null
+      }
+    ],
+    "Water_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
         "Description": null
       }
     ],
@@ -2556,38 +2721,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Brez vpliva",
-        "Description": null
-      },
-      {
-        "Id": 13,
-        "Name": "Začeto iskanje in reševanje",
-        "Description": null
-      },
-      {
-        "Id": 15,
-        "Name": "Zaustavitev prometa",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Le materialna škoda",
-        "Description": null
-      },
-      {
-        "Id": 25,
-        "Name": "Evakuacija",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Nihče zasut, a je bilo blizu",
-        "Description": null
-      },
-      {
-        "Id": 28,
-        "Name": "Zasuta oseba, a brez poškodb",
+        "Id": 40,
+        "Name": "Smrtne žrtve",
         "Description": null
       },
       {
@@ -2596,13 +2731,139 @@
         "Description": null
       },
       {
-        "Id": 40,
-        "Name": "Smrtne žrtve",
+        "Id": 28,
+        "Name": "Zasuta oseba, a brez poškodb",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Nihče zasut, a je bilo blizu",
+        "Description": null
+      },
+      {
+        "Id": 25,
+        "Name": "Evakuacija",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Le materialna škoda",
+        "Description": null
+      },
+      {
+        "Id": 15,
+        "Name": "Zaustavitev prometa",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Začeto iskanje in reševanje",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Brez vpliva",
         "Description": null
       },
       {
         "Id": 99,
         "Name": "Drugo",
+        "Description": null
+      }
+    ],
+    "LocalTouristKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Lives in municipality",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Lives in county",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Lives in the country",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Foreign tourist",
+        "Description": null
+      },
+      {
+        "Id": 100,
+        "Name": "Unknown",
+        "Description": null
+      }
+    ],
+    "LocalKnowledgeKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Completely unknown",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Only read about the trip",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Been on the trip before",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Many times on the trip before",
+        "Description": null
+      }
+    ],
+    "RescueKDV": [
+      {
+        "Id": 60,
+        "Name": "Unknown",
+        "Description": null
+      },
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Self rescue",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Companion rescue",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Other group",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Organized rescue",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Other",
         "Description": null
       }
     ],
@@ -2616,11 +2877,6 @@
         "Id": 100,
         "Name": "-",
         "Description": "Neznano za sneg."
-      },
-      {
-        "Id": 105,
-        "Name": "A",
-        "Description": "Samodejna storitev"
       },
       {
         "Id": 110,
@@ -2646,6 +2902,11 @@
         "Id": 150,
         "Name": "*****",
         "Description": "Opazovalec je prognostik v plazovni službi."
+      },
+      {
+        "Id": 105,
+        "Name": "A",
+        "Description": "Samodejna storitev"
       },
       {
         "Id": 200,
@@ -2852,6 +3113,26 @@
         "Description": null
       },
       {
+        "Id": 60,
+        "Name": "Zasebna pot",
+        "Description": null
+      },
+      {
+        "Id": 55,
+        "Name": "Izobraževanje ali tečaj",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Vodena pot",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Službena pot",
+        "Description": null
+      },
+      {
         "Id": 20,
         "Name": "Redna naloga za potrebe plazovne službe",
         "Description": null
@@ -2864,26 +3145,6 @@
       {
         "Id": 40,
         "Name": "Naročena naloga za potrebe plazovne službe",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Službena pot",
-        "Description": null
-      },
-      {
-        "Id": 55,
-        "Name": "Izobraževanje ali tečaj",
-        "Description": null
-      },
-      {
-        "Id": 60,
-        "Name": "Zasebna pot",
-        "Description": null
-      },
-      {
-        "Id": 70,
-        "Name": "Vodena pot",
         "Description": null
       }
     ],
@@ -2902,21 +3163,6 @@
         "Id": 20,
         "Name": "Zemlja",
         "Description": "Zemeljski plaz"
-      },
-      {
-        "Id": 30,
-        "Name": "Mokra zemlja",
-        "Description": "Poplavni plaz"
-      },
-      {
-        "Id": 33,
-        "Name": "Glina",
-        "Description": null
-      },
-      {
-        "Id": 36,
-        "Name": "Plundra",
-        "Description": null
       },
       {
         "Id": 40,
@@ -2986,13 +3232,13 @@
         "Description": null
       },
       {
-        "Id": 52,
-        "Name": "Izbrisal skrbnik podatkov",
+        "Id": 61,
+        "Name": "Zavrnil skrbnik podatkov",
         "Description": null
       },
       {
-        "Id": 61,
-        "Name": "Zavrnil skrbnik podatkov",
+        "Id": 52,
+        "Name": "Izbrisal skrbnik podatkov",
         "Description": null
       },
       {
@@ -3003,18 +3249,28 @@
     ],
     "RegistrationKDV": [
       {
-        "Id": 10,
-        "Name": "Opombe",
+        "Id": 51,
+        "Name": "Ledena površina",
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Incident",
+        "Id": 50,
+        "Name": "Debelina ledu",
         "Description": null
       },
       {
         "Id": 13,
         "Name": "Znak nevarnosti",
+        "Description": null
+      },
+      {
+        "Id": 26,
+        "Name": "Snežni plaz",
+        "Description": null
+      },
+      {
+        "Id": 33,
+        "Name": "Plazovna aktivnost",
         "Description": null
       },
       {
@@ -3038,8 +3294,8 @@
         "Description": null
       },
       {
-        "Id": 26,
-        "Name": "Snežni plaz",
+        "Id": 32,
+        "Name": "Plazovni problemi",
         "Description": null
       },
       {
@@ -3048,28 +3304,8 @@
         "Description": null
       },
       {
-        "Id": 32,
-        "Name": "Plazovni problemi",
-        "Description": null
-      },
-      {
-        "Id": 33,
-        "Name": "Plazovna aktivnost",
-        "Description": null
-      },
-      {
         "Id": 36,
         "Name": "Snežni profil",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Debelina ledu",
-        "Description": null
-      },
-      {
-        "Id": 51,
-        "Name": "Ledena površina",
         "Description": null
       },
       {
@@ -3100,6 +3336,16 @@
       {
         "Id": 83,
         "Name": "Ocene in problemi",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Incident",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Opombe",
         "Description": null
       }
     ],

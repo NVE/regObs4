@@ -84,6 +84,11 @@
     ],
     "Dirt_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Unknown",
+        "Description": null
+      },
+      {
         "Id": 200,
         "Name": "Not given",
         "Description": null
@@ -116,6 +121,13 @@
       {
         "Id": 290,
         "Name": "Other",
+        "Description": null
+      }
+    ],
+    "Dirt_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
         "Description": null
       }
     ],
@@ -279,6 +291,11 @@
     ],
     "Ice_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Unknown",
+        "Description": null
+      },
+      {
         "Id": 700,
         "Name": "Not given",
         "Description": null
@@ -412,6 +429,33 @@
         "Id": 790,
         "Name": "Other",
         "Description": null
+      }
+    ],
+    "Ice_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 710,
+        "Name": "Throw line and ice picks",
+        "Description": "Good self-protection"
+      },
+      {
+        "Id": 720,
+        "Name": "Ice picks",
+        "Description": "Medium self-protection"
+      },
+      {
+        "Id": 730,
+        "Name": "Other safety equipment",
+        "Description": "Medium/weak self-protection"
+      },
+      {
+        "Id": 790,
+        "Name": "No safety equipment",
+        "Description": "No self-protection"
       }
     ],
     "Ice_IceCoverKDV": [
@@ -708,27 +752,17 @@
         "Description": null
       },
       {
-        "Id": 16,
-        "Name": "Fresh water drainage lines",
-        "Description": null
-      },
-      {
-        "Id": 17,
-        "Name": "Water ponds on snow surface",
-        "Description": null
-      },
-      {
-        "Id": 18,
-        "Name": "Wind with rain",
-        "Description": null
-      },
-      {
         "Id": 99,
         "Name": "Other danger sign (specify)",
         "Description": null
       }
     ],
     "Snow_ActivityInfluencedKDV": [
+      {
+        "Id": 0,
+        "Name": "Unknown",
+        "Description": null
+      },
       {
         "Id": 100,
         "Name": "Not given",
@@ -792,6 +826,28 @@
       {
         "Id": 190,
         "Name": "Other",
+        "Description": null
+      }
+    ],
+    "Snow_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Everyone in the group",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Some",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "None",
         "Description": null
       }
     ],
@@ -1057,17 +1113,17 @@
       },
       {
         "Id": 1,
-        "Name": "Isolated steep slopes",
+        "Name": "Few steep slopes",
         "Description": null
       },
       {
         "Id": 2,
-        "Name": "Specific steep slopes",
+        "Name": "Some steep slopes",
         "Description": null
       },
       {
         "Id": 3,
-        "Name": "Widespread steep slopes",
+        "Name": "Many steep slopes",
         "Description": null
       }
     ],
@@ -1351,11 +1407,6 @@
       {
         "Id": 27,
         "Name": "Triggered by snowmobile",
-        "Description": null
-      },
-      {
-        "Id": 22,
-        "Name": "Remotely triggered",
         "Description": null
       },
       {
@@ -1653,6 +1704,26 @@
       {
         "Id": 15,
         "Name": "CTN",
+        "Description": null
+      },
+      {
+        "Id": 31,
+        "Name": "PST End",
+        "Description": null
+      },
+      {
+        "Id": 32,
+        "Name": "PST SF",
+        "Description": ""
+      },
+      {
+        "Id": 33,
+        "Name": "PST Arr",
+        "Description": null
+      },
+      {
+        "Id": 41,
+        "Name": "RB",
         "Description": null
       }
     ],
@@ -2111,28 +2182,6 @@
         "Description": null
       }
     ],
-    "Snow_SafetyGearKDV": [
-      {
-        "Id": 0,
-        "Name": "Not given",
-        "Description": null
-      },
-      {
-        "Id": 10,
-        "Name": "Yes",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Partially",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "No",
-        "Description": null
-      }
-    ],
     "Snow_SlopeActivityKDV": [
       {
         "Id": 0,
@@ -2157,6 +2206,11 @@
       {
         "Id": 40,
         "Name": "Traversing",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Traversing on peak / ridge",
         "Description": null
       },
       {
@@ -2209,6 +2263,11 @@
     ],
     "Water_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Unknown",
+        "Description": null
+      },
+      {
         "Id": 600,
         "Name": "Not given",
         "Description": null
@@ -2241,6 +2300,13 @@
       {
         "Id": 690,
         "Name": "Other",
+        "Description": null
+      }
+    ],
+    "Water_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
         "Description": null
       }
     ],
@@ -2713,17 +2779,17 @@
       },
       {
         "Id": 10,
-        "Name": "Local",
+        "Name": "Lives in municipality",
         "Description": null
       },
       {
         "Id": 20,
-        "Name": "Lives in region",
+        "Name": "Lives in county",
         "Description": null
       },
       {
         "Id": 30,
-        "Name": "Lives in Norway",
+        "Name": "Lives in the country",
         "Description": null
       },
       {
@@ -2745,26 +2811,31 @@
       },
       {
         "Id": 10,
-        "Name": "First time in area",
+        "Name": "Completely unknown",
         "Description": null
       },
       {
         "Id": 20,
-        "Name": "2-3 time in area",
+        "Name": "Only read about the trip",
         "Description": null
       },
       {
         "Id": 30,
-        "Name": "1 week a year i området",
+        "Name": "Been on the trip before",
         "Description": null
       },
       {
         "Id": 40,
-        "Name": "Constantly in area",
+        "Name": "Many times on the trip before",
         "Description": null
       }
     ],
     "RescueKDV": [
+      {
+        "Id": 60,
+        "Name": "Unknown",
+        "Description": null
+      },
       {
         "Id": 0,
         "Name": "Not given",
@@ -2772,12 +2843,12 @@
       },
       {
         "Id": 10,
-        "Name": "Self",
+        "Name": "Self rescue",
         "Description": null
       },
       {
         "Id": 20,
-        "Name": "Companion",
+        "Name": "Companion rescue",
         "Description": null
       },
       {
@@ -2787,34 +2858,12 @@
       },
       {
         "Id": 40,
-        "Name": "Organized",
+        "Name": "Organized rescue",
         "Description": null
       },
       {
         "Id": 50,
         "Name": "Other",
-        "Description": null
-      }
-    ],
-    "SafetyGearKDV": [
-      {
-        "Id": 0,
-        "Name": "Not given",
-        "Description": null
-      },
-      {
-        "Id": 10,
-        "Name": "Yes",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Partially",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "No",
         "Description": null
       }
     ],
@@ -3114,21 +3163,6 @@
         "Id": 20,
         "Name": "Soil",
         "Description": "Earth slide"
-      },
-      {
-        "Id": 30,
-        "Name": "Wet soil",
-        "Description": "Flood slide"
-      },
-      {
-        "Id": 33,
-        "Name": "Clay",
-        "Description": null
-      },
-      {
-        "Id": 36,
-        "Name": "Slush",
-        "Description": null
       },
       {
         "Id": 40,

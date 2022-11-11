@@ -22,13 +22,8 @@
         "Description": null
       },
       {
-        "Id": 204,
-        "Name": "Overvatn i terreng",
-        "Description": null
-      },
-      {
-        "Id": 205,
-        "Name": "Utilstrekkeleg drenering",
+        "Id": 212,
+        "Name": "Snødekke med mykje vatn",
         "Description": null
       },
       {
@@ -42,6 +37,26 @@
         "Description": null
       },
       {
+        "Id": 230,
+        "Name": "Erosjon langs bekkar/elver",
+        "Description": null
+      },
+      {
+        "Id": 214,
+        "Name": "Bekkar tek nye løp",
+        "Description": null
+      },
+      {
+        "Id": 204,
+        "Name": "Overvatn i terreng",
+        "Description": null
+      },
+      {
+        "Id": 205,
+        "Name": "Utilstrekkeleg drenering",
+        "Description": null
+      },
+      {
         "Id": 208,
         "Name": "Sprekker/sig i terrenget",
         "Description": null
@@ -49,16 +64,6 @@
       {
         "Id": 209,
         "Name": "Observert jordskred",
-        "Description": null
-      },
-      {
-        "Id": 212,
-        "Name": "Snødekke med mykje vatn",
-        "Description": null
-      },
-      {
-        "Id": 214,
-        "Name": "Bekkar tek nye løp",
         "Description": null
       },
       {
@@ -72,11 +77,6 @@
         "Description": null
       },
       {
-        "Id": 230,
-        "Name": "Erosjon langs bekkar/elver",
-        "Description": null
-      },
-      {
         "Id": 299,
         "Name": "Andre fareteikn (spesifiser)",
         "Description": null
@@ -84,13 +84,13 @@
     ],
     "Dirt_ActivityInfluencedKDV": [
       {
-        "Id": 200,
-        "Name": "Ikkje spesifisert",
+        "Id": 0,
+        "Name": "Ukjent",
         "Description": null
       },
       {
-        "Id": 211,
-        "Name": "Personar",
+        "Id": 200,
+        "Name": "Ikkje spesifisert",
         "Description": null
       },
       {
@@ -104,18 +104,30 @@
         "Description": null
       },
       {
-        "Id": 251,
-        "Name": "Skog- og landbrukareal",
-        "Description": null
-      },
-      {
         "Id": 260,
         "Name": "Busetnad",
         "Description": null
       },
       {
+        "Id": 211,
+        "Name": "Personar",
+        "Description": null
+      },
+      {
+        "Id": 251,
+        "Name": "Skog- og landbrukareal",
+        "Description": null
+      },
+      {
         "Id": 290,
         "Name": "Anna",
+        "Description": null
+      }
+    ],
+    "Dirt_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
         "Description": null
       }
     ],
@@ -141,8 +153,18 @@
         "Description": null
       },
       {
+        "Id": 11,
+        "Name": "Steinskred",
+        "Description": null
+      },
+      {
         "Id": 6,
         "Name": "Steinsprang",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Ice fall",
         "Description": null
       },
       {
@@ -158,11 +180,6 @@
       {
         "Id": 10,
         "Name": "Kvikkleireskred",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Steinskred",
         "Description": null
       }
     ],
@@ -274,6 +291,11 @@
     ],
     "Ice_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
+      {
         "Id": 700,
         "Name": "Ikkje spesifisert",
         "Description": null
@@ -281,6 +303,11 @@
       {
         "Id": 710,
         "Name": "Gåande",
+        "Description": null
+      },
+      {
+        "Id": 714,
+        "Name": "Isfiskar",
         "Description": null
       },
       {
@@ -299,8 +326,8 @@
         "Description": null
       },
       {
-        "Id": 714,
-        "Name": "Isfiskar",
+        "Id": 719,
+        "Name": "Personskade av isgang",
         "Description": null
       },
       {
@@ -319,24 +346,9 @@
         "Description": null
       },
       {
-        "Id": 719,
-        "Name": "Personskade av isgang",
+        "Id": 725,
+        "Name": "Sparkstøtting",
         "Description": null
-      },
-      {
-        "Id": 720,
-        "Name": "Snøskuter på isen",
-        "Description": null
-      },
-      {
-        "Id": 721,
-        "Name": "Bil på isen",
-        "Description": null
-      },
-      {
-        "Id": 722,
-        "Name": "ATV",
-        "Description": "All Terrain Vehicle"
       },
       {
         "Id": 723,
@@ -349,8 +361,18 @@
         "Description": null
       },
       {
-        "Id": 725,
-        "Name": "Sparkstøtting",
+        "Id": 720,
+        "Name": "Snøskuter på isen",
+        "Description": null
+      },
+      {
+        "Id": 722,
+        "Name": "ATV",
+        "Description": "All Terrain Vehicle"
+      },
+      {
+        "Id": 721,
+        "Name": "Bil på isen",
         "Description": null
       },
       {
@@ -379,6 +401,21 @@
         "Description": null
       },
       {
+        "Id": 777,
+        "Name": "Ispropp",
+        "Description": "Ein isgang har stansa og sperrar ein del av elveløpet"
+      },
+      {
+        "Id": 776,
+        "Name": "Sarr/is tettar elveløpet",
+        "Description": "Drivande sarr og isflak samlar seg under eit isdekke og snevrar inn elveløpet slik at vatn må renne på oversida av isdekket. Gir ofte skadar langs land eller på elvebotnen."
+      },
+      {
+        "Id": 775,
+        "Name": "Botnis dam",
+        "Description": "Isdam som vert laga når drivande sarr festar seg på elvebotnen. Kan gi overfløyming."
+      },
+      {
         "Id": 773,
         "Name": "Svellis / Kjøving",
         "Description": null
@@ -389,30 +426,52 @@
         "Description": "Is på innsjøar som løsnar og driv avgarde. Kan øydelegge langs land."
       },
       {
-        "Id": 775,
-        "Name": "Botnis dam",
-        "Description": "Isdam som vert laga når drivande sarr festar seg på elvebotnen. Kan gi overfløyming."
-      },
-      {
-        "Id": 776,
-        "Name": "Sarr/is tettar elveløpet",
-        "Description": "Drivande sarr og isflak samlar seg under eit isdekke og snevrar inn elveløpet slik at vatn må renne på oversida av isdekket. Gir ofte skadar langs land eller på elvebotnen."
-      },
-      {
-        "Id": 777,
-        "Name": "Ispropp",
-        "Description": "Ein isgang har stansa og sperrar ein del av elveløpet"
-      },
-      {
         "Id": 790,
         "Name": "Anna",
         "Description": null
+      }
+    ],
+    "Ice_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 710,
+        "Name": "Kasteline og ispiggar",
+        "Description": "God eigensikring"
+      },
+      {
+        "Id": 720,
+        "Name": "Ispiggar",
+        "Description": "Middels eigensikring"
+      },
+      {
+        "Id": 730,
+        "Name": "Anna tryggingsutstyr",
+        "Description": "Middels/svak eigensikring"
+      },
+      {
+        "Id": 790,
+        "Name": "Mangla tryggingsutstyr",
+        "Description": "Manglande eigensikring"
       }
     ],
     "Ice_IceCoverKDV": [
       {
         "Id": 0,
         "Name": "Ikkje gitt",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Heile sjøen isfri",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Heile sjøen islagd",
         "Description": null
       },
       {
@@ -431,33 +490,23 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Isløysing langs land, is utpå",
-        "Description": null
-      },
-      {
         "Id": 11,
         "Name": "Islegging ved land, ope utpå",
         "Description": null
       },
       {
-        "Id": 20,
-        "Name": "Heile sjøen isfri",
-        "Description": null
-      },
-      {
-        "Id": 21,
-        "Name": "Heile sjøen islagd",
-        "Description": null
-      },
-      {
-        "Id": 40,
-        "Name": "Isgang i elv",
+        "Id": 10,
+        "Name": "Isløysing langs land, is utpå",
         "Description": null
       },
       {
         "Id": 41,
         "Name": "Drivande sarr på elv",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Isgang i elv",
         "Description": null
       },
       {
@@ -473,14 +522,14 @@
         "Description": null
       },
       {
-        "Id": 1,
-        "Name": "Isfritt, no fyrste is målestad",
-        "Description": "Ingen is på målestaden før i dag. Det kan ha vore is langs land. Målestad er vanlegvis noko utpå vatnet."
-      },
-      {
         "Id": 2,
         "Name": "Isfritt, no fyrste is ved land",
         "Description": "Ingen is tidlegare denne sesongen. I dag is langs land."
+      },
+      {
+        "Id": 1,
+        "Name": "Isfritt, no fyrste is målestad",
+        "Description": "Ingen is på målestaden før i dag. Det kan ha vore is langs land. Målestad er vanlegvis noko utpå vatnet."
       },
       {
         "Id": 3,
@@ -673,6 +722,11 @@
         "Description": null
       },
       {
+        "Id": 14,
+        "Name": "Skytande sprekkar",
+        "Description": null
+      },
+      {
         "Id": 5,
         "Name": "Stort snøfall",
         "Description": "Brukes i elrapp"
@@ -693,11 +747,6 @@
         "Description": null
       },
       {
-        "Id": 14,
-        "Name": "Skytande sprekkar",
-        "Description": null
-      },
-      {
         "Id": 15,
         "Name": "Ferske glidesprekkar",
         "Description": null
@@ -710,6 +759,11 @@
     ],
     "Snow_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
+      {
         "Id": 100,
         "Name": "Ikkje spesifisert",
         "Description": null
@@ -720,13 +774,13 @@
         "Description": null
       },
       {
-        "Id": 112,
-        "Name": "Ski i anlegg",
+        "Id": 113,
+        "Name": "Ski, offpiste",
         "Description": null
       },
       {
-        "Id": 113,
-        "Name": "Ski, offpiste",
+        "Id": 112,
+        "Name": "Ski i anlegg",
         "Description": null
       },
       {
@@ -750,13 +804,13 @@
         "Description": null
       },
       {
-        "Id": 120,
-        "Name": "Veg",
+        "Id": 130,
+        "Name": "Snøskuter",
         "Description": null
       },
       {
-        "Id": 130,
-        "Name": "Snøskuter",
+        "Id": 120,
+        "Name": "Veg",
         "Description": null
       },
       {
@@ -775,15 +829,32 @@
         "Description": null
       }
     ],
+    "Snow_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Alle i gruppa",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Nokon",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Ingen",
+        "Description": null
+      }
+    ],
     "Snow_AvalancheKDV": [
       {
         "Id": 0,
         "Name": "Ikkje gitt",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Vått laussnøskred",
         "Description": null
       },
       {
@@ -792,13 +863,18 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "Vått flakskred",
+        "Id": 11,
+        "Name": "Vått laussnøskred",
         "Description": null
       },
       {
         "Id": 22,
         "Name": "Tørt flakskred",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Vått flakskred",
         "Description": null
       },
       {
@@ -933,24 +1009,24 @@
         "Description": "Kantkorna snø ved bakken"
       },
       {
-        "Id": 18,
-        "Name": "Kantkorna snø over skare",
-        "Description": "Kantkorna snø over skare"
-      },
-      {
         "Id": 19,
         "Name": "Kantkorna snø under skare",
         "Description": "Kantkorna snø under skare"
       },
       {
-        "Id": 20,
-        "Name": "Smelting frå bakken",
-        "Description": "Smelting frå bakken"
+        "Id": 18,
+        "Name": "Kantkorna snø over skare",
+        "Description": "Kantkorna snø over skare"
       },
       {
         "Id": 22,
         "Name": "Opphoping av vatn over lag",
         "Description": "Opphoping av vatn over lag"
+      },
+      {
+        "Id": 20,
+        "Name": "Smelting frå bakken",
+        "Description": "Smelting frå bakken"
       },
       {
         "Id": 24,
@@ -1100,11 +1176,6 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Naturleg utløyst",
-        "Description": null
-      },
-      {
         "Id": 30,
         "Name": "Svært vanskeleg å løyse ut",
         "Description": null
@@ -1122,6 +1193,11 @@
       {
         "Id": 60,
         "Name": "Svært lett å løyse ut",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Naturleg utløyst",
         "Description": null
       }
     ],
@@ -1324,8 +1400,13 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Fjernutløyst",
+        "Id": 26,
+        "Name": "Personutløyst",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Skuterutløyst",
         "Description": null
       },
       {
@@ -1336,16 +1417,6 @@
       {
         "Id": 25,
         "Name": "Utløyst med sprengstoff",
-        "Description": null
-      },
-      {
-        "Id": 26,
-        "Name": "Personutløyst",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Skuterutløyst",
         "Description": null
       },
       {
@@ -1418,21 +1489,6 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Overflatekantkorn",
-        "Description": null
-      },
-      {
-        "Id": 61,
-        "Name": "Rim på hardt underlag",
-        "Description": null
-      },
-      {
-        "Id": 62,
-        "Name": "Rim på mjukt underlag",
-        "Description": null
-      },
-      {
         "Id": 101,
         "Name": "Svært mykje tørr laussnø (>30cm)",
         "Description": null
@@ -1448,8 +1504,23 @@
         "Description": null
       },
       {
-        "Id": 104,
-        "Name": "Våt laussnø",
+        "Id": 61,
+        "Name": "Rim på hardt underlag",
+        "Description": null
+      },
+      {
+        "Id": 62,
+        "Name": "Rim på mjukt underlag",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Overflatekantkorn",
+        "Description": null
+      },
+      {
+        "Id": 107,
+        "Name": "Skare",
         "Description": null
       },
       {
@@ -1463,8 +1534,8 @@
         "Description": null
       },
       {
-        "Id": 107,
-        "Name": "Skare",
+        "Id": 104,
+        "Name": "Våt laussnø",
         "Description": null
       },
       {
@@ -1552,12 +1623,57 @@
         "Id": 3,
         "Name": "Q3",
         "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Sudden planar (SP)",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Sudden collapse (SC)",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Progressive compression (PC)",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Resistant planar (RP)",
+        "Description": null
+      },
+      {
+        "Id": 14,
+        "Name": "Non-planar break (BRK)",
+        "Description": null
       }
     ],
     "Snow_PropagationKDV": [
       {
         "Id": 0,
         "Name": "Ikkje gitt",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "ECTPV",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "ECTP",
+        "Description": null
+      },
+      {
+        "Id": 23,
+        "Name": "ECTN",
+        "Description": null
+      },
+      {
+        "Id": 24,
+        "Name": "ECTX",
         "Description": null
       },
       {
@@ -1591,23 +1707,23 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "ECTPV",
+        "Id": 31,
+        "Name": "PST End",
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "ECTP",
+        "Id": 32,
+        "Name": "PST SF",
+        "Description": ""
+      },
+      {
+        "Id": 33,
+        "Name": "PST Arr",
         "Description": null
       },
       {
-        "Id": 23,
-        "Name": "ECTN",
-        "Description": null
-      },
-      {
-        "Id": 24,
-        "Name": "ECTX",
+        "Id": 41,
+        "Name": "RB",
         "Description": null
       }
     ],
@@ -2041,18 +2157,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Bad",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Ok",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "Good",
+        "Id": 50,
+        "Name": "Perfect",
         "Description": null
       },
       {
@@ -2061,8 +2167,55 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Perfect",
+        "Id": 30,
+        "Name": "Good",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Ok",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Bad",
+        "Description": null
+      }
+    ],
+    "Snow_SlopeActivityKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Oppover",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Nedover",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Stillestående",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Kryssende/traversering",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Ferdsel på rygg/stup",
+        "Description": null
+      },
+      {
+        "Id": 80,
+        "Name": "Anna",
         "Description": null
       }
     ],
@@ -2110,6 +2263,11 @@
     ],
     "Water_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
+      {
         "Id": 600,
         "Name": "Ikkje spesifisert",
         "Description": null
@@ -2142,6 +2300,13 @@
       {
         "Id": 690,
         "Name": "Anna",
+        "Description": null
+      }
+    ],
+    "Water_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
         "Description": null
       }
     ],
@@ -2556,38 +2721,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Påverka ikkje noko",
-        "Description": null
-      },
-      {
-        "Id": 13,
-        "Name": "Leiteaksjon iverksatt",
-        "Description": null
-      },
-      {
-        "Id": 15,
-        "Name": "Trafikk hindra",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Berre materielle skadar",
-        "Description": null
-      },
-      {
-        "Id": 25,
-        "Name": "Evakuering",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Ingen skredtatt, men nære på",
-        "Description": null
-      },
-      {
-        "Id": 28,
-        "Name": "Person skredtatt, utan skadar",
+        "Id": 40,
+        "Name": "Personar omkom",
         "Description": null
       },
       {
@@ -2596,12 +2731,138 @@
         "Description": null
       },
       {
-        "Id": 40,
-        "Name": "Personar omkom",
+        "Id": 28,
+        "Name": "Person skredtatt, utan skadar",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Ingen skredtatt, men nære på",
+        "Description": null
+      },
+      {
+        "Id": 25,
+        "Name": "Evakuering",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Berre materielle skadar",
+        "Description": null
+      },
+      {
+        "Id": 15,
+        "Name": "Trafikk hindra",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Leiteaksjon iverksatt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Påverka ikkje noko",
         "Description": null
       },
       {
         "Id": 99,
+        "Name": "Anna",
+        "Description": null
+      }
+    ],
+    "LocalTouristKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Bur i kommunen",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Bur i fylket",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Bur i landet",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Utenlandsk turist",
+        "Description": null
+      },
+      {
+        "Id": 100,
+        "Name": "Ukjent",
+        "Description": null
+      }
+    ],
+    "LocalKnowledgeKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Dårleg kjend",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Lest meg opp",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Vore på turen før",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Vore på turen mange gonger før",
+        "Description": null
+      }
+    ],
+    "RescueKDV": [
+      {
+        "Id": 60,
+        "Name": "Ukjend",
+        "Description": null
+      },
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Sjølvredning",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Kameratredning",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Annen gruppe",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Organisert redning",
+        "Description": null
+      },
+      {
+        "Id": 50,
         "Name": "Anna",
         "Description": null
       }
@@ -2616,11 +2877,6 @@
         "Id": 100,
         "Name": "-",
         "Description": "Ukjent kompetanse på snø."
-      },
-      {
-        "Id": 105,
-        "Name": "A",
-        "Description": "Automatisert tjeneste"
       },
       {
         "Id": 110,
@@ -2646,6 +2902,11 @@
         "Id": 150,
         "Name": "*****",
         "Description": "Observatøren tilhøyrar ein varslingstjeneste. Kompetansen tilsvarar NVE sitt nivå 4c."
+      },
+      {
+        "Id": 105,
+        "Name": "A",
+        "Description": "Automatisert tjeneste"
       },
       {
         "Id": 200,
@@ -2852,6 +3113,26 @@
         "Description": null
       },
       {
+        "Id": 60,
+        "Name": "Privat tur",
+        "Description": null
+      },
+      {
+        "Id": 55,
+        "Name": "Undervising og kurs",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Føring og guiding",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Oppdrag for arbeidsgjevar",
+        "Description": null
+      },
+      {
         "Id": 20,
         "Name": "Ordinært oppdrag for skredvarslinga",
         "Description": null
@@ -2864,26 +3145,6 @@
       {
         "Id": 40,
         "Name": "Tinga oppdrag for skredvarslinga",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Oppdrag for arbeidsgjevar",
-        "Description": null
-      },
-      {
-        "Id": 55,
-        "Name": "Undervising og kurs",
-        "Description": null
-      },
-      {
-        "Id": 60,
-        "Name": "Privat tur",
-        "Description": null
-      },
-      {
-        "Id": 70,
-        "Name": "Føring og guiding",
         "Description": null
       }
     ],
@@ -2902,21 +3163,6 @@
         "Id": 20,
         "Name": "Jord",
         "Description": "Jordskred"
-      },
-      {
-        "Id": 30,
-        "Name": "Våt jord",
-        "Description": "Flaumskred"
-      },
-      {
-        "Id": 33,
-        "Name": "Leire",
-        "Description": null
-      },
-      {
-        "Id": 36,
-        "Name": "Sørpe",
-        "Description": null
       },
       {
         "Id": 40,
@@ -2986,13 +3232,13 @@
         "Description": null
       },
       {
-        "Id": 52,
-        "Name": "Sletta av admin",
+        "Id": 61,
+        "Name": "Underkjent av dataforvaltar",
         "Description": null
       },
       {
-        "Id": 61,
-        "Name": "Underkjent av dataforvaltar",
+        "Id": 52,
+        "Name": "Sletta av admin",
         "Description": null
       },
       {
@@ -3003,18 +3249,28 @@
     ],
     "RegistrationKDV": [
       {
-        "Id": 10,
-        "Name": "Notat",
+        "Id": 51,
+        "Name": "Isdekking",
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Ulykke/hending",
+        "Id": 50,
+        "Name": "Istjukkleik",
         "Description": null
       },
       {
         "Id": 13,
         "Name": "Fareteikn",
+        "Description": null
+      },
+      {
+        "Id": 26,
+        "Name": "Skredhending",
+        "Description": null
+      },
+      {
+        "Id": 33,
+        "Name": "Skredaktivitet",
         "Description": null
       },
       {
@@ -3038,8 +3294,8 @@
         "Description": null
       },
       {
-        "Id": 26,
-        "Name": "Skredhending",
+        "Id": 32,
+        "Name": "Skredproblem",
         "Description": null
       },
       {
@@ -3048,28 +3304,8 @@
         "Description": null
       },
       {
-        "Id": 32,
-        "Name": "Skredproblem",
-        "Description": null
-      },
-      {
-        "Id": 33,
-        "Name": "Skredaktivitet",
-        "Description": null
-      },
-      {
         "Id": 36,
         "Name": "Snøprofil",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Istjukkleik",
-        "Description": null
-      },
-      {
-        "Id": 51,
-        "Name": "Isdekking",
         "Description": null
       },
       {
@@ -3101,6 +3337,16 @@
         "Id": 83,
         "Name": "Vurderingar og problem",
         "Description": "Grupperings type - Vurderinger og problemer"
+      },
+      {
+        "Id": 11,
+        "Name": "Ulykke/hending",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Notat",
+        "Description": null
       }
     ],
     "SourceKDV": [
