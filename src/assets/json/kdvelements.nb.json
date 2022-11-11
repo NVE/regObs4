@@ -84,6 +84,11 @@
     ],
     "Dirt_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
+      {
         "Id": 200,
         "Name": "Ikke spesifisert",
         "Description": null
@@ -116,6 +121,13 @@
       {
         "Id": 290,
         "Name": "Annet",
+        "Description": null
+      }
+    ],
+    "Dirt_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
         "Description": null
       }
     ],
@@ -279,6 +291,11 @@
     ],
     "Ice_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
+      {
         "Id": 700,
         "Name": "Ikke spesifisert",
         "Description": null
@@ -412,6 +429,33 @@
         "Id": 790,
         "Name": "Annet",
         "Description": null
+      }
+    ],
+    "Ice_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 710,
+        "Name": "Kasteline og ispigger",
+        "Description": "God egensikring"
+      },
+      {
+        "Id": 720,
+        "Name": "Ispigger",
+        "Description": "Middels egensikring"
+      },
+      {
+        "Id": 730,
+        "Name": "Annet sikkerhetsutstyr",
+        "Description": "Middels/svak egensikring"
+      },
+      {
+        "Id": 790,
+        "Name": "Manglet sikkerhetsutstyr",
+        "Description": "Manglende egensikring"
       }
     ],
     "Ice_IceCoverKDV": [
@@ -708,27 +752,17 @@
         "Description": null
       },
       {
-        "Id": 16,
-        "Name": "Ferske smelteriller i snøen",
-        "Description": null
-      },
-      {
-        "Id": 17,
-        "Name": "Blå/grå laguner",
-        "Description": null
-      },
-      {
-        "Id": 18,
-        "Name": "Vind med regn",
-        "Description": null
-      },
-      {
         "Id": 99,
         "Name": "Annet faretegn (spesifiser)",
         "Description": null
       }
     ],
     "Snow_ActivityInfluencedKDV": [
+      {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
       {
         "Id": 100,
         "Name": "Ikke spesifisert",
@@ -792,6 +826,28 @@
       {
         "Id": 190,
         "Name": "Annet",
+        "Description": null
+      }
+    ],
+    "Snow_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Alle i gruppa",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Noen",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Ingen",
         "Description": null
       }
     ],
@@ -1354,11 +1410,6 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Fjernutløst",
-        "Description": null
-      },
-      {
         "Id": 23,
         "Name": "Kunstig utløst testheng",
         "Description": null
@@ -1653,6 +1704,26 @@
       {
         "Id": 15,
         "Name": "CTN",
+        "Description": null
+      },
+      {
+        "Id": 31,
+        "Name": "PST End",
+        "Description": null
+      },
+      {
+        "Id": 32,
+        "Name": "PST SF",
+        "Description": null
+      },
+      {
+        "Id": 33,
+        "Name": "PST Arr",
+        "Description": null
+      },
+      {
+        "Id": 41,
+        "Name": "RB",
         "Description": null
       }
     ],
@@ -2111,28 +2182,6 @@
         "Description": null
       }
     ],
-    "Snow_SafetyGearKDV": [
-      {
-        "Id": 0,
-        "Name": "Ikke gitt",
-        "Description": null
-      },
-      {
-        "Id": 10,
-        "Name": "Ja",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Delvis",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "Nei",
-        "Description": null
-      }
-    ],
     "Snow_SlopeActivityKDV": [
       {
         "Id": 0,
@@ -2160,23 +2209,13 @@
         "Description": null
       },
       {
-        "Id": 80,
-        "Name": "Annet",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "High marking",
-        "Description": null
-      },
-      {
-        "Id": 60,
-        "Name": "Ferdsel i utløpsområder",
-        "Description": null
-      },
-      {
         "Id": 70,
         "Name": "Ferdsel på rygg/stup",
+        "Description": null
+      },
+      {
+        "Id": 80,
+        "Name": "Annet",
         "Description": null
       }
     ],
@@ -2224,6 +2263,11 @@
     ],
     "Water_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Ukjent",
+        "Description": null
+      },
+      {
         "Id": 600,
         "Name": "Ikke spesifisert",
         "Description": null
@@ -2256,6 +2300,13 @@
       {
         "Id": 690,
         "Name": "Annet",
+        "Description": null
+      }
+    ],
+    "Water_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Ikke gitt",
         "Description": null
       }
     ],
@@ -2728,17 +2779,17 @@
       },
       {
         "Id": 10,
-        "Name": "Lokal",
+        "Name": "Bor i kommunen",
         "Description": null
       },
       {
         "Id": 20,
-        "Name": "Bor i regionen",
+        "Name": "Bor i fylket",
         "Description": null
       },
       {
         "Id": 30,
-        "Name": "Bor i Norge",
+        "Name": "Bor i landet",
         "Description": null
       },
       {
@@ -2760,26 +2811,31 @@
       },
       {
         "Id": 10,
-        "Name": "Første gang i området",
+        "Name": "Dårlig kjent",
         "Description": null
       },
       {
         "Id": 20,
-        "Name": "2-3 gang i området",
+        "Name": "Lest meg opp",
         "Description": null
       },
       {
         "Id": 30,
-        "Name": "1 uke i året i området",
+        "Name": "Vært på turen før",
         "Description": null
       },
       {
         "Id": 40,
-        "Name": "Jevnlig i området",
+        "Name": "Vært på turen mange ganger før",
         "Description": null
       }
     ],
     "RescueKDV": [
+      {
+        "Id": 60,
+        "Name": "Ukjent",
+        "Description": null
+      },
       {
         "Id": 0,
         "Name": "Ikke gitt",
@@ -2787,12 +2843,12 @@
       },
       {
         "Id": 10,
-        "Name": "Selv",
+        "Name": "Selvredning",
         "Description": null
       },
       {
         "Id": 20,
-        "Name": "Kamerat",
+        "Name": "Kameratredning",
         "Description": null
       },
       {
@@ -2802,34 +2858,12 @@
       },
       {
         "Id": 40,
-        "Name": "Organisert",
+        "Name": "Organisert redning",
         "Description": null
       },
       {
         "Id": 50,
         "Name": "Annet",
-        "Description": null
-      }
-    ],
-    "SafetyGearKDV": [
-      {
-        "Id": 0,
-        "Name": "Ikke gitt",
-        "Description": null
-      },
-      {
-        "Id": 10,
-        "Name": "Ja",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Delvis",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "Nei",
         "Description": null
       }
     ],
@@ -3129,21 +3163,6 @@
         "Id": 20,
         "Name": "Jord",
         "Description": "Jordskred"
-      },
-      {
-        "Id": 30,
-        "Name": "Våt jord",
-        "Description": "Flomskred"
-      },
-      {
-        "Id": 33,
-        "Name": "Leire",
-        "Description": null
-      },
-      {
-        "Id": 36,
-        "Name": "Sørpe",
-        "Description": null
       },
       {
         "Id": 40,

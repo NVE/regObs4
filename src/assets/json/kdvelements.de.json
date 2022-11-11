@@ -22,13 +22,8 @@
         "Description": null
       },
       {
-        "Id": 204,
-        "Name": "Oberflächenabfluss",
-        "Description": null
-      },
-      {
-        "Id": 205,
-        "Name": "Unzureichende Drainage",
+        "Id": 212,
+        "Name": "Schneedecke mit viel Wasser",
         "Description": null
       },
       {
@@ -42,6 +37,26 @@
         "Description": null
       },
       {
+        "Id": 230,
+        "Name": "Erosion entlang von Flüssen",
+        "Description": null
+      },
+      {
+        "Id": 214,
+        "Name": "Bäche finden neue Wege",
+        "Description": null
+      },
+      {
+        "Id": 204,
+        "Name": "Oberflächenabfluss",
+        "Description": null
+      },
+      {
+        "Id": 205,
+        "Name": "Unzureichende Drainage",
+        "Description": null
+      },
+      {
         "Id": 208,
         "Name": "Risse/Kriechen im Gelände",
         "Description": null
@@ -49,16 +64,6 @@
       {
         "Id": 209,
         "Name": "Erdrutsch beobachtet",
-        "Description": null
-      },
-      {
-        "Id": 212,
-        "Name": "Schneedecke mit viel Wasser",
-        "Description": null
-      },
-      {
-        "Id": 214,
-        "Name": "Bäche finden neue Wege",
         "Description": null
       },
       {
@@ -72,11 +77,6 @@
         "Description": null
       },
       {
-        "Id": 230,
-        "Name": "Erosion entlang von Flüssen",
-        "Description": null
-      },
-      {
         "Id": 299,
         "Name": "Sonstige Gefahrenzeichen",
         "Description": null
@@ -84,13 +84,13 @@
     ],
     "Dirt_ActivityInfluencedKDV": [
       {
-        "Id": 200,
-        "Name": "Nicht angegeben",
+        "Id": 0,
+        "Name": "Unbekannt",
         "Description": null
       },
       {
-        "Id": 211,
-        "Name": "Personen",
+        "Id": 200,
+        "Name": "Nicht angegeben",
         "Description": null
       },
       {
@@ -104,18 +104,30 @@
         "Description": null
       },
       {
-        "Id": 251,
-        "Name": "Landwirtschaftliche Flächen",
-        "Description": null
-      },
-      {
         "Id": 260,
         "Name": "Gebäude",
         "Description": null
       },
       {
+        "Id": 211,
+        "Name": "Personen",
+        "Description": null
+      },
+      {
+        "Id": 251,
+        "Name": "Landwirtschaftliche Flächen",
+        "Description": null
+      },
+      {
         "Id": 290,
         "Name": "Andere",
+        "Description": null
+      }
+    ],
+    "Dirt_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
         "Description": null
       }
     ],
@@ -141,8 +153,18 @@
         "Description": null
       },
       {
+        "Id": 11,
+        "Name": "Kleine Steinlawine",
+        "Description": null
+      },
+      {
         "Id": 6,
         "Name": "Steinschlag",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Ice fall",
         "Description": null
       },
       {
@@ -158,11 +180,6 @@
       {
         "Id": 10,
         "Name": "Quicktonrutsch",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Kleine Steinlawine",
         "Description": null
       }
     ],
@@ -274,6 +291,11 @@
     ],
     "Ice_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Unbekannt",
+        "Description": null
+      },
+      {
         "Id": 700,
         "Name": "Nicht angegeben",
         "Description": null
@@ -281,6 +303,11 @@
       {
         "Id": 710,
         "Name": "Zu Fuß",
+        "Description": null
+      },
+      {
+        "Id": 714,
+        "Name": "Ice fisher",
         "Description": null
       },
       {
@@ -299,8 +326,8 @@
         "Description": null
       },
       {
-        "Id": 714,
-        "Name": "Ice fisher",
+        "Id": 719,
+        "Name": "Person injured by ice run",
         "Description": null
       },
       {
@@ -319,24 +346,9 @@
         "Description": null
       },
       {
-        "Id": 719,
-        "Name": "Person injured by ice run",
+        "Id": 725,
+        "Name": "Kicksledge",
         "Description": null
-      },
-      {
-        "Id": 720,
-        "Name": "Snowmobile auf dem Eis",
-        "Description": null
-      },
-      {
-        "Id": 721,
-        "Name": "Auto auf dem Eis",
-        "Description": null
-      },
-      {
-        "Id": 722,
-        "Name": "ATV",
-        "Description": "All Terrain Vehicle"
       },
       {
         "Id": 723,
@@ -349,8 +361,18 @@
         "Description": null
       },
       {
-        "Id": 725,
-        "Name": "Kicksledge",
+        "Id": 720,
+        "Name": "Snowmobile auf dem Eis",
+        "Description": null
+      },
+      {
+        "Id": 722,
+        "Name": "ATV",
+        "Description": "All Terrain Vehicle"
+      },
+      {
+        "Id": 721,
+        "Name": "Auto auf dem Eis",
         "Description": null
       },
       {
@@ -379,6 +401,21 @@
         "Description": null
       },
       {
+        "Id": 777,
+        "Name": "Eisstau",
+        "Description": null
+      },
+      {
+        "Id": 776,
+        "Name": "Frazil ice plugging",
+        "Description": null
+      },
+      {
+        "Id": 775,
+        "Name": "Anchor ice dam",
+        "Description": null
+      },
+      {
         "Id": 773,
         "Name": "Ausgebuchtetes Eis",
         "Description": null
@@ -389,30 +426,52 @@
         "Description": null
       },
       {
-        "Id": 775,
-        "Name": "Anchor ice dam",
-        "Description": null
-      },
-      {
-        "Id": 776,
-        "Name": "Frazil ice plugging",
-        "Description": null
-      },
-      {
-        "Id": 777,
-        "Name": "Eisstau",
-        "Description": null
-      },
-      {
         "Id": 790,
         "Name": "Andere",
         "Description": null
+      }
+    ],
+    "Ice_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 710,
+        "Name": "Throw line and ice picks",
+        "Description": "Good self-protection"
+      },
+      {
+        "Id": 720,
+        "Name": "Ice picks",
+        "Description": "Medium self-protection"
+      },
+      {
+        "Id": 730,
+        "Name": "Other safety equipment",
+        "Description": "Medium/weak self-protection"
+      },
+      {
+        "Id": 790,
+        "Name": "No safety equipment",
+        "Description": "No self-protection"
       }
     ],
     "Ice_IceCoverKDV": [
       {
         "Id": 0,
         "Name": "Nicht angegeben",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Kein Seeeis",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "See eisbedeckt",
         "Description": null
       },
       {
@@ -431,33 +490,23 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Eis bricht entlang des Ufers",
-        "Description": null
-      },
-      {
         "Id": 11,
         "Name": "Eisbildung entlang des Ufers",
         "Description": null
       },
       {
-        "Id": 20,
-        "Name": "Kein Seeeis",
-        "Description": null
-      },
-      {
-        "Id": 21,
-        "Name": "See eisbedeckt",
-        "Description": null
-      },
-      {
-        "Id": 40,
-        "Name": "Flusseislauf",
+        "Id": 10,
+        "Name": "Eis bricht entlang des Ufers",
         "Description": null
       },
       {
         "Id": 41,
         "Name": "Treibendes Frazil-Eis am Fluss",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Flusseislauf",
         "Description": null
       },
       {
@@ -473,14 +522,14 @@
         "Description": null
       },
       {
-        "Id": 1,
-        "Name": "Jetzt erstmal Eis vor Ort",
-        "Description": "Gestern kein Eis vor Ort. Möglicherweise war Eis am Ufer. Messpunkt liegt normalerweise etwas vom Ufer entfernt."
-      },
-      {
         "Id": 2,
         "Name": "Jetzt erstes Eis am Ufer",
         "Description": "Kein Eis am Ufer gestern."
+      },
+      {
+        "Id": 1,
+        "Name": "Jetzt erstmal Eis vor Ort",
+        "Description": "Gestern kein Eis vor Ort. Möglicherweise war Eis am Ufer. Messpunkt liegt normalerweise etwas vom Ufer entfernt."
       },
       {
         "Id": 3,
@@ -673,6 +722,11 @@
         "Description": null
       },
       {
+        "Id": 14,
+        "Name": "Shooting cracks",
+        "Description": null
+      },
+      {
         "Id": 5,
         "Name": "Starker Schneefall",
         "Description": "Brukes i elrapp"
@@ -693,11 +747,6 @@
         "Description": null
       },
       {
-        "Id": 14,
-        "Name": "Shooting cracks",
-        "Description": null
-      },
-      {
         "Id": 15,
         "Name": "Glide cracks",
         "Description": null
@@ -710,6 +759,11 @@
     ],
     "Snow_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Unbekannt",
+        "Description": null
+      },
+      {
         "Id": 100,
         "Name": "Nicht angegeben",
         "Description": null
@@ -720,13 +774,13 @@
         "Description": null
       },
       {
-        "Id": 112,
-        "Name": "Skigebiet",
+        "Id": 113,
+        "Name": "Skigebiet, abseits der Piste",
         "Description": null
       },
       {
-        "Id": 113,
-        "Name": "Skigebiet, abseits der Piste",
+        "Id": 112,
+        "Name": "Skigebiet",
         "Description": null
       },
       {
@@ -750,13 +804,13 @@
         "Description": null
       },
       {
-        "Id": 120,
-        "Name": "Straße",
+        "Id": 130,
+        "Name": "Schneemobil",
         "Description": null
       },
       {
-        "Id": 130,
-        "Name": "Schneemobil",
+        "Id": 120,
+        "Name": "Straße",
         "Description": null
       },
       {
@@ -775,15 +829,32 @@
         "Description": null
       }
     ],
+    "Snow_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Everyone in the group",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Some",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "None",
+        "Description": null
+      }
+    ],
     "Snow_AvalancheKDV": [
       {
         "Id": 0,
         "Name": "Nicht angegeben",
-        "Description": null
-      },
-      {
-        "Id": 11,
-        "Name": "Nasse Lockerschneelawine",
         "Description": null
       },
       {
@@ -792,13 +863,18 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "Nasse Schneebrettlawine",
+        "Id": 11,
+        "Name": "Nasse Lockerschneelawine",
         "Description": null
       },
       {
         "Id": 22,
         "Name": "Trockene Schneebrettlawine",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "Nasse Schneebrettlawine",
         "Description": null
       },
       {
@@ -933,24 +1009,24 @@
         "Description": "Aufbauend umgewandelte Kristalle in Bodennähe"
       },
       {
-        "Id": 18,
-        "Name": "Aufbauend umgewandelte Kristalle über einer Kruste",
-        "Description": "Aufbauend umgewandelte Kristalle über einer Kruste"
-      },
-      {
         "Id": 19,
         "Name": "Aufbauend umgewandelte Kristalle unter einer Kruste",
         "Description": "Aufbauend umgewandelte Kristalle unter einer Kruste"
       },
       {
-        "Id": 20,
-        "Name": "Schmelzen in Bodennähe",
-        "Description": "Schmelzen in Bodennähe"
+        "Id": 18,
+        "Name": "Aufbauend umgewandelte Kristalle über einer Kruste",
+        "Description": "Aufbauend umgewandelte Kristalle über einer Kruste"
       },
       {
         "Id": 22,
         "Name": "Wasseransammlung über Schneeschichten",
         "Description": "Wasseransammlung über Schneeschichten"
+      },
+      {
+        "Id": 20,
+        "Name": "Schmelzen in Bodennähe",
+        "Description": "Schmelzen in Bodennähe"
       },
       {
         "Id": 24,
@@ -1100,11 +1176,6 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Spontanauszulösungen",
-        "Description": null
-      },
-      {
         "Id": 30,
         "Name": "Sehr schwer auszulösen",
         "Description": null
@@ -1122,6 +1193,11 @@
       {
         "Id": 60,
         "Name": "Sehr leicht auszulösen",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "Spontanauszulösungen",
         "Description": null
       }
     ],
@@ -1324,8 +1400,13 @@
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "Fernauslösung",
+        "Id": 26,
+        "Name": "Auslösung durch Person(en)",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Ausgelöst durch ein Snowmobile",
         "Description": null
       },
       {
@@ -1336,16 +1417,6 @@
       {
         "Id": 25,
         "Name": "Sprengauslösung",
-        "Description": null
-      },
-      {
-        "Id": 26,
-        "Name": "Auslösung durch Person(en)",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Ausgelöst durch ein Snowmobile",
         "Description": null
       },
       {
@@ -1418,21 +1489,6 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Oberflächennahe kantige Kristalle",
-        "Description": null
-      },
-      {
-        "Id": 61,
-        "Name": "Raureif auf einer harten Oberfläche",
-        "Description": null
-      },
-      {
-        "Id": 62,
-        "Name": "Oberflächenreif auf einer weichen Oberfläche",
-        "Description": null
-      },
-      {
         "Id": 101,
         "Name": "Sehr viel lockerer Schnee (>30cm)",
         "Description": null
@@ -1448,8 +1504,23 @@
         "Description": null
       },
       {
-        "Id": 104,
-        "Name": "Nasser lockerer Schnee",
+        "Id": 61,
+        "Name": "Raureif auf einer harten Oberfläche",
+        "Description": null
+      },
+      {
+        "Id": 62,
+        "Name": "Oberflächenreif auf einer weichen Oberfläche",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Oberflächennahe kantige Kristalle",
+        "Description": null
+      },
+      {
+        "Id": 107,
+        "Name": "Kruste",
         "Description": null
       },
       {
@@ -1463,8 +1534,8 @@
         "Description": null
       },
       {
-        "Id": 107,
-        "Name": "Kruste",
+        "Id": 104,
+        "Name": "Nasser lockerer Schnee",
         "Description": null
       },
       {
@@ -1552,12 +1623,57 @@
         "Id": 3,
         "Name": "Q3",
         "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Sudden planar (SP)",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Sudden collapse (SC)",
+        "Description": null
+      },
+      {
+        "Id": 12,
+        "Name": "Progressive compression (PC)",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Resistant planar (RP)",
+        "Description": null
+      },
+      {
+        "Id": 14,
+        "Name": "Non-planar break (BRK)",
+        "Description": null
       }
     ],
     "Snow_PropagationKDV": [
       {
         "Id": 0,
         "Name": "Nicht angegeben",
+        "Description": null
+      },
+      {
+        "Id": 21,
+        "Name": "ECTPV",
+        "Description": null
+      },
+      {
+        "Id": 22,
+        "Name": "ECTP",
+        "Description": null
+      },
+      {
+        "Id": 23,
+        "Name": "ECTN",
+        "Description": null
+      },
+      {
+        "Id": 24,
+        "Name": "ECTX",
         "Description": null
       },
       {
@@ -1591,23 +1707,23 @@
         "Description": null
       },
       {
-        "Id": 21,
-        "Name": "ECTPV",
+        "Id": 31,
+        "Name": "PST End",
         "Description": null
       },
       {
-        "Id": 22,
-        "Name": "ECTP",
+        "Id": 32,
+        "Name": "PST SF",
+        "Description": ""
+      },
+      {
+        "Id": 33,
+        "Name": "PST Arr",
         "Description": null
       },
       {
-        "Id": 23,
-        "Name": "ECTN",
-        "Description": null
-      },
-      {
-        "Id": 24,
-        "Name": "ECTX",
+        "Id": 41,
+        "Name": "RB",
         "Description": null
       }
     ],
@@ -2041,18 +2157,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Bad",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Ok",
-        "Description": null
-      },
-      {
-        "Id": 30,
-        "Name": "Good",
+        "Id": 50,
+        "Name": "Perfect",
         "Description": null
       },
       {
@@ -2061,8 +2167,55 @@
         "Description": null
       },
       {
-        "Id": 50,
-        "Name": "Perfect",
+        "Id": 30,
+        "Name": "Good",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Ok",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Bad",
+        "Description": null
+      }
+    ],
+    "Snow_SlopeActivityKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Ascending",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Descending",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Stationary",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Traversing",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Traversing on peak / ridge",
+        "Description": null
+      },
+      {
+        "Id": 80,
+        "Name": "Other",
         "Description": null
       }
     ],
@@ -2110,6 +2263,11 @@
     ],
     "Water_ActivityInfluencedKDV": [
       {
+        "Id": 0,
+        "Name": "Unbekannt",
+        "Description": null
+      },
+      {
         "Id": 600,
         "Name": "Nicht angegeben",
         "Description": null
@@ -2142,6 +2300,13 @@
       {
         "Id": 690,
         "Name": "Andere",
+        "Description": null
+      }
+    ],
+    "Water_SafetyGearKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
         "Description": null
       }
     ],
@@ -2556,38 +2721,8 @@
         "Description": null
       },
       {
-        "Id": 10,
-        "Name": "Hat nichts beeinflusst",
-        "Description": null
-      },
-      {
-        "Id": 13,
-        "Name": "Eingeleitete Suche und Rettung",
-        "Description": null
-      },
-      {
-        "Id": 15,
-        "Name": "Der Verkehr stoppte",
-        "Description": null
-      },
-      {
-        "Id": 20,
-        "Name": "Nur Materialschäden",
-        "Description": null
-      },
-      {
-        "Id": 25,
-        "Name": "Evakuierung",
-        "Description": null
-      },
-      {
-        "Id": 27,
-        "Name": "Nicht verschüttet,rausgefahren",
-        "Description": null
-      },
-      {
-        "Id": 28,
-        "Name": "Person verschüttet, unverletzt",
+        "Id": 40,
+        "Name": "Personen getötet",
         "Description": null
       },
       {
@@ -2596,13 +2731,139 @@
         "Description": null
       },
       {
-        "Id": 40,
-        "Name": "Personen getötet",
+        "Id": 28,
+        "Name": "Person verschüttet, unverletzt",
+        "Description": null
+      },
+      {
+        "Id": 27,
+        "Name": "Nicht verschüttet,rausgefahren",
+        "Description": null
+      },
+      {
+        "Id": 25,
+        "Name": "Evakuierung",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Nur Materialschäden",
+        "Description": null
+      },
+      {
+        "Id": 15,
+        "Name": "Der Verkehr stoppte",
+        "Description": null
+      },
+      {
+        "Id": 13,
+        "Name": "Eingeleitete Suche und Rettung",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Hat nichts beeinflusst",
         "Description": null
       },
       {
         "Id": 99,
         "Name": "Ander",
+        "Description": null
+      }
+    ],
+    "LocalTouristKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Lives in municipality",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Lives in county",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Lives in the country",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Foreign tourist",
+        "Description": null
+      },
+      {
+        "Id": 100,
+        "Name": "Unknown",
+        "Description": null
+      }
+    ],
+    "LocalKnowledgeKDV": [
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Completely unknown",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Only read about the trip",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Been on the trip before",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Many times on the trip before",
+        "Description": null
+      }
+    ],
+    "RescueKDV": [
+      {
+        "Id": 60,
+        "Name": "Unknown",
+        "Description": null
+      },
+      {
+        "Id": 0,
+        "Name": "Not given",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Self rescue",
+        "Description": null
+      },
+      {
+        "Id": 20,
+        "Name": "Companion rescue",
+        "Description": null
+      },
+      {
+        "Id": 30,
+        "Name": "Other group",
+        "Description": null
+      },
+      {
+        "Id": 40,
+        "Name": "Organized rescue",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Other",
         "Description": null
       }
     ],
@@ -2616,11 +2877,6 @@
         "Id": 100,
         "Name": "-",
         "Description": "Unbekannt für Schnee."
-      },
-      {
-        "Id": 105,
-        "Name": "A",
-        "Description": "Automatischer Service"
       },
       {
         "Id": 110,
@@ -2646,6 +2902,11 @@
         "Id": 150,
         "Name": "*****",
         "Description": "Beobachter ist Lawinenprognostiker."
+      },
+      {
+        "Id": 105,
+        "Name": "A",
+        "Description": "Automatischer Service"
       },
       {
         "Id": 200,
@@ -2852,6 +3113,26 @@
         "Description": null
       },
       {
+        "Id": 60,
+        "Name": "Privat",
+        "Description": null
+      },
+      {
+        "Id": 55,
+        "Name": "Ausbildungstour",
+        "Description": null
+      },
+      {
+        "Id": 70,
+        "Name": "Geführte Tour",
+        "Description": null
+      },
+      {
+        "Id": 50,
+        "Name": "Angestellt",
+        "Description": null
+      },
+      {
         "Id": 20,
         "Name": "Regelmäßiger Auftrag des Lawinenwarndienstes",
         "Description": null
@@ -2864,26 +3145,6 @@
       {
         "Id": 40,
         "Name": "Im Auftrag des Lawinenwarndienstes",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Angestellt",
-        "Description": null
-      },
-      {
-        "Id": 55,
-        "Name": "Ausbildungstour",
-        "Description": null
-      },
-      {
-        "Id": 60,
-        "Name": "Privat",
-        "Description": null
-      },
-      {
-        "Id": 70,
-        "Name": "Geführte Tour",
         "Description": null
       }
     ],
@@ -2902,21 +3163,6 @@
         "Id": 20,
         "Name": "Erde",
         "Description": "Erdrutsch"
-      },
-      {
-        "Id": 30,
-        "Name": "Nasse Erde",
-        "Description": "Mure"
-      },
-      {
-        "Id": 33,
-        "Name": "Sediment",
-        "Description": null
-      },
-      {
-        "Id": 36,
-        "Name": "Matsch",
-        "Description": null
       },
       {
         "Id": 40,
@@ -2986,13 +3232,13 @@
         "Description": null
       },
       {
-        "Id": 52,
-        "Name": "Gelöscht von Admin",
+        "Id": 61,
+        "Name": "Vom Administrator abgelehnt",
         "Description": null
       },
       {
-        "Id": 61,
-        "Name": "Vom Administrator abgelehnt",
+        "Id": 52,
+        "Name": "Gelöscht von Admin",
         "Description": null
       },
       {
@@ -3003,18 +3249,28 @@
     ],
     "RegistrationKDV": [
       {
-        "Id": 10,
-        "Name": "Anmerkungen",
+        "Id": 51,
+        "Name": "Eisdecke",
         "Description": null
       },
       {
-        "Id": 11,
-        "Name": "Ereignis",
+        "Id": 50,
+        "Name": "Eisdicke",
         "Description": null
       },
       {
         "Id": 13,
         "Name": "Gefahrenzeichen",
+        "Description": null
+      },
+      {
+        "Id": 26,
+        "Name": "Lawinenbeobachtung",
+        "Description": null
+      },
+      {
+        "Id": 33,
+        "Name": "Lawinenaktivität",
         "Description": null
       },
       {
@@ -3038,8 +3294,8 @@
         "Description": null
       },
       {
-        "Id": 26,
-        "Name": "Lawinenbeobachtung",
+        "Id": 32,
+        "Name": "Lawinenprobleme",
         "Description": null
       },
       {
@@ -3048,28 +3304,8 @@
         "Description": null
       },
       {
-        "Id": 32,
-        "Name": "Lawinenprobleme",
-        "Description": null
-      },
-      {
-        "Id": 33,
-        "Name": "Lawinenaktivität",
-        "Description": null
-      },
-      {
         "Id": 36,
         "Name": "Schneeprofil",
-        "Description": null
-      },
-      {
-        "Id": 50,
-        "Name": "Eisdicke",
-        "Description": null
-      },
-      {
-        "Id": 51,
-        "Name": "Eisdecke",
         "Description": null
       },
       {
@@ -3100,6 +3336,16 @@
       {
         "Id": 83,
         "Name": "Bewertungen und Probleme",
+        "Description": null
+      },
+      {
+        "Id": 11,
+        "Name": "Ereignis",
+        "Description": null
+      },
+      {
+        "Id": 10,
+        "Name": "Anmerkungen",
         "Description": null
       }
     ],
