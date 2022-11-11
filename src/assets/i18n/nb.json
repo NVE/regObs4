@@ -415,6 +415,8 @@
       "INCIDENT": {
         "INVOLVED_NUM": "Antall i turgruppa",
         "CASUALTIES_NUM": "Antall gjennom isen",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall i turgruppa",
+        "DEAD_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall gjennom isen",
         "SAFETY_GEAR_TID": "Redningsutstyr"
       }
     },
@@ -534,9 +536,12 @@
         "TRAJECTORY_NAME": "Skredbanenavn",
         "VALID_EXPOSITION": "Eksposisjon",
         "REMOTELY_TRIGGERED": "Fjernutløst",
-        "INVOLVED_NUM": "Antall involvert",
+        "INVOLVED_NUM": "Antall involverte",
         "CASUALTIES_NUM": "Antall skredtatte",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall involverte",
+        "DEAD_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall skredtatte",
         "HARMED_NUM": "Antall kun skadet",
+        "HARMED_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall involverte",
         "SAFETY_GEAR_TID": "Sender/mottaker",
         "LOCAL_TOURIST_TID": "Lokal eller tilreisende",
         "LOCAL_KNOWLEDGE_TID": "Kjennskap til området",
