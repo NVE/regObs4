@@ -113,8 +113,8 @@ export class SendButtonComponent implements OnInit, OnChanges {
   async requestDeleteFromRegobs(): Promise<boolean> {
     return await this.confirmationModalService.askForConfirmation(
       {
-        message: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER',
-        header: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE',
+        message: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE',
+        header: 'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER',
         buttons: [
           {
             text: 'DIALOGS.CANCEL',
