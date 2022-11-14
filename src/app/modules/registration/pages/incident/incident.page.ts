@@ -36,13 +36,6 @@ export class IncidentPage extends BasePage {
     this.isDeadValid =  IncidentValidation.onDeadNumChange(this.incident);
   }
 
-  /**
-   * If InvolvedNum is set then:
-   * CasualtiesNum must be equal to or less than InvolvedNum.
-   * DeadNum must be equal to or less than CasualtiesNum.
-   * All numbers must be >= 0.
-   * CasualtiesNum and DeadNum can be empty.
-   */
   isValid() {
     this.groupValidate();
     return this.isCasualtiesValid && this.isDeadValid;

@@ -414,8 +414,8 @@
       "INCIDENT": {
         "INVOLVED_NUM": "Antall i turgruppa",
         "CASUALTIES_NUM": "Antall gjennom isen",
-        "CASUALTIES_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall i turgruppa",
-        "DEAD_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall gjennom isen",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall i turgruppa",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall gjennom isen eller antall i turgruppa",
         "SAFETY_GEAR_TID": "Redningsutstyr"
       }
     },
@@ -537,10 +537,11 @@
         "REMOTELY_TRIGGERED": "Fjernutløst",
         "INVOLVED_NUM": "Antall involverte",
         "CASUALTIES_NUM": "Antall skredtatte",
-        "CASUALTIES_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall involverte",
-        "DEAD_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall skredtatte",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall skredtatte eller involverte",
         "HARMED_NUM": "Antall kun skadet",
-        "HARMED_NUM_ERROR_MESSAGE": "Må være lik eller mindre antall involverte",
+        "HARMED_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum antall døde og kun skadet kan ikke være flere enn antall skredtatte eller involverte",
         "SAFETY_GEAR_TID": "Sender/mottaker",
         "LOCAL_TOURIST_TID": "Lokal eller tilreisende",
         "LOCAL_KNOWLEDGE_TID": "Kjennskap til området",

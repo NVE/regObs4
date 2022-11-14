@@ -27,6 +27,16 @@ describe('AvalancheObsPage', () => {
     expect(component.isValid()).toBeTrue();
   });
 
+  it('Number of casualties is given without number involved, is valid', () => {
+    component.draft.registration.Incident.CasualtiesNum = 7;
+    expect(component.isValid()).toBeTrue();
+  });
+
+  it('Number of dead is given without number casualties or involved, is valid', () => {
+    component.draft.registration.Incident.DeadNum = 7;
+    expect(component.isValid()).toBeTrue();
+  });
+
   it('Number of casualties higher than number involved, is not valid', () => {
     component.draft.registration.Incident.InvolvedNum = 5;
     component.draft.registration.Incident.CasualtiesNum = 7;
@@ -40,8 +50,15 @@ describe('AvalancheObsPage', () => {
     expect(component.isValid()).toBeFalse();
   });
 
+  it('Number of dead higher than number of involved without casualties, is not valid', () => {
+    component.draft.registration.Incident.InvolvedNum = 6;
+    component.draft.registration.Incident.DeadNum = 7;
+    expect(component.isValid()).toBeFalse();
+  });
+
   it('Number of harmed is higher than number of involved, is not valid', () => {
     component.draft.registration.Incident.InvolvedNum = 6;
+    component.draft.registration.Incident.CasualtiesNum = 3;
     component.draft.registration.Incident.HarmedNum = 7;
     expect(component.isValid()).toBeFalse();
   });
@@ -52,6 +69,26 @@ describe('AvalancheObsPage', () => {
     component.draft.registration.Incident.DeadNum = 3;
     component.draft.registration.Incident.HarmedNum = 3;
     expect(component.isValid()).toBeFalse();
+  });
+
+  it('Number of harmed and dead is higher than number of involved without casualties specified, is not valid', () => {
+    component.draft.registration.Incident.InvolvedNum = 6;
+    component.draft.registration.Incident.DeadNum = 4;
+    component.draft.registration.Incident.HarmedNum = 3;
+    expect(component.isValid()).toBeFalse();
+  });
+
+  it('Number of harmed and dead is higher than number of casualties without involved specified, is not valid', () => {
+    component.draft.registration.Incident.CasualtiesNum = 4;
+    component.draft.registration.Incident.DeadNum = 3;
+    component.draft.registration.Incident.HarmedNum = 3;
+    expect(component.isValid()).toBeFalse();
+  });
+
+  it('Number of harmed and dead without casualties and involved, is valid', () => {
+    component.draft.registration.Incident.DeadNum = 3;
+    component.draft.registration.Incident.HarmedNum = 3;
+    expect(component.isValid()).toBeTrue();
   });
 
   it('Form is valid', () => {

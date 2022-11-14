@@ -125,16 +125,19 @@ export class AvalancheObsPage extends BasePage {
     this.onHarmedChange();
   }
 
-  //Så den beste sjekken er at summen av døde og skadete ikke må overstige antall involverte eller antall skredtatte.
   onHarmedChange(){
-    if (
-      (this.incident.InvolvedNum == undefined && this.incident.HarmedNum > 0)
-      || (this.incident.HarmedNum > this.incident.InvolvedNum))
+    if
+    ((isNaN(this.incident.CasualtiesNum)
+    && isNaN(this.incident.DeadNum)
+    && (this.incident.HarmedNum > this.incident.InvolvedNum))
+    || (isNaN(this.incident.DeadNum)
+    && (this.incident.HarmedNum > this.incident.InvolvedNum)))
     {
       this.isHarmedValid = false;
     }
-    else if((this.incident.DeadNum > 0
-      && (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum)){
+    else if((!isNaN(this.incident.DeadNum)
+      && ((this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum
+        || (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.InvolvedNum ))){
       this.isHarmedValid = false;
       this.isDeadValid = false;
       this.isErrorMessageHarmAndDead = true;
@@ -143,17 +146,8 @@ export class AvalancheObsPage extends BasePage {
       this.isHarmedValid = true;
       this.isErrorMessageHarmAndDead = false;
     }
-
   }
 
-  /**
-   * If InvolvedNum is set then:
-   * CasualtiesNum must be equal to or less than InvolvedNum.
-   * DeadNum must be equal to or less than CasualtiesNum.
-   * All numbers must be >= 0.
-   * CasualtiesNum and DeadNum can be empty.
-   * DtAvalancheTime must be set.
-   */
   isValid() {
     this.showWarning = true;
 
