@@ -12,4 +12,11 @@ export class SummaryComponent {
   @Input() showHeaders = true;
 
   SummaryType = SummaryType;
+
+  isNameSameAsPreviousName(i: number): boolean {
+    if (i < 1 || this.summaries?.length < 2) {
+      return false;
+    }
+    return this.summaries[i].RegistrationName === this.summaries[i-1].RegistrationName;
+  }
 }
