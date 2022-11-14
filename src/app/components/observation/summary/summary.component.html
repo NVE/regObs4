@@ -22,7 +22,7 @@
     </ng-container>
   </ng-container>
   <ng-template #TextSummary>
-    <h4 *ngIf="showHeaders">{{ header }}:&nbsp;</h4><span>{{ value }}</span>
+    <h4 *ngIf="showHeaders">{{ header }}:&nbsp;</h4><span class="text">{{ value }}</span>
   </ng-template>
   <ng-template #UrlSummary>
     <app-external-link [src]="value">{{header}}</app-external-link>
