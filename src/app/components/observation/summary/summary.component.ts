@@ -22,7 +22,7 @@ export class SummaryComponent {
 
   startOnNewLineIfContainLineBreaks(text: string): string {
     if (text && typeof text === 'string' && text.indexOf('\n') >= 0) {
-      return `\n${text}`;
+      return `\n${text}\n`;
     }
     return text;
   }
