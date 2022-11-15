@@ -19,6 +19,8 @@ export class NumericInputComponent {
   @Input() suffix: string;
   @Input() decimalSeparator;
   @Input() value: number;
+  @Input() isValid = true;
+  @Input() errorMessage?: string;
   @Output() valueChange = new EventEmitter();
   @Input() title: string;
   @Input() placeholder: string;

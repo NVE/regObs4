@@ -4,11 +4,13 @@ import { IncidentPage } from './incident.page';
 import { SharedComponentsModule } from '../../shared-components.module';
 import { AddWebUrlModalPageModule } from '../add-web-url-modal/add-web-url-modal.module';
 import { RegistrationModule } from '../../registration.module';
+import { CanDeactivateRouteGuard } from '../can-deactivate-route.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: IncidentPage
+    component: IncidentPage,
+    canDeactivate: [CanDeactivateRouteGuard]
   }
 ];
 

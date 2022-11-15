@@ -4,13 +4,13 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { createEmptyRegistration } from 'src/app/modules/common-registration/registration.helpers';
-
+import *  as L from 'leaflet';
+import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 
 /**
  * Used to register both avalanche observations and incidents, so this page contains two forms.
@@ -59,6 +59,12 @@ export class AvalancheObsPage extends BasePage {
 
   showWarning = false;
   maxDate: string;
+
+  isInvolvedValid = true;
+  isCasualtiesValid = true;
+  isDeadValid = true;
+  isHarmedValid = true;
+  isErrorMessageHarmAndDead = false;
 
   get avalancheObs(): AvalancheObsEditModel {
     return this.draft.registration.AvalancheObs;
@@ -112,9 +118,46 @@ export class AvalancheObsPage extends BasePage {
     this.draft = await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
 
+
+  groupValidate(){
+    this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
+    this.isDeadValid =  IncidentValidation.onDeadNumChange(this.incident);
+    this.onHarmedChange();
+  }
+
+  onHarmedChange(){
+    if
+    ((isNaN(this.incident.CasualtiesNum)
+    && isNaN(this.incident.DeadNum)
+    && (this.incident.HarmedNum > this.incident.InvolvedNum))
+    || (isNaN(this.incident.DeadNum)
+    && (this.incident.HarmedNum > this.incident.InvolvedNum)))
+    {
+      this.isHarmedValid = false;
+    }
+    else if((!isNaN(this.incident.DeadNum)
+      && ((this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum
+        || (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.InvolvedNum ))){
+      this.isHarmedValid = false;
+      this.isDeadValid = false;
+      this.isErrorMessageHarmAndDead = true;
+    }
+    else {
+      this.isHarmedValid = true;
+      this.isErrorMessageHarmAndDead = false;
+    }
+  }
+
   isValid() {
     this.showWarning = true;
-    return !!this.avalancheObs.DtAvalancheTime;
+
+    this.groupValidate();
+
+    return !!this.avalancheObs.DtAvalancheTime
+    && this.isInvolvedValid
+    && this.isCasualtiesValid
+    && this.isDeadValid
+    && this.isHarmedValid;
   }
 
   async isEmpty(): Promise<boolean> {

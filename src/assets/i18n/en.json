@@ -414,6 +414,8 @@
       "INCIDENT": {
         "INVOLVED_NUM": "Number in the tour group",
         "CASUALTIES_NUM": "Number through the ice",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Cannot be greater than the number in the tour group",
+        "DEAD_NUM_ERROR_MESSAGE": "Cannot be greater than the number through the ice or the number in the tour group",
         "SAFETY_GEAR_TID": "Rescue equipment"
       }
     },
@@ -535,7 +537,11 @@
         "REMOTELY_TRIGGERED": "Remotely triggered",
         "INVOLVED_NUM": "Number involved",
         "CASUALTIES_NUM": "Number of casualties",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Cannot be greater than the number involved",
+        "DEAD_NUM_ERROR_MESSAGE": "Cannot be greater than the number of casualties or involved",
         "HARMED_NUM": "Number injured",
+        "HARMED_NUM_ERROR_MESSAGE": "Cannot be greater than the number involved",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum of dead and injured cannot be greater than the number casualties or involved",
         "SAFETY_GEAR_TID": "Sender/receiver",
         "LOCAL_TOURIST_TID": "Local or visiting",
         "LOCAL_KNOWLEDGE_TID": "Knowledge of the area",

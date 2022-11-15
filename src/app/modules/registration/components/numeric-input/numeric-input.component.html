@@ -4,8 +4,9 @@
     *ngIf="title"
     [color]="color"
     position="stacked"
+    class="no-white-space-wrap"
     [ngClass]="{'ion-text-uppercase': !simpleObsMode, 'simple-mode-title': simpleObsMode}">
-    {{ title | translate}}
+    {{ title | translate}} {{isValid == false ? '('+(errorMessage | translate)+')' : null}}
   </ion-label>
   <ion-text
     [ngClass]="{'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode}"
