@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnInit } from '@angular/core';
 import { firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
@@ -17,6 +17,10 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController, IonToggle } from '@ionic/angular';
+import {
+  ConfirmationModalService,
+  PopupResponse
+} from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'OverviewPage';
 
@@ -50,7 +54,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     private logger: LoggingService,
     private translateService: TranslateService,
     private alertController: AlertController,
-    private draftRepository: DraftRepositoryService
+    private draftRepository: DraftRepositoryService,
+    private confirmationModalService: ConfirmationModalService
   ) {
     super();
   }
@@ -111,7 +116,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
           const okToConvertToSimple = await this.requestConvertToSimple();
           if (okToConvertToSimple) {
             const simpleDraft = {
-              ...this.clearDataNotAvailableInSimpleSnowObs(draft),
+              ...this.clearDataNotAvailableInSimpleSnowObs(draft)
             };
             this.saveDraftAndSimpleModeSetting(simpleDraft, true);
           } else {
@@ -145,30 +150,25 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     const promise = new Promise<boolean>(resolve => {
       resolveFunction = resolve;
     });
-    const translations = await firstValueFrom(this.translateService
-      .get([
-        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER',
-        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE',
-        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES',
-        'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL',
-      ]));
-    const alert = await this.alertController.create({
-      header: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER'],
-      message: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE'],
-      buttons: [
-        {
-          text: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL'],
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => resolveFunction(false)
-        },
-        {
-          text: translations['REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES'],
-          handler: () => resolveFunction(true)
-        }
-      ]
-    });
-    await alert.present();
+
+    await this.confirmationModalService.askForConfirmation(
+      {
+        message: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE',
+        header: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER',
+        buttons: [
+          {
+            text: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL',
+            role: PopupResponse.CANCEL,
+            handler: () => resolveFunction(false)
+          },
+          {
+            text: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES',
+            role: PopupResponse.CONFIRM,
+            handler: () => resolveFunction(true)
+          }
+        ]
+      });
+
     return promise;
   }
 
@@ -246,7 +246,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   //If conflict or registration is gone, re-sumbit or cancelling is handled by the failed-registration-component
   hideSendButton(draft: RegistrationDraft): boolean {
     return this.draftHasStatusSync(draft)
-    && [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft?.error?.code);
+      && [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft?.error?.code);
   }
 
   trackByFunction(index: number, item: ISummaryItem) {

@@ -7,19 +7,19 @@ import { TranslateService } from '@ngx-translate/core';
 
 export enum PopupResponse {
   CANCEL = 'cancel',
-  CONFIRM = 'confirm'
+  CONFIRM = 'confirm',
 }
 
 // We use ConfirmationModalButton instead of AlertButton to make sure that the role is set
-export interface ConfirmationModalButton extends AlertButton {
+interface ConfirmationModalButton extends AlertButton {
   text: string;
   role: PopupResponse;
 }
 
-// We use ConfirmationModalButtons to make sure the array has at least two buttons (Confirm and Cancel)
-export type ConfirmationModalButtons = [ConfirmationModalButton, ConfirmationModalButton, ...ConfirmationModalButton[]];
+// We use ConfirmationModalButtons to make sure the array has at least one buttons (Confirm)
+type ConfirmationModalButtons = [ConfirmationModalButton, ...ConfirmationModalButton[]];
 
-export interface ConfirmationModal extends AlertOptions {
+interface ConfirmationModal extends AlertOptions {
   message: string | IonicSafeString;
 }
 
@@ -44,19 +44,15 @@ export class ConfirmationModalService {
   /**
    * Creates a confirmation dialog with a message and two buttons.
    * If no buttons are provided, default 'Confirm' and 'Cancel'-buttons will be added.
-   * @param message The key of the message to be displayed in the dialog
-   * @param header The key of the header to be displayed in the dialog
-   * @param buttons All the buttons to be displayed in the dialog
-   * @param opts The options to be passed to the dialog
+   * @param message: The key of the message to be displayed in the dialog
+   * @param header: The key of the header to be displayed in the dialog
+   * @param buttons: All the buttons to be displayed in the dialog
+   * @param opts: The options to be passed to the dialog
    * @returns Promise boolean value based on user button input.
    * This promise will resolve to true if the button has the role 'confirm'
    * and false if the button has the role 'cancel'.
    */
   async askForConfirmation({ message, header, buttons, opts }: AskForConfirmationParams): Promise<boolean> {
-    if (buttons && buttons.length < 2) {
-      throw new Error('ConfirmationModalService: You must provide at least two buttons');
-    }
-
     const _buttons = [...(buttons || await this.getDefaultButtons())];
 
     const translations = await firstValueFrom(this.translateService.get([
@@ -86,7 +82,7 @@ export class ConfirmationModalService {
   }
 
   /**
-   * We want to make sure we have at least two buttons (Confirm and Cancel)
+   * Generates the default buttons for the confirmation dialog. The default buttons are 'Confirm' and 'Cancel'.
    * @returns An array of objects with the following properties:
    *   text: The text to be displayed on the button
    *   role: The role of the button
