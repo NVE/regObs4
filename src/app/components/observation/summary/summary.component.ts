@@ -19,4 +19,11 @@ export class SummaryComponent {
     }
     return this.summaries[i].RegistrationName === this.summaries[i-1].RegistrationName;
   }
+
+  startOnNewLineIfContainLineBreaks(text: string): string {
+    if (text && typeof text === 'string' && text.indexOf('\n') >= 0) {
+      return `\n${text}\n`;
+    }
+    return text;
+  }
 }
