@@ -5,10 +5,21 @@ ion-footer {
 
     .send-button-col {
         ion-button {
-            margin-left: 6px;
-            margin-right: 6px;
+            max-width: 400px;
+            margin: 10px auto;
             height: var(--ion-button-height);
         }
+
+        @media only screen and (max-width: 400px) {
+            ion-button {
+                margin: 6px;
+            }
+        }
+    }
+
+    .delete-button-wrapper {
+        max-width: 400px;
+        margin: auto;
     }
 
     .delete-button-col {

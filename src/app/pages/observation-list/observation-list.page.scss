@@ -7,12 +7,19 @@
 }
 
 ion-item-divider {
+  max-width: 960px;
+    padding: 0px;
   h3 {
     margin-top: 24px;
     margin-bottom: 0px;
   }
 }
 
+@media only screen and (max-width: 950px) {
+  ion-item-divider {
+    padding-left: 1rem;
+  }
+}
 virtual-scroller,
 ion-list {
   // width: 100%;

@@ -21,6 +21,7 @@ import {
   ConfirmationModalService,
   PopupResponse
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'OverviewPage';
 
@@ -43,6 +44,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   draft$: Observable<RegistrationDraft>;
   userSetting: UserSetting;
   showSnowObsModeSelector$: Observable<boolean>;
+  geoHazardName$: Observable<string>;
+  isDesktop: boolean;
 
   constructor(
     private draftService: DraftRepositoryService,
@@ -62,9 +65,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
   ngOnInit() {
     const uuid = this.activatedRoute.snapshot.params['id'];
+    this.isDesktop = !Capacitor.isNativePlatform();
     this.draft$ = this.draftService.getDraft$(uuid);
     this.userGroupService.updateUserGroups();
-
+    this.geoHazardName$ = this.draft$.pipe(map( draft => GeoHazard[draft.registration.GeoHazardTID]));
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$))
       .subscribe((setting) => {
         this.ngZone.run(() => {
@@ -85,6 +89,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
         }
       })
     );
+  }
+
+  getName(geoHazard: GeoHazard): string {
+    return GeoHazard[geoHazard];
   }
 
   private syncFailed(draft: RegistrationDraft): boolean {
