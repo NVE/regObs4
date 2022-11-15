@@ -22,13 +22,8 @@
                 "Description": null
             },
             {
-                "Id": 204,
-                "Name": "Ruissellement en surface",
-                "Description": null
-            },
-            {
-                "Id": 205,
-                "Name": "Drainage insuffisant",
+                "Id": 212,
+                "Name": "Manteau neigeux gorgé d'eau",
                 "Description": null
             },
             {
@@ -42,6 +37,26 @@
                 "Description": null
             },
             {
+                "Id": 230,
+                "Name": "Érosion le long des rivières",
+                "Description": null
+            },
+            {
+                "Id": 214,
+                "Name": "Avulsion (nouveau tracé)",
+                "Description": null
+            },
+            {
+                "Id": 204,
+                "Name": "Ruissellement en surface",
+                "Description": null
+            },
+            {
+                "Id": 205,
+                "Name": "Drainage insuffisant",
+                "Description": null
+            },
+            {
                 "Id": 208,
                 "Name": "Fissures/fluage du terrain",
                 "Description": null
@@ -49,16 +64,6 @@
             {
                 "Id": 209,
                 "Name": "Glissement de terrain observé",
-                "Description": null
-            },
-            {
-                "Id": 212,
-                "Name": "Manteau neigeux gorgé d'eau",
-                "Description": null
-            },
-            {
-                "Id": 214,
-                "Name": "Avulsion (nouveau tracé)",
                 "Description": null
             },
             {
@@ -72,11 +77,6 @@
                 "Description": null
             },
             {
-                "Id": 230,
-                "Name": "Érosion le long des rivières",
-                "Description": null
-            },
-            {
                 "Id": 299,
                 "Name": "Autre signes d'instabilité",
                 "Description": null
@@ -84,13 +84,13 @@
         ],
         "Dirt_ActivityInfluencedKDV": [
             {
-                "Id": 200,
-                "Name": "Non donné",
+                "Id": 0,
+                "Name": "Inconnu",
                 "Description": null
             },
             {
-                "Id": 211,
-                "Name": "Personnes",
+                "Id": 200,
+                "Name": "Non donné",
                 "Description": null
             },
             {
@@ -104,18 +104,30 @@
                 "Description": null
             },
             {
-                "Id": 251,
-                "Name": "Zones agricoles",
-                "Description": null
-            },
-            {
                 "Id": 260,
                 "Name": "Bâtiments",
                 "Description": null
             },
             {
+                "Id": 211,
+                "Name": "Personnes",
+                "Description": null
+            },
+            {
+                "Id": 251,
+                "Name": "Zones agricoles",
+                "Description": null
+            },
+            {
                 "Id": 290,
                 "Name": "Autre",
+                "Description": null
+            }
+        ],
+        "Dirt_SafetyGearKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
                 "Description": null
             }
         ],
@@ -141,8 +153,18 @@
                 "Description": null
             },
             {
+                "Id": 11,
+                "Name": "Petite avalanche de roches",
+                "Description": null
+            },
+            {
                 "Id": 6,
                 "Name": "Chute de blocs",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "Ice fall",
                 "Description": null
             },
             {
@@ -158,11 +180,6 @@
             {
                 "Id": 10,
                 "Name": "Glissement d'argile rapide",
-                "Description": null
-            },
-            {
-                "Id": 11,
-                "Name": "Petite avalanche de roches",
                 "Description": null
             }
         ],
@@ -274,6 +291,11 @@
         ],
         "Ice_ActivityInfluencedKDV": [
             {
+                "Id": 0,
+                "Name": "Inconnu",
+                "Description": null
+            },
+            {
                 "Id": 700,
                 "Name": "Non donné",
                 "Description": null
@@ -281,6 +303,11 @@
             {
                 "Id": 710,
                 "Name": "À pied",
+                "Description": null
+            },
+            {
+                "Id": 714,
+                "Name": "Pêche sur glace",
                 "Description": null
             },
             {
@@ -299,8 +326,8 @@
                 "Description": null
             },
             {
-                "Id": 714,
-                "Name": "Pêche sur glace",
+                "Id": 719,
+                "Name": "Personne blessée par la glace",
                 "Description": null
             },
             {
@@ -319,24 +346,9 @@
                 "Description": null
             },
             {
-                "Id": 719,
-                "Name": "Personne blessée par la glace",
+                "Id": 725,
+                "Name": "Traineau scandinave",
                 "Description": null
-            },
-            {
-                "Id": 720,
-                "Name": "Motoneige sur la glace",
-                "Description": null
-            },
-            {
-                "Id": 721,
-                "Name": "Voiture sur la glace",
-                "Description": null
-            },
-            {
-                "Id": 722,
-                "Name": "Véhicule 4x4",
-                "Description": "Véhicule 4x4"
             },
             {
                 "Id": 723,
@@ -349,8 +361,18 @@
                 "Description": null
             },
             {
-                "Id": 725,
-                "Name": "Traineau scandinave",
+                "Id": 720,
+                "Name": "Motoneige sur la glace",
+                "Description": null
+            },
+            {
+                "Id": 722,
+                "Name": "Véhicule 4x4",
+                "Description": "Véhicule 4x4"
+            },
+            {
+                "Id": 721,
+                "Name": "Voiture sur la glace",
                 "Description": null
             },
             {
@@ -379,6 +401,21 @@
                 "Description": null
             },
             {
+                "Id": 777,
+                "Name": "dérive de glace",
+                "Description": null
+            },
+            {
+                "Id": 776,
+                "Name": "Bouchon de frasil",
+                "Description": null
+            },
+            {
+                "Id": 775,
+                "Name": "Barrage de glace de fond",
+                "Description": null
+            },
+            {
                 "Id": 773,
                 "Name": "Aufeis - glace formée/ couches",
                 "Description": null
@@ -389,30 +426,52 @@
                 "Description": null
             },
             {
-                "Id": 775,
-                "Name": "Barrage de glace de fond",
-                "Description": null
-            },
-            {
-                "Id": 776,
-                "Name": "Bouchon de frasil",
-                "Description": null
-            },
-            {
-                "Id": 777,
-                "Name": "dérive de glace",
-                "Description": null
-            },
-            {
                 "Id": 790,
                 "Name": "Autres",
                 "Description": null
+            }
+        ],
+        "Ice_SafetyGearKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 710,
+                "Name": "Throw line and ice picks",
+                "Description": "Good self-protection"
+            },
+            {
+                "Id": 720,
+                "Name": "Ice picks",
+                "Description": "Medium self-protection"
+            },
+            {
+                "Id": 730,
+                "Name": "Other safety equipment",
+                "Description": "Medium/weak self-protection"
+            },
+            {
+                "Id": 790,
+                "Name": "No safety equipment",
+                "Description": "No self-protection"
             }
         ],
         "Ice_IceCoverKDV": [
             {
                 "Id": 0,
                 "Name": "Non donné",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Pas de glace sur les lacs",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "Lac couvert de glace",
                 "Description": null
             },
             {
@@ -431,33 +490,23 @@
                 "Description": null
             },
             {
-                "Id": 10,
-                "Name": "Glace cassante sur les rives",
-                "Description": null
-            },
-            {
                 "Id": 11,
                 "Name": "Glace sur le long du rivage",
                 "Description": null
             },
             {
-                "Id": 20,
-                "Name": "Pas de glace sur les lacs",
-                "Description": null
-            },
-            {
-                "Id": 21,
-                "Name": "Lac couvert de glace",
-                "Description": null
-            },
-            {
-                "Id": 40,
-                "Name": "Débâcle (rivière)",
+                "Id": 10,
+                "Name": "Glace cassante sur les rives",
                 "Description": null
             },
             {
                 "Id": 41,
                 "Name": "Aiguilles de glace à la dérive",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "Débâcle (rivière)",
                 "Description": null
             },
             {
@@ -473,14 +522,14 @@
                 "Description": null
             },
             {
-                "Id": 1,
-                "Name": "1ères glaces loin du rivage",
-                "Description": "Pas de glace sur le site de mesure avant aujourd'hui, même s'il a pu y avoir de la glace sur les rives. Le \"site\" est un point virtuel du lac, situé loin des rives du lac."
-            },
-            {
                 "Id": 2,
                 "Name": "Première glace sur les rivages",
                 "Description": "Pas de glace le long de la côte avant aujourd'hui."
+            },
+            {
+                "Id": 1,
+                "Name": "1ères glaces loin du rivage",
+                "Description": "Pas de glace sur le site de mesure avant aujourd'hui, même s'il a pu y avoir de la glace sur les rives. Le \"site\" est un point virtuel du lac, situé loin des rives du lac."
             },
             {
                 "Id": 3,
@@ -673,6 +722,11 @@
                 "Description": null
             },
             {
+                "Id": 14,
+                "Name": "Fissures",
+                "Description": null
+            },
+            {
                 "Id": 5,
                 "Name": "Importantes chutes de neige",
                 "Description": null
@@ -693,11 +747,6 @@
                 "Description": null
             },
             {
-                "Id": 14,
-                "Name": "Fissures",
-                "Description": null
-            },
-            {
                 "Id": 15,
                 "Name": "Fissures de glissement",
                 "Description": null
@@ -710,6 +759,11 @@
         ],
         "Snow_ActivityInfluencedKDV": [
             {
+                "Id": 0,
+                "Name": "Inconnu",
+                "Description": null
+            },
+            {
                 "Id": 100,
                 "Name": "Non donné",
                 "Description": null
@@ -720,13 +774,13 @@
                 "Description": null
             },
             {
-                "Id": 112,
-                "Name": "Domaine skiable",
+                "Id": 113,
+                "Name": "Hors-piste en domaine skiable",
                 "Description": null
             },
             {
-                "Id": 113,
-                "Name": "Hors-piste en domaine skiable",
+                "Id": 112,
+                "Name": "Domaine skiable",
                 "Description": null
             },
             {
@@ -750,13 +804,13 @@
                 "Description": null
             },
             {
-                "Id": 120,
-                "Name": "Route",
+                "Id": 130,
+                "Name": "Motoneige",
                 "Description": null
             },
             {
-                "Id": 130,
-                "Name": "Motoneige",
+                "Id": 120,
+                "Name": "Route",
                 "Description": null
             },
             {
@@ -775,15 +829,32 @@
                 "Description": null
             }
         ],
+        "Snow_SafetyGearKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Everyone in the group",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Some",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "None",
+                "Description": null
+            }
+        ],
         "Snow_AvalancheKDV": [
             {
                 "Id": 0,
                 "Name": "Non renseigné",
-                "Description": null
-            },
-            {
-                "Id": 11,
-                "Name": "Avalanche de neige humide",
                 "Description": null
             },
             {
@@ -792,13 +863,18 @@
                 "Description": null
             },
             {
-                "Id": 21,
-                "Name": "Avalanche de plaque humide",
+                "Id": 11,
+                "Name": "Avalanche de neige humide",
                 "Description": null
             },
             {
                 "Id": 22,
                 "Name": "Avalanche de plaque sèche",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "Avalanche de plaque humide",
                 "Description": null
             },
             {
@@ -933,24 +1009,24 @@
                 "Description": "Couche de grains anguleux enfouie près du sol"
             },
             {
-                "Id": 18,
-                "Name": "Grains anguleux au-dessus d'une croûte",
-                "Description": "Grains anguleux au-dessus d'une croûte"
-            },
-            {
                 "Id": 19,
                 "Name": "Couche de grains anguleux enfouie sous une croûte",
                 "Description": "Couche de grains anguleux enfouie sous une croûte"
             },
             {
-                "Id": 20,
-                "Name": "Fonte près du sol",
-                "Description": "Fonte près du sol"
+                "Id": 18,
+                "Name": "Grains anguleux au-dessus d'une croûte",
+                "Description": "Grains anguleux au-dessus d'une croûte"
             },
             {
                 "Id": 22,
                 "Name": "Accumulation d'eau au-dessus de couches de neige",
                 "Description": "Accumulation d'eau au-dessus de couches de neige"
+            },
+            {
+                "Id": 20,
+                "Name": "Fonte près du sol",
+                "Description": "Fonte près du sol"
             },
             {
                 "Id": 24,
@@ -1100,11 +1176,6 @@
                 "Description": null
             },
             {
-                "Id": 22,
-                "Name": "Départ spontané",
-                "Description": null
-            },
-            {
                 "Id": 30,
                 "Name": "Très difficile à déclencher",
                 "Description": null
@@ -1122,6 +1193,11 @@
             {
                 "Id": 60,
                 "Name": "Très facile à déclencher",
+                "Description": null
+            },
+            {
+                "Id": 22,
+                "Name": "Départ spontané",
                 "Description": null
             }
         ],
@@ -1324,8 +1400,13 @@
                 "Description": null
             },
             {
-                "Id": 22,
-                "Name": "Déclenchement à distance",
+                "Id": 26,
+                "Name": "Déclenchement humain",
+                "Description": null
+            },
+            {
+                "Id": 27,
+                "Name": "Déclenchement par motoneige",
                 "Description": null
             },
             {
@@ -1336,16 +1417,6 @@
             {
                 "Id": 25,
                 "Name": "Déclenchement par explosifs",
-                "Description": null
-            },
-            {
-                "Id": 26,
-                "Name": "Déclenchement humain",
-                "Description": null
-            },
-            {
-                "Id": 27,
-                "Name": "Déclenchement par motoneige",
                 "Description": null
             },
             {
@@ -1418,21 +1489,6 @@
                 "Description": null
             },
             {
-                "Id": 50,
-                "Name": "Grains facettés proches de la surface",
-                "Description": null
-            },
-            {
-                "Id": 61,
-                "Name": "Givre de surface reposant sur une surface dure",
-                "Description": null
-            },
-            {
-                "Id": 62,
-                "Name": "Givre de surface reposant sur une surface molle",
-                "Description": null
-            },
-            {
                 "Id": 101,
                 "Name": "Quantité importante de neige fraîche (> 30 cm)",
                 "Description": null
@@ -1448,8 +1504,23 @@
                 "Description": null
             },
             {
-                "Id": 104,
-                "Name": "Neige humide",
+                "Id": 61,
+                "Name": "Givre de surface reposant sur une surface dure",
+                "Description": null
+            },
+            {
+                "Id": 62,
+                "Name": "Givre de surface reposant sur une surface molle",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Grains facettés proches de la surface",
+                "Description": null
+            },
+            {
+                "Id": 107,
+                "Name": "Croûte",
                 "Description": null
             },
             {
@@ -1463,8 +1534,8 @@
                 "Description": null
             },
             {
-                "Id": 107,
-                "Name": "Croûte",
+                "Id": 104,
+                "Name": "Neige humide",
                 "Description": null
             },
             {
@@ -1552,12 +1623,57 @@
                 "Id": 3,
                 "Name": "Q3 ( rupture irrégulière)",
                 "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Sudden planar (SP)",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "Sudden collapse (SC)",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "Progressive compression (PC)",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "Resistant planar (RP)",
+                "Description": null
+            },
+            {
+                "Id": 14,
+                "Name": "Non-planar break (BRK)",
+                "Description": null
             }
         ],
         "Snow_PropagationKDV": [
             {
                 "Id": 0,
                 "Name": "Non donné",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "ECTPV-Propag. tot à la découpe",
+                "Description": null
+            },
+            {
+                "Id": 22,
+                "Name": "ECTP-Propagation tot. à n coup",
+                "Description": null
+            },
+            {
+                "Id": 23,
+                "Name": "ECTN -Pas de prog. totale en 1",
+                "Description": null
+            },
+            {
+                "Id": 24,
+                "Name": "ECTX - Negatif pas de fracture",
                 "Description": null
             },
             {
@@ -1591,23 +1707,23 @@
                 "Description": null
             },
             {
-                "Id": 21,
-                "Name": "ECTPV-Propag. tot à la découpe",
+                "Id": 31,
+                "Name": "PST End",
                 "Description": null
             },
             {
-                "Id": 22,
-                "Name": "ECTP-Propagation tot. à n coup",
+                "Id": 32,
+                "Name": "PST SF",
+                "Description": ""
+            },
+            {
+                "Id": 33,
+                "Name": "PST Arr",
                 "Description": null
             },
             {
-                "Id": 23,
-                "Name": "ECTN -Pas de prog. totale en 1",
-                "Description": null
-            },
-            {
-                "Id": 24,
-                "Name": "ECTX - Negatif pas de fracture",
+                "Id": 41,
+                "Name": "RB",
                 "Description": null
             }
         ],
@@ -2041,18 +2157,8 @@
                 "Description": null
             },
             {
-                "Id": 10,
-                "Name": "Bad",
-                "Description": null
-            },
-            {
-                "Id": 20,
-                "Name": "Ok",
-                "Description": null
-            },
-            {
-                "Id": 30,
-                "Name": "Good",
+                "Id": 50,
+                "Name": "Perfect",
                 "Description": null
             },
             {
@@ -2061,8 +2167,55 @@
                 "Description": null
             },
             {
-                "Id": 50,
-                "Name": "Perfect",
+                "Id": 30,
+                "Name": "Good",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Ok",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Bad",
+                "Description": null
+            }
+        ],
+        "Snow_SlopeActivityKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Ascending",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Descending",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "Stationary",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "Traversing",
+                "Description": null
+            },
+            {
+                "Id": 70,
+                "Name": "Traversing on peak / ridge",
+                "Description": null
+            },
+            {
+                "Id": 80,
+                "Name": "Other",
                 "Description": null
             }
         ],
@@ -2110,6 +2263,11 @@
         ],
         "Water_ActivityInfluencedKDV": [
             {
+                "Id": 0,
+                "Name": "Inconnu",
+                "Description": null
+            },
+            {
                 "Id": 600,
                 "Name": "Non donné",
                 "Description": null
@@ -2142,6 +2300,13 @@
             {
                 "Id": 690,
                 "Name": "Autres",
+                "Description": null
+            }
+        ],
+        "Water_SafetyGearKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
                 "Description": null
             }
         ],
@@ -2556,38 +2721,8 @@
                 "Description": null
             },
             {
-                "Id": 10,
-                "Name": "N'a rien affecté",
-                "Description": null
-            },
-            {
-                "Id": 13,
-                "Name": "Recherche et sauvetage lancés",
-                "Description": null
-            },
-            {
-                "Id": 15,
-                "Name": "Circulation interrompue",
-                "Description": null
-            },
-            {
-                "Id": 20,
-                "Name": "Dégâts matériels uniquement",
-                "Description": null
-            },
-            {
-                "Id": 25,
-                "Name": "Évacuation",
-                "Description": null
-            },
-            {
-                "Id": 27,
-                "Name": "Pas d'enseveli, mais de peu",
-                "Description": null
-            },
-            {
-                "Id": 28,
-                "Name": "Personne ensevelie non blessée",
+                "Id": 40,
+                "Name": "Personnes décédées",
                 "Description": null
             },
             {
@@ -2596,13 +2731,139 @@
                 "Description": null
             },
             {
-                "Id": 40,
-                "Name": "Personnes décédées",
+                "Id": 28,
+                "Name": "Personne ensevelie non blessée",
+                "Description": null
+            },
+            {
+                "Id": 27,
+                "Name": "Pas d'enseveli, mais de peu",
+                "Description": null
+            },
+            {
+                "Id": 25,
+                "Name": "Évacuation",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Dégâts matériels uniquement",
+                "Description": null
+            },
+            {
+                "Id": 15,
+                "Name": "Circulation interrompue",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "Recherche et sauvetage lancés",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "N'a rien affecté",
                 "Description": null
             },
             {
                 "Id": 99,
                 "Name": "Autre",
+                "Description": null
+            }
+        ],
+        "LocalTouristKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Lives in municipality",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Lives in county",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "Lives in the country",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "Foreign tourist",
+                "Description": null
+            },
+            {
+                "Id": 100,
+                "Name": "Unknown",
+                "Description": null
+            }
+        ],
+        "LocalKnowledgeKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Completely unknown",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Only read about the trip",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "Been on the trip before",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "Many times on the trip before",
+                "Description": null
+            }
+        ],
+        "RescueKDV": [
+            {
+                "Id": 60,
+                "Name": "Unknown",
+                "Description": null
+            },
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Self rescue",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "Companion rescue",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "Other group",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "Organized rescue",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Other",
                 "Description": null
             }
         ],
@@ -2616,11 +2877,6 @@
                 "Id": 100,
                 "Name": "-",
                 "Description": "Compétence en nivologie non renseignée"
-            },
-            {
-                "Id": 105,
-                "Name": "Automatique",
-                "Description": "Service automatique"
             },
             {
                 "Id": 110,
@@ -2646,6 +2902,11 @@
                 "Id": 150,
                 "Name": "*****",
                 "Description": "L'observateur est un prévisionniste avalanche."
+            },
+            {
+                "Id": 105,
+                "Name": "Automatique",
+                "Description": "Service automatique"
             },
             {
                 "Id": 200,
@@ -2852,6 +3113,26 @@
                 "Description": null
             },
             {
+                "Id": 60,
+                "Name": "Sortie privée",
+                "Description": null
+            },
+            {
+                "Id": 55,
+                "Name": "Formation et cours",
+                "Description": null
+            },
+            {
+                "Id": 70,
+                "Name": "Encadrement professionnel",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Employé",
+                "Description": null
+            },
+            {
                 "Id": 20,
                 "Name": "Tâche de routine dans le cadre de la PRA",
                 "Description": null
@@ -2864,26 +3145,6 @@
             {
                 "Id": 40,
                 "Name": "Tâche demandée dans le cadre de la PRA",
-                "Description": null
-            },
-            {
-                "Id": 50,
-                "Name": "Employé",
-                "Description": null
-            },
-            {
-                "Id": 55,
-                "Name": "Formation et cours",
-                "Description": null
-            },
-            {
-                "Id": 60,
-                "Name": "Sortie privée",
-                "Description": null
-            },
-            {
-                "Id": 70,
-                "Name": "Encadrement professionnel",
                 "Description": null
             }
         ],
@@ -2902,21 +3163,6 @@
                 "Id": 20,
                 "Name": "Sol",
                 "Description": "Glissement de terrain"
-            },
-            {
-                "Id": 30,
-                "Name": "Sols humides",
-                "Description": "Glissement de terrain - inondation"
-            },
-            {
-                "Id": 33,
-                "Name": "Argile",
-                "Description": null
-            },
-            {
-                "Id": 36,
-                "Name": "Neige fondue (slush)",
-                "Description": null
             },
             {
                 "Id": 40,
@@ -2986,13 +3232,13 @@
                 "Description": null
             },
             {
-                "Id": 52,
-                "Name": "Supprimé par l'administrateur",
+                "Id": 61,
+                "Name": "Refusé par l'administrateur",
                 "Description": null
             },
             {
-                "Id": 61,
-                "Name": "Refusé par l'administrateur",
+                "Id": 52,
+                "Name": "Supprimé par l'administrateur",
                 "Description": null
             },
             {
@@ -3003,18 +3249,28 @@
         ],
         "RegistrationKDV": [
             {
-                "Id": 10,
-                "Name": "Remarques/notes",
+                "Id": 51,
+                "Name": "Couverture de glace",
                 "Description": null
             },
             {
-                "Id": 11,
-                "Name": "Incident",
+                "Id": 50,
+                "Name": "Épaisseur de glace",
                 "Description": null
             },
             {
                 "Id": 13,
                 "Name": "Signe d'instabilité",
+                "Description": null
+            },
+            {
+                "Id": 26,
+                "Name": "Observation avalanche",
+                "Description": null
+            },
+            {
+                "Id": 33,
+                "Name": "Activité avalancheuse",
                 "Description": null
             },
             {
@@ -3038,8 +3294,8 @@
                 "Description": null
             },
             {
-                "Id": 26,
-                "Name": "Observation avalanche",
+                "Id": 32,
+                "Name": "Situation avalancheuse typique",
                 "Description": null
             },
             {
@@ -3048,28 +3304,8 @@
                 "Description": null
             },
             {
-                "Id": 32,
-                "Name": "Situation avalancheuse typique",
-                "Description": null
-            },
-            {
-                "Id": 33,
-                "Name": "Activité avalancheuse",
-                "Description": null
-            },
-            {
                 "Id": 36,
                 "Name": "Profil du manteau neigeux",
-                "Description": null
-            },
-            {
-                "Id": 50,
-                "Name": "Épaisseur de glace",
-                "Description": null
-            },
-            {
-                "Id": 51,
-                "Name": "Couverture de glace",
                 "Description": null
             },
             {
@@ -3100,6 +3336,16 @@
             {
                 "Id": 83,
                 "Name": "Évaluations et problèmes",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "Incident",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "Remarques/notes",
                 "Description": null
             }
         ],

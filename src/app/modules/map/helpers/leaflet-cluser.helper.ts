@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import { settings } from '../../../../settings';
+import 'leaflet.markercluster';
 
 export class LeafletClusterHelper {
   static createMarkerClusterGroup(options?: L.MarkerClusterGroupOptions) {

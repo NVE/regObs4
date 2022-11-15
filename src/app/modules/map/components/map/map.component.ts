@@ -85,10 +85,11 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
+  private isNative = Capacitor.isNativePlatform();
   @Input() showMapSearch = true;
   @Input() showFullscreenToggle = true;
   @Input() showGpsCenter = true;
-  @Input() showUserLocation = Capacitor.isNativePlatform();
+  @Input() showUserLocation = this.isNative;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng;
@@ -318,6 +319,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
+    this.mapService.followMode = this.isNative;
     this.mapService.followMode$
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((val) => {
@@ -383,22 +385,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => {
         this.redrawMap();
       });
-
-    if (this.showUserLocation) {
-      this.geoPositionService.currentPosition$
-        .pipe(takeUntil(this.ngDestroy$))
-        .subscribe((pos) => this.onPositionUpdate(pos));
-
-      this.geoPositionService.currentHeading$
-        .pipe(takeUntil(this.ngDestroy$))
-        .subscribe((heading) => {
-          if (this.userMarker) {
-            this.userMarker.setHeading(heading);
-          }
-        });
-
-      this.startActiveSubscriptions();
-    }
+    //set overwrite default showUserLocation with component input
+    this.mapService.showUserLocation(this.isNative);
+    this.mapService.showUserLocation$.subscribe(value => {
+      if (value){
+        this.mapService.followMode = true;
+        this.geoPositionService.currentPosition$
+          .pipe(takeUntil(this.ngDestroy$))
+          .subscribe((pos) => this.onPositionUpdate(pos));
+        this.geoPositionService.currentHeading$
+          .pipe(takeUntil(this.ngDestroy$))
+          .subscribe((heading) => {
+            if (this.userMarker) {
+              this.userMarker.setHeading(heading);
+            }
+          });
+        this.startActiveSubscriptions();
+      }
+    });
 
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
     this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
