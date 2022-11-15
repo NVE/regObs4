@@ -27,6 +27,11 @@ import { WaterLevelViewModel } from './water-level-view-model';
 import { Waterlevel2ViewModel } from './waterlevel-2view-model';
 import { WeatherViewModel } from './weather-view-model';
 export interface RegistrationViewModel {
+
+  /**
+   * If set to true, the user's account will not be shown publicly. NVE will still be able to see who sent in the observation.
+   */
+  Anonymous?: boolean;
   AttachmentSummaries?: Array<Summary>;
   Attachments?: Array<AttachmentViewModel>;
   AvalancheActivityObs?: Array<AvalancheActivityObsViewModel>;

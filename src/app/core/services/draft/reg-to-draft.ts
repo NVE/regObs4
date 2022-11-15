@@ -7,6 +7,7 @@ import { RegistrationEditModelWithRemoteOrLocalAttachments, RemoteOrLocalAttachm
 export function viewModelToEditModel(viewModel: RegistrationViewModel): RegistrationEditModelWithRemoteOrLocalAttachments {
   // Destructure all properties of the view model
   const {
+    Anonymous,
     // RegId,
     // ExternalReferenceId,
     // GeoHazardName,
@@ -50,6 +51,7 @@ export function viewModelToEditModel(viewModel: RegistrationViewModel): Registra
   } = viewModel;
 
   const registration: RegistrationEditModelWithRemoteOrLocalAttachments = {
+    Anonymous,
     GeoHazardTID,
     DtObsTime,
   };
