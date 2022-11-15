@@ -1,4 +1,8 @@
-import { AttachmentUploadEditModel, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import {
+  AttachmentUploadEditModel,
+  RegistrationTid,
+  SyncStatus
+} from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { BasePageService } from './base-page-service';
 import { LoggingService } from '../../shared/services/logging/logging.service';
@@ -39,19 +43,19 @@ describe('BasePageService', () => {
       id: '1',
       type: 'Attachment',
       AttachmentId: 1,
-      RegistrationTID: RegistrationTid.Incident,
-    },{
+      RegistrationTID: RegistrationTid.Incident
+    }, {
       id: '2',
       type: 'Attachment',
       AttachmentId: 2,
-      RegistrationTID: RegistrationTid.Incident,
+      RegistrationTID: RegistrationTid.Incident
     },
     {
       id: '3',
       type: 'Attachment',
       AttachmentId: 3,
-      RegistrationTID: RegistrationTid.AvalancheObs,
-    },{
+      RegistrationTID: RegistrationTid.AvalancheObs
+    }, {
       id: '4',
       type: 'Attachment',
       AttachmentId: 4,
@@ -73,7 +77,8 @@ describe('BasePageService', () => {
       newAttachmentService,
       null,
       null,
-      loggerService
+      loggerService,
+      null
     );
   });
 

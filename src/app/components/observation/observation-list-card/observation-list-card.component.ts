@@ -1,20 +1,12 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
-import {
-  AttachmentViewModel,
-  RegistrationViewModel,
-  Summary
-} from 'src/app/modules/common-regobs-api/models';
+import { AttachmentViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
+import {
+  FullscreenImageModalPage
+} from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as utils from '@nano-sql/core/lib/utilities';
@@ -39,6 +31,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
+import {
+  ConfirmationModalService,
+  PopupResponse
+} from '../../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -87,8 +83,10 @@ export class ObservationListCardComponent implements OnChanges {
     private logger: LoggingService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private translateService: TranslateService
-  ) {}
+    private translateService: TranslateService,
+    private confirmationModalService: ConfirmationModalService
+  ) {
+  }
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
@@ -194,7 +192,7 @@ export class ObservationListCardComponent implements OnChanges {
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
     const attachments = getAllAttachmentsFromViewModel(this.obs);
-    const image = attachments[event.index] as AttachmentViewModel & {Href: string};
+    const image = attachments[event.index] as AttachmentViewModel & { Href: string };
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
@@ -204,7 +202,7 @@ export class ObservationListCardComponent implements OnChanges {
         )}?r=${utils.uuid()}`,
         header: image.RegistrationName,
         description: image.Comment,
-        href: image.Href,
+        href: image.Href
       }
     });
     modal.present();
@@ -269,7 +267,7 @@ export class ObservationListCardComponent implements OnChanges {
         url
       });
     } else {
-      Clipboard.write({ string: url});
+      Clipboard.write({ string: url });
       const toastText = await firstValueFrom(this.translateService.get('REGISTRATION.COPIED_TO_CLIPBOARD'));
       const toast = await this.toastController.create({
         message: toastText,
@@ -339,28 +337,25 @@ export class ObservationListCardComponent implements OnChanges {
     const promise = new Promise<boolean>(resolve => {
       resolveFunction = resolve;
     });
-    const toTranslate = [
-      'DIALOGS.CANCEL',
-      'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
-      'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
-      'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON'];
-    const translations = await firstValueFrom(this.translateService.get(toTranslate));
-    const alert = await this.alertController.create({
-      header: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER'],
-      message: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE'],
-      buttons: [
-        {
-          text: translations['DIALOGS.CANCEL'],
-          role: 'cancel',
-          handler: () => resolveFunction(false)
-        },
-        {
-          text: translations['REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON'],
-          handler: () => resolveFunction(true)
-        }
-      ]
-    });
-    await alert.present();
+
+    await this.confirmationModalService.askForConfirmation(
+      {
+        message: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
+        header: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
+        buttons: [
+          {
+            text: 'DIALOGS.CANCEL',
+            handler: () => resolveFunction(false),
+            role: PopupResponse.CANCEL
+          },
+          {
+            text: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON',
+            handler: () => resolveFunction(true),
+            role: PopupResponse.CONFIRM
+          }
+        ]
+      });
+
     return promise;
   }
 }

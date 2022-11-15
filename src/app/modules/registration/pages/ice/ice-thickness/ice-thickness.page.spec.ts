@@ -6,7 +6,7 @@ describe('IceThicknessPage', () => {
   let component: IceThicknessPage;
 
   beforeEach(() => {
-    const basePageService = new BasePageService(null, null, null, null, null);
+    const basePageService = new BasePageService(null, null, null, null, null, null);
     component = new IceThicknessPage(basePageService, null, null, null);
     component.draft = {
       registration: {
@@ -16,7 +16,7 @@ describe('IceThicknessPage', () => {
       },
       uuid: null,
       syncStatus: null,
-      simpleMode: false,
+      simpleMode: false
     };
   });
 

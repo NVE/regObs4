@@ -1,6 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
+import {
+  ConfirmationModalService,
+  PopupResponse
+} from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 
 @Component({
   selector: 'app-modal-save-or-delete-buttons',
@@ -18,37 +22,32 @@ export class ModalSaveOrDeleteButtonsComponent {
 
   constructor(
     private translateService: TranslateService,
-    private alertController: AlertController
-  ) {}
+    private alertController: AlertController,
+    private confirmationModalService: ConfirmationModalService
+  ) {
+  }
 
   ok() {
     this.saveClicked.emit();
   }
 
   async delete() {
-    const toTranslate = [this.alertTitle, 'DIALOGS.CANCEL', 'DIALOGS.OK'];
-    if (this.alertMessage) {
-      toTranslate.push(this.alertMessage);
-    }
-    const translations = await this.translateService
-      .get(toTranslate)
-      .toPromise();
-    const alert = await this.alertController.create({
-      header: translations[this.alertTitle],
-      message: this.alertMessage ? translations[this.alertMessage] : undefined,
+    await this.confirmationModalService.askForConfirmation({
+      header: this.alertTitle,
+      message: this.alertMessage ? this.alertMessage : undefined,
       buttons: [
         {
-          text: translations['DIALOGS.CANCEL'],
-          role: 'cancel'
+          text: 'DIALOGS.CANCEL',
+          role: PopupResponse.CANCEL
         },
         {
-          text: translations['DIALOGS.OK'],
+          text: 'DIALOGS.OK',
           handler: () => {
             this.deleteClicked.emit();
-          }
+          },
+          role: PopupResponse.CONFIRM
         }
       ]
     });
-    alert.present();
   }
 }

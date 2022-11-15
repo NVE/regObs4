@@ -10,14 +10,18 @@ import { ObsLocationPage } from './obs-location/obs-location.page';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { PopupResponse } from '../../../core/models/popup-response.enum';
+import {
+  ConfirmationModalService,
+  PopupResponse
+} from '../../../core/services/confirmation-modal/confirmation-modal.service';
 
 @Injectable()
 export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
     private draftService: DraftRepositoryService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private confirmationModal: ConfirmationModalService
   ) {
   }
 
@@ -46,30 +50,20 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
   }
 
   async createAlert() {
-    const translations = await this.translateService
-      .get([
-        'REGISTRATION.SAVE_ALERT.HEADER',
-        'REGISTRATION.SAVE_ALERT.MESSAGE',
-        'REGISTRATION.SAVE_ALERT.NO',
-        'REGISTRATION.SAVE_ALERT.YES'
-      ])
-      .toPromise();
-    const alert = await this.alertController.create({
-      header: translations['REGISTRATION.SAVE_ALERT.HEADER'],
-      message: translations['REGISTRATION.SAVE_ALERT.MESSAGE'],
-      buttons: [
-        {
-          text: translations['REGISTRATION.SAVE_ALERT.NO'],
-          role: PopupResponse.CANCEL
-        },
-        {
-          text: translations['REGISTRATION.SAVE_ALERT.YES'],
-          role: PopupResponse.SAVE
-        }
-      ]
-    });
-    await alert.present();
-    const result = await alert.onDidDismiss();
-    return result.role === PopupResponse.SAVE;
+    return await this.confirmationModal.askForConfirmation(
+      {
+        message: 'REGISTRATION.SAVE_ALERT.MESSAGE',
+        header: 'REGISTRATION.SAVE_ALERT.HEADER',
+        buttons: [
+          {
+            text: 'REGISTRATION.SAVE_ALERT.NO',
+            role: PopupResponse.CANCEL
+          },
+          {
+            text: 'REGISTRATION.SAVE_ALERT.YES',
+            role: PopupResponse.CONFIRM
+          }
+        ]
+      });
   }
 }

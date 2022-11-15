@@ -18,8 +18,8 @@
   font-style: normal;
   font-weight: 400;
   src: url('/assets/fonts/Calibri.woff') format('woff2'),
-    url('/assets/fonts/Calibri.woff') format('woff'),
-    url('/assets/fonts/Calibri.ttf') format('truetype');
+  url('/assets/fonts/Calibri.woff') format('woff'),
+  url('/assets/fonts/Calibri.ttf') format('truetype');
   /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
 }
@@ -320,6 +320,7 @@ ion-button {
 ion-back-button {
   padding: 3px 20px 3px 0;
 }
+
 ion-radio {
   --width: 22px;
   --height: 22px;
@@ -453,6 +454,7 @@ ion-toast {
 .toast {
   transform: translateY(-65px) !important;
 }
+
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -497,7 +499,7 @@ ion-toast {
   justify-content: flex-start;
   height: 100%;
 
-  >* {
+  > * {
     width: 100%;
 
     &:last-child {
@@ -523,6 +525,7 @@ ion-toast {
   font-size: 32px;
   line-height: 130%;
 }
+
 .refresher-pulling-text {
   opacity: 0.5;
 }
@@ -586,10 +589,10 @@ ion-toast {
   padding: 0.75rem 0;
 
   &:hover ion-item,
-    .grey {
+  .grey {
     --background: darkgrey;
-    }
-    
+  }
+
   .drop-zone-content {
     padding: 8px;
 
@@ -603,19 +606,19 @@ ion-toast {
     }
   }
 
-    ion-item {
-      height: 100%;
-      --border-width: 0 !important;
-      line-height: 20px;
-    }
-  
-    ion-item::part(native) {
-      height: 100%;
-    }
+  ion-item {
+    height: 100%;
+    --border-width: 0 !important;
+    line-height: 20px;
+  }
 
-    ion-icon {
-      margin-right: 8px;
-    }
+  ion-item::part(native) {
+    height: 100%;
+  }
+
+  ion-icon {
+    margin-right: 8px;
+  }
 
   button {
     position: absolute;
@@ -747,5 +750,15 @@ ion-modal {
 
   &--right div {
     justify-content: flex-end;
+  }
+}
+
+button.alert-button.alert-button-confirm {
+  background-color: var(--ion-color-varsom-orange);
+  color: var(--ion-color-varsom-orange-contrast);
+  min-width: 50px;
+
+  .alert-button-inner.sc-ion-alert-md {
+    justify-content: center;
   }
 }

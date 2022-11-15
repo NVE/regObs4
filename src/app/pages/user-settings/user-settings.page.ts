@@ -13,6 +13,10 @@ import { AppResetService } from '../../modules/shared/services/app-reset/app-res
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import {
+  ConfirmationModalService,
+  PopupResponse
+} from '../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -58,8 +62,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private navController: NavController,
     private fileLoggingService: FileLoggingService,
     private breakpointService: BreakpointService,
-    private platform: Platform
-  ) {}
+    private platform: Platform,
+    private confirmationModalService: ConfirmationModalService
+  ) {
+  }
 
   async ngOnInit() {
     if (this.platform.is('desktop')) {
@@ -123,33 +129,32 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async showKdvElementsUpdated(ok: boolean) {
-    const translations = await this.translateService
-      .get(['SETTINGS.DROPDOWNS_UPDATED', 'SETTINGS.DROPDOWNS_FAILED', 'ALERT.OK'])
-      .toPromise();
-    const alert = await this.alertController.create({
-      message: ok ? translations['SETTINGS.DROPDOWNS_UPDATED'] : translations['SETTINGS.DROPDOWNS_FAILED'],
-      buttons: [translations['ALERT.OK']]
-    });
-    alert.present();
-    return alert.onDidDismiss();
-  }
-
-  async confirmReset() {
-    const translations = await this.translateService.get(['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
-    const alert = await this.alertController.create({
-      message: translations['SETTINGS.CONFIRM_RESET'],
+    return await this.confirmationModalService.askForConfirmation({
+      message: ok ? 'SETTINGS.DROPDOWNS_UPDATED' : 'SETTINGS.DROPDOWNS_FAILED',
       buttons: [
         {
-          text: translations['ALERT.OK'],
-          handler: () => this.reset()
-        },
-        {
-          text: translations['ALERT.CANCEL'],
-          role: 'cancel'
+          text: 'ALERT.OK',
+          role: PopupResponse.CONFIRM
         }
       ]
     });
-    alert.present();
+  }
+
+  async confirmReset() {
+    return await this.confirmationModalService.askForConfirmation({
+      message: 'SETTINGS.CONFIRM_RESET',
+      buttons: [
+        {
+          text: 'ALERT.OK',
+          handler: () => this.reset(),
+          role: PopupResponse.CONFIRM
+        },
+        {
+          text: 'ALERT.CANCEL',
+          role: PopupResponse.CANCEL
+        }
+      ]
+    });
   }
 
   async reset() {
