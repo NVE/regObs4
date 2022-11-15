@@ -7,7 +7,7 @@ import 'leaflet.markercluster';
 describe('AvalancheObsPage', () => {
   let component: AvalancheObsPage;
   beforeEach(() => {
-    const basePageService = new BasePageService(null, null, null, null, null);
+    const basePageService = new BasePageService(null, null, null, null, null, null);
     component = new AvalancheObsPage(basePageService, null, null);
     component.draft = {
       registration: {
@@ -20,7 +20,7 @@ describe('AvalancheObsPage', () => {
       },
       uuid: null,
       syncStatus: null,
-      simpleMode: false,
+      simpleMode: false
     };
   });
   it('empty incident is valid', () => {
