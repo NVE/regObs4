@@ -1,6 +1,6 @@
 {
 	"appId": "no.nve.regobs4",
-  "appName": "Varsom",
+	"appName": "Varsom",
 	"webDir": "www",
 	"bundledWebRuntime": false,
 	"server": {
