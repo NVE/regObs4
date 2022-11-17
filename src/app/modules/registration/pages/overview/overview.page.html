@@ -3,43 +3,56 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{"REGISTRATION.OVERVIEW.TITLE" | translate}}
-    </ion-title>
+    <ng-container *ngIf="geoHazardName$ | async as geoHazardName">
+      <ion-title class="header-title">
+        {{isDesktop ? 'Varsom' : 'ADD_MENU.NEW_' + geoHazardName + '_OBSERVATION' | uppercase | translate}}
+      </ion-title>
+    </ng-container>
   </ion-toolbar>
 </ion-header>
 <ng-container *ngIf="draft$ | async as draft">
   <ion-content>
     <!-- Simple snow obs header-->
-    <ion-grid *ngIf="showSnowObsModeSelector$ | async" class="header">
-      <ion-row>
-        <ion-col *ngIf="draft.simpleMode" class="question">
-          <ion-item>
-            <ion-label>
-              {{"REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate}}
-            </ion-label>
-          </ion-item>
-        </ion-col>
-        <ion-col class="simple-obs-toggle">
-          <ion-item>
-            <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}</ion-label>
-            <ion-toggle [ngModel]="draft.simpleMode" (ionChange)="changeMode($event)"></ion-toggle>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <div class="content-wrapper">
+      <ng-container *ngIf="isDesktop && geoHazardName$ | async as geoHazardName">
+        <h2>
+          {{'ADD_MENU.NEW_' + geoHazardName + '_OBSERVATION' | uppercase | translate}}
+        </h2>
+      </ng-container>
+      <ng-container *ngIf="showSnowObsModeSelector$ | async">
+        <ion-grid class="header">
+    
+          <ion-row>
+            <ion-col *ngIf="draft.simpleMode" class="question">
+              <ion-item>
+                <ion-label>
+                  {{"REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate}}
+                </ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col class="simple-obs-toggle">
+              <ion-item>
+                <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}</ion-label>
+                <ion-toggle [ngModel]="draft.simpleMode" (ionChange)="changeMode($event)"></ion-toggle>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+    
+      <!-- Error info if posting the registration failed -->
+      <app-failed-registration *ngIf="draft.error && draftHasStatusSync(draft)" [draft]="draft">
+      </app-failed-registration>
 
-    <!-- Error info if posting the registration failed -->
-    <app-failed-registration *ngIf="draft.error && draftHasStatusSync(draft)" [draft]="draft"></app-failed-registration>
+      <app-simple-snow-obs *ngIf="showSimpleMode(draft)" [draft]="draft"></app-simple-snow-obs>
 
-    <app-simple-snow-obs *ngIf="showSimpleMode(draft)" [draft]="draft"></app-simple-snow-obs>
-
-    <ion-list lines="full">
-      <!-- "Summary" items for each form -->
-      <app-summary-item [readonly]="draftHasStatusSync(draft)"
-        *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction" [simpleObsMode]="draft.simpleMode"
-        [item]="item"></app-summary-item>
-    </ion-list>
+      <ion-list lines="full">
+        <!-- "Summary" items for each form -->
+        <app-summary-item [readonly]="draftHasStatusSync(draft)"
+          *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction" [simpleObsMode]="draft.simpleMode"
+          [item]="item"></app-summary-item>
+      </ion-list>
+      </div>
   </ion-content>
   <app-send-button *ngIf="!hideSendButton(draft)" [draft]="draft"></app-send-button>
   <app-coach-marks-simple-obs *ngIf="showSimpleMode(draft)"></app-coach-marks-simple-obs>

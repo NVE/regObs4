@@ -1,8 +1,8 @@
 <ion-card *ngIf="loaded">
-  <ion-card-header>
-    <h3 color="medium">{{ header }}</h3>
-  </ion-card-header>
   <ion-card-content>
+    <ion-card-header>
+      <h3 color="medium">{{ header }}</h3>
+    </ion-card-header>
     <ion-grid class="ion-no-padding">
       <ion-row class="row-padding-start">
         <ion-col size="12">
@@ -63,17 +63,17 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-item class="ion-no-padding" color="light">
-      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" slot="start" (click)="edit()"
-        [disabled]="isLoadingObsForEdit">
-        <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
-        {{'REGISTRATION.EDIT' | translate}}
-      </ion-button>
-      <ion-spinner slot="start" name="dots" *ngIf="isLoadingObsForEdit"></ion-spinner>
-      <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
-        ID: {{ obs.RegId }}
-        <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
-      </ion-button>
-    </ion-item>
   </ion-card-content>
+  <ion-item color="light">
+    <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" slot="start" (click)="edit()"
+      [disabled]="isLoadingObsForEdit">
+      <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
+      {{'REGISTRATION.EDIT' | translate}}
+    </ion-button>
+    <ion-spinner slot="start" name="dots" *ngIf="isLoadingObsForEdit"></ion-spinner>
+    <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
+      ID: {{ obs.RegId }}
+      <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
+    </ion-button>
+  </ion-item>
 </ion-card>
