@@ -1,20 +1,20 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Subscription, combineLatest } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
-import { IonSelect, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 @Component({
   selector: 'app-observations-days-back',
   templateUrl: './observations-days-back.component.html',
   styleUrls: ['./observations-days-back.component.scss']
 })
-export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
+export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
   selectedDaysBack: number;
   daysBackOptions: { val: number}[];
   subscription: Subscription;
@@ -22,23 +22,24 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
 
   constructor(
     private userSettingService: UserSettingService,
-    private zone: NgZone,
     private platform: Platform,
-    private loggingService: LoggingService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
-    this.userSettingService.currentGeoHazard$.subscribe( currentGeoHazard => {
-      this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
-    })
-    this.userSettingService.daysBackForCurrentGeoHazard$.subscribe( selectedDaysBack => {
-      this.selectedDaysBack = selectedDaysBack;
-    })
-  }
+    this.userSettingService.currentGeoHazard$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe( currentGeoHazard => {
+        this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
+      });
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.userSettingService.daysBackForCurrentGeoHazard$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe( selectedDaysBack => {
+        this.selectedDaysBack = selectedDaysBack;
+      });
   }
 
   getDaysBackArray(geoHazard: GeoHazard) {
@@ -50,9 +51,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   }
 
   async save(): Promise<void> {
-    const userSetting = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
     let changed = false;
     for (const geoHazard of userSetting.currentGeoHazard) {
       const existingValue = userSetting.observationDaysBack.find(
