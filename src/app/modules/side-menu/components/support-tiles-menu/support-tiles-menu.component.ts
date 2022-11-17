@@ -22,7 +22,6 @@ interface PopupSubscription {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
-  private checkSupportMap: PopupSubscription;
   private checkOfflineSupportMaps: {[mapName: string]: PopupSubscription} = {};
   private subTileInstantiation: Subscription;
 
@@ -50,16 +49,10 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       );
       this.subTileInstantiation.unsubscribe();
     });
-
-    this.checkSupportMap = {
-      subscription: undefined,
-      checker: popupInfoService.checkSupportMapInfoPopup,
-      condition: () => true,
-    };
   }
 
   ngOnDestroy() {
-    for (const checkMap of Object.values(this.checkOfflineSupportMaps).concat([this.checkSupportMap])) {
+    for (const checkMap of Object.values(this.checkOfflineSupportMaps)) {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
       }
@@ -123,7 +116,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
         condition: (tile) => !tile.availableOffline,
       };
     }
-    [this.checkSupportMap, this.checkOfflineSupportMaps[tile.name]].forEach((checkMap) => {
+    [this.checkOfflineSupportMaps[tile.name]].forEach((checkMap) => {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
       }
