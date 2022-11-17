@@ -17,24 +17,39 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMTIME = 'fromTime';
 const URL_PARAM_TOTIME = 'toTime';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
   Longitude: latLng.lng
 });
 
-function commaSeparatedStringToNumberArray(commaSeparatedString : string): number[] {
+function separatedStringToNumberArray(commaSeparatedString : string): number[] {
   if(commaSeparatedString?.trim().length) {
-    return commaSeparatedString.split('|').filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+    return commaSeparatedString
+      .split(URL_PARAM_ARRAY_DELIMITER)
+      .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
   }
   return [];
+}
+
+function numberArrayToSeparatedString(numbers: number[]): string {
+  if(numbers?.length) {
+    return numbers.join(URL_PARAM_ARRAY_DELIMITER);
+  }
+  return '';
 }
 
 /**
  * Contains current filter for registrations.
  * Use this to change which registrations you want to find.
+ *
  * Also responsible for saving the filter as query params in the url.
  * Initializes filter from url query params on startup.
+ * The URL should be short, easily readable for the user and easy to type.
+ * Multi-select parameters, like geoHazard and type should be represented as a delimited list, example:
+ * geoHazard=20~60&type=SnowProfile2=21~22~36
+ *
  * TODO: Vi håndterer ikke alle URL-parametre ennå
  */
 @Injectable({
@@ -127,26 +142,25 @@ export class SearchCriteriaService {
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
     let geoHazards: number[] = [GeoHazard.Snow];
 
-    //read old param format used in (old) regobs.no
+    //read param used in (old) regobs.no
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
     if (geoHazardsParamValueOld?.length) {
       geoHazards = geoHazardsParamValueOld.filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
-      new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply; //we will create params in new format instead
+      new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply; //we will create url params in new format instead
     }
 
-    //read params on new format
-    const geoHazardsParamValue = searchParams.getAll(URL_PARAM_GEOHAZARD);
+    //read param on new format
+    const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
     if (geoHazardsParamValue?.length > 0) {
-      geoHazards = geoHazardsParamValue.map(stringValue => {
-        return Number(stringValue);
-      });
+      geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
     }
+
     return geoHazards;
   }
 
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
     const params = new UrlParams();
-    params.set(URL_PARAM_GEOHAZARD, criteria.SelectedGeoHazards);
+    params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
     params.set(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
     params.set(URL_PARAM_TOTIME, criteria.ToDtObsTime);
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
@@ -169,14 +183,7 @@ export class SearchCriteriaService {
   }
 
   setObsTime(fromTime: string, toTime: string) {
-    // const currentCriteria = this.searchCriteria.value;
-    // const newCriteria = {
-    //   ...cloneDeep(currentCriteria),
-    //   FromDtObsTime: fromTime != null ? fromTime : null,
-    //   ToDtObsTime: toTime != null ? toTime : null
-    // } as SearchCriteriaRequestDto;
-    // this.searchCriteria.next(newCriteria);
-    // this.setUrlParam(URL_PARAM_DAYSBACK, null);
+    //TODO
   }
 
   setObserverNickName(nickName: string) {
