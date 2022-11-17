@@ -65,6 +65,10 @@ const routes: Routes = [
       import('./modules/login/user-information.module').then((m) => m.UserInformationModule)
   },
   {
+    path: 'start-registration/:geoHazard',
+    redirectTo: 'registration/new/:geoHazard'
+  },
+  {
     path: 'registration',
     loadChildren: () =>
       import('./modules/registration/registration.module').then(
