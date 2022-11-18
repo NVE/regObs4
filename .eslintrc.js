@@ -4,14 +4,16 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['prettier'],
   rules: {
+    'prettier/prettier': 'error',
+    '@typescript-eslint/indent': ['error', 2],
     'no-warning-comments': ['warn', { terms: ['todo', 'fixme'], location: 'start' }],
     'no-console': 'error',
     'no-trailing-spaces': ['error'],
@@ -19,16 +21,6 @@ module.exports = {
       'warn',
       {
         max: 2
-      }
-    ],
-    indent: ['error', 2],
-    quotes: ['error', 'single'],
-    semi: ['error', 'always'],
-    'max-len': [
-      'warn',
-      {
-        ignorePattern: '^import |// import',
-        code: 120
       }
     ]
   }
