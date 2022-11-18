@@ -52,7 +52,9 @@
     <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
     <ion-item>
       <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
-      <ion-searchbar mode="ios" class="ion-no-padding" placeholder="Søk på observatørnavn"></ion-searchbar>
+      <ion-searchbar [value]="nickName" [debounce]="1000" mode="ios" class="ion-no-padding"
+        placeholder="Søk på observatørnavn" (ionChange)="setNickName($event)">
+      </ion-searchbar>
     </ion-item>
 
     <!-- TODO: Implementere reset filter funksjonalitet -->

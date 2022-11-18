@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 export interface ObservationTypeFilterItem {
   value: string,
@@ -13,12 +16,15 @@ export interface ObservationTypeFilterItem {
   isChecked: boolean
 }
 
+const DEBUG_TAG = 'FilterMenuComponent';
+
 @Component({
   selector: 'app-filter-menu',
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilterMenuComponent implements OnInit {
+export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
@@ -26,6 +32,7 @@ export class FilterMenuComponent implements OnInit {
   showObservationTypes = false;
   isIndeterminate: boolean;
   masterCheck: boolean;
+  nickName: string;
 
   filteredObservationTypes: ObservationTypeFilterItem[];
 
@@ -107,9 +114,13 @@ export class FilterMenuComponent implements OnInit {
     }
   ];
 
-
   constructor(private platform: Platform,
-              private userSettingService: UserSettingService) { }
+              private userSettingService: UserSettingService,
+              private searchCriteriaService: SearchCriteriaService,
+              private cdr: ChangeDetectorRef,
+              private logger: LoggingService) {
+    super();
+  }
 
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
@@ -118,6 +129,14 @@ export class FilterMenuComponent implements OnInit {
     this.userSettingService.currentGeoHazard$.pipe(
       switchMap( currentGeoHazard => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
       .subscribe(items => this.filteredObservationTypes = items);
+
+    this.searchCriteriaService.searchCriteria$.pipe(
+      takeUntil(this.ngDestroy$),
+      tap((criteria) => {
+        this.nickName = criteria.ObserverNickName;
+        this.cdr.markForCheck();
+      })
+    ).subscribe();
   }
 
   filterObservationTypesByGeohazard(currentGeoHazard: GeoHazard[]) {
@@ -159,5 +178,10 @@ export class FilterMenuComponent implements OnInit {
     }
   }
 
-
+  setNickName(event) {
+    const nickName = event.target.value?.toLowerCase();
+    if (nickName) {
+      this.searchCriteriaService.setObserverNickName(nickName);
+    }
+  }
 }

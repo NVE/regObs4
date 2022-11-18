@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, NgZone, AfterViewChecked, Inject } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, Observable, Subject, race } from 'rxjs';
+import { combineLatest, Observable, Subject, race, of } from 'rxjs';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
@@ -26,6 +26,8 @@ import { enterZone } from '../../core/helpers/observable-helper';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { DOCUMENT } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -55,10 +57,12 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   constructor(
     router: Router,
     route: ActivatedRoute,
-    private observationService: ObservationService,
+    // private observationService: ObservationService,
+    private searchRegistrationService: SearchRegistrationService,
     private fullscreenService: FullscreenService,
     public userSettingService: UserSettingService,
     private ngZone: NgZone,
+    private searchCriteriaService: SearchCriteriaService,
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     @Inject(DOCUMENT) private document: Document
@@ -89,10 +93,12 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
-    this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
-      map((val) => [val]),
-      enterZone(this.ngZone)
-    );
+    // TODO
+    // this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
+    //   map((val) => [val]),
+    //   enterZone(this.ngZone)
+    // );
+    this.dataLoadIds$ = of([]);
     this.checkForFirstStartup();
   }
 
@@ -139,10 +145,21 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       this.selectedMarker = null;
       this.mapItemBar.hide();
     });
+
     // TODO: Move this to custom marker layer?
-    const observationObservable = combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
-    observationObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe(([regObservations, showObservations]) => {
-      this.redrawObservationMarkers(showObservations ? regObservations : []);
+    // const observationObservable = combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
+    // observationObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe(([regObservations, showObservations]) => {
+    //   this.redrawObservationMarkers(showObservations ? regObservations : []);
+    // });
+
+    const searchResult = this.searchRegistrationService.atAGlance(this.searchCriteriaService.searchCriteria$);
+    combineLatest([
+      searchResult.registrations$,
+      this.userSettingService.showObservations$
+    ]).pipe(
+      takeUntil(this.ngUnsubscribe),  // TODO: Is this page ever destroyed?
+    ).subscribe(([registrations, show]) => {
+      this.redrawObservationMarkers(show ? registrations : []);
     });
   }
 
@@ -176,10 +193,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   //   this.mapComponent.stopGeoPositionUpdates();
   // }
 
-  private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {
+  private redrawObservationMarkers(regObservations: AtAGlanceViewModel[]) {
     this.markerLayer.clearLayers();
     for (const regObservation of regObservations) {
-      const latLng = L.latLng(regObservation.ObsLocation.Latitude, regObservation.ObsLocation.Longitude);
+      const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
       const marker = new MapItemMarker(regObservation, latLng, {});
       marker.on('click', (event: L.LeafletEvent) => {
         const m: MapItemMarker = event.target;
