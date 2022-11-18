@@ -133,7 +133,7 @@ export class PagedSearchResult<TViewModel> {
 }
 
 /**
- * SearchRegistrationService
+ * Use this to search for observations.
  */
 @Injectable({
   providedIn: 'root'
@@ -142,6 +142,11 @@ export class SearchRegistrationService {
 
   constructor(private searchService: SearchService, private logger: LoggingService) {}
 
+  /**
+   * Normal search.
+   * You should apply a row limit to the search criteria
+   * if you don't have control over how many rows you will get.
+   */
   search(searchCriteria$: Observable<SearchCriteria>): SearchResult<RegistrationViewModel> {
     return new SearchResult<RegistrationViewModel>(
       searchCriteria$,
@@ -150,6 +155,9 @@ export class SearchRegistrationService {
     );
   }
 
+  /**
+   * Normal search with paging
+   */
   pagedSearch(searchCriteria$: Observable<SearchCriteria>): PagedSearchResult<RegistrationViewModel> {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
@@ -159,6 +167,9 @@ export class SearchRegistrationService {
     );
   }
 
+  /**
+   * A fast search. Return only a summary of each observation.
+   */
   atAGlance(searchCriteria$: Observable<SearchCriteria>): SearchResult<AtAGlanceViewModel> {
     return new SearchResult<AtAGlanceViewModel>(
       searchCriteria$.pipe(map(c => ({  ...c, NumberOfRecords: 100000 }))),

@@ -7,6 +7,9 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 
 const DEBUG_TAG = 'OfflineCapableSearchService';
 
+/**
+ * Will search for observations in the offline database instead of searching online through the Regobs API
+ */
 @Injectable()
 export class OfflineCapableSearchService extends SearchService {
 
