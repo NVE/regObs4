@@ -77,32 +77,64 @@ npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
 
 ## Build and release
 
-Use npm to make a release build:
+### 1. Use npm to make a release build:
 
-```
+```bash
 npm run build --production --device
 ```
 
 TIP! if you run into "ERROR maximum call stack size exceeded" it's most probably a circular module dependency.
 If you build without aot, you might get a better error message:
 
-```
+```bash
 ng build --aot=false
 ```
 
-Create release branch. Branch name example: release/v4.7.3
+### 2. Create release branch
 
-Update version number in package.json manually.
+1. For a release to trigger, the branch has to follow the naming convention `release/vx.x.x`. For
+   example `release/v4.0.0`.
+   Switch 4.0.0 with the version number you want to release.
 
-Create build number and copy build/version info to manifest files:
+```bash
+git switch develop
+git pull
+git switch -c release/v4.0.0
+```
+
+2. Create build- and version number (`AndroidManifest.xml` and `Info.plist`):
+
 ```
 npm run create-version-file
 ```
-Commit changed files and push relase-branch.
+
+3. Commit changed files and push relase-branch.
+
+```bash
+git add .
+git commit -m "Release v4.0.0"
+git push release/v4.0.0
+```
 
 The build will be published to internal testers in Testflight and Google Play automatically.
 
-You need to add release notes / what to test manually in Appstore connect and Google Play console after the build is published.
+You need to add release notes / what to test manually in Appstore connect and Google Play console after the build is
+published.
+
+### 3. Update version number
+
+After the release is published, you need to update the version number in `package.json` and `package-lock.json` to the
+next version, and merge the release branch to develop.
+
+```bash
+git switch develop
+git pull
+git merge release/v4.0.0
+git switch -c task/update-version-to-4.0.1
+git add package.json package-lock.json
+git commit -m "Update version to 4.0.1"
+git push
+```
 
 ## Renew certificates and provisioning profiles
 
@@ -114,7 +146,8 @@ You need certificates to build and publish apps. The Apple certificates last onl
 
 [Tips on how to create a .p12 file](https://github.com/phonegap/phonegap-docs/blob/master/docs/4-phonegap-build/3-signing/2-ios.html.md)
 
-When you renew an Apple distribution certificate; you need to create a new provisioning profile containing the distribution certificate. You also need to make these changes in build/project files:
+When you renew an Apple distribution certificate; you need to create a new provisioning profile containing the
+distribution certificate. You also need to make these changes in build/project files:
 
 | File | Setting |
 |------|---------|
@@ -154,7 +187,8 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 ### Produksjonssette på Apple App Store
 
 - Gå til https://appstoreconnect.apple.com/
-- Bruk + øverst til venstre for "Opprett ny utgave". Pass på at du faktisk sender den til gjennomgang, det skal stå "waiting for review" i statusfeltet. Det kan ta et par dager før du får godkjent den nye versjonen.
+- Bruk + øverst til venstre for "Opprett ny utgave". Pass på at du faktisk sender den til gjennomgang, det skal stå "
+  waiting for review" i statusfeltet. Det kan ta et par dager før du får godkjent den nye versjonen.
 - Oppdater versjonsnotater - engelsk og norsk
 - Velg riktig bygg
 - Når versjonen er godkjent, kan du sende den til produksjon
