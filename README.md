@@ -131,7 +131,8 @@ git switch develop
 git pull
 git merge release/v4.0.0
 git switch -c task/update-version-to-4.0.1
-git add package.json package-lock.json
+npm run create-version-file
+git add .
 git commit -m "Update version to 4.0.1"
 git push
 ```
