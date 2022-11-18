@@ -182,10 +182,6 @@ export class SearchCriteriaService {
     return null;
   }
 
-  setObsTime(fromTime: string, toTime: string) {
-    //TODO
-  }
-
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
