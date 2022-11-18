@@ -102,13 +102,7 @@ git pull
 git switch -c release/v4.0.0
 ```
 
-2. Create build- and version number (`AndroidManifest.xml` and `Info.plist`):
-
-```
-npm run create-version-file
-```
-
-3. Commit changed files and push relase-branch.
+2. Commit changed files and push relase-branch.
 
 ```bash
 git add .
