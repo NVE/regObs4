@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, tap } from 'rxjs';
 import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -14,8 +14,8 @@ const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
 const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
 const URL_PARAM_DAYSBACK = 'daysBack';
-const URL_PARAM_FROMTIME = 'fromTime';
-const URL_PARAM_TOTIME = 'toTime';
+const URL_PARAM_FROMDATE = 'fromDate';
+const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
@@ -74,7 +74,7 @@ export class SearchCriteriaService {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
-    private logger: LoggingService
+    private logger: LoggingService,
   ) {
     const criteria = this.readUrlParams();
 
@@ -92,7 +92,7 @@ export class SearchCriteriaService {
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(map(daysBack => this.convertToIsoDate(daysBack))),
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(map(daysBack => this.daysBackToIsoDateTime(daysBack))),
       this.mapService.mapView$.pipe(map(mapView => this.createExtentCriteria(mapView)))
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
@@ -125,7 +125,7 @@ export class SearchCriteriaService {
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
-      fromObsTime = this.convertToIsoDate(daysBackNumeric);
+      fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
@@ -161,14 +161,19 @@ export class SearchCriteriaService {
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
-    params.set(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
-    params.set(URL_PARAM_TOTIME, criteria.ToDtObsTime);
+    params.set(URL_PARAM_FROMDATE, this.isoDateTimeToLocalDate(criteria.FromDtObsTime));
+    params.set(URL_PARAM_TODATE, this.isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.apply();
+  }
 
-    //TODO:Når skal daysBack overstyre fromObsTime?
-    //Lettest å lagre kun FromDtObsTime, men hvis bruker har valgt daysBack, gir det en mer fleksibel spørring som kan funke over tid
-    //Blir dette riktig? Hvis fromObsTime er satt, fjern daysBack fra url
+  private isoDateTimeToLocalDate(isoDateTime: string): string {
+    if (isoDateTime) {
+      const offset = new Date().getTimezoneOffset();
+      const localTime = new Date(Date.parse(isoDateTime) - (offset * 60 * 1000));
+      return localTime.toISOString().split('T')[0];
+    }
+    return null;
   }
 
   private convertToPositiveInteger(value: string): number {
@@ -186,8 +191,7 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  private convertToIsoDate(daysBack: number): string {
-    //TODO: Feilhåndtering
+  private daysBackToIsoDateTime(daysBack: number): string {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
 

@@ -36,6 +36,11 @@ describe('SearchCriteriaService', () => {
       currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water]
     });
 
+    jasmine.clock().install();
+  });
+
+  afterEach(function() {
+    jasmine.clock().uninstall();
   });
 
   it('should be created', () => {
@@ -65,6 +70,18 @@ describe('SearchCriteriaService', () => {
     expect(url2.searchParams.get('hazard')).toEqual('70');
   }));
 
+  it('default days-back filter should work', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24'));
+
+    //check that criteria contains from time. Should be 3 days earlier minus 1 hour because UTC is one hour after us
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.FromDtObsTime).toEqual('2000-12-20T23:00:00.000Z');
+
+    //check fromDate parameter in url. Should be 3 days earlier based on local time
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('fromDate')).toEqual('2000-12-21');
+  }));
+
   it('nick name filter should work', fakeAsync(async () => {
     service.setObserverNickName('Nick');
     tick(1);
@@ -76,14 +93,6 @@ describe('SearchCriteriaService', () => {
     //check that url contains nickname filter
     const url = new URL(document.location.href);
     expect(url.searchParams.get('nick')).toEqual('Nick');
-
-    //TODO: Sjekk at den kan lese kallenavn fra url og sette filter
-    // history.pushState(null, '', `${window.location.pathname}?nick=Nicky`);
-    // service.readUrlParams();
-    // tick(1);
-    // //check that current criteria contains expected nick name
-    // const criteria2 = await firstValueFrom(service.searchCriteria$);
-    // expect(criteria2.ObserverNickName).toEqual('Nicky');
   }));
 
 });
