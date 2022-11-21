@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
-import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import { PositionDto, SearchCriteriaRequestDto, SearchService, SearchSideBarDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
@@ -70,6 +70,7 @@ export class SearchCriteriaService {
    * Current filter. Current language and geo hazards are always included
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
+  avaialbleSerachCriteria: SearchSideBarDto;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -104,6 +105,7 @@ export class SearchCriteriaService {
         ToDtObsTime: null,
         Extent: extent
       })),
+
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap(newCriteria => this.setUrlParams(newCriteria)),
@@ -113,7 +115,10 @@ export class SearchCriteriaService {
       tap(currentCriteria => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
+
+
   }
+
 
   // build search criteria from url parameters. Some params are stored in user settings
   private readUrlParams(): SearchCriteriaRequestDto {
@@ -184,6 +189,20 @@ export class SearchCriteriaService {
 
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
+  }
+
+  setCompetence(competenceCriteria: number[]) {
+    this.searchCriteriaChanges.next({ObserverCompetence: competenceCriteria});
+  }
+
+  async removeAutomaticStationFilter(competenceToRemove: number[]) {
+    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
+    if(existingCompetence){
+      const newCompetence = existingCompetence.filter(c => competenceToRemove.indexOf(c) === -1);
+      this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
+    } else {
+      this.searchCriteriaChanges.next({ ObserverCompetence: [0, 100, 110, 115,120,130,150]});
+    }
   }
 
   private convertToIsoDate(daysBack: number): string {

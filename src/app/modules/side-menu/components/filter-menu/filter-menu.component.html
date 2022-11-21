@@ -4,7 +4,7 @@
   </ion-list-header>
   <app-observations-days-back></app-observations-days-back>
   <app-update-observations></app-update-observations>
-  <div *ngIf="false">
+  <div *ngIf="true">
     <!-- Dette er på prototypestadiet, så vi skjuler dette foreløpig -->
     <!-- TODO: Oversettelser på all tekst -->
     <ion-list-header color="varsom-blue" class="ion-no-margin">
@@ -38,17 +38,39 @@
 
     <ion-list-header color="varsom-blue" class="ion-no-margin">
       <ion-label>
-        Observatør
+        {{'OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE' | translate}}
       </ion-label>
     </ion-list-header>
+<!--<ng-container *ngIf="this.showCompetances">
+  <ion-item *ngIf="competanceOptions$ | async as competanceOptions">
+    <ion-list lines="none">
+      <ion-item *ngFor="let competance of competanceOptions.entries()">
+        <ion-checkbox [checked]="competance[1].isChecked" (ionChange)="onSelectChange(competance[1])"
+          color="varsom-dark-blue" mode="md">
+        </ion-checkbox>
+        <ion-label class="ion-padding-start">{{competance[0]}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-item>
+</ng-container> -->
     <!-- TODO: Legg til eller hente kompetanser i menyen. Husk at på snø er det en spesiell kompetanse A -->
-    <ion-item>
-      <ion-label class="no-margin-bottom" color="dark" position="stacked">Kompetanse</ion-label>
-      <ion-select placeholder="Alle kompetansenivå" [interface]="popupType">
-        <ion-select-option>
+    <ion-item *ngIf="competanceOptions$ | async as competanceOptions">
+      <ion-label class="no-margin-bottom" color="dark" position="stacked">{{'OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL' |
+        translate}}</ion-label>
+      <ion-select [interface]="popupType" [value]="'{}'" (ionChange)="onSelectCompetenceChange($event)">
+        <ion-select-option value="{}">{{'OBSERVATION_FILTER.COMPETANCE_FILTER.ALL' | translate}}</ion-select-option>
+        <ion-select-option *ngFor="let co of competanceOptions | keyvalue" [value]="co">
+          {{co.key}}
         </ion-select-option>
       </ion-select>
-    </ion-item>
+  </ion-item>
+  <ion-item *ngIf="isShowAutomaticStation">
+    <ion-checkbox checked="true" color="varsom-dark-blue" mode="md" [value]="automaticStation | keyvalue"
+      (ionChange)="onCheckAutomaticStations($event)">
+    </ion-checkbox>
+    <ion-label class="ion-padding-start">{{'OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS' | translate}}
+    </ion-label>
+  </ion-item>
     <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
     <ion-item>
       <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
