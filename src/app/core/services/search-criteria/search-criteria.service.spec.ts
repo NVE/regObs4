@@ -73,13 +73,10 @@ describe('SearchCriteriaService', () => {
 
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
-    const offset = new Date().getTimezoneOffset();
-    console.log('=======> offset = ' + offset);
     const expectedFromTime = moment(new Date('2000-12-21 00:00:00.000')).toISOString();
-    console.log('=======> expectedFromTime = ' + expectedFromTime);
-    console.log('=====> moment = ' + moment().toISOString());
 
-    //check that criteria contains from time. Should be 3 days earlier minus 1 hour because UTC is one hour after us
+    //check that criteria contains correct from time. Should be 3 days earlier at midnight
+    //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
 
