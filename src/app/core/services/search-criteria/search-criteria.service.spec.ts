@@ -1,4 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import moment from 'moment';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -36,6 +37,11 @@ describe('SearchCriteriaService', () => {
       currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water]
     });
 
+    jasmine.clock().install();
+  });
+
+  afterEach(function() {
+    jasmine.clock().uninstall();
   });
 
   it('should be created', () => {
@@ -65,6 +71,20 @@ describe('SearchCriteriaService', () => {
     expect(url2.searchParams.get('hazard')).toEqual('70');
   }));
 
+  it('default days-back filter should work', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+    const expectedFromTime = moment(new Date('2000-12-21 00:00:00.000')).toISOString();
+
+    //check that criteria contains correct from time. Should be 3 days earlier at midnight
+    //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
+
+    //check fromDate parameter in url. Should be 3 days earlier based on local time
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('fromDate')).toEqual('2000-12-21');
+  }));
+
   it('nick name filter should work', fakeAsync(async () => {
     service.setObserverNickName('Nick');
     tick(1);
@@ -76,14 +96,6 @@ describe('SearchCriteriaService', () => {
     //check that url contains nickname filter
     const url = new URL(document.location.href);
     expect(url.searchParams.get('nick')).toEqual('Nick');
-
-    //TODO: Sjekk at den kan lese kallenavn fra url og sette filter
-    // history.pushState(null, '', `${window.location.pathname}?nick=Nicky`);
-    // service.readUrlParams();
-    // tick(1);
-    // //check that current criteria contains expected nick name
-    // const criteria2 = await firstValueFrom(service.searchCriteria$);
-    // expect(criteria2.ObserverNickName).toEqual('Nicky');
   }));
 
 });
