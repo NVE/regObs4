@@ -9,6 +9,8 @@ indent_size = 2
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+ij_html_quote_style = double # Makes IntelliJ software use double quotes for HTML attributes
+ij_html_keep_whitespaces = true # Makes IntelliJ software keep whitespaces in HTML files
 
 [*.md]
 insert_final_newline = false
