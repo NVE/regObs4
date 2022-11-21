@@ -40,6 +40,20 @@ function numberArrayToSeparatedString(numbers: number[]): string {
   return '';
 }
 
+function isArraysEqual(array1: number[], array2: number[]): boolean {
+  return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
+}
+
+function isoDateTimeToLocalDate(isoDateTime: string): string {
+  if (isoDateTime) {
+    const offset = new Date().getTimezoneOffset();
+    const localTime = new Date(Date.parse(isoDateTime) - (offset * 60 * 1000));
+    return localTime.toISOString().split('T')[0];
+  }
+  return null;
+}
+
+
 /**
  * Contains current filter for registrations.
  * Use this to change which registrations you want to find.
@@ -161,19 +175,10 @@ export class SearchCriteriaService {
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
-    params.set(URL_PARAM_FROMDATE, this.isoDateTimeToLocalDate(criteria.FromDtObsTime));
-    params.set(URL_PARAM_TODATE, this.isoDateTimeToLocalDate(criteria.ToDtObsTime));
+    params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
+    params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.apply();
-  }
-
-  private isoDateTimeToLocalDate(isoDateTime: string): string {
-    if (isoDateTime) {
-      const offset = new Date().getTimezoneOffset();
-      const localTime = new Date(Date.parse(isoDateTime) - (offset * 60 * 1000));
-      return localTime.toISOString().split('T')[0];
-    }
-    return null;
   }
 
   private convertToPositiveInteger(value: string): number {
@@ -208,12 +213,15 @@ export class SearchCriteriaService {
 
   private async saveGeoHazardsAndDaysBackInSettings(geoHazards: number[], daysBack: number): Promise<void> {
     //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
-    const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
+    let userSetting = await firstValueFrom(this.userSettingService.userSetting$);
     let changed = false;
     if (geoHazards != null) {
-      if (geoHazards != userSetting.currentGeoHazard) {
+      if (!isArraysEqual(geoHazards, userSetting.currentGeoHazard)) {
+        userSetting = {
+          ...userSetting,
+          currentGeoHazard: geoHazards
+        };
         changed = true;
-        userSetting.currentGeoHazard = geoHazards;
       }
     }
     if (daysBack != null) {
