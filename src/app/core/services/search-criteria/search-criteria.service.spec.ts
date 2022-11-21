@@ -1,4 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import moment from 'moment';
+import 'moment-timezone';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -71,7 +73,11 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('default days-back filter should work', fakeAsync(async () => {
-    jasmine.clock().mockDate(new Date('2000-12-24'));
+    //    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00'));
+    // const offset = new Date().getTimezoneOffset();
+    // const expectedFromTime2 = moment(new Date('2000-12-24 00:00:00.000')).add(offset, 'm');
+    // const expectedFromTime = moment(new Date('2000-12-24 00:00:00.000')).toISOString();
 
     //check that criteria contains from time. Should be 3 days earlier minus 1 hour because UTC is one hour after us
     const criteria = await firstValueFrom(service.searchCriteria$);
