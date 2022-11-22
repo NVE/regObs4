@@ -1,4 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { SpyLocation } from '@angular/common/testing';
 import moment from 'moment';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -6,8 +7,8 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-
 import { SearchCriteriaService } from './search-criteria.service';
+import { UrlParams } from './url-params';
 
 class TestMapService {
   mapView$: Observable<IMapView>;
@@ -100,3 +101,73 @@ describe('SearchCriteriaService', () => {
 
 });
 
+describe('SearchCriteriaService url parsing', () => {
+  let service: SearchCriteriaService;
+  let userSettingService: UserSettingService;
+  let mapService: TestMapService;
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      // providers: [{ provide: Location, useClass: SpyLocation }]
+    });
+
+    mapService = new TestMapService();
+    mapService.mapView$ = of({ bounds: undefined, center: undefined, zoom: undefined });
+
+    userSettingService = new UserSettingService(null, null);
+    userSettingService.saveUserSettings({
+      ...await firstValueFrom(userSettingService.userSetting$),
+      language: LangKey.nn,
+      currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water]
+    });
+
+    //window.location.href = `${window.location.pathname}?daysBack=1&nick=Oluf`;
+    jasmine.clock().install();
+  });
+
+  afterEach(function() {
+    jasmine.clock().uninstall();
+  });
+
+  it('nick name url filter should work', fakeAsync(async () => {
+    new UrlParams().set('nick', 'Oluf').apply();
+    // window.history.pushState(null, '', `${window.location.pathname}?daysBack=1&nick=Oluf`);
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService());
+
+    //check that current criteria contains expected nick name
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.ObserverNickName).toEqual('Oluf');
+  }));
+
+  it('geo hazard url filter should work', fakeAsync(async () => {
+    new UrlParams().set('hazard', 70).apply();
+    // window.history.pushState(null, '', `${window.location.pathname}?daysBack=1&nick=Oluf`);
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService());
+
+    //check that current criteria contains expected geo hazard
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedGeoHazards).toEqual([70]);
+  }));
+
+  it('days back url filter should work', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+    const expectedFromTime = moment(new Date('2000-12-23 00:00:00.000')).toISOString();
+
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService());
+
+    tick();
+    //check that current criteria contains expected nick name
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
+  }));
+
+});
