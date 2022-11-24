@@ -17,6 +17,7 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
@@ -43,7 +44,9 @@ function numberArrayToSeparatedString(numbers: number[]): string {
   }
   return '';
 }
-
+function  convertToShorterName(value: string): string{
+  return value == 'DtChangeTime' ? 'changeTime' : 'obsTime';
+}
 function isArraysEqual(array1: number[], array2: number[]): boolean {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 }
@@ -139,9 +142,9 @@ export class SearchCriteriaService {
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
-
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
+    const orderBy =  this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
@@ -152,11 +155,16 @@ export class SearchCriteriaService {
     const criteria = {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
-      ObserverNickName: nickName
+      ObserverNickName: nickName,
+      OrderBy: orderBy
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
+  }
+
+  private readOrderBy(orderBy: string){
+    return orderBy == 'changeTime' ? 'DtChangeTime' : 'DtObsTime';
   }
 
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
@@ -184,6 +192,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.set(URL_PARAM_ORDER_BY, convertToShorterName(criteria.OrderBy));
     params.apply();
   }
 
@@ -200,6 +209,10 @@ export class SearchCriteriaService {
 
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
+  }
+
+  setOrderBy(order: string){
+    this.searchCriteriaChanges.next({ OrderBy: order });
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

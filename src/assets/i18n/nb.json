@@ -228,7 +228,10 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
-    "OBSERVATIONS": "Observasjoner"
+    "OBSERVATIONS": "Observasjoner",
+    "SORT_BY_TEXT": "Sortert på",
+    "SORT_BY_OBS_TIME": "Sist observert tid",
+    "SORT_BY_CHANGE_TIME": "Sist oppdatert tid"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
