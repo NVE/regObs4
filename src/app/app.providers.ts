@@ -1,5 +1,5 @@
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone, Provider } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
@@ -89,7 +89,7 @@ export function initDb(dbService: OfflineDbService) {
 //   }
 // }
 
-export const APP_PROVIDERS = [
+export const APP_PROVIDERS: Provider[] = [
   StartWizardGuard,
   AuthGuard,
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

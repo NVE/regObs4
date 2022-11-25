@@ -1,5 +1,5 @@
-import { Component, HostListener } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Component, HostListener, Injector } from '@angular/core';
+import { isPlatform, Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -18,6 +18,7 @@ import { AuthService } from 'ionic-appauth';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
 import { Keyboard } from '@capacitor/keyboard';
+import { SqliteService } from './core/services/sqlite/sqlite.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -42,7 +43,8 @@ export class AppComponent {
     private fileLoggingService: FileLoggingService,
     private auth: AuthService,
     private draftToRegService: DraftToRegistrationService,
-    private breakpointService: BreakpointService
+    private breakpointService: BreakpointService,
+    private injector: Injector
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -92,8 +94,8 @@ export class AppComponent {
   private initServices(): (src: Observable<unknown>) => Observable<unknown> {
     return (src: Observable<UserSetting>) =>
       src.pipe(
-        concatMap((userSettings) =>
-          forkJoin([
+        concatMap((userSettings) => {
+          const observables = [
             of(this.lockScreenOrientation()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))
             ),
@@ -118,8 +120,15 @@ export class AppComponent {
             of(this.draftToRegService.createSubscriptions()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start draftToRegService'))
             ),
-          ])
-        )
+          ];
+
+          if (isPlatform('hybrid')) {
+            const sqliteService = this.injector.get<SqliteService>(SqliteService);
+            observables.push(of(sqliteService.init()));
+          }
+
+          return forkJoin(observables);
+        })
       );
   }
 
