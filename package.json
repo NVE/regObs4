@@ -46,6 +46,7 @@
     "@angular/router": "^14.2.3",
     "@asymmetrik/ngx-leaflet": "^8.1.0",
     "@asymmetrik/ngx-leaflet-markercluster": "^5.0.1",
+    "@capacitor-community/sqlite": "^4.2.2",
     "@capacitor/android": "^4.0.1",
     "@capacitor/app": "^4.0.1",
     "@capacitor/browser": "^4.0.1",
