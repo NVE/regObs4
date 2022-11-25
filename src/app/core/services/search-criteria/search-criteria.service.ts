@@ -24,11 +24,15 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Longitude: latLng.lng
 });
 
-function separatedStringToNumberArray(commaSeparatedString : string): number[] {
-  if(commaSeparatedString?.trim().length) {
-    return commaSeparatedString
-      .split(URL_PARAM_ARRAY_DELIMITER)
-      .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+export function separatedStringToNumberArray(separatedString : string): number[] {
+  if (separatedString?.length) {
+    const textWithoutDelimiter = separatedString.replace(URL_PARAM_ARRAY_DELIMITER, '');
+    const textContainsOnlyNumbers = !isNaN (+textWithoutDelimiter);
+    if (textContainsOnlyNumbers) {
+      return separatedString
+        .split(URL_PARAM_ARRAY_DELIMITER)
+        .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+    }
   }
   return [];
 }
@@ -62,7 +66,7 @@ function isoDateTimeToLocalDate(isoDateTime: string): string {
  * Initializes filter from url query params on startup.
  * The URL should be short, easily readable for the user and easy to type.
  * Multi-select parameters, like geoHazard and type should be represented as a delimited list, example:
- * geoHazard=20~60&type=SnowProfile2=21~22~36
+ * geoHazard=20~60&type=21~22~36
  *
  * TODO: Vi håndterer ikke alle URL-parametre ennå
  */
@@ -91,6 +95,7 @@ export class SearchCriteriaService {
     private logger: LoggingService,
   ) {
     const criteria = this.readUrlParams();
+    this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
     this.searchCriteriaChanges.pipe(
       scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []),
@@ -145,6 +150,7 @@ export class SearchCriteriaService {
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
 
     const criteria = {
+      SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName
     } as SearchCriteriaRequestDto;
