@@ -4,7 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
@@ -12,6 +12,9 @@ import {
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TabsService, TAB_OBSERVATION_LIST } from '../tabs/tabs.service';
+
+const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
   selector: 'app-observation-list',
@@ -40,6 +43,7 @@ export class ObservationListPage implements OnInit {
     private searchCriteriaService: SearchCriteriaService,
     private activatedRoute: ActivatedRoute,
     searchRegistrationService: SearchRegistrationService,
+    private tabsService: TabsService,
     private logger: LoggingService
   ) {
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
@@ -51,6 +55,21 @@ export class ObservationListPage implements OnInit {
       map(([allFetched, maxReached]) => allFetched || maxReached),
       distinctUntilChanged()
     );
+
+    //search triggered manually
+    searchRegistrationService.searchRequested$
+      .pipe(
+        withLatestFrom(this.tabsService.selectedTab$),
+        tap(([, tab]) => {
+          if (tab === TAB_OBSERVATION_LIST) {
+            this.refresh(null);
+            this.logger.debug('Search manually triggered', DEBUG_TAG);
+          } else {
+            this.logger.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnInit() {

@@ -1,20 +1,20 @@
 import { Injectable, NgZone } from '@angular/core';
-import { WarningService } from '../warning/warning.service';
-import { ObservationService } from '../observation/observation.service';
-import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
-import { UserSettingService } from '../user-setting/user-setting.service';
-import { settings } from '../../../../settings';
-import { Platform } from '@ionic/angular';
-import { TripLoggerService } from '../trip-logger/trip-logger.service';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { Subject, Subscription } from 'rxjs';
-import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
-import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
-import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
-import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
-import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
-import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
+import { Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, pairwise, switchMap, take } from 'rxjs/operators';
+import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { settings } from '../../../../settings';
+import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
+import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
+import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
+import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
+import { ObservationService } from '../observation/observation.service';
+import { TripLoggerService } from '../trip-logger/trip-logger.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
+import { WarningService } from '../warning/warning.service';
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
@@ -50,28 +50,41 @@ export class DataMarshallService implements OnReset {
 
   init(): void {
     this.ngZone.runOutsideAngular(() => {
-      this.subscriptions.push(
-        this.hasDaysBackChangedToLargerValue().subscribe(() => {
-          this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
-          this.updateObservations();
-        })
-      );
+      // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
+      // this.subscriptions.push(
+      //   this.hasDaysBackChangedToLargerValue().subscribe(() => {
+      //     this.loggingService.debug(
+      //       'DaysBack has changed to a larger value. Update observations.',
+      //       DEBUG_TAG
+      //     );
+      //     this.updateObservations();
+      //   })
+      // );
 
       this.subscriptions.push(
-        this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, langKey, geoHazards]) => {
-          this.loggingService.debug(
-            'AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.',
-            DEBUG_TAG
-          );
-          this.analyticService.trackDimension(AppCustomDimension.language, LangKey[langKey]);
-          this.analyticService.trackDimension(AppCustomDimension.appMode, appMode);
-          this.analyticService.trackDimension(
-            AppCustomDimension.geoHazard,
-            geoHazards.map((gh) => GeoHazard[gh]).join(',')
-          );
-          this.updateObservations();
-          this.warningService.updateWarnings();
-        })
+        this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(
+          ([appMode, langKey, geoHazards]) => {
+            this.loggingService.debug(
+              'AppMode, Language or CurrentGeoHazard has changed. Update warnings.',
+              DEBUG_TAG
+            );
+            this.analyticService.trackDimension(
+              AppCustomDimension.language,
+              LangKey[langKey]
+            );
+            this.analyticService.trackDimension(
+              AppCustomDimension.appMode,
+              appMode
+            );
+            this.analyticService.trackDimension(
+              AppCustomDimension.geoHazard,
+              geoHazards.map((gh) => GeoHazard[gh]).join(',')
+            );
+            // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
+            //this.updateObservations();
+            this.warningService.updateWarnings();
+          }
+        )
       );
       this.subscriptions.push(
         this.userSettingService.userSetting$
@@ -168,9 +181,10 @@ export class DataMarshallService implements OnReset {
     this.cancelUpdateObservationsSubject.next(true);
   }
 
-  updateObservations(): void {
-    this.observationService.updateObservations(this.cancelObservationsPromise);
-  }
+  // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
+  // updateObservations(): void {
+  //   this.observationService.updateObservations(this.cancelObservationsPromise);
+  // }
 
   /**
    * Emits only when days back has changed to a larger value for current geoHazard
