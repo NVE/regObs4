@@ -1,27 +1,29 @@
-import { Component, OnInit, ViewChild, NgZone, AfterViewChecked, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { AfterViewChecked, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, Observable, Subject, race, of } from 'rxjs';
-import { ObservationService } from '../../core/services/observation/observation.service';
-import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
-import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapComponent } from '../../modules/map/components/map/map.component';
-import { AtAGlanceViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
-import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
-import { LoggingService } from '../../modules/shared/services/logging/logging.service';
-import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
-import { Router, ActivatedRoute } from '@angular/router';
-import { map, distinctUntilChanged, takeUntil, take, debounceTime } from 'rxjs/operators';
-import { settings } from '../../../settings';
-import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
-import { RouterPage } from '../../core/helpers/routed-page';
-import { enterZone } from '../../core/helpers/observable-helper';
-import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
-import { DOCUMENT } from '@angular/common';
-import { Capacitor } from '@capacitor/core';
+import { combineLatest, Observable, of, race, Subject } from 'rxjs';
+import {
+  debounceTime, distinctUntilChanged, map, take, takeUntil, tap, withLatestFrom
+} from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
+import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api/models';
+import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
+import { settings } from '../../../settings';
+import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
+import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
+import { enterZone } from '../../core/helpers/observable-helper';
+import { RouterPage } from '../../core/helpers/routed-page';
+import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
+import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { MapComponent } from '../../modules/map/components/map/map.component';
+import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { TabsService, TAB_HOME } from '../tabs/tabs.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -51,8 +53,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   constructor(
     router: Router,
     route: ActivatedRoute,
-    // private observationService: ObservationService,
     private searchRegistrationService: SearchRegistrationService,
+    private tabsService: TabsService,
     private fullscreenService: FullscreenService,
     public userSettingService: UserSettingService,
     private ngZone: NgZone,
@@ -138,20 +140,29 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       this.mapItemBar.hide();
     });
 
-    // TODO: Move this to custom marker layer?
-    // const observationObservable = combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
-    // observationObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe(([regObservations, showObservations]) => {
-    //   this.redrawObservationMarkers(showObservations ? regObservations : []);
-    // });
-
     const searchResult = this.searchRegistrationService.atAGlance(this.searchCriteriaService.searchCriteria$);
-    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$])
-      .pipe(
-        takeUntil(this.ngUnsubscribe) // TODO: Is this page ever destroyed?
-      )
-      .subscribe(([registrations, show]) => {
-        this.redrawObservationMarkers(show ? registrations : []);
-      });
+    combineLatest([
+      searchResult.registrations$,
+      this.userSettingService.showObservations$
+    ]).pipe(
+      takeUntil(this.ngUnsubscribe),  // TODO: Is this page ever destroyed?
+    ).subscribe(([registrations, show]) => {
+      this.redrawObservationMarkers(show ? registrations : []);
+    });
+
+    //search triggered manually
+    this.searchRegistrationService.searchRequested$.pipe(
+      takeUntil(this.ngUnsubscribe),  // TODO: Is this page ever destroyed?
+      withLatestFrom(this.tabsService.selectedTab$),
+      tap(([, tab]) => {
+        if (tab === TAB_HOME) {
+          searchResult.update();
+          this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+        } else {
+          this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+        }
+      })
+    ).subscribe();
   }
 
   async onEnter() {

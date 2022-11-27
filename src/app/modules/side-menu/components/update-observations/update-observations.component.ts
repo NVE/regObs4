@@ -1,50 +1,50 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { switchMap, map, distinctUntilChanged } from 'rxjs/operators';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
 import { settings } from '../../../../../settings';
-import { ObservationService } from '../../../../core/services/observation/observation.service';
-import { DataMarshallService } from '../../../../core/services/data-marshall/data-marshall.service';
-import { DataLoadService } from '../../../data-load/services/data-load.service';
 
 @Component({
   selector: 'app-update-observations',
   templateUrl: './update-observations.component.html',
   styleUrls: ['./update-observations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UpdateObservationsComponent implements OnInit, OnDestroy {
-  lastUpdated: Date;
   settings = settings;
-  isLoading: boolean;
+  readonly isLoading$: Observable<boolean>;
   subscriptions: Subscription[] = [];
+  lastFetched: Date;
 
   constructor(
-    private observationService: ObservationService,
-    private dataMarshallService: DataMarshallService,
-    private ngZone: NgZone,
-    private dataLoadService: DataLoadService
-  ) {}
+    private searchRegistrationService: SearchRegistrationService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
+    this.isLoading$ = searchRegistrationService.isFetchingData$;
+    this.searchRegistrationService.lastFetched$.pipe(
+      tap((lastFetched) => {
+        this.lastFetched = lastFetched;
+        this.changeDetectorRef.markForCheck();
+      })
+    ).subscribe();
+
+  }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.observationService.getLastUpdatedForCurrentGeoHazardAsObservable().subscribe((val) => {
-        this.ngZone.run(() => {
-          this.lastUpdated = val;
-        });
-      })
-    );
-    this.subscriptions.push(
-      this.observationService.dataLoad$
-        .pipe(
-          switchMap((id) => this.dataLoadService.getStateAsObservable(id)),
-          map((state) => state.isLoading),
-          distinctUntilChanged()
-        )
-        .subscribe((val) => {
-          this.ngZone.run(() => {
-            this.isLoading = val;
-          });
-        })
-    );
+    // TODO: Sjekk at det er greit å fjerne dette
+    // this.subscriptions.push(
+    //   this.observationService.dataLoad$
+    //     .pipe(
+    //       switchMap((id) => this.dataLoadService.getStateAsObservable(id)),
+    //       map((state) => state.isLoading),
+    //       distinctUntilChanged()
+    //     )
+    //     .subscribe((val) => {
+    //       this.ngZone.run(() => {
+    //         this.isLoading = val;
+    //       });
+    //     })
+    // );
   }
   ngOnDestroy(): void {
     for (const subscription of this.subscriptions) {
@@ -53,16 +53,18 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
   }
 
   async updateOrCancelObservations() {
-    if (this.isLoading) {
-      this.dataMarshallService.cancelUpdateObservations();
-    } else {
-      this.isLoading = true;
-      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(
-        this.dataMarshallService.cancelObservationsPromise
-      );
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 500);
-    }
+    //TODO: Support cancel
+    // if (this.isLoading) {
+    //   this.dataMarshallService.cancelUpdateObservations();
+    // } else {
+    //   this.isLoading = true;
+    this.searchRegistrationService.requestSearch();
+    // await this.observationService.forceUpdateObservationsForCurrentGeoHazard(
+    //   this.dataMarshallService.cancelObservationsPromise
+    // );
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    // }, 500);
+    // }
   }
 }
