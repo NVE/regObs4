@@ -6,7 +6,7 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
+import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
 
 class TestMapService {
@@ -106,9 +106,8 @@ describe('SearchCriteriaService', () => {
   orderByTestCases.forEach(test => {
     it('orderBy filter should work', fakeAsync(async () => {
 
-      service.setOrderBy(test.apiValue);
+      service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
       tick();
-
       //check that current criteria contains expected orderBy
       const criteria = await firstValueFrom(service.searchCriteria$);
       expect(criteria.OrderBy).toEqual(test.apiValue);

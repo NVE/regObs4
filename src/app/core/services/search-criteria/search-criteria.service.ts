@@ -10,6 +10,11 @@ import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UrlParams } from './url-params';
 
+
+export type SearchCriteriaOrderBy  = 'DtObsTime' | 'DtChangeTime';
+
+const UrlDtoOrderByMap = new Map([['changeTime', 'DtChangeTime'],['obsTime', 'DtObsTime']]);
+
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
 const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
@@ -38,14 +43,20 @@ export function separatedStringToNumberArray(separatedString : string): number[]
   return [];
 }
 
+//DtObsTime => obsTime
+function  convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string{
+  if(value){
+    const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
+    return keyValue;
+  }
+  return null;
+}
+
 function numberArrayToSeparatedString(numbers: number[]): string {
   if(numbers?.length) {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
   }
   return '';
-}
-function  convertToShorterName(value: string): string{
-  return value == 'DtChangeTime' ? 'changeTime' : 'obsTime';
 }
 function isArraysEqual(array1: number[], array2: number[]): boolean {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
@@ -163,9 +174,10 @@ export class SearchCriteriaService {
     return criteria;
   }
 
-  private readOrderBy(orderBy: string){
-    return orderBy == 'changeTime' ? 'DtChangeTime' : 'DtObsTime';
+  private readOrderBy(orderBy: string) : string{
+    return UrlDtoOrderByMap.get(orderBy);
   }
+
 
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
     let geoHazards: number[] = [GeoHazard.Snow];
@@ -192,7 +204,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
-    params.set(URL_PARAM_ORDER_BY, convertToShorterName(criteria.OrderBy));
+    params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
     params.apply();
   }
 
@@ -211,7 +223,7 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  setOrderBy(order: string){
+  setOrderBy(order: SearchCriteriaOrderBy) {
     this.searchCriteriaChanges.next({ OrderBy: order });
   }
 

@@ -21,8 +21,8 @@ export class ObservationListPage implements OnInit {
   searchResult: PagedSearchResult<RegistrationViewModel>;
   registrations$: Observable<RegistrationViewModel[]>;
   shouldDisableScroller$: Observable<boolean>;
+  orderBy$: Observable<string>;
   popupType: SelectInterface;
-  sortByValue: string;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -49,9 +49,12 @@ export class ObservationListPage implements OnInit {
   }
 
   ngOnInit() {
-    const orderBy = this.activatedRoute.snapshot.queryParams['orderBy'];
+    this.orderBy$ = this.searchCriteriaService.searchCriteria$.pipe(map(searchCriteria => {
+      if (!searchCriteria.OrderBy) return 'DtObsTime';
+      else return searchCriteria.OrderBy;
+    }));
+
     this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
-    this.sortByValue =  orderBy == 'changeTime' ? 'DtChangeTime' : 'DtObsTime';
   }
 
   handleChangeSorting(event){
