@@ -19,7 +19,7 @@ const DEBUG_TAG = 'AddMenuComponent';
 @Component({
   selector: 'app-add-menu',
   templateUrl: './add-menu.component.html',
-  styleUrls: ['./add-menu.component.scss'],
+  styleUrls: ['./add-menu.component.scss']
 })
 export class AddMenuComponent implements OnInit {
   @ViewChild('menuFab') menuFab: IonFab;
@@ -48,16 +48,18 @@ export class AddMenuComponent implements OnInit {
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,
-        showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0,
+        showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0
       })),
       setObservableTimeout()
     );
 
     this.drafts$ = this.draftService.drafts$.pipe(
       tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
-      map((drafts) => drafts.filter((d) => d.syncStatus === SyncStatus.Draft)),
+      map((drafts) => drafts.filter(d => d.syncStatus === SyncStatus.Draft)),
       switchMap((drafts) =>
-        drafts.length > 0 ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft))) : of([])
+        drafts.length > 0
+          ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft)))
+          : of([])
       ),
       tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
       setObservableTimeout()
@@ -65,7 +67,9 @@ export class AddMenuComponent implements OnInit {
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
 
-  private convertDraftToDate(draft: RegistrationDraft): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
+  private convertDraftToDate(
+    draft: RegistrationDraft
+  ): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
     return from(this.getDate(draft.lastSavedTime)).pipe(
       map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
     );
@@ -101,6 +105,8 @@ export class AddMenuComponent implements OnInit {
   }
 
   startOrStopTrip(tripStarted: boolean): void {
-    return tripStarted ? this.tripLoggerService.stopLegacyTrip() : this.closeAndNavigate('legacy-trip');
+    return tripStarted
+      ? this.tripLoggerService.stopLegacyTrip()
+      : this.closeAndNavigate('legacy-trip');
   }
 }

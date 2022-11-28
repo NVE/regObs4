@@ -7,8 +7,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, TranslateModule, LeafletModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    TranslateModule,
+    LeafletModule
+  ],
   declarations: [MapImageComponent],
-  exports: [MapImageComponent],
+  exports: [MapImageComponent]
 })
 export class MapImageModule {}

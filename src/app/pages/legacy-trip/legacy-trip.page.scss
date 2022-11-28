@@ -1,17 +1,17 @@
 .reset-button {
-  margin-bottom: var(--ion-safe-area-bottom, 5px);
+    margin-bottom: var(--ion-safe-area-bottom, 5px);
 
-  svg-icon {
-    display: flex;
-  }
+    svg-icon {
+        display: flex;
+    }
 }
 
 .white-background {
-  background-color: #fff;
+    background-color: #fff;
 }
 
 .start-buttons {
-  ion-button {
-    height: var(--ion-button-height);
-  }
+    ion-button {
+        height: var(--ion-button-height);
+    }
 }

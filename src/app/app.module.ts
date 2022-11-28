@@ -50,9 +50,9 @@ import { RegobsApiModuleWithConfig } from './modules/common-regobs-api';
     GpsDebugModule,
     AnalyticsModule.forRoot(),
     RegobsApiModuleWithConfig.forRoot(),
-    CommonRegistrationModule.forRoot(),
+    CommonRegistrationModule.forRoot()
   ],
   providers: APP_PROVIDERS,
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

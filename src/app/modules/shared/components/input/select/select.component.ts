@@ -13,7 +13,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
 @Component({
   selector: 'app-select',
   templateUrl: './select.component.html',
-  styleUrls: ['./select.component.scss'],
+  styleUrls: ['./select.component.scss']
 })
 export class SelectComponent implements OnInit {
   @Input() title: string;
@@ -61,26 +61,29 @@ export class SelectComponent implements OnInit {
   private async getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
     for (const option of (this.options || []).filter((x) => !x.disabled)) {
-      const translatedText = await firstValueFrom(this.translateService.get(option.text));
+      const translatedText = await firstValueFrom(this.translateService
+        .get(option.text));
       buttons.push({
         text: translatedText,
         icon: option.icon,
         role: option.id === this.selectedValue ? 'selected' : undefined,
-        handler: () => this.setSelectedValue(option.id),
+        handler: () => this.setSelectedValue(option.id)
       });
     }
     if (this.selectedValue !== undefined && this.showReset) {
-      const resetTextTranslated = await firstValueFrom(this.translateService.get(TRANSLATION_KEY_RESET));
+      const resetTextTranslated = await firstValueFrom(this.translateService
+        .get(TRANSLATION_KEY_RESET));
       buttons.splice(0, 0, {
         text: resetTextTranslated,
         handler: () => this.setSelectedValue(undefined),
-        role: 'destructive',
+        role: 'destructive'
       });
     }
-    const cancelTextTranslated = await firstValueFrom(this.translateService.get(TRANSLATION_KEY_CANCEL));
+    const cancelTextTranslated = await firstValueFrom(this.translateService
+      .get(TRANSLATION_KEY_CANCEL));
     buttons.push({
       text: cancelTextTranslated,
-      role: 'cancel',
+      role: 'cancel'
     });
     return buttons;
   }
@@ -88,15 +91,17 @@ export class SelectComponent implements OnInit {
   async getTitleTranslations() {
     let titleTextTranslated: string;
     if (this.title) {
-      titleTextTranslated = await firstValueFrom(this.translateService.get(this.title));
+      titleTextTranslated = await firstValueFrom(this.translateService
+        .get(this.title));
     }
     let subTitleTextTranslated: string;
     if (this.subTitle) {
-      subTitleTextTranslated = await firstValueFrom(this.translateService.get(this.subTitle));
+      subTitleTextTranslated = await firstValueFrom(this.translateService
+        .get(this.subTitle));
     }
     return {
       titleTextTranslated,
-      subTitleTextTranslated,
+      subTitleTextTranslated
     };
   }
 
@@ -107,7 +112,7 @@ export class SelectComponent implements OnInit {
       const actionSheet = await this.actionSheetController.create({
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
-        buttons,
+        buttons
       });
       await actionSheet.present();
     }

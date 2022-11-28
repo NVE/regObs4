@@ -26,10 +26,10 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   selector: 'app-map-center-info',
   templateUrl: './map-center-info.component.html',
   styleUrls: ['./map-center-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapCenterInfoComponent extends NgDestoryBase {
-  private userPos: Position; // Caches the gps position for distance and height diff computation
+  private userPos: Position;  // Caches the gps position for distance and height diff computation
   private lastUserPos: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
   private _userAltitude: number = null; // Cached user altitude from server fetched when we can't trust the GPS altitude
 
@@ -51,7 +51,7 @@ export class MapCenterInfoComponent extends NgDestoryBase {
     if (this.userPos?.coords && this.mapCenter != null) {
       return this.mapCenter.distanceTo({
         lat: this.userPos.coords.latitude,
-        lng: this.userPos.coords.longitude,
+        lng: this.userPos.coords.longitude
       });
     }
   }
@@ -82,7 +82,10 @@ export class MapCenterInfoComponent extends NgDestoryBase {
 
     // When we get a new gps position, update cached position.
     // If followMode is on, we do not need to show distance and relative height.
-    combineLatest([geoPositionService.currentPosition$, mapService.followMode$])
+    combineLatest([
+      geoPositionService.currentPosition$,
+      mapService.followMode$
+    ])
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([newPos, followMode]) => {
         this.userPos = followMode ? null : newPos;
@@ -128,22 +131,19 @@ export class MapCenterInfoComponent extends NgDestoryBase {
           this.cdr.markForCheck();
           this.loggingService.debug(
             `Device altitude ${this.userPos.coords.altitude} adjusted to ${locationInfo.elevation} ` +
-              `in ${Date.now() - start}ms`,
-            DEBUG_TAG
+            `in ${Date.now() - start}ms`, DEBUG_TAG
           );
         } else {
           this._userAltitude = null;
           this.loggingService.debug(
             'Tried to adjust user position altitude, but got no response from server, ' +
-              `keeping altitude from device: ${this.userPos.coords.altitude}, took ${Date.now() - start}ms`,
-            DEBUG_TAG
+            `keeping altitude from device: ${this.userPos.coords.altitude}, took ${Date.now() - start}ms`, DEBUG_TAG
           );
         }
       } else {
         this.loggingService.debug(
           `Distance to last user position is ${this.lastUserPos.distanceTo(latLng)}m. ` +
-            'Skips adjustment of altitude when distance is < 5m',
-          DEBUG_TAG
+          'Skips adjustment of altitude when distance is < 5m', DEBUG_TAG
         );
       }
     }
@@ -154,62 +154,61 @@ export class MapCenterInfoComponent extends NgDestoryBase {
   }
 
   private getLocationInfo$(latLng: L.LatLng): Observable<ViewInfo> {
-    return this.mapSearchService.getViewInfo(latLng).pipe(
-      timeout(LOCATION_INFO_REQUEST_TIMEOUT),
-      catchError(() => of({} as ViewInfo))
-    );
+    return this.mapSearchService.getViewInfo(latLng)
+      .pipe(
+        timeout(LOCATION_INFO_REQUEST_TIMEOUT),
+        catchError(() => of({} as ViewInfo)),
+      );
   }
 
   async copyToClipboard(): Promise<void> {
     const textToCopy = `${this.mapCenter.lat}, ${this.mapCenter.lng}`;
-    await Clipboard.write({ string: textToCopy });
+    await Clipboard.write({ string: textToCopy});
 
     const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD'));
     const toast = await this.toastController.create({
       message: toastText,
       mode: 'md',
-      duration: 2000,
+      duration: 2000
     });
     toast.present();
   }
 
   async loadYr(lat, lon) {
     interface YrSearch {
-      totalResults: number;
+      totalResults: number,
       _embedded: {
         location: {
-          id: string;
-        }[];
-      };
+          id: string
+        }[]
+      }
     }
 
     const apiReq = await new HttpRequest(
       'GET',
-      `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`
+      `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`,
     );
-    const apiResponse = await firstValueFrom(
-      this.http.request(apiReq).pipe(
-        filter((_r) => _r instanceof HttpResponse),
-        map((_r) => (_r as StrictHttpResponse<YrSearch>).body)
-      )
-    );
+    const apiResponse = await firstValueFrom(this.http.request(apiReq).pipe(
+      filter(_r => _r instanceof HttpResponse),
+      map((_r) => (_r as StrictHttpResponse<YrSearch>).body)
+    ));
 
     if (apiResponse.totalResults) {
       const id = apiResponse._embedded.location[0].id;
-      const url =
-        {
-          nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
-          nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
-        }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
+      const url = {
+        nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
+        nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
+      }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
       this.externalLinkService.openExternalLink(url);
     } else {
       const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.WEATHER_ERROR'));
       const toast = await this.toastController.create({
         message: toastText,
         mode: 'md',
-        duration: 2000,
+        duration: 2000
       });
       toast.present();
     }
   }
 }
+

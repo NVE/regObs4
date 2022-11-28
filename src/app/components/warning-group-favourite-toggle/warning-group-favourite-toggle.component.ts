@@ -1,4 +1,13 @@
-import { Component, Input, NgZone, OnDestroy, Renderer2, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  NgZone,
+  OnDestroy,
+  Renderer2,
+  ViewChild,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
@@ -8,7 +17,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
 @Component({
   selector: 'app-warning-group-favourite-toggle',
   templateUrl: './warning-group-favourite-toggle.component.html',
-  styleUrls: ['./warning-group-favourite-toggle.component.scss'],
+  styleUrls: ['./warning-group-favourite-toggle.component.scss']
 })
 export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChanges {
   @Input() key: WarningGroupKey;
@@ -65,13 +74,19 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
         .removeFromFavourite(this.key.groupId, this.key.geoHazard)
         .then(() => this.presentToast(false));
     } else {
-      this.warningService.addToFavourite(this.key.groupId, this.key.geoHazard).then(() => this.presentToast(true));
+      this.warningService
+        .addToFavourite(this.key.groupId, this.key.geoHazard)
+        .then(() => this.presentToast(true));
     }
   }
 
   presentToast(added: boolean) {
     this.translateService
-      .get(['WARNING_LIST.ADDED_TO_FAVOURITES', 'WARNING_LIST.REMOVED_FROM_FAVOURITES', 'ALERT.UNDO'])
+      .get([
+        'WARNING_LIST.ADDED_TO_FAVOURITES',
+        'WARNING_LIST.REMOVED_FROM_FAVOURITES',
+        'ALERT.UNDO'
+      ])
       .subscribe(async (translation) => {
         const toast = await this.toastController.create({
           message: `${this.key.groupName} ${
@@ -87,13 +102,19 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
               role: 'cancel',
               handler: () => {
                 if (added) {
-                  this.warningService.removeFromFavourite(this.key.groupId, this.key.geoHazard);
+                  this.warningService.removeFromFavourite(
+                    this.key.groupId,
+                    this.key.geoHazard
+                  );
                 } else {
-                  this.warningService.addToFavourite(this.key.groupId, this.key.geoHazard);
+                  this.warningService.addToFavourite(
+                    this.key.groupId,
+                    this.key.geoHazard
+                  );
                 }
-              },
-            },
-          ],
+              }
+            }
+          ]
         });
         toast.present();
       });

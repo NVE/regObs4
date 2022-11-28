@@ -6,16 +6,18 @@ xdescribe('GpsDebugComponent', () => {
   let component: GpsDebugComponent;
   let fixture: ComponentFixture<GpsDebugComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [GpsDebugComponent],
-      imports: [TestModule],
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [GpsDebugComponent],
+        imports: [TestModule]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(GpsDebugComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(GpsDebugComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();

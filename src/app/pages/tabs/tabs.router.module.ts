@@ -12,31 +12,31 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadChildren: () => import('../home/home.module').then((m) => m.HomePageModule),
+        loadChildren: () => import('../home/home.module').then((m) => m.HomePageModule)
       },
       {
         path: 'home',
-        redirectTo: '',
+        redirectTo: ''
       },
       {
         path: 'trip',
-        loadChildren: () => import('../trip/trip.module').then((m) => m.TripPageModule),
+        loadChildren: () => import('../trip/trip.module').then((m) => m.TripPageModule)
       },
       {
         path: 'observation-list',
-        loadChildren: () =>
-          import('../observation-list/observation-list.module').then((m) => m.ObservationListPageModule),
+        loadChildren: () => import('../observation-list/observation-list.module')
+          .then((m) => m.ObservationListPageModule)
       },
       {
         path: 'warning-list',
-        loadChildren: () => import('../warning-list/warning-list.module').then((m) => m.WarningListPageModule),
-      },
-    ],
-  },
+        loadChildren: () => import('../warning-list/warning-list.module').then((m) => m.WarningListPageModule)
+      }
+    ]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class TabsPageRoutingModule {}

@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -26,7 +17,7 @@ const MAX_REGISTRATIONS_COUNT = 100;
 
 const getUniqueRegistrations = (regs: RegistrationViewModel[]) => {
   const regIds = new Set();
-  return regs.filter((reg) => {
+  return regs.filter(reg => {
     if (regIds.has(reg.RegId)) {
       return false;
     }
@@ -64,18 +55,20 @@ export class SentListComponent implements OnDestroy {
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
 
     addUpdateDeleteRegistrationService.changedRegistrations$
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((newRegistration) => {
-        const regsWithoutNewRegistration = this.loadedRegistrations.filter(
-          (reg) => reg.RegId !== newRegistration.RegId
-        );
+        const regsWithoutNewRegistration = this.loadedRegistrations
+          .filter(reg => reg.RegId !== newRegistration.RegId);
 
-        this.loadedRegistrations = [newRegistration, ...regsWithoutNewRegistration];
+        this.loadedRegistrations = [
+          newRegistration,
+          ...regsWithoutNewRegistration
+        ];
 
         this.isEmpty.next(false);
         this.changeDetectorRef.detectChanges();
@@ -101,7 +94,10 @@ export class SentListComponent implements OnDestroy {
       // Since this.loadedRegistrations can be modified by the draftToRegService subscription above as well,
       // add results to the end and filter unique observations in case the my-observations request returns after a
       // new registration has been added
-      this.loadedRegistrations = getUniqueRegistrations([...this.loadedRegistrations, ...result]);
+      this.loadedRegistrations = getUniqueRegistrations([
+        ...this.loadedRegistrations,
+        ...result
+      ]);
       this.isEmpty.emit(this.loadedRegistrations.length === 0);
     } catch (error) {
       this.loggingService.debug('Could not load my registrations', DEBUG_TAG, error);

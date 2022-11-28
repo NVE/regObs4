@@ -9,7 +9,7 @@ describe('PopupInfoService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
+      imports: [TestModule]
     });
     service = TestBed.inject(PopupInfoService);
   });

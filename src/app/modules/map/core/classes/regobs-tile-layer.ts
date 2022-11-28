@@ -12,7 +12,11 @@ export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
 }
 
 export class RegObsTileLayer extends L.TileLayer {
-  constructor(url: string, options: IRegObsTileLayerOptions) {
+
+  constructor(
+    url: string,
+    options: IRegObsTileLayerOptions
+  ) {
     super(url, options);
   }
 
@@ -29,9 +33,9 @@ export class RegObsTileLayer extends L.TileLayer {
         tileBounds.getSouthWest().lng, // minx
         tileBounds.getSouthWest().lat, // miny
         tileBounds.getNorthEast().lng, // maxx
-        tileBounds.getNorthEast().lat, // maxy
+        tileBounds.getNorthEast().lat // maxy
       ]);
-      return !excludeBounds.some((geometry) => booleanWithin(tileBBox, geometry));
+      return !excludeBounds.some(geometry => booleanWithin(tileBBox, geometry));
     }
     return true;
   }
@@ -61,10 +65,7 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
   _isValidTile(coords: L.Coords) {
     const valid = super._isValidTile(coords);
     if (valid && this.canUseOfflineTiles(coords)) {
-      this.loggingService.debug(
-        `Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`,
-        DEBUG_TAG
-      );
+      this.loggingService.debug(`Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`, DEBUG_TAG);
       return false;
     }
     return valid;

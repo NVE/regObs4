@@ -9,12 +9,16 @@ const routes: Routes = [
   {
     path: '',
     component: IceThicknessPage,
-    canDeactivate: [CanDeactivateRouteGuard],
-  },
+    canDeactivate: [CanDeactivateRouteGuard]
+  }
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, IceLayerPageModule, RouterModule.forChild(routes)],
-  declarations: [IceThicknessPage],
+  imports: [
+    SharedComponentsModule,
+    IceLayerPageModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [IceThicknessPage]
 })
 export class IceThicknessPageModule {}

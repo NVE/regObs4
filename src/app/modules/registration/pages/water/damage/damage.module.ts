@@ -8,12 +8,16 @@ import { SetDamageLocationPageModule } from '../../set-damage-location/set-damag
 const routes: Routes = [
   {
     path: '',
-    component: DamagePage,
-  },
+    component: DamagePage
+  }
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, SetDamageLocationPageModule, RouterModule.forChild(routes)],
-  declarations: [DamagePage, DamageObsComponent],
+  imports: [
+    SharedComponentsModule,
+    SetDamageLocationPageModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [DamagePage, DamageObsComponent]
 })
 export class DamagePageModule {}

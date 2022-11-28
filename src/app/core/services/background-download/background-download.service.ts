@@ -4,7 +4,9 @@ import { DownloadProgress } from './download-progress';
 
 @Injectable()
 export abstract class BackgroundDownloadService {
-  abstract download(url: string): Observable<DownloadProgress>;
+  abstract download(
+     url: string
+  ): Observable<DownloadProgress>
   // abstract downloadFile(
   //   path: string,
   //   filename: string,

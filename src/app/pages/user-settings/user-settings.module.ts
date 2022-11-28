@@ -6,12 +6,12 @@ import { SharedModule } from '../../modules/shared/shared.module';
 const routes: Routes = [
   {
     path: '',
-    component: UserSettingsPage,
-  },
+    component: UserSettingsPage
+  }
 ];
 
 @NgModule({
   imports: [SharedModule, RouterModule.forChild(routes)],
-  declarations: [UserSettingsPage],
+  declarations: [UserSettingsPage]
 })
 export class UserSettingsPageModule {}

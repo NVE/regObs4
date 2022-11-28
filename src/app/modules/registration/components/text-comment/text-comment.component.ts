@@ -1,9 +1,14 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  Input,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-text-comment',
   templateUrl: './text-comment.component.html',
-  styleUrls: ['./text-comment.component.scss'],
+  styleUrls: ['./text-comment.component.scss']
 })
 export class TextCommentComponent {
   @Input() title: string;

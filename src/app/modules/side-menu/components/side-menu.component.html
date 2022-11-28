@@ -1,7 +1,7 @@
 <ion-list lines="full" class="ion-no-margin" *ngIf="userSettings">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">
-      {{ "MENU.USER_SETTINGS" | translate }}
+      {{'MENU.USER_SETTINGS' | translate}}
     </ion-label>
   </ion-list-header>
   <ion-menu-toggle auto-hide="false">
@@ -9,7 +9,7 @@
     <ion-item routerLink="/user-settings" routerDirection="forward" detail="true">
       <ion-icon slot="start" name="settings" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">
-        {{ "SETTINGS.TITLE" | translate }}
+        {{'SETTINGS.TITLE' | translate}}
       </ion-label>
     </ion-item>
     <ion-item>
@@ -18,12 +18,15 @@
         {{ "SETTINGS.LANGUAGE" | translate }}<span *ngIf="userSettings.language !== LangKey.en"> / Language</span>
       </ion-label>
       <ion-select
-        cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+        cancelText="{{'DIALOGS.CANCEL' | translate}}"
         [(ngModel)]="userSettings.language"
         [interface]="popupType"
         (ngModelChange)="changeLanguage()"
       >
-        <ion-select-option *ngFor="let lang of supportedLanguages" [value]="lang.langKey">
+        <ion-select-option
+          *ngFor="let lang of supportedLanguages"
+          [value]="lang.langKey"
+        >
           {{ lang.name }}
         </ion-select-option>
       </ion-select>
@@ -31,38 +34,33 @@
   </ion-menu-toggle>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">
-      {{ "MENU.MAP_SETTINGS" | translate }}
+      {{'MENU.MAP_SETTINGS' | translate}}
     </ion-label>
   </ion-list-header>
   <ion-item>
     <svg-icon slot="start" src="/assets/icon/map-center-menu.svg"></svg-icon>
     <ion-label class="menu-label">
-      {{ "MENU.SHOW_MAP_CENTER" | translate }}
+      {{'MENU.SHOW_MAP_CENTER' | translate}}
     </ion-label>
     <ion-toggle [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
   </ion-item>
   <ion-item *ngIf="observerTrips.isAuthorized | async">
     <!-- Obstur icon, has the same style as the map layer -->
     <svg slot="start" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line
-        x1="2"
-        y1="20.8787"
-        x2="20.8787"
-        y2="2"
-        stroke="#FF0000"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-dasharray="4 4"
-      />
+      <line x1="2" y1="20.8787" x2="20.8787" y2="2" stroke="#FF0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
     </svg>
-    <ion-label class="menu-label"> Vis obsturer </ion-label>
-    <ion-toggle [checked]="observerTrips.toggledOn | async" (ionChange)="observerTrips.toggle()"></ion-toggle>
+    <ion-label class="menu-label">
+      Vis obsturer
+    </ion-label>
+    <ion-toggle 
+      [checked]="observerTrips.toggledOn | async"
+      (ionChange)="observerTrips.toggle()"
+    ></ion-toggle>
   </ion-item>
   <ion-item>
     <ion-icon slot="start" name="eye" color="varsom-blue"></ion-icon>
     <ion-label class="menu-label">
-      {{ "MENU.SHOW_OBSERVATIONS" | translate }}
+      {{'MENU.SHOW_OBSERVATIONS' | translate}}
     </ion-label>
     <ion-toggle [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
   </ion-item>
@@ -71,23 +69,17 @@
     <app-update-observations></app-update-observations>
   </div> -->
   <ion-item>
-    <ion-label position="stacked" color="dark" class="stacked-label">{{ "MENU.MAP" | translate }}</ion-label>
-    <ion-select
-      cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-      [(ngModel)]="userSettings.topoMap"
-      [interface]="popupType"
-      (ngModelChange)="saveUserSettings()"
-    >
+    <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
+    <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
+      [interface]="popupType" (ngModelChange)="saveUserSettings()">
       <ion-select-option [value]="TopoMap.default">
-        {{ "MENU.TILES.ARC_GIS" | translate }} + {{ "MENU.TILES.KARTVERKET" | translate }} +
-        {{ "MENU.TILES.NORWEGIAN_POLAR_INSTITUTE" | translate }}
+        {{ 'MENU.TILES.ARC_GIS' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }} + {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
       </ion-select-option>
       <ion-select-option [value]="TopoMap.mixOpenTopo">
-        {{ "MENU.TILES.OPEN_TOPO" | translate }} + {{ "MENU.TILES.KARTVERKET" | translate }} +
-        {{ "MENU.TILES.NORWEGIAN_POLAR_INSTITUTE" | translate }}
+        {{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }} + {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
       </ion-select-option>
       <ion-select-option [value]="TopoMap.geoDataLandskap">
-        {{ "MENU.TILES.GEODATA_LANDSKAP" | translate }}
+        {{ 'MENU.TILES.GEODATA_LANDSKAP' | translate }}
       </ion-select-option>
     </ion-select>
   </ion-item>
@@ -95,44 +87,45 @@
     <ion-item routerLink="/offline-map" routerDirection="forward" detail="true">
       <ion-icon slot="start" name="download-outline" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">
-        {{ "OFFLINE_MAP.OFFLINE_MAP_PAGE_TITLE" | translate }}
+        {{ 'OFFLINE_MAP.OFFLINE_MAP_PAGE_TITLE' | translate }}
       </ion-label>
     </ion-item>
   </ion-menu-toggle>
   <app-support-tiles-menu></app-support-tiles-menu>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">
-      {{ "MENU.OTHER" | translate }}
+      {{'MENU.OTHER' | translate}}
     </ion-label>
   </ion-list-header>
   <ion-menu-toggle auto-hide="false">
     <ion-item (click)="showLegalTerms()" detail="true" button="true">
       <ion-icon slot="start" name="information-circle-outline" color="varsom-blue"></ion-icon>
-      <ion-label class="menu-label">{{ "MENU.ABOUT_REGOBS" | translate }}</ion-label>
+      <ion-label class="menu-label">{{'MENU.ABOUT_REGOBS' | translate}}</ion-label>
     </ion-item>
     <ion-item (click)="openStartWizard()" detail="true" button="true">
       <svg-icon slot="start" src="/assets/icon/start-wizard.svg"></svg-icon>
-      <ion-label class="menu-label">{{ "MENU.START_WIZARD" | translate }}</ion-label>
+      <ion-label class="menu-label">{{'MENU.START_WIZARD' | translate}}</ion-label>
     </ion-item>
     <ion-item (click)="contactError()" detail="true" button="true">
       <svg-icon slot="start" src="/assets/icon/error.svg"></svg-icon>
-      <ion-label class="menu-label">{{ "MENU.CONTACT_REGOBS_ERROR" | translate }}</ion-label>
+      <ion-label class="menu-label">{{'MENU.CONTACT_REGOBS_ERROR' | translate}}</ion-label>
     </ion-item>
     <ion-item (click)="contactUs()" detail="true" button="true">
       <ion-icon slot="start" name="mail" color="varsom-blue"></ion-icon>
-      <ion-label class="menu-label">{{ "MENU.CONTACT_REGOBS" | translate }}</ion-label>
+      <ion-label class="menu-label">{{'MENU.CONTACT_REGOBS' | translate}}</ion-label>
     </ion-item>
   </ion-menu-toggle>
   <ion-item-divider>
     <ion-label class="ion-text-wrap">
-      {{ "MENU.TOPO_MAP_CREDITS" | translate }}
-      <app-external-link src="https://www.kartverket.no/">Kartverket </app-external-link>,
-      <app-external-link src="https://www.npolar.no/">Norsk Polarinstitutt </app-external-link>,
-      <app-external-link src="https://www.esri.com/">Esri</app-external-link>,
-      <app-external-link src="https://www.geodata.no/">Geodata</app-external-link>
-      {{ "MENU.AND" | translate }}
+      {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">Kartverket
+      </app-external-link>,
+      <app-external-link src="https://www.npolar.no/">Norsk Polarinstitutt
+      </app-external-link>,
+      <app-external-link src="https://www.esri.com/">Esri</app-external-link>, <app-external-link
+        src="https://www.geodata.no/">Geodata</app-external-link>
+      {{'MENU.AND' | translate}}
       <app-external-link src="https://opentopomap.org/">OpenTopoMap</app-external-link>.
-      {{ "MENU.SUPPORT_MAP_CREDITS" | translate }} <app-external-link src="https://www.nve.no/">NVE</app-external-link>
+      {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">NVE</app-external-link>
     </ion-label>
   </ion-item-divider>
 </ion-list>

@@ -9,7 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-snow-density-layer-modal',
   templateUrl: './snow-density-layer-modal.page.html',
-  styleUrls: ['./snow-density-layer-modal.page.scss'],
+  styleUrls: ['./snow-density-layer-modal.page.scss']
 })
 export class SnowDensityLayerModalPage implements OnInit {
   @Input() draft: RegistrationDraft;
@@ -21,7 +21,10 @@ export class SnowDensityLayerModalPage implements OnInit {
   addNew: boolean;
   private initialDraftState: RegistrationDraft;
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {}
+  constructor(
+    private modalController: ModalController,
+    private draftRepository: DraftRepositoryService
+  ) {}
 
   ngOnInit() {
     this.initialDraftState = cloneDeep(this.draft);
@@ -44,19 +47,24 @@ export class SnowDensityLayerModalPage implements OnInit {
   }
 
   get layerLenght() {
-    return this.hasLayers ? this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length : 0;
+    return this.hasLayers
+      ? this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length
+      : 0;
   }
 
   get canGoNext() {
     return (
       (this.hasLayers && this.index < this.layerLenght) ||
-      (this.index === this.layerLenght && this.addNew && !this.isEmpty(this.layer))
+      (this.index === this.layerLenght &&
+        this.addNew &&
+        !this.isEmpty(this.layer))
     );
   }
 
   private isEmpty(snowDensityLayer: SnowDensityLayerModel) {
     return this.useCylinder
-      ? snowDensityLayer.Thickness === undefined && snowDensityLayer.Weight === undefined
+      ? snowDensityLayer.Thickness === undefined &&
+          snowDensityLayer.Weight === undefined
       : snowDensityLayer.Density === undefined;
   }
 
@@ -71,13 +79,19 @@ export class SnowDensityLayerModalPage implements OnInit {
       this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
     }
     if (this.addNew && !this.isEmpty(this.layer)) {
-      this.draft.registration.SnowProfile2.SnowDensity[0].Layers.splice(this.index, 0, this.layer);
+      this.draft.registration.SnowProfile2.SnowDensity[0].Layers.splice(
+        this.index,
+        0,
+        this.layer
+      );
     }
     await this.draftRepository.save(this.draft);
 
     if (gotoIndex !== undefined) {
       this.index = this.index + gotoIndex;
-      this.layer = this.draft.registration.SnowProfile2.SnowDensity[0].Layers[this.index];
+      this.layer = this.draft.registration.SnowProfile2.SnowDensity[0].Layers[
+        this.index
+      ];
       this.initLayer();
     } else {
       this.modalController.dismiss();
@@ -91,8 +105,10 @@ export class SnowDensityLayerModalPage implements OnInit {
 
   async delete() {
     if (this.hasLayers) {
-      this.draft.registration.SnowProfile2.SnowDensity[0].Layers =
-        this.draft.registration.SnowProfile2.SnowDensity[0].Layers.filter((l) => l !== this.layer);
+      this.draft.registration.SnowProfile2.SnowDensity[0].Layers
+      = this.draft.registration.SnowProfile2.SnowDensity[0].Layers.filter(
+          (l) => l !== this.layer
+        );
       await this.draftRepository.save(this.draft);
     }
     this.modalController.dismiss();

@@ -16,7 +16,7 @@ import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/
 @Component({
   selector: 'app-user-information',
   templateUrl: './user-information.html',
-  styleUrls: ['./user-information.scss'],
+  styleUrls: ['./user-information.scss']
 })
 export class UserInformation implements OnInit {
   loggedInUser$: Observable<LoggedInUser>;
@@ -36,28 +36,28 @@ export class UserInformation implements OnInit {
       {
         GeohazardTID: 60,
         CompetenceTID: 610,
-      },
-    ],
-  };
+      }
+    ]
+  }
 
   geoHazards = [
     {
       GeoHazardTID: 10,
-      GeoHazardName: 'GEO_HAZARDS.SNOW',
+      GeoHazardName: 'GEO_HAZARDS.SNOW'
     },
     {
       GeoHazardTID: 20,
-      GeoHazardName: 'GEO_HAZARDS.DIRT',
+      GeoHazardName: 'GEO_HAZARDS.DIRT'
     },
     {
       GeoHazardTID: 60,
-      GeoHazardName: 'GEO_HAZARDS.WATER',
+      GeoHazardName: 'GEO_HAZARDS.WATER'
     },
     {
       GeoHazardTID: 70,
-      GeoHazardName: 'GEO_HAZARDS.ICE',
+      GeoHazardName: 'GEO_HAZARDS.ICE'
     },
-  ];
+  ]
   copyright$: Observable<string>;
   photographer$: Observable<string>;
 
@@ -77,20 +77,10 @@ export class UserInformation implements OnInit {
     //this.myPage$ = this.accountApiService.AccountGetMyPageData();
     this.myPage$ = of(this.myPageSampleData);
     this.userGroupService.updateUserGroups();
-    this.copyright$ = this.userSettingService.userSetting$.pipe(
-      switchMap((userSetting) =>
-        userSetting.copyright
-          ? of(userSetting.copyright)
-          : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))
-      )
-    );
-    this.photographer$ = this.userSettingService.userSetting$.pipe(
-      switchMap((userSetting) =>
-        userSetting.photographer
-          ? of(userSetting.photographer)
-          : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))
-      )
-    );
+    this.copyright$ = this.userSettingService.userSetting$.pipe(switchMap((userSetting) => userSetting.copyright ? of(userSetting.copyright)
+      : this.loggedInUser$.pipe(map( (LoggedInUser) => LoggedInUser.email ))));
+    this.photographer$ = this.userSettingService.userSetting$.pipe(switchMap((userSetting) => userSetting.photographer ? of(userSetting.photographer)
+      : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))));
   }
 
   signIn(): Promise<void> {
@@ -108,9 +98,13 @@ export class UserInformation implements OnInit {
         take(1)
       )
       .toPromise();
-    const currentLangKey = await this.userSettingService.language$.pipe(take(1)).toPromise();
+    const currentLangKey = await this.userSettingService.language$
+      .pipe(take(1))
+      .toPromise();
     const locale = this.getSupportedMyPageLocales(currentLangKey);
-    this.externalLinkService.openExternalLink(`${myPageUrl}/SubPage?Culture=${locale}&tag=${tag}`);
+    this.externalLinkService.openExternalLink(
+      `${myPageUrl}/SubPage?Culture=${locale}&tag=${tag}`
+    );
   }
 
   private getSupportedMyPageLocales(langKey: LangKey) {
@@ -120,11 +114,12 @@ export class UserInformation implements OnInit {
     return 'en';
   }
 
-  getCompetenceFromGeoHazard(geohazardTID: number): number {
-    const competence = this.myPageSampleData.Competence.find((x) => x.GeohazardTID == geohazardTID);
+  getCompetenceFromGeoHazard(geohazardTID: number) : number {
+    const competence = this.myPageSampleData.Competence.find( x => x.GeohazardTID == geohazardTID);
     if (competence != null) {
       return StarRatingHelper.getStarRating(competence.CompetenceTID);
-    } else {
+    }
+    else {
       return 0;
     }
   }
@@ -139,13 +134,13 @@ export class UserInformation implements OnInit {
   async presentModal() {
     const copyright = await this.copyright$.pipe(take(1)).toPromise();
     const photographer = await this.photographer$.pipe(take(1)).toPromise();
-    const modal = await this.modalController.create({
+    const modal =await this.modalController.create({
       component: EditPictureInfoModalComponent,
       componentProps: {
         copyright: copyright,
-        photographer: photographer,
+        photographer: photographer
       },
-      cssClass: 'editCopyrightModal',
+      cssClass: 'editCopyrightModal'
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();

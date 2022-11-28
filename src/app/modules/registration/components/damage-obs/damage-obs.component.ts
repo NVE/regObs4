@@ -1,4 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input
+} from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
@@ -15,7 +19,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-damage-obs',
   templateUrl: './damage-obs.component.html',
-  styleUrls: ['./damage-obs.component.scss'],
+  styleUrls: ['./damage-obs.component.scss']
 })
 export class DamageObsComponent implements OnInit {
   @Input() damageTypeId: number;
@@ -27,12 +31,17 @@ export class DamageObsComponent implements OnInit {
 
   get damageObs() {
     if (this.draft?.registration?.DamageObs) {
-      return this.draft.registration.DamageObs.find((x) => x.DamageTypeTID === this.damageTypeId);
+      return this.draft.registration.DamageObs.find(
+        (x) => x.DamageTypeTID === this.damageTypeId
+      );
     }
     return undefined;
   }
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {}
+  constructor(
+    private modalController: ModalController,
+    private draftRepository: DraftRepositoryService
+  ) {}
 
   ngOnInit() {
     if (this.damageObs) {
@@ -54,7 +63,7 @@ export class DamageObsComponent implements OnInit {
       if (!this.damageObs) {
         this.draft.registration.DamageObs.push({
           DamageTypeTID: this.damageTypeId,
-          Attachments: [],
+          Attachments: []
         });
       }
     } else {
@@ -75,15 +84,18 @@ export class DamageObsComponent implements OnInit {
 
   async setDamagePosition() {
     const fromLatLng = this.draft.registration.ObsLocation
-      ? L.latLng(this.draft.registration.ObsLocation.Latitude, this.draft.registration.ObsLocation.Longitude)
+      ? L.latLng(
+        this.draft.registration.ObsLocation.Latitude,
+        this.draft.registration.ObsLocation.Longitude
+      )
       : null;
     const modal = await this.modalController.create({
       component: SetDamageLocationPage,
       componentProps: {
         fromLatLng,
         damageObs: this.damageObs,
-        geoHazard: this.draft.registration.GeoHazardTID,
-      },
+        geoHazard: this.draft.registration.GeoHazardTID
+      }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -91,7 +103,7 @@ export class DamageObsComponent implements OnInit {
       const obs: ObsLocationEditModel = result.data.location;
       this.damageObs.DamagePosition = {
         Latitude: obs.Latitude,
-        Longitude: obs.Longitude,
+        Longitude: obs.Longitude
       };
       await this.save();
     }

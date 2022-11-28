@@ -4,5 +4,5 @@ export enum MapLayerZIndex {
   OnlineBackgroundLayer = 20,
   OfflineSupportLayer = 30,
   OnlineSupportLayer = 40,
-  Top = 50,
+  Top = 50
 }

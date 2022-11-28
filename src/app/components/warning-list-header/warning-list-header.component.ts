@@ -5,7 +5,7 @@ import { Platform } from '@ionic/angular';
 @Component({
   selector: 'app-warning-list-header',
   templateUrl: './warning-list-header.component.html',
-  styleUrls: ['./warning-list-header.component.scss'],
+  styleUrls: ['./warning-list-header.component.scss']
 })
 export class WarningListHeaderComponent {
   @Input() title: string;

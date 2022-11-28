@@ -2,7 +2,11 @@ import { Position } from '@capacitor/geolocation';
 
 export interface GeoPositionLog {
   timestamp: number;
-  status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate' | 'PositionError';
+  status:
+    | 'StartGpsTracking'
+    | 'StopGpsTracking'
+    | 'PositionUpdate'
+    | 'PositionError';
   highAccuracyEnabled: boolean;
   pos?: Position;
   err?: PositionError;

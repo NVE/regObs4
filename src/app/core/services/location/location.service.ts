@@ -5,7 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class LocationService {
   constructor(private regobsAuthService: RegobsAuthService, private apiLocationService: RegobsApiLocationService) {}
@@ -18,7 +18,7 @@ export class LocationService {
           radius,
           latitude: lat,
           longitude: lng,
-          returnCount: 100,
+          returnCount: 100
         })
       )
     );

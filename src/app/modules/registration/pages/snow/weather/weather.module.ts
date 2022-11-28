@@ -8,12 +8,12 @@ const routes: Routes = [
   {
     path: '',
     component: WeatherPage,
-    canDeactivate: [CanDeactivateRouteGuard],
-  },
+    canDeactivate: [CanDeactivateRouteGuard]
+  }
 ];
 
 @NgModule({
   imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [WeatherPage],
+  declarations: [WeatherPage]
 })
 export class WeatherPageModule {}

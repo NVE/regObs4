@@ -7,7 +7,9 @@ export function initTranslateService(
   userSettingService: UserSettingService
 ): () => void {
   return () => {
-    translateService.addLangs(settings.language.supportedLanguages.map((l) => l.lang));
+    translateService.addLangs(
+      settings.language.supportedLanguages.map((l) => l.lang)
+    );
     translateService.setDefaultLang(settings.language.fallbackLang);
     userSettingService.init();
   };

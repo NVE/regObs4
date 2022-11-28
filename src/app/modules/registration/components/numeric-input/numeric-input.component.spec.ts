@@ -27,4 +27,5 @@ describe('NumericInputComponent', () => {
     component.value = 1;
     expect(component.displayValue).toEqual('10');
   });
+
 });

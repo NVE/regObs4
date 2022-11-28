@@ -7,12 +7,16 @@ import { AvalancheActivityModalPageModule } from './avalanche-activity-modal/ava
 const routes: Routes = [
   {
     path: '',
-    component: AvalancheActivityPage,
-  },
+    component: AvalancheActivityPage
+  }
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AvalancheActivityModalPageModule, RouterModule.forChild(routes)],
-  declarations: [AvalancheActivityPage],
+  imports: [
+    SharedComponentsModule,
+    AvalancheActivityModalPageModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [AvalancheActivityPage]
 })
 export class AvalancheActivityPageModule {}

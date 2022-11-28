@@ -9,12 +9,19 @@ export class CustomAnimation {
   static createScaleInInitialStyle(fromScale = 0, fromOpacity = 0) {
     return style({
       transform: `scale3d(${fromScale},${fromScale},1)`,
-      opacity: fromOpacity,
+      opacity: fromOpacity
     }); // initial
   }
 
-  static createScaleInAnimation(delay = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
-    return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale3d(1,1,1)', opacity: 1 }));
+  static createScaleInAnimation(
+    delay = 0,
+    duration: number = DEFAULT_DURATION,
+    easing = EASE_IN_OUT
+  ) {
+    return animate(
+      `${duration}ms ${delay}ms ${easing}`,
+      style({ transform: 'scale3d(1,1,1)', opacity: 1 })
+    );
   }
 
   static createScaleInTransition(
@@ -26,7 +33,7 @@ export class CustomAnimation {
   ) {
     return [
       CustomAnimation.createScaleInInitialStyle(fromScale, fromOpacity), // initial
-      CustomAnimation.createScaleInAnimation(delay, duration, easing),
+      CustomAnimation.createScaleInAnimation(delay, duration, easing)
     ];
   }
 
@@ -38,7 +45,16 @@ export class CustomAnimation {
     fromOpacity = 0
   ) {
     return [
-      transition(':enter', CustomAnimation.createScaleInTransition(delay, duration, easing, fromScale, fromOpacity)),
+      transition(
+        ':enter',
+        CustomAnimation.createScaleInTransition(
+          delay,
+          duration,
+          easing,
+          fromScale,
+          fromOpacity
+        )
+      )
     ];
   }
 
@@ -190,7 +206,9 @@ export class CustomAnimation {
     wrapperAnimation
       .fromTo(
         'transform',
-        `translateX(${currentTranslateX ? parseInt(currentTranslateX, 10) : 0}%)`,
+        `translateX(${
+          currentTranslateX ? parseInt(currentTranslateX, 10) : 0
+        }%)`,
         'translateX(100%)'
       )
       .fromTo('opacity', currentOpacity ? parseInt(currentOpacity, 10) : 0, 0);

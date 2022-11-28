@@ -3,5 +3,5 @@ export interface ISyncProgressRecord {
   recordsLeft: Array<string>;
   totalRecords: number;
   startedTimestamp: number;
-  errors: Array<{ id: string; error: string | unknown }>;
+  errors: Array<{id: string, error: string | unknown}>;
 }

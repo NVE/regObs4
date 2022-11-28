@@ -6,12 +6,12 @@ import { SharedComponentsModule } from '../../shared-components.module';
 const routes: Routes = [
   {
     path: '',
-    component: GroupPage,
-  },
+    component: GroupPage
+  }
 ];
 
 @NgModule({
   imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [GroupPage],
+  declarations: [GroupPage]
 })
 export class GroupPageModule {}

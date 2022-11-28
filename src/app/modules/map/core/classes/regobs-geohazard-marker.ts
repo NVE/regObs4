@@ -10,7 +10,7 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
       html: RegobsGeoHazardMarker.getIconSvg(geoHazard, isSelected),
       className: 'obs-marker',
       iconSize: [30, 40],
-      iconAnchor: [15, 40],
+      iconAnchor: [15, 40]
     });
     this._selected = isSelected;
     this._geoHazard = geoHazard;
@@ -18,16 +18,16 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
 
   static getIconSvg(geoHazard: GeoHazard, isSelected: boolean) {
     switch (geoHazard) {
-      case GeoHazard.Snow:
-        return this.getSnowSvg(isSelected);
-      case GeoHazard.Water:
-        return this.getWaterSvg(isSelected);
-      case GeoHazard.Soil:
-        return this.getDirtSvg(isSelected);
-      case GeoHazard.Ice:
-        return this.getIceSvg(isSelected);
-      default:
-        return '';
+    case GeoHazard.Snow:
+      return this.getSnowSvg(isSelected);
+    case GeoHazard.Water:
+      return this.getWaterSvg(isSelected);
+    case GeoHazard.Soil:
+      return this.getDirtSvg(isSelected);
+    case GeoHazard.Ice:
+      return this.getIceSvg(isSelected);
+    default:
+      return '';
     }
   }
 
@@ -109,7 +109,9 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
         1.5 7.82326 2.76829 5.29578 5.29578C2.76829 7.82326 1.5 10.901 1.5 14.5C1.5 16.3162 1.96777 18.3934 2.87649
         20.722C3.77997 23.0372 4.78458 25.1184 5.89172 26.9636C6.99252 28.7983 8.27499 30.6864 9.73828 32.6281C11.1911
         34.5559 12.2079 35.8559 12.7804 36.5143C13.3394 37.1571 13.7859 37.6734 14.1204 38.0636L14.4826 38.4863L14.8641
-        38.0809L16.2064 36.6548Z" fill="white" stroke="#6996A3" ${isSelected ? 'stroke-width="2"' : ''}/>
+        38.0809L16.2064 36.6548Z" fill="white" stroke="#6996A3" ${
+  isSelected ? 'stroke-width="2"' : ''
+}/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8746 12.8977C21.8901 12.9116 21.9057 12.9257 21.9216
         12.94C22.4737 13.435 23.2353 14.0483 24.4158 14.0483V12.1652C23.8256 12.1652 23.4353 11.8854 22.9688
         11.4658C22.9505 11.4493 22.932 11.4328 22.9135 11.4161C22.3736 10.9307 21.7358 10.3574 20.4841 10.3574C19.1894
@@ -212,7 +214,10 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
   }
 
   redraw() {
-    this.options.html = RegobsGeoHazardMarker.getIconSvg(this._geoHazard, this._selected);
+    this.options.html = RegobsGeoHazardMarker.getIconSvg(
+      this._geoHazard,
+      this._selected
+    );
   }
 
   setGeoHazard(geoHazard: GeoHazard) {

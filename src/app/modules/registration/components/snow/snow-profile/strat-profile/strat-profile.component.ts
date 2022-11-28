@@ -15,7 +15,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-strat-profile',
   templateUrl: './strat-profile.component.html',
-  styleUrls: ['./strat-profile.component.scss'],
+  styleUrls: ['./strat-profile.component.scss']
 })
 export class StratProfileComponent {
   @Input() draft: RegistrationDraft;
@@ -30,7 +30,10 @@ export class StratProfileComponent {
     return IsEmptyHelper.isEmpty(this.profile);
   }
 
-  constructor(private modalContoller: ModalController, private draftrepository: DraftRepositoryService) {}
+  constructor(
+    private modalContoller: ModalController,
+    private draftrepository: DraftRepositoryService
+  ) {}
 
   async openModal() {
     if (!this.modal) {
@@ -38,8 +41,8 @@ export class StratProfileComponent {
       this.modal = await this.modalContoller.create({
         component: StratProfileModalPage,
         componentProps: {
-          uuid: this.draft.uuid,
-        },
+          uuid: this.draft.uuid
+        }
       });
       this.modal.present();
       await this.modal.onDidDismiss();

@@ -18,8 +18,8 @@ import { CompressionTestListModalPageModule } from '../../../components/snow/sno
 const routes: Routes = [
   {
     path: '',
-    component: SnowProfilePage,
-  },
+    component: SnowProfilePage
+  }
 ];
 
 @NgModule({
@@ -30,14 +30,14 @@ const routes: Routes = [
     SnowDensityModalPageModule,
     CompressionTestListModalPageModule,
     FullscreenImageModalPageModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
   declarations: [
     SnowProfilePage,
     CompressionTestComponent,
     SnowDensityComponent,
     SnowTempComponent,
-    StratProfileComponent,
-  ],
+    StratProfileComponent
+  ]
 })
 export class SnowProfilePageModule {}

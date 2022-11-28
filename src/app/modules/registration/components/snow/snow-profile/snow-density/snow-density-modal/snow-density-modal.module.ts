@@ -5,6 +5,7 @@ import { SnowDensityLayerModalPageModule } from '../snow-density-layer-modal/sno
 
 @NgModule({
   imports: [SharedComponentsModule, SnowDensityLayerModalPageModule],
-  declarations: [SnowDensityModalPage],
+  declarations: [SnowDensityModalPage]
 })
-export class SnowDensityModalPageModule {}
+export class SnowDensityModalPageModule {
+}

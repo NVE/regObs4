@@ -15,7 +15,7 @@ import { FileLoggingService } from 'src/app/modules/shared/services/logging/file
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import {
   ConfirmationModalService,
-  PopupResponse,
+  PopupResponse
 } from '../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
@@ -24,7 +24,7 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 @Component({
   selector: 'app-user-settings',
   templateUrl: './user-settings.page.html',
-  styleUrls: ['./user-settings.page.scss'],
+  styleUrls: ['./user-settings.page.scss']
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
@@ -43,8 +43,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       {
         id: 'TEST',
         text: 'Test Regobs',
-        disabled: !this.userSettings.featureToggleDeveloperMode,
-      },
+        disabled: !this.userSettings.featureToggleDeveloperMode
+      }
     ];
     return options;
   }
@@ -64,7 +64,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private breakpointService: BreakpointService,
     private platform: Platform,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+  }
 
   async ngOnInit() {
     if (this.platform.is('desktop')) {
@@ -133,9 +134,9 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       buttons: [
         {
           text: 'ALERT.OK',
-          role: PopupResponse.CONFIRM,
-        },
-      ],
+          role: PopupResponse.CONFIRM
+        }
+      ]
     });
   }
 
@@ -146,20 +147,20 @@ export class UserSettingsPage implements OnInit, OnDestroy {
         {
           text: 'ALERT.OK',
           handler: () => this.reset(),
-          role: PopupResponse.CONFIRM,
+          role: PopupResponse.CONFIRM
         },
         {
           text: 'ALERT.CANCEL',
-          role: PopupResponse.CANCEL,
-        },
-      ],
+          role: PopupResponse.CANCEL
+        }
+      ]
     });
   }
 
   async reset() {
     const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
     const loading = await this.loadingController.create({
-      message,
+      message
     });
     loading.present();
     this.isUpdating = true;

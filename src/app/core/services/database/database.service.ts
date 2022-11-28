@@ -9,7 +9,7 @@ import { Platform } from '@ionic/angular';
  * Use it to save data on the device
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DatabaseService {
   private database: Storage = null;
@@ -66,33 +66,33 @@ export class DatabaseService {
   }
 
   /**
-   * Clear the entire key value store. WARNING: HOT!
-   * @returns Returns a promise that resolves when the store is cleared
-   */
+    * Clear the entire key value store. WARNING: HOT!
+    * @returns Returns a promise that resolves when the store is cleared
+    */
   async clear(): Promise<void> {
     await firstValueFrom(this.ready$);
     return this.database.clear();
   }
   /**
-   * @returns Returns a promise that resolves with the number of keys stored.
-   */
+    * @returns Returns a promise that resolves with the number of keys stored.
+    */
   async length(): Promise<number> {
     await firstValueFrom(this.ready$);
     return this.database.length();
   }
 
   /**
-   * @returns Returns a promise that resolves with the keys in the store.
-   */
+  * @returns Returns a promise that resolves with the keys in the store.
+  */
   async keys(): Promise<string[]> {
     await firstValueFrom(this.ready$);
     return this.database.keys();
   }
 
   /**
-   * Iterate through each key,value pair.
-   * @param iteratorCallback a callback of the form (value, key, iterationNumber)
-   * @returns Returns a promise that resolves when the iteration has finished.
-   */
+  * Iterate through each key,value pair.
+  * @param iteratorCallback a callback of the form (value, key, iterationNumber)
+  * @returns Returns a promise that resolves when the iteration has finished.
+  */
   //TODO: forEach(iteratorCallback: (value: any, key: string, iterationNumber: number) => any): Promise<void>;
 }

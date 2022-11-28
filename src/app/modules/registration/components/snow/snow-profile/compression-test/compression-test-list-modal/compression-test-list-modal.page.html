@@ -3,17 +3,16 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.TITLE' | translate }} </ion-title>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.TITLE' | translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
     <ng-container *ngIf="draft && draft.registration && draft.registration.CompressionTest">
-      <app-compression-test-list
-        [(tests)]="draft.registration.CompressionTest"
-        (testsChange)="save()"
-        [includeInSnowProfileAsDefault]="true"
-      >
+      <app-compression-test-list [(tests)]="draft.registration.CompressionTest" (testsChange)="save()"
+        [includeInSnowProfileAsDefault]="true">
       </app-compression-test-list>
     </ng-container>
     <ion-grid class="ion-no-padding">

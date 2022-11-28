@@ -5,6 +5,6 @@ import { SharedModule } from '../shared/shared.module';
 @NgModule({
   imports: [SharedModule],
   declarations: [GpsDebugComponent],
-  exports: [GpsDebugComponent],
+  exports: [GpsDebugComponent]
 })
 export class GpsDebugModule {}

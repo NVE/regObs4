@@ -4,7 +4,7 @@ import { SelectOption } from '../../../shared/components/input/select/select-opt
 @Component({
   selector: 'app-yes-no-select',
   templateUrl: './yes-no-select.component.html',
-  styleUrls: ['./yes-no-select.component.scss'],
+  styleUrls: ['./yes-no-select.component.scss']
 })
 export class YesNoSelectComponent {
   @Input() value: boolean;
@@ -14,6 +14,6 @@ export class YesNoSelectComponent {
 
   options: SelectOption[] = [
     { id: true, text: 'DIALOGS.YES' },
-    { id: false, text: 'DIALOGS.NO' },
+    { id: false, text: 'DIALOGS.NO' }
   ];
 }

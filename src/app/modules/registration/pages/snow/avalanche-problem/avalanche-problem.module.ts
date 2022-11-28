@@ -7,12 +7,16 @@ import { AvalancheProblemModalPageModule } from './avalanche-problem-modal/avala
 const routes: Routes = [
   {
     path: '',
-    component: AvalancheProblemPage,
-  },
+    component: AvalancheProblemPage
+  }
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AvalancheProblemModalPageModule, RouterModule.forChild(routes)],
-  declarations: [AvalancheProblemPage],
+  imports: [
+    SharedComponentsModule,
+    AvalancheProblemModalPageModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [AvalancheProblemPage]
 })
 export class AvalancheProblemPageModule {}

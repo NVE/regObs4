@@ -3,17 +3,20 @@
   <ion-item-divider *ngIf="drafts?.length > 0" no-border>
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>
-        <h3 class="ion-text-uppercase">{{ "REGISTRATION.DRAFTS" | translate }}</h3>
+        <h3 class="ion-text-uppercase">{{ 'REGISTRATION.DRAFTS' | translate }}</h3>
       </ion-row>
       <ion-row>
         <ion-label class="ion-text-wrap" color="medium">
-          {{ "REGISTRATION.DRAFTS_DESCRIPTION" | translate }}
+          {{ 'REGISTRATION.DRAFTS_DESCRIPTION' | translate }}
         </ion-label>
       </ion-row>
     </ion-grid>
   </ion-item-divider>
   <ion-list>
     <!-- Create an app-sync-item for each draft -->
-    <app-sync-item *ngFor="let draft of drafts; trackBy: trackByIdFunc" [draft]="draft"></app-sync-item>
+    <app-sync-item
+      *ngFor="let draft of drafts; trackBy: trackByIdFunc"
+      [draft]="draft"
+    ></app-sync-item>
   </ion-list>
 </div>

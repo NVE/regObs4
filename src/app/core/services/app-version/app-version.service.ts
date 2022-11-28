@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppVersion } from '../../models/app-version.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AppVersionService {
   getAppVersion(): AppVersion {
@@ -15,7 +15,7 @@ export class AppVersionService {
         buildNumber: 0,
         revision: '',
         branch: '',
-        date: new Date().toISOString(),
+        date: new Date().toISOString()
       };
     }
   }

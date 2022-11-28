@@ -4,6 +4,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-weakenedice-legend',
   templateUrl: './weakenedice-legend.component.html',
   styleUrls: ['./weakenedice-legend.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WeakenediceLegendComponent {}

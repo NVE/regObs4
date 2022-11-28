@@ -1,4 +1,10 @@
-<div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)"></div>
+<div
+  *ngIf="loaded"
+  leaflet
+  [leafletOptions]="options"
+  (leafletMapReady)="onLeafletMapReady($event)"
+>
+</div>
 <app-map-controls
   [showMapSearch]="showMapSearch"
   [showFullscreenToggle]="showFullscreenToggle"
@@ -8,13 +14,13 @@
 <div
   #observerTripsContainer
   class="observer-trip-backdrop"
-  style="display: none"
+  style="display: none;"
   (click)="removeObserverTripDescription()"
   *ngIf="showObserverTrips"
 >
   <div class="observer-trip-desc">
     <div>
-      <strong>Obsturbeskrivelse{{ observationTripName ? " " + observationTripName : "" }}:</strong>
+      <strong>Obsturbeskrivelse{{ observationTripName ? ' ' + observationTripName : '' }}:</strong>
     </div>
     <div>{{ observationTripDescription }}</div>
   </div>

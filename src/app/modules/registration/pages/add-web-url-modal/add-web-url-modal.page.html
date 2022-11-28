@@ -3,32 +3,26 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate }} </ion-title>
+    <ion-title>
+      {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list lines="full">
     <ion-list-header class="ion-text-uppercase">
-      <ion-label> {{"REGISTRATION.ADD_WEB_URL.TITLE" | translate}} </ion-label>
+      <ion-label>
+        {{"REGISTRATION.ADD_WEB_URL.TITLE" | translate}}
+      </ion-label>
     </ion-list-header>
-    <app-text-comment
-      [(value)]="urlToSave.UrlDescription"
-      title="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE"
-      rows="2"
-    ></app-text-comment>
+    <app-text-comment [(value)]="urlToSave.UrlDescription" title="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" rows="2"></app-text-comment>
     <ion-item>
-      <ion-label color="medium" position="stacked" class="ion-text-uppercase"
-        >{{ 'REGISTRATION.ADD_WEB_URL.URL' | translate }}</ion-label
-      >
+      <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ 'REGISTRATION.ADD_WEB_URL.URL' | translate }}</ion-label>
       <ion-input type="url" [(ngModel)]="urlToSave.UrlLine"></ion-input>
     </ion-item>
   </ion-list>
-  <app-modal-save-or-delete-buttons
-    [saveDisabled]="!urlToSave.UrlLine"
-    (saveClicked)="ok()"
-    (deleteClicked)="delete()"
-    [showDelete]="!isNew"
-  >
+  <app-modal-save-or-delete-buttons [saveDisabled]="!urlToSave.UrlLine" (saveClicked)="ok()" (deleteClicked)="delete()"
+    [showDelete]="!isNew">
   </app-modal-save-or-delete-buttons>
 </ion-content>

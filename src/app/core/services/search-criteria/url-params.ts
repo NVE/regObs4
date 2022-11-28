@@ -3,6 +3,7 @@
  * Usage: new UrlParams.set('hazard', 10).set('nick', 'siggen').apply()
  */
 export class UrlParams {
+
   private params = new URLSearchParams(document.location.search);
 
   /**
@@ -14,7 +15,7 @@ export class UrlParams {
     if (value) {
       if (Array.isArray(value)) {
         this.params.delete(key);
-        value.forEach((v) => this.params.append(key, '' + v));
+        value.forEach(v =>  this.params.append(key, '' + v));
       } else {
         this.params.set(key, '' + value);
       }

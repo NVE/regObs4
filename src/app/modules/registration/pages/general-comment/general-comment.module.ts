@@ -7,12 +7,16 @@ import { AddWebUrlModalPageModule } from '../add-web-url-modal/add-web-url-modal
 const routes: Routes = [
   {
     path: '',
-    component: GeneralCommentPage,
-  },
+    component: GeneralCommentPage
+  }
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes)],
-  declarations: [GeneralCommentPage],
+  imports: [
+    SharedComponentsModule,
+    AddWebUrlModalPageModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [GeneralCommentPage]
 })
 export class GeneralCommentPageModule {}

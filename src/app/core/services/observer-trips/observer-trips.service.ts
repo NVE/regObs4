@@ -1,24 +1,7 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/turf';
-import {
-  defer,
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  firstValueFrom,
-  from,
-  map,
-  mapTo,
-  Observable,
-  of,
-  ReplaySubject,
-  shareReplay,
-  skipWhile,
-  Subject,
-  switchMap,
-  tap,
-  withLatestFrom,
-} from 'rxjs';
+import { defer, distinctUntilChanged, distinctUntilKeyChanged, firstValueFrom, from, map, mapTo, Observable, of, ReplaySubject, shareReplay, skipWhile, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -40,7 +23,7 @@ const DEBUG_TAG = 'ObserverTrips';
 enum AuthorizedState {
   Authorized,
   NotAuthorized,
-  Unknown,
+  Unknown
 }
 
 /**
@@ -50,18 +33,19 @@ enum AuthorizedState {
  * If user logs out, cached geojson data will be deleted and geojson will be null.
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ObserverTripsService {
+
   geojson$: Observable<FeatureCollection | null>;
 
   toggledOn = new ReplaySubject<boolean>(1);
   private authorizedState = new Subject<AuthorizedState>();
   isAuthorized: Observable<boolean> = this.authorizedState.pipe(
-    map((state) => state === AuthorizedState.Authorized),
+    map(state => state === AuthorizedState.Authorized),
     distinctUntilChanged(),
     tap((isAuthorized) => this.logger.debug('Authorized', DEBUG_TAG, isAuthorized))
-  );
+  )
 
   constructor(
     private tripService: TripService,
@@ -84,7 +68,7 @@ export class ObserverTripsService {
         } else {
           return defer(() => from(this.getData()));
         }
-      })
+      }),
     );
 
     this.geojson$ = authService.loggedInUser$.pipe(
@@ -92,7 +76,7 @@ export class ObserverTripsService {
       // Allow multiple subscribers
       shareReplay(1),
       // Do not do anything until we have a logged in user
-      skipWhile((user) => !user.isLoggedIn),
+      skipWhile(user => !user.isLoggedIn),
       // First time user has logged in, initialize state from DB
       tap(() => {
         if (!hasInitializedStateFromDb) {
@@ -100,18 +84,17 @@ export class ObserverTripsService {
           hasInitializedStateFromDb = true;
         }
       }),
-      switchMap((user) =>
-        user.isLoggedIn
-          ? // User is logged in, read data from database or fetch new data
-            getGeojsonWhenToggledOnAndAuthorized$
-          : // If user logs out, clear data and return null
-            defer(() => from(this.clear())).pipe(mapTo(null))
+      switchMap(user => user.isLoggedIn ?
+        // User is logged in, read data from database or fetch new data
+        getGeojsonWhenToggledOnAndAuthorized$ :
+        // If user logs out, clear data and return null
+        defer(() => from(this.clear())).pipe(mapTo(null))
       )
     );
   }
 
   async toggle() {
-    const toggled = !(await firstValueFrom(this.toggledOn));
+    const toggled = !await firstValueFrom(this.toggledOn);
     await this.dbService.set(toggledOnKey, toggled);
     this.toggledOn.next(toggled);
   }
@@ -157,7 +140,7 @@ export class ObserverTripsService {
   }
 
   private async getData(): Promise<FeatureCollection | null> {
-    const lastModified = (await this.readFromDb<number>(dataModifiedKey)) || 0;
+    const lastModified = await this.readFromDb<number>(dataModifiedKey) || 0;
 
     // Either try to update data if data is not fresh enough, or try to read data from database if fresh enough.
     // Try the opposite as a fallback if first priority fails.
@@ -193,7 +176,7 @@ export class ObserverTripsService {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.logger.debug('User does not have access to observertrips', DEBUG_TAG);
           this.authorizedState.next(AuthorizedState.NotAuthorized);
-          await this.dbService.set(isAuthorizedKey, false); // Persist so we know on next startup
+          await this.dbService.set(isAuthorizedKey, false);  // Persist so we know on next startup
           return null;
         }
       }

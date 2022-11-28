@@ -10,30 +10,18 @@
 <ion-content>
   <ion-list lines="full">
     <ion-list-header>
-      <ion-label> {{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER_TITLE' | translate}} </ion-label>
+      <ion-label>
+        {{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER_TITLE' | translate}}
+      </ion-label>
     </ion-list-header>
-    <app-kdv-select
-      title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}"
-      kdvKey="Ice_IceLayerKDV"
-      [(value)]="layerCopy.IceLayerTID"
-    ></app-kdv-select>
-    <app-numeric-input
-      [(value)]="layerCopy.IceLayerThickness"
-      title="REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS"
-      [min]="0"
-      [max]="999"
-      [decimalPlaces]="2"
-      [convertRatio]="100"
-      suffix="cm"
-      placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER"
-    >
+    <app-kdv-select title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}" kdvKey="Ice_IceLayerKDV"
+      [(value)]="layerCopy.IceLayerTID"></app-kdv-select>
+    <app-numeric-input [(value)]="layerCopy.IceLayerThickness"
+      title="REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS" [min]="0" [max]="999" [decimalPlaces]="2"
+      [convertRatio]="100" suffix="cm" placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER">
     </app-numeric-input>
   </ion-list>
-  <app-modal-save-or-delete-buttons
-    [saveDisabled]="!isValid"
-    (saveClicked)="ok()"
-    (deleteClicked)="delete()"
-    [showDelete]="!isNew"
-  >
+  <app-modal-save-or-delete-buttons [saveDisabled]="!isValid" (saveClicked)="ok()" (deleteClicked)="delete()"
+    [showDelete]="!isNew">
   </app-modal-save-or-delete-buttons>
 </ion-content>

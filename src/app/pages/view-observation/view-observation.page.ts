@@ -13,7 +13,7 @@ import { EditMode } from 'src/app/modules/registration/edit-registration-helper-
   selector: 'app-view-observation',
   templateUrl: './view-observation.page.html',
   styleUrls: ['./view-observation.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
   editMode$: Observable<EditMode>;
@@ -23,7 +23,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     private activatedRoute: ActivatedRoute,
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private popupInfoService: PopupInfoService
+    private popupInfoService: PopupInfoService,
   ) {
     super();
   }
@@ -32,7 +32,8 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
     const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
     this.registrationViewModel$ = this.userSettingService.userSetting$.pipe(
-      switchMap((userSetting) => from(this.observationService.getObservationById(id, userSetting.appMode)))
+      switchMap((userSetting) =>
+        from(this.observationService.getObservationById(id, userSetting.appMode)))
     );
   }
 }

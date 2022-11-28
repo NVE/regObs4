@@ -8,7 +8,15 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapImageModule } from '../../../map-image/map-image.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, TranslateModule, LeafletModule, MapImageModule],
-  declarations: [ModalMapImagePage],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    TranslateModule,
+    LeafletModule,
+    MapImageModule
+  ],
+  declarations: [ModalMapImagePage]
 })
-export class ModalMapImagePageModule {}
+export class ModalMapImagePageModule {
+}

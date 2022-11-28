@@ -5,7 +5,7 @@ import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/mo
 @Component({
   selector: 'app-ice-layer',
   templateUrl: './ice-layer.page.html',
-  styleUrls: ['./ice-layer.page.scss'],
+  styleUrls: ['./ice-layer.page.scss']
 })
 export class IceLayerPage implements OnInit {
   @Input() iceThicknessLayer: IceThicknessLayerEditModel;
@@ -17,7 +17,10 @@ export class IceLayerPage implements OnInit {
 
   layerCopy: IceThicknessLayerEditModel; // Using object copy so cancel does not change input object
 
-  constructor(private modalController: ModalController, private ngZone: NgZone) {}
+  constructor(
+    private modalController: ModalController,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     if (!this.iceThicknessLayer) {

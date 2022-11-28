@@ -1,14 +1,16 @@
-<ion-item [lines]="obsLocMode ? 'none' : undefined">
-  <ion-label [color]="labelColor" position="stacked" [ngClass]="{ 'ion-text-uppercase': !obsLocMode }">
-    {{ title | translate }}
+<ion-item [lines]="obsLocMode ? 'none' : undefined">  
+  <ion-label
+  [color]="labelColor"
+  position="stacked"
+  [ngClass]="{'ion-text-uppercase': !obsLocMode}">
+    {{ title | translate}}
   </ion-label>
   <app-select
-    [(selectedValue)]="value"
-    [options]="selectOptions"
-    [disabled]="disabled"
-    [title]="title"
-    [showReset]="showResetButton"
-    (selectedValueChange)="valueChange.emit($event)"
-    [ngClass]="{ 'obs-loc-mode-select': obsLocMode }"
-  ></app-select>
+  [(selectedValue)]="value"
+  [options]="selectOptions"
+  [disabled]="disabled"
+  [title]="title"
+  [showReset]="showResetButton"
+  (selectedValueChange)="valueChange.emit($event)"
+  [ngClass]="{'obs-loc-mode-select': obsLocMode}"></app-select>
 </ion-item>

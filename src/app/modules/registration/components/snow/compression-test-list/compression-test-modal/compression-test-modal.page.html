@@ -10,94 +10,46 @@
 <ion-content>
   <ion-list lines="full">
     <ion-item>
-      <ion-label> {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.INCLUDE_IN_SNOW_PROFILE' | translate}} </ion-label>
-      <ion-toggle
-        [disabled]="includeInSnowProfileDisabled"
-        slot="end"
-        [(ngModel)]="compressionTest.IncludeInSnowProfile"
-        name="IncludeInSnowProfile"
-      >
+      <ion-label>
+        {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.INCLUDE_IN_SNOW_PROFILE' | translate}}
+      </ion-label>
+      <ion-toggle [disabled]="includeInSnowProfileDisabled" slot="end"
+        [(ngModel)]="compressionTest.IncludeInSnowProfile" name="IncludeInSnowProfile">
       </ion-toggle>
     </ion-item>
-    <app-kdv-select
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.TEST_TYPE"
-      kdvKey="Snow_PropagationKDV"
-      [(value)]="compressionTest.PropagationTID"
-      (valueChange)="checkTestType()"
-    >
+    <app-kdv-select title="REGISTRATION.SNOW.COMPRESSION_TEST.TEST_TYPE" kdvKey="Snow_PropagationKDV"
+      [(value)]="compressionTest.PropagationTID" (valueChange)="checkTestType()">
     </app-kdv-select>
     <ion-item *ngIf="tapsFractureVisible()">
       <ion-label *ngIf="!isRB()" color="medium" position="stacked" class="ion-text-uppercase">
-        {{'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE' | translate}}</ion-label
-      >
+        {{'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
+        | translate}}</ion-label>
       <ion-label *ngIf="isRB()" color="medium" position="stacked" class="ion-text-uppercase">
-        {{'REGISTRATION.SNOW.COMPRESSION_TEST.RB_SCORE' | translate}}</ion-label
-      >
-      <app-select
-        [(selectedValue)]="compressionTest.TapsFracture"
-        [options]="tapsArray"
-        title="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"
-      ></app-select>
+        {{'REGISTRATION.SNOW.COMPRESSION_TEST.RB_SCORE'
+        | translate}}</ion-label>
+      <app-select [(selectedValue)]="compressionTest.TapsFracture" [options]="tapsArray"
+        title="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"></app-select>
     </ion-item>
-    <app-numeric-input
-      *ngIf="!isCTNorECTXorRB7() && !isNull()"
-      [(value)]="compressionTest.FractureDepth"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.DISTANCE_FROM_TOP"
-      [min]="0"
-      [max]="999"
-      [decimalPlaces]="0"
-      [convertRatio]="100"
-      suffix="cm"
-    ></app-numeric-input>
-    <app-numeric-input
-      *ngIf="isPST()"
-      [(value)]="compressionTest.PstX"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.X_DISTANCE"
-      [min]="0"
-      [max]="999"
-      [decimalPlaces]="0"
-      [convertRatio]="100"
-      suffix="cm"
-    ></app-numeric-input>
-    <app-numeric-input
-      *ngIf="isPST()"
-      [(value)]="compressionTest.PstY"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.Y_DISTANCE"
-      [min]="0"
-      [max]="999"
-      [decimalPlaces]="0"
-      [convertRatio]="100"
-      suffix="cm"
-    ></app-numeric-input>
-    <app-numeric-input
-      *ngIf="rbReleaseVisible()"
-      [(value)]="compressionTest.RbRelease"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.RB_RELEASE"
-      [min]="0"
-      [max]="100"
-      [decimalPlaces]="0"
-      suffix="%"
-    >
+    <app-numeric-input *ngIf="!isCTNorECTXorRB7() && !isNull()" [(value)]="compressionTest.FractureDepth"
+      title="REGISTRATION.SNOW.COMPRESSION_TEST.DISTANCE_FROM_TOP" [min]="0" [max]="999" [decimalPlaces]="0"
+      [convertRatio]="100" suffix="cm"></app-numeric-input>
+    <app-numeric-input *ngIf="isPST()" [(value)]="compressionTest.PstX"
+      title="REGISTRATION.SNOW.COMPRESSION_TEST.X_DISTANCE" [min]="0" [max]="999" [decimalPlaces]="0"
+      [convertRatio]="100" suffix="cm"></app-numeric-input>
+    <app-numeric-input *ngIf="isPST()" [(value)]="compressionTest.PstY"
+      title="REGISTRATION.SNOW.COMPRESSION_TEST.Y_DISTANCE" [min]="0" [max]="999" [decimalPlaces]="0"
+      [convertRatio]="100" suffix="cm"></app-numeric-input>
+    <app-numeric-input *ngIf="rbReleaseVisible()" [(value)]="compressionTest.RbRelease"
+      title="REGISTRATION.SNOW.COMPRESSION_TEST.RB_RELEASE" [min]="0" [max]="100" [decimalPlaces]="0" suffix="%">
     </app-numeric-input>
-    <app-kdv-select
-      *ngIf="testFractureVisible()"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.FRACTURE_TYPE"
-      kdvKey="Snow_ComprTestFractureKDV"
-      [(value)]="compressionTest.ComprTestFractureTID"
-    ></app-kdv-select>
-    <app-kdv-select
-      *ngIf="!isLBT() && !isNull()"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.STABILITY_EVAL"
-      kdvKey="Snow_StabilityEvalKDV"
-      [(value)]="compressionTest.StabilityEvalTID"
-    ></app-kdv-select>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="compressionTest.Comment"> </app-text-comment>
+    <app-kdv-select *ngIf="testFractureVisible()" title="REGISTRATION.SNOW.COMPRESSION_TEST.FRACTURE_TYPE"
+      kdvKey="Snow_ComprTestFractureKDV" [(value)]="compressionTest.ComprTestFractureTID"></app-kdv-select>
+    <app-kdv-select *ngIf="!isLBT() && !isNull()" title="REGISTRATION.SNOW.COMPRESSION_TEST.STABILITY_EVAL"
+      kdvKey="Snow_StabilityEvalKDV" [(value)]="compressionTest.StabilityEvalTID"></app-kdv-select>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="compressionTest.Comment">
+    </app-text-comment>
   </ion-list>
-  <app-modal-save-or-delete-buttons
-    [saveDisabled]="!isValid"
-    (saveClicked)="ok()"
-    (deleteClicked)="delete()"
-    [showDelete]="showDelete"
-  >
+  <app-modal-save-or-delete-buttons [saveDisabled]="!isValid" (saveClicked)="ok()" (deleteClicked)="delete()"
+    [showDelete]="showDelete">
   </app-modal-save-or-delete-buttons>
 </ion-content>

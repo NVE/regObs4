@@ -12,13 +12,21 @@ describe('ModalMapImagePage', () => {
   let component: ModalMapImagePage;
   let fixture: ComponentFixture<ModalMapImagePage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, IonicModule, TranslateModule, LeafletModule],
-      declarations: [ModalMapImagePage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          CommonModule,
+          FormsModule,
+          IonicModule,
+          TranslateModule,
+          LeafletModule
+        ],
+        declarations: [ModalMapImagePage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ModalMapImagePage);

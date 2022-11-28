@@ -9,6 +9,6 @@ import { RegobsApiModule } from 'src/app/modules/common-regobs-api';
   imports: [RegistrationRoutingModule, RegobsApiModule, SharedModule],
   exports: [],
   declarations: [],
-  providers: [CanDeactivateRouteGuard, SaveAsDraftRouteGuard],
+  providers: [CanDeactivateRouteGuard, SaveAsDraftRouteGuard]
 })
 export class RegistrationModule {}

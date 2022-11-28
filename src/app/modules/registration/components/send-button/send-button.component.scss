@@ -1,35 +1,35 @@
 ion-footer {
-  ion-toolbar {
-    --background: #fff;
-  }
-
-  .send-button-col {
-    ion-button {
-      max-width: 400px;
-      margin: 10px auto;
-      height: var(--ion-button-height);
+    ion-toolbar {
+        --background: #fff;
     }
 
-    @media only screen and (max-width: 400px) {
-      ion-button {
-        margin: 6px;
-      }
+    .send-button-col {
+        ion-button {
+            max-width: 400px;
+            margin: 10px auto;
+            height: var(--ion-button-height);
+        }
+
+        @media only screen and (max-width: 400px) {
+            ion-button {
+                margin: 6px;
+            }
+        }
     }
-  }
 
-  .delete-button-wrapper {
-    max-width: 400px;
-    margin: auto;
-  }
-
-  .delete-button-col {
-    --ion-button-font-size: 11px;
-
-    ion-button {
-      svg-icon {
-        margin-right: 6px;
-        display: flex;
-      }
+    .delete-button-wrapper {
+        max-width: 400px;
+        margin: auto;
     }
-  }
+
+    .delete-button-col {
+        --ion-button-font-size: 11px;
+
+        ion-button {
+            svg-icon {
+                margin-right: 6px;
+                display: flex;
+            }
+        }
+    }
 }

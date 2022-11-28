@@ -11,17 +11,30 @@ import { FileLoggingService } from './file-logging.service';
 import { AppVersion } from 'src/app/core/models/app-version.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SentryService implements LoggingService {
+
   private versionInfo: AppVersion;
 
-  constructor(appVersionService: AppVersionService, private fileLoggingService: FileLoggingService) {
+  constructor(
+    appVersionService: AppVersionService,
+    private fileLoggingService: FileLoggingService
+  ) {
     this.versionInfo = appVersionService.getAppVersion();
-    this.log(`Version = ${this.versionInfo.version}, build = ${this.versionInfo.buildNumber}`, null, LogLevel.Info);
+    this.log(
+      `Version = ${this.versionInfo.version}, build = ${this.versionInfo.buildNumber}`,
+      null,
+      LogLevel.Info
+    );
   }
 
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
+  error(
+    error: Error,
+    tag?: string,
+    message?: string,
+    ...optionalParams: any[]
+  ) {
     this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
@@ -33,24 +46,29 @@ export class SentryService implements LoggingService {
     Sentry.init({
       dsn: environment.production ? settings.sentryDsn : null,
       transport: Sentry.Transports.FetchTransport,
-      environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
+      environment:
+        appMode === AppMode.Prod
+          ? 'regObs'
+          : appMode === AppMode.Demo
+            ? 'demo regObs'
+            : 'test regObs',
       enabled: environment.production,
       release: this.versionInfo.version,
-      dist: this.versionInfo.revision,
+      dist: this.versionInfo.revision
     });
   }
 
   enable() {
     Sentry.init({
       dsn: environment.production ? settings.sentryDsn : null,
-      enabled: environment.production,
+      enabled: environment.production
     });
   }
 
   disable() {
     Sentry.init({
       dsn: null,
-      enabled: false,
+      enabled: false
     });
   }
 
@@ -62,14 +80,25 @@ export class SentryService implements LoggingService {
     }
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
+  log(
+    message?: string,
+    error?: Error,
+    level?: LogLevel,
+    tag?: string,
+    ...optionalParams: any[]
+  ) {
     this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
-    if (message && (level === LogLevel.Warning || level === LogLevel.Info || level === LogLevel.Error)) {
+    if (
+      message &&
+      (level === LogLevel.Warning ||
+        level === LogLevel.Info ||
+        level === LogLevel.Error)
+    ) {
       Sentry.addBreadcrumb({
         category: tag,
         data: optionalParams,
         message,
-        level: level as unknown as Sentry.Severity,
+        level: (level as unknown) as Sentry.Severity
       });
     }
     if (error && level === LogLevel.Error) {

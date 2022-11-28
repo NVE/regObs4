@@ -5,6 +5,6 @@ import { UserInformationRoutingModule } from './user-information-routing.module'
 @NgModule({
   imports: [CommonModule, UserInformationRoutingModule],
   declarations: [],
-  exports: [],
+  exports: []
 })
 export class UserInformationModule {}

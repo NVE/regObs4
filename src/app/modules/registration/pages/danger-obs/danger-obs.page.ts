@@ -19,7 +19,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 @Component({
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
-  styleUrls: ['./danger-obs.page.scss'],
+  styleUrls: ['./danger-obs.page.scss']
 })
 export class DangerObsPage extends BasePage {
   private dangerSignKdv: KdvElement[];
@@ -43,18 +43,23 @@ export class DangerObsPage extends BasePage {
 
   onInit() {
     const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
-    this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
-      this.zone.run(() => {
-        this.dangerSignKdv = val;
+    this.dangerSignKdvSubscription = this.kdvService
+      .getKdvRepositoryByKeyObservable(kdvKey)
+      .subscribe((val) => {
+        this.zone.run(() => {
+          this.dangerSignKdv = val;
+        });
       });
-    });
   }
 
   async addOrEdit(index?: number) {
-    const dangerObs = index !== undefined ? this.draft.registration.DangerObs[index] : undefined;
+    const dangerObs =
+      index !== undefined
+        ? this.draft.registration.DangerObs[index]
+        : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
-      componentProps: { dangerObs, geoHazard: this.draft.registration.GeoHazardTID },
+      componentProps: { dangerObs, geoHazard: this.draft.registration.GeoHazardTID }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -103,7 +108,9 @@ export class DangerObsPage extends BasePage {
   getSummaryText(dangerObs: DangerObsEditModel) {
     const text = [];
     if (dangerObs.DangerSignTID % 100 !== 0 && this.dangerSignKdv) {
-      const kdvElement = this.dangerSignKdv.find((x) => x.Id === dangerObs.DangerSignTID);
+      const kdvElement = this.dangerSignKdv.find(
+        (x) => x.Id === dangerObs.DangerSignTID
+      );
       if (kdvElement) {
         text.push(kdvElement.Name.trim());
       }

@@ -5,9 +5,10 @@
         <ion-col class="send-button-col" size="12">
           <ion-button [disabled]="isDisabled$ | async" expand="block" color="varsom-orange" (click)="send()">
             <ion-icon slot="start" name="send"></ion-icon>
+            
+            <span *ngIf="draft.error">{{"REGISTRATION.RESEND" | translate}}</span>
+            <span *ngIf="!draft.error">{{"REGISTRATION.SEND" | translate}}</span>
 
-            <span *ngIf="draft.error">{{ "REGISTRATION.RESEND" | translate }}</span>
-            <span *ngIf="!draft.error">{{ "REGISTRATION.SEND" | translate }}</span>
           </ion-button>
         </ion-col>
       </ion-row>
@@ -15,13 +16,13 @@
         <ion-col class="delete-button-col ion-no-padding ion-text-center">
           <ion-button (click)="requestDeleteDraft()" color="dark" size="small" fill="clear">
             <svg-icon slot="start" src="/assets/icon/reset.svg"></svg-icon>
-            {{ "REGISTRATION.DELETE.DRAFT.BUTTON" | translate }}
+            {{"REGISTRATION.DELETE.DRAFT.BUTTON" | translate}}
           </ion-button>
         </ion-col>
         <ion-col *ngIf="draft.regId" class="delete-button-col ion-no-padding ion-text-center">
           <ion-button (click)="requestDeleteFromRegobs()" color="dark" size="small" fill="clear">
             <svg-icon slot="start" src="/assets/icon/delete.svg"></svg-icon>
-            {{ "REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON" | translate }}
+            {{"REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON" | translate}}
           </ion-button>
         </ion-col>
       </ion-row>

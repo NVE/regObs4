@@ -3,6 +3,7 @@ import { BasePageService } from '../../base-page-service';
 import { AvalancheObsPage } from './avalanche-obs.page';
 import 'leaflet.markercluster';
 
+
 describe('AvalancheObsPage', () => {
   let component: AvalancheObsPage;
   beforeEach(() => {
@@ -14,12 +15,12 @@ describe('AvalancheObsPage', () => {
         GeoHazardTID: GeoHazard.Snow,
         Incident: {},
         AvalancheObs: {
-          DtAvalancheTime: new Date(2020, 0, 1).toISOString(),
-        },
+          DtAvalancheTime: new Date(2020, 0, 1).toISOString()
+        }
       },
       uuid: null,
       syncStatus: null,
-      simpleMode: false,
+      simpleMode: false
     };
   });
   it('empty incident is valid', () => {

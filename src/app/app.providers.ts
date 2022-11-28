@@ -38,7 +38,7 @@ import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {
   IRegistrationModuleOptions,
-  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN
 } from './modules/common-registration/module.options';
 import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
@@ -73,7 +73,7 @@ export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
   const options = {
     autoSync: false,
     adapter: 'idb',
-    attachmentsSupported: false,
+    attachmentsSupported: false
   };
   return options;
 }
@@ -97,7 +97,7 @@ export const APP_PROVIDERS = [
   {
     provide: LOCALE_ID,
     useClass: DynamicLocaleId,
-    deps: [TranslateService],
+    deps: [TranslateService]
   },
   DeviceOrientation,
   File,
@@ -115,17 +115,17 @@ export const APP_PROVIDERS = [
   {
     provide: HTTP_INTERCEPTORS,
     useClass: ApiInterceptor, // TODO: Move to auth module
-    multi: true,
+    multi: true
   },
   { provide: ErrorHandler, useClass: AppErrorHandler },
   {
     provide: LoggingService,
-    useClass: environment.production ? SentryService : ConsoleLoggingService,
+    useClass: environment.production ? SentryService : ConsoleLoggingService
   },
   {
     provide: TranslateLoader,
     useFactory: createTranslateLoader,
-    deps: [HttpClient],
+    deps: [HttpClient]
   },
 
   // APP initializers
@@ -133,26 +133,26 @@ export const APP_PROVIDERS = [
     provide: APP_INITIALIZER,
     useFactory: initTranslateService,
     deps: [TranslateService, UserSettingService],
-    multi: true,
+    multi: true
   },
   {
     provide: APP_INITIALIZER,
     useFactory: initDeepLinks,
     deps: [Platform, NgZone, AuthService, NavController, Router],
-    multi: true,
+    multi: true
   },
 
   // @varsom-regobs-common providers
   {
     provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
     useFactory: initCommonRegistrationOptions,
-    deps: [],
+    deps: []
   },
   {
     provide: APP_INITIALIZER,
     useFactory: initDb,
     multi: true,
-    deps: [OfflineDbService],
+    deps: [OfflineDbService]
   },
   // {
   //   provide: APP_INITIALIZER,
@@ -169,7 +169,7 @@ export const APP_PROVIDERS = [
   // Custom native/web providers
   {
     provide: BackgroundGeolocationService,
-    useClass: isPlatform('hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService,
+    useClass: isPlatform('hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
   },
   {
     provide: BackgroundDownloadService,
@@ -177,13 +177,13 @@ export const APP_PROVIDERS = [
     //   ? BackgroundDownloadNativeService
     //   : BackgroundDownloadWebService
     // TODO: Implement Download Manager for Android
-    useClass: HttpClientDownloadService,
+    useClass: HttpClientDownloadService
   },
   {
     // POC
     provide: SearchService,
-    useClass: OfflineCapableSearchService,
+    useClass: OfflineCapableSearchService
     // TODO: Override SearchService for offline support on devices
     // useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService
-  },
+  }
 ];

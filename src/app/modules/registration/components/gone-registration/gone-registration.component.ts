@@ -16,9 +16,10 @@ const DEBUG_TAG = 'VersionConflictComponent';
 @Component({
   selector: 'app-gone-registration',
   templateUrl: './gone-registration.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GoneRegistrationComponent {
+
   @Input() draft: RegistrationDraft;
 
   constructor(
@@ -26,8 +27,8 @@ export class GoneRegistrationComponent {
     private draftRepository: DraftRepositoryService,
     private observationService: ObservationService,
     private logger: LoggingService,
-    private navController: NavController
-  ) {}
+    private navController: NavController)
+  {}
 
   async submitAsNew(): Promise<void> {
     const uuid = uuidv4();
@@ -35,8 +36,7 @@ export class GoneRegistrationComponent {
     const newDraft = await this.draftRepository.load(uuid);
     this.logger.debug(
       `Submitting new draft with uuid ${newDraft.uuid} based on deleted registration with regId ${this.draft.regId}`,
-      DEBUG_TAG
-    );
+      DEBUG_TAG);
     this.draftToRegistrationService.markDraftAsReadyToSubmit(newDraft, false);
     this.delete();
     this.navigateToMyObservations(); //so we can see that the draft happily submits

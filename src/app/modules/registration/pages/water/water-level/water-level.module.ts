@@ -9,12 +9,12 @@ const routes: Routes = [
   {
     path: '',
     component: WaterLevelPage,
-    canDeactivate: [CanDeactivateRouteGuard],
-  },
+    canDeactivate: [CanDeactivateRouteGuard]
+  }
 ];
 
 @NgModule({
   imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [WaterLevelPage, WaterLevelMeasurementComponent],
+  declarations: [WaterLevelPage, WaterLevelMeasurementComponent]
 })
 export class WaterLevelPageModule {}

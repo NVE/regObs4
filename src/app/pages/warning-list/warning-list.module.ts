@@ -15,18 +15,25 @@ import { AbonnerBannerComponent } from './abonner-banner/abonner-banner.componen
 const routes: Routes = [
   {
     path: '',
-    component: WarningListPage,
-  },
+    component: WarningListPage
+  }
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), TranslateModule, SharedModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    TranslateModule,
+    SharedModule
+  ],
   declarations: [
     WarningListPage,
     WarningListHeaderComponent,
     WarningListItemComponent,
     WarningGroupFavouriteToggleComponent,
-    AbonnerBannerComponent,
-  ],
+    AbonnerBannerComponent
+  ]
 })
 export class WarningListPageModule {}

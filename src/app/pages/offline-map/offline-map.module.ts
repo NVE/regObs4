@@ -14,8 +14,8 @@ import { OfflinePackageModalComponent } from './offline-package-modal/offline-pa
 const routes: Routes = [
   {
     path: '',
-    component: OfflineMapPage,
-  },
+    component: OfflineMapPage
+  }
 ];
 
 @NgModule({
@@ -26,8 +26,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MapModule,
     HttpClientModule,
-    SharedModule,
+    SharedModule
   ],
-  declarations: [OfflineMapPage, OfflinePackageModalComponent],
+  declarations: [OfflineMapPage, OfflinePackageModalComponent]
 })
 export class OfflineMapPageModule {}

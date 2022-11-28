@@ -21,7 +21,7 @@ export const TOKEN_RESPONSE_KEY = 'token_response';
 export const TOKEN_RESPONSE_FULL_KEY = 'token_response_full';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegobsAuthService {
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
@@ -106,7 +106,7 @@ export class RegobsAuthService {
         isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
         token: tokenResponseWithClaims?.tokenResponse?.idToken,
         tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
-        email: tokenResponseWithClaims?.claims?.email,
+        email: tokenResponseWithClaims?.claims?.email
       })),
       shareReplay(1)
     );
@@ -118,7 +118,7 @@ export class RegobsAuthService {
         this.authService.token$.pipe(
           map((tokenResponse) => ({
             tokenResponse,
-            claims: tokenResponse?.idToken ? this.parseJwt(tokenResponse.idToken) : undefined,
+            claims: tokenResponse?.idToken ? this.parseJwt(tokenResponse.idToken) : undefined
           }))
         )
       )
@@ -166,7 +166,7 @@ export class RegobsAuthService {
     try {
       await this.authService.signIn({
         ui_locales: this.getSupportedLoginLocales(currentLang),
-        prompt: 'login', // Force login screen
+        prompt: 'login' // Force login screen
       });
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not signIn');
@@ -205,17 +205,17 @@ export class RegobsAuthService {
           name: 'nick',
           type: 'text',
           max: 24,
-          placeholder: translations[headerTextKey],
-        },
+          placeholder: translations[headerTextKey]
+        }
       ],
       buttons: [
         {
           text: translations[okTextKey],
           handler: (data: { nick: string }) => {
             return data && data.nick != null && data.nick != '';
-          },
-        },
-      ],
+          }
+        }
+      ]
     });
     alert.present();
 
@@ -247,13 +247,11 @@ export class RegobsAuthService {
     const text = status === 401 ? 'UNAUTHORIZED' : status <= 0 ? 'SERVICE_UNAVAILABLE' : 'UNKNOWN_ERROR';
     const messageText = `LOGIN.${text}`;
     const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
-    const translations = await lastValueFrom(
-      this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText])
-    );
+    const translations = await lastValueFrom(this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText]));
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: `${translations[messageText]}${extraMessage}`,
-      buttons: [translations['ALERT.OK']],
+      buttons: [translations['ALERT.OK']]
     });
     await alert.present();
   }
@@ -271,7 +269,7 @@ export class RegobsAuthService {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
-        .map(function (c) {
+        .map(function(c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         })
         .join('')

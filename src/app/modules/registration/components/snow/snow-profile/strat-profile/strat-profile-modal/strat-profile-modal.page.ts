@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { StratProfileEditModel, StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api/models';
+import {
+  StratProfileEditModel,
+  StratProfileLayerEditModel
+} from 'src/app/modules/common-regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
@@ -18,7 +21,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-strat-profile-modal',
   templateUrl: './strat-profile-modal.page.html',
-  styleUrls: ['./strat-profile-modal.page.scss'],
+  styleUrls: ['./strat-profile-modal.page.scss']
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;
@@ -40,7 +43,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private regobsAuthService: RegobsAuthService,
     private ngZone: NgZone,
-    private draftRepository: DraftRepositoryService
+    private draftRepository: DraftRepositoryService,
   ) {}
 
   ngOnInit(): void {
@@ -56,10 +59,11 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         });
       });
 
-    this.totalThickness = this.draftRepository.getDraft$(this.uuid).pipe(
-      takeUntil(this.ngDestroy$),
-      map((draft) => this.calculateTotalThickness(draft))
-    );
+    this.totalThickness = this.draftRepository.getDraft$(this.uuid)
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        map(draft => this.calculateTotalThickness(draft))
+      );
   }
 
   ngOnDestroy(): void {
@@ -83,7 +87,9 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
 
   addLayerBottom(): void {
     this.addOrEditLayer(
-      this.hasLayers ? this.draft.registration.SnowProfile2.StratProfile.Layers.length : 0,
+      this.hasLayers
+        ? this.draft.registration.SnowProfile2.StratProfile.Layers.length
+        : 0,
       undefined
     );
   }
@@ -105,8 +111,8 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         this.layerModal = await this.modalController.create({
           component: StratProfileLayerHistoryModalPage,
           componentProps: {
-            draft: this.draft,
-          },
+            draft: this.draft
+          }
         });
         this.layerModal.present();
         await this.layerModal.onDidDismiss();
@@ -124,8 +130,8 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         componentProps: {
           draft: this.draft,
           layer,
-          index,
-        },
+          index
+        }
       });
       this.layerModal.present();
       await this.layerModal.onDidDismiss();

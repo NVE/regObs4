@@ -10,22 +10,24 @@ xdescribe('CompetenceComponent', () => {
   let translate: TranslateService;
   const unknownCopetenceNO = '(Ukjent kompetanse)';
   const unknownCopetenceEN = '(Competence unknown)';
-  const filledStarSelector = "svg-icon[src='/assets/icon/star-selected.svg']";
-  const emptyStarSelector = "svg-icon[src='/assets/icon/star-empty.svg']";
+  const filledStarSelector = 'svg-icon[src=\'/assets/icon/star-selected.svg\']';
+  const emptyStarSelector = 'svg-icon[src=\'/assets/icon/star-empty.svg\']';
   const smallTextSelector = '.small-text';
 
   function getElementCount(element: HTMLElement, selector: string) {
     return element.querySelectorAll(selector).length;
   }
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [TestModule],
-    }).compileComponents();
-    translate = TestBed.inject(TranslateService);
-    // translate.addLangs(['nb', 'en']);
-    // translate.setDefaultLang('nb');
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [TestModule]
+      }).compileComponents();
+      translate = TestBed.inject(TranslateService);
+      // translate.addLangs(['nb', 'en']);
+      // translate.setDefaultLang('nb');
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CompetenceComponent);

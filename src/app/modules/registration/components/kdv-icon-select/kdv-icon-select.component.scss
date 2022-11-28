@@ -1,3 +1,4 @@
+
 ion-item.header {
   /* top | right | bottom | left */
   --border-style: solid solid none solid;
@@ -17,8 +18,7 @@ ion-item.header {
     color: var(--ion-text-color-heading);
   }
 
-  ion-button,
-  .n-selected {
+  ion-button, .n-selected {
     font-size: 14px;
     font-weight: 400;
     color: #808080;
@@ -37,7 +37,7 @@ ion-item.container {
   // Content has a 4 px padding-top to adjust for check marks position above
   // buttons
   margin-top: -4px;
-
+  
   .content {
     padding-top: 4px;
     display: flex;
@@ -49,11 +49,11 @@ ion-item.container {
 
     &::-webkit-scrollbar {
       height: 3px;
-      background-color: #e3ebee;
+      background-color: #E3EBEE;
     }
-
+  
     &::-webkit-scrollbar-thumb {
-      background-color: #a4bec6;
+      background-color: #A4BEC6;
     }
   }
 
@@ -75,10 +75,11 @@ ion-item.container {
     }
 
     .element {
+  
       &:first-child {
         margin-left: 0;
       }
-
+  
       &:last-child {
         margin-right: 0;
       }
@@ -94,7 +95,7 @@ ion-item.container {
 
 .kdv-item {
   width: 70px;
-  background: #ffffff;
+  background: #FFFFFF;
 }
 
 .item-text {

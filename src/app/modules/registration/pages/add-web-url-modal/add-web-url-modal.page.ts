@@ -5,7 +5,7 @@ import { UrlEditModel } from 'src/app/modules/common-regobs-api/models';
 @Component({
   selector: 'app-add-web-url-modal',
   templateUrl: './add-web-url-modal.page.html',
-  styleUrls: ['./add-web-url-modal.page.scss'],
+  styleUrls: ['./add-web-url-modal.page.scss']
 })
 export class AddWebUrlModalPage implements OnInit {
   @Input() weburl: UrlEditModel;

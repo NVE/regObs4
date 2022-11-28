@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss'],
+  styleUrls: ['tabs.page.scss']
 })
 export class TabsPage implements OnInit, OnDestroy {
   private warningGroupInMapViewSubscription: Subscription;
@@ -56,11 +56,11 @@ export class TabsPage implements OnInit, OnDestroy {
     this.isAndroid = this.platform.is('android');
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
+      filter(e => e instanceof NavigationEnd),
       map(() => location.path()),
       distinctUntilChanged(),
-      map((path) => this.parseTabFromPath(path)),
-      share() // All tabs subscribe to this, so share amongst subscribers
+      map(path => this.parseTabFromPath(path)),
+      share()  // All tabs subscribe to this, so share amongst subscribers
     );
   }
 
@@ -86,7 +86,7 @@ export class TabsPage implements OnInit, OnDestroy {
             count: allWarnings.length,
             text: allWarnings.length > 9 ? '9+' : allWarnings.length.toString(),
             maxWarning,
-            hasEmergencyWarning,
+            hasEmergencyWarning
           };
         })
       )
@@ -96,11 +96,13 @@ export class TabsPage implements OnInit, OnDestroy {
         });
       });
 
-    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
-      });
-    });
+    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe(
+      (val) => {
+        this.ngZone.run(() => {
+          this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
+        });
+      }
+    );
   }
 
   ngOnDestroy(): void {

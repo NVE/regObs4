@@ -19,7 +19,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   selector: 'app-kdv-icon-select',
   templateUrl: './kdv-icon-select.component.html',
   styleUrls: ['./kdv-icon-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KdvIconSelectComponent {
   @Input() title: string;
@@ -30,7 +30,7 @@ export class KdvIconSelectComponent {
    * It is the ID of the KDV element that will be stored.
    * If multiselect is set, the value field will be treated as an array.
    */
-  @Input() value: number | number[];
+  @Input() value: number|number[];
   @Input() multiSelect = false;
   @Input() showZeroValues = false;
 
@@ -38,7 +38,7 @@ export class KdvIconSelectComponent {
    * You may control which KDV element IDs to show with this function
    */
   @Input() filter: (number) => boolean;
-  @Output() valueChange = new EventEmitter<number | number[]>();
+  @Output() valueChange = new EventEmitter<number|number[]>();
 
   kdvElements$: Observable<KdvElement[]>;
   lang$: Observable<string>;
@@ -51,11 +51,14 @@ export class KdvIconSelectComponent {
   ) {}
 
   ngOnInit() {
-    this.lang$ = this.userSettings.language$.pipe(map((langKey) => LangKey[langKey]));
-    this.kdvElements$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).pipe(
-      map((elements) => elements.filter((element) => this.isVisible(element))),
-      enterZone(this.ngZone)
-    );
+    this.lang$ = this.userSettings.language$
+      .pipe(map(langKey => LangKey[langKey]));
+    this.kdvElements$ = this.kdvService
+      .getKdvRepositoryByKeyObservable(this.kdvKey)
+      .pipe(
+        map(elements => elements.filter(element => this.isVisible(element))),
+        enterZone(this.ngZone)
+      );
   }
 
   private isVisible(item: KdvElement): boolean {
@@ -97,8 +100,7 @@ export class KdvIconSelectComponent {
         values = [element.Id, ...values]; //add element to selection
       }
       this.value = values;
-    } else {
-      //single select
+    } else { //single select
       if (this.isSelected(element)) {
         this.value = undefined; //deselect if it was selected earlier
       } else {

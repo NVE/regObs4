@@ -30,7 +30,7 @@ export interface RegistrationDraftError {
 export type RemoteOrLocalAttachmentEditModel = Pick<AttachmentViewModel, 'Url' | 'UrlFormats'> & AttachmentEditModel;
 
 export interface RegistrationEditModelWithRemoteOrLocalAttachments extends Omit<RegistrationEditModel, 'Attachments'> {
-  Attachments?: RemoteOrLocalAttachmentEditModel[];
+  Attachments?: RemoteOrLocalAttachmentEditModel[]
 }
 
 /**
@@ -38,6 +38,7 @@ export interface RegistrationEditModelWithRemoteOrLocalAttachments extends Omit<
  * It can be a new registration or an earlier submitted registration changed by you.
  */
 export interface RegistrationDraft {
+
   /** Unique Draft ID */
   readonly uuid: string;
 

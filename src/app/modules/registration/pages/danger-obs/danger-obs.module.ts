@@ -7,12 +7,16 @@ import { AddOrEditDangerObsModalPageModule } from './add-or-edit-danger-obs-moda
 const routes: Routes = [
   {
     path: '',
-    component: DangerObsPage,
-  },
+    component: DangerObsPage
+  }
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AddOrEditDangerObsModalPageModule, RouterModule.forChild(routes)],
-  declarations: [DangerObsPage],
+  imports: [
+    SharedComponentsModule,
+    AddOrEditDangerObsModalPageModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [DangerObsPage]
 })
 export class DangerObsPageModule {}

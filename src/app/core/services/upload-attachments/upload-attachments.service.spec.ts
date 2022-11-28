@@ -17,8 +17,8 @@ describe('UploadAttachmentsService', () => {
 
     // List of fake attachments that fake newAttachmentsService will return
     const fakeAttachments: AttachmentUploadEditModel[] = [
-      { id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
-      { id: '5678', type: 'Attachment', AttachmentUploadId: '5678' },
+      {id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
+      {id: '5678', type: 'Attachment', AttachmentUploadId: '5678' }
     ];
 
     const fakeAttachmentsCopy = cloneDeep(fakeAttachments);
@@ -26,7 +26,7 @@ describe('UploadAttachmentsService', () => {
     const newAttachmentService = {
       getAttachments: (): Observable<AttachmentUploadEditModel[]> => {
         return of(fakeAttachments);
-      },
+      }
     };
 
     service = new UploadAttachmentsService(
@@ -35,7 +35,7 @@ describe('UploadAttachmentsService', () => {
       {} as AttachmentService,
       {} as LoggingService,
       {
-        userSetting$: of({}),
+        userSetting$: of({})
       } as UserSettingService
     );
 
@@ -46,7 +46,7 @@ describe('UploadAttachmentsService', () => {
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'test',
-      },
+      }
     };
 
     const result = await service.uploadAllAttachments(draft);
@@ -62,30 +62,28 @@ describe('UploadAttachmentsService', () => {
     const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
     const responseAttachmentUploadId = '12345-test-id';
 
-    httpClient.post.and.returnValue(
-      of(
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 500,
-          total: 1000,
-        },
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 1000,
-          total: 1000,
-        },
-        new HttpResponse({ body: responseAttachmentUploadId })
-      )
-    );
+    httpClient.post.and.returnValue(of(
+      {
+        type: HttpEventType.UploadProgress,
+        loaded: 500,
+        total: 1000
+      },
+      {
+        type: HttpEventType.UploadProgress,
+        loaded: 1000,
+        total: 1000
+      },
+      new HttpResponse({ body: responseAttachmentUploadId })
+    ));
 
     const fakeAttachments: AttachmentUploadEditModel[] = [
-      { id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
-      { id: '5678', type: 'Attachment' }, // This attachment has no AttachmentUploadId and should be uploaded
+      {id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
+      {id: '5678', type: 'Attachment' }  // This attachment has no AttachmentUploadId and should be uploaded
     ];
 
     const addAttachmentsResult: AttachmentUploadEditModel[] = [
-      { id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
-      { id: '5678', type: 'Attachment', AttachmentUploadId: responseAttachmentUploadId },
+      {id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
+      {id: '5678', type: 'Attachment', AttachmentUploadId: responseAttachmentUploadId}
     ];
 
     const saveAttachmentMeta$ = jasmine.createSpy();
@@ -96,9 +94,9 @@ describe('UploadAttachmentsService', () => {
         return of(fakeAttachments);
       },
       getBlob: (): Observable<Blob> => {
-        return of(new Blob(['test'], { type: 'image/png' }));
+        return of(new Blob(['test'], {type: 'image/png'}));
       },
-      saveAttachmentMeta$: saveAttachmentMeta$,
+      saveAttachmentMeta$: saveAttachmentMeta$
     };
 
     service = new UploadAttachmentsService(
@@ -107,7 +105,7 @@ describe('UploadAttachmentsService', () => {
       {} as AttachmentService,
       jasmine.createSpyObj('LoggingService', ['debug']),
       {
-        userSetting$: of({}),
+        userSetting$: of({})
       } as UserSettingService
     );
 
@@ -118,7 +116,7 @@ describe('UploadAttachmentsService', () => {
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'test',
-      },
+      }
     };
 
     const result = await service.uploadAllAttachments(draft);
@@ -140,12 +138,12 @@ describe('UploadAttachmentsService', () => {
         {
           type: HttpEventType.UploadProgress,
           loaded: 500,
-          total: 1000,
+          total: 1000
         },
         {
           type: HttpEventType.UploadProgress,
           loaded: 1000,
-          total: 1000,
+          total: 1000
         },
         new HttpResponse({ body: responseAttachmentUploadId })
       ),
@@ -154,17 +152,17 @@ describe('UploadAttachmentsService', () => {
         {
           type: HttpEventType.UploadProgress,
           loaded: 200,
-          total: 1000,
+          total: 1000
         },
         {
           type: HttpEventType.UploadProgress,
           loaded: 500,
-          total: 1000,
+          total: 1000
         },
         {
           type: HttpEventType.UploadProgress,
           loaded: 700,
-          total: 1000,
+          total: 1000
         },
         new HttpErrorResponse({
           error: new Error('Something failed'),
@@ -175,9 +173,9 @@ describe('UploadAttachmentsService', () => {
 
     const attachmentIdThatFails = '3-abc';
     const fakeAttachments: AttachmentUploadEditModel[] = [
-      { id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
-      { id: '2-abc', type: 'Attachment' },
-      { id: attachmentIdThatFails, type: 'Attachment' },
+      {id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
+      {id: '2-abc', type: 'Attachment' },
+      {id: attachmentIdThatFails, type: 'Attachment' }
     ];
 
     const saveAttachmentMeta$ = jasmine.createSpy();
@@ -188,9 +186,9 @@ describe('UploadAttachmentsService', () => {
         return of(fakeAttachments);
       },
       getBlob: (): Observable<Blob> => {
-        return of(new Blob(['test'], { type: 'image/png' }));
+        return of(new Blob(['test'], {type: 'image/png'}));
       },
-      saveAttachmentMeta$: saveAttachmentMeta$,
+      saveAttachmentMeta$: saveAttachmentMeta$
     };
 
     const loggingService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
@@ -201,7 +199,7 @@ describe('UploadAttachmentsService', () => {
       {} as AttachmentService,
       loggingService,
       {
-        userSetting$: of({}),
+        userSetting$: of({})
       } as UserSettingService
     );
 
@@ -213,20 +211,21 @@ describe('UploadAttachmentsService', () => {
       registration: {
         GeoHazardTID: 10,
         DtObsTime: 'test',
-      },
+      }
     };
 
     // Test that uploadAllAttachments rejects with an error
     // containing regid and attachment ids
-    const error = new UploadAttachmentError(regUuid, [
-      {
-        id: attachmentIdThatFails,
-        error: jasmine.any(Error) as unknown as Error,
-      },
-    ]);
-    await expectAsync(service.uploadAllAttachments(draft)).toBeRejectedWith(error);
+    const error = new UploadAttachmentError(regUuid, [{
+      id: attachmentIdThatFails,
+      error: jasmine.any(Error) as unknown as Error
+    }]);
+    await expectAsync(service.uploadAllAttachments(draft))
+      .toBeRejectedWith(error);
 
     expect(loggingService.error).toHaveBeenCalled();
     expect(httpClient.post).toHaveBeenCalledTimes(2);
   });
+
+
 });

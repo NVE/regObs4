@@ -11,12 +11,18 @@ import { TripPage } from './trip.page';
 const routes: Routes = [
   {
     path: '',
-    component: TripPage,
-  },
+    component: TripPage
+  }
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), TranslateModule],
-  declarations: [TripPage],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    TranslateModule
+  ],
+  declarations: [TripPage]
 })
 export class TripPageModule {}

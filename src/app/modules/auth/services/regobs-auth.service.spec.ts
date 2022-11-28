@@ -22,9 +22,13 @@ describe('RegobsAuthService', () => {
         SharedModule,
         HttpClientModule,
         TranslateModule.forRoot(),
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })
       ],
-      providers: [{ provide: LoggingService, useClass: TestLoggingService }, SafariViewController, InAppBrowser],
+      providers: [
+        { provide: LoggingService, useClass: TestLoggingService },
+        SafariViewController,
+        InAppBrowser
+      ]
     });
     TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;
     TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
@@ -42,4 +46,5 @@ describe('RegobsAuthService', () => {
     expect(service.isTokenOlderThan(tokenIssuedAt, 60)).toBeTrue();
     expect(service.isTokenOlderThan(tokenIssuedAt, 600)).toBeFalse();
   });
+
 });

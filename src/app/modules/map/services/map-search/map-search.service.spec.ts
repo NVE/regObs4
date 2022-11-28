@@ -13,20 +13,20 @@ const DRAMMEN_CITY: Navn = {
   representasjonspunkt: {
     øst: 10.20448,
     nord: 59.74389,
-    koordsys: 4258,
+    koordsys: 4258
   },
   fylker: [
     {
       fylkesnavn: 'Viken',
-      fylkesnummer: '30',
-    },
+      fylkesnummer: '30'
+    }
   ],
   kommuner: [
     {
       kommunenavn: 'Drammen',
-      kommunenummer: '3005',
-    },
-  ],
+      kommunenummer: '3005'
+    }
+  ]
 };
 
 const OSLO_COUNTY: Navn = {
@@ -40,20 +40,20 @@ const OSLO_COUNTY: Navn = {
   representasjonspunkt: {
     øst: 10.73353,
     nord: 59.91187,
-    koordsys: 4258,
+    koordsys: 4258
   },
   fylker: [
     {
       fylkesnavn: 'Oslo',
-      fylkesnummer: '03',
-    },
+      fylkesnummer: '03'
+    }
   ],
   kommuner: [
     {
       kommunenavn: 'Oslo',
-      kommunenummer: '0301',
-    },
-  ],
+      kommunenummer: '0301'
+    }
+  ]
 };
 
 const FOLLO_AREA: Navn = {
@@ -67,40 +67,40 @@ const FOLLO_AREA: Navn = {
   representasjonspunkt: {
     øst: 10.92339,
     nord: 59.70191,
-    koordsys: 4258,
+    koordsys: 4258
   },
   fylker: [
     {
       fylkesnavn: 'Viken',
-      fylkesnummer: '30',
-    },
+      fylkesnummer: '30'
+    }
   ],
   kommuner: [
     {
       kommunenummer: '3019',
-      kommunenavn: 'Vestby',
+      kommunenavn: 'Vestby'
     },
     {
       kommunenummer: '3020',
-      kommunenavn: 'Nordre Follo',
+      kommunenavn: 'Nordre Follo'
     },
     {
       kommunenummer: '3022',
-      kommunenavn: 'Frogn',
+      kommunenavn: 'Frogn'
     },
     {
       kommunenummer: '3021',
-      kommunenavn: 'Ås',
+      kommunenavn: 'Ås'
     },
     {
       kommunenummer: '3023',
-      kommunenavn: 'Nesodden',
+      kommunenavn: 'Nesodden'
     },
     {
       kommunenummer: '3028',
-      kommunenavn: 'Enebakk',
-    },
-  ],
+      kommunenavn: 'Enebakk'
+    }
+  ]
 };
 
 describe('Service: LocationSearchService', () => {
@@ -111,32 +111,50 @@ describe('Service: LocationSearchService', () => {
   });
 
   it('#formatLocationDescription should format description for Drammen nicely in nynorsk', () => {
-    const drammenDescription = locationSearchService.formatLocationDescription(DRAMMEN_CITY, LangKey.nn);
+    const drammenDescription = locationSearchService.formatLocationDescription(
+      DRAMMEN_CITY,
+      LangKey.nn
+    );
     expect(drammenDescription).toEqual('By, Drammen (Viken)');
   });
 
   it('#formatLocationDescription should format description for Drammen nicely in english', () => {
-    const drammenDescription = locationSearchService.formatLocationDescription(DRAMMEN_CITY, LangKey.en);
+    const drammenDescription = locationSearchService.formatLocationDescription(
+      DRAMMEN_CITY,
+      LangKey.en
+    );
     expect(drammenDescription).toEqual('Drammen (Viken)');
   });
 
   it('#formatLocationDescription should format description for Oslo fylke nicely in bokmål', () => {
-    const result = locationSearchService.formatLocationDescription(OSLO_COUNTY, LangKey.nb);
+    const result = locationSearchService.formatLocationDescription(
+      OSLO_COUNTY,
+      LangKey.nb
+    );
     expect(result).toEqual('Fylke');
   });
 
   it('#formatLocationDescription should format description for Oslo fylke nicely in english', () => {
-    const result = locationSearchService.formatLocationDescription(OSLO_COUNTY, LangKey.en);
+    const result = locationSearchService.formatLocationDescription(
+      OSLO_COUNTY,
+      LangKey.en
+    );
     expect(result).toEqual('');
   });
 
   it('#formatLocationDescription should format description for Follo area nicely in nynorsk', () => {
-    const result = locationSearchService.formatLocationDescription(FOLLO_AREA, LangKey.nn);
+    const result = locationSearchService.formatLocationDescription(
+      FOLLO_AREA,
+      LangKey.nn
+    );
     expect(result).toEqual('Landskapsområde, Viken');
   });
 
   it('#formatLocationDescription should format description for Follo area nicely in english', () => {
-    const result = locationSearchService.formatLocationDescription(FOLLO_AREA, LangKey.en);
+    const result = locationSearchService.formatLocationDescription(
+      FOLLO_AREA,
+      LangKey.en
+    );
     expect(result).toEqual('Viken');
   });
 });

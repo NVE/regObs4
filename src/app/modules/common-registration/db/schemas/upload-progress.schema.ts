@@ -1,5 +1,7 @@
-import { RxJsonSchema } from 'rxdb';
-export const UploadProgressSchema: RxJsonSchema = {
+import {
+  RxJsonSchema
+} from 'rxdb';
+export const UploadProgressSchema : RxJsonSchema = {
   title: 'Upload progress schema',
   description: 'Upload progress',
   version: 0,
@@ -15,7 +17,7 @@ export const UploadProgressSchema: RxJsonSchema = {
     },
     complete: {
       type: 'number',
-    },
+    }
   },
   required: ['id', 'totalBytes', 'complete'],
 };

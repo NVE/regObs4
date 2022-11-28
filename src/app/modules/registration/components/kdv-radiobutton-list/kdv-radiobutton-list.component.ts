@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  NgZone
+} from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Observable } from 'rxjs';
 import { enterZone } from '../../../../core/helpers/observable-helper';
@@ -8,7 +15,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 @Component({
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',
-  styleUrls: ['./kdv-radiobutton-list.component.scss'],
+  styleUrls: ['./kdv-radiobutton-list.component.scss']
 })
 export class KdvRadiobuttonListComponent implements OnInit {
   @Input() title: string;
@@ -23,7 +30,9 @@ export class KdvRadiobuttonListComponent implements OnInit {
   constructor(private kdvService: KdvService, private ngZone: NgZone) {}
 
   ngOnInit() {
-    this.kdvelements$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).pipe(enterZone(this.ngZone));
+    this.kdvelements$ = this.kdvService
+      .getKdvRepositoryByKeyObservable(this.kdvKey)
+      .pipe(enterZone(this.ngZone));
   }
 
   onChange(value: number) {

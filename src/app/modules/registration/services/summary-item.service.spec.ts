@@ -4,7 +4,9 @@ import { SyncStatus } from '../../common-registration/registration.models';
 import { draftHasNotChanged } from './summary-item.service';
 
 describe('SummaryItemService', () => {
+
   it('draftHasNotChanged should detect changes in comment schema', () => {
+
     const draftV1: RegistrationDraft = {
       uuid: 'draft',
       syncStatus: SyncStatus.Draft,
@@ -13,13 +15,13 @@ describe('SummaryItemService', () => {
         GeoHazardTID: 10,
         DtObsTime: 'obsTime',
         GeneralObservation: {
-          Comment: 'version 1',
-        },
-      },
+          Comment: 'version 1'
+        }
+      }
     };
 
     const draftV1Copy: RegistrationDraft = {
-      ...draftV1,
+      ...draftV1
     };
 
     const draftV2: RegistrationDraft = {
@@ -27,17 +29,17 @@ describe('SummaryItemService', () => {
       registration: {
         ...draftV1.registration,
         GeneralObservation: {
-          Comment: 'version 2',
-        },
-      },
+          Comment: 'version 2'
+        }
+      }
     };
 
     const draftV3: RegistrationDraft = {
       ...draftV1,
       registration: {
         ...draftV1.registration,
-        GeneralObservation: undefined,
-      },
+        GeneralObservation: undefined
+      }
     };
 
     const draftV4: RegistrationDraft = {
@@ -45,9 +47,9 @@ describe('SummaryItemService', () => {
       registration: {
         ...draftV1.registration,
         WeatherObservation: {
-          AirTemperature: 42,
-        },
-      },
+          AirTemperature: 42
+        }
+      }
     };
 
     expect(draftHasNotChanged(draftV1, draftV1Copy)).toBeTrue();
@@ -55,4 +57,5 @@ describe('SummaryItemService', () => {
     expect(draftHasNotChanged(draftV1, draftV3)).toBeFalse();
     expect(draftHasNotChanged(draftV1, draftV4)).toBeFalse(); //same number of schemas, but schemas are different
   });
+
 });

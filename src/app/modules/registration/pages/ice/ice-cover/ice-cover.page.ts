@@ -7,10 +7,13 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-ice-cover',
   templateUrl: './ice-cover.page.html',
-  styleUrls: ['./ice-cover.page.scss'],
+  styleUrls: ['./ice-cover.page.scss']
 })
 export class IceCoverPage extends BasePage {
-  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  constructor(
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute
+  ) {
     super(RegistrationTid.IceCoverObs, basePageService, activatedRoute);
   }
 }

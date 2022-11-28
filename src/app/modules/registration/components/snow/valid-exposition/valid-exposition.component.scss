@@ -1,19 +1,19 @@
 .exposition {
-  border: 2px solid lightgrey;
-  ion-row {
-    ion-col {
-      padding: 18px;
-      background: lightgrey;
-      border: 2px solid lightgrey;
+    border: 2px solid lightgrey;
+    ion-row {
+        ion-col {
+            padding: 18px;
+            background: lightgrey;
+            border: 2px solid lightgrey;
 
-      &.selected {
-        color: #fff;
-        background: rgba(0, 0, 0, 0.8);
-      }
+            &.selected {
+                color: #fff;
+                background: rgba(0, 0, 0, 0.8);
+            }
+        }
     }
-  }
 }
 
 ion-text {
-  width: 100%;
+    width: 100%;
 }

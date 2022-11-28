@@ -1,68 +1,65 @@
 <ion-list lines="full">
-  <app-kdv-icon-select
-    title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS"
-    kdvKey="Snow_SkiConditionsKDV"
-    [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"
-    (valueChange)="save()"
-    [filter]="filterSnowSurfaceTIDs"
-  >
-  </app-kdv-icon-select>
+        <app-kdv-icon-select 
+        title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS" 
+        kdvKey="Snow_SkiConditionsKDV"
+        [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"
+        (valueChange)="save()"
+        [filter]="filterSnowSurfaceTIDs">
+        </app-kdv-icon-select>
+      
+        <app-kdv-icon-select 
+        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" 
+        kdvKey="Snow_SnowSurfaceKDV"
+        [(value)]="draft.registration.SnowSurfaceObservation.SnowSurfaceTID"
+        (valueChange)="save()"
+        [filter]="filterSnowSurfaceTIDs">
+        </app-kdv-icon-select>
+      <app-edit-images-bar 
+          [draft]="draft"   
+          [registrationTid]="22" 
+          modalTitlePostfix="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
+        ></app-edit-images-bar>
 
-  <app-kdv-icon-select
-    title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
-    kdvKey="Snow_SnowSurfaceKDV"
-    [(value)]="draft.registration.SnowSurfaceObservation.SnowSurfaceTID"
-    (valueChange)="save()"
-    [filter]="filterSnowSurfaceTIDs"
-  >
-  </app-kdv-icon-select>
-  <app-edit-images-bar
-    [draft]="draft"
-    [registrationTid]="22"
-    modalTitlePostfix="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
-  ></app-edit-images-bar>
-
-  <app-kdv-icon-select
-    title="REGISTRATION.DANGER_OBS.TITLE"
-    kdvKey="Snow_DangerSignKDV"
-    [(value)]="dangerSignTIDs"
-    (valueChange)="save()"
-    multiSelect="true"
-    [filter]="filterDangerSignTIDs"
-  >
-  </app-kdv-icon-select>
-
-  <app-edit-images-bar
-    [draft]="draft"
-    [registrationTid]="13"
-    modalTitlePostfix="REGISTRATION.DANGER_OBS.TITLE"
-  ></app-edit-images-bar>
-
-  <div class="inline numeric-side-by-side">
-    <app-numeric-input
-      [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
-      title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
-      [min]="0"
-      [max]="999"
-      [decimalPlaces]="0"
-      [convertRatio]="100"
-      placeholder="&nbsp;"
-      suffix="cm"
-      simpleObsMode="true"
+      <app-kdv-icon-select 
+      title="REGISTRATION.DANGER_OBS.TITLE" 
+      kdvKey="Snow_DangerSignKDV"
+      [(value)]="dangerSignTIDs"
       (valueChange)="save()"
-    ></app-numeric-input>
+      multiSelect="true"
+      [filter]="filterDangerSignTIDs">
+      </app-kdv-icon-select>
 
-    <app-numeric-input
-      [(value)]="draft.registration.SnowSurfaceObservation.SnowDepth"
-      title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
-      [min]="0"
-      [max]="9999"
-      [decimalPlaces]="0"
-      [convertRatio]="100"
-      placeholder="&nbsp;"
-      suffix="cm"
-      simpleObsMode="true"
-      (valueChange)="save()"
-    ></app-numeric-input>
-  </div>
+      <app-edit-images-bar 
+        [draft]="draft"
+        [registrationTid]="13"
+        modalTitlePostfix="REGISTRATION.DANGER_OBS.TITLE"
+      ></app-edit-images-bar>
+
+      <div class="inline numeric-side-by-side">
+        <app-numeric-input
+          [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
+          title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
+          [min]="0"
+          [max]="999"
+          [decimalPlaces]="0"
+          [convertRatio]="100"
+          placeholder="&nbsp;"
+          suffix="cm"
+          simpleObsMode="true"
+          (valueChange)="save()"
+        ></app-numeric-input>
+
+        <app-numeric-input
+          [(value)]="draft.registration.SnowSurfaceObservation.SnowDepth"
+          title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
+          [min]="0"
+          [max]="9999"
+          [decimalPlaces]="0"
+          [convertRatio]="100"
+          placeholder="&nbsp;"
+          suffix="cm"
+          simpleObsMode="true"
+          (valueChange)="save()"
+        ></app-numeric-input>
+      </div>
 </ion-list>

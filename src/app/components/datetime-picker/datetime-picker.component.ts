@@ -9,7 +9,7 @@ import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum
 @Component({
   selector: 'app-datetime-picker',
   templateUrl: './datetime-picker.component.html',
-  styleUrls: ['./datetime-picker.component.scss'],
+  styleUrls: ['./datetime-picker.component.scss']
 })
 /**
  * Component for displaying a date and time picker.
@@ -39,7 +39,8 @@ export class DatetimePickerComponent implements OnInit {
 
   @ViewChild(IonModal) modal: IonModal;
 
-  constructor(private userSettings: UserSettingService) {}
+  constructor(private userSettings: UserSettingService) {
+  }
 
   async ngOnInit(): Promise<void> {
     if (!this.language) {
@@ -80,7 +81,7 @@ export class DatetimePickerComponent implements OnInit {
    * @returns false if the event.detail.value is not defined or if it is an array.
    */
   updateTempDateTime(event: CustomEvent<DatetimeChangeEventDetail>) {
-    if (!event.detail.value || Array.isArray(event.detail.value)) return false;
+    if (!event.detail.value || (Array.isArray(event.detail.value))) return false;
     this.tempDate = event.detail.value;
   }
 }

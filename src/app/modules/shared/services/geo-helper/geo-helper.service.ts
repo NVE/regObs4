@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class GeoHelperService {
   constructor(private translateService: TranslateService) {}
@@ -24,7 +24,9 @@ export class GeoHelperService {
 
   getName(geoHazards: GeoHazard[]): Observable<string> {
     const keys = this.getTranslationKeys(geoHazards);
-    return this.translateService.get(keys).pipe(map((val) => keys.map((k) => val[k]).join(' / ')));
+    return this.translateService
+      .get(keys)
+      .pipe(map((val) => keys.map((k) => val[k]).join(' / ')));
   }
 
   getAllGeoHazards(): GeoHazard[] {

@@ -17,14 +17,14 @@ export function isEmpty(obj: Object | Array<Object>): boolean {
   if (obj === null || obj === undefined) {
     return true;
   }
-  if (typeof obj === 'string') {
+  if (typeof (obj) === 'string') {
     return obj.length === 0;
   }
-  if (typeof obj === 'number' || typeof obj === 'boolean') {
+  if (typeof (obj) === 'number' || typeof (obj) === 'boolean') {
     return false;
   }
   if (obj instanceof Array) {
-    const arr = <Array<Object | Array<Object>>>obj;
+    const arr = (<Array<Object | Array<Object>>>obj);
     return arr.length === 0 || !arr.some((x) => !isEmpty(x));
   }
   const props = Object.getOwnPropertyNames(obj);

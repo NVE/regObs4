@@ -1,4 +1,11 @@
-import { trigger, state, transition, style, animate, keyframes } from '@angular/animations';
+import {
+  trigger,
+  state,
+  transition,
+  style,
+  animate,
+  keyframes
+} from '@angular/animations';
 
 export const scaleUpCubicBezier = 'cubic-bezier(0.64, 0.1, 0.57, 1.53)';
 export const defaultDuration = '700ms';
@@ -6,18 +13,18 @@ export const scaleUpHeaderFrom = 'scale3d(0.9, 0.9, 1)';
 
 export const keyFramesScaleUp = keyframes([
   style({ transform: 'scale3d(0, 0, 1)', offset: 0 }),
-  style({ transform: 'scale3d(1, 1, 1)', offset: 1 }),
+  style({ transform: 'scale3d(1, 1, 1)', offset: 1 })
 ]);
 
 export const keyFramesPulse = keyframes([
   style({ transform: 'scale3d(1, 1, 1)', offset: 0 }),
   style({ transform: 'scale3d(1.2, 1.2, 1.2)', offset: 0.5 }),
-  style({ transform: 'scale3d(1, 1, 1)', offset: 1.0 }),
+  style({ transform: 'scale3d(1, 1, 1)', offset: 1.0 })
 ]);
 
 export const keyFramesScaleUpHeader = keyframes([
   style({ transform: scaleUpHeaderFrom, offset: 0 }),
-  style({ transform: 'scale3d(1, 1, 1)', offset: 1 }),
+  style({ transform: 'scale3d(1, 1, 1)', offset: 1 })
 ]);
 
 export function getScaleUpAnimation(delay: number) {
@@ -25,17 +32,23 @@ export function getScaleUpAnimation(delay: number) {
     state(
       '*',
       style({
-        transform: 'scale3d(0, 0, 1)',
+        transform: 'scale3d(0, 0, 1)'
       })
     ),
     // http://cubic-bezier.com/#.64,.1,.57,1.53
-    transition('* => page_1', animate(`${defaultDuration} ${delay}ms ${scaleUpCubicBezier}`, keyFramesScaleUp)),
+    transition(
+      '* => page_1',
+      animate(
+        `${defaultDuration} ${delay}ms ${scaleUpCubicBezier}`,
+        keyFramesScaleUp
+      )
+    ),
     state(
       'page_1',
       style({
-        transform: 'scale3d(1, 1, 1)',
+        transform: 'scale3d(1, 1, 1)'
       })
-    ),
+    )
   ];
 }
 
@@ -44,7 +57,7 @@ export function getFadeInAnimation(page: number, delay: number) {
     state(
       '*',
       style({
-        opacity: 0,
+        opacity: 0
       })
     ),
     // http://cubic-bezier.com/#.64,.1,.57,1.53
@@ -52,19 +65,28 @@ export function getFadeInAnimation(page: number, delay: number) {
       `* => page_${page}`,
       animate(
         `500ms ${delay}ms ease-out`,
-        keyframes([style({ opacity: 0, offset: 0 }), style({ opacity: 1, offset: 1 })])
+        keyframes([
+          style({ opacity: 0, offset: 0 }),
+          style({ opacity: 1, offset: 1 })
+        ])
       )
     ),
     transition(
       `page_${page} => *`,
-      animate('500ms ease-out', keyframes([style({ opacity: 1, offset: 0 }), style({ opacity: 0, offset: 1 })]))
+      animate(
+        '500ms ease-out',
+        keyframes([
+          style({ opacity: 1, offset: 0 }),
+          style({ opacity: 0, offset: 1 })
+        ])
+      )
     ),
     state(
       `page_${page}`,
       style({
-        opacity: 1,
+        opacity: 1
       })
-    ),
+    )
   ];
 }
 
@@ -73,16 +95,19 @@ export function getHeaderAnimation(page: number) {
     state(
       '*',
       style({
-        transform: scaleUpHeaderFrom,
+        transform: scaleUpHeaderFrom
       })
     ),
-    transition(`* => page_${page}`, animate(`500ms 200ms ${scaleUpCubicBezier}`, keyFramesScaleUpHeader)),
+    transition(
+      `* => page_${page}`,
+      animate(`500ms 200ms ${scaleUpCubicBezier}`, keyFramesScaleUpHeader)
+    ),
     state(
       `page_${page}`,
       style({
-        transform: 'scale3d(1, 1, 1)',
+        transform: 'scale3d(1, 1, 1)'
       })
-    ),
+    )
   ];
 }
 
@@ -92,10 +117,13 @@ export const animations = [
     state(
       '*',
       style({
-        transform: 'scale3d(1, 1, 1)',
+        transform: 'scale3d(1, 1, 1)'
       })
     ),
-    transition('* => *', animate(`${defaultDuration} 500ms ease-out`, keyFramesPulse)),
+    transition(
+      '* => *',
+      animate(`${defaultDuration} 500ms ease-out`, keyFramesPulse)
+    )
   ]),
 
   // Page 0 animations
@@ -112,7 +140,7 @@ export const animations = [
     state(
       '*',
       style({
-        transform: 'translateX(0)',
+        transform: 'translateX(0)'
       })
     ),
     transition(
@@ -122,7 +150,7 @@ export const animations = [
         keyframes([
           style({ transform: 'translateX(0)', offset: 0 }),
           style({ transform: 'translateX(65px)', offset: 0.5 }),
-          style({ transform: 'translateX(0)', offset: 1.0 }),
+          style({ transform: 'translateX(0)', offset: 1.0 })
         ])
       )
     ),
@@ -133,10 +161,10 @@ export const animations = [
         keyframes([
           style({ transform: 'translateX(0)', offset: 0 }),
           style({ transform: 'translateX(-65px)', offset: 0.5 }),
-          style({ transform: 'translateX(0)', offset: 1.0 }),
+          style({ transform: 'translateX(0)', offset: 1.0 })
         ])
       )
-    ),
+    )
   ]),
 
   // Page 2 animations
@@ -145,7 +173,7 @@ export const animations = [
     state(
       '*',
       style({
-        transform: 'translateX(200px)',
+        transform: 'translateX(200px)'
       })
     ),
     transition(
@@ -154,18 +182,20 @@ export const animations = [
         '1200ms ease-out',
         keyframes([
           style({ transform: 'translateX(200px)', offset: 0 }),
-          style({ transform: 'translateX(0)', offset: 1.0 }),
+          style({ transform: 'translateX(0)', offset: 1.0 })
         ])
       )
     ),
     state(
       'page_2',
       style({
-        transform: 'translateX(0)',
+        transform: 'translateX(0)'
       })
-    ),
+    )
   ]),
-  trigger('nudgeExclamation', [transition('* => page_2', animate('500ms 700ms ease-out', keyFramesPulse))]),
+  trigger('nudgeExclamation', [
+    transition('* => page_2', animate('500ms 700ms ease-out', keyFramesPulse))
+  ]),
 
   // Page 3 animations
   trigger('headerAnimation3', getHeaderAnimation(3)),
@@ -176,10 +206,10 @@ export const animations = [
         '700ms ease-out',
         keyframes([
           style({ transform: 'translate(-30px, -20px)', offset: 0 }),
-          style({ transform: 'translate(0px, 0px)', offset: 1 }),
+          style({ transform: 'translate(0px, 0px)', offset: 1 })
         ])
       )
-    ),
+    )
   ]),
   trigger('moveDownRightLess', [
     transition(
@@ -188,10 +218,10 @@ export const animations = [
         '700ms ease-out',
         keyframes([
           style({ transform: 'translate(-10px, -20px)', offset: 0 }),
-          style({ transform: 'translate(0px, 0px)', offset: 1 }),
+          style({ transform: 'translate(0px, 0px)', offset: 1 })
         ])
       )
-    ),
+    )
   ]),
   trigger('moveDownLeft', [
     transition(
@@ -200,10 +230,10 @@ export const animations = [
         '700ms ease-out',
         keyframes([
           style({ transform: 'translate(10px, -20px)', offset: 0 }),
-          style({ transform: 'translate(0px, 0px)', offset: 1 }),
+          style({ transform: 'translate(0px, 0px)', offset: 1 })
         ])
       )
-    ),
+    )
   ]),
   trigger('moveLeftAndABitDown', [
     transition(
@@ -212,10 +242,10 @@ export const animations = [
         '700ms ease-out',
         keyframes([
           style({ transform: 'translate(20px, -10px)', offset: 0 }),
-          style({ transform: 'translate(0px, 0px)', offset: 1 }),
+          style({ transform: 'translate(0px, 0px)', offset: 1 })
         ])
       )
-    ),
+    )
   ]),
   trigger('moveUpAndABitLeft', [
     transition(
@@ -224,16 +254,16 @@ export const animations = [
         '700ms ease-out',
         keyframes([
           style({ transform: 'translate(6px, 25px)', offset: 0 }),
-          style({ transform: 'translate(0px, 0px)', offset: 1 }),
+          style({ transform: 'translate(0px, 0px)', offset: 1 })
         ])
       )
-    ),
+    )
   ]),
   trigger('moveUp', [
     state(
       '*',
       style({
-        transform: 'translateY(20px)',
+        transform: 'translateY(20px)'
       })
     ),
     transition(
@@ -242,7 +272,7 @@ export const animations = [
         `700ms ${scaleUpCubicBezier}`,
         keyframes([
           style({ transform: 'translateY(20px)', offset: 0 }),
-          style({ transform: 'translateY(0px)', offset: 1 }),
+          style({ transform: 'translateY(0px)', offset: 1 })
         ])
       )
     ),
@@ -252,16 +282,16 @@ export const animations = [
         `700ms ${scaleUpCubicBezier}`,
         keyframes([
           style({ transform: 'translateY(0px)', offset: 0 }),
-          style({ transform: 'translateY(20px)', offset: 1 }),
+          style({ transform: 'translateY(20px)', offset: 1 })
         ])
       )
     ),
     state(
       'page_3',
       style({
-        transform: 'translateY(0px)',
+        transform: 'translateY(0px)'
       })
-    ),
+    )
   ]),
 
   // Page 4 animations
@@ -273,5 +303,5 @@ export const animations = [
   trigger('legalText2', getFadeInAnimation(5, 1200)),
   trigger('legalText3', getFadeInAnimation(5, 1800)),
   trigger('legalText4', getFadeInAnimation(5, 2400)),
-  trigger('legalText5', getFadeInAnimation(5, 3000)),
+  trigger('legalText5', getFadeInAnimation(5, 3000))
 ];

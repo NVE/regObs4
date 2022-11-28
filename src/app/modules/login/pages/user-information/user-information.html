@@ -29,33 +29,22 @@
 
     <ion-row class="flex">
       <div>
-        <ion-button
-          class="button ion-text-uppercase"
-          type="button"
-          fill="outline"
-          expand="block"
-          (click)="openMyPage()"
-        >
+        <ion-button class="button ion-text-uppercase" type="button" fill="outline" expand="block"
+          (click)="openMyPage()">
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
           {{'MY_PROFILE.MY_NVE_ACCOUNT' | translate }}
         </ion-button>
       </div>
       <div>
-        <ion-button
-          class="button ion-text-uppercase delete-button"
-          type="button"
-          fill="outline"
-          expand="block"
-          (click)="openMyPage('user-data')"
-        >
+        <ion-button class="button ion-text-uppercase delete-button" type="button" fill="outline" expand="block"
+          (click)="openMyPage('user-data')">
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
           {{'LOGIN.DELETE_PROFILE' | translate }}
         </ion-button>
       </div>
       <div>
         <ion-button class="button ion-text-uppercase logout" type="submit" fill="outline" (click)="logout()">
-          {{ 'LOGIN.LOGOUT' | translate }}</ion-button
-        >
+          {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
       </div>
     </ion-row>
 
@@ -84,12 +73,9 @@
       <ion-col>
         <div class="flexContainer myPictureContainer">
           <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
-          <ion-button
-            (click)="presentModal()"
-            class="button ion-padding-start ion-text-uppercase edit-button"
-            fill="clear"
-            expand="block"
-            >Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"> </ion-icon>
+          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button"
+            fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg">
+            </ion-icon>
           </ion-button>
         </div>
       </ion-col>
@@ -97,14 +83,12 @@
     <ion-row>
       <ion-col>
         <div class="flexContainer max-div-height margin-mobile">
-          <p class="ion-align-self-center no-margin">
-            <strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong> {{copyright$ | async}}
-          </p>
+          <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong>
+            {{copyright$ | async}}</p>
         </div>
         <div class="flexContainer max-div-height">
-          <p class="ion-align-self-center no-margin">
-            <strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong> {{photographer$ | async}}
-          </p>
+          <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong>
+            {{photographer$ | async}}</p>
         </div>
       </ion-col>
     </ion-row>
@@ -139,7 +123,9 @@
 
     <ion-row>
       <ion-col>
-        <h2>{{'MY_PROFILE.MY_GROUPS' | translate}}</h2>
+        <h2>
+          {{'MY_PROFILE.MY_GROUPS' | translate}}
+        </h2>
       </ion-col>
     </ion-row>
     <ion-row class="ion-padding-top" *ngIf="userGroups$ | async as userGroups">

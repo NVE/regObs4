@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  NgZone,
+  OnDestroy
+} from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription } from 'rxjs';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
@@ -8,7 +16,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 @Component({
   selector: 'app-kdv-select',
   templateUrl: './kdv-select.component.html',
-  styleUrls: ['./kdv-select.component.scss'],
+  styleUrls: ['./kdv-select.component.scss']
 })
 export class KdvSelectComponent implements OnInit, OnDestroy {
   @Input() title: string;
@@ -22,7 +30,7 @@ export class KdvSelectComponent implements OnInit, OnDestroy {
   @Input() useDescription: boolean;
   @Input() filter: (number) => boolean;
   @Input() getIconFunc: (kdvElement: KdvElement) => string;
-  @Input() obsLocMode = false;
+  @Input() obsLocMode: boolean = false;
   private kdvelements: KdvElement[] = [];
 
   private subscription: Subscription;
@@ -32,18 +40,20 @@ export class KdvSelectComponent implements OnInit, OnDestroy {
       id: el.Id,
       text: this.useDescription ? el.Description : el.Name,
       disabled: !this.isVisible(el),
-      icon: this.getIconFunc ? this.getIconFunc(el) : undefined,
+      icon: this.getIconFunc ? this.getIconFunc(el) : undefined
     }));
   }
 
   constructor(private kdvService: KdvService, private ngZone: NgZone) {}
 
   ngOnInit() {
-    this.subscription = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).subscribe((kdvelements) => {
-      this.ngZone.run(() => {
-        this.kdvelements = kdvelements;
+    this.subscription = this.kdvService
+      .getKdvRepositoryByKeyObservable(this.kdvKey)
+      .subscribe((kdvelements) => {
+        this.ngZone.run(() => {
+          this.kdvelements = kdvelements;
+        });
       });
-    });
   }
 
   ngOnDestroy(): void {

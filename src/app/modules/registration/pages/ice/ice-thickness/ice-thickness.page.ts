@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-ice-thickness',
   templateUrl: './ice-thickness.page.html',
-  styleUrls: ['./ice-thickness.page.scss'],
+  styleUrls: ['./ice-thickness.page.scss']
 })
 export class IceThicknessPage extends BasePage {
   isWaterBefore: boolean = undefined;
@@ -46,6 +46,7 @@ export class IceThicknessPage extends BasePage {
       this.isWaterBefore = false;
     }
 
+
     if (iceThickness.IceHeightAfter < 0) {
       this.isWaterAfter = true;
       this.waterHeightAfter = -iceThickness.IceHeightAfter;
@@ -78,12 +79,11 @@ export class IceThicknessPage extends BasePage {
   }
 
   isValid() {
-    const checkBefore =
-      Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore) || Boolean(this.isWaterBefore) == false;
-    const checkAfter =
-      (this.isWaterAfter && !isNaN(this.waterHeightAfter)) ||
-      (this.isWaterAfter == false && !isNaN(this.waterDepthAfter)) ||
-      this.isWaterAfter == undefined;
+    const checkBefore = Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore)
+        || Boolean(this.isWaterBefore) == false;
+    const checkAfter = this.isWaterAfter && !isNaN(this.waterHeightAfter)
+        || this.isWaterAfter == false && !isNaN(this.waterDepthAfter)
+        || this.isWaterAfter == undefined;
 
     const valid = checkBefore && checkAfter;
     if (valid) {
@@ -93,7 +93,11 @@ export class IceThicknessPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
-    return (await super.isEmpty()) && this.isWaterAfter === undefined && this.isWaterBefore === undefined;
+    return (
+      (await super.isEmpty()) &&
+      this.isWaterAfter === undefined &&
+      this.isWaterBefore === undefined
+    );
   }
 
   onReset() {
@@ -109,8 +113,8 @@ export class IceThicknessPage extends BasePage {
     const modal = await this.modalController.create({
       component: IceLayerPage,
       componentProps: {
-        iceThicknessLayer: this.iceThickness.IceThicknessLayers[index],
-      },
+        iceThicknessLayer: this.iceThickness.IceThicknessLayers[index]
+      }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -130,7 +134,11 @@ export class IceThicknessPage extends BasePage {
 
   onIceThicknessReorder(event: CustomEvent) {
     this.ngZone.run(() => {
-      this.reorderList(this.iceThickness.IceThicknessLayers, event.detail.from, event.detail.to);
+      this.reorderList(
+        this.iceThickness.IceThicknessLayers,
+        event.detail.from,
+        event.detail.to
+      );
     });
     event.detail.complete();
   }
@@ -154,7 +162,9 @@ export class IceThicknessPage extends BasePage {
   }
 
   calculateIceThicknessSum() {
-    const newSum = (this.iceThickness.IceThicknessLayers || []).reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
+    const newSum = (
+      this.iceThickness.IceThicknessLayers || []
+    ).reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
     this.ngZone.run(() => {
       this.iceThickness.IceThicknessSum = newSum;
     });

@@ -4,7 +4,9 @@ import { settings } from '../../../../settings';
 import { AttachmentViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
+import {
+  FullscreenImageModalPage
+} from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as utils from '@nano-sql/core/lib/utilities';
@@ -31,7 +33,7 @@ import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import {
   ConfirmationModalService,
-  PopupResponse,
+  PopupResponse
 } from '../../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
@@ -46,7 +48,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   selector: 'app-observation-list-card',
   templateUrl: './observation-list-card.component.html',
   styleUrls: ['./observation-list-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;
@@ -83,7 +85,8 @@ export class ObservationListCardComponent implements OnChanges {
     private toastController: ToastController,
     private translateService: TranslateService,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+  }
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
@@ -101,14 +104,19 @@ export class ObservationListCardComponent implements OnChanges {
 
   private getLocation(obs: RegistrationViewModel): ImageLocation {
     return {
-      latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
+      latLng: L.latLng(
+        this.obs.ObsLocation.Latitude,
+        this.obs.ObsLocation.Longitude
+      ),
       geoHazard: this.geoHazard,
       startStopLocation: this.getStartStopLocation(obs),
-      damageLocations: this.getDamagePositions(obs),
+      damageLocations: this.getDamagePositions(obs)
     };
   }
 
-  private getStartStopLocation(obs: RegistrationViewModel): { start?: L.LatLng; stop?: L.LatLng } {
+  private getStartStopLocation(
+    obs: RegistrationViewModel
+  ): { start?: L.LatLng; stop?: L.LatLng } {
     if (obs.AvalancheObs) {
       return {
         start:
@@ -118,7 +126,7 @@ export class ObservationListCardComponent implements OnChanges {
         stop:
           obs.AvalancheObs.StopLong && obs.AvalancheObs.StopLong
             ? L.latLng(obs.AvalancheObs.StopLat, obs.AvalancheObs.StopLong)
-            : undefined,
+            : undefined
       };
     }
     if (obs.LandSlideObs) {
@@ -130,7 +138,7 @@ export class ObservationListCardComponent implements OnChanges {
         stop:
           obs.LandSlideObs.StopLat && obs.LandSlideObs.StopLong
             ? L.latLng(obs.LandSlideObs.StopLat, obs.LandSlideObs.StopLong)
-            : undefined,
+            : undefined
       };
     }
     return undefined;
@@ -139,8 +147,13 @@ export class ObservationListCardComponent implements OnChanges {
   private getDamagePositions(obs: RegistrationViewModel) {
     if (obs && obs.DamageObs && obs.DamageObs.some((d) => d.DamagePosition)) {
       return obs.DamageObs.filter(
-        (d) => d.DamagePosition && d.DamagePosition.Latitude && d.DamagePosition.Longitude
-      ).map((d) => L.latLng(d.DamagePosition.Latitude, d.DamagePosition.Longitude));
+        (d) =>
+          d.DamagePosition &&
+          d.DamagePosition.Latitude &&
+          d.DamagePosition.Longitude
+      ).map((d) =>
+        L.latLng(d.DamagePosition.Latitude, d.DamagePosition.Longitude)
+      );
     }
     return undefined;
   }
@@ -151,14 +164,14 @@ export class ObservationListCardComponent implements OnChanges {
 
   getGeoHazardCircleIcon(geoHazard: GeoHazard): string {
     switch (geoHazard) {
-      case GeoHazard.Soil:
-        return '/assets/icon/dirt_circle.svg';
-      case GeoHazard.Ice:
-        return '/assets/icon/ice_circle.svg';
-      case GeoHazard.Snow:
-        return '/assets/icon/snow_circle.svg';
-      case GeoHazard.Water:
-        return '/assets/icon/water_circle.svg';
+    case GeoHazard.Soil:
+      return '/assets/icon/dirt_circle.svg';
+    case GeoHazard.Ice:
+      return '/assets/icon/ice_circle.svg';
+    case GeoHazard.Snow:
+      return '/assets/icon/snow_circle.svg';
+    case GeoHazard.Water:
+      return '/assets/icon/water_circle.svg';
     }
   }
 
@@ -183,21 +196,27 @@ export class ObservationListCardComponent implements OnChanges {
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: `${this.getImageUrl(image, 'Original')}?r=${utils.uuid()}`,
+        imgSrc: `${this.getImageUrl(
+          image,
+          'Original'
+        )}?r=${utils.uuid()}`,
         header: image.RegistrationName,
         description: image.Comment,
-        href: image.Href,
-      },
+        href: image.Href
+      }
     });
     modal.present();
   }
 
-  async openLocation(location: { latLng: L.LatLng; geoHazard: GeoHazard }): Promise<void> {
+  async openLocation(location: {
+    latLng: L.LatLng;
+    geoHazard: GeoHazard;
+  }): Promise<void> {
     const modal = await this.modalController.create({
       component: ModalMapImagePage,
       componentProps: {
-        location,
-      },
+        location
+      }
     });
     modal.present();
   }
@@ -208,14 +227,21 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   private getRegistrationUrl(baseUrl: string, loginHint?: string) {
-    return `${baseUrl}/Registration/${this.obs.RegId}${loginHint ? `?login_hint=${loginHint}` : ''}`;
+    return `${baseUrl}/Registration/${this.obs.RegId}${
+      loginHint ? `?login_hint=${loginHint}` : ''
+    }`;
   }
 
   async openWeb(): Promise<void> {
     const baseUrl = await this.getBaseUrl();
     const user = await this.regobsAuthService.getLoggedInUserAsPromise();
     const url = this.getRegistrationUrl(baseUrl, user.email);
-    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Click, url, this.obs.RegId);
+    this.analyticService.trackEvent(
+      AppEventCategory.Observations,
+      AppEventAction.Click,
+      url,
+      this.obs.RegId
+    );
     this.externalLinkService.openExternalLink(url);
   }
 
@@ -230,10 +256,15 @@ export class ObservationListCardComponent implements OnChanges {
   async share(): Promise<void> {
     const baseUrl = await this.getBaseUrl();
     const url = this.getRegistrationUrl(baseUrl);
-    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Share, url, this.obs.RegId);
+    this.analyticService.trackEvent(
+      AppEventCategory.Observations,
+      AppEventAction.Share,
+      url,
+      this.obs.RegId
+    );
     if (await this.canShareNative()) {
       Share.share({
-        url,
+        url
       });
     } else {
       Clipboard.write({ string: url });
@@ -241,7 +272,7 @@ export class ObservationListCardComponent implements OnChanges {
       const toast = await this.toastController.create({
         message: toastText,
         mode: 'md',
-        duration: 2000,
+        duration: 2000
       });
       toast.present();
     }
@@ -257,9 +288,9 @@ export class ObservationListCardComponent implements OnChanges {
     regId: RegistrationService.RegistrationGetParams['regId']
   ): Observable<RegistrationViewModel> {
     return this.userSettingService.language$.pipe(
-      switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey })),
+      switchMap(langKey => this.registrationService.RegistrationGet({ regId, langKey })),
       timeout(FETCH_OBS_TIMEOUT_MS),
-      catchError((error) => {
+      catchError(error => {
         let msg: string;
         if (error instanceof TimeoutError) {
           msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms`;
@@ -303,26 +334,27 @@ export class ObservationListCardComponent implements OnChanges {
 
   private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {
     let resolveFunction: (confirm: boolean) => void;
-    const promise = new Promise<boolean>((resolve) => {
+    const promise = new Promise<boolean>(resolve => {
       resolveFunction = resolve;
     });
 
-    await this.confirmationModalService.askForConfirmation({
-      message: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
-      header: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
-      buttons: [
-        {
-          text: 'DIALOGS.CANCEL',
-          handler: () => resolveFunction(false),
-          role: PopupResponse.CANCEL,
-        },
-        {
-          text: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON',
-          handler: () => resolveFunction(true),
-          role: PopupResponse.CONFIRM,
-        },
-      ],
-    });
+    await this.confirmationModalService.askForConfirmation(
+      {
+        message: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
+        header: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
+        buttons: [
+          {
+            text: 'DIALOGS.CANCEL',
+            handler: () => resolveFunction(false),
+            role: PopupResponse.CANCEL
+          },
+          {
+            text: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON',
+            handler: () => resolveFunction(true),
+            role: PopupResponse.CONFIRM
+          }
+        ]
+      });
 
     return promise;
   }

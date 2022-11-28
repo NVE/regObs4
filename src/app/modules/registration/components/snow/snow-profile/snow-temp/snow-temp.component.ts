@@ -8,7 +8,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-snow-temp',
   templateUrl: './snow-temp.component.html',
-  styleUrls: ['./snow-temp.component.scss'],
+  styleUrls: ['./snow-temp.component.scss']
 })
 export class SnowTempComponent {
   @Input() draft: RegistrationDraft;
@@ -30,8 +30,8 @@ export class SnowTempComponent {
       this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {
-          uuid: this.draft.uuid,
-        },
+          uuid: this.draft.uuid
+        }
       });
       this.snowTempModal.present();
       await this.snowTempModal.onDidDismiss();

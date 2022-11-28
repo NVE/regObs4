@@ -15,23 +15,30 @@ describe('FilterMenuComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [FilterMenuComponent, ObservationsDaysBackComponent, UpdateObservationsComponent],
+      declarations: [
+        FilterMenuComponent,
+        ObservationsDaysBackComponent,
+        UpdateObservationsComponent
+      ],
       providers: [
         {
           provide: ObservationService,
           useValue: {
             getLastUpdatedForCurrentGeoHazardAsObservable: () => of(new Date()),
-            dataLoad$: of('test'),
-          },
+            dataLoad$: of('test')
+          }
         },
         {
           provide: DataMarshallService,
           useValue: {
-            getStateAsObservable: () => of({} as IDataLoad),
-          },
-        },
+            getStateAsObservable: () => of({} as IDataLoad)
+          }
+        }
       ],
-      imports: [IonicModule.forRoot(), TestModule],
+      imports: [
+        IonicModule.forRoot(),
+        TestModule
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilterMenuComponent);

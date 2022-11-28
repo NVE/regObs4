@@ -11,25 +11,25 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
   styleUrls: ['./show-filter-criteria.component.scss'],
 })
 export class ShowFilterCriteriaComponent implements OnInit {
-  daysBack$: Observable<{ value: number }>;
+
+  daysBack$: Observable<{value: number}>;
   isDesktop: boolean;
   showObservations$: Observable<boolean>;
   currentGeoHazard$: Observable<GeoHazard[]>;
   language$: Observable<LangKey>;
 
-  constructor(public userSettingService: UserSettingService, private breakpointService: BreakpointService) {}
+  constructor(public userSettingService: UserSettingService, private breakpointService: BreakpointService) { }
 
   ngOnInit() {
     this.daysBack$ = this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
       map((value) => ({
-        value,
-      }))
-    );
+        value
+      })));
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
       this.isDesktop = isDesktop;
     });
     this.currentGeoHazard$ = this.userSettingService.currentGeoHazard$;
     this.language$ = this.userSettingService.language$;
-    this.showObservations$ = this.userSettingService.showObservations$;
+    this.showObservations$ = this.userSettingService.showObservations$ ;
   }
 }

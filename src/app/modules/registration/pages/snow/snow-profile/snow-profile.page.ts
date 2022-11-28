@@ -32,7 +32,7 @@ const DEBUG_TAG = 'SnowProfilePage';
 @Component({
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.page.html',
-  styleUrls: ['./snow-profile.page.scss'],
+  styleUrls: ['./snow-profile.page.scss']
 })
 export class SnowProfilePage extends BasePage {
   expositionOptions: SelectOption[] = [
@@ -43,7 +43,7 @@ export class SnowProfilePage extends BasePage {
     { id: 4, text: 'REGISTRATION.SNOW.SNOW_PROFILE.SOUTH' },
     { id: 5, text: 'REGISTRATION.SNOW.SNOW_PROFILE.SOUTH_WEST' },
     { id: 6, text: 'REGISTRATION.SNOW.SNOW_PROFILE.WEST' },
-    { id: 7, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_WEST' },
+    { id: 7, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_WEST' }
   ];
 
   constructor(
@@ -81,7 +81,7 @@ export class SnowProfilePage extends BasePage {
     this.translateService.get('REGISTRATION.SNOW.SNOW_PROFILE.GENERATING_PREVIEW').subscribe(async (message) => {
       const loader = await this.loadingController.create({
         message,
-        backdropDismiss: true, // enable cancel
+        backdropDismiss: true // enable cancel
       });
       await loader.present();
       const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
@@ -120,11 +120,10 @@ export class SnowProfilePage extends BasePage {
   private getPlotFromApi(userSetting: UserSetting, format: number, size: number) {
     const rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
     return this.httpClient.post(
-      `${rootUrl}/Registration/PlotPreviewPng?format=${format}` +
-        `&height=${size}&width=${size}&langKey=${userSetting.language}`,
+      `${rootUrl}/Registration/PlotPreviewPng?format=${format}` + `&height=${size}&width=${size}&langKey=${userSetting.language}`,
       this.draft.registration,
       {
-        responseType: 'blob',
+        responseType: 'blob'
       }
     );
   }
@@ -134,7 +133,7 @@ export class SnowProfilePage extends BasePage {
       const toast = await this.toastController.create({
         message: message,
         mode: 'md',
-        duration: 2000,
+        duration: 2000
       });
       toast.present();
     });
@@ -144,8 +143,8 @@ export class SnowProfilePage extends BasePage {
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: src,
-      },
+        imgSrc: src
+      }
     });
     modal.present();
   }

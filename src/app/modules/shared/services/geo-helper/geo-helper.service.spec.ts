@@ -10,7 +10,7 @@ describe('GeoHelperService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TranslateService, provideMock(TranslateService)],
+      providers: [TranslateService, provideMock(TranslateService)]
     });
     geoHelperService = TestBed.get(GeoHelperService);
   });
@@ -20,15 +20,23 @@ describe('GeoHelperService', () => {
   });
 
   it('geoHazard snow should return translation key GEO_HAZARDS.SNOW', () => {
-    expect(geoHelperService.getTranslationKey(GeoHazard.Snow)).toEqual('GEO_HAZARDS.SNOW');
+    expect(geoHelperService.getTranslationKey(GeoHazard.Snow)).toEqual(
+      'GEO_HAZARDS.SNOW'
+    );
   });
   it('geoHazard water should return translation key GEO_HAZARDS.WATER', () => {
-    expect(geoHelperService.getTranslationKey(GeoHazard.Water)).toEqual('GEO_HAZARDS.WATER');
+    expect(geoHelperService.getTranslationKey(GeoHazard.Water)).toEqual(
+      'GEO_HAZARDS.WATER'
+    );
   });
   it('geoHazard dirt should return translation key GEO_HAZARDS.DIRT', () => {
-    expect(geoHelperService.getTranslationKey(GeoHazard.Soil)).toEqual('GEO_HAZARDS.DIRT');
+    expect(geoHelperService.getTranslationKey(GeoHazard.Soil)).toEqual(
+      'GEO_HAZARDS.DIRT'
+    );
   });
   it('geoHazard ice should return translation key GEO_HAZARDS.ICE', () => {
-    expect(geoHelperService.getTranslationKey(GeoHazard.Ice)).toEqual('GEO_HAZARDS.ICE');
+    expect(geoHelperService.getTranslationKey(GeoHazard.Ice)).toEqual(
+      'GEO_HAZARDS.ICE'
+    );
   });
 });

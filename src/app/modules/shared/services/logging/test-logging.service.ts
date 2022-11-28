@@ -7,14 +7,27 @@ import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class TestLoggingService implements LoggingService {
-  configureLogging(appMode: AppMode) {}
-  setUser(user: LoggedInUser) {}
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {}
-  debug(message: string, tag?: string, ...optionalParams: any[]) {}
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {}
-  enable() {}
-  disable() {}
+  configureLogging(appMode: AppMode) {
+
+  }
+  setUser(user: LoggedInUser) {
+  }
+  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
+
+  }
+  debug(message: string, tag?: string, ...optionalParams: any[]) {
+
+  }
+  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
+
+  }
+  enable() {
+
+  }
+  disable() {
+
+  }
 }

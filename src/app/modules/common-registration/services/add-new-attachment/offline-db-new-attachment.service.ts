@@ -6,12 +6,7 @@ import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachme
 import { OfflineDbService, TABLE_NAMES } from '../offline-db/offline-db.service';
 import { NewAttachmentService } from './new-attachment.service';
 import { catchError, filter, map, startWith, switchMap, take } from 'rxjs/operators';
-import {
-  RxAttachmentMetaCollection,
-  RxAttachmentMetaDocument,
-  RxRegistrationCollection,
-  RxRegistrationDocument,
-} from '../../db/RxDB';
+import { RxAttachmentMetaCollection, RxAttachmentMetaDocument, RxRegistrationCollection, RxRegistrationDocument } from '../../db/RxDB';
 import { RegistrationTid } from '../../models/registration-tid.enum';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -49,14 +44,14 @@ export class OfflineDbNewAttachmentService extends NewAttachmentService {
             RegistrationTID: registrationTid,
             type,
             ref,
-            fileSize: data.size,
+            fileSize: data.size
           }).pipe(
             switchMap(() =>
               from(
                 doc.putAttachment({
                   id: attachmentId,
                   data,
-                  type: mimeType,
+                  type: mimeType
                 })
               )
             )
@@ -71,10 +66,7 @@ export class OfflineDbNewAttachmentService extends NewAttachmentService {
   }
 
   protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
-    return combineLatest([
-      this.getRegistrationOfflineDocumentById(registrationId),
-      this.getAnyChangesToMetaData$(),
-    ]).pipe(
+    return combineLatest([this.getRegistrationOfflineDocumentById(registrationId), this.getAnyChangesToMetaData$()]).pipe(
       switchMap(([doc]) => (doc && doc.allAttachments().length > 0 ? this.getAttachmentMetaFromDocument(doc) : of([])))
     );
   }
@@ -135,8 +127,7 @@ export class OfflineDbNewAttachmentService extends NewAttachmentService {
           err,
           `Could not remove attachment meta document from registration document with ID = '${registrationId}`,
           this.DEBUG_TAG,
-          metaDoc
-        );
+          metaDoc);
       }
     }
     const collection = await this.getRegistrationDbCollectionForAppMode().pipe(take(1)).toPromise();
@@ -152,22 +143,16 @@ export class OfflineDbNewAttachmentService extends NewAttachmentService {
 
   private getAttachmentMetaFromDocument(doc: RxRegistrationDocument) {
     return this.getAttachmentMetaDocumentsFromRegistrationDocument(doc).pipe(
-      map((attachmentMetaDocs: RxAttachmentMetaDocument[]) =>
-        attachmentMetaDocs.filter((doc) => !!doc).map((mdoc) => mdoc.toJSON())
-      )
+      map((attachmentMetaDocs: RxAttachmentMetaDocument[]) => attachmentMetaDocs.filter((doc) => !!doc).map((mdoc) => mdoc.toJSON()))
     );
   }
 
-  private getAttachmentMetaDocumentsFromRegistrationDocument(
-    doc: RxRegistrationDocument
-  ): Observable<RxAttachmentMetaDocument[]> {
+  private getAttachmentMetaDocumentsFromRegistrationDocument(doc: RxRegistrationDocument): Observable<RxAttachmentMetaDocument[]> {
     const attachments = doc.allAttachments();
     if (attachments.length <= 0) {
       return of([]);
     }
-    return forkJoin(
-      doc.allAttachments().map((attachment) => this.getAttachmentMetaDocument(attachment.id).pipe(take(1)))
-    );
+    return forkJoin(doc.allAttachments().map((attachment) => this.getAttachmentMetaDocument(attachment.id).pipe(take(1))));
   }
 
   private getAttachmentMetaDocument(id: string): Observable<RxAttachmentMetaDocument> {
@@ -176,10 +161,7 @@ export class OfflineDbNewAttachmentService extends NewAttachmentService {
     );
   }
 
-  public saveAttachmentMeta$(
-    registrationId: string,
-    attachmentMetaData: AttachmentUploadEditModel
-  ): Observable<RxAttachmentMetaDocument> {
+  public saveAttachmentMeta$(registrationId: string, attachmentMetaData: AttachmentUploadEditModel): Observable<RxAttachmentMetaDocument> {
     return this.getAttachmentMetaDbCollectionForAppMode().pipe(
       take(1),
       switchMap((dbCollection) => from(dbCollection.atomicUpsert(attachmentMetaData)))

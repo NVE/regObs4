@@ -6,10 +6,12 @@ import { enterZone, tickApplicationRef } from '../../helpers';
 import { enterZoneAndTickApplicationRef } from '../../helpers/enter-zone-and-tick-application-ref';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ObservableHelperService {
-  constructor(private ngZone: NgZone, private applicationRef: ApplicationRef) {}
+
+  constructor(private ngZone: NgZone, private applicationRef: ApplicationRef) {
+  }
 
   enterZone<T>(): (source: Observable<T>) => Observable<T> {
     return enterZone(this.ngZone);
@@ -22,4 +24,5 @@ export class ObservableHelperService {
   enterZoneAndTickApplicationRef<T>(): (source: Observable<T>) => Observable<T> {
     return enterZoneAndTickApplicationRef(this.ngZone, this.applicationRef);
   }
+
 }

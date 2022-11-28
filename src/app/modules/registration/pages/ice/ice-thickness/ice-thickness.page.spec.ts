@@ -12,11 +12,11 @@ describe('IceThicknessPage', () => {
       registration: {
         DtObsTime: new Date(2020, 0, 1).toISOString(),
         GeoHazardTID: GeoHazard.Ice,
-        IceThickness: {},
+        IceThickness: {}
       },
       uuid: null,
       syncStatus: null,
-      simpleMode: false,
+      simpleMode: false
     };
   });
 
@@ -38,7 +38,7 @@ describe('IceThicknessPage', () => {
     expect(component.isValid()).toBeFalse();
   });
 
-  it("validity check shouldn't modify values", () => {
+  it('validity check shouldn\'t modify values', () => {
     component.isWaterBefore = true;
     component.isWaterAfter = true;
     component.waterHeightBefore = 6;
@@ -70,5 +70,6 @@ describe('IceThicknessPage', () => {
     expect(component.isValid()).toBeTrue();
     expect(iceThickness.IceHeightBefore).toEqual(0);
     expect(iceThickness.IceHeightAfter).toEqual(15);
+
   });
 });

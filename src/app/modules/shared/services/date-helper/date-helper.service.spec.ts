@@ -11,10 +11,13 @@ describe('DateHelperService', () => {
 
   beforeEach(() => {
     translateService = jasmine.createSpyObj('TranslateService', {
-      getTranslation: () => of({}),
+      getTranslation: () => of({})
     });
     TestBed.configureTestingModule({
-      providers: [{ provide: TranslateService, useValue: translateService }, DateHelperService],
+      providers: [
+        { provide: TranslateService, useValue: translateService },
+        DateHelperService
+      ]
     });
   });
 
@@ -27,7 +30,12 @@ describe('DateHelperService', () => {
   });
 
   it('show basic date', async () => {
-    const result = await service.formatDate(moment(new Date(2019, 0, 1)), false, true, false);
+    const result = await service.formatDate(
+      moment(new Date(2019, 0, 1)),
+      false,
+      true,
+      false
+    );
     expect(result).toEqual('01/01 2019');
   });
 

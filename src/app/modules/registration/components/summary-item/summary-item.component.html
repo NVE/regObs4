@@ -1,10 +1,11 @@
 <ion-item class="summary-item" (click)="navigate()" [detail]="!readonly" *ngIf="!(readonly && !item.hasData)">
-  <ion-label class="ion-padding-vertical ion-padding-end" [ngClass]="{ 'simple-mode-title': simpleObsMode }">
-    <h2>{{ item.title | translate }}</h2>
-    <p *ngIf="item.subTitle" [ngClass]="{ 'simple-mode-sub': simpleObsMode }">
+  <ion-label class="ion-padding-vertical ion-padding-end" [ngClass]="{'simple-mode-title': simpleObsMode}">
+    <h2>{{ item.title | translate}}</h2>
+    <p *ngIf="item.subTitle" [ngClass]="{'simple-mode-sub': simpleObsMode}">
       {{ item.subTitle | translate }}
     </p>
-    <app-thumbnails [attachments]="item.attachments" [draftUuid]="item.uuid"> </app-thumbnails>
+    <app-thumbnails [attachments]="item.attachments" [draftUuid]="item.uuid">
+    </app-thumbnails>
   </ion-label>
   <ion-icon *ngIf="item.hasData && !readonly" slot="end" color="success" name="checkmark-circle"></ion-icon>
 </ion-item>

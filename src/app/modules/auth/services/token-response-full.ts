@@ -1,4 +1,8 @@
-import { nowInSeconds, TokenResponse, TokenResponseJson } from '@openid/appauth';
+import {
+  nowInSeconds,
+  TokenResponse,
+  TokenResponseJson
+} from '@openid/appauth';
 
 export const AUTH_EXPIRY_BUFFER = 10 * 60 * -1; // 10 mins in seconds
 
@@ -23,7 +27,10 @@ export class TokenResponseFull extends TokenResponse {
   constructor(response: TokenResponseFullJson) {
     super(response);
     if (response.refresh_token_expires_in) {
-      this.refreshTokenExpiresIn = parseInt(response.refresh_token_expires_in, 10);
+      this.refreshTokenExpiresIn = parseInt(
+        response.refresh_token_expires_in,
+        10
+      );
     }
   }
 

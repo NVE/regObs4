@@ -19,40 +19,40 @@ export const TABLE_NAMES = {
   HELP_TEXTS: 'helptexts',
   ATTACHMENT_META: 'attachmentmeta',
   REGISTRATION_SYNC_PROGRESS: 'syncprogress',
-  UPLOAD_PROGRESS: 'uploadprogress',
+  UPLOAD_PROGRESS: 'uploadprogress'
 };
 
 const collections: Array<{ name: string; schema: RxJsonSchema; instancePerAppMode: boolean }> = [
   {
     name: TABLE_NAMES.REGISTRATION,
     schema: RegistrationSchema,
-    instancePerAppMode: true,
+    instancePerAppMode: true
   },
   {
     name: TABLE_NAMES.KDV_ELEMENTS,
     schema: GenericSchema,
-    instancePerAppMode: true,
+    instancePerAppMode: true
   },
   {
     name: TABLE_NAMES.HELP_TEXTS,
     schema: GenericSchema,
-    instancePerAppMode: true,
+    instancePerAppMode: true
   },
   {
     name: TABLE_NAMES.ATTACHMENT_META,
     schema: AttachmentMetaSchema,
-    instancePerAppMode: true,
+    instancePerAppMode: true
   },
   {
     name: TABLE_NAMES.REGISTRATION_SYNC_PROGRESS,
     schema: RegistrationSyncProgressSchema,
-    instancePerAppMode: false,
+    instancePerAppMode: false
   },
   {
     name: TABLE_NAMES.UPLOAD_PROGRESS,
     schema: UploadProgressSchema,
-    instancePerAppMode: false,
-  },
+    instancePerAppMode: false
+  }
 ];
 
 function loadRxDBPlugins(): void {
@@ -62,7 +62,7 @@ function loadRxDBPlugins(): void {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class OfflineDbService {
   // public readonly appModeInitialized$: Observable<AppMode>;
@@ -106,9 +106,9 @@ export class OfflineDbService {
       name: 'rxdb_regobs_registration_v2',
       adapter,
       pouchSettings: {
-        revs_limit: 10, // Max 10 revisions to keep db small
+        revs_limit: 10 // Max 10 revisions to keep db small
       },
-      ignoreDuplicate: true,
+      ignoreDuplicate: true
     });
 
     if (isDevMode()) {

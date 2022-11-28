@@ -7,7 +7,7 @@ import { LogLevel } from '../logging/log-level.model';
 const DEBUG_TAG = 'AppResetService';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AppResetService {
   constructor(
@@ -17,10 +17,21 @@ export class AppResetService {
   ) {}
 
   async resetApp(): Promise<void> {
-    await Promise.all(this.services.map((s) => Promise.resolve(s.appOnReset())));
+    await Promise.all(
+      this.services.map((s) => Promise.resolve(s.appOnReset()))
+    );
     await this.dbHelperService.resetDb((table) => {
-      this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
+      this.loggingService.log(
+        `Error reset table ${table}`,
+        null,
+        LogLevel.Warning,
+        DEBUG_TAG
+      );
     });
-    await Promise.all(this.services.map((s) => Promise.resolve(s.appOnResetComplete ? s.appOnResetComplete() : true)));
+    await Promise.all(
+      this.services.map((s) =>
+        Promise.resolve(s.appOnResetComplete ? s.appOnResetComplete() : true)
+      )
+    );
   }
 }

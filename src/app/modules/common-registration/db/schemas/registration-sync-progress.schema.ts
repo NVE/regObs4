@@ -1,5 +1,7 @@
-import { RxJsonSchema } from 'rxdb';
-export const RegistrationSyncProgressSchema: RxJsonSchema = {
+import {
+  RxJsonSchema
+} from 'rxdb';
+export const RegistrationSyncProgressSchema : RxJsonSchema = {
   title: 'Registration sync progress schema',
   description: 'Registration sync progress',
   version: 0,
@@ -14,8 +16,8 @@ export const RegistrationSyncProgressSchema: RxJsonSchema = {
       type: 'array',
       uniqueItems: true,
       items: {
-        type: 'string',
-      },
+        type: 'string'
+      }
     },
     totalRecords: {
       type: 'number',
@@ -29,14 +31,14 @@ export const RegistrationSyncProgressSchema: RxJsonSchema = {
         type: 'object',
         properties: {
           id: {
-            type: 'string',
+            type: 'string'
           },
           error: {
-            type: 'string',
-          },
-        },
-      },
-    },
+            type: 'string'
+          }
+        }
+      }
+    }
   },
   required: ['id'],
 };

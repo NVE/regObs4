@@ -1,5 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import {
+  Router,
+  NavigationEnd,
+  ActivatedRouteSnapshot,
+  ActivatedRoute
+} from '@angular/router';
 import { Subject, from } from 'rxjs';
 import { takeUntil, filter, tap, map, concatMap } from 'rxjs/operators';
 @Injectable()
@@ -17,7 +22,10 @@ export abstract class RouterPage implements OnDestroy {
       .subscribe();
   }
 
-  private isComponentActive(path: ActivatedRouteSnapshot[], component: any): boolean {
+  private isComponentActive(
+    path: ActivatedRouteSnapshot[],
+    component: any
+  ): boolean {
     let isActive = false;
     path.forEach((ss: ActivatedRouteSnapshot) => {
       if (ss.component === component) {

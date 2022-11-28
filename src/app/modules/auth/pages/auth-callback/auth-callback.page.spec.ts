@@ -19,7 +19,9 @@ describe('AuthCallbackPage', () => {
         { provide: RegobsAuthService, useValue: regobsAuthService },
         { provide: Router, useValue: { url: '/testurl?abc=123' } },
       ],
-      imports: [IonicModule],
+      imports: [
+        IonicModule
+      ]
     }).compileComponents();
   }));
 

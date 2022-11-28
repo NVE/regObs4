@@ -11,21 +11,21 @@ import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
 import { DraftRepositoryService } from './draft-repository.service';
 import { DraftToRegistrationService } from './draft-to-registration.service';
 
+
 describe('DraftToRegistrationService', () => {
   let service: DraftToRegistrationService;
   let addUpdateDeleteRegService: jasmine.SpyObj<AddUpdateDeleteRegistrationService>;
   let connected: ReplaySubject<boolean>;
   let networkService: NetworkStatusService;
 
-  const draft: RegistrationDraft = {
-    // Default test draft
+  const draft: RegistrationDraft = {  // Default test draft
     uuid: 'abc',
     syncStatus: SyncStatus.Sync,
     simpleMode: false,
     registration: {
       GeoHazardTID: 10,
-      DtObsTime: 'Test',
-    },
+      DtObsTime: 'Test'
+    }
   };
   let drafts: ReplaySubject<RegistrationDraft[]>;
   let draftService: {
@@ -41,14 +41,16 @@ describe('DraftToRegistrationService', () => {
     draftService = {
       drafts$: drafts.asObservable(),
       delete: jasmine.createSpy('DraftService.delete'),
-      save: jasmine.createSpy('DraftService.save'),
+      save: jasmine.createSpy('DraftService.save')
     };
 
-    addUpdateDeleteRegService = jasmine.createSpyObj('AddUpdateDeleteRegistrationService', ['add', 'update']);
+    addUpdateDeleteRegService = jasmine.createSpyObj(
+      'AddUpdateDeleteRegistrationService', ['add', 'update']
+    );
 
     connected = new ReplaySubject<boolean>();
     networkService = {
-      connected$: connected.asObservable(),
+      connected$: connected.asObservable()
     };
 
     loggerService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
@@ -66,13 +68,16 @@ describe('DraftToRegistrationService', () => {
     // Test database for drafts
     let testDrafts = [
       { ...draft, uuid: 'a' },
-      { ...draft, uuid: 'b' },
+      { ...draft, uuid: 'b' }
     ];
 
     draftService.save.and.callFake((draftToSave) => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         setTimeout(() => {
-          testDrafts = [...testDrafts.filter((d) => d.uuid !== draftToSave.uuid), draftToSave];
+          testDrafts = [
+            ...testDrafts.filter(d => d.uuid !== draftToSave.uuid),
+            draftToSave
+          ];
           drafts.next(testDrafts);
           resolve();
         }, 100);
@@ -96,13 +101,13 @@ describe('DraftToRegistrationService', () => {
 
     // The drafts should have been saved with an error object on it
     const error = jasmine.objectContaining({
-      code: RegistrationDraftErrorCode.NoNetworkOrTimedOut,
+      code: RegistrationDraftErrorCode.NoNetworkOrTimedOut
     });
     expect(draftService.save).toHaveBeenCalledTimes(3);
     expect(draftService.save.calls.allArgs()).toEqual([
       [{ ...draft, uuid: 'a', error }],
       [{ ...draft, uuid: 'b', error }],
-      [{ ...draft, uuid: 'c', error }],
+      [{ ...draft, uuid: 'c', error }]
     ]);
 
     // We should not try to upload any drafts
@@ -131,8 +136,8 @@ describe('DraftToRegistrationService', () => {
       error: {
         code: RegistrationDraftErrorCode.ServerError,
         message: jasmine.any(String),
-        timestamp: jasmine.any(Number),
-      },
+        timestamp: jasmine.any(Number)
+      }
     });
 
     // We should have logged the error
@@ -147,11 +152,11 @@ describe('DraftToRegistrationService', () => {
     // We start with not beeing connected, and with drafts that have a network error
     connected.next(false);
     drafts.next([
-      { ...draft, uuid: 'a', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut } },
-      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut } },
+      { ...draft, uuid: 'a', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut }},
+      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut }},
       // Some drafts without network error
-      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError } },
-      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft },
+      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError }},
+      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft }
     ]);
 
     // Start listening
@@ -170,7 +175,10 @@ describe('DraftToRegistrationService', () => {
 
     // We expect that draftService.save have been called two times with each draft with network error, a and b
     expect(draftService.save).toHaveBeenCalledTimes(2);
-    expect(draftService.save.calls.allArgs()).toEqual([[{ ...draft, uuid: 'a' }], [{ ...draft, uuid: 'b' }]]);
+    expect(draftService.save.calls.allArgs()).toEqual([
+      [{ ...draft, uuid: 'a'}],
+      [{ ...draft, uuid: 'b'}]
+    ]);
 
     discardPeriodicTasks();
   }));
@@ -189,11 +197,11 @@ describe('DraftToRegistrationService', () => {
     // We start with beeing connected, and with drafts that have network errors
     connected.next(true);
     drafts.next([
-      { ...draft, uuid: 'a', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut } },
-      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut } },
+      { ...draft, uuid: 'a', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut }},
+      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut }},
       // Some drafts without network error
-      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError } },
-      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft },
+      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError }},
+      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft }
     ]);
 
     // Start listening
@@ -208,11 +216,11 @@ describe('DraftToRegistrationService', () => {
     // Update drafts
     drafts.next([
       // The first draft has its error removed
-      { ...draft, uuid: 'a' },
-      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut } },
+      { ...draft, uuid: 'a'},
+      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut }},
       // Some drafts without network error
-      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError } },
-      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft },
+      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError }},
+      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft }
     ]);
 
     tick(2);
@@ -220,39 +228,38 @@ describe('DraftToRegistrationService', () => {
     // Then one of the drafts has a danger sign added to it
     drafts.next([
       // The first draft has its error removed
-      { ...draft, uuid: 'a' },
-      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut } },
+      { ...draft, uuid: 'a'},
+      { ...draft, uuid: 'b', error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut }},
       // Some drafts without network error
-      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError } },
+      { ...draft, uuid: 'c', error: { code: RegistrationDraftErrorCode.ServerError }},
       // One of the drafts are updated with a danger sign
-      {
-        ...draft,
-        uuid: 'd',
-        syncStatus: SyncStatus.Draft,
-        registration: {
-          ...draft.registration,
-          DangerObs: [{ DangerSignTID: 1 }],
-        },
-      },
+      { ...draft, uuid: 'd', syncStatus: SyncStatus.Draft, registration: {
+        ...draft.registration,
+        DangerObs: [{ DangerSignTID: 1 }]
+      }}
     ]);
 
     flush();
 
     // We expect that draftService.save have been called two times with each draft with network error, a and b
     expect(draftService.save).toHaveBeenCalledTimes(2);
-    expect(draftService.save.calls.allArgs()).toEqual([[{ ...draft, uuid: 'a' }], [{ ...draft, uuid: 'b' }]]);
+    expect(draftService.save.calls.allArgs()).toEqual([
+      [{ ...draft, uuid: 'a'}],
+      [{ ...draft, uuid: 'b'}]
+    ]);
 
     discardPeriodicTasks();
   }));
 
   it(
-    'Uploads drafts once and deletes the draft after upload, ' + 'even if drafts$ changes while doing an upload',
+    'Uploads drafts once and deletes the draft after upload, ' +
+    'even if drafts$ changes while doing an upload',
     fakeAsync(() => {
-      // Make addUpdateDeleteRegService.add return a registration after 500 ms
+    // Make addUpdateDeleteRegService.add return a registration after 500 ms
       const registration: RegistrationViewModel = {
         RegId: 123456,
         GeoHazardTID: 10,
-        DtObsTime: 'Test',
+        DtObsTime: 'Test'
       };
       addUpdateDeleteRegService.add.and.callFake(() => {
         return new Promise((resolve) => {
@@ -290,6 +297,5 @@ describe('DraftToRegistrationService', () => {
       expect(draftService.delete).toHaveBeenCalledWith(draft.uuid);
 
       discardPeriodicTasks();
-    })
-  );
+    }));
 });

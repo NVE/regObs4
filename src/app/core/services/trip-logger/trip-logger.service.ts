@@ -20,7 +20,7 @@ import { AppMode } from 'src/app/modules/common-core/models';
 const DEBUG_TAG = 'TripLoggerService';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class TripLoggerService {
   get isTripRunning$(): Observable<boolean> {
@@ -63,21 +63,15 @@ export class TripLoggerService {
   }
 
   getTripLogActivityAsObservable(): Observable<TripLogActivity[]> {
-    return new NSqlFullUpdateObservable<TripLogActivity[]>(
-      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').listen()
-    );
+    return new NSqlFullUpdateObservable<TripLogActivity[]>(nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').listen());
   }
 
   getLegacyTripAsObservable(): Observable<LegacyTrip> {
-    return this.userSettingService.appMode$.pipe(
-      switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode)))
-    );
+    return this.userSettingService.appMode$.pipe(switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode))));
   }
 
   async getLegacyTripFromDbByAppMode(appMode: AppMode): Promise<LegacyTrip> {
-    const result = (await NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode)
-      .query('select')
-      .exec()) as LegacyTrip[];
+    const result = (await NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('select').exec()) as LegacyTrip[];
     return result[0];
   }
 
@@ -85,18 +79,14 @@ export class TripLoggerService {
     const legacyTrip: LegacyTrip = {
       id: 'legacytrip',
       timestamp: moment().unix(),
-      request: tripDto,
+      request: tripDto
     };
     return this.userSettingService.appMode$.pipe(
       take(1),
       switchMap((appMode) =>
         this.tripService
           .TripPost(tripDto)
-          .pipe(
-            switchMap(() =>
-              from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('upsert', legacyTrip).exec())
-            )
-          )
+          .pipe(switchMap(() => from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('upsert', legacyTrip).exec())))
       ),
       tap(() => this.tripStartedSubject.next(true)),
       switchMap(() => this.infoMessage(true)),
@@ -116,33 +106,28 @@ export class TripLoggerService {
   }
 
   async showTripErrorMessage(start: boolean): Promise<void> {
-    const translations = await this.translateService
-      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'TRIP.END_ERROR'])
-      .toPromise();
+    const translations = await this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'TRIP.END_ERROR']).toPromise();
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: start ? translations['TRIP.ERROR'] : translations['TRIP.END_ERROR'],
-      buttons: [translations['ALERT.OK']],
+      buttons: [translations['ALERT.OK']]
     });
     return alert.present();
   }
 
   async showTripNoPositionErrorMessage(): Promise<void> {
-    const translations = await this.translateService
-      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR_POSITION'])
-      .toPromise();
+    const translations = await this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR_POSITION']).toPromise();
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: translations['TRIP.ERROR_POSITION'],
-      buttons: [translations['ALERT.OK']],
+      buttons: [translations['ALERT.OK']]
     });
     return alert.present();
   }
 
   private async confirmStopTrip(): Promise<void> {
-    const translations = await firstValueFrom(
-      this.translateService.get(['TRIP.STOP_TRIP', 'DIALOGS.ARE_YOU_SURE', 'ALERT.OK', 'ALERT.CANCEL'])
-    );
+    const translations = await firstValueFrom(this.translateService
+      .get(['TRIP.STOP_TRIP', 'DIALOGS.ARE_YOU_SURE', 'ALERT.OK', 'ALERT.CANCEL']));
     const alert = await this.alertController.create({
       header: translations['TRIP.STOP_TRIP'] + '?',
       message: translations['DIALOGS.ARE_YOU_SURE'],
@@ -150,13 +135,13 @@ export class TripLoggerService {
         {
           text: translations['ALERT.CANCEL'],
           role: 'cancel',
-          cssClass: 'secondary',
+          cssClass: 'secondary'
         },
         {
           text: translations['ALERT.OK'],
-          handler: () => this.callStopLegacyTripApiAndDeleteFromDb(),
-        },
-      ],
+          handler: () => this.callStopLegacyTripApiAndDeleteFromDb()
+        }
+      ]
     });
     await alert.present();
   }
@@ -184,9 +169,7 @@ export class TripLoggerService {
 
   private deleteLegacyTripsFromDb() {
     return this.userSettingService.appMode$.pipe(
-      concatMap((appMode) =>
-        from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec())
-      )
+      concatMap((appMode) => from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec()))
     );
   }
 
@@ -209,7 +192,7 @@ export class TripLoggerService {
     const toast = await this.toastController.create({
       message,
       mode: 'md',
-      duration: 2000,
+      duration: 2000
     });
     return toast.present();
   }

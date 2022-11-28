@@ -5,7 +5,7 @@ import { CompressionTestModalPage } from './compression-test-modal/compression-t
 @Component({
   selector: 'app-compression-test-list',
   templateUrl: './compression-test-list.component.html',
-  styleUrls: ['./compression-test-list.component.scss'],
+  styleUrls: ['./compression-test-list.component.scss']
 })
 export class CompressionTestListComponent {
   @Input() tests: Array<CompressionTestEditModel>;
@@ -23,8 +23,8 @@ export class CompressionTestListComponent {
         component: CompressionTestModalPage,
         componentProps: {
           compressionTest: add ? undefined : (this.tests || [])[index],
-          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault,
-        },
+          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault
+        }
       });
       modal.present();
       const result = await modal.onDidDismiss();

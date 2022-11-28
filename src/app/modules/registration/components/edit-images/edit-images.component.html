@@ -1,12 +1,7 @@
 <div class="images">
   <!-- Existing attachments -->
   <div class="image-wrapper" *ngFor="let attachment of filteredExistingImages; trackBy: trackExisting">
-    <app-remote-image
-      [attachment]="attachment"
-      preferSize="Large"
-      withFallbackText="true"
-      largeFallback="true"
-    ></app-remote-image>
+    <app-remote-image [attachment]="attachment" preferSize="Large" withFallbackText="true" largeFallback="true"></app-remote-image>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
       <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeExistingImage(attachment)">
         <ion-icon name="close"></ion-icon>
@@ -46,16 +41,11 @@
 </ion-item>
 
 <ion-item class="file-drop" *ngIf="!isHybrid">
-  <ngx-file-drop
-    style="width: 100%"
-    dropZoneLabel="Drop files here"
-    [accept]="accept"
-    dropZoneClassName="drop-zone"
-    (onFileDrop)="dropped($event)"
-  >
+  <ngx-file-drop style="width:100%;" dropZoneLabel="Drop files here" [accept]="accept" dropZoneClassName="drop-zone"
+    (onFileDrop)="dropped($event)">
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
       <button type="button" (click)="openFileSelector()">
-        <ion-item [ngClass]="{ grey: aboutToDrop }" (dragenter)="aboutToDrop = true" (dragleave)="aboutToDrop = false">
+        <ion-item [ngClass]="{'grey': aboutToDrop}" (dragenter)="aboutToDrop = true" (dragleave)="aboutToDrop=false">
           <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
           <ion-label>{{ title | translate }}</ion-label>
         </ion-item>

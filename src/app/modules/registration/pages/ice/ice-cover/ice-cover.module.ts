@@ -6,12 +6,12 @@ import { SharedComponentsModule } from '../../../shared-components.module';
 const routes: Routes = [
   {
     path: '',
-    component: IceCoverPage,
-  },
+    component: IceCoverPage
+  }
 ];
 
 @NgModule({
   imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [IceCoverPage],
+  declarations: [IceCoverPage]
 })
 export class IceCoverPageModule {}

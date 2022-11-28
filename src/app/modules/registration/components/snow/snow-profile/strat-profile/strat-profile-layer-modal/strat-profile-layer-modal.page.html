@@ -3,96 +3,61 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate }} </ion-title>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
     <ion-list lines="full" class="ion-no-margin">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}} </ion-label>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}}
+        </ion-label>
       </ion-list-header>
-      <app-numeric-input
-        [(value)]="layer.Thickness"
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
-        [min]="0"
-        suffix="cm"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-      >
+      <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
+        [min]="0" suffix="cm" [decimalPlaces]="2" [convertRatio]="100">
       </app-numeric-input>
-      <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS"
-        kdvKey="Snow_HardnessKDV"
-        [(value)]="layer.HardnessTID"
-        [filter]="hardnessFilter"
-      ></app-kdv-select>
-      <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM"
-        kdvKey="Snow_GrainFormKDV"
-        [(value)]="layer.GrainFormPrimaryTID"
-        [filter]="grainFormFilter"
-        [getIconFunc]="getIconFunc"
-      >
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS" kdvKey="Snow_HardnessKDV"
+        [(value)]="layer.HardnessTID" [filter]="hardnessFilter"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM" kdvKey="Snow_GrainFormKDV"
+        [(value)]="layer.GrainFormPrimaryTID" [filter]="grainFormFilter" [getIconFunc]="getIconFunc">
       </app-kdv-select>
       <ion-item>
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE' | translate }}</ion-label
-        >
-        <app-select
-          [(selectedValue)]="layer.GrainSizeAvg"
-          [options]="grainSizeOptions"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE"
-        >
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE' | translate }}</ion-label>
+        <app-select [(selectedValue)]="layer.GrainSizeAvg" [options]="grainSizeOptions"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE">
         </app-select>
       </ion-item>
-      <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS"
-        kdvKey="Snow_WetnessKDV"
-        [(value)]="layer.WetnessTID"
-        [filter]="wetnessFilter"
-      >
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS" kdvKey="Snow_WetnessKDV"
+        [(value)]="layer.WetnessTID" [filter]="wetnessFilter">
       </app-kdv-select>
     </ion-list>
     <ion-button (click)="toggleShowMore()" fill="clear" expand="full">
       <ion-icon slot="start" [name]="showMore ? 'chevron-up' : 'chevron-down'"></ion-icon>
-      <ng-container *ngIf="showMore"
-        >{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS' | translate }}
+      <ng-container *ngIf="showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS' | translate  }}
       </ng-container>
-      <ng-container *ngIf="!showMore"
-        >{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE' | translate }}
+      <ng-container *ngIf="!showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE' | translate  }}
       </ng-container>
     </ion-button>
     <ion-list lines="full" *ngIf="showMore">
-      <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM"
-        kdvKey="Snow_HardnessKDV"
-        [(value)]="layer.HardnessBottomTID"
-      >
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM" kdvKey="Snow_HardnessKDV"
+        [(value)]="layer.HardnessBottomTID">
       </app-kdv-select>
-      <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
-        kdvKey="Snow_GrainFormKDV"
-        [(value)]="layer.GrainFormSecondaryTID"
-        [getIconFunc]="getIconFunc"
-      >
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
+        kdvKey="Snow_GrainFormKDV" [(value)]="layer.GrainFormSecondaryTID" [getIconFunc]="getIconFunc">
       </app-kdv-select>
       <ion-item>
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE' | translate }}</ion-label
-        >
-        <app-select
-          [(selectedValue)]="layer.GrainSizeAvgMax"
-          [options]="grainSizeOptions"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE"
-        >
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE' | translate }}</ion-label>
+        <app-select [(selectedValue)]="layer.GrainSizeAvgMax" [options]="grainSizeOptions"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE">
         </app-select>
       </ion-item>
-      <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
-        kdvKey="Snow_CriticalLayerKDV"
-        [(value)]="layer.CriticalLayerTID"
-      >
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER" kdvKey="Snow_CriticalLayerKDV"
+        [(value)]="layer.CriticalLayerTID">
       </app-kdv-select>
       <app-text-comment title="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
     </ion-list>
@@ -101,19 +66,15 @@
         <ion-col size="6">
           <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
             <ion-icon slot="start" name="arrow-back"></ion-icon>
-            <ion-text
-              >{{ 'DIALOGS.PREVIOUS' | translate }} {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate
-              | lowercase }}
-            </ion-text>
+            <ion-text>{{ 'DIALOGS.PREVIOUS' | translate }}
+              {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate | lowercase }} </ion-text>
           </ion-button>
         </ion-col>
         <ion-col size="6">
           <ion-button [disabled]="!canGoNext" expand="block" fill="outline" color="primary" (click)="ok(1)">
             <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            <ion-text
-              >{{ 'DIALOGS.NEXT' | translate }} {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate |
-              lowercase }}</ion-text
-            >
+            <ion-text>{{ 'DIALOGS.NEXT' | translate }}
+              {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate | lowercase }}</ion-text>
           </ion-button>
         </ion-col>
       </ion-row>

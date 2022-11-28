@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SwipeBackService {
   private _subject: Subject<boolean>;

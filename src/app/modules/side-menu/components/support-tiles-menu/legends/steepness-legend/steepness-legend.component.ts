@@ -2,19 +2,25 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SupportTile } from 'src/app/core/models/support-tile.model';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { setObservableTimeout } from '../../../../../../core/helpers/observable-helper';
+import {
+  setObservableTimeout
+} from '../../../../../../core/helpers/observable-helper';
 
 @Component({
   selector: 'app-steepness-legend',
   templateUrl: './steepness-legend.component.html',
   styleUrls: ['./steepness-legend.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SteepnessLegendComponent {
   readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
-  constructor(private userSettingService: UserSettingService) {
-    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(setObservableTimeout());
+  constructor(
+    private userSettingService: UserSettingService,
+  ) {
+    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(
+      setObservableTimeout()
+    );
   }
 
   isOutletsActive(supportTiles: SupportTile[]): boolean {

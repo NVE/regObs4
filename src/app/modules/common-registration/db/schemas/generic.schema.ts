@@ -1,5 +1,7 @@
-import { RxJsonSchema } from 'rxdb';
-export const GenericSchema: RxJsonSchema = {
+import {
+  RxJsonSchema
+} from 'rxdb';
+export const GenericSchema : RxJsonSchema = {
   title: 'Generic schema',
   description: 'Generic offline table with string id',
   version: 0,
@@ -8,13 +10,13 @@ export const GenericSchema: RxJsonSchema = {
   properties: {
     id: {
       type: 'string',
-      primary: true,
+      primary: true
     },
     lastUpdated: {
-      type: 'number',
+      type: 'number'
     },
     data: {
-      type: ['object', 'array'],
-    },
+      type: ['object', 'array' ]
+    }
   },
 };

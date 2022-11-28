@@ -1,36 +1,21 @@
-import {
-  distinctUntilChanged,
-  map,
-  Observable,
-  take,
-  catchError,
-  of,
-  forkJoin,
-  switchMap,
-  OperatorFunction,
-} from 'rxjs';
+import { distinctUntilChanged, map, Observable, take, catchError, of, forkJoin, switchMap, OperatorFunction } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import {
-  AttachmentType,
-  AttachmentUploadEditModel,
-  AttachmentUploadEditModelWithBlob,
-  RegistrationTid,
-} from '../../registration.models';
+import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from '../../registration.models';
 
 export interface GetAttachmentFilterOptions {
   /**
    * Filter for attachment type, eg. Water Level Attachments
    */
-  type?: AttachmentType | 'All';
-  /**
-   * Reference used to filter attachments matching eg. one specific water level measurement
-   */
-  ref?: string;
-  /**
-   * Filter for registration type, eg. Danger Sign
-   */
-  registrationTid?: RegistrationTid;
+   type?: AttachmentType | 'All';
+   /**
+    * Reference used to filter attachments matching eg. one specific water level measurement
+    */
+   ref?: string;
+   /**
+    * Filter for registration type, eg. Danger Sign
+    */
+   registrationTid?: RegistrationTid;
 }
 
 type AttachmentFilter = OperatorFunction<AttachmentUploadEditModel[], AttachmentUploadEditModel[]>;
@@ -63,15 +48,15 @@ export abstract class NewAttachmentService {
     const filters: AttachmentFilter[] = [];
 
     if (registrationTid != null) {
-      filters.push(map((attachments) => attachments.filter((a) => a.RegistrationTID === registrationTid)));
+      filters.push(map(attachments => attachments.filter(a => a.RegistrationTID === registrationTid)));
     }
 
     if (type !== 'All') {
-      filters.push(map((attachments) => attachments.filter((a) => a.type === type)));
+      filters.push(map(attachments => attachments.filter(a => a.type === type)));
     }
 
     if (ref) {
-      filters.push(map((attachments) => attachments.filter((a) => a.ref === ref)));
+      filters.push(map(attachments => attachments.filter(a => a.ref === ref)));
     }
 
     // We need to declare this as a tuple to allow usage spread operator by typescript
@@ -83,7 +68,7 @@ export abstract class NewAttachmentService {
       return 0;
     }
     return a.fileAddedTime - b.fileAddedTime;
-  };
+  }
 
   protected abstract getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]>;
 
@@ -97,7 +82,7 @@ export abstract class NewAttachmentService {
   ): Observable<AttachmentUploadEditModel[]> {
     return this.getAttachmentsObservable(registrationId).pipe(
       ...this.getAttachmentFilterOperators(options),
-      map((attachments) => attachments.sort(this.compareByAddedTime))
+      map(attachments => attachments.sort(this.compareByAddedTime))
     );
   }
 
@@ -122,9 +107,9 @@ export abstract class NewAttachmentService {
     };
 
     // Get blobs for all attachments
-    const addBlobs = (attachments: AttachmentUploadEditModel[]) => forkJoin(attachments.map((a) => addBlob(a)));
+    const addBlobs = (attachments: AttachmentUploadEditModel[]) => forkJoin(attachments.map(a => addBlob(a)));
 
-    return switchMap((attachments) => (attachments.length > 0 ? addBlobs(attachments) : of([])));
+    return switchMap(attachments => attachments.length > 0 ? addBlobs(attachments) : of([]));
   }
 
   abstract getBlob(registrationId: string, attachmentId: string): Observable<Blob>;

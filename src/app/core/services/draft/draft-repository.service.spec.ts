@@ -12,38 +12,39 @@ import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  store: Map<string, any> = new Map();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    store: Map<string, any> = new Map();
 
-  private ready = new ReplaySubject<void>();
-  readonly ready$: Observable<void> = this.ready.asObservable();
+    private ready = new ReplaySubject<void>();
+    readonly ready$: Observable<void> = this.ready.asObservable();
 
-  constructor() {
-    this.ready.next();
-  }
+    constructor() {
+      this.ready.next();
+    }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async set(key: string, value: any): Promise<void> {
-    this.store.set(key, JSON.stringify(value));
-  }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async set(key: string, value: any): Promise<void> {
+      this.store.set(key, JSON.stringify(value));
+    }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async get(key: string): Promise<any> {
-    const value = this.store.get(key);
-    if (value) return JSON.parse(value);
-    return undefined;
-  }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async get(key: string): Promise<any> {
+      const value = this.store.get(key);
+      if (value) return JSON.parse(value);
+      return undefined;
+    }
 
-  async keys(): Promise<string[]> {
-    return [...this.store.keys()];
-  }
+    async keys(): Promise<string[]> {
+      return [ ...this.store.keys() ];
+    }
 
-  async remove(key: string): Promise<void> {
-    this.store.delete(key);
-  }
+    async remove(key: string): Promise<void> {
+      this.store.delete(key);
+    }
 }
 
 describe('DraftRepositoryService', () => {
+
   let service: DraftRepositoryService;
   let database: TestDatabaseService;
   let newAttachmentService: NewAttachmentService;
@@ -63,7 +64,7 @@ describe('DraftRepositoryService', () => {
     );
 
     userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
+      ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
     });
   });
@@ -94,9 +95,9 @@ describe('DraftRepositoryService', () => {
 
     //deselect simple mode setting => snow drafts should now be created with complete mode, not simple
     userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
+      ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
-      preferCompleteSnowObservations: true,
+      preferCompleteSnowObservations: true
     });
     const completeSnowDraft = await service.create(GeoHazard.Snow);
     expect(completeSnowDraft.simpleMode).toBeFalse();
@@ -112,8 +113,8 @@ describe('DraftRepositoryService', () => {
         GeoHazardTID: GeoHazard.Snow,
         DtObsTime: null,
         ObsLocation: { Latitude: 0, Longitude: 0 },
-        Attachments: [],
-      },
+        Attachments: []
+      }
     };
     database.set(`drafts.TEST.${uuid}`, oldDraftRecord);
 
@@ -126,7 +127,7 @@ describe('DraftRepositoryService', () => {
     draft.registration.DtObsTime = '2022-02-13 08:00';
     draft.registration.SnowSurfaceObservation = {
       Comment: 'comment',
-      SnowDepth: 3.5,
+      SnowDepth: 3.5
     };
     await service.save(draft);
 
@@ -138,9 +139,9 @@ describe('DraftRepositoryService', () => {
     expect(savedDraft.registration.DtObsTime).toBe('2022-02-13 08:00');
     expect(savedDraft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
     expect(savedDraft.registration.Attachments).toEqual([]);
-    expect(savedDraft.registration.SnowSurfaceObservation).toEqual({
+    expect(savedDraft.registration.SnowSurfaceObservation).toEqual( {
       Comment: 'comment',
-      SnowDepth: 3.5,
+      SnowDepth: 3.5
     });
     expect(savedDraft.lastSavedTime).toBeLessThanOrEqual(Date.now());
   });
@@ -173,11 +174,11 @@ describe('DraftRepositoryService', () => {
     //irreleant registrations are not changed
     expect(await service.load(irrelevantDraft1.uuid)).toEqual({
       ...irrelevantDraft1,
-      lastSavedTime: jasmine.any(Number),
+      lastSavedTime: jasmine.any(Number)
     });
     expect(await service.load(irrelevantDraft2.uuid)).toEqual({
       ...irrelevantDraft2,
-      lastSavedTime: jasmine.any(Number),
+      lastSavedTime: jasmine.any(Number)
     });
   });
 
@@ -275,7 +276,7 @@ describe('DraftRepositoryService', () => {
     await service.save(draft2inTest);
 
     userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
+      ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Demo,
     });
 
@@ -295,7 +296,7 @@ describe('DraftRepositoryService', () => {
     expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBeTrue();
 
     userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
+      ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
     });
 
@@ -305,11 +306,11 @@ describe('DraftRepositoryService', () => {
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
     expect(await service.load(draft1inTest.uuid)).toEqual({
       ...draft1inTest,
-      lastSavedTime: jasmine.any(Number),
+      lastSavedTime: jasmine.any(Number)
     });
     expect(await service.load(draft2inTest.uuid)).toEqual({
       ...draft2inTest,
-      lastSavedTime: jasmine.any(Number),
+      lastSavedTime: jasmine.any(Number)
     });
 
     //drafts in demo database not available when in environment test
@@ -318,8 +319,8 @@ describe('DraftRepositoryService', () => {
 
   it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
     let draft: RegistrationDraft = {
-      ...(await service.create(GeoHazard.Ice)),
-      uuid: 'test',
+      ...await service.create(GeoHazard.Ice),
+      uuid: 'test'
     };
 
     let i = 0;
@@ -331,7 +332,7 @@ describe('DraftRepositoryService', () => {
       },
       complete: () => {
         completed = true;
-      },
+      }
     });
 
     tick(1);
@@ -372,8 +373,8 @@ describe('DraftRepositoryService', () => {
       GeoHazardTID: GeoHazard.Ice,
       GeneralObservation: {
         Comment: 'comment',
-        GeoHazardTID: GeoHazard.Ice,
-      },
+        GeoHazardTID: GeoHazard.Ice
+      }
     };
     await service.saveAsDraft(viewModel);
 
@@ -386,7 +387,7 @@ describe('DraftRepositoryService', () => {
     expect(draft.regId).toEqual(42);
     expect(draft.registration.GeneralObservation).toEqual({
       Comment: 'comment',
-      GeoHazardTID: GeoHazard.Ice,
+      GeoHazardTID: GeoHazard.Ice
     });
   });
 
@@ -398,8 +399,8 @@ describe('DraftRepositoryService', () => {
       GeoHazardTID: GeoHazard.Ice,
       GeneralObservation: {
         Comment: 'comment',
-        GeoHazardTID: GeoHazard.Ice,
-      },
+        GeoHazardTID: GeoHazard.Ice
+      }
     };
     await service.copyViewModelAndSave(viewModel, 'uuid');
 
@@ -414,7 +415,7 @@ describe('DraftRepositoryService', () => {
     //check that the draft contains a copy of the viewModel
     expect(draft.registration.GeneralObservation).toEqual({
       Comment: 'comment',
-      GeoHazardTID: GeoHazard.Ice,
+      GeoHazardTID: GeoHazard.Ice
     });
   });
 });

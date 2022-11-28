@@ -7,7 +7,7 @@ xdescribe('BlobImageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RemoteImageComponent, DomSanitizer],
+      providers: [RemoteImageComponent, DomSanitizer]
     });
     component = TestBed.inject(RemoteImageComponent);
   });

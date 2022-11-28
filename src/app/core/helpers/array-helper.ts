@@ -15,7 +15,11 @@ export class ArrayHelper {
    * @param toIndex Reorder item to index
    * @returns New reordered array
    */
-  static reorderList<T>(array: Array<T>, fromIndex: number, toIndex: number): Array<T> {
+  static reorderList<T>(
+    array: Array<T>,
+    fromIndex: number,
+    toIndex: number
+  ): Array<T> {
     if (!array || array.length === 0) {
       return array;
     }

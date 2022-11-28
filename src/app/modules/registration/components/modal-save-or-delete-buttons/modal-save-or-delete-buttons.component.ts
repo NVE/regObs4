@@ -3,13 +3,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
 import {
   ConfirmationModalService,
-  PopupResponse,
+  PopupResponse
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 
 @Component({
   selector: 'app-modal-save-or-delete-buttons',
   templateUrl: './modal-save-or-delete-buttons.component.html',
-  styleUrls: ['./modal-save-or-delete-buttons.component.scss'],
+  styleUrls: ['./modal-save-or-delete-buttons.component.scss']
 })
 export class ModalSaveOrDeleteButtonsComponent {
   @Input() saveText = 'DIALOGS.OK';
@@ -24,7 +24,8 @@ export class ModalSaveOrDeleteButtonsComponent {
     private translateService: TranslateService,
     private alertController: AlertController,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+  }
 
   ok() {
     this.saveClicked.emit();
@@ -37,16 +38,16 @@ export class ModalSaveOrDeleteButtonsComponent {
       buttons: [
         {
           text: 'DIALOGS.CANCEL',
-          role: PopupResponse.CANCEL,
+          role: PopupResponse.CANCEL
         },
         {
           text: 'DIALOGS.OK',
           handler: () => {
             this.deleteClicked.emit();
           },
-          role: PopupResponse.CONFIRM,
-        },
-      ],
+          role: PopupResponse.CONFIRM
+        }
+      ]
     });
   }
 }

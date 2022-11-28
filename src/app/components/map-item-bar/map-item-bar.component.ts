@@ -6,11 +6,7 @@ import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
-import {
-  AtAGlanceViewModel,
-  AttachmentViewModel,
-  RegistrationViewModel,
-} from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
@@ -20,7 +16,7 @@ import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registrat
 @Component({
   selector: 'app-map-item-bar',
   templateUrl: './map-item-bar.component.html',
-  styleUrls: ['./map-item-bar.component.scss'],
+  styleUrls: ['./map-item-bar.component.scss']
 })
 /**
  * Show key info from selected registration on top of the map.

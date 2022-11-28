@@ -68,11 +68,12 @@ export class SideMenuComponent implements OnInit, OnDestroy {
           this.lastUpdated = val;
         });
       });
-    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
+    this.userSettingSubscription =
+      this.userSettingService.userSetting$.subscribe((val) => {
+        this.ngZone.run(() => {
+          this.userSettings = val;
+        });
       });
-    });
     this.offlineMapsAvailable = Capacitor.isNativePlatform();
   }
 
@@ -104,10 +105,17 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     this.navController.navigateRoot('start-wizard');
   }
 
-  async contact(subjectMessage: string, descriptionMessage: string, additionalSubjectText?: string) {
+  async contact(
+    subjectMessage: string,
+    descriptionMessage: string,
+    additionalSubjectText?: string
+  ) {
     if (Capacitor.isNativePlatform()) {
-      const translations = await firstValueFrom(this.translateService.get([subjectMessage, descriptionMessage]));
-      const subject = translations[subjectMessage] + (additionalSubjectText || '');
+      const translations = await firstValueFrom(
+        this.translateService.get([subjectMessage, descriptionMessage])
+      );
+      const subject =
+        translations[subjectMessage] + (additionalSubjectText || '');
       const body = translations[descriptionMessage];
       this.fileLoggingService.sendLogsByEmail(subject, body);
     } else {
@@ -125,11 +133,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     let additionalSubjectText;
     if (Capacitor.isNativePlatform()) {
       const appVersion = await this.appVersionService.getAppVersion();
-      additionalSubjectText = ` : ${Capacitor.getPlatform()} ${appVersion.version} ${appVersion.buildNumber} ${
-        appVersion.revision
-      }`;
+      additionalSubjectText = ` : ${Capacitor.getPlatform()} ${
+        appVersion.version
+      } ${appVersion.buildNumber} ${appVersion.revision}`;
     }
-    this.contact('MENU.CONTACT_REGOBS_ERROR', 'MENU.ERROR_REPORT_DESCRIPTION', additionalSubjectText);
+    this.contact(
+      'MENU.CONTACT_REGOBS_ERROR',
+      'MENU.ERROR_REPORT_DESCRIPTION',
+      additionalSubjectText
+    );
   }
 
   changeLanguage() {

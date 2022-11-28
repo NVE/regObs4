@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-fullscreen-toggle',
   templateUrl: './fullscreen-toggle.component.html',
-  styleUrls: ['./fullscreen-toggle.component.scss'],
+  styleUrls: ['./fullscreen-toggle.component.scss']
 })
 export class FullscreenToggleComponent {
   isFullscreen$: Observable<boolean>;

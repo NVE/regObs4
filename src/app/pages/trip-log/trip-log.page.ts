@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',
-  styleUrls: ['./trip-log.page.scss'],
+  styleUrls: ['./trip-log.page.scss']
 })
 export class TripLogPage implements OnInit, OnDestroy {
   state: TripLogState = TripLogState.NotStarted;
@@ -19,9 +19,11 @@ export class TripLogPage implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.subscription = this.tripLoggerService.getTripLogStateAsObservable().subscribe((activity) => {
-      this.state = activity.state;
-    });
+    this.subscription = this.tripLoggerService
+      .getTripLogStateAsObservable()
+      .subscribe((activity) => {
+        this.state = activity.state;
+      });
   }
 
   async startTrip() {

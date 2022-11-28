@@ -3,46 +3,42 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate }} </ion-title>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.METHOD' | translate}} </ion-label>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.METHOD' | translate}}
+        </ion-label>
       </ion-list-header>
       <ion-item>
-        <ion-label> {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_METHOD' | translate}} </ion-label>
+        <ion-label>
+          {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_METHOD' | translate}}
+        </ion-label>
         <ion-toggle slot="end" [(ngModel)]="useCylinder" name="useCylinder"></ion-toggle>
       </ion-item>
       <ng-container *ngIf="useCylinder">
         <ion-list-header class="ion-text-uppercase">
-          <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER' | translate }} </ion-label>
+          <ion-label>
+            {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER' | translate }}
+          </ion-label>
         </ion-list-header>
-        <app-numeric-input
-          [(value)]="profile.CylinderDiameter"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER"
-          [max]="999"
-          [min]="0"
-          suffix="cm"
-          [decimalPlaces]="2"
-          (valueChange)="recalculateLayersAndSave()"
-          [convertRatio]="100"
-        ></app-numeric-input>
-        <app-numeric-input
-          [(value)]="profile.TareWeight"
-          (valueChange)="recalculateLayersAndSave()"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT"
-          [max]="999"
-          [min]="0"
-          suffix="g"
-          [decimalPlaces]="2"
-          [convertRatio]="1000"
-        ></app-numeric-input>
+        <app-numeric-input [(value)]="profile.CylinderDiameter"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER" [max]="999" [min]="0" suffix="cm"
+          [decimalPlaces]="2" (valueChange)="recalculateLayersAndSave()" [convertRatio]="100"></app-numeric-input>
+        <app-numeric-input [(value)]="profile.TareWeight" (valueChange)="recalculateLayersAndSave()"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT" [max]="999" [min]="0" suffix="g"
+          [decimalPlaces]="2" [convertRatio]="1000"></app-numeric-input>
       </ng-container>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.LAYER' | translate }} </ion-label>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.LAYER' | translate }}
+        </ion-label>
       </ion-list-header>
       <ng-container *ngIf="hasLayers else noLayers">
         <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()">
@@ -50,16 +46,18 @@
           <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
         </ion-item>
         <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
-          <ion-item
-            tabindex="0"
-            (click)="addOrEditLayer(i, layer)"
-            (keyup.enter)="addOrEditLayer(i, layer)"
-            *ngFor="let layer of profile.Layers; let i = index"
-          >
+          <ion-item tabindex="0" (click)="addOrEditLayer(i, layer)" (keyup.enter)="addOrEditLayer(i, layer)"
+            *ngFor="let layer of profile.Layers; let i = index">
             <ion-label>
-              <ion-text *ngIf="layer.Thickness !== undefined"> {{layer.Thickness | metersToCm }}cm </ion-text>
-              <ion-text *ngIf="layer.Weight !== undefined"> {{layer.Weight * 1000 }}g </ion-text>
-              <ion-text *ngIf="layer.Density !== undefined"> {{ layer.Density | number:'1.0-2' }}kg/m³ </ion-text>
+              <ion-text *ngIf="layer.Thickness !== undefined">
+                {{layer.Thickness | metersToCm }}cm
+              </ion-text>
+              <ion-text *ngIf="layer.Weight !== undefined">
+                {{layer.Weight * 1000 }}g
+              </ion-text>
+              <ion-text *ngIf="layer.Density !== undefined">
+                {{ layer.Density | number:'1.0-2' }}kg/m³
+              </ion-text>
               <ion-text *ngIf="useCylinder && layer.Density !== undefined && layer.Thickness !== undefined">
                 ({{ getWaterEquivalent(layer.Density, layer.Thickness) | number:'1.0-2' }}mm)
               </ion-text>

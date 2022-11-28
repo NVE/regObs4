@@ -13,7 +13,7 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
   selector: 'app-start-wizard',
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
-  animations: animations,
+  animations: animations
 })
 export class StartWizardPage implements OnInit, OnDestroy {
   @ViewChild(IonSlides) slides: IonSlides;
@@ -33,7 +33,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
     langKey: LangKey;
   }[] = settings.language.supportedLanguages.map((lang) => ({
     ...lang,
-    langKey: LangKey[lang.lang],
+    langKey: LangKey[lang.lang]
   }));
   isIosOrAndroid: boolean;
   isDesktop: boolean;
@@ -54,12 +54,14 @@ export class StartWizardPage implements OnInit, OnDestroy {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isDesktop = this.platform.is('desktop');
 
-    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
-        this.legalUrl = this.userSettingService.legalUrl;
-      });
-    });
+    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe(
+      (val) => {
+        this.ngZone.run(() => {
+          this.userSettings = val;
+          this.legalUrl = this.userSettingService.legalUrl;
+        });
+      }
+    );
   }
 
   ionViewWillEnter() {
@@ -75,7 +77,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     this.userSettingService.saveUserSettings({
       ...userSettings,
-      language: this.language,
+      language: this.language
     });
   }
 
@@ -124,7 +126,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
       const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
       this.userSettingService.saveUserSettings({
         ...userSettings,
-        completedStartWizard: true,
+        completedStartWizard: true
       });
       this.navController.navigateRoot('/');
     } else {

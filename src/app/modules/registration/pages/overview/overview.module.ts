@@ -19,8 +19,8 @@ const routes: Routes = [
   {
     path: '',
     component: OverviewPage,
-    canDeactivate: [SaveAsDraftRouteGuard],
-  },
+    canDeactivate: [SaveAsDraftRouteGuard]
+  }
 ];
 
 @NgModule({
@@ -37,7 +37,7 @@ const routes: Routes = [
     CoachMarksSimpleObsComponent,
     EditImagesBarComponent,
     EditImagesPage,
-    KdvIconSelectComponent,
-  ],
+    KdvIconSelectComponent
+  ]
 })
 export class OverviewPageModule {}

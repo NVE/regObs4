@@ -1,72 +1,72 @@
 .map-center-info {
-  border-radius: 5px;
-  min-width: 153px;
-  background-color: var(--map-faded-overlay-background);
-  position: absolute;
-  bottom: 10px;
-  left: 11px;
-  z-index: var(--z-index-over-map);
-  color: #fff;
-  padding: 10px;
-  font-size: 12px;
-  display: block;
+    border-radius: 5px;
+    min-width: 153px;
+    background-color: var(--map-faded-overlay-background);
+    position: absolute;
+    bottom: 10px;
+    left: 11px;
+    z-index: var(--z-index-over-map);
+    color: #fff;
+    padding: 10px;
+    font-size: 12px;
+    display: block;
 
-  ion-row {
-    height: 17px;
-  }
-
-  .steepness-triangle {
-    height: 12px;
-    width: 14px;
-    overflow: hidden;
-    position: relative;
-    margin-right: 5px;
-    margin-left: 5px;
-    bottom: -1px;
-    border: 1px solid #fff;
-
-    .steepness-value {
-      height: 100%;
-      top: 50%;
-      width: 200%;
-      color: #fff;
-      position: absolute;
-      display: block;
-      background-color: #fff;
-      left: -60%;
+    ion-row {
+        height: 17px;
     }
-  }
+
+    .steepness-triangle {
+        height: 12px;
+        width: 14px;
+        overflow: hidden;
+        position: relative;
+        margin-right: 5px;
+        margin-left: 5px;
+        bottom: -1px;
+        border: 1px solid #fff;
+
+        .steepness-value {
+            height: 100%;
+            top: 50%;
+            width: 200%;
+            color: #fff;
+            position: absolute;
+            display: block;
+            background-color: #fff;
+            left: -60%;
+        }
+    }
 }
 
 .center-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-37px, -37px);
-  z-index: var(--z-index-over-map);
-  pointer-events: none; // make clicks go trough
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-37px,-37px);
+    z-index: var(--z-index-over-map);
+    pointer-events: none; // make clicks go trough
 }
 
 .height-difference-icon {
-  padding-top: 2px;
-  padding-left: 5px;
-  padding-right: 1px;
+    padding-top: 2px;
+    padding-left: 5px;
+    padding-right: 1px;
 }
 
 .yr-icon {
-  position: relative;
-  height: 13px;
+    position: relative;
+    height: 13px;
 }
 
 .yr-y {
-  top: 1.4px;
+    top: 1.4px;
 }
 
 .yr-r {
-  left: -2px;
+    left: -2px;
 }
 
 .weather-link {
-  border-bottom: 1px solid white;
-  height: 16px;
+    border-bottom:1px solid white;
+    height: 16px;
 }

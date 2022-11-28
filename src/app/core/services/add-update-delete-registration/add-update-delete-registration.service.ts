@@ -16,9 +16,10 @@ import { addAttachmentToRegistration } from './attachmentHelpers';
  * data. Underlying services will also request an update of attachment metadata after a successful attachment upload.
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AddUpdateDeleteRegistrationService {
+
   constructor(
     private uploadAttachmentsService: UploadAttachmentsService,
     private regobsApiRegistrationService: RegistrationService,
@@ -60,13 +61,11 @@ export class AddUpdateDeleteRegistrationService {
     const registrationWithMeta = this.addMetadata(registration, draft);
 
     // Send registration to regobs
-    const result = await firstValueFrom(
-      this.regobsApiRegistrationService.RegistrationInsert({
-        registration: registrationWithMeta,
-        langKey,
-        externalReferenceId: draft.uuid,
-      })
-    );
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
+      registration: registrationWithMeta,
+      langKey,
+      externalReferenceId: draft.uuid
+    }));
 
     // Track observation type in GA
     this.analytics.trackDimension(AppCustomDimension.observationType, draft.simpleMode ? 'simple' : 'normal');
@@ -87,7 +86,10 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {HttpErrorResponse} If the request is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
-  async update(draft: RegistrationDraft, ignoreVersionCheck = false): Promise<RegistrationViewModel> {
+  async update(
+    draft: RegistrationDraft,
+    ignoreVersionCheck = false
+  ): Promise<RegistrationViewModel> {
     if (!draft.regId) {
       throw new Error('Update operation needs regid');
     }
@@ -98,15 +100,13 @@ export class AddUpdateDeleteRegistrationService {
     const registrationWithMeta = this.addMetadata(registration, draft);
 
     // Send registration to regobs
-    const result = await firstValueFrom(
-      this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
-        registration: registrationWithMeta,
-        langKey,
-        externalReferenceId: draft.uuid,
-        id: draft.regId,
-        ignoreVersionCheck: ignoreVersionCheck,
-      })
-    );
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
+      registration: registrationWithMeta,
+      langKey,
+      externalReferenceId: draft.uuid,
+      id: draft.regId,
+      ignoreVersionCheck: ignoreVersionCheck
+    }));
 
     this.changedRegistrations.next(result);
     return result;
@@ -126,12 +126,10 @@ export class AddUpdateDeleteRegistrationService {
     if (regId == null) {
       throw new Error('regId required');
     }
-    return firstValueFrom(
-      this.regobsApiRegistrationService.RegistrationDelete(regId).pipe(
-        timeout(timeoutInMillis),
-        tap(() => this.deletedRegistrationIds.next(regId))
-      )
-    );
+    return firstValueFrom(this.regobsApiRegistrationService.RegistrationDelete(regId).pipe(
+      timeout(timeoutInMillis),
+      tap(() => this.deletedRegistrationIds.next(regId))
+    ));
   }
 
   /**
@@ -148,7 +146,7 @@ export class AddUpdateDeleteRegistrationService {
 
     return {
       ...draft,
-      registration,
+      registration
     };
   }
 
@@ -164,9 +162,10 @@ export class AddUpdateDeleteRegistrationService {
 
     const regWithMeta = {
       ...registration,
-      ...metadata,
+      ...metadata
     };
 
     return regWithMeta as RegistrationEditModelWithRemoteOrLocalAttachments;
   }
+
 }

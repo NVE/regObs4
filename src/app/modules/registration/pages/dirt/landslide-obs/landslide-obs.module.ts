@@ -10,8 +10,8 @@ const routes: Routes = [
   {
     path: '',
     component: LandslideObsPage,
-    canDeactivate: [CanDeactivateRouteGuard],
-  },
+    canDeactivate: [CanDeactivateRouteGuard]
+  }
 ];
 
 @NgModule({
@@ -19,8 +19,8 @@ const routes: Routes = [
     SharedComponentsModule,
     AddWebUrlModalPageModule,
     SetAvalanchePositionPageModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
-  declarations: [LandslideObsPage],
+  declarations: [LandslideObsPage]
 })
 export class LandslideObsPageModule {}

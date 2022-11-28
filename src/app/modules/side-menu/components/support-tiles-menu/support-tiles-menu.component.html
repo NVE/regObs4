@@ -3,27 +3,23 @@
     <ion-item>
       <svg-icon slot="start" src="/assets/icon/map.svg"></svg-icon>
       <ion-label class="menu-label ion-text-wrap">
-        {{ "SUPPORT_MAP." + supportTile.description | translate }}
+        {{'SUPPORT_MAP.' +supportTile.description | translate }}
       </ion-label>
-      <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)"> </ion-toggle>
+      <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)">
+      </ion-toggle>
     </ion-item>
     <div class="inner-list-panel" *ngIf="isTileActive(supportTile)">
       <ion-item *ngIf="supportTile.subTile">
         <ion-label class="menu-label ion-text-wrap">
-          {{ "SUPPORT_MAP." + supportTile.subTile.description | translate }}
+          {{'SUPPORT_MAP.' +supportTile.subTile.description | translate }}
         </ion-label>
         <ion-toggle [(ngModel)]="supportTile.subTile.checked" (ionChange)="onSubTileChanged(supportTile)"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="dark" class="stacked-label">{{ "MENU.OPACITY" | translate }}</ion-label>
-        <ion-select
-          interface="action-sheet"
-          cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-          [(ngModel)]="supportTile.opacity"
-          (ionChange)="onTileChanged(supportTile)"
-        >
-          <ion-select-option *ngFor="let option of opacityValues" [value]="option.value"
-            >{{ option.name | translate }}
+        <ion-label position="stacked" color="dark" class="stacked-label">{{'MENU.OPACITY' | translate}}</ion-label>
+        <ion-select interface="action-sheet" cancelText="{{'DIALOGS.CANCEL' | translate}}"
+          [(ngModel)]="supportTile.opacity" (ionChange)="onTileChanged(supportTile)">
+          <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}
           </ion-select-option>
         </ion-select>
       </ion-item>

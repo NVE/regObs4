@@ -1,7 +1,11 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { SharedModule } from '../shared/shared.module';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateLoader,
+  TranslateService
+} from '@ngx-translate/core';
 import { initTranslateService } from '../../custom-translate.loader';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
@@ -22,22 +26,22 @@ function createTranslateLoader(http: HttpClient) {
     HttpClientTestingModule,
     TranslateModule.forRoot(),
     AngularSvgIconModule.forRoot(),
-    SharedModule,
+    SharedModule
   ],
   exports: [SharedModule],
   providers: [
     {
       provide: TranslateLoader,
       useFactory: createTranslateLoader,
-      deps: [HttpClient],
+      deps: [HttpClient]
     },
     {
       provide: APP_INITIALIZER,
       useFactory: initTranslateService,
       deps: [TranslateService, UserSettingService],
-      multi: true,
+      multi: true
     },
     { provide: LoggingService, useClass: TestLoggingService },
-  ],
+  ]
 })
 export class TestModule {}

@@ -2,26 +2,31 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { NgZone, OnDestroy, Injectable } from '@angular/core';
 import { timeout } from 'rxjs/operators';
 
-export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promise<void>, timeoutInMs?: number) {
+export function toPromiseWithCancel<T>(
+  observable: Observable<T>,
+  cancel?: Promise<void>,
+  timeoutInMs?: number,
+) {
   return new Promise<T>((resolve, reject) => {
     let subscription: Subscription = undefined;
-    subscription = (timeoutInMs != null ? observable.pipe(timeout(timeoutInMs)) : observable).subscribe({
+    subscription =
+    (timeoutInMs != null ? observable.pipe(timeout(timeoutInMs)) : observable).subscribe({
       next: (result) => {
-        if (subscription) {
+        if(subscription) {
           subscription.unsubscribe();
         }
         resolve(result);
       },
       error: (error) => {
-        if (subscription) {
+        if(subscription) {
           subscription.unsubscribe();
         }
         reject(error);
-      },
+      }
     });
     if (cancel) {
       cancel.then(() => {
-        if (subscription) {
+        if(subscription) {
           subscription.unsubscribe();
         }
         reject(new Error('Cancelled'));
@@ -36,7 +41,7 @@ export function enterZone(zone: NgZone) {
       source.subscribe({
         next: (x) => zone.run(() => observer.next(x)),
         error: (err) => observer.error(err),
-        complete: () => observer.complete(),
+        complete: () => observer.complete()
       })
     );
 }
@@ -47,7 +52,7 @@ export function setObservableTimeout() {
       source.subscribe({
         next: (x) => setTimeout(() => observer.next(x)),
         error: (err) => observer.error(err),
-        complete: () => observer.complete(),
+        complete: () => observer.complete()
       })
     );
 }

@@ -8,14 +8,17 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { firstValueFrom } from 'rxjs';
-import { ConfirmationModalService } from '../../../core/services/confirmation-modal/confirmation-modal.service';
+import {
+  ConfirmationModalService
+} from '../../../core/services/confirmation-modal/confirmation-modal.service';
 
 const DEBUG_TAG = 'BasePageService';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BasePageService {
+
   get draftRepository(): DraftRepositoryService {
     return this.draftRepositoryService;
   }
@@ -27,7 +30,8 @@ export class BasePageService {
     private translateService: TranslateService,
     private loggingService: LoggingService,
     private confirmationModal: ConfirmationModalService
-  ) {}
+  ) {
+  }
 
   /**
    * @returns true if operator confirms to leave an invalid registration form (and lose the data)
@@ -56,8 +60,8 @@ export class BasePageService {
       const draftCopy: RegistrationDraft = {
         ...draft,
         registration: {
-          ...draft.registration,
-        },
+          ...draft.registration
+        }
       };
 
       const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
@@ -70,11 +74,8 @@ export class BasePageService {
             try {
               this.newAttachmentService.removeAttachment(draft.uuid, attachment.id);
             } catch (error) {
-              this.loggingService.error(
-                error,
-                DEBUG_TAG,
-                `Remove image failed, attachmentId = ${attachment.id}, registration ID = ${draft.uuid}`
-              );
+              this.loggingService.error(error, DEBUG_TAG,
+                `Remove image failed, attachmentId = ${attachment.id}, registration ID = ${draft.uuid}`);
             }
           }
         }
@@ -85,4 +86,6 @@ export class BasePageService {
     }
     return draft;
   }
+
 }
+

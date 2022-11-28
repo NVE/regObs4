@@ -1,10 +1,16 @@
-import { Directive, OnInit, OnDestroy, HostBinding, NgZone } from '@angular/core';
+import {
+  Directive,
+  OnInit,
+  OnDestroy,
+  HostBinding,
+  NgZone
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 
 @Directive({
-  selector: '[appHeaderColor]',
+  selector: '[appHeaderColor]'
 })
 export class HeaderColorDirective implements OnInit, OnDestroy {
   private appMode: AppMode;
@@ -12,17 +18,24 @@ export class HeaderColorDirective implements OnInit, OnDestroy {
 
   @HostBinding('class')
   get elementClass(): string {
-    return `hydrated app-header-color ${this.appMode ? this.appMode.toLowerCase() : ''}`;
+    return `hydrated app-header-color ${
+      this.appMode ? this.appMode.toLowerCase() : ''
+    }`;
   }
 
-  constructor(private userSettingService: UserSettingService, private ngZone: NgZone) {}
+  constructor(
+    private userSettingService: UserSettingService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
-    this.subscription = this.userSettingService.appMode$.subscribe((appMode) => {
-      this.ngZone.run(() => {
-        this.appMode = appMode;
-      });
-    });
+    this.subscription = this.userSettingService.appMode$.subscribe(
+      (appMode) => {
+        this.ngZone.run(() => {
+          this.appMode = appMode;
+        });
+      }
+    );
   }
 
   ngOnDestroy(): void {

@@ -10,7 +10,7 @@ const DEBUG_TAG = 'ShortcutService';
 const FLAG_ACTIVITY_CLEAR_TOP = 67108864;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ShortcutService {
   constructor(
@@ -31,14 +31,14 @@ export class ShortcutService {
 
   private getImage(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.Snow:
-        return 'ic_snow';
-      case GeoHazard.Soil:
-        return 'ic_dirt';
-      case GeoHazard.Ice:
-        return 'ic_ice';
-      case GeoHazard.Water:
-        return 'ic_water';
+    case GeoHazard.Snow:
+      return 'ic_snow';
+    case GeoHazard.Soil:
+      return 'ic_dirt';
+    case GeoHazard.Ice:
+      return 'ic_ice';
+    case GeoHazard.Water:
+      return 'ic_water';
     }
   }
 
@@ -50,9 +50,7 @@ export class ShortcutService {
       .toPromise();
 
     const getLongLabelTranslation = (geoHazardName: string) =>
-      `${translations['ADD_MENU.NEW_OBSERVATION']} ${geoHazardName.toLowerCase()} ${
-        translations['MAP_ITEM_BAR.OBSERVATION']
-      }`;
+      `${translations['ADD_MENU.NEW_OBSERVATION']} ${geoHazardName.toLowerCase()} ${translations['MAP_ITEM_BAR.OBSERVATION']}`;
     const getShortLabel = (geoHazardName: string) => `+ ${geoHazardName}`;
 
     return geoHazards.map((geoHazard) => ({
@@ -60,7 +58,7 @@ export class ShortcutService {
       url: `regobs://registration/new/${geoHazard}`,
       shortLabel: getShortLabel(translations[this.geoHelperService.getTranslationKey(geoHazard)]),
       longLabel: getLongLabelTranslation(translations[this.geoHelperService.getTranslationKey(geoHazard)]),
-      iconFromResource: this.getImage(geoHazard),
+      iconFromResource: this.getImage(geoHazard)
     }));
   }
 
@@ -79,8 +77,8 @@ export class ShortcutService {
           intent: {
             action: 'android.intent.action.VIEW',
             flags: FLAG_ACTIVITY_CLEAR_TOP, // FLAG_ACTIVITY_CLEAR_TOP
-            data: s.url, // Must be a well-formed URI
-          },
+            data: s.url // Must be a well-formed URI
+          }
         }));
         this.loggingService.debug('Adding dynamic shortcuts:', DEBUG_TAG, shortcutsFull);
         w.plugins.Shortcuts.setDynamic(
@@ -94,12 +92,7 @@ export class ShortcutService {
         );
       },
       (error) => {
-        this.loggingService.log(
-          'Error when checking support for dynamic shortcuts!',
-          error,
-          LogLevel.Warning,
-          DEBUG_TAG
-        );
+        this.loggingService.log('Error when checking support for dynamic shortcuts!', error, LogLevel.Warning, DEBUG_TAG);
       }
     );
   }

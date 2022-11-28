@@ -1,12 +1,12 @@
 import { RegistrationTid } from '../models/registration-tid.enum';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
-import { AdaptiveElement, AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import {
-  RegistrationDraft,
-  RegistrationEditModelWithRemoteOrLocalAttachments,
-  RemoteOrLocalAttachmentEditModel,
-} from 'src/app/core/services/draft/draft-model';
+  AdaptiveElement,
+  AttachmentViewModel,
+  RegistrationViewModel
+} from 'src/app/modules/common-regobs-api/models';
+import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments, RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
@@ -50,11 +50,13 @@ export function getWaterLevelAttachments(
 export function getSnowProfileAttachments(
   viewModel: RegistrationViewModel,
   registrationTid?: RegistrationTid
-): AttachmentViewModel & { Href: string } {
+): AttachmentViewModel & {Href: string} {
   if (registrationTid && registrationTid != RegistrationTid.SnowProfile2) {
     return null;
   }
-  const snowProfileSummary = viewModel.Summaries?.find((s) => s.RegistrationTID === RegistrationTid.SnowProfile2);
+  const snowProfileSummary = viewModel.Summaries?.find(
+    (s) => s.RegistrationTID === RegistrationTid.SnowProfile2
+  );
   const snowProfilePlot = snowProfileSummary?.AdaptiveElements.find(
     (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
   ) as SnowProfileData;
@@ -153,7 +155,7 @@ export function isArrayType(tid: RegistrationTid): boolean {
       RegistrationTid.CompressionTest,
       RegistrationTid.DangerObs,
       RegistrationTid.Picture,
-      RegistrationTid.DamageObs,
+      RegistrationTid.DamageObs
     ].indexOf(tid) >= 0
   );
 }
@@ -169,8 +171,8 @@ export function createEmptyRegistration(draft: RegistrationDraft, registrationTi
       ...draft,
       registration: {
         ...draft.registration,
-        [propName]: getDefaultValue(registrationTid),
-      },
+        [propName]: getDefaultValue(registrationTid)
+      }
     };
   }
   return draft;
@@ -182,15 +184,16 @@ export function createEmptyRegistration(draft: RegistrationDraft, registrationTi
  * @returns same draft but without empty registrations
  */
 export function removeEmptyRegistrations(draft: RegistrationDraft): RegistrationDraft {
-  const registration = Object.keys(draft.registration).reduce((registration, key) => {
-    if (!isEmpty(draft.registration[key])) {
-      registration[key] = draft.registration[key];
-    }
-    return registration;
-  }, {} as RegistrationEditModelWithRemoteOrLocalAttachments);
+  const registration = Object.keys(draft.registration)
+    .reduce((registration, key) => {
+      if (!isEmpty(draft.registration[key])) {
+        registration[key] = draft.registration[key];
+      }
+      return registration;
+    }, {} as RegistrationEditModelWithRemoteOrLocalAttachments);
   return {
     ...draft,
-    registration,
+    registration
   };
 }
 
@@ -201,3 +204,5 @@ function getDefaultValue(registrationTid: RegistrationTid) {
     return {};
   }
 }
+
+

@@ -5,7 +5,7 @@ import { SummaryType } from '../../../core/models/summmary-type.enum';
 @Component({
   selector: 'app-summary',
   templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.scss'],
+  styleUrls: ['./summary.component.scss']
 })
 export class SummaryComponent {
   @Input() summaries: Summary[];
@@ -17,7 +17,7 @@ export class SummaryComponent {
     if (i < 1 || this.summaries?.length < 2) {
       return false;
     }
-    return this.summaries[i].RegistrationName === this.summaries[i - 1].RegistrationName;
+    return this.summaries[i].RegistrationName === this.summaries[i-1].RegistrationName;
   }
 
   startOnNewLineIfContainLineBreaks(text: string): string {

@@ -1,8 +1,8 @@
-<ng-container *ngIf="!isLoggingIn; else spinner">
+<ng-container *ngIf="!isLoggingIn else spinner">
   <ion-item *ngIf="!loggedInUser.isLoggedIn" (click)="login()" detail="true" button="true">
     <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
     <ion-label class="menu-label">
-      {{ "LOGIN.TITLE" | translate }}
+      {{'LOGIN.TITLE' | translate}}
     </ion-label>
   </ion-item>
   <ng-container *ngIf="loggedInUser.isLoggedIn">
@@ -15,7 +15,7 @@
     <ion-item routerLink="/my-observations" routerDirection="forward" detail="true">
       <ion-icon slot="start" name="eye" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">
-        {{ "MY_OBSERVATIONS.TITLE" | translate }}
+        {{'MY_OBSERVATIONS.TITLE' | translate}}
       </ion-label>
     </ion-item>
   </ng-container>

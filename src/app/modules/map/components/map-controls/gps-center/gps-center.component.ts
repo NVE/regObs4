@@ -1,4 +1,10 @@
-import { Component, OnDestroy, AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  AfterContentInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { MapService } from '../../../services/map/map.service';
 import { Subscription } from 'rxjs';
 
@@ -6,14 +12,17 @@ import { Subscription } from 'rxjs';
   selector: 'app-gps-center',
   templateUrl: './gps-center.component.html',
   styleUrls: ['./gps-center.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GpsCenterComponent implements OnDestroy, AfterContentInit {
   followMode: boolean;
 
   private subscription: Subscription;
 
-  constructor(private mapService: MapService, private cdRef: ChangeDetectorRef) {}
+  constructor(
+    private mapService: MapService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   ngAfterContentInit(): void {
     this.subscription = this.mapService.followMode$.subscribe((val) => {

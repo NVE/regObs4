@@ -12,7 +12,7 @@ const IMAGE_PREFIX = 'REGOBS_IMAGE_';
 
 @Injectable()
 export class LocalStorageAttachmentService extends NewAttachmentService {
-  meta = new BehaviorSubject<{ [registrationId: string]: AttachmentUploadEditModel[] }>({});
+  meta = new BehaviorSubject<{[registrationId: string]: AttachmentUploadEditModel[]}>({});
   protected DEBUG_TAG = 'LocalStorageAttachmentService';
 
   constructor(protected logger: LoggingService) {
@@ -23,15 +23,7 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
     this.meta.next(data);
   }
 
-  addAttachment(
-    registrationId: string,
-    data: Blob,
-    mimeType: string,
-    geoHazard: GeoHazard,
-    registrationTid: RegistrationTid,
-    type?: AttachmentType,
-    ref?: string
-  ): Promise<void> {
+  addAttachment(registrationId: string, data: Blob, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): Promise<void> {
     const attachmentId = uuidv4();
 
     const metadata: AttachmentUploadEditModel = {
@@ -43,7 +35,7 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
       fileSize: data.size,
       // fileName: attachmentFileName,
       fileAddedTime: Date.now(),
-      ref,
+      ref
     };
 
     return new Promise<void>((resolve) => {
@@ -56,10 +48,10 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
 
         // Save metadata
         const metaForReg = this.meta.value[registrationId] || [];
-        const otherMeta = metaForReg.filter((m) => m.id !== attachmentId);
+        const otherMeta = metaForReg.filter(m => m.id !== attachmentId);
         const newMeta = {
           ...this.meta.value,
-          [registrationId]: [...otherMeta, metadata],
+          [registrationId]: [...otherMeta, metadata]
         };
 
         localStorage.setItem(METADATA_KEY, JSON.stringify(newMeta));
@@ -72,7 +64,10 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
     const metaForReg = this.meta.value[registrationId] || [];
     const newMeta = {
       ...this.meta.value,
-      [registrationId]: [...metaForReg.filter((a) => a.id !== meta.id), meta],
+      [registrationId]: [
+        ...metaForReg.filter(a => a.id !== meta.id),
+        meta
+      ]
     };
     localStorage.setItem(METADATA_KEY, JSON.stringify(newMeta));
     this.meta.next(newMeta);
@@ -80,15 +75,15 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
   }
 
   protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
-    return this.meta.pipe(map((meta) => meta[registrationId] || []));
+    return this.meta.pipe(map(meta => meta[registrationId] || []));
   }
 
   getBlob(registrationId: string, attachmentId: string): Observable<Blob> {
     return this.getAttachmentsObservable(registrationId).pipe(
-      map((attachmens) => attachmens.find((a) => a.id === attachmentId)),
-      filter((a) => a != null),
+      map(attachmens => attachmens.find(a => a.id === attachmentId)),
+      filter(a => a != null),
       map((a) => localStorage.getItem(IMAGE_PREFIX + attachmentId)),
-      switchMap((base64) => fetch(base64).then((res) => res.blob()))
+      switchMap(base64 => fetch(base64).then(res => res.blob()))
     );
   }
 
@@ -97,7 +92,7 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
     const metaForReg = this.meta.value[registrationId] || [];
     const newMeta = {
       ...this.meta.value,
-      [registrationId]: metaForReg.filter((m) => m.id !== attachmentId),
+      [registrationId]: metaForReg.filter(m => m.id !== attachmentId)
     };
     localStorage.setItem(METADATA_KEY, JSON.stringify(newMeta));
     this.meta.next(newMeta);
@@ -108,7 +103,7 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
   }
   removeAttachments(registrationId: string): Promise<void> {
     const { [registrationId]: metaForReg, ...otherMeta } = this.meta.value;
-    (metaForReg || []).map((a) => a.id).forEach((id) => localStorage.removeItem(IMAGE_PREFIX + id));
+    (metaForReg || []).map(a => a.id).forEach(id => localStorage.removeItem(IMAGE_PREFIX + id));
     localStorage.setItem(METADATA_KEY, JSON.stringify(otherMeta));
     this.meta.next(otherMeta);
     return Promise.resolve();

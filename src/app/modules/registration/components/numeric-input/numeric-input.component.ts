@@ -1,11 +1,16 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
 import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
-  styleUrls: ['./numeric-input.component.scss'],
+  styleUrls: ['./numeric-input.component.scss']
 })
 export class NumericInputComponent {
   @Input() decimalPlaces = 0;
@@ -49,8 +54,8 @@ export class NumericInputComponent {
           max: this.max,
           suffix: this.suffix,
           decimalSeparator: this.decimalSeparator,
-          title: this.title,
-        },
+          title: this.title
+        }
       });
       modal.present();
       const result = await modal.onDidDismiss();
@@ -63,9 +68,15 @@ export class NumericInputComponent {
   }
 
   private convert(val: number, direction: 'from' | 'to'): number {
-    if (val == null || val === 0 || this.convertRatio === undefined) {
+    if (
+      val == null ||
+      val === 0 ||
+      this.convertRatio === undefined
+    ) {
       return val;
     }
-    return direction === 'from' ? val * this.convertRatio : val / this.convertRatio;
+    return direction === 'from'
+      ? val * this.convertRatio
+      : val / this.convertRatio;
   }
 }

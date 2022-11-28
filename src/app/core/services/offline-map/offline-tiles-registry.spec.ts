@@ -13,9 +13,9 @@ describe('OfflineTilesRegistry', () => {
           rootTile: { x: 200, y: 201, z: 6 },
           zMax: 12,
           template: '/{z}/{x}/{y}.png',
-          url: 'path-to-offline-tiles-1/{z}/{x}/{y}.png',
-        },
-      },
+          url: 'path-to-offline-tiles-1/{z}/{x}/{y}.png'
+        }
+      }
     });
 
     // z: 7 = 400 - 401
@@ -33,16 +33,16 @@ describe('OfflineTilesRegistry', () => {
           rootTile: { x: 200, y: 200, z: 6 },
           zMax: 12,
           template: '/{z}/{x}/{y}.png',
-          url: 'path-to-offline-tiles-2/{z}/{x}/{y}.png',
+          url: 'path-to-offline-tiles-2/{z}/{x}/{y}.png'
         },
         'map-type-2': {
           mapId: 'map-type-2',
           rootTile: { x: 200, y: 200, z: 6 },
           zMax: 12,
           template: '/{z}/{x}/{y}.png',
-          url: 'path-to-offline-tiles-3/{z}/{x}/{y}.png',
-        },
-      },
+          url: 'path-to-offline-tiles-3/{z}/{x}/{y}.png'
+        }
+      }
     });
   });
 
@@ -76,6 +76,7 @@ describe('OfflineTilesRegistry', () => {
     const p = registry.findRegisteredPackage('map-type-1', 25700, 25700, 13);
     expect(p.zMax).toBe(12);
   });
+
 });
 
 describe('OfflineTilesRegistry with overlapping packages', () => {
@@ -101,9 +102,9 @@ describe('OfflineTilesRegistry with overlapping packages', () => {
           rootTile: { x: 100, y: 100, z: 4 },
           zMax: 15,
           template: '/{z}/{x}/{y}.png',
-          url: 'path-to-offline-tiles-1/{z}/{x}/{y}.png',
-        },
-      },
+          url: 'path-to-offline-tiles-1/{z}/{x}/{y}.png'
+        }
+      }
     });
 
     registry.add({
@@ -114,9 +115,9 @@ describe('OfflineTilesRegistry with overlapping packages', () => {
           rootTile: { x: 25, y: 25, z: 2 },
           zMax: 12,
           template: '/{z}/{x}/{y}.png',
-          url: 'path-to-offline-tiles-2/{z}/{x}/{y}.png',
-        },
-      },
+          url: 'path-to-offline-tiles-2/{z}/{x}/{y}.png'
+        }
+      }
     });
   });
 
@@ -132,13 +133,15 @@ describe('OfflineTilesRegistry with overlapping packages', () => {
 
   it('finds one of the packages inside the overlap', () => {
     const url = registry.getUrl('map-type-1', 200, 200, 5);
-    expect(
-      ['path-to-offline-tiles-1/{z}/{x}/{y}.png', 'path-to-offline-tiles-2/{z}/{x}/{y}.png'].includes(url)
-    ).toBeTrue();
+    expect([
+      'path-to-offline-tiles-1/{z}/{x}/{y}.png',
+      'path-to-offline-tiles-2/{z}/{x}/{y}.png'
+    ].includes(url)).toBeTrue();
   });
 
   it('finds the correct url below the overlap', () => {
     const url = registry.getUrl('map-type-1', 51500, 51650, 13);
     expect(url).toBe('path-to-offline-tiles-1/{z}/{x}/{y}.png');
   });
+
 });

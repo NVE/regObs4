@@ -13,7 +13,7 @@ import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/dr
   selector: 'app-remote-image',
   templateUrl: './remote-image.component.html',
   styleUrls: ['./remote-image.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteImageComponent implements OnInit {
   @Input() attachment: RemoteOrLocalAttachmentEditModel;

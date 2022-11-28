@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class HelperService {
+
   getDistanceText(distanceInMeter: number, numDecimals = 1): string {
     const options = {
       minimumFractionDigits: numDecimals,
-      maximumFractionDigits: numDecimals,
+      maximumFractionDigits: numDecimals
     };
     if (distanceInMeter > 1000) {
-      return `${(distanceInMeter / 1000).toLocaleString(undefined, options)}  km`;
+      return `${(distanceInMeter / 1000).toLocaleString(
+        undefined,
+        options
+      )}  km`;
     } else {
       return `${(distanceInMeter || 0).toFixed(0)} m`;
     }

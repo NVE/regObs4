@@ -1,7 +1,7 @@
 <ion-grid *ngIf="hasHelpText$ | async">
   <ion-row>
     <ion-col class="ion-text-center">
-      <ion-button (click)="showHelp()" fill="clear">{{ "HELP.TITLE" | translate }}</ion-button>
+      <ion-button (click)="showHelp()" fill="clear">{{'HELP.TITLE' | translate}}</ion-button>
     </ion-col>
   </ion-row>
 </ion-grid>

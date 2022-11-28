@@ -20,9 +20,9 @@ export interface UserSetting {
   consentForSendingAnalyticsDialogCompleted: boolean;
   featureToggleDeveloperMode: boolean;
   featureToggeGpsDebug: boolean;
-  infoAboutObservationsRecievedTimestamps?: { [name: string]: number };
-  infoAboutSupportMapsRecievedTimestamps?: { [name: string]: number };
-  infoAboutOfflineSupportMapsRecievedTimestamps?: { [name: string]: number };
+  infoAboutObservationsRecievedTimestamps?: {[name: string]: number};
+  infoAboutSupportMapsRecievedTimestamps?: {[name: string]: number};
+  infoAboutOfflineSupportMapsRecievedTimestamps?: {[name: string]: number};
   copyright?: string;
   photographer?: string;
 
@@ -30,5 +30,5 @@ export interface UserSetting {
    * true = use full/complete snow obs schemas
    * false/undefined = use simple snow obs schema
    */
-  preferCompleteSnowObservations: boolean;
+   preferCompleteSnowObservations: boolean;
 }

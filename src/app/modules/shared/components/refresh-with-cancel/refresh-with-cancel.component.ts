@@ -6,7 +6,7 @@ import { IonRefresher, Platform } from '@ionic/angular';
 @Component({
   selector: 'app-refresh-with-cancel',
   templateUrl: './refresh-with-cancel.component.html',
-  styleUrls: ['./refresh-with-cancel.component.scss'],
+  styleUrls: ['./refresh-with-cancel.component.scss']
 })
 export class RefreshWithCancelComponent implements OnInit {
   showCancel = false;

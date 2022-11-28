@@ -1,34 +1,25 @@
-<p [innerHTML]="'SUPPORT_MAP.STEEPNESS_MAP_DISCLAMER' | translate"></p>
-<br />
+<p [innerHTML]="'SUPPORT_MAP.STEEPNESS_MAP_DISCLAMER' | translate"></p><br>
 <ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
   <ng-container *ngIf="isOutletsActive(supportTiles)">
     <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TITLE' | translate"></p>
     <div class="tile-legend-row">
-      <img
-        class="tile-legend-image"
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jqgt9V5Bv1OYIBgYGGnt51MBRA0cNHDUQh4HQIohMwIhuICMlpsEAALfiBF7FLHyOAAAAAElFTkSuQmCC"
-      />
-      {{ "SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_1" | translate }}
+      <img class="tile-legend-image"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jqgt9V5Bv1OYIBgYGGnt51MBRA0cNHDUQh4HQIohMwIhuICMlpsEAALfiBF7FLHyOAAAAAElFTkSuQmCC" />
+      {{'SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_1' | translate}}
     </div>
     <div class="tile-legend-row">
-      <img
-        class="tile-legend-image"
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADlJREFUOI1jYaAyYKGlgf+pYB4jqgvzKTBzIiMDAwONvTxq4KiBowaOGojDQGgRRCZgRDeQItNgAACOoQPlkCSSYAAAAABJRU5ErkJggg=="
-      />
-      {{ "SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_2" | translate }}
+      <img class="tile-legend-image"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADlJREFUOI1jYaAyYKGlgf+pYB4jqgvzKTBzIiMDAwONvTxq4KiBowaOGojDQGgRRCZgRDeQItNgAACOoQPlkCSSYAAAAABJRU5ErkJggg==" />
+      {{'SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_2' | translate}}
     </div>
     <div class="tile-legend-row">
-      <img
-        class="tile-legend-image"
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jigv3XSLfTCc9RgYGBhp7edTAUQNHDRw1ELuBsCKITMCIbiBFpsEAANfWBMRO4MAYAAAAAElFTkSuQmCC"
-      />
-      {{ "SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_3" | translate }}
-    </div>
-    <br />
+      <img class="tile-legend-image"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jigv3XSLfTCc9RgYGBhp7edTAUQNHDRw1ELuBsCKITMCIbiBFpsEAANfWBMRO4MAYAAAAAElFTkSuQmCC" />
+      {{'SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_3' | translate}}
+    </div><br>
   </ng-container>
   <ng-container *ngIf="!isOutletsActive(supportTiles)">
-    <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OFFLINE_DISCLAMER' | translate"></p>
-    <br />
+    <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OFFLINE_DISCLAMER' | translate"></p><br>
   </ng-container>
 </ng-container>
 <app-steepness-common-legend></app-steepness-common-legend>

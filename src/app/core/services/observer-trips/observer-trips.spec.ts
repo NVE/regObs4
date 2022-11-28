@@ -5,13 +5,7 @@ import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
-import {
-  ObserverTripsService,
-  dataKey,
-  dataModifiedKey,
-  toggledOnKey,
-  isAuthorizedKey,
-} from './observer-trips.service';
+import { ObserverTripsService, dataKey, dataModifiedKey, toggledOnKey, isAuthorizedKey } from './observer-trips.service';
 
 describe('ObserverTripsService', () => {
   let tripService: jasmine.SpyObj<TripService>;
@@ -31,7 +25,7 @@ describe('ObserverTripsService', () => {
     database = {};
     dbService = {
       get: async (key) => database[key],
-      set: async (key, val) => (database[key] = val),
+      set: async (key, val) => database[key] = val
     } as DatabaseService;
     dbServiceGetSpy = spyOn(dbService, 'get').and.callThrough();
     dbServiceSetSpy = spyOn(dbService, 'set').and.callThrough();
@@ -45,7 +39,7 @@ describe('ObserverTripsService', () => {
       [isAuthorizedKey]: true,
       [toggledOnKey]: true,
       [dataKey]: { features: true },
-      [dataModifiedKey]: Date.now(),
+      [dataModifiedKey]: Date.now()
     };
 
     loggedInUser.next({ isLoggedIn: true });
@@ -53,7 +47,7 @@ describe('ObserverTripsService', () => {
     // Check that geojson is not null when toggle is on
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let geojson: any = 'NONE_EMITTED_YET';
-    service.geojson$.subscribe((newVal) => (geojson = newVal));
+    service.geojson$.subscribe(newVal => geojson = newVal);
 
     tick(100);
 
@@ -83,7 +77,7 @@ describe('ObserverTripsService', () => {
       [isAuthorizedKey]: true,
       [toggledOnKey]: true,
       [dataKey]: { features: true },
-      [dataModifiedKey]: Date.now(),
+      [dataModifiedKey]: Date.now()
     };
 
     loggedInUser.next({ isLoggedIn: true });
@@ -104,7 +98,7 @@ describe('ObserverTripsService', () => {
       [isAuthorizedKey]: true,
       [toggledOnKey]: true,
       [dataKey]: { features: [{ type: 'OldFeature1' }, { type: 'OldFeature1' }, { type: 'OldFeature1' }] },
-      [dataModifiedKey]: 100,
+      [dataModifiedKey]: 100
     };
 
     loggedInUser.next({ isLoggedIn: true });
@@ -125,7 +119,7 @@ describe('ObserverTripsService', () => {
       [isAuthorizedKey]: true,
       [toggledOnKey]: true,
       [dataKey]: { features: [{ type: 'OldFeature1' }, { type: 'OldFeature1' }, { type: 'OldFeature1' }] },
-      [dataModifiedKey]: 100,
+      [dataModifiedKey]: 100
     };
 
     loggedInUser.next({ isLoggedIn: true });
@@ -156,7 +150,7 @@ describe('ObserverTripsService', () => {
     try {
       tick(2000);
       await geojsonPromise;
-      // eslint-disable-next-line no-empty
+    // eslint-disable-next-line no-empty
     } catch (error) {}
 
     // Still should not have called any dependencies

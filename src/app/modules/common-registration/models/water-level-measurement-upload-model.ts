@@ -1,4 +1,4 @@
-import { WaterLevelMeasurementEditModel } from 'src/app/modules/common-regobs-api/models';
+import { WaterLevelMeasurementEditModel }from 'src/app/modules/common-regobs-api/models';
 
 export interface WaterLevelMeasurementUploadModel extends WaterLevelMeasurementEditModel {
   /**

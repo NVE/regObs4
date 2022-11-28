@@ -17,7 +17,7 @@ import { NgDestoryBase } from '../../core/helpers/observable-helper';
 @Component({
   selector: 'app-warning-list-item',
   templateUrl: './warning-list-item.component.html',
-  styleUrls: ['./warning-list-item.component.scss'],
+  styleUrls: ['./warning-list-item.component.scss']
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   @Input() warningGroup: WarningGroup;
@@ -49,7 +49,11 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
         const color = `rgba(186,196,204,${opacity})`;
         this.favouriteToggle.setOpen(opacity);
         this.domCtrl.write(() => {
-          this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+          this.renderer.setStyle(
+            (<any>this.itemSlide).el,
+            'background-color',
+            color
+          );
         });
       });
     this.ngDestroy$.subscribe(() => {
@@ -93,9 +97,14 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     if (group.url) {
       return group.url;
     } else {
-      const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
+      const currentLang = await this.userSettingService.language$
+        .pipe(take(1))
+        .toPromise();
       const supportedLang = this.getSupportedLangOrFallbackToEn(currentLang);
-      const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[supportedLang]];
+      const url: string =
+        settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[
+          LangKey[supportedLang]
+        ];
       if (url) {
         return encodeURI(
           url
@@ -120,17 +129,28 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     event.preventDefault();
     const url = await this.getUrl(group);
     if (url) {
-      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
+      this.analyticService.trackEvent(
+        AppEventCategory.Warnings,
+        AppEventAction.Click,
+        group.getKeyAsString()
+      );
       this.externalLinkService.openExternalLink(url);
     }
   }
 
   async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
     event.preventDefault();
-    const dateString = moment().startOf('day').add(day, 'days').format(settings.services.warning.dateFormat);
+    const dateString = moment()
+      .startOf('day')
+      .add(day, 'days')
+      .format(settings.services.warning.dateFormat);
     const url = await this.getUrl(group, dateString);
     if (url) {
-      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
+      this.analyticService.trackEvent(
+        AppEventCategory.Warnings,
+        AppEventAction.Click,
+        group.getKeyAsString()
+      );
       this.externalLinkService.openExternalLink(url);
     }
   }

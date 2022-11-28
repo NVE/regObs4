@@ -42,7 +42,7 @@ import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-p
     RouterModule,
     MapImageModule,
     AuthModule,
-    VirtualScrollerModule,
+    VirtualScrollerModule
   ],
   declarations: [
     ShadowCssDirective,
@@ -66,7 +66,7 @@ import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-p
     RemoteImageComponent,
     EditPictureInfoModalComponent,
     ShowFilterCriteriaComponent,
-    CheckDaysOrWeeksBackComponent,
+    CheckDaysOrWeeksBackComponent
   ],
   exports: [
     CommonModule,
@@ -99,7 +99,7 @@ import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-p
     RemoteImageComponent,
     EditPictureInfoModalComponent,
     ShowFilterCriteriaComponent,
-    CheckDaysOrWeeksBackComponent,
-  ],
+    CheckDaysOrWeeksBackComponent
+  ]
 })
 export class SharedModule {}

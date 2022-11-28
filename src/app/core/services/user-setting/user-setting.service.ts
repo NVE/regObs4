@@ -15,7 +15,7 @@ import {
   debounceTime,
   switchMap,
   concatMap,
-  filter,
+  filter
 } from 'rxjs/operators';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
@@ -37,7 +37,7 @@ import { SupportTile } from '../../models/support-tile.model';
 const DEBUG_TAG = 'UserSettingService';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class UserSettingService extends NgDestoryBase implements OnReset {
   // Setting this observable to be a shared instance since
@@ -47,9 +47,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   public readonly appMode$: Observable<AppMode>;
   public readonly showMapCenter$: Observable<boolean>;
   public readonly appModeAndLanguage$: Observable<[AppMode, LangKey]>;
-  public readonly appModeLanguageAndCurrentGeoHazard$: Observable<[AppMode, LangKey, GeoHazard[]]>;
+  public readonly appModeLanguageAndCurrentGeoHazard$: Observable<
+    [AppMode, LangKey, GeoHazard[]]
+  >;
   public readonly language$: Observable<LangKey>;
-  public readonly daysBack$: Observable<{ geoHazard: GeoHazard; daysBack: number }[]>;
+  public readonly daysBack$: Observable<
+    { geoHazard: GeoHazard; daysBack: number }[]
+  >;
   public readonly showObservations$: Observable<boolean>;
   public readonly userSetting$: Observable<UserSetting>;
   public readonly daysBackForCurrentGeoHazard$: Observable<number>;
@@ -86,10 +90,15 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     }
   }
 
-  constructor(private translate: TranslateService, private loggingService: LoggingService) {
+  constructor(
+    private translate: TranslateService,
+    private loggingService: LoggingService
+  ) {
     super();
     this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
-      concatMap((val) => (val ? of(val) : this.getUserSettingsFromDbOrDefaultSettings())),
+      concatMap((val) =>
+        val ? of(val) : this.getUserSettingsFromDbOrDefaultSettings()
+      ),
       tap((val) => {
         this.loggingService?.debug('User settings is: ', DEBUG_TAG, val);
       }),
@@ -98,7 +107,12 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.currentGeoHazard$ = this.userSetting$.pipe(
       map((val) => val.currentGeoHazard),
       distinctUntilChanged(equal),
-      tap((val) => this.loggingService?.debug(`Current geohazard changed to: ${val.join(',')}`, DEBUG_TAG)),
+      tap((val) =>
+        this.loggingService?.debug(
+          `Current geohazard changed to: ${val.join(',')}`,
+          DEBUG_TAG
+        )
+      ),
       shareReplay(1)
     );
 
@@ -123,17 +137,22 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       shareReplay(1)
     );
 
-    this.appModeAndLanguage$ = combineLatest([this.appMode$, this.language$]).pipe(shareReplay(1));
+    this.appModeAndLanguage$ = combineLatest([
+      this.appMode$,
+      this.language$
+    ]).pipe(shareReplay(1));
 
     this.appModeLanguageAndCurrentGeoHazard$ = combineLatest([
       this.appMode$,
       this.language$,
-      this.currentGeoHazard$,
+      this.currentGeoHazard$
     ]).pipe(shareReplay(1));
 
     this.daysBack$ = this.userSetting$.pipe(
       map((val) => val.observationDaysBack),
-      tap((val) => this.loggingService?.debug('Days back changed to:', DEBUG_TAG, val)),
+      tap((val) =>
+        this.loggingService?.debug('Days back changed to:', DEBUG_TAG, val)
+      ),
       shareReplay(1)
     );
 
@@ -143,14 +162,16 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       shareReplay(1)
     );
 
-    (this.daysBackForCurrentGeoHazard$ = combineLatest([this.daysBack$, this.currentGeoHazard$]).pipe(
-      map(([daysBack, currentGeoHazard]) => {
+    this.daysBackForCurrentGeoHazard$ = combineLatest([
+      this.daysBack$,
+      this.currentGeoHazard$
+    ]).pipe(map(([daysBack, currentGeoHazard]) => {
         const geoHazard = currentGeoHazard[0];
-        const daysBackForCurrentGeoHazard = daysBack.find((x) => x.geoHazard === geoHazard);
+        const daysBackForCurrentGeoHazard = daysBack.find(
+          (x) => x.geoHazard === geoHazard
+        );
         return daysBackForCurrentGeoHazard?.daysBack;
-      })
-    )),
-      tap((val) => this.loggingService.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val));
+    })), tap((val) => this.loggingService.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val));
   }
 
   public init() {
@@ -163,27 +184,27 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const lang = LangKey[langKey];
       switch (langKey) {
-        case LangKey.nb:
-          registerLocaleData(nbData);
-          break;
-        case LangKey.en:
-          registerLocaleData(enData);
-          break;
-        case LangKey.de:
-          registerLocaleData(deData);
-          break;
-        case LangKey.sv:
-          registerLocaleData(svData);
-          break;
-        case LangKey.sl:
-          registerLocaleData(slData);
-          break;
-        case LangKey.nn:
-          registerLocaleData(nnData);
-          break;
-        case LangKey.fr:
-          registerLocaleData(frData);
-          break;
+      case LangKey.nb:
+        registerLocaleData(nbData);
+        break;
+      case LangKey.en:
+        registerLocaleData(enData);
+        break;
+      case LangKey.de:
+        registerLocaleData(deData);
+        break;
+      case LangKey.sv:
+        registerLocaleData(svData);
+        break;
+      case LangKey.sl:
+        registerLocaleData(slData);
+        break;
+      case LangKey.nn:
+        registerLocaleData(nnData);
+        break;
+      case LangKey.fr:
+        registerLocaleData(frData);
+        break;
       }
       this.translate.use(lang);
     });
@@ -195,7 +216,11 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         filter((result) => !!result),
         debounceTime(200),
         tap((result) =>
-          this.loggingService?.debug('InMemory user settings changed. Saving to db: ', DEBUG_TAG, result)
+          this.loggingService?.debug(
+            'InMemory user settings changed. Saving to db: ',
+            DEBUG_TAG,
+            result
+          )
         ),
         switchMap((result) => this.saveUserSettingsToDb(result)),
         takeUntil(this.ngDestroy$)
@@ -208,19 +233,21 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {
-    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles
-      .filter((setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0)
-      .map((tile) => {
-        const usSupportTile = us.supportTiles.find((usTiles) => usTiles.name === tile.name);
-        let subTile = tile.subTile;
-        if (subTile && usSupportTile && usSupportTile.subTile) {
-          subTile = { ...tile.subTile, ...usSupportTile.subTile };
-        }
-        return {
-          ...(usSupportTile ? { ...tile, ...usSupportTile } : tile),
-          subTile: subTile,
-        };
-      });
+    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles.filter(
+      (setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0
+    ).map((tile) => {
+      const usSupportTile = us.supportTiles.find(
+        (usTiles) => usTiles.name === tile.name
+      );
+      let subTile = tile.subTile;
+      if (subTile && usSupportTile && usSupportTile.subTile) {
+        subTile = {...tile.subTile, ...usSupportTile.subTile};
+      }
+      return {
+        ...(usSupportTile ? {...tile, ...usSupportTile} : tile),
+        subTile: subTile,
+      };
+    });
 
     if (flat) {
       supportTilesForCurrentGeoHazard
@@ -239,23 +266,34 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   private getUserSettingsFromDbOrDefaultSettings(): Observable<UserSetting> {
-    return this.getUserSettingsFromDb().pipe(map((result) => (result ? result : DEFAULT_USER_SETTINGS(null))));
-  }
-
-  private getUserSettingsFromDb(): Observable<UserSetting> {
-    return from(nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').exec() as Promise<UserSetting[]>).pipe(
-      map((result) => result[0])
+    return this.getUserSettingsFromDb().pipe(
+      map((result) => (result ? result : DEFAULT_USER_SETTINGS(null)))
     );
   }
 
-  private saveUserSettingsToDb(userSetting: UserSetting): Observable<UserSetting[]> {
+  private getUserSettingsFromDb(): Observable<UserSetting> {
+    return from(
+      nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').exec() as Promise<
+        UserSetting[]
+      >
+    ).pipe(map((result) => result[0]));
+  }
+
+  private saveUserSettingsToDb(
+    userSetting: UserSetting
+  ): Observable<UserSetting[]> {
     return from(
       nSQL(NanoSql.TABLES.USER_SETTINGS.name)
         .query('upsert', { id: 'usersettings', ...userSetting })
         .exec() as Promise<UserSetting[]>
     ).pipe(
       catchError((err) => {
-        this.loggingService?.log('Could not save user settings to offline db', err, LogLevel.Warning, DEBUG_TAG);
+        this.loggingService?.log(
+          'Could not save user settings to offline db',
+          err,
+          LogLevel.Warning,
+          DEBUG_TAG
+        );
         return of(null);
       })
     );
@@ -265,7 +303,10 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   appOnReset() {}
 
   appOnResetComplete() {
-    this.loggingService.debug('App reset complete. Re-init observables.', DEBUG_TAG);
+    this.loggingService.debug(
+      'App reset complete. Re-init observables.',
+      DEBUG_TAG
+    );
     // const defaultSettings = DEFAULT_USER_SETTINGS(null);
     // this.saveUserSettings(defaultSettings);
     this.userSettingInMemory.next(null); // Reset in memory observable

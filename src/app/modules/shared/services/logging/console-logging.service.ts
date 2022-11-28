@@ -10,9 +10,10 @@ import { AppMode } from 'src/app/modules/common-core/models';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
+
   constructor() {}
 
   enable(): void {}
@@ -23,7 +24,12 @@ export class ConsoleLoggingService implements LoggingService {
 
   setUser(user: LoggedInUser): void {}
 
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
+  error(
+    error: Error,
+    tag?: string,
+    message?: string,
+    ...optionalParams: any[]
+  ) {
     this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
@@ -31,9 +37,19 @@ export class ConsoleLoggingService implements LoggingService {
     this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
-    optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
+  log(
+    message?: string,
+    error?: Error,
+    level?: LogLevel,
+    tag?: string,
+    ...optionalParams: any[]
+  ) {
+    const msg = `[${level.toUpperCase()}]${
+      tag ? '[' + tag + ']' : ''
+    } ${message}`;
+    optionalParams.length > 0
+      ? console.log(msg, optionalParams)
+      : console.log(msg);
     if (error) {
       console.error(error);
     }

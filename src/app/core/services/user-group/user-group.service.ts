@@ -12,7 +12,7 @@ import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.se
 import { nSQL } from '@nano-sql/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class UserGroupService {
   constructor(
@@ -53,7 +53,7 @@ export class UserGroupService {
         key: `${email}_${val.Id}`,
         userId: email,
         Id: val.Id,
-        Name: val.Name,
+        Name: val.Name
       };
     });
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
@@ -78,9 +78,7 @@ export class UserGroupService {
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
     return combineLatest([this.regobsAuthService.loggedInUser$, this.userSettingService.appMode$]).pipe(
       switchMap(([loggedInUser, appMode]) =>
-        loggedInUser.isLoggedIn
-          ? from(this.getUserGroupsFromDb(appMode, loggedInUser.email))
-          : from(Promise.resolve([]))
+        loggedInUser.isLoggedIn ? from(this.getUserGroupsFromDb(appMode, loggedInUser.email)) : from(Promise.resolve([]))
       )
     );
   }
