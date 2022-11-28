@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, tap } from 'rxjs';
 import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -14,8 +14,8 @@ const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
 const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
 const URL_PARAM_DAYSBACK = 'daysBack';
-const URL_PARAM_FROMTIME = 'fromTime';
-const URL_PARAM_TOTIME = 'toTime';
+const URL_PARAM_FROMDATE = 'fromDate';
+const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
@@ -24,11 +24,15 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Longitude: latLng.lng
 });
 
-function separatedStringToNumberArray(commaSeparatedString : string): number[] {
-  if(commaSeparatedString?.trim().length) {
-    return commaSeparatedString
-      .split(URL_PARAM_ARRAY_DELIMITER)
-      .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+export function separatedStringToNumberArray(separatedString : string): number[] {
+  if (separatedString?.length) {
+    const textWithoutDelimiter = separatedString.replace(URL_PARAM_ARRAY_DELIMITER, '');
+    const textContainsOnlyNumbers = !isNaN (+textWithoutDelimiter);
+    if (textContainsOnlyNumbers) {
+      return separatedString
+        .split(URL_PARAM_ARRAY_DELIMITER)
+        .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+    }
   }
   return [];
 }
@@ -40,6 +44,20 @@ function numberArrayToSeparatedString(numbers: number[]): string {
   return '';
 }
 
+function isArraysEqual(array1: number[], array2: number[]): boolean {
+  return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
+}
+
+function isoDateTimeToLocalDate(isoDateTime: string): string {
+  if (isoDateTime) {
+    const offset = new Date().getTimezoneOffset();
+    const localTime = new Date(Date.parse(isoDateTime) - (offset * 60 * 1000));
+    return localTime.toISOString().split('T')[0];
+  }
+  return null;
+}
+
+
 /**
  * Contains current filter for registrations.
  * Use this to change which registrations you want to find.
@@ -48,7 +66,7 @@ function numberArrayToSeparatedString(numbers: number[]): string {
  * Initializes filter from url query params on startup.
  * The URL should be short, easily readable for the user and easy to type.
  * Multi-select parameters, like geoHazard and type should be represented as a delimited list, example:
- * geoHazard=20~60&type=SnowProfile2=21~22~36
+ * geoHazard=20~60&type=21~22~36
  *
  * TODO: Vi håndterer ikke alle URL-parametre ennå
  */
@@ -74,9 +92,10 @@ export class SearchCriteriaService {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
-    private logger: LoggingService
+    private logger: LoggingService,
   ) {
     const criteria = this.readUrlParams();
+    this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
     this.searchCriteriaChanges.pipe(
       scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []),
@@ -92,7 +111,7 @@ export class SearchCriteriaService {
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(map(daysBack => this.convertToIsoDate(daysBack))),
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(map(daysBack => this.daysBackToIsoDateTime(daysBack))),
       this.mapService.mapView$.pipe(map(mapView => this.createExtentCriteria(mapView)))
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
@@ -125,12 +144,13 @@ export class SearchCriteriaService {
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
-      fromObsTime = this.convertToIsoDate(daysBackNumeric);
+      fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
 
     const criteria = {
+      SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName
     } as SearchCriteriaRequestDto;
@@ -161,14 +181,10 @@ export class SearchCriteriaService {
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
-    params.set(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
-    params.set(URL_PARAM_TOTIME, criteria.ToDtObsTime);
+    params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
+    params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.apply();
-
-    //TODO:Når skal daysBack overstyre fromObsTime?
-    //Lettest å lagre kun FromDtObsTime, men hvis bruker har valgt daysBack, gir det en mer fleksibel spørring som kan funke over tid
-    //Blir dette riktig? Hvis fromObsTime er satt, fjern daysBack fra url
   }
 
   private convertToPositiveInteger(value: string): number {
@@ -186,8 +202,7 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  private convertToIsoDate(daysBack: number): string {
-    //TODO: Feilhåndtering
+  private daysBackToIsoDateTime(daysBack: number): string {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
 
@@ -204,12 +219,15 @@ export class SearchCriteriaService {
 
   private async saveGeoHazardsAndDaysBackInSettings(geoHazards: number[], daysBack: number): Promise<void> {
     //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
-    const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
+    let userSetting = await firstValueFrom(this.userSettingService.userSetting$);
     let changed = false;
     if (geoHazards != null) {
-      if (geoHazards != userSetting.currentGeoHazard) {
+      if (!isArraysEqual(geoHazards, userSetting.currentGeoHazard)) {
+        userSetting = {
+          ...userSetting,
+          currentGeoHazard: geoHazards
+        };
         changed = true;
-        userSetting.currentGeoHazard = geoHazards;
       }
     }
     if (daysBack != null) {
