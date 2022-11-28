@@ -31,7 +31,8 @@
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
     "translations:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
     "translations:download": "ts-node --project tsconfig.npm-script.json translations/download.ts",
-    "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts"
+    "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts",
+    "prettier:fix": "prettier --write src"
   },
   "private": true,
   "dependencies": {
