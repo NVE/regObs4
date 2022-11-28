@@ -14,7 +14,7 @@ import moment from 'moment';
 @Component({
   selector: 'app-landslide-obs',
   templateUrl: './landslide-obs.page.html',
-  styleUrls: ['./landslide-obs.page.scss']
+  styleUrls: ['./landslide-obs.page.scss'],
 })
 export class LandslideObsPage extends BasePage {
   maxDateStart: string;
@@ -52,16 +52,12 @@ export class LandslideObsPage extends BasePage {
       this.draft.registration.LandSlideObs.Urls = [];
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTimeEnd) {
-      this.maxDateStart = moment(
-        this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
-      ).toISOString(true);
+      this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
     } else {
       this.maxDateStart = this.getMaxDateForNow();
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTime) {
-      this.minDateEnd = moment(
-        this.draft.registration.LandSlideObs.DtLandSlideTime
-      ).toISOString(true);
+      this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
     }
     this.maxDateEnd = this.getMaxDateForNow();
   }
@@ -73,23 +69,19 @@ export class LandslideObsPage extends BasePage {
   }
 
   dtTimeChanged() {
-    this.minDateEnd = moment(
-      this.draft.registration.LandSlideObs.DtLandSlideTime
-    ).toISOString(true);
+    this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
     if (
       this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
-      moment(
-        this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
-      ).isBefore(moment(this.draft.registration.LandSlideObs.DtLandSlideTime))
+      moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).isBefore(
+        moment(this.draft.registration.LandSlideObs.DtLandSlideTime)
+      )
     ) {
       this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = this.draft.registration.LandSlideObs.DtLandSlideTime;
     }
   }
 
   dtEndTimeChanged() {
-    this.maxDateStart = moment(
-      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
-    ).toISOString(true);
+    this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
     if (
       this.draft.registration.LandSlideObs.DtLandSlideTime &&
       moment(this.draft.registration.LandSlideObs.DtLandSlideTime).isAfter(
@@ -109,39 +101,24 @@ export class LandslideObsPage extends BasePage {
   }
 
   setDtLandSlideTimeToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().toISOString(
-      true
-    );
+    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().toISOString(true);
   }
 
   setDtLandSlideTimeEndToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(
-      true
-    );
+    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(true);
   }
 
   async setLandslidePosition() {
     const relativeToLatLng = this.draft.registration.ObsLocation
-      ? L.latLng(
-        this.draft.registration.ObsLocation.Latitude,
-        this.draft.registration.ObsLocation.Longitude
-      )
+      ? L.latLng(this.draft.registration.ObsLocation.Latitude, this.draft.registration.ObsLocation.Longitude)
       : null;
     const startLatLng =
-      this.draft.registration.LandSlideObs.StartLat &&
-      this.draft.registration.LandSlideObs.StartLong
-        ? L.latLng(
-          this.draft.registration.LandSlideObs.StartLat,
-          this.draft.registration.LandSlideObs.StartLong
-        )
+      this.draft.registration.LandSlideObs.StartLat && this.draft.registration.LandSlideObs.StartLong
+        ? L.latLng(this.draft.registration.LandSlideObs.StartLat, this.draft.registration.LandSlideObs.StartLong)
         : null;
     const endLatLng =
-      this.draft.registration.LandSlideObs.StopLat &&
-      this.draft.registration.LandSlideObs.StopLong
-        ? L.latLng(
-          this.draft.registration.LandSlideObs.StopLat,
-          this.draft.registration.LandSlideObs.StopLong
-        )
+      this.draft.registration.LandSlideObs.StopLat && this.draft.registration.LandSlideObs.StopLong
+        ? L.latLng(this.draft.registration.LandSlideObs.StopLat, this.draft.registration.LandSlideObs.StopLong)
         : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
@@ -149,8 +126,8 @@ export class LandslideObsPage extends BasePage {
         relativeToLatLng,
         startLatLng,
         endLatLng,
-        geoHazard: this.draft.registration.GeoHazardTID
-      }
+        geoHazard: this.draft.registration.GeoHazardTID,
+      },
     });
     modal.present();
     const result = await modal.onDidDismiss();

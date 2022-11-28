@@ -7,21 +7,18 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./edit-picture-info-modal.component.scss'],
 })
 export class EditPictureInfoModalComponent {
-
   copyright: string;
   photographer: string;
 
-  constructor(public modalController: ModalController) { }
+  constructor(public modalController: ModalController) {}
 
-  save(){
+  save() {
     this.copyright = this.copyright.trim();
     this.photographer = this.photographer.trim();
-    this.modalController.dismiss({copyright: this.copyright, photographer: this.photographer});
+    this.modalController.dismiss({ copyright: this.copyright, photographer: this.photographer });
   }
 
-  close(){
+  close() {
     this.modalController.dismiss();
   }
-
-
 }

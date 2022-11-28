@@ -4,9 +4,7 @@ import { RegobsCorePipesModule } from './pipes';
 @NgModule({
   declarations: [],
   imports: [],
-  exports: [
-    RegobsCorePipesModule
-  ],
-  providers: []
+  exports: [RegobsCorePipesModule],
+  providers: [],
 })
-export class CoreModule { }
+export class CoreModule {}

@@ -13,7 +13,7 @@ import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils
 
 const DEBUG_TAG = 'AnalyticService';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AnalyticService {
   get router() {
@@ -35,26 +35,15 @@ export class AnalyticService {
     }
   }
 
-  trackDimension(
-    dimension: AppCustomDimension,
-    value: string | number | boolean
-  ) {
+  trackDimension(dimension: AppCustomDimension, value: string | number | boolean) {
     if (ga) {
-      this.loggingService.debug(
-        `Tracking dimension ${dimension}: ${value}`,
-        DEBUG_TAG
-      );
+      this.loggingService.debug(`Tracking dimension ${dimension}: ${value}`, DEBUG_TAG);
       ga('set', dimension, value);
       ga('send', 'pageview');
     }
   }
 
-  trackEvent(
-    eventCategory: AppEventCategory,
-    eventAction: AppEventAction,
-    eventLabel?: string,
-    eventValue?: number
-  ) {
+  trackEvent(eventCategory: AppEventCategory, eventAction: AppEventAction, eventLabel?: string, eventValue?: number) {
     if (ga) {
       this.loggingService.debug(
         `Tracking event eventCategory:${eventCategory}, eventAction:${eventAction},` +
@@ -65,7 +54,7 @@ export class AnalyticService {
         eventCategory,
         eventAction,
         eventLabel,
-        eventValue
+        eventValue,
       });
     }
   }
@@ -77,11 +66,7 @@ export class AnalyticService {
 
   enable() {
     this.loggingService.debug(
-      `Enable Google Analytics ${
-        environment.production
-          ? ''
-          : '(DEV-MODE! Analytics data is not sent to server!)'
-      }`,
+      `Enable Google Analytics ${environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)'}`,
       DEBUG_TAG
     );
     if (environment.production) {
@@ -100,11 +85,7 @@ export class AnalyticService {
       return;
     }
     this.loggingService.debug(
-      `Init Google Analytics ${
-        environment.production
-          ? ''
-          : '(DEV-MODE! Analytics data is not sent to server!)'
-      }`,
+      `Init Google Analytics ${environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)'}`,
       DEBUG_TAG
     );
     if (!environment.production) {
@@ -116,7 +97,7 @@ export class AnalyticService {
     if (window.localStorage) {
       ga('create', settings.googleAnalytics.trackerId, 'auto', {
         storage: 'none',
-        clientId: window.localStorage.getItem('ga_clientId')
+        clientId: window.localStorage.getItem('ga_clientId'),
       });
       ga('set', 'checkProtocolTask', null);
       ga(function (tracker) {

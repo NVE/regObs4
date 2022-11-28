@@ -7,7 +7,7 @@ import {
   OnChanges,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
@@ -20,7 +20,7 @@ import { BreakpointService } from '../../core/services/breakpoint.service';
   selector: 'app-img-swiper',
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImgSwiperComponent implements OnChanges, OnDestroy {
   @Input() attachments: AttachmentViewModel[] = [];
@@ -47,24 +47,18 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
       breakpoints: {
         800: {
           slidesPerView: this.checkAmountOfPictures(),
-          spaceBetween: 0
-        }
+          spaceBetween: 0,
+        },
       },
       keyboard: {
-        enabled: true
-      }
+        enabled: true,
+      },
     };
   }
 
   moreThanFourPics = false;
 
-  state:
-    | 'loading'
-    | 'empty'
-    | 'singleimage'
-    | 'singlemap'
-    | 'loading-swiper'
-    | 'swiper-ready' = 'loading';
+  state: 'loading' | 'empty' | 'singleimage' | 'singlemap' | 'loading-swiper' | 'swiper-ready' = 'loading';
   slides: ImgSwiperSlide[];
   activeIndex = 0;
 
@@ -101,8 +95,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     return (
       this.slides &&
       this.slides[this.activeIndex] &&
-      (this.slides[this.activeIndex].header ||
-        this.slides[this.activeIndex].description)
+      (this.slides[this.activeIndex].header || this.slides[this.activeIndex].description)
     );
   }
 
@@ -115,10 +108,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   get imageIndex() {
-    if (
-      this.slides[this.activeIndex] &&
-      this.slides[this.activeIndex].type === 'image'
-    ) {
+    if (this.slides[this.activeIndex] && this.slides[this.activeIndex].type === 'image') {
       return this.getImageIndex(this.slides[this.activeIndex].img as AttachmentViewModel);
     }
     return 0;
@@ -131,10 +121,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     return false;
   }
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private breakpointService: BreakpointService
-  ) {}
+  constructor(private cdr: ChangeDetectorRef, private breakpointService: BreakpointService) {}
 
   ngOnDestroy(): void {
     this.cdr.detach();
@@ -175,7 +162,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
       this.slides.push({
         type: 'location',
         img: this.location,
-        header: 'REGISTRATION.OBS_LOCATION.TITLE'
+        header: 'REGISTRATION.OBS_LOCATION.TITLE',
       });
     }
     this.slides = [...this.getLocationSlides(), ...this.getImageSlides()];
@@ -205,12 +192,12 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   private getLocationSlides(): ImgSwiperSlide[] {
     return this.location
       ? [
-        {
-          type: 'location',
-          img: this.location,
-          header: 'REGISTRATION.OBS_LOCATION.TITLE'
-        }
-      ]
+          {
+            type: 'location',
+            img: this.location,
+            header: 'REGISTRATION.OBS_LOCATION.TITLE',
+          },
+        ]
       : [];
   }
 
@@ -219,7 +206,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
       type: 'image',
       img,
       header: this.attachments[index].RegistrationName,
-      description: this.attachments[index].Comment
+      description: this.attachments[index].Comment,
     }));
   }
 
@@ -248,9 +235,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
 
   async getSwiperIndex() {
     const index = await (this.slider ? this.slider.getActiveIndex() : 0);
-    const isEnd = await (this.slider
-      ? this.slider.isEnd()
-      : Promise.resolve(false));
+    const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
     return isEnd ? (this.slides ? this.slides.length - 1 : 0) : index;
   }
 

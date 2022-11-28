@@ -3,7 +3,10 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
-import { PagedSearchResult, SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
+import {
+  PagedSearchResult,
+  SearchRegistrationService,
+} from 'src/app/core/services/search-registration/search-registration.service';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
@@ -11,7 +14,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
   selector: 'app-observation-list',
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObservationListPage {
   searchResult: PagedSearchResult<RegistrationViewModel>;
@@ -24,7 +27,9 @@ export class ObservationListPage {
   trackByIdFunc = this.trackByIdFuncInternal.bind(this);
   refreshFunc = this.refresh.bind(this);
 
-  get maxCount() { return PagedSearchResult.MAX_ITEMS; }
+  get maxCount() {
+    return PagedSearchResult.MAX_ITEMS;
+  }
 
   constructor(
     searchCriteriaService: SearchCriteriaService,
@@ -38,7 +43,7 @@ export class ObservationListPage {
       this.searchResult.maxItemsFetched$,
     ]).pipe(
       map(([allFetched, maxReached]) => allFetched || maxReached),
-      distinctUntilChanged(),
+      distinctUntilChanged()
     );
   }
 

@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
-import {
-  SnowTempObsModel,
-} from 'src/app/modules/common-regobs-api/models';
+import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import cloneDeep from 'clone-deep';
@@ -13,7 +11,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-snow-temp-modal',
   templateUrl: './snow-temp-modal.page.html',
-  styleUrls: ['./snow-temp-modal.page.scss']
+  styleUrls: ['./snow-temp-modal.page.scss'],
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;
@@ -31,7 +29,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   get hasLayers() {
-    return (this.tempProfile?.Layers?.length > 0);
+    return this.tempProfile?.Layers?.length > 0;
   }
 
   constructor(
@@ -80,10 +78,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(
-      this.hasLayers ? this.tempProfile.Layers.length : 0,
-      undefined
-    );
+    this.addOrEditLayer(this.hasLayers ? this.tempProfile.Layers.length : 0, undefined);
   }
 
   async addOrEditLayer(index: number, layer: SnowTempObsModel) {
@@ -93,8 +88,8 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
         componentProps: {
           draft: this.draft,
           layer,
-          index
-        }
+          index,
+        },
       });
       this.layerModal.present();
       await this.layerModal.onDidDismiss();
@@ -105,9 +100,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
 
   private sortLayers() {
     if (this.tempProfile && this.tempProfile.Layers) {
-      this.tempProfile.Layers = this.tempProfile.Layers.sort(
-        (a, b) => a.Depth - b.Depth
-      );
+      this.tempProfile.Layers = this.tempProfile.Layers.sort((a, b) => a.Depth - b.Depth);
     }
   }
 }

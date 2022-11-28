@@ -9,7 +9,7 @@ export class LeafletClusterHelper {
       showCoverageOnHover: false,
       zoomToBoundsOnClick: true,
       maxClusterRadius: settings.map.maxClusterRadius,
-      iconCreateFunction: LeafletClusterHelper.createClusterIcon
+      iconCreateFunction: LeafletClusterHelper.createClusterIcon,
     };
     return L.markerClusterGroup({ ...defaultOptions, ...(options || {}) });
   }
@@ -21,7 +21,7 @@ export class LeafletClusterHelper {
       html: '<div>' + length + '</div>',
       iconSize: [size, size],
       iconAnchor: [size / 2.0, size / 2.0],
-      className: 'circle-marker-cluster'
+      className: 'circle-marker-cluster',
     });
   }
 }

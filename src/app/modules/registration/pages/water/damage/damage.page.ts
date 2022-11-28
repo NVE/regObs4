@@ -18,7 +18,7 @@ const NO_DAMAGE_VISIBLE = 7;
 @Component({
   selector: 'app-damage',
   templateUrl: './damage.page.html',
-  styleUrls: ['./damage.page.scss']
+  styleUrls: ['./damage.page.scss'],
 })
 export class DamagePage extends BasePage {
   damageTypes: KdvElement[];
@@ -28,11 +28,7 @@ export class DamagePage extends BasePage {
     if (this.draft?.registration?.DamageObs?.length === 0) {
       return this.checked;
     }
-    return (
-      this.draft?.registration?.DamageObs.filter(
-        (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
-      ).length > 0
-    );
+    return this.draft?.registration?.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
   }
 
   set isChecked(val: boolean) {
@@ -40,8 +36,8 @@ export class DamagePage extends BasePage {
     if (val === false) {
       this.draft.registration.DamageObs = [
         {
-          DamageTypeTID: NO_DAMAGE_VISIBLE
-        }
+          DamageTypeTID: NO_DAMAGE_VISIBLE,
+        },
       ];
     } else {
       this.draft.registration.DamageObs = this.draft.registration.DamageObs.filter(

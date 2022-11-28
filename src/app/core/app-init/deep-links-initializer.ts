@@ -18,9 +18,7 @@ export function initDeepLinks(
           if (data?.url.indexOf('regobs://callback') >= 0) {
             authService.authorizationCallback(data.url);
           } else {
-            const deepLinkRoute = router.createUrlTree([
-              data?.url.replace('regobs://', '')
-            ]);
+            const deepLinkRoute = router.createUrlTree([data?.url.replace('regobs://', '')]);
             navController.navigateForward(deepLinkRoute);
           }
         });

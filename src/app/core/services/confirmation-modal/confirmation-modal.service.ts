@@ -31,15 +31,10 @@ interface AskForConfirmationParams {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfirmationModalService {
-
-  constructor(
-    private alertController: AlertController,
-    private translateService: TranslateService
-  ) {
-  }
+  constructor(private alertController: AlertController, private translateService: TranslateService) {}
 
   /**
    * Creates a confirmation dialog with a message and two buttons.
@@ -53,15 +48,13 @@ export class ConfirmationModalService {
    * and false if the button has the role 'cancel'.
    */
   async askForConfirmation({ message, header, buttons, opts }: AskForConfirmationParams): Promise<boolean> {
-    const _buttons = [...(buttons || await this.getDefaultButtons())];
+    const _buttons = [...(buttons || (await this.getDefaultButtons()))];
 
-    const translations = await firstValueFrom(this.translateService.get([
-      message,
-      header,
-      ..._buttons.map(button => button.text)
-    ]));
+    const translations = await firstValueFrom(
+      this.translateService.get([message, header, ..._buttons.map((button) => button.text)])
+    );
 
-    _buttons.map(button => {
+    _buttons.map((button) => {
       if (button.role === PopupResponse.CONFIRM && !button.cssClass) {
         button.cssClass = 'alert-button-confirm';
       }
@@ -73,7 +66,7 @@ export class ConfirmationModalService {
       message: translations[message],
       header: translations[header],
       buttons: _buttons,
-      backdropDismiss: false
+      backdropDismiss: false,
     });
 
     await alert.present();
@@ -94,13 +87,13 @@ export class ConfirmationModalService {
       {
         text: translations['DIALOGS.CANCEL'],
         role: PopupResponse.CANCEL,
-        cssClass: 'alert-button-cancel'
+        cssClass: 'alert-button-cancel',
       },
       {
         text: translations['DIALOGS.YES'],
         role: PopupResponse.CONFIRM,
-        cssClass: 'alert-button-confirm'
-      }
+        cssClass: 'alert-button-confirm',
+      },
     ];
   }
 }

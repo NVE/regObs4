@@ -1,3 +1,3 @@
 export interface IRegistrationSettings {
-    autoSync: boolean;
+  autoSync: boolean;
 }

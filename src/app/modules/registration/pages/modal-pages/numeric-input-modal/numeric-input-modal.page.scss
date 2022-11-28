@@ -1,36 +1,36 @@
 ion-content {
-    --background: #D4E4EF;
-    --overflow: hidden;
-    .number-pad {
-        font-size: 20px;
-        ion-button {
-            display: flex;
-            flex-grow: 1;
-            font-size: 22px;
-            height: 2.8em;
-            &:not(.button-solid) {
-                --background: var(--ion-background-color);
-            }
+  --background: #d4e4ef;
+  --overflow: hidden;
+  .number-pad {
+    font-size: 20px;
+    ion-button {
+      display: flex;
+      flex-grow: 1;
+      font-size: 22px;
+      height: 2.8em;
+      &:not(.button-solid) {
+        --background: var(--ion-background-color);
+      }
 
-            &.delete-button {
-                height: 2.8em;
-                width: 2.8em;
-                display: inline-flex;
-                --border-radius: 50%;
-            }
-        }
-
-        .text-value {
-            padding-right: 16px;
-            font-size: 26px;
-        }
+      &.delete-button {
+        height: 2.8em;
+        width: 2.8em;
+        display: inline-flex;
+        --border-radius: 50%;
+      }
     }
+
+    .text-value {
+      padding-right: 16px;
+      font-size: 26px;
+    }
+  }
 }
 
 ion-toolbar {
-    --ion-safe-area-top: 0;
-    ion-button {
-        min-height: 44px;
-        min-width: 44px;
-    }
+  --ion-safe-area-top: 0;
+  ion-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

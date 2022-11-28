@@ -3,19 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate }}
-    </ion-title>
+    <ion-title> {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="draft" [draft]="draft"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="draft" [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}} </ion-label>
       </ion-list-header>
       <ion-item (click)="addOrEdit(i)" *ngFor="let dangerObs of draft.registration.DangerObs; let i = index">
         <ion-label>{{ getSummaryText(dangerObs) }}</ion-label>
@@ -25,9 +20,7 @@
         <ion-label>{{ 'REGISTRATION.DANGER_OBS.NEW_DANGER_OBS' | translate }}</ion-label>
       </ion-item>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.ADD_IMAGES' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

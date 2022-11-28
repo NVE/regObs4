@@ -8,7 +8,7 @@ describe('BlobImageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BlobImageComponent, DomSanitizer]
+      providers: [BlobImageComponent, DomSanitizer],
     });
     component = TestBed.inject(BlobImageComponent);
   });

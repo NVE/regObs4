@@ -10,9 +10,20 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-set-location-in-map *ngIf="fromMarker" [geoHazard]="geoHazard" (mapReady)="onMapReady($event)" [fromMarker]="fromMarker"
-    [locationMarker]="locationMarker" (locationTimeSet)="onLocationSet($event)" [confirmLocationText]="confirmLocationText"
-    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" [locationTitle]="locationText"
-    [showPolyline]="false" [setObsTime]="false" [locationMarkerIconUrl]="locationMarkerIconUrl">
+  <app-set-location-in-map
+    *ngIf="fromMarker"
+    [geoHazard]="geoHazard"
+    (mapReady)="onMapReady($event)"
+    [fromMarker]="fromMarker"
+    [locationMarker]="locationMarker"
+    (locationTimeSet)="onLocationSet($event)"
+    [confirmLocationText]="confirmLocationText"
+    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE"
+    [showPreviousUsedLocations]="false"
+    [locationTitle]="locationText"
+    [showPolyline]="false"
+    [setObsTime]="false"
+    [locationMarkerIconUrl]="locationMarkerIconUrl"
+  >
   </app-set-location-in-map>
 </ion-content>

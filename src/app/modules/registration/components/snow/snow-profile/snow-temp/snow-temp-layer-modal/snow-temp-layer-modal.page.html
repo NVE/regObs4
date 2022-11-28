@@ -3,23 +3,32 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title>
-      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate }}
-    </ion-title>
+    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate}} </ion-label>
       </ion-list-header>
-      <app-numeric-input [(value)]="layer.Depth" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.DEPTH" [max]="999"
-        [min]="0" suffix="cm" [decimalPlaces]="2" [convertRatio]="100"></app-numeric-input>
-      <app-numeric-input [(value)]="layer.SnowTemp" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TEMPERATURE"
-        [max]="0" [min]="-70" suffix="°C" [decimalPlaces]="2"></app-numeric-input>
+      <app-numeric-input
+        [(value)]="layer.Depth"
+        title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.DEPTH"
+        [max]="999"
+        [min]="0"
+        suffix="cm"
+        [decimalPlaces]="2"
+        [convertRatio]="100"
+      ></app-numeric-input>
+      <app-numeric-input
+        [(value)]="layer.SnowTemp"
+        title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TEMPERATURE"
+        [max]="0"
+        [min]="-70"
+        suffix="°C"
+        [decimalPlaces]="2"
+      ></app-numeric-input>
     </ion-list>
     <ion-grid class="ion-no-padding">
       <ion-row>

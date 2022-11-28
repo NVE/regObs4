@@ -17,7 +17,7 @@ import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.mode
 const KDV_ASSETS_FOLDER = '/assets/json';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto> {
   constructor(
@@ -27,10 +27,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     private httpClient: HttpClient,
     protected userSettingService: UserSettingService
   ) {
-    super(
-      offlineDbService,
-      logger,
-      userSettingService);
+    super(offlineDbService, logger, userSettingService);
   }
 
   protected getDebugTag(): string {
@@ -46,7 +43,8 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
           return [];
         }
         return kdvsForGivenKey;
-      }));
+      })
+    );
   }
 
   public getViewRepositoryByKeyObservable(key: KdvViewRepositoryKey): Observable<unknown> {
@@ -68,7 +66,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
         this.logger.error(err, this.getDebugTag(), `${filename} not found`);
         return of({
           KdvRepositories: {},
-          ViewRepositories: {}
+          ViewRepositories: {},
         });
       })
     );

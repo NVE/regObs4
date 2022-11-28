@@ -10,14 +10,10 @@ import { MapModule } from '../map/map.module';
 import { Base64ImageComponent } from './components/base64-image/base64-image.component';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-url-item.component';
-import {
-  ModalSaveOrDeleteButtonsComponent
-} from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
+import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { ExposedHeightComponent } from './components/snow/exposed-height/exposed-height.component';
 import { ValidExpositionComponent } from './components/snow/valid-exposition/valid-exposition.component';
-import {
-  RegistrationContentWrapperComponent
-} from './components/registration-content-wrapper/registration-content-wrapper.component';
+import { RegistrationContentWrapperComponent } from './components/registration-content-wrapper/registration-content-wrapper.component';
 import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
 import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.component';
@@ -31,13 +27,7 @@ import { NgxFileDropModule } from 'ngx-file-drop';
 import { DatetimePickerComponent } from '../../components/datetime-picker/datetime-picker.component';
 
 @NgModule({
-  imports: [
-    SharedModule,
-    MapModule,
-    HelpModalPageModule,
-    NumericInputModalPageModule,
-    NgxFileDropModule
-  ],
+  imports: [SharedModule, MapModule, HelpModalPageModule, NumericInputModalPageModule, NgxFileDropModule],
   exports: [
     SharedModule,
     MapModule,
@@ -63,7 +53,7 @@ import { DatetimePickerComponent } from '../../components/datetime-picker/dateti
     CompressionTestListComponent,
     KdvSelectComponent,
     BlobImageComponent,
-    DatetimePickerComponent
+    DatetimePickerComponent,
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
@@ -86,8 +76,7 @@ import { DatetimePickerComponent } from '../../components/datetime-picker/dateti
     CompressionTestListComponent,
     KdvSelectComponent,
     BlobImageComponent,
-    DatetimePickerComponent
-  ]
+    DatetimePickerComponent,
+  ],
 })
-export class SharedComponentsModule {
-}
+export class SharedComponentsModule {}

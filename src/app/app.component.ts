@@ -23,7 +23,7 @@ const DEBUG_TAG = 'AppComponent';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;
@@ -60,16 +60,18 @@ export class AppComponent {
       this.breakpointService.onResize(this.platform.width());
     });
 
-    from(this.fileLoggingService.init({})).pipe(switchMap(() =>
-      this.getUserSettings()
-        .pipe(this.initServices())))
-      .subscribe({ next: () => {
-        this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
-        this.afterAppInitialized();
-      }, error: (err) => {
-        this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
-        this.afterAppInitialized();
-      }});
+    from(this.fileLoggingService.init({}))
+      .pipe(switchMap(() => this.getUserSettings().pipe(this.initServices())))
+      .subscribe({
+        next: () => {
+          this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
+          this.afterAppInitialized();
+        },
+        error: (err) => {
+          this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
+          this.afterAppInitialized();
+        },
+      });
   }
 
   private afterAppInitialized() {
@@ -99,47 +101,23 @@ export class AppComponent {
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))
             ),
             of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not configure logging'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not configure logging'))
             ),
             from(this.offlineImageService.cleanupOldItems()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not cleanup old items'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not cleanup old items'))
             ),
             of(this.shortcutService.init()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init shortcutService'))
             ),
             from(this.auth.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not init auth service'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init auth service'))
             ),
-            of( this.dataMarshallService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not init dataMarshallService'
-                )
-              )
+            of(this.dataMarshallService.init()).pipe(
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init dataMarshallService'))
             ),
             of(this.draftToRegService.createSubscriptions()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start draftToRegService'))
-            )
+            ),
           ])
         )
       );

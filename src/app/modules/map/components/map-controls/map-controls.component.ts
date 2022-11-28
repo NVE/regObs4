@@ -1,11 +1,11 @@
-import { Component,  Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-map-controls',
   templateUrl: './map-controls.component.html',
-  styleUrls: ['./map-controls.component.scss']
+  styleUrls: ['./map-controls.component.scss'],
 })
 export class MapControlsComponent {
   @Input() showMapSearch = true;

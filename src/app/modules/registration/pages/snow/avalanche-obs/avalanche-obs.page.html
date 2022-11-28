@@ -23,7 +23,7 @@
           [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
           position="stacked"
           class="ion-text-uppercase"
-        >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label
+          >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label
         >
         <app-datetime-picker [(dateTime)]="avalancheObs.DtAvalancheTime" [maxDate]="maxDate"> </app-datetime-picker>
         <ion-button
@@ -59,7 +59,7 @@
       </ion-item>
       <ion-item>
         <ion-label color="medium" position="stacked" class="ion-text-uppercase"
-        >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION' | translate}}</ion-label
+          >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION' | translate}}</ion-label
         >
         <app-select
           title="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"

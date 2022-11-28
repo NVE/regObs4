@@ -21,5 +21,5 @@ export enum SyncStatus {
   /**
    * Same as Sync but will ignore version check in API an overwrite earlier versions
    */
-  SyncAndIgnoreVersionCheck = 'sync-and-ignore-version-check'
+  SyncAndIgnoreVersionCheck = 'sync-and-ignore-version-check',
 }

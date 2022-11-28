@@ -1,17 +1,16 @@
 <ion-list-header class="ion-text-uppercase" *ngIf="title">
   <ion-label>
-    {{ title | translate}}
+    {{ title | translate }}
   </ion-label>
 </ion-list-header>
 <ion-radio-group (ngModelChange)="onChange($event)" [(ngModel)]="value" *ngIf="kdvelements$ | async as kdvelements">
   <ng-container *ngFor="let item of kdvelements">
-    <ion-item [ngClass]="{'selected': item.Id === value}" [hidden]="!isVisible(item)">
+    <ion-item [ngClass]="{ selected: item.Id === value }" [hidden]="!isVisible(item)">
       <ion-label>{{ useDescription ? item.Description : item.Name }}</ion-label>
       <ion-radio mode="md" slot="start" [value]="item.Id"></ion-radio>
     </ion-item>
     <div *ngIf="item.Id === value">
-      <ng-content>
-      </ng-content>
+      <ng-content> </ng-content>
     </div>
   </ng-container>
 </ion-radio-group>

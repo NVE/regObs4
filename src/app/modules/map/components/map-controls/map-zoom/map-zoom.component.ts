@@ -4,11 +4,10 @@ import { MapZoomService } from '../../../services/map/map-zoom.service';
 @Component({
   selector: 'app-map-zoom',
   templateUrl: './map-zoom.component.html',
-  styleUrls: ['./map-zoom.component.scss']
+  styleUrls: ['./map-zoom.component.scss'],
 })
 export class MapZoomComponent {
-
-  constructor(private mapZoomService: MapZoomService) { }
+  constructor(private mapZoomService: MapZoomService) {}
 
   zoomIn(): void {
     this.mapZoomService.requestZoomIn();

@@ -8,29 +8,28 @@ export interface JobStatus {
   status: string;
 
   /** Ongoing (last started) task type */
-  task: 'download'|'unzip';
+  task: 'download' | 'unzip';
 }
 
 export interface DownloadAndUnzipOptions {
   /** Url of the file you like to download */
-  downloadUrl: string,
+  downloadUrl: string;
 
   /** Example: file:///data/user/0/no.nve.regobs4/files/maps/134-72-8/steepness */
-  destinationPath: string
+  destinationPath: string;
 }
 
 export interface JobOptions {
   /**
    * A unique ID of the download/unzip job
    */
-  fileReference: number
+  fileReference: number;
 }
 
 /**
  * A native plugin that can download zip files and unzip them
  */
 export interface DownloadAndUnzipPlugin {
-
   /**
    * Start download and unzip of a specific file.
    * You may use the returned job ID to query for status or cancel the job.

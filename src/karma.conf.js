@@ -3,7 +3,7 @@ const configOptions = {
   basePath: '',
   frameworks: ['jasmine', '@angular-devkit/build-angular'],
   port: 9876,
-  browsers: ['ChromeHeadless']
+  browsers: ['ChromeHeadless'],
 };
 
 /** @param { import('karma').Config } config  */
@@ -23,18 +23,11 @@ module.exports = function (config) {
       client: {
         captureConsole: false,
       },
-      reporters: [
-        'junit',
-        'coverage'
-      ],
+      reporters: ['junit', 'coverage'],
       coverageReporter: {
         dir: '../coverage',
         subdir: '.',
-        reporters: [
-          { type: 'html' },
-          { type: 'lcovonly' },
-          { type: 'cobertura' }
-        ],
+        reporters: [{ type: 'html' }, { type: 'lcovonly' }, { type: 'cobertura' }],
         includeAllSources: true,
         fixWebpackSourcePaths: true,
         // check: {
@@ -51,7 +44,7 @@ module.exports = function (config) {
         suite: '',
       },
       colors: false,
-      logLevel: config.LOG_WARN
+      logLevel: config.LOG_WARN,
     });
   } else {
     config.set({
@@ -63,8 +56,8 @@ module.exports = function (config) {
         require('@angular-devkit/build-angular/plugins/karma'),
       ],
       client: {
-        clearContext: false
-      }
+        clearContext: false,
+      },
     });
   }
 };

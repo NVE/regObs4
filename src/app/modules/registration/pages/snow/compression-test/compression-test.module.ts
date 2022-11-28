@@ -8,16 +8,12 @@ import { CompressionTestModalPageModule } from '../../../components/snow/compres
 const routes: Routes = [
   {
     path: '',
-    component: CompressionTestPage
-  }
+    component: CompressionTestPage,
+  },
 ];
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-    CompressionTestModalPageModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [CompressionTestPage]
+  imports: [SharedComponentsModule, CompressionTestModalPageModule, RouterModule.forChild(routes)],
+  declarations: [CompressionTestPage],
 })
 export class CompressionTestPageModule {}
