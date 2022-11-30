@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, tap } from 'rxjs';
-import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import { PositionDto, RegistrationTypeCriteriaDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
@@ -17,6 +17,7 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_TYPE = 'type';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
@@ -43,6 +44,20 @@ function numberArrayToSeparatedString(numbers: number[]): string {
   }
   return '';
 }
+//[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
+function convertRegTypeDtoToUrl(types:RegistrationTypeCriteriaDto[]) {
+  if (types != null){
+    const url = [] as string[];
+    types.forEach(type => {
+      const parentId = type.Id;
+      if (type.SubTypes.length > 0) {
+        type.SubTypes.forEach(subtype => url.push(`${parentId}.${subtype}`));
+      } else { url.push(parentId.toString());}
+    });
+    return url.join('~');
+  }
+  return '';
+}
 
 function isArraysEqual(array1: number[], array2: number[]): boolean {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
@@ -56,7 +71,6 @@ function isoDateTimeToLocalDate(isoDateTime: string): string {
   }
   return null;
 }
-
 
 /**
  * Contains current filter for registrations.
@@ -148,11 +162,14 @@ export class SearchCriteriaService {
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
+    const type = url.searchParams.get(URL_PARAM_TYPE);
+    const convertTypeFromUrlToCriteria = type != null ? this.convertRegTypeFromUrlToDto(type) : null;
 
     const criteria = {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
-      ObserverNickName: nickName
+      ObserverNickName: nickName,
+      SelectedRegistrationTypes: convertTypeFromUrlToCriteria,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
@@ -184,6 +201,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.apply();
   }
 
@@ -198,8 +216,62 @@ export class SearchCriteriaService {
     return null;
   }
 
+  //81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
+  convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
+    //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
+    const splitUrlToArray = type.split('~').map(i => i.split('.'));
+    //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
+    const regTypeCriteriaDto = splitUrlToArray.map(i =>
+    { return {Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])]: []};})
+      .reduce((obj, item)=>{
+        obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = {...item});
+        return obj;
+      }, {});
+    return Object.values(regTypeCriteriaDto);
+  }
+
+
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
+  }
+
+  async setObservationType(newType: RegistrationTypeCriteriaDto) {
+    const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
+
+    if (currentTypesCriteria){
+      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+      const criteriaToUpdateIndex = copyCriteria.findIndex(i => i.Id === newType.Id);
+
+      if (criteriaToUpdateIndex != -1) {
+        copyCriteria[criteriaToUpdateIndex].SubTypes =
+          [...copyCriteria[criteriaToUpdateIndex].SubTypes, ...newType.SubTypes];
+        this.searchCriteriaChanges.next({SelectedRegistrationTypes: copyCriteria});
+      }
+      else this.searchCriteriaChanges.next(
+        {SelectedRegistrationTypes: [...currentTypesCriteria as RegistrationTypeCriteriaDto[], newType]});
+    }
+    else this.searchCriteriaChanges.next({SelectedRegistrationTypes: [newType]});
+  }
+
+  //
+  async removeObservationType(typeToRemove: RegistrationTypeCriteriaDto) {
+    const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
+    const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+    const criteriaToUpdateWithIndex = copyCriteria.findIndex(criteria => criteria.Id == typeToRemove.Id);
+    //compare chosen object with existing one and if they are the same (no SubTypes differences) remove it from criteria
+    if (JSON.stringify(copyCriteria[criteriaToUpdateWithIndex]) == JSON.stringify(typeToRemove)){
+
+      copyCriteria.splice(criteriaToUpdateWithIndex, 1);
+      this.searchCriteriaChanges.next({SelectedRegistrationTypes: copyCriteria});
+    }
+    //if not then it means there are subtypes differences so remove the subtypes from the current criterias
+    else {
+      //{Id:81, SubTypes: [33,23]} => {Id:81, SubTypes: [33]} remove typeToRemove subtypes from current criteria
+      const [ subTypeValueToRemove ] = typeToRemove.SubTypes;
+      const subTypesToRemoveWithIndex = copyCriteria[criteriaToUpdateWithIndex].SubTypes.indexOf(subTypeValueToRemove);
+      copyCriteria[criteriaToUpdateWithIndex].SubTypes.splice(subTypesToRemoveWithIndex, 1);
+      this.searchCriteriaChanges.next({SelectedRegistrationTypes: copyCriteria});
+    }
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

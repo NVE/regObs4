@@ -4,7 +4,7 @@
   </ion-list-header>
   <app-observations-days-back></app-observations-days-back>
   <app-update-observations></app-update-observations>
-  <div *ngIf="false">
+  <div *ngIf="true">
     <!-- Dette er på prototypestadiet, så vi skjuler dette foreløpig -->
     <!-- TODO: Oversettelser på all tekst -->
     <ion-list-header color="varsom-blue" class="ion-no-margin">
@@ -12,29 +12,19 @@
         Observasjonstype
       </ion-label>
     </ion-list-header>
-    <!-- TODO: Checkboxer må endre seg basert på hvilken naturfare som er valgt! Se på eksisterende funksjonalitet i side-menu.component -->
-    <ion-item>
-      <ion-checkbox checked="true" [(ngModel)]="masterCheck" [indeterminate]="isIndeterminate"
-        (click)="checkMaster($event)" color="varsom-dark-blue" mode="md">
-      </ion-checkbox>
-      <ion-label class="ion-padding-start">Alle</ion-label>
-      <ion-button class="toggleAllTypesButton" (click)="toggleAllObservationTypes()" fill="clear">
-        <ion-icon [name]="showObservationTypes ? 'chevron-up-circle-outline' : 'chevron-down-circle-outline' ">
-        </ion-icon>
-      </ion-button>
-    </ion-item>
-    <ng-container *ngIf="this.showObservationTypes">
-      <ion-item>
-        <ion-list lines="none">
-          <!-- TODO: Hente ut riktige observasjonstyper i checkboxer -->
-          <ion-item *ngFor="let type of filteredObservationTypes">
-            <ion-checkbox [(ngModel)]="type.isChecked" (ionChange)="checkEvent()" color="varsom-dark-blue" mode="md">
+  
+    <ion-item *ngIf="observationTypesOptions">
+      <ion-list lines="none">
+        <ng-container *ngFor="let type of observationTypesOptions">
+          <ion-item class="item-height">
+            <ion-checkbox [(ngModel)]="type.isChecked" (ionChange)="setNewType($event, type.parentId, type.id)"
+              color="varsom-dark-blue">
             </ion-checkbox>
-            <ion-label class="ion-padding-start">{{type.value}}</ion-label>
+            <ion-label class="ion-padding-start">{{type.name}}</ion-label>
           </ion-item>
-        </ion-list>
-      </ion-item>
-    </ng-container>
+        </ng-container>
+      </ion-list>
+    </ion-item>
 
     <ion-list-header color="varsom-blue" class="ion-no-margin">
       <ion-label>

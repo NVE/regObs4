@@ -98,6 +98,19 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('nick')).toEqual('Nick');
   }));
 
+  it('set new observation type should work', fakeAsync(async () => {
+    const obsType = {Id: 81, SubTypes: [13]};
+    service.setObservationType(obsType);
+    tick(1);
+    //check that current criteria contains expected nick name
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual('81.13');
+  }));
+
+
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -142,6 +155,18 @@ describe('SearchCriteriaService url parsing', () => {
     //check that current criteria contains expected nick name
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverNickName).toEqual('Oluf');
+  }));
+
+  it('type url should work', fakeAsync( async () => {
+    new UrlParams().set('type', '81.13~81.26~10').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService());
+
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([{Id: 10, SubTypes: []}, {Id: 81, SubTypes: [13, 26]}]);
   }));
 
   it('geo hazard url filter should work', fakeAsync(async () => {
