@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { NavController } from '@ionic/angular';
 import {
-  ObsLocationsResponseDtoV2} from 'src/app/modules/common-regobs-api/models';
+  ObsLocationsResponseDtoV2, ObsLocationViewModel} from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
@@ -12,6 +12,7 @@ import { LocationTime, SetLocationInMapComponent } from '../../components/set-lo
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { LocationService } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-obs-location',
@@ -34,6 +35,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private draftService: DraftRepositoryService,
     private activatedRoute: ActivatedRoute,
     private ngZone: NgZone,
+    private locationService: LocationService,
     private navController: NavController,
     private fullscreenService: FullscreenService,
     private swipeBackService: SwipeBackService,
@@ -44,35 +46,43 @@ export class ObsLocationPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     const id = this.activatedRoute.snapshot.params['id'];
+    const geoHazard = this.activatedRoute.snapshot.params['geoHazard'];
+    const lat = this.activatedRoute.snapshot.queryParams['lat'];
+    const lon = this.activatedRoute.snapshot.queryParams['lon'];
+    const locationId = this.activatedRoute.snapshot.queryParams['locationId'];
     if (id) {
       // Edit an existing draft
       this.draft = await this.draftService.load(id);
       this.geoHazard = this.draft.registration.GeoHazardTID;
-    } else if (this.activatedRoute.snapshot.params['geoHazard']) {
+    } else if (geoHazard) {
       // New draft - will be created later
-      this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
+      if (isNaN(geoHazard)){
+        const geoHazardCapLetter = geoHazard.charAt(0).toUpperCase() + geoHazard.slice(1);
+        this.geoHazard = parseInt(GeoHazard[geoHazardCapLetter], 10);
+      } else {
+        this.geoHazard = parseInt(geoHazard, 10);
+      }
     }
     if (this.geoHazard == null) {
       // No geohazard found, use app mode
       const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
       this.geoHazard = userSettings.currentGeoHazard[0];
     }
-    if (this.hasLocation(this.draft)) {
+    if(lat && lon){
+      this.setLocationMarker(lat, lon);
+    }
+    else if(locationId){
+      const location =
+        await firstValueFrom(this.locationService.LocationGet({locationId: locationId})) as ObsLocationViewModel;
+      this.setLocationMarker(location.Latitude, location.Longitude);
+      this.selectedLocation = {
+        Name: location.LocationName || location.LocationDescription,
+        Id: locationId
+      };
+    }
+    else if (this.hasLocation(this.draft)) {
       const obsLocation = this.draft.registration.ObsLocation;
-      const locationMarkerIcon = L.icon({
-        iconUrl: '/assets/icon/map/obs-location.svg',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41]
-      });
-      this.locationMarker = L.marker(
-        {
-          lat: obsLocation.Latitude,
-          lng: obsLocation.Longitude
-        },
-        { icon: locationMarkerIcon }
-      );
+      this.setLocationMarker(obsLocation.Latitude, obsLocation.Longitude);
       this.selectedLocation = {
         Name: obsLocation.LocationName || obsLocation.LocationDescription,
         Id: obsLocation.ObsLocationID
@@ -88,6 +98,23 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  setLocationMarker(lat: number, long: number) {
+    const locationMarkerIcon = L.icon({
+      iconUrl: '/assets/icon/map/obs-location.svg',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      shadowUrl: 'leaflet/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
+    this.locationMarker = L.marker(
+      {
+        lat: lat,
+        lng: long
+      },
+      { icon: locationMarkerIcon }
+    );
   }
 
   ionViewDidEnter() {
