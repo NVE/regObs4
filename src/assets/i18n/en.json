@@ -195,7 +195,7 @@
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. You may see more at <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">your page on web</a>",
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "NO_OBSERVATIONS": "Share your observations!",
-    "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and assessements with others on Varsom.",
+    "NO_OBSERVATIONS_TEXT": "Your observations will appear here. Share your observations, pictures and assessements with others on Varsom.",
     "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
     "TITLE": "My observations"
   },
