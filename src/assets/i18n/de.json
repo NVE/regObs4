@@ -6,13 +6,13 @@
     "TITLE": "Varsom Abonnent"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_SOIL": "Entwurf: Boden beobachtung",
     "DRAFT_TITLE_ICE": "Entwurf: Eis beobachtung",
     "DRAFT_TITLE_SNOW": "Entwurf: Schnee beobachtung",
+    "DRAFT_TITLE_SOIL": "Entwurf: Boden beobachtung",
     "DRAFT_TITLE_WATER": "Entwurf: Wasser beobachtung",
-    "NEW_SOIL_OBSERVATION": "Neue boden beobachtung",
     "NEW_ICE_OBSERVATION": "Neue eis beobachtung",
     "NEW_SNOW_OBSERVATION": "Neue schnee beobachtung",
+    "NEW_SOIL_OBSERVATION": "Neue boden beobachtung",
     "NEW_WATER_OBSERVATION": "Neue wasser beobachtung"
   },
   "ALERT": {
@@ -207,8 +207,8 @@
       "URL": "Url"
     },
     "BACK_TO_OBSERVATION": "Zurück zu Beobachtung",
-    "COPIED_TO_CLIPBOARD": "In die Zwischenablage kopiert",
     "CONFIRM_RESET": "Möchten Sie wirklich alle Felder zurücksetzen?",
+    "COPIED_TO_CLIPBOARD": "In die Zwischenablage kopiert",
     "DANGER_OBS": {
       "AREA": "Bereich",
       "COMMENT": "Kommentar",
