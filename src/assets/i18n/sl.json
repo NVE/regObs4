@@ -586,7 +586,7 @@
     "LANGUAGE": "Jezik",
     "NORWAY_ONLY": "Samo na Norveškem",
     "NUMBER_OF_TILES_IN_CACHE": "Največje število listov zemljevidov brez povezave v predpomnilniku",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "O naši uporabi podatkov lahko preberete v naši <a href=\"{{legalUrl}}\" target=\"_blank\">politiki zasebnosti</a>.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "O naši uporabi podatkov lahko preberete v naši politiki zasebnosti.",
     "RESET": "Ponastavi aplikacijo",
     "RESETTING": "Aplikacija se ponastavlja. Prosimo počakajte ...",
     "SHOW_ADVANCED": "Pokaži napredne nastavitve",
