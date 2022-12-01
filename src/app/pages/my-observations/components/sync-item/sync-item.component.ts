@@ -6,14 +6,17 @@ import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
 @Component({
   selector: 'app-sync-item',
   templateUrl: './sync-item.component.html',
-  styleUrls: ['./sync-item.component.scss'],changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./sync-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SyncItemComponent {
   @Input() draft: RegistrationDraft;
 
   get loading() {
-    return (this.draft.syncStatus === SyncStatus.Sync || this.draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
-    && this.draft.error == null;
+    return (
+      (this.draft.syncStatus === SyncStatus.Sync || this.draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck) &&
+      this.draft.error == null
+    );
   }
 
   get isDraft() {

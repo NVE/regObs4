@@ -17,9 +17,8 @@
   font-family: 'Custom Arrows';
   font-style: normal;
   font-weight: 400;
-  src: url('/assets/fonts/Calibri.woff') format('woff2'),
-  url('/assets/fonts/Calibri.woff') format('woff'),
-  url('/assets/fonts/Calibri.ttf') format('truetype');
+  src: url('/assets/fonts/Calibri.woff') format('woff2'), url('/assets/fonts/Calibri.woff') format('woff'),
+    url('/assets/fonts/Calibri.ttf') format('truetype');
   /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
 }
@@ -302,7 +301,6 @@ ion-radio-group {
 }
 
 ion-button {
-
   &.button-block:not(.button-round),
   &.button-full:not(.button-round) {
     --border-radius: 2px;
@@ -477,7 +475,6 @@ ion-toast {
 }
 
 .shadow-marker {
-
   // filter: drop-shadow(5px 0px 5px #000);
   &:after {
     content: '';
@@ -521,7 +518,7 @@ ion-toast {
 
 .coachmark-text {
   color: #fff;
-  font-family: "Shadows Into Light", "Source Sans Pro";
+  font-family: 'Shadows Into Light', 'Source Sans Pro';
   font-size: 32px;
   line-height: 130%;
 }

@@ -35,7 +35,7 @@ import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.co
     ModalMapImagePageModule,
     SupportMapInfoPageModule,
     MapImageModule,
-    SharedModule
+    SharedModule,
   ],
   declarations: [
     MapComponent,
@@ -44,7 +44,7 @@ import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.co
     FullscreenToggleComponent,
     GpsCenterComponent,
     MapCenterInfoComponent,
-    MapZoomComponent
+    MapZoomComponent,
   ],
   exports: [
     MapComponent,
@@ -56,7 +56,7 @@ import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.co
     MapZoomComponent,
     ModalSearchPageModule,
     ModalMapImagePageModule,
-    SupportMapInfoPageModule
-  ]
+    SupportMapInfoPageModule,
+  ],
 })
 export class MapModule {}

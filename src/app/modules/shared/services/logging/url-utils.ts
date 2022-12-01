@@ -13,7 +13,6 @@ export function removeOauthTokenFromUrl(text: string): string {
   return result;
 }
 
-
 /**
  * Replace specific parameter value(s) in provided url.
  * If the parameter doesn't exist in the url, the parameter will NOT be added.
@@ -23,10 +22,9 @@ export function removeOauthTokenFromUrl(text: string): string {
  * @returns the new url
  */
 function updateQueryStringParameter(url: string, paramKey: string, paramValue: string): string {
-  const re = new RegExp('(?<=[?&])' + paramKey + '=.*?((?=[&\'])|$)', 'g');
+  const re = new RegExp('(?<=[?&])' + paramKey + "=.*?((?=[&'])|$)", 'g');
   if (url.match(re)) {
     return url.replace(re, paramKey + '=' + paramValue);
   }
   return url;
 }
-

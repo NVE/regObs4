@@ -12,18 +12,27 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{'loaded': loaded}" [items]="warningGroups"
-    [headerFn]="myHeaderFn" [footerFn]="myFooterFn" [approxItemHeight]="49" [approxHeaderHeight]="38"
-    [trackBy]="trackByFunc">
+  <ion-virtual-scroll
+    *ngIf="!showEmptyState else empty"
+    [ngClass]="{'loaded': loaded}"
+    [items]="warningGroups"
+    [headerFn]="myHeaderFn"
+    [footerFn]="myFooterFn"
+    [approxItemHeight]="49"
+    [approxHeaderHeight]="38"
+    [trackBy]="trackByFunc"
+  >
     <ion-item-divider *virtualHeader="let header">
-      <app-warning-list-header [title]="header.header" [subTitle]="header.infoText"
-        [showDayNames]="header.showDayNames"></app-warning-list-header>
+      <app-warning-list-header
+        [title]="header.header"
+        [subTitle]="header.infoText"
+        [showDayNames]="header.showDayNames"
+      ></app-warning-list-header>
     </ion-item-divider>
     <div *virtualItem="let virtialItem">
       <app-warning-list-item [warningGroup]="virtialItem.item"></app-warning-list-item>
     </div>
-    <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer">
-    </ion-item-divider>
+    <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer"> </ion-item-divider>
   </ion-virtual-scroll>
   <div id="abonner-banner" *ngIf="selectedTab === 'inMapView'" class="ion-margin" [ngClass]="{'loaded': loaded}">
     <app-abonner-banner></app-abonner-banner>
@@ -43,7 +52,7 @@
     </ion-row>
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2> {{ 'WARNING_LIST.NO_FAVOURITES' | translate }}</h2>
+        <h2>{{ 'WARNING_LIST.NO_FAVOURITES' | translate }}</h2>
         <h3 class="ion-text-wrap">{{'WARNING_LIST.NO_FAVOURITES_TEXT'|translate}}</h3>
       </ion-col>
     </ion-row>
@@ -58,7 +67,7 @@
     </ion-row>
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2> {{ 'WARNING_LIST.NO_WARNINGS' | translate }}</h2>
+        <h2>{{ 'WARNING_LIST.NO_WARNINGS' | translate }}</h2>
         <h3 class="ion-text-wrap">{{'WARNING_LIST.NO_WARNINGS_TEXT'|translate}}</h3>
       </ion-col>
     </ion-row>

@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { MetersToCmPipe } from './pipes/metersToCm.pipe';
 
-const PIPES = [
-  MetersToCmPipe,
-];
+const PIPES = [MetersToCmPipe];
 
 @NgModule({
   declarations: PIPES,

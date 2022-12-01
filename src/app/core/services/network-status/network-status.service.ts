@@ -6,19 +6,18 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 const DEBUG_TAG = 'NetworkStatus';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NetworkStatusService {
-
-  public connected$: Observable<boolean>
+  public connected$: Observable<boolean>;
 
   constructor(loggerService: LoggingService) {
     const currentStatus = Network.getStatus();
 
     // networkStatusChange will not emit before a change occurs thats why we need to use
     // Network.getStatus and concat to include the initial status in the stream
-    const statusChanges: Observable<ConnectionStatus> = fromEventPattern(
-      (handler) => Network.addListener('networkStatusChange', handler)
+    const statusChanges: Observable<ConnectionStatus> = fromEventPattern((handler) =>
+      Network.addListener('networkStatusChange', handler)
     );
 
     this.connected$ = concat(currentStatus, statusChanges).pipe(

@@ -13,7 +13,7 @@ class TestMapService {
   mapView$: Observable<IMapView>;
 }
 
-function createTestMapService (): TestMapService {
+function createTestMapService(): TestMapService {
   const service = new TestMapService();
   service.mapView$ = of({ bounds: undefined, center: undefined, zoom: undefined });
   return service;
@@ -33,12 +33,13 @@ describe('SearchCriteriaService', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     jasmine.clock().install();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     history.pushState(null, '', window.location.pathname); //remove all query params added in test
     jasmine.clock().uninstall();
   });
@@ -58,9 +59,9 @@ describe('SearchCriteriaService', () => {
 
     //verify that criteria changes when we change language and geo hazard
     userSettingService.saveUserSettings({
-      ...await firstValueFrom(userSettingService.userSetting$),
+      ...(await firstValueFrom(userSettingService.userSetting$)),
       language: LangKey.en,
-      currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water]
+      currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water],
     });
     tick(1);
     const criteria2 = await firstValueFrom(service.searchCriteria$);
@@ -84,7 +85,6 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
   }));
 
-
   it('nick name filter should work', fakeAsync(async () => {
     service.setObserverNickName('Nick');
     tick(1);
@@ -97,7 +97,6 @@ describe('SearchCriteriaService', () => {
     const url = new URL(document.location.href);
     expect(url.searchParams.get('nick')).toEqual('Nick');
   }));
-
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -107,7 +106,7 @@ describe('SearchCriteriaService url parsing', () => {
   let mapService: TestMapService;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ });
+    TestBed.configureTestingModule({});
 
     mapService = createTestMapService();
     userSettingService = new UserSettingService(null, null);
@@ -115,7 +114,7 @@ describe('SearchCriteriaService url parsing', () => {
     jasmine.clock().install();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     history.pushState(null, '', window.location.pathname); //remove all query params added in test
     jasmine.clock().uninstall();
   });
@@ -136,7 +135,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected nick name
@@ -149,7 +149,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected geo hazard
@@ -162,7 +163,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected geo hazard
@@ -177,7 +179,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that criteria contains correct from time. Should be 1 days earlier at midnight
@@ -186,5 +189,4 @@ describe('SearchCriteriaService url parsing', () => {
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
   }));
-
 });

@@ -13,7 +13,7 @@ import { firstValueFrom, Observable } from 'rxjs';
   selector: 'app-help-text',
   templateUrl: './help-text.component.html',
   styleUrls: ['./help-text.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HelpTextComponent implements OnInit {
   @Input() registrationTid: number;
@@ -21,22 +21,21 @@ export class HelpTextComponent implements OnInit {
 
   hasHelpText$: Observable<boolean>;
 
-  constructor(
-    private helpTextService: HelpTextService,
-    private modalController: ModalController,
-  ) {}
+  constructor(private helpTextService: HelpTextService, private modalController: ModalController) {}
 
   async ngOnInit() {
     this.hasHelpText$ = this.helpTextService.hasHelpTextObservable(this.geoHazard, this.registrationTid);
   }
 
   async showHelp() {
-    const helpText = await firstValueFrom(this.helpTextService.getHelpTextObservable(this.geoHazard, this.registrationTid));
+    const helpText = await firstValueFrom(
+      this.helpTextService.getHelpTextObservable(this.geoHazard, this.registrationTid)
+    );
     const modal = await this.modalController.create({
       component: HelpModalPage,
       componentProps: {
-        helpText: helpText
-      }
+        helpText: helpText,
+      },
     });
     modal.present();
   }

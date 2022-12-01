@@ -18,11 +18,7 @@ export abstract class BasePage extends NgDestoryBase {
   registrationTid: RegistrationTid;
   activatedRoute: ActivatedRoute;
 
-  constructor(
-    registrationTid: RegistrationTid,
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute
-  ) {
+  constructor(registrationTid: RegistrationTid, basePageService: BasePageService, activatedRoute: ActivatedRoute) {
     super();
     this.basePageService = basePageService;
     this.activatedRoute = activatedRoute;
@@ -35,31 +31,28 @@ export abstract class BasePage extends NgDestoryBase {
     const draft$ = this.basePageService.draftRepository.getDraft$(id);
 
     // The first time we get a registration object, run some additional logic
-    draft$.pipe(
-      take(1),
-      map((draft) => {
-        // Seems like this class is also used by the set datetime page,
-        // where we don't have a registrationTid
-        if (this.registrationTid != null) {
-          return createEmptyRegistration(draft, this.registrationTid);
-        }
-        return draft;
-      }),
-      tap((reg) => {
-        this.draft = reg;
-      }),
-      switchMap(() => this.createInitObservable()),
-    ).subscribe();
-
-    // Update registration data eg. when navigating back from subforms
     draft$
       .pipe(
-        skip(1),
-        takeUntil(this.ngDestroy$)
+        take(1),
+        map((draft) => {
+          // Seems like this class is also used by the set datetime page,
+          // where we don't have a registrationTid
+          if (this.registrationTid != null) {
+            return createEmptyRegistration(draft, this.registrationTid);
+          }
+          return draft;
+        }),
+        tap((reg) => {
+          this.draft = reg;
+        }),
+        switchMap(() => this.createInitObservable())
       )
-      .subscribe((draft) => {
-        this.draft = draft;
-      });
+      .subscribe();
+
+    // Update registration data eg. when navigating back from subforms
+    draft$.pipe(skip(1), takeUntil(this.ngDestroy$)).subscribe((draft) => {
+      this.draft = draft;
+    });
   }
 
   /**

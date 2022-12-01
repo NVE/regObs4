@@ -3,20 +3,21 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{'REGISTRATION.GROUP.TITLE' | translate}}
-    </ion-title>
+    <ion-title> {{'REGISTRATION.GROUP.TITLE' | translate}} </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper [isEmpty]="isEmpty()" *ngIf="draft" [draft]="draft"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper
+    [isEmpty]="isEmpty()"
+    *ngIf="draft"
+    [draft]="draft"
+    [registrationTid]="registrationTid"
+    (reset)="reset()"
+  >
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{"REGISTRATION.GROUP.SUBTITLE" | translate}}
-        </ion-label>
+        <ion-label> {{"REGISTRATION.GROUP.SUBTITLE" | translate}} </ion-label>
       </ion-list-header>
       <ion-radio-group
         *ngIf="groups.length > 1"

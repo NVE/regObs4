@@ -14,18 +14,17 @@ const DEBUG_TAG = 'VersionConflictComponent';
 @Component({
   selector: 'app-version-conflict',
   templateUrl: './version-conflict.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VersionConflictComponent {
-
   @Input() draft: RegistrationDraft;
 
   constructor(
     private draftToRegistrationService: DraftToRegistrationService,
     private draftRepository: DraftRepositoryService,
     private logger: LoggingService,
-    private navController: NavController)
-  {}
+    private navController: NavController
+  ) {}
 
   overwrite(): void {
     this.logger.debug(`Trying to overwrite remote version of draft ${this.draft.uuid}`, DEBUG_TAG);

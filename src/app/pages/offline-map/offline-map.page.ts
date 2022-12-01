@@ -19,28 +19,28 @@ const documentStyle = getComputedStyle(document.body);
 const defaultTileStyle = {
   color: documentStyle.getPropertyValue('--ion-color-primary'),
   opacity: 1,
-  fillOpacity: notFilledTileOpacity
+  fillOpacity: notFilledTileOpacity,
 };
 const downloadedTileStyle = {
   ...defaultTileStyle,
-  fillOpacity: filledTileOpacity
+  fillOpacity: filledTileOpacity,
 };
 const errorTileStyle = {
   ...downloadedTileStyle,
-  color: documentStyle.getPropertyValue('--ion-color-danger')
+  color: documentStyle.getPropertyValue('--ion-color-danger'),
 };
 
 type PackageIndex = CompoundPackageMetadata[];
 
 interface PackageTotals {
-  numPackages: number,
-  spaceUsed: string
+  numPackages: number;
+  spaceUsed: string;
 }
 
 @Component({
   selector: 'app-offline-map',
   templateUrl: './offline-map.page.html',
-  styleUrls: ['./offline-map.page.scss']
+  styleUrls: ['./offline-map.page.scss'],
 })
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
@@ -56,7 +56,7 @@ export class OfflineMapPage extends NgDestoryBase {
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<CompoundPackageFeature>();
   isZooming = new BehaviorSubject<boolean>(false);
-  featureMap = new Map<string, { feature: CompoundPackageFeature, layer: L.Layer }>();
+  featureMap = new Map<string, { feature: CompoundPackageFeature; layer: L.Layer }>();
   expanded = false; //show list of downloads if this is true
 
   constructor(
@@ -73,23 +73,25 @@ export class OfflineMapPage extends NgDestoryBase {
     this.packagesOnServer$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(
       // Map downloaded package index to a packageName => package map
       map((packageIndex) => {
-        const nameAndPkg: [string, CompoundPackage][] = packageIndex.map(p => [
+        const nameAndPkg: [string, CompoundPackage][] = packageIndex.map((p) => [
           CompoundPackage.GetNameFromXYZ(...p.xyz),
-          new CompoundPackage(p)
+          new CompoundPackage(p),
         ]);
         return new Map(nameAndPkg);
       }),
       shareReplay()
     );
 
-    this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$
-      .pipe(map((items) => items.sort(((a, b) => b.downloadStart - a.downloadStart))));
-    this.installedPackages$ = this.offlineMapService.packages$
-      .pipe(map((downloaded) => new Map(downloaded.map((item) => [this.getFeatureIdForPackage(item), item]))));
+    this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$.pipe(
+      map((items) => items.sort((a, b) => b.downloadStart - a.downloadStart))
+    );
+    this.installedPackages$ = this.offlineMapService.packages$.pipe(
+      map((downloaded) => new Map(downloaded.map((item) => [this.getFeatureIdForPackage(item), item])))
+    );
     this.allPackages$ = combineLatest([
       this.offlineMapService.downloadAndUnzipProgress$,
-      this.offlineMapService.packages$
-    ]).pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])));
+      this.offlineMapService.packages$,
+    ]).pipe(map(([inProgress, downloaded]) => [...inProgress, ...downloaded]));
 
     this.packageTotals$ = this.allPackages$.pipe(
       map((packages) => {
@@ -122,21 +124,18 @@ export class OfflineMapPage extends NgDestoryBase {
             this.showModal.next(feature);
           }
         });
-      }
+      },
     });
 
     map.addLayer(this.tilesLayer);
 
-    this.packagesOnServer$.subscribe(packageMap => {
+    this.packagesOnServer$.subscribe((packageMap) => {
       packageMap.forEach((mapPackage) => {
         this.tilesLayer.addData(mapPackage.getFeature());
       });
     });
 
-    combineLatest([
-      this.installedPackages$,
-      this.packagesOnServer$
-    ])
+    combineLatest([this.installedPackages$, this.packagesOnServer$])
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([installedPackages, packagesOnServer]) => {
         this.installedPackages = installedPackages;
@@ -144,25 +143,30 @@ export class OfflineMapPage extends NgDestoryBase {
         this.setStyleForPackages();
       });
 
-    this.downloadAndUnzipProgress$.pipe(takeUntil(this.ngDestroy$)).pipe(
-      tap((itemsWithProgress) => {
-        this.failedPackageIds = itemsWithProgress.filter(item => item.error).map(item => item.name);
-      })
-    ).subscribe((itemsWithProgress) => {
-      this.zone.runOutsideAngular(() => {
-        for (const item of itemsWithProgress) {
-          this.setStyleForProgressOrDownloadedPackage(item);
-        }
+    this.downloadAndUnzipProgress$
+      .pipe(takeUntil(this.ngDestroy$))
+      .pipe(
+        tap((itemsWithProgress) => {
+          this.failedPackageIds = itemsWithProgress.filter((item) => item.error).map((item) => item.name);
+        })
+      )
+      .subscribe((itemsWithProgress) => {
+        this.zone.runOutsideAngular(() => {
+          for (const item of itemsWithProgress) {
+            this.setStyleForProgressOrDownloadedPackage(item);
+          }
+        });
       });
-    });
 
-    this.showModal.pipe(
-      debounceTime(200),
-      withLatestFrom(this.isZooming),
-      filter(([, isZooming]) => !isZooming),
-      switchMap(([feature]) => from(this.showPackageModal(feature))),
-      takeUntil(this.ngDestroy$)
-    ).subscribe();
+    this.showModal
+      .pipe(
+        debounceTime(200),
+        withLatestFrom(this.isZooming),
+        filter(([, isZooming]) => !isZooming),
+        switchMap(([feature]) => from(this.showPackageModal(feature))),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe();
 
     // This is to avoid pinch-zooming on map triggers click event
     map.on('dragend zoomend', () => {
@@ -177,7 +181,7 @@ export class OfflineMapPage extends NgDestoryBase {
     for (const [, item] of this.installedPackages) {
       this.setStyleForProgressOrDownloadedPackage(item);
     }
-    for (const [key,] of this.packagesOnServer) {
+    for (const [key] of this.packagesOnServer) {
       let style = defaultTileStyle;
       if (!this.installedPackages.has(key)) {
         if (this.failedPackageIds.includes(key)) {
@@ -191,7 +195,7 @@ export class OfflineMapPage extends NgDestoryBase {
   private setStyleForFeature(id: string, style: L.PathOptions) {
     const feature = this.featureMap.get(id);
     if (feature) {
-      const polyline = (feature.layer as L.Polyline);
+      const polyline = feature.layer as L.Polyline;
       polyline.setStyle(style);
     }
   }
@@ -207,7 +211,7 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   private getProgressOpacity(item: OfflineMapPackage) {
-    const progressValue = (item.progress ? (item.progress.percentage / 2.0) : 0) + 0.4;
+    const progressValue = (item.progress ? item.progress.percentage / 2.0 : 0) + 0.4;
     return Math.min(progressValue, filledTileOpacity);
   }
 
@@ -227,7 +231,6 @@ export class OfflineMapPage extends NgDestoryBase {
     return '';
   }
 
-
   async showPackageModal(feature: CompoundPackageFeature) {
     const compoundPackage = this.packagesOnServer.get(feature.id as string);
     const name = compoundPackage.getName();
@@ -236,12 +239,11 @@ export class OfflineMapPage extends NgDestoryBase {
       componentProps: {
         feature: feature,
         packageOnServer: compoundPackage,
-        offlinePackageStatus$: this.allPackages$.pipe(
-          map(packages => packages.find(p => p.name === name)))
+        offlinePackageStatus$: this.allPackages$.pipe(map((packages) => packages.find((p) => p.name === name))),
       },
       swipeToClose: true,
       mode: 'ios',
-      cssClass: 'offline-map-modal'
+      cssClass: 'offline-map-modal',
     });
     await modal.present();
   }
@@ -278,15 +280,15 @@ export class OfflineMapPage extends NgDestoryBase {
         buttons: [
           {
             text: translations['DIALOGS.CANCEL'],
-            role: 'cancel'
+            role: 'cancel',
           },
           {
             text: translations['DIALOGS.DELETE'],
             handler: () => {
               this.offlineMapService.removeMapPackageByName(map.name);
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
       alert.present();
     } else {

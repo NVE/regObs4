@@ -8,12 +8,12 @@ const routes: Routes = [
   {
     path: '',
     component: ObsLocationPage,
-    canDeactivate: [SaveAsDraftRouteGuard]
-  }
+    canDeactivate: [SaveAsDraftRouteGuard],
+  },
 ];
 
 @NgModule({
   imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [ObsLocationPage]
+  declarations: [ObsLocationPage],
 })
 export class ObsLocationPageModule {}

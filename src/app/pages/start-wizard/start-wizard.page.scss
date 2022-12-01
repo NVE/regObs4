@@ -139,10 +139,10 @@ ion-content {
       }
 
       &:before {
-        content: "";
+        content: '';
         width: 120px;
         height: 120px;
-        background-image: url("/assets/images/onboarding/legal-spinner.png");
+        background-image: url('/assets/images/onboarding/legal-spinner.png');
         animation: rotate 3s linear infinite;
         background-position: center;
         background-repeat: no-repeat;
@@ -220,7 +220,7 @@ ion-content {
           top: 81px;
 
           &:before {
-            content: "";
+            content: '';
             display: block;
             animation: usermarker-pulsate 1.5s ease-in-out infinite;
             border: 5px solid #6996a3;

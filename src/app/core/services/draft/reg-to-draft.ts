@@ -1,10 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-import { AttachmentViewModel, AvalancheActivityObs2EditModel, AvalancheActivityObs2ViewModel, ObsLocationEditModel, ObsLocationViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import {
+  AttachmentViewModel,
+  AvalancheActivityObs2EditModel,
+  AvalancheActivityObs2ViewModel,
+  ObsLocationEditModel,
+  ObsLocationViewModel,
+  RegistrationViewModel,
+} from 'src/app/modules/common-regobs-api';
 import { RegistrationEditModelWithRemoteOrLocalAttachments, RemoteOrLocalAttachmentEditModel } from './draft-model';
 
-export function viewModelToEditModel(viewModel: RegistrationViewModel): RegistrationEditModelWithRemoteOrLocalAttachments {
+export function viewModelToEditModel(
+  viewModel: RegistrationViewModel
+): RegistrationEditModelWithRemoteOrLocalAttachments {
   // Destructure all properties of the view model
   const {
     Anonymous,
@@ -164,14 +173,16 @@ function obsLocationEditModel(viewModel: ObsLocationViewModel): ObsLocationEditM
 }
 
 function attachmentEditModel(viewModel: Array<AttachmentViewModel>): Array<RemoteOrLocalAttachmentEditModel> {
-  return viewModel.map(a => {
+  return viewModel.map((a) => {
     const { GeoHazardName, RegistrationName, ...attachment } = a;
     return attachment;
   });
 }
 
-function avalancheActivityObs2EditModel(viewModel: Array<AvalancheActivityObs2ViewModel>): Array<AvalancheActivityObs2EditModel> {
-  return viewModel.map(a => {
+function avalancheActivityObs2EditModel(
+  viewModel: Array<AvalancheActivityObs2ViewModel>
+): Array<AvalancheActivityObs2EditModel> {
+  return viewModel.map((a) => {
     const {
       ExposedHeightComboName,
       EstimatedNumName,

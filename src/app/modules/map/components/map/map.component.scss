@@ -1,37 +1,37 @@
 .leaflet-container {
-    width: 100%;
-    height: 100%;
-    position: inherit !important;
-    -webkit-transform: translate3d(0,0,0);
-    transform: translate3d(0,0,0);
+  width: 100%;
+  height: 100%;
+  position: inherit !important;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 
-    --leaflet-bottom: calc(var(--map-center-info-height) + 10px);
-    // --leaflet-control-margin-left: 7px;
+  --leaflet-bottom: calc(var(--map-center-info-height) + 10px);
+  // --leaflet-control-margin-left: 7px;
 }
 
 app-map-controls {
-    position: absolute;
-    top: 0;
-    right: 0px;
-    width: 60px;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  width: 60px;
 }
 
 .observer-trip-backdrop {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba($color: #000000, $alpha: 0.3);
-    z-index: 1000;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba($color: #000000, $alpha: 0.3);
+  z-index: 1000;
 }
 
 .observer-trip-desc {
-    padding: 12px;
-    background-color: white;
-    position: absolute;
-    bottom: 0;
-    min-height: 100px;
-    max-height: 50%;
-    overflow-x: scroll;
-    width: 100%;
+  padding: 12px;
+  background-color: white;
+  position: absolute;
+  bottom: 0;
+  min-height: 100px;
+  max-height: 50%;
+  overflow-x: scroll;
+  width: 100%;
 }

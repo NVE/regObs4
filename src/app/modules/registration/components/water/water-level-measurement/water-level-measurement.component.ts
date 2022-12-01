@@ -1,14 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WaterLevelMeasurementEditModel } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
-import { RegistrationTid, WaterLevelMeasurementUploadModel } from 'src/app/modules/common-registration/registration.models';
+import {
+  RegistrationTid,
+  WaterLevelMeasurementUploadModel,
+} from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { isEmpty, uuidv4 } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-water-level-measurement',
   templateUrl: './water-level-measurement.component.html',
-  styleUrls: ['./water-level-measurement.component.scss']
+  styleUrls: ['./water-level-measurement.component.scss'],
 })
 export class WaterLevelMeasurementComponent implements OnInit {
   @Input() measurementNumber: number;

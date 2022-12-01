@@ -6,7 +6,6 @@ import { LegalTermsComponent } from '../../../components/legal-terms/legal-terms
 @NgModule({
   imports: [SharedModule],
   declarations: [LegalTermsModalPage, LegalTermsComponent],
-  exports: [LegalTermsModalPage]
+  exports: [LegalTermsModalPage],
 })
-export class LegalTermsModalPageModule {
-}
+export class LegalTermsModalPageModule {}

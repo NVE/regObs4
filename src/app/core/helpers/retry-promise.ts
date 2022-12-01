@@ -13,21 +13,17 @@ import { retryWhen, delay, take } from 'rxjs/operators';
 export async function tryNTimes<T>({
   toTry,
   times = 5,
-  intervalMS = 1000
+  intervalMS = 1000,
 }: {
   toTry: () => Promise<T>;
   times?: number;
   intervalMS?: number;
 }): Promise<T> {
   if (times < 1) {
-    throw new Error(
-      `Bad argument: 'times' must be greater than 0, but ${times} was received.`
-    );
+    throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
   }
 
   return from(toTry())
-    .pipe(
-      retryWhen((errors) => errors.pipe(delay(intervalMS), take(times - 1)))
-    )
+    .pipe(retryWhen((errors) => errors.pipe(delay(intervalMS), take(times - 1))))
     .toPromise();
 }

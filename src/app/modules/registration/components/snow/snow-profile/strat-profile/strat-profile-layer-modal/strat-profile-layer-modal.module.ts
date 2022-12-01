@@ -4,7 +4,6 @@ import { SharedComponentsModule } from '../../../../../shared-components.module'
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [StratProfileLayerModalPage]
+  declarations: [StratProfileLayerModalPage],
 })
-export class StratProfileLayerModalPageModule {
-}
+export class StratProfileLayerModalPageModule {}

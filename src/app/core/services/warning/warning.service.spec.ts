@@ -52,8 +52,8 @@ describe('WarningService', () => {
         { provide: HTTP, useValue: nativeHttp },
         { provide: LoggingService, useValue: loggingService },
         { provide: DbHelperService, useValue: dbHelperService },
-        WarningService
-      ]
+        WarningService,
+      ],
     });
   });
 
@@ -67,12 +67,7 @@ describe('WarningService', () => {
 
   it('aggregateWarningRegions should return empty array', () => {
     const warningResult = [];
-    const result = service.aggregateWarningRegions(
-      warningResult,
-      GeoHazard.Soil,
-      LangKey.nb,
-      moment()
-    );
+    const result = service.aggregateWarningRegions(warningResult, GeoHazard.Soil, LangKey.nb, moment());
 
     expect(result).toEqual([]);
   });
@@ -90,10 +85,10 @@ describe('WarningService', () => {
           {
             Id: '50',
             Name: 'Trøndelag',
-            MunicipalityList: null
-          }
+            MunicipalityList: null,
+          },
         ],
-        MunicipalityCsvString: '1;'
+        MunicipalityCsvString: '1;',
       },
       {
         Version: 1,
@@ -106,19 +101,14 @@ describe('WarningService', () => {
           {
             Id: '50',
             Name: 'Trøndelag',
-            MunicipalityList: null
-          }
+            MunicipalityList: null,
+          },
         ],
-        MunicipalityCsvString: '1;'
-      }
+        MunicipalityCsvString: '1;',
+      },
     ];
     const now = moment('2019-03-23T17:00:00');
-    const result = service.aggregateWarningRegions(
-      warningResult,
-      GeoHazard.Soil,
-      LangKey.nb,
-      now
-    );
+    const result = service.aggregateWarningRegions(warningResult, GeoHazard.Soil, LangKey.nb, now);
     expect(result.length).toEqual(1);
     expect(result[0].id).toEqual('50_20');
     expect(result[0].warnings.length).toEqual(1);
@@ -128,17 +118,10 @@ describe('WarningService', () => {
   it('aggregateWarningRegions same full api result test', () => {
     const warningResult = require('../../../../assets/test/warning-api-test-result.json');
     const now = moment('2019-03-23T17:00:00');
-    const result = service.aggregateWarningRegions(
-      warningResult,
-      GeoHazard.Soil,
-      LangKey.nb,
-      now
-    );
+    const result = service.aggregateWarningRegions(warningResult, GeoHazard.Soil, LangKey.nb, now);
     const trondelag = result.filter((x) => x.id === '50_20');
     const todaysWarnings = trondelag[0].warnings.filter((x) =>
-      moment(x.validTo)
-        .startOf('day')
-        .isSame(moment('2019-03-24T05:59:59.000Z').startOf('day'))
+      moment(x.validTo).startOf('day').isSame(moment('2019-03-24T05:59:59.000Z').startOf('day'))
     );
     expect(trondelag.length).toEqual(1);
     expect(todaysWarnings.length).toEqual(1);
@@ -148,17 +131,10 @@ describe('WarningService', () => {
   it('aggregateWarningRegions trondelag api result test', () => {
     const warningResult = require('../../../../assets/test/warning-api-test-trond.json');
     const now = moment('2019-03-23T17:00:00');
-    const result = service.aggregateWarningRegions(
-      warningResult,
-      GeoHazard.Soil,
-      LangKey.nb,
-      now
-    );
+    const result = service.aggregateWarningRegions(warningResult, GeoHazard.Soil, LangKey.nb, now);
     const trondelag = result.filter((x) => x.id === '50_20');
     const todaysWarnings = trondelag[0].warnings.filter((x) =>
-      moment(x.validTo)
-        .startOf('day')
-        .isSame(moment('2019-03-24T05:59:59.000Z').startOf('day'))
+      moment(x.validTo).startOf('day').isSame(moment('2019-03-24T05:59:59.000Z').startOf('day'))
     );
     expect(trondelag.length).toEqual(1);
     expect(todaysWarnings.length).toEqual(1);
@@ -168,17 +144,10 @@ describe('WarningService', () => {
   it('aggregateWarningRegions norland api result should show activity level 2', () => {
     const warningResult = require('../../../../../test-files/flood-result-18.json');
     const now = moment('2019-04-05T08:00:00');
-    const result = service.aggregateWarningRegions(
-      warningResult,
-      GeoHazard.Water,
-      LangKey.nb,
-      now
-    );
+    const result = service.aggregateWarningRegions(warningResult, GeoHazard.Water, LangKey.nb, now);
     const nordland = result.filter((x) => x.id === '18_60');
     const todaysWarnings = nordland[0].warnings.filter((x) =>
-      moment(x.validTo)
-        .startOf('day')
-        .isSame(moment('2019-04-06T06:59:59.000Z').startOf('day'))
+      moment(x.validTo).startOf('day').isSame(moment('2019-04-06T06:59:59.000Z').startOf('day'))
     );
     expect(nordland.length).toEqual(1);
     expect(todaysWarnings.length).toEqual(1);
