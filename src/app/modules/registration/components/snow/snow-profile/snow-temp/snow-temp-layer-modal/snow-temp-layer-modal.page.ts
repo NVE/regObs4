@@ -9,7 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-snow-temp-layer-modal',
   templateUrl: './snow-temp-layer-modal.page.html',
-  styleUrls: ['./snow-temp-layer-modal.page.scss']
+  styleUrls: ['./snow-temp-layer-modal.page.scss'],
 })
 export class SnowTempLayerModalPage implements OnInit {
   @Input() layer: SnowTempObsModel;
@@ -19,10 +19,7 @@ export class SnowTempLayerModalPage implements OnInit {
 
   private initialRegistrationState: RegistrationDraft;
 
-  constructor(
-    private modalController: ModalController,
-    private draftRepository: DraftRepositoryService
-  ) {}
+  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {}
 
   ngOnInit() {
     this.initialRegistrationState = cloneDeep(this.draft);
@@ -41,17 +38,13 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   get layerLenght() {
-    return this.hasLayers
-      ? this.draft.registration.SnowProfile2.SnowTemp.Layers.length
-      : 0;
+    return this.hasLayers ? this.draft.registration.SnowProfile2.SnowTemp.Layers.length : 0;
   }
 
   get canGoNext() {
     return (
       (this.hasLayers && this.index < this.layerLenght) ||
-      (this.index === this.layerLenght &&
-        this.addNew &&
-        !IsEmptyHelper.isEmpty(this.layer))
+      (this.index === this.layerLenght && this.addNew && !IsEmptyHelper.isEmpty(this.layer))
     );
   }
 
@@ -66,11 +59,7 @@ export class SnowTempLayerModalPage implements OnInit {
       this.draft.registration.SnowProfile2.SnowTemp.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.draft.registration.SnowProfile2.SnowTemp.Layers.splice(
-        this.index,
-        0,
-        this.layer
-      );
+      this.draft.registration.SnowProfile2.SnowTemp.Layers.splice(this.index, 0, this.layer);
     }
     await this.draftRepository.save(this.draft);
 
@@ -90,9 +79,8 @@ export class SnowTempLayerModalPage implements OnInit {
 
   async delete() {
     if (this.hasLayers) {
-      this.draft.registration.SnowProfile2.SnowTemp.Layers = this.draft.registration.SnowProfile2.SnowTemp.Layers.filter(
-        (l) => l !== this.layer
-      );
+      this.draft.registration.SnowProfile2.SnowTemp.Layers =
+        this.draft.registration.SnowProfile2.SnowTemp.Layers.filter((l) => l !== this.layer);
       await this.draftRepository.save(this.draft);
     }
     this.modalController.dismiss({ delete: true });

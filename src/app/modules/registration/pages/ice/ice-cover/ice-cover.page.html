@@ -3,34 +3,46 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{'REGISTRATION.ICE.ICE_COVER.TITLE' | translate}}
-    </ion-title>
+    <ion-title> {{'REGISTRATION.ICE.ICE_COVER.TITLE' | translate}} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="draft && draft.registration.IceCoverObs"
-    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper
+    *ngIf="draft && draft.registration.IceCoverObs"
+    [draft]="draft"
+    [registrationTid]="registrationTid"
+    (reset)="reset()"
+  >
     <ion-list lines="full">
-      <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_COVER" kdvKey="Ice_IceCoverKDV"
-        [(value)]="draft.registration.IceCoverObs.IceCoverTID"></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_COVER_BEFORE" kdvKey="Ice_IceCoverBeforeKDV"
-        [(value)]="draft.registration.IceCoverObs.IceCoverBeforeTID"></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_CAPACITY" kdvKey="Ice_IceCapacityKDV"
-        [(value)]="draft.registration.IceCoverObs.IceCapacityTID"></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_SKATEABILITY" kdvKey="Ice_IceSkateabilityKDV"
-        [(value)]="draft.registration.IceCoverObs.IceSkateabilityTID"></app-kdv-select>
+      <app-kdv-select
+        title="REGISTRATION.ICE.ICE_COVER.ICE_COVER"
+        kdvKey="Ice_IceCoverKDV"
+        [(value)]="draft.registration.IceCoverObs.IceCoverTID"
+      ></app-kdv-select>
+      <app-kdv-select
+        title="REGISTRATION.ICE.ICE_COVER.ICE_COVER_BEFORE"
+        kdvKey="Ice_IceCoverBeforeKDV"
+        [(value)]="draft.registration.IceCoverObs.IceCoverBeforeTID"
+      ></app-kdv-select>
+      <app-kdv-select
+        title="REGISTRATION.ICE.ICE_COVER.ICE_CAPACITY"
+        kdvKey="Ice_IceCapacityKDV"
+        [(value)]="draft.registration.IceCoverObs.IceCapacityTID"
+      ></app-kdv-select>
+      <app-kdv-select
+        title="REGISTRATION.ICE.ICE_COVER.ICE_SKATEABILITY"
+        kdvKey="Ice_IceSkateabilityKDV"
+        [(value)]="draft.registration.IceCoverObs.IceSkateabilityTID"
+      ></app-kdv-select>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}} </ion-label>
       </ion-list-header>
-      <app-text-comment [(value)]="draft.registration.IceCoverObs.Comment"
-        placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+      <app-text-comment
+        [(value)]="draft.registration.IceCoverObs.Comment"
+        placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
+      ></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.ADD_IMAGES' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

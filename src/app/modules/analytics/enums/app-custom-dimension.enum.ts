@@ -8,5 +8,5 @@ export enum AppCustomDimension {
   showMapCenter = 'dimension4',
   topoMap = 'dimension5',
   enabledAnalytics = 'dimension7',
-  observationType = 'dimension8'
+  observationType = 'dimension8',
 }

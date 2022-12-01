@@ -1,10 +1,10 @@
-<div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{'animated-background': isSwiper, 'loaded': isSwiperLoaded }">
-  <ion-slides 
-    #slider 
+<div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{ 'animated-background': isSwiper, loaded: isSwiperLoaded }">
+  <ion-slides
+    #slider
     *ngIf="isSwiper"
     [options]="slideOptions"
     [pager]="true"
-    [ngClass]="{'loaded': isSwiperLoaded}"
+    [ngClass]="{ loaded: isSwiperLoaded }"
     (ionSlideTransitionEnd)="onSlideTransitionEnd()"
     (ionSlidesDidLoad)="slidesLoaded()"
     (ionSlideTouchStart)="onSlideTouchStart()"
@@ -13,7 +13,7 @@
       class="slideGrid"
       *ngFor="let slide of slides; let i = index"
       [ngSwitch]="slide.type"
-      [ngClass]="{'small': small}"
+      [ngClass]="{ small: small }"
     >
       <app-remote-image
         *ngSwitchCase="'image'"
@@ -22,32 +22,34 @@
         [withFallbackText]="withFallbackText"
         preferSize="Large"
       ></app-remote-image>
-      <app-map-image
-        *ngSwitchCase="'location'"
-        [location]="slide.img"
-        (click)="onLocationClick()"
-      ></app-map-image>
+      <app-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()"></app-map-image>
       <div *ngIf="isDesktop" class="textOverlay">
-        <p class="img-comment-header"><strong>{{slide.header | translate}}</strong>&nbsp;{{slide.description | translate}}</p>     
+        <p class="img-comment-header">
+          <strong>{{ slide.header | translate }}</strong
+          >&nbsp;{{ slide.description | translate }}
+        </p>
       </div>
     </ion-slide>
   </ion-slides>
-  
+
   <ng-container *ngIf="isDesktop && moreThanFourPics">
-    <div *ngIf="isPreviousImgAvailable()" class="swiper-button-prev" (click)="prev();$event.stopPropagation()"></div>
-    <div *ngIf="isNextImgAvailable()" class="swiper-button-next" (click)="next();$event.stopPropagation()"></div>
+    <div *ngIf="isPreviousImgAvailable()" class="swiper-button-prev" (click)="prev(); $event.stopPropagation()"></div>
+    <div *ngIf="isNextImgAvailable()" class="swiper-button-next" (click)="next(); $event.stopPropagation()"></div>
   </ng-container>
 
-  <app-remote-image *ngIf="isSingleImage" (click)="onImageClick(attachments[0])"
-  [attachment]="attachments[0]" preferSize="Large"></app-remote-image>
-  <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
-  </app-map-image>
-  <ion-label *ngIf="showLabel && !isDesktop" [ngClass]="{'loaded': isLoaded}">
-    <span class="img-comment-header" *ngIf="showIndex">{{imageIndex + 1}}/{{imageLength}}&nbsp;</span>
-    <span [ngClass]="{'img-comment-header': slides[activeIndex].description }"
-      *ngIf="slides[activeIndex].header">{{ slides[activeIndex].header | translate }}<ng-container
-        *ngIf="slides[activeIndex].description">:&nbsp;
-      </ng-container></span>
+  <app-remote-image
+    *ngIf="isSingleImage"
+    (click)="onImageClick(attachments[0])"
+    [attachment]="attachments[0]"
+    preferSize="Large"
+  ></app-remote-image>
+  <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()"> </app-map-image>
+  <ion-label *ngIf="showLabel && !isDesktop" [ngClass]="{ loaded: isLoaded }">
+    <span class="img-comment-header" *ngIf="showIndex">{{ imageIndex + 1 }}/{{ imageLength }}&nbsp;</span>
+    <span [ngClass]="{ 'img-comment-header': slides[activeIndex].description }" *ngIf="slides[activeIndex].header"
+      >{{ slides[activeIndex].header | translate
+      }}<ng-container *ngIf="slides[activeIndex].description">:&nbsp; </ng-container></span
+    >
     <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>
   </ion-label>
 </div>

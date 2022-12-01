@@ -1,6 +1,10 @@
 <ion-fab>
-  <ion-fab-button color="varsom-dark-blue" class="map-control-fab" [ngClass]="{'active': followMode}"
-    (click)="centerMapToUser()">
+  <ion-fab-button
+    color="varsom-dark-blue"
+    class="map-control-fab"
+    [ngClass]="{ active: followMode }"
+    (click)="centerMapToUser()"
+  >
     <ion-icon name="locate"></ion-icon>
   </ion-fab-button>
 </ion-fab>

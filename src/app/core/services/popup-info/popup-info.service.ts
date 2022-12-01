@@ -8,7 +8,7 @@ import { Observable, of, from } from 'rxjs';
 import { settings } from '../../../../settings';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PopupInfoService {
   constructor(
@@ -50,11 +50,7 @@ export class PopupInfoService {
     );
   }
 
-  checkLastTimestamp(
-    limitMs: number,
-    lastTimestamp?: number,
-    showWhenNull = true
-  ): boolean {
+  checkLastTimestamp(limitMs: number, lastTimestamp?: number, showWhenNull = true): boolean {
     if (lastTimestamp === undefined || lastTimestamp === null) {
       return showWhenNull;
     }
@@ -62,15 +58,11 @@ export class PopupInfoService {
     return moment.unix(lastTimestamp).isBefore(limit);
   }
 
-  async showAlert(
-    header: string,
-    message: string,
-    okText: string
-  ): Promise<void> {
+  async showAlert(header: string, message: string, okText: string): Promise<void> {
     const alert = await this.alertController.create({
       header,
       message,
-      buttons: [okText]
+      buttons: [okText],
     });
     await alert.present();
   }
@@ -84,21 +76,22 @@ export class PopupInfoService {
       map((translations) => ({
         header: translations[headerKey],
         message: translations[messageKey],
-        okText: translations[okKey]
+        okText: translations[okKey],
       }))
     );
   }
 
   async saveInfoAboutRecievedTimestamp(timestampType: string, timestampName: string) {
-    let userSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    let userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     userSettings = {
       ...userSettings,
-      [timestampType]: timestampType in userSettings ? {
-        ...userSettings[timestampType],
-        [timestampName]: moment().unix(),
-      } : {[timestampName]: moment().unix()}
+      [timestampType]:
+        timestampType in userSettings
+          ? {
+              ...userSettings[timestampType],
+              [timestampName]: moment().unix(),
+            }
+          : { [timestampName]: moment().unix() },
     };
     this.userSettingService.saveUserSettings(userSettings);
   }
@@ -110,29 +103,16 @@ export class PopupInfoService {
     header: string,
     msg: string,
     ok_txt: string,
-    refreshTimeMs: number = settings.popupDisclamerRefreshTimeMs,
+    refreshTimeMs: number = settings.popupDisclamerRefreshTimeMs
   ) {
     return this.userSettingService.userSetting$.pipe(
       take(1),
       delay(delayMs),
       filter((us) =>
-        this.checkLastTimestamp(
-          refreshTimeMs,
-          timestampType in us ? us[timestampType][timestampName] : null,
-        )
+        this.checkLastTimestamp(refreshTimeMs, timestampType in us ? us[timestampType][timestampName] : null)
       ),
-      switchMap(() =>
-        this.geAlertTranslations(header, msg, ok_txt)
-      ),
-      switchMap((translations) =>
-        from(
-          this.showAlert(
-            translations.header,
-            translations.message,
-            translations.okText
-          )
-        )
-      ),
+      switchMap(() => this.geAlertTranslations(header, msg, ok_txt)),
+      switchMap((translations) => from(this.showAlert(translations.header, translations.message, translations.okText))),
       switchMap(() => from(this.saveInfoAboutRecievedTimestamp(timestampType, timestampName)))
     );
   }

@@ -49,11 +49,13 @@ export default class FileAttachmentService extends NewAttachmentService {
       fileSize: data.size,
       fileName: attachmentFileName,
       fileAddedTime: Date.now(),
-      ref
+      ref,
     };
 
     this.logger.debug(
-      `Attachment saved in ${rootDir}/${registrationId}/${attachmentFileName}`, this.DEBUG_TAG, metadata
+      `Attachment saved in ${rootDir}/${registrationId}/${attachmentFileName}`,
+      this.DEBUG_TAG,
+      metadata
     );
     await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
   }
@@ -172,10 +174,10 @@ export default class FileAttachmentService extends NewAttachmentService {
 
   private getFileExtension(mimeType: string): string {
     switch (mimeType) {
-    case 'image/jpeg':
-      return 'jpg';
-    case 'image/png':
-      return 'png';
+      case 'image/jpeg':
+        return 'jpg';
+      case 'image/png':
+        return 'png';
     }
     return 'jpg';
   }

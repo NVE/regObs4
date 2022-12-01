@@ -1,17 +1,19 @@
 import cloneDeep from 'clone-deep';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { AttachmentUploadEditModel, WaterLevelMeasurementUploadModel } from 'src/app/modules/common-registration/registration.models';
+import {
+  AttachmentUploadEditModel,
+  WaterLevelMeasurementUploadModel,
+} from 'src/app/modules/common-registration/registration.models';
 import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { addAttachmentToRegistration } from './attachmentHelpers';
 
 const getSmallTestReg = (): RegistrationEditModel => ({
   GeneralObservation: { ObsComment: 'a test' },
   GeoHazardTID: GeoHazard.Snow,
-  DtObsTime: 'test'
+  DtObsTime: 'test',
 });
 
 describe('addAttachmentToRegistration', () => {
-
   it('should not modify the draft, but return a new one', () => {
     const registration = getSmallTestReg();
     const registrationCopy = cloneDeep(registration);
@@ -29,12 +31,12 @@ describe('addAttachmentToRegistration', () => {
       id: '12345-test-id',
       type: 'Attachment',
       AttachmentUploadId: 'test-id-56789',
-      Comment: 'Test image'
+      Comment: 'Test image',
     };
 
     const addedAttachment: AttachmentEditModel = {
       AttachmentUploadId: 'test-id-56789',
-      Comment: 'Test image'
+      Comment: 'Test image',
     };
 
     const updatedReg = addAttachmentToRegistration(attachment, registration);
@@ -49,7 +51,7 @@ describe('addAttachmentToRegistration', () => {
 
     const registration: RegistrationEditModel = {
       ...getSmallTestReg(),
-      Attachments: [attachmentA, attachmentB]
+      Attachments: [attachmentA, attachmentB],
     };
 
     const attachmentToAdd: AttachmentUploadEditModel = {
@@ -69,7 +71,7 @@ describe('addAttachmentToRegistration', () => {
       WaterLevelMeasurementId: 1,
       WaterLevelValue: 50,
       DtMeasurementTime: 'testdato',
-      ref: 'abc'
+      ref: 'abc',
     };
 
     const measurementB: WaterLevelMeasurementUploadModel = {
@@ -77,21 +79,21 @@ describe('addAttachmentToRegistration', () => {
       WaterLevelValue: 50,
       DtMeasurementTime: 'testdato',
       ref: 'def',
-      Attachments: [{ AttachmentUploadId: 'test-id-a' }]
+      Attachments: [{ AttachmentUploadId: 'test-id-a' }],
     };
 
     const measurementC: WaterLevelMeasurementUploadModel = {
       WaterLevelMeasurementId: 1,
       WaterLevelValue: 50,
       DtMeasurementTime: 'testdato',
-      ref: 'ghi'
+      ref: 'ghi',
     };
 
     const registration: RegistrationEditModel = {
       ...getSmallTestReg(),
       WaterLevel2: {
-        WaterLevelMeasurement: [ measurementA, measurementB, measurementC ]
-      }
+        WaterLevelMeasurement: [measurementA, measurementB, measurementC],
+      },
     };
 
     const attachmentToAdd: AttachmentUploadEditModel = {

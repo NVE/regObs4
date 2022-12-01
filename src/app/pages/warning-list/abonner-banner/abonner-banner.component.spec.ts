@@ -8,15 +8,13 @@ describe('AbonnerBannerComponent', () => {
   let component: AbonnerBannerComponent;
   let fixture: ComponentFixture<AbonnerBannerComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [AbonnerBannerComponent],
-        imports: [TestModule],
-        providers: [InAppBrowser, SafariViewController]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AbonnerBannerComponent],
+      imports: [TestModule],
+      providers: [InAppBrowser, SafariViewController],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AbonnerBannerComponent);

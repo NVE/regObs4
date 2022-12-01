@@ -1,51 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Varsom Regobs</title>
+    <base href="/" />
 
-<head>
-  <meta charset="utf-8">
-  <title>Varsom Regobs</title>
-  <base href="/" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' * 'unsafe-inline' data: gap: cdvfile: blob: 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src * filesystem: app-file: cdvfile: data: blob:; media-src * blob:"
+    />
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'"> -->
+    <link rel="icon" type="image/png" href="assets/icon/favicon.ico" />
 
-  <meta name="viewport"
-    content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="msapplication-tap-highlight" content="no">
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self' * 'unsafe-inline' data: gap: cdvfile: blob: 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src * filesystem: app-file: cdvfile: data: blob:; media-src * blob:">
-  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'"> -->
-  <link rel="icon" type="image/png" href="assets/icon/favicon.ico">
+    <!-- add to homescreen for ios -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  </head>
 
-  <!-- add to homescreen for ios -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <body>
+    <app-root></app-root>
+    <script>
+      // Instructs analytics.js to use the name `ga`.
+      window.GoogleAnalyticsObject = "ga";
 
-</head>
+      // Creates an initial analytics ga() function.
+      // The queued commands will be executed once analytics.js loads.
+      // This is used later in analytics.service.ts
+      window.ga =
+        window.ga ||
+        function () {
+          (ga.q = ga.q || []).push(arguments);
+        };
 
-<body>
-  <app-root></app-root>
-  <script>
-    // Instructs analytics.js to use the name `ga`.
-    window.GoogleAnalyticsObject = 'ga';
+      // Sets the time (as an integer) this tag was executed.
+      // Used for timing hits.
+      ga.l = +new Date();
 
-    // Creates an initial analytics ga() function.
-    // The queued commands will be executed once analytics.js loads.
-    // This is used later in analytics.service.ts
-    window.ga = window.ga || function() {
-      (ga.q = ga.q || []).push(arguments)
-    };
-
-    // Sets the time (as an integer) this tag was executed.
-    // Used for timing hits.
-    ga.l = +new Date;
-    
-    window.addEventListener("load", function () {
-      console.log("Page loaded. Adding analytics.js script tag to load ga.");
-      var tag = document.createElement("script");
-      tag.async = 1;
-      tag.src = "https://www.google-analytics.com/analytics.js";
-      document.getElementsByTagName("head")[0].appendChild(tag);
-    });
-  </script>
-</body>
-
+      window.addEventListener("load", function () {
+        console.log("Page loaded. Adding analytics.js script tag to load ga.");
+        var tag = document.createElement("script");
+        tag.async = 1;
+        tag.src = "https://www.google-analytics.com/analytics.js";
+        document.getElementsByTagName("head")[0].appendChild(tag);
+      });
+    </script>
+  </body>
 </html>

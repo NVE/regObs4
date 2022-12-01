@@ -30,10 +30,9 @@ export class UploadAttachmentError extends Error {
  * Upload registration attachments (only images yet)
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadAttachmentsService {
-
   constructor(
     private httpClient: HttpClient,
     private newAttachmentService: NewAttachmentService,
@@ -62,8 +61,8 @@ export class UploadAttachmentsService {
     const attachmentsWithDefaultSettingsMetadata = await this.setCopyrightAndPhotographer(attachments);
 
     // Some attachments may already be uploaded
-    const alreadyUploaded = attachmentsWithDefaultSettingsMetadata.filter(a => a.AttachmentUploadId != null);
-    const attachmentsToUpload = attachmentsWithDefaultSettingsMetadata.filter(a => a.AttachmentUploadId == null);
+    const alreadyUploaded = attachmentsWithDefaultSettingsMetadata.filter((a) => a.AttachmentUploadId != null);
+    const attachmentsToUpload = attachmentsWithDefaultSettingsMetadata.filter((a) => a.AttachmentUploadId == null);
 
     // Error handling
     // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
@@ -80,7 +79,7 @@ export class UploadAttachmentsService {
         this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
         failedAttachments.push({
           id: attachment.id,
-          error
+          error,
         });
       }
     };
@@ -92,37 +91,38 @@ export class UploadAttachmentsService {
       throw new UploadAttachmentError(draft.uuid, failedAttachments);
     }
 
-    return [
-      ...alreadyUploaded,
-      ...uploadedAttachments
-    ];
+    return [...alreadyUploaded, ...uploadedAttachments];
   }
 
   // TODO: Add test
   private async setCopyrightAndPhotographer(attachments: AttachmentUploadEditModel[]) {
     const userSettings = await firstValueFrom(this.userSettings.userSetting$);
 
-    const setCopyright = userSettings.copyright == null ? a => a :
-      (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
-        if (attachment.Copyright == null) {
-          return {
-            ...attachment,
-            Copyright: userSettings.copyright
+    const setCopyright =
+      userSettings.copyright == null
+        ? (a) => a
+        : (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
+            if (attachment.Copyright == null) {
+              return {
+                ...attachment,
+                Copyright: userSettings.copyright,
+              };
+            }
           };
-        }
-      };
 
-    const setPhotographer = userSettings.photographer == null ? a => a :
-      (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
-        if (attachment.Photographer == null) {
-          return {
-            ...attachment,
-            Photographer: userSettings.photographer
+    const setPhotographer =
+      userSettings.photographer == null
+        ? (a) => a
+        : (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
+            if (attachment.Photographer == null) {
+              return {
+                ...attachment,
+                Photographer: userSettings.photographer,
+              };
+            }
           };
-        }
-      };
 
-    return attachments.map(a => setPhotographer(setCopyright(a)));
+    return attachments.map((a) => setPhotographer(setCopyright(a)));
   }
 
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel) {
@@ -156,7 +156,7 @@ export class UploadAttachmentsService {
       // We can use the events to track the upload progress.
       reportProgress: true,
       observe: 'events',
-      headers: { 'ngsw-bypass': '' }
+      headers: { 'ngsw-bypass': '' },
     }) as Observable<HttpEvent<string>>;
   }
 
@@ -166,18 +166,17 @@ export class UploadAttachmentsService {
   ): Promise<AttachmentUploadEditModel> {
     const blob = await firstValueFrom(this.newAttachmentService.getBlob(draft.uuid, attachment.id));
 
-    const request = this.sendPostRequestWithImageBlob(blob)
-      .pipe(
-        tap((event) => this.onHttpEvent(event, attachment)),
-        filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
-        map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
-        tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`)),
-      );
+    const request = this.sendPostRequestWithImageBlob(blob).pipe(
+      tap((event) => this.onHttpEvent(event, attachment)),
+      filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
+      map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
+      tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`))
+    );
 
     const uploadedAttachment = {
       ...attachment,
       // The response body contains only the AttachmentUploadId
-      AttachmentUploadId: await firstValueFrom(request)
+      AttachmentUploadId: await firstValueFrom(request),
     };
 
     // Update metadata

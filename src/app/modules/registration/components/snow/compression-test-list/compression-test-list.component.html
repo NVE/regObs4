@@ -1,24 +1,32 @@
 <ion-list lines="full">
   <ion-list-header class="ion-text-uppercase">
     <ion-label>
-      {{ 'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE' | translate}}
+      {{ "REGISTRATION.SNOW.COMPRESSION_TEST.TITLE" | translate }}
     </ion-label>
   </ion-list-header>
-  <ion-item tabindex="0" detail="true" (click)="addOrEditCompressionTest(i)" (keyup.enter)="addOrEditCompressionTest(i)"
-    *ngFor="let compressionTest of tests; let i = index">
+  <ion-item
+    tabindex="0"
+    detail="true"
+    (click)="addOrEditCompressionTest(i)"
+    (keyup.enter)="addOrEditCompressionTest(i)"
+    *ngFor="let compressionTest of tests; let i = index"
+  >
     <ion-label>
-      <ng-container *ngIf="compressionTest.PropagationTID">{{compressionTest.PropagationTID | kdvDescription:
-        'Snow_PropagationKDV' | async}}</ng-container>
-      <ng-container *ngIf="compressionTest.TapsFracture > 0">{{compressionTest.TapsFracture}}</ng-container>
-      <ng-container *ngIf="compressionTest.ComprTestFractureTID"> ({{ compressionTest.ComprTestFractureTID |
-        kdvDescription: 'Snow_ComprTestFractureKDV' | async }})</ng-container>
-      <ng-container *ngIf="compressionTest.FractureDepth > 0"> @{{compressionTest.FractureDepth | metersToCm: 0}}cm
+      <ng-container *ngIf="compressionTest.PropagationTID">{{
+        compressionTest.PropagationTID | kdvDescription: "Snow_PropagationKDV" | async
+      }}</ng-container>
+      <ng-container *ngIf="compressionTest.TapsFracture > 0">{{ compressionTest.TapsFracture }}</ng-container>
+      <ng-container *ngIf="compressionTest.ComprTestFractureTID">
+        ({{ compressionTest.ComprTestFractureTID | kdvDescription: "Snow_ComprTestFractureKDV" | async }})</ng-container
+      >
+      <ng-container *ngIf="compressionTest.FractureDepth > 0">
+        @{{ compressionTest.FractureDepth | metersToCm: 0 }}cm
       </ng-container>
     </ion-label>
     <ion-icon slot="end" name="link" *ngIf="compressionTest.IncludeInSnowProfile"></ion-icon>
   </ion-item>
   <ion-item tabindex="0" (click)="addOrEditCompressionTest()" (keyup.enter)="addOrEditCompressionTest()">
     <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-    <ion-label>{{'REGISTRATION.SNOW.COMPRESSION_TEST.ADD_NEW' | translate}}</ion-label>
+    <ion-label>{{ "REGISTRATION.SNOW.COMPRESSION_TEST.ADD_NEW" | translate }}</ion-label>
   </ion-item>
 </ion-list>

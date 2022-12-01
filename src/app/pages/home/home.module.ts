@@ -11,13 +11,13 @@ import { MapModule } from '../../modules/map/map.module';
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
-      }
+        component: HomePage,
+      },
     ]),
     SharedModule,
     DataLoadModule,
-    MapModule
+    MapModule,
   ],
-  declarations: [HomePage, MapItemBarComponent]
+  declarations: [HomePage, MapItemBarComponent],
 })
 export class HomePageModule {}

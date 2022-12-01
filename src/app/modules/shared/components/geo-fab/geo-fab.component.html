@@ -1,5 +1,12 @@
-<ion-fab mode="ios" *ngIf="(currentGeoHazard$ | async) as currentGeoHazard" vertical="top" horizontal="start"
-  slot="fixed" [ngClass]="{ 'fullscreen': fullscreen$ | async }" [@enterAnimationFab]="animateOnEnterState">
+<ion-fab
+  mode="ios"
+  *ngIf="currentGeoHazard$ | async as currentGeoHazard"
+  vertical="top"
+  horizontal="start"
+  slot="fixed"
+  [ngClass]="{ fullscreen: fullscreen$ | async }"
+  [@enterAnimationFab]="animateOnEnterState"
+>
   <ion-item (click)="toggle()">
     <ion-fab-button class="ion-margin-end" slot="start" [color]="color">
       <app-geo-icon [geoHazards]="currentGeoHazard"></app-geo-icon>
@@ -8,10 +15,13 @@
       <app-geo-name [geoHazards]="currentGeoHazard"></app-geo-name>
     </ion-label>
   </ion-item>
-  <ng-container *ngIf="(selectableGeoHazards$ | async) as selectableGeoHazards">
+  <ng-container *ngIf="selectableGeoHazards$ | async as selectableGeoHazards">
     <ion-list [@listAnimate]="selectableGeoHazards.length" *ngIf="isOpen" lines="none">
-      <ion-item class="list-item" *ngFor="let geoHazards of selectableGeoHazards"
-        (click)="setCurrentGeoHazard(geoHazards)">
+      <ion-item
+        class="list-item"
+        *ngFor="let geoHazards of selectableGeoHazards"
+        (click)="setCurrentGeoHazard(geoHazards)"
+      >
         <ion-fab-button class="ion-margin-end" slot="start" [color]="color">
           <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
         </ion-fab-button>

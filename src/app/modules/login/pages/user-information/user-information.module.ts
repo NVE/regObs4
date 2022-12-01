@@ -6,12 +6,12 @@ import { SharedModule } from '../../../shared/shared.module';
 const routes: Routes = [
   {
     path: '',
-    component: UserInformation
-  }
+    component: UserInformation,
+  },
 ];
 
 @NgModule({
   imports: [SharedModule, RouterModule.forChild(routes)],
-  declarations: [UserInformation]
+  declarations: [UserInformation],
 })
 export class UserInformationModule {}

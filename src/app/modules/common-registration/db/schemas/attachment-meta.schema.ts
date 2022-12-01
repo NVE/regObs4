@@ -1,7 +1,5 @@
-import {
-  RxJsonSchema
-} from 'rxdb';
-export const AttachmentMetaSchema : RxJsonSchema = {
+import { RxJsonSchema } from 'rxdb';
+export const AttachmentMetaSchema: RxJsonSchema = {
   title: 'Attachment Metadata schema',
   description: 'Attachment Metadata',
   version: 0,
@@ -24,13 +22,12 @@ export const AttachmentMetaSchema : RxJsonSchema = {
     type: {
       type: 'string',
     },
-    error: {
-    },
+    error: {},
     fileSize: {
-      type: 'number'
+      type: 'number',
     },
     AttachmentId: {
-      type: 'number'
+      type: 'number',
     },
     AttachmentUploadId: {
       type: 'string',
@@ -42,7 +39,7 @@ export const AttachmentMetaSchema : RxJsonSchema = {
       type: 'string',
     },
     Aspect: {
-      type: 'number'
+      type: 'number',
     },
     Comment: {
       type: 'string',
@@ -50,8 +47,7 @@ export const AttachmentMetaSchema : RxJsonSchema = {
     AttachmentMimeType: {
       type: 'string',
     },
-    IsMainAttachment: {
-    }
+    IsMainAttachment: {},
   },
   required: ['id', 'GeoHazardTID', 'RegistrationTID'],
 };

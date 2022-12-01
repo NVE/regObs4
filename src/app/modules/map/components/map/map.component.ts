@@ -9,7 +9,7 @@ import {
   EventEmitter,
   Injector,
   ElementRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import * as L from 'leaflet';
@@ -20,14 +20,7 @@ import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import {
-  take,
-  takeUntil,
-  switchMap,
-  distinctUntilChanged,
-  withLatestFrom,
-  filter
-} from 'rxjs/operators';
+import { take, takeUntil, switchMap, distinctUntilChanged, withLatestFrom, filter } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -67,12 +60,12 @@ const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean):
   if (detectRetina) {
     return {
       minNativeZoom: Math.max(0, map.rootTile.z - 1),
-      maxNativeZoom: Math.max(0, map.zMax - 1)
+      maxNativeZoom: Math.max(0, map.zMax - 1),
     };
   } else {
     return {
       minNativeZoom: map.rootTile.z,
-      maxNativeZoom: map.zMax
+      maxNativeZoom: map.zMax,
     };
   }
 };
@@ -82,7 +75,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private isNative = Capacitor.isNativePlatform();
@@ -147,12 +140,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       _rawPanBy: function (offset) {
         if (this._mapPane) {
-          L.DomUtil.setPosition(
-            this._mapPane,
-            this._getMapPanePos().subtract(offset)
-          );
+          L.DomUtil.setPosition(this._mapPane, this._getMapPanePos().subtract(offset));
         }
-      }
+      },
     });
   }
 
@@ -160,27 +150,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async ngOnInit() {
     this.options = {
-      zoom:
-        this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
+      zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
       maxZoom: settings.map.tiles.maxZoom,
       minZoom: settings.map.tiles.minZoom,
-      center:
-        this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
+      center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
       bounceAtZoomLimits: false,
       attributionControl: false,
       zoomControl: false,
-      maxBounds: new L.LatLngBounds(
-        new L.LatLng(90.0, -180.0),
-        new L.LatLng(-90, 180.0)
-      ),
-      maxBoundsViscosity: 1.0
+      maxBounds: new L.LatLngBounds(new L.LatLng(90.0, -180.0), new L.LatLng(-90, 180.0)),
+      maxBoundsViscosity: 1.0,
     };
     this.isActive = new BehaviorSubject(this.autoActivate);
     try {
       if (this.center === undefined || this.zoom === undefined) {
-        const currentView = await this.mapService.mapView$
-          .pipe(take(1))
-          .toPromise();
+        const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
         if (currentView && currentView.center) {
           this.firstPositionUpdate = false;
           if (this.center === undefined) {
@@ -212,7 +195,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private removeObserverTripMapLayers(map: L.Map) {
     if (this.observationTripLayers != null) {
-      this.observationTripLayers.forEach(l => {
+      this.observationTripLayers.forEach((l) => {
         if (map.hasLayer(l)) {
           map.removeLayer(l);
         }
@@ -243,7 +226,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (map.getZoom() >= observerTripsMinZoom) {
-      this.observationTripLayers.forEach(l => l.addTo(map));
+      this.observationTripLayers.forEach((l) => l.addTo(map));
     }
 
     const clickHandler = (e) => {
@@ -256,11 +239,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       const zoomLevel = map.getZoom();
       if (zoomLevel < observerTripsMinZoom) {
         if (map.hasLayer(geojsonLayer)) {
-          this.observationTripLayers.forEach(l => map.removeLayer(l));
+          this.observationTripLayers.forEach((l) => map.removeLayer(l));
         }
       } else {
         if (!map.hasLayer(geojsonLayer)) {
-          this.observationTripLayers.forEach(l => map.addLayer(l));
+          this.observationTripLayers.forEach((l) => map.addLayer(l));
         }
       }
     };
@@ -272,11 +255,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     race(
       this.ngDestroy$,
       this.removeObserverTripEventHandlers,
-      this.observerTripsService.toggledOn.pipe(filter(toggledOn => !toggledOn))
-    ).pipe(take(1)).subscribe(() => {
-      layerToBindClickHandlerTo.off('click', clickHandler);
-      map.off('zoomend', addOrRemoveLayers);
-    });
+      this.observerTripsService.toggledOn.pipe(filter((toggledOn) => !toggledOn))
+    )
+      .pipe(take(1))
+      .subscribe(() => {
+        layerToBindClickHandlerTo.off('click', clickHandler);
+        map.off('zoomend', addOrRemoveLayers);
+      });
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -287,7 +272,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.showObserverTrips) {
-      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
+      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
         this.showOrHideObserverTripsLayer(map, geojson);
       });
     }
@@ -295,7 +280,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
-
 
     if (this.offlinePackageMode) {
       // Style all online maps grayscale.
@@ -310,66 +294,50 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    this.userSettingService.userSetting$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((userSetting) => {
-        this.configureTileLayers(userSetting);
-        if (userSetting.showMapCenter) {
-          this.updateMapView();
-        }
-      });
+    this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
+      this.configureTileLayers(userSetting);
+      if (userSetting.showMapCenter) {
+        this.updateMapView();
+      }
+    });
 
     this.mapService.followMode = this.isNative;
-    this.mapService.followMode$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.followMode = val;
-        this.loggingService.debug(
-          `Follow mode changed to: ${this.followMode}`,
-          DEBUG_TAG
-        );
-      });
+    this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.followMode = val;
+      this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
+    });
 
     this.mapService.centerMapToUser$
       .pipe(
         takeUntil(this.ngDestroy$),
-        switchMap(() =>
-          from(this.geoPositionService.choosePositionMethod(DEBUG_TAG))
-        )
+        switchMap(() => from(this.geoPositionService.choosePositionMethod(DEBUG_TAG)))
       )
       .subscribe();
 
-    this.mapSearchService.mapSearchClick$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((item) => {
-        this.disableFollowMode();
-        this.zone.runOutsideAngular(() => {
-          const latLng = item instanceof L.LatLng ? item : item.latlng;
-          this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
-        });
+    this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
+      this.disableFollowMode();
+      this.zone.runOutsideAngular(() => {
+        const latLng = item instanceof L.LatLng ? item : item.latlng;
+        this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
       });
+    });
 
-    this.mapService.centerMapToUser$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.zone.runOutsideAngular(() => {
-          if (this.userMarker) {
-            const currentPosition = this.userMarker.getPosition();
-            const latLng = L.latLng(
-              currentPosition.coords.latitude,
-              currentPosition.coords.longitude
-            );
-            if (this.followMode || this.firstClickOnZoomToUser) {
-              // Follow mode is allready true or first click, zoom in
-              this.flyToMaxZoom(latLng);
-            } else {
-              // Use existing zoom
-              this.flyTo(latLng, this.map.getZoom(), true);
-            }
-            this.firstClickOnZoomToUser = false;
+    this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.zone.runOutsideAngular(() => {
+        if (this.userMarker) {
+          const currentPosition = this.userMarker.getPosition();
+          const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+          if (this.followMode || this.firstClickOnZoomToUser) {
+            // Follow mode is allready true or first click, zoom in
+            this.flyToMaxZoom(latLng);
+          } else {
+            // Use existing zoom
+            this.flyTo(latLng, this.map.getZoom(), true);
           }
-        });
+          this.firstClickOnZoomToUser = false;
+        }
       });
+    });
 
     this.zone.runOutsideAngular(() => {
       this.map.on('movestart', () => this.onMapMove());
@@ -380,26 +348,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('moveend', () => this.onMapMoveEnd());
     });
 
-    this.fullscreenService.isFullscreen$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.redrawMap();
-      });
+    this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.redrawMap();
+    });
     //set overwrite default showUserLocation with component input
     this.mapService.showUserLocation(this.isNative);
-    this.mapService.showUserLocation$.subscribe(value => {
-      if (value){
+    this.mapService.showUserLocation$.subscribe((value) => {
+      if (value) {
         this.mapService.followMode = true;
         this.geoPositionService.currentPosition$
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe((pos) => this.onPositionUpdate(pos));
-        this.geoPositionService.currentHeading$
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe((heading) => {
-            if (this.userMarker) {
-              this.userMarker.setHeading(heading);
-            }
-          });
+        this.geoPositionService.currentHeading$.pipe(takeUntil(this.ngDestroy$)).subscribe((heading) => {
+          if (this.userMarker) {
+            this.userMarker.setHeading(heading);
+          }
+        });
         this.startActiveSubscriptions();
       }
     });
@@ -421,10 +385,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private async initOfflineMaps() {
     this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
 
-    combineLatest([
-      this.offlineMapService.packages$,
-      this.userSettingService.userSetting$
-    ])
+    combineLatest([this.offlineMapService.packages$, this.userSettingService.userSetting$])
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([packages, userSettings]) => {
         this.zone.runOutsideAngular(() => {
@@ -440,7 +401,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private tileCoordsToBounds({ x, y, z }: { x: number, y: number, z: number }): L.LatLngBounds {
+  private tileCoordsToBounds({ x, y, z }: { x: number; y: number; z: number }): L.LatLngBounds {
     const tileSize = new L.Point(256, 256);
     const coords = new L.Point(x, y);
 
@@ -458,7 +419,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // Create a map of enabled support tiles
     const enabledSupportMaps = this.userSettingService
       .getSupportTilesOptions(userSettings)
-      .filter(supportMap => supportMap.enabled)
+      .filter((supportMap) => supportMap.enabled)
       .reduce((map, supportMap) => {
         map.set(supportMap.name, supportMap);
         return map;
@@ -494,7 +455,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       // always put offline packages on top so they display above
       // the grayscale background-map
       zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
-      detectRetina
+      detectRetina,
     });
     this.offlineTopoLayerGroup.addLayer(layer);
   }
@@ -511,23 +472,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       // always put offline packages on top so they display above
       // the grayscale background-map
       zIndex: this.offlinePackageMode ? MapLayerZIndex.Top + 1 : MapLayerZIndex.OfflineSupportLayer,
-      detectRetina
+      detectRetina,
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
   }
 
-
   private startActiveSubscriptions() {
-    this.isActive
-      .pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$))
-      .subscribe((active) => {
-        if (active) {
-          this.geoPositionService.startTrackingComponent(this.geoTag);
-          this.redrawMap();
-        } else {
-          this.geoPositionService.stopTrackingComponent(this.geoTag);
-        }
-      });
+    this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
+      if (active) {
+        this.geoPositionService.startTrackingComponent(this.geoTag);
+        this.redrawMap();
+      } else {
+        this.geoPositionService.stopTrackingComponent(this.geoTag);
+      }
+    });
   }
 
   private onMapMove() {
@@ -544,10 +502,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.loggingService.debug('Disable follow mode!', DEBUG_TAG);
       this.mapService.followMode = false;
     } else {
-      this.loggingService.debug(
-        'Did not disable follow mode, because isDoingMoveAction',
-        DEBUG_TAG
-      );
+      this.loggingService.debug('Did not disable follow mode, because isDoingMoveAction', DEBUG_TAG);
     }
   }
 
@@ -556,14 +511,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),
         center: this.map.getCenter(),
-        zoom: this.map.getZoom()
+        zoom: this.map.getZoom(),
       });
     }
   }
 
-  private getTileLayerDefaultOptions(
-    useRetinaMap = false
-  ): IRegObsTileLayerOptions {
+  private getTileLayerDefaultOptions(useRetinaMap = false): IRegObsTileLayerOptions {
     return {
       minZoom: settings.map.tiles.minZoom,
       maxZoom: this.getMaxZoom(useRetinaMap),
@@ -583,9 +536,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         layer.addTo(this.layerGroup);
       }
 
-      for (const supportMaps of this.userSettingService.getSupportTilesOptions(
-        userSetting
-      )) {
+      for (const supportMaps of this.userSettingService.getSupportTilesOptions(userSetting)) {
         if (!supportMaps.enabled) {
           continue;
         }
@@ -597,7 +548,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           keepBuffer: 0,
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: settings.map.tiles.supportTilesBounds
+          bounds: settings.map.tiles.supportTilesBounds,
         };
 
         const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
@@ -622,9 +573,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getMaxZoom(detectRetina: boolean) {
-    return detectRetina && L.Browser.retina
-      ? settings.map.tiles.maxZoom + 2
-      : settings.map.tiles.maxZoom;
+    return detectRetina && L.Browser.retina ? settings.map.tiles.maxZoom + 2 : settings.map.tiles.maxZoom;
   }
 
   private *getTopoMapLayers(topoMap: TopoMap, useRetinaMap: boolean) {
@@ -652,13 +601,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           this.loggingService
         );
       } else if (layerSettings.excludeBounds) {
-        yield new RegObsTileLayer(
-          defaultLayerSettings.url,
-          {
-            ...options,
-            excludeBounds: layerSettings.excludeBounds
-          }
-        );
+        yield new RegObsTileLayer(defaultLayerSettings.url, {
+          ...options,
+          excludeBounds: layerSettings.excludeBounds,
+        });
       } else {
         yield new L.TileLayer(defaultLayerSettings.url, options);
       }
@@ -692,7 +638,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.map) {
         const latLng = L.latLng({
           lat: data.coords.latitude,
-          lng: data.coords.longitude
+          lng: data.coords.longitude,
         });
         if (!this.userMarker) {
           this.userMarker = new UserMarker(this.map, data);
@@ -708,11 +654,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
-    this.flyTo(
-      latLng,
-      Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()),
-      usePan
-    );
+    this.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()), usePan);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

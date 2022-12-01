@@ -77,4 +77,4 @@ window.FileReader = FileReaderA;
 //TODO: Remove this when we upgrade rxdb
 //It is needed by the library generate-function which is used by our version of rxdb
 //To make it to work we had to install the library 'util' and create this polyfill:
-(window as any).process = { env: { DEBUG: undefined }, };
+(window as any).process = { env: { DEBUG: undefined } };

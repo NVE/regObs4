@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-trip-log-summary',
   templateUrl: './trip-log-summary.component.html',
-  styleUrls: ['./trip-log-summary.component.scss']
+  styleUrls: ['./trip-log-summary.component.scss'],
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {
   private tripLogSubscription: Subscription;
@@ -21,17 +21,12 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
   tripLog: TripLogItem[];
   tripLogActivity: TripLogActivity[];
 
-  constructor(
-    private tripLoggerService: TripLoggerService,
-    private helperService: HelperService
-  ) {}
+  constructor(private tripLoggerService: TripLoggerService, private helperService: HelperService) {}
 
   ngOnInit() {
-    this.tripLogSubscription = this.tripLoggerService
-      .getTripLogAsObservable()
-      .subscribe((tripLog) => {
-        this.tripLog = tripLog;
-      });
+    this.tripLogSubscription = this.tripLoggerService.getTripLogAsObservable().subscribe((tripLog) => {
+      this.tripLog = tripLog;
+    });
     this.tripLogActivitySubscription = this.tripLoggerService
       .getTripLogActivityAsObservable()
       .subscribe((tripLogActivity) => {
@@ -39,9 +34,7 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
       });
 
     this.interval = setInterval(async () => {
-      const lengthMs = this.calculateTimeFromTripLogActivity(
-        this.tripLogActivity
-      );
+      const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
       this.lengthString = this.helperService.formatMsToTime(lengthMs);
     }, 1000);
   }
@@ -52,9 +45,7 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
       let lastItem: TripLogActivity = null;
       for (const item of tripLogActivity) {
         if (item.state === TripLogState.Paused) {
-          lengthMs += moment
-            .unix(item.timestamp)
-            .diff(moment.unix(lastItem.timestamp));
+          lengthMs += moment.unix(item.timestamp).diff(moment.unix(lastItem.timestamp));
         }
         lastItem = item;
       }

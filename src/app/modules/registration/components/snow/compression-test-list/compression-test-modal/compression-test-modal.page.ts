@@ -7,7 +7,7 @@ import { SelectOption } from '../../../../../shared/components/input/select/sele
 @Component({
   selector: 'app-compression-test-modal',
   templateUrl: './compression-test-modal.page.html',
-  styleUrls: ['./compression-test-modal.page.scss']
+  styleUrls: ['./compression-test-modal.page.scss'],
 })
 export class CompressionTestModalPage implements OnInit {
   @Input() compressionTest: CompressionTestEditModel;
@@ -72,24 +72,15 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   isCTNorECTX() {
-    return (
-      this.compressionTest.PropagationTID === 15 ||
-      this.compressionTest.PropagationTID === 24
-    );
+    return this.compressionTest.PropagationTID === 15 || this.compressionTest.PropagationTID === 24;
   }
 
   isCTNorECTXorRB7() {
-    return (
-      this.isCTNorECTX() ||
-      (this.compressionTest.PropagationTID == 41 && this.compressionTest.TapsFracture == 7)
-    );
+    return this.isCTNorECTX() || (this.compressionTest.PropagationTID == 41 && this.compressionTest.TapsFracture == 7);
   }
 
   isCTVorECTV() {
-    return (
-      this.compressionTest.PropagationTID === 11 ||
-      this.compressionTest.PropagationTID === 21
-    );
+    return this.compressionTest.PropagationTID === 11 || this.compressionTest.PropagationTID === 21;
   }
 
   isLBT() {
@@ -134,8 +125,8 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   getTaps(from, to) {
-    return [...Array(to).keys()]
-      .slice(from, to)
-      .map((k) => {return {id: k, text: k.toString()};});
+    return [...Array(to).keys()].slice(from, to).map((k) => {
+      return { id: k, text: k.toString() };
+    });
   }
 }

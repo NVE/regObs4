@@ -5,7 +5,7 @@ type XYZ = [number, number, number];
 
 export interface PackageMetadata {
   name: string;
-  lastModified: string;  // in UTC
+  lastModified: string; // in UTC
   urls: string[];
   sizeInMib: number;
 }
@@ -15,7 +15,7 @@ export interface CompoundPackageMetadata {
   xyz: XYZ;
   bbox: BBox;
   sizeInMib: number;
-  maps: PackageMetadata[]
+  maps: PackageMetadata[];
 }
 
 export interface Part {
@@ -26,7 +26,6 @@ export interface Part {
 export type CompoundPackageFeature = Feature<Polygon, null>;
 
 export class CompoundPackage {
-
   static GetNameFromXYZ(x: number, y: number, z: number) {
     return `${x}-${y}-${z}`;
   }
@@ -48,16 +47,18 @@ export class CompoundPackage {
       geometry: {
         bbox: this.metadata.bbox,
         type: 'Polygon',
-        coordinates: [[
-          [xMin, yMin],
-          [xMin, yMax],
-          [xMax, yMax],
-          [xMax, yMin],
-          [xMin, yMin]
-        ]]
+        coordinates: [
+          [
+            [xMin, yMin],
+            [xMin, yMax],
+            [xMax, yMax],
+            [xMax, yMin],
+            [xMin, yMin],
+          ],
+        ],
       },
       properties: null,
-      id: CompoundPackage.GetFeatureId(...this.metadata.xyz)
+      id: CompoundPackage.GetFeatureId(...this.metadata.xyz),
     };
   }
 
@@ -74,15 +75,17 @@ export class CompoundPackage {
     if (this.metadata.maps.length === 0) {
       return null;
     }
-    return moment.max(this.metadata.maps.map(p => moment(p.lastModified))).toDate();
+    return moment.max(this.metadata.maps.map((p) => moment(p.lastModified))).toDate();
   }
 
   getParts(): Part[] {
-    return this.metadata.maps
-      // Hent name / url for alle pakker
-      .map((p) => p.urls.map(url => ({name: p.name, url})))
-      // Flatten array
-      .reduce((a, b) => a.concat(b), []);
+    return (
+      this.metadata.maps
+        // Hent name / url for alle pakker
+        .map((p) => p.urls.map((url) => ({ name: p.name, url })))
+        // Flatten array
+        .reduce((a, b) => a.concat(b), [])
+    );
   }
 
   getXYZ(): XYZ {

@@ -7,13 +7,10 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 @Component({
   selector: 'app-compression-test',
   templateUrl: './compression-test.page.html',
-  styleUrls: ['./compression-test.page.scss']
+  styleUrls: ['./compression-test.page.scss'],
 })
 export class CompressionTestPage extends BasePage {
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute
-  ) {
+  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
     super(RegistrationTid.CompressionTest, basePageService, activatedRoute);
   }
 }

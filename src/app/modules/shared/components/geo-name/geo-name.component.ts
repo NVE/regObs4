@@ -6,8 +6,8 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 
 @Component({
   selector: 'app-geo-name',
-  templateUrl: './geo-name.component.html',
-  styleUrls: ['./geo-name.component.scss']
+  template: '{{ name$ | async }}',
+  styleUrls: ['./geo-name.component.scss'],
 })
 export class GeoNameComponent implements OnChanges {
   @Input() geoHazards: GeoHazard[];
@@ -15,8 +15,7 @@ export class GeoNameComponent implements OnChanges {
   name$: Observable<string>;
   language$: Observable<LangKey>;
 
-  constructor(private geoHelperService: GeoHelperService, private userSettingsService: UserSettingService) {
-  }
+  constructor(private geoHelperService: GeoHelperService, private userSettingsService: UserSettingService) {}
 
   ngOnChanges(): void {
     this.name$ = this.userSettingsService.language$.pipe(

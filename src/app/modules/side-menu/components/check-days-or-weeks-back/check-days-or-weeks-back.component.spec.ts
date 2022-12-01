@@ -10,8 +10,8 @@ describe('CheckDaysOrWeeksBackComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CheckDaysOrWeeksBackComponent ],
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot()]
+      declarations: [CheckDaysOrWeeksBackComponent],
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CheckDaysOrWeeksBackComponent);

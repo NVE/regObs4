@@ -6,7 +6,7 @@ import { SentListComponent } from './components/sent-list/sent-list.component';
   selector: 'app-my-observations',
   templateUrl: './my-observations.page.html',
   styleUrls: ['./my-observations.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyObservationsPage {
   @ViewChild(IonContent, { static: true }) content: IonContent;

@@ -6,11 +6,9 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./check-days-or-weeks-back.component.scss'],
 })
 export class CheckDaysOrWeeksBackComponent implements OnInit {
+  @Input() daysBack: number;
 
-  @Input() daysBack: number; 
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {}
-
 }

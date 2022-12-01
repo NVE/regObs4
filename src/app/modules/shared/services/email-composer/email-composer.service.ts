@@ -19,17 +19,13 @@ export class EmailComposerService {
     const platform = Capacitor.getPlatform();
     let canSend;
     if (platform === 'ios') {
-      canSend = await this.emailComposer
-        .hasAccount()
-        .then((isValid: boolean) => isValid);
+      canSend = await this.emailComposer.hasAccount().then((isValid: boolean) => isValid);
     }
     if (platform === 'android') {
       canSend = await this.emailComposer.isAvailable();
     }
     if (!canSend) {
-      const toastMessage = await firstValueFrom(
-        this.translateService.get(['MENU.NO_EMAIL_APP'])
-      );
+      const toastMessage = await firstValueFrom(this.translateService.get(['MENU.NO_EMAIL_APP']));
       const toast = await this.toastController.create({
         message: toastMessage['MENU.NO_EMAIL_APP'],
         mode: 'md',

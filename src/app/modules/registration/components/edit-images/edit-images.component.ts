@@ -1,9 +1,21 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
-import { Camera, CameraResultType, CameraSource, GalleryImageOptions, GalleryPhotos, ImageOptions } from '@capacitor/camera';
+import {
+  Camera,
+  CameraResultType,
+  CameraSource,
+  GalleryImageOptions,
+  GalleryPhotos,
+  ImageOptions,
+} from '@capacitor/camera';
 import { settings } from '../../../../../settings';
-import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import {
+  AttachmentType,
+  AttachmentUploadEditModel,
+  AttachmentUploadEditModelWithBlob,
+  RegistrationTid,
+} from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
@@ -11,10 +23,7 @@ import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
-import {
-  ALLOWED_ATTACHMENT_FILE_TYPES,
-  DropZoneService
-} from './drop-zone.service';
+import { ALLOWED_ATTACHMENT_FILE_TYPES, DropZoneService } from './drop-zone.service';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
@@ -25,13 +34,14 @@ const ERRORS_TO_IGNORE = [
   'No Image Selected',
   'No Images Selected',
   'User cancelled photos app',
-  'User cancelled camera app'];
+  'User cancelled camera app',
+];
 
 @Component({
   selector: 'app-edit-images',
   templateUrl: './edit-images.component.html',
   styleUrls: ['./edit-images.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditImagesComponent implements OnInit {
   @Input() draftUuid: string;
@@ -60,8 +70,9 @@ export class EditImagesComponent implements OnInit {
     if (this.existingAttachments == null) {
       return [];
     }
-    return this.existingAttachments
-      .filter(a => this.registrationTid ? a.RegistrationTID === this.registrationTid : true);
+    return this.existingAttachments.filter((a) =>
+      this.registrationTid ? a.RegistrationTID === this.registrationTid : true
+    );
   }
 
   constructor(
@@ -78,10 +89,11 @@ export class EditImagesComponent implements OnInit {
   ngOnInit() {
     this.isHybrid = this.platform.is('hybrid');
 
-    this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
-      this.draftUuid,
-      { ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
-    );
+    this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(this.draftUuid, {
+      ref: this.ref,
+      type: this.attachmentType,
+      registrationTid: this.registrationTid,
+    });
   }
 
   setNewAttachmentComment(attachment: AttachmentUploadEditModel, comment: AttachmentUploadEditModel['Comment']) {
@@ -93,29 +105,30 @@ export class EditImagesComponent implements OnInit {
     if (this.onBeforeAdd !== undefined) {
       await Promise.resolve(this.onBeforeAdd());
     }
-    const translations = await firstValueFrom(this.translateService
-      .get([
+    const translations = await firstValueFrom(
+      this.translateService.get([
         'REGISTRATION.GENERAL_COMMENT.ADD_PICTURE',
         'REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO',
         'REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY',
-        'DIALOGS.CANCEL'
-      ]));
+        'DIALOGS.CANCEL',
+      ])
+    );
     const actionSheet = await this.actionSheetController.create({
       header: translations['REGISTRATION.GENERAL_COMMENT.ADD_PICTURE'],
       buttons: [
         {
           text: translations['REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO'],
-          handler: () => this.getImages(CameraSource.Camera)
+          handler: () => this.getImages(CameraSource.Camera),
         },
         {
           text: translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
-          handler: () => this.getImages(CameraSource.Photos)
+          handler: () => this.getImages(CameraSource.Photos),
         },
         {
           text: translations['DIALOGS.CANCEL'],
-          role: 'cancel'
-        }
-      ]
+          role: 'cancel',
+        },
+      ],
     });
     actionSheet.present();
   }
@@ -128,7 +141,7 @@ export class EditImagesComponent implements OnInit {
       height: settings.images.size,
       width: settings.images.size,
       correctOrientation: true,
-      saveToGallery: source === CameraSource.Camera
+      saveToGallery: source === CameraSource.Camera,
     };
   }
 
@@ -136,8 +149,8 @@ export class EditImagesComponent implements OnInit {
     let imageUrls: string[] = [];
     let photos: GalleryPhotos;
     let permissionState = await Camera.checkPermissions();
-    if (!(['granted', 'limited'].includes(permissionState?.photos))) {
-      permissionState = await Camera.requestPermissions({permissions: ['photos']});
+    if (!['granted', 'limited'].includes(permissionState?.photos)) {
+      permissionState = await Camera.requestPermissions({ permissions: ['photos'] });
     }
     if (['granted', 'limited'].includes(permissionState?.photos)) {
       photos = await Camera.pickImages(options);
@@ -145,8 +158,8 @@ export class EditImagesComponent implements OnInit {
       this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
     }
     if (photos?.photos?.length > 0) {
-      if (this.checkAndNotifyIfUnsupportedImageFormat(photos.photos.map(photo => photo.format))) {
-        imageUrls = photos.photos.map(photo => photo.path);
+      if (this.checkAndNotifyIfUnsupportedImageFormat(photos.photos.map((photo) => photo.format))) {
+        imageUrls = photos.photos.map((photo) => photo.path);
       }
     }
     return imageUrls;
@@ -155,7 +168,7 @@ export class EditImagesComponent implements OnInit {
   private async takePhotoAndReturnImageUrl(options: ImageOptions): Promise<string[]> {
     let permissionState = await Camera.checkPermissions();
     if (permissionState?.camera !== 'granted') {
-      permissionState = await Camera.requestPermissions({permissions: ['camera']});
+      permissionState = await Camera.requestPermissions({ permissions: ['camera'] });
     }
     if (permissionState?.camera === 'granted') {
       const photo = await Camera.getPhoto(options);
@@ -191,7 +204,7 @@ export class EditImagesComponent implements OnInit {
       }
     } catch (err) {
       // we ignore errors we get if user cancels taking photo or gallery selection
-      if (!(ERRORS_TO_IGNORE.includes(err.message))) {
+      if (!ERRORS_TO_IGNORE.includes(err.message)) {
         this.logger.log('Unknown error when adding image', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
         this.showErrorToast('REGISTRATION.IMAGE_ERROR.UNKNOWN');
       }
@@ -212,7 +225,7 @@ export class EditImagesComponent implements OnInit {
   }
 
   private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
-    formats.forEach(format => {
+    formats.forEach((format) => {
       if (!(format === 'jpeg')) {
         this.showErrorToast('REGISTRATION.INVALID_IMAGE');
         return false;
@@ -226,7 +239,7 @@ export class EditImagesComponent implements OnInit {
       const toast = await this.toastController.create({
         message: translation,
         mode: 'md',
-        duration: 4000
+        duration: 4000,
       });
       toast.present();
     });
@@ -249,7 +262,7 @@ export class EditImagesComponent implements OnInit {
   }
 
   removeExistingImage(image: RemoteOrLocalAttachmentEditModel) {
-    const existingAttachments = this.existingAttachments.filter(a => a.AttachmentId !== image.AttachmentId);
+    const existingAttachments = this.existingAttachments.filter((a) => a.AttachmentId !== image.AttachmentId);
     if (existingAttachments.length !== this.existingAttachments.length) {
       this.existingAttachmentsChange.emit(existingAttachments);
     }
@@ -270,9 +283,8 @@ export class EditImagesComponent implements OnInit {
         this.attachImageToDraft(file, MIME_TYPE);
       } catch (err) {
         this.logger.error(err, 'Could not add attachment');
-        this.showErrorToast('Could not add image');  // TODO: Add better error message
+        this.showErrorToast('Could not add image'); // TODO: Add better error message
       }
     }
   }
-
 }

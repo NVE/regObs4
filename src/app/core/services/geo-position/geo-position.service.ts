@@ -8,19 +8,10 @@ import {
   combineLatest,
   merge,
   fromEvent,
-  firstValueFrom
+  firstValueFrom,
 } from 'rxjs';
-import {
-  filter,
-  map,
-  distinctUntilChanged,
-  startWith
-} from 'rxjs/operators';
-import {
-  CallbackID,
-  ClearWatchOptions,
-  Geolocation, Position, WatchPositionCallback,
-} from '@capacitor/geolocation';
+import { filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,27 +27,25 @@ const DEBUG_TAG = 'GeoPositionService';
 const POSITION_OPTIONS_DEFAULT: PositionOptions = {
   enableHighAccuracy: true,
   timeout: 20 * 1000, // 20 sec
-  maximumAge: Infinity // Start with latest cached value
+  maximumAge: Infinity, // Start with latest cached value
 };
 
 const POSITION_OPTIONS_ANDROID: PositionOptions = {
   enableHighAccuracy: true,
   timeout: 1000, //get notified with new position data at least each 1 sec
-  maximumAge: 0 //we do not accept cached positions, ask for GPS position immediately
+  maximumAge: 0, //we do not accept cached positions, ask for GPS position immediately
 };
 
 /**
  * Henter posisjon fra GPS og himmelretning fra kompasset
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GeoPositionService implements OnDestroy {
   private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
-  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject(
-    null
-  );
+  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject(null);
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
 
   private readonly trackingComponents = new BehaviorSubject<string[]>([]);
@@ -115,9 +104,7 @@ export class GeoPositionService implements OnDestroy {
     );
     combineLatest([this.getPlatformIsActiveObservable(), anyComponentsTracking])
       .pipe(
-        map(([platformIsActive, anyComponentsTracking]) =>
-          platformIsActive && anyComponentsTracking ? true : false
-        )
+        map(([platformIsActive, anyComponentsTracking]) => (platformIsActive && anyComponentsTracking ? true : false))
       )
       .subscribe((activate) => {
         if (activate) {
@@ -130,10 +117,9 @@ export class GeoPositionService implements OnDestroy {
 
   private getPlatformIsActiveObservable() {
     if (isAndroidOrIos(this.platform)) {
-      return merge(
-        this.platform.resume.pipe(map(() => true)),
-        this.platform.pause.pipe(map(() => false))
-      ).pipe(startWith(true));
+      return merge(this.platform.resume.pipe(map(() => true)), this.platform.pause.pipe(map(() => false))).pipe(
+        startWith(true)
+      );
     }
     return of(true);
   }
@@ -150,8 +136,8 @@ export class GeoPositionService implements OnDestroy {
       highAccuracyEnabled,
       err: {
         code,
-        message
-      }
+        message,
+      },
     };
   }
 
@@ -168,15 +154,10 @@ export class GeoPositionService implements OnDestroy {
   private createGpsPositionLogElement(pos: Position): GeoPositionLog {
     const log: GeoPositionLog = {
       timestamp: this.getTimestamp(pos),
-      status: (pos.coords === undefined
-        ? 'PositionError'
-        : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
+      status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
       pos,
       highAccuracyEnabled: true,
-      err:
-        pos.coords === undefined
-          ? ((pos as unknown) as PositionError)
-          : undefined
+      err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined,
     };
     return log;
   }
@@ -185,11 +166,11 @@ export class GeoPositionService implements OnDestroy {
     this.gpsPositionLog.next({
       timestamp: moment().unix(),
       status,
-      highAccuracyEnabled: this.highAccuracyEnabled.value
+      highAccuracyEnabled: this.highAccuracyEnabled.value,
     });
   }
 
-  public async choosePositionMethod(nameForTrackingComponent: string) : Promise<void> {
+  public async choosePositionMethod(nameForTrackingComponent: string): Promise<void> {
     if (isAndroidOrIos(this.platform)) {
       this.startTrackingComponent(nameForTrackingComponent, true);
     } else {
@@ -201,7 +182,7 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-  public async requestPositionFromBrowser() : Promise<void> {
+  public async requestPositionFromBrowser(): Promise<void> {
     if (!this.geoLocationSupported) {
       const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.UNSUPPORTED');
       this.gpsPositionLog.next(this.createPositionError(errorMessage));
@@ -225,63 +206,48 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-  private async createToast( message?: string){
+  private async createToast(message?: string) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 6000
+      duration: 6000,
     });
     await toast.present();
   }
 
-  private async geolocationError( error: PositionError) {
+  private async geolocationError(error: PositionError) {
     let key: string;
     switch (error.code) {
-    case GeoPositionErrorCode.PermissionDenied:
-      key = 'PermissionDenied';
-      break;
-    case GeoPositionErrorCode.Timeout:
-      key = 'Timeout';
-      break;
-    default:
-      key = 'PositionUnavailable';
+      case GeoPositionErrorCode.PermissionDenied:
+        key = 'PermissionDenied';
+        break;
+      case GeoPositionErrorCode.Timeout:
+        key = 'Timeout';
+        break;
+      default:
+        key = 'PositionUnavailable';
     }
     if (key) {
-      const errorMessage: string = this.translateService.instant(
-        `GEOLOCATION.POSITION_ERROR.${key}`
-      );
+      const errorMessage: string = this.translateService.instant(`GEOLOCATION.POSITION_ERROR.${key}`);
       this.gpsPositionLog.next(this.createPositionError(errorMessage, error.code));
       this.createToast(errorMessage);
     }
   }
 
-  public async startTrackingComponent(
-    name: string,
-    forcePermissionDialog = false
-  ): Promise<void> {
+  public async startTrackingComponent(name: string, forcePermissionDialog = false): Promise<void> {
     if (forcePermissionDialog) {
       this.loggingService.debug(`startTrackingComponent: name = ${name}. Check permissions...`, DEBUG_TAG);
       const valid = await this.checkPermissions();
       if (!valid) {
-        this.gpsPositionLog.next(
-          this.createPositionError(
-            'Permission denied',
-            GeoPositionErrorCode.PermissionDenied
-          )
-        );
+        this.gpsPositionLog.next(this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied));
         return;
       }
       this.loggingService.debug(`startTrackingComponent: name = ${name}. Permissions ok = ${valid}`, DEBUG_TAG);
     }
-    this.trackingComponents.next([
-      ...this.getTrackingComponentsExcludeByName(name),
-      name
-    ]);
+    this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name), name]);
   }
 
   public stopTrackingComponent(name: string) {
-    this.trackingComponents.next([
-      ...this.getTrackingComponentsExcludeByName(name)
-    ]);
+    this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name)]);
   }
 
   private getTrackingComponentsExcludeByName(name: string) {
@@ -301,7 +267,8 @@ export class GeoPositionService implements OnDestroy {
   private stopWatchingPosition() {
     if (this.watchPositionCallbackId !== null) {
       this.loggingService.debug(
-        `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG
+        `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`,
+        DEBUG_TAG
       );
       this.addStatusToGpsPositionLog('StopGpsTracking');
       const options: ClearWatchOptions = { id: this.watchPositionCallbackId };
@@ -312,18 +279,11 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-
   private async startWatchingPosition(): Promise<void> {
     await this.checkPermissions();
     const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
       if (err) {
-        this.loggingService.log(
-          'Error when watchPosition',
-          err,
-          LogLevel.Warning,
-          DEBUG_TAG,
-          err
-        );
+        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
         this.gpsPositionLog.next(this.createPositionError('Unknown error'));
       }
       if (position !== null) {
@@ -332,8 +292,8 @@ export class GeoPositionService implements OnDestroy {
           const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
           this.loggingService.debug(
             'First callback received. ' +
-            `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
-            `Delay since request: ${secondsSinceStartWatch}s`,
+              `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
+              `Delay since request: ${secondsSinceStartWatch}s`,
             DEBUG_TAG,
             { accuracy: position.coords.accuracy }
           );
@@ -347,10 +307,7 @@ export class GeoPositionService implements OnDestroy {
     this.addStatusToGpsPositionLog('StartGpsTracking');
     this.stopWatchingPosition(); //we need to stop current watch of position if any
     this.watchPositionRequestTime = Date.now();
-    this.watchPositionCallbackId = await Geolocation.watchPosition(
-      this.getPositionOptions(),
-      watchPositionCallback
-    );
+    this.watchPositionCallbackId = await Geolocation.watchPosition(this.getPositionOptions(), watchPositionCallback);
     this.loggingService.debug(
       `Start GPS position subscription with callback ID: ${this.watchPositionCallbackId}`,
       DEBUG_TAG,
@@ -382,24 +339,20 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-  private async checkPermissions() : Promise<boolean> {
+  private async checkPermissions(): Promise<boolean> {
     try {
       if (isAndroidOrIos(this.platform)) {
         await this.checkPermissionsApp();
       }
     } catch (err) {
-      this.loggingService.error(
-        err,
-        DEBUG_TAG,
-        'Error asking for location permissions'
-      );
+      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
       const errorMessage = this.translateService.instant('GEOLOCATION.POSITION_ERROR.PermissionDenied');
       this.createToast(errorMessage);
       return true; // continue anyway on error
     }
   }
 
-  private async checkPermissionsApp() : Promise<boolean> {
+  private async checkPermissionsApp(): Promise<boolean> {
     const currentPermissions = await Geolocation.checkPermissions();
     this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
     const authorized = currentPermissions.location === 'granted';
@@ -421,16 +374,12 @@ export class GeoPositionService implements OnDestroy {
 
   private async showPermissionDeniedError() {
     const translations = await this.translateService
-      .get([
-        'ALERT.OK',
-        'PERMISSION.LOCATION_DENIED_HEADER',
-        'PERMISSION.LOCATION_DENIED_MESSAGE'
-      ])
+      .get(['ALERT.OK', 'PERMISSION.LOCATION_DENIED_HEADER', 'PERMISSION.LOCATION_DENIED_MESSAGE'])
       .toPromise();
     const alert = await this.alertController.create({
       header: translations['PERMISSION.LOCATION_DENIED_HEADER'],
       message: translations['PERMISSION.LOCATION_DENIED_MESSAGE'],
-      buttons: [translations['ALERT.OK']]
+      buttons: [translations['ALERT.OK']],
     });
     await alert.present();
   }
@@ -442,10 +391,9 @@ export class GeoPositionService implements OnDestroy {
     // NOTE! Because of issues with show heading with W3C Devece Orientation API in iOS 13, the depricated
     // plugin cordova-plugin-device-orientation is used instead on ios
     // https://github.com/apache/cordova-plugin-device-orientation/issues/52
-    this.headingSubscription = (this.isIos()
-      ? this.getHeadingNative()
-      : this.getWebHeadingObservable()
-    ).subscribe((heading: number) => this.validateAndSetHeading(heading));
+    this.headingSubscription = (this.isIos() ? this.getHeadingNative() : this.getWebHeadingObservable()).subscribe(
+      (heading: number) => this.validateAndSetHeading(heading)
+    );
   }
 
   private isIos(): boolean {
@@ -454,15 +402,12 @@ export class GeoPositionService implements OnDestroy {
 
   private getHeadingNative() {
     return this.deviceOrientation
-      .watchHeading({filter: 1}) //get notified only if heading changes > 1 degree
+      .watchHeading({ filter: 1 }) //get notified only if heading changes > 1 degree
       .pipe(map((val) => val?.magneticHeading));
   }
 
   private getWebHeadingObservable() {
-    return merge(
-      fromEvent(<any>window, 'deviceorientationabsolute'),
-      fromEvent(<any>window, 'deviceorientation')
-    ).pipe(
+    return merge(fromEvent(<any>window, 'deviceorientationabsolute'), fromEvent(<any>window, 'deviceorientation')).pipe(
       map((event: DeviceOrientationEvent) => {
         const appleHeading = (<any>event).webkitCompassHeading;
         const heading: number = appleHeading || this.getAbsoluteHeading(event);
@@ -472,9 +417,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private getAbsoluteHeading(event: DeviceOrientationEvent) {
-    return event.alpha !== undefined && event.absolute
-      ? 360 - event.alpha
-      : undefined;
+    return event.alpha !== undefined && event.absolute ? 360 - event.alpha : undefined;
   }
 
   private validateAndSetHeading(heading: number) {

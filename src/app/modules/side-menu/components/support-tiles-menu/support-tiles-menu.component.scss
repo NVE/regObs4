@@ -1,27 +1,27 @@
 ion-item {
-    --ion-item-background: var(--background-color-menu);
-    ion-toggle {
-        --ion-item-background: #fff;
-        transform: scale(0.75);
-    }
+  --ion-item-background: var(--background-color-menu);
+  ion-toggle {
+    --ion-item-background: #fff;
+    transform: scale(0.75);
+  }
 
-    svg-icon {
-        margin-top: 6px;
-    }
+  svg-icon {
+    margin-top: 6px;
+  }
 }
 
 .inner-list-panel {
-    ion-item {
-        --border-width: 0 0 0 0;
-        --ion-item-background: #fff;
-    }
+  ion-item {
+    --border-width: 0 0 0 0;
+    --ion-item-background: #fff;
+  }
 }
 
 .menu-label {
-    font-size: var(--h3-font-size);
+  font-size: var(--h3-font-size);
 }
 
 .stacked-label {
-    font-size: 14px;
-    margin-bottom: 0px;
+  font-size: 14px;
+  margin-bottom: 0px;
 }

@@ -11,8 +11,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 const DEBUG_TAG = 'BackgroundGeolocationNativeService';
 
 @Injectable()
-export class BackgroundGeolocationNativeService
-implements BackgroundGeolocationService {
+export class BackgroundGeolocationNativeService implements BackgroundGeolocationService {
   backgroundGeolocation: any;
 
   constructor(
@@ -30,10 +29,7 @@ implements BackgroundGeolocationService {
   private async configureBackgroundGeoLocation() {
     await this.platform.ready();
     const translations = await this.translateService
-      .get([
-        'GEOLOCATION_SERVICE.NOTIFICATION_TITLE',
-        'GEOLOCATION_SERVICE.NOTIFICATION_TEXT'
-      ])
+      .get(['GEOLOCATION_SERVICE.NOTIFICATION_TITLE', 'GEOLOCATION_SERVICE.NOTIFICATION_TEXT'])
       .toPromise();
     // const config: BackgroundGeolocationConfig = {
     //     locationProvider: this.backgroundGeolocation.DISTANCE_FILTER_PROVIDER, // ANDROID_DISTANCE_FILTER_PROVIDER

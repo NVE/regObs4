@@ -22,7 +22,7 @@ import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registr
 const DEBUG_TAG = 'ObservationService';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ObservationService {
   private _observationsObservable: Observable<RegistrationViewModel[]>;
@@ -71,7 +71,11 @@ export class ObservationService {
     }
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (!cancelled) {
-      const result = await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, userSettings, cancel);
+      const result = await this.checkLastUpdatedAndUpdateDataIfNeeded(
+        userSettings.currentGeoHazard,
+        userSettings,
+        cancel
+      );
       return result;
     } else {
       return 0;
@@ -88,7 +92,11 @@ export class ObservationService {
     );
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazards: GeoHazard[], userSetting: UserSetting, cancel?: Promise<void>) {
+  private async checkLastUpdatedAndUpdateDataIfNeeded(
+    geoHazards: GeoHazard[],
+    userSetting: UserSetting,
+    cancel?: Promise<void>
+  ) {
     const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards, userSetting.language);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
@@ -153,12 +161,15 @@ export class ObservationService {
           SelectedGeoHazards: geoHazards,
           NumberOfRecords: settings.observations.maxObservationsToFetch,
           LangKey: userSetting.language,
-          TimeZone: moment().format('Z')
+          TimeZone: moment().format('Z'),
         }),
         cancel,
         60000
       );
-      this.loggingService.debug(`Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`, DEBUG_TAG);
+      this.loggingService.debug(
+        `Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`,
+        DEBUG_TAG
+      );
       if (!isCanceled) {
         this.updateLatestObservations(userSetting.appMode, userSetting.language, geoHazards, searchResult);
         await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
@@ -184,7 +195,7 @@ export class ObservationService {
     const cachedObservations = await firstValueFrom(this.observations$);
 
     // Remove old version of observation if we already have it
-    const cachedObservationsWithoutCurrentObs = cachedObservations.filter(obs => obs.RegId !== observation.RegId);
+    const cachedObservationsWithoutCurrentObs = cachedObservations.filter((obs) => obs.RegId !== observation.RegId);
     const newObservations = [observation, ...cachedObservationsWithoutCurrentObs];
 
     await this.updateCacheAndSave(newObservations, observation.GeoHazardTID);
@@ -193,11 +204,11 @@ export class ObservationService {
   async deleteFetchedObservation(regId: number) {
     const cachedObservations = await firstValueFrom(this.observations$);
 
-    const index = cachedObservations.findIndex(obs => obs.RegId === regId);
+    const index = cachedObservations.findIndex((obs) => obs.RegId === regId);
     if (index !== -1) {
       //we found the registration in the cache, so remove it
       const observation = cachedObservations[index];
-      const observationsToKeep = cachedObservations.filter(obs => obs.RegId !== regId);
+      const observationsToKeep = cachedObservations.filter((obs) => obs.RegId !== regId);
       await this.updateCacheAndSave(observationsToKeep, observation.GeoHazardTID);
     }
   }
@@ -211,7 +222,7 @@ export class ObservationService {
     // Update cached observations
     this.latestObservations.next({
       ...inMemoryCache,
-      [key]: observations
+      [key]: observations,
     });
 
     // Update offline storage
@@ -219,7 +230,12 @@ export class ObservationService {
     await this.saveAndClenupOfflineObservations(fromDate, geoHazards, userSettings, observations);
   }
 
-  private updateLatestObservations(appMode: AppMode, langKey: LangKey, geoHazards: GeoHazard[], observations: RegistrationViewModel[]) {
+  private updateLatestObservations(
+    appMode: AppMode,
+    langKey: LangKey,
+    geoHazards: GeoHazard[],
+    observations: RegistrationViewModel[]
+  ) {
     const latestObs = this.latestObservations.getValue();
     const key = this.getGeoHazardKeyFull(appMode, langKey, geoHazards);
     latestObs[key] = observations;
@@ -236,7 +252,12 @@ export class ObservationService {
     const now = new Date();
     await this.dbHelperService.fastInsert(instanceName, result, (data) => data.RegId);
     this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
-    const deleteResult = await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, fromDate, result);
+    const deleteResult = await this.deleteObservationNoLongerInResult(
+      userSetting.appMode,
+      geoHazards,
+      fromDate,
+      result
+    );
     this.loggingService.debug('Deleted items no longer in updated result', DEBUG_TAG, deleteResult);
     await this.deleteOldObservations(userSetting.appMode, geoHazards);
   }
@@ -254,15 +275,13 @@ export class ObservationService {
     pageNr?: number,
     numberOfRecords = 10
   ): Observable<RegistrationViewModel[]> {
-
     const criteria: SearchCriteriaExclUserRequestDto = {
       NumberOfRecords: numberOfRecords,
       LangKey: langKey,
       Offset: (pageNr || 0) * numberOfRecords,
-      TimeZone: moment().format('Z')
+      TimeZone: moment().format('Z'),
     };
-    return this.searchService.SearchPostSearchMyRegistrations(criteria)
-      .pipe(catchError(() => of([]))); // Return empty list if http request fails);
+    return this.searchService.SearchPostSearchMyRegistrations(criteria).pipe(catchError(() => of([]))); // Return empty list if http request fails);
   }
 
   async updateObservationById(regId: number, appMode: AppMode, langKey: LangKey, currentGeoHazards: GeoHazard[]) {
@@ -280,7 +299,9 @@ export class ObservationService {
   }
 
   getObservationsDaysBack(userSettings: UserSetting, geoHazards: GeoHazard[]): number {
-    const daysBackForCurrentGeoHazard = userSettings.observationDaysBack.find((setting) => setting.geoHazard === geoHazards[0]);
+    const daysBackForCurrentGeoHazard = userSettings.observationDaysBack.find(
+      (setting) => setting.geoHazard === geoHazards[0]
+    );
     const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
     return daysBack;
   }
@@ -291,7 +312,12 @@ export class ObservationService {
     return fromDate.toDate();
   }
 
-  private deleteObservationNoLongerInResult(appMode: AppMode, geoHazards: GeoHazard[], fromDate: Date, items: RegistrationViewModel[]) {
+  private deleteObservationNoLongerInResult(
+    appMode: AppMode,
+    geoHazards: GeoHazard[],
+    fromDate: Date,
+    items: RegistrationViewModel[]
+  ) {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('delete')
       .where((reg: RegistrationViewModel) => {
@@ -340,7 +366,10 @@ export class ObservationService {
   }
 
   private getObservationsAsObservable(): Observable<RegistrationViewModel[]> {
-    return combineLatest([this.getUserSettingsObservableDistinctToChangeObservations(), this.latestObservations.asObservable()]).pipe(
+    return combineLatest([
+      this.getUserSettingsObservableDistinctToChangeObservations(),
+      this.latestObservations.asObservable(),
+    ]).pipe(
       tap((val) => this.loggingService.debug('User settings or latest observations triggered change', DEBUG_TAG, val)),
       switchMap(([userSetting, latestObservations]) => {
         const key = this.getGeoHazardKeyFull(userSetting.appMode, userSetting.language, userSetting.currentGeoHazard);
@@ -370,17 +399,18 @@ export class ObservationService {
     return `${userSetting.appMode}#${userSetting.language}#${userSetting.currentGeoHazard.join(',')}#${dateString}`;
   }
 
-  private getObservationsByParametersQuery(appMode: AppMode, langKey: LangKey, geoHazards?: GeoHazard[], fromDate?: Date) {
+  private getObservationsByParametersQuery(
+    appMode: AppMode,
+    langKey: LangKey,
+    geoHazards?: GeoHazard[],
+    fromDate?: Date
+  ) {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('select')
       .where((reg: RegistrationViewModel) => this.observationByParameterFilter(reg, geoHazards, fromDate));
   }
 
-  private observationByParameterFilter(
-    reg: RegistrationViewModel,
-    geoHazards?: GeoHazard[],
-    fromDate?: Date
-  ) {
+  private observationByParameterFilter(reg: RegistrationViewModel, geoHazards?: GeoHazard[], fromDate?: Date) {
     return (
       !!reg &&
       (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true) &&
@@ -406,7 +436,7 @@ export class ObservationService {
       this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate).listen({
         debounce: 500,
         unique: true,
-        compareFn: (a, b) => this.isDifferent(a, b, langKey)
+        compareFn: (a, b) => this.isDifferent(a, b, langKey),
       })
     ).pipe(
       map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
@@ -430,14 +460,17 @@ export class ObservationService {
   }
 
   async getObservationById(id: number, appMode: AppMode) {
-    const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where(['RegId', '=', id]).exec();
+    const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+      .query('select')
+      .where(['RegId', '=', id])
+      .exec();
     return result[0] as RegistrationViewModel;
   }
 
   getObserableCount(appMode: AppMode): Observable<number> {
     return new NSqlFullUpdateObservable<RowCount[]>(
       NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select', ['COUNT(*) as count']).listen({
-        debounce: 100
+        debounce: 100,
       })
     ).pipe(
       map((val: RowCount[]) => val[0].count),

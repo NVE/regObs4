@@ -8,7 +8,7 @@ import {
   InanoSQLQuery,
   InanoSQLDataModel,
   InanoSQLTableIndexConfig,
-  InanoSQLInstance
+  InanoSQLInstance,
 } from '@nano-sql/core/lib/interfaces';
 
 export class NanoSql {
@@ -20,9 +20,9 @@ export class NanoSql {
         'RegId:int': { pk: true },
         'GeoHazardTID:int': {},
         'LangKey:int': {},
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
       // indexes: {
       //     'GeoHazardTID:int': {},
       //     'LangKey:int': {},
@@ -38,51 +38,51 @@ export class NanoSql {
         'altitude:number': {},
         'speed:number': {},
         'accuracy:number': {},
-        'heading:number': {}
+        'heading:number': {},
       },
-      indexes: {}
+      indexes: {},
     },
     TRIP_LOG_ACTIVITY: {
       name: 'triplogactivity',
       model: {
         'id:uuid': { pk: true },
         'state:string': {},
-        'timestamp:number': {}
+        'timestamp:number': {},
       },
-      indexes: {}
+      indexes: {},
     },
     LEGACY_TRIP_LOG: {
       name: 'legacytrip',
       instancePerAppMode: true,
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     WARNING: {
       name: 'warning',
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     WARNING_FAVOURITE: {
       name: 'warning_favourite',
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     OFFLINE_MAP: {
       name: 'offlinemap',
       model: {
         'name:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     OFFLINE_MAP_TILES: {
       name: 'offlinemaptiles',
@@ -92,21 +92,21 @@ export class NanoSql {
         'lastAccess:number': {},
         'size:number': {},
         'dataUrl:string': {},
-        'mimeType:string': {}
+        'mimeType:string': {},
       },
       indexes: {
         'mapName:string': {},
         'lastAccess:number': {},
-        'size:number': {}
-      }
+        'size:number': {},
+      },
     },
     OFFLINE_MAP_CACHE_SIZE: {
       name: 'offlinemapcachessize',
       model: {
         'id:string': { pk: true },
         'count:number': {},
-        'size:number': {}
-      }
+        'size:number': {},
+      },
     },
     OFFLINE_ASSET: {
       name: 'offlineasset',
@@ -115,53 +115,53 @@ export class NanoSql {
         'type:string': {},
         'lastAccess:number': {},
         'size:number': {},
-        'dataUrl:string': {}
+        'dataUrl:string': {},
       },
       indexes: {
-        'lastAccess:number': {}
-      }
+        'lastAccess:number': {},
+      },
     },
     MAP_SEARCH_HISTORY: {
       name: 'mapsearchhistory',
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     USER_SETTINGS: {
       name: 'usersettings',
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     USER: {
       name: 'user',
       instancePerAppMode: true,
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     DATA_LOAD: {
       name: 'dataload',
       model: {
         'id:string': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     REGISTRATION: {
       name: 'registration',
       instancePerAppMode: true,
       model: {
         'id:uuid': { pk: true },
-        '*:any': {}
+        '*:any': {},
       },
-      indexes: {}
+      indexes: {},
     },
     OBSERVER_GROUPS: {
       name: 'groups',
@@ -169,12 +169,12 @@ export class NanoSql {
       model: {
         'key:string': { pk: true },
         'userId:string': {},
-        '*:any': {}
+        '*:any': {},
       },
       indexes: {
-        'userId:string': {}
-      }
-    }
+        'userId:string': {},
+      },
+    },
   };
 
   static getTables() {
@@ -202,23 +202,23 @@ export class NanoSql {
         tables.push({
           name: NanoSql.getInstanceName(table.name, AppMode.Prod),
           model: table.model,
-          indexes: table.indexes
+          indexes: table.indexes,
         });
         tables.push({
           name: NanoSql.getInstanceName(table.name, AppMode.Demo),
           model: table.model,
-          indexes: table.indexes
+          indexes: table.indexes,
         });
         tables.push({
           name: NanoSql.getInstanceName(table.name, AppMode.Test),
           model: table.model,
-          indexes: table.indexes
+          indexes: table.indexes,
         });
       } else {
         tables.push({
           name: table.name,
           model: table.model,
-          indexes: table.indexes
+          indexes: table.indexes,
         });
       }
     }
@@ -247,11 +247,11 @@ export class NanoSql {
               call: (inputArgs: { res: InanoSQLTable; query: InanoSQLQuery }, complete) => {
                 inputArgs.res.id = inputArgs.res.name;
                 complete(inputArgs);
-              }
-            }
-          ]
-        }
-      ]
+              },
+            },
+          ],
+        },
+      ],
     });
     // NOTE: It is also possible to implement migrations on version updates.
     // See: https://github.com/ClickSimply/Nano-SQL/issues/70
@@ -271,7 +271,10 @@ export class NanoSql {
     return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
   }
 
-  static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void): Promise<void> {
+  static async resetTable(
+    tableConfig: InanoSQLTableConfig,
+    onError?: (tableName: string, ex: Error) => void
+  ): Promise<void> {
     if (tableConfig.name === 'offlinemaptiles') {
       await this.dropAndRecreateTable(tableConfig, onError);
     } else {
@@ -279,7 +282,10 @@ export class NanoSql {
     }
   }
 
-  private static async deleteAllRowsInTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+  private static async deleteAllRowsInTable(
+    tableConfig: InanoSQLTableConfig,
+    onError?: (tableName: string, ex: Error) => void
+  ) {
     try {
       await nSQL(tableConfig.name).query('delete').exec();
     } catch (ex) {
@@ -289,7 +295,10 @@ export class NanoSql {
     }
   }
 
-  private static async dropAndRecreateTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+  private static async dropAndRecreateTable(
+    tableConfig: InanoSQLTableConfig,
+    onError?: (tableName: string, ex: Error) => void
+  ) {
     try {
       await nSQL(tableConfig.name).query('drop').exec();
     } catch (ex) {

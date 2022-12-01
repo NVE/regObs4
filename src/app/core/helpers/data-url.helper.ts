@@ -3,10 +3,7 @@ import { Observable, of } from 'rxjs';
 const BASE64_MARKER = ';base64,';
 
 export class DataUrlHelper {
-  static async toDataUrlWithSize(
-    blob: Blob,
-    mimeType: string
-  ): Promise<{ dataUrl: string; size: number }> {
+  static async toDataUrlWithSize(blob: Blob, mimeType: string): Promise<{ dataUrl: string; size: number }> {
     const dataUrl = await this.toDataUrl(blob, mimeType);
     return { size: blob.size, dataUrl };
   }
@@ -15,24 +12,15 @@ export class DataUrlHelper {
     buffer: ArrayBuffer,
     mimeType: string
   ): Promise<{ dataUrl: string; size: number }> {
-    const dataUrl = await this.toDataUrl(
-      new Blob([new Uint8Array(buffer, 0, buffer.byteLength)]),
-      mimeType
-    );
+    const dataUrl = await this.toDataUrl(new Blob([new Uint8Array(buffer, 0, buffer.byteLength)]), mimeType);
     return { size: buffer.byteLength, dataUrl };
   }
 
-  static getDataUrlFromSrcUrl(
-    src: string,
-    mimeType = 'image/jpeg'
-  ): Promise<string> {
+  static getDataUrlFromSrcUrl(src: string, mimeType = 'image/jpeg'): Promise<string> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = async () => {
-        const result = await DataUrlHelper.toDataUrl(
-          <Blob>xhr.response,
-          mimeType
-        );
+        const result = await DataUrlHelper.toDataUrl(<Blob>xhr.response, mimeType);
         resolve(result);
       };
       xhr.onabort = () => reject();
@@ -46,8 +34,7 @@ export class DataUrlHelper {
   static toDataUrl(blob: Blob, mimeType: string) {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () =>
-        resolve(this.ensureCorrectMimeType(reader.result as string, mimeType));
+      reader.onloadend = () => resolve(this.ensureCorrectMimeType(reader.result as string, mimeType));
       reader.onerror = () => reject();
       reader.onabort = () => reject();
       reader.readAsDataURL(blob);
