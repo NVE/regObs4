@@ -48,7 +48,7 @@ const routes: Routes = [
   },
   {
     path: 'start-registration/:geoHazard',
-    redirectTo: 'registration/new/:geoHazard'
+    redirectTo: 'registration/new/:geoHazard',
   },
   {
     path: 'registration',
