@@ -1,26 +1,15 @@
 <ion-accordion-group>
   <ion-accordion>
     <ion-item slot="header" color="light">
-      <ion-label>Tidsrom</ion-label>
+      <ion-label color="dark" position="stacked">Tidsrom</ion-label>
+      <ion-text class="ion-align-self-start">{{ modeText | async }}</ion-text>
     </ion-item>
     <div slot="content">
       <ion-list>
         <ion-radio-group [(ngModel)]="mode">
           <ion-item>
-            <ion-grid class="ion-no-padding">
-              <ion-row (click)="mode = 'predefined'">
-                <ion-col size="auto">
-                  <ion-radio [value]="'predefined'">test</ion-radio>
-                </ion-col>
-                <ion-col>
-                  <ion-select cancelText="{{ 'DIALOGS.CANCEL' | translate }}" [interface]="'popover'">
-                    <ion-select-option> Test1 </ion-select-option>
-                    <ion-select-option> Test2 </ion-select-option>
-                    <ion-select-option> Test3 </ion-select-option>
-                  </ion-select>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+            <ion-radio [value]="'predefined'" slot="start"></ion-radio>
+            <app-observations-days-back></app-observations-days-back>
           </ion-item>
 
           <ion-item>
