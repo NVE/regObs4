@@ -88,6 +88,10 @@ export class MapService {
     this._followModeSubject.next(val);
   }
 
+  set showUserLocation(value: boolean) {
+    this._showUserLocationSubject.next(value);
+  }
+
   constructor(
     private userSettingService: UserSettingService,
     private loggingService: LoggingService
@@ -119,17 +123,13 @@ export class MapService {
   centerMapToUser(): void {
     this.followMode = true;
     this._centerMapToUserSubject.next();
-    this.showUserLocation(true);
+    this.showUserLocation = true;
   }
 
   updateMapView(mapView: IMapView): void {
     if (mapView) {
       this._mapViewSubject.next(mapView);
     }
-  }
-
-  showUserLocation(value: boolean): void {
-    this._showUserLocationSubject.next(value);
   }
 
   sendMapMoveStart(): void {
