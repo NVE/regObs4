@@ -85,11 +85,9 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
-  private isNative = Capacitor.isNativePlatform();
   @Input() showMapSearch = true;
   @Input() showFullscreenToggle = true;
   @Input() showGpsCenter = true;
-  @Input() showUserLocation = this.isNative;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng;
@@ -99,6 +97,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() geoTag = DEBUG_TAG;
   @Input() offlinePackageMode = false;
   @Input() showObserverTrips = false;
+
+  /**
+   * Set to true to show the user location in map.
+   * NB: activateFollowModeOnStartup controls if the map should start following the user or not.
+   */
+  @Input() showUserLocation = Capacitor.isNativePlatform();
+  /**
+   * Set to true to start the map in follow mode.
+   * This has no effect if showUserLocation is false.
+   */
+  @Input() activateFollowModeOnStartup = false;
 
   @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
   observationTripName = '';
@@ -159,6 +168,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   options: L.MapOptions;
 
   async ngOnInit() {
+    this.mapService.showUserLocation = this.showUserLocation;
+    this.mapService.followMode = this.showUserLocation && this.activateFollowModeOnStartup;
+
     this.options = {
       zoom:
         this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
@@ -319,7 +331,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
-    this.mapService.followMode = this.isNative;
     this.mapService.followMode$
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((val) => {
@@ -385,23 +396,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => {
         this.redrawMap();
       });
-    //set overwrite default showUserLocation with component input
-    this.mapService.showUserLocation(this.isNative);
-    this.mapService.showUserLocation$.subscribe(value => {
-      if (value){
-        this.mapService.followMode = true;
-        this.geoPositionService.currentPosition$
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe((pos) => this.onPositionUpdate(pos));
-        this.geoPositionService.currentHeading$
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe((heading) => {
-            if (this.userMarker) {
-              this.userMarker.setHeading(heading);
-            }
-          });
-        this.startActiveSubscriptions();
-      }
+
+    this.mapService.showUserLocation$.pipe(
+      filter(showUserLocation => showUserLocation === true),
+      // In subscribe, we only start some subscriptions,
+      // no need to start them again if showUserLocation$ emits again.
+      take(1),
+      takeUntil(this.ngDestroy$)
+    ).subscribe(() => {
+      this.geoPositionService.currentPosition$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((pos) => this.onPositionUpdate(pos));
+
+      this.geoPositionService.currentHeading$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((heading) => {
+          if (this.userMarker) {
+            this.userMarker.setHeading(heading);
+          }
+        });
+
+      this.deactivateTrackingIfComponentIsInactive();
     });
 
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
@@ -517,7 +532,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  private startActiveSubscriptions() {
+  private deactivateTrackingIfComponentIsInactive() {
     this.isActive
       .pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$))
       .subscribe((active) => {
