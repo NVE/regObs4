@@ -1,0 +1,6 @@
+"NSCameraUsageDescription" = "Legg til bilete i observasjonen";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Posisjonenen din brukes til å vise kvar du er på kartet og for å sette observasjonspunkt. ";
+"NSLocationAlwaysUsageDescription" = "Posisjonenen din brukes til å vise kvar du er på kartet og for å sette observasjonspunkt. ";
+"NSLocationWhenInUseUsageDescription" = "Posisjonenen din brukes til å vise kvar du er på kartet og for å sette observasjonspunkt. ";
+"NSPhotoLibraryAddUsageDescription" = "Legg til bilete i observasjonen";
+"NSPhotoLibraryUsageDescription" = "Legg til bilete i observasjonen";

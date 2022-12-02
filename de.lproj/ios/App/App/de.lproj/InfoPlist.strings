@@ -1,0 +1,5 @@
+"NSCameraUsageDescription" = "Füge Bilder zu Beobachtung hinzu";
+"NSLocationAlwaysUsageDescription" = "Der Standort wird verwendet, um Ihre Position auf der Karte anzuzeigen und die Anfangsposition bei der Dokumentation der Beobachtung festzulegen";
+"NSLocationWhenInUseUsageDescription" = "Der Standort wird verwendet, um Ihre Position auf der Karte anzuzeigen und die Anfangsposition bei der Dokumentation der Beobachtung festzulegen";
+"NSPhotoLibraryAddUsageDescription" = "Füge Bilder zu Beobachtung hinzu";
+"NSPhotoLibraryUsageDescription" = "Füge Bilder zu Beobachtung hinzu";
