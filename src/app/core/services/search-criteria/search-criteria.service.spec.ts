@@ -6,7 +6,7 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
+import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
 
 class TestMapService {
@@ -23,6 +23,11 @@ describe('SearchCriteriaService', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
+
+  const orderByTestCases = [
+    {apiValue:'DtChangeTime', urlValue: 'changeTime'},
+    {apiValue:'DtObsTime', urlValue: 'obsTime'}
+  ];
 
   beforeEach(async () => {
     TestBed.configureTestingModule({});
@@ -97,6 +102,20 @@ describe('SearchCriteriaService', () => {
     const url = new URL(document.location.href);
     expect(url.searchParams.get('nick')).toEqual('Nick');
   }));
+
+  orderByTestCases.forEach(test => {
+    it('orderBy filter should work', fakeAsync(async () => {
+
+      service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
+      tick();
+      //check that current criteria contains expected orderBy
+      const criteria = await firstValueFrom(service.searchCriteria$);
+      expect(criteria.OrderBy).toEqual(test.apiValue);
+      const url = new URL(document.location.href);
+      expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
+    }));
+  });
+
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -142,6 +161,32 @@ describe('SearchCriteriaService url parsing', () => {
     //check that current criteria contains expected nick name
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverNickName).toEqual('Oluf');
+  }));
+
+  it('orderBy url filter should work', fakeAsync(async () => {
+    new UrlParams().set('orderBy', 'changeTime').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService());
+
+    tick();
+    //check that current criteria contains expected orderBy
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.OrderBy).toEqual('DtChangeTime');
+  }));
+
+  it('orderBy url filter should work', fakeAsync(async () => {
+    new UrlParams().set('orderBy', 'obsTime').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService());
+
+    tick();
+    //check that current criteria contains expected orderBy
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.OrderBy).toEqual('DtObsTime');
   }));
 
   it('geo hazard url filter should work', fakeAsync(async () => {

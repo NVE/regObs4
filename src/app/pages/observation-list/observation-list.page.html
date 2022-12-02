@@ -1,4 +1,4 @@
-<app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
+<app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ng-container *ngIf="registrations$ | async as registrations; else skeleton">
@@ -6,6 +6,30 @@
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <!--i kart utsnitt/ alle -->
+          </ion-col>
+          <ion-col>
+            <!--titelen -->
+          </ion-col>
+          <ion-col>
+            <!--bilde galleri toggle-->
+          </ion-col>
+          <ion-col>
+            <ng-container *ngIf="orderBy$ | async as orderBy">
+            <div class="select-wrapper">
+              <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
+              <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
+                <ion-select-option value="DtObsTime"> {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option>
+                <ion-select-option value="DtChangeTime">{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option>
+              </ion-select>
+            </div>
+            </ng-container>
+            </ion-col>
+        </ion-row>
+      </ion-grid>
       <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc;" [obs]="obs">
       </app-observation-list-card>
     </ion-list>
@@ -24,6 +48,29 @@
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <!--i kart utsnitt/ alle -->
+          </ion-col>
+          <ion-col>
+            <!--titelen -->
+          </ion-col>
+          <ion-col>
+            <!--bilde galleri toggle-->
+          </ion-col>
+          <ion-col>
+            <div class="select-wrapper">
+              <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
+              <ion-select (ionChange)="handleChangeSorting($event)" [interface]="popupType">
+                <ion-select-option value="DtObsTime"> {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option>
+                <ion-select-option value="DtChangeTime">{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}
+                </ion-select-option>
+              </ion-select>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
       <app-observation-skeleton></app-observation-skeleton>
       <app-observation-skeleton></app-observation-skeleton>
       <app-observation-skeleton></app-observation-skeleton>
