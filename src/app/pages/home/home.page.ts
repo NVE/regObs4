@@ -60,6 +60,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
+  activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
 
   constructor(
     router: Router,
