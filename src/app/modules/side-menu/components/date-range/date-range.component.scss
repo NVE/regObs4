@@ -1,0 +1,24 @@
+ion-select {
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+}
+
+ion-radio {
+  margin-right: 20px;
+  margin-left: 4px;
+}
+
+ion-list.list-md {
+  padding-bottom: 0;
+}
+
+ion-radio-group ion-item {
+  --background: #f7f7f7;
+  --border-width: 1px;
+  --inner-border-width: 0;
+}
+
+ion-accordion ion-item[slot='header'] {
+  --ion-color-base: #fff !important;
+}

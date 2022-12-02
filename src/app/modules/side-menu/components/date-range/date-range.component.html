@@ -1,0 +1,55 @@
+<ion-accordion-group>
+  <ion-accordion>
+    <ion-item slot="header" color="light">
+      <ion-label>Tidsrom</ion-label>
+    </ion-item>
+    <div slot="content">
+      <ion-list>
+        <ion-radio-group [(ngModel)]="mode">
+          <ion-item>
+            <ion-grid class="ion-no-padding">
+              <ion-row (click)="mode = 'predefined'">
+                <ion-col size="auto">
+                  <ion-radio [value]="'predefined'">test</ion-radio>
+                </ion-col>
+                <ion-col>
+                  <ion-select cancelText="{{ 'DIALOGS.CANCEL' | translate }}" [interface]="'popover'">
+                    <ion-select-option> Test1 </ion-select-option>
+                    <ion-select-option> Test2 </ion-select-option>
+                    <ion-select-option> Test3 </ion-select-option>
+                  </ion-select>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Egendefinert periode</ion-label>
+            <ion-radio slot="start" [value]="'custom'"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </div>
+  </ion-accordion>
+</ion-accordion-group>
+
+<ion-item class="no-border" *ngIf="mode === 'custom'">
+  <ion-note slot="start">Startdato</ion-note>
+  <app-datetime-picker
+    presentation="date"
+    [(dateTime)]="fromDate"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [dateTimeFormat]="'dd. MMM yyyy'"
+  ></app-datetime-picker>
+</ion-item>
+<ion-item class="no-border" *ngIf="mode === 'custom'">
+  <ion-note slot="start">Sluttdato</ion-note>
+  <app-datetime-picker
+    presentation="date"
+    [(dateTime)]="toDate"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [dateTimeFormat]="'dd. MMM yyyy'"
+  ></app-datetime-picker>
+</ion-item>
