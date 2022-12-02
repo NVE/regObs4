@@ -98,7 +98,7 @@
     "LINE_1": "Brug af varsler, observationer og kortene er på eget ansvar. Der kan komme fejl og mangler.",
     "LINE_2": "Husk at varsler er et hjælpemiddel og ikke et facit. Altid lav din egne vurderinger. Lokale forhold for din lokation kan være komplekse og afvige fra det, som er varslet.",
     "LINE_3": "Data på Regobs produceres af Regobs brugere og foreligger \"som de er\". Det kan indeholde fejl og udeladelser. NVE har ikke ansvar for fejl, mangler og vurderinger som produceres af brugerne.",
-    "LINE_4": "Når du publicerer billeder i Regobs, accepterer du, at billederne kan genbruges (licenseret under <a href='https://data.norge.no/nlod/no/'>Norsk licens for offentlige data</a>",
+    "LINE_4": "Når du publicerer billeder i Regobs, accepterer du, at billederne kan genbruges (licenseret under <a href='https:\/\/data.norge.no\/nlod\/no\/'>Norsk licens for offentlige data<\/a>",
     "OK": "OJ, jeg accepterer"
   },
   "LOGIN": {
@@ -178,7 +178,7 @@
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Læser flere observationer...",
     "MAX_COUNT_REACHED_HEADER": "Ikke flere observationer",
-    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Du kan se flere på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">din side på web </a>",
+    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Du kan se flere på <a target=\"_blank\" href=\"{{ myObservationsUrl }}\/\">din side på web <\/a>",
     "MY_SENT_OBSERVATIONS": "Mine indsendte observationer",
     "NO_OBSERVATIONS": "Del dine observationer!",
     "NO_OBSERVATIONS_TEXT": "Her vil dine egne observationer fremgå. Med Varsom Regobs er det let at dele observationer, billeder og vurderinger med andre.",
@@ -186,19 +186,19 @@
     "TITLE": "Mine observationer"
   },
   "MY_PROFILE": {
-    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Læs mere om kompetencer</a>",
+    "COMPETENCE": "<a href=\"https:\/\/varsom.no\/regobs\/kompetanse\/\">Læs mere om kompetencer<\/a>",
     "COPYRIGHT": "Ophavsret",
     "EDIT": "Rediger",
     "MY_COMPETENCE": "Min kompetence",
     "MY_GROUPS": "Mine grupper",
-    "MY_GROUPS_TEXT": "Du kan redigere en observation i en gruppe 48 timer efter den er indsendt. <a href=\"mailto:regobs@nve.no\">Tag kontakt </a> for at ændre gruppenavn, gruppebeskrivelse og gruppemedlemmer.",
+    "MY_GROUPS_TEXT": "Du kan redigere en observation i en gruppe 48 timer efter den er indsendt. <a href=\"mailto:regobs@nve.no\">Tag kontakt <\/a> for at ændre gruppenavn, gruppebeskrivelse og gruppemedlemmer.",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine billeder",
     "NICKNAME": "Mit kaldenavn",
     "NICKNAME_TEXT": "Kaldenavn er et navn, der er synligt for alle og vises sammen med de observationer du foretager",
     "NO_GROUPS": "Du er ikke medlem af nogen grupper",
     "PHOTOGRAPHER": "Fotograf",
-    "PUBLISH_PHOTOS": "Når du publicerer billeder i Regobs accepterer du, at de er licenseret under NLOD og kan genbruges. <a href=\"https://data.norge.no/nlod/en/\">Læs mere om data </a>",
+    "PUBLISH_PHOTOS": "Når du publicerer billeder i Regobs accepterer du, at de er licenseret under NLOD og kan genbruges. <a href=\"https:\/\/data.norge.no\/nlod\/en\/\">Læs mere om data <\/a>",
     "SAVE": "Gem",
     "TITLE": "Min side",
     "USER": "Bruger"
@@ -210,8 +210,7 @@
     "MAX_COUNT_REACHED_HEADER": "Ikke flere observationer",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Hvis du ikke fandt det, som du leder efter, kan du prøve at zoome ind på kortet eller begrænse perioden, du vil se observationer for.",
     "NO_OBSERVATIONS": "Ingen observationer",
-    "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra.",
-    "OBSERVATIONS": "Observationer"
+    "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kortpakke?",
@@ -275,9 +274,9 @@
       "COMMENT_PLACEHOLDER": "Her kan du give en yderligere beskrivelse af faretegnet",
       "DESCRIPTION": "Beskrivelse",
       "FOR_MUNICIPAL": "For kommunen",
-      "FOR_REGION": "Amt/varslingsområde",
+      "FOR_REGION": "Amt\/varslingsområde",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjeldet",
-      "IN_THE_VALLEY_OR_FJORD": "I dalen/fjorden",
+      "IN_THE_VALLEY_OR_FJORD": "I dalen\/fjorden",
       "MANY_WATER_NEARBY": "Meget vand i nærheden",
       "NEW_DANGER_OBS": "Nyt faretegn",
       "NO_DAMAGE_SIGN": "Ingen faretegn observeret",
@@ -371,7 +370,7 @@
       "COMMENT_PLACEHOLDER": "Hvorfor skete det? Gik det hurtigt? Kunne situationen være undgået?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "IMAGE_PLACEHOLDER": "+ Tilføj en beskrivelse af billedet",
-      "TITLE": "Ulykke / hændelse"
+      "TITLE": "Ulykke \/ hændelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldigt billedformat",
     "IN_CM": "I centimeter",
@@ -505,7 +504,7 @@
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinderdiameter (cm)",
           "CYLINDER_METHOD": "Cylinderberegning",
-          "DENSITY": "Tæthed (kg/m³)",
+          "DENSITY": "Tæthed (kg\/m³)",
           "EMPTY": "Ingen tæthedsprofiler",
           "HEIGHT": "Højde (cm)",
           "LAYER": "Lag",
@@ -594,7 +593,7 @@
         "PRECIPITATION": "Nedbørstype",
         "TITLE": "Vejr",
         "WIND_DIRECTION": "Vindretning",
-        "WIND_SPEED": "Vindhastighed (m/s)"
+        "WIND_SPEED": "Vindhastighed (m\/s)"
       }
     },
     "SUMMARY": "Opsummering",
@@ -604,7 +603,7 @@
         "CAN_YOU_SEE_DAMAGE": "Kan du se nogen skader? ",
         "COMMENT": "Beskriv skaden",
         "COMMENT_PLACEHOLDER": "Her kan du beskrive skaden yderligere",
-        "IMAGE_OF_DAMAGES": "Billeder af skaden/skaderne",
+        "IMAGE_OF_DAMAGES": "Billeder af skaden\/skaderne",
         "TITLE": "Skader",
         "WHAT_IS_DAMAGED": "Hvad er skadet?",
         "WHERE_IS_DAMAGE_LOCATION": "Hvor er skadestedet?"
@@ -621,7 +620,7 @@
         "MARKED_WITH": "Jeg har markeret vandstanden med",
         "MARKING": "Markering",
         "MARKING_PLURAL": "Markering",
-        "MARKING_REFERENCE": "Jeg har markeret vandstanden i/på",
+        "MARKING_REFERENCE": "Jeg har markeret vandstanden i\/på",
         "MEASURE_PLURAL": "Målingen",
         "MEASURING": "Måling",
         "MEASURING_TOOL": "Indskriv måleinstrument her",
@@ -699,7 +698,7 @@
     },
     "PAGE_4": {
       "HEADER": "Hvad og hvordan?",
-      "LINE_1": "Du vælger selv hvad du vil se og dele på Varsom Regobs. DU kan læse om hvordan du deler observationer med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
+      "LINE_1": "Du vælger selv hvad du vil se og dele på Varsom Regobs. DU kan læse om hvordan du deler observationer med andre på varsom.no\/snøskredskolen og varsom.no\/isskolen"
     },
     "SKIP_START": "Hop over"
   },
@@ -713,11 +712,11 @@
     "CLAY_LEGEND_TEXT_4": "Marinegrænse",
     "CLAY_LEGEND_TEXT_5": "Areal over marinegrænse",
     "CLAY_LEGEND_TEXT_6": "Areal under marinegrænse",
-    "CLAY_LEGEND_TEXT_7": "Lille/ingen marine påvirkning",
+    "CLAY_LEGEND_TEXT_7": "Lille\/ingen marine påvirkning",
     "CLAY_LEGEND_TEXT_8": "Udledningsområde",
     "CLAY_LEGEND_TEXT_9": "Potentiel lavinefare",
     "CLAY_MAP_DISCLAMER": "Dette kortlag er ikke inkluderet i offline kortpakker",
-    "CLAY_ZONES_MAP_DESCRIPTION": "Kvikler/jordskred",
+    "CLAY_ZONES_MAP_DESCRIPTION": "Kvikler\/jordskred",
     "FLOOD_LEGEND_TEXT_1": "Gældende",
     "FLOOD_LEGEND_TEXT_10": "200-års oversvømmelse",
     "FLOOD_LEGEND_TEXT_11": "500-års oversvømmelse",
@@ -743,7 +742,7 @@
     "ICE_LEGEND_TEXT_6": "Rørledning",
     "ICE_LEGEND_TEXT_7": "Kraftværkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekortet viser dele af vandløb som opfører sig uforudsigeligt gennem vinteren grundet reguleringer for energiproduktion.",
-    "INFO_PAGE": "<h1>Om kort med stejlhed og udløb</h1>\nKortene er automatisk genereret og kan indholde fejl. Der kan forekomme stejlt terræn som højdemodellen ikke opfanger og derfor ikke vises på kortet.\nNogle laviner kan være længere end dem, som er markeret som udløbsområder på kortene.\n<h2>Hvilke hensyn skal tages?</h2>\nTilpas egen risiko ved at vælge hvor, hvornår og hvordan du færdes. Varsom Regobs er et hjælpemiddel, ikke facit. Lav altid dine egne vurderinger-\n\n<h2>Hvornår er det trygt?</h2>\nAl færdsel i snedækket lavineterræn er forbundet med risiko-\n\n<h2>Lær mere?</h2>\nDu kan lære mere ved at tage et lavinekursus og på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kort med stejlhed og udløb<\/h1>\\nKortene er automatisk genereret og kan indholde fejl. Der kan forekomme stejlt terræn som højdemodellen ikke opfanger og derfor ikke vises på kortet.\\nNogle laviner kan være længere end dem, som er markeret som udløbsområder på kortene.\\n<h2>Hvilke hensyn skal tages?<\/h2>\\nTilpas egen risiko ved at vælge hvor, hvornår og hvordan du færdes. Varsom Regobs er et hjælpemiddel, ikke facit. Lav altid dine egne vurderinger-\\n\\n<h2>Hvornår er det trygt?<\/h2>\\nAl færdsel i snedækket lavineterræn er forbundet med risiko-\\n\\n<h2>Lær mere?<\/h2>\\nDu kan lære mere ved at tage et lavinekursus og på Varsom.no.",
     "LOW": "Lav",
     "MARITINE_BORDER": "Marinegrænseflade",
     "MIDDLE": "Medium",
@@ -751,11 +750,11 @@
     "READ_MORE": "Læs mere om støttekort",
     "STEEPNESS_COLOR_INFO": "Farver indikerer stejlhedsgraden i terrænet:",
     "STEEPNESS_MAP_DESCRIPTION": "Stejlhedskort",
-    "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlægning. Kortet er automatisk genereret og kan have fejl og mangler feks. skråninger eller udløb som ikke vises korrekt.",
+    "STEEPNESS_MAP_DISCLAMER": "<i>Kun<\/i> for turplanlægning. Kortet er automatisk genereret og kan have fejl og mangler feks. skråninger eller udløb som ikke vises korrekt.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekortet er kun tilgængeligt offline med udløbende aktiviteter",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte udløb (50% af laviner stopper inden denne grænse)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium udløb (25% af laviner går længere)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange udløb (5% af laviner går længere)\nNogle laviner kan have udløb som ikke er vist på kortet.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange udløb (5% af laviner går længere)\\nNogle laviner kan have udløb som ikke er vist på kortet.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Fare for udløbsområder for lavine",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Udløbsområder for sneskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "svækket is"
@@ -771,7 +770,7 @@
     "END_ERROR": "Kan ikke stoppe tur. Prøv venligst igen senere. Turen vil automatisk stoppe ved midnat.",
     "ERROR": "Klarede ikke at starte tur. Venligst prøv igen.",
     "ERROR_POSITION": "Kan ikke starte tur uden GPS-position.",
-    "LEGACY_HELP_TEXT": "Du kan bruge denne for til at rapporter at du planlægger en tur i dag.\n\nDet er nyttigt for lavinevarslingen at vide om der kan forventes observationer i dag. Det er også nyttigt at vide, hvilke observationer der kan ventes (hvad ser du egyer, hvor skal du på tur) og hvornår du regner med at indsende disse til Regobs.\n\nAlle betalte observatører skal registrere hvilken type af obs-tour, der planlægges: er det en ordinær betalt obervastionstur, eller er det en tillgægsregistrering? Tillægsregistreringer er indsendning af observationer du har gjort under andet arbejde eller i din fritid.",
+    "LEGACY_HELP_TEXT": "Du kan bruge denne for til at rapporter at du planlægger en tur i dag.\\n\\nDet er nyttigt for lavinevarslingen at vide om der kan forventes observationer i dag. Det er også nyttigt at vide, hvilke observationer der kan ventes (hvad ser du egyer, hvor skal du på tur) og hvornår du regner med at indsende disse til Regobs.\\n\\nAlle betalte observatører skal registrere hvilken type af obs-tour, der planlægges: er det en ordinær betalt obervastionstur, eller er det en tillgægsregistrering? Tillægsregistreringer er indsendning af observationer du har gjort under andet arbejde eller i din fritid.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startet",
     "START_TRIP": "Start tur",

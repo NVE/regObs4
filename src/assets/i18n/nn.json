@@ -93,8 +93,8 @@
     "LINE_1": "Bruk varsel, observajonar og kart på eige ansvar. Feil og manglar kan førekomme.  ",
     "LINE_2": "Hugs at varselet er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. Dei lokale tilhøva der du er kan vere meir komplekse og avvike frå det som er varsla. ",
     "LINE_3": "Observasjonar produserast av brukerane. Dei er ikkje kvalitetsikra og kan innehalde feil og manglar. NVE tek ikkje ansvar for kvaliteten og gyldigheita av observasjonar frå brukarane. ",
-    "LINE_4": "Når du publiserer bilder på observasjonar aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
-    "LINE_5": "Les meir i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukarvilkår</a>.",
+    "LINE_4": "Når du publiserer bilder på observasjonar aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https:\/\/data.norge.no\/nlod\/no\/'> Norsk lisens for offentlige data<\/a>).",
+    "LINE_5": "Les meir i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukarvilkår<\/a>.",
     "OK": "Greit, eg aksepterar"
   },
   "LOGIN": {
@@ -175,7 +175,7 @@
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Last fleire observasjonar...",
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
-    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Du kan sjå fleire på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">di side på web</a>",
+    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Du kan sjå fleire på <a target=\"_blank\" href=\"{{ myObservationsUrl }}\/\">di side på web<\/a>",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjonar",
     "NO_OBSERVATIONS": "Del dine observasjonar!",
     "NO_OBSERVATIONS_TEXT": "Her ligg observasjonar du sjølv har gjort. Det er lett å dele observasjonar, bilete og vurderingar med andre. ",
@@ -183,19 +183,19 @@
     "TITLE": "Mine observasjonar"
   },
   "MY_PROFILE": {
-    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Les meir om kompetanse</a>",
+    "COMPETENCE": "<a href=\"https:\/\/varsom.no\/regobs\/kompetanse\/\">Les meir om kompetanse<\/a>",
     "COPYRIGHT": "Opphavsrett",
     "EDIT": "Rediger",
     "MY_COMPETENCE": "Min kompetanse",
     "MY_GROUPS": "Mine grupper",
-    "MY_GROUPS_TEXT": "Du kan redigere ein observasjon i ein gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
+    "MY_GROUPS_TEXT": "Du kan redigere ein observasjon i ein gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt<\/a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine bilder",
     "NICKNAME": "Mitt kallenavn",
     "NICKNAME_TEXT": "Kallenavn er eit navn som er synlig for alle og vises sammen med observasjonar du gjør",
     "NO_GROUPS": "Du er ikkje medlem av noen grupper",
     "PHOTOGRAPHER": "Fotograf",
-    "PUBLISH_PHOTOS": "Når du publiserer bilder på observasjonar aksepterer du at de er lisensiert under NLOD og kan gjenbrukast. <a href=\"https://data.norge.no/nlod/no/\">Les meir om data</a>",
+    "PUBLISH_PHOTOS": "Når du publiserer bilder på observasjonar aksepterer du at de er lisensiert under NLOD og kan gjenbrukast. <a href=\"https:\/\/data.norge.no\/nlod\/no\/\">Les meir om data<\/a>",
     "SAVE": "Lagre",
     "TITLE": "Min side",
     "USER": "Brukar"
@@ -207,8 +207,7 @@
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjonar",
-    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjonar i kartutsnittet. Prøv å endre utsnittet eller forleng perioda du vil sjå observasjonar frå.",
-    "OBSERVATIONS": "Observasjonar"
+    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjonar i kartutsnittet. Prøv å endre utsnittet eller forleng perioda du vil sjå observasjonar frå."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -246,7 +245,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observasjonar",
-      "MESSAGE": "Observasjonar brukast på eige ansvar. Dei er registrert av brukarane og er ikkje kvalitetsjekka. NVE tek ikkje ansvar for feil, manglar og vurderingar som registererast av brukarane. \nKompetansenivået, som visast som stjerner bak navnet, KAN vere ein indikator på truverdigheit. "
+      "MESSAGE": "Observasjonar brukast på eige ansvar. Dei er registrert av brukarane og er ikkje kvalitetsjekka. NVE tek ikkje ansvar for feil, manglar og vurderingar som registererast av brukarane. \\nKompetansenivået, som visast som stjerner bak navnet, KAN vere ein indikator på truverdigheit. "
     },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kart",
@@ -273,9 +272,9 @@
       "COMMENT_PLACEHOLDER": "Her kan du gje ei utvida skildring av fareteiknet",
       "DESCRIPTION": "Skildring",
       "FOR_MUNICIPAL": "For kommunen",
-      "FOR_REGION": "Fylket/varslingsregionen",
+      "FOR_REGION": "Fylket\/varslingsregionen",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",
-      "IN_THE_VALLEY_OR_FJORD": "I dalen/fjorden",
+      "IN_THE_VALLEY_OR_FJORD": "I dalen\/fjorden",
       "MANY_WATER_NEARBY": "Mange vatn i nærleiken",
       "NEW_DANGER_OBS": "Nytt fareteikn",
       "NO_DAMAGE_SIGN": "Ingen fareteikn observert",
@@ -315,7 +314,7 @@
     },
     "FAILED": {
       "ABANDON": "Forkast mine endringar",
-      "CONFLICT": "Mens du jobba har observasjonen blitt endra ein annan plass.<br/>Vil du forkaste dine endringar eller vil du sende inn og overskrive endringene som blei gjort den andre plassen?",
+      "CONFLICT": "Mens du jobba har observasjonen blitt endra ein annan plass.<br\/>Vil du forkaste dine endringar eller vil du sende inn og overskrive endringene som blei gjort den andre plassen?",
       "EDIT_OBSERVATION": "Rediger observasjon",
       "LOGGED": "Vi har logga problemet.",
       "OVERWRITE": "Send inn og overskriv",
@@ -372,7 +371,7 @@
     "IMAGE_ERROR": {
       "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
       "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
-      "UNKNOWN": "Vi fekk ikkje til å legge til bildet/bildane. Det kan være noko gale med ein bildefil eller ein annan feil. Prøv gjerne eit anna bilde for å sjekke"
+      "UNKNOWN": "Vi fekk ikkje til å legge til bildet\/bildane. Det kan være noko gale med ein bildefil eller ein annan feil. Prøv gjerne eit anna bilde for å sjekke"
     },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
@@ -380,7 +379,7 @@
       "COMMENT_PLACEHOLDER": "Kvifor skjedde det? Gjekk det bra? Kunne situasjonen vore unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "IMAGE_PLACEHOLDER": "+ Legg til ein beskrivelse av bilete",
-      "TITLE": "Ulykke/hending"
+      "TITLE": "Ulykke\/hending"
     },
     "INVALID_IMAGE": "Ugyldig biletformat. Bare JPEG er støttet",
     "IN_CM": "I centimeter",
@@ -455,7 +454,7 @@
         "FRACTURE_HEIGTH": "Brothøyde (cm)",
         "FRACTURE_WIDTH": "Brotbreidd (m)",
         "HARMED_NUM": "Antal kun skadet",
-        "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
+        "INCIDENT_DESCRIPTION": "Ulykke\/Hendelse",
         "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Kva skjedde og kvifor? Kunne situasjonen vore unngått?",
         "INVOLVED_NUM": "Antal involvert",
         "LOCAL_KNOWLEDGE_TID": "Kjenskap til området",
@@ -464,7 +463,7 @@
         "POSITION": "Skredposisjon",
         "REMOTELY_TRIGGERED": "Fjernutløst",
         "RESCUE_TID": "Redning",
-        "SAFETY_GEAR_TID": "Sendar/mottakar",
+        "SAFETY_GEAR_TID": "Sendar\/mottakar",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
         "SLOPE_ACTIVITY_TID": "Turfase",
         "TERRAIN_START_ZONE": "Terrengtype i losneområdet",
@@ -534,7 +533,7 @@
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
           "CYLINDER_METHOD": "Sylingerutrekning",
-          "DENSITY": "Tettleik (kg/m³)",
+          "DENSITY": "Tettleik (kg\/m³)",
           "EMPTY": "Ingen tettleiksprofilar",
           "HEIGHT": "Høgde (cm)",
           "LAYER": "Lag",
@@ -624,7 +623,7 @@
         "PRECIPITATION": "Nedbørstype",
         "TITLE": "Vêr",
         "WIND_DIRECTION": "Vindretning",
-        "WIND_SPEED": "Vindhastigheit (m/s)"
+        "WIND_SPEED": "Vindhastigheit (m\/s)"
       }
     },
     "SUMMARY": "Samandrag",
@@ -634,7 +633,7 @@
         "CAN_YOU_SEE_DAMAGE": "Kan du sjå nokre skader?",
         "COMMENT": "Beskriv skada",
         "COMMENT_PLACEHOLDER": "Her kan du skildre skada nøyare",
-        "IMAGE_OF_DAMAGES": "Bilete av skaden/skadane",
+        "IMAGE_OF_DAMAGES": "Bilete av skaden\/skadane",
         "TITLE": "Skadar",
         "WHAT_IS_DAMAGED": "Kva er skada?",
         "WHERE_IS_DAMAGE_LOCATION": "Kvar er skadepunktet?"
@@ -651,7 +650,7 @@
         "MARKED_WITH": "Eg har markert vasstanden med",
         "MARKING": "Markering",
         "MARKING_PLURAL": "Markeringa",
-        "MARKING_REFERENCE": "Eg har markert vasstanden i/på",
+        "MARKING_REFERENCE": "Eg har markert vasstanden i\/på",
         "MEASURE_PLURAL": "Målinga",
         "MEASURING": "Måling",
         "MEASURING_TOOL": "Skriv inn måleinstrument her",
@@ -681,7 +680,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Berre i Noreg",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt tal på offline kartblad. ",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæringa</a>.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæringa<\/a>.",
     "RESET": "Tilbakestill app",
     "RESETTING": "Appen resetjast. Vær vennleg å vent...",
     "SEND_LOGS": "Send loggar til Regobs-teamet",
@@ -735,7 +734,7 @@
     },
     "PAGE_4": {
       "HEADER": "Kva og korleis?",
-      "LINE_1": "Du vel sjølv kva du vil sjå å dele i Varsom. De kan lese om korleis du delar observasjonar med andre på varsom.no/skredskolen og varsom.no/isskolen."
+      "LINE_1": "Du vel sjølv kva du vil sjå å dele i Varsom. De kan lese om korleis du delar observasjonar med andre på varsom.no\/skredskolen og varsom.no\/isskolen."
     },
     "SKIP_START": "Hopp over"
   },
@@ -749,10 +748,10 @@
     "CLAY_LEGEND_TEXT_4": "Marin grense",
     "CLAY_LEGEND_TEXT_5": "Areal over marin grense",
     "CLAY_LEGEND_TEXT_6": "Areal under marin grense",
-    "CLAY_LEGEND_TEXT_7": "Lite/ingen marin påverknad",
+    "CLAY_LEGEND_TEXT_7": "Lite\/ingen marin påverknad",
     "CLAY_LEGEND_TEXT_8": "Utløpsområde",
     "CLAY_LEGEND_TEXT_9": "Potensiell skredfare",
-    "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire/Jordskred",
+    "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire\/Jordskred",
     "FLOOD_LEGEND_TEXT_1": "Gjeldande",
     "FLOOD_LEGEND_TEXT_10": "200-årsflaum",
     "FLOOD_LEGEND_TEXT_11": "500-årsflaum",
@@ -769,7 +768,7 @@
     "FLOOD_LEGEND_TEXT_YEAR": "Flaumutsett ved",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Flaumsoner",
     "HIGH": "Høg",
-    "ICE_LEGEND_TEXT_1": "Knust/is med sprekker langs land",
+    "ICE_LEGEND_TEXT_1": "Knust\/is med sprekker langs land",
     "ICE_LEGEND_TEXT_2": "Vesentleg svekka is",
     "ICE_LEGEND_TEXT_3": "Ofte farlege istilhøve",
     "ICE_LEGEND_TEXT_4": "Svekka is",
@@ -777,7 +776,7 @@
     "ICE_LEGEND_TEXT_6": "Røyrgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser delar av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunna reguleringar for kraftproduksjon",
-    "INFO_PAGE": "<h1>Om kart med helling og utløp</h1>\nKarta er automatisk generert og kan innehalde feil. Det kan eksistere bratte heng som høgdemodellen ikkje får med seg og derfor ikke visast på kartet.\nNokre skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Kva omsyn må takast?</h2>\nTilpass eigen risiko med å velje, når og korleis du ferdast. Varsom er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. \n\n<h2>Når er det trygt?</h2>\nDet er ein viss risiko med all ferdsel i snødekt skredterreng.\n\n<h2>Lære meir?</h2>\nDu kan lære meir på skredkurs og Snøskredskulen på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kart med helling og utløp<\/h1>\\nKarta er automatisk generert og kan innehalde feil. Det kan eksistere bratte heng som høgdemodellen ikkje får med seg og derfor ikke visast på kartet.\\nNokre skred kan gå lenger enn det som er markert som utløpsområde i kartet.\\n\\n<h2>Kva omsyn må takast?<\/h2>\\nTilpass eigen risiko med å velje, når og korleis du ferdast. Varsom er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. \\n\\n<h2>Når er det trygt?<\/h2>\\nDet er ein viss risiko med all ferdsel i snødekt skredterreng.\\n\\n<h2>Lære meir?<\/h2>\\nDu kan lære meir på skredkurs og Snøskredskulen på Varsom.no.",
     "LOW": "Låg",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
@@ -785,11 +784,11 @@
     "READ_MORE": "Les meir om støttekart",
     "STEEPNESS_COLOR_INFO": "Fargar gir hellingen til terrenget (grader):",
     "STEEPNESS_MAP_DESCRIPTION": "Hellingskart",
-    "STEEPNESS_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
+    "STEEPNESS_MAP_DISCLAMER": "<i>Berre<\/i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Offline støttekart er berre tilgjengeleg med både helning og utløpsområder.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Fargar på utløp for snøskred:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
@@ -805,7 +804,7 @@
     "END_ERROR": "Klarte ikkje å stoppe tur. Vennlegast prøv igjen seinare. Turen blir automatisk stoppa med midnatt. ",
     "ERROR": "Klarte ikkje starte tur. Vennlegast prøv igjen.",
     "ERROR_POSITION": "Kan ikkje starte tur utan GPS-posisjon.",
-    "LEGACY_HELP_TEXT": "Her melder du frå om du planlegg tur i dag. \n\nDet er nyttig for snøskredvarslinga å vite om og ev. når det kan ventast observasjonar, samt kvar du er på tur, og kva du ser etter.\n\nBetalte observatørar skal registrere kva slags tur dei planlegg. Er det ein ordinær betalt observasjonstur, eller er det ei tilleggsregistrering (gjort i anna arbeid eller på fritida)?",
+    "LEGACY_HELP_TEXT": "Her melder du frå om du planlegg tur i dag. \\n\\nDet er nyttig for snøskredvarslinga å vite om og ev. når det kan ventast observasjonar, samt kvar du er på tur, og kva du ser etter.\\n\\nBetalte observatørar skal registrere kva slags tur dei planlegg. Er det ein ordinær betalt observasjonstur, eller er det ei tilleggsregistrering (gjort i anna arbeid eller på fritida)?",
     "ONGOING_TRIP": "Tur føregår",
     "STARTED": "Tur starta",
     "START_TRIP": "Start tur",

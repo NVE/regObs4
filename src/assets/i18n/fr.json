@@ -90,7 +90,7 @@
   },
   "LEGAL_TERMS": {
     "HEADER": "À propos des données Varsom Regobs",
-    "LINE_1": "Utilisez les bulletins, les données et les cartes à vos propres risques. Des erreurs et/ou omissions peuvent être présentes.",
+    "LINE_1": "Utilisez les bulletins, les données et les cartes à vos propres risques. Des erreurs et\/ou omissions peuvent être présentes.",
     "LINE_2": "Un bulletin est un outil de préparation de sorties et peut différer de la situation réelle et locale. Faites toujours votre propre évaluation locale. Les conditions peuvent être complexes et différer du bulletin.",
     "LINE_3": "Les données sur Regobs sont produites par la communauté des utilisateurs et sont disponibles \"en l'état\". Elles peuvent contenir des erreurs et des omissions. NVE n'offre aucune garantie quant aux erreurs, omissions et évaluations produites par les utilisateurs.",
     "OK": "Oui, j'accepte",
@@ -183,8 +183,7 @@
     "FORMS": "Formulaires",
     "IN_MAP_VIEW": "Observations dans la vue cartographique",
     "NO_OBSERVATIONS": "Aucune observation",
-    "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations.",
-    "OBSERVATIONS": "Observations"
+    "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
@@ -222,11 +221,11 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "À propos des observations",
-      "MESSAGE": "Utilisation des observations à vos risques et périls; elles sont produites par les utilisateurs et disponibles « en l'état ».\n Le NVE n'offre aucune garantie sur les erreurs, omissions et évaluations produites par les utilisateurs.\n Considérez les observations à la lumière de la compétence de l'observateur, indiquée par des étoiles à côté du nom."
+      "MESSAGE": "Utilisation des observations à vos risques et périls; elles sont produites par les utilisateurs et disponibles « en l'état ».\\n Le NVE n'offre aucune garantie sur les erreurs, omissions et évaluations produites par les utilisateurs.\\n Considérez les observations à la lumière de la compétence de l'observateur, indiquée par des étoiles à côté du nom."
     },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "À propos des cartes",
-      "MESSAGE": "Utilisez ces cartes à vos propres risques et faites toujours votre propre évaluation locale. Ces cartes peuvent contenir des erreurs et/ou des omissions."
+      "MESSAGE": "Utilisez ces cartes à vos propres risques et faites toujours votre propre évaluation locale. Ces cartes peuvent contenir des erreurs et\/ou des omissions."
     },
     "OK_I_UNDERSTAND": "Oui, j'ai compris"
   },
@@ -245,9 +244,9 @@
       "COMMENT_PLACEHOLDER": "Fournir une description du signe d'instabilité",
       "DESCRIPTION": "Description",
       "FOR_MUNICIPAL": "Pour la municipalité",
-      "FOR_REGION": "Comté/ zone de prévision",
+      "FOR_REGION": "Comté\/ zone de prévision",
       "GENERAL_ON_MOUNTAIN": "En général en montagne",
-      "IN_THE_VALLEY_OR_FJORD": "Dans la vallée/le fjord",
+      "IN_THE_VALLEY_OR_FJORD": "Dans la vallée\/le fjord",
       "MANY_WATER_NEARBY": "Nombreux lacs des environs",
       "NEW_DANGER_OBS": "Ajouter un signe d'instabilité",
       "NO_DAMAGE_SIGN": "Aucune observation d'instabilité",
@@ -283,7 +282,7 @@
     "EDIT": "Afficher l'observation",
     "EMAIL": {
       "BODY": "Bonjour, j'ai des problèmes pour envoyer cette inscription. Pouvez-vous m'aider ?",
-      "SUBJECT": "L'enregistrement/inscription a échoué"
+      "SUBJECT": "L'enregistrement\/inscription a échoué"
     },
     "FAILED": {
       "EDIT_OBSERVATION": "Afficher l'observation",
@@ -301,7 +300,7 @@
       "CHOOSE_FROM_LIBRARY": "Choisir dans la bibliothèque",
       "COMMENT_PLACEHOLDER": "Vous pouvez ajouter plus de détails ici si besoin",
       "COMMENT_TITLE": "Description",
-      "DESCRIPTION": "Vous pouvez télécharger des photos de la zone que vous avez observée ou des photos d'autres choses que vous estimez pertinentes (pendant le trajet en voiture/train par exemple).",
+      "DESCRIPTION": "Vous pouvez télécharger des photos de la zone que vous avez observée ou des photos d'autres choses que vous estimez pertinentes (pendant le trajet en voiture\/train par exemple).",
       "SUBTITLE": "Illustrations de l'observation",
       "TAKE_NEW_PHOTO": "Prendre une nouvelle photo",
       "TITLE": "Notes"
@@ -344,7 +343,7 @@
       "COMMENT_PLACEHOLDER": "Pourquoi cela s'est-il produit ? Est-ce que cela s'est bien fini ? La situation aurait-elle pu être évitée ?",
       "DAMAGE_EXTENT": "Étendue des dommages et des dégâts",
       "IMAGE_PLACEHOLDER": "+ Ajouter une description",
-      "TITLE": "Accident / Incident"
+      "TITLE": "Accident \/ Incident"
     },
     "INVALID_IMAGE": "Désolé, cette photo n'est pas valide",
     "IN_CM": "En centimètres",
@@ -480,7 +479,7 @@
           "CYLINDER": "Carottier",
           "CYLINDER_DIAMETER": "Diamètre du carottier (cm)",
           "CYLINDER_METHOD": "Utilisation d'un carottier",
-          "DENSITY": "Densité (kg/m³)",
+          "DENSITY": "Densité (kg\/m³)",
           "EMPTY": "Pas de mesure de densité",
           "HEIGHT": "Hauteur (cm)",
           "LAYER": "Couches",
@@ -510,7 +509,7 @@
           "ADD_LAYER": "Ajouter une couche",
           "ADD_LAYER_BOTTOM": "Ajouter une couche en dessous",
           "ADD_LAYER_TOP": "Ajouter une couche au-dessus",
-          "CRITICAL_LAYER": "Couche critique/d'intérêt",
+          "CRITICAL_LAYER": "Couche critique\/d'intérêt",
           "EMPTY": "Aucune couche",
           "FROM_OTHER_PROFILE": "Couche d'un autre profil",
           "GRAIN_FORM": "Type de grain majoritaire (F1)",
@@ -571,7 +570,7 @@
         "PRECIPITATION": "Précipitations",
         "TITLE": "Météo",
         "WIND_DIRECTION": "Direction du vent",
-        "WIND_SPEED": "Vitesse du vent (m/s)"
+        "WIND_SPEED": "Vitesse du vent (m\/s)"
       }
     },
     "SUMMARY": "Résumé",
@@ -628,7 +627,7 @@
     "LANGUAGE": "Langue",
     "NORWAY_ONLY": "En Norvège uniquement",
     "NUMBER_OF_TILES_IN_CACHE": "Taille du cache des tuiles hors connexion",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Vous pouvez consulter l'utilisation des données dans <a href=\"{{legalUrl}}\" target=\"_blank\">notre politique de confidentialité</a>.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Vous pouvez consulter l'utilisation des données dans <a href=\"{{legalUrl}}\" target=\"_blank\">notre politique de confidentialité<\/a>.",
     "RESET": "Réinitialiser l'application",
     "RESETTING": "Réinitialisation de l'application. Veuillez patienter...",
     "SHOW_ADVANCED": "Paramètres avancés",
@@ -681,7 +680,7 @@
     },
     "PAGE_4": {
       "HEADER": "Quoi et comment ?",
-      "LINE_1": "Choisissez ce que vous voulez consulter et partager sur Regobs. Vous trouverez des informations sur le partage des observations sur varsom.no/snøskredskolen et varsom.no/isskolen."
+      "LINE_1": "Choisissez ce que vous voulez consulter et partager sur Regobs. Vous trouverez des informations sur le partage des observations sur varsom.no\/snøskredskolen et varsom.no\/isskolen."
     },
     "SKIP_START": "Sauter les pages de présentation"
   },
@@ -695,7 +694,7 @@
     "CLAY_LEGEND_TEXT_4": "Limites marines",
     "CLAY_LEGEND_TEXT_5": "Au-dessus de l'aire marine",
     "CLAY_LEGEND_TEXT_6": "En dessous de l'aire marine",
-    "CLAY_LEGEND_TEXT_7": "Pas/peu d'impact maritime",
+    "CLAY_LEGEND_TEXT_7": "Pas\/peu d'impact maritime",
     "CLAY_LEGEND_TEXT_8": "Zone de dépôt",
     "CLAY_LEGEND_TEXT_9": "Zone potentielle d'écoulement",
     "CLAY_ZONES_MAP_DESCRIPTION": "Zones d'argiles",
@@ -723,7 +722,7 @@
     "ICE_LEGEND_TEXT_6": "Pipeline",
     "ICE_LEGEND_TEXT_7": "Prise d'eau de la centrale électrique",
     "ICE_MAP_DESCRIPTION": "Le fond de carte montre les parties des cours d'eau ou des lacs qui se comportent de façon imprévisible tout au long de l'hiver en lien avec la régulation des cours d'eau pour la production hydro-électrique.",
-    "INFO_PAGE": "<h1>À propos des cartes de pentes et de zones d'écoulement</h1>\nLes cartes sont produites automatiquement et peuvent contenir des erreurs. Il peut y avoir une portion de terrain raide, qui n'est pas représentée dans le modèle numérique de terrain (MNT), et qui n'apparaîtra donc pas sur les cartes.\nCertaines avalanches peuvent avoir un écoulement plus long que ce qui est affiché comme emprise sur les cartes.\n\n<h2>Quelles sont les considérations à prendre en compte ?</h2>\nAdaptez votre comportement en choisissant où, quand et comment vous vous déplacez. Varsom Regobs est un outil de préparation de course et ses données peuvent différer de la situation réelle rencontrée. Faites toujours votre propre évaluation locale du risque.\n \n<h2>Le risque zéro existe-t-il ?</h2>\nTout déplacement en terrain avalancheux enneigé comporte un élément de risque.\n\n<h2>Vous voulez en savoir plus ?</h2>\nVous pouvez en savoir plus en vous formant à la gestion du risque. Des ressources pédagogiques en ligne sont disponible en Norvège : Snøskredskolen (\"École sur les avalanches\", en norvégien) sur Varsom.no. Des ressources existent aussi en français : par exemple, https://www.anena.org (Gérer le risque) ou https://www.avalanche.ca/education",
+    "INFO_PAGE": "<h1>À propos des cartes de pentes et de zones d'écoulement<\/h1>\\nLes cartes sont produites automatiquement et peuvent contenir des erreurs. Il peut y avoir une portion de terrain raide, qui n'est pas représentée dans le modèle numérique de terrain (MNT), et qui n'apparaîtra donc pas sur les cartes.\\nCertaines avalanches peuvent avoir un écoulement plus long que ce qui est affiché comme emprise sur les cartes.\\n\\n<h2>Quelles sont les considérations à prendre en compte ?<\/h2>\\nAdaptez votre comportement en choisissant où, quand et comment vous vous déplacez. Varsom Regobs est un outil de préparation de course et ses données peuvent différer de la situation réelle rencontrée. Faites toujours votre propre évaluation locale du risque.\\n \\n<h2>Le risque zéro existe-t-il ?<\/h2>\\nTout déplacement en terrain avalancheux enneigé comporte un élément de risque.\\n\\n<h2>Vous voulez en savoir plus ?<\/h2>\\nVous pouvez en savoir plus en vous formant à la gestion du risque. Des ressources pédagogiques en ligne sont disponible en Norvège : Snøskredskolen (\"École sur les avalanches\", en norvégien) sur Varsom.no. Des ressources existent aussi en français : par exemple, https:\/\/www.anena.org (Gérer le risque) ou https:\/\/www.avalanche.ca\/education",
     "LOW": "Faible",
     "MARITINE_BORDER": "Bord de mer",
     "MIDDLE": "Intermédiaire",
@@ -731,11 +730,11 @@
     "READ_MORE": "En savoir plus sur ces cartes",
     "STEEPNESS_COLOR_INFO": "La couleur indique l'inclinaison de pente du terrain",
     "STEEPNESS_MAP_DESCRIPTION": "Carte des pentes",
-    "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
+    "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement<\/i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
     "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Emprise médiane de l'écoulement des avalanches (50 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Emprise \"normale\" de l'écoulement des avalanches (25 % des avalanches iront plus loin).",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Palette de couleur donnant les zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Carte des pentes et zones d'écoulement des avalanches",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Glace affaiblie"
@@ -751,7 +750,7 @@
     "END_ERROR": "Impossible de stopper le déplacement. Veuillez réessayer plus tard. Ce déplacement s'arrêtera automatiquement à minuit.",
     "ERROR": "Erreur lors de l'initialisation du déplacement. Veuillez réessayer.",
     "ERROR_POSITION": "Impossible de commencer le déplacement sans position GPS.",
-    "LEGACY_HELP_TEXT": "Vous pouvez utiliser ce formulaire pour signaler que vous prévoyez un déplacement aujourd'hui.\n\nIl est utile pour l'équipe de prévisionnistes de savoir si des observations peuvent être disponibles aujourd'hui. Il est également utile de savoir quel type d'observations seront rentrées (ce que vous recherchez, où allez-vous) et quand vous pensez les soumettre à Regobs.\n\nTous les observateurs rémunérés doivent indiquer l'itinéraire prévu : s'agit-il d'une observation \"ordinaire\" rémunéré dans le cadre d'une convention ou d'une observation supplémentaire ? Une observation supplémentaire est une observations que vous faites pendant votre temps libre ou hors convention.",
+    "LEGACY_HELP_TEXT": "Vous pouvez utiliser ce formulaire pour signaler que vous prévoyez un déplacement aujourd'hui.\\n\\nIl est utile pour l'équipe de prévisionnistes de savoir si des observations peuvent être disponibles aujourd'hui. Il est également utile de savoir quel type d'observations seront rentrées (ce que vous recherchez, où allez-vous) et quand vous pensez les soumettre à Regobs.\\n\\nTous les observateurs rémunérés doivent indiquer l'itinéraire prévu : s'agit-il d'une observation \"ordinaire\" rémunéré dans le cadre d'une convention ou d'une observation supplémentaire ? Une observation supplémentaire est une observations que vous faites pendant votre temps libre ou hors convention.",
     "ONGOING_TRIP": "Déplacement en cours",
     "STARTED": "Déplacement démarré",
     "START_TRIP": "Début du déplacement",
