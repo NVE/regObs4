@@ -3,7 +3,7 @@ import { map, distinctUntilChanged, Observable, ReplaySubject, combineLatest } f
 import {
   AttachmentUploadEditModel,
   AttachmentUploadEditModelWithBlob,
-  ExistingOrNewAttachment
+  ExistingOrNewAttachment,
 } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
@@ -16,7 +16,7 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
   selector: 'app-thumbnails',
   templateUrl: './thumbnails.component.html',
   styleUrls: ['./thumbnails.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThumbnailsComponent implements OnChanges, OnInit {
   @Input() attachments: ExistingOrNewAttachment[]; //attachments for given draft registration

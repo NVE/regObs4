@@ -14,7 +14,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-snow-density-modal',
   templateUrl: './snow-density-modal.page.html',
-  styleUrls: ['./snow-density-modal.page.scss']
+  styleUrls: ['./snow-density-modal.page.scss'],
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;
@@ -67,11 +67,8 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
             this.useCylinder =
               !!this.draft.registration.SnowProfile2.SnowDensity[0].CylinderDiameter ||
               !!this.draft.registration.SnowProfile2.SnowDensity[0].TareWeight ||
-              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length ===
-                0 ||
-              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some(
-                (l) => !!l.Weight
-              );
+              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
+              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
           }
           this.recalculateLayers();
         });
@@ -97,10 +94,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(
-      this.hasLayers ? this.profile.Layers.length : 0,
-      undefined
-    );
+    this.addOrEditLayer(this.hasLayers ? this.profile.Layers.length : 0, undefined);
   }
 
   async addOrEditLayer(index: number, layer: SnowDensityLayerModel) {
@@ -113,8 +107,8 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
           useCylinder: this.useCylinder,
           cylinderDiameterInM: this.profile.CylinderDiameter,
           tareWeight: this.profile.TareWeight,
-          index
-        }
+          index,
+        },
       });
       this.layerModal.present();
       await this.layerModal.onDidDismiss();
@@ -124,11 +118,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
-    this.profile.Layers = ArrayHelper.reorderList(
-      this.profile.Layers,
-      event.detail.from,
-      event.detail.to
-    );
+    this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
     event.detail.complete();
   }
 

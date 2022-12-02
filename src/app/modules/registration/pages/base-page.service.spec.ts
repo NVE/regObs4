@@ -1,7 +1,7 @@
 import {
   AttachmentUploadEditModel,
   RegistrationTid,
-  SyncStatus
+  SyncStatus,
 } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { BasePageService } from './base-page-service';
@@ -12,7 +12,6 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 describe('BasePageService', () => {
-
   let service: BasePageService;
   let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
   let loggerService: jasmine.SpyObj<LoggingService>;
@@ -30,12 +29,12 @@ describe('BasePageService', () => {
       DtObsTime: 'obsTime',
       AvalancheObs: {
         DtAvalancheTime: 'avalancheTime',
-        Comment: 'avalance obs comment'
+        Comment: 'avalance obs comment',
       },
       Incident: {
-        Comment: 'incident comment'
-      }
-    }
+        Comment: 'incident comment',
+      },
+    },
   };
 
   const attachments: AttachmentUploadEditModel[] = [
@@ -43,30 +42,33 @@ describe('BasePageService', () => {
       id: '1',
       type: 'Attachment',
       AttachmentId: 1,
-      RegistrationTID: RegistrationTid.Incident
-    }, {
+      RegistrationTID: RegistrationTid.Incident,
+    },
+    {
       id: '2',
       type: 'Attachment',
       AttachmentId: 2,
-      RegistrationTID: RegistrationTid.Incident
+      RegistrationTID: RegistrationTid.Incident,
     },
     {
       id: '3',
       type: 'Attachment',
       AttachmentId: 3,
-      RegistrationTID: RegistrationTid.AvalancheObs
-    }, {
+      RegistrationTID: RegistrationTid.AvalancheObs,
+    },
+    {
       id: '4',
       type: 'Attachment',
       AttachmentId: 4,
-      RegistrationTID: RegistrationTid.DangerObs
-    }];
+      RegistrationTID: RegistrationTid.DangerObs,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
 
     draftRepository = {
-      save: jasmine.createSpy('DraftService.save')
+      save: jasmine.createSpy('DraftService.save'),
     };
 
     loggerService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
@@ -83,16 +85,15 @@ describe('BasePageService', () => {
   });
 
   it('delete should delete the avalanche and incident registration', async () => {
-
     const expectedEmptyDraft: RegistrationDraft = {
       uuid: 'draft',
       syncStatus: SyncStatus.Draft,
       simpleMode: false,
       registration: {
         GeoHazardTID: 10,
-        DtObsTime: 'obsTime'
+        DtObsTime: 'obsTime',
         //No AvalancheObs or Incident anymore
-      }
+      },
     };
     newAttachmentService.getAttachments.and.returnValue(of(attachments));
     const registrationTids = [RegistrationTid.AvalancheObs, RegistrationTid.Incident];
@@ -106,5 +107,4 @@ describe('BasePageService', () => {
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '2');
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '3');
   });
-
 });

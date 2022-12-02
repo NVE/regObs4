@@ -1,9 +1,9 @@
 <ion-item (click)="updateOrCancelObservations()">
-  <ion-label color="dark" position="stacked">{{'MENU.UPDATE_OBSERVATIONS' | translate}}</ion-label>
-  <ng-container *ngIf="!isLoading else isLoadingTemplate">
+  <ion-label color="dark" position="stacked">{{ "MENU.UPDATE_OBSERVATIONS" | translate }}</ion-label>
+  <ng-container *ngIf="!isLoading; else isLoadingTemplate">
     <ion-text class="ion-align-self-start">
       <ng-container *ngIf="lastUpdated">
-        {{ lastUpdated | date:settings.dateFormats.angular.dateAndTime }}
+        {{ lastUpdated | date: settings.dateFormats.angular.dateAndTime }}
       </ng-container>
     </ion-text>
     <ion-button size="small" fill="clear" slot="end">
@@ -16,6 +16,6 @@
     <ion-spinner name="dots"></ion-spinner>
   </ion-text>
   <ion-button size="small" fill="clear" slot="end">
-    {{'DIALOGS.CANCEL' | translate}}
+    {{ "DIALOGS.CANCEL" | translate }}
   </ion-button>
 </ng-template>

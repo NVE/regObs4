@@ -11,7 +11,7 @@ import { DataUrlHelper } from '../../helpers/data-url.helper';
 const DEBUG_TAG = 'OfflineImageService';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OfflineImageService {
   constructor(private loggingService: LoggingService) {}
@@ -28,16 +28,10 @@ export class OfflineImageService {
 
   private updateLastAccess(offlineAsset: IOfflineAsset) {
     offlineAsset.lastAccess = moment().unix();
-    return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('upsert', offlineAsset)
-      .exec();
+    return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
   }
 
-  async saveOfflineImageDataUrl(
-    url: string,
-    dataUrl: string,
-    type = 'image/jpg'
-  ) {
+  async saveOfflineImageDataUrl(url: string, dataUrl: string, type = 'image/jpg') {
     try {
       const size = DataUrlHelper.getDataUriByteLength(dataUrl);
 
@@ -46,20 +40,12 @@ export class OfflineImageService {
         type,
         lastAccess: moment().unix(),
         size,
-        dataUrl
+        dataUrl,
       };
-      await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-        .query('upsert', offlineAsset)
-        .exec();
+      await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
       return offlineAsset;
     } catch (error) {
-      this.loggingService.log(
-        'Could not save offline asset',
-        error,
-        LogLevel.Warning,
-        DEBUG_TAG,
-        url
-      );
+      this.loggingService.log('Could not save offline asset', error, LogLevel.Warning, DEBUG_TAG, url);
       return null;
     }
   }

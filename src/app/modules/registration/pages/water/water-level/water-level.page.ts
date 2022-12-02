@@ -14,16 +14,13 @@ import { WaterLevelMeasurementComponent } from '../../../components/water/water-
 @Component({
   selector: 'app-water-level',
   templateUrl: './water-level.page.html',
-  styleUrls: ['./water-level.page.scss']
+  styleUrls: ['./water-level.page.scss'],
 })
 export class WaterLevelPage extends BasePage {
   @ViewChildren(WaterLevelMeasurementComponent)
   private waterLevelMeasurements: QueryList<WaterLevelMeasurementComponent>;
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute
-  ) {
+  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
     super(RegistrationTid.WaterLevel2, basePageService, activatedRoute);
   }
 
@@ -32,21 +29,17 @@ export class WaterLevelPage extends BasePage {
       !this.draft.registration.WaterLevel2.WaterLevelMeasurement ||
       this.draft.registration.WaterLevel2.WaterLevelMeasurement.length === 0
     ) {
-      this.draft.registration.WaterLevel2.WaterLevelMeasurement = [
-        { DtMeasurementTime: undefined }
-      ];
+      this.draft.registration.WaterLevel2.WaterLevelMeasurement = [{ DtMeasurementTime: undefined }];
     }
   }
 
   onReset() {
-    this.draft.registration.WaterLevel2.WaterLevelMeasurement = [
-      { DtMeasurementTime: undefined }
-    ];
+    this.draft.registration.WaterLevel2.WaterLevelMeasurement = [{ DtMeasurementTime: undefined }];
   }
 
   addWaterLevelMeasurement() {
     this.draft.registration.WaterLevel2.WaterLevelMeasurement.push({
-      DtMeasurementTime: undefined
+      DtMeasurementTime: undefined,
     });
     this.save();
   }
@@ -76,9 +69,6 @@ export class WaterLevelPage extends BasePage {
     for (const wl of this.waterLevelMeasurements.toArray()) {
       wl.showError();
     }
-    return (
-      this.waterLevelMeasurements &&
-      !this.waterLevelMeasurements.some((x) => !x.isValid)
-    );
+    return this.waterLevelMeasurements && !this.waterLevelMeasurements.some((x) => !x.isValid);
   }
 }

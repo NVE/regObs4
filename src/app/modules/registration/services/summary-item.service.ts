@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
-import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import {
+  ExistingAttachmentType,
+  ExistingOrNewAttachment,
+  NewAttachmentType,
+  RegistrationTid,
+} from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
@@ -12,7 +17,12 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { combineLatest, distinctUntilChanged, from, map, Observable, switchMap } from 'rxjs';
 import deepEqual from 'fast-deep-equal';
-import { getAllAttachmentsFromEditModel, getRegistationPropertyForModel, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
+import {
+  getAllAttachmentsFromEditModel,
+  getRegistationPropertyForModel,
+  getRegistrationsWithData,
+  isObservationModelEmptyForRegistrationTid,
+} from '../../common-registration/registration.helpers';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 import { NewAttachmentService } from '../../common-registration/registration.services';
 
@@ -74,10 +84,9 @@ function groupsHasNotChanged(previous: ObserverGroupDto[], current: ObserverGrou
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SummaryItemService {
-
   constructor(
     private draftService: DraftRepositoryService,
     private newAttachmentService: NewAttachmentService,
@@ -90,7 +99,8 @@ export class SummaryItemService {
     // Observables that only emits when the properties we need has changed
     const draft$ = this.draftService.getDraft$(uuid).pipe(distinctUntilChanged(draftHasNotChanged));
     const groups$ = this.userGroupService.getUserGroupsAsObservable().pipe(distinctUntilChanged(groupsHasNotChanged));
-    const newAttachments$ = this.newAttachmentService.getAttachments(uuid)
+    const newAttachments$ = this.newAttachmentService
+      .getAttachments(uuid)
       .pipe(distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')));
 
     return combineLatest([draft$, groups$, newAttachments$]).pipe(
@@ -101,13 +111,13 @@ export class SummaryItemService {
           draft,
           groups,
           [
-            ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
-            ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
-          ]
+            ...existingAttachments.map((attachment) => ({ type: 'existing' as ExistingAttachmentType, attachment })),
+            ...newAttachments.map((attachment) => ({ type: 'new' as NewAttachmentType, attachment })),
+          ],
         ] as [RegistrationDraft, ObserverGroupDto[], ExistingOrNewAttachment[]];
       }),
       // Get summary items
-      switchMap(inputs => from(this.getSummaryItems(...inputs)))
+      switchMap((inputs) => from(this.getSummaryItems(...inputs)))
     );
   }
 
@@ -121,14 +131,14 @@ export class SummaryItemService {
       queryParams: { geoHazard: draft.registration.GeoHazardTID },
       title: 'REGISTRATION.OBS_LOCATION.TITLE',
       subTitle: [locSummary, timeSummary].join(' — '),
-      hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime
+      hasData: !isEmpty(reg.ObsLocation) || !!reg.DtObsTime,
     };
   }
 
   private async getSummaryItems(
     draft: RegistrationDraft,
     userGroups?: ObserverGroupDto[],
-    attachments?: ExistingOrNewAttachment[],
+    attachments?: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem[]> {
     if (!draft) {
       return [];
@@ -143,7 +153,7 @@ export class SummaryItemService {
 
     const summaryItems: ISummaryItem[] = [
       locationAndTimeItem,
-      ...(await this.getGeoHazardItems(draft, attachmentsToUse))
+      ...(await this.getGeoHazardItems(draft, attachmentsToUse)),
     ];
 
     summaryItems.splice(
@@ -155,7 +165,7 @@ export class SummaryItemService {
         'REGISTRATION.GENERAL_COMMENT.TITLE',
         draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
         RegistrationTid.GeneralObservation,
-        attachmentsToUse,
+        attachmentsToUse
       )
     );
 
@@ -165,7 +175,7 @@ export class SummaryItemService {
         href: '/registration/group',
         title: 'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP',
         subTitle: this.getObservationGroupName(draft, userGroupsToUse),
-        hasData: !!draft.registration.ObserverGroupID
+        hasData: !!draft.registration.ObserverGroupID,
       });
     }
 
@@ -216,19 +226,16 @@ export class SummaryItemService {
     return '';
   }
 
-  private getGeoHazardItems(
-    draft: RegistrationDraft,
-    attachments: ExistingOrNewAttachment[]
-  ): Promise<ISummaryItem[]> {
+  private getGeoHazardItems(draft: RegistrationDraft, attachments: ExistingOrNewAttachment[]): Promise<ISummaryItem[]> {
     switch (draft.registration.GeoHazardTID) {
-    case GeoHazard.Water:
-      return this.getWaterItems(draft, attachments);
-    case GeoHazard.Ice:
-      return this.getIceItems(draft, attachments);
-    case GeoHazard.Soil:
-      return this.getDirtItems(draft, attachments);
-    case GeoHazard.Snow:
-      return this.getSnowItems(draft, attachments);
+      case GeoHazard.Water:
+        return this.getWaterItems(draft, attachments);
+      case GeoHazard.Ice:
+        return this.getIceItems(draft, attachments);
+      case GeoHazard.Soil:
+        return this.getDirtItems(draft, attachments);
+      case GeoHazard.Snow:
+        return this.getSnowItems(draft, attachments);
     }
   }
 
@@ -252,7 +259,7 @@ export class SummaryItemService {
         '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
         RegistrationTid.DamageObs,
         attachments
-      )
+      ),
     ];
   }
 
@@ -264,9 +271,9 @@ export class SummaryItemService {
     registrationTid: RegistrationTid,
     allAttachments: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem> {
-    const attachments = allAttachments.filter(a => a.attachment.RegistrationTID === registrationTid);
-    const isEmpty = attachments.length === 0
-      && isObservationModelEmptyForRegistrationTid(draft.registration, registrationTid);
+    const attachments = allAttachments.filter((a) => a.attachment.RegistrationTID === registrationTid);
+    const isEmpty =
+      attachments.length === 0 && isObservationModelEmptyForRegistrationTid(draft.registration, registrationTid);
 
     return {
       uuid: draft.uuid,
@@ -274,7 +281,7 @@ export class SummaryItemService {
       title,
       subTitle,
       hasData: !isEmpty,
-      attachments
+      attachments,
     };
   }
 
@@ -298,14 +305,11 @@ export class SummaryItemService {
         draft.registration.LandSlideObs ? draft.registration.LandSlideObs.Comment : '',
         RegistrationTid.LandSlideObs,
         attachments
-      )
+      ),
     ];
   }
 
-  private async getIceItems(
-    draft: RegistrationDraft,
-    attachments: ExistingOrNewAttachment[]
-  ): Promise<ISummaryItem[]> {
+  private async getIceItems(draft: RegistrationDraft, attachments: ExistingOrNewAttachment[]): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
@@ -338,7 +342,7 @@ export class SummaryItemService {
         '',
         RegistrationTid.Incident,
         attachments
-      )
+      ),
     ];
   }
 
@@ -346,12 +350,14 @@ export class SummaryItemService {
     draft: RegistrationDraft,
     attachments: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem[]> {
-    const snowProfileAttachments = attachments
-      .filter(a => a.attachment.RegistrationTID === RegistrationTid.SnowProfile2);
+    const snowProfileAttachments = attachments.filter(
+      (a) => a.attachment.RegistrationTID === RegistrationTid.SnowProfile2
+    );
     const snowProfileHasTests = draft.registration.CompressionTest?.some((x) => x.IncludeInSnowProfile === true);
-    const snowProfileIsEmpty = snowProfileAttachments.length === 0
-      && isObservationModelEmptyForRegistrationTid(draft.registration, RegistrationTid.SnowProfile2)
-      && !snowProfileHasTests;
+    const snowProfileIsEmpty =
+      snowProfileAttachments.length === 0 &&
+      isObservationModelEmptyForRegistrationTid(draft.registration, RegistrationTid.SnowProfile2) &&
+      !snowProfileHasTests;
 
     return [
       await this.getRegItem(
@@ -408,7 +414,7 @@ export class SummaryItemService {
         title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         subTitle: '',
         hasData: !snowProfileIsEmpty,
-        attachments: snowProfileAttachments
+        attachments: snowProfileAttachments,
       },
       await this.getRegItem(
         draft,
@@ -425,7 +431,7 @@ export class SummaryItemService {
         '',
         RegistrationTid.AvalancheEvaluation3,
         attachments
-      )
+      ),
     ];
   }
 }

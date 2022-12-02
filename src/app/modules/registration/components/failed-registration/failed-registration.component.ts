@@ -1,11 +1,6 @@
-import {
-  Component,
-  Input} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import {
-  EmailComposer,
-  EmailComposerOptions
-} from '@ionic-native/email-composer/ngx';
+import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
 import stringify from 'json-stringify-safe';
@@ -18,7 +13,7 @@ import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 @Component({
   selector: 'app-failed-registration',
   templateUrl: './failed-registration.component.html',
-  styleUrls: ['./failed-registration.component.scss']
+  styleUrls: ['./failed-registration.component.scss'],
 })
 export class FailedRegistrationComponent {
   @Input() draft: RegistrationDraft;
@@ -66,10 +61,9 @@ export class FailedRegistrationComponent {
 
   async sendEmail() {
     if (isAndroidOrIos(this.platform)) {
-      const translations = await firstValueFrom(this.translateService.get([
-        'REGISTRATION.EMAIL.SUBJECT',
-        'REGISTRATION.EMAIL.BODY'
-      ]));
+      const translations = await firstValueFrom(
+        this.translateService.get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY'])
+      );
       // const pictures = this.registrationService
       //   .getAllPictures(this.registration.request)
       //   .filter(
@@ -86,7 +80,7 @@ export class FailedRegistrationComponent {
         attachments,
         subject: translations['REGISTRATION.EMAIL.SUBJECT'],
         body: translations['REGISTRATION.EMAIL.BODY'],
-        isHtml: true
+        isHtml: true,
       };
       this.emailComposer.open(email);
     } else {

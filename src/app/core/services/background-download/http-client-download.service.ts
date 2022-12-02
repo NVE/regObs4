@@ -7,40 +7,41 @@ import { DownloadProgress } from './download-progress';
 
 @Injectable()
 export class HttpClientDownloadService implements BackgroundDownloadService {
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   download(url: string): Observable<DownloadProgress> {
-    return this.http.get(url, {
-      reportProgress: true,
-      observe: 'events',
-      responseType: 'blob'
-    }).pipe(scan((previous: DownloadProgress, event: HttpEvent<Blob>): DownloadProgress => {
-      if (this.isHttpProgressEvent(event)) {
-        return {
-          progress: event.total
-            ?  (event.loaded / event.total)
-            : previous.progress,
-          state: 'IN_PROGRESS',
-          loaded: event.loaded,
-          total: event.total,
-          content: null
-        };
-      }
-      if (this.isHttpResponse(event)) {
-        return {
-          progress: 100,
-          state: 'DONE',
-          total: event.body.size,
-          loaded: event.body.size,
-          content: event.body
-        };
-      }
-      return previous;
-    },
-    {state: 'PENDING', progress: 0, loaded: 0, content: null}
-    ));
+    return this.http
+      .get(url, {
+        reportProgress: true,
+        observe: 'events',
+        responseType: 'blob',
+      })
+      .pipe(
+        scan(
+          (previous: DownloadProgress, event: HttpEvent<Blob>): DownloadProgress => {
+            if (this.isHttpProgressEvent(event)) {
+              return {
+                progress: event.total ? event.loaded / event.total : previous.progress,
+                state: 'IN_PROGRESS',
+                loaded: event.loaded,
+                total: event.total,
+                content: null,
+              };
+            }
+            if (this.isHttpResponse(event)) {
+              return {
+                progress: 100,
+                state: 'DONE',
+                total: event.body.size,
+                loaded: event.body.size,
+                content: event.body,
+              };
+            }
+            return previous;
+          },
+          { state: 'PENDING', progress: 0, loaded: 0, content: null }
+        )
+      );
   }
 
   private isHttpResponse<T>(event: HttpEvent<T>): event is HttpResponse<T> {
@@ -48,7 +49,6 @@ export class HttpClientDownloadService implements BackgroundDownloadService {
   }
 
   private isHttpProgressEvent(event: HttpEvent<unknown>): event is HttpProgressEvent {
-    return event.type === HttpEventType.DownloadProgress
-        || event.type === HttpEventType.UploadProgress;
+    return event.type === HttpEventType.DownloadProgress || event.type === HttpEventType.UploadProgress;
   }
 }

@@ -1,20 +1,29 @@
-<ion-item class="hide-detail-icon" detail="false" button="true" tabindex="0" (click)="openPicker()"
-  (keyup.enter)="openPicker()">
+<ion-item
+  class="hide-detail-icon"
+  detail="false"
+  button="true"
+  tabindex="0"
+  (click)="openPicker()"
+  (keyup.enter)="openPicker()"
+>
   <ion-label
     *ngIf="title"
     [color]="color"
     position="stacked"
     class="no-white-space-wrap"
-    [ngClass]="{'ion-text-uppercase': !simpleObsMode, 'simple-mode-title': simpleObsMode}">
-    {{ title | translate}} {{isValid == false ? '('+(errorMessage | translate)+')' : null}}
+    [ngClass]="{ 'ion-text-uppercase': !simpleObsMode, 'simple-mode-title': simpleObsMode }"
+  >
+    {{ title | translate }} {{ isValid == false ? "(" + (errorMessage | translate) + ")" : null }}
   </ion-label>
   <ion-text
-    [ngClass]="{'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode}"
-    *ngIf="displayValue else ph">
-    {{ displayValue }}</ion-text>
+    [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode }"
+    *ngIf="displayValue; else ph"
+  >
+    {{ displayValue }}</ion-text
+  >
 </ion-item>
 <ng-template #ph>
-  <ion-text
-  [ngClass]="{'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode}"
-  [color]="color">{{ placeholder | translate }}</ion-text>
+  <ion-text [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode }" [color]="color">{{
+    placeholder | translate
+  }}</ion-text>
 </ng-template>

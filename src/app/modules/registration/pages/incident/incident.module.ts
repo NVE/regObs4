@@ -10,18 +10,12 @@ const routes: Routes = [
   {
     path: '',
     component: IncidentPage,
-    canDeactivate: [CanDeactivateRouteGuard]
-  }
+    canDeactivate: [CanDeactivateRouteGuard],
+  },
 ];
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-    AddWebUrlModalPageModule,
-    RouterModule.forChild(routes),
-    RegistrationModule
-  ],
-  declarations: [IncidentPage]
+  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes), RegistrationModule],
+  declarations: [IncidentPage],
 })
-export class IncidentPageModule {
-}
+export class IncidentPageModule {}

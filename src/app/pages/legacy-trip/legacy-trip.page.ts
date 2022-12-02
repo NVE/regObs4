@@ -21,7 +21,7 @@ const DEBUG_TAG = 'LegacyTripPage';
 @Component({
   selector: 'app-legacy-trip',
   templateUrl: './legacy-trip.page.html',
-  styleUrls: ['./legacy-trip.page.scss']
+  styleUrls: ['./legacy-trip.page.scss'],
 })
 export class LegacyTripPage implements OnInit, OnDestroy {
   private tripLoggerSubscription: Subscription;
@@ -37,7 +37,11 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   private startTripSubscription: Subscription;
 
   get isValid(): boolean {
-    return this.tripDto.ObservationExpectedMinutes !== undefined && this.tripDto.TripTypeID !== undefined && this.currentPosition != null;
+    return (
+      this.tripDto.ObservationExpectedMinutes !== undefined &&
+      this.tripDto.TripTypeID !== undefined &&
+      this.currentPosition != null
+    );
   }
 
   get isEmpty(): boolean {
@@ -162,8 +166,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: HelpModalPage,
       componentProps: {
-        helpText: translation
-      }
+        helpText: translation,
+      },
     });
     modal.present();
   }

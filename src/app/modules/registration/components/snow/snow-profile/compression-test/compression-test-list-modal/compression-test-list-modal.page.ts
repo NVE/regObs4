@@ -10,7 +10,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-compression-test-list-modal',
   templateUrl: './compression-test-list-modal.page.html',
-  styleUrls: ['./compression-test-list-modal.page.scss']
+  styleUrls: ['./compression-test-list-modal.page.scss'],
 })
 export class CompressionTestListModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

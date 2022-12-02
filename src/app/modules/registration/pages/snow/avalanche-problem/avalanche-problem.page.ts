@@ -5,10 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ItemReorderEventDetail } from '@ionic/core';
-import {
-  AvalancheEvalProblem2EditModel,
-  KdvElement
-} from 'src/app/modules/common-regobs-api/models';
+import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
 import { Subscription } from 'rxjs';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
@@ -22,7 +19,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 @Component({
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',
-  styleUrls: ['./avalanche-problem.page.scss']
+  styleUrls: ['./avalanche-problem.page.scss'],
 })
 export class AvalancheProblemPage extends BasePage {
   private avalancheCause: KdvElement[];
@@ -35,20 +32,14 @@ export class AvalancheProblemPage extends BasePage {
     private ngZone: NgZone,
     private kdvService: KdvService
   ) {
-    super(
-      RegistrationTid.AvalancheEvalProblem2,
-      basePageService,
-      activatedRoute
-    );
+    super(RegistrationTid.AvalancheEvalProblem2, basePageService, activatedRoute);
     this.avalancheCause = [];
   }
 
   onInit() {
-    this.kdvSubscription = this.kdvService
-      .getKdvRepositoryByKeyObservable('Snow_AvalCauseKDV')
-      .subscribe((val) => {
-        this.avalancheCause = val;
-      });
+    this.kdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseKDV').subscribe((val) => {
+      this.avalancheCause = val;
+    });
   }
 
   onBeforeLeave() {
@@ -62,8 +53,8 @@ export class AvalancheProblemPage extends BasePage {
       const modal = await this.modalController.create({
         component: AvalancheProblemModalPage,
         componentProps: {
-          avalancheEvalProblem: this.draft.registration.AvalancheEvalProblem2[index]
-        }
+          avalancheEvalProblem: this.draft.registration.AvalancheEvalProblem2[index],
+        },
       });
       modal.present();
       const result = await modal.onDidDismiss();
@@ -87,9 +78,7 @@ export class AvalancheProblemPage extends BasePage {
   }
 
   getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel): string {
-    const cause = this.avalancheCause.find(
-      (c) => c.Id === avalancheEvalProblem.AvalCauseTID
-    );
+    const cause = this.avalancheCause.find((c) => c.Id === avalancheEvalProblem.AvalCauseTID);
     if (cause) {
       return cause.Name;
     } else {

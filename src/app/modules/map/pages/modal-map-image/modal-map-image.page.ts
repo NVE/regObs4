@@ -5,7 +5,7 @@ import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-modal-map-image',
   templateUrl: './modal-map-image.page.html',
-  styleUrls: ['./modal-map-image.page.scss']
+  styleUrls: ['./modal-map-image.page.scss'],
 })
 export class ModalMapImagePage {
   @Input() location: { latLng: L.LatLng; geoHazard: GeoHazard };

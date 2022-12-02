@@ -10,11 +10,10 @@ import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 @Component({
   selector: 'app-incident',
   templateUrl: './incident.page.html',
-  styleUrls: ['./incident.page.scss']
+  styleUrls: ['./incident.page.scss'],
 })
 export class IncidentPage extends BasePage {
-
-  isCasualtiesValid= true;
+  isCasualtiesValid = true;
   isDeadValid = true;
 
   get geoHazardName(): string {
@@ -25,15 +24,13 @@ export class IncidentPage extends BasePage {
     return this.draft.registration.Incident;
   }
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute) {
+  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
     super(RegistrationTid.Incident, basePageService, activatedRoute);
   }
 
-  groupValidate(){
+  groupValidate() {
     this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
-    this.isDeadValid =  IncidentValidation.onDeadNumChange(this.incident);
+    this.isDeadValid = IncidentValidation.onDeadNumChange(this.incident);
   }
 
   isValid() {

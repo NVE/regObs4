@@ -10,14 +10,14 @@
   flex-wrap: wrap;
 }
 
-@media only screen and (max-width:765px) {
+@media only screen and (max-width: 765px) {
   .buttons-container ion-col {
     flex-basis: 100%;
   }
 }
 
 /*targeting map-conatiner wrapper which is in a shadow-root. look 'part' attribute*/
-::part(scroll){
+::part(scroll) {
   display: flex;
   flex-direction: column;
 }

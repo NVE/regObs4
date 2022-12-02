@@ -10,45 +10,60 @@
 <ion-content *ngIf="avalancheEvalProblemCopy">
   <ion-list lines="full">
     <ion-list-header class="ion-text-uppercase">
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}}
-      </ion-label>
+      <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}} </ion-label>
     </ion-list-header>
     <ion-item>
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS' | translate}}</ion-label>
       <ion-checkbox mode="md" slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
     </ion-item>
     <ng-container *ngIf="!noWeakLayers">
-      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER" kdvKey="Snow_AvalCauseKDV"
-        [(value)]="avalancheEvalProblemCopy.AvalCauseTID"></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH" kdvKey="Snow_AvalCauseDepthKDV"
-        [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"></app-kdv-select>
+      <app-kdv-select
+        title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
+        kdvKey="Snow_AvalCauseKDV"
+        [(value)]="avalancheEvalProblemCopy.AvalCauseTID"
+      ></app-kdv-select>
+      <app-kdv-select
+        title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH"
+        kdvKey="Snow_AvalCauseDepthKDV"
+        [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"
+      ></app-kdv-select>
       <ion-item *ngFor="let avalancheCauseAttribute of avalancheCauseAttributes">
         <ion-label class="ion-text-wrap"> {{ avalancheCauseAttribute.kdvElement.Name }}</ion-label>
         <ion-checkbox mode="md" slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
       </ion-item>
     </ng-container>
     <ion-list-header class="ion-text-uppercase">
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}
-      </ion-label>
+      <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}} </ion-label>
     </ion-list-header>
-    <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE" kdvKey="Snow_AvalancheExtKDV"
-      [(value)]="avalancheEvalProblemCopy.AvalancheExtTID" [filter]="avalancheExtKdvFilter"></app-kdv-select>
-    <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY"
-      kdvKey="Snow_AvalTriggerSimpleKDV" [(value)]="avalancheEvalProblemCopy.AvalTriggerSimpleTID"></app-kdv-select>
-    <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_DESTRUCTIVE_SIZE"
-      kdvKey="Snow_DestructiveSizeKDV" [(value)]="avalancheEvalProblemCopy.DestructiveSizeTID"></app-kdv-select>
+    <app-kdv-select
+      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
+      kdvKey="Snow_AvalancheExtKDV"
+      [(value)]="avalancheEvalProblemCopy.AvalancheExtTID"
+      [filter]="avalancheExtKdvFilter"
+    ></app-kdv-select>
+    <app-kdv-select
+      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY"
+      kdvKey="Snow_AvalTriggerSimpleKDV"
+      [(value)]="avalancheEvalProblemCopy.AvalTriggerSimpleTID"
+    ></app-kdv-select>
+    <app-kdv-select
+      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_DESTRUCTIVE_SIZE"
+      kdvKey="Snow_DestructiveSizeKDV"
+      [(value)]="avalancheEvalProblemCopy.DestructiveSizeTID"
+    ></app-kdv-select>
     <ion-list-header class="ion-text-uppercase">
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate}}
-      </ion-label>
+      <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate}} </ion-label>
     </ion-list-header>
-    <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
-      [(value)]="avalancheEvalProblemCopy.AvalPropagationTID"></app-kdv-select>
-    <app-exposed-height [(exposedHeightComboTID)]="avalancheEvalProblemCopy.ExposedHeightComboTID"
+    <app-kdv-select
+      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
+      kdvKey="Snow_AvalPropagationKDV"
+      [(value)]="avalancheEvalProblemCopy.AvalPropagationTID"
+    ></app-kdv-select>
+    <app-exposed-height
+      [(exposedHeightComboTID)]="avalancheEvalProblemCopy.ExposedHeightComboTID"
       [(exposedHight1)]="avalancheEvalProblemCopy.ExposedHeight1"
-      [(exposedHight2)]="avalancheEvalProblemCopy.ExposedHeight2"></app-exposed-height>
+      [(exposedHight2)]="avalancheEvalProblemCopy.ExposedHeight2"
+    ></app-exposed-height>
     <app-valid-exposition [(validExposition)]="avalancheEvalProblemCopy.ValidExposition"></app-valid-exposition>
     <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheEvalProblemCopy.Comment">
     </app-text-comment>

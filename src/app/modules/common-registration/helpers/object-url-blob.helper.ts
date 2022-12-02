@@ -3,11 +3,11 @@ export function getBlobFromUrl(url: string): Promise<Blob> {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'blob';
-    xhr.onerror = ((err) => reject(err));
+    xhr.onerror = (err) => reject(err);
     xhr.onload = () => {
       if (xhr.status == 200) {
         resolve(xhr.response);
-      }else{
+      } else {
         reject(new Error('Not found'));
       }
     };

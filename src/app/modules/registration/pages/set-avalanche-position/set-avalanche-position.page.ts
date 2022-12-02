@@ -1,16 +1,12 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  NgZone,
-  ChangeDetectorRef,
-  ViewChild
-} from '@angular/core';
+import { Component, OnInit, Input, NgZone, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
-import { LocationTime, SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import {
+  LocationTime,
+  SetLocationInMapComponent,
+} from '../../components/set-location-in-map/set-location-in-map.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
@@ -19,7 +15,7 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
 @Component({
   selector: 'app-set-avalanche-position',
   templateUrl: './set-avalanche-position.page.html',
-  styleUrls: ['./set-avalanche-position.page.scss']
+  styleUrls: ['./set-avalanche-position.page.scss'],
 })
 export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;
@@ -45,7 +41,7 @@ export class SetAvalanchePositionPage implements OnInit {
     iconSize: [27, 42],
     iconAnchor: [13.5, 41],
     shadowUrl: 'leaflet/marker-shadow.png',
-    shadowSize: [41, 41]
+    shadowSize: [41, 41],
   });
   endImageUrl = '/assets/icon/map/GPS_stop.svg';
   private endIcon = L.icon({
@@ -53,14 +49,14 @@ export class SetAvalanchePositionPage implements OnInit {
     iconSize: [27, 42],
     iconAnchor: [13.5, 41],
     shadowUrl: 'leaflet/marker-shadow.png',
-    shadowSize: [41, 41]
+    shadowSize: [41, 41],
   });
   locationMarkerIcon = L.icon({
     iconUrl: '/assets/icon/map/obs-location.svg',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     shadowUrl: 'leaflet/marker-shadow.png',
-    shadowSize: [41, 41]
+    shadowSize: [41, 41],
   });
   private startMarker: L.Marker;
   private endMarker: L.Marker;
@@ -89,7 +85,7 @@ export class SetAvalanchePositionPage implements OnInit {
       .get([
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION',
-        'DIALOGS.CONFIRM'
+        'DIALOGS.CONFIRM',
       ])
       .toPromise();
     const fallbackLatlng = L.latLng(59.1, 10.3);
@@ -100,10 +96,10 @@ export class SetAvalanchePositionPage implements OnInit {
       this.end = L.latLng(this.endLatLng.lat, this.endLatLng.lng);
     }
     this.locationMarker = L.marker(this.relativeToLatLng || fallbackLatlng, {
-      icon: this.startIcon
+      icon: this.startIcon,
     });
     this.startMarker = L.marker(this.locationMarker.getLatLng(), {
-      icon: this.startIcon
+      icon: this.startIcon,
     }).on('click', () => {
       if (!this.startIsActive) {
         this.end = this.locationMarker.getLatLng();
@@ -112,7 +108,7 @@ export class SetAvalanchePositionPage implements OnInit {
       this.updateMarkers();
     });
     this.endMarker = L.marker(this.locationMarker.getLatLng(), {
-      icon: this.endIcon
+      icon: this.endIcon,
     }).on('click', () => {
       if (this.startIsActive) {
         this.start = this.locationMarker.getLatLng();
@@ -122,7 +118,7 @@ export class SetAvalanchePositionPage implements OnInit {
     });
     if (this.relativeToLatLng) {
       this.fromMarker = L.marker(this.relativeToLatLng, {
-        icon: this.locationMarkerIcon
+        icon: this.locationMarkerIcon,
       });
     }
   }
@@ -147,26 +143,18 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   private setStartLocationText() {
-    this.confirmLocationText = `${
-      this.translations['DIALOGS.CONFIRM']
-    } ${this.translations[
+    this.confirmLocationText = `${this.translations['DIALOGS.CONFIRM']} ${this.translations[
       'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'
     ].toLowerCase()}`;
-    this.locationText = this.translations[
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'
-    ];
+    this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
     this.locationMarkerIconUrl = this.startImageUrl;
   }
 
   private setEndLocationText() {
-    this.confirmLocationText = `${
-      this.translations['DIALOGS.CONFIRM']
-    } ${this.translations[
+    this.confirmLocationText = `${this.translations['DIALOGS.CONFIRM']} ${this.translations[
       'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'
     ].toLowerCase()}`;
-    this.locationText = this.translations[
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'
-    ];
+    this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
     this.locationMarkerIconUrl = this.endImageUrl;
   }
 
@@ -199,15 +187,12 @@ export class SetAvalanchePositionPage implements OnInit {
 
   updatePolyline() {
     if (this.end || this.start) {
-      const path = [
-        this.locationMarker.getLatLng(),
-        this.startIsActive ? this.end : this.start
-      ];
+      const path = [this.locationMarker.getLatLng(), this.startIsActive ? this.end : this.start];
       if (!this.pathLine) {
         this.pathLine = L.polyline(path, {
           color: 'red',
           weight: 6,
-          opacity: 0.9
+          opacity: 0.9,
         }).addTo(this.map);
       } else {
         this.pathLine.setLatLngs(path);
@@ -215,7 +200,7 @@ export class SetAvalanchePositionPage implements OnInit {
     }
   }
 
-  async onLocationSet({location}: LocationTime) {
+  async onLocationSet({ location }: LocationTime) {
     if (this.startIsActive) {
       this.start = L.latLng(location.Latitude, location.Longitude);
       if (this.end) {

@@ -6,8 +6,7 @@ import { Observable } from 'rxjs';
 import { DownloadProgress } from './download-progress';
 
 @Injectable()
-export class BackgroundDownloadNativeService
-implements BackgroundDownloadService {
+export class BackgroundDownloadNativeService implements BackgroundDownloadService {
   currentDownloads: Map<string, CancelPromise>;
 
   constructor(private file: File) {

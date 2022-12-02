@@ -12,13 +12,7 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-  map,
-  distinctUntilChanged,
-  takeUntil,
-  take,
-  debounceTime
-} from 'rxjs/operators';
+import { map, distinctUntilChanged, takeUntil, take, debounceTime } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { RouterPage } from '../../core/helpers/routed-page';
@@ -34,7 +28,7 @@ const DEBUG_TAG = 'HomePage';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss']
+  styleUrls: ['home.page.scss'],
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
@@ -42,7 +36,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
     spiderfyOnMaxZoom: false,
-    zoomToBoundsOnClick: false
+    zoomToBoundsOnClick: false,
   });
   private geoCoachMarksClosedSubject = new Subject<void>();
 
@@ -71,13 +65,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
     // Update global css property containing info box height when height changes.
     // This is used to position map scale above map center info box.
-    this.mapCenterInfoHeight.pipe(
-      distinctUntilChanged(),
-      debounceTime(500),
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe((newInfoBoxHeight) => {
-      this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
-    });
+    this.mapCenterInfoHeight
+      .pipe(distinctUntilChanged(), debounceTime(500), takeUntil(this.ngUnsubscribe))
+      .subscribe((newInfoBoxHeight) => {
+        this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
+      });
   }
 
   get appname(): string {
@@ -153,14 +145,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     // });
 
     const searchResult = this.searchRegistrationService.atAGlance(this.searchCriteriaService.searchCriteria$);
-    combineLatest([
-      searchResult.registrations$,
-      this.userSettingService.showObservations$
-    ]).pipe(
-      takeUntil(this.ngUnsubscribe),  // TODO: Is this page ever destroyed?
-    ).subscribe(([registrations, show]) => {
-      this.redrawObservationMarkers(show ? registrations : []);
-    });
+    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$])
+      .pipe(
+        takeUntil(this.ngUnsubscribe) // TODO: Is this page ever destroyed?
+      )
+      .subscribe(([registrations, show]) => {
+        this.redrawObservationMarkers(show ? registrations : []);
+      });
   }
 
   async onEnter() {

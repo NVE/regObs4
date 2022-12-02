@@ -1,17 +1,17 @@
 .map-controls {
-    position: relative;
-    top: 10px;
-    right: 10px;
-    z-index: 900;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  position: relative;
+  top: 10px;
+  right: 10px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
-    &.fullscreen {
-        top: var(--fab-fullscreen-top);
-    }
+  &.fullscreen {
+    top: var(--fab-fullscreen-top);
+  }
 
-    > * {
-        margin-bottom: 5px;
-    }
+  > * {
+    margin-bottom: 5px;
+  }
 }

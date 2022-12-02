@@ -12,51 +12,42 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 @Component({
   selector: 'app-observations-days-back',
   templateUrl: './observations-days-back.component.html',
-  styleUrls: ['./observations-days-back.component.scss']
+  styleUrls: ['./observations-days-back.component.scss'],
 })
 export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
   selectedDaysBack: number;
-  daysBackOptions: { val: number}[];
+  daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private platform: Platform,
-  ) {
+  constructor(private userSettingService: UserSettingService, private platform: Platform) {
     super();
   }
 
   ngOnInit(): void {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
-    this.userSettingService.currentGeoHazard$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe( currentGeoHazard => {
-        this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
-      });
+    this.userSettingService.currentGeoHazard$.pipe(takeUntil(this.ngDestroy$)).subscribe((currentGeoHazard) => {
+      this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
+    });
 
     this.userSettingService.daysBackForCurrentGeoHazard$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe( selectedDaysBack => {
+      .subscribe((selectedDaysBack) => {
         this.selectedDaysBack = selectedDaysBack;
       });
   }
 
   getDaysBackArray(geoHazard: GeoHazard) {
-    return settings.observations.daysBack[GeoHazard[geoHazard]].map(
-      (val: number) => ({
-        val: val
-      })
-    );
+    return settings.observations.daysBack[GeoHazard[geoHazard]].map((val: number) => ({
+      val: val,
+    }));
   }
 
   async save(): Promise<void> {
     const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
     let changed = false;
     for (const geoHazard of userSetting.currentGeoHazard) {
-      const existingValue = userSetting.observationDaysBack.find(
-        (x) => x.geoHazard === geoHazard
-      );
+      const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
       if (existingValue.daysBack !== this.selectedDaysBack) {
         existingValue.daysBack = this.selectedDaysBack;
         changed = true;

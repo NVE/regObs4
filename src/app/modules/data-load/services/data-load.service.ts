@@ -12,10 +12,9 @@ import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFul
  * Trenger nye data og hentes? osv.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataLoadService {
-
   async startLoading(id: string, totalItems?: number) {
     const existingItem = await this.getState(id);
     existingItem.startedDate = moment().toISOString();
@@ -30,12 +29,7 @@ export class DataLoadService {
     return this.saveDataLoadItem(existingItem);
   }
 
-  async updateProgress(
-    id: string,
-    itemsComplete: number,
-    totalItems: number,
-    status?: string
-  ) {
+  async updateProgress(id: string, itemsComplete: number, totalItems: number, status?: string) {
     const existingItem = await this.getState(id);
     existingItem.itemsComplete = itemsComplete;
     existingItem.totalItems = totalItems;
@@ -44,12 +38,7 @@ export class DataLoadService {
     return this.saveDataLoadItem(existingItem);
   }
 
-  async loadingCompleted(
-    id: string,
-    totalItems?: number,
-    itemsFromDate?: Date,
-    itemsToDate?: Date
-  ) {
+  async loadingCompleted(id: string, totalItems?: number, itemsFromDate?: Date, itemsToDate?: Date) {
     const existingItem = await this.getState(id);
     existingItem.isLoading = false;
     existingItem.completedDate = moment().toISOString();
@@ -92,12 +81,12 @@ export class DataLoadService {
         val.length > 0
           ? val[0]
           : {
-            id,
-            completed: null,
-            lastUpdated: null,
-            isLoading: false,
-            started: null
-          }
+              id,
+              completed: null,
+              lastUpdated: null,
+              isLoading: false,
+              started: null,
+            }
       )
     );
   }

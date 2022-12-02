@@ -9,7 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-snow-density',
   templateUrl: './snow-density.component.html',
-  styleUrls: ['./snow-density.component.scss']
+  styleUrls: ['./snow-density.component.scss'],
 })
 export class SnowDensityComponent {
   @Input() draft: RegistrationDraft;
@@ -34,8 +34,8 @@ export class SnowDensityComponent {
       this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {
-          uuid: this.draft.uuid
-        }
+          uuid: this.draft.uuid,
+        },
       });
       this.densityModal.present();
       await this.densityModal.onDidDismiss();

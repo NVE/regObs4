@@ -5,17 +5,14 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ModalController } from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
-import {
-  AvalancheActivityObs2EditModel,
-  KdvElement
-} from 'src/app/modules/common-regobs-api/models';
+import { AvalancheActivityObs2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription, combineLatest } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',
-  styleUrls: ['./avalanche-activity.page.scss']
+  styleUrls: ['./avalanche-activity.page.scss'],
 })
 export class AvalancheActivityPage extends BasePage {
   private avalancheCause: KdvElement[];
@@ -29,11 +26,7 @@ export class AvalancheActivityPage extends BasePage {
     private ngZone: NgZone,
     private kdvService: KdvService
   ) {
-    super(
-      RegistrationTid.AvalancheActivityObs2,
-      basePageService,
-      activatedRoute
-    );
+    super(RegistrationTid.AvalancheActivityObs2, basePageService, activatedRoute);
     this.avalancheCause = [];
     this.estimatedNumber = [];
   }
@@ -45,7 +38,7 @@ export class AvalancheActivityPage extends BasePage {
   onInit() {
     this.kdvSubscription = combineLatest([
       this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
-      this.kdvService.getKdvRepositoryByKeyObservable('Snow_EstimatedNumKDV')
+      this.kdvService.getKdvRepositoryByKeyObservable('Snow_EstimatedNumKDV'),
     ]).subscribe(([causeKdv, estimatedNumberKdv]) => {
       this.avalancheCause = causeKdv;
       this.estimatedNumber = estimatedNumberKdv;
@@ -63,8 +56,8 @@ export class AvalancheActivityPage extends BasePage {
       component: AvalancheActivityModalPage,
       componentProps: {
         avalancheActivity: this.avalancheActivities[index],
-        dtObsTime: this.draft.registration.DtObsTime
-      }
+        dtObsTime: this.draft.registration.DtObsTime,
+      },
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -85,9 +78,7 @@ export class AvalancheActivityPage extends BasePage {
   }
 
   getCause(avalancheActivityObs: AvalancheActivityObs2EditModel) {
-    const cause = this.avalancheCause.find(
-      (c) => c.Id === avalancheActivityObs.AvalancheExtTID
-    );
+    const cause = this.avalancheCause.find((c) => c.Id === avalancheActivityObs.AvalancheExtTID);
     if (cause) {
       return cause.Name;
     } else {
@@ -96,9 +87,7 @@ export class AvalancheActivityPage extends BasePage {
   }
 
   getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2EditModel) {
-    const kdvalue = this.estimatedNumber.find(
-      (c) => c.Id === avalancheActivityObs.EstimatedNumTID
-    );
+    const kdvalue = this.estimatedNumber.find((c) => c.Id === avalancheActivityObs.EstimatedNumTID);
     if (kdvalue) {
       return kdvalue.Name;
     } else {

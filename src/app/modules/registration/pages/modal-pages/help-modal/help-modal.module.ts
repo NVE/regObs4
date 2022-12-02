@@ -5,7 +5,6 @@ import { SharedModule } from '../../../../shared/shared.module';
 
 @NgModule({
   imports: [SharedModule, MarkdownModule.forChild()],
-  declarations: [HelpModalPage]
+  declarations: [HelpModalPage],
 })
-export class HelpModalPageModule {
-}
+export class HelpModalPageModule {}

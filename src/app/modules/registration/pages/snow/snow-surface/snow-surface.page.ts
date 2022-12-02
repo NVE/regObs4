@@ -7,17 +7,10 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 @Component({
   selector: 'app-snow-surface',
   templateUrl: './snow-surface.page.html',
-  styleUrls: ['./snow-surface.page.scss']
+  styleUrls: ['./snow-surface.page.scss'],
 })
 export class SnowSurfacePage extends BasePage {
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute
-  ) {
-    super(
-      RegistrationTid.SnowSurfaceObservation,
-      basePageService,
-      activatedRoute
-    );
+  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+    super(RegistrationTid.SnowSurfaceObservation, basePageService, activatedRoute);
   }
 }

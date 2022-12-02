@@ -7,33 +7,26 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.scss']
+  styleUrls: ['./user-login.component.scss'],
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   loggedInUser: LoggedInUser = { isLoggedIn: false };
   private ngDestroy$ = new Subject<void>();
   isLoggingIn = false;
 
-  constructor(
-    private regobsauthService: RegobsAuthService,
-    private ngZone: NgZone
-  ) {}
+  constructor(private regobsauthService: RegobsAuthService, private ngZone: NgZone) {}
 
   ngOnInit(): void {
-    this.regobsauthService.loggedInUser$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.loggedInUser = val;
-        });
+    this.regobsauthService.loggedInUser$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.loggedInUser = val;
       });
-    this.regobsauthService.isLoggingIn$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.isLoggingIn = val;
-        });
+    });
+    this.regobsauthService.isLoggingIn$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.isLoggingIn = val;
       });
+    });
   }
 
   login(): void {

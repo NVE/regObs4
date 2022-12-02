@@ -9,7 +9,7 @@ import { IonCheckbox } from '@ionic/angular';
 @Component({
   selector: 'app-group',
   templateUrl: './group.page.html',
-  styleUrls: ['./group.page.scss']
+  styleUrls: ['./group.page.scss'],
 })
 export class GroupPage extends BasePage {
   groups: ObserverGroupDto[] = [];
@@ -19,10 +19,7 @@ export class GroupPage extends BasePage {
   }
 
   get isSelected(): boolean {
-    return (
-      this.groups.length > 0 &&
-      this.groups[0].Id === this.draft.registration.ObserverGroupID
-    );
+    return this.groups.length > 0 && this.groups[0].Id === this.draft.registration.ObserverGroupID;
   }
 
   constructor(
@@ -56,8 +53,8 @@ export class GroupPage extends BasePage {
       ...this.draft,
       registration: {
         ...this.draft.registration,
-        ObserverGroupID
-      }
+        ObserverGroupID,
+      },
     };
   }
 
@@ -73,8 +70,7 @@ export class GroupPage extends BasePage {
   isEmpty(): Promise<boolean> {
     return Promise.resolve(
       this.draft &&
-      (this.draft.registration.ObserverGroupID === undefined ||
-        this.draft.registration.ObserverGroupID === null)
+        (this.draft.registration.ObserverGroupID === undefined || this.draft.registration.ObserverGroupID === null)
     );
   }
 }

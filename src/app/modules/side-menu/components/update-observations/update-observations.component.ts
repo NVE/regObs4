@@ -9,7 +9,7 @@ import { DataLoadService } from '../../../data-load/services/data-load.service';
 @Component({
   selector: 'app-update-observations',
   templateUrl: './update-observations.component.html',
-  styleUrls: ['./update-observations.component.scss']
+  styleUrls: ['./update-observations.component.scss'],
 })
 export class UpdateObservationsComponent implements OnInit, OnDestroy {
   lastUpdated: Date;
@@ -26,13 +26,11 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.observationService
-        .getLastUpdatedForCurrentGeoHazardAsObservable()
-        .subscribe((val) => {
-          this.ngZone.run(() => {
-            this.lastUpdated = val;
-          });
-        })
+      this.observationService.getLastUpdatedForCurrentGeoHazardAsObservable().subscribe((val) => {
+        this.ngZone.run(() => {
+          this.lastUpdated = val;
+        });
+      })
     );
     this.subscriptions.push(
       this.observationService.dataLoad$

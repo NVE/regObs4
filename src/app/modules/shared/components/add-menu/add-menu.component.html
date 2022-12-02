@@ -1,33 +1,31 @@
-<ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed" *ngIf="(geoHazardInfo$ | async) as geoHazardInfo ">
+<ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed" *ngIf="geoHazardInfo$ | async as geoHazardInfo">
   <ion-fab-button>
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
     <ion-list lines="full" class="ion-no-padding ion-no-margin add-menu-list">
-
       <!-- New observation button -->
       <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazardInfo.geoHazards">
         <app-geo-icon slot="start" [useGeoColors]="false" [geoHazards]="[geoHazard]"></app-geo-icon>
-        <ion-label>{{ 'ADD_MENU.NEW_' + getName(geoHazard) + '_OBSERVATION' | uppercase | translate }}</ion-label>
+        <ion-label>{{ "ADD_MENU.NEW_" + getName(geoHazard) + "_OBSERVATION" | uppercase | translate }}</ion-label>
       </ion-item>
 
       <!-- Drafts -->
       <ion-item *ngFor="let draft of drafts$ | async" (click)="editRegistration(draft.id)">
         <ion-icon slot="start" name="create"></ion-icon>
         <ion-label>
-          {{'ADD_MENU.DRAFT_TITLE_' + getName(draft.geoHazard) | uppercase | translate}}
+          {{ "ADD_MENU.DRAFT_TITLE_" + getName(draft.geoHazard) | uppercase | translate }}
           <p>{{ draft.date }}</p>
         </ion-label>
       </ion-item>
 
       <!-- Start / stop trip -->
       <ng-container *ngIf="geoHazardInfo.showTrip && isIosOrAndroid">
-        <ion-item *ngIf="tripStarted$ | async else startTrip" (click)="startOrStopTrip(true)">
+        <ion-item *ngIf="tripStarted$ | async; else startTrip" (click)="startOrStopTrip(true)">
           <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
-          <ion-label>{{'TRIP.STOP_TRIP' | translate }}</ion-label>
+          <ion-label>{{ "TRIP.STOP_TRIP" | translate }}</ion-label>
         </ion-item>
       </ng-container>
-
     </ion-list>
     <div class="backdrop" click="closeMenu()"></div>
   </ion-fab-list>
@@ -35,6 +33,6 @@
 <ng-template #startTrip>
   <ion-item (click)="startOrStopTrip(false)">
     <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
-    <ion-label>{{'TRIP.START_TRIP' | translate }}</ion-label>
+    <ion-label>{{ "TRIP.START_TRIP" | translate }}</ion-label>
   </ion-item>
 </ng-template>
