@@ -32,6 +32,7 @@
     "translations:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
     "translations:download": "ts-node --project tsconfig.npm-script.json translations/download.ts",
     "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts",
+    "translations:pr": "ts-node --project tsconfig.npm-script.json translations/triggerPRs.ts",
     "prettier:fix": "prettier --write src"
   },
   "private": true,
