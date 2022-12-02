@@ -186,7 +186,9 @@
     "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
-    "OBSERVATIONS": "Observationer"
+    "SORT_BY_CHANGE_TIME": "Uppdateringstidpunkt",
+    "SORT_BY_OBS_TIME": "Observationstidpunkt",
+    "SORT_BY_TEXT": "Sortera efter"
   },
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
@@ -220,7 +222,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observationer",
-      "MESSAGE": "Använd observationer på egen risk, dom är producerade av användarna och är tillgängliga «som det är». \nNVE ger inga garantier för fel, utelämnanden och bedömningar som producerats av användarna. \nBedöm observationerna mot bakgrund av observatörens kompetens, som visas av stjärnor bredvid namnet."
+      "MESSAGE": "Använd observationer på egen risk, dom är producerade av användarna och är tillgängliga «som det är». \\nNVE ger inga garantier för fel, utelämnanden och bedömningar som producerats av användarna. \\nBedöm observationerna mot bakgrund av observatörens kompetens, som visas av stjärnor bredvid namnet."
     },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kartor",
@@ -527,7 +529,7 @@
           "GRAIN_FORM": "Kristallform",
           "GRAIN_FROM_SECONDARY": "Under­ordnad kristallform",
           "HARDNESS": "Hårdhet",
-          "HARDNESS_BOTTOM": "Under hårdhet",
+          "HARDNESS_BOTTOM": "Nedre hårdhet",
           "LAYER": "Lager",
           "MAX_GRAIN_SIZE": "Max kristallstorlek (mm)",
           "MULTIPLE_LAYERS": "Lager",
@@ -730,7 +732,7 @@
     "ICE_LEGEND_TEXT_6": "Rörledning",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Stödkarta visar delar av vattendrag som uppför sig oförutsägbart under vintern på grund av reglering vid vattenkraftsproduktion",
-    "INFO_PAGE": "<h1>Om kartor med lutningsgrad och utloppszoner</h1>\nKartorna produceras automatiskt och kan innehålla fel. Det kan finnas brant terräng, som inte representeras i höjdmodellen och därmed inte visas på kartorna.\nVissa laviner kan ha längre utloppzoner än vad som visas som visas på kartorna.\n\n<h2> Vad ska man beakta?</h2>\nVälj vilken risk du vill utsätta dig för genom att välja var, när och hur du åker. Varsom är ett planeringsverktyg och dess data kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering.\n\n<h2> När är det säkert?</h2>\nAlla vistelse i snötäckt lavinterräng har ett inslag av risk.\n\n<h2> Vill du lära dig mer?</h2>\nDu kan lära dig mer genom att gå en Lavinkurs eller läsa mer på Snøskredskolen på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kartor med lutningsgrad och utloppszoner</h1>\\nKartorna produceras automatiskt och kan innehålla fel. Det kan finnas brant terräng, som inte representeras i höjdmodellen och därmed inte visas på kartorna.\\nVissa laviner kan ha längre utloppzoner än vad som visas som visas på kartorna.\\n\\n<h2> Vad ska man beakta?</h2>\\nVälj vilken risk du vill utsätta dig för genom att välja var, när och hur du åker. Varsom är ett planeringsverktyg och dess data kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering.\\n\\n<h2> När är det säkert?</h2>\\nAlla vistelse i snötäckt lavinterräng har ett inslag av risk.\\n\\n<h2> Vill du lära dig mer?</h2>\\nDu kan lära dig mer genom att gå en Lavinkurs eller läsa mer på Snøskredskolen på Varsom.no.",
     "LOW": "Låg",
     "MARITINE_BORDER": "Havsgräns",
     "MIDDLE": "Medel",
@@ -742,7 +744,7 @@
     "STEEPNESS_OFFLINE_DISCLAMER": "Temakartan är endast tillgänglig offline med utloppszoner aktiverade.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kort utloppszon (50% av lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medel utloppszon (25% oav lavinerna når längre)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszon för laviner",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
@@ -758,7 +760,7 @@
     "END_ERROR": "Det gick inte att avsluta turen. Försök igen senare. Turen avslutas automatiskt vid midnatt.",
     "ERROR": "Kunde inte starta turen. Försök igen.",
     "ERROR_POSITION": "Kan inte starta turen utan GPS-position.",
-    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\n\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \n\nAlla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
+    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\\n\\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \\n\\nAlla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startat",
     "START_TRIP": "Start tur",

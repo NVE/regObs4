@@ -210,8 +210,7 @@
     "MAX_COUNT_REACHED_HEADER": "Ikke flere observationer",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Hvis du ikke fandt det, som du leder efter, kan du prøve at zoome ind på kortet eller begrænse perioden, du vil se observationer for.",
     "NO_OBSERVATIONS": "Ingen observationer",
-    "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra.",
-    "OBSERVATIONS": "Observationer"
+    "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kortpakke?",
@@ -743,7 +742,7 @@
     "ICE_LEGEND_TEXT_6": "Rørledning",
     "ICE_LEGEND_TEXT_7": "Kraftværkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekortet viser dele af vandløb som opfører sig uforudsigeligt gennem vinteren grundet reguleringer for energiproduktion.",
-    "INFO_PAGE": "<h1>Om kort med stejlhed og udløb</h1>\nKortene er automatisk genereret og kan indholde fejl. Der kan forekomme stejlt terræn som højdemodellen ikke opfanger og derfor ikke vises på kortet.\nNogle laviner kan være længere end dem, som er markeret som udløbsområder på kortene.\n<h2>Hvilke hensyn skal tages?</h2>\nTilpas egen risiko ved at vælge hvor, hvornår og hvordan du færdes. Varsom Regobs er et hjælpemiddel, ikke facit. Lav altid dine egne vurderinger-\n\n<h2>Hvornår er det trygt?</h2>\nAl færdsel i snedækket lavineterræn er forbundet med risiko-\n\n<h2>Lær mere?</h2>\nDu kan lære mere ved at tage et lavinekursus og på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kort med stejlhed og udløb</h1>\\nKortene er automatisk genereret og kan indholde fejl. Der kan forekomme stejlt terræn som højdemodellen ikke opfanger og derfor ikke vises på kortet.\\nNogle laviner kan være længere end dem, som er markeret som udløbsområder på kortene.\\n<h2>Hvilke hensyn skal tages?</h2>\\nTilpas egen risiko ved at vælge hvor, hvornår og hvordan du færdes. Varsom Regobs er et hjælpemiddel, ikke facit. Lav altid dine egne vurderinger-\\n\\n<h2>Hvornår er det trygt?</h2>\\nAl færdsel i snedækket lavineterræn er forbundet med risiko-\\n\\n<h2>Lær mere?</h2>\\nDu kan lære mere ved at tage et lavinekursus og på Varsom.no.",
     "LOW": "Lav",
     "MARITINE_BORDER": "Marinegrænseflade",
     "MIDDLE": "Medium",
@@ -755,7 +754,7 @@
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekortet er kun tilgængeligt offline med udløbende aktiviteter",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte udløb (50% af laviner stopper inden denne grænse)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium udløb (25% af laviner går længere)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange udløb (5% af laviner går længere)\nNogle laviner kan have udløb som ikke er vist på kortet.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange udløb (5% af laviner går længere)\\nNogle laviner kan have udløb som ikke er vist på kortet.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Fare for udløbsområder for lavine",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Udløbsområder for sneskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "svækket is"
@@ -771,7 +770,7 @@
     "END_ERROR": "Kan ikke stoppe tur. Prøv venligst igen senere. Turen vil automatisk stoppe ved midnat.",
     "ERROR": "Klarede ikke at starte tur. Venligst prøv igen.",
     "ERROR_POSITION": "Kan ikke starte tur uden GPS-position.",
-    "LEGACY_HELP_TEXT": "Du kan bruge denne for til at rapporter at du planlægger en tur i dag.\n\nDet er nyttigt for lavinevarslingen at vide om der kan forventes observationer i dag. Det er også nyttigt at vide, hvilke observationer der kan ventes (hvad ser du egyer, hvor skal du på tur) og hvornår du regner med at indsende disse til Regobs.\n\nAlle betalte observatører skal registrere hvilken type af obs-tour, der planlægges: er det en ordinær betalt obervastionstur, eller er det en tillgægsregistrering? Tillægsregistreringer er indsendning af observationer du har gjort under andet arbejde eller i din fritid.",
+    "LEGACY_HELP_TEXT": "Du kan bruge denne for til at rapporter at du planlægger en tur i dag.\\n\\nDet er nyttigt for lavinevarslingen at vide om der kan forventes observationer i dag. Det er også nyttigt at vide, hvilke observationer der kan ventes (hvad ser du egyer, hvor skal du på tur) og hvornår du regner med at indsende disse til Regobs.\\n\\nAlle betalte observatører skal registrere hvilken type af obs-tour, der planlægges: er det en ordinær betalt obervastionstur, eller er det en tillgægsregistrering? Tillægsregistreringer er indsendning af observationer du har gjort under andet arbejde eller i din fritid.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startet",
     "START_TRIP": "Start tur",

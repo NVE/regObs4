@@ -183,8 +183,7 @@
     "FORMS": "Formulaires",
     "IN_MAP_VIEW": "Observations dans la vue cartographique",
     "NO_OBSERVATIONS": "Aucune observation",
-    "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations.",
-    "OBSERVATIONS": "Observations"
+    "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
@@ -222,7 +221,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "À propos des observations",
-      "MESSAGE": "Utilisation des observations à vos risques et périls; elles sont produites par les utilisateurs et disponibles « en l'état ».\n Le NVE n'offre aucune garantie sur les erreurs, omissions et évaluations produites par les utilisateurs.\n Considérez les observations à la lumière de la compétence de l'observateur, indiquée par des étoiles à côté du nom."
+      "MESSAGE": "Utilisation des observations à vos risques et périls; elles sont produites par les utilisateurs et disponibles « en l'état ».\\n Le NVE n'offre aucune garantie sur les erreurs, omissions et évaluations produites par les utilisateurs.\\n Considérez les observations à la lumière de la compétence de l'observateur, indiquée par des étoiles à côté du nom."
     },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "À propos des cartes",
@@ -723,7 +722,7 @@
     "ICE_LEGEND_TEXT_6": "Pipeline",
     "ICE_LEGEND_TEXT_7": "Prise d'eau de la centrale électrique",
     "ICE_MAP_DESCRIPTION": "Le fond de carte montre les parties des cours d'eau ou des lacs qui se comportent de façon imprévisible tout au long de l'hiver en lien avec la régulation des cours d'eau pour la production hydro-électrique.",
-    "INFO_PAGE": "<h1>À propos des cartes de pentes et de zones d'écoulement</h1>\nLes cartes sont produites automatiquement et peuvent contenir des erreurs. Il peut y avoir une portion de terrain raide, qui n'est pas représentée dans le modèle numérique de terrain (MNT), et qui n'apparaîtra donc pas sur les cartes.\nCertaines avalanches peuvent avoir un écoulement plus long que ce qui est affiché comme emprise sur les cartes.\n\n<h2>Quelles sont les considérations à prendre en compte ?</h2>\nAdaptez votre comportement en choisissant où, quand et comment vous vous déplacez. Varsom Regobs est un outil de préparation de course et ses données peuvent différer de la situation réelle rencontrée. Faites toujours votre propre évaluation locale du risque.\n \n<h2>Le risque zéro existe-t-il ?</h2>\nTout déplacement en terrain avalancheux enneigé comporte un élément de risque.\n\n<h2>Vous voulez en savoir plus ?</h2>\nVous pouvez en savoir plus en vous formant à la gestion du risque. Des ressources pédagogiques en ligne sont disponible en Norvège : Snøskredskolen (\"École sur les avalanches\", en norvégien) sur Varsom.no. Des ressources existent aussi en français : par exemple, https://www.anena.org (Gérer le risque) ou https://www.avalanche.ca/education",
+    "INFO_PAGE": "<h1>À propos des cartes de pentes et de zones d'écoulement</h1>\\nLes cartes sont produites automatiquement et peuvent contenir des erreurs. Il peut y avoir une portion de terrain raide, qui n'est pas représentée dans le modèle numérique de terrain (MNT), et qui n'apparaîtra donc pas sur les cartes.\\nCertaines avalanches peuvent avoir un écoulement plus long que ce qui est affiché comme emprise sur les cartes.\\n\\n<h2>Quelles sont les considérations à prendre en compte ?</h2>\\nAdaptez votre comportement en choisissant où, quand et comment vous vous déplacez. Varsom Regobs est un outil de préparation de course et ses données peuvent différer de la situation réelle rencontrée. Faites toujours votre propre évaluation locale du risque.\\n \\n<h2>Le risque zéro existe-t-il ?</h2>\\nTout déplacement en terrain avalancheux enneigé comporte un élément de risque.\\n\\n<h2>Vous voulez en savoir plus ?</h2>\\nVous pouvez en savoir plus en vous formant à la gestion du risque. Des ressources pédagogiques en ligne sont disponible en Norvège : Snøskredskolen (\"École sur les avalanches\", en norvégien) sur Varsom.no. Des ressources existent aussi en français : par exemple, https://www.anena.org (Gérer le risque) ou https://www.avalanche.ca/education",
     "LOW": "Faible",
     "MARITINE_BORDER": "Bord de mer",
     "MIDDLE": "Intermédiaire",
@@ -735,7 +734,7 @@
     "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Emprise médiane de l'écoulement des avalanches (50 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Emprise \"normale\" de l'écoulement des avalanches (25 % des avalanches iront plus loin).",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Palette de couleur donnant les zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Carte des pentes et zones d'écoulement des avalanches",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Glace affaiblie"
@@ -751,7 +750,7 @@
     "END_ERROR": "Impossible de stopper le déplacement. Veuillez réessayer plus tard. Ce déplacement s'arrêtera automatiquement à minuit.",
     "ERROR": "Erreur lors de l'initialisation du déplacement. Veuillez réessayer.",
     "ERROR_POSITION": "Impossible de commencer le déplacement sans position GPS.",
-    "LEGACY_HELP_TEXT": "Vous pouvez utiliser ce formulaire pour signaler que vous prévoyez un déplacement aujourd'hui.\n\nIl est utile pour l'équipe de prévisionnistes de savoir si des observations peuvent être disponibles aujourd'hui. Il est également utile de savoir quel type d'observations seront rentrées (ce que vous recherchez, où allez-vous) et quand vous pensez les soumettre à Regobs.\n\nTous les observateurs rémunérés doivent indiquer l'itinéraire prévu : s'agit-il d'une observation \"ordinaire\" rémunéré dans le cadre d'une convention ou d'une observation supplémentaire ? Une observation supplémentaire est une observations que vous faites pendant votre temps libre ou hors convention.",
+    "LEGACY_HELP_TEXT": "Vous pouvez utiliser ce formulaire pour signaler que vous prévoyez un déplacement aujourd'hui.\\n\\nIl est utile pour l'équipe de prévisionnistes de savoir si des observations peuvent être disponibles aujourd'hui. Il est également utile de savoir quel type d'observations seront rentrées (ce que vous recherchez, où allez-vous) et quand vous pensez les soumettre à Regobs.\\n\\nTous les observateurs rémunérés doivent indiquer l'itinéraire prévu : s'agit-il d'une observation \"ordinaire\" rémunéré dans le cadre d'une convention ou d'une observation supplémentaire ? Une observation supplémentaire est une observations que vous faites pendant votre temps libre ou hors convention.",
     "ONGOING_TRIP": "Déplacement en cours",
     "STARTED": "Déplacement démarré",
     "START_TRIP": "Début du déplacement",

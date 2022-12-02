@@ -179,8 +179,7 @@
     "FORMS": "Form",
     "IN_MAP_VIEW": "Beobachtungen in Kartenansicht",
     "NO_OBSERVATIONS": "Keine Beobachtungen",
-    "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten.",
-    "OBSERVATIONS": "Beobachtungen"
+    "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten."
   },
   "OFFLINE_MAP": {
     "OFFLINE_MAP_PAGE_TITLE": "Offline-Karte"
@@ -192,7 +191,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Über Beobachtungen",
-      "MESSAGE": "Verwenden Sie die Beobachtungen auf eigenes Risiko, die von den Benutzern erstellt wurden und «wie sie sind» verfügbar sind.\nNVE übernimmt keine Garantie für Fehler, Auslassungen und Bewertungen der Benutzer.\nBetrachten Sie die Beobachtungen im Lichte der Kompetenz des Beobachters, wie durch Sterne neben dem Namen gezeigt."
+      "MESSAGE": "Verwenden Sie die Beobachtungen auf eigenes Risiko, die von den Benutzern erstellt wurden und «wie sie sind» verfügbar sind.\\nNVE übernimmt keine Garantie für Fehler, Auslassungen und Bewertungen der Benutzer.\\nBetrachten Sie die Beobachtungen im Lichte der Kompetenz des Beobachters, wie durch Sterne neben dem Namen gezeigt."
     },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "Über Karten",
@@ -682,7 +681,7 @@
     "ICE_LEGEND_TEXT_6": "Rohrleitung",
     "ICE_LEGEND_TEXT_7": "Kraftwerkstunnel",
     "ICE_MAP_DESCRIPTION": "Die Unterstützungskarte zeigt Teile von Wasserläufen, die sich aufgrund von Vorschriften zur Stromerzeugung den ganzen Winter über unvorhersehbar verhalten",
-    "INFO_PAGE": "<h1> Über Karten mit Steilheits- und Rundlaufzonen </h1>\nDie Karten werden automatisch erstellt und können Fehler enthalten. Möglicherweise gibt es steiles Gelände, das im Höhenmodell nicht dargestellt und daher nicht in den Karten angezeigt wird.\nEinige Lawinen haben möglicherweise längere Auslaufzonen als die in den Karten als Auslaufzone angezeigten.\n\n<h2> Welche Überlegungen sind zu beachten? </h2>\nPassen Sie Ihr Risiko an, indem Sie auswählen, wohin, wann und wie Sie reisen. Varsom Regobs ist ein Planungswerkzeug und seine Daten können von der tatsächlichen Situation abweichen. Machen Sie immer Ihre eigene Bewertung.\n\n<h2> Wann ist es sicher? </h2>\nJede Tour in schneebedecktem Lawinengelände birgt ein gewisses Risiko.\n\n<h2> Möchten Sie mehr erfahren? </h2>\nSie können mehr erfahren, indem Sie an einem Lawinensicherheitskurs teilnehmen und auf Snøskredskolen auf Varsom.no.",
+    "INFO_PAGE": "<h1> Über Karten mit Steilheits- und Rundlaufzonen </h1>\\nDie Karten werden automatisch erstellt und können Fehler enthalten. Möglicherweise gibt es steiles Gelände, das im Höhenmodell nicht dargestellt und daher nicht in den Karten angezeigt wird.\\nEinige Lawinen haben möglicherweise längere Auslaufzonen als die in den Karten als Auslaufzone angezeigten.\\n\\n<h2> Welche Überlegungen sind zu beachten? </h2>\\nPassen Sie Ihr Risiko an, indem Sie auswählen, wohin, wann und wie Sie reisen. Varsom Regobs ist ein Planungswerkzeug und seine Daten können von der tatsächlichen Situation abweichen. Machen Sie immer Ihre eigene Bewertung.\\n\\n<h2> Wann ist es sicher? </h2>\\nJede Tour in schneebedecktem Lawinengelände birgt ein gewisses Risiko.\\n\\n<h2> Möchten Sie mehr erfahren? </h2>\\nSie können mehr erfahren, indem Sie an einem Lawinensicherheitskurs teilnehmen und auf Snøskredskolen auf Varsom.no.",
     "LOW": "Tief",
     "MARITINE_BORDER": "Seegrenze",
     "MIDDLE": "Mittel",
@@ -693,9 +692,9 @@
     "STEEPNESS_MAP_DISCLAMER": "<i>Nur</i> für die Reiseplanung. Die Karte wird automatisch erstellt und kann Fehler und Auslassungen aufweisen, z.B. steiles Gelände nicht angezeigt.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kurze Auslaufzonen (50% der Lawinen reichen weiter)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Mittlere Auslaufzonen (25% der Lawinen reichen weiter)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange Auslaufzonen (5% der Lawinen reichen weiter)\nEinige Lawinen haben möglicherweise längere Auslaufzonen, wie die auf der Karte angezeigten.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange Auslaufzonen (5% der Lawinen reichen weiter)\\nEinige Lawinen haben möglicherweise längere Auslaufzonen, wie die auf der Karte angezeigten.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Hangneigungskarte mit Auslaufzonen",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Nur</i> für die Reiseplanung. Die Karte wird automatisch erstellt und kann Fehler und Auslassungen aufweisen, z.B. steiles Gelände oder Unebenheiten werden nicht angezeigt.\n<br/>\n<br/>\nFarben geben Auslaufzonen für Lawinen wieder:",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Nur</i> für die Reiseplanung. Die Karte wird automatisch erstellt und kann Fehler und Auslassungen aufweisen, z.B. steiles Gelände oder Unebenheiten werden nicht angezeigt.\\n<br/>\\n<br/>\\nFarben geben Auslaufzonen für Lawinen wieder:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Geschwächtes Eis"
   },
   "TABS": {
@@ -709,7 +708,7 @@
     "END_ERROR": "Konnte Routenaufzeichnung nicht stoppen. Bitte versuchen Sie es später noch einmal. Die Routenaufzeichnung stoppt automatisch um Mitternacht.",
     "ERROR": "Fehler beim Starten der Routenaufzeichnung. Bitte versuche es erneut.",
     "ERROR_POSITION": "Routenaufzeichnung konnte ohne GPS-Position nicht gestartet werden.",
-    "LEGACY_HELP_TEXT": "Mit diesem Formular können Sie mitteilen, dass Sie heute eine Route planen.\n\nEs ist für das Warndienstteam hilfreich zu wissen, ob heute mit Beobachtungen zu rechnen ist. Es ist auch hilfreich zu wissen, welche Art von Beobachtungen zu erwarten sind (wonach Sie suchen, wohin Sie gehen) und wann Sie damit rechnen, dass diese bei Regobs eingereicht werden.\n\nAlle bezahlten Beobachter müssen aufzeichnen, welche Arten von Beobachtungstouren geplant sind: ist es eine gewöhnliche bezahlte Beobachtungstour oder ist dies eine zusätzliche Meldung? Eine zusätzliche Meldung ist die Übermittlung von Beobachtungen, die Sie während anderer Arbeiten oder in Ihrer Freizeit gemacht haben.",
+    "LEGACY_HELP_TEXT": "Mit diesem Formular können Sie mitteilen, dass Sie heute eine Route planen.\\n\\nEs ist für das Warndienstteam hilfreich zu wissen, ob heute mit Beobachtungen zu rechnen ist. Es ist auch hilfreich zu wissen, welche Art von Beobachtungen zu erwarten sind (wonach Sie suchen, wohin Sie gehen) und wann Sie damit rechnen, dass diese bei Regobs eingereicht werden.\\n\\nAlle bezahlten Beobachter müssen aufzeichnen, welche Arten von Beobachtungstouren geplant sind: ist es eine gewöhnliche bezahlte Beobachtungstour oder ist dies eine zusätzliche Meldung? Eine zusätzliche Meldung ist die Übermittlung von Beobachtungen, die Sie während anderer Arbeiten oder in Ihrer Freizeit gemacht haben.",
     "ONGOING_TRIP": "Routenaufzeichnung läuft",
     "STARTED": "Tour wurde gestartet",
     "START_TRIP": "Starte Tour",

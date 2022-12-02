@@ -207,8 +207,7 @@
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjonar",
-    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjonar i kartutsnittet. Prøv å endre utsnittet eller forleng perioda du vil sjå observasjonar frå.",
-    "OBSERVATIONS": "Observasjonar"
+    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjonar i kartutsnittet. Prøv å endre utsnittet eller forleng perioda du vil sjå observasjonar frå."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -246,7 +245,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observasjonar",
-      "MESSAGE": "Observasjonar brukast på eige ansvar. Dei er registrert av brukarane og er ikkje kvalitetsjekka. NVE tek ikkje ansvar for feil, manglar og vurderingar som registererast av brukarane. \nKompetansenivået, som visast som stjerner bak navnet, KAN vere ein indikator på truverdigheit. "
+      "MESSAGE": "Observasjonar brukast på eige ansvar. Dei er registrert av brukarane og er ikkje kvalitetsjekka. NVE tek ikkje ansvar for feil, manglar og vurderingar som registererast av brukarane. \\nKompetansenivået, som visast som stjerner bak navnet, KAN vere ein indikator på truverdigheit. "
     },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kart",
@@ -777,7 +776,7 @@
     "ICE_LEGEND_TEXT_6": "Røyrgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser delar av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunna reguleringar for kraftproduksjon",
-    "INFO_PAGE": "<h1>Om kart med helling og utløp</h1>\nKarta er automatisk generert og kan innehalde feil. Det kan eksistere bratte heng som høgdemodellen ikkje får med seg og derfor ikke visast på kartet.\nNokre skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Kva omsyn må takast?</h2>\nTilpass eigen risiko med å velje, når og korleis du ferdast. Varsom er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. \n\n<h2>Når er det trygt?</h2>\nDet er ein viss risiko med all ferdsel i snødekt skredterreng.\n\n<h2>Lære meir?</h2>\nDu kan lære meir på skredkurs og Snøskredskulen på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kart med helling og utløp</h1>\\nKarta er automatisk generert og kan innehalde feil. Det kan eksistere bratte heng som høgdemodellen ikkje får med seg og derfor ikke visast på kartet.\\nNokre skred kan gå lenger enn det som er markert som utløpsområde i kartet.\\n\\n<h2>Kva omsyn må takast?</h2>\\nTilpass eigen risiko med å velje, når og korleis du ferdast. Varsom er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. \\n\\n<h2>Når er det trygt?</h2>\\nDet er ein viss risiko med all ferdsel i snødekt skredterreng.\\n\\n<h2>Lære meir?</h2>\\nDu kan lære meir på skredkurs og Snøskredskulen på Varsom.no.",
     "LOW": "Låg",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
@@ -789,7 +788,7 @@
     "STEEPNESS_OFFLINE_DISCLAMER": "Offline støttekart er berre tilgjengeleg med både helning og utløpsområder.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Fargar på utløp for snøskred:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
@@ -805,7 +804,7 @@
     "END_ERROR": "Klarte ikkje å stoppe tur. Vennlegast prøv igjen seinare. Turen blir automatisk stoppa med midnatt. ",
     "ERROR": "Klarte ikkje starte tur. Vennlegast prøv igjen.",
     "ERROR_POSITION": "Kan ikkje starte tur utan GPS-posisjon.",
-    "LEGACY_HELP_TEXT": "Her melder du frå om du planlegg tur i dag. \n\nDet er nyttig for snøskredvarslinga å vite om og ev. når det kan ventast observasjonar, samt kvar du er på tur, og kva du ser etter.\n\nBetalte observatørar skal registrere kva slags tur dei planlegg. Er det ein ordinær betalt observasjonstur, eller er det ei tilleggsregistrering (gjort i anna arbeid eller på fritida)?",
+    "LEGACY_HELP_TEXT": "Her melder du frå om du planlegg tur i dag. \\n\\nDet er nyttig for snøskredvarslinga å vite om og ev. når det kan ventast observasjonar, samt kvar du er på tur, og kva du ser etter.\\n\\nBetalte observatørar skal registrere kva slags tur dei planlegg. Er det ein ordinær betalt observasjonstur, eller er det ei tilleggsregistrering (gjort i anna arbeid eller på fritida)?",
     "ONGOING_TRIP": "Tur føregår",
     "STARTED": "Tur starta",
     "START_TRIP": "Start tur",
