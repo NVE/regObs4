@@ -144,12 +144,12 @@ You need certificates to build and publish apps. The Apple certificates last onl
 When you renew an Apple distribution certificate; you need to create a new provisioning profile containing the
 distribution certificate. You also need to make these changes in build/project files:
 
-| File | Setting |
-|------|---------|
-| azure-pipelines-release.yml | certSecureFile |
-| azure-pipelines-release.yml | provisioningProfileName |
-| azure-pipelines-release.yml | provProfileSecureFile |
-| project.pbxproj | PROVISIONING_PROFILE_SPECIFIER |
+| File                        | Setting                        |
+| --------------------------- | ------------------------------ |
+| azure-pipelines-release.yml | certSecureFile                 |
+| azure-pipelines-release.yml | provisioningProfileName        |
+| azure-pipelines-release.yml | provProfileSecureFile          |
+| project.pbxproj             | PROVISIONING_PROFILE_SPECIFIER |
 
 ## Beta-testing
 
@@ -303,7 +303,7 @@ Overwrite /assets/json/regions-simple-polygons.json
 # Translations
 
 App-spesifikke tekster finnes i `./translations/app`. Disse tekstene
-håndteres via *cordova-plugin-localization-strings*.
+håndteres via _cordova-plugin-localization-strings_.
 
 Web-tekster finnes i `./src/assets/i18n`. Omtrent all regobs-koden er web-kode
 (det som ligger under `./src/`).
@@ -319,7 +319,7 @@ Vi bruker [Lokalise](https://lokalise.com/) til å håndtere oversettelser.
 Disse NPM-skriptene eksisterer som hjelp til å håndtere språkfiler:
 
 | Script                          | Beskrivelse                                                        |
-|---------------------------------|--------------------------------------------------------------------|
+| ------------------------------- | ------------------------------------------------------------------ |
 | `npm run translations:sort`     | Sorter nøklene i språkfilene som ligger lokalt fra a - å.          |
 | `npm run translations:upload`   | Last opp språkfiler til Lokalise. Overskriver endringer i Lokalse. |
 | `npm run translations:download` | Last ned språkfiler fra Lokalse. Overskriver lokale endringer.     |
