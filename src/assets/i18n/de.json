@@ -179,8 +179,7 @@
     "FORMS": "Form",
     "IN_MAP_VIEW": "Beobachtungen in Kartenansicht",
     "NO_OBSERVATIONS": "Keine Beobachtungen",
-    "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten.",
-    "OBSERVATIONS": "Beobachtungen"
+    "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten."
   },
   "OFFLINE_MAP": {
     "OFFLINE_MAP_PAGE_TITLE": "Offline-Karte"

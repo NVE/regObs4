@@ -179,8 +179,7 @@
     "FORMS": "Obrazci",
     "IN_MAP_VIEW": "Opažanja na prikazanem delu zemljevida",
     "NO_OBSERVATIONS": "Brez opažanj",
-    "NO_OBSERVATIONS_TEXT": "Na prikazanem delu zemljevida ni vnešenih opažanj. Poskusite spremeniti območje ali razširite željeno časovno obdobje za opažanja.",
-    "OBSERVATIONS": "Opažanja"
+    "NO_OBSERVATIONS_TEXT": "Na prikazanem delu zemljevida ni vnešenih opažanj. Poskusite spremeniti območje ali razširite željeno časovno obdobje za opažanja."
   },
   "OFFLINE_MAP": {
     "OFFLINE_MAP_PAGE_TITLE": "Zemljevid brez povezave"

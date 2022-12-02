@@ -186,7 +186,9 @@
     "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
-    "OBSERVATIONS": "Observationer"
+    "SORT_BY_CHANGE_TIME": "Uppdateringstidpunkt",
+    "SORT_BY_OBS_TIME": "Observationstidpunkt",
+    "SORT_BY_TEXT": "Sortera efter"
   },
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
@@ -527,7 +529,7 @@
           "GRAIN_FORM": "Kristallform",
           "GRAIN_FROM_SECONDARY": "Under­ordnad kristallform",
           "HARDNESS": "Hårdhet",
-          "HARDNESS_BOTTOM": "Under hårdhet",
+          "HARDNESS_BOTTOM": "Nedre hårdhet",
           "LAYER": "Lager",
           "MAX_GRAIN_SIZE": "Max kristallstorlek (mm)",
           "MULTIPLE_LAYERS": "Lager",

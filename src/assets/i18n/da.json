@@ -210,8 +210,7 @@
     "MAX_COUNT_REACHED_HEADER": "Ikke flere observationer",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Hvis du ikke fandt det, som du leder efter, kan du prøve at zoome ind på kortet eller begrænse perioden, du vil se observationer for.",
     "NO_OBSERVATIONS": "Ingen observationer",
-    "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra.",
-    "OBSERVATIONS": "Observationer"
+    "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kortpakke?",

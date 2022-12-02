@@ -183,8 +183,7 @@
     "FORMS": "Formulaires",
     "IN_MAP_VIEW": "Observations dans la vue cartographique",
     "NO_OBSERVATIONS": "Aucune observation",
-    "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations.",
-    "OBSERVATIONS": "Observations"
+    "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations."
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
