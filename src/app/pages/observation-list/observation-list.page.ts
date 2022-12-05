@@ -8,7 +8,7 @@ import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
-  SearchRegistrationService
+  SearchRegistrationService,
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -54,15 +54,17 @@ export class ObservationListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.orderBy$ = this.searchCriteriaService.searchCriteria$.pipe(map(searchCriteria => {
-      if (!searchCriteria.OrderBy) return 'DtObsTime';
-      else return searchCriteria.OrderBy;
-    }));
+    this.orderBy$ = this.searchCriteriaService.searchCriteria$.pipe(
+      map((searchCriteria) => {
+        if (!searchCriteria.OrderBy) return 'DtObsTime';
+        else return searchCriteria.OrderBy;
+      })
+    );
 
     this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
   }
 
-  handleChangeSorting(event){
+  handleChangeSorting(event) {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 

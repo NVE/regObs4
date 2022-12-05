@@ -10,7 +10,7 @@ import {
   shareReplay,
   startWith,
   Subject,
-  tap
+  tap,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -21,10 +21,12 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 
+export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
-export type SearchCriteriaOrderBy  = 'DtObsTime' | 'DtChangeTime';
-
-const UrlDtoOrderByMap = new Map([['changeTime', 'DtChangeTime'],['obsTime', 'DtObsTime']]);
+const UrlDtoOrderByMap = new Map([
+  ['changeTime', 'DtChangeTime'],
+  ['obsTime', 'DtObsTime'],
+]);
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
@@ -56,8 +58,8 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
 }
 
 //DtObsTime => obsTime
-function  convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string{
-  if(value){
+function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
+  if (value) {
     const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
     return keyValue;
   }
@@ -167,7 +169,7 @@ export class SearchCriteriaService {
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
-    const orderBy =  this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
+    const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
@@ -179,17 +181,16 @@ export class SearchCriteriaService {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
-      OrderBy: orderBy
+      OrderBy: orderBy,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
   }
 
-  private readOrderBy(orderBy: string) : string{
+  private readOrderBy(orderBy: string): string {
     return UrlDtoOrderByMap.get(orderBy);
   }
-
 
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
     let geoHazards: number[] = [GeoHazard.Snow];
