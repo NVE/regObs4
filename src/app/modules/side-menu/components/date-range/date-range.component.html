@@ -9,36 +9,37 @@
         <ion-radio-group [(ngModel)]="mode">
           <ion-item>
             <ion-radio [value]="'predefined'" slot="start"></ion-radio>
-            <app-observations-days-back></app-observations-days-back>
+            <app-observations-days-back (changeDaysBack)="changeDate($event)"></app-observations-days-back>
           </ion-item>
 
           <ion-item>
             <ion-label>Egendefinert periode</ion-label>
             <ion-radio slot="start" [value]="'custom'"></ion-radio>
           </ion-item>
+          <ion-item class="no-border" *ngIf="mode === 'custom'">
+            <ion-note slot="start">Startdato</ion-note>
+            <app-datetime-picker
+              presentation="date"
+              [(dateTime)]="fromDate"
+              [minDate]="minDate"
+              [maxDate]="maxDate"
+              [dateTimeFormat]="'dd. MMM yyyy'"
+              (dateTimeChange)="setFromDate($event)"
+            ></app-datetime-picker>
+          </ion-item>
+          <ion-item class="no-border" *ngIf="mode === 'custom'">
+            <ion-note slot="start">Sluttdato</ion-note>
+            <app-datetime-picker
+              presentation="date"
+              [(dateTime)]="toDate"
+              [minDate]="minDate"
+              [maxDate]="maxDate"
+              [dateTimeFormat]="'dd. MMM yyyy'"
+              (dateTimeChange)="setToDate($event)"
+            ></app-datetime-picker>
+          </ion-item>
         </ion-radio-group>
       </ion-list>
     </div>
   </ion-accordion>
 </ion-accordion-group>
-
-<ion-item class="no-border" *ngIf="mode === 'custom'">
-  <ion-note slot="start">Startdato</ion-note>
-  <app-datetime-picker
-    presentation="date"
-    [(dateTime)]="fromDate"
-    [minDate]="minDate"
-    [maxDate]="maxDate"
-    [dateTimeFormat]="'dd. MMM yyyy'"
-  ></app-datetime-picker>
-</ion-item>
-<ion-item class="no-border" *ngIf="mode === 'custom'">
-  <ion-note slot="start">Sluttdato</ion-note>
-  <app-datetime-picker
-    presentation="date"
-    [(dateTime)]="toDate"
-    [minDate]="minDate"
-    [maxDate]="maxDate"
-    [dateTimeFormat]="'dd. MMM yyyy'"
-  ></app-datetime-picker>
-</ion-item>

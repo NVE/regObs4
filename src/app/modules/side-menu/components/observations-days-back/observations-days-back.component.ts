@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -19,6 +19,8 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
+
+  @Output() changeDaysBack = new EventEmitter<number>();
 
   constructor(private userSettingService: UserSettingService, private platform: Platform) {
     super();
@@ -55,6 +57,8 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
     }
     if (changed) {
       this.userSettingService.saveUserSettings(userSetting);
+      const daysBack = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
+      this.changeDaysBack.emit(daysBack);
     }
   }
 }

@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map, Observable } from 'rxjs';
+import { map, Observable, takeUntil } from 'rxjs';
+import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
+import { tap } from 'rxjs/operators';
+import moment from 'moment';
 
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
 })
-export class DateRangeComponent implements OnInit {
+export class DateRangeComponent extends NgDestoryBase implements OnInit {
   fromDate: string;
   toDate: string;
-  minDate: string;
-  maxDate: string;
+  minDate = new Date('01.01.2010').toISOString();
+  maxDate = new Date().toISOString();
   mode: 'predefined' | 'custom' = 'predefined';
 
   get modeText(): Observable<string> {
@@ -44,11 +47,32 @@ export class DateRangeComponent implements OnInit {
     });
   }
 
-  constructor(private searchCriteriaService: SearchCriteriaService, private userSettingService: UserSettingService) {}
+  constructor(private searchCriteriaService: SearchCriteriaService, private userSettingService: UserSettingService) {
+    super();
+  }
 
   ngOnInit() {
-    this.minDate = new Date('01.01.2010').toISOString();
-    this.maxDate = new Date().toISOString();
+    this.searchCriteriaService.searchCriteria$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap((criteria) => {
+          this.fromDate = criteria.FromDtObsTime;
+          this.toDate = criteria.ToDtObsTime;
+        })
+      )
+      .subscribe();
+  }
+
+  setFromDate(date: string) {
+    this.searchCriteriaService.setFromDate(date);
+  }
+
+  setToDate(date: string) {
+    this.searchCriteriaService.setToDate(date);
+  }
+
+  changeDate(days: number) {
+    this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'));
   }
 
   private static getReadableDays(day: number): string {

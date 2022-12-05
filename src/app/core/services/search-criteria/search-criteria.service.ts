@@ -121,18 +121,13 @@ export class SearchCriteriaService {
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
-      ),
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => ({
+      map(([criteria, langKey, geoHazards, extent]) => ({
         ...criteria,
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
-        FromDtObsTime: fromObsTime,
-        ToDtObsTime: null,
         Extent: extent,
       })),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
@@ -154,10 +149,10 @@ export class SearchCriteriaService {
 
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
-    let fromObsTime: string = null;
-    if (daysBackNumeric != null) {
-      fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
-    }
+    const fromObsTime: string = this.daysBackToIsoDateTime(daysBackNumeric);
+    const toObsTime: string = this.daysBackToIsoDateTime(
+      this.convertToPositiveInteger(url.searchParams.get(URL_PARAM_TODATE))
+    );
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
 
@@ -165,6 +160,7 @@ export class SearchCriteriaService {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
+      ToDtObsTime: toObsTime,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
@@ -214,17 +210,24 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
+  setFromDate(fromDate: string) {
+    this.searchCriteriaChanges.next({ FromDtObsTime: isoDateTimeToLocalDate(fromDate) });
+  }
+
+  setToDate(toDate: string) {
+    this.searchCriteriaChanges.next({ ToDtObsTime: isoDateTimeToLocalDate(toDate) });
+  }
+
   private daysBackToIsoDateTime(daysBack: number): string {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
 
   private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto {
     if (mapView?.bounds) {
-      const extent: WithinExtentCriteriaDto = {
+      return {
         BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),
         TopLeft: latLngToPositionDto(mapView.bounds.getNorthWest()),
       };
-      return extent;
     }
     return null;
   }
