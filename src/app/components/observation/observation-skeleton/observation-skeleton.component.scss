@@ -1,104 +1,104 @@
 .skeleton-header {
-    height: 27px;
-    width: 124px;
-    display: inline-block;
-    top: -5px;
+  height: 27px;
+  width: 124px;
+  display: inline-block;
+  top: -5px;
 }
 
 .skeleton-image {
-    height: 30vh;
-    width: 100%;
-    margin-bottom: 30px;
+  height: 30vh;
+  width: 100%;
+  margin-bottom: 30px;
 }
 
 ion-card {
-    border-radius: 0;
-    margin: 1rem;
-    max-width: 960px;
+  border-radius: 0;
+  margin: 1rem;
+  max-width: 960px;
 
-    ion-card-content {
-        padding: 2rem 2rem 0 2rem;
-        font-size: 16px;
+  ion-card-content {
+    padding: 2rem 2rem 0 2rem;
+    font-size: 16px;
 
-        ion-card-header {
-            padding: 0px;
-            padding-bottom: 0px;
+    ion-card-header {
+      padding: 0px;
+      padding-bottom: 0px;
 
-            h3 {
-                font-size: 24px;
-                margin-top: 0px;
-                margin-bottom: 10px;
-            }
-        }
-
-        ion-grid {
-            // margin-bottom: 25px;
-            ion-row {
-                &.row-padding-end {
-                    padding-bottom: 5px;
-                }
-
-                ion-col {
-                    ion-badge {
-                        border-radius: 16px;
-                        margin-right: 6px;
-                        margin-bottom: 6px;
-                        --ion-color-medium-contrast: #fff;
-                        font-weight: 400;
-                        padding: 7px 10px;
-                        font-size: 12px;
-
-                        &.outline {
-                            border: 1px solid var(--ion-color-medium);
-                        }
-                    }
-                }
-            }
-        }
-
-        .card-icon-item {
-            display: inline-flex;
-            align-self: center;
-            padding-right: 16px;
-            padding-bottom: 5px;
-
-            .card-icon-item-icon {
-                // padding-right: 5px;
-                margin-right: 5px;
-                margin-top: 2px;
-            }
-
-            app-competence {
-                display: inline-block;
-                padding-left: 5px;
-            }
-        }
+      h3 {
+        font-size: 24px;
+        margin-top: 0px;
+        margin-bottom: 10px;
+      }
     }
+
+    ion-grid {
+      // margin-bottom: 25px;
+      ion-row {
+        &.row-padding-end {
+          padding-bottom: 5px;
+        }
+
+        ion-col {
+          ion-badge {
+            border-radius: 16px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            --ion-color-medium-contrast: #fff;
+            font-weight: 400;
+            padding: 7px 10px;
+            font-size: 12px;
+
+            &.outline {
+              border: 1px solid var(--ion-color-medium);
+            }
+          }
+        }
+      }
+    }
+
+    .card-icon-item {
+      display: inline-flex;
+      align-self: center;
+      padding-right: 16px;
+      padding-bottom: 5px;
+
+      .card-icon-item-icon {
+        // padding-right: 5px;
+        margin-right: 5px;
+        margin-top: 2px;
+      }
+
+      app-competence {
+        display: inline-block;
+        padding-left: 5px;
+      }
+    }
+  }
 }
 
 ion-item {
-    --inner-border-width: 0 !important;
-    --inner-padding-start: 2rem;
-    --inner-padding-end: 2rem;
+  --inner-border-width: 0 !important;
+  --inner-padding-start: 2rem;
+  --inner-padding-end: 2rem;
 
-    ion-button {
-        --ion-color-primary: var(--ion-text-color);
+  ion-button {
+    --ion-color-primary: var(--ion-text-color);
 
-        &.link-title {
-            font-size: 14px;
-            letter-spacing: 0.75px;
-            text-transform: uppercase;
-            font-weight: 600;
-            color: var(--ion-color-varsom-blue);
+    &.link-title {
+      font-size: 14px;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--ion-color-varsom-blue);
 
-            &.reg-id {
-                margin-left: 0px;
+      &.reg-id {
+        margin-left: 0px;
 
-                ion-icon {
-                    font-size: 1.4em;
-                    margin-left: 16px;
-                }
-            }
+        ion-icon {
+          font-size: 1.4em;
+          margin-left: 16px;
         }
+      }
     }
+  }
 }

@@ -25,8 +25,8 @@ describe('SearchCriteriaService', () => {
   let mapService: TestMapService;
 
   const orderByTestCases = [
-    {apiValue:'DtChangeTime', urlValue: 'changeTime'},
-    {apiValue:'DtObsTime', urlValue: 'obsTime'}
+    { apiValue: 'DtChangeTime', urlValue: 'changeTime' },
+    { apiValue: 'DtObsTime', urlValue: 'obsTime' },
   ];
 
   beforeEach(async () => {
@@ -103,9 +103,8 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('nick')).toEqual('Nick');
   }));
 
-  orderByTestCases.forEach(test => {
+  orderByTestCases.forEach((test) => {
     it('orderBy filter should work', fakeAsync(async () => {
-
       service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
       tick();
       //check that current criteria contains expected orderBy
@@ -115,7 +114,6 @@ describe('SearchCriteriaService', () => {
       expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
     }));
   });
-
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -168,7 +166,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected orderBy
@@ -181,7 +180,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected orderBy

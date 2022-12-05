@@ -19,15 +19,19 @@
           </ion-col>
           <ion-col>
             <ng-container *ngIf="orderBy$ | async as orderBy">
-            <div class="select-wrapper">
-              <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
-              <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
-                <ion-select-option value="DtObsTime"> {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option>
-                <ion-select-option value="DtChangeTime">{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option>
-              </ion-select>
-            </div>
+              <div class="select-wrapper">
+                <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
+                <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
+                  <ion-select-option value="DtObsTime">
+                    {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
+                  >
+                  <ion-select-option value="DtChangeTime"
+                    >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
+                  >
+                </ion-select>
+              </div>
             </ng-container>
-            </ion-col>
+          </ion-col>
         </ion-row>
       </ion-grid>
       <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc;" [obs]="obs">
@@ -63,8 +67,11 @@
             <div class="select-wrapper">
               <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
               <ion-select (ionChange)="handleChangeSorting($event)" [interface]="popupType">
-                <ion-select-option value="DtObsTime"> {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option>
-                <ion-select-option value="DtChangeTime">{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}
+                <ion-select-option value="DtObsTime">
+                  {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
+                >
+                <ion-select-option value="DtChangeTime"
+                  >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}
                 </ion-select-option>
               </ion-select>
             </div>
