@@ -129,6 +129,7 @@ export class SearchCriteriaService {
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
         Extent: extent,
+        // TODO: Bytte criteria hit for å overskrive brukerinstillinger fra url
       })),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
