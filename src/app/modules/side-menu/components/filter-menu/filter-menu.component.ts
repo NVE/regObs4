@@ -197,6 +197,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     } else return keyName;
   }*/
 
+
   sortCompetences(unsortedCompetences: KdvElement[][]): CompetenceItem {
     const competanceSorted: CompetenceItem = {};
     //since the filter menu component is not re rendered on geo hazard change we have to set showAutomaticStation to false here
@@ -209,6 +210,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         const filteredIds = allIds.filter(id => id>=filteredCompetance.Id && id != 105);
         //remove A from the array that will be used as select options
         if(filteredCompetance.Name == 'A') {
+          this.searchCriteriaService.setCompetence([105]);
           this.isShowAutomaticStation = true;
           this.automaticStation[filteredCompetance.Name] = [filteredCompetance.Id];
         }
@@ -223,13 +225,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         }
       });
     });
+    console.log(competanceSorted);
     return competanceSorted;
   }
 
   onSelectCompetenceChange(event) {
-    //check if isAutomaticStationChecked and then add 105 to filters
     const filterValues = event.detail.value.value;
-    if(this.isAutomaticStationChecked && this.showCompetances && filterValues) filterValues.push(105);
+    //check if isAutomaticStationChecked and then add 105 to filters
+    if(this.isAutomaticStationChecked && filterValues) filterValues.push(105);
     this.searchCriteriaService.setCompetence(filterValues);
   }
 

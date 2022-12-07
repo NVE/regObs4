@@ -17,6 +17,7 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMTIME = 'fromTime';
 const URL_PARAM_TOTIME = 'toTime';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_COMPETENCE = 'competence';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
@@ -31,6 +32,16 @@ function separatedStringToNumberArray(commaSeparatedString : string): number[] {
       .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
   }
   return [];
+}
+
+function competenceFromUrlToDto(competence: string): number[]{
+  return competence ?
+    competence.split(URL_PARAM_ARRAY_DELIMITER).map(competence => parseInt(competence)) :
+    null;
+}
+
+function competenceFromDtoToUrl(competence: number[]): string {
+  return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : null;
 }
 
 function numberArrayToSeparatedString(numbers: number[]): string {
@@ -134,10 +145,12 @@ export class SearchCriteriaService {
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
+    const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
 
     const criteria = {
       FromDtObsTime: fromObsTime,
-      ObserverNickName: nickName
+      ObserverNickName: nickName,
+      ObserverCompetence: observerCompetence,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
@@ -169,6 +182,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMTIME, criteria.FromDtObsTime);
     params.set(URL_PARAM_TOTIME, criteria.ToDtObsTime);
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.apply();
 
     //TODO:Når skal daysBack overstyre fromObsTime?
