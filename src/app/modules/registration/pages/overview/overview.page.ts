@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AlertController, IonToggle } from '@ionic/angular';
 import {
   ConfirmationModalService,
-  PopupResponse
+  PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { Capacitor } from '@capacitor/core';
 
@@ -37,7 +37,7 @@ const DEBUG_TAG = 'OverviewPage';
   selector: 'app-overview',
   templateUrl: './overview.page.html',
   styleUrls: ['./overview.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
   summaryItems$: Observable<Array<ISummaryItem>>;
@@ -68,13 +68,12 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     this.isDesktop = !Capacitor.isNativePlatform();
     this.draft$ = this.draftService.getDraft$(uuid);
     this.userGroupService.updateUserGroups();
-    this.geoHazardName$ = this.draft$.pipe(map( draft => GeoHazard[draft.registration.GeoHazardTID]));
-    this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$))
-      .subscribe((setting) => {
-        this.ngZone.run(() => {
-          this.userSetting = setting;
-        });
+    this.geoHazardName$ = this.draft$.pipe(map((draft) => GeoHazard[draft.registration.GeoHazardTID]));
+    this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((setting) => {
+      this.ngZone.run(() => {
+        this.userSetting = setting;
       });
+    });
 
     this.showSnowObsModeSelector$ = this.draft$.pipe(
       map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow && !this.syncFailed(draft))
@@ -124,7 +123,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
           const okToConvertToSimple = await this.requestConvertToSimple();
           if (okToConvertToSimple) {
             const simpleDraft = {
-              ...this.clearDataNotAvailableInSimpleSnowObs(draft)
+              ...this.clearDataNotAvailableInSimpleSnowObs(draft),
             };
             this.saveDraftAndSimpleModeSetting(simpleDraft, true);
           } else {
@@ -146,7 +145,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   private async saveDraftAndSimpleModeSetting(draft: RegistrationDraft, simpleMode: boolean): Promise<void> {
     const draftToSave: RegistrationDraft = {
       ...draft,
-      simpleMode
+      simpleMode,
     };
     this.draftRepository.save(draftToSave); //save mode on draft
     this.userSetting.preferCompleteSnowObservations = !simpleMode;
@@ -155,27 +154,26 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
   private async requestConvertToSimple(): Promise<boolean> {
     let resolveFunction: (confirm: boolean) => void;
-    const promise = new Promise<boolean>(resolve => {
+    const promise = new Promise<boolean>((resolve) => {
       resolveFunction = resolve;
     });
 
-    await this.confirmationModalService.askForConfirmation(
-      {
-        message: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE',
-        header: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER',
-        buttons: [
-          {
-            text: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL',
-            role: PopupResponse.CANCEL,
-            handler: () => resolveFunction(false)
-          },
-          {
-            text: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES',
-            role: PopupResponse.CONFIRM,
-            handler: () => resolveFunction(true)
-          }
-        ]
-      });
+    await this.confirmationModalService.askForConfirmation({
+      message: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.MESSAGE',
+      header: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.HEADER',
+      buttons: [
+        {
+          text: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.CANCEL',
+          role: PopupResponse.CANCEL,
+          handler: () => resolveFunction(false),
+        },
+        {
+          text: 'REGISTRATION.OVERVIEW.SIMPLE.CONFIRM.YES',
+          role: PopupResponse.CONFIRM,
+          handler: () => resolveFunction(true),
+        },
+      ],
+    });
 
     return promise;
   }
@@ -213,10 +211,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
         ObsLocation: draft.registration.ObsLocation,
         Attachments: draft.registration.Attachments,
         SnowSurfaceObservation: this.getSimpleSnowSurfaceObservation(draft),
-        DangerObs: this.filterSnowDangerObs(draft)
+        DangerObs: this.filterSnowDangerObs(draft),
 
         //TODO: Ta med skiføre
-      }
+      },
     };
     this.logger.debug(`Draft ${draft.uuid} converted to simple mode`, DEBUG_TAG, draft);
     return result;
@@ -229,7 +227,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     return {
       SnowSurfaceTID: draft.registration.SnowSurfaceObservation.SnowSurfaceTID,
       SnowDepth: draft.registration.SnowSurfaceObservation.SnowDepth,
-      NewSnowDepth24: draft.registration.SnowSurfaceObservation.NewSnowDepth24
+      NewSnowDepth24: draft.registration.SnowSurfaceObservation.NewSnowDepth24,
     };
   }
 
@@ -238,12 +236,12 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     if (draft.registration.DangerObs == null) {
       return [];
     }
-    const snowDangerObses = draft.registration.DangerObs.filter(obs => obs.GeoHazardTID == GeoHazard.Snow);
+    const snowDangerObses = draft.registration.DangerObs.filter((obs) => obs.GeoHazardTID == GeoHazard.Snow);
     for (const dangerObs of snowDangerObses) {
       if (dangerObs.GeoHazardTID == GeoHazard.Snow) {
         const snowObs: DangerObsEditModel = {
           GeoHazardTID: GeoHazard.Snow,
-          DangerSignTID: dangerObs.DangerSignTID
+          DangerSignTID: dangerObs.DangerSignTID,
         };
         result.push(snowObs);
       }
@@ -253,8 +251,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
   //If conflict or registration is gone, re-sumbit or cancelling is handled by the failed-registration-component
   hideSendButton(draft: RegistrationDraft): boolean {
-    return this.draftHasStatusSync(draft)
-      && [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft?.error?.code);
+    return (
+      this.draftHasStatusSync(draft) &&
+      [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft?.error?.code)
+    );
   }
 
   trackByFunction(index: number, item: ISummaryItem) {

@@ -13,21 +13,18 @@ import {
   scan,
   skipWhile,
   take,
-  filter
+  filter,
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { fromWorker } from 'observable-webworker';
-import {
-  IRegionInViewInput,
-  IRegionInViewOutput
-} from '../../web-workers/region-in-view-models';
+import { IRegionInViewInput, IRegionInViewOutput } from '../../web-workers/region-in-view-models';
 
 const DEBUG_TAG = 'MapService';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapService {
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
@@ -88,26 +85,17 @@ export class MapService {
     this._followModeSubject.next(val);
   }
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private loggingService: LoggingService
-  ) {
+  constructor(private userSettingService: UserSettingService, private loggingService: LoggingService) {
     this._showUserLocationSubject = new BehaviorSubject<boolean>(true);
     this._showUserLocationObservable = this._showUserLocationSubject.asObservable();
     this._followModeSubject = new BehaviorSubject<boolean>(false);
-    this._followModeObservable = this._followModeSubject
-      .asObservable()
-      .pipe(distinctUntilChanged(), shareReplay(1));
+    this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
-    this._centerMapToUserObservable = this._centerMapToUserSubject
-      .asObservable()
-      .pipe(shareReplay(1));
+    this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
     this._mapViewSubject = new BehaviorSubject<IMapView>(null);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
       debounceTime(200),
-      tap((val) =>
-        this.loggingService.debug('MapView updated', DEBUG_TAG, val)
-      ),
+      tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
       shareReplay(1)
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
@@ -162,17 +150,9 @@ export class MapService {
     return this.mapView$.pipe(
       bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
       switchMap((buffer) =>
-        buffer.length > 0 && !!buffer[buffer.length - 1]
-          ? of(buffer[buffer.length - 1])
-          : this.mapView$.pipe(take(1))
+        buffer.length > 0 && !!buffer[buffer.length - 1] ? of(buffer[buffer.length - 1]) : this.mapView$.pipe(take(1))
       ),
-      tap((val) =>
-        this.loggingService.debug(
-          'MapView has relevant change!',
-          DEBUG_TAG,
-          val
-        )
-      ),
+      tap((val) => this.loggingService.debug('MapView has relevant change!', DEBUG_TAG, val)),
       shareReplay(1)
     );
   }
@@ -180,7 +160,7 @@ export class MapService {
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
     const currenteMapViewAndGeoHazards = combineLatest([
       this.relevantMapChange$,
-      this.userSettingService.currentGeoHazard$
+      this.userSettingService.currentGeoHazard$,
     ]).pipe(
       map(([mapView, geoHazards]) => ({
         mapView,
@@ -188,10 +168,10 @@ export class MapService {
           mapView.bounds.getSouthWest().lng, // minx
           mapView.bounds.getSouthWest().lat, // miny
           mapView.bounds.getNorthEast().lng, // maxx
-          mapView.bounds.getNorthEast().lat // maxy
+          mapView.bounds.getNorthEast().lat, // maxy
         ],
         center: { lat: mapView.center.lat, lng: mapView.center.lng },
-        geoHazards
+        geoHazards,
       }))
     );
 
@@ -200,19 +180,17 @@ export class MapService {
         fromWorker<IRegionInViewInput, IRegionInViewOutput>(
           () =>
             new Worker(new URL('../../web-workers/region-in-view.worker', import.meta.url), {
-              type: 'module'
+              type: 'module',
             }),
           currenteMapViewAndGeoHazards
         ).pipe(
           map((result) => ({
             ...cvg.mapView,
-            ...result
+            ...result,
           }))
         )
       ),
-      tap((val) =>
-        this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)
-      ),
+      tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
       shareReplay(1)
     );
   }

@@ -40,6 +40,7 @@
 		69096B672750087900183268 /* nn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nn; path = nn.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		69096B682750089500183268 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		69096B69275008AC00183268 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6937234D293A30E700D199E3 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		69A0EED3281BE2A500FF6913 /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
 		69A0EED8281BF17800FF6913 /* Regobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regobs.swift; sourceTree = "<group>"; };
 		AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +167,7 @@
 				nn,
 				sl,
 				de,
+				da,
 			);
 			mainGroup = 504EC2FB1FED79650016851F;
 			productRefGroup = 504EC3051FED79650016851F /* Products */;
@@ -286,6 +288,7 @@
 				69096B672750087900183268 /* nn */,
 				69096B682750089500183268 /* sl */,
 				69096B69275008AC00183268 /* de */,
+				6937234D293A30E700D199E3 /* da */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

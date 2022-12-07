@@ -46,10 +46,9 @@ function removeDuplicatesFromObservationTypes(arr: ObservationTypeView[]): Obser
   selector: 'app-filter-menu',
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
-
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
@@ -104,13 +103,15 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         this.cdr.markForCheck();
       });
 
-    this.searchCriteriaService.searchCriteria$.pipe(
-      takeUntil(this.ngDestroy$),
-      tap((criteria) => {
-        this.nickName = criteria.ObserverNickName;
-        this.cdr.markForCheck();
-      })
-    ).subscribe();
+    this.searchCriteriaService.searchCriteria$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap((criteria) => {
+          this.nickName = criteria.ObserverNickName;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe();
   }
 
   mapSelectedRegTypesFromSearchCriteria(

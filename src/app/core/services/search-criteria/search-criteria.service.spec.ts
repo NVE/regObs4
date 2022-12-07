@@ -6,14 +6,14 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
+import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
 
 class TestMapService {
   mapView$: Observable<IMapView>;
 }
 
-function createTestMapService (): TestMapService {
+function createTestMapService(): TestMapService {
   const service = new TestMapService();
   service.mapView$ = of({ bounds: undefined, center: undefined, zoom: undefined });
   return service;
@@ -24,6 +24,11 @@ describe('SearchCriteriaService', () => {
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
 
+  const orderByTestCases = [
+    { apiValue: 'DtChangeTime', urlValue: 'changeTime' },
+    { apiValue: 'DtObsTime', urlValue: 'obsTime' },
+  ];
+
   beforeEach(async () => {
     TestBed.configureTestingModule({});
 
@@ -33,12 +38,13 @@ describe('SearchCriteriaService', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     jasmine.clock().install();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     history.pushState(null, '', window.location.pathname); //remove all query params added in test
     jasmine.clock().uninstall();
   });
@@ -58,9 +64,9 @@ describe('SearchCriteriaService', () => {
 
     //verify that criteria changes when we change language and geo hazard
     userSettingService.saveUserSettings({
-      ...await firstValueFrom(userSettingService.userSetting$),
+      ...(await firstValueFrom(userSettingService.userSetting$)),
       language: LangKey.en,
-      currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water]
+      currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water],
     });
     tick(1);
     const criteria2 = await firstValueFrom(service.searchCriteria$);
@@ -83,7 +89,6 @@ describe('SearchCriteriaService', () => {
     const url = new URL(document.location.href);
     expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
   }));
-
 
   it('nick name filter should work', fakeAsync(async () => {
     service.setObserverNickName('Nick');
@@ -111,6 +116,17 @@ describe('SearchCriteriaService', () => {
   }));
 
 
+  orderByTestCases.forEach((test) => {
+    it('orderBy filter should work', fakeAsync(async () => {
+      service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
+      tick();
+      //check that current criteria contains expected orderBy
+      const criteria = await firstValueFrom(service.searchCriteria$);
+      expect(criteria.OrderBy).toEqual(test.apiValue);
+      const url = new URL(document.location.href);
+      expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
+    }));
+  });
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -120,7 +136,7 @@ describe('SearchCriteriaService url parsing', () => {
   let mapService: TestMapService;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ });
+    TestBed.configureTestingModule({});
 
     mapService = createTestMapService();
     userSettingService = new UserSettingService(null, null);
@@ -128,7 +144,7 @@ describe('SearchCriteriaService url parsing', () => {
     jasmine.clock().install();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     history.pushState(null, '', window.location.pathname); //remove all query params added in test
     jasmine.clock().uninstall();
   });
@@ -149,7 +165,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected nick name
@@ -169,12 +186,41 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.SelectedRegistrationTypes).toEqual([{Id: 10, SubTypes: []}, {Id: 81, SubTypes: [13, 26]}]);
   }));
 
+  it('orderBy url filter should work', fakeAsync(async () => {
+    new UrlParams().set('orderBy', 'changeTime').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+    //check that current criteria contains expected orderBy
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.OrderBy).toEqual('DtChangeTime');
+  }));
+
+  it('orderBy url filter should work', fakeAsync(async () => {
+    new UrlParams().set('orderBy', 'obsTime').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+    //check that current criteria contains expected orderBy
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.OrderBy).toEqual('DtObsTime');
+  }));
+
   it('geo hazard url filter should work', fakeAsync(async () => {
     new UrlParams().set('hazard', 70).apply();
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected geo hazard
@@ -187,7 +233,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that current criteria contains expected geo hazard
@@ -202,7 +249,8 @@ describe('SearchCriteriaService url parsing', () => {
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     //check that criteria contains correct from time. Should be 1 days earlier at midnight
@@ -211,5 +259,4 @@ describe('SearchCriteriaService url parsing', () => {
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
   }));
-
 });

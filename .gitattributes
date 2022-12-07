@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
-* text=auto
+* text=auto eof=lf
 
 # Language files. When we download files from lokalise, they only get <LF> as line break character
 src/assets/i18n/*.json text eol=lf

@@ -1,6 +1,6 @@
 <ion-list class="ion-no-margin">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
-    <ion-label>{{'OBSERVATION_FILTER.TITLE' | translate}}</ion-label>
+    <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
   <app-observations-days-back></app-observations-days-back>
   <app-update-observations></app-update-observations>
@@ -8,11 +8,9 @@
     <!-- Dette er på prototypestadiet, så vi skjuler dette foreløpig -->
     <!-- TODO: Oversettelser på all tekst -->
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <ion-label>
-        Observasjonstype
-      </ion-label>
+      <ion-label> Observasjonstype </ion-label>
     </ion-list-header>
-  
+
     <ion-item *ngIf="observationTypesOptions">
       <ion-list lines="none">
         <ng-container *ngFor="let type of observationTypesOptions">
@@ -27,31 +25,33 @@
     </ion-item>
 
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <ion-label>
-        Observatør
-      </ion-label>
+      <ion-label> Observatør </ion-label>
     </ion-list-header>
     <!-- TODO: Legg til eller hente kompetanser i menyen. Husk at på snø er det en spesiell kompetanse A -->
     <ion-item>
       <ion-label class="no-margin-bottom" color="dark" position="stacked">Kompetanse</ion-label>
       <ion-select placeholder="Alle kompetansenivå" [interface]="popupType">
-        <ion-select-option>
-        </ion-select-option>
+        <ion-select-option> </ion-select-option>
       </ion-select>
     </ion-item>
     <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
     <ion-item>
       <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
-      <ion-searchbar [value]="nickName" [debounce]="1000" mode="ios" class="ion-no-padding"
-        placeholder="Søk på observatørnavn" (ionChange)="setNickName($event)">
+      <ion-searchbar
+        [value]="nickName"
+        [debounce]="1000"
+        mode="ios"
+        class="ion-no-padding"
+        placeholder="Søk på observatørnavn"
+        (ionChange)="setNickName($event)"
+      >
       </ion-searchbar>
     </ion-item>
 
     <!-- TODO: Implementere reset filter funksjonalitet -->
     <ion-item>
       <ion-button class="resetFiltersButton" type="button" fill="clear">
-        <ion-icon src="./assets/icon/reset-button.svg">
-        </ion-icon>Tilbakestill filtere
+        <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>Tilbakestill filtere
       </ion-button>
     </ion-item>
   </div>

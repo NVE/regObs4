@@ -8,7 +8,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-compression-test',
   templateUrl: './compression-test.component.html',
-  styleUrls: ['./compression-test.component.scss']
+  styleUrls: ['./compression-test.component.scss'],
 })
 export class CompressionTestComponent {
   @Input() draft: RegistrationDraft;
@@ -26,10 +26,7 @@ export class CompressionTestComponent {
     return this.connectedTests.length === 0;
   }
 
-  constructor(
-    private modalContoller: ModalController,
-    private draftService: DraftRepositoryService
-  ) {}
+  constructor(private modalContoller: ModalController, private draftService: DraftRepositoryService) {}
 
   async openModal(): Promise<void> {
     if (!this.compressionTestListModal) {
@@ -37,8 +34,8 @@ export class CompressionTestComponent {
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {
-          uuid: this.draft.uuid
-        }
+          uuid: this.draft.uuid,
+        },
       });
       this.compressionTestListModal.present();
       await this.compressionTestListModal.onDidDismiss();

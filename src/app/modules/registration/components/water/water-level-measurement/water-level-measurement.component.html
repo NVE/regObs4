@@ -1,47 +1,72 @@
 <ion-list-header>
   <ion-label>
-    {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING' :
-    'REGISTRATION.WATER.WATER_LEVEL.MEASURING') |
-    translate }} {{ measurementNumber }}
+    {{
+      (waterLevelMethod === 1 ? "REGISTRATION.WATER.WATER_LEVEL.MARKING" : "REGISTRATION.WATER.WATER_LEVEL.MEASURING")
+        | translate
+    }}
+    {{ measurementNumber }}
   </ion-label>
 </ion-list-header>
-<app-numeric-input *ngIf='waterLevelMethod === 2' [(value)]='waterLevelMeasurement.WaterLevelValue'
-                   title='REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS' [min]='0' [max]='8848' [decimalPlaces]='3'
-                   suffix='m'>
+<app-numeric-input
+  *ngIf="waterLevelMethod === 2"
+  [(value)]="waterLevelMeasurement.WaterLevelValue"
+  title="REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS"
+  [min]="0"
+  [max]="8848"
+  [decimalPlaces]="3"
+  suffix="m"
+>
 </app-numeric-input>
-<ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
-  <ion-label color='medium' position='stacked' class='ion-text-uppercase'>
-    {{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
+<ion-item [ngClass]="{ hasWarning: dateIsDifferentThanObsTime }">
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+    {{ "REGISTRATION.SET_TIME.TITLE" | translate }}
   </ion-label>
-  <app-datetime-picker [(dateTime)]='waterLevelMeasurement.DtMeasurementTime' (dateTimeChange)='dtChanged()'
-                       [maxDate]='maxDate'></app-datetime-picker>
-  <ion-button class='set-to-now-button' slot='end' fill='outline' color='medium' (click)='setToNow()'>
-    <ion-icon slot='start' name='time'></ion-icon>
-    {{"REGISTRATION.SET_TIME.NOW" | translate}}
+  <app-datetime-picker
+    [(dateTime)]="waterLevelMeasurement.DtMeasurementTime"
+    (dateTimeChange)="dtChanged()"
+    [maxDate]="maxDate"
+  ></app-datetime-picker>
+  <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium" (click)="setToNow()">
+    <ion-icon slot="start" name="time"></ion-icon>
+    {{ "REGISTRATION.SET_TIME.NOW" | translate }}
   </ion-button>
 </ion-item>
-<ion-item *ngIf='dateIsDifferentThanObsTime'>
-  <ion-label color='danger' class='ion-text-wrap'>
-    {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
+<ion-item *ngIf="dateIsDifferentThanObsTime">
+  <ion-label color="danger" class="ion-text-wrap">
+    {{ "ALERT.WARNING" | translate }}! {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING" | translate }}
   </ion-label>
 </ion-item>
-<ion-item *ngIf='showDtMeasurementTimeError'>
-  <ion-label color='danger' class='ion-text-wrap'>
-    {{'REGISTRATION.WATER.WATER_LEVEL.DT_REQUIRED_TEXT' | translate}}
+<ion-item *ngIf="showDtMeasurementTimeError">
+  <ion-label color="danger" class="ion-text-wrap">
+    {{ "REGISTRATION.WATER.WATER_LEVEL.DT_REQUIRED_TEXT" | translate }}
   </ion-label>
 </ion-item>
 <app-edit-images
-  iconColor='primary'
-  icon='add-circle-outline'
-  title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
-'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"
-  [registrationTid]='registrationTid'
-  [geoHazard]='geoHazard'
-  [draftUuid]='registrationId'
-  [(existingAttachments)]='waterLevelMeasurement.Attachments'
-  [ref]='ref'
+  iconColor="primary"
+  icon="add-circle-outline"
+  title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{
+    (waterLevelMethod === 1
+      ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL'
+      : 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL'
+    )
+      | translate
+      | lowercase
+  }}"
+  [registrationTid]="registrationTid"
+  [geoHazard]="geoHazard"
+  [draftUuid]="registrationId"
+  [(existingAttachments)]="waterLevelMeasurement.Attachments"
+  [ref]="ref"
   [attachmentType]="'WaterLevelMeasurementAttachment'"
 ></app-edit-images>
-<app-text-comment [(value)]='waterLevelMeasurement.Comment'
-                  placeholder="{{'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
-'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"></app-text-comment>
+<app-text-comment
+  [(value)]="waterLevelMeasurement.Comment"
+  placeholder="{{ 'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate }} {{
+    (waterLevelMethod === 1
+      ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL'
+      : 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL'
+    )
+      | translate
+      | lowercase
+  }}"
+></app-text-comment>

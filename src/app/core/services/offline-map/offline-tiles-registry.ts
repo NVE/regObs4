@@ -1,8 +1,11 @@
 import { OfflineMapPackage } from './offline-map.model';
 
-interface RegisteredPackageInfo {url: string; zMin: number; zMax: number}
+interface RegisteredPackageInfo {
+  url: string;
+  zMin: number;
+  zMax: number;
+}
 type RegisterForMapType = Map<string, RegisteredPackageInfo>;
-
 
 /**
  * Registry structure (map of maps):
@@ -38,7 +41,7 @@ export class OfflineTilesRegistry {
       }
       const registryForMapType = this.registry.get(mapType);
       const registryKey = this.getKey(map.rootTile.x, map.rootTile.y, map.rootTile.z);
-      registryForMapType.set(registryKey, { url: map.url, zMin: map.rootTile.z, zMax: map.zMax});
+      registryForMapType.set(registryKey, { url: map.url, zMin: map.rootTile.z, zMax: map.zMax });
       if (!this.lowestRootTileZ || map.rootTile.z < this.lowestRootTileZ) {
         this.lowestRootTileZ = map.rootTile.z;
       }

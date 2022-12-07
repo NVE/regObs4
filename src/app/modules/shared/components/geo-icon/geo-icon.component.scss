@@ -7,10 +7,11 @@ ion-icon {
   font-size: var(--base-font-size);
 
   &.ice {
-      font-size: calc(var(--base-font-size) * 0.9);
+    font-size: calc(var(--base-font-size) * 0.9);
   }
-  &.water-dirt, &.dirt-water  {
-      font-size: calc(var(--base-font-size) * 1.3);
+  &.water-dirt,
+  &.dirt-water {
+    font-size: calc(var(--base-font-size) * 1.3);
   }
 
   &.geo-color {

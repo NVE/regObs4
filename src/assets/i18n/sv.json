@@ -6,13 +6,13 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_SOIL": "Utkast: Jordobservation",
     "DRAFT_TITLE_ICE": "Utkast: Isobservation",
     "DRAFT_TITLE_SNOW": "Utkast: Snöobservation",
+    "DRAFT_TITLE_SOIL": "Utkast: Jordobservation",
     "DRAFT_TITLE_WATER": "Utkast: Vattenobservation",
-    "NEW_SOIL_OBSERVATION": "Ny jordobservation",
     "NEW_ICE_OBSERVATION": "Ny isobservation",
     "NEW_SNOW_OBSERVATION": "Ny snöobservation",
+    "NEW_SOIL_OBSERVATION": "Ny jordobservation",
     "NEW_WATER_OBSERVATION": "Ny vattenobservation"
   },
   "ALERT": {
@@ -100,6 +100,7 @@
   "LOGIN": {
     "CHANGE_PASSWORD": "Ändra lösenord",
     "CREATE_USER": "Skapa ny användare",
+    "DELETE_PROFILE": "Radera profil och mina data",
     "EMAIL": "E-post",
     "FORGOT_PASSWORD": "Glömt lösenord",
     "IS_LOGGING_IN": "Loggar in ...",
@@ -107,7 +108,6 @@
     "LOGIN": "Logga in",
     "LOGOUT": "Logga ut",
     "MY_PROFILE": "Min profil",
-    "DELETE_PROFILE": "Radera profil och mina data",
     "PASSWORD": "lösenord",
     "SERVICE_UNAVAILABLE": "Fel vid anslutning till tjänsten. Har du mobilnätverk? Vänta några minuter och försök igen.",
     "TITLE": "Logga in",
@@ -133,10 +133,10 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i Varsom",
     "AND": "och",
+    "CONTACT_DESCRIPTION": "Vi har bifogat loggfiler. Du kan ta bort dem om du inte önskar sända dem till oss.",
     "CONTACT_REGOBS": "Kontakta oss",
     "CONTACT_REGOBS_ERROR": "Rapportera fel",
     "CONTACT_SUBJECT": "Kontakta oss från appen",
-    "CONTACT_DESCRIPTION": "Vi har bifogat loggfiler. Du kan ta bort dem om du inte önskar sända dem till oss.",
     "DAYS_BACK": "Dagar tillbaka",
     "ERROR_REPORT_DESCRIPTION": "Vänligen beskriv ditt problem nedan. Om du har skärmdumpar vänligen bifoga. Vi har lagt till loggfiler som kan hjälpa oss att felsöka problemet. Du kan ta bort dessa om du så önskar.",
     "ERROR_REPORT_SUBJECT": "Felrapport från",
@@ -186,7 +186,10 @@
     "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
-    "OBSERVATIONS": "Observationer"
+    "SORT_BY_CHANGE_TIME": "Uppdateringstidpunkt",
+    "SORT_BY_OBS_TIME": "Observationstidpunkt",
+    "SORT_BY_TEXT": "Sortera efter",
+    "TITLE": "Observationer"
   },
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
@@ -241,6 +244,8 @@
     "BACK_TO_OBSERVATION": "Tillbaka till min observation",
     "CONFIRM_RESET": "Är du säker på att du vill återställa alla fält?",
     "COPIED_TO_CLIPBOARD": "Kopierade till urklipp",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Bilden kunde inte laddas ned från regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Är du online?",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -349,20 +354,18 @@
       "TITLE": "Olycka / tillbud"
     },
     "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
-    "COULD_NOT_DOWNLOAD_IMAGE": "Bilden kunde inte laddas ned från regobs.no.",
-    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Är du online?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekräfta position och tid",
       "CURRENT_LOCATION": "Aktuella position",
-      "HIDE_DETAILS": "Dölj detaljer",
-      "SHOW_DETAILS": "Visa detaljer",
-      "TITLE": "Observationspunkt och -tid",
-      "SOURCE": "Källa",
       "EXACT": "Exakt",
+      "HIDE_DETAILS": "Dölj detaljer",
       "MORETHANONEKM": "Mer än 1 km",
+      "SHOW_DETAILS": "Visa detaljer",
+      "SOURCE": "Källa",
+      "TITLE": "Observationspunkt och -tid",
       "UNCERTAINTY": "Osäkerhet i position"
     },
     "OVERVIEW": {
@@ -458,15 +461,15 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Lägg till nytt test",
         "DISTANCE_FROM_TOP": "Avstånd från toppen (cm)",
-        "X_DISTANCE": "Kapad längd",
-        "Y_DISTANCE": "Kolonnlängd",
         "FRACTURE_TYPE": "Brottyp",
+        "RB_RELEASE": "Utlöst procentandel av blocket",
+        "RB_SCORE": "Rutschblock-resultat",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antal slag",
-        "RB_SCORE": "Rutschblock-resultat",
-        "RB_RELEASE": "Utlöst procentandel av blocket",
         "TEST_TYPE": "Testtyp",
-        "TITLE": "Test"
+        "TITLE": "Test",
+        "X_DISTANCE": "Kapad längd",
+        "Y_DISTANCE": "Kolonnlängd"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -527,7 +530,7 @@
           "GRAIN_FORM": "Kristallform",
           "GRAIN_FROM_SECONDARY": "Under­ordnad kristallform",
           "HARDNESS": "Hårdhet",
-          "HARDNESS_BOTTOM": "Under hårdhet",
+          "HARDNESS_BOTTOM": "Nedre hårdhet",
           "LAYER": "Lager",
           "MAX_GRAIN_SIZE": "Max kristallstorlek (mm)",
           "MULTIPLE_LAYERS": "Lager",

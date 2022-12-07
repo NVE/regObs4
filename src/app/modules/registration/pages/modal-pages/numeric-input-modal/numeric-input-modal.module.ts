@@ -4,7 +4,6 @@ import { SharedModule } from '../../../../shared/shared.module';
 
 @NgModule({
   imports: [SharedModule],
-  declarations: [NumericInputModalPage]
+  declarations: [NumericInputModalPage],
 })
-export class NumericInputModalPageModule {
-}
+export class NumericInputModalPageModule {}

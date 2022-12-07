@@ -1,9 +1,0 @@
-{
-  "config_ios": {
-    "NSCameraUsageDescription": "Legge til bilder i observasjonen",
-    "NSLocationAlwaysUsageDescription": "Posisjonen din er brukt til å vise din posisjon i kart og kunne sette observasjonspunkt",
-    "NSLocationWhenInUseUsageDescription": "Posisjonen din er brukt til å vise din posisjon i kart og kunne sette observasjonspunkt",
-    "NSPhotoLibraryAddUsageDescription": "Legge til bilder i observasjonen",
-    "NSPhotoLibraryUsageDescription": "Legge til bilder i observasjonen"
-  }
-}

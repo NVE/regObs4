@@ -14,7 +14,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
   constructor(
@@ -24,11 +24,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     private httpClient: HttpClient,
     protected userSettingService: UserSettingService
   ) {
-    super(
-      offlineDbService,
-      logger,
-      userSettingService
-    );
+    super(offlineDbService, logger, userSettingService);
   }
 
   protected getDebugTag(): string {

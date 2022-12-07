@@ -4,23 +4,16 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { UntypedFormControl } from '@angular/forms';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
-
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
-  styleUrls: ['./modal-search.page.scss']
+  styleUrls: ['./modal-search.page.scss'],
 })
 export class ModalSearchPage implements OnInit {
-
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
   searchField: UntypedFormControl;
@@ -31,17 +24,13 @@ export class ModalSearchPage implements OnInit {
   constructor(
     private modalController: ModalController,
     private mapSearchService: MapSearchService,
-    private ngZone: NgZone,
-  ) {
-  }
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     this.searchField = new UntypedFormControl();
     this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable();
-    const searchTextObservable = this.searchField.valueChanges.pipe(
-      debounceTime(400),
-      distinctUntilChanged()
-    );
+    const searchTextObservable = this.searchField.valueChanges.pipe(debounceTime(400), distinctUntilChanged());
 
     this.searchResult$ = searchTextObservable.pipe(
       tap((val) => {
@@ -51,9 +40,7 @@ export class ModalSearchPage implements OnInit {
           this.searchText = val;
         });
       }),
-      switchMap((searchValue: string) =>
-        this.mapSearchService.searchAll(searchValue)
-      ),
+      switchMap((searchValue: string) => this.mapSearchService.searchAll(searchValue)),
       tap((values) => {
         this.ngZone.run(() => {
           this.hasResults = values.length > 0;

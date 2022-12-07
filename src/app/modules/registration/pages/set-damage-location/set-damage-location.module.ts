@@ -4,7 +4,6 @@ import { SharedComponentsModule } from '../../shared-components.module';
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [SetDamageLocationPage]
+  declarations: [SetDamageLocationPage],
 })
-export class SetDamageLocationPageModule {
-}
+export class SetDamageLocationPageModule {}

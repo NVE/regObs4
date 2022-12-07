@@ -29,7 +29,7 @@ app-map {
 
   .confirm-button-col {
     padding: 10px 14px;
-    box-shadow: 0px -15px 15px -15px rgba(0, 0, 0, 0.1), 0px -8px 6px -6px rgba(0, 0, 0, 0.05);;
+    box-shadow: 0px -15px 15px -15px rgba(0, 0, 0, 0.1), 0px -8px 6px -6px rgba(0, 0, 0, 0.05);
 
     ion-button {
       height: var(--ion-button-height);
@@ -159,7 +159,7 @@ app-map {
 }
 
 .leaflet-usermarker:before {
-  content: "";
+  content: '';
   position: absolute;
   width: 14px;
   height: 14px;
@@ -197,7 +197,6 @@ app-map {
   font-size: inherit;
   height: 100%;
   max-height: 46px;
-
 }
 
 .tooltip {
@@ -218,7 +217,7 @@ app-map {
   pointer-events: none;
 }
 
-@media(hover: hover) {
+@media (hover: hover) {
   .edit-name-button:hover .tooltip {
     opacity: 0.8;
   }

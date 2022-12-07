@@ -9,16 +9,12 @@ const routes: Routes = [
   {
     path: '',
     component: LegacyTripPage,
-    canActivate: [AuthGuard]
-  }
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    SharedComponentsModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [LegacyTripPage]
+  imports: [SharedModule, SharedComponentsModule, RouterModule.forChild(routes)],
+  declarations: [LegacyTripPage],
 })
 export class LegacyTripPageModule {}

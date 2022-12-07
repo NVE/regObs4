@@ -31,7 +31,8 @@
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
     "translations:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
     "translations:download": "ts-node --project tsconfig.npm-script.json translations/download.ts",
-    "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts"
+    "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts",
+    "prettier:fix": "prettier --write src"
   },
   "private": true,
   "dependencies": {
@@ -162,6 +163,7 @@
     "cordova-res": "^0.15.3",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
     "jasmine-core": "~3.9.0",
     "jasmine-spec-reporter": "~7.0.0",
     "jetifier": "^2.0.0",
@@ -176,6 +178,7 @@
     "ng-swagger-gen": "^2.3.1",
     "ngx-translate-testing": "^5.2.0",
     "plist": "^3.0.5",
+    "prettier": "2.7.1",
     "protractor": "~7.0.0",
     "sqli-cordova-disk-space-plugin": "^1.0.3",
     "ts-node": "^10.2.1",

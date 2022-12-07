@@ -19,7 +19,7 @@ export function attachmentsComparator<T extends AttachmentEditModel>(
   if (previous.length !== current.length) {
     return false;
   }
-  const previousIds = previous.map(a => a[key]).sort();
-  const currentIds = previous.map(a => a[key]).sort();
+  const previousIds = previous.map((a) => a[key]).sort();
+  const currentIds = previous.map((a) => a[key]).sort();
   return previousIds.every((id, index) => id == currentIds[index]);
 }

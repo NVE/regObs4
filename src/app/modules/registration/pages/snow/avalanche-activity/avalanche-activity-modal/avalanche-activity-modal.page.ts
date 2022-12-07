@@ -7,7 +7,7 @@ import moment from 'moment';
 @Component({
   selector: 'app-avalanche-activity-modal',
   templateUrl: './avalanche-activity-modal.page.html',
-  styleUrls: ['./avalanche-activity-modal.page.scss']
+  styleUrls: ['./avalanche-activity-modal.page.scss'],
 })
 export class AvalancheActivityModalPage implements OnInit {
   @Input() avalancheActivity: AvalancheActivityObs2EditModel;
@@ -30,12 +30,7 @@ export class AvalancheActivityModalPage implements OnInit {
   }
 
   get dateIsDifferentThanObsTime() {
-    return (
-      this.startDate &&
-      !moment(this.startDate)
-        .startOf('day')
-        .isSame(moment(this.dtObsTime).startOf('day'))
-    );
+    return this.startDate && !moment(this.startDate).startOf('day').isSame(moment(this.dtObsTime).startOf('day'));
   }
 
   timeFrames = [
@@ -43,32 +38,32 @@ export class AvalancheActivityModalPage implements OnInit {
       id: 1,
       start: { h: 0, m: 0 },
       end: { h: 23, m: 59 },
-      text: 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DURING_THE_DAY'
+      text: 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DURING_THE_DAY',
     },
     {
       id: 2,
       start: { h: 0, m: 0 },
       end: { h: 6, m: 0 },
-      text: '0-6'
+      text: '0-6',
     },
     {
       id: 3,
       start: { h: 6, m: 0 },
       end: { h: 12, m: 0 },
-      text: '6-12'
+      text: '6-12',
     },
     {
       id: 4,
       start: { h: 12, m: 0 },
       end: { h: 18, m: 0 },
-      text: '12-18'
+      text: '12-18',
     },
     {
       id: 5,
       start: { h: 18, m: 0 },
       end: { h: 23, m: 59 },
-      text: '18-24'
-    }
+      text: '18-24',
+    },
   ];
 
   selectedTimeFrame = 1;
@@ -84,15 +79,10 @@ export class AvalancheActivityModalPage implements OnInit {
       this.avalancheActivityCopy = {};
       this.isNew = true;
     }
-    if (
-      this.avalancheActivityCopy.DtStart &&
-      this.avalancheActivityCopy.DtEnd
-    ) {
+    if (this.avalancheActivityCopy.DtStart && this.avalancheActivityCopy.DtEnd) {
       const start = moment(this.avalancheActivityCopy.DtStart);
       const end = moment(this.avalancheActivityCopy.DtEnd);
-      this.startDate = moment(this.avalancheActivityCopy.DtStart)
-        .startOf('day')
-        .toISOString(true);
+      this.startDate = moment(this.avalancheActivityCopy.DtStart).startOf('day').toISOString(true);
       const timeFrame = this.timeFrames.find(
         (tf) =>
           tf.start.h === start.hours() &&
@@ -133,9 +123,7 @@ export class AvalancheActivityModalPage implements OnInit {
     if (this.avalancheActivityCopy.EstimatedNumTID === 1) {
       this.resetWhenNoActivityFields();
     }
-    const timeFrame = this.timeFrames.find(
-      (tf) => tf.id === this.selectedTimeFrame
-    );
+    const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
     if (this.startDate && timeFrame) {
       this.avalancheActivityCopy.DtStart = moment(this.startDate)
         .hours(timeFrame.start.h)

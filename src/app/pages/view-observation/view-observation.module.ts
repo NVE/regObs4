@@ -7,16 +7,12 @@ import { FullscreenImageModalPageModule } from '../modal-pages/fullscreen-image-
 const routes: Routes = [
   {
     path: '',
-    component: ViewObservationPage
-  }
+    component: ViewObservationPage,
+  },
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    FullscreenImageModalPageModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [ViewObservationPage]
+  imports: [SharedModule, FullscreenImageModalPageModule, RouterModule.forChild(routes)],
+  declarations: [ViewObservationPage],
 })
 export class ViewObservationPageModule {}

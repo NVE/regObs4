@@ -1,14 +1,8 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
+    "outDir": "../out-tsc/app"
   },
-  "files": [
-    "main.ts",
-    "polyfills.ts",
-    "zone-flags.ts",
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ]
+  "files": ["main.ts", "polyfills.ts", "zone-flags.ts"],
+  "include": ["src/**/*.d.ts"]
 }

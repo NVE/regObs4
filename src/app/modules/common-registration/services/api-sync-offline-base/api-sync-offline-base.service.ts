@@ -29,8 +29,8 @@ export abstract class ApiSyncOfflineBaseService<T> {
 
   protected options: ApiSyncOfflineBaseServiceOptions = {
     validSeconds: getCacheAge(),
-    useLangKeyAsDbKey: true
-  }
+    useLangKeyAsDbKey: true,
+  };
 
   // As we can use cached data anyway, use a short timeout here to avoid blank screen issues if fetching new data takes
   // a long time
@@ -68,8 +68,11 @@ export abstract class ApiSyncOfflineBaseService<T> {
    */
   protected isValid(metaData: RxDocument<OfflineSyncMeta<T>>): boolean {
     const valid = metaData && metaData.lastUpdated > this.getInvalidTime().unix();
-    this.logger.debug(`Offline data is ${valid ? 'valid -> returning offline data' : 'not valid -> Fetch new data'}`,
-      this.getDebugTag(), metaData);
+    this.logger.debug(
+      `Offline data is ${valid ? 'valid -> returning offline data' : 'not valid -> Fetch new data'}`,
+      this.getDebugTag(),
+      metaData
+    );
     return valid;
   }
 
@@ -89,7 +92,9 @@ export abstract class ApiSyncOfflineBaseService<T> {
         this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey).pipe(
           take(1),
           switchMap((updatedData) =>
-            updatedData != null ? of(updatedData) : this.getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode, langKey)
+            updatedData != null
+              ? of(updatedData)
+              : this.getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode, langKey)
           )
         )
       )
@@ -155,7 +160,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
     const meta: OfflineSyncMeta<T> = {
       id: this.getOfflineStorageDbKey(langKey),
       lastUpdated: moment().unix(),
-      data
+      data,
     };
     return from(this.getDbCollection(appMode).atomicUpsert(meta));
   }
@@ -199,7 +204,12 @@ export abstract class ApiSyncOfflineBaseService<T> {
     return this.getOfflineData(appMode, langKey).pipe(
       concatMap((val) => {
         if (!val) {
-          this.logger.log('No data found in offline storage. Get fallback data', null, LogLevel.Warning, this.getDebugTag());
+          this.logger.log(
+            'No data found in offline storage. Get fallback data',
+            null,
+            LogLevel.Warning,
+            this.getDebugTag()
+          );
           return this.getFallbackData(appMode, langKey);
         }
         return of(val.data);

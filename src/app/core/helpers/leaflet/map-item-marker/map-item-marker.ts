@@ -34,8 +34,6 @@ export class MapItemMarker extends L.Marker {
   }
 
   private updateIcon() {
-    this.setIcon(
-      new RegobsGeoHazardMarker(this._item.GeoHazardTID, this._isSelected)
-    );
+    this.setIcon(new RegobsGeoHazardMarker(this._item.GeoHazardTID, this._isSelected));
   }
 }

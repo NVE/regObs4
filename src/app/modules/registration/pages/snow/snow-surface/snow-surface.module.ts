@@ -8,12 +8,12 @@ const routes: Routes = [
   {
     path: '',
     component: SnowSurfacePage,
-    canDeactivate: [CanDeactivateRouteGuard]
-  }
+    canDeactivate: [CanDeactivateRouteGuard],
+  },
 ];
 
 @NgModule({
   imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [SnowSurfacePage]
+  declarations: [SnowSurfacePage],
 })
 export class SnowSurfacePageModule {}

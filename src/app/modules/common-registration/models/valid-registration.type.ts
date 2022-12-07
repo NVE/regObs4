@@ -16,7 +16,7 @@ import {
   SnowSurfaceEditModel,
   WeatherEditModel,
   Waterlevel2EditModel,
-  DamageObsEditModel
+  DamageObsEditModel,
 } from 'src/app/modules/common-regobs-api/models';
 
 export type ValidRegistrationType =

@@ -5,10 +5,33 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import moment from 'moment';
-import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
+import {
+  combineLatest,
+  firstValueFrom,
+  map,
+  Observable,
+  ReplaySubject,
+  scan,
+  shareReplay,
+  startWith,
+  Subject,
+  tap,
+} from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
+
+export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
+
+const UrlDtoOrderByMap = new Map([
+  ['changeTime', 'DtChangeTime'],
+  ['obsTime', 'DtObsTime'],
+]);
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
@@ -18,28 +41,39 @@ const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_TYPE = 'type';
+const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
-  Longitude: latLng.lng
+  Longitude: latLng.lng,
 });
 
-export function separatedStringToNumberArray(separatedString : string): number[] {
+export function separatedStringToNumberArray(separatedString: string): number[] {
   if (separatedString?.length) {
     const textWithoutDelimiter = separatedString.replace(URL_PARAM_ARRAY_DELIMITER, '');
-    const textContainsOnlyNumbers = !isNaN (+textWithoutDelimiter);
+    const textContainsOnlyNumbers = !isNaN(+textWithoutDelimiter);
     if (textContainsOnlyNumbers) {
       return separatedString
         .split(URL_PARAM_ARRAY_DELIMITER)
-        .filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+        .filter((x) => x.trim().length && !isNaN(parseInt(x)))
+        .map(Number);
     }
   }
   return [];
 }
 
+//DtObsTime => obsTime
+function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
+  if (value) {
+    const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
+    return keyValue;
+  }
+  return null;
+}
+
 function numberArrayToSeparatedString(numbers: number[]): string {
-  if(numbers?.length) {
+  if (numbers?.length) {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
   }
   return '';
@@ -58,7 +92,6 @@ function convertRegTypeDtoToUrl(types:RegistrationTypeCriteriaDto[]) {
   }
   return '';
 }
-
 function isArraysEqual(array1: number[], array2: number[]): boolean {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 }
@@ -66,11 +99,12 @@ function isArraysEqual(array1: number[], array2: number[]): boolean {
 function isoDateTimeToLocalDate(isoDateTime: string): string {
   if (isoDateTime) {
     const offset = new Date().getTimezoneOffset();
-    const localTime = new Date(Date.parse(isoDateTime) - (offset * 60 * 1000));
+    const localTime = new Date(Date.parse(isoDateTime) - offset * 60 * 1000);
     return localTime.toISOString().split('T')[0];
   }
   return null;
 }
+
 
 /**
  * Contains current filter for registrations.
@@ -85,7 +119,7 @@ function isoDateTimeToLocalDate(isoDateTime: string): string {
  * TODO: Vi håndterer ikke alle URL-parametre ennå
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SearchCriteriaService {
   // Jeg tror searchCriteria må være en ReplaySubject for at vi skal være sikre på at scan fungerer som tenkt,
@@ -106,16 +140,15 @@ export class SearchCriteriaService {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
-    private logger: LoggingService,
+    private logger: LoggingService
   ) {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
-    this.searchCriteriaChanges.pipe(
-      scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []),
-    )
+    this.searchCriteriaChanges
+      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
       // Log last 10 choices made
-      .subscribe(history => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
+      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
@@ -125,8 +158,10 @@ export class SearchCriteriaService {
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(map(daysBack => this.daysBackToIsoDateTime(daysBack))),
-      this.mapService.mapView$.pipe(map(mapView => this.createExtentCriteria(mapView)))
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
+        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
+      ),
+      this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       map(([criteria, langKey, geoHazards, fromObsTime, extent]) => ({
@@ -135,15 +170,15 @@ export class SearchCriteriaService {
         SelectedGeoHazards: geoHazards,
         FromDtObsTime: fromObsTime,
         ToDtObsTime: null,
-        Extent: extent
+        Extent: extent,
       })),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap(newCriteria => this.setUrlParams(newCriteria)),
+      tap((newCriteria) => this.setUrlParams(newCriteria)),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
       // Uansett kjekt med en shareReplay her, se kommentar over.
-      tap(currentCriteria => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
+      tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
   }
@@ -153,9 +188,9 @@ export class SearchCriteriaService {
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
-
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
+    const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
@@ -170,10 +205,15 @@ export class SearchCriteriaService {
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
       SelectedRegistrationTypes: convertTypeFromUrlToCriteria,
+      OrderBy: orderBy,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
+  }
+
+  private readOrderBy(orderBy: string): string {
+    return UrlDtoOrderByMap.get(orderBy);
   }
 
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
@@ -182,7 +222,7 @@ export class SearchCriteriaService {
     //read param used in (old) regobs.no
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
     if (geoHazardsParamValueOld?.length) {
-      geoHazards = geoHazardsParamValueOld.filter(x => x.trim().length && !isNaN(parseInt(x))).map(Number);
+      geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
       new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply; //we will create url params in new format instead
     }
 
@@ -202,6 +242,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
+    params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
     params.apply();
   }
 
@@ -274,6 +315,10 @@ export class SearchCriteriaService {
     }
   }
 
+  setOrderBy(order: SearchCriteriaOrderBy) {
+    this.searchCriteriaChanges.next({ OrderBy: order });
+  }
+
   private daysBackToIsoDateTime(daysBack: number): string {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
@@ -282,7 +327,7 @@ export class SearchCriteriaService {
     if (mapView?.bounds) {
       const extent: WithinExtentCriteriaDto = {
         BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),
-        TopLeft: latLngToPositionDto(mapView.bounds.getNorthWest())
+        TopLeft: latLngToPositionDto(mapView.bounds.getNorthWest()),
       };
       return extent;
     }
@@ -297,17 +342,15 @@ export class SearchCriteriaService {
       if (!isArraysEqual(geoHazards, userSetting.currentGeoHazard)) {
         userSetting = {
           ...userSetting,
-          currentGeoHazard: geoHazards
+          currentGeoHazard: geoHazards,
         };
         changed = true;
       }
     }
     if (daysBack != null) {
       for (const geoHazard of userSetting.currentGeoHazard) {
-      //check and eventually set days back for every selected geo hazard
-        const existingValue = userSetting.observationDaysBack.find(
-          (x) => x.geoHazard === geoHazard
-        );
+        //check and eventually set days back for every selected geo hazard
+        const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
         if (existingValue.daysBack !== daysBack) {
           existingValue.daysBack = daysBack;
           changed = true;
