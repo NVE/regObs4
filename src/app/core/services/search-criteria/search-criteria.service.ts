@@ -1,9 +1,4 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, firstValueFrom, map, Observable, ReplaySubject, scan, shareReplay, startWith, Subject, tap } from 'rxjs';
-import { PositionDto, RegistrationTypeCriteriaDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
-import { UserSettingService } from '../user-setting/user-setting.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { MapService } from 'src/app/modules/map/services/map/map.service';
 import moment from 'moment';
 import {
   combineLatest,
@@ -19,7 +14,12 @@ import {
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import {
+  PositionDto,
+  RegistrationTypeCriteriaDto,
+  SearchCriteriaRequestDto,
+  WithinExtentCriteriaDto,
+} from 'src/app/modules/common-regobs-api';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -78,15 +78,25 @@ function numberArrayToSeparatedString(numbers: number[]): string {
   }
   return '';
 }
+
+function isRegTypeValid(type: string) {
+  //accepts only two digits or two digits with coma, and optional tilde as delimiter
+  const regex = /^((\b\d{2}\b~?)|(\b\d{2}\.\d{2}\b~?))*$/g;
+  const found = type.match(regex);
+  return found;
+}
+
 //[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
-function convertRegTypeDtoToUrl(types:RegistrationTypeCriteriaDto[]) {
-  if (types != null){
+function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
+  if (types != null) {
     const url = [] as string[];
-    types.forEach(type => {
+    types.forEach((type) => {
       const parentId = type.Id;
       if (type.SubTypes.length > 0) {
-        type.SubTypes.forEach(subtype => url.push(`${parentId}.${subtype}`));
-      } else { url.push(parentId.toString());}
+        type.SubTypes.forEach((subtype) => url.push(`${parentId}.${subtype}`));
+      } else {
+        url.push(parentId.toString());
+      }
     });
     return url.join('~');
   }
@@ -104,7 +114,6 @@ function isoDateTimeToLocalDate(isoDateTime: string): string {
   }
   return null;
 }
-
 
 /**
  * Contains current filter for registrations.
@@ -259,18 +268,20 @@ export class SearchCriteriaService {
 
   //81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
   convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
+    if (!isRegTypeValid(type)) return;
     //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
-    const splitUrlToArray = type.split('~').map(i => i.split('.'));
+    const splitUrlToArray = type.split('~').map((i) => i.split('.'));
     //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
-    const regTypeCriteriaDto = splitUrlToArray.map(i =>
-    { return {Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])]: []};})
-      .reduce((obj, item)=>{
-        obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = {...item});
+    const regTypeCriteriaDto = splitUrlToArray
+      .map((i) => {
+        return { Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])] : [] };
+      })
+      .reduce((obj, item) => {
+        obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = { ...item });
         return obj;
       }, {});
     return Object.values(regTypeCriteriaDto);
   }
-
 
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
@@ -279,39 +290,45 @@ export class SearchCriteriaService {
   async setObservationType(newType: RegistrationTypeCriteriaDto) {
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
 
-    if (currentTypesCriteria){
+    if (currentTypesCriteria) {
       const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
-      const criteriaToUpdateIndex = copyCriteria.findIndex(i => i.Id === newType.Id);
+      const criteriaToUpdateIndex = copyCriteria.findIndex((i) => i.Id === newType.Id);
 
       if (criteriaToUpdateIndex != -1) {
-        copyCriteria[criteriaToUpdateIndex].SubTypes =
-          [...copyCriteria[criteriaToUpdateIndex].SubTypes, ...newType.SubTypes];
-        this.searchCriteriaChanges.next({SelectedRegistrationTypes: copyCriteria});
-      }
-      else this.searchCriteriaChanges.next(
-        {SelectedRegistrationTypes: [...currentTypesCriteria as RegistrationTypeCriteriaDto[], newType]});
-    }
-    else this.searchCriteriaChanges.next({SelectedRegistrationTypes: [newType]});
+        copyCriteria[criteriaToUpdateIndex].SubTypes = [
+          ...copyCriteria[criteriaToUpdateIndex].SubTypes,
+          ...newType.SubTypes,
+        ];
+        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
+      } else
+        this.searchCriteriaChanges.next({
+          SelectedRegistrationTypes: [...(currentTypesCriteria as RegistrationTypeCriteriaDto[]), newType],
+        });
+    } else this.searchCriteriaChanges.next({ SelectedRegistrationTypes: [newType] });
   }
 
-  //
   async removeObservationType(typeToRemove: RegistrationTypeCriteriaDto) {
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
-    const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
-    const criteriaToUpdateWithIndex = copyCriteria.findIndex(criteria => criteria.Id == typeToRemove.Id);
-    //compare chosen object with existing one and if they are the same (no SubTypes differences) remove it from criteria
-    if (JSON.stringify(copyCriteria[criteriaToUpdateWithIndex]) == JSON.stringify(typeToRemove)){
+    if (currentTypesCriteria) {
+      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
 
-      copyCriteria.splice(criteriaToUpdateWithIndex, 1);
-      this.searchCriteriaChanges.next({SelectedRegistrationTypes: copyCriteria});
-    }
-    //if not then it means there are subtypes differences so remove the subtypes from the current criterias
-    else {
-      //{Id:81, SubTypes: [33,23]} => {Id:81, SubTypes: [33]} remove typeToRemove subtypes from current criteria
-      const [ subTypeValueToRemove ] = typeToRemove.SubTypes;
-      const subTypesToRemoveWithIndex = copyCriteria[criteriaToUpdateWithIndex].SubTypes.indexOf(subTypeValueToRemove);
-      copyCriteria[criteriaToUpdateWithIndex].SubTypes.splice(subTypesToRemoveWithIndex, 1);
-      this.searchCriteriaChanges.next({SelectedRegistrationTypes: copyCriteria});
+      const criteriaToUpdateWithIndex = copyCriteria.findIndex((criteria) => criteria.Id == typeToRemove.Id);
+
+      if (!(criteriaToUpdateWithIndex >= 0)) return;
+      //compare chosen object with existing one and if they are the same (no SubTypes differences) remove it from criteria
+      if (JSON.stringify(copyCriteria[criteriaToUpdateWithIndex]) == JSON.stringify(typeToRemove)) {
+        copyCriteria.splice(criteriaToUpdateWithIndex, 1);
+        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
+      }
+      //if not then it means there are subtypes differences so remove the subtypes from the current criterias
+      else {
+        //{Id:81, SubTypes: [33,23]} => {Id:81, SubTypes: [33]} remove typeToRemove subtypes from current criteria
+        const [subTypeValueToRemove] = typeToRemove.SubTypes;
+        const subTypesToRemoveWithIndex =
+          copyCriteria[criteriaToUpdateWithIndex].SubTypes.indexOf(subTypeValueToRemove);
+        copyCriteria[criteriaToUpdateWithIndex].SubTypes.splice(subTypesToRemoveWithIndex, 1);
+        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
+      }
     }
   }
 

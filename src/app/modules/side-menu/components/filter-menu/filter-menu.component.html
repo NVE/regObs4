@@ -5,8 +5,6 @@
   <app-observations-days-back></app-observations-days-back>
   <app-update-observations></app-update-observations>
   <div *ngIf="true">
-    <!-- Dette er på prototypestadiet, så vi skjuler dette foreløpig -->
-    <!-- TODO: Oversettelser på all tekst -->
     <ion-list-header color="varsom-blue" class="ion-no-margin">
       <ion-label> Observasjonstype </ion-label>
     </ion-list-header>
@@ -15,10 +13,13 @@
       <ion-list lines="none">
         <ng-container *ngFor="let type of observationTypesOptions">
           <ion-item class="item-height">
-            <ion-checkbox [(ngModel)]="type.isChecked" (ionChange)="setNewType($event, type.parentId, type.id)"
-              color="varsom-dark-blue">
+            <ion-checkbox
+              [(ngModel)]="type.isChecked"
+              (ionChange)="setNewType($event, type.parentId, type.id)"
+              color="varsom-dark-blue"
+            >
             </ion-checkbox>
-            <ion-label class="ion-padding-start">{{type.name}}</ion-label>
+            <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
           </ion-item>
         </ng-container>
       </ion-list>
@@ -35,6 +36,7 @@
       </ion-select>
     </ion-item>
     <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
+    <!--
     <ion-item>
       <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
       <ion-searchbar
@@ -47,12 +49,14 @@
       >
       </ion-searchbar>
     </ion-item>
-
+    -->
     <!-- TODO: Implementere reset filter funksjonalitet -->
+    <!--
     <ion-item>
       <ion-button class="resetFiltersButton" type="button" fill="clear">
         <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>Tilbakestill filtere
       </ion-button>
     </ion-item>
+    -->
   </div>
 </ion-list>

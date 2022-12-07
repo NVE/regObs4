@@ -103,11 +103,11 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('nick')).toEqual('Nick');
   }));
 
-  it('set new observation type should work', fakeAsync(async () => {
-    const obsType = {Id: 81, SubTypes: [13]};
+  it('set new observation type should be ok', fakeAsync(async () => {
+    const obsType = { Id: 81, SubTypes: [13] };
     service.setObservationType(obsType);
     tick(1);
-    //check that current criteria contains expected nick name
+    //check that current criteria contains expected type
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
 
@@ -115,6 +115,40 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('type')).toEqual('81.13');
   }));
 
+  it('remove observation type should be ok', fakeAsync(async () => {
+    const obsType1 = { Id: 81, SubTypes: [13, 26] };
+    const obsType2 = { Id: 81, SubTypes: [26] };
+    await service.setObservationType(obsType1);
+    await service.removeObservationType(obsType2);
+    //check that criteria contains only obsType2
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual('81.13');
+  }));
+
+  it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
+    const obsType1 = { Id: 81, SubTypes: [13, 26] };
+    const obsType2 = { Id: 40, SubTypes: [26] };
+    await service.setObservationType(obsType1);
+    await service.removeObservationType(obsType2);
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual('81.13~81.26');
+  }));
+
+  it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
+    const obsType2 = { Id: 40, SubTypes: [26] };
+    await service.removeObservationType(obsType2);
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual(null);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual(null);
+  }));
 
   orderByTestCases.forEach((test) => {
     it('orderBy filter should work', fakeAsync(async () => {
@@ -134,6 +168,8 @@ describe('SearchCriteriaService url parsing', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
+
+  const wrongObservationTypeUrl = ['42,66', '23456', 'testMe'];
 
   beforeEach(async () => {
     TestBed.configureTestingModule({});
@@ -174,17 +210,38 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.ObserverNickName).toEqual('Oluf');
   }));
 
-  it('type url should work', fakeAsync( async () => {
+  it('type url should work', fakeAsync(async () => {
     new UrlParams().set('type', '81.13~81.26~10').apply();
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
-      new TestLoggingService());
+      new TestLoggingService()
+    );
 
     tick();
     const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.SelectedRegistrationTypes).toEqual([{Id: 10, SubTypes: []}, {Id: 81, SubTypes: [13, 26]}]);
+    expect(criteria.SelectedRegistrationTypes).toEqual([
+      { Id: 10, SubTypes: [] },
+      { Id: 81, SubTypes: [13, 26] },
+    ]);
   }));
+
+  wrongObservationTypeUrl.forEach((test) => {
+    it('type url wrong format, remove type param from url', fakeAsync(async () => {
+      new UrlParams().set('type', test).apply();
+      service = new SearchCriteriaService(
+        userSettingService,
+        mapService as unknown as MapService,
+        new TestLoggingService()
+      );
+
+      tick();
+      const criteria = await firstValueFrom(service.searchCriteria$);
+      const url = new URL(document.location.href).toString();
+      expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
+      expect(url.includes('type')).toBeFalse();
+    }));
+  });
 
   it('orderBy url filter should work', fakeAsync(async () => {
     new UrlParams().set('orderBy', 'changeTime').apply();
