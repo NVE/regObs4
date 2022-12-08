@@ -1,15 +1,17 @@
-<ion-accordion-group>
-  <ion-accordion>
+<ion-accordion-group #accordionGroup (ionChange)="toggleAccordion($event)">
+  <ion-accordion value="first">
     <ion-item slot="header" color="light">
       <ion-label color="dark" position="stacked">Tidsrom</ion-label>
-      <ion-text class="ion-align-self-start">{{ modeText | async }}</ion-text>
+      <ion-text class="ion-align-self-start">
+        <span *ngIf="!isOpen">{{ modeText | async }}</span>
+      </ion-text>
     </ion-item>
     <div slot="content">
       <ion-list>
         <ion-radio-group [(ngModel)]="mode">
           <ion-item>
             <ion-radio [value]="'predefined'" slot="start"></ion-radio>
-            <app-observations-days-back (changeDaysBack)="changeDate($event)"></app-observations-days-back>
+            <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>
           </ion-item>
 
           <ion-item>
