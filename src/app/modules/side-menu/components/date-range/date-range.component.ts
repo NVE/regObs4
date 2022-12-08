@@ -72,7 +72,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   changeDate(days: number) {
-    this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'));
+    this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
   }
 
   private static getReadableDays(day: number): string {

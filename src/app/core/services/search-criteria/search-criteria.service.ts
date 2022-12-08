@@ -60,8 +60,7 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
-    const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
-    return keyValue;
+    return [...UrlDtoOrderByMap].find(([, val]) => val == value)[0];
   }
   return null;
 }
@@ -72,6 +71,7 @@ function numberArrayToSeparatedString(numbers: number[]): string {
   }
   return '';
 }
+
 function isArraysEqual(array1: number[], array2: number[]): boolean {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 }
@@ -137,15 +137,22 @@ export class SearchCriteriaService {
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
+        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
+      ),
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, extent]) => ({
-        ...criteria,
-        LangKey: langKey,
-        SelectedGeoHazards: geoHazards,
-        Extent: extent,
-      })),
+      map(
+        ([criteria, langKey, geoHazards, fromObsTime, extent]) =>
+          ({
+            LangKey: langKey,
+            SelectedGeoHazards: geoHazards,
+            FromDtObsTime: fromObsTime,
+            Extent: extent,
+            ...criteria,
+          } as SearchCriteriaRequestDto)
+      ),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap((newCriteria) => this.setUrlParams(newCriteria)),
@@ -166,9 +173,11 @@ export class SearchCriteriaService {
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
     const fromObsTime: string = this.daysBackToIsoDateTime(daysBackNumeric);
-    const toObsTime: string = this.daysBackToIsoDateTime(
-      this.convertToPositiveInteger(url.searchParams.get(URL_PARAM_TODATE))
-    );
+
+    let toObsTime: string;
+    if (url.searchParams.get(URL_PARAM_TODATE)) {
+      toObsTime = isoDateTimeToLocalDate(url.searchParams.get(URL_PARAM_TODATE));
+    }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
 
@@ -232,8 +241,11 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  setFromDate(fromDate: string) {
-    this.searchCriteriaChanges.next({ FromDtObsTime: isoDateTimeToLocalDate(fromDate) });
+  setFromDate(fromDate: string, removeToDate = false) {
+    this.searchCriteriaChanges.next({
+      FromDtObsTime: isoDateTimeToLocalDate(fromDate),
+    });
+    if (removeToDate) this.searchCriteriaChanges.next({ ToDtObsTime: null });
   }
 
   setToDate(toDate: string) {
