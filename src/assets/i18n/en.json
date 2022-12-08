@@ -228,7 +228,10 @@
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
-    "OBSERVATIONS": "Observations"
+    "TITLE": "Observations",
+    "SORT_BY_TEXT": "Order by",
+    "SORT_BY_OBS_TIME": "Recently observed",
+    "SORT_BY_CHANGE_TIME": "Recently updated"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",

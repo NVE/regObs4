@@ -9,7 +9,7 @@
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
-    "source.organizeImports": true
+    "source.organizeImports": false
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
