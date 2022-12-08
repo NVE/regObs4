@@ -18,8 +18,13 @@ export interface ObservationTypeFilterItem {
   isChecked: boolean
 }
 
+interface Ex {
+  name: string,
+  ids: number[]
+}
+
 interface CompetenceItem {
-  [name: string]: number[]
+  [name: string]: Ex
 }
 
 const DEBUG_TAG = 'FilterMenuComponent';
@@ -129,8 +134,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   ];
 
   selectedVal: string;
-  competanceOptions$: Observable<CompetenceItem>;
-  automaticStation: CompetenceItem = {};
+  competanceOptions$: Observable<Ex[]>;
+  automaticStation: Ex;
   isShowAutomaticStation = false;
   isAutomaticStationChecked = true;
 
@@ -177,6 +182,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       map(filteredList => {
         return this.sortCompetences(filteredList);
       }));
+
+    //ADJUST VIEW TO URL
+
     this.searchCriteriaService.searchCriteria$.pipe(
       takeUntil(this.ngDestroy$),
       tap((criteria) => {
@@ -197,49 +205,54 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     } else return keyName;
   }*/
 
+  //set automatic station on as default in both view and searchCriteria
+  setAutomaticStationsOnInit(filteredCompetance: KdvElement) {
+    this.isShowAutomaticStation = true;
+    this.automaticStation = {name: filteredCompetance.Name, ids: [filteredCompetance.Id]};
+  }
 
-  sortCompetences(unsortedCompetences: KdvElement[][]): CompetenceItem {
+  sortCompetences(unsortedCompetences: KdvElement[][]): Ex[] {
     const competanceSorted: CompetenceItem = {};
-    //since the filter menu component is not re rendered on geo hazard change we have to set showAutomaticStation to false here
+    //since the filter menu component is not re rendered on geo hazard change
+    //we have to set showAutomaticStation to false here
     this.isShowAutomaticStation = false;
     unsortedCompetences.map(arrOfFilteredCompetances => {
-    //create an array of all competnece ids available per geohazard
+      //create an array of all competnece ids available per geohazard
       const allIds = arrOfFilteredCompetances.map(item => item.Id);
       arrOfFilteredCompetances.map(filteredCompetance => {
         //exclude automatic station id 105
         const filteredIds = allIds.filter(id => id>=filteredCompetance.Id && id != 105);
-        //remove A from the array that will be used as select options
         if(filteredCompetance.Name == 'A') {
-          this.searchCriteriaService.setCompetence([105]);
-          this.isShowAutomaticStation = true;
-          this.automaticStation[filteredCompetance.Name] = [filteredCompetance.Id];
+          this.setAutomaticStationsOnInit(filteredCompetance);
         }
-        //add 0 to ids which is 'unknown' competence
-        else if (filteredCompetance.Name == '-')  competanceSorted[filteredCompetance.Name] = [...filteredIds, 0];
+        //add 0 to 'unknown' competence array of ids
+        else if (filteredCompetance.Name == '-') {
+          competanceSorted[filteredCompetance.Name] = {name: filteredCompetance.Name, ids:[...filteredIds, 0]};
+        }
         //check if object contains key already and add extra ids (water and soil)
         else if(Object.prototype.hasOwnProperty.call(competanceSorted, filteredCompetance.Name)){
           const existing = competanceSorted[filteredCompetance.Name];
-          competanceSorted[filteredCompetance.Name] = [...existing, ...filteredIds];
+          competanceSorted[filteredCompetance.Name] = {...existing, ids: [...existing.ids, ...filteredIds]};
         } else {
-          competanceSorted[filteredCompetance.Name] = filteredIds;
+          competanceSorted[filteredCompetance.Name] = {name:filteredCompetance.Name, ids: filteredIds};
         }
       });
     });
-    console.log(competanceSorted);
-    return competanceSorted;
+    console.log(Object.values(competanceSorted));
+    return Object.values(competanceSorted).reverse();
   }
 
   onSelectCompetenceChange(event) {
-    const filterValues = event.detail.value.value;
+    const ids = event.detail.value.ids;
     //check if isAutomaticStationChecked and then add 105 to filters
-    if(this.isAutomaticStationChecked && filterValues) filterValues.push(105);
-    this.searchCriteriaService.setCompetence(filterValues);
+    if(this.isAutomaticStationChecked && ids) ids.push(105);
+    this.searchCriteriaService.setCompetence(ids);
   }
 
   onCheckAutomaticStations(event) {
     this.isAutomaticStationChecked = event.detail.checked;
-    if (this.isAutomaticStationChecked) this.searchCriteriaService.setCompetence(event.detail.value[0].value);
-    else this.searchCriteriaService.removeAutomaticStationFilter(event.detail.value[0].value);
+    if (this.isAutomaticStationChecked) this.searchCriteriaService.addAutomaticStationFilter(event.detail.value.ids);
+    else this.searchCriteriaService.removeAutomaticStationFilter(event.detail.value.ids);
   }
 
   filterObservationTypesByGeohazard(currentGeoHazard: GeoHazard[]) {

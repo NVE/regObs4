@@ -206,16 +206,26 @@ export class SearchCriteriaService {
   }
 
   setCompetence(competenceCriteria: number[]) {
-    this.searchCriteriaChanges.next({ObserverCompetence: competenceCriteria});
+    //[105, 120, 130]   //[140, 130]
+    console.log(competenceCriteria);
+    //remove duplicates
+    const removedDuplicates = competenceCriteria.reduce((compArr, item) => {
+      if(!compArr.includes(item)) compArr.push(item);
+      return compArr;
+    },[] as number[]);
+    this.searchCriteriaChanges.next({ObserverCompetence: removedDuplicates});
   }
 
-  async removeAutomaticStationFilter(competenceToRemove: number[]) {
+  async addAutomaticStationFilter(automaticStationToAdd: number[]) {
     const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
-    if(existingCompetence){
-      const newCompetence = existingCompetence.filter(c => competenceToRemove.indexOf(c) === -1);
+    if(existingCompetence) { this.setCompetence([...existingCompetence, ...automaticStationToAdd]); }
+  }
+
+  async removeAutomaticStationFilter(automaticStationToRemove: number[]) {
+    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
+    if(existingCompetence) {
+      const newCompetence = existingCompetence.filter(c => automaticStationToRemove.indexOf(c) === -1);
       this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
-    } else {
-      this.searchCriteriaChanges.next({ ObserverCompetence: [0, 100, 110, 115,120,130,150]});
     }
   }
 

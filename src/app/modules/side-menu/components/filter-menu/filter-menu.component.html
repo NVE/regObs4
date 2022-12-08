@@ -59,13 +59,13 @@
         translate}}</ion-label>
       <ion-select [interface]="popupType" [value]="'{}'" (ionChange)="onSelectCompetenceChange($event)">
         <ion-select-option value="{}">{{'OBSERVATION_FILTER.COMPETANCE_FILTER.ALL' | translate}}</ion-select-option>
-        <ion-select-option *ngFor="let co of competanceOptions | keyvalue" [value]="co">
-          {{co.key}}
+        <ion-select-option *ngFor="let co of competanceOptions" [value]="co">
+          {{co.name}}
         </ion-select-option>
       </ion-select>
   </ion-item>
   <ion-item *ngIf="isShowAutomaticStation">
-    <ion-checkbox checked="true" color="varsom-dark-blue" mode="md" [value]="automaticStation | keyvalue"
+    <ion-checkbox checked="true" color="varsom-dark-blue" mode="md" [value]="automaticStation"
       (ionChange)="onCheckAutomaticStations($event)">
     </ion-checkbox>
     <ion-label class="ion-padding-start">{{'OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS' | translate}}
