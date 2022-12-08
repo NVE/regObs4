@@ -18,8 +18,8 @@
             <ion-label>Egendefinert periode</ion-label>
             <ion-radio slot="start" [value]="'custom'"></ion-radio>
           </ion-item>
-          <ion-item class="no-border" *ngIf="mode === 'custom'">
-            <ion-note slot="start">Startdato</ion-note>
+          <ion-item class="white-background" *ngIf="mode === 'custom'">
+            <ion-label slot="start">Startdato</ion-label>
             <app-datetime-picker
               presentation="date"
               [(dateTime)]="fromDate"
@@ -27,10 +27,12 @@
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setFromDate($event)"
+              [textAlign]="'right'"
+              size="large"
             ></app-datetime-picker>
           </ion-item>
-          <ion-item class="no-border" *ngIf="mode === 'custom'">
-            <ion-note slot="start">Sluttdato</ion-note>
+          <ion-item class="white-background" *ngIf="mode === 'custom'">
+            <ion-label slot="start">Sluttdato</ion-label>
             <app-datetime-picker
               presentation="date"
               [(dateTime)]="toDate"
@@ -38,6 +40,8 @@
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setToDate($event)"
+              [textAlign]="'right'"
+              size="large"
             ></app-datetime-picker>
           </ion-item>
         </ion-radio-group>
