@@ -7,6 +7,11 @@ import { tap } from 'rxjs/operators';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
 
+enum Mode {
+  PREDEFINED = 'predefined',
+  CUSTOM = 'custom',
+}
+
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
@@ -17,13 +22,13 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   toDate: string;
   minDate = new Date('01.01.2010').toISOString();
   maxDate = new Date().toISOString();
-  mode: 'predefined' | 'custom' = 'predefined';
+  mode: Mode = Mode.PREDEFINED;
   isOpen = false;
 
   @ViewChild('accordionGroup', { static: true }) accordionGroup: IonAccordionGroup;
 
   get modeText(): Observable<string> {
-    if (this.mode === 'predefined') {
+    if (this.mode === Mode.PREDEFINED) {
       return this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((day) => DateRangeComponent.getReadableDays(day))
       );
@@ -81,7 +86,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
 
   changeDateAndSetMode(days: number) {
     this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
-    this.mode = 'predefined';
+    this.mode = Mode.PREDEFINED;
   }
 
   private static getReadableDays(day: number): string {

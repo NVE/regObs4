@@ -85,6 +85,10 @@ function isoDateTimeToLocalDate(isoDateTime: string): string {
   return null;
 }
 
+function shorthandDateToIsoDateTime(date: string): string {
+  return moment(date).startOf('day').toISOString(true);
+}
+
 /**
  * Contains current filter for registrations.
  * Use this to change which registrations you want to find.
@@ -138,21 +142,21 @@ export class SearchCriteriaService {
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
+        map((daysBack) => isoDateTimeToLocalDate(this.daysBackToIsoDateTime(daysBack)))
       ),
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(
-        ([criteria, langKey, geoHazards, fromObsTime, extent]) =>
-          ({
-            LangKey: langKey,
-            SelectedGeoHazards: geoHazards,
-            FromDtObsTime: fromObsTime,
-            Extent: extent,
-            ...criteria,
-          } as SearchCriteriaRequestDto)
-      ),
+      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
+        const _criteria = { ...criteria } as SearchCriteriaRequestDto;
+        return {
+          ...criteria,
+          LangKey: _criteria.LangKey || langKey,
+          SelectedGeoHazards: _criteria.SelectedGeoHazards || geoHazards,
+          FromDtObsTime: shorthandDateToIsoDateTime(_criteria.FromDtObsTime || fromObsTime),
+          Extent: _criteria.Extent || extent,
+        } as SearchCriteriaRequestDto;
+      }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap((newCriteria) => this.setUrlParams(newCriteria)),
@@ -169,14 +173,22 @@ export class SearchCriteriaService {
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
+    const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
+
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
-    const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
-    const fromObsTime: string = this.daysBackToIsoDateTime(daysBackNumeric);
+
+    let fromObsTime: string;
+    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
+      fromObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+    }
+    if (daysBackNumeric != null) {
+      fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
+    }
 
     let toObsTime: string;
     if (url.searchParams.get(URL_PARAM_TODATE)) {
-      toObsTime = isoDateTimeToLocalDate(url.searchParams.get(URL_PARAM_TODATE));
+      toObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE));
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
@@ -242,14 +254,18 @@ export class SearchCriteriaService {
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
-    this.searchCriteriaChanges.next({
-      FromDtObsTime: isoDateTimeToLocalDate(fromDate),
-    });
-    if (removeToDate) this.searchCriteriaChanges.next({ ToDtObsTime: null });
+    if (fromDate) {
+      this.searchCriteriaChanges.next({
+        FromDtObsTime: fromDate,
+      });
+      if (removeToDate) this.searchCriteriaChanges.next({ ToDtObsTime: null });
+    }
   }
 
   setToDate(toDate: string) {
-    this.searchCriteriaChanges.next({ ToDtObsTime: isoDateTimeToLocalDate(toDate) });
+    if (toDate) {
+      this.searchCriteriaChanges.next({ ToDtObsTime: toDate });
+    }
   }
 
   setOrderBy(order: SearchCriteriaOrderBy) {
