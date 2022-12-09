@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, Observable, of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -18,13 +18,9 @@ export interface ObservationTypeFilterItem {
   isChecked: boolean
 }
 
-interface Ex {
+interface CompetenceItem {
   name: string,
   ids: number[]
-}
-
-interface CompetenceItem {
-  [name: string]: Ex
 }
 
 const DEBUG_TAG = 'FilterMenuComponent';
@@ -134,11 +130,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   ];
 
   selectedVal: string;
-  competanceOptions$: Observable<Ex[]>;
-  automaticStation: Ex;
+  competenceOptions: CompetenceItem[];
+  automaticStation: CompetenceItem;
   isShowAutomaticStation = false;
   isAutomaticStationChecked = true;
-
+  chosenValue = 'all';
   constructor(private platform: Platform,
               private userSettingService: UserSettingService,
               private searchCriteriaService: SearchCriteriaService,
@@ -170,8 +166,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.userSettingService.currentGeoHazard$.pipe(
       switchMap( currentGeoHazard => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
       .subscribe(items => this.filteredObservationTypes = items);
-
-    this.competanceOptions$ = combineLatest([
+    const hasCompetenceTypesLoaded = new Subject<void>();
+    combineLatest([
       this.userSettingService.currentGeoHazard$.pipe(
         map(geoHazards => geoHazards.map(geoHazard => COMPETANCE_FILTER[geoHazard]))
       ),
@@ -181,17 +177,45 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       //KdvElement[][] -> {KdvElement.Name: [ids]}
       map(filteredList => {
         return this.sortCompetences(filteredList);
-      }));
+      })).subscribe(c => {this.competenceOptions = c; hasCompetenceTypesLoaded.next(); this.cdr.markForCheck();});
 
     //ADJUST VIEW TO URL
-
-    this.searchCriteriaService.searchCriteria$.pipe(
-      takeUntil(this.ngDestroy$),
-      tap((criteria) => {
+    combineLatest([this.searchCriteriaService.searchCriteria$, hasCompetenceTypesLoaded.pipe(take(1))]).pipe(
+      take(1),
+      tap(([criteria]) => {
         this.nickName = criteria.ObserverNickName;
+        if(criteria.ObserverCompetence) {
+          this.chosenValue = this.formatUrlToViewModel(criteria.ObserverCompetence as number[]);
+        }
+        //[105,140,0] => remove 0 and 105 and then compare array to any other arrays in competenceOptions and ok
+        //this.competenceOptions = criteria.ObserverCompetence;
         this.cdr.markForCheck();
       })
     ).subscribe();
+  }
+
+  formatUrlToViewModel(ids: number[]){
+    let newIds = ids;
+    if(ids.includes(105)) {
+      newIds = ids.filter(i => i !== 105);
+      //fetch out 105 and set checkbox
+      this.isAutomaticStationChecked = true;
+    } else {
+      this.isAutomaticStationChecked = false;
+    }
+    let competenceOptionToSet;
+    const compareArrays = (a, b) =>
+      a.length === b.length &&
+      a.every((element, index) => element === b[index]);
+
+    for (let i = 0; i < this.competenceOptions.length; i++){
+      if(compareArrays(this.competenceOptions[i].ids, newIds)){
+        competenceOptionToSet = this.competenceOptions[i];
+        break;
+      }
+    }
+    console.log('format', competenceOptionToSet);
+    return competenceOptionToSet;
   }
 
   /*formatNames(keyName: string): string{
@@ -211,8 +235,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.automaticStation = {name: filteredCompetance.Name, ids: [filteredCompetance.Id]};
   }
 
-  sortCompetences(unsortedCompetences: KdvElement[][]): Ex[] {
-    const competanceSorted: CompetenceItem = {};
+  sortCompetences(unsortedCompetences: KdvElement[][]): CompetenceItem[] {
+    const competanceSorted: {[name: string]: CompetenceItem}= {};
     //since the filter menu component is not re rendered on geo hazard change
     //we have to set showAutomaticStation to false here
     this.isShowAutomaticStation = false;
@@ -238,11 +262,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         }
       });
     });
-    console.log(Object.values(competanceSorted));
     return Object.values(competanceSorted).reverse();
   }
 
   onSelectCompetenceChange(event) {
+    console.log(event);
+    this.chosenValue = event.detail.value;
     const ids = event.detail.value.ids;
     //check if isAutomaticStationChecked and then add 105 to filters
     if(this.isAutomaticStationChecked && ids) ids.push(105);

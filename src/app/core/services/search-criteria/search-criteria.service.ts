@@ -209,6 +209,10 @@ export class SearchCriteriaService {
     //[105, 120, 130]   //[140, 130]
     console.log(competenceCriteria);
     //remove duplicates
+    if (!competenceCriteria) {
+      this.searchCriteriaChanges.next({ObserverCompetence: null});
+      return;
+    }
     const removedDuplicates = competenceCriteria.reduce((compArr, item) => {
       if(!compArr.includes(item)) compArr.push(item);
       return compArr;
