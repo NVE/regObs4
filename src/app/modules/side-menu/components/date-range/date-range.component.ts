@@ -1,10 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { map, Observable, takeUntil } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import { tap } from 'rxjs/operators';
 import moment from 'moment';
+import { IonAccordionGroup } from '@ionic/angular';
+
+enum Mode {
+  PREDEFINED = 'predefined',
+  CUSTOM = 'custom',
+}
 
 @Component({
   selector: 'app-date-range',
@@ -16,10 +22,13 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   toDate: string;
   minDate = new Date('01.01.2010').toISOString();
   maxDate = new Date().toISOString();
-  mode: 'predefined' | 'custom' = 'predefined';
+  mode: Mode = Mode.PREDEFINED;
+  isOpen = false;
+
+  @ViewChild('accordionGroup', { static: true }) accordionGroup: IonAccordionGroup;
 
   get modeText(): Observable<string> {
-    if (this.mode === 'predefined') {
+    if (this.mode === Mode.PREDEFINED) {
       return this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((day) => DateRangeComponent.getReadableDays(day))
       );
@@ -63,6 +72,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
+  toggleAccordion(e: CustomEvent<IonAccordionGroup>) {
+    this.isOpen = !!e.detail.value;
+  }
+
   setFromDate(date: string) {
     this.searchCriteriaService.setFromDate(date);
   }
@@ -71,8 +84,9 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.setToDate(date);
   }
 
-  changeDate(days: number) {
-    this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'));
+  changeDateAndSetMode(days: number) {
+    this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
+    this.mode = Mode.PREDEFINED;
   }
 
   private static getReadableDays(day: number): string {

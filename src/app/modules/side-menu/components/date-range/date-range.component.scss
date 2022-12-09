@@ -2,10 +2,22 @@ ion-list.list-md {
   padding-bottom: 0;
 }
 
+ion-radio-group ion-item .item-bottom {
+  border-bottom: 1px solid red;
+}
+
 ion-radio-group ion-item {
   --background: #f7f7f7;
-  --border-width: 1px;
+  --border-width: 0;
   --inner-border-width: 0;
+}
+
+ion-radio-group ion-item.white-background {
+  --background: #fff;
+}
+
+ion-radio-group ion-item.white-background::part(native) {
+  --padding-start: 35px;
 }
 
 ion-accordion ion-item[slot='header'] {
@@ -15,3 +27,10 @@ ion-accordion ion-item[slot='header'] {
 ion-item::part(native) {
   max-width: 100%;
 }
+
+ion-item::part(native),
+ion-item.no-border:last-child::part(native) {
+  border-bottom: 1px solid #dedede;
+}
+
+

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import moment from 'moment';
 import {
   combineLatest,
   firstValueFrom,
@@ -11,15 +12,21 @@ import {
   Subject,
   tap,
 } from 'rxjs';
-import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
-import { UserSettingService } from '../user-setting/user-setting.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { MapService } from 'src/app/modules/map/services/map/map.service';
-import moment from 'moment';
-import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
+
+export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
+
+const UrlDtoOrderByMap = new Map([
+  ['changeTime', 'DtChangeTime'],
+  ['obsTime', 'DtObsTime'],
+]);
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
@@ -28,6 +35,7 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
@@ -49,6 +57,14 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
   return [];
 }
 
+//DtObsTime => obsTime
+function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
+  if (value) {
+    return [...UrlDtoOrderByMap].find(([, val]) => val == value)[0];
+  }
+  return null;
+}
+
 function numberArrayToSeparatedString(numbers: number[]): string {
   if (numbers?.length) {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
@@ -67,6 +83,10 @@ function isoDateTimeToLocalDate(isoDateTime: string): string {
     return localTime.toISOString().split('T')[0];
   }
   return null;
+}
+
+function shorthandDateToIsoDateTime(date: string): string {
+  return moment(date).startOf('day').toISOString(true);
 }
 
 /**
@@ -121,16 +141,22 @@ export class SearchCriteriaService {
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
+        map((daysBack) => isoDateTimeToLocalDate(this.daysBackToIsoDateTime(daysBack)))
+      ),
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, extent]) => ({
-        ...criteria,
-        LangKey: langKey,
-        SelectedGeoHazards: geoHazards,
-        Extent: extent,
-        // TODO: Bytte criteria hit for å overskrive brukerinstillinger fra url
-      })),
+      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
+        const _criteria = { ...criteria } as SearchCriteriaRequestDto;
+        return {
+          ...criteria,
+          LangKey: _criteria.LangKey || langKey,
+          SelectedGeoHazards: _criteria.SelectedGeoHazards || geoHazards,
+          FromDtObsTime: shorthandDateToIsoDateTime(_criteria.FromDtObsTime || fromObsTime),
+          Extent: _criteria.Extent || extent,
+        } as SearchCriteriaRequestDto;
+      }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap((newCriteria) => this.setUrlParams(newCriteria)),
@@ -147,13 +173,23 @@ export class SearchCriteriaService {
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
+    const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
 
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
-    const fromObsTime: string = this.daysBackToIsoDateTime(daysBackNumeric);
-    const toObsTime: string = this.daysBackToIsoDateTime(
-      this.convertToPositiveInteger(url.searchParams.get(URL_PARAM_TODATE))
-    );
+
+    let fromObsTime: string;
+    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
+      fromObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+    }
+    if (daysBackNumeric != null) {
+      fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
+    }
+
+    let toObsTime: string;
+    if (url.searchParams.get(URL_PARAM_TODATE)) {
+      toObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE));
+    }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
 
@@ -162,10 +198,15 @@ export class SearchCriteriaService {
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
       ToDtObsTime: toObsTime,
+      OrderBy: orderBy,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
+  }
+
+  private readOrderBy(orderBy: string): string {
+    return UrlDtoOrderByMap.get(orderBy);
   }
 
   private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
@@ -193,6 +234,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
     params.apply();
   }
 
@@ -211,12 +253,23 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  setFromDate(fromDate: string) {
-    this.searchCriteriaChanges.next({ FromDtObsTime: isoDateTimeToLocalDate(fromDate) });
+  setFromDate(fromDate: string, removeToDate = false) {
+    if (fromDate) {
+      this.searchCriteriaChanges.next({
+        FromDtObsTime: fromDate,
+      });
+      if (removeToDate) this.searchCriteriaChanges.next({ ToDtObsTime: null });
+    }
   }
 
   setToDate(toDate: string) {
-    this.searchCriteriaChanges.next({ ToDtObsTime: isoDateTimeToLocalDate(toDate) });
+    if (toDate) {
+      this.searchCriteriaChanges.next({ ToDtObsTime: toDate });
+    }
+  }
+
+  setOrderBy(order: SearchCriteriaOrderBy) {
+    this.searchCriteriaChanges.next({ OrderBy: order });
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

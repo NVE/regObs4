@@ -9,8 +9,8 @@ describe('DateRangeComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DateRangeComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [DateRangeComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DateRangeComponent);

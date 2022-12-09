@@ -1,23 +1,25 @@
-<ion-accordion-group>
-  <ion-accordion>
+<ion-accordion-group #accordionGroup (ionChange)="toggleAccordion($event)">
+  <ion-accordion value="first">
     <ion-item slot="header" color="light">
       <ion-label color="dark" position="stacked">Tidsrom</ion-label>
-      <ion-text class="ion-align-self-start">{{ modeText | async }}</ion-text>
+      <ion-text class="ion-align-self-start">
+        <span *ngIf="!isOpen">{{ modeText | async }}</span>
+      </ion-text>
     </ion-item>
     <div slot="content">
       <ion-list>
         <ion-radio-group [(ngModel)]="mode">
           <ion-item>
             <ion-radio [value]="'predefined'" slot="start"></ion-radio>
-            <app-observations-days-back (changeDaysBack)="changeDate($event)"></app-observations-days-back>
+            <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>
           </ion-item>
 
           <ion-item>
             <ion-label>Egendefinert periode</ion-label>
             <ion-radio slot="start" [value]="'custom'"></ion-radio>
           </ion-item>
-          <ion-item class="no-border" *ngIf="mode === 'custom'">
-            <ion-note slot="start">Startdato</ion-note>
+          <ion-item class="white-background" *ngIf="mode === 'custom'">
+            <ion-label slot="start">Startdato</ion-label>
             <app-datetime-picker
               presentation="date"
               [(dateTime)]="fromDate"
@@ -25,10 +27,12 @@
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setFromDate($event)"
+              [textAlign]="'right'"
+              size="large"
             ></app-datetime-picker>
           </ion-item>
-          <ion-item class="no-border" *ngIf="mode === 'custom'">
-            <ion-note slot="start">Sluttdato</ion-note>
+          <ion-item class="white-background" *ngIf="mode === 'custom'">
+            <ion-label slot="start">Sluttdato</ion-label>
             <app-datetime-picker
               presentation="date"
               [(dateTime)]="toDate"
@@ -36,6 +40,8 @@
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setToDate($event)"
+              [textAlign]="'right'"
+              size="large"
             ></app-datetime-picker>
           </ion-item>
         </ion-radio-group>
