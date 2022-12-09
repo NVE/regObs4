@@ -38,6 +38,15 @@ ion-row {
   margin: 0 auto;
 }
 
+ion-col {
+  display: flex;
+  align-items: center;
+}
+
+.segment-button-class::part(indicator-background) {
+  background-color: red;
+}
+
 ion-item-divider {
   max-width: 960px;
   padding: 0px;

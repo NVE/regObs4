@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import {
+  BehaviorSubject,
   combineLatest,
   firstValueFrom,
   map,
@@ -109,7 +110,7 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
-  private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
+  private useMapExtent$: Subject<boolean> = new BehaviorSubject<boolean>(true); //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -140,17 +141,29 @@ export class SearchCriteriaService {
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
+      this.useMapExtent$,
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => ({
-        ...criteria,
-        LangKey: langKey,
-        SelectedGeoHazards: geoHazards,
-        FromDtObsTime: fromObsTime,
-        ToDtObsTime: null,
-        Extent: extent,
-      })),
+      map(([criteria, langKey, geoHazards, fromObsTime, showMapExtent, extent]) => {
+        if (showMapExtent) {
+          return {
+            ...criteria,
+            LangKey: langKey,
+            SelectedGeoHazards: geoHazards,
+            FromDtObsTime: fromObsTime,
+            ToDtObsTime: null,
+            Extent: extent,
+          };
+        } else
+          return {
+            ...criteria,
+            LangKey: langKey,
+            SelectedGeoHazards: geoHazards,
+            FromDtObsTime: fromObsTime,
+            ToDtObsTime: null,
+          };
+      }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap((newCriteria) => this.setUrlParams(newCriteria)),
@@ -238,6 +251,10 @@ export class SearchCriteriaService {
 
   setOrderBy(order: SearchCriteriaOrderBy) {
     this.searchCriteriaChanges.next({ OrderBy: order });
+  }
+
+  setExtent(value: string) {
+    value == 'all' ? this.useMapExtent$.next(false) : this.useMapExtent$.next(true);
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

@@ -68,6 +68,10 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
+  toggleFilterByMapView(event) {
+    this.searchCriteriaService.setExtent(event.detail.value);
+  }
+
   refresh(cancelPromise: Promise<unknown>): void {
     this.logger.debug('Refresh', 'PagedSearchResult');
     this.searchResult.resetPaging();
