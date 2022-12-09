@@ -68,7 +68,8 @@
         mode="ios"
         class="ion-no-padding"
         placeholder="Søk på observatørnavn"
-        (ionChange)="setNickName($event)"
+        (ionChange)="setNickName($event.target.value)"
+        (ionClear)="setNickName(null)"
       >
       </ion-searchbar>
     </ion-item>
