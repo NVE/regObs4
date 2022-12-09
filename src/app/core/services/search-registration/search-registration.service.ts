@@ -2,17 +2,23 @@ import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   combineLatest,
-  concatMap, distinctUntilChanged, map, Observable, scan, shareReplay,
+  concatMap,
+  distinctUntilChanged,
+  map,
+  Observable,
+  scan,
+  shareReplay,
   startWith,
   Subject,
-  switchMap, tap
+  switchMap,
+  tap,
 } from 'rxjs';
 import { SearchCriteria } from 'src/app/core/models/search-criteria';
 import {
   AtAGlanceViewModel,
   RegistrationViewModel,
   SearchCriteriaRequestDto,
-  SearchService
+  SearchService,
 } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
@@ -38,14 +44,11 @@ export class SearchResult<TViewModel> {
     searchCriteria$: Observable<SearchCriteria>,
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ) {
-    return combineLatest([
-      searchCriteria$,
-      this.forceUpdate.pipe(startWith(true))
-    ]).pipe(
+    return combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(true))]).pipe(
       tap(() => {
         this.searchRegistrationService.setFetchingStatus(true);
       }),
-      map(([searchCriteria,]) => searchCriteria),
+      map(([searchCriteria]) => searchCriteria),
       switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
       tap(() => {
         this.searchRegistrationService.updateLastFetched();
@@ -129,7 +132,7 @@ export class PagedSearchResult<TViewModel> {
   ): Observable<TViewModel[]> {
     return combineLatest([
       searchCriteria$,
-      this.pageInfo
+      this.pageInfo,
       // TODO: Oppfrisk-knappen virket ikke med dette:
       // this.pageInfo.pipe(distinctUntilChanged((prev, curr) => prev.items === curr.items && prev.offset === curr.offset))
     ]).pipe(
@@ -145,15 +148,17 @@ export class PagedSearchResult<TViewModel> {
       // Search for matching registrations.
       // Use concatMap here and not switchMap as we want to include all pages if increasePage() is called before
       // the current search is finished.
-      concatMap(searchCriteria => fetchFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
-        // Include search criteria with search results so that we know which search criteria the results belong to
-        map(result => ({ searchCriteria, result }))
-      )),
+      concatMap((searchCriteria) =>
+        fetchFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+          // Include search criteria with search results so that we know which search criteria the results belong to
+          map((result) => ({ searchCriteria, result }))
+        )
+      ),
       // Accumulate results if offset > 0
       // TODO: Filter out duplicates
       scan(
-        (accumulated, { searchCriteria, result }) => searchCriteria.Offset > 0 ? [...accumulated, ...result] : result,
-        []  // Start with an empty array
+        (accumulated, { searchCriteria, result }) => (searchCriteria.Offset > 0 ? [...accumulated, ...result] : result),
+        [] // Start with an empty array
       ),
       tap(() => {
         this.searchRegistrationService.updateLastFetched();
@@ -170,16 +175,14 @@ export class PagedSearchResult<TViewModel> {
   providedIn: 'root',
 })
 export class SearchRegistrationService {
-
   private searchRequested = new Subject<void>();
-  private lastFetched = new Subject<Date>()
+  private lastFetched = new Subject<Date>();
   private isFetchingData = new BehaviorSubject(false);
-  readonly searchRequested$ = this.searchRequested.asObservable()
-  readonly lastFetched$ = this.lastFetched.asObservable()
-  readonly isFetchingData$ = this.isFetchingData.asObservable()
+  readonly searchRequested$ = this.searchRequested.asObservable();
+  readonly lastFetched$ = this.lastFetched.asObservable();
+  readonly isFetchingData$ = this.isFetchingData.asObservable();
 
-  constructor(private searchService: SearchService, private logger: LoggingService) {
-  }
+  constructor(private searchService: SearchService, private logger: LoggingService) {}
 
   /**
    * Normal search.
@@ -202,7 +205,7 @@ export class SearchRegistrationService {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
       this.searchService.SearchSearch.bind(this.searchService),
-      searchCriteria => this.searchService.SearchCount(searchCriteria).pipe(map(result => result.TotalMatches)),
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches)),
       this,
       this.logger
     );
