@@ -4,7 +4,7 @@
   </ion-list-header>
   <app-observations-days-back></app-observations-days-back>
   <app-update-observations></app-update-observations>
-  <div *ngIf="false">
+  <div *ngIf="true">
     <!-- Dette er på prototypestadiet, så vi skjuler dette foreløpig -->
     <!-- TODO: Oversettelser på all tekst -->
     <ion-list-header color="varsom-blue" class="ion-no-margin">
@@ -59,7 +59,8 @@
         mode="ios"
         class="ion-no-padding"
         placeholder="Søk på observatørnavn"
-        (ionChange)="setNickName($event)"
+        (ionChange)="setNickName($event.target.value)"
+        (ionClear)="setNickName(null)"
       >
       </ion-searchbar>
     </ion-item>

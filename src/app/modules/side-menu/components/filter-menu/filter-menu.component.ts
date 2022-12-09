@@ -183,10 +183,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  setNickName(event) {
-    const nickName = event.target.value?.toLowerCase();
-    if (nickName) {
-      this.searchCriteriaService.setObserverNickName(nickName);
-    }
+  setNickName(value) {
+    let nickName;
+    value != null ? (nickName = value.toLowerCase()) : null;
+    this.searchCriteriaService.setObserverNickName(nickName);
   }
 }
