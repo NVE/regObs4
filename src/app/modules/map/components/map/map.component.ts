@@ -1,45 +1,45 @@
 import {
+  AfterViewInit,
   Component,
-  OnInit,
+  ElementRef,
+  EventEmitter,
+  Injector,
   Input,
   NgZone,
   OnDestroy,
-  AfterViewInit,
+  OnInit,
   Output,
-  EventEmitter,
-  Injector,
-  ElementRef,
   ViewChild,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import * as L from 'leaflet';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from, BehaviorSubject, combineLatest, race } from 'rxjs';
-import { UserSetting } from '../../../../core/models/user-settings.model';
-import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
-import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
-import { MapService } from '../../services/map/map.service';
-import { take, takeUntil, switchMap, distinctUntilChanged, withLatestFrom, filter } from 'rxjs/operators';
-import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
-import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { MapSearchService } from '../../services/map-search/map-search.service';
-import { TopoMap } from '../../../../core/models/topo-map.enum';
-import {
-  RegObsTileLayer,
-  IRegObsTileLayerOptions,
-  RegObsOfflineAwareTileLayer,
-} from '../../core/classes/regobs-tile-layer';
-import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
-import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
-import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
-import { MapZoomService } from '../../services/map/map-zoom.service';
+import { FeatureCollection } from '@turf/turf';
+import * as L from 'leaflet';
+import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
-import { FeatureCollection } from '@turf/turf';
+import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { settings } from '../../../../../settings';
+import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
+import { TopoMap } from '../../../../core/models/topo-map.enum';
+import { UserSetting } from '../../../../core/models/user-settings.model';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+import {
+  IRegObsTileLayerOptions,
+  RegObsOfflineAwareTileLayer,
+  RegObsTileLayer,
+} from '../../core/classes/regobs-tile-layer';
+import { MapSearchService } from '../../services/map-search/map-search.service';
+import { MapZoomService } from '../../services/map/map-zoom.service';
+import { MapService } from '../../services/map/map.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -348,7 +348,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('moveend', () => this.onMapMoveEnd());
     });
 
-    this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+    this.fullscreenService.isFullscreen$.pipe(skip(1), takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
     });
     //set overwrite default showUserLocation with component input

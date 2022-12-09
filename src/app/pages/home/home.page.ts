@@ -4,14 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, Observable, of, race, Subject } from 'rxjs';
-import {
-  debounceTime, distinctUntilChanged, map, take, takeUntil, tap, withLatestFrom
-} from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable, of, race, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
+import {
+  SearchRegistrationService,
+  SearchResult,
+} from 'src/app/core/services/search-registration/search-registration.service';
 import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
@@ -61,6 +63,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private searchCriteriaService: SearchCriteriaService,
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
+    private mapService: MapService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -119,7 +122,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.mapComponent.componentIsActive(true);
   }
 
-  onMapReady(leafletMap: L.Map) {
+  async onMapReady(leafletMap: L.Map) {
     this.map = leafletMap;
     this.markerLayer.addTo(this.map);
     this.markerLayer.on('clusterclick', (a: any) => {
@@ -140,29 +143,36 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       this.mapItemBar.hide();
     });
 
-    const searchResult = this.searchRegistrationService.atAGlance(this.searchCriteriaService.searchCriteria$);
-    combineLatest([
-      searchResult.registrations$,
-      this.userSettingService.showObservations$
-    ]).pipe(
-      takeUntil(this.ngUnsubscribe),  // TODO: Is this page ever destroyed?
-    ).subscribe(([registrations, show]) => {
-      this.redrawObservationMarkers(show ? registrations : []);
-    });
+    const searchResult = await this.createSearchResult();
+
+    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$])
+      .pipe(
+        takeUntil(this.ngUnsubscribe) // TODO: Is this page ever destroyed?
+      )
+      .subscribe(([registrations, show]) => {
+        this.redrawObservationMarkers(show ? registrations : []);
+      });
 
     //search triggered manually
-    this.searchRegistrationService.searchRequested$.pipe(
-      takeUntil(this.ngUnsubscribe),  // TODO: Is this page ever destroyed?
-      withLatestFrom(this.tabsService.selectedTab$),
-      tap(([, tab]) => {
-        if (tab === TAB_HOME) {
-          searchResult.update();
-          this.loggingService.debug('Search manually triggered', DEBUG_TAG);
-        } else {
-          this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
-        }
-      })
-    ).subscribe();
+    this.searchRegistrationService.searchRequested$
+      .pipe(
+        takeUntil(this.ngUnsubscribe), // TODO: Is this page ever destroyed?
+        withLatestFrom(this.tabsService.selectedTab$),
+        tap(([, tab]) => {
+          if (tab === TAB_HOME) {
+            searchResult.update();
+            this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+          } else {
+            this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  private async createSearchResult(): Promise<SearchResult<AtAGlanceViewModel>> {
+    await firstValueFrom(this.mapService.relevantMapChangeWithInitialView$);
+    return this.searchRegistrationService.atAGlance(this.searchCriteriaService.searchCriteria$);
   }
 
   async onEnter() {
