@@ -1,19 +1,19 @@
 /* tslint:disable */
+import { HttpClient, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { BaseService as __BaseService } from '../base-service';
-import { RegobsApiConfiguration as __Configuration } from '../regobs-api-configuration';
-import { StrictHttpResponse as __StrictHttpResponse } from '../strict-http-response';
 import { Observable as __Observable } from 'rxjs';
-import { map as __map, filter as __filter } from 'rxjs/operators';
-
+import { filter as __filter, map as __map } from 'rxjs/operators';
+import { BaseService as __BaseService } from '../base-service';
+import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
 import { RegistrationViewModel } from '../models/registration-view-model';
-import { SearchCriteriaRequestDto } from '../models/search-criteria-request-dto';
-import { SearchCriteriaExclUserRequestDto } from '../models/search-criteria-excl-user-request-dto';
 import { SearchCountResponseDto } from '../models/search-count-response-dto';
+import { SearchCriteriaExclUserRequestDto } from '../models/search-criteria-excl-user-request-dto';
+import { SearchCriteriaRequestDto } from '../models/search-criteria-request-dto';
 import { SearchSideBarDto } from '../models/search-side-bar-dto';
 import { SearchSideBarRequestDto } from '../models/search-side-bar-request-dto';
-import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
+import { RegobsApiConfiguration as __Configuration } from '../regobs-api-configuration';
+import { StrictHttpResponse as __StrictHttpResponse } from '../strict-http-response';
+
 
 /**
  * Search for registrations.
@@ -50,6 +50,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
+    console.log(`Search API call: BottomRight.lat = ${criteria.Extent?.BottomRight.Latitude}, TopLeft.lat = ${criteria.Extent?.TopLeft.Latitude}, fromTime = ${criteria.FromDtObsTime} `);
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -277,6 +278,8 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
+    console.log(`SearchAtAGLance API call: BottomRight.lat = ${criteria.Extent?.BottomRight.Latitude}, TopLeft.lat = ${criteria.Extent?.TopLeft.Latitude}`);
+    const start = new Date();
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -294,6 +297,7 @@ class SearchService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
+        console.log(`SearchAtAGLance API call took ${new Date().getMilliseconds() - start.getMilliseconds()} ms`);
         return _r as __StrictHttpResponse<Array<AtAGlanceViewModel>>;
       })
     );
@@ -330,4 +334,5 @@ module SearchService {
   }
 }
 
-export { SearchService }
+export { SearchService };
+

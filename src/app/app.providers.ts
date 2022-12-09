@@ -1,51 +1,51 @@
+import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
-import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
-import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
-import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
-import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
-import { File } from '@ionic-native/file/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
+import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { Network } from '@ionic-native/network/ngx';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { SQLite } from '@ionic-native/sqlite/ngx';
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 // import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
 import { Zip } from '@ionic-native/zip/ngx';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { ErrorHandler, LOCALE_ID, APP_INITIALIZER, NgZone } from '@angular/core';
-import { AppErrorHandler } from './core/error-handler/error-handler.class';
-import { HTTP } from '@ionic-native/http/ngx';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { EmailComposer } from '@ionic-native/email-composer/ngx';
-import { StartWizardGuard } from './core/guards/start-wizard.guard';
-import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-import { AuthGuard } from './core/guards/auth.guard';
-import { SQLite } from '@ionic-native/sqlite/ngx';
-import { Network } from '@ionic-native/network/ngx';
-import { LoggingService } from './modules/shared/services/logging/logging.service';
-import { SentryService } from './modules/shared/services/logging/sentry.service';
-import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
-import { environment } from '../environments/environment';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
-import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { initTranslateService } from './custom-translate.loader';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
-import { initDeepLinks } from './core/app-init/deep-links-initializer';
-import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import {
-  IRegistrationModuleOptions,
-  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
-} from './modules/common-registration/module.options';
+import { AuthService } from 'ionic-appauth';
 import { addRxPlugin } from 'rxdb';
+import { environment } from '../environments/environment';
+import { initDeepLinks } from './core/app-init/deep-links-initializer';
+import { AppErrorHandler } from './core/error-handler/error-handler.class';
+import { AuthGuard } from './core/guards/auth.guard';
+import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
+import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
+import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
+import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
+import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
+import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
+import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
+import { UserSettingService } from './core/services/user-setting/user-setting.service';
+import { initTranslateService } from './custom-translate.loader';
+import {
+  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+  IRegistrationModuleOptions,
+} from './modules/common-registration/module.options';
 import { OfflineDbService } from './modules/common-registration/registration.services';
 import { SearchService } from './modules/common-regobs-api';
-import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
+import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
+import { LoggingService } from './modules/shared/services/logging/logging.service';
+import { SentryService } from './modules/shared/services/logging/sentry.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -180,10 +180,7 @@ export const APP_PROVIDERS = [
     useClass: HttpClientDownloadService,
   },
   {
-    // POC
     provide: SearchService,
-    useClass: OfflineCapableSearchService,
-    // TODO: Override SearchService for offline support on devices
-    // useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService
+    useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
   },
 ];
