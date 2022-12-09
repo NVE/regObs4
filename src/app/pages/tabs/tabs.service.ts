@@ -10,23 +10,19 @@ export const TAB_WARNING_LIST = 'warning-list';
 /**
  * Use this to get notified when current tab changes
  */
- @Injectable({
-   providedIn: 'root'
- })
+@Injectable({
+  providedIn: 'root',
+})
 export class TabsService {
-
   readonly selectedTab$: Observable<string>;
 
-  constructor(
-    location: Location,
-    router: Router
-  ) {
+  constructor(location: Location, router: Router) {
     this.selectedTab$ = router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
+      filter((e) => e instanceof NavigationEnd),
       map(() => location.path()),
       distinctUntilChanged(),
-      map(path => this.parseTabFromPath(path)),
-      share()  // All tabs subscribe to this, so share amongst subscribers
+      map((path) => this.parseTabFromPath(path)),
+      share() // All tabs subscribe to this, so share amongst subscribers
     );
   }
 

@@ -8,7 +8,7 @@ import { settings } from '../../../../../settings';
   selector: 'app-update-observations',
   templateUrl: './update-observations.component.html',
   styleUrls: ['./update-observations.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpdateObservationsComponent implements OnInit, OnDestroy {
   settings = settings;
@@ -21,13 +21,14 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.isLoading$ = searchRegistrationService.isFetchingData$;
-    this.searchRegistrationService.lastFetched$.pipe(
-      tap((lastFetched) => {
-        this.lastFetched = lastFetched;
-        this.changeDetectorRef.markForCheck();
-      })
-    ).subscribe();
-
+    this.searchRegistrationService.lastFetched$
+      .pipe(
+        tap((lastFetched) => {
+          this.lastFetched = lastFetched;
+          this.changeDetectorRef.markForCheck();
+        })
+      )
+      .subscribe();
   }
 
   ngOnInit() {

@@ -62,29 +62,18 @@ export class DataMarshallService implements OnReset {
       // );
 
       this.subscriptions.push(
-        this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(
-          ([appMode, langKey, geoHazards]) => {
-            this.loggingService.debug(
-              'AppMode, Language or CurrentGeoHazard has changed. Update warnings.',
-              DEBUG_TAG
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.language,
-              LangKey[langKey]
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.appMode,
-              appMode
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.geoHazard,
-              geoHazards.map((gh) => GeoHazard[gh]).join(',')
-            );
-            // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
-            //this.updateObservations();
-            this.warningService.updateWarnings();
-          }
-        )
+        this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, langKey, geoHazards]) => {
+          this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update warnings.', DEBUG_TAG);
+          this.analyticService.trackDimension(AppCustomDimension.language, LangKey[langKey]);
+          this.analyticService.trackDimension(AppCustomDimension.appMode, appMode);
+          this.analyticService.trackDimension(
+            AppCustomDimension.geoHazard,
+            geoHazards.map((gh) => GeoHazard[gh]).join(',')
+          );
+          // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
+          //this.updateObservations();
+          this.warningService.updateWarnings();
+        })
       );
       this.subscriptions.push(
         this.userSettingService.userSetting$
