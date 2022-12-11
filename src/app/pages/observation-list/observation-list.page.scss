@@ -33,12 +33,18 @@
   }
 }
 
+ion-grid {
+  margin: 0 1rem;
+  padding: 0;
+}
+
 ion-row {
   max-width: 960px;
   margin: 0 auto;
 }
 
 ion-col {
+  padding: 0;
   display: flex;
   align-items: center;
 }
@@ -60,6 +66,12 @@ ion-item-divider {
 @media only screen and (max-width: 950px) {
   ion-item-divider {
     padding-left: 1rem;
+  }
+}
+
+@media only screen and (max-width: 465px) {
+  ion-col {
+    padding: 5px 0;
   }
 }
 
