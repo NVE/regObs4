@@ -24,6 +24,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   maxDate = new Date().toISOString();
   mode: Mode = Mode.PREDEFINED;
   isOpen = false;
+  cachedDays: number;
 
   @ViewChild('accordionGroup', { static: true }) accordionGroup: IonAccordionGroup;
 
@@ -67,6 +68,9 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
         tap((criteria) => {
           this.fromDate = criteria.FromDtObsTime;
           this.toDate = criteria.ToDtObsTime;
+          if (!this.cachedDays) {
+            this.cachedDays = moment().diff(moment(this.fromDate), 'days');
+          }
         })
       )
       .subscribe();
@@ -84,9 +88,15 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.setToDate(date);
   }
 
-  changeDateAndSetMode(days: number) {
-    this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
-    this.mode = Mode.PREDEFINED;
+  changeDateAndSetMode(days?: number) {
+    if (days) {
+      this.cachedDays = days;
+      this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
+      this.mode = Mode.PREDEFINED;
+    } else if (this.cachedDays) {
+      this.searchCriteriaService.setFromDate(moment().subtract(this.cachedDays, 'days').format('YYYY-MM-DD'), true);
+      this.mode = Mode.CUSTOM;
+    }
   }
 
   private static getReadableDays(day: number): string {
