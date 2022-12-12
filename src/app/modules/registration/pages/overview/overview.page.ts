@@ -22,6 +22,7 @@ import {
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { Capacitor } from '@capacitor/core';
+import { SwipeBackService } from 'src/app/core/services/swipe-back/swipe-back.service';
 
 const DEBUG_TAG = 'OverviewPage';
 
@@ -51,6 +52,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     private draftService: DraftRepositoryService,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
+    private swipeBackService: SwipeBackService,
     private userGroupService: UserGroupService,
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
@@ -88,6 +90,14 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
         }
       })
     );
+  }
+
+  ionViewDidEnter() {
+    this.swipeBackService.disableSwipeBack();
+  }
+
+  ionViewWillLeave() {
+    this.swipeBackService.enableSwipeBack();
   }
 
   getName(geoHazard: GeoHazard): string {

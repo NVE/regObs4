@@ -22,6 +22,7 @@ import { DOCUMENT } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
+import { SwipeBackService } from 'src/app/core/services/swipe-back/swipe-back.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -56,6 +57,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private fullscreenService: FullscreenService,
     public userSettingService: UserSettingService,
     private ngZone: NgZone,
+    private swipeBackService: SwipeBackService,
     private searchCriteriaService: SearchCriteriaService,
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
@@ -92,6 +94,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     // );
     this.dataLoadIds$ = of([]);
     this.checkForFirstStartup();
+  }
+
+  ionViewDidEnter() {
+    this.swipeBackService.enableSwipeBack();
   }
 
   checkForFirstStartup() {
