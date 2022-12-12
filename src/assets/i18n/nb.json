@@ -184,7 +184,19 @@
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdatert",
     "USER_SETTINGS": "Brukervalg",
-    "WEEKS_BACK": "Uker tilbake"
+    "WEEKS_BACK": "Uker tilbake",
+    "DATE_RANGE": {
+      "TODAY": "I dag",
+      "YESTERDAY": "I går",
+      "LAST_X_DAYS": "Siste {{days}} dager",
+      "LAST_WEEK": "Siste uke",
+      "LAST_X_WEEKS": "Siste {{weeks}} uker",
+      "LAST_X_MONTHS": "Siste {{months}} måneder"
+    },
+    "TIMESPAN": "Tidsrom",
+    "CUSTOM_TIMESPAN": "Egendefinert periode",
+    "START_DATE": "Startdato",
+    "END_DATE": "Sluttdato"
   },
   "MONTHS": {
     "SHORT_LIST": "jan, feb, mar, apr, mai, jun, jul, aug, sep, okt, nov, des"

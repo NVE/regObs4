@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { map, Observable, takeUntil } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
-import { tap } from 'rxjs/operators';
+import { concatMap, tap } from 'rxjs/operators';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
+import { getLangKeyString } from '../../../common-core/models/lang-key.enum';
+import { TranslateService } from '@ngx-translate/core';
 
 enum Mode {
   PREDEFINED = 'predefined',
@@ -26,38 +28,44 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   isOpen = false;
   cachedDays: number;
 
-  @ViewChild('accordionGroup', { static: true }) accordionGroup: IonAccordionGroup;
-
   get modeText(): Observable<string> {
     if (this.mode === Mode.PREDEFINED) {
       return this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        map((day) => DateRangeComponent.getReadableDays(day))
+        concatMap((day) => this.getReadableDays.bind(this)(day)),
+        map((x) => x[Object.keys(x)[0]])
       );
     }
     let dateRange = '';
-    if (this.fromDate) {
-      dateRange = new Date(this.fromDate).toLocaleDateString('nb-NO', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-      });
-    }
-    if (this.toDate) {
-      if (this.fromDate) {
-        dateRange += ' - ';
-      }
-      dateRange += new Date(this.toDate).toLocaleDateString('nb-NO', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-      });
-    }
-    return new Observable<string>((subscriber) => {
-      subscriber.next(dateRange);
-    });
+    return this.userSettingService.language$.pipe(
+      map((value) => {
+        const lang = getLangKeyString(value);
+        if (this.fromDate) {
+          dateRange = new Date(this.fromDate).toLocaleDateString(lang, {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+          });
+        }
+        if (this.toDate) {
+          if (this.fromDate) {
+            dateRange += ' - ';
+          }
+          dateRange += new Date(this.toDate).toLocaleDateString(lang, {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+          });
+        }
+        return dateRange;
+      })
+    );
   }
 
-  constructor(private searchCriteriaService: SearchCriteriaService, private userSettingService: UserSettingService) {
+  constructor(
+    private searchCriteriaService: SearchCriteriaService,
+    private userSettingService: UserSettingService,
+    private translateService: TranslateService
+  ) {
     super();
   }
 
@@ -76,19 +84,19 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
-  toggleAccordion(e: CustomEvent<IonAccordionGroup>) {
+  toggleAccordion(e: CustomEvent<IonAccordionGroup>): void {
     this.isOpen = !!e.detail.value;
   }
 
-  setFromDate(date: string) {
+  setFromDate(date: string): void {
     this.searchCriteriaService.setFromDate(date);
   }
 
-  setToDate(date: string) {
+  setToDate(date: string): void {
     this.searchCriteriaService.setToDate(date);
   }
 
-  changeDateAndSetMode(days?: number) {
+  changeDateAndSetMode(days?: number): void {
     if (days) {
       this.cachedDays = days;
       this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
@@ -99,22 +107,20 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  private static getReadableDays(day: number): string {
-    if (day === 0) return 'I dag';
-    if (day === 1) return 'I går';
-    let text = 'Siste ';
+  private getReadableDays(day: number): Observable<string> {
+    if (day === 0) return this.translateService.get(['MENU.DATE_RANGE.TODAY']);
+    if (day === 1) return this.translateService.get(['MENU.DATE_RANGE.YESTERDAY']);
     if (day > 1 && day < 7) {
-      text += `${day} dager`;
+      return this.translateService.get(['MENU.DATE_RANGE.LAST_X_DAYS'], { days: day });
     }
     if (day >= 7 && day < 14) {
-      text += 'uke';
+      return this.translateService.get(['MENU.DATE_RANGE.LAST_WEEK']);
     }
     if (day >= 14 && day < 28) {
-      text += `${day / 7} uker`;
+      return this.translateService.get(['MENU.DATE_RANGE.LAST_X_WEEKS'], { weeks: day / 7 });
     }
     if (day >= 28) {
-      text += `${(day / 30).toFixed(0)} måneder`;
+      return this.translateService.get(['MENU.DATE_RANGE.LAST_X_MONTHS'], { months: day / 30 });
     }
-    return text;
   }
 }

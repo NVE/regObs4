@@ -184,7 +184,19 @@
     "TOPO_MAP_CREDITS": "Topo maps provided by",
     "UPDATE_OBSERVATIONS": "Updated",
     "USER_SETTINGS": "User",
-    "WEEKS_BACK": "Weeks back"
+    "WEEKS_BACK": "Weeks back",
+    "DATE_RANGE": {
+      "TODAY": "Today",
+      "YESTERDAY": "Yesterday",
+      "LAST_X_DAYS": "Last {{days}} days",
+      "LAST_WEEK": "Last week",
+      "LAST_X_WEEKS": "Last {{weeks}} weeks",
+      "LAST_X_MONTHS": "Last {{months}} months"
+    },
+    "TIMESPAN": "Timespan",
+    "CUSTOM_TIMESPAN": "Custom timespan",
+    "START_DATE": "Start date",
+    "END_DATE": "End date"
   },
   "MONTHS": {
     "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"
