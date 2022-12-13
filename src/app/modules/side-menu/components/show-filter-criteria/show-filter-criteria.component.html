@@ -1,10 +1,10 @@
 <ng-container *ngIf="isDesktop">
   <div class="show-container" *ngIf="!(showObservations$ | async) as boolean; else showFilterCriteria">
-    <span>{{'MENU.DEACTIVATE_OBSERVATIONS' | translate }}</span>
+    <span>{{ "MENU.DEACTIVATE_OBSERVATIONS" | translate }}</span>
   </div>
-  </ng-container>
-  
-  <ng-template #showFilterCriteria>
+</ng-container>
+
+<ng-template #showFilterCriteria>
   <div class="show-container" *ngIf="daysBack$ | async as daysBack">
     <ng-container *ngIf="currentGeoHazard$ | async as currentGeoHazard">
       <app-geo-name [geoHazards]="currentGeoHazard"></app-geo-name>
@@ -12,12 +12,13 @@
     <span *ngIf="daysBack.value === 0">:</span>
     <ng-container *ngIf="language$ | async as language">
       <span *ngIf="language === 2 || daysBack.value === 0">&nbsp;</span>
-      <span *ngIf="daysBack.value !== 0">{{'MENU.SHOWING_OBSERVATIONS' | translate | lowercase}}&nbsp;</span>
+      <span *ngIf="daysBack.value !== 0">{{ "MENU.SHOWING_OBSERVATIONS" | translate | lowercase }}&nbsp;</span>
       <app-check-days-or-weeks-back [daysBack]="daysBack.value"></app-check-days-or-weeks-back>
-      <span *ngIf="daysBack.value === 0 && language === 2 ">&nbsp;{{'MENU.SHOWING_OBSERVATIONS' | translate |
-        lowercase}}</span>
+      <span *ngIf="daysBack.value === 0 && language === 2"
+        >&nbsp;{{ "MENU.SHOWING_OBSERVATIONS" | translate | lowercase }}</span
+      >
       <ion-menu-button menu="filter" color="light" mode="ios">
-        <a>{{'MY_PROFILE.EDIT' | translate}}</a>
+        <a>{{ "MY_PROFILE.EDIT" | translate }}</a>
       </ion-menu-button>
     </ng-container>
   </div>

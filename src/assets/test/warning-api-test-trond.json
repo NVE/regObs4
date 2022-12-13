@@ -1,2594 +1,2594 @@
 [
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5016",
-                "Name": "Agdenes",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5017",
-                "Name": "Bjugn",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5017",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5049",
-                "Name": "Flatanger",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5049",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5048",
-                "Name": "Fosnes",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5048",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5036",
-                "Name": "Frosta",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5014",
-                "Name": "Frøya",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5014",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5045",
-                "Name": "Grong",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5045",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5011",
-                "Name": "Hemne",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5013",
-                "Name": "Hitra",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5013",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5026",
-                "Name": "Holtålen",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5026",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5046",
-                "Name": "Høylandet",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5046",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5053",
-                "Name": "Inderøy",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5053",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5054",
-                "Name": "Indre Fosen",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5030",
-                "Name": "Klæbu",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5052",
-                "Name": "Leka",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5052",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5037",
-                "Name": "Levanger",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5042",
-                "Name": "Lierne",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5042",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5031",
-                "Name": "Malvik",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5023",
-                "Name": "Meldal",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5028",
-                "Name": "Melhus",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5034",
-                "Name": "Meråker",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5034",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5027",
-                "Name": "Midtre Gauldal",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5027",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5040",
-                "Name": "Namdalseid",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5040",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5005",
-                "Name": "Namsos",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5005",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5044",
-                "Name": "Namsskogan",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5044",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5051",
-                "Name": "Nærøy",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5051",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5021",
-                "Name": "Oppdal",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5021",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5024",
-                "Name": "Orkdal",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5020",
-                "Name": "Osen",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5020",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5047",
-                "Name": "Overhalla",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5047",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5022",
-                "Name": "Rennebu",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5022",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5019",
-                "Name": "Roan",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5019",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5025",
-                "Name": "Røros",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5025",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5043",
-                "Name": "Røyrvik",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5043",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5032",
-                "Name": "Selbu",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5029",
-                "Name": "Skaun",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5012",
-                "Name": "Snillfjord",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5041",
-                "Name": "Snåsa",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5041",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5004",
-                "Name": "Steinkjer",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5004",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5035",
-                "Name": "Stjørdal",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "240710",
-        "Id": "240710",
-        "MasterId": "240710",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": "",
-        "MetName": "",
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": [],
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5001",
-                "Name": "Trondheim",
-                "WarningList": []
-            }
-        ],
-        "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
-        "ActivityLevel": "2",
-        "ActivityLevelName": null,
-        "DangerType": "2",
-        "DangerTypeName": "Jordskredfare",
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:00",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-23T09:46:00",
-        "DangerIncreaseDateTime": "2019-03-24T00:00:00",
-        "DangerDecreaseDateTime": "2019-03-24T12:00:00",
-        "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
-        "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
-        "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
-        "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
-        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
-        "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 400,
-        "ExposedClimateType": 0,
-        "CauseList": [
-            {
-                "Id": 1,
-                "Name": "Regn"
-            },
-            {
-                "Id": 3,
-                "Name": "Snøsmelting"
-            },
-            {
-                "Id": 6,
-                "Name": "Vannmetning (i jord)"
-            }
-        ],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5033",
-                "Name": "Tydal",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5033",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5038",
-                "Name": "Verdal",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5038",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5039",
-                "Name": "Verran",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5039",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5050",
-                "Name": "Vikna",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5050",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5015",
-                "Name": "Ørland",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5015",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    },
-    {
-        "LandSlideTypeList": [],
-        "EventId": "xxx",
-        "Id": "xxx",
-        "MasterId": "xxx",
-        "Version": 1,
-        "LangKey": 1,
-        "MetId": null,
-        "MetName": null,
-        "CountyList": [
-            {
-                "Id": "50",
-                "Name": "Trøndelag",
-                "MunicipalityList": null,
-                "HighestActivityLevel": null
-            }
-        ],
-        "MunicipalityList": [
-            {
-                "Id": "5018",
-                "Name": "Åfjord",
-                "WarningList": null
-            }
-        ],
-        "MunicipalityCsvString": "5018",
-        "ActivityLevel": "1",
-        "ActivityLevelName": null,
-        "DangerType": null,
-        "DangerTypeName": null,
-        "ValidFrom": "2019-03-23T07:00:00",
-        "ValidTo": "2019-03-24T06:59:59",
-        "NextWarningTime": "2019-03-23T15:30:00",
-        "PublishTime": "2019-03-23T10:48:00",
-        "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
-        "DangerIncreaseDateTime": null,
-        "DangerDecreaseDateTime": null,
-        "MainText": "Generelt trygge forhold",
-        "WarningText": null,
-        "AdviceText": null,
-        "ConsequenceText": null,
-        "LevelMeaningText": null,
-        "CauseText": null,
-        "Area": null,
-        "ExposedHeightType": 0,
-        "ExposedHeightValue": 0,
-        "ExposedHeightValue2": 0,
-        "ExposedClimateType": 0,
-        "CauseList": [],
-        "MicroBlogPostList": [],
-        "StationList": []
-    }
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5016",
+        "Name": "Agdenes",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5017",
+        "Name": "Bjugn",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5017",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5049",
+        "Name": "Flatanger",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5049",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5048",
+        "Name": "Fosnes",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5048",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5036",
+        "Name": "Frosta",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5014",
+        "Name": "Frøya",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5014",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5045",
+        "Name": "Grong",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5045",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5011",
+        "Name": "Hemne",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5013",
+        "Name": "Hitra",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5013",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5026",
+        "Name": "Holtålen",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5026",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5046",
+        "Name": "Høylandet",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5046",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5053",
+        "Name": "Inderøy",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5053",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5054",
+        "Name": "Indre Fosen",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5030",
+        "Name": "Klæbu",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5052",
+        "Name": "Leka",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5052",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5037",
+        "Name": "Levanger",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5042",
+        "Name": "Lierne",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5042",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5031",
+        "Name": "Malvik",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5023",
+        "Name": "Meldal",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5028",
+        "Name": "Melhus",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5034",
+        "Name": "Meråker",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5034",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5027",
+        "Name": "Midtre Gauldal",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5027",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5040",
+        "Name": "Namdalseid",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5040",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5005",
+        "Name": "Namsos",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5005",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5044",
+        "Name": "Namsskogan",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5044",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5051",
+        "Name": "Nærøy",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5051",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5021",
+        "Name": "Oppdal",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5021",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5024",
+        "Name": "Orkdal",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5020",
+        "Name": "Osen",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5020",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5047",
+        "Name": "Overhalla",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5047",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5022",
+        "Name": "Rennebu",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5022",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5019",
+        "Name": "Roan",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5019",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5025",
+        "Name": "Røros",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5025",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5043",
+        "Name": "Røyrvik",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5043",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5032",
+        "Name": "Selbu",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5029",
+        "Name": "Skaun",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5012",
+        "Name": "Snillfjord",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5041",
+        "Name": "Snåsa",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5041",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5004",
+        "Name": "Steinkjer",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5004",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5035",
+        "Name": "Stjørdal",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "240710",
+    "Id": "240710",
+    "MasterId": "240710",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": "",
+    "MetName": "",
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": [],
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5001",
+        "Name": "Trondheim",
+        "WarningList": []
+      }
+    ],
+    "MunicipalityCsvString": "1576;1567;5016;5036;5011;5054;5030;5037;5031;5023;5028;5024;5032;5029;5012;5035;5001;",
+    "ActivityLevel": "2",
+    "ActivityLevelName": null,
+    "DangerType": "2",
+    "DangerTypeName": "Jordskredfare",
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:00",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-23T09:46:00",
+    "DangerIncreaseDateTime": "2019-03-24T00:00:00",
+    "DangerDecreaseDateTime": "2019-03-24T12:00:00",
+    "MainText": "Varsel om jordskredfare, gult nivå for deler av Møre og Romsdal og Trøndelag",
+    "WarningText": "Nedbørhendelsen har begrenset utstrekning i tid og det er knyttet stor usikkerhet til plasseringen av den mest intense nedbøren og om nedbøren kommer i form av regn, sludd eller snø.  Grunnvannstanden og vannmetningsgraden i bakken er svært høy. Bratte skråninger, samt bekker og elveløp med stor vannføring er spesielt utsatt.",
+    "AdviceText": "Hold stikkrenner, kummer og andre vannveier fri for snø/is, grus, søppel, kvist og løv. Tette vannveier med oppdemmet vann kan forårsake skred.",
+    "ConsequenceText": "Det ventes noen skredhendelser. Enkelte store hendelser kan forekomme. Utsatte bane- og vegstrekninger kan bli stengt. Jordskred: Utglidninger og rask bevegelse av vannmettet jord i bratte skråninger.",
+    "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt. Gult nivå er det laveste av våre varslingsnivåer.",
+    "CauseText": "Det ventes lokalt opp mot 30 mm regn på 6 timer natt til søndag. Regn under 200-300 moh. Grunnvannstanden og vannmetningsgraden i bakken er høy.  ",
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 400,
+    "ExposedClimateType": 0,
+    "CauseList": [
+      {
+        "Id": 1,
+        "Name": "Regn"
+      },
+      {
+        "Id": 3,
+        "Name": "Snøsmelting"
+      },
+      {
+        "Id": 6,
+        "Name": "Vannmetning (i jord)"
+      }
+    ],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5033",
+        "Name": "Tydal",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5033",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5038",
+        "Name": "Verdal",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5038",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5039",
+        "Name": "Verran",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5039",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5050",
+        "Name": "Vikna",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5050",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5015",
+        "Name": "Ørland",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5015",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  },
+  {
+    "LandSlideTypeList": [],
+    "EventId": "xxx",
+    "Id": "xxx",
+    "MasterId": "xxx",
+    "Version": 1,
+    "LangKey": 1,
+    "MetId": null,
+    "MetName": null,
+    "CountyList": [
+      {
+        "Id": "50",
+        "Name": "Trøndelag",
+        "MunicipalityList": null,
+        "HighestActivityLevel": null
+      }
+    ],
+    "MunicipalityList": [
+      {
+        "Id": "5018",
+        "Name": "Åfjord",
+        "WarningList": null
+      }
+    ],
+    "MunicipalityCsvString": "5018",
+    "ActivityLevel": "1",
+    "ActivityLevelName": null,
+    "DangerType": null,
+    "DangerTypeName": null,
+    "ValidFrom": "2019-03-23T07:00:00",
+    "ValidTo": "2019-03-24T06:59:59",
+    "NextWarningTime": "2019-03-23T15:30:00",
+    "PublishTime": "2019-03-23T10:48:00",
+    "CreatedTime": "2019-03-25T13:10:44.6584076+01:00",
+    "DangerIncreaseDateTime": null,
+    "DangerDecreaseDateTime": null,
+    "MainText": "Generelt trygge forhold",
+    "WarningText": null,
+    "AdviceText": null,
+    "ConsequenceText": null,
+    "LevelMeaningText": null,
+    "CauseText": null,
+    "Area": null,
+    "ExposedHeightType": 0,
+    "ExposedHeightValue": 0,
+    "ExposedHeightValue2": 0,
+    "ExposedClimateType": 0,
+    "CauseList": [],
+    "MicroBlogPostList": [],
+    "StationList": []
+  }
 ]

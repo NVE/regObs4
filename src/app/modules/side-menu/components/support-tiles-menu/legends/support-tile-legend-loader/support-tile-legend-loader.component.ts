@@ -5,7 +5,7 @@ import {
   Input,
   ComponentFactoryResolver,
   ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
 import { legendsConfig } from '../legends.config';
 
@@ -13,7 +13,7 @@ import { legendsConfig } from '../legends.config';
   selector: 'app-support-tile-legend-loader',
   templateUrl: './support-tile-legend-loader.component.html',
   styleUrls: ['./support-tile-legend-loader.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupportTileLegendLoaderComponent implements OnInit {
   @Input() name: string;
@@ -28,9 +28,7 @@ export class SupportTileLegendLoaderComponent implements OnInit {
 
   loadComponent(): void {
     if (this.name && legendsConfig[this.name]) {
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
-        legendsConfig[this.name]
-      );
+      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(legendsConfig[this.name]);
       this.viewContainerRef.createComponent(componentFactory);
     }
   }

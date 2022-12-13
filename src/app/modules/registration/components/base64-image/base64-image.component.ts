@@ -3,7 +3,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-base64-image',
   templateUrl: './base64-image.component.html',
-  styleUrls: ['./base64-image.component.scss']
+  styleUrls: ['./base64-image.component.scss'],
 })
 export class Base64ImageComponent implements OnInit {
   @Input() base64encodedImage: string;

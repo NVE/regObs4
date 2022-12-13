@@ -6,13 +6,13 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_SOIL": "Kladd: Jordobservasjon",
     "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
     "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_SOIL": "Kladd: Jordobservasjon",
     "DRAFT_TITLE_WATER": "Kladd: Vannobservasjon",
-    "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
     "NEW_ICE_OBSERVATION": "Ny isobservasjon",
     "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
     "NEW_WATER_OBSERVATION": "Ny vannobservasjon"
   },
   "ALERT": {
@@ -29,10 +29,10 @@
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til egne observasjoner",
     "SELECT_GEO_HAZARD": "Velg naturfare",
-    "VIEW_WARNINGS": "Se varsler fra varsom.no",
+    "SKI_CONDITIONS": "Nå kan du også rapportere skiføre!",
     "TOGGLE_OBSERVATION": "Bytt mellom enkel og fullstendig observasjon",
     "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå på for å sende inn observasjoner av situasjonen der du er – enkelt og raskt. Dette er supernyttige data for varslingen og andre brukere.\n \n Slå av for å få alle valgene for innsending av observasjoner – som før.",
-    "SKI_CONDITIONS": "Nå kan du også rapportere skiføre!"
+    "VIEW_WARNINGS": "Se varsler fra varsom.no"
   },
   "COMPETENCE": {
     "UNKNOWN": "Ukjent kompetanse"
@@ -81,10 +81,10 @@
   "DRAFT": "Kladd",
   "GEOLOCATION": {
     "POSITION_ERROR": {
+      "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
       "PermissionDenied": "For å hente posisjonen din må du endre lokasjonsinnstillinger",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din",
-      "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
       "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
     }
   },
@@ -112,6 +112,7 @@
   "LOGIN": {
     "CHANGE_PASSWORD": "Endre passord",
     "CREATE_USER": "Lag ny bruker",
+    "DELETE_PROFILE": "Slett profil og mine data",
     "EMAIL": "E-post",
     "FORGOT_PASSWORD": "Glemt passord",
     "IS_LOGGING_IN": "Logger inn...",
@@ -119,7 +120,6 @@
     "LOGIN": "Logg inn",
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
-    "DELETE_PROFILE": "Slett profil og mine data",
     "PASSWORD": "Passord",
     "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
     "TITLE": "Logg inn",
@@ -146,12 +146,13 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i Varsom",
     "AND": "og",
+    "CONTACT_DESCRIPTION": "Vi har lagt ved loggfiler. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss fra app",
-    "CONTACT_DESCRIPTION": "Vi har lagt ved loggfiler. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "DAYS_BACK": "Dager tilbake",
     "DAY_BACK": "Dag tilbake",
+    "DEACTIVATE_OBSERVATIONS": "Visning av observasjoner er deaktivert",
     "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
@@ -168,7 +169,6 @@
     "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
-    "DEACTIVATE_OBSERVATIONS": "Visning av observasjoner er deaktivert",
     "SHOW_TRIPS": "Vis turer",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
@@ -234,7 +234,10 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
-    "OBSERVATIONS": "Observasjoner"
+    "TITLE": "Observasjoner",
+    "SORT_BY_TEXT": "Sorter på",
+    "SORT_BY_OBS_TIME": "Observert tid",
+    "SORT_BY_CHANGE_TIME": "Oppdatert tid"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -285,18 +288,20 @@
     "OK_I_UNDERSTAND": "OK, jeg skjønner"
   },
   "REGISTRATION": {
-    "ANONYMIZE": {
-      "TITLE": "Anonymisering",
-      "CHECK_TO_ANONYMIZE": "Huk av for å anonymisere"
-    },
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {
       "TITLE": "Legg til weblenke",
       "URL": "Url"
     },
+    "ANONYMIZE": {
+      "CHECK_TO_ANONYMIZE": "Huk av for å anonymisere",
+      "TITLE": "Anonymisering"
+    },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -320,17 +325,17 @@
       "DRAFT": {
         "BUTTON": "Slett kladd",
         "HEADER": "Slett kladd",
-        "MESSAGE_NEW": "Denne observasjonen er ikke sendt inn til Regobs. Vil du slette den?",
-        "MESSAGE_EDIT": "Vil du slette evt. endringer du har gjort på denne observasjonen?"
+        "MESSAGE_EDIT": "Vil du slette evt. endringer du har gjort på denne observasjonen?",
+        "MESSAGE_NEW": "Denne observasjonen er ikke sendt inn til Regobs. Vil du slette den?"
       },
       "SUBMITTED_REGISTRATION": {
         "BUTTON": "Slett observasjon fra Regobs",
-        "HEADER": "Slett observasjon",
-        "MESSAGE": "Vil du slette denne observasjonen fra Regobs for godt?",
         "FAILED": {
           "HEADER": "Sletting feilet",
           "MESSAGE": "Vi fikk ikke slettet observasjonen fra Regobs. Sjekk gjerne om du har nett og prøv igjen."
-        }
+        },
+        "HEADER": "Slett observasjon",
+        "MESSAGE": "Vil du slette denne observasjonen fra Regobs for godt?"
       }
     },
     "DIRT": {
@@ -359,24 +364,24 @@
       "SUBJECT": "Registrering feilet"
     },
     "FAILED": {
+      "ABANDON": "Forkast mine endringer",
+      "CONFLICT": "Mens du jobbet har observasjonen blitt endret et annet sted.<br/>Vil du forkaste dine endringer eller vil du sende inn og overskrive endringene som ble gjort et annet sted?",
       "EDIT_OBSERVATION": "Rediger observasjon",
+      "GONE": "Denne observasjonen er slettet i Regobs. <br/>Vil du forkaste dine endringer eller vil du sende inn kladden som en ny observasjon?",
       "LOGGED": "Vi har logget problemet.",
+      "OVERWRITE": "Send inn og overskriv",
       "PROBLEM": "Det har oppstått et problem med registreringen din",
       "PROBLEM_HELP_TEXT": "Feilede observasjoner lagres i telefonen din, og når problemet er løst vil du kunne sende inn observasjoen på nytt.",
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på e-post",
+      "SUBMIT_NEW": "Send inn som ny observasjon",
       "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
-      "TITLE": "Innsending feilet",
-      "CONFLICT": "Mens du jobbet har observasjonen blitt endret et annet sted.<br/>Vil du forkaste dine endringer eller vil du sende inn og overskrive endringene som ble gjort et annet sted?",
-      "ABANDON": "Forkast mine endringer",
-      "OVERWRITE": "Send inn og overskriv",
-      "GONE": "Denne observasjonen er slettet i Regobs. <br/>Vil du forkaste dine endringer eller vil du sende inn kladden som en ny observasjon?",
-      "SUBMIT_NEW": "Send inn som ny observasjon"
+      "TITLE": "Innsending feilet"
     },
     "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Rediger observasjon",
       "HEADER": "Synkronisering feilet",
-      "MESSAGE": "Vi fikk ikke til å hente en fersk utgave av observasjonen fra Regobs. Du kan likevel redigere denne, men det er en sjanse for å støte på konflikter når du prøver å sende den inn hvis flere har jobbet med samme observasjon eller du har jobbet med observasjonen på flere enheter.",
-      "CONFIRM_BUTTON": "Rediger observasjon"
+      "MESSAGE": "Vi fikk ikke til å hente en fersk utgave av observasjonen fra Regobs. Du kan likevel redigere denne, men det er en sjanse for å støte på konflikter når du prøver å sende den inn hvis flere har jobbet med samme observasjon eller du har jobbet med observasjonen på flere enheter."
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat fra observasjonen",
@@ -418,10 +423,10 @@
         "TITLE": "Istykkelse"
       },
       "INCIDENT": {
-        "INVOLVED_NUM": "Antall i turgruppa",
         "CASUALTIES_NUM": "Antall gjennom isen",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall i turgruppa",
         "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall gjennom isen eller antall i turgruppa",
+        "INVOLVED_NUM": "Antall i turgruppa",
         "SAFETY_GEAR_TID": "Redningsutstyr"
       }
     },
@@ -438,46 +443,44 @@
       "COMMENT": "Beskrivelse",
       "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Gikk det bra? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
-      "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
-      "TITLE": "Ulykke / hendelse",
       "DEAD_NUM": "Antall døde",
-      "RESCUE_TID": "Redning"
+      "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
+      "RESCUE_TID": "Redning",
+      "TITLE": "Ulykke / hendelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
-    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
-    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",
       "CURRENT_LOCATION": "Nåværende posisjon",
-      "HIDE_DETAILS": "Skjul detaljer",
-      "SHOW_DETAILS": "Vis detaljer",
-      "TITLE": "Observasjonspunkt og -tid",
-      "SOURCE": "Kildeangivelse",
       "EXACT": "Eksakt",
+      "HIDE_DETAILS": "Skjul detaljer",
       "MORETHANONEKM": "Mer enn 1 km",
-      "UNCERTAINTY": "Usikkerhet i posisjon",
       "NAME_LOCATION": "Navngi sted",
-      "NAME_LOCATION_TOOLTIP": "Å navngi stedet gjør det mulig å lage en tidsserie på samme observasjonspunkt"
+      "NAME_LOCATION_TOOLTIP": "Å navngi stedet gjør det mulig å lage en tidsserie på samme observasjonspunkt",
+      "SHOW_DETAILS": "Vis detaljer",
+      "SOURCE": "Kildeangivelse",
+      "TITLE": "Observasjonspunkt og -tid",
+      "UNCERTAINTY": "Usikkerhet i posisjon"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
       "SHARE_WITH_GROUP": "Del med gruppe",
-      "TITLE": "Observasjon",
       "SIMPLE": {
-        "HEADER_QUESTION": "Hvordan er det her nå?",
-        "TOGGLE": "Enkel observasjon",
         "CONFIRM": {
+          "CANCEL": "Avbryt",
           "HEADER": "Bytt til enkel modus",
           "MESSAGE": "Observasjonen inneholder data som ikke kan vises i enkel modus. Vil du slette data vi ikke kan vise?",
-          "YES": "Slett data og bytt til enkel",
-          "CANCEL": "Avbryt"
+          "YES": "Slett data og bytt til enkel"
         },
-        "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}"
-      }
+        "HEADER_QUESTION": "Hvordan er det her nå?",
+        "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}",
+        "TOGGLE": "Enkel observasjon"
+      },
+      "TITLE": "Observasjon"
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
@@ -528,33 +531,33 @@
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
         "AVAL_CAUSE": "Svakt lag",
-        "DESTRUCTIVE_SIZE": "Størrelse",
-        "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
-        "FRACTURE_WIDTH": "Bruddbredde (m)",
-        "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
-        "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Hva skjedde og hvorfor? Kunne situasjonen vært unngått?",
-        "POSITION": "Skredposisjon",
-        "SET_AVALANCHE_POSITION": "Sett skredposisjon",
-        "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
-        "TIME": "Skredtidspunkt (obligatorisk)",
-        "TITLE": "Skredhendelse",
-        "TRAJECTORY_NAME": "Skredbanenavn",
-        "VALID_EXPOSITION": "Eksposisjon",
-        "REMOTELY_TRIGGERED": "Fjernutløst",
-        "INVOLVED_NUM": "Antall involverte",
         "CASUALTIES_NUM": "Antall skredtatte",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
         "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall skredtatte eller involverte",
+        "DESTRUCTIVE_SIZE": "Størrelse",
+        "EVACUATED_NUM": "Antall evakuerte",
+        "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
+        "FRACTURE_WIDTH": "Bruddbredde (m)",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum antall døde og kun skadet kan ikke være flere enn antall skredtatte eller involverte",
         "HARMED_NUM": "Antall kun skadet",
         "HARMED_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
-        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum antall døde og kun skadet kan ikke være flere enn antall skredtatte eller involverte",
-        "SAFETY_GEAR_TID": "Sender/mottaker",
-        "LOCAL_TOURIST_TID": "Lokal eller tilreisende",
+        "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
+        "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Hva skjedde og hvorfor? Kunne situasjonen vært unngått?",
+        "INVOLVED_NUM": "Antall involverte",
         "LOCAL_KNOWLEDGE_TID": "Kjennskap til området",
-        "TRAFFIC_OBSTRUCTED": "Trafikk hindret",
-        "EVACUATED_NUM": "Antall evakuerte",
+        "LOCAL_TOURIST_TID": "Lokal eller tilreisende",
         "MATERIAL_DAMAGES": "Materielle skader",
-        "SLOPE_ACTIVITY_TID": "Turfase"
+        "POSITION": "Skredposisjon",
+        "REMOTELY_TRIGGERED": "Fjernutløst",
+        "SAFETY_GEAR_TID": "Sender/mottaker",
+        "SET_AVALANCHE_POSITION": "Sett skredposisjon",
+        "SLOPE_ACTIVITY_TID": "Turfase",
+        "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
+        "TIME": "Skredtidspunkt (obligatorisk)",
+        "TITLE": "Skredhendelse",
+        "TRAFFIC_OBSTRUCTED": "Trafikk hindret",
+        "TRAJECTORY_NAME": "Skredbanenavn",
+        "VALID_EXPOSITION": "Eksposisjon"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
@@ -582,15 +585,15 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Legg til ny test",
         "DISTANCE_FROM_TOP": "Avstand fra toppen (cm)",
-        "X_DISTANCE": "Kuttlengde",
-        "Y_DISTANCE": "Søylelengde",
         "FRACTURE_TYPE": "Bruddtype",
+        "RB_RELEASE": "Løsnet prosentdel av blokk",
+        "RB_SCORE": "Rutschblock-resultat",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antall slag",
-        "RB_SCORE": "Rutschblock-resultat",
-        "RB_RELEASE": "Løsnet prosentdel av blokk",
         "TEST_TYPE": "Test type",
-        "TITLE": "Tester"
+        "TITLE": "Tester",
+        "X_DISTANCE": "Kuttlengde",
+        "Y_DISTANCE": "Søylelengde"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -767,14 +770,14 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om vår bruk av data i vår <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæring</a>.",
     "RESET": "Tilbakestill app",
     "RESETTING": "App tilbakestilles. Vennligst vent...",
+    "SEND_LOGS": "Send logger til Regobs-teamet",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",
     "SIZE_OF_TILES_CACHE": "Størrelse på kartblad lagret på telefonen",
     "TILES_CACHE_SIZE": "Antall kartblad lagret på telefonen",
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge",
-    "USE_RETINA_MAP": "Bruk høy oppløsning på kart",
-    "SEND_LOGS": "Send logger til Regobs-teamet"
+    "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",

@@ -1,26 +1,25 @@
 .reset-button {
-    margin-top: 30px;
-    margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 ion-button.button-block {
-    height: var(--ion-button-height);
+  height: var(--ion-button-height);
 }
 
 ion-item {
-
-    &.item-label {
-        ion-text {
-            &.ion-align-self-start {
-               &.build-version {
-                    margin-top: 5px;
-                    margin-bottom: 5px;
-                }
-                &.build-rev {
-                    font-size: 14px;
-                    margin-top: 0px;
-                }
-            }
+  &.item-label {
+    ion-text {
+      &.ion-align-self-start {
+        &.build-version {
+          margin-top: 5px;
+          margin-bottom: 5px;
         }
+        &.build-rev {
+          font-size: 14px;
+          margin-top: 0px;
+        }
+      }
     }
+  }
 }

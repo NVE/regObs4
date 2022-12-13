@@ -1,17 +1,10 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  NgZone,
-  EventEmitter
-} from '@angular/core';
+import { Component, OnInit, Input, Output, NgZone, EventEmitter } from '@angular/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
-  styleUrls: ['./exposed-height.component.scss']
+  styleUrls: ['./exposed-height.component.scss'],
 })
 export class ExposedHeightComponent implements OnInit {
   @Input() exposedHeightComboTID: number;
@@ -34,9 +27,7 @@ export class ExposedHeightComponent implements OnInit {
   }
 
   get lowerHeightArray() {
-    return this.heightArray.filter(
-      (x) => this.exposedHight1 === undefined || x.id < this.exposedHight1
-    );
+    return this.heightArray.filter((x) => this.exposedHight1 === undefined || x.id < this.exposedHight1);
   }
 
   constructor(private ngZone: NgZone) {}
@@ -90,20 +81,12 @@ export class ExposedHeightComponent implements OnInit {
 
   sholdUseExposedHight2() {
     return (
-      (this.exposedHeightTop &&
-        this.exposedHeightBottom &&
-        !this.exposedHeightMiddle) ||
-      (!this.exposedHeightTop &&
-        !this.exposedHeightBottom &&
-        this.exposedHeightMiddle)
+      (this.exposedHeightTop && this.exposedHeightBottom && !this.exposedHeightMiddle) ||
+      (!this.exposedHeightTop && !this.exposedHeightBottom && this.exposedHeightMiddle)
     );
   }
 
-  private updateExposedHeightComboTID(
-    top: boolean,
-    middle: boolean,
-    bottom: boolean
-  ) {
+  private updateExposedHeightComboTID(top: boolean, middle: boolean, bottom: boolean) {
     if (top && middle && bottom) {
       this.exposedHeightComboTID = 0;
     } else if (!top && middle && !bottom) {
@@ -120,11 +103,7 @@ export class ExposedHeightComponent implements OnInit {
   }
 
   applyChanges() {
-    this.updateExposedHeightComboTID(
-      this.exposedHeightTop,
-      this.exposedHeightMiddle,
-      this.exposedHeightBottom
-    );
+    this.updateExposedHeightComboTID(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
     if (!this.sholdUseExposedHight2()) {
       this.exposedHight2 = undefined;
     }

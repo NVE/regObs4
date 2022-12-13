@@ -3,19 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{'REGISTRATION.WATER.DAMAGE.TITLE' | translate}}
-    </ion-title>
+    <ion-title> {{'REGISTRATION.WATER.DAMAGE.TITLE' | translate}} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="draft" [draft]="draft"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="draft" [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}} </ion-label>
       </ion-list-header>
       <ion-radio-group [(ngModel)]="isChecked">
         <ion-item [ngClass]="{'selected': checked === true}" (click)="isChecked = true">
@@ -29,12 +24,15 @@
       </ion-radio-group>
       <ng-container *ngIf="isChecked && damageTypes">
         <ion-list-header class="ion-text-uppercase">
-          <ion-label>
-            {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}
-          </ion-label>
+          <ion-label> {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }} </ion-label>
         </ion-list-header>
-        <app-damage-obs *ngFor="let damageType of damageTypes" [(draft)]="draft"
-          [damageTypeId]="damageType.Id" [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
+        <app-damage-obs
+          *ngFor="let damageType of damageTypes"
+          [(draft)]="draft"
+          [damageTypeId]="damageType.Id"
+          [damageTypeName]="damageType.Name"
+          [registrationTid]="registrationTid"
+        >
         </app-damage-obs>
       </ng-container>
     </ion-list>

@@ -8,7 +8,7 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-geo-select',
   templateUrl: './geo-select.component.html',
-  styleUrls: ['./geo-select.component.scss']
+  styleUrls: ['./geo-select.component.scss'],
 })
 export class GeoSelectComponent implements OnInit {
   geoHazardTypes: Array<GeoHazard[]>;
@@ -18,11 +18,7 @@ export class GeoSelectComponent implements OnInit {
   constructor(private userSettingService: UserSettingService) {}
 
   ngOnInit(): void {
-    this.geoHazardTypes = [
-      [GeoHazard.Snow],
-      [GeoHazard.Ice],
-      [GeoHazard.Water, GeoHazard.Soil]
-    ];
+    this.geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
     this.userSettings$ = this.userSettingService.userSetting$;
   }
 
@@ -32,12 +28,10 @@ export class GeoSelectComponent implements OnInit {
 
   async changeGeoHazard(geoHazards: GeoHazard[]): Promise<void> {
     this.isOpen = false;
-    const currentSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     this.userSettingService.saveUserSettings({
       ...currentSettings,
-      currentGeoHazard: geoHazards
+      currentGeoHazard: geoHazards,
     });
   }
 }

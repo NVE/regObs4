@@ -2,9 +2,11 @@
  * Contains helper functions needed when posting registration data to regobs api.
  */
 
-import { AttachmentUploadEditModel, WaterLevelMeasurementUploadModel } from 'src/app/modules/common-registration/registration.models';
+import {
+  AttachmentUploadEditModel,
+  WaterLevelMeasurementUploadModel,
+} from 'src/app/modules/common-registration/registration.models';
 import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
-
 
 /**
  * Add an attachment to a registration object / draft.
@@ -26,7 +28,7 @@ export function addAttachmentToRegistration(
   }
 
   const attachment: AttachmentEditModel = {
-    ...uploadedAttachment
+    ...uploadedAttachment,
   };
 
   delete attachment['id'];
@@ -57,8 +59,8 @@ function addDamageObsAttachment(attachment: AttachmentEditModel, draft: Registra
 function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: RegistrationEditModel, ref: string) {
   let found = false;
 
-  const modifiedMeasurements = draft.WaterLevel2.WaterLevelMeasurement
-    .map((measurement: WaterLevelMeasurementUploadModel) => {
+  const modifiedMeasurements = draft.WaterLevel2.WaterLevelMeasurement.map(
+    (measurement: WaterLevelMeasurementUploadModel) => {
       // When we find a matching measurement, return a new object with updated attachment info
       if (measurement.ref === ref && ref != null) {
         found = true;
@@ -72,12 +74,13 @@ function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: Registr
       }
 
       return measurement;
-    });
+    }
+  );
 
   if (!found) {
     throw new Error(
       'Could not find water level measurement for attachment.' +
-      `Ref: '${ref}', AttachmentId: '${attachment.AttachmentId}'`
+        `Ref: '${ref}', AttachmentId: '${attachment.AttachmentId}'`
     );
   }
 

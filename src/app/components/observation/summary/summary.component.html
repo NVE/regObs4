@@ -1,11 +1,9 @@
 <div class="summaries" *ngFor="let summary of summaries; let i = index">
   <ng-container *ngIf="summary.Summaries.length > 0">
-    <h3 *ngIf="!isNameSameAsPreviousName(i)">{{ summary.RegistrationName }}
-    </h3>
+    <h3 *ngIf="!isNameSameAsPreviousName(i)">{{ summary.RegistrationName }}</h3>
     <ng-container *ngFor="let genericValue of summary.Summaries; let i = index">
-      <span *ngIf="i>0" class="bullet">&nbsp;&bull;&nbsp;</span>
-      <ng-container *ngTemplateOutlet="RegObsGenericValue; context:genericValue">
-      </ng-container>
+      <span *ngIf="i > 0" class="bullet">&nbsp;&bull;&nbsp;</span>
+      <ng-container *ngTemplateOutlet="RegObsGenericValue; context: genericValue"> </ng-container>
     </ng-container>
   </ng-container>
 </div>
@@ -22,16 +20,16 @@
     </ng-container>
   </ng-container>
   <ng-template #TextSummary>
-    <h4 *ngIf="showHeaders">{{ header }}:&nbsp;</h4><span class="text">{{ startOnNewLineIfContainLineBreaks(value)
-      }}</span>
+    <h4 *ngIf="showHeaders">{{ header }}:&nbsp;</h4>
+    <span class="text">{{ startOnNewLineIfContainLineBreaks(value) }}</span>
   </ng-template>
   <ng-template #UrlSummary>
-    <app-external-link [src]="value">{{header}}</app-external-link>
+    <app-external-link [src]="value">{{ header }}</app-external-link>
   </ng-template>
   <ng-template #List>
     <ng-container *ngFor="let item of value; let j = index">
-      <span *ngIf="j>0" class="bullet">&nbsp;&bull;&nbsp;</span>
-      <ng-container *ngTemplateOutlet="RegObsGenericValue; context:item"></ng-container>
+      <span *ngIf="j > 0" class="bullet">&nbsp;&bull;&nbsp;</span>
+      <ng-container *ngTemplateOutlet="RegObsGenericValue; context: item"></ng-container>
     </ng-container>
   </ng-template>
 </ng-template>

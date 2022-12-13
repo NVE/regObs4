@@ -6,15 +6,13 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
   selector: 'app-save-and-go-back-button',
   templateUrl: './save-and-go-back-button.component.html',
   styleUrls: ['./save-and-go-back-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SaveAndGoBackButtonComponent {
   @Input() draft: RegistrationDraft;
   @Output() reset = new EventEmitter();
 
-  constructor(
-    private navContoller: NavController,
-  ) {}
+  constructor(private navContoller: NavController) {}
 
   async goBack() {
     this.navContoller.navigateBack('registration/edit/' + this.draft.uuid);

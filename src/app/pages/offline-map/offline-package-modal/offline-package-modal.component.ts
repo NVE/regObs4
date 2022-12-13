@@ -14,7 +14,7 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 @Component({
   templateUrl: './offline-package-modal.component.html',
   styleUrls: ['./offline-package-modal.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
   @Input() feature: CompoundPackageFeature;
@@ -24,14 +24,14 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   zoom: number;
   center: number[];
   tileLayer: L.GeoJSON;
-  isCheckingAvailableDiskspace:boolean;
+  isCheckingAvailableDiskspace: boolean;
 
   offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
 
   constructor(
     private modalController: ModalController,
     private offlineMapService: OfflineMapService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {
     super();
   }
@@ -39,7 +39,8 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   ngOnInit(): void {
     this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
-      tap(() => this.cdr.detectChanges() ));
+      tap(() => this.cdr.detectChanges())
+    );
     this.tileLayer = new L.GeoJSON(this.feature);
 
     // Set center from package bounds
@@ -50,8 +51,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     const [, , z] = this.packageOnServer.getXYZ();
     this.zoom = z;
 
-    this.offlineMapService.finishedPackageIds$.pipe(
-      takeUntil(this.ngDestroy$)).subscribe((packageName) => {
+    this.offlineMapService.finishedPackageIds$.pipe(takeUntil(this.ngDestroy$)).subscribe((packageName) => {
       if (this.packageOnServer.getName() === packageName) {
         this.dismiss(); //close when package is unzipped and ready to use
       }
@@ -66,7 +66,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     this.isCheckingAvailableDiskspace = true;
     this.cdr.detectChanges();
 
-    if(await this.offlineMapService.checkAvailableDiskSpace(this.packageOnServer)) {
+    if (await this.offlineMapService.checkAvailableDiskSpace(this.packageOnServer)) {
       this.offlineMapService.downloadPackage(this.packageOnServer);
     }
     this.isCheckingAvailableDiskspace = false;
@@ -87,7 +87,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
 
   dismiss() {
     this.modalController.dismiss({
-      'dismissed': true
+      dismissed: true,
     });
   }
 }

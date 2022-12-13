@@ -1,7 +1,7 @@
 <ion-list lines="full">
   <ion-list-header class="ion-text-uppercase">
     <ion-label>
-      {{'REGISTRATION.FAILED.TITLE' | translate}}
+      {{ "REGISTRATION.FAILED.TITLE" | translate }}
     </ion-label>
   </ion-list-header>
   <app-version-conflict *ngIf="conflictError" [draft]="draft"></app-version-conflict>
@@ -9,43 +9,44 @@
   <ng-container *ngIf="!(conflictError || goneError)">
     <ion-item>
       <ion-label class="ion-text-wrap" *ngIf="networkError">
-        {{'REGISTRATION.FAILED.SUBTITLE' | translate}}
+        {{ "REGISTRATION.FAILED.SUBTITLE" | translate }}
       </ion-label>
       <!-- TODO: Handle attachment error? -->
       <ion-label class="ion-text-wrap" *ngIf="unknownError">
-        {{'REGISTRATION.FAILED.PROBLEM' | translate}}
+        {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
       </ion-label>
       <ion-label class="ion-text-wrap" *ngIf="registrationError">
-        {{'REGISTRATION.FAILED.PROBLEM' | translate}}
+        {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
         <ng-container *ngIf="draft.error.message">
-          :<div class="error-message">
+          :
+          <div class="error-message">
             {{ draft.error.message }}
           </div>
         </ng-container>
       </ion-label>
       <ion-label class="ion-text-wrap" *ngIf="serverError">
-        {{'REGISTRATION.FAILED.PROBLEM' | translate}}. {{'REGISTRATION.FAILED.LOGGED' | translate}}
+        {{ "REGISTRATION.FAILED.PROBLEM" | translate }}. {{ "REGISTRATION.FAILED.LOGGED" | translate }}
         <!-- Ta skjermbilde og
         <app-external-link src="http://www.regobs.no/Home/About">kontakt oss</app-external-link>
         , så hjelper du oss med å finne en løsning.  -->
-        {{'REGISTRATION.FAILED.PROBLEM_HELP_TEXT' | translate}}
+        {{ "REGISTRATION.FAILED.PROBLEM_HELP_TEXT" | translate }}
       </ion-label>
     </ion-item>
     <ion-item *ngIf="registrationError || serverError || unknownError">
       <ion-label class="ion-text-wrap">
-        {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ draft.uuid }}
+        {{ "REGISTRATION.FAILED.REFERENCE" | translate }} ID: {{ draft.uuid }}
       </ion-label>
     </ion-item>
     <ion-item (click)="sendEmail()">
       <ion-icon slot="start" name="mail"></ion-icon>
       <ion-label class="ion-text-wrap">
-        {{'REGISTRATION.FAILED.SEND_EMAIL' | translate}}
+        {{ "REGISTRATION.FAILED.SEND_EMAIL" | translate }}
       </ion-label>
     </ion-item>
     <ion-item (click)="openForEdit()">
       <ion-icon slot="start" name="create"></ion-icon>
       <ion-label class="ion-text-wrap">
-        {{'REGISTRATION.FAILED.EDIT_OBSERVATION' | translate}}
+        {{ "REGISTRATION.FAILED.EDIT_OBSERVATION" | translate }}
       </ion-label>
     </ion-item>
   </ng-container>

@@ -9,12 +9,7 @@ import { AuthCallbackPageRoutingModule } from './auth-callback-routing.module';
 import { AuthCallbackPage } from './auth-callback.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    AuthCallbackPageRoutingModule
-  ],
-  declarations: [AuthCallbackPage]
+  imports: [CommonModule, FormsModule, IonicModule, AuthCallbackPageRoutingModule],
+  declarations: [AuthCallbackPage],
 })
 export class AuthCallbackPageModule {}

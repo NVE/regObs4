@@ -18,29 +18,22 @@ import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
     {
       provide: StorageBackend,
       useFactory: storageFactory,
-      deps: [Platform]
+      deps: [Platform],
     },
     {
       provide: Requestor,
       useFactory: httpFactory,
-      deps: [Platform, HttpClient]
+      deps: [Platform, HttpClient],
     },
     {
       provide: Browser,
-      useClass: CapacitorBrowser
+      useClass: CapacitorBrowser,
     },
     {
       provide: AuthService,
       useFactory: authFactory,
-      deps: [
-        Platform,
-        NgZone,
-        Requestor,
-        Browser,
-        StorageBackend,
-        UserSettingService
-      ]
-    }
-  ]
+      deps: [Platform, NgZone, Requestor, Browser, StorageBackend, UserSettingService],
+    },
+  ],
 })
 export class AuthModule {}

@@ -1,9 +1,26 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
-import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  from,
+  map,
+  Observable,
+  shareReplay,
+  skipUntil,
+  Subject,
+  switchMap,
+  takeWhile,
+  tap,
+} from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { getAllAttachmentsFromEditModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import {
+  getAllAttachmentsFromEditModel,
+  hasAnyObservations,
+  isObservationModelEmptyForRegistrationTid,
+} from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -22,10 +39,9 @@ const DEBUG_TAG = 'DraftRepositoryService';
  * TODO: Error handling
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DraftRepositoryService {
-
   //used to spread the word about changes in drafts
   private shouldLoad: BehaviorSubject<void> = new BehaviorSubject(null);
 
@@ -38,20 +54,15 @@ export class DraftRepositoryService {
     private logger: LoggingService,
     private newAttachmentSerivice: NewAttachmentService,
     private databaseService: DatabaseService,
-    private userSettingService: UserSettingService,
+    private userSettingService: UserSettingService
   ) {
-    this.drafts$ = combineLatest([
-      this.userSettingService.appMode$,
-      this.databaseService.ready$,
-      this.shouldLoad
-    ])
-      .pipe(
-        switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
-        shareReplay(1),
-        // As we use shareReplay(1) to avoid reading from the database more than needed,
-        // clone the drafts before they are returned
-        map(drafts => cloneDeep(drafts))
-      );
+    this.drafts$ = combineLatest([this.userSettingService.appMode$, this.databaseService.ready$, this.shouldLoad]).pipe(
+      switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
+      shareReplay(1),
+      // As we use shareReplay(1) to avoid reading from the database more than needed,
+      // clone the drafts before they are returned
+      map((drafts) => cloneDeep(drafts))
+    );
   }
 
   /**
@@ -62,14 +73,14 @@ export class DraftRepositoryService {
   getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
     const gotDraft = new Subject<boolean>();
     return this.drafts$.pipe(
-      map(drafts => drafts.find(draft => draft.uuid === uuid)),
+      map((drafts) => drafts.find((draft) => draft.uuid === uuid)),
       tap((draft) => {
         if (draft != null) {
           gotDraft.next(true);
         }
       }),
       skipUntil(gotDraft),
-      takeWhile(draft => draft != null)
+      takeWhile((draft) => draft != null)
     );
   }
 
@@ -98,10 +109,7 @@ export class DraftRepositoryService {
     if (registrationTid == null) {
       throw new Error('Not implemented');
     }
-    let isEmpty = isObservationModelEmptyForRegistrationTid(
-      draft.registration,
-      registrationTid
-    );
+    let isEmpty = isObservationModelEmptyForRegistrationTid(draft.registration, registrationTid);
 
     if (isEmpty) {
       const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, registrationTid);
@@ -119,10 +127,10 @@ export class DraftRepositoryService {
   }
 
   /**
-  * Create a new empty registration
-  * @param geoHazard the geo hazard you have observed
-  * @returns the registration
-  */
+   * Create a new empty registration
+   * @param geoHazard the geo hazard you have observed
+   * @returns the registration
+   */
   async create(geoHazard: GeoHazard): Promise<RegistrationDraft> {
     const simpleMode = await this.useSimpleMode(geoHazard);
     const draft: RegistrationDraft = {
@@ -133,8 +141,8 @@ export class DraftRepositoryService {
         GeoHazardTID: geoHazard,
         DtObsTime: null,
         ObsLocation: { Latitude: 0, Longitude: 0 },
-        Attachments: []
-      }
+        Attachments: [],
+      },
     };
     return draft;
   }
@@ -189,7 +197,7 @@ export class DraftRepositoryService {
       regId: regId,
       syncStatus: SyncStatus.Draft,
       registration: registration,
-      simpleMode: false
+      simpleMode: false,
     };
     await this.save(draft);
   }
@@ -201,9 +209,9 @@ export class DraftRepositoryService {
   }
 
   /**
-  * Save a registration on device
-  * @param draft the registration to save
-  */
+   * Save a registration on device
+   * @param draft the registration to save
+   */
   async save(draft: RegistrationDraft): Promise<void> {
     const start = Date.now();
 
@@ -212,21 +220,24 @@ export class DraftRepositoryService {
 
     const updatedDraft: RegistrationDraft = {
       ...draft,
-      lastSavedTime: Date.now()
+      lastSavedTime: Date.now(),
     };
     await this.databaseService.set(key, updatedDraft);
 
-    this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms 
-      in environment ${appMode}`, DEBUG_TAG, draft);
+    this.logger.debug(
+      `Draft ${draft.uuid} saved in ${this.millisSince(start)} ms 
+      in environment ${appMode}`,
+      DEBUG_TAG,
+      draft
+    );
     this.shouldLoad.next();
   }
 
-
   /**
-  * Load a registration from device
-  * @param uuid registration uuid
-  * @returns registration with given uuid or undefined if not found
-  */
+   * Load a registration from device
+   * @param uuid registration uuid
+   * @returns registration with given uuid or undefined if not found
+   */
   async load(uuid: string): Promise<RegistrationDraft | undefined> {
     const start = Date.now();
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
@@ -246,11 +257,11 @@ export class DraftRepositoryService {
   }
 
   /**
-  * Delete a registration from your device
-  * The registration will NOT be deleted from server if you have submitted it
-  * Nothing will happen if we don't find it.
-  * @param uuid uuid of the registration you want to delete
-  */
+   * Delete a registration from your device
+   * The registration will NOT be deleted from server if you have submitted it
+   * Nothing will happen if we don't find it.
+   * @param uuid uuid of the registration you want to delete
+   */
   async delete(uuid: string): Promise<void> {
     await this.newAttachmentSerivice.removeAttachments(uuid);
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
@@ -281,7 +292,7 @@ export class DraftRepositoryService {
     const drafts: RegistrationDraft[] = [];
     const keyPrefix = this.createKeyForAllDrafts(appMode);
     const keys = await this.databaseService.keys();
-    const keysForAppMode = keys.filter(k => k.startsWith(keyPrefix));
+    const keysForAppMode = keys.filter((k) => k.startsWith(keyPrefix));
     for (const key of keysForAppMode) {
       const draft = await this.databaseService.get<RegistrationDraft>(key);
       drafts.push(draft);

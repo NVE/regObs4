@@ -1,9 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import {
-  StratProfileLayerEditModel,
-  KdvElement
-} from 'src/app/modules/common-regobs-api/models';
+import { StratProfileLayerEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
@@ -18,7 +15,7 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
 @Component({
   selector: 'app-strat-profile-layer-modal',
   templateUrl: './strat-profile-layer-modal.page.html',
-  styleUrls: ['./strat-profile-layer-modal.page.scss']
+  styleUrls: ['./strat-profile-layer-modal.page.scss'],
 })
 export class StratProfileLayerModalPage implements OnInit {
   @Input() layer: StratProfileLayerEditModel;
@@ -39,17 +36,13 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   get layerLenght() {
-    return this.hasLayers
-      ? this.draft.registration.SnowProfile2.StratProfile.Layers.length
-      : 0;
+    return this.hasLayers ? this.draft.registration.SnowProfile2.StratProfile.Layers.length : 0;
   }
 
   get canGoNext() {
     return (
       (this.hasLayers && this.index < this.layerLenght) ||
-      (this.index === this.layerLenght &&
-        this.addNew &&
-        !IsEmptyHelper.isEmpty(this.layer))
+      (this.index === this.layerLenght && this.addNew && !IsEmptyHelper.isEmpty(this.layer))
     );
   }
 
@@ -70,11 +63,10 @@ export class StratProfileLayerModalPage implements OnInit {
     { id: 0.055, text: '5.5' },
     { id: 0.06, text: '6' },
     { id: 0.08, text: '8' },
-    { id: 0.1, text: '10' }
+    { id: 0.1, text: '10' },
   ];
 
-  getIconFunc = (kdvElement: KdvElement) =>
-    `md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}`;
+  getIconFunc = (kdvElement: KdvElement) => `md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}`;
 
   constructor(
     private modalController: ModalController,
@@ -85,13 +77,11 @@ export class StratProfileLayerModalPage implements OnInit {
   ngOnInit() {
     this.initialRegistationState = cloneDeep(this.draft);
     this.initLayer();
-    this.translateService
-      .get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE')
-      .subscribe((val) => {
-        this.grainSizeInterfaceOptions = {
-          header: val
-        };
-      });
+    this.translateService.get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE').subscribe((val) => {
+      this.grainSizeInterfaceOptions = {
+        header: val,
+      };
+    });
   }
 
   private initLayer() {
@@ -128,19 +118,13 @@ export class StratProfileLayerModalPage implements OnInit {
       this.draft.registration.SnowProfile2.StratProfile.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.draft.registration.SnowProfile2.StratProfile.Layers.splice(
-        this.index,
-        0,
-        this.layer
-      );
+      this.draft.registration.SnowProfile2.StratProfile.Layers.splice(this.index, 0, this.layer);
     }
     await this.save();
 
     if (gotoIndex !== undefined) {
       this.index = this.index + gotoIndex;
-      this.layer = this.draft.registration.SnowProfile2.StratProfile.Layers[
-        this.index
-      ];
+      this.layer = this.draft.registration.SnowProfile2.StratProfile.Layers[this.index];
       this.initLayer();
     } else {
       this.modalController.dismiss();
@@ -155,9 +139,7 @@ export class StratProfileLayerModalPage implements OnInit {
   async delete() {
     if (this.hasLayers) {
       this.draft.registration.SnowProfile2.StratProfile.Layers =
-        this.draft.registration.SnowProfile2.StratProfile.Layers.filter(
-          (l) => l !== this.layer
-        );
+        this.draft.registration.SnowProfile2.StratProfile.Layers.filter((l) => l !== this.layer);
       await this.save();
     }
     this.modalController.dismiss();
@@ -175,20 +157,14 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   private setHardnessFilter() {
-    this.hardnessFilter = this.showMore
-      ? undefined
-      : (n) => basicHardnessValues.indexOf(n) >= 0;
+    this.hardnessFilter = this.showMore ? undefined : (n) => basicHardnessValues.indexOf(n) >= 0;
   }
 
   private setGrainFormFilter() {
-    this.grainFormFilter = this.showMore
-      ? undefined
-      : (n) => basicGrainFormValues.indexOf(n) >= 0;
+    this.grainFormFilter = this.showMore ? undefined : (n) => basicGrainFormValues.indexOf(n) >= 0;
   }
 
   private setWetnessFilter() {
-    this.wetnessFilter = this.showMore
-      ? undefined
-      : (n) => basicWetnessValues.indexOf(n) >= 0;
+    this.wetnessFilter = this.showMore ? undefined : (n) => basicWetnessValues.indexOf(n) >= 0;
   }
 }

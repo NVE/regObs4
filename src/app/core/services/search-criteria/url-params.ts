@@ -3,16 +3,19 @@
  * Usage: new UrlParams.set('hazard', 10).set('nick', 'siggen').apply()
  */
 export class UrlParams {
-
   private params = new URLSearchParams(document.location.search);
 
+  /**
+   * Add a query parameter and a value
+   * @param key parameter name
+   * @param value if value is null, the parameter will be deleted from the url
+   */
   set(key: string, value: unknown): UrlParams {
     if (value) {
       if (Array.isArray(value)) {
         this.params.delete(key);
-        value.forEach(v =>  this.params.append(key, '' + v));
+        value.forEach((v) => this.params.append(key, '' + v));
       } else {
-        //TODO: Handle datetime. Maybe only show yy-MM-dd if time is 00:00 to make url simpler?
         this.params.set(key, '' + value);
       }
     } else {

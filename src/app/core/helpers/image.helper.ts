@@ -28,11 +28,7 @@ export class ImageHelper {
   //     return canvas.toDataURL(format, quality);
   // }
 
-  static getBlobFromImage(
-    el: HTMLImageElement,
-    format = 'image/png',
-    quality = 0.5
-  ) {
+  static getBlobFromImage(el: HTMLImageElement, format = 'image/png', quality = 0.5) {
     return new Promise<Blob>((resolve, reject) => {
       const canvas = ImageHelper.getCanvasFromImage(el);
       if (canvas) {
@@ -43,11 +39,7 @@ export class ImageHelper {
     });
   }
 
-  static async getArrayBufferFromImage(
-    el: HTMLImageElement,
-    format = 'image/png',
-    quality = 0.5
-  ) {
+  static async getArrayBufferFromImage(el: HTMLImageElement, format = 'image/png', quality = 0.5) {
     const blob = await this.getBlobFromImage(el, format, quality);
     return await new Response(blob).arrayBuffer();
   }
@@ -55,12 +47,8 @@ export class ImageHelper {
   static toDataUrlWithWebWorker(
     input$: Observable<{ blob: ArrayBuffer; mimeType: string }>
   ): Observable<{ dataUrl: string; size: number }> {
-    return fromWorker<
-      { blob: ArrayBuffer; mimeType: string },
-      { dataUrl: string; size: number }
-    >(
-      () =>
-        new Worker(new URL('../../workers/blob-to-dataurl.worker', import.meta.url), { type: 'module' }),
+    return fromWorker<{ blob: ArrayBuffer; mimeType: string }, { dataUrl: string; size: number }>(
+      () => new Worker(new URL('../../workers/blob-to-dataurl.worker', import.meta.url), { type: 'module' }),
       input$,
       (input) => [input.blob]
     );
@@ -71,9 +59,7 @@ export class ImageHelper {
     mimeType = 'image/png',
     quality = 0.5
   ): Observable<{ dataUrl: string; size: number }> {
-    const blobAndMimeType$ = from(
-      this.getBlobFromImage(el, mimeType, quality)
-    ).pipe(
+    const blobAndMimeType$ = from(this.getBlobFromImage(el, mimeType, quality)).pipe(
       switchMap((b) => from(new Response(b).arrayBuffer())),
       map((b) => ({ blob: b, mimeType: mimeType }))
     );

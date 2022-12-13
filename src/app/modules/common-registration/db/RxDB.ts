@@ -22,11 +22,11 @@ export type RxRegistrationSyncProgressCollection = RxCollection<ISyncProgressRec
 export type RxUploadProgressCollection = RxCollection<IUplaodProgress>;
 
 export type RxRegistrationCollections =
-    RxRegistrationCollection |
-    RxKdvCollection |
-    RxHelpTextCollection |
-    RxAttachmentMetaCollection |
-    RxRegistrationSyncProgressCollection |
-    RxUploadProgressCollection;
+  | RxRegistrationCollection
+  | RxKdvCollection
+  | RxHelpTextCollection
+  | RxAttachmentMetaCollection
+  | RxRegistrationSyncProgressCollection
+  | RxUploadProgressCollection;
 
-export type RxRegistrationDatabase = RxDatabase<{[key: string]: RxRegistrationCollections}>;
+export type RxRegistrationDatabase = RxDatabase<{ [key: string]: RxRegistrationCollections }>;

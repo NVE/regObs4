@@ -6,7 +6,7 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
+import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
 
 class TestMapService {
@@ -23,6 +23,11 @@ describe('SearchCriteriaService', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
+
+  const orderByTestCases = [
+    { apiValue: 'DtChangeTime', urlValue: 'changeTime' },
+    { apiValue: 'DtObsTime', urlValue: 'obsTime' },
+  ];
 
   beforeEach(async () => {
     TestBed.configureTestingModule({});
@@ -107,6 +112,64 @@ describe('SearchCriteriaService', () => {
     const url = new URL(document.location.href);
     expect(url.searchParams.get('competence')).toEqual('150~105');
   }));
+  it('set new observation type should be ok', fakeAsync(async () => {
+    const obsType = { Id: 81, SubTypes: [13] };
+    service.setObservationType(obsType);
+    tick(1);
+    //check that current criteria contains expected type
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual('81.13');
+  }));
+
+  it('remove observation type should be ok', fakeAsync(async () => {
+    const obsType1 = { Id: 81, SubTypes: [13, 26] };
+    const obsType2 = { Id: 81, SubTypes: [26] };
+    await service.setObservationType(obsType1);
+    await service.removeObservationType(obsType2);
+    //check that criteria contains only obsType2
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual('81.13');
+  }));
+
+  it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
+    const obsType1 = { Id: 81, SubTypes: [13, 26] };
+    const obsType2 = { Id: 40, SubTypes: [26] };
+    await service.setObservationType(obsType1);
+    await service.removeObservationType(obsType2);
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual('81.13~81.26');
+  }));
+
+  it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
+    const obsType2 = { Id: 40, SubTypes: [26] };
+    await service.removeObservationType(obsType2);
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual(null);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('type')).toEqual(null);
+  }));
+
+  orderByTestCases.forEach((test) => {
+    it('orderBy filter should work', fakeAsync(async () => {
+      service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
+      tick();
+      //check that current criteria contains expected orderBy
+      const criteria = await firstValueFrom(service.searchCriteria$);
+      expect(criteria.OrderBy).toEqual(test.apiValue);
+      const url = new URL(document.location.href);
+      expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
+    }));
+  });
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -114,6 +177,8 @@ describe('SearchCriteriaService url parsing', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
+
+  const wrongObservationTypeUrl = ['42,66', '23456', 'testMe'];
 
   beforeEach(async () => {
     TestBed.configureTestingModule({});
@@ -125,6 +190,7 @@ describe('SearchCriteriaService url parsing', () => {
       mapService as unknown as MapService,
       new TestLoggingService()
     );
+
     jasmine.clock().install();
   });
 
@@ -162,10 +228,79 @@ describe('SearchCriteriaService url parsing', () => {
 
   it('nick name url filter should work', fakeAsync(async () => {
     new UrlParams().set('nick', 'Oluf').apply();
+  it('nick name url filter should work', fakeAsync(async () => {
+    new UrlParams().set('nick', 'Oluf').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
     tick();
     //check that current criteria contains expected nick name
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverNickName).toEqual('Oluf');
+  }));
+
+  it('type url should work', fakeAsync(async () => {
+    new UrlParams().set('type', '81.13~81.26~10').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes).toEqual([
+      { Id: 10, SubTypes: [] },
+      { Id: 81, SubTypes: [13, 26] },
+    ]);
+  }));
+
+  wrongObservationTypeUrl.forEach((test) => {
+    it('type url wrong format, remove type param from url', fakeAsync(async () => {
+      new UrlParams().set('type', test).apply();
+      service = new SearchCriteriaService(
+        userSettingService,
+        mapService as unknown as MapService,
+        new TestLoggingService()
+      );
+
+      tick();
+      const criteria = await firstValueFrom(service.searchCriteria$);
+      const url = new URL(document.location.href).toString();
+      expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
+      expect(url.includes('type')).toBeFalse();
+    }));
+  });
+
+  it('orderBy url filter should work', fakeAsync(async () => {
+    new UrlParams().set('orderBy', 'changeTime').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+    //check that current criteria contains expected orderBy
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.OrderBy).toEqual('DtChangeTime');
+  }));
+
+  it('orderBy url filter should work', fakeAsync(async () => {
+    new UrlParams().set('orderBy', 'obsTime').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+    //check that current criteria contains expected orderBy
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.OrderBy).toEqual('DtObsTime');
   }));
 
   it('geo hazard url filter should work', fakeAsync(async () => {

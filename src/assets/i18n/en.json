@@ -6,13 +6,13 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_SOIL": "Draft: Soil observation",
     "DRAFT_TITLE_ICE": "Draft: Ice observation",
     "DRAFT_TITLE_SNOW": "Draft: Snow observation",
+    "DRAFT_TITLE_SOIL": "Draft: Soil observation",
     "DRAFT_TITLE_WATER": "Draft: Water observation",
-    "NEW_SOIL_OBSERVATION": "New soil observation",
     "NEW_ICE_OBSERVATION": "New ice observation",
     "NEW_SNOW_OBSERVATION": "New snow observation",
+    "NEW_SOIL_OBSERVATION": "New soil observation",
     "NEW_WATER_OBSERVATION": "New water observation"
   },
   "ALERT": {
@@ -29,10 +29,10 @@
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Add your observations",
     "SELECT_GEO_HAZARD": "Select geo hazard",
-    "VIEW_WARNINGS": "View warnings from varsom.no",
+    "SKI_CONDITIONS": "Now you can also report ski conditions!",
     "TOGGLE_OBSERVATION": "Switch between simple and full observation",
     "TOGGLE_OBSERVATION_EXTRA_INFO": "Toggle on to send observations at your position - simple and fast. This is extremely useful for the warning services and for other users.\n \n Toggle off to submit a more advanced observation - just like before.",
-    "SKI_CONDITIONS": "Now you can also report ski conditions!"
+    "VIEW_WARNINGS": "View warnings from varsom.no"
   },
   "COMPETENCE": {
     "UNKNOWN": "Competence unknown"
@@ -81,10 +81,10 @@
   "DRAFT": "Draft",
   "GEOLOCATION": {
     "POSITION_ERROR": {
+      "INVALID": "Invalid position data",
       "PermissionDenied": "To fetch your position you need to alter your location settings",
       "PositionUnavailable": "Not able fetch your position",
       "Timeout": "It took to long time to fetch your position",
-      "INVALID": "Invalid position data",
       "UNSUPPORTED": "Positioning is not supported on this unit"
     }
   },
@@ -112,6 +112,7 @@
   "LOGIN": {
     "CHANGE_PASSWORD": "Change password",
     "CREATE_USER": "Create user",
+    "DELETE_PROFILE": "Delete profile and my data",
     "EMAIL": "Email",
     "FORGOT_PASSWORD": "Forgot password",
     "IS_LOGGING_IN": "Logging in...",
@@ -119,7 +120,6 @@
     "LOGIN": "Log in",
     "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
-    "DELETE_PROFILE": "Delete profile and my data",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
     "TITLE": "Log in",
@@ -146,12 +146,13 @@
   "MENU": {
     "ABOUT_REGOBS": "About data in Varsom",
     "AND": "and",
+    "CONTACT_DESCRIPTION": "We have attached log files. You can remove them if you do not wish to send us logs.",
     "CONTACT_REGOBS": "Contact us",
     "CONTACT_REGOBS_ERROR": "Report error",
     "CONTACT_SUBJECT": "Contact from app",
-    "CONTACT_DESCRIPTION": "We have attached log files. You can remove them if you do not wish to send us logs.",
     "DAYS_BACK": "Days back",
     "DAY_BACK": "Day back",
+    "DEACTIVATE_OBSERVATIONS": "Displaying observations has been disabled",
     "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach. We have attached logs which may help us in troubleshooting. You can remove these if you wish.",
     "ERROR_REPORT_SUBJECT": "Error report from",
     "GENERAL": "General",
@@ -166,7 +167,6 @@
     "OTHER": "Other",
     "SHOW": "Show",
     "SHOWING_OBSERVATIONS": "observations",
-    "DEACTIVATE_OBSERVATIONS": "Displaying observations has been disabled",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
     "SHOW_TRIPS": "Show trips",
@@ -195,7 +195,7 @@
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. You may see more at <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">your page on web</a>",
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "NO_OBSERVATIONS": "Share your observations!",
-    "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and assessements with others on Varsom.",
+    "NO_OBSERVATIONS_TEXT": "Your observations will appear here. Share your observations, pictures and assessements with others on Varsom.",
     "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
     "TITLE": "My observations"
   },
@@ -234,7 +234,10 @@
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
-    "OBSERVATIONS": "Observations"
+    "TITLE": "Observations",
+    "SORT_BY_TEXT": "Order by",
+    "SORT_BY_OBS_TIME": "Recently observed",
+    "SORT_BY_CHANGE_TIME": "Recently updated"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
@@ -285,18 +288,20 @@
     "OK_I_UNDERSTAND": "OK, I understand"
   },
   "REGISTRATION": {
-    "ANONYMIZE": {
-      "TITLE": "Anonymize",
-      "CHECK_TO_ANONYMIZE": "Check to anonymize"
-    },
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {
       "TITLE": "Add web url",
       "URL": "Url"
     },
+    "ANONYMIZE": {
+      "CHECK_TO_ANONYMIZE": "Check to anonymize",
+      "TITLE": "Anonymize"
+    },
     "BACK_TO_OBSERVATION": "Back to observation",
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "DANGER_OBS": {
       "AREA": "Area",
       "COMMENT": "Comment",
@@ -320,17 +325,17 @@
       "DRAFT": {
         "BUTTON": "Delete draft",
         "HEADER": "Delete draft",
-        "MESSAGE_NEW": "This observation is not sent to Regobs yet. Do you want to delete it?",
-        "MESSAGE_EDIT": "Discard changes?"
+        "MESSAGE_EDIT": "Discard changes?",
+        "MESSAGE_NEW": "This observation is not sent to Regobs yet. Do you want to delete it?"
       },
       "SUBMITTED_REGISTRATION": {
         "BUTTON": "Delete observation from Regobs",
-        "HEADER": "Delete observation",
-        "MESSAGE": "Do you want to delete this observation from Regobs?",
         "FAILED": {
           "HEADER": "Delete failed",
           "MESSAGE": "We were not able to delete the observation from Regobs. Please check your network connection and try again."
-        }
+        },
+        "HEADER": "Delete observation",
+        "MESSAGE": "Do you want to delete this observation from Regobs?"
       }
     },
     "DIRT": {
@@ -359,24 +364,24 @@
       "SUBJECT": "Registration failed"
     },
     "FAILED": {
+      "ABANDON": "Cancel my work",
+      "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
       "EDIT_OBSERVATION": "Edit observation",
+      "GONE": "This observation is deleted in Regobs. <br/>Would you like to abandon your changes or submit the draft as a new observation?",
       "LOGGED": "The problem has been logged.",
+      "OVERWRITE": "Submit and overwrite",
       "PROBLEM": "There has been a problem with your registration",
       "PROBLEM_HELP_TEXT": "Observations with errors are stored in your phone and when the problem is resolved you will be able to resubmit.",
       "REFERENCE": "Reference",
       "SEND_EMAIL": "Send to us by email",
+      "SUBMIT_NEW": "Submit as new observation",
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
-      "TITLE": "Submission failed",
-      "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
-      "ABANDON": "Cancel my work",
-      "OVERWRITE": "Submit and overwrite",
-      "GONE": "This observation is deleted in Regobs. <br/>Would you like to abandon your changes or submit the draft as a new observation?",
-      "SUBMIT_NEW": "Submit as new observation"
+      "TITLE": "Submission failed"
     },
     "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Edit observation",
       "HEADER": "Synchronization failed",
-      "MESSAGE": "We couldn't fetch a fresh copy of this observation from Regobs. You may still edit this, but there is a chance of conflict when you submit the observation later if the same observation has been changed elsewhere.",
-      "CONFIRM_BUTTON": "Edit observation"
+      "MESSAGE": "We couldn't fetch a fresh copy of this observation from Regobs. You may still edit this, but there is a chance of conflict when you submit the observation later if the same observation has been changed elsewhere."
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notes for observation",
@@ -418,10 +423,10 @@
         "TITLE": "Ice Thickness"
       },
       "INCIDENT": {
-        "INVOLVED_NUM": "Number in the tour group",
         "CASUALTIES_NUM": "Number through the ice",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Cannot be greater than the number in the tour group",
         "DEAD_NUM_ERROR_MESSAGE": "Cannot be greater than the number through the ice or the number in the tour group",
+        "INVOLVED_NUM": "Number in the tour group",
         "SAFETY_GEAR_TID": "Rescue equipment"
       }
     },
@@ -438,46 +443,44 @@
       "COMMENT": "Description",
       "COMMENT_PLACEHOLDER": "Why did it happen? Did it go well? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
-      "IMAGE_PLACEHOLDER": "+ Add image description",
-      "TITLE": "Accident / Incident",
       "DEAD_NUM": "Number of dead",
-      "RESCUE_TID": "Rescue"
+      "IMAGE_PLACEHOLDER": "+ Add image description",
+      "RESCUE_TID": "Rescue",
+      "TITLE": "Accident / Incident"
     },
     "INVALID_IMAGE": "Sorry, only JPEG images is supported",
-    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
-    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location and time",
       "CURRENT_LOCATION": "Current position",
-      "HIDE_DETAILS": "Hide details",
-      "SHOW_DETAILS": "Show details",
-      "TITLE": "Observed Location and Time",
-      "SOURCE": "Source",
       "EXACT": "Exact",
+      "HIDE_DETAILS": "Hide details",
       "MORETHANONEKM": "More than 1 km",
-      "UNCERTAINTY": "Uncertainty in position",
       "NAME_LOCATION": "Name location",
-      "NAME_LOCATION_TOOLTIP": "Naming a location makes it possible to create a time series at the same observation point"
+      "NAME_LOCATION_TOOLTIP": "Naming a location makes it possible to create a time series at the same observation point",
+      "SHOW_DETAILS": "Show details",
+      "SOURCE": "Source",
+      "TITLE": "Observed Location and Time",
+      "UNCERTAINTY": "Uncertainty in position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",
       "MY_OBSERVATION": "My observation",
       "SHARE_WITH_GROUP": "Share with group",
-      "TITLE": "Observation",
       "SIMPLE": {
-        "HEADER_QUESTION": "What is it like right now?",
-        "TOGGLE": "Simple observation",
         "CONFIRM": {
+          "CANCEL": "Cancel",
           "HEADER": "Change to simple mode",
           "MESSAGE": "The observation contains data not relevant for simple mode. Would you like to delete data we can't show?",
-          "YES": "Delete data and change to simple mode",
-          "CANCEL": "Cancel"
+          "YES": "Delete data and change to simple mode"
         },
-        "IMAGES_MODAL_TITLE": "Images of {{registrationType}}"
-      }
+        "HEADER_QUESTION": "What is it like right now?",
+        "IMAGES_MODAL_TITLE": "Images of {{registrationType}}",
+        "TOGGLE": "Simple observation"
+      },
+      "TITLE": "Observation"
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",
@@ -528,33 +531,33 @@
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_CAUSE": "Weak layer",
-        "DESTRUCTIVE_SIZE": "Size",
-        "FRACTURE_HEIGTH": "Fracture height (cm)",
-        "FRACTURE_WIDTH": "Fracture width (m)",
-        "INCIDENT_DESCRIPTION": "Accident or injury",
-        "INCIDENT_PLACEHOLDER": "Did the avalanche cause any damage, accidents or close calls? Why and how did it happen? Could the situation have been avoided?",
-        "POSITION": "Avalanche position",
-        "SET_AVALANCHE_POSITION": "Set avalanche position",
-        "TERRAIN_START_ZONE": "Terrain type in the release area",
-        "TIME": "Avalanche time (required)",
-        "TITLE": "Avalanche Incident",
-        "TRAJECTORY_NAME": "Name of avalanche path",
-        "VALID_EXPOSITION": "Aspect",
-        "REMOTELY_TRIGGERED": "Remotely triggered",
-        "INVOLVED_NUM": "Number involved",
         "CASUALTIES_NUM": "Number of casualties",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Cannot be greater than the number involved",
         "DEAD_NUM_ERROR_MESSAGE": "Cannot be greater than the number of casualties or involved",
+        "DESTRUCTIVE_SIZE": "Size",
+        "EVACUATED_NUM": "Number of evacuees",
+        "FRACTURE_HEIGTH": "Fracture height (cm)",
+        "FRACTURE_WIDTH": "Fracture width (m)",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum of dead and injured cannot be greater than the number casualties or involved",
         "HARMED_NUM": "Number injured",
         "HARMED_NUM_ERROR_MESSAGE": "Cannot be greater than the number involved",
-        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Sum of dead and injured cannot be greater than the number casualties or involved",
-        "SAFETY_GEAR_TID": "Sender/receiver",
-        "LOCAL_TOURIST_TID": "Local or visiting",
+        "INCIDENT_DESCRIPTION": "Accident or injury",
+        "INCIDENT_PLACEHOLDER": "Did the avalanche cause any damage, accidents or close calls? Why and how did it happen? Could the situation have been avoided?",
+        "INVOLVED_NUM": "Number involved",
         "LOCAL_KNOWLEDGE_TID": "Knowledge of the area",
-        "TRAFFIC_OBSTRUCTED": "Traffic obstructed",
-        "EVACUATED_NUM": "Number of evacuees",
+        "LOCAL_TOURIST_TID": "Local or visiting",
         "MATERIAL_DAMAGES": "Material damages",
-        "SLOPE_ACTIVITY_TID": "Tour phase"
+        "POSITION": "Avalanche position",
+        "REMOTELY_TRIGGERED": "Remotely triggered",
+        "SAFETY_GEAR_TID": "Sender/receiver",
+        "SET_AVALANCHE_POSITION": "Set avalanche position",
+        "SLOPE_ACTIVITY_TID": "Tour phase",
+        "TERRAIN_START_ZONE": "Terrain type in the release area",
+        "TIME": "Avalanche time (required)",
+        "TITLE": "Avalanche Incident",
+        "TRAFFIC_OBSTRUCTED": "Traffic obstructed",
+        "TRAJECTORY_NAME": "Name of avalanche path",
+        "VALID_EXPOSITION": "Aspect"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
@@ -582,15 +585,15 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Add new test",
         "DISTANCE_FROM_TOP": "Distance from top (cm)",
-        "X_DISTANCE": "Cut length",
-        "Y_DISTANCE": "Column length",
         "FRACTURE_TYPE": "Fracture type",
+        "RB_RELEASE": "Percentage of block released",
+        "RB_SCORE": "Rutschblock score",
         "STABILITY_EVAL": "Stability",
         "TAPS_FRACTURE": "Number of taps",
-        "RB_SCORE": "Rutschblock score",
-        "RB_RELEASE": "Percentage of block released",
         "TEST_TYPE": "Test type",
-        "TITLE": "Tests"
+        "TITLE": "Tests",
+        "X_DISTANCE": "Cut length",
+        "Y_DISTANCE": "Column length"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -767,14 +770,14 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our <a href=\"{{legalUrl}}\" target=\"_blank\">privacy policy</a>.",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
+    "SEND_LOGS": "Send logs to the Regobs-team",
     "SHOW_ADVANCED": "Show advanced settings",
     "SIZE_OF_TILES_CACHE": "Size of tiles saved on device",
     "TILES_CACHE_SIZE": "Number of tiles saved on device",
     "TITLE": "Settings",
     "UPDATE_DROPDOWNS": "Update dropdowns",
     "USE_IN_WORLD": "Outside Norway",
-    "USE_RETINA_MAP": "Use high resolution maps",
-    "SEND_LOGS": "Send logs to the Regobs-team"
+    "USE_RETINA_MAP": "Use high resolution maps"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Couldn't save nickname. Please try later.",

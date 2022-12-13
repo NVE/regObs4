@@ -1,42 +1,42 @@
 :root {
-    --sliding-background: lightgrey;
+  --sliding-background: lightgrey;
 }
 
 ion-item {
-    --inner-padding-end: 0px;
+  --inner-padding-end: 0px;
 
-    ion-grid {
-        display: contents;
-    }
+  ion-grid {
+    display: contents;
+  }
 }
 
 ion-item-sliding {
-    --background: var(--sliding-background);
+  --background: var(--sliding-background);
 }
 
 ion-item-option {
-    --background: rgba(0,0,0,0);
+  --background: rgba(0, 0, 0, 0);
 }
 
 .geo-icon-circle {
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 ion-badge {
-    border-radius: 2px;
-    height: 36px;
-    width: 36px;
-    color: #fff;
-    font-size: 17px;
-    font-weight: bold;
-    line-height: 30px;
-    text-align: center;
-    display: block;
+  border-radius: 2px;
+  height: 36px;
+  width: 36px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: bold;
+  line-height: 30px;
+  text-align: center;
+  display: block;
 
-    ion-icon {
-        position: relative;
-        top: 3px;
-        left: -5px;
-    }
-}   
+  ion-icon {
+    position: relative;
+    top: 3px;
+    left: -5px;
+  }
+}

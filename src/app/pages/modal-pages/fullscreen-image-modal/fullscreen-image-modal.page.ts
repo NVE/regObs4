@@ -6,7 +6,7 @@ import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 @Component({
   selector: 'app-fullscreen-image-modal',
   templateUrl: './fullscreen-image-modal.page.html',
-  styleUrls: ['./fullscreen-image-modal.page.scss']
+  styleUrls: ['./fullscreen-image-modal.page.scss'],
 })
 export class FullscreenImageModalPage implements OnInit, OnDestroy {
   @Input() imgSrc: string;

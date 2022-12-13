@@ -10,5 +10,5 @@ export enum TopoMapLayer {
   arcGisOnline = 'arcGisOnline',
   statensKartverk = 'statensKartverk',
   geoDataLandskap = 'geoDataLandskap',
-  npolarBasiskart = 'npolarBasiskart'
+  npolarBasiskart = 'npolarBasiskart',
 }

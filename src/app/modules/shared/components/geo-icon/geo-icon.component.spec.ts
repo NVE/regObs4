@@ -8,14 +8,12 @@ describe('GeoIconComponent', () => {
   let component: GeoIconComponent;
   let fixture: ComponentFixture<GeoIconComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [IonicModule],
-        declarations: [GeoIconComponent]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [IonicModule],
+      declarations: [GeoIconComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GeoIconComponent);

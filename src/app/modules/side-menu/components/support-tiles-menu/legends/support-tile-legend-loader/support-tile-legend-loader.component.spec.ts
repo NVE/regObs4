@@ -6,13 +6,11 @@ describe('SupportTileLegendLoaderComponent', () => {
   let component: SupportTileLegendLoaderComponent;
   let fixture: ComponentFixture<SupportTileLegendLoaderComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SupportTileLegendLoaderComponent]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SupportTileLegendLoaderComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SupportTileLegendLoaderComponent);

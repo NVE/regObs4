@@ -3,9 +3,7 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title>
-      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate }}
-    </ion-title>
+    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,9 +11,7 @@
   <form (ngSubmit)="ok()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate}} </ion-label>
       </ion-list-header>
       <ion-item tabindex="0" (click)="getPrevousUsedLayers()" (keyup.enter)="getPrevousUsedLayers()">
         <ion-icon color="dark" name="cloud-download" slot="start"></ion-icon>
@@ -27,9 +23,7 @@
         </ion-label>
       </ion-item-divider>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate}}
-        </ion-label>
+        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate}} </ion-label>
       </ion-list-header>
       <ng-container *ngIf="hasLayers else noLayers">
         <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()">
@@ -37,12 +31,14 @@
           <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
         </ion-item>
         <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
-          <ion-item tabindex="0" (click)="addOrEditLayer(i, layer)" (keyup.enter)="addOrEditLayer(i, layer)"
-            *ngFor="let layer of profile.Layers; let i = index">
+          <ion-item
+            tabindex="0"
+            (click)="addOrEditLayer(i, layer)"
+            (keyup.enter)="addOrEditLayer(i, layer)"
+            *ngFor="let layer of profile.Layers; let i = index"
+          >
             <ion-label [color]="layer.CriticalLayerTID > 0 ? 'danger' : 'dark'">
-              <ng-container *ngIf="layer.Thickness !== undefined">
-                {{layer.Thickness | metersToCm}}cm
-              </ng-container>
+              <ng-container *ngIf="layer.Thickness !== undefined"> {{layer.Thickness | metersToCm}}cm </ng-container>
               <ng-container *ngIf="layer.HardnessTID !== undefined">
                 {{layer.HardnessTID | kdvDescription: 'Snow_HardnessKDV' | async}}
               </ng-container>
@@ -66,17 +62,16 @@
       </ng-container>
       <ng-container *ngIf="hasLayers">
         <ion-list-header class="ion-text-uppercase">
-          <ion-label>
-            {{ 'REGISTRATION.SUMMARY' | translate}}
-          </ion-label>
+          <ion-label> {{ 'REGISTRATION.SUMMARY' | translate}} </ion-label>
         </ion-list-header>
         <ion-item>
           <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-            {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
-            | translate}}</ion-label>
+            {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS' | translate}}</ion-label
+          >
           <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
-            <p class="ion-no-margin" *ngIf="totalThickness | async as totalThickness">{{ totalThickness | metersToCm }}
-              cm</p>
+            <p class="ion-no-margin" *ngIf="totalThickness | async as totalThickness">
+              {{ totalThickness | metersToCm }} cm
+            </p>
           </ion-text>
         </ion-item>
       </ng-container>

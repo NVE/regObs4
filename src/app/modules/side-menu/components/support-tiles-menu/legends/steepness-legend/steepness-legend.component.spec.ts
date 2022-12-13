@@ -8,14 +8,12 @@ describe('SteepnessLegendComponent', () => {
   let component: SteepnessLegendComponent;
   let fixture: ComponentFixture<SteepnessLegendComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [TestModule],
-        declarations: [SteepnessCommonLegendComponent, SteepnessLegendComponent]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [TestModule],
+      declarations: [SteepnessCommonLegendComponent, SteepnessLegendComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SteepnessLegendComponent);

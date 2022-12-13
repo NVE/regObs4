@@ -8,14 +8,7 @@ import { Platform } from '@ionic/angular';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { Subject, Subscription } from 'rxjs';
-import {
-  map,
-  switchMap,
-  distinctUntilChanged,
-  pairwise,
-  filter,
-  take
-} from 'rxjs/operators';
+import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
@@ -25,7 +18,7 @@ import { Router } from '@angular/router';
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataMarshallService implements OnReset {
   foregroundUpdateInterval: NodeJS.Timeout;
@@ -37,10 +30,7 @@ export class DataMarshallService implements OnReset {
   }
 
   get cancelObservationsPromise(): Promise<boolean> {
-    return this.cancelUpdateObservationsSubject
-      .asObservable()
-      .pipe(take(1))
-      .toPromise();
+    return this.cancelUpdateObservationsSubject.asObservable().pipe(take(1)).toPromise();
   }
 
   constructor(
@@ -62,37 +52,26 @@ export class DataMarshallService implements OnReset {
     this.ngZone.runOutsideAngular(() => {
       this.subscriptions.push(
         this.hasDaysBackChangedToLargerValue().subscribe(() => {
-          this.loggingService.debug(
-            'DaysBack has changed to a larger value. Update observations.',
-            DEBUG_TAG
-          );
+          this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
           this.updateObservations();
         })
       );
 
       this.subscriptions.push(
-        this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(
-          ([appMode, langKey, geoHazards]) => {
-            this.loggingService.debug(
-              'AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.',
-              DEBUG_TAG
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.language,
-              LangKey[langKey]
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.appMode,
-              appMode
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.geoHazard,
-              geoHazards.map((gh) => GeoHazard[gh]).join(',')
-            );
-            this.updateObservations();
-            this.warningService.updateWarnings();
-          }
-        )
+        this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, langKey, geoHazards]) => {
+          this.loggingService.debug(
+            'AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.',
+            DEBUG_TAG
+          );
+          this.analyticService.trackDimension(AppCustomDimension.language, LangKey[langKey]);
+          this.analyticService.trackDimension(AppCustomDimension.appMode, appMode);
+          this.analyticService.trackDimension(
+            AppCustomDimension.geoHazard,
+            geoHazards.map((gh) => GeoHazard[gh]).join(',')
+          );
+          this.updateObservations();
+          this.warningService.updateWarnings();
+        })
       );
       this.subscriptions.push(
         this.userSettingService.userSetting$
@@ -104,15 +83,9 @@ export class DataMarshallService implements OnReset {
             if (consent) {
               this.analyticService.enable();
               this.loggingService.enable();
-              this.analyticService.trackDimension(
-                AppCustomDimension.enabledAnalytics,
-                consent
-              );
+              this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent);
             } else {
-              this.analyticService.trackDimension(
-                AppCustomDimension.enabledAnalytics,
-                consent
-              );
+              this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent);
               this.analyticService.disable();
               this.loggingService.disable();
             }
@@ -120,10 +93,7 @@ export class DataMarshallService implements OnReset {
       );
       this.subscriptions.push(
         this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
-          this.analyticService.trackDimension(
-            AppCustomDimension.showMapCenter,
-            showMapCenter.toString()
-          );
+          this.analyticService.trackDimension(AppCustomDimension.showMapCenter, showMapCenter.toString());
         })
       );
       this.subscriptions.push(
@@ -133,10 +103,7 @@ export class DataMarshallService implements OnReset {
             distinctUntilChanged()
           )
           .subscribe((topoMap) => {
-            this.analyticService.trackDimension(
-              AppCustomDimension.topoMap,
-              topoMap
-            );
+            this.analyticService.trackDimension(AppCustomDimension.topoMap, topoMap);
           })
       );
       this.subscriptions.push(
@@ -151,29 +118,19 @@ export class DataMarshallService implements OnReset {
             distinctUntilChanged()
           )
           .subscribe((supportMap) => {
-            this.analyticService.trackDimension(
-              AppCustomDimension.supportMap,
-              supportMap
-            );
+            this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
           })
       );
       this.subscriptions.push(
-        this.regobsAuthService.loggedInUser$.subscribe((user) =>
-          this.loggingService.setUser(user)
-        )
+        this.regobsAuthService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user))
       );
       this.subscriptions.push(
-        this.userSettingService.appMode$.subscribe((appMode) =>
-          this.loggingService.configureLogging(appMode)
-        )
+        this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode))
       );
 
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
-          this.loggingService.debug(
-            'App paused. Stop foreground updates.',
-            DEBUG_TAG
-          );
+          this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
           this.stopForegroundUpdate();
         })
       );
@@ -222,10 +179,7 @@ export class DataMarshallService implements OnReset {
     return this.userSettingService.currentGeoHazard$.pipe(
       switchMap((currentGeoHazard) =>
         this.userSettingService.daysBack$.pipe(
-          map(
-            (val) =>
-              val.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack
-          ),
+          map((val) => val.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack),
           distinctUntilChanged(),
           pairwise(),
           filter(([prev, next]) => next > prev)
@@ -251,18 +205,14 @@ export class DataMarshallService implements OnReset {
   backgroundFetchUpdate(useTimeout = false): Promise<void> {
     return this.ngZone.runOutsideAngular(async () => {
       const cancelTimer = useTimeout
-        ? CancelPromiseTimer.createCancelPromiseTimer(
-          settings.backgroundFetchTimeout
-        )
+        ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout)
         : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
 
       const cancelPromiseForObservations = cancelTimer
         ? Promise.race([this.cancelObservationsPromise, cancelTimer])
         : this.cancelObservationsPromise;
-      await this.observationService.updateObservations(
-        cancelPromiseForObservations
-      );
+      await this.observationService.updateObservations(cancelPromiseForObservations);
       await this.warningService.updateWarnings(cancelTimer);
       await this.tripLoggerService.cleanupOldLegacyTrip();
       this.loggingService.debug('Background update completed', DEBUG_TAG);

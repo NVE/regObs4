@@ -1,52 +1,42 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import {
-  setObservableTimeout,
-  NgDestoryBase
-} from '../../../../core/helpers/observable-helper';
+import { setObservableTimeout, NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import { Observable, Subscription } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
 import { takeUntil, take } from 'rxjs/operators';
 
 interface PopupSubscription {
-  subscription: Subscription,
-  checker: (name: string) => Observable<void>,
-  condition: (tile: SubTile) => boolean,
+  subscription: Subscription;
+  checker: (name: string) => Observable<void>;
+  condition: (tile: SubTile) => boolean;
 }
 
 @Component({
   selector: 'app-support-tiles-menu',
   templateUrl: './support-tiles-menu.component.html',
   styleUrls: ['./support-tiles-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
-  private checkOfflineSupportMaps: {[mapName: string]: PopupSubscription} = {};
+  private checkOfflineSupportMaps: { [mapName: string]: PopupSubscription } = {};
   private subTileInstantiation: Subscription;
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
     { name: '25%', value: 0.75 },
     { name: '50%', value: 0.5 },
-    { name: '75%', value: 0.25 }
+    { name: '75%', value: 0.25 },
   ];
 
   readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private popupInfoService: PopupInfoService
-  ) {
+  constructor(private userSettingService: UserSettingService, private popupInfoService: PopupInfoService) {
     super();
-    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(
-      setObservableTimeout()
-    );
+    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(setObservableTimeout());
 
     this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
-      supportTiles.forEach(
-        (supportTile) => this.onTileChanged(supportTile)
-      );
+      supportTiles.forEach((supportTile) => this.onTileChanged(supportTile));
       this.subTileInstantiation.unsubscribe();
     });
   }
@@ -88,15 +78,10 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   async saveSettings(supportTile: SupportTile) {
-    const currentSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     this.userSettingService.saveUserSettings({
       ...currentSettings,
-      supportTiles: this.addOrUpdateSupportTileSettings(
-        supportTile,
-        currentSettings.supportTiles
-      )
+      supportTiles: this.addOrUpdateSupportTileSettings(supportTile, currentSettings.supportTiles),
     });
   }
 
@@ -121,8 +106,8 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
         checkMap.subscription.unsubscribe();
       }
       if (tile.enabled && checkMap.condition(tile)) {
-        checkMap.subscription = checkMap
-          .checker.bind(this.popupInfoService)(tile.name)
+        checkMap.subscription = checkMap.checker
+          .bind(this.popupInfoService)(tile.name)
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe();
       }
@@ -150,9 +135,6 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
         checked: supportTile.subTile.checked,
       };
     }
-    return [
-      ...currentSupportTileSettings.filter((m) => m.name !== supportTile.name) as SupportTile[],
-      storeTile,
-    ];
+    return [...(currentSupportTileSettings.filter((m) => m.name !== supportTile.name) as SupportTile[]), storeTile];
   }
 }

@@ -23,7 +23,7 @@ interface ITopoMapLayerOptions {
 
 type TopoMapLayersSettings = {
   [mapLayer in TopoMapLayer]: ITopoMapLayerOptions;
-}
+};
 
 interface ITopoMapSettings {
   layer: keyof typeof TopoMapLayer;
@@ -46,8 +46,8 @@ interface ITopoMapSettings {
 }
 
 type TopoMapsSettings = {
-  [topoMap in TopoMap]: ITopoMapSettings[]
-}
+  [topoMap in TopoMap]: ITopoMapSettings[];
+};
 
 interface IMapTileSettings {
   defaultZoom: number;
@@ -100,7 +100,7 @@ export interface ISettings {
   googleAnalytics: any;
   language: any;
   legalUrl: {
-    nb: string,
-    en: string,
-  }
+    nb: string;
+    en: string;
+  };
 }

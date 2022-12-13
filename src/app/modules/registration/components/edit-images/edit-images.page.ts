@@ -11,7 +11,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 @Component({
   templateUrl: './edit-images.page.html',
   styleUrls: ['./edit-images.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditImagesPage {
   @Input() draftUuid: string;
@@ -23,6 +23,6 @@ export class EditImagesPage {
   constructor(private modalController: ModalController) {}
 
   close() {
-    this.modalController.dismiss({ existingAttachments: this.existingAttachments});
+    this.modalController.dismiss({ existingAttachments: this.existingAttachments });
   }
 }

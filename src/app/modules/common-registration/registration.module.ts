@@ -45,14 +45,14 @@ export const translateModuleForRoot = TranslateModule.forRoot({
   loader: {
     provide: TranslateLoader,
     useFactory: createTranslateLoader,
-    deps: [HttpClient]
-  }
+    deps: [HttpClient],
+  },
 });
 
 @NgModule({
   imports: [CoreModule, RegobsApiModuleWithConfig, translateModuleForRoot],
   declarations: [],
-  exports: [RegobsRegistrationPipesModule]
+  exports: [RegobsRegistrationPipesModule],
 })
 export class RegistrationModule {
   static forRoot(options?: IRegistrationModuleOptions): ModuleWithProviders<RegistrationModule> {
@@ -61,24 +61,24 @@ export class RegistrationModule {
       providers: [
         {
           provide: FOR_ROOT_OPTIONS_TOKEN,
-          useValue: options
+          useValue: options,
         },
         {
           provide: OfflineDbServiceOptions,
           useFactory: offlineDbServiceOptionsFactory,
-          deps: [FOR_ROOT_OPTIONS_TOKEN]
+          deps: [FOR_ROOT_OPTIONS_TOKEN],
         },
         {
           provide: HTTP_INTERCEPTORS,
           useClass: HttpConnectivityInterceptor,
-          multi: true
+          multi: true,
         },
         {
           provide: NewAttachmentService,
-          useClass: isPlatform('hybrid') ? FileAttachmentService : LocalStorageAttachmentService
+          useClass: isPlatform('hybrid') ? FileAttachmentService : LocalStorageAttachmentService,
         },
-        TranslateService
-      ]
+        TranslateService,
+      ],
     };
   }
 
@@ -92,19 +92,19 @@ export class RegistrationModule {
       providers: [
         {
           provide: FOR_ROOT_OPTIONS_TOKEN,
-          useValue: { adapter: 'memory' }
+          useValue: { adapter: 'memory' },
         },
         {
           provide: OfflineDbServiceOptions,
-          useValue: { adapter: 'memory' }
+          useValue: { adapter: 'memory' },
         },
         {
           provide: NewAttachmentService,
-          useClass: LocalStorageAttachmentService
+          useClass: LocalStorageAttachmentService,
         },
         { provide: KdvElementsService, useFactory: getFakeKdvElementsService },
-        { provide: HelpTextApiService, useFactory: getFakeHelpTextApiService }
-      ]
+        { provide: HelpTextApiService, useFactory: getFakeHelpTextApiService },
+      ],
     };
   }
 }
