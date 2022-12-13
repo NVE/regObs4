@@ -80,7 +80,7 @@ describe('SearchCriteriaService', () => {
     jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
 
     //check that criteria contains correct from time. Should be 2 days earlier at midnight
-    const expectedFromTime = moment(new Date('2000-12-22 00:00:00.000')).toISOString();
+    const expectedFromTime = moment(new Date('2000-12-22 00:00:00.000')).toISOString(true);
     //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
@@ -230,7 +230,7 @@ describe('SearchCriteriaService url parsing', () => {
     tick();
     //check that criteria contains correct from time. Should be 1 days earlier at midnight
     //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
-    const expectedFromTime = moment(new Date('2000-12-23 00:00:00.000')).toISOString();
+    const expectedFromTime = moment(new Date('2000-12-23 00:00:00.000')).toISOString(true);
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
   }));

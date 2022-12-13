@@ -147,14 +147,16 @@ export class SearchCriteriaService {
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
+      // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
+      // - FromDtObsTime: fromDate URL param
       map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
         const _criteria = { ...criteria } as SearchCriteriaRequestDto;
         return {
           ...criteria,
-          LangKey: _criteria.LangKey || langKey,
-          SelectedGeoHazards: _criteria.SelectedGeoHazards || geoHazards,
+          LangKey: langKey,
+          SelectedGeoHazards: geoHazards,
           FromDtObsTime: shorthandDateToIsoDateTime(_criteria.FromDtObsTime || fromObsTime),
-          Extent: _criteria.Extent || extent,
+          Extent: extent,
         } as SearchCriteriaRequestDto;
       }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
