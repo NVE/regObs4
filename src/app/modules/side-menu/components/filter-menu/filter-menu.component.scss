@@ -12,8 +12,13 @@
 
 ion-list {
   width: 100%;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: 0;
+  padding: 8px 0;
   overflow: auto;
   max-height: 100vh;
+  background: #FFF;
+  .item-height {
+      max-height: 40px;
+      display: flex;
+      align-items: center;
+    }
 }
