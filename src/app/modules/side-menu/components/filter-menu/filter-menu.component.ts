@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, Subject } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -80,39 +80,28 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
 
-    const hasObservationsTypesOptions = new Subject<void>();
-
-    combineLatest([this.searchCriteriaService.searchCriteria$, hasObservationsTypesOptions.pipe(take(1))])
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap(([criteria]) => {
-          if (criteria.SelectedRegistrationTypes != null) {
-            //this one runs just as many times as the number of checkboxes selected...
-            this.mapSelectedRegTypesFromSearchCriteria(
-              this.observationTypesOptions,
-              criteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]
-            );
-          }
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe();
-
+    const sc = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
     combineLatest([
-      this.userSettingService.currentGeoHazard$.pipe(map((result) => result)),
+      this.userSettingService.currentGeoHazard$,
       this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
     ])
       .pipe(
+        takeUntil(this.ngDestroy$),
         map(([geoHazard, registrationTypes]) => {
           const registrationTypesByGeoHazard = geoHazard
             .map((typesByGeoHazard) => registrationTypes[typesByGeoHazard])
             .flat();
-          return this.convertTypesDtoToView(registrationTypesByGeoHazard);
+          const emptyForm = this.convertTypesDtoToView(registrationTypesByGeoHazard);
+          if (sc.SelectedRegistrationTypes != null && sc.SelectedRegistrationTypes.length > 0) {
+            return this.mapSelectedRegTypesFromSearchCriteria(
+              emptyForm,
+              sc.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]
+            );
+          } else return emptyForm;
         })
       )
-      .subscribe((c) => {
-        this.observationTypesOptions = c;
-        hasObservationsTypesOptions.next();
+      .subscribe((r) => {
+        this.observationTypesOptions = r;
         this.cdr.markForCheck();
       });
 
