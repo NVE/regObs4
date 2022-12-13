@@ -67,7 +67,7 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
 }
 
 function competenceFromUrlToDto(competence: string): number[] {
-  if (!isCompetenceUrlValid(competence)) return;
+  if (competence && !isCompetenceUrlValid(competence)) return;
   return competence ? competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c)) : null;
 }
 
@@ -91,7 +91,7 @@ function numberArrayToSeparatedString(numbers: number[]): string {
 }
 
 function isCompetenceUrlValid(competence: string): RegExpMatchArray {
-  //check if its a number to max 3 digits with optional tilde as param
+  //check if its a sequence of numbers to max 3 digits with optional tilde as param
   const regex = /^(\b\d{0,3}\b~?)*$/g;
   const isValid = competence.match(regex);
   return isValid;
@@ -312,7 +312,6 @@ export class SearchCriteriaService {
 
   setCompetence(competenceCriteria: number[]) {
     //[105, 120, 130]   //[140, 130]
-    console.log(competenceCriteria);
     if (!competenceCriteria) {
       this.searchCriteriaChanges.next({ ObserverCompetence: null });
       return;

@@ -31,7 +31,6 @@
       <ion-label>
         {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
       </ion-label>
-      <ion-label> Observatør </ion-label>
     </ion-list-header>
     <!-- TODO: Legg til eller hente kompetanser i menyen. Husk at på snø er det en spesiell kompetanse A -->
     <ion-item *ngIf="competenceOptions">
@@ -44,12 +43,6 @@
           {{ co.name }}
         </ion-select-option>
       </ion-select>
-      <ion-item>
-        <ion-label class="no-margin-bottom" color="dark" position="stacked">Kompetanse</ion-label>
-        <ion-select placeholder="Alle kompetansenivå" [interface]="popupType">
-          <ion-select-option> </ion-select-option>
-        </ion-select>
-      </ion-item>
     </ion-item>
     <ion-item *ngIf="isShowAutomaticStation">
       <ion-checkbox

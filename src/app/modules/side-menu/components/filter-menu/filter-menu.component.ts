@@ -113,31 +113,36 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
-    const hasCompetenceTypesLoaded = new Subject<void>();
+
     const sc = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
+
     combineLatest([
       this.userSettingService.currentGeoHazard$,
       this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
+      this.kdv.getKdvRepositoryByKeyObservable('CompetenceLevelKDV'),
     ])
       .pipe(
         takeUntil(this.ngDestroy$),
-        map(([geoHazard, registrationTypes]) => {
+        map(([geoHazard, registrationTypes, competenceLevels]) => {
           const registrationTypesByGeoHazard = geoHazard
             .map((typesByGeoHazard) => registrationTypes[typesByGeoHazard])
             .flat();
-          const emptyForm = this.convertTypesDtoToView(registrationTypesByGeoHazard);
-          if (sc.SelectedRegistrationTypes != null && sc.SelectedRegistrationTypes.length > 0) {
-            return this.mapSelectedRegTypesFromSearchCriteria(
-              emptyForm,
-              sc.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]
-            );
-          } else return emptyForm;
+          const competenceLevelsByGeoHazard = geoHazard
+            .map((geoHazard) => COMPETANCE_FILTER[geoHazard])
+            .map((f) => competenceLevels.filter(f));
+          //if sc.SelectedRegistrationTypes
+          this.isSelectedRegistrationTypes(
+            sc.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
+            registrationTypesByGeoHazard
+          );
+          //if sc.ObserverCompetence
+          this.isObserverCompetence(sc.ObserverCompetence as number[], competenceLevelsByGeoHazard);
+          //if sc.ObserverNickName add later
+
+          this.cdr.markForCheck();
         })
       )
-      .subscribe((r) => {
-        this.observationTypesOptions = r;
-        this.cdr.markForCheck();
-      });
+      .subscribe();
 
     this.searchCriteriaService.searchCriteria$
       .pipe(
@@ -148,43 +153,29 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         })
       )
       .subscribe();
-    combineLatest([
-      this.userSettingService.currentGeoHazard$.pipe(
-        map((geoHazards) => geoHazards.map((geoHazard) => COMPETANCE_FILTER[geoHazard]))
-      ),
-      this.kdv.getKdvRepositoryByKeyObservable('CompetenceLevelKDV'),
-    ])
-      .pipe(
-        map(([competanceFilters, competance]) => competanceFilters.map((f) => competance.filter(f))),
-        //KdvElement[][] -> {KdvElement.Name: [ids]}
-        map((filteredList) => {
-          return this.sortCompetences(filteredList);
-        })
-      )
-      .subscribe((c) => {
-        this.competenceOptions = c;
-        hasCompetenceTypesLoaded.next();
-        this.cdr.markForCheck();
-      });
-
-    //ADJUST VIEW TO URL
-    combineLatest([this.searchCriteriaService.searchCriteria$, hasCompetenceTypesLoaded.pipe(take(1))])
-      .pipe(
-        take(1),
-        tap(([criteria]) => {
-          this.nickName = criteria.ObserverNickName;
-          if (criteria.ObserverCompetence) {
-            this.chosenValue = this.formatUrlToViewModel(criteria.ObserverCompetence as number[]);
-          }
-          //[105,140,0] => remove 0 and 105 and then compare array to any other arrays in competenceOptions and ok
-          //this.competenceOptions = criteria.ObserverCompetence;
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe();
   }
 
-  formatUrlToViewModel(ids: number[]) {
+  isObserverCompetence(sc: number[], compLevels) {
+    const emptyForm = this.sortCompetences(compLevels);
+    this.competenceOptions = emptyForm;
+    if (sc != null && sc.length > 0) {
+      this.chosenValue = this.formatUrlToViewModel(emptyForm, sc);
+    }
+  }
+
+  isSelectedRegistrationTypes(sc: RegistrationTypeCriteriaDto[], regTypes) {
+    const emptyForm = this.convertTypesDtoToView(regTypes);
+    if (sc != null && sc.length > 0) {
+      this.observationTypesOptions = this.mapSelectedRegTypesFromSearchCriteria(
+        emptyForm,
+        sc as RegistrationTypeCriteriaDto[]
+      );
+    } else {
+      this.observationTypesOptions = emptyForm;
+    }
+  }
+
+  formatUrlToViewModel(emptyForm: CompetenceItem[], ids: number[]) {
     let newIds = ids;
     if (ids.includes(105)) {
       newIds = ids.filter((i) => i !== 105);
@@ -196,26 +187,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     let competenceOptionToSet;
     const compareArrays = (a, b) => a.length === b.length && a.every((element, index) => element === b[index]);
 
-    for (let i = 0; i < this.competenceOptions.length; i++) {
-      if (compareArrays(this.competenceOptions[i].ids, newIds)) {
-        competenceOptionToSet = this.competenceOptions[i];
+    for (let i = 0; i < emptyForm.length; i++) {
+      if (compareArrays(emptyForm[i].ids, newIds)) {
+        competenceOptionToSet = emptyForm[i];
         break;
       }
     }
-    console.log('format', competenceOptionToSet);
     return competenceOptionToSet;
   }
-
-  /*formatNames(keyName: string): string{
-    if(keyName.includes('*')){
-      const numOfStars = keyName.split('*').length - 1;
-      return `${numOfStars} star`;
-    } else if (keyName == '-'){
-      return 'Unkown';
-    } else if (keyName == 'A') {
-      return 'Automatic station';
-    } else return keyName;
-  }*/
 
   //set automatic station on as default in both view and searchCriteria
   setAutomaticStationsOnInit(filteredCompetance: KdvElement) {
@@ -237,10 +216,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         if (filteredCompetance.Name == 'A') {
           this.setAutomaticStationsOnInit(filteredCompetance);
         }
+
         //add 0 to 'unknown' competence array of ids
         else if (filteredCompetance.Name == '-') {
           competanceSorted[filteredCompetance.Name] = { name: filteredCompetance.Name, ids: [...filteredIds, 0] };
         }
+
         //check if object contains key already and add extra ids (water and soil)
         else if (Object.prototype.hasOwnProperty.call(competanceSorted, filteredCompetance.Name)) {
           const existing = competanceSorted[filteredCompetance.Name];
@@ -254,7 +235,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   onSelectCompetenceChange(event) {
-    console.log(event);
     this.chosenValue = event.detail.value;
     const ids = event.detail.value.ids;
     //check if isAutomaticStationChecked and then add 105 to filters
