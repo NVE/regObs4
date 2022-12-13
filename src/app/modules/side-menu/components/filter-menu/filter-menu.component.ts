@@ -1,22 +1,51 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { Observable, of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
+import { map, take, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import {
+  RegistrationTypeCriteriaDto,
+  RegistrationTypeDto,
+  RegistrationTypeSubTypeDto,
+} from 'src/app/modules/common-regobs-api';
+import { captureMessage } from '@sentry/browser';
 
-export interface ObservationTypeFilterItem {
-  value: string;
-  geohazardTid: GeoHazard[];
+interface ObservationTypeView {
+  name: string;
+  id: number;
   isChecked: boolean;
+  parentId: number;
 }
 
 const DEBUG_TAG = 'FilterMenuComponent';
+
+//create view model
+function mapRegistrationSubtypes(subtypes: RegistrationTypeSubTypeDto[], parentId: number): ObservationTypeView[] {
+  return subtypes.map((st) => {
+    return { name: st.Name, parentId: parentId, id: st.Id, isChecked: false };
+  });
+}
+
+function mapRegistrationType(type: RegistrationTypeDto): ObservationTypeView[] {
+  return [{ name: type.Name, parentId: type.Id, id: type.Id, isChecked: false }];
+}
+
+function removeDuplicatesFromObservationTypes(arr: ObservationTypeView[]): ObservationTypeView[] {
+  return arr.reduce((cur, element) => {
+    if (cur && cur.filter((i) => i.id === element.id).length > 0) {
+      return cur;
+    } else {
+      cur.push(element);
+      return cur;
+    }
+  }, [] as ObservationTypeView[]);
+}
 
 @Component({
   selector: 'app-filter-menu',
@@ -33,91 +62,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   masterCheck: boolean;
   nickName: string;
 
-  filteredObservationTypes: ObservationTypeFilterItem[];
-
-  observationTypes: ObservationTypeFilterItem[] = [
-    {
-      value: 'Ulykker',
-      geohazardTid: [GeoHazard.Snow, GeoHazard.Ice],
-      isChecked: false,
-    },
-    {
-      value: 'Skredhendelser',
-      geohazardTid: [GeoHazard.Snow, GeoHazard.Soil],
-      isChecked: false,
-    },
-    {
-      value: 'Faretegn',
-      geohazardTid: [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Soil],
-      isChecked: false,
-    },
-    {
-      value: 'Isdekning',
-      geohazardTid: [GeoHazard.Ice],
-      isChecked: false,
-    },
-    {
-      value: 'Istykkelse',
-      geohazardTid: [GeoHazard.Ice],
-      isChecked: false,
-    },
-    {
-      value: 'Snødekke',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Skredaktiviter',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Vær',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Tester',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Snøprofil',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Skredproblem',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Skredfarevurdering',
-      geohazardTid: [GeoHazard.Snow],
-      isChecked: false,
-    },
-    {
-      value: 'Vannstand',
-      geohazardTid: [GeoHazard.Water],
-      isChecked: false,
-    },
-    {
-      value: 'Skader',
-      geohazardTid: [GeoHazard.Water],
-      isChecked: false,
-    },
-    {
-      value: 'Notater',
-      geohazardTid: [GeoHazard.Snow, GeoHazard.Soil, GeoHazard.Water, GeoHazard.Ice],
-      isChecked: false,
-    },
-  ];
+  observationTypesOptions: ObservationTypeView[];
 
   constructor(
     private platform: Platform,
     private userSettingService: UserSettingService,
     private searchCriteriaService: SearchCriteriaService,
     private cdr: ChangeDetectorRef,
+    private kdv: KdvService,
     private logger: LoggingService
   ) {
     super();
@@ -127,9 +79,31 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
-    this.userSettingService.currentGeoHazard$
-      .pipe(switchMap((currentGeoHazard) => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
-      .subscribe((items) => (this.filteredObservationTypes = items));
+
+    const sc = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
+    combineLatest([
+      this.userSettingService.currentGeoHazard$,
+      this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
+    ])
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        map(([geoHazard, registrationTypes]) => {
+          const registrationTypesByGeoHazard = geoHazard
+            .map((typesByGeoHazard) => registrationTypes[typesByGeoHazard])
+            .flat();
+          const emptyForm = this.convertTypesDtoToView(registrationTypesByGeoHazard);
+          if (sc.SelectedRegistrationTypes != null && sc.SelectedRegistrationTypes.length > 0) {
+            return this.mapSelectedRegTypesFromSearchCriteria(
+              emptyForm,
+              sc.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]
+            );
+          } else return emptyForm;
+        })
+      )
+      .subscribe((r) => {
+        this.observationTypesOptions = r;
+        this.cdr.markForCheck();
+      });
 
     this.searchCriteriaService.searchCriteria$
       .pipe(
@@ -142,45 +116,43 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
-  filterObservationTypesByGeohazard(currentGeoHazard: GeoHazard[]) {
-    return this.observationTypes.filter((observationType) =>
-      observationType.geohazardTid.some(
-        (observationGeoHazardTid) => currentGeoHazard.indexOf(observationGeoHazardTid) >= 0
-      )
-    );
-  }
-
-  toggleAllObservationTypes() {
-    this.showObservationTypes = !this.showObservationTypes;
-  }
-
-  checkMaster(event) {
-    setTimeout(() => {
-      this.observationTypes.forEach((obj) => {
-        obj.isChecked = this.masterCheck;
-      });
+  mapSelectedRegTypesFromSearchCriteria(
+    emptyForm: ObservationTypeView[],
+    criteria: RegistrationTypeCriteriaDto[]
+  ): ObservationTypeView[] {
+    criteria.forEach((selectedType) => {
+      if (selectedType.SubTypes.length > 0) {
+        selectedType.SubTypes.forEach((subtype) => {
+          const subTypeToChangeIndex = emptyForm.findIndex((type) => type.id === subtype);
+          emptyForm[subTypeToChangeIndex] ? (emptyForm[subTypeToChangeIndex].isChecked = true) : null;
+        });
+      } else {
+        const typeToChangeIndex = emptyForm.findIndex((type) => type.id === selectedType.Id);
+        emptyForm[typeToChangeIndex] ? (emptyForm[typeToChangeIndex].isChecked = true) : null;
+      }
     });
+    return emptyForm;
+  }
+  //combine subtypes and types into one array
+  convertTypesDtoToView(registrationTypesByGeoHazard: RegistrationTypeDto[]): ObservationTypeView[] {
+    let arrToReturn: ObservationTypeView[] = [];
+    registrationTypesByGeoHazard.map((type) => {
+      const subtypestoReturn =
+        type.SubTypes.length > 0 ? mapRegistrationSubtypes(type.SubTypes, type.Id) : mapRegistrationType(type);
+      arrToReturn = [...arrToReturn, ...subtypestoReturn];
+    });
+
+    const noDuplicates = removeDuplicatesFromObservationTypes(arrToReturn);
+    return noDuplicates;
   }
 
-  checkEvent() {
-    const totalItems = this.observationTypes.length;
-    let checked = 0;
-    this.observationTypes.map((obj) => {
-      if (obj.isChecked) checked++;
-    });
-    if (checked > 0 && checked < totalItems) {
-      //If even one item is checked but not all
-      this.isIndeterminate = true;
-      this.masterCheck = false;
-    } else if (checked == totalItems) {
-      //If all are checked
-      this.masterCheck = true;
-      this.isIndeterminate = false;
-    } else {
-      //If none is checked
-      this.isIndeterminate = false;
-      this.masterCheck = false;
-    }
+  setNewType(event: CustomEvent, parentId: number, typeId?: number) {
+    //if parentid and subtypeid are the same it means there is no subtypes
+    let obsType: RegistrationTypeCriteriaDto;
+    if (parentId == typeId) obsType = { Id: parentId, SubTypes: [] };
+    else obsType = { Id: parentId, SubTypes: [typeId] };
+    if (event.detail.checked) this.searchCriteriaService.setObservationType(obsType);
+    else this.searchCriteriaService.removeObservationType(obsType);
   }
 
   setNickName(event) {

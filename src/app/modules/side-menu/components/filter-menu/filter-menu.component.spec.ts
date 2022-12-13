@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { of } from 'rxjs';
+import { offEventFilter } from '@nano-sql/core/lib/interfaces';
+import { Observable, of } from 'rxjs';
 import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
+import { KdvElementsService } from 'src/app/modules/common-regobs-api';
 import { IDataLoad } from 'src/app/modules/data-load/models/data-load.interface';
 import { TestModule } from '../../../test/test.module';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
