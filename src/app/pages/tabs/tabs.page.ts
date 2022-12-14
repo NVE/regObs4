@@ -8,6 +8,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 
 @Component({
   selector: 'app-tabs',
@@ -45,6 +46,7 @@ export class TabsPage implements OnInit, OnDestroy {
 
   constructor(
     private fullscreenService: FullscreenService,
+    private searchCriteriaService: SearchCriteriaService,
     private platform: Platform,
     private warningService: WarningService,
     private userSettingService: UserSettingService,
@@ -59,7 +61,10 @@ export class TabsPage implements OnInit, OnDestroy {
       filter((e) => e instanceof NavigationEnd),
       map(() => location.path()),
       distinctUntilChanged(),
-      map((path) => this.parseTabFromPath(path)),
+      map((path) => {
+        this.shouldTransferQueryParams(path);
+        return this.parseTabFromPath(path);
+      }),
       share() // All tabs subscribe to this, so share amongst subscribers
     );
   }
@@ -72,6 +77,12 @@ export class TabsPage implements OnInit, OnDestroy {
       return 'warning-list';
     }
     return 'home';
+  }
+
+  private shouldTransferQueryParams(path: string) {
+    if (path == '' || path == '/observation-list' || path == '/warning-list') {
+      this.searchCriteriaService.applyQueryParams();
+    }
   }
 
   ngOnInit(): void {

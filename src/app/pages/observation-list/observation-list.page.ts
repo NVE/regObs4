@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
@@ -38,7 +37,6 @@ export class ObservationListPage implements OnInit {
 
   constructor(
     private searchCriteriaService: SearchCriteriaService,
-    private activatedRoute: ActivatedRoute,
     searchRegistrationService: SearchRegistrationService,
     private logger: LoggingService
   ) {
