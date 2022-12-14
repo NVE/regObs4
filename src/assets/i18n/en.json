@@ -533,6 +533,10 @@
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
+        "AVALANCHE_AREA": "Avalanche area",
+        "AREA_TOTAL": "Hele skredområdet",
+        "AREA_START": "Startsone",
+        "AREA_END": "Utløpssone",
         "AVAL_CAUSE": "Weak layer",
         "CASUALTIES_NUM": "Number of casualties",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Cannot be greater than the number involved",

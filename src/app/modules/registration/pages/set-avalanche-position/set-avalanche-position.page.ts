@@ -1,16 +1,16 @@
-import { Component, OnInit, Input, NgZone, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import '@geoman-io/leaflet-geoman-free';
 import { ModalController } from '@ionic/angular';
-import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
-import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  LocationTime,
-  SetLocationInMapComponent,
-} from '../../components/set-location-in-map/set-location-in-map.component';
+import * as L from 'leaflet';
+import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
+import {
+  LocationTime,
+  SetLocationInMapComponent
+} from '../../components/set-location-in-map/set-location-in-map.component';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -33,6 +33,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   fromMarker: L.Marker;
   locationMarker: L.Marker;
+  locationPolygon = new Subject<L.Polygon>();
   confirmLocationText = '';
   locationText = '';
   startImageUrl = '/assets/icon/map/GPS_start.svg';
@@ -62,6 +63,7 @@ export class SetAvalanchePositionPage implements OnInit {
   private endMarker: L.Marker;
   private translations;
   private startIsActive = true;
+  private endIsActive = false;
   locationMarkerIconUrl = this.startImageUrl;
 
   fullscreen$: Observable<boolean>;
@@ -85,6 +87,7 @@ export class SetAvalanchePositionPage implements OnInit {
       .get([
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION',
+        'REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA',
         'DIALOGS.CONFIRM',
       ])
       .toPromise();
@@ -158,6 +161,13 @@ export class SetAvalanchePositionPage implements OnInit {
     this.locationMarkerIconUrl = this.endImageUrl;
   }
 
+  private setPolygonLocationText() {
+    this.confirmLocationText = `${this.translations['DIALOGS.CONFIRM']} ${this.translations[
+      'REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'
+    ].toLowerCase()}`;
+    this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
+  }
+
   private updateMarkers() {
     this.startMarker.remove();
     this.endMarker.remove();
@@ -173,12 +183,43 @@ export class SetAvalanchePositionPage implements OnInit {
           this.endMarker.setLatLng(this.end);
           this.endMarker.addTo(this.map);
         }
-      } else {
+      } else if (this.endIsActive) {
         this.locationMarker.setIcon(this.endIcon);
         this.locationMarker.setLatLng(this.end || this.start);
         this.setEndLocationText();
         this.startMarker.setLatLng(this.start);
         this.startMarker.addTo(this.map);
+      } else {
+        this.locationMarker.remove();
+        this.startMarker.setLatLng(this.start);
+        this.startMarker.addTo(this.map);
+        this.startMarker.off('click');
+        this.endMarker.setLatLng(this.end);
+        this.endMarker.addTo(this.map);
+        this.endMarker.off('click');
+        this.map.off('drag');
+        const totalCircle = new L.Circle(
+          [(this.start.lat + this.end.lat) / 2, (this.start.lng + this.end.lng) / 2],
+          {radius: this.start.distanceTo(this.end) / 2}
+        );
+        const startCircle = new L.Circle(
+          [this.start.lat + (this.end.lat - this.start.lat) / 6, this.start.lng + (this.end.lng - this.start.lng) / 6],
+          {radius: this.start.distanceTo(this.end) / 6}
+        );
+        const endCircle = new L.Circle(
+          [this.end.lat + (this.start.lat - this.end.lat) / 6, this.end.lng + (this.start.lng - this.end.lng) / 6],
+          {radius: this.start.distanceTo(this.end) / 6}
+        );
+        const totalPolygon = L.PM.Utils.circleToPolygon(totalCircle, 5);
+        const startPolygon = L.PM.Utils.circleToPolygon(startCircle, 5);
+        const endPolygon = L.PM.Utils.circleToPolygon(endCircle, 5);
+        totalPolygon.setStyle({color: '#3344bb'});
+        startPolygon.setStyle({color: '#33bb44'});
+        endPolygon.setStyle({color: '#bb3344'});
+        this.locationPolygon.next(totalPolygon);
+        this.locationPolygon.next(startPolygon);
+        this.locationPolygon.next(endPolygon);
+        this.setPolygonLocationText()
       }
     }
     this.map.panTo(this.locationMarker.getLatLng());
@@ -209,9 +250,13 @@ export class SetAvalanchePositionPage implements OnInit {
         this.end = L.latLng(location.Latitude, location.Longitude);
       }
       this.startIsActive = false;
+      this.endIsActive = true;
+      this.updateMarkers();
+    } else if (this.endIsActive) {
+      this.end = L.latLng(location.Latitude, location.Longitude);
+      this.endIsActive = false;
       this.updateMarkers();
     } else {
-      this.end = L.latLng(location.Latitude, location.Longitude);
       this.modalController.dismiss({ start: this.start, end: this.end });
     }
   }

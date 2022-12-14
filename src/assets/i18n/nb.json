@@ -533,6 +533,7 @@
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
+        "AVALANCHE_AREA": "Skredområde",
         "AVAL_CAUSE": "Svakt lag",
         "CASUALTIES_NUM": "Antall skredtatte",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
