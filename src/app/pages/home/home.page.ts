@@ -226,19 +226,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.map.addLayer(this.markerLayer);
   }
 
-  // private createActiveMarkerClusterGroup(registration: RegistrationViewModel): L.MarkerClusterGroup {
-  //   const pointObject = this.createPointObject(registration);
-  //   const location = L.latLng(registration.ObsLocation.Latitude, registration.ObsLocation.Longitude);
-  //   const geoJson = L.geoJSON(pointObject, {
-  //     pointToLayer: () => RegObsGeoJson.pointToLayer(pointObject, location),
-  //   });
-
-  //   const clusterGroup = new L.MarkerClusterGroup();
-  //   clusterGroup.addLayer(geoJson);
-  //   return clusterGroup;
-  // }
-
-  createPointObject(registration: AtAGlanceViewModel): Feature<Point, AtAGlanceViewModel> {
+  private createPointObject(registration: AtAGlanceViewModel): Feature<Point, AtAGlanceViewModel> {
     const result = {
       geometry: {
         type: 'Point',

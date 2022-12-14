@@ -1,6 +1,5 @@
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { IconHelper } from './icon.helper';
 import { Feature, Point } from 'geojson';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
@@ -48,16 +47,34 @@ export class RegObsMarkerClusterLayer extends L.MarkerClusterGroup {
     }
   }
 
-  resetPopup() {
-    this.openedPopup = null;
-    this.openedFeature = null;
+  private createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
+    const count = cluster.getChildCount();
+    let diameter = 79;
+    if (count < 10) {
+      diameter = 39;
+    } else if (count < 100) {
+      diameter = 49;
+    } else if (count < 1000) {
+      diameter = 64;
+    }
+
+    return L.divIcon({
+      html: RegObsMarkerClusterLayer.getMixedObservationsClusterSvg(count, diameter),
+      iconSize: [diameter, diameter],
+      iconAnchor: [Math.floor(diameter / 2), diameter],
+      className: 'cluster-marker',
+    });
   }
 
-  createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
-    return IconHelper.getMixedObservationsClusterIcon(cluster.getChildCount());
-  }
-
-  getDistinctGeohazards(items): number[] {
-    return Array.from(new Set(items));
+  static getMixedObservationsClusterSvg(count: number, diameter: number): string {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 ${diameter} ${diameter}" width="${diameter}" height="${diameter}" aria-label="${count}">
+        <circle fill="#9BB9C2" stroke="white" stroke-width="2" cx="${diameter / 2}" cy="${diameter / 2}" r="${
+      diameter / 2 - 1
+    }" />
+        <text font-family="Source Sans Pro" font-weight="normal" fill="#000000" text-anchor="middle" x="50%" y="50%" dy=".3em" font-size="14">
+            ${count}
+        </text>
+    </svg>`;
   }
 }
