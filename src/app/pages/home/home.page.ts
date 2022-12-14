@@ -194,16 +194,15 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   private redrawObservationMarkers(registrations: AtAGlanceViewModel[]) {
     const startTime = performance.now();
-    // this.markerLayer.clearLayers();
-    if (!this.markerLayer) {
-      this.setupMarkerClusterLayer();
-    }
 
+    if (!this.markerLayer) {
+      this.createMarkerLayer();
+    }
     const newMarkers = registrations
-      .filter((sr) => !!sr.Longitude)
-      .map((sr) => {
-        const pointObject = this.createPointObject(sr);
-        const latLng = L.latLng(sr.Latitude, sr.Longitude);
+      .filter((reg) => !!reg.Longitude)
+      .map((reg) => {
+        const pointObject = this.createPointObject(reg);
+        const latLng = L.latLng(reg.Latitude, reg.Longitude);
         const geoJson = L.geoJSON(pointObject, {
           pointToLayer: () => RegObsGeoJson.pointToLayer(pointObject, latLng),
         });
@@ -217,27 +216,27 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     );
   }
 
-  private setupMarkerClusterLayer(): void {
+  private createMarkerLayer(): void {
     this.markerLayer = new RegObsMarkerClusterLayer(this.map);
     this.markerLayer.on('click', (e: L.LeafletMouseEvent) => {
       const layer: L.MarkerCluster = e.propagatedFrom;
-      const registration: RegistrationViewModel = layer.feature.properties;
+      const registration: AtAGlanceViewModel = layer.feature.properties;
       this.mapItemBar.show(registration);
     });
     this.map.addLayer(this.markerLayer);
   }
 
-  private createActiveMarkerClusterGroup(registration: RegistrationViewModel): L.MarkerClusterGroup {
-    const pointObject = this.createPointObject(registration);
-    const location = L.latLng(registration.ObsLocation.Latitude, registration.ObsLocation.Longitude);
-    const geoJson = L.geoJSON(pointObject, {
-      pointToLayer: () => RegObsGeoJson.pointToLayer(pointObject, location),
-    });
+  // private createActiveMarkerClusterGroup(registration: RegistrationViewModel): L.MarkerClusterGroup {
+  //   const pointObject = this.createPointObject(registration);
+  //   const location = L.latLng(registration.ObsLocation.Latitude, registration.ObsLocation.Longitude);
+  //   const geoJson = L.geoJSON(pointObject, {
+  //     pointToLayer: () => RegObsGeoJson.pointToLayer(pointObject, location),
+  //   });
 
-    const clusterGroup = new L.MarkerClusterGroup();
-    clusterGroup.addLayer(geoJson);
-    return clusterGroup;
-  }
+  //   const clusterGroup = new L.MarkerClusterGroup();
+  //   clusterGroup.addLayer(geoJson);
+  //   return clusterGroup;
+  // }
 
   createPointObject(registration: AtAGlanceViewModel): Feature<Point, AtAGlanceViewModel> {
     const result = {
