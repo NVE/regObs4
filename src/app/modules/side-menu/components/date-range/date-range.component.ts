@@ -22,7 +22,7 @@ enum Mode {
 export class DateRangeComponent extends NgDestoryBase implements OnInit {
   fromDate: string;
   toDate: string;
-  minDate = new Date('01.01.2010').toISOString();
+  minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
   mode: Mode = Mode.PREDEFINED;
   isOpen = false;
