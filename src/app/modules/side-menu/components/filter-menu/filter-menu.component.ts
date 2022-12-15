@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { SelectInterface } from '@ionic/core';
+import { SearchbarCustomEvent, SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
@@ -295,9 +295,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     else this.searchCriteriaService.removeObservationType(obsType);
   }
 
-  setNickName(value) {
+  setNickName(newNick: SearchbarCustomEvent | null) {
     let nickName;
-    value != null ? (nickName = value.toLowerCase()) : null;
+    newNick?.target?.value != null ? (nickName = newNick.target.value.toLowerCase()) : null;
     this.searchCriteriaService.setObserverNickName(nickName);
   }
 }

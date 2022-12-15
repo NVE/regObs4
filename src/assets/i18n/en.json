@@ -224,6 +224,10 @@
       "LABEL": "Competence",
       "ALL": "All",
       "AUTOMATIC_STATIONS": "Automatic stations"
+    },
+    "NICK_FILTER": {
+      "TITLE": "Search",
+      "PLACEHOLDER": "Search by observer name"
     }
   },
   "OBSERVATION_LIST": {

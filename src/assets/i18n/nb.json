@@ -224,6 +224,10 @@
       "LABEL": "Kompetanse",
       "ALL": "Alle",
       "AUTOMATIC_STATIONS": "Automatiske stasjoner"
+    },
+    "NICK_FILTER": {
+      "TITLE": "Søk",
+      "PLACEHOLDER": "Søk på observatørnavn"
     }
   },
   "OBSERVATION_LIST": {

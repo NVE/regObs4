@@ -59,21 +59,22 @@
     </ion-item>
 
     <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
-    <!--
+
     <ion-item>
-      <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
+      <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
+        "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
+      }}</ion-label>
       <ion-searchbar
         [value]="nickName"
         [debounce]="1000"
         mode="ios"
         class="ion-no-padding"
-        placeholder="Søk på observatørnavn"
-        (ionChange)="setNickName($event.target.value)"
-        (ionClear)="setNickName(null)"
+        [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"
+        (ionChange)="setNickName($event)"
       >
       </ion-searchbar>
     </ion-item>
-    -->
+
     <!-- TODO: Implementere reset filter funksjonalitet -->
     <!--
     <ion-item>
