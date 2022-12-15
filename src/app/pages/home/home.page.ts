@@ -122,12 +122,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   async onMapReady(leafletMap: L.Map) {
     this.map = leafletMap;
+
     this.map.on('click', () => {
-      if (this.selectedMarker) {
-        this.selectedMarker.deselect();
-      }
-      this.selectedMarker = null;
-      this.mapItemBar.hide();
+      this.mapItemBar.hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
     });
 
     const searchResult = await this.createSearchResult();
