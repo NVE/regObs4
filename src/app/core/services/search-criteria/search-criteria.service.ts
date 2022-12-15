@@ -101,6 +101,7 @@ function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
   }
   return '';
 }
+
 function isArraysEqual(array1: number[], array2: number[]): boolean {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
 }
@@ -306,12 +307,12 @@ export class SearchCriteriaService {
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
+    const returnObj = {} as SearchCriteriaRequestDto;
     if (fromDate) {
-      this.searchCriteriaChanges.next({
-        FromDtObsTime: fromDate,
-      });
-      if (removeToDate) this.searchCriteriaChanges.next({ ToDtObsTime: null });
+      returnObj.FromDtObsTime = fromDate;
+      if (removeToDate) returnObj.ToDtObsTime = null;
     }
+    this.searchCriteriaChanges.next(returnObj);
   }
 
   setToDate(toDate: string) {
