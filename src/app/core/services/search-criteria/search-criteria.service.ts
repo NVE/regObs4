@@ -14,12 +14,19 @@ import {
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
+import {
+  PositionDto,
+  RegistrationTypeCriteriaDto,
+  SearchCriteriaRequestDto,
+  SearchSideBarDto,
+  WithinExtentCriteriaDto,
+} from 'src/app/modules/common-regobs-api';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
+import { circleMarker } from 'leaflet';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -35,6 +42,8 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_COMPETENCE = 'competence';
+const URL_PARAM_TYPE = 'type';
 const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
@@ -57,6 +66,14 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
   return [];
 }
 
+function competenceFromUrlToDto(competence: string): number[] {
+  if (competence && !isCompetenceUrlValid(competence)) return;
+  return competence ? competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c)) : null;
+}
+
+function competenceFromDtoToUrl(competence: number[]): string {
+  return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : null;
+}
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
@@ -69,6 +86,37 @@ function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
 function numberArrayToSeparatedString(numbers: number[]): string {
   if (numbers?.length) {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
+  }
+  return '';
+}
+
+function isCompetenceUrlValid(competence: string): RegExpMatchArray {
+  //check if its a sequence of numbers to max 3 digits with optional tilde as param
+  const regex = /^(\b\d{0,3}\b~?)*$/g;
+  const isValid = competence.match(regex);
+  return isValid;
+}
+
+function isRegTypeValid(type: string) {
+  //accepts only two digits or two digits with coma, and optional tilde as delimiter
+  const regex = /^((\b\d{2}\b~?)|(\b\d{2}\.\d{2}\b~?))*$/g;
+  const found = type.match(regex);
+  return found;
+}
+
+//[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
+function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
+  if (types != null) {
+    const url = [] as string[];
+    types.forEach((type) => {
+      const parentId = type.Id;
+      if (type.SubTypes.length > 0) {
+        type.SubTypes.forEach((subtype) => url.push(`${parentId}.${subtype}`));
+      } else {
+        url.push(parentId.toString());
+      }
+    });
+    return url.join('~');
   }
   return '';
 }
@@ -115,6 +163,7 @@ export class SearchCriteriaService {
    * Current filter. Current language and geo hazards are always included
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
+  avaialbleSerachCriteria: SearchSideBarDto;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -151,6 +200,7 @@ export class SearchCriteriaService {
         ToDtObsTime: null,
         Extent: extent,
       })),
+
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap((newCriteria) => this.setUrlParams(newCriteria)),
@@ -176,11 +226,16 @@ export class SearchCriteriaService {
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
+    const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
+    const type = url.searchParams.get(URL_PARAM_TYPE);
+    const convertTypeFromUrlToCriteria = type != null ? this.convertRegTypeFromUrlToDto(type) : null;
 
     const criteria = {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
+      ObserverCompetence: observerCompetence,
+      SelectedRegistrationTypes: convertTypeFromUrlToCriteria,
       OrderBy: orderBy,
     } as SearchCriteriaRequestDto;
 
@@ -217,6 +272,8 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
+    params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
     params.apply();
   }
@@ -232,8 +289,98 @@ export class SearchCriteriaService {
     return null;
   }
 
+  //81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
+  convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
+    if (!isRegTypeValid(type)) return;
+    //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
+    const splitUrlToArray = type.split('~').map((i) => i.split('.'));
+    //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
+    const regTypeCriteriaDto = splitUrlToArray
+      .map((i) => {
+        return { Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])] : [] };
+      })
+      .reduce((obj, item) => {
+        obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = { ...item });
+        return obj;
+      }, {});
+    return Object.values(regTypeCriteriaDto);
+  }
+
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
+  }
+
+  setCompetence(competenceCriteria: number[]) {
+    //[105, 120, 130]   //[140, 130]
+    if (!competenceCriteria) {
+      this.searchCriteriaChanges.next({ ObserverCompetence: null });
+      return;
+    }
+    const removedDuplicates = competenceCriteria.reduce((compArr, item) => {
+      if (!compArr.includes(item)) compArr.push(item);
+      return compArr;
+    }, [] as number[]);
+    this.searchCriteriaChanges.next({ ObserverCompetence: removedDuplicates });
+  }
+
+  async addAutomaticStationFilter(automaticStationToAdd: number[]) {
+    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
+    if (existingCompetence) {
+      this.setCompetence([...existingCompetence, ...automaticStationToAdd]);
+    }
+  }
+
+  async removeAutomaticStationFilter(automaticStationToRemove: number[]) {
+    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
+    if (existingCompetence) {
+      const newCompetence = existingCompetence.filter((c) => automaticStationToRemove.indexOf(c) === -1);
+      this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
+    }
+  }
+
+  async setObservationType(newType: RegistrationTypeCriteriaDto) {
+    const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
+
+    if (currentTypesCriteria) {
+      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+      const criteriaToUpdateIndex = copyCriteria.findIndex((i) => i.Id === newType.Id);
+
+      if (criteriaToUpdateIndex != -1) {
+        copyCriteria[criteriaToUpdateIndex].SubTypes = [
+          ...copyCriteria[criteriaToUpdateIndex].SubTypes,
+          ...newType.SubTypes,
+        ];
+        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
+      } else
+        this.searchCriteriaChanges.next({
+          SelectedRegistrationTypes: [...(currentTypesCriteria as RegistrationTypeCriteriaDto[]), newType],
+        });
+    } else this.searchCriteriaChanges.next({ SelectedRegistrationTypes: [newType] });
+  }
+
+  async removeObservationType(typeToRemove: RegistrationTypeCriteriaDto) {
+    const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
+    if (currentTypesCriteria) {
+      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+
+      const criteriaToUpdateWithIndex = copyCriteria.findIndex((criteria) => criteria.Id == typeToRemove.Id);
+
+      if (!(criteriaToUpdateWithIndex >= 0)) return;
+      //compare chosen object with existing one and if they are the same (no SubTypes differences) remove it from criteria
+      if (JSON.stringify(copyCriteria[criteriaToUpdateWithIndex]) == JSON.stringify(typeToRemove)) {
+        copyCriteria.splice(criteriaToUpdateWithIndex, 1);
+        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
+      }
+      //if not then it means there are subtypes differences so remove the subtypes from the current criterias
+      else {
+        //{Id:81, SubTypes: [33,23]} => {Id:81, SubTypes: [33]} remove typeToRemove subtypes from current criteria
+        const [subTypeValueToRemove] = typeToRemove.SubTypes;
+        const subTypesToRemoveWithIndex =
+          copyCriteria[criteriaToUpdateWithIndex].SubTypes.indexOf(subTypeValueToRemove);
+        copyCriteria[criteriaToUpdateWithIndex].SubTypes.splice(subTypesToRemoveWithIndex, 1);
+        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
+      }
+    }
   }
 
   setOrderBy(order: SearchCriteriaOrderBy) {
