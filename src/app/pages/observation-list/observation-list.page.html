@@ -68,7 +68,19 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <!--i kart utsnitt/ alle -->
+            <ion-segment
+              (ionChange)="toggleFilterByMapView($event)"
+              class="segment-button-class"
+              value="mapBorders"
+              mode="ios"
+            >
+              <ion-segment-button value="mapBorders">
+                <ion-label>I kartutsnitt</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="all">
+                <ion-label>Alle</ion-label>
+              </ion-segment-button>
+            </ion-segment>
           </ion-col>
           <ion-col>
             <!--titelen -->
