@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, firstValueFrom } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
@@ -15,7 +15,6 @@ import {
   RegistrationTypeDto,
   RegistrationTypeSubTypeDto,
 } from 'src/app/modules/common-regobs-api';
-import { captureMessage } from '@sentry/browser';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 
 interface ObservationTypeView {
@@ -70,20 +69,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
-  showObservationTypes = false;
-  showCompetances = false;
-  isIndeterminate: boolean;
-  masterCheck: boolean;
   nickName: string;
-
   observationTypesOptions: ObservationTypeView[];
-
-  selectedVal: string;
   competenceOptions: CompetenceItem[];
   automaticStation: CompetenceItem;
   isShowAutomaticStation = false;
   isAutomaticStationChecked = true;
-  chosenValue = 'all';
+  chosenCompetenceValue;
+
   constructor(
     private platform: Platform,
     private userSettingService: UserSettingService,
@@ -95,19 +88,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   ) {
     super();
   }
-  /*
-    ukjent 0, 100
-    * 110
-    ** 115
-    *** 120
-    **** 130
-    ***** 150
-  */
-
-  //get elements like
-  // all []
-  //{ name: *, ids: [110, 115 120 130 150] } ids >= current id from a list of all ids
-  //{ name: **, ids: [115 120 130 150] } ids >= current id from a list of all ids
 
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
@@ -159,7 +139,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     const emptyForm = this.sortCompetences(compLevels);
     this.competenceOptions = emptyForm;
     if (sc != null && sc.length > 0) {
-      this.chosenValue = this.formatUrlToViewModel(emptyForm, sc);
+      this.chosenCompetenceValue = this.formatUrlToViewModel(emptyForm, sc);
     }
   }
 
@@ -176,7 +156,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   formatUrlToViewModel(emptyForm: CompetenceItem[], ids: number[]) {
-    let newIds = ids;
+    let newIds = ids.sort((id1, id2) => id1 - id2);
     if (ids.includes(105)) {
       newIds = ids.filter((i) => i !== 105);
       //fetch out 105 and set checkbox
@@ -206,20 +186,23 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     const competanceSorted: { [name: string]: CompetenceItem } = {};
     //since the filter menu component is not re rendered on geo hazard change
     //we have to set showAutomaticStation to false here
+    const allIds = unsortedCompetences
+      .flat()
+      .map((item) => item.Id)
+      .filter((id) => id !== 105);
     this.isShowAutomaticStation = false;
     unsortedCompetences.map((arrOfFilteredCompetances) => {
       //create an array of all competnece ids available per geohazard
-      const allIds = arrOfFilteredCompetances.map((item) => item.Id);
       arrOfFilteredCompetances.map((filteredCompetance) => {
         //exclude automatic station id 105
-        const filteredIds = allIds.filter((id) => id >= filteredCompetance.Id && id != 105);
+        const filteredIds = allIds.filter((id) => id >= filteredCompetance.Id);
         if (filteredCompetance.Name == 'A') {
           this.setAutomaticStationsOnInit(filteredCompetance);
         }
 
-        //add 0 to 'unknown' competence array of ids
+        //add 0 to 'unknown' competence array of ids and change name to All
         else if (filteredCompetance.Name == '-') {
-          competanceSorted[filteredCompetance.Name] = { name: filteredCompetance.Name, ids: [...filteredIds, 0] };
+          competanceSorted['All'] = { name: 'All', ids: [0, ...filteredIds] };
         }
 
         //check if object contains key already and add extra ids (water and soil)
@@ -231,29 +214,41 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         }
       });
     });
+    this.chosenCompetenceValue = competanceSorted['All'];
     return Object.values(competanceSorted).reverse();
   }
 
   onSelectCompetenceChange(event) {
-    this.chosenValue = event.detail.value;
+    this.chosenCompetenceValue = event.detail.value;
     const ids = event.detail.value.ids;
-    //check if isAutomaticStationChecked and then add 105 to filters
-    if (this.isAutomaticStationChecked && ids) ids.push(105);
-    this.searchCriteriaService.setCompetence(ids);
+    if (this.isAutomaticStationChecked && event.detail.value.name === 'All') {
+      this.searchCriteriaService.setCompetence(null);
+    } else {
+      this.searchCriteriaService.setCompetence(ids);
+    }
   }
 
-  onCheckAutomaticStations(event) {
+  async onCheckAutomaticStations(event) {
+    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
     this.isAutomaticStationChecked = event.detail.checked;
-    if (this.isAutomaticStationChecked) this.searchCriteriaService.addAutomaticStationFilter(event.detail.value.ids);
-    else this.searchCriteriaService.removeAutomaticStationFilter(event.detail.value.ids);
-  }
-
-  toggleShowCompetances() {
-    this.showCompetances = !this.showCompetances;
-  }
-
-  toggleAllObservationTypes() {
-    this.showObservationTypes = !this.showObservationTypes;
+    const allIds = this.competenceOptions
+      .map((co) => co.ids)
+      .flat()
+      .reduce((cur, id) => {
+        if (!cur.includes(id)) cur.push(id);
+        return cur;
+      }, []);
+    let competence = [];
+    if (existingCompetence?.length == allIds.length && this.isAutomaticStationChecked) {
+      competence = null;
+    } else if (existingCompetence?.length && this.isAutomaticStationChecked) {
+      competence = [...existingCompetence, ...event.detail.value.ids];
+    } else if (existingCompetence?.length && !this.isAutomaticStationChecked) {
+      competence = existingCompetence.filter((c) => event.detail.value.ids.indexOf(c) === -1);
+    } else if (!this.isAutomaticStationChecked) {
+      competence = allIds;
+    }
+    this.searchCriteriaService.setCompetence(competence);
   }
 
   mapSelectedRegTypesFromSearchCriteria(
@@ -295,9 +290,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     else this.searchCriteriaService.removeObservationType(obsType);
   }
 
-  setNickName(value) {
-    let nickName;
-    value != null ? (nickName = value.toLowerCase()) : null;
-    this.searchCriteriaService.setObserverNickName(nickName);
+  setNickName(event) {
+    const nickName = event.target.value?.toLowerCase();
+    if (nickName) {
+      this.searchCriteriaService.setObserverNickName(nickName);
+    }
   }
 }

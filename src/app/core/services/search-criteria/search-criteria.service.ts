@@ -230,6 +230,8 @@ export class SearchCriteriaService {
     const type = url.searchParams.get(URL_PARAM_TYPE);
     const convertTypeFromUrlToCriteria = type != null ? this.convertRegTypeFromUrlToDto(type) : null;
 
+    //I recommend to add spread operator on optional properties so that we dont send 'null' values to API.
+    //example: ...(nickName && {ObserverCompetence: nickname})
     const criteria = {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
@@ -321,21 +323,6 @@ export class SearchCriteriaService {
       return compArr;
     }, [] as number[]);
     this.searchCriteriaChanges.next({ ObserverCompetence: removedDuplicates });
-  }
-
-  async addAutomaticStationFilter(automaticStationToAdd: number[]) {
-    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
-    if (existingCompetence) {
-      this.setCompetence([...existingCompetence, ...automaticStationToAdd]);
-    }
-  }
-
-  async removeAutomaticStationFilter(automaticStationToRemove: number[]) {
-    const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteria$);
-    if (existingCompetence) {
-      const newCompetence = existingCompetence.filter((c) => automaticStationToRemove.indexOf(c) === -1);
-      this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
-    }
   }
 
   async setObservationType(newType: RegistrationTypeCriteriaDto) {
