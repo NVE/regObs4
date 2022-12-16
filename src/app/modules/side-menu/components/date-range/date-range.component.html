@@ -12,13 +12,13 @@
       <ion-list>
         <ion-radio-group [(ngModel)]="mode">
           <ion-item>
-            <ion-radio [value]="'predefined'" slot="start" (click)="changeDateAndSetMode()"></ion-radio>
+            <ion-radio value="predefined" slot="start" (click)="changeDateAndSetMode()"></ion-radio>
             <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>
           </ion-item>
 
           <ion-item>
             <ion-label>{{'MENU.CUSTOM_TIMESPAN' | translate}}</ion-label>
-            <ion-radio slot="start" [value]="'custom'"></ion-radio>
+            <ion-radio slot="start" value="custom"></ion-radio>
           </ion-item>
 
           <ion-item class="white-background" *ngIf="mode === 'custom'">
@@ -30,7 +30,7 @@
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setFromDate($event)"
-              [textAlign]="'right'"
+              textAlign="right"
               buttonSize="large"
             ></app-datetime-picker>
           </ion-item>
@@ -44,7 +44,7 @@
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setToDate($event)"
-              [textAlign]="'right'"
+              textAlign="right"
               buttonSize="large"
             ></app-datetime-picker>
           </ion-item>

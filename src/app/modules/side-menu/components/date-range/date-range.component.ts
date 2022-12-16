@@ -9,11 +9,6 @@ import { IonAccordionGroup } from '@ionic/angular';
 import { getLangKeyString } from '../../../common-core/models/lang-key.enum';
 import { TranslateService } from '@ngx-translate/core';
 
-enum Mode {
-  PREDEFINED = 'predefined',
-  CUSTOM = 'custom',
-}
-
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
@@ -24,12 +19,12 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   toDate: string;
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
-  mode: Mode = Mode.PREDEFINED;
+  mode: 'predefined' | 'custom' = 'predefined';
   isOpen = false;
   cachedDays: number;
 
   get modeText(): Observable<string> {
-    if (this.mode === Mode.PREDEFINED) {
+    if (this.mode === 'predefined') {
       return this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         concatMap((day) => this.getReadableDays.bind(this)(day)),
         map((x) => x[Object.keys(x)[0]])
@@ -100,10 +95,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     if (days) {
       this.cachedDays = days;
       this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
-      this.mode = Mode.PREDEFINED;
+      this.mode = 'predefined';
     } else if (this.cachedDays) {
       this.searchCriteriaService.setFromDate(moment().subtract(this.cachedDays, 'days').format('YYYY-MM-DD'), true);
-      this.mode = Mode.CUSTOM;
+      this.mode = 'custom';
     }
   }
 
