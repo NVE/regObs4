@@ -5,9 +5,12 @@ import { Capacitor } from '@capacitor/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, of, race, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { combineLatest, firstValueFrom, Observable, of, race, Subject, scan } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import {
+  SearchCriteriaService,
+  withinExtentCriteriaToBounds,
+} from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
   SearchResult,
@@ -153,8 +156,48 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   private async createSearchResult(): Promise<SearchResult<AtAGlanceViewModel>> {
+    const startTime = performance.now();
     await firstValueFrom(this.mapService.relevantMapChangeWithInitialView$);
-    return this.searchRegistrationService.atAGlance(this.searchCriteriaService.searchCriteria$);
+    this.loggingService.debug(
+      `Waited ${performance.now() - startTime} ms for initial map extent to search for observations`,
+      DEBUG_TAG
+    );
+    const searchCriteriaWithLargerExtent = this.searchCriteriaService.searchCriteria$.pipe(
+      //get current search criteria together with previous criteria, so we can check what's changed
+      scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
+      filter(([prev, current]) => {
+        //will prevent zoom in to trigger new search
+        if (!prev) {
+          this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
+          return true;
+        }
+        const previousCriteriaWithoutExtent = { ...prev, Extent: undefined };
+        const currentCriteriaWithoutExtent = { ...current, Extent: undefined };
+        if (JSON.stringify(previousCriteriaWithoutExtent) === JSON.stringify(currentCriteriaWithoutExtent)) {
+          //only extent is changed in criteria
+          const previousBounds = withinExtentCriteriaToBounds(prev.Extent);
+          const currentBounds = withinExtentCriteriaToBounds(current.Extent);
+          if (previousBounds.contains(currentBounds)) {
+            this.loggingService.debug('Extent inside previous extent, no need to fetch observations again', DEBUG_TAG);
+            return false; //will stop this criteria change to propagate when we zoom in
+          } else {
+            this.loggingService.debug('Extent outside previous extent, need to fetch observations again', DEBUG_TAG);
+            return true;
+          }
+        } else {
+          this.loggingService.debug('Other criteria than extent changed, need to fetch observations', DEBUG_TAG);
+          return true;
+        }
+      }),
+      map(([, current]) => current) //return current criteria
+    );
+    return this.searchRegistrationService.atAGlance(searchCriteriaWithLargerExtent);
+
+    // Du kan bruke denne for å teste søk uten kartutsnitt i stedet
+    // const searchCriteriaWithoutExtent = this.searchCriteriaService.searchCriteria$.pipe(
+    //   map((criteria) => ({ ...criteria, Extent: undefined }))
+    // );
+    // return this.searchRegistrationService.atAGlance(searchCriteriaWithoutExtent);
   }
 
   async onEnter() {
