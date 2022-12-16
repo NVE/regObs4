@@ -2,10 +2,6 @@ ion-list.list-md {
   padding-bottom: 0;
 }
 
-ion-radio-group ion-item .item-bottom {
-  border-bottom: 1px solid red;
-}
-
 ion-radio-group ion-item {
   --background: #f7f7f7;
   --border-width: 0;
@@ -28,9 +24,6 @@ ion-item::part(native) {
   max-width: 100%;
 }
 
-ion-item::part(native),
-ion-item.no-border:last-child::part(native) {
+ion-item::part(native) {
   border-bottom: 1px solid #dedede;
 }
-
-
