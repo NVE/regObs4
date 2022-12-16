@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewChecked, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, firstValueFrom, Observable, of, race, Subject } from 'rxjs';
@@ -11,10 +12,9 @@ import {
   SearchRegistrationService,
   SearchResult,
 } from 'src/app/core/services/search-registration/search-registration.service';
-import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
-import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { enterZone } from '../../core/helpers/observable-helper';
@@ -23,9 +23,10 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { TabsService, TAB_HOME } from '../tabs/tabs.service';
+import { RegObsGeoJson } from './geojson';
+import { RegObsMarkerClusterLayer } from './markerCluster.layer';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -38,10 +39,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
-  private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
-    spiderfyOnMaxZoom: false,
-    zoomToBoundsOnClick: false,
-  });
+  private markerLayer: RegObsMarkerClusterLayer;
   private geoCoachMarksClosedSubject = new Subject<void>();
 
   fullscreen$: Observable<boolean>;
@@ -124,23 +122,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   async onMapReady(leafletMap: L.Map) {
     this.map = leafletMap;
-    this.markerLayer.addTo(this.map);
-    this.markerLayer.on('clusterclick', (a: any) => {
-      const groupLatLng: L.LatLng = a.latlng;
-      const currentZoom = this.map.getZoom();
-      const newZoom = currentZoom + 2;
-      if (newZoom >= settings.map.tiles.maxZoom) {
-        a.layer.spiderfy();
-      } else {
-        this.map.setView(groupLatLng, Math.min(newZoom, settings.map.tiles.maxZoom));
-      }
-    });
+
     this.map.on('click', () => {
-      if (this.selectedMarker) {
-        this.selectedMarker.deselect();
-      }
-      this.selectedMarker = null;
-      this.mapItemBar.hide();
+      this.mapItemBar.hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
     });
 
     const searchResult = await this.createSearchResult();
@@ -205,23 +189,51 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   //   this.mapComponent.stopGeoPositionUpdates();
   // }
 
-  private redrawObservationMarkers(regObservations: AtAGlanceViewModel[]) {
-    this.markerLayer.clearLayers();
-    for (const regObservation of regObservations) {
-      const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
-      const marker = new MapItemMarker(regObservation, latLng, {});
-      marker.on('click', (event: L.LeafletEvent) => {
-        const m: MapItemMarker = event.target;
-        if (this.selectedMarker) {
-          this.selectedMarker.deselect();
-        }
+  private redrawObservationMarkers(registrations: AtAGlanceViewModel[]) {
+    const startTime = performance.now();
 
-        this.selectedMarker = m;
-        m.setSelected();
-        this.mapItemBar.show(m.item);
-      });
-      marker.addTo(this.markerLayer);
+    if (!this.markerLayer) {
+      this.createMarkerLayer();
     }
+    const newMarkers = registrations
+      .filter((reg) => !!reg.Longitude)
+      .map((reg) => {
+        const pointObject = this.createPointObject(reg);
+        const latLng = L.latLng(reg.Latitude, reg.Longitude);
+        const geoJson = L.geoJSON(pointObject, {
+          pointToLayer: () => RegObsGeoJson.pointToLayer(pointObject, latLng),
+        });
+        return geoJson;
+      });
+    this.markerLayer.clearLayers();
+    this.markerLayer.addLayers(newMarkers);
+    this.loggingService.debug(
+      `redrawObservationMarkers(): ${registrations.length} markers drawn in ${performance.now() - startTime} ms`,
+      DEBUG_TAG
+    );
+  }
+
+  private createMarkerLayer(): void {
+    this.markerLayer = new RegObsMarkerClusterLayer(this.map);
+    this.markerLayer.on('click', (e: L.LeafletMouseEvent) => {
+      const layer: L.MarkerCluster = e.propagatedFrom;
+      const registration: AtAGlanceViewModel = layer.feature.properties;
+      this.mapItemBar.show(registration);
+    });
+    this.map.addLayer(this.markerLayer);
+  }
+
+  private createPointObject(registration: AtAGlanceViewModel): Feature<Point, AtAGlanceViewModel> {
+    const result = {
+      geometry: {
+        type: 'Point',
+        coordinates: [registration.Longitude, registration.Latitude],
+      } as GeoJSON.Point,
+      type: 'Feature',
+      properties: registration,
+      id: registration.RegId,
+    } as Feature<Point, AtAGlanceViewModel>;
+    return result;
   }
 
   private updateInfoBoxHeight() {

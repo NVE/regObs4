@@ -279,7 +279,7 @@ class SearchService extends __BaseService {
    */
   SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
     console.log(`SearchAtAGLance API call: BottomRight.lat = ${criteria.Extent?.BottomRight.Latitude}, TopLeft.lat = ${criteria.Extent?.TopLeft.Latitude}`);
-    const start = new Date();
+    const startTime = performance.now();
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -297,7 +297,7 @@ class SearchService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        console.log(`SearchAtAGLance API call took ${new Date().getMilliseconds() - start.getMilliseconds()} ms`);
+        console.log(`SearchAtAGLance API call took ${performance.now() - startTime} ms`);
         return _r as __StrictHttpResponse<Array<AtAGlanceViewModel>>;
       })
     );
