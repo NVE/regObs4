@@ -11,6 +11,10 @@ import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum
   templateUrl: './datetime-picker.component.html',
   styleUrls: ['./datetime-picker.component.scss'],
 })
+/**
+ * Component for displaying a date and time picker.
+ * The date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
+ */
 export class DatetimePickerComponent implements OnInit {
   @Input() dateTime: string; // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
@@ -19,7 +23,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
   @Input() presentation: DatetimePresentation = 'date-time';
-  @Input() size: 'small' | 'default' | 'large' = 'default';
+  @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
   @Input() datePickerOpen = false;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
 
