@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { LatLng, LatLngBounds } from 'leaflet';
 import moment from 'moment';
+import { parse } from 'path';
 import {
   BehaviorSubject,
   combineLatest,
@@ -37,6 +39,10 @@ const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_ORDER_BY = 'orderBy';
+const URL_PARAM_NW_LAT = 'nwlat';
+const URL_PARAM_NW_LON = 'nwlon';
+const URL_PARAM_SE_LAT = 'selat';
+const URL_PARAM_SE_LON = 'selon';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
@@ -134,7 +140,10 @@ export class SearchCriteriaService {
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
-        scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
+        scan(
+          (allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }),
+          {} as SearchCriteriaRequestDto
+        )
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
@@ -146,26 +155,18 @@ export class SearchCriteriaService {
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       map(([criteria, langKey, geoHazards, fromObsTime, showMapExtent, extent]) => {
-        if (showMapExtent) {
-          return {
-            ...criteria,
-            LangKey: langKey,
-            SelectedGeoHazards: geoHazards,
-            FromDtObsTime: fromObsTime,
-            ToDtObsTime: null,
-            Extent: extent,
-          };
-        } else
-          return {
-            ...criteria,
-            LangKey: langKey,
-            SelectedGeoHazards: geoHazards,
-            FromDtObsTime: fromObsTime,
-            ToDtObsTime: null,
-          };
+        return {
+          ...criteria,
+          LangKey: langKey,
+          SelectedGeoHazards: geoHazards,
+          FromDtObsTime: fromObsTime,
+          ToDtObsTime: null,
+          ...(showMapExtent && { Extent: extent }),
+        };
       }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
+      tap((c) => console.log(c)),
       tap((newCriteria) => this.setUrlParams(newCriteria)),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
@@ -177,12 +178,19 @@ export class SearchCriteriaService {
 
   // build search criteria from url parameters. Some params are stored in user settings
   private readUrlParams(): SearchCriteriaRequestDto {
+    console.log('reading happens');
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
+    const extent = this.readCoordinates(
+      url.searchParams.get(URL_PARAM_NW_LAT),
+      url.searchParams.get(URL_PARAM_NW_LON),
+      url.searchParams.get(URL_PARAM_SE_LAT),
+      url.searchParams.get(URL_PARAM_SE_LON)
+    );
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
@@ -195,10 +203,29 @@ export class SearchCriteriaService {
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
       OrderBy: orderBy,
+      Extent: extent,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
+  }
+
+  private readCoordinates(nwLat: string, nwLon: string, seLat: string, seLon: string): WithinExtentCriteriaDto {
+    if (nwLat && nwLon && seLat && seLon) {
+      //change mapview
+      const sWLatLong = new LatLng(parseFloat(seLat), parseFloat(seLon));
+      const nELatLong = new LatLng(parseFloat(nwLat), parseFloat(nwLon));
+      const bounds = new LatLngBounds(sWLatLong, nELatLong);
+      const mapView: IMapView = { bounds: bounds };
+
+      this.mapService.updateMapView(bounds);
+      return {
+        BottomRight: { Latitude: parseFloat(seLat), Longitude: parseFloat(seLon) },
+        TopLeft: { Latitude: parseFloat(nwLat), Longitude: parseFloat(nwLon) },
+      };
+    } else {
+      return null;
+    }
   }
 
   private readOrderBy(orderBy: string): string {
@@ -231,6 +258,10 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
+    params.set(URL_PARAM_NW_LAT, criteria.Extent && criteria.Extent.TopLeft.Latitude.toFixed(4));
+    params.set(URL_PARAM_NW_LON, criteria.Extent && criteria.Extent.TopLeft.Longitude.toFixed(4));
+    params.set(URL_PARAM_SE_LAT, criteria.Extent && criteria.Extent.BottomRight.Latitude.toFixed(4));
+    params.set(URL_PARAM_SE_LON, criteria.Extent && criteria.Extent.BottomRight.Longitude.toFixed(4));
     params.apply();
   }
 
