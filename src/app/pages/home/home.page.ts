@@ -12,11 +12,10 @@ import {
   SearchRegistrationService,
   SearchResult,
 } from 'src/app/core/services/search-registration/search-registration.service';
-import { AtAGlanceViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
-import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { enterZone } from '../../core/helpers/observable-helper';
 import { RouterPage } from '../../core/helpers/routed-page';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
@@ -43,7 +42,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private geoCoachMarksClosedSubject = new Subject<void>();
 
   fullscreen$: Observable<boolean>;
-  selectedMarker: MapItemMarker;
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
 
