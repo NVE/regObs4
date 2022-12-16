@@ -27,7 +27,7 @@
               presentation="date"
               [(dateTime)]="fromDate"
               [minDate]="minDate"
-              [maxDate]="maxDate"
+              [maxDate]="toDate || maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setFromDate($event)"
               textAlign="right"
@@ -40,7 +40,7 @@
             <app-datetime-picker
               presentation="date"
               [(dateTime)]="toDate"
-              [minDate]="minDate"
+              [minDate]="fromDate || minDate"
               [maxDate]="maxDate"
               [dateTimeFormat]="'dd. MMM yyyy'"
               (dateTimeChange)="setToDate($event)"
