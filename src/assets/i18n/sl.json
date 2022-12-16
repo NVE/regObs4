@@ -228,7 +228,11 @@
       "RIGHT_HERE": "Točno tukaj",
       "TITLE": "Znak nevarnosti"
     },
-    "DELETE": "Izbriši opažanje",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Izbriši opažanje"
+      }
+    },
     "DELETE_CONFIRM": "Ali ste prepričani?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
