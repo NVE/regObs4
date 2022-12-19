@@ -16,6 +16,7 @@ import {
   RegistrationTypeSubTypeDto,
 } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { TranslateService } from '@ngx-translate/core';
 
 interface ObservationTypeView {
   name: string;
@@ -26,6 +27,7 @@ interface ObservationTypeView {
 
 interface CompetenceItem {
   name: string;
+  value: string;
   ids: number[];
 }
 
@@ -81,6 +83,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     private platform: Platform,
     private userSettingService: UserSettingService,
     private searchCriteriaService: SearchCriteriaService,
+    private translateService: TranslateService,
     private searchService: SearchService,
     private cdr: ChangeDetectorRef,
     private kdv: KdvService,
@@ -135,8 +138,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
-  isObserverCompetence(sc: number[], compLevels) {
-    const emptyForm = this.sortCompetences(compLevels);
+  async isObserverCompetence(sc: number[], compLevels) {
+    const emptyForm = await this.sortCompetences(compLevels);
     this.competenceOptions = emptyForm;
     if (sc != null && sc.length > 0) {
       this.chosenCompetenceValue = this.formatUrlToViewModel(emptyForm, sc);
@@ -179,10 +182,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   //set automatic station on as default in both view and searchCriteria
   setAutomaticStationsOnInit(filteredCompetance: KdvElement) {
     this.isShowAutomaticStation = true;
-    this.automaticStation = { name: filteredCompetance.Name, ids: [filteredCompetance.Id] };
+    this.automaticStation = {
+      name: filteredCompetance.Name,
+      value: filteredCompetance.Name,
+      ids: [filteredCompetance.Id],
+    };
   }
 
-  sortCompetences(unsortedCompetences: KdvElement[][]): CompetenceItem[] {
+  async sortCompetences(unsortedCompetences: KdvElement[][]): Promise<CompetenceItem[]> {
     const competanceSorted: { [name: string]: CompetenceItem } = {};
     //since the filter menu component is not re rendered on geo hazard change
     //we have to set showAutomaticStation to false here
@@ -202,7 +209,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
         //add 0 to 'unknown' competence array of ids and change name to All
         else if (filteredCompetance.Name == '-') {
-          competanceSorted['All'] = { name: 'All', ids: [0, ...filteredIds] };
+          competanceSorted['All'] = { name: filteredCompetance.Name, value: 'All', ids: [0, ...filteredIds] };
         }
 
         //check if object contains key already and add extra ids (water and soil)
@@ -210,10 +217,17 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
           const existing = competanceSorted[filteredCompetance.Name];
           competanceSorted[filteredCompetance.Name] = { ...existing, ids: [...existing.ids, ...filteredIds] };
         } else {
-          competanceSorted[filteredCompetance.Name] = { name: filteredCompetance.Name, ids: filteredIds };
+          competanceSorted[filteredCompetance.Name] = {
+            name: filteredCompetance.Name,
+            value: filteredCompetance.Name,
+            ids: filteredIds,
+          };
         }
       });
     });
+    competanceSorted['All'].name = await firstValueFrom(
+      this.translateService.get('OBSERVATION_FILTER.COMPETANCE_FILTER.ALL')
+    );
     this.chosenCompetenceValue = competanceSorted['All'];
     return Object.values(competanceSorted).reverse();
   }
@@ -221,7 +235,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   onSelectCompetenceChange(event) {
     this.chosenCompetenceValue = event.detail.value;
     const ids = event.detail.value.ids;
-    if (this.isAutomaticStationChecked && event.detail.value.name === 'All') {
+    if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
       this.searchCriteriaService.setCompetence(null);
     } else if (this.isAutomaticStationChecked) {
       ids.push(105);
