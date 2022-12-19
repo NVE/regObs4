@@ -136,7 +136,7 @@ class AccountService extends __BaseService {
    * @param langKey undefined
    * @return OK
    */
-  AccountGetMyPageDataResponse(langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8): __Observable<__StrictHttpResponse<MyPageData>> {
+  AccountGetMyPageDataResponse(langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9): __Observable<__StrictHttpResponse<MyPageData>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -162,7 +162,7 @@ class AccountService extends __BaseService {
    * @param langKey undefined
    * @return OK
    */
-  AccountGetMyPageData(langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8): __Observable<MyPageData> {
+  AccountGetMyPageData(langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9): __Observable<MyPageData> {
     return this.AccountGetMyPageDataResponse(langKey).pipe(
       __map(_r => _r.body as MyPageData)
     );
