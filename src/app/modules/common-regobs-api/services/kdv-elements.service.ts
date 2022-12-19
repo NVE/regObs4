@@ -93,7 +93,7 @@ module KdvElementsService {
     /**
      * 1 = norwegian, 2 = english, 3 = german, 4 = slovenian, 5 = swedish, 7 = norwegian nynorsk, 8 = french. Norwegian is the default language if none is selected. Default langKey is norwegian
      */
-    langkey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    langkey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     /**
      * False returns data types that are no longer in use

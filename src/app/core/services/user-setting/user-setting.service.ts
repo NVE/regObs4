@@ -32,6 +32,7 @@ import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
 import frData from '@angular/common/locales/fr';
+import daData from '@angular/common/locales/da';
 import { SupportTile } from '../../models/support-tile.model';
 
 const DEBUG_TAG = 'UserSettingService';
@@ -183,6 +184,9 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
           break;
         case LangKey.fr:
           registerLocaleData(frData);
+          break;
+        case LangKey.da:
+          registerLocaleData(daData);
           break;
       }
       this.translate.use(lang);
