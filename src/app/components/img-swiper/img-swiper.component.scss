@@ -49,14 +49,15 @@
 
   ion-slides {
     background-color: inherit;
+    ion-slide {
+      width: 90% !important;
+      &:last-child {
+        width: 100% !important;
+      }
+    }
     .swiper-slide {
-      width: 80vw;
       height: 80vw;
       display: inline-flex;
-
-      &:last-child {
-        margin-right: 0px;
-      }
 
       &.small {
         width: inherit;
