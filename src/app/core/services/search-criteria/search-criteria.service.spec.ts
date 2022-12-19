@@ -217,6 +217,18 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
   }));
 
+  it('type wrong hazard should search for 10 as default', fakeAsync(async () => {
+    new UrlParams().set('hazard', '140').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedGeoHazards).toEqual([10]);
+  }));
+
   it('competence url filter with wrong params', fakeAsync(async () => {
     new UrlParams().set('competence', '150~string').apply();
     service = new SearchCriteriaService(
@@ -307,7 +319,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('geo hazard url filter should work', fakeAsync(async () => {
-    new UrlParams().set('hazard', 70).apply();
+    new UrlParams().set('hazard', '70').apply();
     service = new SearchCriteriaService(
       userSettingService,
       mapService as unknown as MapService,
@@ -320,7 +332,7 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.SelectedGeoHazards).toEqual([70]);
   }));
 
-  it('illegal geo hazard in url should be ignored', fakeAsync(async () => {
+  it('illegal geo hazard in url should reuturn 10', fakeAsync(async () => {
     new UrlParams().set('hazard', 'illegal').apply();
     service = new SearchCriteriaService(
       userSettingService,
@@ -331,7 +343,7 @@ describe('SearchCriteriaService url parsing', () => {
     tick();
     //check that current criteria contains expected geo hazard
     const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.SelectedGeoHazards).toEqual([]);
+    expect(criteria.SelectedGeoHazards).toEqual([10]);
   }));
 
   it('days back url filter should work', fakeAsync(async () => {

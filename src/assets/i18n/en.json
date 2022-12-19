@@ -223,10 +223,10 @@
       "TITLE": "Observation type"
     },
     "COMPETANCE_FILTER": {
-      "TITLE": "Observer",
-      "LABEL": "Competence",
       "ALL": "All",
-      "AUTOMATIC_STATIONS": "Automatic stations"
+      "AUTOMATIC_STATIONS": "Automatic stations",
+      "LABEL": "Competence",
+      "TITLE": "Observator"
     }
   },
   "OBSERVATION_LIST": {
