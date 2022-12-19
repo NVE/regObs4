@@ -218,13 +218,13 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observasjonsfilter",
     "COMPETANCE_FILTER": {
-      "TITLE": "Observatør",
-      "LABEL": "Kompetanse",
       "ALL": "Alle",
-      "AUTOMATIC_STATIONS": "Automatiske stasjoner"
-    }
+      "AUTOMATIC_STATIONS": "Automatiske stasjoner",
+      "LABEL": "Kompetanse",
+      "TITLE": "Observatør"
+    },
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",

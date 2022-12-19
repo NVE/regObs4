@@ -218,13 +218,13 @@
     "USER": "User"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observation filter",
     "COMPETANCE_FILTER": {
-      "TITLE": "Observator",
-      "LABEL": "Competence",
       "ALL": "All",
-      "AUTOMATIC_STATIONS": "Automatic stations"
-    }
+      "AUTOMATIC_STATIONS": "Automatic stations",
+      "LABEL": "Competence",
+      "TITLE": "Observator"
+    },
+    "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
