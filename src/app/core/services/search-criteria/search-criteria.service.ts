@@ -46,6 +46,7 @@ const URL_PARAM_COMPETENCE = 'competence';
 const URL_PARAM_TYPE = 'type';
 const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
+const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
@@ -88,6 +89,18 @@ function numberArrayToSeparatedString(numbers: number[]): string {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
   }
   return '';
+}
+
+function isGeoHazardValid(hazards: number[]): boolean {
+  hazards.sort((a, b) => b - a);
+  let isValid = false;
+  for (const haz of VALID_GEO_HAZARDS) {
+    if (haz.toString() === hazards.toString()) {
+      isValid = true;
+      break;
+    }
+  }
+  return isValid;
 }
 
 function isCompetenceUrlValid(competence: string): RegExpMatchArray {
@@ -260,7 +273,8 @@ export class SearchCriteriaService {
     //read param on new format
     const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
     if (geoHazardsParamValue?.length > 0) {
-      geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
+      const geoHazardsToArray = separatedStringToNumberArray(geoHazardsParamValue);
+      isGeoHazardValid(geoHazardsToArray) && (geoHazards = geoHazardsToArray);
     }
 
     return geoHazards;
