@@ -219,6 +219,9 @@
   },
   "OBSERVATION_FILTER": {
     "TITLE": "Observasjonsfilter",
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
     "COMPETANCE_FILTER": {
       "TITLE": "Observatør",
       "LABEL": "Kompetanse",
