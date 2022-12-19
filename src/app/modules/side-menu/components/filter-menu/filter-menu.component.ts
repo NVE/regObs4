@@ -223,6 +223,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     const ids = event.detail.value.ids;
     if (this.isAutomaticStationChecked && event.detail.value.name === 'All') {
       this.searchCriteriaService.setCompetence(null);
+    } else if (this.isAutomaticStationChecked) {
+      ids.push(105);
+      this.searchCriteriaService.setCompetence(ids);
     } else {
       this.searchCriteriaService.setCompetence(ids);
     }
