@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import L from 'leaflet';
 import { LatLng, LatLngBounds } from 'leaflet';
 import moment from 'moment';
-import { parse } from 'path';
 import {
   BehaviorSubject,
   combineLatest,
@@ -64,6 +64,20 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
   return [];
 }
 
+//call happens three times when i start with coordinates in the url
+//sometimes the map changes the zoom and shows the entire globe instead of zoomed area (happens for example if you start app in registration page
+//and then go back to home page)
+function createMapView(nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView {
+  const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
+  const leafletBounds = new LatLngBounds(
+    new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
+    new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
+  );
+  const center = new LatLng(bounds.getCenter().x, bounds.getCenter().y);
+  const mapView: IMapView = { bounds: leafletBounds, center: center, zoom: null };
+  return mapView;
+}
+
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
@@ -116,7 +130,7 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
-  private useMapExtent$: Subject<boolean> = new BehaviorSubject<boolean>(true); //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
+  useMapExtent$: Subject<boolean> = new BehaviorSubject<boolean>(false); //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -161,12 +175,11 @@ export class SearchCriteriaService {
           SelectedGeoHazards: geoHazards,
           FromDtObsTime: fromObsTime,
           ToDtObsTime: null,
-          ...(showMapExtent && { Extent: extent }),
+          ...(!showMapExtent && { Extent: extent }),
         };
       }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((c) => console.log(c)),
       tap((newCriteria) => this.setUrlParams(newCriteria)),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
@@ -178,14 +191,13 @@ export class SearchCriteriaService {
 
   // build search criteria from url parameters. Some params are stored in user settings
   private readUrlParams(): SearchCriteriaRequestDto {
-    console.log('reading happens');
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
-    const extent = this.readCoordinates(
+    this.readCoordinates(
       url.searchParams.get(URL_PARAM_NW_LAT),
       url.searchParams.get(URL_PARAM_NW_LON),
       url.searchParams.get(URL_PARAM_SE_LAT),
@@ -203,7 +215,6 @@ export class SearchCriteriaService {
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
       OrderBy: orderBy,
-      Extent: extent,
     } as SearchCriteriaRequestDto;
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
@@ -212,16 +223,15 @@ export class SearchCriteriaService {
 
   private readCoordinates(nwLat: string, nwLon: string, seLat: string, seLon: string): WithinExtentCriteriaDto {
     if (nwLat && nwLon && seLat && seLon) {
-      //change mapview
-      const sWLatLong = new LatLng(parseFloat(seLat), parseFloat(seLon));
-      const nELatLong = new LatLng(parseFloat(nwLat), parseFloat(nwLon));
-      const bounds = new LatLngBounds(sWLatLong, nELatLong);
-      const mapView: IMapView = { bounds: bounds };
-
-      this.mapService.updateMapView(bounds);
+      const nwLatToNum = parseFloat(nwLat);
+      const nwLonToNum = parseFloat(nwLon);
+      const seLatToNum = parseFloat(seLat);
+      const seLonToNum = parseFloat(seLon);
+      const formatedMapView = createMapView(nwLatToNum, nwLonToNum, seLatToNum, seLonToNum);
+      this.mapService.updateMapView(formatedMapView);
       return {
-        BottomRight: { Latitude: parseFloat(seLat), Longitude: parseFloat(seLon) },
-        TopLeft: { Latitude: parseFloat(nwLat), Longitude: parseFloat(nwLon) },
+        BottomRight: { Latitude: seLatToNum, Longitude: seLonToNum },
+        TopLeft: { Latitude: nwLatToNum, Longitude: nwLonToNum },
       };
     } else {
       return null;
@@ -285,7 +295,7 @@ export class SearchCriteriaService {
   }
 
   setExtent(value: string) {
-    value == 'all' ? this.useMapExtent$.next(false) : this.useMapExtent$.next(true);
+    value == 'all' ? this.useMapExtent$.next(true) : this.useMapExtent$.next(false);
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

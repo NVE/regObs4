@@ -112,6 +112,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
   private offlineMapService: OfflineMapService;
+  private bounds;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -164,6 +165,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       if (this.center === undefined || this.zoom === undefined) {
         const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
+        console.log('currView', currentView);
+        console.log('center', this.center);
+        if (currentView && currentView.bounds) {
+          this.bounds = currentView.bounds;
+        }
         if (currentView && currentView.center) {
           this.firstPositionUpdate = false;
           if (this.center === undefined) {
@@ -269,6 +275,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.map = map;
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
+    }
+
+    if (this.bounds) {
+      map.fitBounds(this.bounds);
     }
 
     if (this.showObserverTrips) {
@@ -514,6 +524,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         zoom: this.map.getZoom(),
       });
     }
+    console.log('bounds', this.map.getBounds());
+    console.log('center', this.map.getCenter());
+    console.log('zoom', this.map.getZoom());
   }
 
   private getTileLayerDefaultOptions(useRetinaMap = false): IRegObsTileLayerOptions {

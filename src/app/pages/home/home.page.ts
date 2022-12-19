@@ -94,6 +94,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.checkForFirstStartup();
   }
 
+  ionViewWillEnter() {
+    this.searchCriteriaService.useMapExtent$.next(false);
+  }
+
   checkForFirstStartup() {
     this.userSettingService.userSetting$
       .pipe(

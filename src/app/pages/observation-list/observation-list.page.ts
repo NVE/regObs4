@@ -25,6 +25,7 @@ export class ObservationListPage implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
+  segmentValue: string;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -42,6 +43,7 @@ export class ObservationListPage implements OnInit {
     searchRegistrationService: SearchRegistrationService,
     private logger: LoggingService
   ) {
+    this.segmentValue = 'mapBorders';
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
     this.shouldDisableScroller$ = combineLatest([
@@ -64,12 +66,16 @@ export class ObservationListPage implements OnInit {
     this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
   }
 
+  ionViewWillLeave() {
+    this.segmentValue = 'mapBorders';
+  }
+
   handleChangeSorting(event) {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
   toggleFilterByMapView(event) {
-    this.searchCriteriaService.setExtent(event.detail.value);
+    this.searchCriteriaService.setExtent(event.target.value);
   }
 
   refresh(cancelPromise: Promise<unknown>): void {
@@ -81,10 +87,6 @@ export class ObservationListPage implements OnInit {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
     this.refresh(null);
-  }
-
-  ionViewWillLeave(): void {
-    // this.loaded = false;
   }
 
   loadNextPage(): void {

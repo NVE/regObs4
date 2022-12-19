@@ -11,9 +11,9 @@
           <ion-col>
             <!--i kart utsnitt/ alle -->
             <ion-segment
-              (ionChange)="toggleFilterByMapView($event)"
+              (click)="toggleFilterByMapView($event)"
               class="segment-button-class"
-              value="mapBorders"
+              [(ngModel)]="segmentValue"
               mode="ios"
             >
               <ion-segment-button value="mapBorders">
