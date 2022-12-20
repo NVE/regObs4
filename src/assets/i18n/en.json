@@ -219,11 +219,14 @@
   },
   "OBSERVATION_FILTER": {
     "TITLE": "Observation filter",
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observation type"
+    },
     "COMPETANCE_FILTER": {
-      "TITLE": "Observator",
-      "LABEL": "Competence",
       "ALL": "All",
-      "AUTOMATIC_STATIONS": "Automatic stations"
+      "AUTOMATIC_STATIONS": "Automatic stations",
+      "LABEL": "Competence",
+      "TITLE": "Observer"
     },
     "NICK_FILTER": {
       "TITLE": "Search",

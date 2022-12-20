@@ -328,6 +328,7 @@ export const settings: ISettings = {
       { lang: 'nn', name: 'Norsk nynorsk' },
       { lang: 'en', name: 'English' },
       { lang: 'sv', name: 'Svenska' },
+      { lang: 'da', name: 'Dansk' },
       { lang: 'de', name: 'Deutsch' },
       { lang: 'sl', name: 'Slovenski' },
       { lang: 'fr', name: 'Français' },

@@ -196,7 +196,7 @@ module GeoCodeService {
     /**
      * Language key, 1 = NO, 2 = EN etc
      */
-    langKey: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    langKey: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     /**
      * Geohazard id, eg. 10 = Snow/Avalanche

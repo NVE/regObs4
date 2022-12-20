@@ -457,7 +457,7 @@ module RegistrationService {
     /**
      * 1 = norwegian, 2 = english, 3 = german, 4 = slovenian, 5 = swedish, 6 = italian, 7 = norwegian nynorsk.
      */
-    langKey: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    langKey: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   }
 
   /**
@@ -476,7 +476,7 @@ module RegistrationService {
     /**
      * 1 = norwegian, 2 = english, 3 = german, 4 = slovenian, 5 = swedish, 6 = italian, 7 = norwegian nynorsk.
      */
-    langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   }
 
   /**
@@ -497,7 +497,7 @@ module RegistrationService {
     /**
      * 1 = norwegian, 2 = english, 3 = german, 4 = slovenian, 5 = swedish, 6 = italian, 7 = norwegian nynorsk.
      */
-    langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     /**
      * Set this to true if you want to replace the last saved version of this registration even if your copy is outdated
@@ -523,7 +523,7 @@ module RegistrationService {
     /**
      * 1 = norwegian, 2 = english, 3 = german, 4 = slovenian, 5 = swedish, 6 = italian, 7 = norwegian nynorsk.
      */
-    langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    langKey?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
     /**
      * Unique identifier for registration (must be in GUID format).
