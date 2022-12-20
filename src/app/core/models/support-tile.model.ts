@@ -10,6 +10,7 @@ export interface SubTile extends SubTileStore {
   description: string;
   url: string;
   availableOffline?: boolean;
+  bounds: L.LatLngTuple[];
 }
 
 export interface SupportTileStore extends SubTileStore {

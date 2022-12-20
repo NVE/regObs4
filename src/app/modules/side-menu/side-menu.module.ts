@@ -6,24 +6,13 @@ import { UserLoginComponent } from './components/user-login/user-login.component
 import { ObservationsDaysBackComponent } from './components/observations-days-back/observations-days-back.component';
 import { UpdateObservationsComponent } from './components/update-observations/update-observations.component';
 import { SharedModule } from '../shared/shared.module';
-import {
-  SupportTileLegendLoaderComponent
-} from './components/support-tiles-menu/legends/support-tile-legend-loader/support-tile-legend-loader.component';
-import {
-  SteepnessLegendComponent
-} from './components/support-tiles-menu/legends/steepness-legend/steepness-legend.component';
-import {
-  FloodzonesLegendComponent
-} from './components/support-tiles-menu/legends/floodzones-legend/floodzones-legend.component';
-import {
-  ClayzonesLegendComponent
-} from './components/support-tiles-menu/legends/clayzones-legend/clayzones-legend.component';
-import {
-  WeakenediceLegendComponent
-} from './components/support-tiles-menu/legends/weakenedice-legend/weakenedice-legend.component';
-import {
-  SteepnessCommonLegendComponent
-} from './components/support-tiles-menu/legends/steepness-common-legend/steepness-common-legend.component';
+import { SupportTileLegendLoaderComponent } from './components/support-tiles-menu/legends/support-tile-legend-loader/support-tile-legend-loader.component';
+import { SteepnessLegendComponent } from './components/support-tiles-menu/legends/steepness-legend/steepness-legend.component';
+import { FloodzonesLegendComponent } from './components/support-tiles-menu/legends/floodzones-legend/floodzones-legend.component';
+import { ClayzonesLegendComponent } from './components/support-tiles-menu/legends/clayzones-legend/clayzones-legend.component';
+import { WeakenediceLegendComponent } from './components/support-tiles-menu/legends/weakenedice-legend/weakenedice-legend.component';
+import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/legends/steepness-common-legend/steepness-common-legend.component';
+import { NoLegendComponent } from './components/support-tiles-menu/legends/no-legend.component';
 
 @NgModule({
   imports: [SharedModule],
@@ -39,7 +28,8 @@ import {
     FloodzonesLegendComponent,
     ClayzonesLegendComponent,
     WeakenediceLegendComponent,
-    SteepnessCommonLegendComponent
+    SteepnessCommonLegendComponent,
+    NoLegendComponent,
   ],
   exports: [SideMenuComponent, FilterMenuComponent]
 })

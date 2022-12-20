@@ -612,7 +612,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           keepBuffer: 0,
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: settings.map.tiles.supportTilesBounds
+          bounds: supportMaps.bounds,
         };
 
         const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);

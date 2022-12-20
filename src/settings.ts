@@ -235,8 +235,56 @@ export const settings: ISettings = {
             url: 'https://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
             enabled: true,
             checked: true,
-            availableOffline: true
-          }
+            availableOffline: true,
+            bounds: [
+              [57.136239319177434, -0.17578125],
+              [57.136239319177434, 36.03515625],
+              [81.36128726057069, 36.03515625],
+              [81.36128726057069, -0.17578125],
+              [57.136239319177434, -0.17578125],
+            ],
+          },
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
+        },
+        {
+          name: 'steepness-greenland',
+          description: 'STEEPNESS_GREENLAND_MAP_DESCRIPTION',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/BratthetGronland/MapServer/tile/{z}/{y}/{x}',
+          enabled: false,
+          checked: false,
+          opacity: 0.5,
+          geoHazardId: 10,
+          availableOffline: true,
+          bounds: [
+            [63.706357155206376, -55.30247736705827],
+            [63.706357155206376, -48.83886886210894],
+            [67.72977075500214, -48.83886886210894],
+            [67.72977075500214, -55.30247736705827],
+            [63.706357155206376, -55.30247736705827],
+          ],
+        },
+        {
+          name: 'outlets-greenland',
+          description: 'OUTLETS_GREENLAND_MAP_DESCRIPTION',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/UtlopGronland/MapServer/tile/{z}/{y}/{x}',
+          enabled: false,
+          checked: false,
+          opacity: 0.5,
+          geoHazardId: 10,
+          availableOffline: true,
+          bounds: [
+            [63.706357155206376, -55.30247736705827],
+            [63.706357155206376, -48.83886886210894],
+            [67.72977075500214, -48.83886886210894],
+            [67.72977075500214, -55.30247736705827],
+            [63.706357155206376, -55.30247736705827],
+          ],
         },
         {
           name: 'clayzones',
@@ -246,7 +294,14 @@ export const settings: ISettings = {
           checked: true,
           opacity: 0.5,
           geoHazardId: 20,
-          availableOffline: false
+          availableOffline: false,
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
         },
         {
           name: 'floodzoones',
@@ -256,7 +311,14 @@ export const settings: ISettings = {
           checked: true,
           opacity: 0.5,
           geoHazardId: 60,
-          availableOffline: false
+          availableOffline: false,
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
         },
         {
           name: 'weakenedice',
@@ -266,16 +328,16 @@ export const settings: ISettings = {
           checked: true,
           opacity: 0.5,
           geoHazardId: 70,
-          availableOffline: true
-        }
+          availableOffline: true,
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
+        },
       ],
-      supportTilesBounds: [
-        [57.136239319177434, -0.17578125],
-        [57.136239319177434, 36.03515625],
-        [81.36128726057069, 36.03515625],
-        [81.36128726057069, -0.17578125],
-        [57.136239319177434, -0.17578125]
-      ]
     },
     search: {
       no: {
