@@ -262,7 +262,11 @@
       "RIGHT_HERE": "Just här",
       "TITLE": "Tecken på fara"
     },
-    "DELETE": "Radera observation",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Radera observation"
+      }
+    },
     "DELETE_CONFIRM": "Är du säker?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
@@ -337,6 +341,9 @@
         "ICE_TYPE": "Istyp",
         "SLUSH_SNOW_BEFORE_DRILL": "Slasksnö före borrning (cm)",
         "TITLE": "Istjocklek"
+      },
+      "INCIDENT": {
+        "INVOLVED_NUM": "Antal i turföljet"
       }
     },
     "IMAGES": "Bilder",
@@ -347,6 +354,7 @@
       "COMMENT": "Beskrivning",
       "COMMENT_PLACEHOLDER": "Varför hände det? Gick det bra? Kan situationen ha undvikits?",
       "DAMAGE_EXTENT": "Skada omfattning",
+      "DEAD_NUM": "Antal avlidna",
       "IMAGE_PLACEHOLDER": "+ Lägg till bildbeskrivning",
       "TITLE": "Olycka / tillbud"
     },
@@ -420,11 +428,17 @@
         "AVALANCHE_TYPE": "Lavintyp",
         "AVAL_CAUSE": "Svagt lager",
         "DESTRUCTIVE_SIZE": "Storlek",
+        "EVACUATED_NUM": "Antal evakuerade",
         "FRACTURE_HEIGTH": "Brottkant höjd (cm)",
         "FRACTURE_WIDTH": "Brottkant bredd (m)",
+        "HARMED_NUM": "Endast antal skadade",
         "INCIDENT_DESCRIPTION": "Olycka eller skada",
         "INCIDENT_PLACEHOLDER": "Orsakade lavinen till skada, olycka eller nästan olycka? Varför och hur hände det? Kunde situationen ha undvikits?",
+        "INVOLVED_NUM": "Antal inblandade",
+        "MATERIAL_DAMAGES": "Skador på egendom",
         "POSITION": "Lavinens position ",
+        "REMOTELY_TRIGGERED": "Fjärrutlöst",
+        "SAFETY_GEAR_TID": "Tranciever",
         "SET_AVALANCHE_POSITION": "Välj lavinens position",
         "TERRAIN_START_ZONE": "Terräng i startzonen",
         "TIME": "Tid för lavinen (obligatoriskt)",
@@ -527,7 +541,7 @@
           "GRAIN_FORM": "Kristallform",
           "GRAIN_FROM_SECONDARY": "Under­ordnad kristallform",
           "HARDNESS": "Hårdhet",
-          "HARDNESS_BOTTOM": "Under hårdhet",
+          "HARDNESS_BOTTOM": "Nedre hårdhet",
           "LAYER": "Lager",
           "MAX_GRAIN_SIZE": "Max kristallstorlek (mm)",
           "MULTIPLE_LAYERS": "Lager",
@@ -649,6 +663,9 @@
     "UPDATE_DROPDOWNS": "Uppdatera rullgardinsmenyer",
     "USE_IN_WORLD": "Utanför Norge",
     "USE_RETINA_MAP": "Använd högupplösta kartor"
+  },
+  "SET_NICK_ALERT": {
+    "NICK": "Användarnamn"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {

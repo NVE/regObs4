@@ -29,6 +29,9 @@
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til eigne observasjonar",
     "SELECT_GEO_HAZARD": "Vel naturfare",
+    "SKI_CONDITIONS": "No kan du også rapportere skiføre!",
+    "TOGGLE_OBSERVATION": "Bytt mellom enkel og fullstendig observasjon",
+    "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå på for å sende inn observasjonar av situasjonen der du er - enkelt og raskt. Dette er veldig nyttig informasjon for varslinga og andre brukarar. \n\nSlå av for å få alle valg for innsending av observasjonar - som før.",
     "VIEW_WARNINGS": "Sjå varsel frå varsom.no"
   },
   "COMPETENCE": {
@@ -76,6 +79,15 @@
     "W": "V"
   },
   "DRAFT": "Kladd",
+  "GEOLOCATION": {
+    "POSITION_ERROR": {
+      "INVALID": "Kan ikkje vise posisjonen din pga. ufullstendige posisjonsdata.",
+      "PermissionDenied": "For å hente posisjonen din lyt du endre innstillingar for stadstenestar",
+      "PositionUnavailable": "Får ikkje tak i posisjonen din",
+      "Timeout": "Det tok for lang tid å få tak i posisjonen din. ",
+      "UNSUPPORTED": "Eininga kan ikkje gje deg posisjonsdata"
+    }
+  },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur føregår"
   },
@@ -119,7 +131,9 @@
     "AWAY_FROM": "unna",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavla",
     "EAST_SHORT": "A",
-    "NORTH_SHORT": "N"
+    "NORTH_SHORT": "N",
+    "WEATHER_ERROR": "Fann ikkje vêrmelding.",
+    "WEATHER_FROM": "Vêrmelding på"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Unna",
@@ -264,9 +278,13 @@
       "TITLE": "Legg til weblenke",
       "URL": "Url"
     },
+    "ANONYMIZE": {
+      "CHECK_TO_ANONYMIZE": "Huk av for å sende inn anonymt"
+    },
     "BACK_TO_OBSERVATION": "Tilbake til observasjonen min",
     "CONFIRM_RESET": "Er du sikker på at du vil nullstille alle felt?",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavla",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikkje å laste bilete frå regobs.no",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -286,7 +304,21 @@
       "RIGHT_HERE": "Akkurat her",
       "TITLE": "Fareteikn"
     },
-    "DELETE": "Slett observasjon",
+    "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Slett kladd",
+        "HEADER": "Slett kladd",
+        "MESSAGE_NEW": "Denne observasjonen er ikkje sendt inn til Regobs. Vil du slette den?"
+      },
+      "SUBMITTED_REGISTRATION": {
+        "BUTTON": "Slett observasjonen frå Regobs",
+        "FAILED": {
+          "HEADER": "Feil under sletting"
+        },
+        "HEADER": "Slett observasjon",
+        "MESSAGE": "Vil du slette denne observasjonen frå Regobs for godt?"
+      }
+    },
     "DELETE_CONFIRM": "Er du sikker?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
@@ -323,8 +355,13 @@
       "PROBLEM_HELP_TEXT": "Observasjonar som ikkje blei sendt inn lagrast på telefonen din, og når prblemet er løyst kan du sende den inn på nytt. ",
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på e-post",
+      "SUBMIT_NEW": "Send inn som ny observasjon",
       "SUBTITLE": "Manglar nettverk eller innsending tok for lang tid. Vi prøvar igjen om ei stund og håper nettverket har betra seg. ",
       "TITLE": "Innsendinga misslykkast"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Rediger observasjon",
+      "HEADER": "Synkronisering feila"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat frå observasjonen",
@@ -364,6 +401,12 @@
         "ICE_TYPE": "Type is",
         "SLUSH_SNOW_BEFORE_DRILL": "Sørpe før boring (cm)",
         "TITLE": "Istjukkleik"
+      },
+      "INCIDENT": {
+        "CASUALTIES_NUM": "Antal gjennom isen",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikkje vere fleire enn antal i turgruppa",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan ikkje vere fleire enn antal gjennom isen eller antal i turgruppa",
+        "INVOLVED_NUM": "Antal i turgruppa"
       }
     },
     "IMAGES": "Bilete",
@@ -598,6 +641,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø utan farleg lagdeling",
         "NEW_SNOW_DEPTH": "Nysnø siste 24t (cm)",
         "NEW_SNOW_LINE": "Nysnøgrense (moh)",
+        "SKI_CONDITIONS": "Skiføre",
         "SNOW_DEPTH": "Total snødjup (cm)",
         "SNOW_DRIFT": "Snøfokk",
         "SNOW_LINE": "Snøgrense (moh)",

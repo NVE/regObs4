@@ -188,6 +188,8 @@
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
+    "DISKSPACE_ERROR_MESSAGE": "Espace insuffisant pour l'option hors ligne des cartes. Merci de faire de la place et de ré-essayer.",
+    "DOWNLOAD_ERROR_MESSAGE": "Ne peut pas charger les fonds de carte. Assurez-vous de la stabilité de votre connection internet.",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Annuler le téléchargement",
       "DELETE_BUTTON": "Supprimer",
@@ -206,6 +208,8 @@
     "SPACE_AVAILABLE": "{{spaceAvailable}} libre",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Téléchargement de la partie {{n}} sur {{totalParts}}",
+      "DOWNLOAD_ERROR": "Erreur lors du téléchargement",
+      "UNZIP_ERROR": "Erreur lors de la décompression",
       "UNZIP_PART_X_OF_Y": "Décompression de la partie {{n}} sur {{totalParts}}"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Impossible de sauvegarder le jeu de carte sur le disque. Veuillez ré-essayer.",
@@ -254,7 +258,11 @@
       "RIGHT_HERE": "Ici même",
       "TITLE": "Signe d'instabilité"
     },
-    "DELETE": "Supprimer l'observation",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Supprimer l'observation"
+      }
+    },
     "DELETE_CONFIRM": "Êtes-vous sûr ?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
@@ -728,7 +736,7 @@
     "STEEPNESS_COLOR_INFO": "La couleur indique l'inclinaison de pente du terrain",
     "STEEPNESS_MAP_DESCRIPTION": "Carte des pentes",
     "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
-    "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche a été activé et la couche téléchargée auparavant.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Emprise médiane de l'écoulement des avalanches (50 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Emprise \"normale\" de l'écoulement des avalanches (25 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
