@@ -59,13 +59,35 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
           if (!this.cachedDays) {
             this.cachedDays = moment().diff(moment(this.fromDate), 'days');
           }
+          if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
+            this.mode.next('custom');
+          }
         })
       )
       .subscribe();
   }
 
+  /**
+   * e.detail.value will return one of the following:
+   * 1. 'predefined' - if the user has selected a predefined date range
+   * 2. 'custom' - if the user has selected a custom date range
+   * 3. undefined - When closing the accordion
+   * 4. 'first' - When opening the accordion
+   * We only care about 3 and 4, so we ignore the rest
+   * @param e - The event from the ionChange event
+   */
   toggleAccordion(e: CustomEvent<IonAccordionGroup>): void {
-    this.isOpen = !!e.detail.value;
+    switch (e.detail.value) {
+      case 'first':
+        this.isOpen = true;
+        break;
+      case undefined:
+        this.isOpen = false;
+        break;
+      case 'predefined':
+      case 'custom':
+        break;
+    }
   }
 
   setFromDate(date: string): void {
@@ -80,8 +102,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     if (days) {
       this.cachedDays = days;
       this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
+      this.mode.next('predefined');
     } else if (this.cachedDays) {
       this.searchCriteriaService.setFromDate(moment().subtract(this.cachedDays, 'days').format('YYYY-MM-DD'), true);
+      this.mode.next('custom');
     }
   }
 
