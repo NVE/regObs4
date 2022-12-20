@@ -2,7 +2,8 @@
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
-  <app-date-range></app-date-range>
+  <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
+  <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
   <app-update-observations></app-update-observations>
   <div *ngIf="true">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
