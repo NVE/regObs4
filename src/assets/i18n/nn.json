@@ -6,13 +6,13 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_SOIL": "Kladd: Jordobservasjon",
     "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
     "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_SOIL": "Kladd: Jordobservasjon",
     "DRAFT_TITLE_WATER": "Kladd: Vatnobservasjon",
-    "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
     "NEW_ICE_OBSERVATION": "Ny isobservasjon",
     "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
     "NEW_WATER_OBSERVATION": "Ny vatnobservasjon"
   },
   "ALERT": {
@@ -100,6 +100,7 @@
   "LOGIN": {
     "CHANGE_PASSWORD": "Endre passord",
     "CREATE_USER": "Lag ny brukar",
+    "DELETE_PROFILE": "Slett profil og mine data",
     "EMAIL": "E-post",
     "FORGOT_PASSWORD": "Gløymt passord",
     "IS_LOGGING_IN": "Loggar inn...",
@@ -107,7 +108,6 @@
     "LOGIN": "Logg inn",
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
-    "DELETE_PROFILE": "Slett profil og mine data",
     "PASSWORD": "Passord",
     "SERVICE_UNAVAILABLE": "Det er problem med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må vakne og treng ein sterk kopp kaffe først. Gi den nokre minutt å prøv igjen.",
     "TITLE": "Logg inn",
@@ -314,17 +314,17 @@
       "SUBJECT": "Registrering feilet"
     },
     "FAILED": {
+      "ABANDON": "Forkast mine endringar",
+      "CONFLICT": "Mens du jobba har observasjonen blitt endra ein annan plass.<br/>Vil du forkaste dine endringar eller vil du sende inn og overskrive endringene som blei gjort den andre plassen?",
       "EDIT_OBSERVATION": "Rediger observasjon",
       "LOGGED": "Vi har logga problemet.",
+      "OVERWRITE": "Send inn og overskriv",
       "PROBLEM": "Det har oppstått eit problem med registreringa di.",
       "PROBLEM_HELP_TEXT": "Observasjonar som ikkje blei sendt inn lagrast på telefonen din, og når prblemet er løyst kan du sende den inn på nytt. ",
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på e-post",
       "SUBTITLE": "Manglar nettverk eller innsending tok for lang tid. Vi prøvar igjen om ei stund og håper nettverket har betra seg. ",
-      "TITLE": "Innsendinga misslykkast",
-      "CONFLICT": "Mens du jobba har observasjonen blitt endra ein annan plass.<br/>Vil du forkaste dine endringar eller vil du sende inn og overskrive endringene som blei gjort den andre plassen?",
-      "ABANDON": "Forkast mine endringar",
-      "OVERWRITE": "Send inn og overskriv"
+      "TITLE": "Innsendinga misslykkast"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat frå observasjonen",
@@ -391,8 +391,8 @@
       "CURRENT_LOCATION": "Noværande posisjon",
       "HIDE_DETAILS": "Skjul detaljar",
       "SHOW_DETAILS": "Vis detaljar",
-      "TITLE": "Observasjonspunkt og -tid",
-      "SOURCE": "Kjelde"
+      "SOURCE": "Kjelde",
+      "TITLE": "Observasjonspunkt og -tid"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
@@ -448,31 +448,31 @@
         "AVALANCHE_TRIGGER": "Skredutløysar",
         "AVALANCHE_TYPE": "Skredtype",
         "AVAL_CAUSE": "Svakt lag",
+        "CASUALTIES_NUM": "Antall skredtatte",
+        "DEAD_NUM": "Antal døde",
         "DESTRUCTIVE_SIZE": "Storleik",
+        "EVACUATED_NUM": "Antal evakuerte",
         "FRACTURE_HEIGTH": "Brothøyde (cm)",
         "FRACTURE_WIDTH": "Brotbreidd (m)",
+        "HARMED_NUM": "Antal kun skadet",
         "INCIDENT_DESCRIPTION": "Ulykke/Hendelse",
         "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Kva skjedde og kvifor? Kunne situasjonen vore unngått?",
+        "INVOLVED_NUM": "Antal involvert",
+        "LOCAL_KNOWLEDGE_TID": "Kjenskap til området",
+        "LOCAL_TOURIST_TID": "Lokal eller tilreisande",
+        "MATERIAL_DAMAGES": "Materielle skadar",
         "POSITION": "Skredposisjon",
+        "REMOTELY_TRIGGERED": "Fjernutløst",
+        "RESCUE_TID": "Redning",
+        "SAFETY_GEAR_TID": "Sendar/mottakar",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
+        "SLOPE_ACTIVITY_TID": "Turfase",
         "TERRAIN_START_ZONE": "Terrengtype i losneområdet",
         "TIME": "Skredtidspunkt (påkrevd)",
         "TITLE": "Skredhending",
-        "TRAJECTORY_NAME": "Skredbanenamn",
-        "VALID_EXPOSITION": "Eksposisjon",
-        "REMOTELY_TRIGGERED": "Fjernutløst",
-        "INVOLVED_NUM": "Antal involvert",
-        "CASUALTIES_NUM": "Antall skredtatte",
-        "HARMED_NUM": "Antal kun skadet",
-        "DEAD_NUM": "Antal døde",
-        "SAFETY_GEAR_TID": "Sendar/mottakar",
-        "LOCAL_TOURIST_TID": "Lokal eller tilreisande",
-        "LOCAL_KNOWLEDGE_TID": "Kjenskap til området",
-        "RESCUE_TID": "Redning",
         "TRAFFIC_OBSTRUCTED": "Trafikk hindra",
-        "EVACUATED_NUM": "Antal evakuerte",
-        "MATERIAL_DAMAGES": "Materielle skadar",
-        "SLOPE_ACTIVITY_TID": "Turfase"
+        "TRAJECTORY_NAME": "Skredbanenamn",
+        "VALID_EXPOSITION": "Eksposisjon"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
@@ -500,15 +500,15 @@
       "COMPRESSION_TEST": {
         "ADD_NEW": "Legg til ny test",
         "DISTANCE_FROM_TOP": "Avstand fra toppen (cm)",
-        "X_DISTANCE": "Kuttlengde",
-        "Y_DISTANCE": "Søylelengde",
         "FRACTURE_TYPE": "Brottype",
+        "RB_RELEASE": "Løsnet prosentdel av blokk",
+        "RB_SCORE": "Rutschblock-resultat",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Tal på slag",
-        "RB_SCORE": "Rutschblock-resultat",
-        "RB_RELEASE": "Løsnet prosentdel av blokk",
         "TEST_TYPE": "Test type",
-        "TITLE": "Testar"
+        "TITLE": "Testar",
+        "X_DISTANCE": "Kuttlengde",
+        "Y_DISTANCE": "Søylelengde"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -684,14 +684,14 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæringa</a>.",
     "RESET": "Tilbakestill app",
     "RESETTING": "Appen resetjast. Vær vennleg å vent...",
+    "SEND_LOGS": "Send loggar til Regobs-teamet",
     "SHOW_ADVANCED": "Vis avanserte innstillingar",
     "SIZE_OF_TILES_CACHE": "Storleik til kartblad lagra på telefonen",
     "TILES_CACHE_SIZE": "Tal på kartblad lagra på telefonen",
     "TITLE": "Innstillingar",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyar",
     "USE_IN_WORLD": "Utanfor Noreg",
-    "USE_RETINA_MAP": "Bruk høg oppløysing på kart",
-    "SEND_LOGS": "Send loggar til Regobs-teamet"
+    "USE_RETINA_MAP": "Bruk høg oppløysing på kart"
   },
   "SET_NICK_ALERT": {
     "ERROR": "Klarte ikkje lagre kallenavn. Ver venleg og prøv igjen seinare.",
