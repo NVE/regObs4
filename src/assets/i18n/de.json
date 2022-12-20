@@ -228,7 +228,11 @@
       "RIGHT_HERE": "Genau hier",
       "TITLE": "Gefahrenzeichen"
     },
-    "DELETE": "Beobachtung löschen",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Beobachtung löschen"
+      }
+    },
     "DELETE_CONFIRM": "Sind Sie sicher?",
     "DIRT": {
       "LAND_SLIDE_OBS": {

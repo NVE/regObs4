@@ -18,6 +18,7 @@ import {
   PositionDto,
   RegistrationTypeCriteriaDto,
   SearchCriteriaRequestDto,
+  SearchSideBarDto,
   WithinExtentCriteriaDto,
 } from 'src/app/modules/common-regobs-api';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -25,6 +26,7 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
+import { circleMarker } from 'leaflet';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -40,9 +42,11 @@ const URL_PARAM_DAYSBACK = 'daysBack';
 const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_COMPETENCE = 'competence';
 const URL_PARAM_TYPE = 'type';
 const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
+const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
@@ -63,10 +67,19 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
   return [];
 }
 
+function competenceFromUrlToDto(competence: string): number[] {
+  if (competence && !isCompetenceUrlValid(competence)) return;
+  return competence ? competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c)) : null;
+}
+
+function competenceFromDtoToUrl(competence: number[]): string {
+  return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : null;
+}
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
-    return [...UrlDtoOrderByMap].find(([, val]) => val == value)[0];
+    const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
+    return keyValue;
   }
   return null;
 }
@@ -76,6 +89,25 @@ function numberArrayToSeparatedString(numbers: number[]): string {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
   }
   return '';
+}
+
+function isGeoHazardValid(hazards: number[]): boolean {
+  hazards.sort((a, b) => b - a);
+  let isValid = false;
+  for (const haz of VALID_GEO_HAZARDS) {
+    if (haz.toString() === hazards.toString()) {
+      isValid = true;
+      break;
+    }
+  }
+  return isValid;
+}
+
+function isCompetenceUrlValid(competence: string): RegExpMatchArray {
+  //check if its a sequence of numbers to max 3 digits with optional tilde as param
+  const regex = /^(\b\d{0,3}\b~?)*$/g;
+  const isValid = competence.match(regex);
+  return isValid;
 }
 
 function isRegTypeValid(type: string) {
@@ -149,6 +181,7 @@ export class SearchCriteriaService {
    * Current filter. Current language and geo hazards are always included
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
+  avaialbleSerachCriteria: SearchSideBarDto;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -231,13 +264,17 @@ export class SearchCriteriaService {
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
+    const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
     const type = url.searchParams.get(URL_PARAM_TYPE);
     const convertTypeFromUrlToCriteria = type != null ? this.convertRegTypeFromUrlToDto(type) : null;
 
+    //I recommend to add spread operator on optional properties so that we dont send 'null' values to API.
+    //example: ...(nickName && {ObserverCompetence: nickname})
     const criteria = {
       SelectedGeoHazards: geoHazards,
       FromDtObsTime: fromObsTime,
       ObserverNickName: nickName,
+      ObserverCompetence: observerCompetence,
       SelectedRegistrationTypes: convertTypeFromUrlToCriteria,
       ToDtObsTime: toObsTime,
       OrderBy: orderBy,
@@ -264,7 +301,8 @@ export class SearchCriteriaService {
     //read param on new format
     const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
     if (geoHazardsParamValue?.length > 0) {
-      geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
+      const geoHazardsToArray = separatedStringToNumberArray(geoHazardsParamValue);
+      isGeoHazardValid(geoHazardsToArray) && (geoHazards = geoHazardsToArray);
     }
 
     return geoHazards;
@@ -276,6 +314,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
     params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
+    params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
     params.apply();
@@ -311,6 +350,19 @@ export class SearchCriteriaService {
 
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
+  }
+
+  setCompetence(competenceCriteria: number[]) {
+    //[105, 120, 130]   //[140, 130]
+    if (!competenceCriteria) {
+      this.searchCriteriaChanges.next({ ObserverCompetence: null });
+      return;
+    }
+    const removedDuplicates = competenceCriteria.reduce((compArr, item) => {
+      if (!compArr.includes(item)) compArr.push(item);
+      return compArr;
+    }, [] as number[]);
+    this.searchCriteriaChanges.next({ ObserverCompetence: removedDuplicates });
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
@@ -383,10 +435,11 @@ export class SearchCriteriaService {
 
   private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto {
     if (mapView?.bounds) {
-      return {
+      const extent: WithinExtentCriteriaDto = {
         BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),
         TopLeft: latLngToPositionDto(mapView.bounds.getNorthWest()),
       };
+      return extent;
     }
     return null;
   }
