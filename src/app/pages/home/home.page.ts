@@ -18,6 +18,7 @@ import {
 import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { enterZone } from '../../core/helpers/observable-helper';
 import { RouterPage } from '../../core/helpers/routed-page';
@@ -47,6 +48,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   fullscreen$: Observable<boolean>;
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
+  private lastFetched: Date = null;
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
@@ -55,6 +57,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     router: Router,
     route: ActivatedRoute,
     private searchRegistrationService: SearchRegistrationService,
+    private updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private fullscreenService: FullscreenService,
     public userSettingService: UserSettingService,
@@ -130,18 +133,24 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
     const searchResult = await this.createSearchResult();
 
-    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$])
-      .pipe(
-        takeUntil(this.ngUnsubscribe) // TODO: Is this page ever destroyed?
-      )
-      .subscribe(([registrations, show]) => {
+    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
+      ([registrations, show]) => {
         this.redrawObservationMarkers(show ? registrations : []);
-      });
+      }
+    );
 
-    //search triggered manually
-    this.searchRegistrationService.searchRequested$
+    this.tabsService.selectedTab$
+      .pipe(filter((tab) => tab === TAB_HOME))
+      .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
+
+    searchResult.registrations$.subscribe(() => {
+      this.lastFetched = new Date();
+      this.updateObservationsService.setLastFetched(this.lastFetched);
+    });
+
+    // search triggered manually
+    this.updateObservationsService.refreshRequested$
       .pipe(
-        takeUntil(this.ngUnsubscribe), // TODO: Is this page ever destroyed?
         withLatestFrom(this.tabsService.selectedTab$),
         tap(([, tab]) => {
           if (tab === TAB_HOME) {

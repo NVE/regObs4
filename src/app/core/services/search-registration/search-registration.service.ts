@@ -29,9 +29,7 @@ export class SearchResult<TViewModel> {
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
-    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    private searchRegistrationService: SearchRegistrationService,
-    private logger: LoggingService
+    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ) {
     this.registrations$ = this.createRegistrationsObservable(searchCriteria$, fetchFunc);
   }
@@ -45,15 +43,8 @@ export class SearchResult<TViewModel> {
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ) {
     return combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(true))]).pipe(
-      tap(() => {
-        this.searchRegistrationService.setFetchingStatus(true);
-      }),
       map(([searchCriteria]) => searchCriteria),
       switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
-      tap(() => {
-        this.searchRegistrationService.updateLastFetched();
-        this.searchRegistrationService.setFetchingStatus(false);
-      }),
       shareReplay(1)
     );
   }
@@ -78,9 +69,7 @@ export class PagedSearchResult<TViewModel> {
     // Not sure what is best here, provide SearchService to this class, or provide the flexibility to create these
     // functions outside
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>,
-    private searchRegistrationService: SearchRegistrationService,
-    private logger: LoggingService
+    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
   ) {
     this.registrations$ = searchCriteria$.pipe(
       // Every time we get new search criteria, reset paging and search state
@@ -133,12 +122,9 @@ export class PagedSearchResult<TViewModel> {
     return combineLatest([
       searchCriteria$,
       this.pageInfo,
-      // TODO: Oppfrisk-knappen virket ikke med dette:
+      // TODO: Oppfrisk-funksjonen virket ikke med dette:
       // this.pageInfo.pipe(distinctUntilChanged((prev, curr) => prev.items === curr.items && prev.offset === curr.offset))
     ]).pipe(
-      tap(() => {
-        this.searchRegistrationService.setFetchingStatus(true);
-      }),
       // Add page info to search criteria
       map(([searchCriteria, pageInfo]) => ({
         ...searchCriteria,
@@ -159,11 +145,7 @@ export class PagedSearchResult<TViewModel> {
       scan(
         (accumulated, { searchCriteria, result }) => (searchCriteria.Offset > 0 ? [...accumulated, ...result] : result),
         [] // Start with an empty array
-      ),
-      tap(() => {
-        this.searchRegistrationService.updateLastFetched();
-        this.searchRegistrationService.setFetchingStatus(false);
-      })
+      )
     );
   }
 }
@@ -175,13 +157,6 @@ export class PagedSearchResult<TViewModel> {
   providedIn: 'root',
 })
 export class SearchRegistrationService {
-  private searchRequested = new Subject<void>();
-  private lastFetched = new Subject<Date>();
-  private isFetchingData = new BehaviorSubject(false);
-  readonly searchRequested$ = this.searchRequested.asObservable();
-  readonly lastFetched$ = this.lastFetched.asObservable();
-  readonly isFetchingData$ = this.isFetchingData.asObservable();
-
   constructor(private searchService: SearchService, private logger: LoggingService) {}
 
   /**
@@ -192,9 +167,7 @@ export class SearchRegistrationService {
   search(searchCriteria$: Observable<SearchCriteria>): SearchResult<RegistrationViewModel> {
     return new SearchResult<RegistrationViewModel>(
       searchCriteria$,
-      this.searchService.SearchSearch.bind(this.searchService),
-      this,
-      this.logger
+      this.searchService.SearchSearch.bind(this.searchService)
     );
   }
 
@@ -205,9 +178,7 @@ export class SearchRegistrationService {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
       this.searchService.SearchSearch.bind(this.searchService),
-      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches)),
-      this,
-      this.logger
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
 
@@ -217,24 +188,7 @@ export class SearchRegistrationService {
   atAGlance(searchCriteria$: Observable<SearchCriteria>): SearchResult<AtAGlanceViewModel> {
     return new SearchResult<AtAGlanceViewModel>(
       searchCriteria$.pipe(map((c) => ({ ...c, NumberOfRecords: 100000 }))),
-      this.searchService.SearchAtAGlance.bind(this.searchService),
-      this,
-      this.logger
+      this.searchService.SearchAtAGlance.bind(this.searchService)
     );
-  }
-
-  /**
-   * Use this to trigger search (again) with current search criteria
-   */
-  requestSearch() {
-    this.searchRequested.next();
-  }
-
-  setFetchingStatus(fetching: boolean) {
-    this.isFetchingData.next(fetching);
-  }
-
-  updateLastFetched() {
-    this.lastFetched.next(new Date());
   }
 }

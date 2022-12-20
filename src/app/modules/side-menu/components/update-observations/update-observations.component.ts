@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
 import { settings } from '../../../../../settings';
+import { UpdateObservationsService } from './update-observations.service';
 
 @Component({
   selector: 'app-update-observations',
@@ -10,62 +9,16 @@ import { settings } from '../../../../../settings';
   styleUrls: ['./update-observations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpdateObservationsComponent implements OnInit, OnDestroy {
+export class UpdateObservationsComponent {
   settings = settings;
-  readonly isLoading$: Observable<boolean>;
-  subscriptions: Subscription[] = [];
-  lastFetched: Date;
+  lastFetched$: Observable<Date>;
 
-  constructor(
-    private searchRegistrationService: SearchRegistrationService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
-    this.isLoading$ = searchRegistrationService.isFetchingData$;
-    this.searchRegistrationService.lastFetched$
-      .pipe(
-        tap((lastFetched) => {
-          this.lastFetched = lastFetched;
-          this.changeDetectorRef.markForCheck();
-        })
-      )
-      .subscribe();
+  constructor(private updateObservationsService: UpdateObservationsService) {
+    this.lastFetched$ = updateObservationsService.lastFetched$;
   }
 
-  ngOnInit() {
-    // TODO: Sjekk at det er greit å fjerne dette
-    // this.subscriptions.push(
-    //   this.observationService.dataLoad$
-    //     .pipe(
-    //       switchMap((id) => this.dataLoadService.getStateAsObservable(id)),
-    //       map((state) => state.isLoading),
-    //       distinctUntilChanged()
-    //     )
-    //     .subscribe((val) => {
-    //       this.ngZone.run(() => {
-    //         this.isLoading = val;
-    //       });
-    //     })
-    // );
-  }
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
-  }
-
-  async updateOrCancelObservations() {
-    //TODO: Support cancel
-    // if (this.isLoading) {
-    //   this.dataMarshallService.cancelUpdateObservations();
-    // } else {
-    //   this.isLoading = true;
-    this.searchRegistrationService.requestSearch();
-    // await this.observationService.forceUpdateObservationsForCurrentGeoHazard(
-    //   this.dataMarshallService.cancelObservationsPromise
-    // );
-    // setTimeout(() => {
-    //   this.isLoading = false;
-    // }, 500);
-    // }
+  async refresh() {
+    this.updateObservationsService.setLastFetched(null);
+    this.updateObservationsService.requestRefresh();
   }
 }
