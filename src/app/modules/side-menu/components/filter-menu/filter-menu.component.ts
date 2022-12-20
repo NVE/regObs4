@@ -4,11 +4,10 @@ import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { KdvElement, SearchService } from 'src/app/modules/common-regobs-api';
+import { KdvElement } from 'src/app/modules/common-regobs-api';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import {
   RegistrationTypeCriteriaDto,
@@ -84,10 +83,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     private userSettingService: UserSettingService,
     private searchCriteriaService: SearchCriteriaService,
     private translateService: TranslateService,
-    private searchService: SearchService,
     private cdr: ChangeDetectorRef,
-    private kdv: KdvService,
-    private logger: LoggingService
+    private kdv: KdvService
   ) {
     super();
   }
@@ -113,25 +110,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
           const competenceLevelsByGeoHazard = geoHazard
             .map((geoHazard) => COMPETANCE_FILTER[geoHazard])
             .map((f) => competenceLevels.filter(f));
-          //if sc.SelectedRegistrationTypes
           this.isSelectedRegistrationTypes(
             searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
             registrationTypesByGeoHazard
           );
-          //if sc.ObserverCompetence
           this.isObserverCompetence(searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
-          //if sc.ObserverNickName add later
-
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe();
-
-    this.searchCriteriaService.searchCriteria$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap((criteria) => {
-          this.nickName = criteria.ObserverNickName;
+          this.isNickName(searchCriteria.ObserverNickName);
           this.cdr.markForCheck();
         })
       )
@@ -184,7 +168,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   setNickName(newNick: SearchbarCustomEvent | null) {
-    let nickName;
+    let nickName: string;
     newNick?.target?.value != null ? (nickName = newNick.target.value.toLowerCase()) : null;
     this.searchCriteriaService.setObserverNickName(nickName);
   }
@@ -195,6 +179,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     if (searchCriteriaObserverCompetence != null && searchCriteriaObserverCompetence.length > 0) {
       this.chosenCompetenceValue = this.formatUrlToViewModel(emptyForm, searchCriteriaObserverCompetence);
     }
+  }
+
+  private isNickName(name: string) {
+    this.nickName = name;
   }
 
   private isSelectedRegistrationTypes(searchCriteriaRegType: RegistrationTypeCriteriaDto[], regTypes) {
