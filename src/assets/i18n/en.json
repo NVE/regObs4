@@ -150,9 +150,19 @@
     "CONTACT_REGOBS": "Contact us",
     "CONTACT_REGOBS_ERROR": "Report error",
     "CONTACT_SUBJECT": "Contact from app",
+    "CUSTOM_TIMESPAN": "Custom timespan",
+    "DATE_RANGE": {
+      "LAST_WEEK": "Last week",
+      "LAST_X_DAYS": "Last {{days}} days",
+      "LAST_X_MONTHS": "Last {{months}} months",
+      "LAST_X_WEEKS": "Last {{weeks}} weeks",
+      "TODAY": "Today",
+      "YESTERDAY": "Yesterday"
+    },
     "DAYS_BACK": "Days back",
     "DAY_BACK": "Day back",
     "DEACTIVATE_OBSERVATIONS": "Displaying observations has been disabled",
+    "END_DATE": "End date",
     "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach. We have attached logs which may help us in troubleshooting. You can remove these if you wish.",
     "ERROR_REPORT_SUBJECT": "Error report from",
     "GENERAL": "General",
@@ -170,6 +180,7 @@
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
     "SHOW_TRIPS": "Show trips",
+    "START_DATE": "Start date",
     "START_WIZARD": "Start wizard",
     "SUPPORT_MAP_CREDITS": "Support maps provided by",
     "TILES": {
@@ -179,24 +190,13 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (world)"
     },
+    "TIMESPAN": "Timespan",
     "TIME_FRAME": "Period",
     "TODAYS_OBSERVATIONS": "Only todays",
     "TOPO_MAP_CREDITS": "Topo maps provided by",
     "UPDATE_OBSERVATIONS": "Updated",
     "USER_SETTINGS": "User",
-    "WEEKS_BACK": "Weeks back",
-    "DATE_RANGE": {
-      "TODAY": "Today",
-      "YESTERDAY": "Yesterday",
-      "LAST_X_DAYS": "Last {{days}} days",
-      "LAST_WEEK": "Last week",
-      "LAST_X_WEEKS": "Last {{weeks}} weeks",
-      "LAST_X_MONTHS": "Last {{months}} months"
-    },
-    "TIMESPAN": "Timespan",
-    "CUSTOM_TIMESPAN": "Custom timespan",
-    "START_DATE": "Start date",
-    "END_DATE": "End date"
+    "WEEKS_BACK": "Weeks back"
   },
   "MONTHS": {
     "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"
@@ -240,10 +240,10 @@
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
-    "TITLE": "Observations",
-    "SORT_BY_TEXT": "Order by",
+    "SORT_BY_CHANGE_TIME": "Recently updated",
     "SORT_BY_OBS_TIME": "Recently observed",
-    "SORT_BY_CHANGE_TIME": "Recently updated"
+    "SORT_BY_TEXT": "Order by",
+    "TITLE": "Observations"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",

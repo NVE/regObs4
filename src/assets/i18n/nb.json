@@ -150,9 +150,19 @@
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss fra app",
+    "CUSTOM_TIMESPAN": "Egendefinert periode",
+    "DATE_RANGE": {
+      "LAST_WEEK": "Siste uke",
+      "LAST_X_DAYS": "Siste {{days}} dager",
+      "LAST_X_MONTHS": "Siste {{months}} måneder",
+      "LAST_X_WEEKS": "Siste {{weeks}} uker",
+      "TODAY": "I dag",
+      "YESTERDAY": "I går"
+    },
     "DAYS_BACK": "Dager tilbake",
     "DAY_BACK": "Dag tilbake",
     "DEACTIVATE_OBSERVATIONS": "Visning av observasjoner er deaktivert",
+    "END_DATE": "Sluttdato",
     "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
@@ -170,6 +180,7 @@
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
     "SHOW_TRIPS": "Vis turer",
+    "START_DATE": "Startdato",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TILES": {
@@ -179,24 +190,13 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
+    "TIMESPAN": "Tidsrom",
     "TIME_FRAME": "Tidsrom",
     "TODAYS_OBSERVATIONS": "Kun dagens observasjoner",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdatert",
     "USER_SETTINGS": "Brukervalg",
-    "WEEKS_BACK": "Uker tilbake",
-    "DATE_RANGE": {
-      "TODAY": "I dag",
-      "YESTERDAY": "I går",
-      "LAST_X_DAYS": "Siste {{days}} dager",
-      "LAST_WEEK": "Siste uke",
-      "LAST_X_WEEKS": "Siste {{weeks}} uker",
-      "LAST_X_MONTHS": "Siste {{months}} måneder"
-    },
-    "TIMESPAN": "Tidsrom",
-    "CUSTOM_TIMESPAN": "Egendefinert periode",
-    "START_DATE": "Startdato",
-    "END_DATE": "Sluttdato"
+    "WEEKS_BACK": "Uker tilbake"
   },
   "MONTHS": {
     "SHORT_LIST": "jan, feb, mar, apr, mai, jun, jul, aug, sep, okt, nov, des"
@@ -240,10 +240,10 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
-    "TITLE": "Observasjoner",
-    "SORT_BY_TEXT": "Sorter på",
+    "SORT_BY_CHANGE_TIME": "Oppdatert tid",
     "SORT_BY_OBS_TIME": "Observert tid",
-    "SORT_BY_CHANGE_TIME": "Oppdatert tid"
+    "SORT_BY_TEXT": "Sorter på",
+    "TITLE": "Observasjoner"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
