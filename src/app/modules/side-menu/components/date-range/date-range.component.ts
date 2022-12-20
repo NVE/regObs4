@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, map, Observable, takeUntil, combineLatest, tap, concatMap } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
-import { concatMap, tap } from 'rxjs/operators';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
-import { getLangKeyString } from '../../../common-core/models/lang-key.enum';
 import { TranslateService } from '@ngx-translate/core';
+import { getLangKeyString } from '../../../common-core/helpers';
+import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
 
 @Component({
   selector: 'app-date-range',
@@ -19,42 +19,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   toDate: string;
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
-  mode: 'predefined' | 'custom' = 'predefined';
+  mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
   cachedDays: number;
-
-  get modeText(): Observable<string> {
-    if (this.mode === 'predefined') {
-      return this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        concatMap((day) => this.getReadableDays.bind(this)(day)),
-        map((x) => x[Object.keys(x)[0]])
-      );
-    }
-    let dateRange = '';
-    return this.userSettingService.language$.pipe(
-      map((value) => {
-        const lang = getLangKeyString(value);
-        if (this.fromDate) {
-          dateRange = new Date(this.fromDate).toLocaleDateString(lang, {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit',
-          });
-        }
-        if (this.toDate) {
-          if (this.fromDate) {
-            dateRange += ' - ';
-          }
-          dateRange += new Date(this.toDate).toLocaleDateString(lang, {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit',
-          });
-        }
-        return dateRange;
-      })
-    );
-  }
+  modeText$: Observable<string>;
 
   constructor(
     private searchCriteriaService: SearchCriteriaService,
@@ -62,6 +30,23 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     private translateService: TranslateService
   ) {
     super();
+    this.modeText$ = combineLatest([
+      this.mode,
+      this.userSettingService.language$,
+      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
+        concatMap((days) => this.getReadableDays(days)),
+        map((x) => x[Object.keys(x)[0]])
+      ),
+    ]).pipe(
+      map(([mode, language, translations]) => {
+        switch (mode) {
+          case 'predefined':
+            return translations;
+          case 'custom':
+            return this.generateDateRange(language);
+        }
+      })
+    );
   }
 
   ngOnInit() {
@@ -95,10 +80,8 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     if (days) {
       this.cachedDays = days;
       this.searchCriteriaService.setFromDate(moment().subtract(days, 'days').format('YYYY-MM-DD'), true);
-      this.mode = 'predefined';
     } else if (this.cachedDays) {
       this.searchCriteriaService.setFromDate(moment().subtract(this.cachedDays, 'days').format('YYYY-MM-DD'), true);
-      this.mode = 'custom';
     }
   }
 
@@ -116,6 +99,35 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     }
     if (day >= 28) {
       return this.translateService.get(['MENU.DATE_RANGE.LAST_X_MONTHS'], { months: day / 30 });
+    }
+  }
+
+  private generateDateRange(language) {
+    let dateRange = '';
+    const lang = getLangKeyString(language);
+    if (this.fromDate) {
+      dateRange = new Date(this.fromDate).toLocaleDateString(lang, {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+      });
+    }
+    if (this.toDate) {
+      if (this.fromDate) {
+        dateRange += ' - ';
+      }
+      dateRange += new Date(this.toDate).toLocaleDateString(lang, {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+      });
+    }
+    return dateRange;
+  }
+
+  changeMode($event: CustomEvent<IRadioGroupRadioGroupChangeEventDetail>) {
+    if ($event.detail.value === 'predefined' || $event.detail.value === 'custom') {
+      this.mode.next($event.detail.value);
     }
   }
 }
