@@ -49,16 +49,6 @@ const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
 
-export function withinExtentCriteriaToBounds(extent: WithinExtentCriteriaDto): L.LatLngBounds {
-  const topLeft = positionDtoToLatLng(extent.TopLeft);
-  const bottomRight = positionDtoToLatLng(extent.BottomRight);
-  return new L.LatLngBounds(topLeft, bottomRight);
-}
-
-function positionDtoToLatLng(position: PositionDto): L.LatLng {
-  return new L.LatLng(position.Latitude, position.Longitude);
-}
-
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
   Longitude: latLng.lng,

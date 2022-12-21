@@ -7,15 +7,12 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, firstValueFrom, Observable, of, race, Subject, scan } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import {
-  SearchCriteriaService,
-  withinExtentCriteriaToBounds,
-} from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
   SearchResult,
 } from 'src/app/core/services/search-registration/search-registration.service';
-import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, PositionDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
@@ -32,6 +29,16 @@ import { RegObsGeoJson } from './geojson';
 import { RegObsMarkerClusterLayer } from './markerCluster.layer';
 
 const DEBUG_TAG = 'HomePage';
+
+function withinExtentCriteriaToBounds(extent: WithinExtentCriteriaDto): L.LatLngBounds {
+  const topLeft = positionDtoToLatLng(extent.TopLeft);
+  const bottomRight = positionDtoToLatLng(extent.BottomRight);
+  return new L.LatLngBounds(topLeft, bottomRight);
+}
+
+function positionDtoToLatLng(position: PositionDto): L.LatLng {
+  return new L.LatLng(position.Latitude, position.Longitude);
+}
 
 @Component({
   selector: 'app-home',

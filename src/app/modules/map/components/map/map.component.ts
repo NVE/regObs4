@@ -348,7 +348,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('moveend', () => this.onMapMoveEnd());
     });
 
-    this.fullscreenService.isFullscreen$.pipe(skip(1), takeUntil(this.ngDestroy$)).subscribe(() => {
+    this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
     });
     //set overwrite default showUserLocation with component input
