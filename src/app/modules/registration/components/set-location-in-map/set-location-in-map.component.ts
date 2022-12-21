@@ -18,6 +18,7 @@ import { LocationName } from '../../../map/services/map-search/location-name.mod
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
+import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 
 export interface LocationTime {
@@ -55,7 +56,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
-  @Input() locationPolygon: Observable<L.Polygon>;
+  @Input() locationPolygon: Observable<IPolygon>;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Output() locationTimeSet = new EventEmitter<LocationTime>();
   @Input() showPreviousUsedLocations = true;
@@ -83,9 +84,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private ngDestroy$ = new Subject<void>();
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
-  locationPolygons: (L.Polygon & {editing?: {enable: () => void, disable: () => void, enabled: () => boolean}})[] = [];
-  activePolygons: boolean[] = [];
-  origPolygonColor: string[] = [];
+  locationPolygons: IPolygon[] = [];
   locationPolygonEditIdx = -1;
   toggleEditingMode: () => void;
 
@@ -264,7 +263,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     })
 
     const locationPolygons = this.locationPolygons;
-    const activePolygons = this.activePolygons;
     let lastToggled: Date;
     this.toggleEditingMode = function () {
       const now = new Date();
@@ -274,30 +272,29 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       let foundEnabled = false;
       let setEnabled = false;
       locationPolygons.forEach((polygon, i) => {
-        if (foundEnabled && !setEnabled && activePolygons[i]) {
+        if (foundEnabled && !setEnabled && polygon.active) {
           setEnabled = true;
-          polygon.editing.enable();
-        } else if (polygon.editing.enabled()) {
+          polygon.polygon.editing.enable();
+        } else if (polygon.polygon.editing.enabled()) {
           foundEnabled = true;
-          polygon.editing.disable();
+          polygon.polygon.editing.disable();
         } else {
-          polygon.editing.disable();
+          polygon.polygon.editing.disable();
         }
       });
       if (!foundEnabled || !setEnabled) {
-        const idx = activePolygons.indexOf(true);
+        const idx = locationPolygons.map(p => p.active).indexOf(true);
         if (idx > -1) { 
-          locationPolygons[idx].editing.enable();
-        }
+          locationPolygons[idx].polygon.editing.enable();
+        } 
       }
     };
     drawnItems.on('click', this.toggleEditingMode);
 
-    this.locationPolygon.subscribe(p => {
-      drawnItems.addLayer(p);
+    this.locationPolygon.subscribe((p) => {
+      p.polygon.setStyle({color: p.active ? p.color : 'rgb(0,0,0,0)'})
+      drawnItems.addLayer(p.polygon);
       this.locationPolygons.push(p);
-      this.activePolygons.push(true);
-      this.origPolygonColor.push(p.options.color);
 
       if (locationPolygons.length == 1) {
         this.toggleEditingMode();
@@ -309,16 +306,25 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   togglePolygon(index: number): void {
-    const currentState = this.activePolygons[index];
-    this.activePolygons[index] = !currentState;
+    const polygon = this.locationPolygons[index]
+    const currentState = polygon.active;
+    polygon.active = !currentState;
     if (currentState) {
-      this.locationPolygons[index].setStyle({color: 'rgb(0,0,0,0)'});
-      if (this.locationPolygons[index].editing.enabled()) {
+      polygon.polygon.setStyle({color: 'rgb(0,0,0,0)'});
+      if (polygon.polygon.editing.enabled()) {
         this.toggleEditingMode();
       }
     } else {
-      this.locationPolygons[index].setStyle({color: this.origPolygonColor[index]});
-      if (this.activePolygons.slice(0, index).concat(this.activePolygons.slice(index + 1)).indexOf(true) == -1) {
+      polygon.polygon.setStyle({color: polygon.color});
+      const isOtherActive = this.locationPolygons
+        .map(p => p.active)
+        .slice(0, index)
+        .concat(
+          this.locationPolygons
+            .map(p => p.active)
+            .slice(index + 1)
+        ).indexOf(true) == -1;
+      if (isOtherActive) {
         this.toggleEditingMode();
       }
     }

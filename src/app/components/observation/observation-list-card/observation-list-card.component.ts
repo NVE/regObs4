@@ -13,7 +13,7 @@ import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/mo
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../../modules/analytics/enums/app-event-action.enum';
-import { ImageLocation } from '../../img-swiper/image-location.model';
+import { ImageLocation, ImageLocationStartStop } from '../../img-swiper/image-location.model';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
@@ -108,7 +108,7 @@ export class ObservationListCardComponent implements OnChanges {
     };
   }
 
-  private getStartStopLocation(obs: RegistrationViewModel): { start?: L.LatLng; stop?: L.LatLng } {
+  private getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop {
     if (obs.AvalancheObs) {
       return {
         start:
@@ -119,6 +119,18 @@ export class ObservationListCardComponent implements OnChanges {
           obs.AvalancheObs.StopLong && obs.AvalancheObs.StopLong
             ? L.latLng(obs.AvalancheObs.StopLat, obs.AvalancheObs.StopLong)
             : undefined,
+        totalPolygon: obs.AvalancheObs.Extent ? new L.Polygon(
+          obs.AvalancheObs.Extent.map(([lng, lat]) => [lat, lng]),
+          {color: settings.map.extentColor}
+        ) : null,
+        startPolygon: obs.AvalancheObs.StartExtent ? new L.Polygon(
+          obs.AvalancheObs.StartExtent.map(([lng, lat]) => [lat, lng]),
+          {color: settings.map.startExtentColor}
+        ) : null,
+        endPolygon: obs.AvalancheObs.StopExtent ? new L.Polygon(
+          obs.AvalancheObs.StopExtent.map(([lng, lat]) => [lat, lng]),
+          {color: settings.map.endExtentColor}
+        ) : null,
       };
     }
     if (obs.LandSlideObs) {

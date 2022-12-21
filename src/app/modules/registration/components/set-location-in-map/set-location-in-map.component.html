@@ -150,14 +150,14 @@
               *ngFor="let polygon of locationPolygons; index as i"
               class="flex-space right-padding">
           <ion-label>
-            <ion-icon name="radio-button-on" [style.color]="polygon.options.color" class="bullet"></ion-icon>
-            {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.INCLUDE_IN_SNOW_PROFILE' | translate}}
+            <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
+            <span>{{locationPolygons[i].title}}</span>
           </ion-label>
           <ion-toggle
-            [checked]="true"
+            [checked]="polygon.active"
             (ionChange)="togglePolygon(i)"
             slot="end"
-            [style.background.color]="polygon.options.color"
+            [style.background.color]="polygon.polygon.options.color"
           ></ion-toggle>
         </ion-item>
       </div>

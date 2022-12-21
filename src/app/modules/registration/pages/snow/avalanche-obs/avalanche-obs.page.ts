@@ -191,6 +191,9 @@ export class AvalancheObsPage extends BasePage {
         relativeToLatLng,
         startLatLng,
         endLatLng,
+        extent: this.avalancheObs.Extent,
+        startExtent: this.avalancheObs.StartExtent,
+        endExtent: this.avalancheObs.StopExtent,
         geoHazard: this.draft.registration.GeoHazardTID,
       },
     });
@@ -203,6 +206,9 @@ export class AvalancheObsPage extends BasePage {
       this.avalancheObs.StartLong = start.lng;
       this.avalancheObs.StopLat = end.lat;
       this.avalancheObs.StopLong = end.lng;
+      this.avalancheObs.Extent = result.data.totalPolygon;
+      this.avalancheObs.StartExtent = result.data.startPolygon;
+      this.avalancheObs.StopExtent = result.data.endPolygon;
     }
   }
 }

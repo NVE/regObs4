@@ -35,6 +35,7 @@ export interface AvalancheObsEditModel {
    * Tid da skredet gikk.
    */
   DtAvalancheTime: string;
+  Extent?: Array<Array<number>>;
 
   /**
    * Bruddhøyde
@@ -65,6 +66,7 @@ export interface AvalancheObsEditModel {
    * SnowLine
    */
   SnowLine?: number;
+  StartExtent?: Array<Array<number>>;
 
   /**
    * StartLat
@@ -75,6 +77,7 @@ export interface AvalancheObsEditModel {
    * StartLong
    */
   StartLong?: number;
+  StopExtent?: Array<Array<number>>;
 
   /**
    * StopLat
