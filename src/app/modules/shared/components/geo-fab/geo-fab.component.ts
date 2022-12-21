@@ -6,6 +6,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
 import { map, take } from 'rxjs/operators';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 
 const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
 @Component({
@@ -67,6 +68,7 @@ export class GeoFabComponent implements OnInit, OnDestroy {
 
   constructor(
     private fullscreenService: FullscreenService,
+    private searchCriteriaService: SearchCriteriaService,
     private userSettingService: UserSettingService,
     private ngZone: NgZone
   ) {}

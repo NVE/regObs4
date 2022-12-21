@@ -27,6 +27,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { circleMarker } from 'leaflet';
+import { ResettableSubject } from './resetable';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -169,8 +170,10 @@ export class SearchCriteriaService {
   // interessant å logge hvis man får en error feks.
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
-  private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
+  private searchCriteriaChanges = new ResettableSubject<SearchCriteriaRequestDto>();
+  private searchCritObs = this.searchCriteriaChanges.asObservable();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
+  private curGeoHazard: GeoHazard[];
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -185,17 +188,21 @@ export class SearchCriteriaService {
   ) {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
-
-    this.searchCriteriaChanges
+    this.searchCritObs
       .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
       // Log last 10 choices made
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
     this.searchCriteria$ = combineLatest([
-      this.searchCriteriaChanges.pipe(
+      this.searchCritObs.pipe(
+        tap((c) => {
+          console.log('criteria from url to start', c);
+        }),
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
-        scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
+        scan((allSearchCriteria, newSearchCriteria) => {
+          return { ...allSearchCriteria, ...newSearchCriteria };
+        }, {})
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
@@ -205,24 +212,53 @@ export class SearchCriteriaService {
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => ({
-        ...criteria,
-        LangKey: langKey,
-        SelectedGeoHazards: geoHazards,
-        FromDtObsTime: fromObsTime,
-        ToDtObsTime: null,
-        Extent: extent,
-      })),
+      map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
+        console.log('crits', criteria);
+        return {
+          ...criteria,
+          LangKey: langKey,
+          SelectedGeoHazards: geoHazards,
+          FromDtObsTime: fromObsTime,
+          ToDtObsTime: null,
+          Extent: extent,
+        } as SearchCriteriaRequestDto;
+      }),
 
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((newCriteria) => this.setUrlParams(newCriteria)),
+      tap((newCriteria) => {
+        if (this.curGeoHazard && this.curGeoHazard != newCriteria.SelectedGeoHazards) {
+          console.log('restart');
+          newCriteria.SelectedRegistrationTypes = null;
+          newCriteria.ObserverCompetence = null;
+          newCriteria.ObserverNickName = null;
+          this.searchCriteriaChanges.reset();
+          return this.setUrlParams(newCriteria);
+        } else {
+          this.curGeoHazard = newCriteria.SelectedGeoHazards;
+          console.log('oldie', newCriteria);
+          return this.setUrlParams(newCriteria);
+        }
+      }),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
       // Uansett kjekt med en shareReplay her, se kommentar over.
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
+  }
+
+  async restartSearchCriteria() {
+    const searchCriteria = await firstValueFrom(this.searchCriteria$);
+
+    const criteria = {
+      ...searchCriteria,
+      ObserverNickName: null,
+      ObserverCompetence: null,
+      SelectedRegistrationTypes: [],
+    } as SearchCriteriaRequestDto;
+    console.log('restart', criteria);
+    this.searchCriteriaChanges.next(criteria);
   }
 
   // build search criteria from url parameters. Some params are stored in user settings
