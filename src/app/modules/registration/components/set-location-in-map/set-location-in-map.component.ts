@@ -3,6 +3,7 @@ import { Position } from '@capacitor/geolocation';
 import { IonInput } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as L from 'leaflet';
+import 'leaflet-draw';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
