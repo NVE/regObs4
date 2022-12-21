@@ -115,7 +115,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
             registrationTypesByGeoHazard
           );
           this.isObserverCompetence(searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
-          this.isNickName(searchCriteria.ObserverNickName);
+          this.setNickNameFromSearchCriteria(searchCriteria.ObserverNickName);
           this.cdr.markForCheck();
         })
       )
@@ -168,8 +168,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   setNickName(newNick: SearchbarCustomEvent | null) {
-    let nickName: string;
-    newNick?.target?.value != null ? (nickName = newNick.target.value.toLowerCase()) : null;
+    let nickName = null;
+    newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
     this.searchCriteriaService.setObserverNickName(nickName);
   }
 
@@ -181,7 +181,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  private isNickName(name: string) {
+  private setNickNameFromSearchCriteria(name: string) {
     this.nickName = name;
   }
 

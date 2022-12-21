@@ -229,7 +229,7 @@
       "TITLE": "Observer"
     },
     "NICK_FILTER": {
-      "TITLE": "Search",
+      "TITLE": "Name",
       "PLACEHOLDER": "Search by observer name"
     }
   },
