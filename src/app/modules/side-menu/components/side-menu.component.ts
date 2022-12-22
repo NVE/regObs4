@@ -89,10 +89,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateObservations() {
-    this.observationService.forceUpdateObservationsForCurrentGeoHazard();
-  }
-
   async showLegalTerms(): Promise<void> {
     const url = this.userSettingService.legalUrl;
     this.externalLinkService.openExternalLink(url);
