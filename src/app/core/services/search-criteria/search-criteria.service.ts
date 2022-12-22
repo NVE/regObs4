@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import {
+  BehaviorSubject,
   combineLatest,
   firstValueFrom,
   map,
@@ -11,6 +12,7 @@ import {
   startWith,
   Subject,
   tap,
+  withLatestFrom,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -170,8 +172,7 @@ export class SearchCriteriaService {
   // interessant å logge hvis man får en error feks.
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
-  private searchCriteriaChanges = new ResettableSubject<SearchCriteriaRequestDto>();
-  private searchCritObs = this.searchCriteriaChanges.asObservable();
+  private searchCriteriaChanges = new Subject<SearchCriteriaRequestDto>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
   private curGeoHazard: GeoHazard[];
 
@@ -188,19 +189,21 @@ export class SearchCriteriaService {
   ) {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
-    this.searchCritObs
+    this.searchCriteriaChanges
       .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
       // Log last 10 choices made
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
     this.searchCriteria$ = combineLatest([
-      this.searchCritObs.pipe(
+      this.searchCriteriaChanges.pipe(
         tap((c) => {
-          console.log('criteria from url to start', c);
+          console.log('criteria from url to start', criteria);
         }),
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
         scan((allSearchCriteria, newSearchCriteria) => {
+          console.log('all', allSearchCriteria);
+          console.log('new', newSearchCriteria);
           return { ...allSearchCriteria, ...newSearchCriteria };
         }, {})
       ),
@@ -213,7 +216,7 @@ export class SearchCriteriaService {
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
-        console.log('crits', criteria);
+        //console.log('crits', criteria);
         return {
           ...criteria,
           LangKey: langKey,
@@ -229,10 +232,11 @@ export class SearchCriteriaService {
       tap((newCriteria) => {
         if (this.curGeoHazard && this.curGeoHazard != newCriteria.SelectedGeoHazards) {
           console.log('restart');
+          this.curGeoHazard = newCriteria.SelectedGeoHazards;
           newCriteria.SelectedRegistrationTypes = null;
           newCriteria.ObserverCompetence = null;
           newCriteria.ObserverNickName = null;
-          this.searchCriteriaChanges.reset();
+          this.searchCriteriaChanges.next({ SelectedRegistrationTypes: null });
           return this.setUrlParams(newCriteria);
         } else {
           this.curGeoHazard = newCriteria.SelectedGeoHazards;
