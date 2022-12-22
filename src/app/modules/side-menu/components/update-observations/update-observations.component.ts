@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';
 
@@ -17,7 +17,7 @@ export class UpdateObservationsComponent {
     this.lastFetched$ = updateObservationsService.lastFetched$;
   }
 
-  async refresh() {
+  refresh() {
     this.updateObservationsService.setLastFetched(null);
     this.updateObservationsService.requestRefresh();
   }

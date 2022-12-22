@@ -84,6 +84,42 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       .subscribe((newInfoBoxHeight) => {
         this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
       });
+
+    this.tabsService.selectedTab$
+      .pipe(filter((tab) => tab === TAB_HOME))
+      .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
+
+    this.initSearch();
+  }
+
+  private async initSearch() {
+    const searchResult = await this.createSearchResult();
+
+    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
+      ([registrations, show]) => {
+        this.redrawObservationMarkers(show ? registrations : []);
+      }
+    );
+
+    searchResult.registrations$.subscribe(() => {
+      this.lastFetched = new Date();
+      this.updateObservationsService.setLastFetched(this.lastFetched);
+    });
+
+    // search triggered manually
+    this.updateObservationsService.refreshRequested$
+      .pipe(
+        withLatestFrom(this.tabsService.selectedTab$),
+        tap(([, tab]) => {
+          if (tab === TAB_HOME) {
+            searchResult.update();
+            this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+          } else {
+            this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+          }
+        })
+      )
+      .subscribe();
   }
 
   get appname(): string {
@@ -137,38 +173,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.map.on('click', () => {
       this.mapItemBar.hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
     });
-
-    const searchResult = await this.createSearchResult();
-
-    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
-      ([registrations, show]) => {
-        this.redrawObservationMarkers(show ? registrations : []);
-      }
-    );
-
-    this.tabsService.selectedTab$
-      .pipe(filter((tab) => tab === TAB_HOME))
-      .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
-
-    searchResult.registrations$.subscribe(() => {
-      this.lastFetched = new Date();
-      this.updateObservationsService.setLastFetched(this.lastFetched);
-    });
-
-    // search triggered manually
-    this.updateObservationsService.refreshRequested$
-      .pipe(
-        withLatestFrom(this.tabsService.selectedTab$),
-        tap(([, tab]) => {
-          if (tab === TAB_HOME) {
-            searchResult.update();
-            this.loggingService.debug('Search manually triggered', DEBUG_TAG);
-          } else {
-            this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
-          }
-        })
-      )
-      .subscribe();
   }
 
   private async createSearchResult(): Promise<SearchResult<AtAGlanceViewModel>> {
