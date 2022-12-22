@@ -49,15 +49,14 @@
 
   ion-slides {
     background-color: inherit;
-    ion-slide {
-      width: 90% !important;
-      &:last-child {
-        width: 100% !important;
-      }
-    }
     .swiper-slide {
+      width: 80vw;
       height: 80vw;
       display: inline-flex;
+
+      &:last-child {
+        margin-right: 0px;
+      }
 
       &.small {
         width: inherit;
@@ -159,6 +158,17 @@
       .swiper-slide {
         min-height: 30vh;
         height: auto;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 650px) {
+  ion-slides {
+    .swiper-slide {
+      width: calc(80vw - 60px) !important;
+      &:last-child {
+        width: 80vw !important;
       }
     }
   }
