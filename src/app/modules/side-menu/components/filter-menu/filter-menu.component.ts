@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, take, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
@@ -17,6 +17,7 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService } from '@ngx-translate/core';
+import { initializeAnalyticService } from 'src/app/modules/analytics/analytics.module';
 
 interface ObservationTypeView {
   name: string;
@@ -97,6 +98,20 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
 
+    await this.initialize();
+
+    this.searchCriteriaService.searchCriteria$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap((criteria) => {
+          this.nickName = criteria.ObserverNickName;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe();
+  }
+
+  async initialize() {
     const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
 
     combineLatest([
@@ -126,16 +141,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         })
       )
       .subscribe();
+  }
 
-    this.searchCriteriaService.searchCriteria$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap((criteria) => {
-          this.nickName = criteria.ObserverNickName;
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe();
+  onRestartFilters() {
+    this.searchCriteriaService.restartSearchCriteria();
+    this.initialize();
   }
 
   onSelectCompetenceChange(event) {

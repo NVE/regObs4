@@ -172,7 +172,7 @@ export class SearchCriteriaService {
   // interessant å logge hvis man får en error feks.
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
-  private searchCriteriaChanges = new Subject<SearchCriteriaRequestDto>();
+  searchCriteriaChanges = new Subject<SearchCriteriaRequestDto>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
   private curGeoHazard: GeoHazard[];
 
@@ -193,6 +193,8 @@ export class SearchCriteriaService {
       .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
       // Log last 10 choices made
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
+
+    this.searchCriteriaChanges.subscribe((v) => console.log('scc', v));
 
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
@@ -236,7 +238,7 @@ export class SearchCriteriaService {
           newCriteria.SelectedRegistrationTypes = null;
           newCriteria.ObserverCompetence = null;
           newCriteria.ObserverNickName = null;
-          this.searchCriteriaChanges.next({ SelectedRegistrationTypes: null });
+          this.restartSearchCriteria();
           return this.setUrlParams(newCriteria);
         } else {
           this.curGeoHazard = newCriteria.SelectedGeoHazards;
@@ -253,15 +255,11 @@ export class SearchCriteriaService {
   }
 
   async restartSearchCriteria() {
-    const searchCriteria = await firstValueFrom(this.searchCriteria$);
-
-    const criteria = {
-      ...searchCriteria,
-      ObserverNickName: null,
+    const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
-      SelectedRegistrationTypes: [],
-    } as SearchCriteriaRequestDto;
-    console.log('restart', criteria);
+      SelectedRegistrationTypes: null,
+      ObserverNickName: null,
+    };
     this.searchCriteriaChanges.next(criteria);
   }
 
