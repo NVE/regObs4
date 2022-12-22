@@ -62,7 +62,7 @@ export class TabsPage implements OnInit, OnDestroy {
       map(() => location.path()),
       distinctUntilChanged(),
       map((path) => {
-        this.shouldTransferQueryParams(path);
+        this.applyCurrentQueryParams(path);
         return this.parseTabFromPath(path);
       }),
       share() // All tabs subscribe to this, so share amongst subscribers
@@ -79,7 +79,7 @@ export class TabsPage implements OnInit, OnDestroy {
     return 'home';
   }
 
-  private shouldTransferQueryParams(path: string) {
+  private applyCurrentQueryParams(path: string) {
     if (path == '' || path == '/observation-list' || path == '/warning-list') {
       this.searchCriteriaService.applyQueryParams();
     }

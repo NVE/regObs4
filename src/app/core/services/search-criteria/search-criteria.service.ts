@@ -162,7 +162,6 @@ export class SearchCriteriaService {
    * Current filter. Current language and geo hazards are always included
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
-  currentCriteria: SearchCriteriaRequestDto;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -203,7 +202,6 @@ export class SearchCriteriaService {
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
       tap((newCriteria) => {
-        this.currentCriteria = newCriteria;
         this.setUrlParams(newCriteria);
       }),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
@@ -268,8 +266,9 @@ export class SearchCriteriaService {
     return geoHazards;
   }
 
-  applyQueryParams() {
-    this.currentCriteria && this.setUrlParams(this.currentCriteria);
+  async applyQueryParams() {
+    const currentCriteria = (await firstValueFrom(this.searchCriteria$)) as SearchCriteriaRequestDto;
+    currentCriteria && this.setUrlParams(currentCriteria);
   }
 
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
