@@ -1,12 +1,10 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, share } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { NavigationEnd, Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
