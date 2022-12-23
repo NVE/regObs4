@@ -218,13 +218,20 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
+    "TITLE": "Observasjonsfilter",
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
       "AUTOMATIC_STATIONS": "Automatiske stasjoner",
       "LABEL": "Kompetanse",
       "TITLE": "Observatør"
     },
-    "TITLE": "Observasjonsfilter"
+    "NICK_FILTER": {
+      "TITLE": "Navn",
+      "PLACEHOLDER": "Søk på observatørnavn"
+    }
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
@@ -869,9 +876,12 @@
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
+    "NO_LEGEND": "Dette kartlaget har ikke tegnforklaring enda.",
     "NO_OPACITY": "Heldekkende",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Løsne- og utløpsområder (Grønland)",
     "READ_MORE": "Les mer om støttekart",
     "STEEPNESS_COLOR_INFO": "Farger på terrengets bratthet i grader:",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Bratthetskart (Grønland)",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekartet er kun tilgjengelig offline med utløp aktiverte.",
