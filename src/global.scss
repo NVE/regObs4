@@ -474,7 +474,7 @@ ion-toast {
   margin-right: 4px;
 }
 
-.shadow-marker {
+.cluster-marker {
   // filter: drop-shadow(5px 0px 5px #000);
   &:after {
     content: '';
@@ -488,6 +488,24 @@ ion-toast {
     display: inline-block;
     z-index: -1;
   }
+}
+
+.obs-marker:hover svg,
+.obs-marker:focus svg,
+.active-map-marker svg {
+  overflow: visible;
+  transform: scale(1.05);
+}
+
+.cluster-marker:hover svg circle,
+.cluster-marker:focus svg circle {
+  stroke-width: 4;
+}
+
+.obs-marker:hover svg path,
+.obs-marker:focus svg path,
+.active-map-marker svg path {
+  stroke-width: 4;
 }
 
 .pull-last-bottom {

@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
@@ -12,6 +11,10 @@ import {
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+import { TabsService, TABS } from '../tabs/tabs.service';
+
+const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
   selector: 'app-observation-list',
@@ -38,8 +41,9 @@ export class ObservationListPage implements OnInit {
 
   constructor(
     private searchCriteriaService: SearchCriteriaService,
-    private activatedRoute: ActivatedRoute,
     searchRegistrationService: SearchRegistrationService,
+    updateObservationsService: UpdateObservationsService,
+    private tabsService: TabsService,
     private logger: LoggingService
   ) {
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
@@ -51,6 +55,23 @@ export class ObservationListPage implements OnInit {
       map(([allFetched, maxReached]) => allFetched || maxReached),
       distinctUntilChanged()
     );
+
+    this.searchResult.registrations$.subscribe(() => updateObservationsService.setLastFetched(new Date()));
+
+    //search triggered manually
+    updateObservationsService.refreshRequested$
+      .pipe(
+        withLatestFrom(this.tabsService.selectedTab$),
+        tap(([, tab]) => {
+          if (tab === TABS.OBSERVATION_LIST) {
+            this.refresh();
+            this.logger.debug('Search manually triggered', DEBUG_TAG);
+          } else {
+            this.logger.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnInit() {
@@ -68,7 +89,7 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
-  refresh(cancelPromise: Promise<unknown>): void {
+  refresh(): void {
     this.logger.debug('Refresh', 'PagedSearchResult');
     this.searchResult.resetPaging();
   }
@@ -76,7 +97,7 @@ export class ObservationListPage implements OnInit {
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
-    this.refresh(null);
+    this.refresh();
   }
 
   ionViewWillLeave(): void {

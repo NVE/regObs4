@@ -1,8 +1,15 @@
 import {
-  AfterViewInit, Component, ElementRef, EventEmitter,
-  Injector, Input,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Injector,
+  Input,
   NgZone,
-  OnDestroy, OnInit, Output, ViewChild
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -11,7 +18,7 @@ import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -28,7 +35,8 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import {
   IRegObsTileLayerOptions,
-  RegObsOfflineAwareTileLayer, RegObsTileLayer
+  RegObsOfflineAwareTileLayer,
+  RegObsTileLayer,
 } from '../../core/classes/regobs-tile-layer';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapZoomService } from '../../services/map/map-zoom.service';
@@ -500,7 +508,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
-    if (this.map) {
+    if (this.map && this.isActive.value) {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),
         center: this.map.getCenter(),
