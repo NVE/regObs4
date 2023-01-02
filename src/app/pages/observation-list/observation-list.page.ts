@@ -12,7 +12,7 @@ import {
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
-import { TabsService, TAB_OBSERVATION_LIST } from '../tabs/tabs.service';
+import { TabsService, TABS } from '../tabs/tabs.service';
 
 const DEBUG_TAG = 'ObservationListPage';
 
@@ -63,7 +63,7 @@ export class ObservationListPage implements OnInit {
       .pipe(
         withLatestFrom(this.tabsService.selectedTab$),
         tap(([, tab]) => {
-          if (tab === TAB_OBSERVATION_LIST) {
+          if (tab === TABS.OBSERVATION_LIST) {
             this.refresh();
             this.logger.debug('Search manually triggered', DEBUG_TAG);
           } else {

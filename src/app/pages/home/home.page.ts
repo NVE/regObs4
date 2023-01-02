@@ -24,7 +24,7 @@ import { UsageAnalyticsConsentService } from '../../core/services/usage-analytic
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
-import { TabsService, TAB_HOME } from '../tabs/tabs.service';
+import { TabsService, TABS } from '../tabs/tabs.service';
 import { RegObsGeoJson } from './geojson';
 import { RegObsMarkerClusterLayer } from './markerCluster.layer';
 
@@ -87,7 +87,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       });
 
     this.tabsService.selectedTab$
-      .pipe(filter((tab) => tab === TAB_HOME))
+      .pipe(filter((tab) => tab === TABS.HOME))
       .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
 
     this.initSearch();
@@ -112,7 +112,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       .pipe(
         withLatestFrom(this.tabsService.selectedTab$),
         tap(([, tab]) => {
-          if (tab === TAB_HOME) {
+          if (tab === TABS.HOME) {
             searchResult.update();
             this.loggingService.debug('Search manually triggered', DEBUG_TAG);
           } else {

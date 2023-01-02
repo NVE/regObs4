@@ -1,19 +1,21 @@
 <ion-tabs [ngClass]="{'ios': isIos, 'md': isAndroid}">
   <ion-tab-bar [hidden]="fullscreen$ | async" slot="bottom">
-    <!-- home will navigate to route '' / start page / map page, but it is not allowed to set '' as a tab value. Router config redirects to ''. -->
-    <ion-tab-button tab="home" [selected]="(selectedTab$ | async) === 'home'">
-      <ion-icon name="map"></ion-icon>
-      <ion-label>{{'TABS.MAP' | translate}}</ion-label>
-    </ion-tab-button>
-    <ion-tab-button tab="observation-list" [selected]="(selectedTab$ | async) === 'observation-list'">
-      <ion-icon name="list"></ion-icon>
-      <ion-label>{{'TABS.LIST' | translate}}</ion-label>
-    </ion-tab-button>
-    <ion-tab-button tab="warning-list" [selected]="(selectedTab$ | async) === 'warning-list'">
-      <ion-icon name="warning"></ion-icon>
-      <ion-label>{{'TABS.WARNINGS' | translate}}</ion-label>
-      <ion-badge *ngIf="showBadge" [color]="badgeColor">{{ badgeText }}</ion-badge>
-    </ion-tab-button>
+    <ng-container *ngIf="(selectedTab$ | async) as selectedTab">
+      <!-- home will navigate to route '' / start page / map page, but it is not allowed to set '' as a tab value. Router config redirects to ''. -->
+      <ion-tab-button tab="home" [selected]="selectedTab === 'home'">
+        <ion-icon name="map"></ion-icon>
+        <ion-label>{{'TABS.MAP' | translate}}</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="observation-list" [selected]="selectedTab === 'observation-list'">
+        <ion-icon name="list"></ion-icon>
+        <ion-label>{{'TABS.LIST' | translate}}</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="warning-list" [selected]="selectedTab === 'warning-list'">
+        <ion-icon name="warning"></ion-icon>
+        <ion-label>{{'TABS.WARNINGS' | translate}}</ion-label>
+        <ion-badge *ngIf="showBadge" [color]="badgeColor">{{ badgeText }}</ion-badge>
+      </ion-tab-button>
+    </ng-container>
   </ion-tab-bar>
 </ion-tabs>
 <app-coach-marks-main-screen></app-coach-marks-main-screen>

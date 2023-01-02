@@ -2,11 +2,12 @@ import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { TabsService } from './tabs.service';
+import { TABS, TabsService } from './tabs.service';
 
 @Component({
   selector: 'app-tabs',
@@ -43,6 +44,7 @@ export class TabsPage implements OnInit, OnDestroy {
 
   constructor(
     private fullscreenService: FullscreenService,
+    private searchCriteriaService: SearchCriteriaService,
     private platform: Platform,
     private warningService: WarningService,
     private userSettingService: UserSettingService,
@@ -53,6 +55,13 @@ export class TabsPage implements OnInit, OnDestroy {
     this.isAndroid = this.platform.is('android');
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
+    this.tabsService.selectedTab$.subscribe((tab) => this.applyCurrentQueryParams(tab));
+  }
+
+  private applyCurrentQueryParams(path: string) {
+    if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
+      this.searchCriteriaService.applyQueryParams();
+    }
   }
 
   ngOnInit(): void {

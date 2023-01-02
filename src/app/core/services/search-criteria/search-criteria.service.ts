@@ -19,7 +19,6 @@ import {
   PositionDto,
   RegistrationTypeCriteriaDto,
   SearchCriteriaRequestDto,
-  SearchSideBarDto,
   WithinExtentCriteriaDto,
 } from 'src/app/modules/common-regobs-api';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -177,7 +176,6 @@ export class SearchCriteriaService {
    * Current filter. Current language and geo hazards are always included
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
-  avaialbleSerachCriteria: SearchSideBarDto;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -217,7 +215,9 @@ export class SearchCriteriaService {
 
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((newCriteria) => this.setUrlParams(newCriteria)),
+      tap((newCriteria) => {
+        this.setUrlParams(newCriteria);
+      }),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
       // Uansett kjekt med en shareReplay her, se kommentar over.
@@ -281,6 +281,11 @@ export class SearchCriteriaService {
     }
 
     return geoHazards;
+  }
+
+  async applyQueryParams() {
+    const currentCriteria = (await firstValueFrom(this.searchCriteria$)) as SearchCriteriaRequestDto;
+    currentCriteria && this.setUrlParams(currentCriteria);
   }
 
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
