@@ -11,6 +11,7 @@ import {
   shareReplay,
   startWith,
   Subject,
+  takeUntil,
   tap,
   withLatestFrom,
 } from 'rxjs';
@@ -173,6 +174,7 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   searchCriteriaChanges = new Subject<SearchCriteriaRequestDto>();
+  unSubMe = new Subject<void>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
   private curGeoHazard: GeoHazard[];
 
@@ -260,6 +262,8 @@ export class SearchCriteriaService {
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
     };
+    this.unSubMe.next();
+    this.unSubMe.complete();
     this.searchCriteriaChanges.next(criteria);
   }
 
