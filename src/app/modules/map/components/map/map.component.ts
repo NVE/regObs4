@@ -165,8 +165,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       if (this.center === undefined || this.zoom === undefined) {
         const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
-        console.log('currView', currentView);
-        console.log('center', this.center);
         if (currentView && currentView.bounds) {
           this.bounds = currentView.bounds;
         }
@@ -524,9 +522,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         zoom: this.map.getZoom(),
       });
     }
-    console.log('bounds', this.map.getBounds());
-    console.log('center', this.map.getCenter());
-    console.log('zoom', this.map.getZoom());
   }
 
   private getTileLayerDefaultOptions(useRetinaMap = false): IRegObsTileLayerOptions {
