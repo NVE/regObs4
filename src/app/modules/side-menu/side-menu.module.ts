@@ -14,6 +14,7 @@ import { WeakenediceLegendComponent } from './components/support-tiles-menu/lege
 import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/legends/steepness-common-legend/steepness-common-legend.component';
 import { DateRangeComponent } from './components/date-range/date-range.component';
 import { SharedComponentsModule } from '../registration/shared-components.module';
+import { NoLegendComponent } from './components/support-tiles-menu/legends/no-legend.component';
 
 @NgModule({
   imports: [SharedModule, SharedComponentsModule],
@@ -31,6 +32,7 @@ import { SharedComponentsModule } from '../registration/shared-components.module
     WeakenediceLegendComponent,
     SteepnessCommonLegendComponent,
     DateRangeComponent,
+    NoLegendComponent,
   ],
   exports: [SideMenuComponent, FilterMenuComponent],
 })
