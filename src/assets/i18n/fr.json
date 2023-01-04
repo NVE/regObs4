@@ -258,7 +258,11 @@
       "RIGHT_HERE": "Ici même",
       "TITLE": "Signe d'instabilité"
     },
-    "DELETE": "Supprimer l'observation",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Supprimer l'observation"
+      }
+    },
     "DELETE_CONFIRM": "Êtes-vous sûr ?",
     "DIRT": {
       "LAND_SLIDE_OBS": {

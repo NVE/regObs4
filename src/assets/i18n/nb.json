@@ -218,7 +218,20 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observasjonsfilter"
+    "TITLE": "Observasjonsfilter",
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
+    "COMPETANCE_FILTER": {
+      "ALL": "Alle",
+      "AUTOMATIC_STATIONS": "Automatiske stasjoner",
+      "LABEL": "Kompetanse",
+      "TITLE": "Observatør"
+    },
+    "NICK_FILTER": {
+      "TITLE": "Navn",
+      "PLACEHOLDER": "Søk på observatørnavn"
+    }
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
@@ -228,10 +241,10 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
-    "TITLE": "Observasjoner",
-    "SORT_BY_TEXT": "Sorter på",
+    "SORT_BY_CHANGE_TIME": "Oppdatert tid",
     "SORT_BY_OBS_TIME": "Observert tid",
-    "SORT_BY_CHANGE_TIME": "Oppdatert tid"
+    "SORT_BY_TEXT": "Sorter på",
+    "TITLE": "Observasjoner"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -863,9 +876,12 @@
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
+    "NO_LEGEND": "Dette kartlaget har ikke tegnforklaring enda.",
     "NO_OPACITY": "Heldekkende",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Løsne- og utløpsområder (Grønland)",
     "READ_MORE": "Les mer om støttekart",
     "STEEPNESS_COLOR_INFO": "Farger på terrengets bratthet i grader:",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Bratthetskart (Grønland)",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekartet er kun tilgjengelig offline med utløp aktiverte.",

@@ -265,7 +265,11 @@
       "RIGHT_HERE": "Just här",
       "TITLE": "Tecken på fara"
     },
-    "DELETE": "Radera observation",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Radera observation"
+      }
+    },
     "DELETE_CONFIRM": "Är du säker?",
     "DIRT": {
       "LAND_SLIDE_OBS": {

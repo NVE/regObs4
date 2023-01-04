@@ -3,23 +3,23 @@ import {
   BehaviorSubject,
   combineLatest,
   concatMap,
+  distinctUntilChanged,
   map,
-  scan,
   Observable,
+  scan,
   shareReplay,
   startWith,
   Subject,
   switchMap,
-  distinctUntilChanged,
   tap,
 } from 'rxjs';
+import { SearchCriteria } from 'src/app/core/models/search-criteria';
 import {
   AtAGlanceViewModel,
   RegistrationViewModel,
   SearchCriteriaRequestDto,
   SearchService,
 } from 'src/app/modules/common-regobs-api';
-import { SearchCriteria } from 'src/app/core/models/search-criteria';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 export class SearchResult<TViewModel> {
@@ -29,8 +29,7 @@ export class SearchResult<TViewModel> {
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
-    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    private logger: LoggingService
+    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ) {
     this.registrations$ = this.createRegistrationsObservable(searchCriteria$, fetchFunc);
   }
@@ -70,8 +69,7 @@ export class PagedSearchResult<TViewModel> {
     // Not sure what is best here, provide SearchService to this class, or provide the flexibility to create these
     // functions outside
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>,
-    private logger: LoggingService
+    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
   ) {
     this.registrations$ = searchCriteria$.pipe(
       // Every time we get new search criteria, reset paging and search state
@@ -123,9 +121,9 @@ export class PagedSearchResult<TViewModel> {
   ): Observable<TViewModel[]> {
     return combineLatest([
       searchCriteria$,
-      this.pageInfo.pipe(
-        distinctUntilChanged((prev, curr) => prev.items === curr.items && prev.offset === curr.offset)
-      ),
+      this.pageInfo,
+      // TODO: Oppfrisk-funksjonen virket ikke med dette:
+      // this.pageInfo.pipe(distinctUntilChanged((prev, curr) => prev.items === curr.items && prev.offset === curr.offset))
     ]).pipe(
       // Add page info to search criteria
       map(([searchCriteria, pageInfo]) => ({
@@ -136,7 +134,6 @@ export class PagedSearchResult<TViewModel> {
       // Search for matching registrations.
       // Use concatMap here and not switchMap as we want to include all pages if increasePage() is called before
       // the current search is finished.
-      tap((criteria) => this.logger.debug('Fetching registrations', PagedSearchResult.DEBUG_TAG, criteria)),
       concatMap((searchCriteria) =>
         fetchFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
           // Include search criteria with search results so that we know which search criteria the results belong to
@@ -170,8 +167,7 @@ export class SearchRegistrationService {
   search(searchCriteria$: Observable<SearchCriteria>): SearchResult<RegistrationViewModel> {
     return new SearchResult<RegistrationViewModel>(
       searchCriteria$,
-      this.searchService.SearchSearch.bind(this.searchService),
-      this.logger
+      this.searchService.SearchSearch.bind(this.searchService)
     );
   }
 
@@ -182,8 +178,7 @@ export class SearchRegistrationService {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
       this.searchService.SearchSearch.bind(this.searchService),
-      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches)),
-      this.logger
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
 
@@ -193,8 +188,7 @@ export class SearchRegistrationService {
   atAGlance(searchCriteria$: Observable<SearchCriteria>): SearchResult<AtAGlanceViewModel> {
     return new SearchResult<AtAGlanceViewModel>(
       searchCriteria$.pipe(map((c) => ({ ...c, NumberOfRecords: 100000 }))),
-      this.searchService.SearchAtAGlance.bind(this.searchService),
-      this.logger
+      this.searchService.SearchAtAGlance.bind(this.searchService)
     );
   }
 }

@@ -330,3 +330,8 @@ Oversettelsene ligger under ios / App / App.
 ## Oversettelser for web-koden
 
 Oversettelsene ligger under src / assets / i18n.
+
+## Oppdatere fallback data for databasen
+
+I `src/assets/json` ligger det fallback-data for nedtrekksmenyer og hjelpetekster. Disse kan oppdateres med
+`npm run translations:update-fallback`. Skriptet laster ned nye filer fra apiet.
