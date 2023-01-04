@@ -1,4 +1,6 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import L from 'leaflet';
+import { LatLng, LatLngBounds } from 'leaflet';
 import moment from 'moment';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -6,11 +8,19 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
+import {
+  createMapView,
+  SearchCriteriaOrderBy,
+  SearchCriteriaService,
+  separatedStringToNumberArray,
+} from './search-criteria.service';
 import { UrlParams } from './url-params';
 
 class TestMapService {
   mapView$: Observable<IMapView>;
+  updateMapView(mapView: IMapView) {
+    this.mapView$ = of(mapView);
+  }
 }
 
 function createTestMapService(): TestMapService {
@@ -171,6 +181,25 @@ describe('SearchCriteriaService', () => {
       expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
     }));
   });
+
+  it('extent filter', fakeAsync(async () => {
+    //create mapview with coordinates
+    const ms = new TestMapService();
+    const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
+    ms.mapView$ = of(mv);
+    service = new SearchCriteriaService(userSettingService, ms as unknown as MapService, new TestLoggingService());
+    const extent = {
+      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
+      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
+    };
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.Extent).toEqual(extent);
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('nwlat')).toEqual('70.7978');
+    expect(url.searchParams.get('nwlon')).toEqual('21.4343');
+    expect(url.searchParams.get('selat')).toEqual('67.5715');
+    expect(url.searchParams.get('selon')).toEqual('33.1458');
+  }));
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -215,6 +244,42 @@ describe('SearchCriteriaService url parsing', () => {
     tick();
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
+  }));
+
+  it('correct coordinates in url', fakeAsync(async () => {
+    new UrlParams().set('nwlat', '70.79781234').apply();
+    new UrlParams().set('nwlon', '21.4343').apply();
+    new UrlParams().set('selat', '67.5715').apply();
+    new UrlParams().set('selon', '33.1458').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+    tick(1);
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.Extent).toEqual({
+      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
+      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
+    });
+  }));
+
+  it('too many decimals in coordinates in url', fakeAsync(async () => {
+    new UrlParams().set('nwlat', '70.79781234').apply();
+    new UrlParams().set('nwlon', '21.4343').apply();
+    new UrlParams().set('selat', '67.5715').apply();
+    new UrlParams().set('selon', '33.1458').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+    tick(1);
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.Extent).toEqual({
+      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
+      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
+    });
   }));
 
   it('type wrong hazard should search for 10 as default', fakeAsync(async () => {

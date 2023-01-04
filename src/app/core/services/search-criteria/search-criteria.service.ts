@@ -76,7 +76,7 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
 //call happens three times when i start with coordinates in the url
 //sometimes the map changes the zoom and shows the entire globe instead of zoomed area (happens for example if you start app in registration page
 //and then go back to home page)
-function createMapView(nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView {
+export function createMapView(nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView {
   const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
   const leafletBounds = new LatLngBounds(
     new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
@@ -290,20 +290,14 @@ export class SearchCriteriaService {
     return criteria;
   }
 
-  private readCoordinates(nwLat: string, nwLon: string, seLat: string, seLon: string): WithinExtentCriteriaDto {
+  readCoordinates(nwLat: string, nwLon: string, seLat: string, seLon: string) {
     if (nwLat && nwLon && seLat && seLon) {
-      const nwLatToNum = parseFloat(nwLat);
-      const nwLonToNum = parseFloat(nwLon);
-      const seLatToNum = parseFloat(seLat);
-      const seLonToNum = parseFloat(seLon);
-      const formatedMapView = createMapView(nwLatToNum, nwLonToNum, seLatToNum, seLonToNum);
+      const nwLatToNum = (+nwLat).toFixed(4);
+      const nwLonToNum = (+nwLon).toFixed(4);
+      const seLatToNum = (+seLat).toFixed(4);
+      const seLonToNum = (+seLon).toFixed(4);
+      const formatedMapView = createMapView(+nwLatToNum, +nwLonToNum, +seLatToNum, +seLonToNum);
       this.mapService.updateMapView(formatedMapView);
-      return {
-        BottomRight: { Latitude: seLatToNum, Longitude: seLonToNum },
-        TopLeft: { Latitude: nwLatToNum, Longitude: nwLonToNum },
-      };
-    } else {
-      return null;
     }
   }
 
