@@ -1,21 +1,16 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
-import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
-import {
-  AtAGlanceViewModel,
-  AttachmentViewModel,
-  RegistrationViewModel,
-} from 'src/app/modules/common-regobs-api/models';
+import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
+import { AtAGlanceViewModel, AttachmentViewModel } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
-import { take } from 'rxjs/operators';
-import { getStarCount } from '../../core/helpers/competence-helper';
-import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import { getStarCountFromNumber } from '../../core/helpers/competence-helper';
+import { AttachmentService } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -32,12 +27,16 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   topHeader: string;
   title: string;
   distanceAndType: string;
+  firstAttachment: SafeUrl;
+  attachmentsCount: number;
   name: string;
   id: number;
   geoHazard: GeoHazard;
   attachments: AttachmentViewModel[] = [];
   masl: number;
   competenceLevel: number;
+  showImage: boolean;
+  imgSrc: string;
 
   private subscription: Subscription;
   private _isVisible: Subject<boolean>;
@@ -53,9 +52,11 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     private geoPositionService: GeoPositionService,
     private helper: HelperService,
     private translateService: TranslateService,
+    private attachmentService: AttachmentService,
     private router: Router,
     private zone: NgZone,
-    private userSettingService: UserSettingService
+    private userSettingService: UserSettingService,
+    private sanitizer: DomSanitizer
   ) {
     this.visible = false;
     this._isVisible = new Subject();
@@ -78,24 +79,40 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     return item.FormNames.join(', ');
   }
 
+  getAttachmentsCount(count: number): number {
+    return count > 1 ? count - 1 : null;
+  }
+
+  public handleMissingImage() {
+    this.firstAttachment = './assets/images/broken-image-w-bg.svg';
+  }
+
+  private isAttachments(url: string) {
+    if (url) {
+      return this.sanitizer.bypassSecurityTrustUrl(url);
+    } else {
+      this.showImage = false;
+    }
+  }
+
   show(item: MapItem) {
-    this.zone.run(() => {
+    this.showImage = true;
+    this.zone.run(async () => {
       this.id = item.RegId;
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.NickName;
-      // this.competenceLevel = getStarCount(item.CompetenceLevelTID);
+      this.competenceLevel = getStarCountFromNumber(item.CompetenceLevelTID);
       this.geoHazard = item.GeoHazardTID;
       // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       // this.setDistanceAndType(item);
       this.attachments = [];
-      // Why do we check for AppMode?
-      // if (this.appMode) {
-      //   this.attachments = getAllAttachmentsFromViewModel(item);
-      // }
+      this.firstAttachment = this.isAttachments(item.FirstAttachmentUrl);
+      this.attachmentsCount = this.getAttachmentsCount(item.AttachmentsCount);
       this.visible = true;
       this.publishChange();
     });
+    console.log(this.firstAttachment);
   }
 
   hide() {
