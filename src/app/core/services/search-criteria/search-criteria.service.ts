@@ -177,6 +177,7 @@ export class SearchCriteriaService {
   unSubMe = new Subject<void>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
   private curGeoHazard: GeoHazard[];
+  restart = false;
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -206,9 +207,14 @@ export class SearchCriteriaService {
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
         scan((allSearchCriteria, newSearchCriteria) => {
-          console.log('all', allSearchCriteria);
-          console.log('new', newSearchCriteria);
-          return { ...allSearchCriteria, ...newSearchCriteria };
+          if (this.restart) {
+            console.log('alll', allSearchCriteria);
+            console.log('neeew', newSearchCriteria);
+            this.restart = false;
+            return criteria;
+          } else {
+            return { ...allSearchCriteria, ...newSearchCriteria };
+          }
         }, {})
       ),
       this.userSettingService.language$,
@@ -220,7 +226,10 @@ export class SearchCriteriaService {
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
-        //console.log('crits', criteria);
+        if (this.curGeoHazard && this.curGeoHazard != geoHazards) {
+          this.restart = true;
+          this.curGeoHazard = geoHazards;
+        }
         return {
           ...criteria,
           LangKey: langKey,
@@ -233,21 +242,7 @@ export class SearchCriteriaService {
 
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((newCriteria) => {
-        if (this.curGeoHazard && this.curGeoHazard != newCriteria.SelectedGeoHazards) {
-          console.log('restart');
-          this.curGeoHazard = newCriteria.SelectedGeoHazards;
-          newCriteria.SelectedRegistrationTypes = null;
-          newCriteria.ObserverCompetence = null;
-          newCriteria.ObserverNickName = null;
-          this.restartSearchCriteria();
-          return this.setUrlParams(newCriteria);
-        } else {
-          this.curGeoHazard = newCriteria.SelectedGeoHazards;
-          console.log('oldie', newCriteria);
-          return this.setUrlParams(newCriteria);
-        }
-      }),
+      tap((newCriteria) => this.setUrlParams(newCriteria)),
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
       // Uansett kjekt med en shareReplay her, se kommentar over.
@@ -262,8 +257,8 @@ export class SearchCriteriaService {
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
     };
-    this.unSubMe.next();
-    this.unSubMe.complete();
+    //this.unSubMe.next();
+    //this.unSubMe.complete();
     this.searchCriteriaChanges.next(criteria);
   }
 
