@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -55,11 +55,13 @@ export class TabsPage implements OnInit, OnDestroy {
     this.isAndroid = this.platform.is('android');
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
-    this.tabsService.selectedTab$.subscribe((tab) => this.applyCurrentQueryParams(tab));
+    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([_, tab]) =>
+      this.applyCurrentQueryParams(tab)
+    );
   }
 
   private applyCurrentQueryParams(path: string) {
-    if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
+    if (path === TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
       this.searchCriteriaService.applyQueryParams();
     }
   }

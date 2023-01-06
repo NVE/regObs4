@@ -215,9 +215,7 @@ export class SearchCriteriaService {
 
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((newCriteria) => {
-        this.setUrlParams(newCriteria);
-      }),
+
       // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
       // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
       // Uansett kjekt med en shareReplay her, se kommentar over.
@@ -288,6 +286,8 @@ export class SearchCriteriaService {
     currentCriteria && this.setUrlParams(currentCriteria);
   }
 
+  //looks like those params are set regardless if the starting page needs to show them or not. We dont need
+  //params on settings or my-observations
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
