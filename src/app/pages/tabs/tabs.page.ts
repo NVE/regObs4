@@ -61,7 +61,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   private applyCurrentQueryParams(path: string) {
-    if (path === TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
+    if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
       this.searchCriteriaService.applyQueryParams();
     }
   }

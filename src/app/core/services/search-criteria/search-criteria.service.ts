@@ -286,8 +286,6 @@ export class SearchCriteriaService {
     currentCriteria && this.setUrlParams(currentCriteria);
   }
 
-  //looks like those params are set regardless if the starting page needs to show them or not. We dont need
-  //params on settings or my-observations
   private setUrlParams(criteria: SearchCriteriaRequestDto) {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
