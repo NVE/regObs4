@@ -171,6 +171,42 @@ describe('SearchCriteriaService', () => {
       expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
     }));
   });
+
+  it('fromDate url param should be set or updated', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+
+    service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
+    tick(100);
+
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('fromDate')).toEqual('2000-12-24');
+  }));
+
+  it('toDate url param should be set or updated', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+
+    service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
+    tick(100);
+
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.ToDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('toDate')).toEqual('2000-12-24');
+  }));
+
+  it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+
+    service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
+    tick(100);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('toDate')).toBeNull();
+  }));
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -362,59 +398,5 @@ describe('SearchCriteriaService url parsing', () => {
     const expectedFromTime = moment(new Date('2000-12-23 00:00:00.000')).toISOString(true);
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
-  }));
-
-  it('fromDate url param should be set or updated', fakeAsync(async () => {
-    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
-
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
-    service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), false);
-    tick(100);
-
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('fromDate')).toEqual('2000-12-24');
-
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000Z');
-  }));
-
-  it('toDate url param should be set or updated', fakeAsync(async () => {
-    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
-
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
-    service.setToDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true));
-    tick(100);
-
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('toDateDate')).toEqual('2000-12-24');
-
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.ToDtObsTime).toEqual('2000-12-24T00:00:00.000Z');
-  }));
-
-  it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
-    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
-
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
-    service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
-    tick(100);
-
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('toDate')).toBeNull();
   }));
 });
