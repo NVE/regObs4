@@ -9,6 +9,6 @@ export function isoDateTimeToLocalDate(isoDateTime: string): string {
   return null;
 }
 
-export function shorthandDateToIsoDateTime(date: string): string {
-  return moment(date).startOf('day').toISOString(true);
+export function shorthandDateToIsoDateTime(date: string, start: 'start' | 'end' = 'start'): string {
+  return moment(date)[start ? 'startOf' : 'endOf']('day').toISOString(true);
 }

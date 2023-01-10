@@ -247,7 +247,7 @@ export class SearchCriteriaService {
 
     let toObsTime: string;
     if (url.searchParams.get(URL_PARAM_TODATE)) {
-      toObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE));
+      toObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
@@ -355,7 +355,7 @@ export class SearchCriteriaService {
   setFromDate(fromDate: string, removeToDate = false) {
     const returnObj = {} as SearchCriteriaRequestDto;
     if (fromDate) {
-      returnObj.FromDtObsTime = fromDate;
+      returnObj.FromDtObsTime = moment(fromDate).startOf('day').toISOString(true);
       if (removeToDate) returnObj.ToDtObsTime = null;
     }
     this.searchCriteriaChanges.next(returnObj);
@@ -363,7 +363,7 @@ export class SearchCriteriaService {
 
   setToDate(toDate: string) {
     if (toDate) {
-      this.searchCriteriaChanges.next({ ToDtObsTime: toDate });
+      this.searchCriteriaChanges.next({ ToDtObsTime: moment(toDate).endOf('day').toISOString(true) });
     }
   }
 
