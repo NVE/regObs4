@@ -399,4 +399,24 @@ describe('SearchCriteriaService url parsing', () => {
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
   }));
+
+  it('toDate and fromDate filter should work', fakeAsync(async () => {
+    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00'));
+    new UrlParams().set('fromDate', '2020-12-24').apply();
+    new UrlParams().set('toDate', '2022-12-24').apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    const expectedFromTime = moment(new Date('2020-12-24 00:00:00.000')).toISOString(true);
+    const expectedToTime = moment(new Date('2022-12-24 00:00:00.000')).toISOString(true);
+
+    expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
+    expect(criteria.ToDtObsTime).toEqual(expectedToTime);
+  }));
 });
