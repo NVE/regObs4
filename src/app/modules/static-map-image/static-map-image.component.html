@@ -1,0 +1,24 @@
+<div class="container" #container>
+  <!--
+    TODO: How to hide tiles if request 404, or display error message?
+    At the moment you can see an image failed icon and the alt message if the request fails.
+  -->
+  <img
+    *ngFor="let props of tiles; trackBy: trackByImgProps"
+    class="tile"
+    [style.top]="props.top"
+    [style.left]="props.left"
+    [src]="props.src"
+    loading="lazy"
+    alt="Map tile"
+    decoding="async"
+  />
+
+  <!-- TODO: Add trackBy for graphics as well -->
+  <div
+    class="graphic"
+    *ngFor="let graphic of graphics;"
+    [innerHTML]="graphic.svg"
+    [ngStyle]="graphic.style"
+  ></div>
+</div>

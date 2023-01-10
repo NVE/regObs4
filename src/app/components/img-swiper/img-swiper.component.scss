@@ -52,7 +52,7 @@
     .swiper-slide {
       width: 80vw;
       height: 80vw;
-      display: inline-flex;
+      // display: inline-flex;
 
       &:last-child {
         margin-right: 0px;
@@ -66,10 +66,10 @@
     }
   }
 
-  app-map-image {
+  app-static-map-image {
     height: 100%;
     width: 100%;
-    display: inline-flex;
+    // display: inline-flex;
     &.single {
       height: 80vw;
     }
@@ -147,7 +147,7 @@
 
 @media screen and (min-width: 800px) {
   .slides-wrapper {
-    app-map-image {
+    app-static-map-image {
       max-height: 400px;
     }
     app-offline-image {

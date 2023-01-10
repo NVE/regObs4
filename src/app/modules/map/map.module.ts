@@ -19,6 +19,7 @@ import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-i
 import { MapImageModule } from '../map-image/map-image.module';
 import { SharedModule } from '../shared/shared.module';
 import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.component';
+import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.co
     ModalMapImagePageModule,
     SupportMapInfoPageModule,
     MapImageModule,
+    StaticMapImageModule,
     SharedModule,
   ],
   declarations: [

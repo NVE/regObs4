@@ -4,7 +4,7 @@ import { SupportTile } from './app/core/models/support-tile.model';
 import { TopoMapLayer } from './app/core/models/topo-map-layer.enum';
 import { TopoMap } from './app/core/models/topo-map.enum';
 
-interface ITopoMapLayerOptions {
+export interface ITopoMapLayerOptions {
   url: string;
 
   /**

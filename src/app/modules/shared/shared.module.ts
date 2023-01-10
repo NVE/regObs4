@@ -30,6 +30,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AbsPipe } from './pipes/abs.pipe';
 import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
+import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-p
     MapImageModule,
     AuthModule,
     VirtualScrollerModule,
+    StaticMapImageModule
   ],
   declarations: [
     ShadowCssDirective,
