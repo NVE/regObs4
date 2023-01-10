@@ -26,7 +26,10 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
-import { circleMarker } from 'leaflet';
+import {
+  isoDateTimeToLocalDate,
+  shorthandDateToIsoDateTime,
+} from '../../../modules/common-core/helpers/date-converters';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -75,6 +78,7 @@ function competenceFromUrlToDto(competence: string): number[] {
 function competenceFromDtoToUrl(competence: number[]): string {
   return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : null;
 }
+
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
@@ -132,23 +136,6 @@ function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
     return url.join('~');
   }
   return '';
-}
-
-function isArraysEqual(array1: number[], array2: number[]): boolean {
-  return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
-}
-
-function isoDateTimeToLocalDate(isoDateTime: string): string {
-  if (isoDateTime) {
-    const offset = new Date().getTimezoneOffset();
-    const localTime = new Date(Date.parse(isoDateTime) - offset * 60 * 1000);
-    return localTime.toISOString().split('T')[0];
-  }
-  return null;
-}
-
-function shorthandDateToIsoDateTime(date: string): string {
-  return moment(date).startOf('day').toISOString(true);
 }
 
 /**
@@ -280,7 +267,7 @@ export class SearchCriteriaService {
       OrderBy: orderBy,
     } as SearchCriteriaRequestDto;
 
-    this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
+    this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards, daysBack: daysBackNumeric });
     return criteria;
   }
 
@@ -442,33 +429,5 @@ export class SearchCriteriaService {
       return extent;
     }
     return null;
-  }
-
-  private async saveGeoHazardsAndDaysBackInSettings(geoHazards: number[], daysBack: number): Promise<void> {
-    //TODO: Snarfet fra ObservationDaysBackComponent: Legg et felles sted hvis vi skal bruke dette!
-    let userSetting = await firstValueFrom(this.userSettingService.userSetting$);
-    let changed = false;
-    if (geoHazards != null) {
-      if (!isArraysEqual(geoHazards, userSetting.currentGeoHazard)) {
-        userSetting = {
-          ...userSetting,
-          currentGeoHazard: geoHazards,
-        };
-        changed = true;
-      }
-    }
-    if (daysBack != null) {
-      for (const geoHazard of userSetting.currentGeoHazard) {
-        //check and eventually set days back for every selected geo hazard
-        const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
-        if (existingValue.daysBack !== daysBack) {
-          existingValue.daysBack = daysBack;
-          changed = true;
-        }
-      }
-    }
-    if (changed) {
-      this.userSettingService.saveUserSettings(userSetting);
-    }
   }
 }
