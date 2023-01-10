@@ -27,7 +27,7 @@ import {
   ElementRef,
   TrackByFunction,
 } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilChanged, firstValueFrom, interval, skipWhile, Subject, takeUntil } from 'rxjs';
 import { ImageLocation } from '../../components/img-swiper/image-location.model';
 import { settings } from '../../../settings';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
@@ -97,9 +97,14 @@ export class StaticMapImageComponent implements OnDestroy, AfterViewInit {
   @ViewChild('container', {static: true})
   container: ElementRef<HTMLDivElement>;
 
-  tiles: TileProps[];
+  tiles: TileProps[] = null;
   graphics: Graphic[] = [];
-  private getSizeInterval;
+  private size = new Subject<{w: number; h: number}>();
+  size$ = this.size.pipe(
+    skipWhile(({ w, h}) => w === 0 || h === 0),
+    distinctUntilChanged((prev, curr) => prev.h === curr.h && prev.w === curr.w),
+    debounceTime(100),
+  );
 
   get trackByImgProps() {
     return trackByImgProps;
@@ -111,32 +116,9 @@ export class StaticMapImageComponent implements OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  private getSize(): Promise<{w: number; h: number}> {
-    // Sometimes the size is 0 if the component is hidden right after init.
-    // Use an interval to ask for the container size repeatadly until we have a valid size.
-
-    if (this.getSizeInterval) {
-      throw new Error('Already getting size');
-    }
-
-    return new Promise((resolve) => {
-      this.getSizeInterval = setInterval(() => {
-        if (this.container?.nativeElement) {
-          const { width: w, height: h } = this.container.nativeElement.getBoundingClientRect();
-
-          if (w && h) {
-            // We have a valid size, stop interval and return
-            clearInterval(this.getSizeInterval);
-            this.getSizeInterval = null;
-            resolve({ w, h});
-          }
-        }
-      }, 50);
-    });
-  }
-
   private async createMap() {
-    const { w, h } = await this.getSize();
+    const { w, h } = await firstValueFrom(this.size$);
+
     const z = settings.map.tiles.zoomLevelObservationList;  // Zoom level
     // TODO: Do we need to support other tile sizes, what about retina map?
     const tileSize = 256;
@@ -179,14 +161,21 @@ export class StaticMapImageComponent implements OnDestroy, AfterViewInit {
     // Create map after view has been initialized, we need the component to be in the dom
     // to figure out the container size
     this.createMap();
+
+    // Read container size
+    interval(50).pipe(
+      takeUntil(this.size$)
+    ).subscribe(() => {
+      if (this.container?.nativeElement) {
+        const { width: w, height: h } = this.container.nativeElement.getBoundingClientRect();
+        this.size.next({ w, h });
+      }
+    });
   }
 
 
   ngOnDestroy(): void {
-    // Clear get size interval if component is destroyed while interval is running
-    if (this.getSizeInterval) {
-      clearInterval(this.getSizeInterval);
-    }
+    // TODO: Unsubscribe interval in ngAfterViewInit if destroyed before it has a size
   }
 
 }

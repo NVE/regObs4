@@ -21,4 +21,8 @@
     [innerHTML]="graphic.svg"
     [ngStyle]="graphic.style"
   ></div>
+
+  <div style="position: absolute; top: 0; left: 0; background-color: white" *ngIf="size$ | async as size">
+    Size = ({{ size.w }}, {{ size.h }})
+  </div>
 </div>
