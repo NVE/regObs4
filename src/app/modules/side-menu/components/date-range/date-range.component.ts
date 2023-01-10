@@ -100,8 +100,18 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
 
   changeDateAndSetMode(days?: number): void {
     const mode = days !== undefined ? 'predefined' : 'custom';
-    const date = days !== undefined && days !== 0 ? moment().subtract(days, 'days') : moment();
+    let date;
 
+    if (days !== undefined && days !== 0) {
+      date = moment().subtract(days, 'days');
+      this.cachedDays = days;
+    } else {
+      date = moment();
+      if (this.cachedDays) {
+        days = this.cachedDays;
+        date = moment().subtract(days, 'days');
+      }
+    }
     this.searchCriteriaService.setFromDate(date.format('YYYY-MM-DD'), true);
     this.mode.next(mode);
   }
