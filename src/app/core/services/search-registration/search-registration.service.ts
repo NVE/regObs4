@@ -14,6 +14,7 @@ import {
   tap,
 } from 'rxjs';
 import { SearchCriteria } from 'src/app/core/models/search-criteria';
+import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import {
   AtAGlanceViewModel,
   RegistrationViewModel,
@@ -50,7 +51,7 @@ export class SearchResult<TViewModel> {
   }
 }
 
-export class PagedSearchResult<TViewModel> {
+export class PagedSearchResult<TViewModel extends Pick<RegistrationViewModel, 'RegId'>> {
   static DEBUG_TAG = 'PagedSearchResult';
   static PAGE_SIZE = 10;
   static MAX_ITEMS = 100;
@@ -134,11 +135,13 @@ export class PagedSearchResult<TViewModel> {
         )
       ),
       // Accumulate results if offset > 0
-      // TODO: Filter out duplicates
       scan(
         (accumulated, { searchCriteria, result }) => (searchCriteria.Offset > 0 ? [...accumulated, ...result] : result),
         [] // Start with an empty array
-      )
+      ),
+      // Return unique registrations. If a new page result comes in after a registration has been submitted,
+      // we would get duplicates
+      map((regs) => getUniqueRegistrations(regs))
     );
   }
 }
