@@ -1,13 +1,15 @@
 <div class="map-item-bar" (click)="navigateToItem()" *ngIf="visible">
   <ion-grid class="ion-text-wrap">
     <ion-row class="ion-justify-content-center ion-nowrap">
-      <ion-col *ngIf="showImage" size="auto">
+      <ion-col *ngIf="firstAttachmentUrl" size="auto">
         <div class="image">
-          <img [src]="firstAttachment" (error)="handleMissingImage()" />
-          <span *ngIf="attachmentsCount" class="image-count">+{{ attachmentsCount }}</span>
+          <img [src]="firstAttachmentUrl" (error)="handleMissingImage()" />
+          <span *ngIf="additionaAttachmentCount && showAdditionalAttachmentCount" class="image-count"
+            >+{{ additionaAttachmentCount }}</span
+          >
         </div>
       </ion-col>
-      <ion-col size="auto" [ngClass]="showImage ? 'image-show' : 'image-show-not'">
+      <ion-col size="auto" [ngClass]="firstAttachmentUrl ? 'image-show' : 'image-show-not'">
         <ion-row>
           <ion-col>
             <div class="card-icon-item">

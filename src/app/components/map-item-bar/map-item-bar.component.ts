@@ -1,16 +1,12 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
+import { SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
-import { HelperService } from '../../core/services/helpers/helper.service';
-import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { AtAGlanceViewModel, AttachmentViewModel } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
-import { getStarCountFromNumber } from '../../core/helpers/competence-helper';
-import { AttachmentService } from 'src/app/modules/common-regobs-api';
+import { StarRatingHelper } from '../competence/star-helper';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -27,39 +23,23 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   topHeader: string;
   title: string;
   distanceAndType: string;
-  firstAttachment: SafeUrl;
-  attachmentsCount: number;
+  firstAttachmentUrl: SafeUrl;
+  additionaAttachmentCount: number;
   name: string;
   id: number;
   geoHazard: GeoHazard;
   attachments: AttachmentViewModel[] = [];
   masl: number;
   competenceLevel: number;
-  showImage: boolean;
-  imgSrc: string;
+  showAdditionalAttachmentCount: boolean;
 
   private subscription: Subscription;
-  private _isVisible: Subject<boolean>;
   private appMode: AppMode;
-
-  get isVisible(): Observable<boolean> {
-    return this._isVisible.asObservable();
-  }
 
   // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
 
-  constructor(
-    private geoPositionService: GeoPositionService,
-    private helper: HelperService,
-    private translateService: TranslateService,
-    private attachmentService: AttachmentService,
-    private router: Router,
-    private zone: NgZone,
-    private userSettingService: UserSettingService,
-    private sanitizer: DomSanitizer
-  ) {
+  constructor(private router: Router, private zone: NgZone, private userSettingService: UserSettingService) {
     this.visible = false;
-    this._isVisible = new Subject();
   }
 
   ngOnInit() {
@@ -79,54 +59,41 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     return item.FormNames.join(', ');
   }
 
-  getAttachmentsCount(count: number): number {
+  getAdditionalAttachmentsCount(count: number): number {
     return count > 1 ? count - 1 : null;
   }
 
   handleMissingImage() {
-    this.firstAttachment = './assets/images/broken-image-w-bg.svg';
-  }
-
-  private isAttachments(url: string) {
-    if (url) {
-      return this.sanitizer.bypassSecurityTrustUrl(url);
-    } else {
-      this.showImage = false;
-    }
+    this.firstAttachmentUrl = './assets/images/broken-image-w-bg.svg';
+    this.showAdditionalAttachmentCount = false;
   }
 
   show(item: MapItem) {
-    this.showImage = true;
+    this.showAdditionalAttachmentCount = true;
     this.zone.run(async () => {
       this.id = item.RegId;
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.NickName;
-      this.competenceLevel = getStarCountFromNumber(item.CompetenceLevelTID);
+      this.competenceLevel = StarRatingHelper.getStarRating(item.CompetenceLevelTID);
       this.geoHazard = item.GeoHazardTID;
       // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       // this.setDistanceAndType(item);
       this.attachments = [];
-      this.firstAttachment = this.isAttachments(item.FirstAttachmentUrl);
-      this.attachmentsCount = this.getAttachmentsCount(item.AttachmentsCount);
+      this.firstAttachmentUrl = item.FirstAttachmentUrl;
+      this.additionaAttachmentCount = this.getAdditionalAttachmentsCount(item.AttachmentsCount);
       this.visible = true;
-      this.publishChange();
     });
   }
 
   hide() {
     this.zone.run(() => {
       this.visible = false;
-      this.publishChange();
     });
   }
 
   navigateToItem() {
     this.router.navigateByUrl(`view-observation/${this.id}`);
-  }
-
-  private publishChange() {
-    this._isVisible.next(this.visible);
   }
 
   // TODO
