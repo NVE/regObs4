@@ -277,6 +277,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.bounds) {
       map.fitBounds(this.bounds);
+      // After fitBounds has been called, the map may show more than the specified bounds.
+      // Notify map service about what the new bounds are so that search criteria service etc gets correct bounds.
+      this.updateMapView();
     }
 
     if (this.showObserverTrips) {
