@@ -72,16 +72,10 @@ export class PagedSearchResult<TViewModel> {
     countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
   ) {
     this.registrations$ = searchCriteria$.pipe(
-      // Every time we get new search criteria, reset paging and search state
-      tap(() => {
-        this.resetPaging();
-        this.allFetchedForCriteria.next(false);
-        this.maxItemsFetched.next(false);
-      }),
       // For every new search criteria, create a paged search and check what the total count is
       switchMap((searchCriteria) =>
         combineLatest([
-          this.createPagedSearch(searchCriteria$, fetchFunc),
+          this.createPagedSearch(searchCriteria, fetchFunc),
           countFunc(searchCriteria as SearchCriteriaRequestDto),
         ])
       ),
@@ -113,20 +107,19 @@ export class PagedSearchResult<TViewModel> {
 
   resetPaging() {
     this.pageInfo.next({ offset: 0, items: PagedSearchResult.PAGE_SIZE });
+    this.allFetchedForCriteria.next(false);
+    this.maxItemsFetched.next(false);
   }
 
   protected createPagedSearch(
-    searchCriteria$: Observable<SearchCriteria>,
+    searchCriteria: SearchCriteria,
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ): Observable<TViewModel[]> {
-    return combineLatest([
-      searchCriteria$,
-      this.pageInfo,
-      // TODO: Oppfrisk-funksjonen virket ikke med dette:
-      // this.pageInfo.pipe(distinctUntilChanged((prev, curr) => prev.items === curr.items && prev.offset === curr.offset))
-    ]).pipe(
+    this.resetPaging(); // Reset state when a new search is created
+
+    return this.pageInfo.pipe(
       // Add page info to search criteria
-      map(([searchCriteria, pageInfo]) => ({
+      map((pageInfo) => ({
         ...searchCriteria,
         Offset: pageInfo.offset,
         NumberOfRecords: pageInfo.items,
