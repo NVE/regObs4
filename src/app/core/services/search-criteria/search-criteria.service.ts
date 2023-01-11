@@ -311,10 +311,13 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
-    params.set(URL_PARAM_NW_LAT, criteria.Extent && criteria.Extent.TopLeft.Latitude.toFixed(4));
-    params.set(URL_PARAM_NW_LON, criteria.Extent && criteria.Extent.TopLeft.Longitude.toFixed(4));
-    params.set(URL_PARAM_SE_LAT, criteria.Extent && criteria.Extent.BottomRight.Latitude.toFixed(4));
-    params.set(URL_PARAM_SE_LON, criteria.Extent && criteria.Extent.BottomRight.Longitude.toFixed(4));
+
+    if (criteria.Extent != null) {
+      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(4));
+      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(4));
+      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(4));
+      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(4));
+    }
     params.apply();
   }
 
