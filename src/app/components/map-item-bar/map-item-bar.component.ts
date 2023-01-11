@@ -83,7 +83,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     return count > 1 ? count - 1 : null;
   }
 
-  public handleMissingImage() {
+  handleMissingImage() {
     this.firstAttachment = './assets/images/broken-image-w-bg.svg';
   }
 
@@ -112,7 +112,6 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.visible = true;
       this.publishChange();
     });
-    console.log(this.firstAttachment);
   }
 
   hide() {

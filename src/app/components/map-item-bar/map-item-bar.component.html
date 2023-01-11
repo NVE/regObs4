@@ -7,7 +7,7 @@
           <span *ngIf="attachmentsCount" class="image-count">+{{ attachmentsCount }}</span>
         </div>
       </ion-col>
-      <ion-col size="auto" [ngStyle]="{ 'max-width': showImage ? '200px' : '400px' }">
+      <ion-col size="auto" [ngClass]="showImage ? 'image-show' : 'image-show-not'">
         <ion-row>
           <ion-col>
             <div class="card-icon-item">
@@ -52,12 +52,3 @@
     </ion-row>
   </ion-grid>
 </div>
-
-<!--<div class="img-wrapper" *ngIf="attachments.length > 0" [ngClass]="{ full: attachments.length > 1 }">
-    <app-img-swiper
-      [showLabels]="false"
-      [attachments]="attachments"
-      [withFallbackText]="false"
-      [small]="true"
-    ></app-img-swiper>
-  </div> -->
