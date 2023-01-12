@@ -15,12 +15,13 @@
               class="segment-button-class"
               [(ngModel)]="segmentValue"
               mode="ios"
+              [disabled]="isCoordinatesInUrl == null"
             >
               <ion-segment-button value="mapBorders">
-                <ion-label>I kartutsnitt</ion-label>
+                <ion-label>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate}}</ion-label>
               </ion-segment-button>
               <ion-segment-button value="all">
-                <ion-label>Alle</ion-label>
+                <ion-label>{{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}</ion-label>
               </ion-segment-button>
             </ion-segment>
           </ion-col>

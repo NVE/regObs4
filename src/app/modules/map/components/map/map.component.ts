@@ -112,7 +112,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
   private offlineMapService: OfflineMapService;
-  private bounds;
+  private bounds: L.LatLngBounds;
 
   constructor(
     private userSettingService: UserSettingService,

@@ -4,12 +4,13 @@ import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, tap, withLatestFrom } from 'rxjs/operators';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { MapSectionFilter, SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { URL_PARAM_NW_LAT } from 'src/app/modules/shared/coordinatesUrl';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
@@ -28,7 +29,8 @@ export class ObservationListPage implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
-  segmentValue: string;
+  segmentValue: MapSectionFilter;
+  isCoordinatesInUrl: string;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -47,6 +49,7 @@ export class ObservationListPage implements OnInit {
     private tabsService: TabsService,
     private logger: LoggingService
   ) {
+    this.checkIsCoordinates();
     this.segmentValue = 'mapBorders';
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
@@ -87,6 +90,12 @@ export class ObservationListPage implements OnInit {
     this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
   }
 
+  checkIsCoordinates() {
+    //toggle disabled if no url coordinates
+    const url = new URL(document.location.href);
+    this.isCoordinatesInUrl = url.searchParams.get(URL_PARAM_NW_LAT);
+  }
+
   ionViewWillLeave() {
     this.segmentValue = 'mapBorders';
   }
@@ -105,6 +114,7 @@ export class ObservationListPage implements OnInit {
   }
 
   ionViewWillEnter(): void {
+    this.checkIsCoordinates();
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
     this.refresh();

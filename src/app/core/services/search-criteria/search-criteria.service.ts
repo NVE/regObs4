@@ -29,8 +29,15 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { circleMarker } from 'leaflet';
+import {
+  URL_PARAM_NW_LAT,
+  URL_PARAM_NW_LON,
+  URL_PARAM_SE_LAT,
+  URL_PARAM_SE_LON,
+} from '../../../modules/shared/coordinatesUrl';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
+export type MapSectionFilter = 'all' | 'mapBorders';
 
 const UrlDtoOrderByMap = new Map([
   ['changeTime', 'DtChangeTime'],
@@ -47,10 +54,6 @@ const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_COMPETENCE = 'competence';
 const URL_PARAM_TYPE = 'type';
 const URL_PARAM_ORDER_BY = 'orderBy';
-const URL_PARAM_NW_LAT = 'nwlat';
-const URL_PARAM_NW_LON = 'nwlon';
-const URL_PARAM_SE_LAT = 'selat';
-const URL_PARAM_SE_LON = 'selon';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
 
@@ -71,20 +74,6 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
     }
   }
   return [];
-}
-
-//call happens three times when i start with coordinates in the url
-//sometimes the map changes the zoom and shows the entire globe instead of zoomed area (happens for example if you start app in registration page
-//and then go back to home page)
-export function createMapView(nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView {
-  const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
-  const leafletBounds = new LatLngBounds(
-    new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
-    new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
-  );
-  const center = new LatLng(bounds.getCenter().x, bounds.getCenter().y);
-  const mapView: IMapView = { bounds: leafletBounds, center: center, zoom: null };
-  return mapView;
 }
 
 function competenceFromUrlToDto(competence: string): number[] {
@@ -228,14 +217,14 @@ export class SearchCriteriaService {
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, fromObsTime, showMapExtent, extent]) => {
+      map(([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]) => {
         return {
           ...criteria,
           LangKey: langKey,
           SelectedGeoHazards: geoHazards,
           FromDtObsTime: fromObsTime,
           ToDtObsTime: null,
-          ...(!showMapExtent && { Extent: extent }),
+          ...(!useMapExtent && { Extent: extent }),
         };
       }),
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
@@ -259,12 +248,6 @@ export class SearchCriteriaService {
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
-    this.readCoordinates(
-      url.searchParams.get(URL_PARAM_NW_LAT),
-      url.searchParams.get(URL_PARAM_NW_LON),
-      url.searchParams.get(URL_PARAM_SE_LAT),
-      url.searchParams.get(URL_PARAM_SE_LON)
-    );
     let fromObsTime: string = null;
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
@@ -288,17 +271,6 @@ export class SearchCriteriaService {
 
     this.saveGeoHazardsAndDaysBackInSettings(geoHazards, daysBackNumeric);
     return criteria;
-  }
-
-  readCoordinates(nwLat: string, nwLon: string, seLat: string, seLon: string) {
-    if (nwLat && nwLon && seLat && seLon) {
-      const nwLatToNum = (+nwLat).toFixed(4);
-      const nwLonToNum = (+nwLon).toFixed(4);
-      const seLatToNum = (+seLat).toFixed(4);
-      const seLonToNum = (+seLon).toFixed(4);
-      const formatedMapView = createMapView(+nwLatToNum, +nwLonToNum, +seLatToNum, +seLonToNum);
-      this.mapService.updateMapView(formatedMapView);
-    }
   }
 
   private readOrderBy(orderBy: string): string {
@@ -440,7 +412,7 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ OrderBy: order });
   }
 
-  setExtent(value: string) {
+  setExtent(value: MapSectionFilter) {
     value == 'all' ? this.useMapExtent$.next(true) : this.useMapExtent$.next(false);
   }
 
