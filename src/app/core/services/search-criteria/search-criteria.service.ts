@@ -3,6 +3,7 @@ import moment from 'moment';
 import {
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   firstValueFrom,
   map,
   Observable,
@@ -177,7 +178,6 @@ export class SearchCriteriaService {
   unSubMe = new Subject<void>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
   private curGeoHazard: GeoHazard[];
-  restart = false;
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -207,29 +207,19 @@ export class SearchCriteriaService {
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
         scan((allSearchCriteria, newSearchCriteria) => {
-          if (this.restart) {
-            console.log('alll', allSearchCriteria);
-            console.log('neeew', newSearchCriteria);
-            this.restart = false;
-            return criteria;
-          } else {
-            return { ...allSearchCriteria, ...newSearchCriteria };
-          }
+          return { ...allSearchCriteria, ...newSearchCriteria };
         }, {})
       ),
       this.userSettingService.language$,
-      this.userSettingService.currentGeoHazard$,
+      this.userSettingService.currentGeoHazard$.pipe(tap(() => this.restartSearchCriteria())),
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
+      debounceTime(50),
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
-        if (this.curGeoHazard && this.curGeoHazard != geoHazards) {
-          this.restart = true;
-          this.curGeoHazard = geoHazards;
-        }
         return {
           ...criteria,
           LangKey: langKey,
