@@ -192,7 +192,7 @@ describe('SearchCriteriaService', () => {
     tick(100);
 
     const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.ToDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
+    expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
 
     const url = new URL(document.location.href);
     expect(url.searchParams.get('toDate')).toEqual('2000-12-24');
@@ -414,7 +414,7 @@ describe('SearchCriteriaService url parsing', () => {
 
     const criteria = await firstValueFrom(service.searchCriteria$);
     const expectedFromTime = moment(new Date('2020-12-24 00:00:00.000')).toISOString(true);
-    const expectedToTime = moment(new Date('2022-12-24 00:00:00.000')).toISOString(true);
+    const expectedToTime = moment(new Date('2022-12-24T23:59:59.999+01:00')).toISOString(true);
 
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
     expect(criteria.ToDtObsTime).toEqual(expectedToTime);

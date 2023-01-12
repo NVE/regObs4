@@ -9,6 +9,14 @@ export function isoDateTimeToLocalDate(isoDateTime: string): string {
   return null;
 }
 
-export function shorthandDateToIsoDateTime(date: string, start: 'start' | 'end' = 'start'): string {
-  return moment(date)[start ? 'startOf' : 'endOf']('day').toISOString(true);
+/**
+ * Converts a shorthand date string to an ISO-formatted date-time string.
+ * @param {string} date - The shorthand date string to convert.
+ * @param {'start'|'end'} [start='start'] - Indicates whether to return the start or end of the day.
+ * @returns {string} The ISO-formatted date-time string.
+ */
+export function convertToIsoDateTime(date: string, start: 'start' | 'end' = 'start'): string {
+  const momentIn = moment(date);
+  const momentOut = momentIn[start + 'Of']('day');
+  return momentOut.toISOString(true);
 }

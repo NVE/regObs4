@@ -26,10 +26,7 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
-import {
-  isoDateTimeToLocalDate,
-  shorthandDateToIsoDateTime,
-} from '../../../modules/common-core/helpers/date-converters';
+import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -192,7 +189,7 @@ export class SearchCriteriaService {
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        map((daysBack) => isoDateTimeToLocalDate(this.daysBackToIsoDateTime(daysBack)))
+        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
@@ -211,7 +208,7 @@ export class SearchCriteriaService {
             ...criteria,
             LangKey: langKey,
             SelectedGeoHazards: geoHazards,
-            FromDtObsTime: shorthandDateToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
+            FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
             Extent: extent,
           };
         }
@@ -239,7 +236,7 @@ export class SearchCriteriaService {
 
     let fromObsTime: string;
     if (url.searchParams.get(URL_PARAM_FROMDATE)) {
-      fromObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
     }
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
@@ -247,7 +244,7 @@ export class SearchCriteriaService {
 
     let toObsTime: string;
     if (url.searchParams.get(URL_PARAM_TODATE)) {
-      toObsTime = shorthandDateToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
+      toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
