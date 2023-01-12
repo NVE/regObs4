@@ -1,11 +1,9 @@
-import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import L from 'leaflet';
-import { LatLng, LatLngBounds } from 'leaflet';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import moment from 'moment';
-import { firstValueFrom, map, Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
-import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { createMapView, MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
@@ -16,24 +14,6 @@ class TestMapService {
   updateMapView(mapView: IMapView) {
     this.mapView$ = of(mapView);
   }
-  /*readCoordinatesFromUrl() {
-    const url = new URL(document.location.href);
-    const nwLat = url.searchParams.get('nwLat');
-    const nwLon = url.searchParams.get('nwLon');
-    const seLat = url.searchParams.get('seLat');
-    const seLon = url.searchParams.get('seLon');
-    const mv = createMapView(nwLat, nwLon, seLat, seLon);
-    return mv;
-  } */
-}
-
-function createMapView(nwLat, nwLon, seLat, seLon): IMapView {
-  const bounds = new L.Bounds([+nwLat, +nwLon], [+seLat, +seLon]);
-  const leafletBounds = new LatLngBounds(
-    new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
-    new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
-  );
-  return { bounds: leafletBounds, center: null, zoom: null };
 }
 
 function createTestMapService(): TestMapService {
@@ -198,7 +178,12 @@ describe('SearchCriteriaService', () => {
   it('extent filter', fakeAsync(async () => {
     //create mapview with coordinates
     const ms = new TestMapService();
-    const mv = createMapView('70.7978', '21.4343', '67.5715', '33.1458');
+    const mv = createMapView(
+      parseFloat('70.7978'),
+      parseFloat('21.4343'),
+      parseFloat('67.5715'),
+      parseFloat('33.1458')
+    );
     ms.mapView$ = of(mv);
     service = new SearchCriteriaService(userSettingService, ms as unknown as MapService, new TestLoggingService());
     const extent = {
@@ -258,28 +243,6 @@ describe('SearchCriteriaService url parsing', () => {
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
   }));
-
-  /*fit('test coordinates from url', fakeAsync(async () => {
-    new UrlParams().set('nwLat', '70.79781234').apply();
-    new UrlParams().set('nwLon', '21.4343').apply();
-    new UrlParams().set('seLat', '67.5715').apply();
-    new UrlParams().set('seLon', '33.1458').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-    tick(1);
-    const mv = mapService.readCoordinatesFromUrl();
-    mapService.mapView$ = of(mv);
-    mapService.mapView$.subscribe((t) => console.log(t));
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    console.log(criteria);
-    expect(criteria.Extent).toEqual({
-      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
-      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
-    });
-  })); */
 
   it('type wrong hazard should search for 10 as default', fakeAsync(async () => {
     new UrlParams().set('hazard', '140').apply();

@@ -30,6 +30,32 @@ import {
 
 const DEBUG_TAG = 'MapService';
 
+//sometimes the map changes the zoom and shows the entire globe instead of zoomed area (happens for example if you start app in registration page
+//and then go back to home page)
+export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
+  const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
+  const leafletBounds = new LatLngBounds(
+    new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
+    new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
+  );
+  const center = new LatLng(bounds.getCenter().x, bounds.getCenter().y);
+  const mapView: IMapView = { bounds: leafletBounds, center: center, zoom: null };
+  return mapView;
+};
+
+export const parseCoordinatesFromUrl = (url: URL): IMapView => {
+  const nwLat = url.searchParams.get(URL_PARAM_NW_LAT);
+  const nwLon = url.searchParams.get(URL_PARAM_NW_LON);
+  const seLat = url.searchParams.get(URL_PARAM_SE_LAT);
+  const seLon = url.searchParams.get(URL_PARAM_SE_LON);
+  if (nwLat && nwLon && seLat && seLon) {
+    const formatedMapView = createMapView(+nwLat, +nwLon, +seLat, +seLon);
+    return formatedMapView;
+  } else {
+    return null;
+  }
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -99,7 +125,7 @@ export class MapService {
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
     this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
-    const mapViewFromUrl = this.readCoordinatesFromUrl();
+    const mapViewFromUrl = parseCoordinatesFromUrl(new URL(document.location.href));
     this._mapViewSubject = new BehaviorSubject<IMapView>(mapViewFromUrl);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
       debounceTime(200),
@@ -110,20 +136,6 @@ export class MapService {
     this._mapMoveStartSubject = new BehaviorSubject<void>(null);
     this._mapMoveStart$ = this._mapMoveStartSubject.asObservable();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
-  }
-
-  readCoordinatesFromUrl(): IMapView {
-    const url = new URL(document.location.href);
-    const nwLat = url.searchParams.get(URL_PARAM_NW_LAT);
-    const nwLon = url.searchParams.get(URL_PARAM_NW_LON);
-    const seLat = url.searchParams.get(URL_PARAM_SE_LAT);
-    const seLon = url.searchParams.get(URL_PARAM_SE_LON);
-    if (nwLat && nwLon && seLat && seLon) {
-      const formatedMapView = this.createMapView(+nwLat, +nwLon, +seLat, +seLon);
-      return formatedMapView;
-    } else {
-      return null;
-    }
   }
 
   centerMapToUser(): void {
@@ -177,20 +189,6 @@ export class MapService {
       tap((val) => this.loggingService.debug('MapView has relevant change!', DEBUG_TAG, val)),
       shareReplay(1)
     );
-  }
-
-  //call happens three times when i start with coordinates in the url
-  //sometimes the map changes the zoom and shows the entire globe instead of zoomed area (happens for example if you start app in registration page
-  //and then go back to home page)
-  private createMapView(nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView {
-    const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
-    const leafletBounds = new LatLngBounds(
-      new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
-      new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
-    );
-    const center = new LatLng(bounds.getCenter().x, bounds.getCenter().y);
-    const mapView: IMapView = { bounds: leafletBounds, center: center, zoom: null };
-    return mapView;
   }
 
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
