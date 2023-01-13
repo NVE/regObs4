@@ -59,6 +59,7 @@ describe('SearchCriteriaService', () => {
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.LangKey).toEqual(LangKey.nb);
     expect(criteria.SelectedGeoHazards).toEqual([GeoHazard.Snow]);
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('hazard')).toEqual('10');
 
@@ -72,6 +73,7 @@ describe('SearchCriteriaService', () => {
     const criteria2 = await firstValueFrom(service.searchCriteria$);
     expect(criteria2.LangKey).toEqual(LangKey.en);
     expect(criteria2.SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
+    await service.applyQueryParams();
     const url2 = new URL(document.location.href);
     expect(url2.searchParams.get('hazard')).toEqual('20~60');
   }));
@@ -84,7 +86,7 @@ describe('SearchCriteriaService', () => {
     //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
-
+    await service.applyQueryParams();
     //check fromDate parameter in url. Should be 2 days earlier based on local time
     const url = new URL(document.location.href);
     expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
@@ -97,7 +99,7 @@ describe('SearchCriteriaService', () => {
     //check that current criteria contains expected nick name
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverNickName).toEqual('Nick');
-
+    await service.applyQueryParams();
     //check that url contains nickname filter
     const url = new URL(document.location.href);
     expect(url.searchParams.get('nick')).toEqual('Nick');
@@ -109,6 +111,7 @@ describe('SearchCriteriaService', () => {
 
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('competence')).toEqual('150~105');
   }));
@@ -120,7 +123,7 @@ describe('SearchCriteriaService', () => {
     //check that current criteria contains expected type
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
-
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual('81.13');
   }));
@@ -133,7 +136,7 @@ describe('SearchCriteriaService', () => {
     //check that criteria contains only obsType2
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
-
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual('81.13');
   }));
@@ -145,7 +148,7 @@ describe('SearchCriteriaService', () => {
     await service.removeObservationType(obsType2);
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
-
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual('81.13~81.26');
   }));
@@ -155,7 +158,7 @@ describe('SearchCriteriaService', () => {
     await service.removeObservationType(obsType2);
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual(null);
-
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual(null);
   }));
@@ -167,6 +170,7 @@ describe('SearchCriteriaService', () => {
       //check that current criteria contains expected orderBy
       const criteria = await firstValueFrom(service.searchCriteria$);
       expect(criteria.OrderBy).toEqual(test.apiValue);
+      await service.applyQueryParams();
       const url = new URL(document.location.href);
       expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
     }));
@@ -238,9 +242,7 @@ describe('SearchCriteriaService url parsing', () => {
     );
     tick();
     const criteria = await firstValueFrom(service.searchCriteria$);
-    const url = new URL(document.location.href).toString();
     expect(criteria.ObserverCompetence).toEqual(undefined);
-    expect(url.includes('competence')).toBeFalse();
   }));
 
   it('nick name url filter should work', fakeAsync(async () => {
@@ -274,7 +276,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   wrongObservationTypeUrl.forEach((test) => {
-    it('type url wrong format, remove type param from url', fakeAsync(async () => {
+    it('type url wrong format, set undefined in criteria', fakeAsync(async () => {
       new UrlParams().set('type', test).apply();
       service = new SearchCriteriaService(
         userSettingService,
@@ -284,9 +286,7 @@ describe('SearchCriteriaService url parsing', () => {
 
       tick();
       const criteria = await firstValueFrom(service.searchCriteria$);
-      const url = new URL(document.location.href).toString();
       expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
-      expect(url.includes('type')).toBeFalse();
     }));
   });
 

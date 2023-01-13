@@ -29,12 +29,13 @@ export class TabsService {
   }
 
   private parseTabFromPath(path: string) {
-    if (path.indexOf(TABS.OBSERVATION_LIST) > -1) {
+    const cleanPath = path.includes('?') ? path.slice(0, path.indexOf('?')) : path;
+    if (cleanPath.indexOf(TABS.OBSERVATION_LIST) > -1) {
       return TABS.OBSERVATION_LIST;
-    }
-    if (path.indexOf(TABS.WARNING_LIST) > -1) {
+    } else if (cleanPath.indexOf(TABS.WARNING_LIST) > -1) {
       return TABS.WARNING_LIST;
+    } else if (cleanPath === '') {
+      return TABS.HOME;
     }
-    return TABS.HOME;
   }
 }
