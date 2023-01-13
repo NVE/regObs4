@@ -103,7 +103,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.searchCriteriaService.searchCriteria$
     )) as SearchCriteriaRequestDto;
 
-    await this.initialize(searchCriteria);
+    this.initialize(searchCriteria);
 
     this.searchCriteriaService.searchCriteria$
       .pipe(
@@ -116,7 +116,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
-  async initialize(searchCriteria: SearchCriteriaRequestDto) {
+  initialize(searchCriteria: SearchCriteriaRequestDto) {
     console.log('crits from filter', searchCriteria);
     combineLatest([
       this.userSettingService.currentGeoHazard$,
@@ -148,13 +148,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onRestartFilters() {
-    await this.searchCriteriaService.restartSearchCriteria();
-    let freshCriteria;
-    this.searchCriteriaService.searchCriteria$.subscribe((c) => {
-      console.log(c), (freshCriteria = c);
-    });
-    console.log(freshCriteria);
-    //await this.initialize();
+    this.searchCriteriaService.restartSearchCriteria();
   }
 
   onSelectCompetenceChange(event) {

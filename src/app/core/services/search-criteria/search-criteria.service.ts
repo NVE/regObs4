@@ -228,7 +228,7 @@ export class SearchCriteriaService {
     );
   }
 
-  async restartSearchCriteria() {
+  restartSearchCriteria() {
     const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,
