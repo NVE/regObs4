@@ -8,7 +8,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { KdvElement, SearchService } from 'src/app/modules/common-regobs-api';
+import { KdvElement, SearchCriteriaRequestDto, SearchService } from 'src/app/modules/common-regobs-api';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import {
   RegistrationTypeCriteriaDto,
@@ -99,9 +99,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
 
-    this.searchCriteriaService.searchCriteria$.subscribe((c) => (this.searchCriteria = c));
+    const searchCriteria = (await firstValueFrom(
+      this.searchCriteriaService.searchCriteria$
+    )) as SearchCriteriaRequestDto;
 
-    await this.initialize();
+    await this.initialize(searchCriteria);
 
     this.searchCriteriaService.searchCriteria$
       .pipe(
@@ -114,8 +116,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
-  async initialize() {
-    const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
+  async initialize(searchCriteria: SearchCriteriaRequestDto) {
     console.log('crits from filter', searchCriteria);
     combineLatest([
       this.userSettingService.currentGeoHazard$,
@@ -133,11 +134,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
             .map((f) => competenceLevels.filter(f));
           //if sc.SelectedRegistrationTypes
           this.isSelectedRegistrationTypes(
-            this.searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
+            searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
             registrationTypesByGeoHazard
           );
           //if sc.ObserverCompetence
-          this.isObserverCompetence(this.searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
+          this.isObserverCompetence(searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
           //if sc.ObserverNickName add later
 
           this.cdr.markForCheck();
@@ -148,8 +149,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   async onRestartFilters() {
     await this.searchCriteriaService.restartSearchCriteria();
-    const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
-    console.log(searchCriteria);
+    let freshCriteria;
+    this.searchCriteriaService.searchCriteria$.subscribe((c) => {
+      console.log(c), (freshCriteria = c);
+    });
+    console.log(freshCriteria);
     //await this.initialize();
   }
 
