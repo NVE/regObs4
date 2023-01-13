@@ -14,7 +14,7 @@ import {
   tap,
 } from 'rxjs';
 import { SearchCriteria } from 'src/app/core/models/search-criteria';
-import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
+import { getUniqueRegistrations, HasRegId } from 'src/app/modules/common-registration/registration.helpers';
 import {
   AtAGlanceViewModel,
   RegistrationViewModel,
@@ -51,7 +51,7 @@ export class SearchResult<TViewModel> {
   }
 }
 
-export class PagedSearchResult<TViewModel extends Pick<RegistrationViewModel, 'RegId'>> {
+export class PagedSearchResult<TViewModel extends HasRegId> {
   static DEBUG_TAG = 'PagedSearchResult';
   static PAGE_SIZE = 10;
   static MAX_ITEMS = 100;
