@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
 import { Router } from '@angular/router';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
@@ -38,7 +38,12 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
   // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
 
-  constructor(private router: Router, private zone: NgZone, private userSettingService: UserSettingService) {
+  constructor(
+    private router: Router,
+    private zone: NgZone,
+    private userSettingService: UserSettingService,
+    private sanitizer: DomSanitizer
+  ) {
     this.visible = false;
   }
 
@@ -68,6 +73,14 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     this.showAdditionalAttachmentCount = false;
   }
 
+  private sanitize(url: string): SafeUrl {
+    if (url) {
+      return this.sanitizer.bypassSecurityTrustUrl(url);
+    } else {
+      return null;
+    }
+  }
+
   show(item: MapItem) {
     this.showAdditionalAttachmentCount = true;
     this.zone.run(async () => {
@@ -80,7 +93,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       // this.setDistanceAndType(item);
       this.attachments = [];
-      this.firstAttachmentUrl = item.FirstAttachmentUrl;
+      this.firstAttachmentUrl = this.sanitize(item.FirstAttachmentUrl);
       this.additionaAttachmentCount = this.getAdditionalAttachmentsCount(item.AttachmentsCount);
       this.visible = true;
     });
