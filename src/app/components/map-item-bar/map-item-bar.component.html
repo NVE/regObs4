@@ -1,52 +1,56 @@
 <div class="map-item-bar" (click)="navigateToItem()" *ngIf="visible">
   <ion-grid class="ion-text-wrap">
-    <ion-row>
-      <ion-col>
-        <div class="card-icon-item">
-          <svg-icon
-            class="card-icon-item-icon"
-            src="/assets/icon/time.svg"
-            [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-          ></svg-icon>
-          <ion-label>{{ topHeader | formatDate | async }}</ion-label>
-        </div>
-        <div class="card-icon-item" *ngIf="masl">
-          <svg-icon
-            class="card-icon-item-icon"
-            src="/assets/icon/moh.svg"
-            [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-          ></svg-icon>
-          <ion-label>{{ masl }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</ion-label>
+    <ion-row class="ion-justify-content-center ion-nowrap">
+      <ion-col *ngIf="firstAttachmentUrl" size="auto">
+        <div class="image">
+          <img [src]="firstAttachmentUrl" (error)="handleMissingImage()" />
+          <span *ngIf="additionaAttachmentCount && showAdditionalAttachmentCount" class="image-count"
+            >+{{ additionaAttachmentCount }}</span
+          >
         </div>
       </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <h5 class="ion-no-margin ion-text-nowrap">{{ title }}</h5>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <div class="card-icon-item">
-          <svg-icon
-            class="card-icon-item-icon"
-            src="/assets/icon/user.svg"
-            [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-          ></svg-icon>
-          <ion-label>{{ name }}</ion-label>
-        </div>
-        <div class="card-icon-item">
-          <app-competence [competenceLevel]="competenceLevel"></app-competence>
-        </div>
+      <ion-col size="auto" [ngClass]="firstAttachmentUrl ? 'image-show' : 'image-show-not'">
+        <ion-row>
+          <ion-col>
+            <div class="card-icon-item">
+              <svg-icon
+                class="card-icon-item-icon"
+                src="/assets/icon/time.svg"
+                [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+              ></svg-icon>
+              <ion-label>{{ topHeader | formatDate | async }}</ion-label>
+            </div>
+            <div class="card-icon-item" *ngIf="masl">
+              <svg-icon
+                class="card-icon-item-icon"
+                src="/assets/icon/moh.svg"
+                [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+              ></svg-icon>
+              <ion-label>{{ masl }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</ion-label>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <h5 class="ion-no-margin ion-text-nowrap">{{ title }}</h5>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col>
+            <div class="card-icon-item">
+              <svg-icon
+                class="card-icon-item-icon"
+                src="/assets/icon/user.svg"
+                [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+              ></svg-icon>
+              <ion-label>{{ name }}</ion-label>
+            </div>
+            <div class="card-icon-item">
+              <app-competence [competenceLevel]="competenceLevel"></app-competence>
+            </div>
+          </ion-col>
+        </ion-row>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div class="img-wrapper" *ngIf="attachments.length > 0" [ngClass]="{ full: attachments.length > 1 }">
-    <app-img-swiper
-      [showLabels]="false"
-      [attachments]="attachments"
-      [withFallbackText]="false"
-      [small]="true"
-    ></app-img-swiper>
-  </div>
 </div>
