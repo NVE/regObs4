@@ -203,10 +203,7 @@ export class SearchCriteriaService {
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
-        scan(
-          (allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }),
-          {} as SearchCriteriaRequestDto
-        )
+        scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,

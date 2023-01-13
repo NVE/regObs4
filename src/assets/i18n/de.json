@@ -175,9 +175,9 @@
     "TITLE": "Meine Beobachtungen"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle Beobachtungen",
+    "ALL_OBSERVATIONS": "Alle",
     "FORMS": "Form",
-    "IN_MAP_VIEW": "Beobachtungen in Kartenansicht",
+    "IN_MAP_VIEW": "In Kartenansicht",
     "NO_OBSERVATIONS": "Keine Beobachtungen",
     "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten.",
     "TITLE": "Beobachtungen"

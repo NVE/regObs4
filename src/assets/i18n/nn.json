@@ -215,9 +215,9 @@
     "USER": "Brukar"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle observasjonar",
+    "ALL_OBSERVATIONS": "Alle",
     "FORMS": "Skjema",
-    "IN_MAP_VIEW": "Observasjonar i kartutsnittet",
+    "IN_MAP_VIEW": "I kartutsnittet",
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjonar",

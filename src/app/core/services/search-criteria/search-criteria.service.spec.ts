@@ -11,9 +11,6 @@ import { UrlParams } from './url-params';
 
 class TestMapService {
   mapView$: Observable<IMapView>;
-  updateMapView(mapView: IMapView) {
-    this.mapView$ = of(mapView);
-  }
 }
 
 function createTestMapService(): TestMapService {
@@ -178,12 +175,7 @@ describe('SearchCriteriaService', () => {
   it('extent filter', fakeAsync(async () => {
     //create mapview with coordinates
     const ms = new TestMapService();
-    const mv = createMapView(
-      parseFloat('70.7978'),
-      parseFloat('21.4343'),
-      parseFloat('67.5715'),
-      parseFloat('33.1458')
-    );
+    const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
     ms.mapView$ = of(mv);
     service = new SearchCriteriaService(userSettingService, ms as unknown as MapService, new TestLoggingService());
     const extent = {

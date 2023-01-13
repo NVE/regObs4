@@ -30,7 +30,7 @@ export class ObservationListPage implements OnInit {
   orderBy$: Observable<string>;
   popupType: SelectInterface;
   segmentValue: MapSectionFilter;
-  isCoordinatesInUrl: string;
+  coordinatesFromParams: string;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -91,9 +91,9 @@ export class ObservationListPage implements OnInit {
   }
 
   checkIsCoordinates() {
-    //toggle disabled if no url coordinates
+    //segment disabled if no url coordinates
     const url = new URL(document.location.href);
-    this.isCoordinatesInUrl = url.searchParams.get(URL_PARAM_NW_LAT);
+    this.coordinatesFromParams = url.searchParams.get(URL_PARAM_NW_LAT);
   }
 
   ionViewWillLeave() {
