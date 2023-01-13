@@ -181,9 +181,9 @@
     "TITLE": "Mina observationer"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alla",
+    "ALL_OBSERVATIONS": "Alla observationer",
     "FORMS": "Formulär",
-    "IN_MAP_VIEW": "I kartavsnittet",
+    "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
     "SORT_BY_CHANGE_TIME": "Uppdateringstidpunkt",

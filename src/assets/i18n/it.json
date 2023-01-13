@@ -165,9 +165,9 @@
     "TITLE": "Le mie osservazioni"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Tutte",
+    "ALL_OBSERVATIONS": "Tutte le osservazioni",
     "FORMS": "Moduli",
-    "IN_MAP_VIEW": "Nella mappa",
+    "IN_MAP_VIEW": "Vedi osservazioni nella mappa",
     "NO_OBSERVATIONS": "Nessune osservazioni",
     "NO_OBSERVATIONS_TEXT": "Non vi sono osservazioni in questa sezione di mappa. Prova a cambiare sezione o aumentare il periodo di tempo usato per ricercare osservazioni.",
     "OBSERVATIONS": "Osservazioni"

@@ -188,6 +188,7 @@ describe('SearchCriteriaService', () => {
     };
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.Extent).toEqual(extent);
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('nwLat')).toEqual('70.7978');
     expect(url.searchParams.get('nwLon')).toEqual('21.4343');
