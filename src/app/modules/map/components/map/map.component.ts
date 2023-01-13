@@ -16,8 +16,8 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
-import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, fromEventPattern, race, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -275,12 +275,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       L.control.scale({ imperial: false }).addTo(map);
     }
 
-    if (this.bounds) {
-      map.fitBounds(this.bounds);
-      // After fitBounds has been called, the map may show more than the specified bounds.
-      // Notify map service about what the new bounds are so that search criteria service etc gets correct bounds.
-      this.updateMapView();
-    }
+    // Det virker som kartet noen ganger kan zoome til hele verden om vi kaller
+    // fitBounds uten noe tiemout først. Med en timeout fungerer det fint.
+    timer(50)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(() => {
+        if (this.bounds) {
+          this.map.fitBounds(this.bounds, { animate: false });
+        }
+
+        // Si fra til map service hva oppdatert extent er etter at kartet er tegnet.
+        this.updateMapView();
+      });
 
     if (this.showObserverTrips) {
       this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
@@ -375,7 +381,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             this.userMarker.setHeading(heading);
           }
         });
-        this.startActiveSubscriptions();
+        this.startStopTrackingWhenActive();
       }
     });
 
@@ -384,11 +390,29 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.startInvalidateSizeMapTimer();
 
-    this.map.on('resize', () => this.updateMapView());
+    fromEventPattern(
+      (handler) => this.map.on('resize', handler),
+      (handler) => this.map.off('resize', handler)
+    )
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        filter(() => this.isActive.value)
+      )
+      .subscribe(() => this.updateMapView());
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
     }
+
+    // Redraw map whenever component is active. If we don't do this some map
+    // tiles are gray and not loaded after we naviagate back to the map
+    this.isActive
+      .pipe(
+        distinctUntilChanged(),
+        filter((isActive) => isActive === true),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(() => this.redrawMap());
 
     this.mapReady.emit(this.map);
   }
@@ -488,11 +512,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineSupportMapLayerGroup.addLayer(layer);
   }
 
-  private startActiveSubscriptions() {
+  private startStopTrackingWhenActive() {
     this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
       if (active) {
         this.geoPositionService.startTrackingComponent(this.geoTag);
-        this.redrawMap();
       } else {
         this.geoPositionService.stopTrackingComponent(this.geoTag);
       }
@@ -518,13 +541,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
-    if (this.map && this.isActive.value) {
-      this.mapService.updateMapView({
-        bounds: this.map.getBounds(),
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom(),
-      });
-    }
+    this.mapService.updateMapView({
+      bounds: this.map.getBounds(),
+      center: this.map.getCenter(),
+      zoom: this.map.getZoom(),
+    });
   }
 
   private getTileLayerDefaultOptions(useRetinaMap = false): IRegObsTileLayerOptions {
