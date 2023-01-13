@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
 import {
-  BehaviorSubject,
   combineLatest,
   debounceTime,
   firstValueFrom,
   map,
   Observable,
-  ReplaySubject,
   scan,
   shareReplay,
   startWith,
   Subject,
-  takeUntil,
   tap,
-  withLatestFrom,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -30,8 +26,6 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
-import { circleMarker } from 'leaflet';
-import { ResettableSubject } from './resetable';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -175,9 +169,6 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   searchCriteriaChanges = new Subject<SearchCriteriaRequestDto>();
-  unSubMe = new Subject<void>();
-  private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
-  private curGeoHazard: GeoHazard[];
 
   /**
    * Current filter. Current language and geo hazards are always included
@@ -197,13 +188,8 @@ export class SearchCriteriaService {
       // Log last 10 choices made
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
-    this.searchCriteriaChanges.subscribe((v) => console.log('scc', v));
-
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
-        tap((c) => {
-          console.log('criteria from url to start', criteria);
-        }),
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
         scan((allSearchCriteria, newSearchCriteria) => {
@@ -220,6 +206,7 @@ export class SearchCriteriaService {
       debounceTime(50),
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       map(([criteria, langKey, geoHazards, fromObsTime, extent]) => {
+        console.log('crits', criteria);
         return {
           ...criteria,
           LangKey: langKey,
@@ -247,8 +234,6 @@ export class SearchCriteriaService {
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
     };
-    //this.unSubMe.next();
-    //this.unSubMe.complete();
     this.searchCriteriaChanges.next(criteria);
   }
 

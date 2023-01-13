@@ -79,6 +79,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   isShowAutomaticStation = false;
   isAutomaticStationChecked = true;
   chosenCompetenceValue: CompetenceItem;
+  searchCriteria: any;
 
   constructor(
     private platform: Platform,
@@ -98,6 +99,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
 
+    this.searchCriteriaService.searchCriteria$.subscribe((c) => (this.searchCriteria = c));
+
     await this.initialize();
 
     this.searchCriteriaService.searchCriteria$
@@ -113,7 +116,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   async initialize() {
     const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
-
+    console.log('crits from filter', searchCriteria);
     combineLatest([
       this.userSettingService.currentGeoHazard$,
       this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
@@ -130,11 +133,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
             .map((f) => competenceLevels.filter(f));
           //if sc.SelectedRegistrationTypes
           this.isSelectedRegistrationTypes(
-            searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
+            this.searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
             registrationTypesByGeoHazard
           );
           //if sc.ObserverCompetence
-          this.isObserverCompetence(searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
+          this.isObserverCompetence(this.searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
           //if sc.ObserverNickName add later
 
           this.cdr.markForCheck();
@@ -143,9 +146,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       .subscribe();
   }
 
-  onRestartFilters() {
-    this.searchCriteriaService.restartSearchCriteria();
-    this.initialize();
+  async onRestartFilters() {
+    await this.searchCriteriaService.restartSearchCriteria();
+    const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
+    console.log(searchCriteria);
+    //await this.initialize();
   }
 
   onSelectCompetenceChange(event) {
