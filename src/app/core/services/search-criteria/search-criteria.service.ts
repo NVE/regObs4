@@ -185,10 +185,10 @@ export class SearchCriteriaService {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
+    // Log last 10 changes made (nb, does not include langKey, extent etc, and only logs the change, not entire critera)
     this.searchCriteriaChanges
-      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
-      // Log last 10 choices made
-      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
+      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange].slice(-10), []))
+      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history));
 
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
