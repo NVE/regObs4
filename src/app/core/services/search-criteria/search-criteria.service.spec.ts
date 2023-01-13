@@ -19,10 +19,6 @@ export function createTestMapService(): TestMapService {
   return service;
 }
 
-function mockDateToOslo(jasmine) {
-  jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-}
-
 describe('SearchCriteriaService', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
@@ -85,7 +81,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('default days-back filter should work', fakeAsync(async () => {
-    mockDateToOslo(jasmine);
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
 
     const criteria = await firstValueFrom(service.searchCriteria$);
     //check that criteria contains correct from time. Should be 2 days earlier at midnight
@@ -183,7 +179,7 @@ describe('SearchCriteriaService', () => {
   });
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
-    mockDateToOslo(jasmine);
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
 
     tick(100);
@@ -196,7 +192,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('toDate url param should be set or updated', fakeAsync(async () => {
-    mockDateToOslo(jasmine);
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
 
     tick(100);
@@ -209,7 +205,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
-    mockDateToOslo(jasmine);
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
 
     tick(100);
@@ -233,8 +229,8 @@ describe('SearchCriteriaService url parsing', () => {
     mapService = createTestMapService();
     userSettingService = new UserSettingService(null, null);
 
-    moment.tz.setDefault('Europe/Oslo');
     jasmine.clock().install();
+    moment.tz.setDefault('Europe/Oslo');
   });
 
   afterEach(function () {
@@ -392,7 +388,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('days back url filter should work', fakeAsync(async () => {
-    mockDateToOslo(jasmine);
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     new UrlParams().set('daysBack', 1).apply();
 
     service = new SearchCriteriaService(
@@ -409,7 +405,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('toDate and fromDate filter should work', fakeAsync(async () => {
-    mockDateToOslo(jasmine);
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
 
     new UrlParams().set('fromDate', '2020-12-24').apply();
     new UrlParams().set('toDate', '2022-12-24').apply();

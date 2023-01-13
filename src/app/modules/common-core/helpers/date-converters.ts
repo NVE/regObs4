@@ -1,12 +1,8 @@
 import moment from 'moment/moment';
 
 export function isoDateTimeToLocalDate(isoDateTime: string): string {
-  if (isoDateTime) {
-    const offset = new Date().getTimezoneOffset();
-    const localTime = new Date(Date.parse(isoDateTime) - offset * 60 * 1000);
-    return localTime.toISOString().split('T')[0];
-  }
-  return null;
+  if (!isoDateTime) return null;
+  return moment(isoDateTime).local(true).format('YYYY-MM-DD');
 }
 
 /**
