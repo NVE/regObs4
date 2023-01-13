@@ -418,7 +418,7 @@ export class SearchCriteriaService {
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {
-    return moment().subtract(daysBack, 'days').startOf('day').toISOString();
+    return moment().subtract(daysBack, 'days').startOf('day').toISOString(true);
   }
 
   private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto {
