@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import L from 'leaflet';
-import { LatLng, LatLngBounds } from 'leaflet';
 import moment from 'moment';
 import {
   BehaviorSubject,
@@ -28,7 +27,6 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
-import { circleMarker } from 'leaflet';
 import {
   URL_PARAM_NW_LAT,
   URL_PARAM_NW_LON,
@@ -194,10 +192,10 @@ export class SearchCriteriaService {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
+    // Log last 10 changes made (nb, does not include langKey, extent etc, and only logs the change, not entire critera)
     this.searchCriteriaChanges
-      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
-      // Log last 10 choices made
-      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
+      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange].slice(-10), []))
+      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history));
 
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
@@ -224,14 +222,6 @@ export class SearchCriteriaService {
           ...(!useMapExtent && { Extent: extent }),
         };
       }),
-      // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
-      // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((newCriteria) => {
-        this.setUrlParams(newCriteria);
-      }),
-      // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
-      // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
-      // Uansett kjekt med en shareReplay her, se kommentar over.
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );

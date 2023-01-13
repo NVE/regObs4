@@ -57,10 +57,12 @@ export class UserMarker {
   }
 
   setHeading(degrees: number) {
-    const element: HTMLElement = this.userMarker.getElement().childNodes[0] as HTMLElement;
-    const rotateZ = degrees - 90;
-    element.style['-webkit-transform'] = 'rotate(' + rotateZ + 'deg) translateX(15px)';
-    element.style.display = 'block';
+    const element: HTMLElement = this.userMarker?.getElement()?.childNodes[0] as HTMLElement;
+    if (element) {
+      const rotateZ = degrees - 90;
+      element.style['-webkit-transform'] = 'rotate(' + rotateZ + 'deg) translateX(15px)';
+      element.style.display = 'block';
+    }
   }
 
   private setAccuracy(position: Position) {
