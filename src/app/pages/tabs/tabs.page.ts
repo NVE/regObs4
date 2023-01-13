@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Subscription, Observable } from 'rxjs';
-import { WarningService } from '../../core/services/warning/warning.service';
-import { distinctUntilChanged, filter, map, share } from 'rxjs/operators';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { NavigationEnd, Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { WarningService } from '../../core/services/warning/warning.service';
+import { TABS, TabsService } from './tabs.service';
 
 @Component({
   selector: 'app-tabs',
@@ -17,6 +17,7 @@ import { Location } from '@angular/common';
 export class TabsPage implements OnInit, OnDestroy {
   private warningGroupInMapViewSubscription: Subscription;
   private currentGeoHazardSubscription: Subscription;
+  readonly selectedTab$: Observable<string>;
 
   warningsInView: {
     count: number;
@@ -41,37 +42,28 @@ export class TabsPage implements OnInit, OnDestroy {
     return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
   }
 
-  selectedTab$: Observable<string>;
-
   constructor(
     private fullscreenService: FullscreenService,
+    private searchCriteriaService: SearchCriteriaService,
     private platform: Platform,
     private warningService: WarningService,
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
-    location: Location,
-    router: Router
+    private tabsService: TabsService
   ) {
     this.isIos = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
-    this.selectedTab$ = router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map(() => location.path()),
-      distinctUntilChanged(),
-      map((path) => this.parseTabFromPath(path)),
-      share() // All tabs subscribe to this, so share amongst subscribers
+    this.selectedTab$ = this.tabsService.selectedTab$;
+    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([_, tab]) =>
+      this.applyCurrentQueryParams(tab)
     );
   }
 
-  private parseTabFromPath(path: string) {
-    if (path.indexOf('observation-list') > -1) {
-      return 'observation-list';
+  private applyCurrentQueryParams(path: string) {
+    if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
+      this.searchCriteriaService.applyQueryParams();
     }
-    if (path.indexOf('warning-list') > -1) {
-      return 'warning-list';
-    }
-    return 'home';
   }
 
   ngOnInit(): void {

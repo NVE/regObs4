@@ -237,7 +237,11 @@
       "ALL": "All",
       "AUTOMATIC_STATIONS": "Automatic stations",
       "LABEL": "Competence",
-      "TITLE": "Observator"
+      "TITLE": "Observer"
+    },
+    "NICK_FILTER": {
+      "TITLE": "Name",
+      "PLACEHOLDER": "Search by observer name"
     }
   },
   "OBSERVATION_LIST": {

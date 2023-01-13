@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as L from 'leaflet';
 import moment from 'moment';
 import {
   combineLatest,
@@ -18,7 +19,6 @@ import {
   PositionDto,
   RegistrationTypeCriteriaDto,
   SearchCriteriaRequestDto,
-  SearchSideBarDto,
   WithinExtentCriteriaDto,
 } from 'src/app/modules/common-regobs-api';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -165,7 +165,6 @@ export class SearchCriteriaService {
    * Current filter. Current language and geo hazards are always included
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
-  avaialbleSerachCriteria: SearchSideBarDto;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -175,10 +174,10 @@ export class SearchCriteriaService {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
+    // Log last 10 changes made (nb, does not include langKey, extent etc, and only logs the change, not entire critera)
     this.searchCriteriaChanges
-      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
-      // Log last 10 choices made
-      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
+      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange].slice(-10), []))
+      .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history));
 
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
@@ -279,7 +278,7 @@ export class SearchCriteriaService {
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
     if (geoHazardsParamValueOld?.length) {
       geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
-      new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply; //we will create url params in new format instead
+      new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
     }
 
     //read param on new format
@@ -290,6 +289,11 @@ export class SearchCriteriaService {
     }
 
     return geoHazards;
+  }
+
+  async applyQueryParams() {
+    const currentCriteria = (await firstValueFrom(this.searchCriteria$)) as SearchCriteriaRequestDto;
+    currentCriteria && this.setUrlParams(currentCriteria);
   }
 
   private setUrlParams(criteria: SearchCriteriaRequestDto) {

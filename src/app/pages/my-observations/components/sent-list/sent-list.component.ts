@@ -16,6 +16,7 @@ import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-up
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
@@ -23,17 +24,6 @@ import { settings } from 'src/settings';
 const DEBUG_TAG = 'SentListComponent';
 const PAGE_SIZE = 10;
 const MAX_REGISTRATIONS_COUNT = 100;
-
-const getUniqueRegistrations = (regs: RegistrationViewModel[]) => {
-  const regIds = new Set();
-  return regs.filter((reg) => {
-    if (regIds.has(reg.RegId)) {
-      return false;
-    }
-    regIds.add(reg.RegId);
-    return true;
-  });
-};
 
 @Component({
   selector: 'app-sent-list',
