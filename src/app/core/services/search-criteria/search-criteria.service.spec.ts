@@ -9,11 +9,11 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
 
-class TestMapService {
+export class TestMapService {
   mapView$: Observable<IMapView>;
 }
 
-function createTestMapService(): TestMapService {
+export function createTestMapService(): TestMapService {
   const service = new TestMapService();
   service.mapView$ = of({ bounds: undefined, center: undefined, zoom: undefined });
   return service;
