@@ -148,7 +148,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onRestartFilters() {
-    this.searchCriteriaService.restartSearchCriteria();
+    await this.searchCriteriaService.restartSearchCriteria();
+    const searchCriteria = (await firstValueFrom(
+      this.searchCriteriaService.searchCriteria$.pipe(take(1))
+    )) as SearchCriteriaRequestDto;
+    console.log(searchCriteria);
   }
 
   onSelectCompetenceChange(event) {

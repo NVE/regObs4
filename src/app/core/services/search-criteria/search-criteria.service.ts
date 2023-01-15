@@ -228,13 +228,14 @@ export class SearchCriteriaService {
     );
   }
 
-  restartSearchCriteria() {
+  async restartSearchCriteria() {
     const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
     };
     this.searchCriteriaChanges.next(criteria);
+    this.searchCriteria$.subscribe((v) => console.log(v));
   }
 
   // build search criteria from url parameters. Some params are stored in user settings
