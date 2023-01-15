@@ -14,7 +14,7 @@
               class="segment-button-class"
               [(ngModel)]="segmentValue"
               mode="ios"
-              [disabled]="!coordinatesFromParams"
+              [disabled]="noMapExtentAvailable$ | async"
             >
               <ion-segment-button value="mapBorders">
                 <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
