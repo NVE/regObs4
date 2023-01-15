@@ -27,12 +27,7 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
-import {
-  URL_PARAM_NW_LAT,
-  URL_PARAM_NW_LON,
-  URL_PARAM_SE_LAT,
-  URL_PARAM_SE_LON,
-} from '../../../modules/shared/coordinatesUrl';
+import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 export type MapSectionFilter = 'all' | 'mapBorders';
@@ -212,16 +207,14 @@ export class SearchCriteriaService {
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
-      map(([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]) => {
-        return {
-          ...criteria,
-          LangKey: langKey,
-          SelectedGeoHazards: geoHazards,
-          FromDtObsTime: fromObsTime,
-          ToDtObsTime: null,
-          ...(!useMapExtent && { Extent: extent }),
-        };
-      }),
+      map(([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]) => ({
+        ...criteria,
+        LangKey: langKey,
+        SelectedGeoHazards: geoHazards,
+        FromDtObsTime: fromObsTime,
+        ToDtObsTime: null,
+        ...(!useMapExtent && { Extent: extent }),
+      })),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );

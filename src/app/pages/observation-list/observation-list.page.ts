@@ -4,13 +4,13 @@ import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, tap, withLatestFrom } from 'rxjs/operators';
-import { MapSectionFilter, SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
-import { URL_PARAM_NW_LAT } from 'src/app/modules/shared/coordinatesUrl';
+import { URL_PARAM_NW_LAT } from 'src/app/core/services/search-criteria/coordinatesUrl';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
@@ -29,7 +29,7 @@ export class ObservationListPage implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
-  segmentValue: MapSectionFilter;
+  segmentValue = 'mapBorders';
   coordinatesFromParams: string;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
@@ -50,7 +50,6 @@ export class ObservationListPage implements OnInit {
     private logger: LoggingService
   ) {
     this.checkIsCoordinates();
-    this.segmentValue = 'mapBorders';
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
     this.shouldDisableScroller$ = combineLatest([
