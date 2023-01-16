@@ -103,7 +103,30 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.searchCriteriaService.searchCriteria$
     )) as SearchCriteriaRequestDto;
 
-    this.initialize(searchCriteria);
+    //this.initialize(searchCriteria);
+
+    combineLatest([
+      this.searchCriteriaService.searchCriteria$,
+      this.userSettingService.currentGeoHazard$,
+      this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
+      this.kdv.getKdvRepositoryByKeyObservable('CompetenceLevelKDV'),
+    ])
+      .pipe()
+      .subscribe(([criteria, geoHazard, registrationTypes, competenceLevels]) => {
+        const registrationTypesByGeoHazard = geoHazard
+          .map((typesByGeoHazard) => registrationTypes[typesByGeoHazard])
+          .flat();
+        const competenceLevelsByGeoHazard = geoHazard
+          .map((geoHazard) => COMPETANCE_FILTER[geoHazard])
+          .map((f) => competenceLevels.filter(f));
+        //if sc.SelectedRegistrationTypes
+        this.isSelectedRegistrationTypes(criteria as RegistrationTypeCriteriaDto[], registrationTypesByGeoHazard);
+        //if sc.ObserverCompetence
+        //this.isObserverCompetence(criteria as number[], competenceLevelsByGeoHazard);
+        //if sc.ObserverNickName add later
+
+        this.cdr.markForCheck();
+      });
 
     this.searchCriteriaService.searchCriteria$
       .pipe(
@@ -125,37 +148,34 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
       this.kdv.getKdvRepositoryByKeyObservable('CompetenceLevelKDV'),
     ])
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        map(([geoHazard, registrationTypes, competenceLevels]) => {
-          const registrationTypesByGeoHazard = geoHazard
-            .map((typesByGeoHazard) => registrationTypes[typesByGeoHazard])
-            .flat();
-          const competenceLevelsByGeoHazard = geoHazard
-            .map((geoHazard) => COMPETANCE_FILTER[geoHazard])
-            .map((f) => competenceLevels.filter(f));
-          //if sc.SelectedRegistrationTypes
-          this.isSelectedRegistrationTypes(
-            searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
-            registrationTypesByGeoHazard
-          );
-          //if sc.ObserverCompetence
-          this.isObserverCompetence(searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
-          //if sc.ObserverNickName add later
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(([geoHazard, registrationTypes, competenceLevels]) => {
+        const registrationTypesByGeoHazard = geoHazard
+          .map((typesByGeoHazard) => registrationTypes[typesByGeoHazard])
+          .flat();
+        const competenceLevelsByGeoHazard = geoHazard
+          .map((geoHazard) => COMPETANCE_FILTER[geoHazard])
+          .map((f) => competenceLevels.filter(f));
+        //if sc.SelectedRegistrationTypes
+        this.isSelectedRegistrationTypes(
+          searchCriteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[],
+          registrationTypesByGeoHazard
+        );
+        //if sc.ObserverCompetence
+        this.isObserverCompetence(searchCriteria.ObserverCompetence as number[], competenceLevelsByGeoHazard);
+        //if sc.ObserverNickName add later
 
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe();
+        this.cdr.markForCheck();
+      });
   }
 
   async onRestartFilters() {
     this.searchCriteriaService.restartSearchCriteria();
-    this.initialize({ SelectedRegistrationTypes: null, ObserverCompetence: null, ObserverNickName: null });
-    const searchCriteria = (await firstValueFrom(
-      this.searchCriteriaService.searchCriteria$.pipe(take(1))
-    )) as SearchCriteriaRequestDto;
-    console.log(searchCriteria);
+    //this.initialize({ SelectedRegistrationTypes: null, ObserverCompetence: null, ObserverNickName: null });
+    // const searchCriteria = (await firstValueFrom(
+    //   this.searchCriteriaService.searchCriteria$.pipe(take(1))
+    // )) as SearchCriteriaRequestDto;
+    // console.log(searchCriteria);
   }
 
   onSelectCompetenceChange(event) {
@@ -214,7 +234,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     const emptyForm = await this.sortCompetences(compLevels);
     this.competenceOptions = emptyForm;
     if (searchCriteriaObserverCompetence != null && searchCriteriaObserverCompetence.length > 0) {
-      this.chosenCompetenceValue = this.formatUrlToViewModel(emptyForm, searchCriteriaObserverCompetence);
+      //this.chosenCompetenceValue = this.formatUrlToViewModel(emptyForm, searchCriteriaObserverCompetence);
     }
   }
 
