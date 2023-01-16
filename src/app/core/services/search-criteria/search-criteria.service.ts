@@ -207,7 +207,6 @@ export class SearchCriteriaService {
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
         FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
-        ToDtObsTime: null,
         Extent: !useMapExtent ? extent : null,
       })),
 
