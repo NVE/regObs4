@@ -4,7 +4,7 @@ import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { MapSectionFilter, SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
@@ -29,7 +29,7 @@ export class ObservationListPage implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
-  segmentValue = 'mapBorders';
+  segmentValue: MapSectionFilter;
   noMapExtentAvailable$: Observable<boolean>;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
@@ -82,6 +82,7 @@ export class ObservationListPage implements OnInit {
       map((mapView) => mapView?.bounds == null),
       distinctUntilChanged()
     );
+    mapService.mapView$.subscribe((c) => (this.segmentValue = c ? 'mapBorders' : 'all'));
   }
 
   ngOnInit() {

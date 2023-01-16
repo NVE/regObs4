@@ -213,7 +213,7 @@ export class SearchCriteriaService {
         SelectedGeoHazards: geoHazards,
         FromDtObsTime: fromObsTime,
         ToDtObsTime: null,
-        ...(!useMapExtent && { Extent: extent }),
+        Extent: !useMapExtent ? extent : null,
       })),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
