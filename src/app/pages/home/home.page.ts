@@ -190,32 +190,29 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     const searchCriteriaWithLargerExtent = this.searchCriteriaService.searchCriteria$.pipe(
       //get current search criteria together with previous criteria, so we can check what's changed
       scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
+      //skip if extent is null (when showing 'all' observations in the list view) to avoid exceptions
+      filter(([, current]) => current.Extent != null),
       filter(([prev, current]) => {
         //will prevent zoom in to trigger new search
-        if (current.Extent != null) {
-          const currentBounds = withinExtentCriteriaToBounds(current.Extent);
-          if (!prev) {
-            this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
-            return this.rememberExtent(currentBounds);
-          }
-          const previousCriteriaWithoutExtent = { ...prev, Extent: undefined };
-          const currentCriteriaWithoutExtent = { ...current, Extent: undefined };
-          if (JSON.stringify(previousCriteriaWithoutExtent) === JSON.stringify(currentCriteriaWithoutExtent)) {
-            //only extent is changed in criteria
-            if (this.lastSearchBounds?.contains(currentBounds)) {
-              this.loggingService.debug(
-                'Extent inside previous extent, no need to fetch observations again',
-                DEBUG_TAG
-              );
-              return false; //will stop this criteria change to propagate when we zoom in
-            } else {
-              this.loggingService.debug('Extent outside previous extent, need to fetch observations again', DEBUG_TAG);
-              return this.rememberExtent(currentBounds);
-            }
+        const currentBounds = withinExtentCriteriaToBounds(current.Extent);
+        if (!prev) {
+          this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
+          return this.rememberExtent(currentBounds);
+        }
+        const previousCriteriaWithoutExtent = { ...prev, Extent: undefined };
+        const currentCriteriaWithoutExtent = { ...current, Extent: undefined };
+        if (JSON.stringify(previousCriteriaWithoutExtent) === JSON.stringify(currentCriteriaWithoutExtent)) {
+          //only extent is changed in criteria
+          if (this.lastSearchBounds?.contains(currentBounds)) {
+            this.loggingService.debug('Extent inside previous extent, no need to fetch observations again', DEBUG_TAG);
+            return false; //will stop this criteria change to propagate when we zoom in
           } else {
-            this.loggingService.debug('Other criteria than extent changed, need to fetch observations', DEBUG_TAG);
+            this.loggingService.debug('Extent outside previous extent, need to fetch observations again', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
           }
+        } else {
+          this.loggingService.debug('Other criteria than extent changed, need to fetch observations', DEBUG_TAG);
+          return this.rememberExtent(currentBounds);
         }
       }),
       map(([, current]) => current) //return current criteria
