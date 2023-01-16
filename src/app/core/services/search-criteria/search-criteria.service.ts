@@ -15,7 +15,7 @@ import {
   tap,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
-import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import {
   PositionDto,
   RegistrationTypeCriteriaDto,
@@ -186,7 +186,10 @@ export class SearchCriteriaService {
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
-        scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
+        scan(
+          (allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }),
+          {} as SearchCriteriaRequestDto
+        )
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$,
@@ -197,6 +200,8 @@ export class SearchCriteriaService {
       this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
+      // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
+      // - FromDtObsTime: fromDate URL param
       map(([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]) => ({
         ...criteria,
         LangKey: langKey,
@@ -205,8 +210,6 @@ export class SearchCriteriaService {
         ToDtObsTime: null,
         Extent: !useMapExtent ? extent : null,
       })),
-      // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
-      // - FromDtObsTime: fromDate URL param
 
       // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
       // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
