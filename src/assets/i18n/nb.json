@@ -229,10 +229,6 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observasjonsfilter",
-    "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observasjonstype"
-    },
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
       "AUTOMATIC_STATIONS": "Automatiske stasjoner",
@@ -240,9 +236,13 @@
       "TITLE": "Observatør"
     },
     "NICK_FILTER": {
-      "TITLE": "Navn",
-      "PLACEHOLDER": "Søk på observatørnavn"
-    }
+      "PLACEHOLDER": "Søk på observatørnavn",
+      "TITLE": "Navn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
