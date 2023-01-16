@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -19,6 +19,8 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
+
+  @Output() changeDaysBack = new EventEmitter<number>();
 
   constructor(private userSettingService: UserSettingService, private platform: Platform) {
     super();
@@ -44,17 +46,9 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
   }
 
   async save(): Promise<void> {
-    const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
-    let changed = false;
-    for (const geoHazard of userSetting.currentGeoHazard) {
-      const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
-      if (existingValue.daysBack !== this.selectedDaysBack) {
-        existingValue.daysBack = this.selectedDaysBack;
-        changed = true;
-      }
-    }
-    if (changed) {
-      this.userSettingService.saveUserSettings(userSetting);
+    const daysBack = await this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: this.selectedDaysBack });
+    if (typeof daysBack === 'number') {
+      this.changeDaysBack.emit(daysBack);
     }
   }
 }

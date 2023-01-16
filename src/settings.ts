@@ -45,7 +45,7 @@ export const settings: ISettings = {
   observations: {
     maxObservationsToFetch: 5000,
     daysBack: {
-      Snow: [0, 1, 2, 3, 7, 7 * 2, 365],
+      Snow: [0, 1, 2, 3, 7, 7 * 2],
       Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
       Water: [0, 1, 2, 3, 7, 7 * 2],
       Soil: [0, 1, 2, 3, 7, 7 * 2],
@@ -58,7 +58,7 @@ export const settings: ISettings = {
         PROD: 'https://api.regobs.no/v5',
         DEMO: 'https://demo-api.regobs.no/v5',
         TEST: 'https://test-api.regobs.no/v5',
-        // 'TEST': 'http://localhost:40001'
+        //TEST: 'http://localhost:40001',
       },
       serviceUrl: {
         PROD: 'https://api.nve.no/hydrology/regobs/v3.5.0',
