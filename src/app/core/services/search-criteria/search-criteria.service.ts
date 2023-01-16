@@ -175,6 +175,7 @@ export class SearchCriteriaService {
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
   avaialbleSerachCriteria: SearchSideBarDto;
+  currentGeoHazard: GeoHazard[];
 
   constructor(
     private userSettingService: UserSettingService,
@@ -184,7 +185,10 @@ export class SearchCriteriaService {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
     this.searchCriteriaChanges
-      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], []))
+      .pipe(
+        startWith(criteria),
+        scan((history, currentCriteriaChange) => [...history, currentCriteriaChange], [])
+      )
       // Log last 10 choices made
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history.slice(-10)));
 
@@ -197,7 +201,12 @@ export class SearchCriteriaService {
         }, {})
       ),
       this.userSettingService.language$,
-      this.userSettingService.currentGeoHazard$.pipe(tap(() => this.restartSearchCriteria())),
+      this.userSettingService.currentGeoHazard$.pipe(
+        tap((geohazard) => {
+          this.currentGeoHazard !== undefined && this.restartSearchCriteria();
+          this.currentGeoHazard = geohazard;
+        })
+      ),
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
@@ -228,7 +237,7 @@ export class SearchCriteriaService {
     );
   }
 
-  async restartSearchCriteria() {
+  restartSearchCriteria() {
     const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,

@@ -114,6 +114,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         })
       )
       .subscribe();
+
+    //this.searchCriteriaService.searchCriteria$.subscribe((sc) => this.initialize(sc as SearchCriteriaRequestDto));
   }
 
   initialize(searchCriteria: SearchCriteriaRequestDto) {
@@ -148,7 +150,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onRestartFilters() {
-    await this.searchCriteriaService.restartSearchCriteria();
+    this.searchCriteriaService.restartSearchCriteria();
+    this.initialize({ SelectedRegistrationTypes: null, ObserverCompetence: null, ObserverNickName: null });
     const searchCriteria = (await firstValueFrom(
       this.searchCriteriaService.searchCriteria$.pipe(take(1))
     )) as SearchCriteriaRequestDto;
