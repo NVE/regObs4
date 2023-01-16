@@ -30,8 +30,6 @@ import {
 
 const DEBUG_TAG = 'MapService';
 
-//sometimes the map changes the zoom and shows the entire globe instead of zoomed area (happens for example if you start app in registration page
-//and then go back to home page)
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
   const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
   const leafletBounds = new LatLngBounds(
