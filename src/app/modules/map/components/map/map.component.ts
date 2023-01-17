@@ -180,7 +180,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
@@ -307,13 +306,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
     });
 
-    this.mapService.centerMapToUser$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap(() => from(this.geoPositionService.choosePositionMethod(DEBUG_TAG)))
-      )
-      .subscribe();
-
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
       this.disableFollowMode();
       this.zone.runOutsideAngular(() => {
@@ -353,20 +345,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     //set overwrite default showUserLocation with component input
     this.mapService.showUserLocation(this.isNative);
-    this.mapService.showUserLocation$.subscribe((value) => {
-      if (value) {
-        this.mapService.followMode = true;
-        this.geoPositionService.currentPosition$
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe((pos) => this.onPositionUpdate(pos));
-        this.geoPositionService.currentHeading$.pipe(takeUntil(this.ngDestroy$)).subscribe((heading) => {
-          if (this.userMarker) {
-            this.userMarker.setHeading(heading);
+    combineLatest([this.mapService.centerMapToUser$, this.mapService.showUserLocation$])
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        filter(([, showUserLocation]) => !showUserLocation),
+        switchMap(() => {
+          if (Capacitor.isNativePlatform()) {
+            this.mapService.followMode = true;
           }
-        });
-        this.startActiveSubscriptions();
-      }
-    });
+          return this.geoPositionService.currentPosition$;
+        })
+      )
+      .subscribe((position) => this.onPositionUpdate(position));
+    //TODO: Abonner på kompassretning
 
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
     this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
@@ -480,10 +471,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private startActiveSubscriptions() {
     this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
       if (active) {
-        this.geoPositionService.startTrackingComponent(this.geoTag);
         this.redrawMap();
-      } else {
-        this.geoPositionService.stopTrackingComponent(this.geoTag);
       }
     });
   }

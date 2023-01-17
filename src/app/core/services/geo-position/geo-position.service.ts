@@ -1,28 +1,32 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
+import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { AlertController, Platform, ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import moment from 'moment';
 import {
   BehaviorSubject,
-  ReplaySubject,
-  of,
-  Observable,
-  Subscription,
-  combineLatest,
-  merge,
-  fromEvent,
+  catchError,
+  defer,
+  filter,
   firstValueFrom,
+  from,
+  merge,
+  Observable,
+  of,
+  ReplaySubject,
+  share,
+  Subject,
+  switchMap,
+  tap,
 } from 'rxjs';
-import { filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
-import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { AlertController, ToastController, Platform } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
-import { GeoPositionLog, PositionError } from './geo-position-log.interface';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
-import moment from 'moment';
-import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { GeoPositionLog, PositionError } from './geo-position-log.interface';
 
-const DEBUG_TAG = 'GeoPositionService';
+const DEBUG_TAG = 'GeoPositionNativeService';
 
 const POSITION_OPTIONS_DEFAULT: PositionOptions = {
   enableHighAccuracy: true,
@@ -32,33 +36,50 @@ const POSITION_OPTIONS_DEFAULT: PositionOptions = {
 
 const POSITION_OPTIONS_ANDROID: PositionOptions = {
   enableHighAccuracy: true,
-  timeout: 1000, //get notified with new position data at least each 1 sec
+  timeout: 20 * 1000, // 20 sec
+  maximumAge: Infinity,
+};
+
+/**
+ * On Android we need to use other options on first watch request to avoid a long delay on first request
+ */
+const POSITION_OPTIONS_ANDROID_FIRST_REQUEST: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 1000, //to avoid a long delay on app startup
   maximumAge: 0, //we do not accept cached positions, ask for GPS position immediately
 };
 
 /**
- * Henter posisjon fra GPS og himmelretning fra kompasset
+ * Henter posisjon fra GPS og himmelretning fra kompasset på Android eller iOS.
+ * TODO: Hvordan sikre at vi får med oss om brukeren skrur på "GPS" etter at appen startet?
+ * TODO: Hvordan sikre oss at bruker skjønner at han må skru på "GPS" og tillate posisjonsdata uten å spørre hver gang vi prøver å hente posisjon?
+ * TODO: Hvordan ønsker vi å gjøre det egentlig? Skiller pluginen mellom "Dette er tilgangen appen har..." og "Be om tilgang.." ? Svar: Ja
+ * Jeg tenker at når appen starter så bør vi bare sjekke hvilken tilgang appen har.
+ * Kun når man trykker på posisjonsikonet i kartet bør vi be om tilgang.
+ * For det er kun da vi vet at brukeren aktivt vil at posisjonen skal vises / trackes i kartet, og da kan det være likt på app/web.
+ * TODO: Hvordan skal klienten få beskjed om at den ikke får posisjonsdata som forventet?
+ * TODO: Logge til gpsPositionLog
+ *
  */
 @Injectable({
   providedIn: 'root',
 })
 export class GeoPositionService implements OnDestroy {
-  private highAccuracyEnabled = new BehaviorSubject(true);
-  private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private currentPosition: BehaviorSubject<Position> = new BehaviorSubject(null);
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
-
-  private readonly trackingComponents = new BehaviorSubject<string[]>([]);
-
-  // Subscriptions
+  private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private watchPositionCallbackId: CallbackID = null;
   private watchPositionRequestTime: number = null;
   private watchPositionFirstCallbackReceived = false;
-  private headingSubscription: Subscription;
+  private watchPositionReadyToReduceCallbackFrequency: BehaviorSubject<void> = new BehaviorSubject(null);
 
-  get currentPosition$(): Observable<Position> {
-    return this.currentPosition.pipe(filter((cp) => cp !== null));
-  }
+  /**
+   * A stream of positions. If position data is not available an error will be thrown.
+   */
+  // get currentPosition$(): Observable<Position> {
+  //   return this.currentPosition.pipe(filter((cp) => cp !== null));
+  // }
+  readonly currentPosition$: Observable<Position>;
 
   get currentHeading$(): Observable<number> {
     return this.currentHeading.pipe(filter((cp) => cp !== null));
@@ -68,24 +89,54 @@ export class GeoPositionService implements OnDestroy {
     return this.gpsPositionLog.asObservable();
   }
 
-  get geoLocationSupported(): boolean {
+  private get geoLocationSupported(): boolean {
     const locationSupport = !!(navigator && navigator.geolocation && navigator.geolocation.watchPosition);
     return locationSupport;
   }
 
   constructor(
     private deviceOrientation: DeviceOrientation,
-    private platform: Platform,
     private loggingService: LoggingService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private platform: Platform
   ) {
-    this.startGeolocationTrackingSubscription();
+    this.currentPosition$ = defer(() => this.startWatchingPosition()).pipe(
+      switchMap(() => this.currentPosition.asObservable()),
+      // Etter at vi har en posisjon kan vi bruke share for å dele posisjonen med alle som subscriber
+      share({
+        // I denne funksjonen som vi gir til share
+        // kan vi sette opp teardown-logikk.
+        // refCount har med antall subscribers å gjøre.
+        resetOnRefCountZero: () => {
+          this.stopWatchingPosition();
+          return of(true); //TODO; Hva skal jeg returnere her?
+        },
+      })
+    );
+
+    this.platform.pause.subscribe(() => this.stopWatchingPosition());
+    this.platform.resume.subscribe(() => this.startWatchingPosition()); //TODO: Check that current subscribers will get notified after resume
   }
 
   ngOnDestroy(): void {
-    this.stopSubscriptions();
+    this.stopWatchingPosition();
+  }
+
+  /**
+   * Request position data from device. You can subscribe to currentPosition$ to get the data.
+   */
+  public async requestPosition(): Promise<void> {
+    if (Capacitor.isNativePlatform()) {
+      this.startWatchingPosition();
+    } else {
+      try {
+        this.requestPositionFromBrowser();
+      } catch (err) {
+        //TODO: this.gpsPositionLog.next(this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied));
+      }
+    }
   }
 
   /**
@@ -95,91 +146,6 @@ export class GeoPositionService implements OnDestroy {
   getSingleCurrentPosition(): Promise<Position> {
     // this.currentPosition always returns a value.
     return firstValueFrom<Position>(this.currentPosition);
-  }
-
-  private startGeolocationTrackingSubscription() {
-    const anyComponentsTracking = this.trackingComponents.pipe(
-      map((val) => val.length > 0),
-      distinctUntilChanged()
-    );
-    combineLatest([this.getPlatformIsActiveObservable(), anyComponentsTracking])
-      .pipe(
-        map(([platformIsActive, anyComponentsTracking]) => (platformIsActive && anyComponentsTracking ? true : false))
-      )
-      .subscribe((activate) => {
-        if (activate) {
-          this.startSubscriptions();
-        } else {
-          this.stopSubscriptions();
-        }
-      });
-  }
-
-  private getPlatformIsActiveObservable() {
-    if (isAndroidOrIos(this.platform)) {
-      return merge(this.platform.resume.pipe(map(() => true)), this.platform.pause.pipe(map(() => false))).pipe(
-        startWith(true)
-      );
-    }
-    return of(true);
-  }
-
-  private createPositionError(
-    message: string,
-    code: GeoPositionErrorCode = GeoPositionErrorCode.Unknown,
-    highAccuracyEnabled = true
-  ): GeoPositionLog {
-    return {
-      timestamp: moment().unix(),
-      status: 'PositionError',
-      pos: undefined,
-      highAccuracyEnabled,
-      err: {
-        code,
-        message,
-      },
-    };
-  }
-
-  getTimestamp(geopos: Position) {
-    if (geopos && geopos.timestamp > 0) {
-      if (this.platform.is('hybrid') && this.platform.is('ios')) {
-        return geopos.timestamp / 1000;
-      }
-      return geopos.timestamp;
-    }
-    return moment().unix();
-  }
-
-  private createGpsPositionLogElement(pos: Position): GeoPositionLog {
-    const log: GeoPositionLog = {
-      timestamp: this.getTimestamp(pos),
-      status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
-      pos,
-      highAccuracyEnabled: true,
-      err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined,
-    };
-    return log;
-  }
-
-  private addStatusToGpsPositionLog(status: 'StartGpsTracking' | 'StopGpsTracking') {
-    this.gpsPositionLog.next({
-      timestamp: moment().unix(),
-      status,
-      highAccuracyEnabled: this.highAccuracyEnabled.value,
-    });
-  }
-
-  public async choosePositionMethod(nameForTrackingComponent: string): Promise<void> {
-    if (isAndroidOrIos(this.platform)) {
-      this.startTrackingComponent(nameForTrackingComponent, true);
-    } else {
-      try {
-        this.requestPositionFromBrowser();
-      } catch (err) {
-        this.gpsPositionLog.next(this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied));
-      }
-    }
   }
 
   public async requestPositionFromBrowser(): Promise<void> {
@@ -204,6 +170,136 @@ export class GeoPositionService implements OnDestroy {
         POSITION_OPTIONS_DEFAULT
       );
     }
+  }
+
+  private async startWatchingPosition(): Promise<void> {
+    const permissionToGetPosition = await this.checkPermissionsAndAsk();
+    if (permissionToGetPosition) {
+      if (!Capacitor.isNativePlatform()) {
+        this.requestPositionFromBrowser();
+        return Promise.resolve();
+      }
+      const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
+        if (err) {
+          this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
+          this.gpsPositionLog.next(this.createPositionError('Unknown error'));
+        }
+        if (position !== null) {
+          if (!this.watchPositionFirstCallbackReceived) {
+            this.watchPositionFirstCallbackReceived = true;
+            this.logFirstCallback(position);
+            if (Capacitor.getPlatform() === 'Android') {
+              this.watchPositionReadyToReduceCallbackFrequency.next();
+              this.watchPositionReadyToReduceCallbackFrequency.complete();
+            }
+          }
+          // this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
+          if (this.isValidPosition(position)) {
+            this.currentPosition.next(position);
+          }
+        }
+      };
+      // this.addStatusToGpsPositionLog('StartGpsTracking');
+      this.stopWatchingPosition(); //we need to stop current watch of position if any
+      this.watchPosition(watchPositionCallback);
+      if (Capacitor.getPlatform() === 'Android') {
+        this.watchPositionReadyToReduceCallbackFrequency.subscribe(() => {
+          this.stopWatchingPosition(); //we need to stopp current subscription an start a new with different options
+          this.watchPosition(watchPositionCallback);
+        });
+      }
+    } else {
+      Promise.reject('Position data not available');
+    }
+  }
+
+  private async watchPosition(callback: WatchPositionCallback) {
+    this.watchPositionRequestTime = Date.now();
+    this.watchPositionCallbackId = await Geolocation.watchPosition(this.getPositionOptions(), callback);
+    this.loggingService.debug(
+      `Start GPS position subscription with callback ID: ${this.watchPositionCallbackId}`,
+      DEBUG_TAG,
+      this.getPositionOptions()
+    );
+  }
+
+  private logFirstCallback(position: Position) {
+    const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
+    this.loggingService.debug(
+      'First callback received. ' +
+        `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
+        `Delay since request: ${secondsSinceStartWatch}s`,
+      DEBUG_TAG,
+      { accuracy: position?.coords?.accuracy }
+    );
+  }
+
+  private stopWatchingPosition() {
+    if (this.watchPositionCallbackId !== null) {
+      this.loggingService.debug(
+        `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`,
+        DEBUG_TAG
+      );
+      // this.addStatusToGpsPositionLog('StopGpsTracking');
+      const options: ClearWatchOptions = { id: this.watchPositionCallbackId };
+      Geolocation.clearWatch(options);
+      this.watchPositionCallbackId = null;
+      this.watchPositionRequestTime = null;
+      this.watchPositionFirstCallbackReceived = false;
+    }
+  }
+
+  private isValidPosition(pos: Position): boolean {
+    return (
+      pos !== undefined &&
+      pos !== null &&
+      pos.coords !== undefined &&
+      pos.coords !== null &&
+      pos.coords.latitude >= -90 &&
+      pos.coords.latitude <= 90 &&
+      pos.coords.longitude >= -180 &&
+      pos.coords.longitude <= 180
+    );
+  }
+
+  private getPositionOptions(): PositionOptions {
+    if (Capacitor.getPlatform() === 'android') {
+      if (!this.watchPositionFirstCallbackReceived) {
+        return POSITION_OPTIONS_ANDROID_FIRST_REQUEST;
+      }
+    }
+    return POSITION_OPTIONS_DEFAULT;
+  }
+
+  private async checkPermissionsAndAsk(): Promise<boolean> {
+    try {
+      const currentPermissions = await Geolocation.checkPermissions();
+      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
+      const authorized = currentPermissions.location === 'granted';
+      if (!authorized) {
+        if (Capacitor.getPlatform() === 'ios') {
+          this.showPermissionDeniedToast();
+          return false;
+        }
+        // location is not authorized, request new. This only works on Android
+        const newPermissionsAfterRequest = await Geolocation.requestPermissions();
+        this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
+        if (newPermissionsAfterRequest?.location === 'denied') {
+          this.showPermissionDeniedToast();
+          return false;
+        }
+      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
+      this.showPermissionDeniedToast();
+      return false;
+    }
+    return true;
+  }
+
+  private showPermissionDeniedToast() {
+    const errorMessage = this.translateService.instant('GEOLOCATION.POSITION_ERROR.PermissionDenied');
+    this.createToast(errorMessage);
   }
 
   private async createToast(message?: string) {
@@ -233,202 +329,20 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-  public async startTrackingComponent(name: string, forcePermissionDialog = false): Promise<void> {
-    if (forcePermissionDialog) {
-      this.loggingService.debug(`startTrackingComponent: name = ${name}. Check permissions...`, DEBUG_TAG);
-      const valid = await this.checkPermissions();
-      if (!valid) {
-        this.gpsPositionLog.next(this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied));
-        return;
-      }
-      this.loggingService.debug(`startTrackingComponent: name = ${name}. Permissions ok = ${valid}`, DEBUG_TAG);
-    }
-    this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name), name]);
-  }
-
-  public stopTrackingComponent(name: string) {
-    this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name)]);
-  }
-
-  private getTrackingComponentsExcludeByName(name: string) {
-    return this.trackingComponents.value.filter((x) => x !== name);
-  }
-
-  private startSubscriptions() {
-    this.startWatchingPosition();
-    this.startWatchingHeading();
-  }
-
-  private stopSubscriptions() {
-    this.stopWatchingHeading();
-    this.stopWatchingPosition();
-  }
-
-  private stopWatchingPosition() {
-    if (this.watchPositionCallbackId !== null) {
-      this.loggingService.debug(
-        `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`,
-        DEBUG_TAG
-      );
-      this.addStatusToGpsPositionLog('StopGpsTracking');
-      const options: ClearWatchOptions = { id: this.watchPositionCallbackId };
-      Geolocation.clearWatch(options);
-      this.watchPositionCallbackId = null;
-      this.watchPositionRequestTime = null;
-      this.watchPositionFirstCallbackReceived = false;
-    }
-  }
-
-  private async startWatchingPosition(): Promise<void> {
-    await this.checkPermissions();
-    const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
-      if (err) {
-        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
-        this.gpsPositionLog.next(this.createPositionError('Unknown error'));
-      }
-      if (position !== null) {
-        if (this.watchPositionFirstCallbackReceived === false) {
-          this.watchPositionFirstCallbackReceived = true;
-          const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
-          this.loggingService.debug(
-            'First callback received. ' +
-              `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
-              `Delay since request: ${secondsSinceStartWatch}s`,
-            DEBUG_TAG,
-            { accuracy: position.coords.accuracy }
-          );
-        }
-        this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
-        if (this.isValidPosition(position)) {
-          this.currentPosition.next(position);
-        }
-      }
+  private createPositionError(
+    message: string,
+    code: GeoPositionErrorCode = GeoPositionErrorCode.Unknown,
+    highAccuracyEnabled = true
+  ): GeoPositionLog {
+    return {
+      timestamp: moment().unix(),
+      status: 'PositionError',
+      pos: undefined,
+      highAccuracyEnabled,
+      err: {
+        code,
+        message,
+      },
     };
-    this.addStatusToGpsPositionLog('StartGpsTracking');
-    this.stopWatchingPosition(); //we need to stop current watch of position if any
-    this.watchPositionRequestTime = Date.now();
-    this.watchPositionCallbackId = await Geolocation.watchPosition(this.getPositionOptions(), watchPositionCallback);
-    this.loggingService.debug(
-      `Start GPS position subscription with callback ID: ${this.watchPositionCallbackId}`,
-      DEBUG_TAG,
-      this.getPositionOptions()
-    );
-  }
-
-  private getPositionOptions(): PositionOptions {
-    if (this.platform.is('android')) {
-      return POSITION_OPTIONS_ANDROID;
-    }
-    return POSITION_OPTIONS_DEFAULT;
-  }
-
-  private isValidPosition(pos: Position): boolean {
-    return (
-      pos !== undefined &&
-      pos !== null &&
-      pos.coords !== undefined &&
-      pos.coords !== null &&
-      pos.coords.latitude >= -90 &&
-      pos.coords.latitude <= 90 &&
-      pos.coords.longitude >= -180 &&
-      pos.coords.longitude <= 180
-    );
-  }
-
-  private isValidHeading(heading: number) {
-    return heading >= 0 && heading <= 360;
-  }
-
-  private async checkPermissions(): Promise<boolean> {
-    try {
-      if (isAndroidOrIos(this.platform)) {
-        await this.checkPermissionsApp();
-      }
-    } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
-      const errorMessage = this.translateService.instant('GEOLOCATION.POSITION_ERROR.PermissionDenied');
-      this.createToast(errorMessage);
-      return true; // continue anyway on error
-    }
-  }
-
-  private async checkPermissionsApp(): Promise<boolean> {
-    const currentPermissions = await Geolocation.checkPermissions();
-    this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
-    const authorized = currentPermissions.location === 'granted';
-    if (!authorized) {
-      if (this.platform.is('ios')) {
-        await this.showPermissionDeniedError();
-        return false;
-      }
-      // location is not authorized, request new. This only works on Android
-      const newPermissionsAfterRequest = await Geolocation.requestPermissions();
-      this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
-      if (newPermissionsAfterRequest?.location === 'denied') {
-        await this.showPermissionDeniedError();
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private async showPermissionDeniedError() {
-    const translations = await this.translateService
-      .get(['ALERT.OK', 'PERMISSION.LOCATION_DENIED_HEADER', 'PERMISSION.LOCATION_DENIED_MESSAGE'])
-      .toPromise();
-    const alert = await this.alertController.create({
-      header: translations['PERMISSION.LOCATION_DENIED_HEADER'],
-      message: translations['PERMISSION.LOCATION_DENIED_MESSAGE'],
-      buttons: [translations['ALERT.OK']],
-    });
-    await alert.present();
-  }
-
-  private startWatchingHeading() {
-    if (this.headingSubscription && !this.headingSubscription.closed) {
-      this.headingSubscription.unsubscribe();
-    }
-    // NOTE! Because of issues with show heading with W3C Devece Orientation API in iOS 13, the depricated
-    // plugin cordova-plugin-device-orientation is used instead on ios
-    // https://github.com/apache/cordova-plugin-device-orientation/issues/52
-    this.headingSubscription = (this.isIos() ? this.getHeadingNative() : this.getWebHeadingObservable()).subscribe(
-      (heading: number) => this.validateAndSetHeading(heading)
-    );
-  }
-
-  private isIos(): boolean {
-    return this.platform.is('hybrid') && this.platform.is('ios');
-  }
-
-  private getHeadingNative() {
-    return this.deviceOrientation
-      .watchHeading({ filter: 1 }) //get notified only if heading changes > 1 degree
-      .pipe(map((val) => val?.magneticHeading));
-  }
-
-  private getWebHeadingObservable() {
-    return merge(fromEvent(<any>window, 'deviceorientationabsolute'), fromEvent(<any>window, 'deviceorientation')).pipe(
-      map((event: DeviceOrientationEvent) => {
-        const appleHeading = (<any>event).webkitCompassHeading;
-        const heading: number = appleHeading || this.getAbsoluteHeading(event);
-        return heading;
-      })
-    );
-  }
-
-  private getAbsoluteHeading(event: DeviceOrientationEvent) {
-    return event.alpha !== undefined && event.absolute ? 360 - event.alpha : undefined;
-  }
-
-  private validateAndSetHeading(heading: number) {
-    if (this.isValidHeading(heading)) {
-      this.currentHeading.next(heading);
-    }
-  }
-
-  private stopWatchingHeading() {
-    if (this.headingSubscription && !this.headingSubscription.closed) {
-      this.headingSubscription.unsubscribe();
-    }
   }
 }
