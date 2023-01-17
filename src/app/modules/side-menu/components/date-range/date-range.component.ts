@@ -8,6 +8,7 @@ import { IonAccordionGroup } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { getLangKeyString } from '../../../common-core/helpers';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-date-range',
@@ -56,13 +57,14 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
         tap((criteria) => {
           this.fromDate = criteria.FromDtObsTime;
           this.toDate = criteria.ToDtObsTime;
-          if (!this.cachedDays) {
+          if (this.cachedDays === undefined || this.cachedDays !== 0) {
             this.cachedDays = moment().diff(moment(this.fromDate), 'days');
           }
           if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
             this.mode.next('custom');
           }
-        })
+        }),
+        take(1)
       )
       .subscribe();
   }
@@ -102,8 +104,12 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     const mode = days !== undefined ? 'predefined' : 'custom';
     let date;
 
-    if (days !== undefined && days !== 0) {
-      date = moment().subtract(days, 'days');
+    if (days !== undefined) {
+      if(days === 0) {
+        date = moment();
+      } else {
+        date = moment().subtract(days, 'days');
+      }
       this.cachedDays = days;
     } else {
       date = moment();
