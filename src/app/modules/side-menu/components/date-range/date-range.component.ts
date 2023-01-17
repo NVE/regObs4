@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { BehaviorSubject, map, Observable, takeUntil, combineLatest, tap, concatMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, takeUntil, combineLatest, concatMap } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
@@ -22,7 +22,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   maxDate = new Date().toISOString();
   mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
-  cachedDays: number;
+  cachedDays: number | null = null;
   modeText$: Observable<string>;
 
   constructor(
@@ -51,22 +51,16 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   ngOnInit() {
-    this.searchCriteriaService.searchCriteria$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap((criteria) => {
-          this.fromDate = criteria.FromDtObsTime;
-          this.toDate = criteria.ToDtObsTime;
-          if (this.cachedDays === undefined || this.cachedDays !== 0) {
-            this.cachedDays = moment().diff(moment(this.fromDate), 'days');
-          }
-          if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
-            this.mode.next('custom');
-          }
-        }),
-        take(1)
-      )
-      .subscribe();
+    this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$), take(1)).subscribe((criteria) => {
+      this.fromDate = criteria.FromDtObsTime;
+      this.toDate = criteria.ToDtObsTime;
+      if (this.cachedDays === null || this.cachedDays !== 0) {
+        this.cachedDays = moment().diff(moment(this.fromDate), 'days');
+      }
+      if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
+        this.mode.next('custom');
+      }
+    });
   }
 
   /**
@@ -105,7 +99,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     let date;
 
     if (days !== undefined) {
-      if(days === 0) {
+      if (days === 0) {
         date = moment();
       } else {
         date = moment().subtract(days, 'days');
