@@ -162,8 +162,10 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
-  useMapExtent$: Subject<boolean> = new BehaviorSubject<boolean>(false); //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
-
+  private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true); //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
+  get useMapExtent$() {
+    return this.useMapExtent.asObservable();
+  }
   /**
    * Current filter. Current language and geo hazards are always included
    */
@@ -207,15 +209,8 @@ export class SearchCriteriaService {
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
         FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
-        Extent: !useMapExtent ? extent : null,
+        Extent: useMapExtent ? extent : null,
       })),
-
-      // Hver gang vi får nye søkekriterier, sett url-parametere. NB - fint å bruke shareReplay sammen med denne
-      // siden dette er en bi-effekt det er unødvendig å kjøre flere ganger.
-      tap((newCriteria) => this.setUrlParams(newCriteria)),
-      // Jeg tror vi trenger en shareReplay her for at de som subscriber sent
-      // skal få alle søkekriteriene når vi bruker scan, men er ikke sikker.
-      // Uansett kjekt med en shareReplay her, se kommentar over.
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
@@ -423,7 +418,7 @@ export class SearchCriteriaService {
   }
 
   setExtent(value: MapSectionFilter) {
-    value == 'all' ? this.useMapExtent$.next(true) : this.useMapExtent$.next(false);
+    value == 'all' ? this.useMapExtent.next(false) : this.useMapExtent.next(true);
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

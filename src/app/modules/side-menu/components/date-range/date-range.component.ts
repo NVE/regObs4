@@ -8,7 +8,7 @@ import { IonAccordionGroup } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { getLangKeyString } from '../../../common-core/helpers';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
-
+import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
@@ -21,7 +21,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   maxDate = new Date().toISOString();
   mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
-  cachedDays: number;
+  cachedDays: number | null = null;
   modeText$: Observable<string>;
 
   constructor(
@@ -50,21 +50,16 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   ngOnInit() {
-    this.searchCriteriaService.searchCriteria$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap((criteria) => {
-          this.fromDate = criteria.FromDtObsTime;
-          this.toDate = criteria.ToDtObsTime;
-          if (!this.cachedDays) {
-            this.cachedDays = moment().diff(moment(this.fromDate), 'days');
-          }
-          if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
-            this.mode.next('custom');
-          }
-        })
-      )
-      .subscribe();
+    this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$)).subscribe((criteria) => {
+      this.fromDate = criteria.FromDtObsTime;
+      this.toDate = criteria.ToDtObsTime;
+      if (this.cachedDays === null || this.cachedDays !== 0) {
+        this.cachedDays = moment().diff(moment(this.fromDate), 'days');
+      }
+      if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
+        this.mode.next('custom');
+      }
+    });
   }
 
   /**
@@ -102,8 +97,12 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     const mode = days !== undefined ? 'predefined' : 'custom';
     let date;
 
-    if (days !== undefined && days !== 0) {
-      date = moment().subtract(days, 'days');
+    if (days !== undefined) {
+      if (days === 0) {
+        date = moment();
+      } else {
+        date = moment().subtract(days, 'days');
+      }
       this.cachedDays = days;
     } else {
       date = moment();
@@ -115,7 +114,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.setFromDate(date.format('YYYY-MM-DD'), true);
     this.mode.next(mode);
   }
-
   private getReadableDays(day: number): Observable<string> {
     if (day === 0) return this.translateService.get(['MENU.DATE_RANGE.TODAY']);
     if (day === 1) return this.translateService.get(['MENU.DATE_RANGE.YESTERDAY']);
