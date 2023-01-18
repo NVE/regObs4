@@ -143,9 +143,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   onSelectCompetenceChange(event) {
-    console.log(this.competenceOptions);
     if (event.detail.value) {
-      //this.chosenCompetenceValue = event.detail.value;
       const ids = [...event.detail.value.ids];
       if (event.detail.value.value === 'All') {
         this.searchCriteriaService.setCompetence(null);
@@ -159,33 +157,19 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onCheckAutomaticStations(event) {
-    /*const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
     this.isAutomaticStationChecked = event.detail.checked;
-    const allIds = this.competenceOptions
-      .map((co) => co.ids)
-      .flat()
-      .reduce((cur, id) => {
-        if (!cur.includes(id)) cur.push(id);
-        return cur;
-      }, []);
-    let competence = [];
-    if (existingCompetence?.length == allIds.length && this.isAutomaticStationChecked) {
-      competence = null;
-    } else if (existingCompetence?.length && this.isAutomaticStationChecked) {
-      competence = [...existingCompetence, ...event.detail.value.ids];
-    } else if (existingCompetence?.length && !this.isAutomaticStationChecked) {
-      competence = existingCompetence.filter((c) => event.detail.value.ids.indexOf(c) === -1);
-    } else if (!this.isAutomaticStationChecked) {
-      competence = allIds;
-    }*/
+    //all ids are set on competenceOption 'All'
+    const allIds = this.competenceOptions.find((option) => option.value === 'All');
     if (event.detail.checked) {
-      this.isAutomaticStationChecked = event.detail.checked;
-      this.searchCriteriaService.setAutomaticStations();
+      this.chosenCompetenceValue.value === 'All'
+        ? this.searchCriteriaService.setCompetence(null)
+        : this.searchCriteriaService.setAutomaticStations();
     } else {
-      this.isAutomaticStationChecked = event.detail.checked;
-      this.searchCriteriaService.removeAtomaticStations();
+      //on removeAutomaticStations if 'All' is a selected option we add allIds to criteria except for 105
+      this.chosenCompetenceValue.value === 'All'
+        ? this.searchCriteriaService.setCompetence(allIds.ids)
+        : this.searchCriteriaService.removeAtomaticStations();
     }
-    console.log(this.isAutomaticStationChecked);
   }
 
   setNewType(event: CustomEvent, parentId: number, typeId?: number) {
@@ -273,8 +257,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.automaticStation = null;
     this.isAutomaticStationChecked = false;
     const competanceSorted: { [name: string]: CompetenceItem } = {};
-    //since the filter menu component is not re rendered on geo hazard change
-    //we have to set showAutomaticStation to false here
     const allIds = unsortedCompetences
       .flat()
       .map((item) => item.Id)
