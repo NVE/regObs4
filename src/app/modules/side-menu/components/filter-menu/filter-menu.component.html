@@ -8,12 +8,12 @@
     <ion-label> {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }} </ion-label>
   </ion-list-header>
 
-  <ion-item *ngIf="observationTypesOptions">
+  <ion-item>
     <ion-list lines="none">
       <ng-container *ngFor="let type of observationTypesOptions">
         <ion-item class="item-height">
           <ion-checkbox
-            [(ngModel)]="type.isChecked"
+            [checked]="type.isChecked"
             (ionChange)="setNewType($event, type.parentId, type.id)"
             color="varsom-dark-blue"
           >
@@ -39,7 +39,7 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item *ngIf="isShowAutomaticStation">
+  <ion-item *ngIf="automaticStation">
     <ion-checkbox
       [checked]="isAutomaticStationChecked"
       color="varsom-dark-blue"

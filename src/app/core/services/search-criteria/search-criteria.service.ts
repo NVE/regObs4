@@ -244,7 +244,6 @@ export class SearchCriteriaService {
       ObserverNickName: null,
     };
     this.searchCriteriaChanges.next(criteria);
-    this.searchCriteria$.subscribe((v) => console.log(v));
   }
 
   // build search criteria from url parameters. Some params are stored in user settings
@@ -359,6 +358,26 @@ export class SearchCriteriaService {
       return compArr;
     }, [] as number[]);
     this.searchCriteriaChanges.next({ ObserverCompetence: removedDuplicates });
+  }
+
+  async removeAtomaticStations() {
+    const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
+    if (currentObserverCriteria) {
+      const copyCriteria = [...currentObserverCriteria] as number[];
+      const removed = copyCriteria.filter((i) => i !== 105);
+      this.searchCriteriaChanges.next({ ObserverCompetence: removed });
+    }
+  }
+
+  async setAutomaticStations() {
+    const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
+
+    console.log(currentObserverCriteria);
+    if (currentObserverCriteria != null && currentObserverCriteria.length > 0) {
+      const copyCriteria = [...currentObserverCriteria] as number[];
+      copyCriteria.push(105);
+      this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
+    }
   }
 
   async setObservationType(newType: RegistrationTypeCriteriaDto) {
