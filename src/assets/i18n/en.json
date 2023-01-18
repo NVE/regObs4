@@ -229,10 +229,6 @@
     "USER": "User"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observation filter",
-    "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observation type"
-    },
     "COMPETANCE_FILTER": {
       "ALL": "All",
       "AUTOMATIC_STATIONS": "Automatic stations",
@@ -240,9 +236,13 @@
       "TITLE": "Observer"
     },
     "NICK_FILTER": {
-      "TITLE": "Name",
-      "PLACEHOLDER": "Search by observer name"
-    }
+      "PLACEHOLDER": "Search by observer name",
+      "TITLE": "Name"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observation type"
+    },
+    "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All",

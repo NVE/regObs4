@@ -206,7 +206,7 @@ describe('SearchCriteriaService', () => {
 
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
-
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('fromDate')).toEqual('2000-12-24');
   }));
@@ -219,7 +219,7 @@ describe('SearchCriteriaService', () => {
 
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
-
+    await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('toDate')).toEqual('2000-12-24');
   }));
