@@ -22,6 +22,8 @@ import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
+//TODO: Dette er den gamle servicen som skal fjernes
+
 const DEBUG_TAG = 'GeoPositionService';
 
 const POSITION_OPTIONS_DEFAULT: PositionOptions = {

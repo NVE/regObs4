@@ -1,6 +1,7 @@
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
@@ -33,6 +34,9 @@ import { BackgroundGeolocationNativeService } from './core/services/background-g
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
+import { GeoPositionWebService } from './core/services/geo-position/geo-posistion-web.service';
+import { GeoPositionNativeService } from './core/services/geo-position/geo-position-native.service';
+import { GeoPositionService } from './core/services/geo-position/geo-position.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
@@ -168,8 +172,12 @@ export const APP_PROVIDERS = [
 
   // Custom native/web providers
   {
+    provide: GeoPositionService,
+    useClass: Capacitor.isNativePlatform() ? GeoPositionNativeService : GeoPositionWebService,
+  },
+  {
     provide: BackgroundGeolocationService,
-    useClass: isPlatform('hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService,
+    useClass: Capacitor.isNativePlatform() ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService,
   },
   {
     provide: BackgroundDownloadService,
@@ -181,6 +189,6 @@ export const APP_PROVIDERS = [
   },
   {
     provide: SearchService,
-    useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
+    useClass: Capacitor.isNativePlatform() ? OfflineCapableSearchService : SearchService,
   },
 ];
