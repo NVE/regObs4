@@ -163,6 +163,17 @@
   }
 }
 
+@media screen and (max-width: 650px) {
+  ion-slides {
+    .swiper-slide {
+      width: calc(80vw - 60px) !important;
+      &:last-child {
+        width: 80vw !important;
+      }
+    }
+  }
+}
+
 .slideGrid {
   display: grid !important;
   grid-template-columns: 1fr;
