@@ -17,7 +17,7 @@ import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
 import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -343,20 +343,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
     });
+
     //set overwrite default showUserLocation with component input
     this.mapService.showUserLocation(this.isNative);
-    combineLatest([this.mapService.centerMapToUser$, this.mapService.showUserLocation$])
+
+    combineLatest([this.mapService.showUserLocation$, this.isActive])
       .pipe(
         takeUntil(this.ngDestroy$),
-        filter(([, showUserLocation]) => !showUserLocation),
-        switchMap(() => {
-          if (Capacitor.isNativePlatform()) {
-            this.mapService.followMode = true;
-          }
-          return this.geoPositionService.currentPosition$;
-        })
+        tap(([showUserLocation, isActive]) =>
+          this.loggingService.debug(`showUserLocation = ${showUserLocation}, isActive = ${isActive}`, DEBUG_TAG)
+        ),
+        filter(([showUserLocation, isActive]) => showUserLocation && isActive),
+        tap(() => (Capacitor.isNativePlatform() ? (this.mapService.followMode = true) : undefined)),
+        switchMap(() => this.geoPositionService.currentPosition$)
       )
-      .subscribe((position) => this.onPositionUpdate(position));
+      .subscribe((position) => {
+        this.onPositionUpdate(position);
+      });
+    //TODO: Blir et nytt abonnement hver gang vi trykker på GPS-knappen på web.
+    //Er det bedre å skille mellom web og app og be tjenesten om posisjon på nytt (men beholde abonnementet?)
+    //TODO: Hvordan av-abonnere når isActive blir satt til false?
+
     //TODO: Abonner på kompassretning
 
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());

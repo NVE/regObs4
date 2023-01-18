@@ -49,11 +49,10 @@ export abstract class GeoPositionService implements OnDestroy {
   protected gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
 
   /**
-   * A stream of positions. If position data is not available an error will be thrown.
+   * A stream of position data.
+   * On web, the observable will complete after the first position is returned, so you need to re-subscribe.
+   * If position data is not available an error will be thrown.
    */
-  // get currentPosition$(): Observable<Position> {
-  //   return this.currentPosition.pipe(filter((cp) => cp !== null));
-  // }
   readonly currentPosition$: Observable<Position>;
 
   get currentHeading$(): Observable<number> {

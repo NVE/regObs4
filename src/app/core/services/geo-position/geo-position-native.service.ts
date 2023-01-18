@@ -34,7 +34,6 @@ export class GeoPositionNativeService extends GeoPositionService {
   private watchPositionCallbackId: CallbackID = null;
   private watchPositionRequestTime: number = null;
   private watchPositionFirstCallbackReceived = false;
-  private watchPositionReadyToReduceCallbackFrequency: BehaviorSubject<void> = new BehaviorSubject(null);
 
   constructor(
     deviceOrientation: DeviceOrientation,
@@ -61,9 +60,10 @@ export class GeoPositionNativeService extends GeoPositionService {
           if (!this.watchPositionFirstCallbackReceived) {
             this.watchPositionFirstCallbackReceived = true;
             this.logFirstCallback(position);
-            if (Capacitor.getPlatform() === 'Android') {
-              this.watchPositionReadyToReduceCallbackFrequency.next();
-              this.watchPositionReadyToReduceCallbackFrequency.complete();
+            if (Capacitor.getPlatform() === 'android') {
+              //we stop current subscription an start a new with much lower callback frequency
+              this.stopWatchingPosition();
+              this.watchPosition(watchPositionCallback);
             }
           }
           // this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
@@ -75,12 +75,6 @@ export class GeoPositionNativeService extends GeoPositionService {
       // this.addStatusToGpsPositionLog('StartGpsTracking');
       this.stopWatchingPosition(); //we need to stop current watch of position if any
       this.watchPosition(watchPositionCallback);
-      if (Capacitor.getPlatform() === 'Android') {
-        this.watchPositionReadyToReduceCallbackFrequency.subscribe(() => {
-          this.stopWatchingPosition(); //we need to stopp current subscription an start a new with different options
-          this.watchPosition(watchPositionCallback);
-        });
-      }
     } else {
       Promise.reject('Position data not available');
     }
@@ -153,7 +147,6 @@ export class GeoPositionNativeService extends GeoPositionService {
       Geolocation.clearWatch(options);
       this.watchPositionCallbackId = null;
       this.watchPositionRequestTime = null;
-      this.watchPositionFirstCallbackReceived = false;
     }
   }
 }
