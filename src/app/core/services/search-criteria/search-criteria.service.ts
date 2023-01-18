@@ -199,7 +199,12 @@ export class SearchCriteriaService {
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
       this.useMapExtent$,
-      this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
+      this.mapService.mapView$.pipe(
+        map((mapView) => {
+          console.log('new map view');
+          return this.createExtentCriteria(mapView);
+        })
+      ),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
@@ -337,6 +342,7 @@ export class SearchCriteriaService {
   }
 
   setObserverNickName(nickName: string) {
+    console.log('set name');
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 

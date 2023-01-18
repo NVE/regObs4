@@ -70,7 +70,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
-  nickName: string;
+  nickName: string | null = null;
   observationTypesOptions: ObservationTypeView[];
   competenceOptions: CompetenceItem[];
   automaticStation: CompetenceItem;
@@ -93,7 +93,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
-
     const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
 
     combineLatest([
@@ -123,6 +122,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   onSelectCompetenceChange(event) {
+    console.log('onCheckAutomaticStations', event);
     this.chosenCompetenceValue = event.detail.value;
     const ids = event.detail.value.ids;
     if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
@@ -136,6 +136,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onCheckAutomaticStations(event) {
+    console.log('onCheckAutomaticStations', event);
     const { ObserverCompetence: existingCompetence } = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
     this.isAutomaticStationChecked = event.detail.checked;
     const allIds = this.competenceOptions
@@ -168,6 +169,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   setNickName(newNick: SearchbarCustomEvent | null) {
+    console.log('setnickname', newNick);
     let nickName = null;
     newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
     this.searchCriteriaService.setObserverNickName(nickName);

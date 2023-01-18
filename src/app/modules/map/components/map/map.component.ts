@@ -414,7 +414,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         takeUntil(this.ngDestroy$),
         filter(() => this.isActive.value)
       )
-      .subscribe(() => this.updateMapView());
+      .subscribe(() => {
+        console.log('fromeventpatternupdate');
+        this.updateMapView();
+      });
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
@@ -544,6 +547,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onMapMoveEnd() {
+    console.log('onmapmoveend');
     this.updateMapView();
   }
 
