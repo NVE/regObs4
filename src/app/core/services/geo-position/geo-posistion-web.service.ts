@@ -10,6 +10,9 @@ const DEBUG_TAG = 'GeoPositionWebService';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Fetch position data from browser
+ */
 export class GeoPositionWebService extends GeoPositionService {
   constructor(
     deviceOrientation: DeviceOrientation,
@@ -21,14 +24,30 @@ export class GeoPositionWebService extends GeoPositionService {
     super(deviceOrientation, toastController, translateService, platform, loggingService);
   }
 
+  async checkPermissionsAndAsk(): Promise<boolean> {
+    //TODO: Mye kopi av kode fra startWatchingPosition, refaktor!
+    if (!this.geoLocationSupported) {
+      this.handleGeoLocationNotSupported();
+      return false;
+    }
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        return true;
+      },
+      (err) => {
+        this.geolocationError(err);
+      },
+      this.getPositionOptions()
+    );
+    return false;
+  }
+
   /**
-   * Will request position from browser (only) once
+   * Will request position from browser (only) once and then complete the currentPosition stream
    */
   protected async startWatchingPosition(): Promise<void> {
     if (!this.geoLocationSupported) {
-      const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.UNSUPPORTED');
-      this.gpsPositionLog.next(this.createPositionError(errorMessage));
-      this.createToast(errorMessage);
+      this.handleGeoLocationNotSupported();
     } else {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -50,5 +69,11 @@ export class GeoPositionWebService extends GeoPositionService {
 
   private get geoLocationSupported(): boolean {
     return !!navigator?.geolocation?.getCurrentPosition;
+  }
+
+  private handleGeoLocationNotSupported() {
+    const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.UNSUPPORTED');
+    this.gpsPositionLog.next(this.createPositionError(errorMessage));
+    this.createToast(errorMessage);
   }
 }

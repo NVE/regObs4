@@ -42,6 +42,10 @@ export class UserMarker {
     return this.position;
   }
 
+  remove(): void {
+    this.userMarker.removeFrom(this.map);
+  }
+
   updatePosition(position: Position) {
     this.position = position;
     const latLng = {

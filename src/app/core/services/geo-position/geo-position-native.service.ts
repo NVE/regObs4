@@ -4,7 +4,6 @@ import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCall
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { GeoPositionService } from './geo-position.service';
@@ -45,61 +44,85 @@ export class GeoPositionNativeService extends GeoPositionService {
     super(deviceOrientation, toastController, translateService, platform, loggingService);
 
     this.platform.pause.subscribe(() => this.stopWatchingPosition());
-    this.platform.resume.subscribe(() => this.startWatchingPosition()); //TODO: Check that current subscribers will get notified after resume
+    this.platform.resume.subscribe(() => {
+      this.loggingService.debug('Resume, try to start watching position...', DEBUG_TAG);
+      this.startWatchingPosition();
+      this.loggingService.debug('Resume, watching position...', DEBUG_TAG);
+    }); //TODO: Check that current subscribers will get notified after resume
   }
 
   protected async startWatchingPosition(): Promise<void> {
-    const permissionToGetPosition = await this.checkPermissionsAndAsk();
-    if (permissionToGetPosition) {
-      const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
-        if (err) {
-          this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
-          this.gpsPositionLog.next(this.createPositionError('Unknown error'));
-        }
-        if (position !== null) {
-          if (!this.watchPositionFirstCallbackReceived) {
-            this.watchPositionFirstCallbackReceived = true;
-            this.logFirstCallback(position);
-            if (Capacitor.getPlatform() === 'android') {
-              //we stop current subscription an start a new with much lower callback frequency
-              this.stopWatchingPosition();
-              this.watchPosition(watchPositionCallback);
-            }
-          }
-          // this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
-          if (this.isValidPosition(position)) {
-            this.currentPosition.next(position);
-          }
-        }
-      };
-      // this.addStatusToGpsPositionLog('StartGpsTracking');
-      this.stopWatchingPosition(); //we need to stop current watch of position if any
-      this.watchPosition(watchPositionCallback);
-    } else {
-      Promise.reject('Position data not available');
+    const permissionGranted = await this.checkPermissions();
+    if (!permissionGranted) {
+      this.showPermissionDeniedToast();
+      this.loggingService.debug(
+        'Watch position request aborted because permission denied. Please run checkPermissionsAndAsk() to check again',
+        DEBUG_TAG
+      );
+      return;
     }
+    const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
+      if (err) {
+        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
+        this.gpsPositionLog.next(this.createPositionError('Unknown error'));
+      }
+      if (position !== null) {
+        if (!this.watchPositionFirstCallbackReceived) {
+          this.watchPositionFirstCallbackReceived = true;
+          this.logFirstCallback(position);
+          if (Capacitor.getPlatform() === 'android') {
+            //we stop current subscription an start a new with much lower callback frequency
+            this.stopWatchingPosition();
+            this.watchPosition(watchPositionCallback);
+          }
+        }
+        // this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
+        if (this.isValidPosition(position)) {
+          this.currentPosition.next(position);
+        }
+      }
+    };
+    // this.addStatusToGpsPositionLog('StartGpsTracking');
+    this.stopWatchingPosition(); //we need to stop current watch of position if any
+    this.watchPosition(watchPositionCallback);
+    this.isWatching = true;
   }
 
-  private async checkPermissionsAndAsk(): Promise<boolean> {
+  private async checkPermissions(): Promise<boolean> {
     try {
-      const currentPermissions = await Geolocation.checkPermissions();
-      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
-      const authorized = currentPermissions.location === 'granted';
-      if (!authorized) {
-        if (Capacitor.getPlatform() === 'ios') {
-          this.showPermissionDeniedToast();
-          return false;
-        }
-        // location is not authorized, request new. This only works on Android
-        const newPermissionsAfterRequest = await Geolocation.requestPermissions();
-        this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
-        if (newPermissionsAfterRequest?.location === 'denied') {
-          this.showPermissionDeniedToast();
-          return false;
-        }
+      const permissions = await Geolocation.checkPermissions();
+      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, permissions);
+      return permissions?.location === 'granted';
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
+    }
+    return false;
+  }
+
+  // This only works on Android
+  private async askForPermission(): Promise<boolean> {
+    try {
+      const permissions = await Geolocation.requestPermissions();
+      this.loggingService.debug('Geolocation permissions after request', DEBUG_TAG, permissions);
+      if (permissions?.location === 'denied') {
+        this.showPermissionDeniedToast();
+        return false;
       }
     } catch (err) {
       this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
+      this.showPermissionDeniedToast();
+      return false;
+    }
+    return true;
+  }
+
+  async checkPermissionsAndAsk(): Promise<boolean> {
+    let authorized = await this.checkPermissions();
+    if (!authorized && Capacitor.getPlatform() === 'android') {
+      // location is not authorized, request new. This only works on Android
+      authorized = await this.askForPermission();
+    }
+    if (!authorized) {
       this.showPermissionDeniedToast();
       return false;
     }

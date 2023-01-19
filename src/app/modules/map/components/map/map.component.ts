@@ -16,8 +16,8 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
-import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, of, race, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -306,6 +306,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
     });
 
+    this.mapService.centerMapToUser$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap(() => from(this.geoPositionService.checkPermissionsAndAsk()))
+      )
+      .subscribe();
+
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
       this.disableFollowMode();
       this.zone.runOutsideAngular(() => {
@@ -353,16 +360,31 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         tap(([showUserLocation, isActive]) =>
           this.loggingService.debug(`showUserLocation = ${showUserLocation}, isActive = ${isActive}`, DEBUG_TAG)
         ),
-        filter(([showUserLocation, isActive]) => showUserLocation && isActive),
         tap(() => (Capacitor.isNativePlatform() ? (this.mapService.followMode = true) : undefined)),
-        switchMap(() => this.geoPositionService.currentPosition$)
+        switchMap(([showUserLocation, isActive]) => {
+          if (showUserLocation && isActive) {
+            return this.geoPositionService.currentPosition$;
+          }
+          return of(null); //we don't want to subscribe to position data
+        })
       )
       .subscribe((position) => {
-        this.onPositionUpdate(position);
+        //TODO: FÅr denne innimellom:
+        // VM3:347 TypeError: Cannot read properties of undefined (reading 'appendChild')
+        // at NewClass._initIcon (leaflet-src.js:7603:6)
+        // at NewClass.onAdd (leaflet-src.js:7455:10)
+        // at NewClass._layerAdd (leaflet-src.js:6567:10)
+        // at NewClass.whenReady (leaflet-src.js:4428:15)
+        // at NewClass.addLayer (leaflet-src.js:6629:10)
+        // at NewClass.addTo (leaflet-src.js:6505:9)
+        // at new UserMarker (user-marker.ts:37:21)
+        // at map.component.ts:654:29
+        if (position == null) {
+          this.removeUserMarker();
+        } else {
+          this.onPositionUpdate(position);
+        }
       });
-    //TODO: Blir et nytt abonnement hver gang vi trykker på GPS-knappen på web.
-    //Er det bedre å skille mellom web og app og be tjenesten om posisjon på nytt (men beholde abonnementet?)
-    //TODO: Hvordan av-abonnere når isActive blir satt til false?
 
     //TODO: Abonner på kompassretning
 
@@ -646,6 +668,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+  }
+
+  private removeUserMarker() {
+    if (this.userMarker) {
+      this.userMarker.remove();
+      this.userMarker = undefined;
+    }
   }
 
   private flyToMaxZoom(latLng: L.LatLng, usePan = false) {

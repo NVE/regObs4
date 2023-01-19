@@ -4,18 +4,7 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
-import {
-  BehaviorSubject,
-  defer,
-  filter,
-  firstValueFrom,
-  Observable,
-  of,
-  ReplaySubject,
-  share,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, Observable, of, ReplaySubject, share, Subject, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';
@@ -30,30 +19,24 @@ const POSITION_OPTIONS_DEFAULT: PositionOptions = {
 
 /**
  * Henter posisjon fra GPS og himmelretning fra kompasset på Android eller iOS.
- * TODO: Hvordan sikre at vi får med oss om brukeren skrur på "GPS" etter at appen startet?
- * TODO: Hvordan sikre oss at bruker skjønner at han må skru på "GPS" og tillate posisjonsdata uten å spørre hver gang vi prøver å hente posisjon?
- * TODO: Hvordan ønsker vi å gjøre det egentlig? Skiller pluginen mellom "Dette er tilgangen appen har..." og "Be om tilgang.." ? Svar: Ja
- * Jeg tenker at når appen starter så bør vi bare sjekke hvilken tilgang appen har.
- * Kun når man trykker på posisjonsikonet i kartet bør vi be om tilgang.
- * For det er kun da vi vet at brukeren aktivt vil at posisjonen skal vises / trackes i kartet, og da kan det være likt på app/web.
- * TODO: Hvordan skal klienten få beskjed om at den ikke får posisjonsdata som forventet?
  * TODO: Skille ut kompasskode i egen service(r)
- *
+ * TODO: Test også på Android 12, som har litt annen måte å spørre om tilgang til posisjonsdata på
+ * TODO: Tar for lang tid å få posisjon på nytt på kartsida etter vi har vært på en annen side. Gjelder Android, ikke web
  */
 @Injectable({
   providedIn: 'root',
 })
 export abstract class GeoPositionService implements OnDestroy {
-  protected currentPosition: BehaviorSubject<Position> = new BehaviorSubject(null);
+  protected currentPosition: Subject<Position> = new Subject();
   protected currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
   protected gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
+  protected isWatching = false;
 
   /**
    * A stream of position data.
    * On web, the observable will complete after the first position is returned, so you need to re-subscribe.
    * If position data is not available an error will be thrown.
    */
-  readonly currentPosition$: Observable<Position>;
 
   get currentHeading$(): Observable<number> {
     return this.currentHeading.pipe(filter((cp) => cp !== null));
@@ -63,34 +46,39 @@ export abstract class GeoPositionService implements OnDestroy {
     return this.gpsPositionLog.asObservable();
   }
 
+  get currentPosition$(): Observable<Position> {
+    if (!this.isWatching) {
+      this.loggingService.debug('Running startWatchingPosition', DEBUG_TAG);
+      this.startWatchingPosition();
+    }
+    return this.currentPosition.pipe(
+      tap((pos) =>
+        this.loggingService.debug(
+          `Dispatched position: ${pos?.coords?.latitude}, ${pos?.coords?.longitude}, timestamp: ${pos?.timestamp}. Subscribers: ${this.currentPosition.observers?.length}`,
+          DEBUG_TAG
+        )
+      ),
+      filter((pos) => this.isValidPosition(pos)),
+      share({
+        // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
+        // refCount har med antall subscribers å gjøre.
+        resetOnRefCountZero: () => {
+          this.loggingService.debug('No more subscribers so stopWatchingPosition...', DEBUG_TAG);
+          this.stopWatchingPosition();
+          this.isWatching = false;
+          return of(false);
+        },
+      })
+    );
+  }
+
   constructor(
     private deviceOrientation: DeviceOrientation,
     private toastController: ToastController,
     protected translateService: TranslateService,
     protected platform: Platform,
     protected loggingService: LoggingService
-  ) {
-    this.currentPosition$ = defer(() => this.startWatchingPosition()).pipe(
-      switchMap(() => this.currentPosition.asObservable()),
-      // Etter at vi har en posisjon kan vi bruke share for å dele posisjonen med alle som subscriber
-      tap((pos) =>
-        this.loggingService.debug(
-          `Dispatched position: ${pos?.coords?.latitude}, ${pos?.coords?.longitude}, timestamp: ${pos?.timestamp}`,
-          DEBUG_TAG
-        )
-      ),
-      filter((pos) => this.isValidPosition(pos)),
-      share({
-        // I denne funksjonen som vi gir til share
-        // kan vi sette opp teardown-logikk.
-        // refCount har med antall subscribers å gjøre.
-        resetOnRefCountZero: () => {
-          this.stopWatchingPosition();
-          return of(true); //TODO; Hva skal jeg returnere her?
-        },
-      })
-    );
-  }
+  ) {}
 
   ngOnDestroy(): void {
     this.stopWatchingPosition();
@@ -105,9 +93,13 @@ export abstract class GeoPositionService implements OnDestroy {
     return firstValueFrom<Position>(this.currentPosition);
   }
 
+  abstract checkPermissionsAndAsk(): Promise<boolean>;
+
   protected abstract startWatchingPosition(): Promise<void>;
 
-  protected stopWatchingPosition() {}
+  protected stopWatchingPosition() {
+    //You may override this if you need to clean up something
+  }
 
   protected isValidPosition(pos: Position): boolean {
     return (
