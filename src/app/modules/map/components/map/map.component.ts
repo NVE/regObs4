@@ -21,6 +21,7 @@ import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap, withLate
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
+import { HeadingService } from 'src/app/core/services/geo-position/heading.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
 import { settings } from '../../../../../settings';
@@ -121,6 +122,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService,
+    private headingService: HeadingService,
     private platform: Platform,
     private mapZoomService: MapZoomService,
     private observerTripsService: ObserverTripsService,
@@ -386,7 +388,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
-    //TODO: Abonner på kompassretning
+    //TODO: Abonner på kompassretning: Hvordan få den til å abonnere på nytt etter at vi har deaktivert kartet?
+    this.headingService.currentHeading$.pipe(takeUntil(this.ngDestroy$)).subscribe((heading) => {
+      if (this.userMarker) {
+        this.userMarker.setHeading(heading);
+      }
+    });
+
+    //TODO: Hva gjør vi med denne?
+    this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
+      if (active) {
+        this.redrawMap();
+      }
+    });
 
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
     this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
@@ -495,14 +509,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       detectRetina,
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
-  }
-
-  private startActiveSubscriptions() {
-    this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
-      if (active) {
-        this.redrawMap();
-      }
-    });
   }
 
   private onMapMove() {

@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import moment from 'moment';
+import { BehaviorSubject } from 'rxjs';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { GeoPositionLog, PositionError } from './geo-position-log.interface';
 import { GeoPositionService } from './geo-position.service';
 
 const DEBUG_TAG = 'GeoPositionNativeService';
@@ -33,21 +35,21 @@ export class GeoPositionNativeService extends GeoPositionService {
   private watchPositionCallbackId: CallbackID = null;
   private watchPositionRequestTime: number = null;
   private watchPositionFirstCallbackReceived = false;
+  private highAccuracyEnabled = new BehaviorSubject(true);
 
   constructor(
-    deviceOrientation: DeviceOrientation,
     toastController: ToastController,
     translateService: TranslateService,
     platform: Platform,
-    loggingService: LoggingService
+    logger: LoggingService
   ) {
-    super(deviceOrientation, toastController, translateService, platform, loggingService);
+    super(toastController, translateService, platform, logger);
 
     this.platform.pause.subscribe(() => this.stopWatchingPosition());
     this.platform.resume.subscribe(() => {
-      this.loggingService.debug('Resume, try to start watching position...', DEBUG_TAG);
+      this.logger.debug('Resume, try to start watching position...', DEBUG_TAG);
       this.startWatchingPosition();
-      this.loggingService.debug('Resume, watching position...', DEBUG_TAG);
+      this.logger.debug('Resume, watching position...', DEBUG_TAG);
     }); //TODO: Check that current subscribers will get notified after resume
   }
 
@@ -55,7 +57,7 @@ export class GeoPositionNativeService extends GeoPositionService {
     const permissionGranted = await this.checkPermissions();
     if (!permissionGranted) {
       this.showPermissionDeniedToast();
-      this.loggingService.debug(
+      this.logger.debug(
         'Watch position request aborted because permission denied. Please run checkPermissionsAndAsk() to check again',
         DEBUG_TAG
       );
@@ -63,7 +65,7 @@ export class GeoPositionNativeService extends GeoPositionService {
     }
     const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
       if (err) {
-        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
+        this.logger.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
         this.gpsPositionLog.next(this.createPositionError('Unknown error'));
       }
       if (position !== null) {
@@ -76,13 +78,13 @@ export class GeoPositionNativeService extends GeoPositionService {
             this.watchPosition(watchPositionCallback);
           }
         }
-        // this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
+        this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
         if (this.isValidPosition(position)) {
           this.currentPosition.next(position);
         }
       }
     };
-    // this.addStatusToGpsPositionLog('StartGpsTracking');
+    this.addStatusToGpsPositionLog('StartGpsTracking');
     this.stopWatchingPosition(); //we need to stop current watch of position if any
     this.watchPosition(watchPositionCallback);
     this.isWatching = true;
@@ -91,10 +93,10 @@ export class GeoPositionNativeService extends GeoPositionService {
   private async checkPermissions(): Promise<boolean> {
     try {
       const permissions = await Geolocation.checkPermissions();
-      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, permissions);
+      this.logger.debug('Geolocation permissions', DEBUG_TAG, permissions);
       return permissions?.location === 'granted';
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
+      this.logger.error(err, DEBUG_TAG, 'Error asking for location permissions');
     }
     return false;
   }
@@ -103,13 +105,13 @@ export class GeoPositionNativeService extends GeoPositionService {
   private async askForPermission(): Promise<boolean> {
     try {
       const permissions = await Geolocation.requestPermissions();
-      this.loggingService.debug('Geolocation permissions after request', DEBUG_TAG, permissions);
+      this.logger.debug('Geolocation permissions after request', DEBUG_TAG, permissions);
       if (permissions?.location === 'denied') {
         this.showPermissionDeniedToast();
         return false;
       }
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
+      this.logger.error(err, DEBUG_TAG, 'Error asking for location permissions');
       this.showPermissionDeniedToast();
       return false;
     }
@@ -132,7 +134,7 @@ export class GeoPositionNativeService extends GeoPositionService {
   private async watchPosition(callback: WatchPositionCallback) {
     this.watchPositionRequestTime = Date.now();
     this.watchPositionCallbackId = await Geolocation.watchPosition(this.getPositionOptions(), callback);
-    this.loggingService.debug(
+    this.logger.debug(
       `Start GPS position subscription with callback ID: ${this.watchPositionCallbackId}`,
       DEBUG_TAG,
       this.getPositionOptions()
@@ -150,7 +152,7 @@ export class GeoPositionNativeService extends GeoPositionService {
 
   private logFirstCallback(position: Position) {
     const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
-    this.loggingService.debug(
+    this.logger.debug(
       'First callback received. ' +
         `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
         `Delay since request: ${secondsSinceStartWatch}s`,
@@ -161,15 +163,44 @@ export class GeoPositionNativeService extends GeoPositionService {
 
   protected stopWatchingPosition() {
     if (this.watchPositionCallbackId !== null) {
-      this.loggingService.debug(
+      this.logger.debug(
         `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`,
         DEBUG_TAG
       );
-      // TODO: this.addStatusToGpsPositionLog('StopGpsTracking');
+      this.addStatusToGpsPositionLog('StopGpsTracking');
       const options: ClearWatchOptions = { id: this.watchPositionCallbackId };
       Geolocation.clearWatch(options);
       this.watchPositionCallbackId = null;
       this.watchPositionRequestTime = null;
     }
+  }
+
+  private getTimestamp(geopos: Position) {
+    if (geopos && geopos.timestamp > 0) {
+      if (Capacitor.getPlatform() === 'ios') {
+        return geopos.timestamp / 1000;
+      }
+      return geopos.timestamp;
+    }
+    return moment().unix();
+  }
+
+  private createGpsPositionLogElement(pos: Position): GeoPositionLog {
+    const log: GeoPositionLog = {
+      timestamp: this.getTimestamp(pos),
+      status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
+      pos,
+      highAccuracyEnabled: true,
+      err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined,
+    };
+    return log;
+  }
+
+  private addStatusToGpsPositionLog(status: 'StartGpsTracking' | 'StopGpsTracking') {
+    this.gpsPositionLog.next({
+      timestamp: moment().unix(),
+      status,
+      highAccuracyEnabled: this.highAccuracyEnabled.value,
+    });
   }
 }

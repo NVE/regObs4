@@ -1,6 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Position } from '@capacitor/geolocation';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
@@ -20,6 +19,7 @@ const POSITION_OPTIONS_DEFAULT: PositionOptions = {
 /**
  * Henter posisjon fra GPS og himmelretning fra kompasset på Android eller iOS.
  * TODO: Skille ut kompasskode i egen service(r)
+ * TODO: Test på iOS
  * TODO: Test også på Android 12, som har litt annen måte å spørre om tilgang til posisjonsdata på
  * TODO: Tar for lang tid å få posisjon på nytt på kartsida etter vi har vært på en annen side. Gjelder Android, ikke web
  */
@@ -32,28 +32,18 @@ export abstract class GeoPositionService implements OnDestroy {
   protected gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   protected isWatching = false;
 
-  /**
-   * A stream of position data.
-   * On web, the observable will complete after the first position is returned, so you need to re-subscribe.
-   * If position data is not available an error will be thrown.
-   */
-
-  get currentHeading$(): Observable<number> {
-    return this.currentHeading.pipe(filter((cp) => cp !== null));
-  }
-
   get log$(): Observable<GeoPositionLog> {
     return this.gpsPositionLog.asObservable();
   }
 
   get currentPosition$(): Observable<Position> {
     if (!this.isWatching) {
-      this.loggingService.debug('Running startWatchingPosition', DEBUG_TAG);
+      this.logger.debug('Running startWatchingPosition', DEBUG_TAG);
       this.startWatchingPosition();
     }
     return this.currentPosition.pipe(
       tap((pos) =>
-        this.loggingService.debug(
+        this.logger.debug(
           `Dispatched position: ${pos?.coords?.latitude}, ${pos?.coords?.longitude}, timestamp: ${pos?.timestamp}. Subscribers: ${this.currentPosition.observers?.length}`,
           DEBUG_TAG
         )
@@ -63,7 +53,7 @@ export abstract class GeoPositionService implements OnDestroy {
         // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
         // refCount har med antall subscribers å gjøre.
         resetOnRefCountZero: () => {
-          this.loggingService.debug('No more subscribers so stopWatchingPosition...', DEBUG_TAG);
+          this.logger.debug('No more subscribers so stopWatchingPosition...', DEBUG_TAG);
           this.stopWatchingPosition();
           this.isWatching = false;
           return of(false);
@@ -73,11 +63,10 @@ export abstract class GeoPositionService implements OnDestroy {
   }
 
   constructor(
-    private deviceOrientation: DeviceOrientation,
     private toastController: ToastController,
     protected translateService: TranslateService,
     protected platform: Platform,
-    protected loggingService: LoggingService
+    protected logger: LoggingService
   ) {}
 
   ngOnDestroy(): void {

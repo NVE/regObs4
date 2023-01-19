@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -15,13 +14,12 @@ const DEBUG_TAG = 'GeoPositionWebService';
  */
 export class GeoPositionWebService extends GeoPositionService {
   constructor(
-    deviceOrientation: DeviceOrientation,
     toastController: ToastController,
     translateService: TranslateService,
     platform: Platform,
-    loggingService: LoggingService
+    logger: LoggingService
   ) {
-    super(deviceOrientation, toastController, translateService, platform, loggingService);
+    super(toastController, translateService, platform, logger);
   }
 
   async checkPermissionsAndAsk(): Promise<boolean> {

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
-import { Platform, AlertController, ToastController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, filter, fromEvent, map, merge, Observable, Subscription } from 'rxjs';
+import { Platform } from '@ionic/angular';
+import { BehaviorSubject, filter, fromEvent, map, merge, Observable, of, share, Subscription, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'HeadingService';
 
 @Injectable({
   providedIn: 'root',
@@ -14,30 +15,49 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 export class HeadingService {
   private headingSubscription: Subscription;
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
-
-  get currentHeading$(): Observable<number> {
-    return this.currentHeading.pipe(filter((cp) => cp !== null));
-  }
+  private isWatching = false;
 
   constructor(
     private deviceOrientation: DeviceOrientation,
     private platform: Platform,
-    private loggingService: LoggingService,
-    private alertController: AlertController,
-    private toastController: ToastController,
-    private translateService: TranslateService
+    private logger: LoggingService
   ) {}
 
-  private startWatchingHeading() {
-    if (this.headingSubscription && !this.headingSubscription.closed) {
-      this.headingSubscription.unsubscribe();
+  get currentHeading$(): Observable<number> {
+    if (!this.isWatching) {
+      this.logger.debug('Running startWatchingHeading', DEBUG_TAG);
+      this.startWatchingHeading();
     }
+    return this.currentHeading.pipe(
+      tap((heading) =>
+        this.logger.debug(
+          `Dispatched heading: ${heading}. Subscribers: ${this.currentHeading.observers?.length}`,
+          DEBUG_TAG
+        )
+      ),
+      filter((heading) => heading !== null),
+      share({
+        // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
+        // refCount har med antall subscribers å gjøre.
+        resetOnRefCountZero: () => {
+          this.logger.debug('No more subscribers so stopWatchingHeading...', DEBUG_TAG);
+          this.stopWatchingHeading();
+          this.isWatching = false;
+          return of(false);
+        },
+      })
+    );
+  }
+
+  private startWatchingHeading() {
+    this.stopWatchingHeading();
     // NOTE! Because of issues with show heading with W3C Devece Orientation API in iOS 13, the depricated
     // plugin cordova-plugin-device-orientation is used instead on ios
     // https://github.com/apache/cordova-plugin-device-orientation/issues/52
     this.headingSubscription = (this.isIos() ? this.getHeadingNative() : this.getWebHeading$()).subscribe(
       (heading: number) => this.validateAndSetHeading(heading)
     );
+    this.isWatching = true;
   }
 
   private isIos(): boolean {
