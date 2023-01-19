@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { getLangKeyString } from '../../../common-core/helpers';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
 import { take } from 'rxjs/operators';
+
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
@@ -114,6 +115,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.setFromDate(date.format('YYYY-MM-DD'), true);
     this.mode.next(mode);
   }
+
   private getReadableDays(day: number): Observable<string> {
     if (day === 0) return this.translateService.get(['MENU.DATE_RANGE.TODAY']);
     if (day === 1) return this.translateService.get(['MENU.DATE_RANGE.YESTERDAY']);

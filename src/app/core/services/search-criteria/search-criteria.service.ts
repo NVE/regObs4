@@ -201,7 +201,6 @@ export class SearchCriteriaService {
       this.useMapExtent$,
       this.mapService.mapView$.pipe(
         map((mapView) => {
-          console.log('new map view');
           return this.createExtentCriteria(mapView);
         })
       ),
@@ -342,7 +341,6 @@ export class SearchCriteriaService {
   }
 
   setObserverNickName(nickName: string) {
-    console.log('set name');
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 

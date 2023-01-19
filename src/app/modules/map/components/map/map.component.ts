@@ -415,7 +415,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         filter(() => this.isActive.value)
       )
       .subscribe(() => {
-        console.log('fromeventpatternupdate');
         this.updateMapView();
       });
 
@@ -547,7 +546,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onMapMoveEnd() {
-    console.log('onmapmoveend');
     this.updateMapView();
   }
 
