@@ -282,23 +282,49 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  onLeafletMapReady(leafletMap: L.Map) {
-    //TODO: Denne metoden er altfor lang, splitte opp i flere funksjoner!
-    this.map = leafletMap;
-    if (this.showScale) {
-      L.control.scale({ imperial: false }).addTo(this.map);
-    }
+  onLeafletMapReady(map: L.Map) {
+    this.map = map;
 
-    if (this.showObserverTrips) {
-      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
-        this.showOrHideObserverTripsLayer(this.map, geojson);
-      });
-    }
+    this.initScale();
+    this.showObserverTripsIfAvailable();
 
     this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
 
+    this.applyOfflinePackageModeIfSet();
+    this.initTileLayers();
+    this.initFollowMode();
+    this.initGeoLocationPermissionRequest();
+    this.initFlyToOnMapSearch();
+    this.initCenterMapToUser();
+    this.createPanZoomAndResizeListeners();
+    this.initRedrawMapWhenFullscreenToggled;
+    this.initShowUserLocationMarker();
+    this.initRedrawMapOnActivation();
+    this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
+    this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
+    this.startInvalidateSizeMapTimer();
+    this.initOfflineMapsInNativeMode();
+
+    this.mapReady.emit(this.map);
+  }
+
+  private initScale() {
+    if (this.showScale) {
+      L.control.scale({ imperial: false }).addTo(this.map);
+    }
+  }
+
+  private showObserverTripsIfAvailable() {
+    if (this.showObserverTrips) {
+      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
+        this.showOrHideObserverTripsLayer(this.map, geojson);
+      });
+    }
+  }
+
+  private applyOfflinePackageModeIfSet() {
     if (this.offlinePackageMode) {
       // Style all online maps grayscale.
       // We need the dom element that contains the layer to use css and add a grayscale filter.
@@ -311,27 +337,35 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       });
     }
+  }
 
+  private initTileLayers() {
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
       this.configureTileLayers(userSetting);
       if (userSetting.showMapCenter) {
         this.updateMapView();
       }
     });
+  }
 
+  private initFollowMode() {
     this.mapService.followMode = this.isNative;
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
     });
+  }
 
+  private initGeoLocationPermissionRequest() {
     this.mapService.centerMapToUser$
       .pipe(
         takeUntil(this.ngDestroy$),
         switchMap(() => from(this.geoPositionService.checkPermissionsAndAsk()))
       )
       .subscribe();
+  }
 
+  private initFlyToOnMapSearch() {
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
       this.disableFollowMode();
       this.zone.runOutsideAngular(() => {
@@ -339,7 +373,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
       });
     });
+  }
 
+  private initCenterMapToUser() {
     this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.zone.runOutsideAngular(() => {
         if (this.userMarker) {
@@ -356,7 +392,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     });
+  }
 
+  private createPanZoomAndResizeListeners() {
     this.zone.runOutsideAngular(() => {
       this.map.on('movestart', () => this.onMapMove());
       this.map.on('zoomstart', () => this.onMapMove());
@@ -366,12 +404,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('moveend', () => this.onMapMoveEnd());
     });
 
+    this.map.on('resize', () => this.updateMapView());
+  }
+
+  private initRedrawMapWhenFullscreenToggled() {
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
     });
+  }
 
-    //set overwrite default showUserLocation with component input
-    this.mapService.showUserLocation(this.isNative);
+  private initShowUserLocationMarker() {
+    this.mapService.showUserLocation(this.isNative); //always show user location in app
 
     const showUserLocationMarker$ = this.createShowUserLocationMarker$();
 
@@ -382,25 +425,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     showUserLocationMarker$
       .pipe(switchMap((showMarker) => (showMarker ? this.headingService.currentHeading$ : of(null))))
       .subscribe((heading) => this.userMarker?.setHeading(heading));
+  }
 
+  private initRedrawMapOnActivation() {
     this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
       if (active) {
         this.redrawMap();
       }
     });
-
-    this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
-    this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
-
-    this.startInvalidateSizeMapTimer();
-
-    this.map.on('resize', () => this.updateMapView());
-
-    if (isAndroidOrIos(this.platform)) {
-      this.initOfflineMaps();
-    }
-
-    this.mapReady.emit(this.map);
   }
 
   private createShowUserLocationMarker$(): Observable<boolean> {
@@ -415,23 +447,25 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  private async initOfflineMaps() {
-    this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
+  private async initOfflineMapsInNativeMode() {
+    if (Capacitor.isNativePlatform()) {
+      this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
 
-    combineLatest([this.offlineMapService.packages$, this.userSettingService.userSetting$])
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(([packages, userSettings]) => {
-        this.zone.runOutsideAngular(() => {
-          this.createOfflineLayers(packages, userSettings);
+      combineLatest([this.offlineMapService.packages$, this.userSettingService.userSetting$])
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe(([packages, userSettings]) => {
+          this.zone.runOutsideAngular(() => {
+            this.createOfflineLayers(packages, userSettings);
 
-          // When starting offline, offline map packages are
-          // registered after the map initially loads.
-          // By redrawing here, we can see offline tiles without
-          // zooming in/out etc.
-          redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
-          redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+            // When starting offline, offline map packages are
+            // registered after the map initially loads.
+            // By redrawing here, we can see offline tiles without
+            // zooming in/out etc.
+            redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
+            redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+          });
         });
-      });
+    }
   }
 
   private tileCoordsToBounds({ x, y, z }: { x: number; y: number; z: number }): L.LatLngBounds {
