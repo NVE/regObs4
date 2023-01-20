@@ -29,6 +29,7 @@ export class HeadingService {
       this.startWatchingHeading();
     }
     return this.currentHeading.pipe(
+      //TODO: Fjern logging før vi fullfører PR
       tap((heading) =>
         this.logger.debug(
           `Dispatched heading: ${heading}. Subscribers: ${this.currentHeading.observers?.length}`,
@@ -40,6 +41,7 @@ export class HeadingService {
         // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
         // refCount har med antall subscribers å gjøre.
         resetOnRefCountZero: () => {
+          //TODO: Fjern logging før vi fullfører PR
           this.logger.debug('No more subscribers so stopWatchingHeading...', DEBUG_TAG);
           this.stopWatchingHeading();
           this.isWatching = false;

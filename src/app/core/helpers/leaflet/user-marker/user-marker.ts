@@ -44,6 +44,7 @@ export class UserMarker {
 
   remove(): void {
     this.userMarker.removeFrom(this.map);
+    this.accuracyMarker?.removeFrom(this.map);
   }
 
   updatePosition(position: Position) {

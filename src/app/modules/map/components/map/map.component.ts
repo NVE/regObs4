@@ -16,8 +16,25 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
-import { BehaviorSubject, combineLatest, from, of, race, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  Observable,
+  of,
+  race,
+  shareReplay,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  timer,
+  withLatestFrom,
+} from 'rxjs';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -265,16 +282,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  onLeafletMapReady(map: L.Map) {
+  onLeafletMapReady(leafletMap: L.Map) {
     //TODO: Denne metoden er altfor lang, splitte opp i flere funksjoner!
-    this.map = map;
+    this.map = leafletMap;
     if (this.showScale) {
-      L.control.scale({ imperial: false }).addTo(map);
+      L.control.scale({ imperial: false }).addTo(this.map);
     }
 
     if (this.showObserverTrips) {
       this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
-        this.showOrHideObserverTripsLayer(map, geojson);
+        this.showOrHideObserverTripsLayer(this.map, geojson);
       });
     }
 
@@ -356,46 +373,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     //set overwrite default showUserLocation with component input
     this.mapService.showUserLocation(this.isNative);
 
-    combineLatest([this.mapService.showUserLocation$, this.isActive])
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap(([showUserLocation, isActive]) =>
-          this.loggingService.debug(`showUserLocation = ${showUserLocation}, isActive = ${isActive}`, DEBUG_TAG)
-        ),
-        tap(() => (Capacitor.isNativePlatform() ? (this.mapService.followMode = true) : undefined)),
-        switchMap(([showUserLocation, isActive]) => {
-          if (showUserLocation && isActive) {
-            return this.geoPositionService.currentPosition$;
-          }
-          return of(null); //we don't want to subscribe to position data
-        })
-      )
-      .subscribe((position) => {
-        //TODO: FÅr denne innimellom:
-        // VM3:347 TypeError: Cannot read properties of undefined (reading 'appendChild')
-        // at NewClass._initIcon (leaflet-src.js:7603:6)
-        // at NewClass.onAdd (leaflet-src.js:7455:10)
-        // at NewClass._layerAdd (leaflet-src.js:6567:10)
-        // at NewClass.whenReady (leaflet-src.js:4428:15)
-        // at NewClass.addLayer (leaflet-src.js:6629:10)
-        // at NewClass.addTo (leaflet-src.js:6505:9)
-        // at new UserMarker (user-marker.ts:37:21)
-        // at map.component.ts:654:29
-        if (position == null) {
-          this.removeUserMarker();
-        } else {
-          this.onPositionUpdate(position);
-        }
-      });
+    const showUserLocationMarker$ = this.createShowUserLocationMarker$();
 
-    //TODO: Abonner på kompassretning: Hvordan få den til å abonnere på nytt etter at vi har deaktivert kartet?
-    this.headingService.currentHeading$.pipe(takeUntil(this.ngDestroy$)).subscribe((heading) => {
-      if (this.userMarker) {
-        this.userMarker.setHeading(heading);
-      }
-    });
+    showUserLocationMarker$
+      .pipe(switchMap((showMarker) => (showMarker ? this.geoPositionService.currentPosition$ : of(null))))
+      .subscribe((position) => (position ? this.onPositionUpdate(position) : this.removeUserMarker()));
 
-    //TODO: Hva gjør vi med denne?
+    showUserLocationMarker$
+      .pipe(switchMap((showMarker) => (showMarker ? this.headingService.currentHeading$ : of(null))))
+      .subscribe((heading) => this.userMarker?.setHeading(heading));
+
     this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
       if (active) {
         this.redrawMap();
@@ -414,6 +401,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.mapReady.emit(this.map);
+  }
+
+  private createShowUserLocationMarker$(): Observable<boolean> {
+    return combineLatest([this.mapService.showUserLocation$, this.isActive]).pipe(
+      takeUntil(this.ngDestroy$),
+      //TODO: Fjern logging før vi fullfører PR
+      tap(([showUserLocation, isActive]) =>
+        this.loggingService.debug(`showUserLocation = ${showUserLocation}, isActive = ${isActive}`, DEBUG_TAG)
+      ),
+      map(([showUserLocation, isActive]) => showUserLocation && isActive),
+      shareReplay()
+    );
   }
 
   private async initOfflineMaps() {
