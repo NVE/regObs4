@@ -132,7 +132,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     searchCriteria: SearchCriteria,
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ): Observable<TViewModel[]> {
-    this.resetPaging(); // Reset state when a new search is created
+    //this.resetPaging(); // Reset state when a new search is created
 
     return this.pageInfo.pipe(
       // Add page info to search criteria

@@ -98,7 +98,7 @@ export class ObservationListPage implements OnInit {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
     this.searchResult.isActiveStream$.next(true);
-    this.refresh();
+    //this.refresh();
   }
 
   ionViewWillLeave(): void {
