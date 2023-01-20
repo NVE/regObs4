@@ -96,8 +96,11 @@ export class SetAvalanchePositionPage implements OnInit {
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA',
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_AREA',
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_LANDSLIDE_AREA',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_START_POSITION',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_END_POSITION',
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.AREA_TOTAL',
         'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START',
@@ -137,8 +140,14 @@ export class SetAvalanchePositionPage implements OnInit {
         icon: this.locationMarkerIcon,
       });
     }
+    let areaTotalText = "";
+    if (this.geoHazard == GeoHazard.Snow) {
+      areaTotalText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL'];
+    } else {
+      areaTotalText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.AREA_TOTAL'];
+    }
     this.totalPolygon = this.constructPolygon(
-      this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL'],
+      areaTotalText,
       this.extent,
       settings.map.extentColor
     );
@@ -191,10 +200,17 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   private setPolygonLocationText() {
-    this.confirmLocationText = this.translations[
-      'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'
-    ];
-    this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
+    if (this.geoHazard == GeoHazard.Snow) {
+      this.confirmLocationText = this.translations[
+        'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'
+      ];
+      this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
+    } else if (this.geoHazard == GeoHazard.Soil) {
+      this.confirmLocationText = this.translations[
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_LANDSLIDE_AREA'
+      ];
+      this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_AREA'];
+    }
   }
 
   private constructPolygon(title: string, extent: [number, number][], color: string) {

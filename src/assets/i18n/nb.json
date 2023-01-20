@@ -362,7 +362,9 @@
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
         "START_POSITION": "Startpunkt",
         "CONFIRM_START_POSITION": "Bekreft startpunkt",
-        "TITLE": "Skredhendelse"
+        "TITLE": "Skredhendelse",
+        "LANDSLIDE_AREA": "Skredområde",
+        "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde"
       }
     },
     "DRAFTS": "Mine kladder",

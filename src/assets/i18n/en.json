@@ -362,7 +362,10 @@
         "SET_LANDSLIDE_POSITION": "Set landslide position",
         "START_POSITION": "Start position",
         "CONFIRM_START_POSITION": "Confirm start position",
-        "TITLE": "Landslide Incident"
+        "TITLE": "Landslide Incident",
+        "LANDSLIDE_AREA": "Landslide area",
+        "CONFIRM_LANDSLIDE_AREA": "Confirm landslide area",
+        "AREA_TOTAL": "Define landslide boundaries"
       }
     },
     "DRAFTS": "My drafts",
