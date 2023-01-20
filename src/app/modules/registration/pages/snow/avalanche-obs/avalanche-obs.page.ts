@@ -196,6 +196,7 @@ export class AvalancheObsPage extends BasePage {
         endExtent: this.avalancheObs.StopExtent,
         geoHazard: this.draft.registration.GeoHazardTID,
       },
+      cssClass: "modal-fullscreen"
     });
     modal.present();
     const result = await modal.onDidDismiss();

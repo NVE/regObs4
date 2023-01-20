@@ -96,10 +96,12 @@ export class SetAvalanchePositionPage implements OnInit {
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA',
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_START_POSITION',
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_END_POSITION',
+        'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START',
         'REGISTRATION.SNOW.AVALANCHE_OBS.AREA_END',
-        'DIALOGS.CONFIRM',
       ])
       .toPromise();
     const fallbackLatlng = L.latLng(59.1, 10.3);
@@ -173,25 +175,25 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   private setStartLocationText() {
-    this.confirmLocationText = `${this.translations[
+    this.confirmLocationText = this.translations[
       'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_START_POSITION'
-    ].toLowerCase()}`;
+    ];
     this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
     this.locationMarkerIconUrl = this.startImageUrl;
   }
 
   private setEndLocationText() {
-    this.confirmLocationText = `${this.translations[
+    this.confirmLocationText = this.translations[
       'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_END_POSITION'
-    ].toLowerCase()}`;
+    ];
     this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
     this.locationMarkerIconUrl = this.endImageUrl;
   }
 
   private setPolygonLocationText() {
-    this.confirmLocationText = `${this.translations[
+    this.confirmLocationText = this.translations[
       'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'
-    ].toLowerCase()}`;
+    ];
     this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
   }
 
