@@ -245,7 +245,6 @@
     "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "All",
     "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
     "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view",
     "FORMS": "Forms",

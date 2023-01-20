@@ -31,7 +31,6 @@ import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON 
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
-export type MapSectionFilter = 'all' | 'mapBorders';
 
 const UrlDtoOrderByMap = new Map([
   ['changeTime', 'DtChangeTime'],
@@ -162,7 +161,7 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
-  private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true); //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
+  private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
   get useMapExtent$() {
     return this.useMapExtent.asObservable();
   }
@@ -421,8 +420,8 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ OrderBy: order });
   }
 
-  setExtent(value: MapSectionFilter) {
-    value == 'all' ? this.useMapExtent.next(false) : this.useMapExtent.next(true);
+  setExtentFilterActive(isExtentFilterActive: boolean) {
+    this.useMapExtent.next(isExtentFilterActive);
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

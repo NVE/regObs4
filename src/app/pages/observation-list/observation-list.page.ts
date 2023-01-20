@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { IonContent, IonInfiniteScroll } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
-import { MapSectionFilter, SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
@@ -15,6 +15,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
 
+type MapSectionFilter = 'all' | 'mapBorders';
 const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
@@ -104,8 +105,9 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
-  toggleFilterByMapView(event) {
-    this.searchCriteriaService.setExtent(event.target.value);
+  toggleFilterByMapView(event: SegmentCustomEvent) {
+    const isExtentFilterActive = event.target.value == 'all' ? false : true;
+    this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);
   }
 
   refresh(): void {

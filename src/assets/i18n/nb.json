@@ -245,7 +245,6 @@
     "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle",
     "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
     "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt",
     "FORMS": "Skjemaer",

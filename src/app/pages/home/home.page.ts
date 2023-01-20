@@ -147,7 +147,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   ionViewWillEnter() {
-    this.searchCriteriaService.setExtent('mapBorders');
+    this.searchCriteriaService.setExtentFilterActive(true);
   }
 
   checkForFirstStartup() {
