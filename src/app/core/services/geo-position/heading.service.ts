@@ -1,7 +1,20 @@
 import { Injectable } from '@angular/core';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, filter, fromEvent, map, merge, Observable, of, share, Subscription, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounce,
+  filter,
+  fromEvent,
+  map,
+  merge,
+  Observable,
+  of,
+  share,
+  Subscription,
+  tap,
+  timer,
+} from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'HeadingService';
@@ -29,6 +42,8 @@ export class HeadingService {
       this.startWatchingHeading();
     }
     return this.currentHeading.pipe(
+      filter((heading) => heading !== null),
+      debounce(() => timer(300)),
       //TODO: Fjern logging før vi fullfører PR
       tap((heading) =>
         this.logger.debug(
@@ -36,7 +51,6 @@ export class HeadingService {
           DEBUG_TAG
         )
       ),
-      filter((heading) => heading !== null),
       share({
         // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
         // refCount har med antall subscribers å gjøre.
@@ -101,4 +115,7 @@ export class HeadingService {
       this.headingSubscription.unsubscribe();
     }
   }
+}
+function debouce(): import('rxjs').OperatorFunction<number, number> {
+  throw new Error('Function not implemented.');
 }
