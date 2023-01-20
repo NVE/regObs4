@@ -118,7 +118,12 @@ export class ObservationListCardComponent implements OnChanges {
       };
     }
     if (obs.LandSlideObs) {
-      return this.obs2Latlng(obs.LandSlideObs);
+      return {
+        ...this.obs2Latlng(obs.LandSlideObs),
+        totalPolygon: this.extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
+        startPolygon: this.extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
+        endPolygon: this.extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor)
+      };
     }
     return undefined;
   }

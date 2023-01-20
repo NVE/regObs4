@@ -109,16 +109,17 @@ export class LandslideObsPage extends BasePage {
   }
 
   async setLandslidePosition() {
-    const relativeToLatLng = this.draft.registration.ObsLocation
-      ? L.latLng(this.draft.registration.ObsLocation.Latitude, this.draft.registration.ObsLocation.Longitude)
+    const reg = this.draft.registration;
+    const relativeToLatLng = reg.ObsLocation
+      ? L.latLng(reg.ObsLocation.Latitude, reg.ObsLocation.Longitude)
       : null;
     const startLatLng =
-      this.draft.registration.LandSlideObs.StartLat && this.draft.registration.LandSlideObs.StartLong
-        ? L.latLng(this.draft.registration.LandSlideObs.StartLat, this.draft.registration.LandSlideObs.StartLong)
+      reg.LandSlideObs.StartLat && reg.LandSlideObs.StartLong
+        ? L.latLng(reg.LandSlideObs.StartLat, reg.LandSlideObs.StartLong)
         : null;
     const endLatLng =
-      this.draft.registration.LandSlideObs.StopLat && this.draft.registration.LandSlideObs.StopLong
-        ? L.latLng(this.draft.registration.LandSlideObs.StopLat, this.draft.registration.LandSlideObs.StopLong)
+      reg.LandSlideObs.StopLat && reg.LandSlideObs.StopLong
+        ? L.latLng(reg.LandSlideObs.StopLat, reg.LandSlideObs.StopLong)
         : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
@@ -126,18 +127,26 @@ export class LandslideObsPage extends BasePage {
         relativeToLatLng,
         startLatLng,
         endLatLng,
-        geoHazard: this.draft.registration.GeoHazardTID,
+        extent: reg.LandSlideObs.Extent,
+        startExtent: reg.LandSlideObs.StartExtent,
+        endExtent: reg.LandSlideObs.StopExtent,
+        geoHazard: reg.GeoHazardTID,
       },
+      cssClass: "modal-fullscreen"
     });
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
       const start: L.LatLng = result.data.start;
       const end: L.LatLng = result.data.end;
-      this.draft.registration.LandSlideObs.StartLat = start.lat;
-      this.draft.registration.LandSlideObs.StartLong = start.lng;
-      this.draft.registration.LandSlideObs.StopLat = end.lat;
-      this.draft.registration.LandSlideObs.StopLong = end.lng;
+      const reg = this.draft.registration;
+      reg.LandSlideObs.StartLat = start.lat;
+      reg.LandSlideObs.StartLong = start.lng;
+      reg.LandSlideObs.StopLat = end.lat;
+      reg.LandSlideObs.StopLong = end.lng;
+      reg.LandSlideObs.Extent = result.data.totalPolygon;
+      reg.LandSlideObs.StartExtent = result.data.startPolygon;
+      reg.LandSlideObs.StopExtent = result.data.endPolygon;
     }
   }
 }
