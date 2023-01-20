@@ -77,7 +77,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private map: L.Map;
   followMode = false;
   private userposition: Position;
-  private pathLine: L.Polyline;
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
@@ -235,8 +234,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
     if (!this.followMode) {
       this.map.setView(this.locationMarker.getLatLng(), 15);
-    }    
+    }
 
+    this.initPolygons();
+    this.mapReady.emit(this.map);
+    this.updatePathAndDistance();
+  }
+
+  initPolygons() {
     const drawnItems = new L.FeatureGroup();
     this.map.addLayer(drawnItems);
     drawnItems.bringToFront();
@@ -301,9 +306,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.toggleEditingMode();
       }
     });
-
-    this.mapReady.emit(this.map);
-    this.updatePathAndDistance();
   }
 
   togglePolygon(index: number): void {
@@ -393,26 +395,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
     if (this.map) {
-      if (!this.pathLine) {
-        this.pathLine = L.polyline(path, {
-          color: 'black',
-          weight: 6,
-          opacity: 0.9,
-          dashArray: '1,12',
-        });
-        if (this.showPolyline) {
-          this.pathLine.addTo(this.map);
-        }
-      } else {
-        this.pathLine.setLatLngs(path);
-      }
       if (this.fromMarker) {
         if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
           this.fromMarker.setOpacity(0);
-          this.pathLine.setStyle({ opacity: 0 });
         } else {
           this.fromMarker.setOpacity(1);
-          this.pathLine.setStyle({ opacity: 0.9 });
         }
       }
     }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
-import { AttachmentViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
+import { AttachmentViewModel, AvalancheObsViewModel, LandslideViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
@@ -111,41 +111,34 @@ export class ObservationListCardComponent implements OnChanges {
   private getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop {
     if (obs.AvalancheObs) {
       return {
-        start:
-          obs.AvalancheObs.StartLat && obs.AvalancheObs.StartLong
-            ? L.latLng(obs.AvalancheObs.StartLat, obs.AvalancheObs.StartLong)
-            : undefined,
-        stop:
-          obs.AvalancheObs.StopLong && obs.AvalancheObs.StopLong
-            ? L.latLng(obs.AvalancheObs.StopLat, obs.AvalancheObs.StopLong)
-            : undefined,
-        totalPolygon: obs.AvalancheObs.Extent ? new L.Polygon(
-          obs.AvalancheObs.Extent.map(([lng, lat]) => [lat, lng]),
-          {color: settings.map.extentColor}
-        ) : null,
-        startPolygon: obs.AvalancheObs.StartExtent ? new L.Polygon(
-          obs.AvalancheObs.StartExtent.map(([lng, lat]) => [lat, lng]),
-          {color: settings.map.startExtentColor}
-        ) : null,
-        endPolygon: obs.AvalancheObs.StopExtent ? new L.Polygon(
-          obs.AvalancheObs.StopExtent.map(([lng, lat]) => [lat, lng]),
-          {color: settings.map.endExtentColor}
-        ) : null,
+        ...this.obs2Latlng(obs.AvalancheObs),
+        totalPolygon: this.extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
+        startPolygon: this.extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
+        endPolygon: this.extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor)
       };
     }
     if (obs.LandSlideObs) {
-      return {
-        start:
-          obs.LandSlideObs.StartLat && obs.LandSlideObs.StartLong
-            ? L.latLng(obs.LandSlideObs.StartLat, obs.LandSlideObs.StartLong)
-            : undefined,
-        stop:
-          obs.LandSlideObs.StopLat && obs.LandSlideObs.StopLong
-            ? L.latLng(obs.LandSlideObs.StopLat, obs.LandSlideObs.StopLong)
-            : undefined,
-      };
+      return this.obs2Latlng(obs.LandSlideObs);
     }
     return undefined;
+  }
+
+  private obs2Latlng(obs: LandslideViewModel | AvalancheObsViewModel) {
+    return {
+      start: obs.StartLat && obs.StartLong
+        ? L.latLng(obs.StartLat, obs.StartLong)
+        : undefined,
+      stop: obs.StopLat && obs.StopLong
+        ? L.latLng(obs.StopLat, obs.StopLong)
+        : undefined
+    }
+  }
+
+  private extent2Polygon(extent: number[][], color: string) {
+    return extent ? new L.Polygon(
+      extent.map(([lng, lat]) => [lat, lng]),
+      {color}
+    ) : null
   }
 
   private getDamagePositions(obs: RegistrationViewModel) {

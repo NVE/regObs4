@@ -343,11 +343,13 @@
         "DT_LAND_SLIDE_TIME": "Hvornår startede lavinen",
         "DT_LAND_SLIDE_TIME_END": "Hvornår sluttede lavinen",
         "END_POSITION": "Slutpunkt",
+        "CONFIRM_END_POSITION": "Bekræft slutpunkt",
         "IN_MAP": "i kort",
         "LANDSLIDE_TYPE": "Lavinetype",
         "POSITION": "Lavineposition",
         "SET_LANDSLIDE_POSITION": "Set lavineposition",
         "START_POSITION": "Start punkt",
+        "CONFIRM_START_POSITION": "Bekræft start punkt",
         "TITLE": "Lavinehændelse"
       }
     },

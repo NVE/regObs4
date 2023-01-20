@@ -16,7 +16,6 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
-import 'leaflet-draw';
 import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';

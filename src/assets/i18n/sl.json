@@ -244,11 +244,13 @@
         "DT_LAND_SLIDE_TIME": "Kdaj se je plaz sprožil",
         "DT_LAND_SLIDE_TIME_END": "Kdaj se je plaz ustavil",
         "END_POSITION": "Končna točka",
+        "CONFIRM_END_POSITION": "Potrdi končna točka",
         "IN_MAP": "na zemljevidu",
         "LANDSLIDE_TYPE": "Vrsta plazu",
         "POSITION": "Lokacija plazu",
         "SET_LANDSLIDE_POSITION": "Določite lokacijo plazu",
         "START_POSITION": "Začetna točka",
+        "CONFIRM_START_POSITION": "Potrdi začetna točka",
         "TITLE": "Zemeljski plaz"
       }
     },

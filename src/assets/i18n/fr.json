@@ -274,11 +274,13 @@
         "DT_LAND_SLIDE_TIME": "Quand le glissement de terrain a-t-il commencé à bouger?",
         "DT_LAND_SLIDE_TIME_END": "Quand le glissement de terrain s'est-il arrêté?",
         "END_POSITION": "Position d 'arrêt",
+        "CONFIRM_END_POSITION": "Confirmer position d 'arrêt",
         "IN_MAP": "sur la carte",
         "LANDSLIDE_TYPE": "Type de glissement de terrain",
         "POSITION": "Position du glissement de terrain",
         "SET_LANDSLIDE_POSITION": "Définir la position du glissement de terrain",
         "START_POSITION": "Position de départ",
+        "CONFIRM_START_POSITION": "Confirmer position de départ",
         "TITLE": "Incident lié à un glissement de terrain"
       }
     },

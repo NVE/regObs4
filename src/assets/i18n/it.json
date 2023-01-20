@@ -230,11 +230,13 @@
         "DT_LAND_SLIDE_TIME": "Quando è cominciata la frana?",
         "DT_LAND_SLIDE_TIME_END": "Quando è finita la frana?",
         "END_POSITION": "Posizione finale",
+        "CONFIRM_END_POSITION": "Conferma posizione finale",
         "IN_MAP": "nella mappa",
         "LANDSLIDE_TYPE": "Tipo di frana",
         "POSITION": "Posizione della frana",
         "SET_LANDSLIDE_POSITION": "Indica la posizione della frana",
         "START_POSITION": "Posizione iniziale",
+        "CONFIRM_START_POSITION": "Conferma posizione iniziale",
         "TITLE": "Incidento di frana"
       }
     },

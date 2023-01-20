@@ -355,11 +355,13 @@
         "DT_LAND_SLIDE_TIME": "Når skjedde skredet tidligst",
         "DT_LAND_SLIDE_TIME_END": "Når skjedde skredet senest",
         "END_POSITION": "Sluttpunkt",
+        "CONFIRM_END_POSITION": "Bekreft sluttpunkt",
         "IN_MAP": "i kart",
         "LANDSLIDE_TYPE": "Type skred",
         "POSITION": "Skredposisjon",
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
         "START_POSITION": "Startpunkt",
+        "CONFIRM_START_POSITION": "Bekreft startpunkt",
         "TITLE": "Skredhendelse"
       }
     },
@@ -538,6 +540,7 @@
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
         "AVALANCHE_AREA": "Skredområde",
+        "CONFIRM_AVALANCHE_AREA": "Bekreft skredområde",
         "AREA_TOTAL": "Tegne hele skredområdet",
         "AREA_START": "Tegne løsneområde",
         "AREA_END": "Tegne utløpsområde",

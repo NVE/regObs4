@@ -135,33 +135,21 @@ export class SetAvalanchePositionPage implements OnInit {
         icon: this.locationMarkerIcon,
       });
     }
-    this.totalPolygon = {
-      title: this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL'],
-      active: Boolean(this.extent),
-      polygon: this.extent ? new L.Polygon(
-        this.extent.map(([lng, lat]) => [lat, lng]),
-        {color: settings.map.extentColor},
-      ) : null,
-      color: settings.map.extentColor,
-    };
-    this.startPolygon = {
-      title: this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START'],
-      active: Boolean(this.startExtent),
-      polygon: this.startExtent ? new L.Polygon(
-        this.startExtent.map(([lng, lat]) => [lat, lng]),
-        {color: settings.map.startExtentColor},
-      ) : null,
-      color: settings.map.startExtentColor,
-    };
-    this.endPolygon = {
-      title: this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_END'],
-      active: Boolean(this.endExtent),
-      polygon: this.endExtent ? new L.Polygon(
-        this.endExtent.map(([lng, lat]) => [lat, lng]),
-        {color: settings.map.endExtentColor},
-      ) : null,
-      color: settings.map.endExtentColor,
-    };
+    this.totalPolygon = this.constructPolygon(
+      this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL'],
+      this.extent,
+      settings.map.extentColor
+    );
+    this.startPolygon = this.constructPolygon(
+      this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START'],
+      this.startExtent,
+      settings.map.startExtentColor
+    );
+    this.endPolygon = this.constructPolygon(
+      this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_END'],
+      this.endExtent,
+      settings.map.endExtentColor
+    );
   }
 
   onMapReady(map: L.Map) {
@@ -177,6 +165,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   ionViewDidEnter() {
     this.swipeBackService.disableSwipeBack();
+    this.updatePolyline();
   }
 
   ionViewWillLeave() {
@@ -184,26 +173,38 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   private setStartLocationText() {
-    this.confirmLocationText = `${this.translations['DIALOGS.CONFIRM']} ${this.translations[
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'
+    this.confirmLocationText = `${this.translations[
+      'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_START_POSITION'
     ].toLowerCase()}`;
     this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
     this.locationMarkerIconUrl = this.startImageUrl;
   }
 
   private setEndLocationText() {
-    this.confirmLocationText = `${this.translations['DIALOGS.CONFIRM']} ${this.translations[
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'
+    this.confirmLocationText = `${this.translations[
+      'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_END_POSITION'
     ].toLowerCase()}`;
     this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
     this.locationMarkerIconUrl = this.endImageUrl;
   }
 
   private setPolygonLocationText() {
-    this.confirmLocationText = `${this.translations['DIALOGS.CONFIRM']} ${this.translations[
-      'REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'
+    this.confirmLocationText = `${this.translations[
+      'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'
     ].toLowerCase()}`;
     this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
+  }
+
+  private constructPolygon(title: string, extent: [number, number][], color: string) {
+    return {
+      title,
+      active: Boolean(extent),
+      polygon: extent ? new L.Polygon(
+        extent.map(([lng, lat]) => [lat, lng]),
+        {color},
+      ) : null,
+      color,
+    };
   }
 
   private makePolygons() {

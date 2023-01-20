@@ -244,11 +244,13 @@
         "DT_LAND_SLIDE_TIME": "Wann begann der Erdrutsch?",
         "DT_LAND_SLIDE_TIME_END": "Wann endete der Erdrutsch",
         "END_POSITION": "Endposition",
+        "CONFIRM_END_POSITION": "Bestätige endposition",
         "IN_MAP": "in der Karte",
         "LANDSLIDE_TYPE": "Erdrutschtyp",
         "POSITION": "Erdrutschposition",
         "SET_LANDSLIDE_POSITION": "Erdrutschposition setzen",
         "START_POSITION": "Startposition",
+        "CONFIRM_START_POSITION": "Bestätige startposition",
         "TITLE": "Erdrutschereignis"
       }
     },
