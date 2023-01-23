@@ -353,6 +353,9 @@ export const settings: ISettings = {
     unknownMapCenter: [59.911197, 10.741059],
     flyToOnGpsZoom: 13,
     maxClusterRadius: 60, // 30,
+    extentColor: '#3344bb',
+    startExtentColor: '#33bb44',
+    endExtentColor: '#bb3344',
   },
   dateFormats: {
     angular: {

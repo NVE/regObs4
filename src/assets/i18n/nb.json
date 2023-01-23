@@ -339,12 +339,17 @@
         "DT_LAND_SLIDE_TIME": "Når skjedde skredet tidligst",
         "DT_LAND_SLIDE_TIME_END": "Når skjedde skredet senest",
         "END_POSITION": "Sluttpunkt",
+        "CONFIRM_END_POSITION": "Bekreft sluttpunkt",
         "IN_MAP": "i kart",
         "LANDSLIDE_TYPE": "Type skred",
         "POSITION": "Skredposisjon",
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
         "START_POSITION": "Startpunkt",
-        "TITLE": "Skredhendelse"
+        "CONFIRM_START_POSITION": "Bekreft startpunkt",
+        "TITLE": "Skredhendelse",
+        "LANDSLIDE_AREA": "Skredområde",
+        "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde",
+        "AREA_TOTAL": "Tegn hele skredarealen"
       }
     },
     "DRAFTS": "Mine kladder",
@@ -521,6 +526,11 @@
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
+        "AVALANCHE_AREA": "Skredområde",
+        "CONFIRM_AVALANCHE_AREA": "Bekreft skredområde",
+        "AREA_TOTAL": "Tegn hele skredområdet",
+        "AREA_START": "Tegn løsneområde",
+        "AREA_END": "Tegn utløpsområde",
         "AVAL_CAUSE": "Svakt lag",
         "CASUALTIES_NUM": "Antall skredtatte",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",

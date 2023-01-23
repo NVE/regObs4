@@ -145,6 +145,22 @@
           </div>
         </div>
       </div>
+      <div *ngIf="locationPolygons" class="">
+        <ion-item
+              *ngFor="let polygon of locationPolygons; index as i"
+              class="flex-space right-padding">
+          <ion-label>
+            <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
+            <span>{{locationPolygons[i].title}}</span>
+          </ion-label>
+          <ion-toggle
+            [checked]="polygon.active"
+            (ionChange)="togglePolygon(i)"
+            slot="end"
+            [style.background.color]="polygon.polygon.options.color"
+          ></ion-toggle>
+        </ion-item>
+      </div>
       <div class="confirm-button-col">
         <ion-button expand="block" color="varsom-orange" (click)="confirm()">{{
           confirmLocationText | translate

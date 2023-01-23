@@ -24,6 +24,11 @@ export interface LandslideViewModel {
    * Når stoppet skredet?
    */
   DtLandSlideTimeEnd?: string;
+
+  /**
+   * Hull of avalanche polygon, List(lon, lat)
+   */
+  Extent?: Array<Array<number>>;
   ForecastAccurateName?: string;
 
   /**
@@ -56,6 +61,11 @@ export interface LandslideViewModel {
   LandSlideTriggerTID?: number;
 
   /**
+   * Hull of avalanche starting zone, List(lon, lat)
+   */
+  StartExtent?: Array<Array<number>>;
+
+  /**
    * Latitude start posisjon
    */
   StartLat?: number;
@@ -64,6 +74,11 @@ export interface LandslideViewModel {
    * Long start posisjon
    */
   StartLong?: number;
+
+  /**
+   * Hull of avalanche runout zone, List(lon, lat)
+   */
+  StopExtent?: Array<Array<number>>;
 
   /**
    * Latitude stopp posisjon
