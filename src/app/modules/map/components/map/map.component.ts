@@ -484,7 +484,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       takeUntil(this.ngDestroy$),
       //TODO: Fjern logging før vi fullfører PR
       tap(([showUserLocation, isActive]) =>
-        this.loggingService.debug(`showUserLocation = ${showUserLocation}, isActive = ${isActive}`, DEBUG_TAG)
+        this.loggingService.debug(
+          `showUserLocation = ${showUserLocation}, isActive = ${isActive}, GeoTag = ${this.geoTag}`,
+          DEBUG_TAG
+        )
       ),
       map(([showUserLocation, isActive]) => showUserLocation && isActive),
       shareReplay()
@@ -599,10 +602,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private disableFollowMode() {
     if (!this.isDoingMoveAction) {
-      this.loggingService.debug('Disable follow mode!', DEBUG_TAG);
+      this.loggingService.debug(`Disable follow mode!, geotag=${this.geoTag}`, DEBUG_TAG);
       this.mapService.followMode = false;
     } else {
-      this.loggingService.debug('Did not disable follow mode, because isDoingMoveAction', DEBUG_TAG);
+      this.loggingService.debug(
+        `Did not disable follow mode, because isDoingMoveAction, geotag=${this.geoTag}`,
+        DEBUG_TAG
+      );
     }
   }
 
