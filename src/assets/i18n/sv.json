@@ -162,7 +162,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (värld)"
     },
-    "TIME_FRAME": "Period",
     "TODAYS_OBSERVATIONS": "Endast dagens observationer",
     "TOPO_MAP_CREDITS": "Topografisk karta tillhandahållen av",
     "UPDATE_OBSERVATIONS": "Uppdaterad",
@@ -281,13 +280,11 @@
         "DT_LAND_SLIDE_TIME": "När inträffade jordskredet tidigast",
         "DT_LAND_SLIDE_TIME_END": "När inträffade jordskredet senast",
         "END_POSITION": "Slutpunkt",
-        "CONFIRM_END_POSITION": "Bekräfta slutpunkt",
         "IN_MAP": "i kartan",
         "LANDSLIDE_TYPE": "Typ av jordskred",
         "POSITION": "Position för jordskred",
         "SET_LANDSLIDE_POSITION": "Ange position för jordskredet",
         "START_POSITION": "Startpunkt",
-        "CONFIRM_START_POSITION": "Bekräfta startpunkt",
         "TITLE": "Jordskredsobservation"
       }
     },

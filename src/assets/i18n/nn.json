@@ -176,7 +176,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
-    "TIME_FRAME": "Tidsrom",
     "TODAYS_OBSERVATIONS": "Berre observasjonar frå i dag",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdatert",
@@ -330,13 +329,11 @@
         "DT_LAND_SLIDE_TIME": "Kva er tidlegaste tidspunktet skredet kan ha gått?",
         "DT_LAND_SLIDE_TIME_END": "Kva er seinaste tidspunktet skredet kunne gått?",
         "END_POSITION": "Sluttpunkt",
-        "CONFIRM_END_POSITION": "Stadfest sluttpunkt",
         "IN_MAP": "i kart",
         "LANDSLIDE_TYPE": "Skredtype",
         "POSITION": "Skredposisjon",
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
         "START_POSITION": "Startpunkt",
-        "CONFIRM_START_POSITION": "Stadfest startpunkt",
         "TITLE": "Skredhending"
       }
     },
