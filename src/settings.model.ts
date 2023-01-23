@@ -80,6 +80,9 @@ interface IMapSettings {
   unknownMapCenter: L.LatLngTuple;
   flyToOnGpsZoom: number;
   maxClusterRadius: number;
+  extentColor: string,
+  startExtentColor: string,
+  endExtentColor: string,
 }
 
 export interface ISettings {

@@ -24,6 +24,11 @@ export interface LandslideEditModel {
   DtLandSlideTimeEnd?: string;
 
   /**
+   * Hull of avalanche polygon, List(lon, lat)
+   */
+  Extent?: Array<Array<number>>;
+
+  /**
    * Var det et varsel utstedt og stemte det? The ForecastAccurateKD unique identifier
    */
   ForecastAccurateTID?: number;
@@ -49,6 +54,11 @@ export interface LandslideEditModel {
   LandSlideTriggerTID?: number;
 
   /**
+   * Hull of avalanche starting zone, List(lon, lat)
+   */
+  StartExtent?: Array<Array<number>>;
+
+  /**
    * Latitude start posisjon
    */
   StartLat?: number;
@@ -57,6 +67,11 @@ export interface LandslideEditModel {
    * Long start posisjon
    */
   StartLong?: number;
+
+  /**
+   * Hull of avalanche runout zone, List(lon, lat)
+   */
+  StopExtent?: Array<Array<number>>;
 
   /**
    * Latitude stopp posisjon

@@ -1,24 +1,26 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, NgZone, ViewChild } from '@angular/core';
-import * as L from 'leaflet';
-import { MapService } from '../../../map/services/map/map.service';
-import { HelperService } from '../../../../core/services/helpers/helper.service';
-import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Position } from '@capacitor/geolocation';
-import { Observable, Subject } from 'rxjs';
-import { LocationName } from '../../../map/services/map-search/location-name.model';
-import { ObsLocationsResponseDtoV2, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
-import { LocationService } from '../../../../core/services/location/location.service';
-import { UtmSource } from '../../pages/obs-location/utm-source.enum';
-import { ViewInfo } from '../../../map/services/map-search/view-info.model';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonInput } from '@ionic/angular';
-import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
-import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import moment from 'moment';
-import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import * as L from 'leaflet';
+import 'leaflet-draw';
+import moment from 'moment';
+import { Observable, Subject } from 'rxjs';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
+import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import { HelperService } from '../../../../core/services/helpers/helper.service';
+import { LocationService } from '../../../../core/services/location/location.service';
+import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
+import { LocationName } from '../../../map/services/map-search/location-name.model';
+import { MapSearchService } from '../../../map/services/map-search/map-search.service';
+import { ViewInfo } from '../../../map/services/map-search/view-info.model';
+import { MapService } from '../../../map/services/map/map.service';
+import { IPolygon } from '../../models/polygon';
+import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -55,6 +57,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
+  @Input() locationPolygon: Observable<IPolygon>;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Output() locationTimeSet = new EventEmitter<LocationTime>();
   @Input() showPreviousUsedLocations = true;
@@ -74,7 +77,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private map: L.Map;
   followMode = false;
   private userposition: Position;
-  private pathLine: L.Polyline;
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
@@ -82,6 +84,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private ngDestroy$ = new Subject<void>();
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
+  locationPolygons: IPolygon[] = [];
+  locationPolygonEditIdx = -1;
+  toggleEditingMode: () => void;
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
@@ -231,8 +236,101 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       this.map.setView(this.locationMarker.getLatLng(), 15);
     }
 
+    this.initPolygons();
     this.mapReady.emit(this.map);
     this.updatePathAndDistance();
+  }
+
+  initPolygons() {
+    const drawnItems = new L.FeatureGroup();
+    this.map.addLayer(drawnItems);
+    drawnItems.bringToFront();
+    
+    new L.Control.Draw({
+      edit: {
+        featureGroup: drawnItems,
+        remove: false,
+        edit: {
+          selectedPathOptions: {
+            dashArray: '10, 10',
+            fill: true,
+            fillOpacity: 0.1
+          }
+        }
+      },
+      draw: {
+        polyline: false,
+        polygon: false,
+        rectangle: false,
+        circle: false,
+        circlemarker: false,
+        marker: false
+      }
+    })
+
+    const locationPolygons = this.locationPolygons;
+    let lastToggled: Date;
+    this.toggleEditingMode = function () {
+      const now = new Date();
+      if (lastToggled && now.getTime() - lastToggled.getTime() < 100) return;
+      lastToggled = now;
+
+      let foundEnabled = false;
+      let setEnabled = false;
+      locationPolygons.forEach((polygon) => {
+        if (foundEnabled && !setEnabled && polygon.active) {
+          setEnabled = true;
+          polygon.polygon.editing.enable();
+        } else if (polygon.polygon.editing.enabled()) {
+          foundEnabled = true;
+          polygon.polygon.editing.disable();
+        } else {
+          polygon.polygon.editing.disable();
+        }
+      });
+      if (!foundEnabled || !setEnabled) {
+        const idx = locationPolygons.map(p => p.active).indexOf(true);
+        if (idx > -1) { 
+          locationPolygons[idx].polygon.editing.enable();
+        } 
+      }
+    };
+    drawnItems.on('click', this.toggleEditingMode);
+
+    this.locationPolygon.subscribe((p) => {
+      p.polygon.setStyle({color: p.active ? p.color : 'rgb(0,0,0,0)'})
+      drawnItems.addLayer(p.polygon);
+      this.locationPolygons.push(p);
+
+      if (locationPolygons.length == 1) {
+        this.toggleEditingMode();
+      }
+    });
+  }
+
+  togglePolygon(index: number): void {
+    const polygon = this.locationPolygons[index]
+    const currentState = polygon.active;
+    polygon.active = !currentState;
+    if (currentState) {
+      polygon.polygon.setStyle({color: 'rgb(0,0,0,0)'});
+      if (polygon.polygon.editing.enabled()) {
+        this.toggleEditingMode();
+      }
+    } else {
+      polygon.polygon.setStyle({color: polygon.color});
+      const isOtherActive = this.locationPolygons
+        .map(p => p.active)
+        .slice(0, index)
+        .concat(
+          this.locationPolygons
+            .map(p => p.active)
+            .slice(index + 1)
+        ).indexOf(true) == -1;
+      if (isOtherActive) {
+        this.toggleEditingMode();
+      }
+    }
   }
 
   private setLocationMarkerLatLng(latLng: L.LatLngExpression): void {
@@ -297,26 +395,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
     if (this.map) {
-      if (!this.pathLine) {
-        this.pathLine = L.polyline(path, {
-          color: 'black',
-          weight: 6,
-          opacity: 0.9,
-          dashArray: '1,12',
-        });
-        if (this.showPolyline) {
-          this.pathLine.addTo(this.map);
-        }
-      } else {
-        this.pathLine.setLatLngs(path);
-      }
       if (this.fromMarker) {
         if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
           this.fromMarker.setOpacity(0);
-          this.pathLine.setStyle({ opacity: 0 });
         } else {
           this.fromMarker.setOpacity(1);
-          this.pathLine.setStyle({ opacity: 0.9 });
         }
       }
     }
