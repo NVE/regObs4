@@ -1,20 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Platform } from '@ionic/angular';
-import {
-  BehaviorSubject,
-  debounce,
-  filter,
-  fromEvent,
-  map,
-  merge,
-  Observable,
-  of,
-  share,
-  Subscription,
-  tap,
-  timer,
-} from 'rxjs';
+import { BehaviorSubject, filter, fromEvent, map, merge, Observable, share, Subscription, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'HeadingService';
@@ -23,7 +11,7 @@ const DEBUG_TAG = 'HeadingService';
   providedIn: 'root',
 })
 /**
- * Henter kompassretning fra enheten
+ * Henter kompassretning fra dingsen. På web vil du ikke få kompassretning
  */
 export class HeadingService {
   private headingSubscription: Subscription;
@@ -34,8 +22,26 @@ export class HeadingService {
     private deviceOrientation: DeviceOrientation,
     private platform: Platform,
     private logger: LoggingService
-  ) {}
+  ) {
+    this.platform.ready().then(() => {
+      if (Capacitor.isNativePlatform()) {
+        this.logger.debug('Platform ready and we are native, so start watching heading', DEBUG_TAG);
+        this.startWatchingHeading();
+      }
+    });
+    this.platform.pause.subscribe(() => {
+      this.logger.debug('Pause, stop watching heading', DEBUG_TAG);
+      this.stopWatchingHeading();
+    });
+    this.platform.resume.subscribe(() => {
+      this.logger.debug('Resume, start watching heading', DEBUG_TAG);
+      this.startWatchingHeading();
+    });
+  }
 
+  /**
+   * Gir deg kompassretningen dingsen peker mot
+   */
   get currentHeading$(): Observable<number> {
     if (!this.isWatching) {
       this.logger.debug('Running startWatchingHeading', DEBUG_TAG);
@@ -43,7 +49,6 @@ export class HeadingService {
     }
     return this.currentHeading.pipe(
       filter((heading) => heading !== null),
-      debounce(() => timer(300)),
       //TODO: Fjern logging før vi fullfører PR
       tap((heading) =>
         this.logger.debug(
@@ -51,17 +56,7 @@ export class HeadingService {
           DEBUG_TAG
         )
       ),
-      share({
-        // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
-        // refCount har med antall subscribers å gjøre.
-        resetOnRefCountZero: () => {
-          //TODO: Fjern logging før vi fullfører PR
-          this.logger.debug('No more subscribers so stopWatchingHeading...', DEBUG_TAG);
-          this.stopWatchingHeading();
-          this.isWatching = false;
-          return of(false);
-        },
-      })
+      share()
     );
   }
 
@@ -77,7 +72,7 @@ export class HeadingService {
   }
 
   private isIos(): boolean {
-    return this.platform.is('hybrid') && this.platform.is('ios');
+    return Capacitor.getPlatform() === 'ios';
   }
 
   private getHeadingNative() {
@@ -115,7 +110,4 @@ export class HeadingService {
       this.headingSubscription.unsubscribe();
     }
   }
-}
-function debouce(): import('rxjs').OperatorFunction<number, number> {
-  throw new Error('Function not implemented.');
 }

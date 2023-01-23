@@ -1,9 +1,9 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Position } from '@capacitor/geolocation';
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
-import { BehaviorSubject, filter, firstValueFrom, Observable, of, ReplaySubject, share, Subject, tap } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, Observable, ReplaySubject, share, Subject, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';
@@ -17,48 +17,34 @@ const POSITION_OPTIONS_DEFAULT: PositionOptions = {
 };
 
 /**
- * Henter posisjon fra GPS og himmelretning fra kompasset på Android eller iOS.
- * TODO: Skille ut kompasskode i egen service(r)
- * TODO: Test på iOS
- * TODO: Test også på Android 12, som har litt annen måte å spørre om tilgang til posisjonsdata på
- * TODO: Tar for lang tid å få posisjon på nytt på kartsida etter vi har vært på en annen side. Gjelder Android, ikke web
+ * Henter posisjon fra GPS
  */
 @Injectable({
   providedIn: 'root',
 })
-export abstract class GeoPositionService implements OnDestroy {
-  protected currentPosition: Subject<Position> = new Subject();
+export abstract class GeoPositionService {
+  protected currentPosition: Subject<Position> = new ReplaySubject(1);
   protected currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
   protected gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
-  protected isWatching = false;
 
   get log$(): Observable<GeoPositionLog> {
     return this.gpsPositionLog.asObservable();
   }
 
+  /**
+   * A stream of device positions. You will get last known position immediately if position data is supported.
+   */
   get currentPosition$(): Observable<Position> {
-    if (!this.isWatching) {
-      this.logger.debug('Running startWatchingPosition', DEBUG_TAG);
-      this.startWatchingPosition();
-    }
     return this.currentPosition.pipe(
       tap((pos) =>
+        //TODO: Fjern når vi fullfører PR
         this.logger.debug(
           `Dispatched position: ${pos?.coords?.latitude}, ${pos?.coords?.longitude}, timestamp: ${pos?.timestamp}. Subscribers: ${this.currentPosition.observers?.length}`,
           DEBUG_TAG
         )
       ),
       filter((pos) => this.isValidPosition(pos)),
-      share({
-        // I denne funksjonen som vi gir til share kan vi sette opp teardown-logikk.
-        // refCount har med antall subscribers å gjøre.
-        resetOnRefCountZero: () => {
-          this.logger.debug('No more subscribers so stopWatchingPosition...', DEBUG_TAG);
-          this.stopWatchingPosition();
-          this.isWatching = false;
-          return of(false);
-        },
-      })
+      share()
     );
   }
 
@@ -69,9 +55,14 @@ export abstract class GeoPositionService implements OnDestroy {
     protected logger: LoggingService
   ) {}
 
-  ngOnDestroy(): void {
-    this.stopWatchingPosition();
-  }
+  /**
+   * Check if device position data is supported and allowed.
+   * In native mode, we will ask for permission if permission is not allowed in beforehand.
+   * In web mode, if position is supported and allowed, a position is also sent to currentPosition$
+   * If permission was denied, a notification toast is shown.
+   * @returns true if we are allowed to fetch position data from the device
+   */
+  abstract requestPositionData(): Promise<boolean>;
 
   /**
    * @returns last known position
@@ -80,14 +71,6 @@ export abstract class GeoPositionService implements OnDestroy {
   getSingleCurrentPosition(): Promise<Position> {
     // this.currentPosition always returns a value.
     return firstValueFrom<Position>(this.currentPosition);
-  }
-
-  abstract checkPermissionsAndAsk(): Promise<boolean>;
-
-  protected abstract startWatchingPosition(): Promise<void>;
-
-  protected stopWatchingPosition() {
-    //You may override this if you need to clean up something
   }
 
   protected isValidPosition(pos: Position): boolean {

@@ -4,8 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { GeoPositionService } from './geo-position.service';
 
-const DEBUG_TAG = 'GeoPositionWebService';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -22,28 +20,12 @@ export class GeoPositionWebService extends GeoPositionService {
     super(toastController, translateService, platform, logger);
   }
 
-  async checkPermissionsAndAsk(): Promise<boolean> {
-    //TODO: Mye kopi av kode fra startWatchingPosition, refaktor!
-    if (!this.geoLocationSupported) {
-      this.handleGeoLocationNotSupported();
-      return false;
-    }
-    navigator.geolocation.getCurrentPosition(
-      () => {
-        return true;
-      },
-      (err) => {
-        this.geolocationError(err);
-      },
-      this.getPositionOptions()
-    );
-    return false;
-  }
-
   /**
-   * Will request position from browser (only) once and then complete the currentPosition stream
+   * If geolocation is permitted, returns true AND send the position to currentPosition$.
+   * Since the only way to check if the browser allows geolocation is to ask for the position,
+   * we also dispatch the posistion to currentPosition$, if the request succeded.
    */
-  protected async startWatchingPosition(): Promise<void> {
+  async requestPositionData(): Promise<boolean> {
     if (!this.geoLocationSupported) {
       this.handleGeoLocationNotSupported();
     } else {
@@ -51,6 +33,7 @@ export class GeoPositionWebService extends GeoPositionService {
         (pos) => {
           if (this.isValidPosition(pos)) {
             this.currentPosition.next(pos);
+            return true;
           } else {
             const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.INVALID');
             this.gpsPositionLog.next(this.createPositionError('Empty position data or no coords'));
@@ -62,6 +45,7 @@ export class GeoPositionWebService extends GeoPositionService {
         },
         this.getPositionOptions()
       );
+      return false;
     }
   }
 

@@ -371,7 +371,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mapService.centerMapToUser$
       .pipe(
         takeUntil(this.ngDestroy$),
-        switchMap(() => from(this.geoPositionService.checkPermissionsAndAsk()))
+        switchMap(() => from(this.geoPositionService.requestPositionData()))
       )
       .subscribe();
   }
@@ -422,41 +422,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
     });
-
-    /*this.mapService.showUserLocation$
-      .pipe(
-        filter((showUserLocation) => showUserLocation === true),
-        // In subscribe, we only start some subscriptions,
-        // no need to start them again if showUserLocation$ emits again.
-        take(1),
-        takeUntil(this.ngDestroy$)
-      )
-      .subscribe(() => {
-        this.geoPositionService.currentPosition$
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe((pos) => this.onPositionUpdate(pos));
-
-        this.geoPositionService.currentHeading$.pipe(takeUntil(this.ngDestroy$)).subscribe((heading) => {
-          if (this.userMarker) {
-            this.userMarker.setHeading(heading);
-          }
-        });
-
-        this.deactivateTrackingIfComponentIsInactive();
-      });
-
-    this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
-    this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
-
-    this.startInvalidateSizeMapTimer();
-
-    this.map.on('resize', () => this.updateMapView());
-
-    if (isAndroidOrIos(this.platform)) {
-      this.initOfflineMaps();
-    }
-
-    this.mapReady.emit(this.map);*/
   }
 
   private initShowUserLocationMarker() {
