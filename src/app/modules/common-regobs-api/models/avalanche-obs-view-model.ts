@@ -39,6 +39,10 @@ export interface AvalancheObsViewModel {
    * Tid da skredet gikk.
    */
   DtAvalancheTime: string;
+
+  /**
+   * Hull of avalanche polygon, List(lon, lat)
+   */
   Extent?: Array<Array<number>>;
 
   /**
@@ -70,6 +74,10 @@ export interface AvalancheObsViewModel {
    * SnowLine
    */
   SnowLine?: number;
+
+  /**
+   * Hull of avalanche starting zone, List(lon, lat)
+   */
   StartExtent?: Array<Array<number>>;
 
   /**
@@ -81,6 +89,10 @@ export interface AvalancheObsViewModel {
    * StartLong
    */
   StartLong?: number;
+
+  /**
+   * Hull of avalanche runout zone, List (lon, lat)
+   */
   StopExtent?: Array<Array<number>>;
 
   /**

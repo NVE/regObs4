@@ -24,7 +24,7 @@ export interface LandslideEditModel {
   DtLandSlideTimeEnd?: string;
 
   /**
-   * Hull of landslide polygon, List<(lon, lat)>
+   * Hull of avalanche polygon, List(lon, lat)
    */
   Extent?: Array<Array<number>>;
 
@@ -54,7 +54,7 @@ export interface LandslideEditModel {
   LandSlideTriggerTID?: number;
 
   /**
-   * Hull of avalanche starting zone, List<(lon, lat)>
+   * Hull of avalanche starting zone, List(lon, lat)
    */
   StartExtent?: Array<Array<number>>;
 
@@ -69,7 +69,7 @@ export interface LandslideEditModel {
   StartLong?: number;
 
   /**
-   * Hull of landslide runout zone, List<(lon, lat)>
+   * Hull of avalanche runout zone, List(lon, lat)
    */
   StopExtent?: Array<Array<number>>;
 
