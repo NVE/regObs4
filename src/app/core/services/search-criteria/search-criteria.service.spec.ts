@@ -1,5 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -9,11 +9,11 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
 
-class TestMapService {
+export class TestMapService {
   mapView$: Observable<IMapView>;
 }
 
-function createTestMapService(): TestMapService {
+export function createTestMapService(): TestMapService {
   const service = new TestMapService();
   service.mapView$ = of({ bounds: undefined, center: undefined, zoom: undefined });
   return service;
@@ -42,11 +42,13 @@ describe('SearchCriteriaService', () => {
     );
 
     jasmine.clock().install();
+    moment.tz.setDefault('Europe/Oslo');
   });
 
   afterEach(function () {
     history.pushState(null, '', window.location.pathname); //remove all query params added in test
     jasmine.clock().uninstall();
+    moment.tz.setDefault();
   });
 
   it('should be created', () => {
@@ -79,14 +81,14 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('default days-back filter should work', fakeAsync(async () => {
-    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
 
-    //check that criteria contains correct from time. Should be 2 days earlier at midnight
-    const expectedFromTime = moment(new Date('2000-12-22 00:00:00.000')).toISOString();
-    //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
     const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
+    //check that criteria contains correct from time. Should be 2 days earlier at midnight
+    expect(criteria.FromDtObsTime).toEqual('2000-12-22T00:00:00.000+01:00');
+
     await service.applyQueryParams();
+
     //check fromDate parameter in url. Should be 2 days earlier based on local time
     const url = new URL(document.location.href);
     expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
@@ -175,6 +177,42 @@ describe('SearchCriteriaService', () => {
       expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
     }));
   });
+
+  it('fromDate url param should be set or updated', fakeAsync(async () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
+
+    tick(100);
+
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
+    await service.applyQueryParams();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('fromDate')).toEqual('2000-12-24');
+  }));
+
+  it('toDate url param should be set or updated', fakeAsync(async () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
+
+    tick(100);
+
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
+    await service.applyQueryParams();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('toDate')).toEqual('2000-12-24');
+  }));
+
+  it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
+
+    tick(100);
+
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('toDate')).toBeNull();
+  }));
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -190,11 +228,14 @@ describe('SearchCriteriaService url parsing', () => {
 
     mapService = createTestMapService();
     userSettingService = new UserSettingService(null, null);
+
     jasmine.clock().install();
+    moment.tz.setDefault('Europe/Oslo');
   });
 
   afterEach(function () {
     history.pushState(null, '', window.location.pathname); //remove all query params added in test
+    moment.tz.setDefault();
     jasmine.clock().uninstall();
   });
 
@@ -347,7 +388,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('days back url filter should work', fakeAsync(async () => {
-    jasmine.clock().mockDate(new Date('2000-12-24T08:00:00+01:00')); //norwegian time
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     new UrlParams().set('daysBack', 1).apply();
 
     service = new SearchCriteriaService(
@@ -357,10 +398,29 @@ describe('SearchCriteriaService url parsing', () => {
     );
 
     tick();
-    //check that criteria contains correct from time. Should be 1 days earlier at midnight
-    //we must also adjust for time zone because search criteria is in UTC and 1 or 2 hour(s) earlier than norwegian time
-    const expectedFromTime = moment(new Date('2000-12-23 00:00:00.000')).toISOString();
+
+    //check that criteria contains correct from time. Should be 1 day earlier at midnight
     const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.FromDtObsTime).toEqual(expectedFromTime);
+    expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+  }));
+
+  it('toDate and fromDate filter should work', fakeAsync(async () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+
+    new UrlParams().set('fromDate', '2020-12-24').apply();
+    new UrlParams().set('toDate', '2022-12-24').apply();
+
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    tick();
+
+    const criteria = await firstValueFrom(service.searchCriteria$);
+
+    expect(criteria.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
+    expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
   }));
 });

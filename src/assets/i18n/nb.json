@@ -150,9 +150,19 @@
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss fra app",
+    "CUSTOM_TIMESPAN": "Egendefinert periode",
+    "DATE_RANGE": {
+      "LAST_WEEK": "Siste uke",
+      "LAST_X_DAYS": "Siste {{days}} dager",
+      "LAST_X_MONTHS": "Siste {{months}} måneder",
+      "LAST_X_WEEKS": "Siste {{weeks}} uker",
+      "TODAY": "I dag",
+      "YESTERDAY": "I går"
+    },
     "DAYS_BACK": "Dager tilbake",
     "DAY_BACK": "Dag tilbake",
     "DEACTIVATE_OBSERVATIONS": "Visning av observasjoner er deaktivert",
+    "END_DATE": "Sluttdato",
     "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
@@ -170,6 +180,7 @@
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
     "SHOW_TRIPS": "Vis turer",
+    "START_DATE": "Startdato",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TILES": {
@@ -179,7 +190,7 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
-    "TIME_FRAME": "Tidsrom",
+    "TIMESPAN": "Tidsrom",
     "TODAYS_OBSERVATIONS": "Kun dagens observasjoner",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdatert",
@@ -218,10 +229,6 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observasjonsfilter",
-    "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observasjonstype"
-    },
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
       "AUTOMATIC_STATIONS": "Automatiske stasjoner",
@@ -229,9 +236,13 @@
       "TITLE": "Observatør"
     },
     "NICK_FILTER": {
-      "TITLE": "Navn",
-      "PLACEHOLDER": "Søk på observatørnavn"
-    }
+      "PLACEHOLDER": "Søk på observatørnavn",
+      "TITLE": "Navn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
