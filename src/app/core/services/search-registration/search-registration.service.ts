@@ -5,7 +5,6 @@ import {
   concatMap,
   distinctUntilChanged,
   filter,
-  flatMap,
   map,
   Observable,
   scan,
@@ -14,7 +13,6 @@ import {
   Subject,
   switchMap,
   takeUntil,
-  takeWhile,
   tap,
 } from 'rxjs';
 import { SearchCriteria } from 'src/app/core/models/search-criteria';
@@ -29,14 +27,17 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 
 export class SearchResult<TViewModel> {
   static DEBUG_TAG = 'SearchResult';
-  readonly registrations$: Observable<TViewModel[]>;
+  registrations = new Subject<TViewModel[]>();
+  readonly registrations$ = this.registrations.asObservable();
   private forceUpdate = new Subject<void>();
+  isStreamActive = new Subject<boolean>();
+  isStreamActive$ = this.isStreamActive.asObservable();
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ) {
-    this.registrations$ = this.createRegistrationsObservable(searchCriteria$, fetchFunc);
+    this.createRegistrationsObservable(searchCriteria$, fetchFunc);
   }
 
   update() {
@@ -47,11 +48,25 @@ export class SearchResult<TViewModel> {
     searchCriteria$: Observable<SearchCriteria>,
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
   ) {
-    return combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(true))]).pipe(
-      map(([searchCriteria]) => searchCriteria),
-      switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
-      shareReplay(1)
+    const searchCriteriaActiveStream = this.isStreamActive$.pipe(
+      filter((isActive) => isActive === true),
+      switchMap(() =>
+        searchCriteria$.pipe(
+          takeUntil(this.isStreamActive),
+          switchMap((searchCriteria) =>
+            combineLatest([
+              fetchFunc(searchCriteria as SearchCriteriaRequestDto),
+              this.forceUpdate.pipe(startWith(true)),
+            ])
+          ),
+          map(([registrations]) => registrations),
+          shareReplay(1)
+        )
+      )
     );
+    searchCriteriaActiveStream.subscribe((searchResult) => {
+      this.registrations.next(searchResult);
+    });
   }
 }
 
@@ -60,7 +75,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   static PAGE_SIZE = 10;
   static MAX_ITEMS = 100;
   registrations = new Subject<TViewModel[]>();
-  registrations$ = this.registrations.asObservable();
+  readonly registrations$ = this.registrations.asObservable();
   private pageInfo = new BehaviorSubject<{ offset: number; items: number }>({
     offset: 0,
     items: PagedSearchResult.PAGE_SIZE,
@@ -69,8 +84,8 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   allFetchedForCriteria$ = this.allFetchedForCriteria.pipe(distinctUntilChanged());
   private maxItemsFetched = new BehaviorSubject<boolean>(false);
   maxItemsFetched$ = this.maxItemsFetched.pipe(distinctUntilChanged());
-  isActiveStream$ = new Subject();
-  isActiveStream = this.isActiveStream$.asObservable();
+  isStreamActive = new Subject();
+  isStreamActive$ = this.isStreamActive.asObservable();
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
@@ -79,11 +94,23 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
     countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
   ) {
-    const resultStream = this.isActiveStream.pipe(
-      filter((x) => x === true),
+    //since this method observes searchCriteria that can be updated from many different subscribers and on different tabs,
+    //it will cause that the createPagedSearch will be called every time it happens and cause
+    //unnecessary network traffic, therefore guardStream observable is stopping the subscription with isActiveStream subject
+    //whenever specified Tab is left
+    this.createRegistrationsObservable(searchCriteria$, fetchFunc, countFunc);
+  }
+
+  protected createRegistrationsObservable(
+    searchCriteria$: Observable<SearchCriteria>,
+    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
+    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
+  ) {
+    const searchCriteriaActiveStream = this.isStreamActive$.pipe(
+      filter((isActive) => isActive === true),
       switchMap(() =>
         searchCriteria$.pipe(
-          takeUntil(this.isActiveStream$),
+          takeUntil(this.isStreamActive),
           switchMap((searchCriteria) =>
             combineLatest([
               this.createPagedSearch(searchCriteria, fetchFunc),
@@ -102,13 +129,11 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
         )
       )
     );
-    resultStream.subscribe((v) => {
-      console.log('subscribing');
-      this.registrations.next(v);
+    searchCriteriaActiveStream.subscribe((searchResult) => {
+      this.registrations.next(searchResult);
     });
   }
-
-  // Do we need to handle this ??
+  // Do we need to handle this ?? probably not - verify
   update() {
     const { offset: oldOffset, items: oldItems } = this.pageInfo.value;
     this.pageInfo.next({

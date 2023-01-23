@@ -51,6 +51,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private map: L.Map;
   private markerLayer: RegObsMarkerClusterLayer;
   private geoCoachMarksClosedSubject = new Subject<void>();
+  private searchResult: SearchResult<AtAGlanceViewModel>;
 
   fullscreen$: Observable<boolean>;
   showGeoSelectInfo = false;
@@ -95,15 +96,15 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   private async initSearch() {
-    const searchResult = await this.createSearchResult();
-
-    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
+    this.searchResult = await this.createSearchResult();
+    this.searchResult.isStreamActive.next(true);
+    combineLatest([this.searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
       ([registrations, show]) => {
         this.redrawObservationMarkers(show ? registrations : []);
       }
     );
 
-    searchResult.registrations$.subscribe(() => {
+    this.searchResult.registrations$.subscribe(() => {
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
     });
@@ -114,7 +115,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
         withLatestFrom(this.tabsService.selectedTab$),
         tap(([, tab]) => {
           if (tab === TABS.HOME) {
-            searchResult.update();
+            this.searchResult.update();
             this.loggingService.debug('Search manually triggered', DEBUG_TAG);
           } else {
             this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
@@ -227,6 +228,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   async onEnter() {
+    this.searchResult && this.searchResult.isStreamActive.next(true);
     this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (userSettings.showGeoSelectInfo) {
@@ -239,6 +241,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   onLeave() {
+    this.searchResult.isStreamActive.next(false);
     this.loggingService.debug('Home page onLeave. Disable map updates and GeoLocation', DEBUG_TAG);
     this.mapComponent.componentIsActive(false);
 
