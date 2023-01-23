@@ -364,7 +364,8 @@
         "CONFIRM_START_POSITION": "Bekreft startpunkt",
         "TITLE": "Skredhendelse",
         "LANDSLIDE_AREA": "Skredområde",
-        "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde"
+        "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde",
+        "AREA_TOTAL": "Tegn hele skredarealen"
       }
     },
     "DRAFTS": "Mine kladder",
@@ -543,9 +544,9 @@
         "AVALANCHE_TYPE": "Skredtype",
         "AVALANCHE_AREA": "Skredområde",
         "CONFIRM_AVALANCHE_AREA": "Bekreft skredområde",
-        "AREA_TOTAL": "Tegne hele skredområdet",
-        "AREA_START": "Tegne løsneområde",
-        "AREA_END": "Tegne utløpsområde",
+        "AREA_TOTAL": "Tegn hele skredområdet",
+        "AREA_START": "Tegn løsneområde",
+        "AREA_END": "Tegn utløpsområde",
         "AVAL_CAUSE": "Svakt lag",
         "CASUALTIES_NUM": "Antall skredtatte",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
