@@ -56,9 +56,14 @@ export class GeoPositionNativeService extends GeoPositionService {
 
   async requestPositionData(): Promise<boolean> {
     let authorized = await this.checkPermissions();
-    if (!authorized && Capacitor.getPlatform() === 'android') {
-      // location is not authorized, request new. This only works on Android
+    if (!authorized) {
       authorized = await this.askForPermission();
+      //when location permission native dialog shows up on ios, it doesnt pasue the app
+      //so platform.resume is not trigerred (unlike android). therefore we have to manually run startWatchingPosition if
+      //permissions are granted
+      if (authorized && Capacitor.getPlatform() === 'ios') {
+        this.startWatchingPosition();
+      }
     }
     if (!authorized) {
       this.showPermissionDeniedToast();
