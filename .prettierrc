@@ -1,0 +1,18 @@
+{
+  "editorconfig": true,
+  "singleQuote": true,
+  "bracketSameLine": false,
+  "printWidth": 120,
+  "trailingComma": "es5",
+  "overrides": [
+    {
+      "files": [
+        "**/*.html",
+        "**/*.json"
+      ],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}

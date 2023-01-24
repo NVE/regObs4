@@ -3,60 +3,55 @@
  -->
 
 <!-- Crosshair displayed in map center -->
-<img class="center-icon" src="../../../assets/icon/center.png">
+<img class="center-icon" src="../../../assets/icon/center.png" />
 
 <!-- Map center info box displayed in bottom left corner -->
 <div #infoBoxElement class="map-center-info ion-text-nowrap" (click)="copyToClipboard()">
   <ion-grid class="ion-no-padding">
-
     <ng-container *ngIf="!loading; else loadingSpinner">
-
       <!-- Location name -->
       <ion-row name="map-center-info-row" *ngIf="location">
-        <span *ngIf="location.name !== location.adminName">{{ location.name }},&nbsp;</span>{{location.adminName}}
+        <span *ngIf="location.name !== location.adminName">{{ location.name }},&nbsp;</span>{{ location.adminName }}
       </ion-row>
 
       <!-- Height (masl) and steepness -->
       <ion-row name="map-center-info-row" *ngIf="elevation != null || steepness != null">
         <ng-container *ngIf="elevation != null">
-          {{ elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}
+          {{ elevation }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
         </ng-container>
         <ng-container *ngIf="steepness != null">
           <span *ngIf="elevation !== null">,&nbsp;</span>
           <span class="steepness-triangle">
-            <span class="steepness-value" [ngStyle]="{ 'transform': 'rotate(' +steepness +'deg)'}">
-            </span>
+            <span class="steepness-value" [ngStyle]="{ transform: 'rotate(' + steepness + 'deg)' }"> </span>
           </span>
           {{ steepness }}&deg;
         </ng-container>
       </ion-row>
-
     </ng-container>
 
     <!-- Coordinates -->
     <ion-row name="map-center-info-row" *ngIf="mapCenter">
-      {{ mapCenter.lat | number:'.3' }}&deg;{{ 'MAP_CENTER_INFO.NORTH_SHORT' | translate }},
-      {{ mapCenter.lng | number:'.3' }}&deg;{{ 'MAP_CENTER_INFO.EAST_SHORT' | translate }}
+      {{ mapCenter.lat | number : ".3" }}&deg;{{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},
+      {{ mapCenter.lng | number : ".3" }}&deg;{{ "MAP_CENTER_INFO.EAST_SHORT" | translate }}
     </ion-row>
 
     <!-- Distance and height difference to gps position -->
     <ion-row name="map-center-info-row" *ngIf="distance != null && distance > 0">
-      {{ getHorizontalDifferenceText(distance) }} {{ 'MAP_CENTER_INFO.AWAY_FROM' | translate }}
+      {{ getHorizontalDifferenceText(distance) }} {{ "MAP_CENTER_INFO.AWAY_FROM" | translate }}
       <ng-container *ngIf="!loading && heightDifference != null">
         <ion-icon *ngIf="heightDifference > 0" name="arrow-up" class="height-difference-icon"></ion-icon>
         <ion-icon *ngIf="heightDifference < 0" name="arrow-down" class="height-difference-icon"></ion-icon>
-        {{ heightDifference | abs | number: '1.0-0' }} m
+        {{ heightDifference | abs | number : "1.0-0" }} m
       </ng-container>
     </ion-row>
 
-    <ion-row name="weather-link-row" (click)="$event.stopPropagation();loadYr(mapCenter.lat, mapCenter.lng)">
+    <ion-row name="weather-link-row" (click)="$event.stopPropagation(); loadYr(mapCenter.lat, mapCenter.lng)">
       <div class="weather-link">
-        {{ 'MAP_CENTER_INFO.WEATHER_FROM' | translate }}
+        {{ "MAP_CENTER_INFO.WEATHER_FROM" | translate }}
         <ion-icon name="yry" class="yr-icon yr-y"></ion-icon>
         <ion-icon name="yrr" class="yr-icon yr-r"></ion-icon>
       </div>
     </ion-row>
-
   </ion-grid>
 </div>
 

@@ -1,39 +1,39 @@
 .exposedHight {
-    ion-row {
-        min-height: 60px;
-        margin-bottom: 10px;
-        background-position: center !important;
-        background-size: contain !important;
+  ion-row {
+    min-height: 60px;
+    margin-bottom: 10px;
+    background-position: center !important;
+    background-size: contain !important;
 
-        &.selected {
-            ion-col {
-                color: #fff;
-            }
-        }
+    &.selected {
+      ion-col {
+        color: #fff;
+      }
+    }
 
-        &.top {
-            background: #fff url("/assets/images/mountain-top-grey.png") no-repeat;
-            &.selected {
-                background: rgba(0, 0, 0, 0.7) url("/assets/images/mountain-top-black.png") no-repeat;
-            }
-        }
+    &.top {
+      background: #fff url('/assets/images/mountain-top-grey.png') no-repeat;
+      &.selected {
+        background: rgba(0, 0, 0, 0.7) url('/assets/images/mountain-top-black.png') no-repeat;
+      }
+    }
 
-        &.middle {
-            background: #fff url("/assets/images/mountain-middle-grey.png") no-repeat;
-            &.selected {
-                    background: rgba(0, 0, 0, 0.7) url("/assets/images/mountain-middle-black.png") no-repeat;
-            }
-        }
+    &.middle {
+      background: #fff url('/assets/images/mountain-middle-grey.png') no-repeat;
+      &.selected {
+        background: rgba(0, 0, 0, 0.7) url('/assets/images/mountain-middle-black.png') no-repeat;
+      }
+    }
 
-        &.bottom {
-            background: #fff url("/assets/images/mountain-bottom-grey.png") no-repeat;
-            &.selected {
-                background: rgba(0, 0, 0,0.7) url("/assets/images/mountain-bottom-black.png") no-repeat;
-            }
-        }
-    }  
+    &.bottom {
+      background: #fff url('/assets/images/mountain-bottom-grey.png') no-repeat;
+      &.selected {
+        background: rgba(0, 0, 0, 0.7) url('/assets/images/mountain-bottom-black.png') no-repeat;
+      }
+    }
+  }
 }
 
 ion-text {
-    width: 100%;
+  width: 100%;
 }

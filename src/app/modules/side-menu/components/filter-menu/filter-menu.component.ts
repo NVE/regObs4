@@ -8,9 +8,9 @@ import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 
 export interface ObservationTypeFilterItem {
-  value: string,
-  geohazardTid: GeoHazard[],
-  isChecked: boolean
+  value: string;
+  geohazardTid: GeoHazard[];
+  isChecked: boolean;
 }
 
 @Component({
@@ -19,7 +19,6 @@ export interface ObservationTypeFilterItem {
   styleUrls: ['./filter-menu.component.scss'],
 })
 export class FilterMenuComponent implements OnInit {
-
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
@@ -29,110 +28,110 @@ export class FilterMenuComponent implements OnInit {
 
   filteredObservationTypes: ObservationTypeFilterItem[];
 
-  observationTypes : ObservationTypeFilterItem[] = [
+  observationTypes: ObservationTypeFilterItem[] = [
     {
       value: 'Ulykker',
       geohazardTid: [GeoHazard.Snow, GeoHazard.Ice],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Skredhendelser',
       geohazardTid: [GeoHazard.Snow, GeoHazard.Soil],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Faretegn',
       geohazardTid: [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Soil],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Isdekning',
       geohazardTid: [GeoHazard.Ice],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Istykkelse',
       geohazardTid: [GeoHazard.Ice],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Snødekke',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Skredaktiviter',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Vær',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Tester',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Snøprofil',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Skredproblem',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Skredfarevurdering',
       geohazardTid: [GeoHazard.Snow],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Vannstand',
       geohazardTid: [GeoHazard.Water],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Skader',
       geohazardTid: [GeoHazard.Water],
-      isChecked: false
+      isChecked: false,
     },
     {
       value: 'Notater',
       geohazardTid: [GeoHazard.Snow, GeoHazard.Soil, GeoHazard.Water, GeoHazard.Ice],
-      isChecked: false
-    }
+      isChecked: false,
+    },
   ];
 
-
-  constructor(private platform: Platform,
-              private userSettingService: UserSettingService) { }
+  constructor(private platform: Platform, private userSettingService: UserSettingService) {}
 
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
-    this.userSettingService.currentGeoHazard$.pipe(
-      switchMap( currentGeoHazard => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
-      .subscribe(items => this.filteredObservationTypes = items);
+    this.userSettingService.currentGeoHazard$
+      .pipe(switchMap((currentGeoHazard) => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
+      .subscribe((items) => (this.filteredObservationTypes = items));
   }
 
   filterObservationTypesByGeohazard(currentGeoHazard: GeoHazard[]) {
-    return this.observationTypes.filter(
-      observationType => observationType.geohazardTid.some(
-        (observationGeoHazardTid) => currentGeoHazard.indexOf(observationGeoHazardTid) >= 0));
+    return this.observationTypes.filter((observationType) =>
+      observationType.geohazardTid.some(
+        (observationGeoHazardTid) => currentGeoHazard.indexOf(observationGeoHazardTid) >= 0
+      )
+    );
   }
 
   toggleAllObservationTypes() {
     this.showObservationTypes = !this.showObservationTypes;
   }
 
-  checkMaster(event){
+  checkMaster(event) {
     setTimeout(() => {
-      this.observationTypes.forEach(obj => {
+      this.observationTypes.forEach((obj) => {
         obj.isChecked = this.masterCheck;
       });
     });
@@ -141,7 +140,7 @@ export class FilterMenuComponent implements OnInit {
   checkEvent() {
     const totalItems = this.observationTypes.length;
     let checked = 0;
-    this.observationTypes.map(obj => {
+    this.observationTypes.map((obj) => {
       if (obj.isChecked) checked++;
     });
     if (checked > 0 && checked < totalItems) {
@@ -158,6 +157,4 @@ export class FilterMenuComponent implements OnInit {
       this.masterCheck = false;
     }
   }
-
-
 }

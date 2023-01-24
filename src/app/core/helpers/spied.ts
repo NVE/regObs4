@@ -26,6 +26,6 @@ export function spyOnClass<T>(spiedClass: Type<T>) {
 export function provideMock<T>(spiedClass: Type<T>) {
   return {
     provide: spiedClass,
-    useValue: spyOnClass(spiedClass)
+    useValue: spyOnClass(spiedClass),
   };
 }

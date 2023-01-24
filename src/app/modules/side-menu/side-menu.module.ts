@@ -31,7 +31,6 @@ import { NoLegendComponent } from './components/support-tiles-menu/legends/no-le
     SteepnessCommonLegendComponent,
     NoLegendComponent,
   ],
-  exports: [SideMenuComponent, FilterMenuComponent]
+  exports: [SideMenuComponent, FilterMenuComponent],
 })
-export class SideMenuModule {
-}
+export class SideMenuModule {}

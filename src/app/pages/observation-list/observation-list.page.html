@@ -9,14 +9,13 @@
       <app-observation-list-card *ngFor="let obs of visibleObservations; trackBy: trackByIdFunc;" [obs]="obs">
       </app-observation-list-card>
     </ion-list>
-    <ion-infinite-scroll (ionInfinite)="loadNextPage($event)" >
-      <ion-infinite-scroll-content>
-      </ion-infinite-scroll-content>
+    <ion-infinite-scroll (ionInfinite)="loadNextPage($event)">
+      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ion-row *ngIf="maxCountReached" class="full-grid-row max-count-reached">
       <ion-col class="ion-text-center ion-margin-horizontal">
         <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
-        <h3 class="ion-text-wrap"> {{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
+        <h3 class="ion-text-wrap">{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
       </ion-col>
     </ion-row>
   </ng-container>
@@ -45,7 +44,7 @@
     </ion-row>
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2> {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
+        <h2>{{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
         <h3 class="ion-text-wrap">{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
       </ion-col>
     </ion-row>

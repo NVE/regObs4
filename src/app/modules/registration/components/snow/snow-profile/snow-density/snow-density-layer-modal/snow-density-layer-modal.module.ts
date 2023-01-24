@@ -4,7 +4,6 @@ import { SharedComponentsModule } from '../../../../../shared-components.module'
 
 @NgModule({
   imports: [SharedComponentsModule],
-  declarations: [SnowDensityLayerModalPage]
+  declarations: [SnowDensityLayerModalPage],
 })
-export class SnowDensityLayerModalPageModule {
-}
+export class SnowDensityLayerModalPageModule {}

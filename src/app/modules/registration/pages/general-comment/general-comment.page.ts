@@ -7,13 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-general-comment',
   templateUrl: './general-comment.page.html',
-  styleUrls: ['./general-comment.page.scss']
+  styleUrls: ['./general-comment.page.scss'],
 })
 export class GeneralCommentPage extends BasePage {
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute
-  ) {
+  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
     super(RegistrationTid.GeneralObservation, basePageService, activatedRoute);
   }
 }

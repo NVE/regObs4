@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LRUCache } from 'lru-fast';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ObsCardHeightService {
   private sizeCache: LRUCache<number, number>;

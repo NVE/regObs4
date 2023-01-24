@@ -10,18 +10,14 @@ import { ISummaryItem } from '../summary-item/summary-item.model';
 @Component({
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',
-  styleUrls: ['./navigation-buttons.component.scss']
+  styleUrls: ['./navigation-buttons.component.scss'],
 })
 export class NavigationButtonsComponent implements OnInit {
   @Input() draft: RegistrationDraft;
   next: ISummaryItem;
   previous: ISummaryItem;
 
-  constructor(
-    private summaryItemService: SummaryItemService,
-    private router: Router,
-    private ngZone: NgZone
-  ) {}
+  constructor(private summaryItemService: SummaryItemService, private router: Router, private ngZone: NgZone) {}
 
   async ngOnInit() {
     const currentUrl = this.router.url;

@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  EventEmitter,
-  Output,
-  NgZone
-} from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
 
 const EMPTY_EXPOSITION = '00000000';
 const ALL_EXPOSITION = '11111111';
@@ -13,7 +6,7 @@ const ALL_EXPOSITION = '11111111';
 @Component({
   selector: 'app-valid-exposition',
   templateUrl: './valid-exposition.component.html',
-  styleUrls: ['./valid-exposition.component.scss']
+  styleUrls: ['./valid-exposition.component.scss'],
 })
 export class ValidExpositionComponent implements OnInit {
   @Input() validExposition: string;
@@ -35,17 +28,12 @@ export class ValidExpositionComponent implements OnInit {
     const existingValue = this.validExpositionCopy.substr(index, 1);
     const newValue = existingValue === '1' ? '0' : '1';
     this.validExpositionCopy =
-      this.validExpositionCopy.substr(0, index) +
-      newValue +
-      this.validExpositionCopy.substr(index + 1);
+      this.validExpositionCopy.substr(0, index) + newValue + this.validExpositionCopy.substr(index + 1);
     this.applyChanges();
   }
 
   toggleAllExpositions() {
-    this.validExpositionCopy =
-      this.validExpositionCopy === ALL_EXPOSITION
-        ? EMPTY_EXPOSITION
-        : ALL_EXPOSITION;
+    this.validExpositionCopy = this.validExpositionCopy === ALL_EXPOSITION ? EMPTY_EXPOSITION : ALL_EXPOSITION;
     this.applyChanges();
   }
 

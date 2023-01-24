@@ -1,42 +1,42 @@
 .legal-icon {
-    font-size: 36px;
-    border-radius: 50%;
-    color: #fff;
-    background-color: var(--ion-color-varsom-blue-tint);
-    width: 70px;
-    height: 70px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
+  font-size: 36px;
+  border-radius: 50%;
+  color: #fff;
+  background-color: var(--ion-color-varsom-blue-tint);
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .full-grid {
-    padding-left: 6vw;
-    padding-right: 6vw;
+  padding-left: 6vw;
+  padding-right: 6vw;
 }
 
 .legal-grid {
-    margin-top: auto;
-    height: auto;
+  margin-top: auto;
+  height: auto;
 }
 
 .legal-info-row {
-    height: 20vh;
+  height: 20vh;
 }
 
 .legal-text-row {
-    ul {
-        padding-left: 18px;
-        li {
-            text-align: left;
-            padding-bottom: 5px;
-            font-size: 4vw;
-        }
-        @media screen and (min-width: 768px) {
-            li {
-               font-size: 18px;
-            }
-          }
+  ul {
+    padding-left: 18px;
+    li {
+      text-align: left;
+      padding-bottom: 5px;
+      font-size: 4vw;
     }
+    @media screen and (min-width: 768px) {
+      li {
+        font-size: 18px;
+      }
+    }
+  }
 }

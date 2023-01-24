@@ -6,12 +6,12 @@ import { AuthCallbackPage } from './auth-callback.page';
 const routes: Routes = [
   {
     path: '',
-    component: AuthCallbackPage
-  }
+    component: AuthCallbackPage,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AuthCallbackPageRoutingModule {}

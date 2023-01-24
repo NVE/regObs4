@@ -19,7 +19,7 @@ const MAX_OBSERVATION_COUNT = 100;
   selector: 'app-observation-list',
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {
   visibleObservations: RegistrationViewModel[];
@@ -61,7 +61,6 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.resetAndLoadObservations(true, cancelPromise);
   }
 
-
   ionViewWillEnter(): void {
     this.content.scrollToTop();
     this.resetAndLoadObservations();
@@ -72,7 +71,10 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.visibleObservations = undefined;
   }
 
-  private async resetAndLoadObservations(forceUpdate = false, cancelPromise: Promise<unknown> = undefined): Promise<void> {
+  private async resetAndLoadObservations(
+    forceUpdate = false,
+    cancelPromise: Promise<unknown> = undefined
+  ): Promise<void> {
     this.loaded = false;
     this.visibleObservations = undefined;
     this.cdr.detectChanges();
@@ -132,7 +134,8 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
 
   private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {
     return observations.filter(
-      (observation) => !view || view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude))
+      (observation) =>
+        !view || view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude))
     );
   }
 

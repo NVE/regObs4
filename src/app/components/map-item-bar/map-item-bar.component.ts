@@ -16,7 +16,7 @@ import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registrat
 @Component({
   selector: 'app-map-item-bar',
   templateUrl: './map-item-bar.component.html',
-  styleUrls: ['./map-item-bar.component.scss']
+  styleUrls: ['./map-item-bar.component.scss'],
 })
 /**
  * Show key info from selected registration on top of the map.
@@ -71,7 +71,9 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   getTitle(item: RegistrationViewModel) {
-    const allRegistrationNames: Array<string> = (item.Summaries || []).map((registration) => registration.RegistrationName);
+    const allRegistrationNames: Array<string> = (item.Summaries || []).map(
+      (registration) => registration.RegistrationName
+    );
     const uniqueValues = Array.from(new Set(allRegistrationNames));
     return uniqueValues.join(', ');
   }

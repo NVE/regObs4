@@ -1,10 +1,5 @@
 <ion-item detail="false">
-  
-  <ion-label 
-    color="medium"
-    position="stacked"
-    class="ion-text-uppercase"
-  >
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">
     {{ title | translate }}
   </ion-label>
 
@@ -17,7 +12,6 @@
     [rows]="rows"
     [(ngModel)]="value"
     [autoGrow]="true"
-    placeholder="{{ placeholder | translate}}"
+    placeholder="{{ placeholder | translate }}"
   ></ion-textarea>
-
 </ion-item>

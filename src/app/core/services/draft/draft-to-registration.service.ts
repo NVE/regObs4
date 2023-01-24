@@ -1,7 +1,18 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { combineLatest, exhaustMap, filter, firstValueFrom, from, interval, map, startWith, throttleTime, withLatestFrom } from 'rxjs';
+import {
+  combineLatest,
+  exhaustMap,
+  filter,
+  firstValueFrom,
+  from,
+  interval,
+  map,
+  startWith,
+  throttleTime,
+  withLatestFrom,
+} from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
@@ -12,14 +23,13 @@ import { DraftRepositoryService } from './draft-repository.service';
 
 const DEBUG_TAG = 'DraftToRegistrationService';
 
-
 /**
  * Service that listens for new drafts ready to send to regobs api (drafts with SyncStatus.Sync), and asks
  * AddUpdateDeleteRegistrationService to send them. If an upload fails, it asks DraftService to save the draft with an
  * error property.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DraftToRegistrationService {
   private initialized = false;
@@ -57,7 +67,7 @@ export class DraftToRegistrationService {
     if (error) {
       this.loggerService.debug('Draft had error, will remove error when saving to retry upload', DEBUG_TAG, {
         uuid: draftToUpdate.uuid,
-        error
+        error,
       });
     }
 
@@ -73,9 +83,9 @@ export class DraftToRegistrationService {
     // Listen for drafts ready to submit to regobs api, and network status
     this.draftService.drafts$.subscribe((drafts) => {
       const draftsToSync = drafts
-        .filter(d => d.syncStatus === SyncStatus.Sync || d.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
-        .filter(d => d.error == null)
-        .filter(d => !this.registrationsUploading.includes(d.uuid));
+        .filter((d) => d.syncStatus === SyncStatus.Sync || d.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
+        .filter((d) => d.error == null)
+        .filter((d) => !this.registrationsUploading.includes(d.uuid));
 
       for (const draft of draftsToSync) {
         this.addOrUpdateRegistrationWithTracker(draft);
@@ -87,17 +97,18 @@ export class DraftToRegistrationService {
     combineLatest([
       this.networkStatus.connected$,
       interval(5 * 60 * 1000).pipe(startWith(true)),
-      this.platform.resume.pipe(startWith(true))
-    ]).pipe(
-      filter(([isConnected,]) => isConnected === true),
-      // Only emit that we have a connection one time per 5 seconds, in case two or more emits at almost the same time
-      throttleTime(5000),
-      withLatestFrom(this.draftService.drafts$),
-      // Pick drafts with network errors
-      map(([,drafts]) => drafts.filter(d => d.error?.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut)),
-      // exhaustMap ignores new incoming drafts until we have successfully saved
-      exhaustMap(drafts => from(this.retryDraftsFailedWithNetworkError(drafts)))
-    )
+      this.platform.resume.pipe(startWith(true)),
+    ])
+      .pipe(
+        filter(([isConnected]) => isConnected === true),
+        // Only emit that we have a connection one time per 5 seconds, in case two or more emits at almost the same time
+        throttleTime(5000),
+        withLatestFrom(this.draftService.drafts$),
+        // Pick drafts with network errors
+        map(([, drafts]) => drafts.filter((d) => d.error?.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut)),
+        // exhaustMap ignores new incoming drafts until we have successfully saved
+        exhaustMap((drafts) => from(this.retryDraftsFailedWithNetworkError(drafts)))
+      )
       .subscribe();
   }
 
@@ -145,13 +156,13 @@ export class DraftToRegistrationService {
       ...draft,
       error: {
         code: RegistrationDraftErrorCode.NoNetworkOrTimedOut,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     });
   }
 
   private retryDraftsFailedWithNetworkError(drafts: RegistrationDraft[]): Promise<void[]> {
-    const updateTasks = drafts.map(d => this.retryDraftThatFailedWithNetworkError(d));
+    const updateTasks = drafts.map((d) => this.retryDraftThatFailedWithNetworkError(d));
     // Concurrently save updates and return the promise to allow it to be awaited
     return Promise.all(updateTasks);
   }
@@ -167,8 +178,7 @@ export class DraftToRegistrationService {
   }
 }
 
-
-function handleError(error: Error): {code: RegistrationDraftErrorCode; message: string} {
+function handleError(error: Error): { code: RegistrationDraftErrorCode; message: string } {
   let code: RegistrationDraftErrorCode;
   let message: string;
 
@@ -180,8 +190,8 @@ function handleError(error: Error): {code: RegistrationDraftErrorCode; message: 
   } else if (error instanceof HttpErrorResponse) {
     // Handle Http Errors
     if (error.status === 0) {
-      code = RegistrationDraftErrorCode.NoNetworkOrTimedOut,
-      message = error.message || 'Response failed with status code 0, probably no network?';
+      (code = RegistrationDraftErrorCode.NoNetworkOrTimedOut),
+        (message = error.message || 'Response failed with status code 0, probably no network?');
     } else if (error.status === HttpStatusCode.BadRequest) {
       code = RegistrationDraftErrorCode.RegistrationError;
       // Regobs api returns additional info for bad requests.

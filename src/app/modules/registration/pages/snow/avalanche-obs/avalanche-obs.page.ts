@@ -9,7 +9,7 @@ import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { createEmptyRegistration } from 'src/app/modules/common-registration/registration.helpers';
-import *  as L from 'leaflet';
+import * as L from 'leaflet';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 
 /**
@@ -19,42 +19,42 @@ import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 @Component({
   selector: 'app-avalanche-obs',
   templateUrl: './avalanche-obs.page.html',
-  styleUrls: ['./avalanche-obs.page.scss']
+  styleUrls: ['./avalanche-obs.page.scss'],
 })
 export class AvalancheObsPage extends BasePage {
   expoArray: SelectOption[] = [
     {
       text: 'DIRECTION.N',
-      id: '10000000'
+      id: '10000000',
     },
     {
       text: 'DIRECTION.NE',
-      id: '01000000'
+      id: '01000000',
     },
     {
       text: 'DIRECTION.E',
-      id: '00100000'
+      id: '00100000',
     },
     {
       text: 'DIRECTION.SE',
-      id: '00010000'
+      id: '00010000',
     },
     {
       text: 'DIRECTION.S',
-      id: '00001000'
+      id: '00001000',
     },
     {
       text: 'DIRECTION.SW',
-      id: '00000100'
+      id: '00000100',
     },
     {
       text: 'DIRECTION.W',
-      id: '00000010'
+      id: '00000010',
     },
     {
       text: 'DIRECTION.NW',
-      id: '00000001'
-    }
+      id: '00000001',
+    },
   ];
 
   showWarning = false;
@@ -118,31 +118,29 @@ export class AvalancheObsPage extends BasePage {
     this.draft = await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
 
-
-  groupValidate(){
+  groupValidate() {
     this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
-    this.isDeadValid =  IncidentValidation.onDeadNumChange(this.incident);
+    this.isDeadValid = IncidentValidation.onDeadNumChange(this.incident);
     this.onHarmedChange();
   }
 
-  onHarmedChange(){
-    if
-    ((isNaN(this.incident.CasualtiesNum)
-    && isNaN(this.incident.DeadNum)
-    && (this.incident.HarmedNum > this.incident.InvolvedNum))
-    || (isNaN(this.incident.DeadNum)
-    && (this.incident.HarmedNum > this.incident.InvolvedNum)))
-    {
+  onHarmedChange() {
+    if (
+      (isNaN(this.incident.CasualtiesNum) &&
+        isNaN(this.incident.DeadNum) &&
+        this.incident.HarmedNum > this.incident.InvolvedNum) ||
+      (isNaN(this.incident.DeadNum) && this.incident.HarmedNum > this.incident.InvolvedNum)
+    ) {
       this.isHarmedValid = false;
-    }
-    else if((!isNaN(this.incident.DeadNum)
-      && ((this.incident.DeadNum + this.incident.HarmedNum) > this.incident.CasualtiesNum
-        || (this.incident.DeadNum + this.incident.HarmedNum) > this.incident.InvolvedNum ))){
+    } else if (
+      !isNaN(this.incident.DeadNum) &&
+      (this.incident.DeadNum + this.incident.HarmedNum > this.incident.CasualtiesNum ||
+        this.incident.DeadNum + this.incident.HarmedNum > this.incident.InvolvedNum)
+    ) {
       this.isHarmedValid = false;
       this.isDeadValid = false;
       this.isErrorMessageHarmAndDead = true;
-    }
-    else {
+    } else {
       this.isHarmedValid = true;
       this.isErrorMessageHarmAndDead = false;
     }
@@ -153,11 +151,13 @@ export class AvalancheObsPage extends BasePage {
 
     this.groupValidate();
 
-    return !!this.avalancheObs.DtAvalancheTime
-    && this.isInvolvedValid
-    && this.isCasualtiesValid
-    && this.isDeadValid
-    && this.isHarmedValid;
+    return (
+      !!this.avalancheObs.DtAvalancheTime &&
+      this.isInvolvedValid &&
+      this.isCasualtiesValid &&
+      this.isDeadValid &&
+      this.isHarmedValid
+    );
   }
 
   async isEmpty(): Promise<boolean> {
@@ -175,26 +175,15 @@ export class AvalancheObsPage extends BasePage {
 
   async setAvalanchePosition() {
     const relativeToLatLng = this.draft.registration.ObsLocation
-      ? L.latLng(
-        this.draft.registration.ObsLocation.Latitude,
-        this.draft.registration.ObsLocation.Longitude
-      )
+      ? L.latLng(this.draft.registration.ObsLocation.Latitude, this.draft.registration.ObsLocation.Longitude)
       : null;
     const startLatLng =
-      this.avalancheObs.StartLat &&
-      this.avalancheObs.StartLong
-        ? L.latLng(
-          this.avalancheObs.StartLat,
-          this.avalancheObs.StartLong
-        )
+      this.avalancheObs.StartLat && this.avalancheObs.StartLong
+        ? L.latLng(this.avalancheObs.StartLat, this.avalancheObs.StartLong)
         : null;
     const endLatLng =
-      this.avalancheObs.StopLat &&
-      this.avalancheObs.StopLong
-        ? L.latLng(
-          this.avalancheObs.StopLat,
-          this.avalancheObs.StopLong
-        )
+      this.avalancheObs.StopLat && this.avalancheObs.StopLong
+        ? L.latLng(this.avalancheObs.StopLat, this.avalancheObs.StopLong)
         : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
@@ -202,8 +191,8 @@ export class AvalancheObsPage extends BasePage {
         relativeToLatLng,
         startLatLng,
         endLatLng,
-        geoHazard: this.draft.registration.GeoHazardTID
-      }
+        geoHazard: this.draft.registration.GeoHazardTID,
+      },
     });
     modal.present();
     const result = await modal.onDidDismiss();

@@ -13,22 +13,12 @@ const routes: Routes = [
   {
     path: '',
     component: MyObservationsPage,
-    canActivate: [AuthGuard]
-  }
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    SharedComponentsModule,
-    FullscreenImageModalPageModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [
-    MyObservationsPage,
-    SyncItemComponent,
-    DraftListComponent,
-    SentListComponent
-  ]
+  imports: [SharedModule, SharedComponentsModule, FullscreenImageModalPageModule, RouterModule.forChild(routes)],
+  declarations: [MyObservationsPage, SyncItemComponent, DraftListComponent, SentListComponent],
 })
 export class MyObservationsPageModule {}

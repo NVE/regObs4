@@ -19,7 +19,7 @@ import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapSearchService {
   private _mapSearchItemClickSubject: Subject<MapSearchResponse | L.LatLng>;
@@ -33,7 +33,11 @@ export class MapSearchService {
     this._mapSearchItemClickSubject.next(item);
   }
 
-  constructor(private httpClient: HttpClient, private userSettingService: UserSettingService, private geoCodeService: GeoCodeService) {
+  constructor(
+    private httpClient: HttpClient,
+    private userSettingService: UserSettingService,
+    private geoCodeService: GeoCodeService
+  ) {
     this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
     this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable();
     this._mapSearchItemClickObservable.subscribe((item) => {
@@ -46,7 +50,9 @@ export class MapSearchService {
   searchAll(text: string): Observable<MapSearchResponse[]> {
     return this.userSettingService.language$.pipe(
       switchMap((language) =>
-        forkJoin([this.searchNorwegianPlaces(text, language), this.searchWorld(text, language)]).pipe(map(([s1, s2]) => [...s1, ...s2]))
+        forkJoin([this.searchNorwegianPlaces(text, language), this.searchWorld(text, language)]).pipe(
+          map(([s1, s2]) => [...s1, ...s2])
+        )
       )
     );
   }
@@ -54,25 +60,21 @@ export class MapSearchService {
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient
       .get(
-        `${settings.map.search.no.url}?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}`
-        + `&utkoordsys=${settings.map.search.no.coordinateSystem}&filtrer=${settings.map.search.no.resultFields}`
+        `${settings.map.search.no.url}?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}` +
+          `&utkoordsys=${settings.map.search.no.coordinateSystem}&filtrer=${settings.map.search.no.resultFields}`
       )
       .pipe(
         map((returSted: ReturSkrivemate) => {
           const hits = returSted.metadata.totaltAntallTreff;
           const resultList =
-            hits === 0
-              ? []
-              : hits === 1
-                ? [returSted.navn[0] as Navn]
-                : (returSted.navn as Array<Navn>);
+            hits === 0 ? [] : hits === 1 ? [returSted.navn[0] as Navn] : (returSted.navn as Array<Navn>);
 
           return this.removeDuplicates(resultList).map((item) => {
             const resp: MapSearchResponse = {
               name: item.skrivemåte,
               description: this.formatLocationDescription(item, lang),
               type: item.navneobjekttype,
-              latlng: L.latLng(item.representasjonspunkt.nord, item.representasjonspunkt.øst)
+              latlng: L.latLng(item.representasjonspunkt.nord, item.representasjonspunkt.øst),
             };
             return resp;
           });
@@ -106,10 +108,7 @@ export class MapSearchService {
 
   private removeDuplicates(data: Navn[]): Navn[] {
     return (data || []).reduce((acc, currentValue) => {
-      if (
-        acc.filter((item) => item.stedsnummer === currentValue.stedsnummer)
-          .length === 0
-      ) {
+      if (acc.filter((item) => item.stedsnummer === currentValue.stedsnummer).length === 0) {
         acc.push(currentValue);
       }
       return acc;
@@ -137,7 +136,7 @@ export class MapSearchService {
                   (item.adminName1 || '') +
                   (item.countryName ? ' (' + item.countryName + ')' : ''),
                 type: '',
-                latlng: L.latLng(parseFloat(item.lat), parseFloat(item.lng))
+                latlng: L.latLng(parseFloat(item.lat), parseFloat(item.lng)),
               };
               return resp;
             });
@@ -151,17 +150,17 @@ export class MapSearchService {
       .GeoCodeLocationInfo({
         latitude: latLng.lat,
         longitude: latLng.lng,
-        geoHazardId: geoHazard
+        geoHazardId: geoHazard,
       })
       .pipe(
         map((result) => ({
           location: {
             name: result.Name,
-            adminName: result.WarningRegionName || result.AdminAreaName
+            adminName: result.WarningRegionName || result.AdminAreaName,
           },
           elevation: result.Masl,
           steepness: result.Steepness,
-          latLng: latLng
+          latLng: latLng,
         })),
         catchError(() => of(null))
       );
@@ -173,7 +172,7 @@ export class MapSearchService {
     );
     existingHistory.splice(0, 0, {
       timestamp: moment().unix(),
-      ...searchResult
+      ...searchResult,
     }); // Insert new search item at index 0
     const items = existingHistory.slice(0, settings.map.search.searchHistorySize); // Keep only last 5 items
     await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('upsert', { id: 'searchresults', items }).exec();

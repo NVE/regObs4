@@ -1,8 +1,10 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-title>{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.HEADER' | translate:{name: packageOnServer.getName()} }}</ion-title>
+    <ion-title>{{
+      "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.HEADER" | translate : { name: packageOnServer.getName() }
+    }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">{{ 'CLOSE' | translate }}</ion-button>
+      <ion-button (click)="dismiss()">{{ "CLOSE" | translate }}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -11,9 +13,9 @@
   <div class="map-container" *ngIf="center">
     <app-map
       [offlinePackageMode]="true"
-      [showMapSearch]=false
-      [showFullscreenToggle]=false
-      [showGpsCenter]=false
+      [showMapSearch]="false"
+      [showFullscreenToggle]="false"
+      [showGpsCenter]="false"
       [showUserLocation]="false"
       [showSupportMaps]="false"
       [center]="center"
@@ -22,24 +24,31 @@
     ></app-map>
   </div>
   <ion-grid class="footer-container">
-
     <ion-row>
-      <ion-col size="4">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_PRODUCED_DATE' | translate }}</ion-col>
-      <ion-col>{{ packageOnServer.getLastModified() | date:'short' }}</ion-col>
+      <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_PRODUCED_DATE" | translate }}</ion-col>
+      <ion-col>{{ packageOnServer.getLastModified() | date : "short" }}</ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col size="4">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE' | translate }}</ion-col>
-      <ion-col>{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE_VALUE_WITH_UNIT' | translate:{size: packageOnServer.getSizeInMiB() | number: '1.0-1'} }}</ion-col>
+      <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE" | translate }}</ion-col>
+      <ion-col>{{
+        "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE_VALUE_WITH_UNIT"
+          | translate : { size: packageOnServer.getSizeInMiB() | number : "1.0-1" }
+      }}</ion-col>
     </ion-row>
 
-    <div *ngIf="offlinePackageStatusThatTriggersChangeDetection$ | async as packageStatus else downloadPackage">
+    <div *ngIf="offlinePackageStatusThatTriggersChangeDetection$ | async as packageStatus; else downloadPackage">
       <ion-row>
-        <ion-col size="4">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOAD_STATUS' | translate }}</ion-col>
+        <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOAD_STATUS" | translate }}</ion-col>
         <ion-col>
           {{ packageStatus.progress?.description }}
-          <span *ngIf="!!packageStatus.downloadComplete">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOADED_DATE' | translate:{date: packageStatus.downloadComplete * 1000 | date:'short'} }} </span>
-          <span *ngIf="!packageStatus.downloadComplete">({{getPercentage(packageStatus) +'%' }})</span>
+          <span *ngIf="!!packageStatus.downloadComplete"
+            >{{
+              "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOADED_DATE"
+                | translate : { date: packageStatus.downloadComplete * 1000 | date : "short" }
+            }}
+          </span>
+          <span *ngIf="!packageStatus.downloadComplete">({{ getPercentage(packageStatus) + "%" }})</span>
         </ion-col>
         <ion-col size="1">
           <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
@@ -54,15 +63,21 @@
       </ion-row>
       <ion-row *ngIf="!packageStatus.downloadComplete && !packageStatus.error">
         <ion-col>
-          <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.CANCEL_DOWNLOAD_BUTTON' | translate }}</ion-button>
+          <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">{{
+            "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.CANCEL_DOWNLOAD_BUTTON" | translate
+          }}</ion-button>
         </ion-col>
       </ion-row>
       <ion-row class="buttons-container" *ngIf="packageStatus.error">
         <ion-col>
-          <ion-button expand="block" color="varsom-orange" (click)="startDownload()">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.TRY_AGAIN_BUTTON' | translate }}</ion-button>
+          <ion-button expand="block" color="varsom-orange" (click)="startDownload()">{{
+            "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.TRY_AGAIN_BUTTON" | translate
+          }}</ion-button>
         </ion-col>
         <ion-col *ngIf="!!packageStatus.downloadComplete || packageStatus.error">
-          <ion-button (click)="delete()" expand="block" color="danger">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON' | translate }}</ion-button>
+          <ion-button (click)="delete()" expand="block" color="danger">{{
+            "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate
+          }}</ion-button>
         </ion-col>
       </ion-row>
     </div>
@@ -70,13 +85,18 @@
 </ion-content>
 
 <ng-template #downloadPackage>
-  <ion-row aria-hidden="true" [ngStyle]="{opacity: 0}">
+  <ion-row aria-hidden="true" [ngStyle]="{ opacity: 0 }">
     <ion-col size="4">ghostrow</ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
-      <ion-button [disabled]="isCheckingAvailableDiskspace" (click)="startDownload()" expand="block"
-        color="varsom-orange">{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DOWNLOAD_BUTTON' | translate }}</ion-button>
+      <ion-button
+        [disabled]="isCheckingAvailableDiskspace"
+        (click)="startDownload()"
+        expand="block"
+        color="varsom-orange"
+        >{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DOWNLOAD_BUTTON" | translate }}</ion-button
+      >
     </ion-col>
   </ion-row>
 </ng-template>

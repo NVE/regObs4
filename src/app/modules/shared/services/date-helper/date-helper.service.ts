@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DateHelperService {
   constructor(private translateService: TranslateService) {}
@@ -15,13 +15,7 @@ export class DateHelperService {
     showTime = true,
     currentTimeZone: string = null
   ) {
-    return this.formatDate(
-      moment.parseZone(dateString),
-      showMonthNames,
-      showYear,
-      showTime,
-      currentTimeZone
-    );
+    return this.formatDate(moment.parseZone(dateString), showMonthNames, showYear, showTime, currentTimeZone);
   }
 
   async formatDate(
@@ -38,9 +32,7 @@ export class DateHelperService {
     const parts = [];
     let dateAndMonth = date.format('DD/MM');
     if (showMonthNames) {
-      const monthNames = await this.translateService
-        .get('MONTHS.SHORT_LIST')
-        .toPromise();
+      const monthNames = await this.translateService.get('MONTHS.SHORT_LIST').toPromise();
       const monthName = monthNames.split(',')[date.month()].trim();
       dateAndMonth = `${date.format('D')}. ${monthName}`;
     }

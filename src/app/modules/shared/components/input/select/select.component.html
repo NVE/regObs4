@@ -1,7 +1,14 @@
 <ng-container *ngIf="isApp; else popover">
-    <ion-button role="combobox" aria-expanded="false" aria-haspopup="dialog" expand="full" type="button" fill="clear"
-    (click)="openSelect()">
-    </ion-button>
+  <ion-button
+    role="combobox"
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    expand="full"
+    type="button"
+    fill="clear"
+    (click)="openSelect()"
+  >
+  </ion-button>
   <ion-icon class="value-icon" *ngIf="valueIcon" [name]="valueIcon"></ion-icon>
   <ion-text>
     {{ valueText | translate }}
@@ -10,9 +17,17 @@
 </ng-container>
 
 <ng-template #popover>
-  <ion-select *ngIf="options && options.length" (click)="getFilteredOptions()" (ionChange)="onChange($event)" [disabled]="disabled" cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="popover" [(ngModel)]="selectedValue">
+  <ion-select
+    *ngIf="options && options.length"
+    (click)="getFilteredOptions()"
+    (ionChange)="onChange($event)"
+    [disabled]="disabled"
+    cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+    interface="popover"
+    [(ngModel)]="selectedValue"
+  >
     <ion-select-option *ngFor="let option of filteredOptions" [value]="option.id">
-      {{option.text | translate }}
+      {{ option.text | translate }}
     </ion-select-option>
   </ion-select>
 </ng-template>

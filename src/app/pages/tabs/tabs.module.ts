@@ -16,8 +16,8 @@ import { SharedComponentsModule } from 'src/app/modules/registration/shared-comp
     TripPageModule,
     WarningListPageModule,
     ObservationListPageModule,
-    SharedModule
+    SharedModule,
   ],
-  declarations: [TabsPage, CoachMarksMainScreenComponent ]
+  declarations: [TabsPage, CoachMarksMainScreenComponent],
 })
 export class TabsPageModule {}

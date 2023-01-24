@@ -10,7 +10,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 const DEBUG_TAG = 'FullscreenService';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FullscreenService extends NgDestoryBase {
   private readonly _subject: BehaviorSubject<boolean>;
@@ -19,27 +19,26 @@ export class FullscreenService extends NgDestoryBase {
     return this._subject.asObservable();
   }
 
-  constructor(
-    private platform: Platform,
-    private logger: LoggingService) {
-
+  constructor(private platform: Platform, private logger: LoggingService) {
     super();
     this._subject = new BehaviorSubject(false);
 
     if (isAndroidOrIos(this.platform)) {
-      StatusBar.setOverlaysWebView({overlay: true});
+      StatusBar.setOverlaysWebView({ overlay: true });
       this.platform.ready().then(() => {
-        this.isFullscreen$.pipe(
-          takeUntil(this.ngDestroy$),
-          switchMap((isFullscreenRequested) =>  {
-            if (isFullscreenRequested) {
-              return of(this.turnFullscreenOn());
-            } else {
-              return of(this.turnFullscreenOff());
-            }
-          }),
-          catchError((err) => this.logger.error(err, DEBUG_TAG, 'Fullscreen toggle error'))
-        ).subscribe();
+        this.isFullscreen$
+          .pipe(
+            takeUntil(this.ngDestroy$),
+            switchMap((isFullscreenRequested) => {
+              if (isFullscreenRequested) {
+                return of(this.turnFullscreenOn());
+              } else {
+                return of(this.turnFullscreenOff());
+              }
+            }),
+            catchError((err) => this.logger.error(err, DEBUG_TAG, 'Fullscreen toggle error'))
+          )
+          .subscribe();
       });
     }
   }
@@ -49,12 +48,12 @@ export class FullscreenService extends NgDestoryBase {
   }
 
   private async turnFullscreenOn(): Promise<void> {
-    await StatusBar.setOverlaysWebView({overlay: true});
+    await StatusBar.setOverlaysWebView({ overlay: true });
     await StatusBar.hide();
   }
 
   private async turnFullscreenOff() {
-    await StatusBar.setOverlaysWebView({overlay: false});
+    await StatusBar.setOverlaysWebView({ overlay: false });
     await StatusBar.show();
   }
 }

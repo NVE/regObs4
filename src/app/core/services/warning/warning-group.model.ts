@@ -9,7 +9,7 @@ export class WarningGroup {
     return {
       geoHazard: this._warningGroup.geoHazard,
       groupId: this._warningGroup.regionId,
-      groupName: this._warningGroup.regionName
+      groupName: this._warningGroup.regionName,
     };
   }
 
@@ -80,11 +80,7 @@ export class WarningGroup {
         max = dayWarning.warningLevel;
         hasWarning = false;
       }
-      if (
-        dayWarning &&
-        dayWarning.warningLevel === max &&
-        dayWarning.emergencyWarning
-      ) {
+      if (dayWarning && dayWarning.warningLevel === max && dayWarning.emergencyWarning) {
         hasWarning = true;
       }
     }

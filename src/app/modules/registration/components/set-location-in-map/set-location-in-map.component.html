@@ -1,130 +1,178 @@
 <div>
-  <app-map *ngIf='locationMarker' [showSupportMaps]='false' (mapReady)='onMapReady($event)'
-           [center]='locationMarker.getLatLng()'></app-map>
-  <div class='bottom-background flex-row'>
-    <div class='bottom-info flex-col flex-grow'>
-      <div *ngIf='setObsTime && isDesktop' class='flex-row'>
-        <div class='horizontal-dist-box flex-row flex-center flex-space'>
-          <svg-icon class='obs-location-marker' [src]='locationMarkerIconUrl'></svg-icon>
-          <svg class='dotted-line' width='27px' height='4px' viewBox='0 0 27 4'>
-            <line x1='2' x2='26' y1='1' y2='1' stroke='#000' stroke-width='2' stroke-linecap='round'
-                  stroke-dasharray='1,4'></line>
+  <app-map
+    *ngIf="locationMarker"
+    [showSupportMaps]="false"
+    (mapReady)="onMapReady($event)"
+    [center]="locationMarker.getLatLng()"
+  ></app-map>
+  <div class="bottom-background flex-row">
+    <div class="bottom-info flex-col flex-grow">
+      <div *ngIf="setObsTime && isDesktop" class="flex-row">
+        <div class="horizontal-dist-box flex-row flex-center flex-space">
+          <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
+          <svg class="dotted-line" width="27px" height="4px" viewBox="0 0 27 4">
+            <line
+              x1="2"
+              x2="26"
+              y1="1"
+              y2="1"
+              stroke="#000"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-dasharray="1,4"
+            ></line>
           </svg>
-          <ion-label class='distance-label small-text ion-no-margin'>{{
-            distanceToObservationText }}</ion-label>
-          <svg class='dotted-line' width='27px' height='4px' viewBox='0 0 27 4'>
-            <line x1='2' x2='26' y1='1' y2='1' stroke='#000' stroke-width='2' stroke-linecap='round'
-                  stroke-dasharray='1,4'></line>
+          <ion-label class="distance-label small-text ion-no-margin">{{ distanceToObservationText }}</ion-label>
+          <svg class="dotted-line" width="27px" height="4px" viewBox="0 0 27 4">
+            <line
+              x1="2"
+              x2="26"
+              y1="1"
+              y2="1"
+              stroke="#000"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-dasharray="1,4"
+            ></line>
           </svg>
-          <div class='leaflet-usermarker' *ngIf='!fromMarker'>
-            <svg-icon *ngIf='fromMarker' [src]='fromMarkerIconUrl'></svg-icon>
+          <div class="leaflet-usermarker" *ngIf="!fromMarker">
+            <svg-icon *ngIf="fromMarker" [src]="fromMarkerIconUrl"></svg-icon>
           </div>
         </div>
       </div>
-      <div *ngIf='setObsTime' class='details-row flex-row flex-grow'>
-        <div *ngIf='!isDesktop' class='ion-no-padding flex-shrink ion-text-center'>
-          <div class='vertical-dist-box'>
-            <svg-icon class='obs-location-marker' [src]='locationMarkerIconUrl'></svg-icon>
-            <svg class='dotted-line' width='4px' height='27px' viewBox='0 0 4 27'>
-              <line x1='1' x2='1' y1='2' y2='26' stroke='#000' stroke-width='2' stroke-linecap='round'
-                    stroke-dasharray='1,4'></line>
+      <div *ngIf="setObsTime" class="details-row flex-row flex-grow">
+        <div *ngIf="!isDesktop" class="ion-no-padding flex-shrink ion-text-center">
+          <div class="vertical-dist-box">
+            <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
+            <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
+              <line
+                x1="1"
+                x2="1"
+                y1="2"
+                y2="26"
+                stroke="#000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-dasharray="1,4"
+              ></line>
             </svg>
-            <ion-label class='small-text ion-no-margin'>{{
-              distanceToObservationText }}</ion-label>
-            <svg class='dotted-line' width='4px' height='27px' viewBox='0 0 4 27'>
-              <line x1='1' x2='1' y1='2' y2='26' stroke='#000' stroke-width='2' stroke-linecap='round'
-                    stroke-dasharray='1,4'></line>
+            <ion-label class="small-text ion-no-margin">{{ distanceToObservationText }}</ion-label>
+            <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
+              <line
+                x1="1"
+                x2="1"
+                y1="2"
+                y2="26"
+                stroke="#000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-dasharray="1,4"
+              ></line>
             </svg>
-            <div class='leaflet-usermarker' *ngIf='!fromMarker'>
-              <svg-icon *ngIf='fromMarker' [src]='fromMarkerIconUrl'></svg-icon>
+            <div class="leaflet-usermarker" *ngIf="!fromMarker">
+              <svg-icon *ngIf="fromMarker" [src]="fromMarkerIconUrl"></svg-icon>
             </div>
           </div>
         </div>
-        <div class='flex-col flex-grow'>
-          <div class='flex-row flex-align-start location-name-container'>
-            <div class='flex-grow'>
+        <div class="flex-col flex-grow">
+          <div class="flex-row flex-align-start location-name-container">
+            <div class="flex-grow">
               <ion-row>
-                <ion-col class='ion-no-padding'>
-                  <ng-container *ngIf='!editLocationName else editLocationTemplate'>
-                    <ng-container *ngIf='selectedLocation else viewInfoTemplate'>
-                      <ion-label class='detail-obs-info ion-no-margin ion-text-wrap'>
+                <ion-col class="ion-no-padding">
+                  <ng-container *ngIf="!editLocationName; else editLocationTemplate">
+                    <ng-container *ngIf="selectedLocation; else viewInfoTemplate">
+                      <ion-label class="detail-obs-info ion-no-margin ion-text-wrap">
                         <span>{{ selectedLocation.Name }}</span>
                       </ion-label>
                     </ng-container>
                   </ng-container>
                 </ion-col>
               </ion-row>
-              <ion-label class='small-text text-nowrap ion-no-margin'>
-                <span *ngIf='!isLoading && locationMarker'>{{ locationMarker.getLatLng().lat | number:'0.3'
-                  }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-                  {{ locationMarker.getLatLng().lng | number:'0.3'
-                  }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</span>
-                <span *ngIf='!isLoading && viewInfo && viewInfo.elevation !== null'>, {{ viewInfo.elevation
-                  }}
-                  {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' |
-                    translate}}
+              <ion-label class="small-text text-nowrap ion-no-margin">
+                <span *ngIf="!isLoading && locationMarker"
+                  >{{ locationMarker.getLatLng().lat | number : "0.3" }}&deg;{{
+                    "MAP_CENTER_INFO.NORTH_SHORT" | translate
+                  }}, {{ locationMarker.getLatLng().lng | number : "0.3" }}&deg;{{
+                    "MAP_CENTER_INFO.EAST_SHORT" | translate
+                  }}</span
+                >
+                <span *ngIf="!isLoading && viewInfo && viewInfo.elevation !== null"
+                  >, {{ viewInfo.elevation }}
+                  {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
                 </span>
               </ion-label>
             </div>
-            <button type='button' *ngIf='canEditLocationName' class='box edit-button edit-name-button'
-                    (click)='editLocation()'>
-              <ion-icon class='edit-icon'
-                        name='edit'></ion-icon>&nbsp;{{'REGISTRATION.OBS_LOCATION.NAME_LOCATION' | translate}}
-              <span class='tooltip'>{{'REGISTRATION.OBS_LOCATION.NAME_LOCATION_TOOLTIP' | translate}}</span>
+            <button
+              type="button"
+              *ngIf="canEditLocationName"
+              class="box edit-button edit-name-button"
+              (click)="editLocation()"
+            >
+              <ion-icon class="edit-icon" name="edit"></ion-icon>&nbsp;{{
+                "REGISTRATION.OBS_LOCATION.NAME_LOCATION" | translate
+              }}
+              <span class="tooltip">{{ "REGISTRATION.OBS_LOCATION.NAME_LOCATION_TOOLTIP" | translate }}</span>
             </button>
           </div>
-          <div class='flex-row'>
-            <div class='flex-grow box edit-button no-padding'>
-              <ion-icon name='calendar'></ion-icon>&nbsp;
-              <app-datetime-picker [(dateTime)]='localDate' [maxDate]='maxDate'></app-datetime-picker>
+          <div class="flex-row">
+            <div class="flex-grow box edit-button no-padding">
+              <ion-icon name="calendar"></ion-icon>&nbsp;
+              <app-datetime-picker [(dateTime)]="localDate" [maxDate]="maxDate"></app-datetime-picker>
             </div>
-            <div class='box edit-button' (click)='setToNow()'>
-              <ion-icon slot='start' name='clock'></ion-icon>&nbsp;{{"REGISTRATION.SET_TIME.NOW" |
-              translate}}
+            <div class="box edit-button" (click)="setToNow()">
+              <ion-icon slot="start" name="clock"></ion-icon>&nbsp;{{ "REGISTRATION.SET_TIME.NOW" | translate }}
             </div>
           </div>
-          <div *ngIf='isDesktop' class='flex-row'>
-            <app-kdv-select class='flex-grow selectors'
-                            title='REGISTRATION.OBS_LOCATION.SOURCE'
-                            kdvKey='SourceKDV'
-                            labelColor='rgb(68, 68, 68)'
-                            obsLocMode='true'
-                            [(value)]='sourceTid'></app-kdv-select>
-            <ion-item class='flex-grow selectors'>
-              <ion-label color='rgb(68, 68, 68)' position='stacked'>
-                {{'REGISTRATION.OBS_LOCATION.UNCERTAINTY'| translate}}</ion-label>
+          <div *ngIf="isDesktop" class="flex-row">
+            <app-kdv-select
+              class="flex-grow selectors"
+              title="REGISTRATION.OBS_LOCATION.SOURCE"
+              kdvKey="SourceKDV"
+              labelColor="rgb(68, 68, 68)"
+              obsLocMode="true"
+              [(value)]="sourceTid"
+            ></app-kdv-select>
+            <ion-item class="flex-grow selectors">
+              <ion-label color="rgb(68, 68, 68)" position="stacked">
+                {{ "REGISTRATION.OBS_LOCATION.UNCERTAINTY" | translate }}</ion-label
+              >
               <app-select
-                [(selectedValue)]='spatialAccuracy'
-                [options]='spatialAccuracyOptions'
-                class='no-padding'
+                [(selectedValue)]="spatialAccuracy"
+                [options]="spatialAccuracyOptions"
+                class="no-padding"
               ></app-select>
             </ion-item>
           </div>
         </div>
       </div>
-      <div class='confirm-button-col'>
-        <ion-button expand='block' color='varsom-orange' (click)='confirm()'>{{ confirmLocationText | translate
-          }}</ion-button>
+      <div class="confirm-button-col">
+        <ion-button expand="block" color="varsom-orange" (click)="confirm()">{{
+          confirmLocationText | translate
+        }}</ion-button>
       </div>
     </div>
   </div>
 </div>
 <ng-template #editLocationTemplate>
-  <ion-input #editLocationNameInput type='text' [max]='60' [(ngModel)]='locationName'
-             (ionBlur)='onLocationEditComplete()'>
+  <ion-input
+    #editLocationNameInput
+    type="text"
+    [max]="60"
+    [(ngModel)]="locationName"
+    (ionBlur)="onLocationEditComplete()"
+  >
   </ion-input>
 </ng-template>
 <ng-template #viewInfoTemplate>
-  <ng-container *ngIf='!isLoading'>
-    <ng-container *ngIf='viewInfo && viewInfo.location'>
-      <ion-label class='detail-obs-info ion-no-margin ion-text-wrap'>
-        <span *ngIf='(viewInfo.location.name !== viewInfo.location.adminName)'>{{
-          viewInfo.location.name
-          }},&nbsp;</span>{{viewInfo.location.adminName}}&nbsp;
+  <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="viewInfo && viewInfo.location">
+      <ion-label class="detail-obs-info ion-no-margin ion-text-wrap">
+        <span *ngIf="viewInfo.location.name !== viewInfo.location.adminName">{{ viewInfo.location.name }},&nbsp;</span
+        >{{ viewInfo.location.adminName }}&nbsp;
       </ion-label>
     </ng-container>
   </ng-container>
-  <ng-container *ngIf='isLoading'>
-    <ion-spinner color='dark' name='dots'></ion-spinner>
+  <ng-container *ngIf="isLoading">
+    <ion-spinner color="dark" name="dots"></ion-spinner>
   </ng-container>
 </ng-template>

@@ -1,46 +1,38 @@
-
 <ng-container *ngIf="kdvElements$ | async as kdvElements">
-    
-    <!-- Header -->
-    <ion-item class="header">
-      <div class="header-content">
-        
-        <ion-label>{{ title | translate}}</ion-label>
+  <!-- Header -->
+  <ion-item class="header">
+    <div class="header-content">
+      <ion-label>{{ title | translate }}</ion-label>
 
-        <div *ngIf="multiSelect" class="n-selected">
-          {{ 'REGISTRATION.SELECTION_COUNT' | translate: {count: count()} }}
-        </div>
-  
-        <div>
-          <ion-button
-            (click)="clear()"
-            size="small"
-            fill="clear"
-          >
-            {{"DIALOGS.RESET" | translate}}
-          </ion-button>
-        </div>
-      
+      <div *ngIf="multiSelect" class="n-selected">
+        {{ "REGISTRATION.SELECTION_COUNT" | translate : { count: count() } }}
       </div>
-    </ion-item>
-  
-    <!-- KDV item select list -->
-    <ion-item class="container">
-      <div class="content">
-        <div class="element" *ngFor="let element of kdvElements" (click)="onClick(element)">
-          <div class="kdv-item" [ngClass]="isSelected(element) ? 'selected' : 'deselected'">
-            <img class="image" [src]="getImageSrc(element)">
-            <ion-label
-              [lang]="this.lang$ | async"
-              class="item-text"
-            >
-              {{ element.Name }}
-            </ion-label>
-          </div>
-          <svg-icon *ngIf="isSelected(element)" class="checkmark" src="/assets/icon/checked.svg"
-          [svgStyle]="{'width.px':22, 'height.px':22  }"></svg-icon>
-        </div>
-      </div>
-    </ion-item>
 
+      <div>
+        <ion-button (click)="clear()" size="small" fill="clear">
+          {{ "DIALOGS.RESET" | translate }}
+        </ion-button>
+      </div>
+    </div>
+  </ion-item>
+
+  <!-- KDV item select list -->
+  <ion-item class="container">
+    <div class="content">
+      <div class="element" *ngFor="let element of kdvElements" (click)="onClick(element)">
+        <div class="kdv-item" [ngClass]="isSelected(element) ? 'selected' : 'deselected'">
+          <img class="image" [src]="getImageSrc(element)" />
+          <ion-label [lang]="this.lang$ | async" class="item-text">
+            {{ element.Name }}
+          </ion-label>
+        </div>
+        <svg-icon
+          *ngIf="isSelected(element)"
+          class="checkmark"
+          src="/assets/icon/checked.svg"
+          [svgStyle]="{ 'width.px': 22, 'height.px': 22 }"
+        ></svg-icon>
+      </div>
+    </div>
+  </ion-item>
 </ng-container>

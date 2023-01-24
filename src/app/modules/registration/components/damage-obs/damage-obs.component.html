@@ -4,34 +4,39 @@
 </ion-item>
 <ion-list lines="none" class="no-border ion-no-margin" *ngIf="isSelected && damageObs">
   <ion-item detail="false" (click)="setDamagePosition()">
-    <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
-          | translate }}</ion-label>
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{
+      "REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION" | translate
+    }}</ion-label>
     <ion-text class="ion-align-self-start ion-text-wrap">
-      <ion-icon class="add-icon" color="primary" name="location">
-      </ion-icon>
-      <ng-container *ngIf="damageObs.DamagePosition else noDamagePosition">
-        {{ damageObs.DamagePosition.Latitude | number:'0.3'
-        }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-        {{ damageObs.DamagePosition.Longitude | number:'0.3'
-        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+      <ion-icon class="add-icon" color="primary" name="location"> </ion-icon>
+      <ng-container *ngIf="damageObs.DamagePosition; else noDamagePosition">
+        {{ damageObs.DamagePosition.Latitude | number : "0.3" }}&deg;{{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},
+        {{ damageObs.DamagePosition.Longitude | number : "0.3" }}&deg;{{ "MAP_CENTER_INFO.EAST_SHORT" | translate }}
       </ng-container>
     </ion-text>
   </ion-item>
   <ion-item class="label-only">
-    <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.WATER.DAMAGE.IMAGE_OF_DAMAGES' |
-      translate}}</ion-label>
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{
+      "REGISTRATION.WATER.DAMAGE.IMAGE_OF_DAMAGES" | translate
+    }}</ion-label>
   </ion-item>
-  <app-edit-images iconColor="primary" 
-    [geoHazard]="draft.registration.GeoHazardTID" 
-    [draftUuid]="draft.uuid" 
+  <app-edit-images
+    iconColor="primary"
+    [geoHazard]="draft.registration.GeoHazardTID"
+    [draftUuid]="draft.uuid"
     [registrationTid]="registrationTid"
     [(existingAttachments)]="draft.registration.Attachments"
-    pictureCommentText="" [onBeforeAdd]="getSaveFunc()"
-    pictureCommentPlaceholder="REGISTRATION.INCIDENT.IMAGE_PLACEHOLDER">
+    pictureCommentText=""
+    [onBeforeAdd]="getSaveFunc()"
+    pictureCommentPlaceholder="REGISTRATION.INCIDENT.IMAGE_PLACEHOLDER"
+  >
   </app-edit-images>
-  <app-text-comment title="REGISTRATION.WATER.DAMAGE.COMMENT" [(value)]="damageObs.Comment"
-    placeholder="REGISTRATION.WATER.DAMAGE.COMMENT_PLACEHOLDER"></app-text-comment>
+  <app-text-comment
+    title="REGISTRATION.WATER.DAMAGE.COMMENT"
+    [(value)]="damageObs.Comment"
+    placeholder="REGISTRATION.WATER.DAMAGE.COMMENT_PLACEHOLDER"
+  ></app-text-comment>
 </ion-list>
 <ng-template #noDamagePosition>
-  {{'REGISTRATION.WATER.DAMAGE.ADD_DAMAGE_LOCATION' | translate }}
+  {{ "REGISTRATION.WATER.DAMAGE.ADD_DAMAGE_LOCATION" | translate }}
 </ng-template>

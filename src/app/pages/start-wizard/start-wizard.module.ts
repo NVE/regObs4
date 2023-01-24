@@ -6,12 +6,12 @@ import { SharedModule } from '../../modules/shared/shared.module';
 const routes: Routes = [
   {
     path: '',
-    component: StartWizardPage
-  }
+    component: StartWizardPage,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes), SharedModule],
-  declarations: [StartWizardPage]
+  declarations: [StartWizardPage],
 })
 export class StartWizardPageModule {}

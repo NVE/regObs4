@@ -3,17 +3,20 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title>
-      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate }}
-    </ion-title>
+    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-list lines="full" class="ion-no-margin">
     <ng-container *ngIf="($previousUsedLayers | async) as previousUsedLayers else loading">
       <ng-container *ngIf="previousUsedLayers.length > 0 else empty">
-        <ion-item [detail]="true" *ngFor="let item of previousUsedLayers" tabindex="0" (click)="selectLayer(item)"
-          (keyup.enter)="selectLayer(item)">
+        <ion-item
+          [detail]="true"
+          *ngFor="let item of previousUsedLayers"
+          tabindex="0"
+          (click)="selectLayer(item)"
+          (keyup.enter)="selectLayer(item)"
+        >
           <ion-label>
             {{ item.date | formatDate | async }} - ({{ item.layers.length }}
             {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}})
@@ -26,27 +29,25 @@
 <ng-template #loading>
   <ion-item [detail]="true">
     <ion-label>
-      <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text> - <ion-skeleton-text animated
-        style="width: 20%"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text> -
+      <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
     </ion-label>
   </ion-item>
   <ion-item [detail]="true">
     <ion-label>
-      <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text> - <ion-skeleton-text animated
-        style="width: 20%"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text> -
+      <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
     </ion-label>
   </ion-item>
   <ion-item [detail]="true">
     <ion-label>
-      <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text> - <ion-skeleton-text animated
-        style="width: 20%"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text> -
+      <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
     </ion-label>
   </ion-item>
 </ng-template>
 <ng-template #empty>
   <ion-list-header class="ion-text-uppercase">
-    <ion-label>
-      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.NO_PROFILES_FOUND' | translate }}
-    </ion-label>
+    <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.NO_PROFILES_FOUND' | translate }} </ion-label>
   </ion-list-header>
 </ng-template>
