@@ -33,6 +33,7 @@ export abstract class GeoPositionService {
 
   /**
    * A stream of device positions. You will get last known position immediately if position data is supported.
+   * A position can be null, it means that position data is not available.
    */
   get currentPosition$(): Observable<Position> {
     return this.currentPosition.pipe(
@@ -64,6 +65,10 @@ export abstract class GeoPositionService {
    */
   abstract requestPositionData(): Promise<boolean>;
 
+  protected clearCurrentPosition() {
+    this.currentPosition.next(null);
+  }
+
   /**
    * @returns last known position
    * @see https://github.com/ionic-team/capacitor/issues/1279
@@ -74,9 +79,10 @@ export abstract class GeoPositionService {
   }
 
   protected isValidPosition(pos: Position): boolean {
+    if (pos == null) {
+      return true; //position = null is allowed, it means that position data is not available
+    }
     return (
-      pos !== undefined &&
-      pos !== null &&
       pos.coords !== undefined &&
       pos.coords !== null &&
       pos.coords.latitude >= -90 &&

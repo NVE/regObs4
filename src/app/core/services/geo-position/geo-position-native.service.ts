@@ -64,9 +64,12 @@ export class GeoPositionNativeService extends GeoPositionService {
       if (authorized && Capacitor.getPlatform() === 'ios') {
         this.startWatchingPosition();
       }
+    } else {
+      this.startWatchingPosition();
     }
     if (!authorized) {
       this.showPermissionDeniedToast();
+      this.clearCurrentPosition();
       return false;
     }
     return true;
@@ -78,23 +81,25 @@ export class GeoPositionNativeService extends GeoPositionService {
       this.logger.debug('Geolocation permissions', DEBUG_TAG, permissions);
       return permissions?.location === 'granted';
     } catch (err) {
-      this.logger.error(err, DEBUG_TAG, 'Error asking for location permissions');
+      this.logger.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
     }
+    this.clearCurrentPosition();
     return false;
   }
 
-  // This only works on Android
   private async askForPermission(): Promise<boolean> {
     try {
       const permissions = await Geolocation.requestPermissions();
       this.logger.debug('Geolocation permissions after request', DEBUG_TAG, permissions);
       if (permissions?.location === 'denied') {
         this.showPermissionDeniedToast();
+        this.clearCurrentPosition();
         return false;
       }
     } catch (err) {
-      this.logger.error(err, DEBUG_TAG, 'Error asking for location permissions');
+      this.logger.error(err, DEBUG_TAG, `Error when requesting location permissions: ${err.message}`);
       this.showPermissionDeniedToast();
+      this.clearCurrentPosition();
       return false;
     }
     return true;
@@ -108,6 +113,7 @@ export class GeoPositionNativeService extends GeoPositionService {
         'Watch position request aborted because permission denied. Please run checkPermissionsAndAsk() to check again',
         DEBUG_TAG
       );
+      this.clearCurrentPosition();
       return;
     }
     const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
@@ -121,7 +127,7 @@ export class GeoPositionNativeService extends GeoPositionService {
           this.logFirstCallback(position);
           if (Capacitor.getPlatform() === 'android') {
             //we stop current subscription and start a new with much lower callback frequency
-            this.stopWatchingPosition();
+            this.stopWatchingPosition(false);
             this.watchPosition(watchPositionCallback);
           }
         }
@@ -166,7 +172,7 @@ export class GeoPositionNativeService extends GeoPositionService {
     );
   }
 
-  protected stopWatchingPosition() {
+  protected stopWatchingPosition(resetWatchPositionFirstCallbackReceived = true) {
     if (this.watchPositionCallbackId !== null) {
       this.logger.debug(
         `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`,
@@ -177,6 +183,9 @@ export class GeoPositionNativeService extends GeoPositionService {
       Geolocation.clearWatch(options);
       this.watchPositionCallbackId = null;
       this.watchPositionRequestTime = null;
+      if (resetWatchPositionFirstCallbackReceived) {
+        this.watchPositionFirstCallbackReceived = null;
+      }
     }
   }
 
