@@ -6,7 +6,16 @@ import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import JSZip from 'jszip';
 import moment from 'moment';
-import { BehaviorSubject, firstValueFrom, from, interval, Observable, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  from,
+  interval,
+  Observable,
+  ReplaySubject,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { exhaustMap, finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
 import { DownloadAndUnzip } from 'src/download-and-unzip-plugin';
@@ -36,6 +45,8 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
 export class OfflineMapService {
   private packages: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
+  private initComplete = new ReplaySubject<void>(1);
+  initComplete$ = this.initComplete.asObservable();
 
   private finishedPackageIds: Subject<string> = new Subject();
 
@@ -70,7 +81,8 @@ export class OfflineMapService {
       })
       .catch((err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Failed to get map packages');
-      });
+      })
+      .then(() => this.initComplete.next());
     this.packages$
       .pipe(
         switchMap((packages) =>
@@ -89,6 +101,10 @@ export class OfflineMapService {
       });
 
     this.packages$.subscribe((packages) => this.registerOfflineMapPackages(packages));
+  }
+
+  getPackages(): OfflineMapPackage[] {
+    return this.packages.value;
   }
 
   private async getMapPackages(): Promise<OfflineMapPackage[]> {
@@ -441,7 +457,7 @@ export class OfflineMapService {
       const neededSpace = await this.getNeededDiskSpaceForPackage(packageMetadataCombined);
 
       this.loggingService.debug(
-        `Available storage is ${this.helperService.humanReadableByteSize(this.availableDiskspace.available)}. 
+        `Available storage is ${this.helperService.humanReadableByteSize(this.availableDiskspace.available)}.
       Needs ${this.helperService.humanReadableByteSize(neededSpace)}`,
         DEBUG_TAG
       );

@@ -26,7 +26,7 @@ type TopoMapLayersSettings = {
   [mapLayer in TopoMapLayer]: ITopoMapLayerOptions;
 };
 
-interface ITopoMapSettings {
+export interface ITopoMapSettings {
   layer: keyof typeof TopoMapLayer;
 
   /**
@@ -46,7 +46,7 @@ interface ITopoMapSettings {
   excludeBounds?: Polygon[];
 }
 
-type TopoMapsSettings = {
+export type TopoMapsSettings = {
   [topoMap in TopoMap]: ITopoMapSettings[];
 };
 
