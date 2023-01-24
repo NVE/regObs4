@@ -286,10 +286,6 @@
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
   },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
-    "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten godkjenning for bruk av lokasjon."
-  },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observasjoner",
