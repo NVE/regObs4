@@ -7,6 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, firstValueFrom, Observable, of, race, Subject, scan } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { GeoPositionNativeService } from 'src/app/core/services/geo-position/geo-position-native.service';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
@@ -75,10 +76,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     private mapService: MapService,
+    private geoPositionNativeService: GeoPositionNativeService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
-
     // Update global css property containing info box height when height changes.
     // This is used to position map scale above map center info box.
     this.mapCenterInfoHeight
@@ -135,7 +136,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.updateInfoBoxHeight();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.geoPositionNativeService.checkPermissions();
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     // TODO
     // this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
