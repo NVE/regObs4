@@ -201,3 +201,21 @@ function getDefaultValue(registrationTid: RegistrationTid) {
     return {};
   }
 }
+
+export type HasRegId = Pick<RegistrationViewModel, 'RegId'>;
+
+/**
+ * Return a list with only unique registrations.
+ *
+ * Only uses RegID when comparing registrations.
+ */
+export function getUniqueRegistrations<T extends HasRegId>(regs: T[]): T[] {
+  const regIds = new Set();
+  return regs.filter((reg) => {
+    if (regIds.has(reg.RegId)) {
+      return false;
+    }
+    regIds.add(reg.RegId);
+    return true;
+  });
+}

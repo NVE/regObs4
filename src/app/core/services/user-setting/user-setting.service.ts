@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { UserSetting } from '../../models/user-settings.model';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard, LangKey, AppMode } from 'src/app/modules/common-core/models';
+import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
-import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, of } from 'rxjs';
 import {
+  catchError,
+  concatMap,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
   map,
   shareReplay,
-  distinctUntilChanged,
-  tap,
-  takeUntil,
-  catchError,
-  debounceTime,
   switchMap,
-  concatMap,
-  filter,
+  takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
@@ -32,7 +32,9 @@ import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
 import frData from '@angular/common/locales/fr';
+import daData from '@angular/common/locales/da';
 import { SupportTile } from '../../models/support-tile.model';
+import { isArraysEqual } from '../../../modules/common-core/helpers/arrays';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -184,6 +186,9 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         case LangKey.fr:
           registerLocaleData(frData);
           break;
+        case LangKey.da:
+          registerLocaleData(daData);
+          break;
       }
       this.translate.use(lang);
     });
@@ -269,5 +274,40 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     // const defaultSettings = DEFAULT_USER_SETTINGS(null);
     // this.saveUserSettings(defaultSettings);
     this.userSettingInMemory.next(null); // Reset in memory observable
+  }
+
+  async saveGeoHazardsAndDaysBack({
+    geoHazards,
+    daysBack,
+  }: {
+    geoHazards?: number[] | undefined;
+    daysBack?: number | null;
+  }): Promise<boolean | number> {
+    let userSetting = await firstValueFrom(this.userSetting$);
+    let changed = false;
+    if (geoHazards != null) {
+      if (!isArraysEqual(geoHazards, userSetting.currentGeoHazard)) {
+        userSetting = {
+          ...userSetting,
+          currentGeoHazard: geoHazards,
+        };
+        changed = true;
+      }
+    }
+    if (daysBack != null) {
+      for (const geoHazard of userSetting.currentGeoHazard) {
+        const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
+        if (existingValue.daysBack !== daysBack) {
+          existingValue.daysBack = daysBack;
+          changed = true;
+        }
+      }
+    }
+    if (changed) {
+      this.saveUserSettings(userSetting);
+      return await firstValueFrom(this.daysBackForCurrentGeoHazard$);
+    } else {
+      return new Promise((resolve) => resolve(false));
+    }
   }
 }

@@ -160,7 +160,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (monde)"
     },
-    "TIME_FRAME": "Période",
     "TODAYS_OBSERVATIONS": "Uniquement en date d'aujourd'hui",
     "TOPO_MAP_CREDITS": "Cartes topographiques fournies par",
     "UPDATE_OBSERVATIONS": "Mise à jour",
@@ -258,7 +257,11 @@
       "RIGHT_HERE": "Ici même",
       "TITLE": "Signe d'instabilité"
     },
-    "DELETE": "Supprimer l'observation",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Supprimer l'observation"
+      }
+    },
     "DELETE_CONFIRM": "Êtes-vous sûr ?",
     "DIRT": {
       "LAND_SLIDE_OBS": {

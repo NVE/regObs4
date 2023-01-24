@@ -1,45 +1,45 @@
 import {
+  AfterViewInit,
   Component,
-  OnInit,
+  ElementRef,
+  EventEmitter,
+  Injector,
   Input,
   NgZone,
   OnDestroy,
-  AfterViewInit,
+  OnInit,
   Output,
-  EventEmitter,
-  Injector,
-  ElementRef,
   ViewChild,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import * as L from 'leaflet';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from, BehaviorSubject, combineLatest, race } from 'rxjs';
-import { UserSetting } from '../../../../core/models/user-settings.model';
-import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
-import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
-import { MapService } from '../../services/map/map.service';
-import { take, takeUntil, switchMap, distinctUntilChanged, withLatestFrom, filter } from 'rxjs/operators';
-import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
-import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { MapSearchService } from '../../services/map-search/map-search.service';
-import { TopoMap } from '../../../../core/models/topo-map.enum';
-import {
-  RegObsTileLayer,
-  IRegObsTileLayerOptions,
-  RegObsOfflineAwareTileLayer,
-} from '../../core/classes/regobs-tile-layer';
-import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
-import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
-import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
-import { MapZoomService } from '../../services/map/map-zoom.service';
+import { FeatureCollection } from '@turf/turf';
+import * as L from 'leaflet';
+import { BehaviorSubject, combineLatest, from, race, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
-import { FeatureCollection } from '@turf/turf';
+import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { settings } from '../../../../../settings';
+import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
+import { TopoMap } from '../../../../core/models/topo-map.enum';
+import { UserSetting } from '../../../../core/models/user-settings.model';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+import {
+  IRegObsTileLayerOptions,
+  RegObsOfflineAwareTileLayer,
+  RegObsTileLayer,
+} from '../../core/classes/regobs-tile-layer';
+import { MapSearchService } from '../../services/map-search/map-search.service';
+import { MapZoomService } from '../../services/map/map-zoom.service';
+import { MapService } from '../../services/map/map.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -78,11 +78,9 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
-  private isNative = Capacitor.isNativePlatform();
   @Input() showMapSearch = true;
   @Input() showFullscreenToggle = true;
   @Input() showGpsCenter = true;
-  @Input() showUserLocation = this.isNative;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng;
@@ -92,6 +90,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() geoTag = DEBUG_TAG;
   @Input() offlinePackageMode = false;
   @Input() showObserverTrips = false;
+
+  /**
+   * Set to true to show the user location in map.
+   * NB: activateFollowModeOnStartup controls if the map should start following the user or not.
+   */
+  @Input() showUserLocation = Capacitor.isNativePlatform();
+  /**
+   * Set to true to start the map in follow mode.
+   * This has no effect if showUserLocation is false.
+   */
+  @Input() activateFollowModeOnStartup = false;
 
   @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
   observationTripName = '';
@@ -149,6 +158,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   options: L.MapOptions;
 
   async ngOnInit() {
+    this.mapService.showUserLocation = this.showUserLocation;
+    this.mapService.followMode = this.showUserLocation && this.activateFollowModeOnStartup;
+
     this.options = {
       zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
       maxZoom: settings.map.tiles.maxZoom,
@@ -301,7 +313,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.mapService.followMode = this.isNative;
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
@@ -351,22 +362,28 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
     });
-    //set overwrite default showUserLocation with component input
-    this.mapService.showUserLocation(this.isNative);
-    this.mapService.showUserLocation$.subscribe((value) => {
-      if (value) {
-        this.mapService.followMode = true;
+
+    this.mapService.showUserLocation$
+      .pipe(
+        filter((showUserLocation) => showUserLocation === true),
+        // In subscribe, we only start some subscriptions,
+        // no need to start them again if showUserLocation$ emits again.
+        take(1),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(() => {
         this.geoPositionService.currentPosition$
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe((pos) => this.onPositionUpdate(pos));
+
         this.geoPositionService.currentHeading$.pipe(takeUntil(this.ngDestroy$)).subscribe((heading) => {
           if (this.userMarker) {
             this.userMarker.setHeading(heading);
           }
         });
-        this.startActiveSubscriptions();
-      }
-    });
+
+        this.deactivateTrackingIfComponentIsInactive();
+      });
 
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
     this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
@@ -477,7 +494,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineSupportMapLayerGroup.addLayer(layer);
   }
 
-  private startActiveSubscriptions() {
+  private deactivateTrackingIfComponentIsInactive() {
     this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
       if (active) {
         this.geoPositionService.startTrackingComponent(this.geoTag);
@@ -507,7 +524,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
-    if (this.map) {
+    if (this.map && this.isActive.value) {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),
         center: this.map.getCenter(),
@@ -548,7 +565,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           keepBuffer: 0,
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: settings.map.tiles.supportTilesBounds,
+          bounds: supportMaps.bounds,
         };
 
         const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);

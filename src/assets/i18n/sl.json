@@ -156,7 +156,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (svet)"
     },
-    "TIME_FRAME": "Obdobje",
     "TODAYS_OBSERVATIONS": "Današnja opažanja",
     "TOPO_MAP_CREDITS": "Topo zemljevidi priskrbljeni od",
     "UPDATE_OBSERVATIONS": "Posodobljeno",
@@ -228,7 +227,11 @@
       "RIGHT_HERE": "Točno tukaj",
       "TITLE": "Znak nevarnosti"
     },
-    "DELETE": "Izbriši opažanje",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Izbriši opažanje"
+      }
+    },
     "DELETE_CONFIRM": "Ali ste prepričani?",
     "DIRT": {
       "LAND_SLIDE_OBS": {

@@ -1,5 +1,6 @@
 import { Polygon } from 'geojson';
 import * as L from 'leaflet';
+import { SupportTile } from './app/core/models/support-tile.model';
 import { TopoMapLayer } from './app/core/models/topo-map-layer.enum';
 import { TopoMap } from './app/core/models/topo-map.enum';
 
@@ -69,8 +70,7 @@ interface IMapTileSettings {
    */
   topoMaps: TopoMapsSettings;
 
-  supportTiles: any;
-  supportTilesBounds: L.LatLngTuple[];
+  supportTiles: SupportTile[];
 }
 
 interface IMapSettings {
@@ -80,6 +80,9 @@ interface IMapSettings {
   unknownMapCenter: L.LatLngTuple;
   flyToOnGpsZoom: number;
   maxClusterRadius: number;
+  extentColor: string,
+  startExtentColor: string,
+  endExtentColor: string,
 }
 
 export interface ISettings {

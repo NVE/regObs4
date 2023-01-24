@@ -7,6 +7,7 @@ export enum LangKey {
   it = 6,
   nn = 7,
   fr = 8,
+  da = 9,
 }
 
 export function getLangKeyString(langKey: LangKey): string {

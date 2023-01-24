@@ -8,9 +8,11 @@
   "ADD_MENU": {
     "DRAFT_TITLE_ICE": "Kladde: Isobservation",
     "DRAFT_TITLE_SNOW": "Kladde: Sneobservation",
+    "DRAFT_TITLE_SOIL": "Udkast: Jordobservation",
     "DRAFT_TITLE_WATER": "Kladde: Vandobservation",
     "NEW_ICE_OBSERVATION": "Ny isobservation",
     "NEW_SNOW_OBSERVATION": "Ny sneobservation",
+    "NEW_SOIL_OBSERVATION": "Ny jordbundsobservation",
     "NEW_WATER_OBSERVATION": "Ny vandobservation"
   },
   "ALERT": {
@@ -27,6 +29,9 @@
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Tilføj til dine observationer",
     "SELECT_GEO_HAZARD": "Vælg naturfare",
+    "SKI_CONDITIONS": "Nu kan du også rapportere om skiforholdene!",
+    "TOGGLE_OBSERVATION": "Skift mellem enkel og fuld observation",
+    "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå til for at sende observationer på din position - enkelt og hurtigt. Dette er yderst nyttigt for advarselstjenesterne og for andre brugere. \n\nSlå fra for at indsende en mere avanceret observation - ligesom før.",
     "VIEW_WARNINGS": "Se varsler fra varsom.no"
   },
   "COMPETENCE": {
@@ -76,9 +81,11 @@
   "DRAFT": "Kladde",
   "GEOLOCATION": {
     "POSITION_ERROR": {
+      "INVALID": "Ugyldige positionsdata",
       "PermissionDenied": "For at hente din position skal du ændre dine browserindstillinger",
       "PositionUnavailable": "Kan ikke bestemme din position",
-      "Timeout": "Det tog for lang tid at bestemme din position"
+      "Timeout": "Det tog for lang tid at bestemme din position",
+      "UNSUPPORTED": "Positionering er ikke understøttet på denne enhed"
     }
   },
   "GEOLOCATION_SERVICE": {
@@ -99,11 +106,13 @@
     "LINE_2": "Husk at varsler er et hjælpemiddel og ikke et facit. Altid lav din egne vurderinger. Lokale forhold for din lokation kan være komplekse og afvige fra det, som er varslet.",
     "LINE_3": "Data på Regobs produceres af Regobs brugere og foreligger \"som de er\". Det kan indeholde fejl og udeladelser. NVE har ikke ansvar for fejl, mangler og vurderinger som produceres af brugerne.",
     "LINE_4": "Når du publicerer billeder i Regobs, accepterer du, at billederne kan genbruges (licenseret under <a href='https://data.norge.no/nlod/no/'>Norsk licens for offentlige data</a>",
+    "LINE_5": "Læs mere i vores <a href=\"{{legalUrl}}\" target=\"_blank\">Servicevilkår </a>",
     "OK": "OJ, jeg accepterer"
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Ændre password",
     "CREATE_USER": "Lav ny bruger",
+    "DELETE_PROFILE": "Slet profil og mine data",
     "EMAIL": "E-mail",
     "FORGOT_PASSWORD": "Glemt password",
     "IS_LOGGING_IN": "Logger ind...",
@@ -122,7 +131,9 @@
     "AWAY_FROM": "væk",
     "COPIED_TO_CLIPBOARD": "Kopieret til udklipsholder",
     "EAST_SHORT": "Ø",
-    "NORTH_SHORT": "N"
+    "NORTH_SHORT": "N",
+    "WEATHER_ERROR": "Vejrudsigt ikke fundet!",
+    "WEATHER_FROM": "Vejret fra"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Væk",
@@ -135,11 +146,13 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i Regobs",
     "AND": "og",
+    "CONTACT_DESCRIPTION": "Vi har vedhæftede logfiler. Du kan fjerne dem, hvis du ikke ønsker at sende os logfiler.",
     "CONTACT_REGOBS": "Kontakt os",
     "CONTACT_REGOBS_ERROR": "Rapport fejl",
     "CONTACT_SUBJECT": "Kontakt os fra appen",
     "DAYS_BACK": "Dage tilbage",
     "DAY_BACK": "Dag tilbage",
+    "DEACTIVATE_OBSERVATIONS": "Visning af observationer er blevet deaktiveret",
     "ERROR_REPORT_DESCRIPTION": "Venligst beskriv fejlen. Hvis du har et skærmbillede, bedes du vedhæfte dette.",
     "ERROR_REPORT_SUBJECT": "Fejlrapport fra",
     "GENERAL": "Generelt",
@@ -149,6 +162,7 @@
     "MAP_LEGENDS": "Tegnforklaringer for kort",
     "MAP_SETTINGS": "Indstillinger for kort",
     "MAP_SETTINGS_FOR": "Indstillinger for kort",
+    "NO_EMAIL_APP": "E-mail kan ikke sendes, fordi vi ikke kan oprette forbindelse til e-mail-applikationen på din telefon. På Iphone skal du have 'Mail'-applikation.",
     "OPACITY": "Gennemsigtighed",
     "OTHER": "Andet",
     "SHOW": "Vis",
@@ -165,7 +179,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "Opentopomap (verden)"
     },
-    "TIME_FRAME": "Tidsrum",
     "TODAYS_OBSERVATIONS": "Kun dagens observationer",
     "TOPO_MAP_CREDITS": "Topografisk kort leveret af",
     "UPDATE_OBSERVATIONS": "Opdateret",
@@ -203,6 +216,22 @@
     "TITLE": "Min side",
     "USER": "Bruger"
   },
+  "OBSERVATION_FILTER": {
+    "COMPETANCE_FILTER": {
+      "ALL": "Alle",
+      "AUTOMATIC_STATIONS": "Automatiske stationer",
+      "LABEL": "Kompetence",
+      "TITLE": "Observatør"
+    },
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Søg efter observatørens navn",
+      "TITLE": "Navn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observationstype"
+    },
+    "TITLE": "Observationsfilter"
+  },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observationer",
     "FORMS": "Skemaer",
@@ -211,6 +240,9 @@
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Hvis du ikke fandt det, som du leder efter, kan du prøve at zoome ind på kortet eller begrænse perioden, du vil se observationer for.",
     "NO_OBSERVATIONS": "Ingen observationer",
     "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra.",
+    "SORT_BY_CHANGE_TIME": "Nyligt opdateret",
+    "SORT_BY_OBS_TIME": "Nyligt observeret",
+    "SORT_BY_TEXT": "Bestil af",
     "TITLE": "Observationer"
   },
   "OFFLINE_MAP": {
@@ -267,8 +299,15 @@
       "TITLE": "Tilføj til Weblink",
       "URL": "Url"
     },
+    "ANONYMIZE": {
+      "CHECK_TO_ANONYMIZE": "Marker for at anonymisere",
+      "TITLE": "Anonymiser"
+    },
     "BACK_TO_OBSERVATION": "Tilbage til min observation",
     "CONFIRM_RESET": "Er du sikker på, at du vil nulstille alle felter?",
+    "COPIED_TO_CLIPBOARD": "Kopieret til udklipsholder",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Kunne ikke downloade billede fra regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Er du online?",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
@@ -287,6 +326,23 @@
       "ON_THIS_WATER": "På denne sø",
       "RIGHT_HERE": "Lige her",
       "TITLE": "Faretegn"
+    },
+    "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Slet udkast",
+        "HEADER": "Slet udkast",
+        "MESSAGE_EDIT": "Kassér ændringer?",
+        "MESSAGE_NEW": "Denne observation er endnu ikke sendt til Regobs. Vil du slette den?"
+      },
+      "SUBMITTED_REGISTRATION": {
+        "BUTTON": "Slet observation fra Regobs",
+        "FAILED": {
+          "HEADER": "Sletning mislykkedes",
+          "MESSAGE": "Vi var ikke i stand til at slette observationen fra Regobs. Tjek venligst din netværksforbindelse, og prøv igen."
+        },
+        "HEADER": "Slet observation",
+        "MESSAGE": "Vil du slette denne observation fra Regobs?"
+      }
     },
     "DIRT": {
       "LAND_SLIDE_OBS": {
@@ -308,19 +364,30 @@
     },
     "DRAFTS": "Mine kladder",
     "DRAFTS_DESCRIPTION": "Disse er observationer er under udarbejdelse og ikke sendt ind.",
+    "EDIT": "Rediger observation",
     "EMAIL": {
       "BODY": "Hej! Jeg har problemer med at sende denne registrering. Kan du hjælpe mig?",
       "SUBJECT": "Registrering fejlet"
     },
     "FAILED": {
+      "ABANDON": "Annuller mit arbejde",
+      "CONFLICT": "En ny version blev gemt, mens du arbejdede. <br/> Vil du annullere dit arbejde og indlæse den nye version eller indsende din version og overskrive?",
       "EDIT_OBSERVATION": "Rediger observation",
+      "GONE": "Denne observation er slettet i Regobs. <br/> Vil du opgive dine ændringer eller indsende udkastet som en ny observation?",
       "LOGGED": "Problemt er logget.",
+      "OVERWRITE": "Indsend og overskriv",
       "PROBLEM": "Der er opstået et problem med din registrering",
       "PROBLEM_HELP_TEXT": "Observationer med fejl lagres i din telefon, og når problemet er løst, vil du kunne indsende observationen på ny.",
       "REFERENCE": "Reference",
       "SEND_EMAIL": "Send til os på email",
+      "SUBMIT_NEW": "Indsend som ny observation",
       "SUBTITLE": "Mangler netværk eller indsendelse tog for lang tid. Vi prøver igen efter en stund og håber, at nettet er forbedret.",
       "TITLE": "Indsendning fejlet"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Rediger observation",
+      "HEADER": "Synkronisering mislykkedes",
+      "MESSAGE": "Vi kunne ikke hente en ny kopi af denne observation fra Regobs. Du kan stadig redigere dette, men der er risiko for konflikt, når du indsender observationen senere, hvis den samme observation er blevet ændret et andet sted."
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Noter fra observationen",
@@ -360,17 +427,31 @@
         "ICE_TYPE": "Istype",
         "SLUSH_SNOW_BEFORE_DRILL": "Snesjap før boring (cm)",
         "TITLE": "Istykkelse"
+      },
+      "INCIDENT": {
+        "CASUALTIES_NUM": "Antal gennem isen",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være større end antallet i turgruppen",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være større en antallet gennem isen eller antallet i turgruppen",
+        "INVOLVED_NUM": "Antal i turgruppen",
+        "SAFETY_GEAR_TID": "Redningsudstyr"
       }
     },
     "IMAGES": "Billeder",
     "IMAGE_DESCRIPTION": "Beskrivelse af billedet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du give en beskrivelse af billedet",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "Du skal give appen tilladelse til billedbiblioteket",
+      "CAMERA_PERMISSION_MISSING": "Du skal give appen tilladelse til at bruge kameraet",
+      "UNKNOWN": "Kunne ikke tilføje billede(r). Der kan være noget galt med billedfilen(erne). Prøv venligst et andet billede for at kontrollere"
+    },
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
       "COMMENT_PLACEHOLDER": "Hvorfor skete det? Gik det hurtigt? Kunne situationen være undgået?",
       "DAMAGE_EXTENT": "Skadeomfang",
+      "DEAD_NUM": "Antal døde",
       "IMAGE_PLACEHOLDER": "+ Tilføj en beskrivelse af billedet",
+      "RESCUE_TID": "Red",
       "TITLE": "Ulykke / hændelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldigt billedformat",
@@ -380,14 +461,31 @@
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekræft observationspunkt",
       "CURRENT_LOCATION": "Nuværende position",
+      "EXACT": "Præcis",
       "HIDE_DETAILS": "Skjul detaljer",
+      "MORETHANONEKM": "Mere end 1 km",
+      "NAME_LOCATION": "Navngiv lokationen",
+      "NAME_LOCATION_TOOLTIP": "Navngivning af et sted gør det muligt at oprette en tidsserie på det samme observationspunkt",
       "SHOW_DETAILS": "Vis detaljer",
-      "TITLE": "Observationspunkt"
+      "SOURCE": "Kilde",
+      "TITLE": "Observationspunkt",
+      "UNCERTAINTY": "Usikkerhed i position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observation",
       "SHARE_WITH_GROUP": "Del med gruppe",
+      "SIMPLE": {
+        "CONFIRM": {
+          "CANCEL": "Annuller",
+          "HEADER": "Skift til simpel tilstand",
+          "MESSAGE": "Observationen indeholder data, der ikke er relevante for simpel tilstand. Vil du slette data, vi ikke kan vise?",
+          "YES": "Slet data og skift til simpel tilstand"
+        },
+        "HEADER_QUESTION": "Hvordan er det lige nu?",
+        "IMAGES_MODAL_TITLE": "Billeder af {{registrationType}}",
+        "TOGGLE": "Simpel observation"
+      },
       "TITLE": "Observation"
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldigt skema. Vil du nulstille skemaet og gå tilbage?",
@@ -401,6 +499,7 @@
       "NO": "Nej, kassér",
       "YES": "Ja, gem"
     },
+    "SELECTION_COUNT": "{{ count }} valgt",
     "SEND": "Indsend",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekræft skadestedet",
@@ -438,17 +537,33 @@
         "AVALANCHE_TRIGGER": "Lavineudløser",
         "AVALANCHE_TYPE": "Lavinetype",
         "AVAL_CAUSE": "Svagt lag",
+        "CASUALTIES_NUM": "Antallet af tilskadekomne",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være større end det involverede antal",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være større end antallet af ofre eller involverede",
         "DESTRUCTIVE_SIZE": "Størrelse",
+        "EVACUATED_NUM": "Antal evakueret",
         "FRACTURE_HEIGTH": "Brudhøjde (cm)",
         "FRACTURE_WIDTH": "Brudbredde (m)",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Summen af døde og tilskadekomne kan ikke være større end antallet af ofre eller involverede",
+        "HARMED_NUM": "Antal tilskadekomne",
+        "HARMED_NUM_ERROR_MESSAGE": "Kan ikke være større end det involverede antal",
         "INCIDENT_DESCRIPTION": "Ulykke eller skade",
         "INCIDENT_PLACEHOLDER": "Førte lavinen til skade, ulykke eller næsten ulykke? Hvad skete og hvorfor? Kunne situationen være undgået?",
+        "INVOLVED_NUM": "Antal involveret",
+        "LOCAL_KNOWLEDGE_TID": "Kendskab til området",
+        "LOCAL_TOURIST_TID": "Lokal eller besøgende",
+        "MATERIAL_DAMAGES": "Materielle skader",
         "POSITION": "Lavineposition",
+        "REMOTELY_TRIGGERED": "Fjernudløst",
+        "SAFETY_GEAR_TID": "Afsender/modtager",
         "SET_AVALANCHE_POSITION": "Set lavineposition",
+        "SLOPE_ACTIVITY_TID": "Tur fase",
         "TERRAIN_START_ZONE": "Terræntype i frigivelsesområdet",
         "TIME": "Lavinetidspunkt (obligatorisk)",
         "TITLE": "Lavinehændelse",
-        "TRAJECTORY_NAME": "Navn på lavinespor"
+        "TRAFFIC_OBSTRUCTED": "Trafik er hindret",
+        "TRAJECTORY_NAME": "Navn på lavinespor",
+        "VALID_EXPOSITION": "Aspekt"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Tilføj til nyt lavineproblem",
@@ -469,6 +584,7 @@
         "TITLE": "Lavineproblem",
         "TOP": "Øverst",
         "UNKNOWN_TYPE": "Ukendt svagt lag",
+        "VALID_EXPOSITION": "Aspekt",
         "WEAK_LAYER": "Svagt lag",
         "WEAK_LAYER_DEPTH": "Svagt lags dybde"
       },
@@ -476,10 +592,14 @@
         "ADD_NEW": "Tilføj til ny test",
         "DISTANCE_FROM_TOP": "Afstand fra toppen (cm)",
         "FRACTURE_TYPE": "Brudtype",
+        "RB_RELEASE": "Procentdel af frigivet blok",
+        "RB_SCORE": "Rutschblock score",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antal slag",
         "TEST_TYPE": "Testtype",
-        "TITLE": "Tests"
+        "TITLE": "Tests",
+        "X_DISTANCE": "Længde af snit",
+        "Y_DISTANCE": "Kolonne længde"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -492,7 +612,7 @@
         },
         "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
-        "IS_PROFILE_TO_GROUND": "Går profilen til bakken?",
+        "IS_PROFILE_TO_GROUND": "Går profilen til grunden?",
         "NORTH": "N",
         "NORTH_EAST": "NØ",
         "NORTH_WEST": "NV",
@@ -559,6 +679,7 @@
         "SUBFORMS": "Underskema",
         "SUPERIOR": "Overordnet",
         "TITLE": "Sneprofil",
+        "VALID_EXPOSITION": "Aspekt",
         "WEST": "V"
       },
       "SNOW_SURFACE": {
@@ -568,6 +689,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For sne uden farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysne sidste 24t (cm)",
         "NEW_SNOW_LINE": "Nysnegrænse (moh)",
+        "SKI_CONDITIONS": "Skiforhold",
         "SNOW_DEPTH": "Total snedybde (cm)",
         "SNOW_DRIFT": "Snefygning",
         "SNOW_LINE": "Snegrænse (moh)",
@@ -654,6 +776,7 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan læse om vores brug af data i vores privatlivspolitik.",
     "RESET": "Nulstil app.",
     "RESETTING": "App nulstilles. Venligst vent...",
+    "SEND_LOGS": "Send logs til Regobs-teamet",
     "SHOW_ADVANCED": "Vis avancerede indstillinger",
     "SIZE_OF_TILES_CACHE": "Størrelse på kortark lageret på telefonen",
     "TILES_CACHE_SIZE": "Antal kortark lageret på telefonen",
@@ -747,9 +870,12 @@
     "LOW": "Lav",
     "MARITINE_BORDER": "Marinegrænseflade",
     "MIDDLE": "Medium",
+    "NO_LEGEND": "Dette kortlag har endnu ingen forklaring.",
     "NO_OPACITY": "Heldækkende",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Potentielle udslipsområder og udløbszoner (Grønland)",
     "READ_MORE": "Læs mere om støttekort",
     "STEEPNESS_COLOR_INFO": "Farver indikerer stejlhedsgraden i terrænet:",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Kort over hældningsvinkler (Grønland)",
     "STEEPNESS_MAP_DESCRIPTION": "Stejlhedskort",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlægning. Kortet er automatisk genereret og kan have fejl og mangler feks. skråninger eller udløb som ikke vises korrekt.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekortet er kun tilgængeligt offline med udløbende aktiviteter",

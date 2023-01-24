@@ -1,4 +1,4 @@
-<ng-container *ngIf="daysBack === 0">{{ "MENU.TODAYS_OBSERVATIONS" | translate | lowercase }}</ng-container>
+<ng-container *ngIf="daysBack === 0">{{ "MENU.TODAYS_OBSERVATIONS" | translate }}</ng-container>
 <ng-container *ngIf="daysBack === 1">{{ daysBack }} {{ "MENU.DAY_BACK" | translate | lowercase }}</ng-container>
 <ng-container *ngIf="daysBack < 28 && daysBack > 1"
   >{{ daysBack }} {{ "MENU.DAYS_BACK" | translate | lowercase }}

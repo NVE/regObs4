@@ -156,7 +156,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (weltweit)"
     },
-    "TIME_FRAME": "Zeitraum",
     "TODAYS_OBSERVATIONS": "Nur heute",
     "TOPO_MAP_CREDITS": "Topokarten bereitgestellt von",
     "UPDATE_OBSERVATIONS": "Aktualisiert",
@@ -228,7 +227,11 @@
       "RIGHT_HERE": "Genau hier",
       "TITLE": "Gefahrenzeichen"
     },
-    "DELETE": "Beobachtung löschen",
+    "DELETE": {
+      "SUBMITTED_REGISTRATION": {
+        "HEADER": "Beobachtung löschen"
+      }
+    },
     "DELETE_CONFIRM": "Sind Sie sicher?",
     "DIRT": {
       "LAND_SLIDE_OBS": {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
-import { AttachmentViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
+import { AttachmentViewModel, AvalancheObsViewModel, LandslideViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
@@ -13,7 +13,7 @@ import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/mo
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../../modules/analytics/enums/app-event-action.enum';
-import { ImageLocation } from '../../img-swiper/image-location.model';
+import { ImageLocation, ImageLocationStartStop } from '../../img-swiper/image-location.model';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
@@ -108,32 +108,42 @@ export class ObservationListCardComponent implements OnChanges {
     };
   }
 
-  private getStartStopLocation(obs: RegistrationViewModel): { start?: L.LatLng; stop?: L.LatLng } {
+  private getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop {
     if (obs.AvalancheObs) {
       return {
-        start:
-          obs.AvalancheObs.StartLat && obs.AvalancheObs.StartLong
-            ? L.latLng(obs.AvalancheObs.StartLat, obs.AvalancheObs.StartLong)
-            : undefined,
-        stop:
-          obs.AvalancheObs.StopLong && obs.AvalancheObs.StopLong
-            ? L.latLng(obs.AvalancheObs.StopLat, obs.AvalancheObs.StopLong)
-            : undefined,
+        ...this.obs2Latlng(obs.AvalancheObs),
+        totalPolygon: this.extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
+        startPolygon: this.extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
+        endPolygon: this.extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor)
       };
     }
     if (obs.LandSlideObs) {
       return {
-        start:
-          obs.LandSlideObs.StartLat && obs.LandSlideObs.StartLong
-            ? L.latLng(obs.LandSlideObs.StartLat, obs.LandSlideObs.StartLong)
-            : undefined,
-        stop:
-          obs.LandSlideObs.StopLat && obs.LandSlideObs.StopLong
-            ? L.latLng(obs.LandSlideObs.StopLat, obs.LandSlideObs.StopLong)
-            : undefined,
+        ...this.obs2Latlng(obs.LandSlideObs),
+        totalPolygon: this.extent2Polygon(obs.LandSlideObs.Extent, settings.map.extentColor),
+        startPolygon: this.extent2Polygon(obs.LandSlideObs.StartExtent, settings.map.startExtentColor),
+        endPolygon: this.extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor)
       };
     }
     return undefined;
+  }
+
+  private obs2Latlng(obs: LandslideViewModel | AvalancheObsViewModel) {
+    return {
+      start: obs.StartLat && obs.StartLong
+        ? L.latLng(obs.StartLat, obs.StartLong)
+        : undefined,
+      stop: obs.StopLat && obs.StopLong
+        ? L.latLng(obs.StopLat, obs.StopLong)
+        : undefined
+    }
+  }
+
+  private extent2Polygon(extent: number[][], color: string) {
+    return extent ? new L.Polygon(
+      extent.map(([lng, lat]) => [lat, lng]),
+      {color}
+    ) : null
   }
 
   private getDamagePositions(obs: RegistrationViewModel) {
