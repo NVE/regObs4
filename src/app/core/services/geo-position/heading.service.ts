@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
-import { Platform } from '@ionic/angular';
 import { BehaviorSubject, filter, fromEvent, map, merge, Observable, share, Subscription, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { GeoPositionNativeService } from './geo-position-native.service';
 
 const DEBUG_TAG = 'HeadingService';
 
@@ -20,22 +20,17 @@ export class HeadingService {
 
   constructor(
     private deviceOrientation: DeviceOrientation,
-    private platform: Platform,
+    private geoPositionNativeService: GeoPositionNativeService,
     private logger: LoggingService
   ) {
-    this.platform.ready().then(() => {
-      if (Capacitor.isNativePlatform()) {
-        this.logger.debug('Platform ready and we are native, so start watching heading', DEBUG_TAG);
-        this.startWatchingHeading();
+    this.geoPositionNativeService.watchingPosition$.subscribe((watching) => {
+      if (watching) {
+        this.logger.debug('We are watching position, so start watching heading also', DEBUG_TAG);
+        this.startWatchingHeading;
+      } else {
+        this.logger.debug('We are not watching position anymore, so stop watching heading also', DEBUG_TAG);
+        this.stopWatchingHeading;
       }
-    });
-    this.platform.pause.subscribe(() => {
-      this.logger.debug('Pause, stop watching heading', DEBUG_TAG);
-      this.stopWatchingHeading();
-    });
-    this.platform.resume.subscribe(() => {
-      this.logger.debug('Resume, start watching heading', DEBUG_TAG);
-      this.startWatchingHeading();
     });
   }
 

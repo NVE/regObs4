@@ -4,10 +4,9 @@ import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCall
 import { Platform, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { threadId } from 'worker_threads';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';
 import { GeoPositionService } from './geo-position.service';
 
@@ -30,6 +29,12 @@ export class GeoPositionNativeService extends GeoPositionService {
   private watchPositionRequestTime: number = null;
   private watchPositionFirstCallbackReceived = false;
   private highAccuracyEnabled = new BehaviorSubject(true);
+  private watchingPosition = new Subject<boolean>();
+
+  /**
+   * If true, we are subscribing to position data from device
+   */
+  readonly watchingPosition$ = this.watchingPosition.asObservable();
 
   constructor(
     toastController: ToastController,
@@ -39,12 +44,6 @@ export class GeoPositionNativeService extends GeoPositionService {
   ) {
     super(toastController, translateService, platform, logger);
 
-    /*this.platform.ready().then(() => {
-      if (Capacitor.isNativePlatform()) {
-        this.logger.debug('Platform ready and we are native, so start watching position...', DEBUG_TAG);
-        this.startWatchingPosition();
-      }
-    });*/
     this.platform.pause.subscribe(() => {
       this.logger.debug('Pause, stop watching position...', DEBUG_TAG);
       this.stopWatchingPosition();
@@ -122,6 +121,7 @@ export class GeoPositionNativeService extends GeoPositionService {
       this.clearCurrentPosition();
       return;
     }
+
     const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
       if (err) {
         this.logger.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
@@ -143,9 +143,11 @@ export class GeoPositionNativeService extends GeoPositionService {
         }
       }
     };
+
     this.addStatusToGpsPositionLog('StartGpsTracking');
     this.stopWatchingPosition(); //we need to stop current watch of position if any
     this.watchPosition(watchPositionCallback);
+    this.watchingPosition.next(true);
   }
 
   private async watchPosition(callback: WatchPositionCallback) {
@@ -191,6 +193,7 @@ export class GeoPositionNativeService extends GeoPositionService {
       this.watchPositionRequestTime = null;
       if (resetWatchPositionFirstCallbackReceived) {
         this.watchPositionFirstCallbackReceived = null;
+        this.watchingPosition.next(false);
       }
     }
   }
