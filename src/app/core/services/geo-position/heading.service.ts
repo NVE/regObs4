@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
-import { BehaviorSubject, filter, fromEvent, map, merge, Observable, share, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, filter, fromEvent, map, merge, Observable, pairwise, share, Subscription, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { GeoPositionNativeService } from './geo-position-native.service';
 
@@ -82,7 +82,12 @@ export class HeadingService {
         const appleHeading = (<any>event).webkitCompassHeading;
         const heading: number = appleHeading || this.getAbsoluteHeading(event);
         return heading;
-      })
+      }),
+
+      //filter away heading change < 2 degree
+      pairwise(),
+      filter(([previous, current]) => Math.abs(previous - current) > 2),
+      map(([, current]) => current)
     );
   }
 

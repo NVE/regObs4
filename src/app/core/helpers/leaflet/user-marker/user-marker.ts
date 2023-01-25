@@ -55,10 +55,6 @@ export class UserMarker {
     };
     this.userMarker.setLatLng(latLng);
     this.setAccuracy(position);
-    // if (position.coords.heading !== null) {
-    //     this.setHeading(position.coords.heading);
-    // }
-    // NOTE: This is set by compass instead of gps
   }
 
   setHeading(degrees: number) {
