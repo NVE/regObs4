@@ -30,6 +30,7 @@ export class GeoPositionNativeService extends GeoPositionService {
   private watchPositionFirstCallbackReceived = false;
   private highAccuracyEnabled = new BehaviorSubject(true);
   private watchingPosition = new Subject<boolean>();
+  private permissionToReadPositionWasGrantedWhenWePaused: boolean;
 
   /**
    * If true, we are subscribing to position data from device
@@ -54,10 +55,14 @@ export class GeoPositionNativeService extends GeoPositionService {
     this.platform.pause.subscribe(() => {
       this.logger.debug('Pause, stop watching position...', DEBUG_TAG);
       this.stopWatchingPosition();
+      this.checkPermissions().then((granted) => (this.permissionToReadPositionWasGrantedWhenWePaused = granted));
     });
     this.platform.resume.subscribe(() => {
       this.logger.debug('Resume, start watching position...', DEBUG_TAG);
-      this.startWatchingPosition();
+
+      // If permission was denied when we paused, suppress permission notification on start watch
+      this.startWatchingPosition(this.permissionToReadPositionWasGrantedWhenWePaused);
+      this.permissionToReadPositionWasGrantedWhenWePaused = null;
     });
   }
 
@@ -112,10 +117,12 @@ export class GeoPositionNativeService extends GeoPositionService {
     return true;
   }
 
-  private async startWatchingPosition(): Promise<void> {
+  private async startWatchingPosition(showPermissionDeniedToast = true): Promise<void> {
     const permissionGranted = await this.checkPermissions();
     if (!permissionGranted) {
-      this.showPermissionDeniedToast();
+      if (showPermissionDeniedToast) {
+        this.showPermissionDeniedToast();
+      }
       this.logger.debug(
         'Watch position request aborted because permission denied. Please run checkPermissionsAndAsk() to check again',
         DEBUG_TAG
