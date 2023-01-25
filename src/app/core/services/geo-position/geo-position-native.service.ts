@@ -44,6 +44,13 @@ export class GeoPositionNativeService extends GeoPositionService {
   ) {
     super(toastController, translateService, platform, logger);
 
+    this.platform.ready().then(() => {
+      if (Capacitor.isNativePlatform()) {
+        this.logger.debug('Platform ready and we are native, so start watching position...', DEBUG_TAG);
+        this.startWatchingPosition();
+      }
+    });
+
     this.platform.pause.subscribe(() => {
       this.logger.debug('Pause, stop watching position...', DEBUG_TAG);
       this.stopWatchingPosition();
@@ -72,24 +79,14 @@ export class GeoPositionNativeService extends GeoPositionService {
       this.clearCurrentPosition();
       return false;
     }
-    this.startWatchingPosition();
     return true;
   }
 
-  async checkPermissions(): Promise<boolean> {
+  private async checkPermissions(): Promise<boolean> {
     try {
       const permissions = await Geolocation.checkPermissions();
       this.logger.debug('Geolocation permissions', DEBUG_TAG, permissions);
-      const isPermissions = permissions?.location === 'granted' ? true : false;
-      if (isPermissions) {
-        return true;
-      } else {
-        this.showPermissionDeniedToast();
-        this.logger.debug(
-          'Watch position request aborted because permission denied. Please run checkPermissionsAndAsk() to check again',
-          DEBUG_TAG
-        );
-      }
+      return permissions?.location === 'granted';
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
     }
@@ -118,6 +115,11 @@ export class GeoPositionNativeService extends GeoPositionService {
   private async startWatchingPosition(): Promise<void> {
     const permissionGranted = await this.checkPermissions();
     if (!permissionGranted) {
+      this.showPermissionDeniedToast();
+      this.logger.debug(
+        'Watch position request aborted because permission denied. Please run checkPermissionsAndAsk() to check again',
+        DEBUG_TAG
+      );
       this.clearCurrentPosition();
       return;
     }
