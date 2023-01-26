@@ -286,10 +286,6 @@
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Permission to location denied",
-    "LOCATION_DENIED_MESSAGE": "Cannot show location in map without permission."
-  },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "About observations",
