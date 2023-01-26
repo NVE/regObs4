@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, HostBinding } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 
@@ -25,6 +25,9 @@ export class RemoteImageComponent implements OnInit {
   imgSrc: SafeUrl;
   showImage = true;
 
+  @HostBinding('style.pointer-events')
+  pointerEvents = 'auto';
+
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
@@ -42,6 +45,7 @@ export class RemoteImageComponent implements OnInit {
       this.imgSrc = this.attachment.Url;
     } else {
       this.showImage = false;
+      this.pointerEvents = 'none';
     }
   }
 }
