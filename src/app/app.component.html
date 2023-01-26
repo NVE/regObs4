@@ -2,7 +2,7 @@
   <ion-menu contentId="main-content" type="overlay" side="end" maxEdgeStart="0">
     <app-side-menu></app-side-menu>
   </ion-menu>
-  <ion-menu side="start" menuId="filter" contentId="main-content" style="--background: #fff">
+  <ion-menu maxEdgeStart="0" side="start" menuId="filter" contentId="main-content" style="--background: #fff">
     <app-filter-menu></app-filter-menu>
   </ion-menu>
   <ion-router-outlet id="main-content" [swipeGesture]="swipeBackEnabled$ | async"></ion-router-outlet>
