@@ -21,6 +21,7 @@ import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -243,6 +244,11 @@ export class GeoPositionService implements OnDestroy {
             this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied)
           );
           return;
+        } else if (Capacitor.getPlatform() === 'ios') {
+          // I Android vil appen bli pauset når vi kjører askForPermission(),
+          // så startWatchingPosition() vil bli kjørt når appen aktiveres igjen.
+          // I iOS vil ikke appen bli pauset, så vi må kjøre startWatchingPosition() manuelt
+          this.startWatchingPosition();
         }
       }
       this.loggingService.debug(`startTrackingComponent: name = ${name}. Permissions ok = ${permission}`, DEBUG_TAG);
@@ -364,7 +370,6 @@ export class GeoPositionService implements OnDestroy {
       this.loggingService.debug('Geolocation permissions after request', DEBUG_TAG, permissions);
       if (permissions?.location === 'denied') {
         this.showPermissionDeniedToast();
-        //        this.clearCurrentPosition();
         return false;
       }
     } catch (err) {
