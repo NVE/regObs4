@@ -38,11 +38,24 @@ export function getMapLayersWithMatchingBoundsForLocation(maps: ITopoMapSettings
   );
 }
 
+const abcGenerator = (function* () {
+  while (true) {
+    yield 'a';
+    yield 'b';
+    yield 'c';
+  }
+})();
+
 function formatTileUrl(urlTemplate: string, tileX: number, tileY: number, tileZoom: number) {
-  return urlTemplate
-    .replace('{x}', tileX.toString())
-    .replace('{y}', tileY.toString())
-    .replace('{z}', tileZoom.toString());
+  let url = urlTemplate;
+
+  // Subdomain a, b, or c, see https://leafletjs.com/reference.html#tilelayer
+  if (urlTemplate.includes('{s}')) {
+    const subdomain = abcGenerator.next().value;
+    url = urlTemplate.replace('{s}', subdomain);
+  }
+
+  return url.replace('{x}', tileX.toString()).replace('{y}', tileY.toString()).replace('{z}', tileZoom.toString());
 }
 
 /**
