@@ -82,7 +82,7 @@
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
-      "PermissionDenied": "For å hente posisjonen din må du endre lokasjonsinnstillinger",
+      "PermissionDenied": "Vi trenger tilgang til nøyaktig posisjon for å vise hvor du er",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din",
       "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
@@ -258,10 +258,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
-    "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten godkjenning for bruk av lokasjon."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
