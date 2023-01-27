@@ -359,7 +359,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private createCenterMarker(topPx: number, leftPx: number) {
-    const svg = this.sanitizer.bypassSecurityTrustHtml(RegobsGeoHazardMarker.getIconSvg(this.location.geoHazard));
+    const svg = this.sanitizer.bypassSecurityTrustHtml(RegobsGeoHazardMarker.getIconSvg(this.location.geoHazard, false));
     // TODO: Can we extract width and height from svg?
     const svgWidth = 26;
     const svgHeight = 37;
