@@ -1,0 +1,20 @@
+<div class="container" #container>
+  <!-- We could add some error handling here, using onerror or (error) to reset the src to something else -->
+  <img
+    *ngFor="let props of tiles; trackBy: trackByImgProps"
+    class="tile"
+    [style.top]="props.top"
+    [style.left]="props.left"
+    [src]="props.src"
+    loading="lazy"
+    alt="Map tile"
+    decoding="async"
+  />
+
+  <div
+    class="graphic"
+    *ngFor="let graphic of graphics; trackBy: trackByGraphic"
+    [innerHTML]="graphic.svg"
+    [ngStyle]="graphic.style"
+  ></div>
+</div>

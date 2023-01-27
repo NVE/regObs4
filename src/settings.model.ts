@@ -4,7 +4,7 @@ import { SupportTile } from './app/core/models/support-tile.model';
 import { TopoMapLayer } from './app/core/models/topo-map-layer.enum';
 import { TopoMap } from './app/core/models/topo-map.enum';
 
-interface ITopoMapLayerOptions {
+export interface ITopoMapLayerOptions {
   url: string;
 
   /**
@@ -26,7 +26,7 @@ type TopoMapLayersSettings = {
   [mapLayer in TopoMapLayer]: ITopoMapLayerOptions;
 };
 
-interface ITopoMapSettings {
+export interface ITopoMapSettings {
   layer: keyof typeof TopoMapLayer;
 
   /**
@@ -46,7 +46,7 @@ interface ITopoMapSettings {
   excludeBounds?: Polygon[];
 }
 
-type TopoMapsSettings = {
+export type TopoMapsSettings = {
   [topoMap in TopoMap]: ITopoMapSettings[];
 };
 
