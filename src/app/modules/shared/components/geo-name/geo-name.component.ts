@@ -6,7 +6,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 
 @Component({
   selector: 'app-geo-name',
-  templateUrl: './geo-name.component.html',
+  template: '{{ name$ | async }}',
   styleUrls: ['./geo-name.component.scss'],
 })
 export class GeoNameComponent implements OnChanges {
