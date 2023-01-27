@@ -123,12 +123,12 @@ steps:
     verbose: false
     customCommand: 'run cap:sync'
 
-- task: Npm@1
-  displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run sentry:create-release-and-upload-sourcemaps'
+#- task: Npm@1
+#  displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
+#  inputs:
+#    command: custom
+#    verbose: false
+#    customCommand: 'run sentry:create-release-and-upload-sourcemaps'
 
 # TODO: Create ipa
 - task: Xcode@5
