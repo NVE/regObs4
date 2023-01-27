@@ -14,9 +14,9 @@ import { ImageLocation, ImageLocationStartStop } from '../../components/img-swip
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 
-const START_ICON = '/assets/icon/map/GPS_start.svg';
-const END_ICON = '/assets/icon/map/GPS_stop.svg';
-const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
+export const START_ICON = '/assets/icon/map/GPS_start.svg';
+export const END_ICON = '/assets/icon/map/GPS_stop.svg';
+export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
 
 @Component({
   selector: 'app-map-image',
