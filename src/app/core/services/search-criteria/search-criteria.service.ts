@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import moment from 'moment';
 import {
   combineLatest,
+  debounceTime,
   firstValueFrom,
   map,
   Observable,
@@ -160,7 +161,8 @@ export class SearchCriteriaService {
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
   private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
-
+  private currentGeoHazard: GeoHazard[];
+  resetEvent: Subject<void> = new Subject();
   /**
    * Current filter. Current language and geo hazards are always included
    */
@@ -186,7 +188,12 @@ export class SearchCriteriaService {
         scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
       ),
       this.userSettingService.language$,
-      this.userSettingService.currentGeoHazard$,
+      this.userSettingService.currentGeoHazard$.pipe(
+        tap((geohazard) => {
+          this.currentGeoHazard !== undefined && this.restartSearchCriteria();
+          this.currentGeoHazard = geohazard;
+        })
+      ),
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
@@ -195,6 +202,7 @@ export class SearchCriteriaService {
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
       // - FromDtObsTime: fromDate URL param
+      debounceTime(50),
       map(
         ([criteria, langKey, geoHazards, fromObsTime, extent]: [
           SearchCriteriaRequestDto,
@@ -215,6 +223,20 @@ export class SearchCriteriaService {
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
+  }
+
+  async restartSearchCriteria() {
+    const resetDate = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
+    const daysBackToIso = this.daysBackToIsoDateTime(resetDate);
+    const criteria: SearchCriteriaRequestDto = {
+      ObserverCompetence: null,
+      SelectedRegistrationTypes: null,
+      ObserverNickName: null,
+      FromDtObsTime: convertToIsoDateTime(daysBackToIso),
+      ToDtObsTime: null,
+    };
+    this.searchCriteriaChanges.next(criteria);
+    this.resetEvent.next();
   }
 
   // build search criteria from url parameters. Some params are stored in user settings

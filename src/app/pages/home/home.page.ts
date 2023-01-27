@@ -189,13 +189,16 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
       filter(([prev, current]) => {
         //will prevent zoom in to trigger new search
-        const currentBounds = withinExtentCriteriaToBounds(current.Extent);
-        if (!prev) {
-          this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
-          return this.rememberExtent(currentBounds);
+        let currentBounds;
+        if (current.Extent) {
+          currentBounds = withinExtentCriteriaToBounds(current.Extent);
+          if (!prev) {
+            this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
+            return this.rememberExtent(currentBounds);
+          }
         }
-        const previousCriteriaWithoutExtent = { ...prev, Extent: undefined };
-        const currentCriteriaWithoutExtent = { ...current, Extent: undefined };
+        const previousCriteriaWithoutExtent = { ...prev, Extent: null };
+        const currentCriteriaWithoutExtent = { ...current, Extent: null };
         if (JSON.stringify(previousCriteriaWithoutExtent) === JSON.stringify(currentCriteriaWithoutExtent)) {
           //only extent is changed in criteria
           if (this.lastSearchBounds?.contains(currentBounds)) {
