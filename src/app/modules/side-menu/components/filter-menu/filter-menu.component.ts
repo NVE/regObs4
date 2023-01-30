@@ -75,10 +75,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   nickName: string;
   observationTypesOptions: ObservationTypeView[];
   competenceOptions: CompetenceItem[];
-  automaticStation;
-  isAutomaticStationChecked: boolean;
   chosenCompetenceValue: CompetenceItem;
-  searchCriteria: any;
+  automaticStationCompetenceItem: CompetenceItem;
+  isAutomaticStationChecked: boolean;
   currentGeoHazard: GeoHazard[];
 
   constructor(
@@ -237,16 +236,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       return competenceOptionToSet;
     } else {
       this.isAutomaticStationChecked = this.currentGeoHazard.includes(10) ? true : false;
-      const defaultValue = this.competenceOptions.find((option) => option.value == 'All');
-      return defaultValue;
+      return this.competenceOptions.find((option) => option.value == 'All');
     }
   }
 
   //set automatic station on as default in both view and searchCriteria
   private setAutomaticStationsOnInit(filteredCompetance: KdvElement) {
     this.isAutomaticStationChecked = true;
-    this.automaticStation = {
-      isChecked: true,
+    this.automaticStationCompetenceItem = {
       name: filteredCompetance.Name,
       value: filteredCompetance.Name,
       ids: [filteredCompetance.Id],
@@ -254,7 +251,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   private async sortCompetences(unsortedCompetences: KdvElement[][]): Promise<CompetenceItem[]> {
-    this.automaticStation = null;
+    this.automaticStationCompetenceItem = null;
     this.isAutomaticStationChecked = false;
     const competanceSorted: { [name: string]: CompetenceItem } = {};
     const allIds = unsortedCompetences

@@ -39,12 +39,12 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item *ngIf="automaticStation">
+  <ion-item *ngIf="automaticStationCompetenceItem">
     <ion-checkbox
       [checked]="isAutomaticStationChecked"
       color="varsom-dark-blue"
       mode="md"
-      [value]="automaticStation"
+      [value]="automaticStationCompetenceItem"
       (ionChange)="onCheckAutomaticStations($event)"
     >
     </ion-checkbox>
