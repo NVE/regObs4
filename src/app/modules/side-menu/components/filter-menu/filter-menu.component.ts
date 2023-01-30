@@ -93,7 +93,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
-    this.searchCriteriaService.resetEvent.subscribe(() => (this.isAutomaticStationChecked = true));
+    this.searchCriteriaService.resetEvent.subscribe(() => {
+      this.isAutomaticStationChecked = true;
+      this.nickName = '';
+    });
     const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
 
     combineLatest([
