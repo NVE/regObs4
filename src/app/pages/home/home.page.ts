@@ -123,6 +123,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
         })
       )
       .subscribe();
+    console.log('completed');
   }
 
   get appname(): string {
