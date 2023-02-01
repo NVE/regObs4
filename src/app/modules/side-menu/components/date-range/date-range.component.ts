@@ -8,7 +8,6 @@ import { IonAccordionGroup } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { getLangKeyString } from '../../../common-core/helpers';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-date-range',
@@ -51,7 +50,8 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   ngOnInit() {
-    this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$), take(1)).subscribe((criteria) => {
+    this.searchCriteriaService.resetEvent.subscribe(() => this.mode.next('predefined'));
+    this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$)).subscribe((criteria) => {
       this.fromDate = criteria.FromDtObsTime;
       this.toDate = criteria.ToDtObsTime;
       if (this.cachedDays === null || this.cachedDays !== 0) {
