@@ -10,9 +10,9 @@
         <ion-row>
           <ion-col>
             <ion-segment
+              [value]="useMapExtentFilter$ | async"
               (click)="toggleFilterByMapView($event)"
               class="segment-button-class"
-              [(ngModel)]="segmentValue"
               mode="ios"
               [disabled]="noMapExtentAvailable$ | async"
             >

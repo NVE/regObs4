@@ -30,8 +30,8 @@ export class ObservationListPage implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
-  segmentValue: MapSectionFilter;
   noMapExtentAvailable$: Observable<boolean>;
+  useMapExtentFilter$: Observable<MapSectionFilter>;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -83,7 +83,14 @@ export class ObservationListPage implements OnInit {
       map((mapView) => mapView?.bounds == null),
       distinctUntilChanged()
     );
-    mapService.mapView$.subscribe((c) => (this.segmentValue = c ? 'mapBorders' : 'all'));
+
+    this.useMapExtentFilter$ = combineLatest([
+      this.noMapExtentAvailable$.pipe(map((noExtent) => !noExtent)),
+      this.searchCriteriaService.useMapExtent$,
+    ]).pipe(
+      map(([hasExtent, useExtent]) => hasExtent && useExtent),
+      map((useExtentFilter) => (useExtentFilter ? 'mapBorders' : 'all'))
+    );
   }
 
   ngOnInit() {
@@ -95,10 +102,6 @@ export class ObservationListPage implements OnInit {
     );
 
     this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
-  }
-
-  ionViewWillLeave() {
-    this.segmentValue = 'mapBorders';
   }
 
   handleChangeSorting(event) {
@@ -118,7 +121,7 @@ export class ObservationListPage implements OnInit {
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
-    this.refresh();
+    this.searchCriteriaService.setExtentFilterActive(true);
   }
 
   loadNextPage(): void {
