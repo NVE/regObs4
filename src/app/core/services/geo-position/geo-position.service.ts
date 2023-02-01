@@ -236,7 +236,7 @@ export class GeoPositionService implements OnDestroy {
   public async startTrackingComponent(name: string, forcePermissionDialog = false): Promise<void> {
     if (forcePermissionDialog) {
       this.loggingService.debug(`startTrackingComponent: name = ${name}. Check permissions...`, DEBUG_TAG);
-      let permission = await this.checkPermissions();
+      let permission = await this.checkIfPermissionIsGranted();
       if (!permission) {
         permission = await this.askForPermission();
         if (!permission) {
@@ -265,8 +265,20 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private async startSubscriptions() {
-    const permission = await this.checkPermissions();
-    if (!permission) {
+    let permissionGranted = false;
+    try {
+      // Will ask for permission if permission status = 'prompt'
+      const permissions = await this.checkPermissions();
+      if (permissions && permissions === 'granted') {
+        permissionGranted = true;
+      } else if (permissions && permissions === 'prompt') {
+        permissionGranted = await this.askForPermission();
+      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
+    }
+
+    if (!permissionGranted) {
       this.loggingService.debug('We cannot watch postion or heading due to lacking permissions', DEBUG_TAG);
       return false;
     }
@@ -353,11 +365,23 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-  private async checkPermissions(): Promise<boolean> {
+  // Checks permission state for "fine location" (GPS)
+  // Return 'prompt' | 'prompt-with-rationale' | 'granted' | 'denied'
+  private async checkPermissions(): Promise<string> {
     try {
       const permissions = await Geolocation.checkPermissions();
       this.loggingService.debug('Geolocation permissions', DEBUG_TAG, permissions);
-      return permissions?.location === 'granted';
+      return permissions?.location;
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, `Error when checking location permissions: ${err.message}`);
+    }
+    return null;
+  }
+
+  private async checkIfPermissionIsGranted(): Promise<boolean> {
+    try {
+      const permissions = await this.checkPermissions();
+      return permissions && permissions === 'granted';
     } catch (err) {
       this.loggingService.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
     }
