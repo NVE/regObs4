@@ -126,17 +126,20 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   onSelectCompetenceChange(event) {
-    if (event.detail.value) {
-      this.chosenCompetenceValue = event.detail.value;
-      const ids = event.detail.value.ids;
-      if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
-        this.searchCriteriaService.setCompetence(null);
-      } else if (this.isAutomaticStationChecked) {
-        ids.push(105);
-        this.searchCriteriaService.setCompetence(ids);
-      } else {
-        this.searchCriteriaService.setCompetence(ids);
-      }
+    if (!event.detail.value) {
+      return;
+    }
+
+    this.chosenCompetenceValue = event.detail.value;
+    const ids = event.detail.value.ids;
+
+    if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
+      this.searchCriteriaService.setCompetence(null);
+    } else if (this.isAutomaticStationChecked) {
+      ids.push(105);
+      this.searchCriteriaService.setCompetence(ids);
+    } else {
+      this.searchCriteriaService.setCompetence(ids);
     }
   }
 
