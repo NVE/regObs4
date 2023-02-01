@@ -109,7 +109,8 @@ export class ObservationListPage implements OnInit {
   }
 
   toggleFilterByMapView(event: SegmentCustomEvent) {
-    const isExtentFilterActive = event.target.value == 'all' ? false : true;
+    const value = event.target.value as MapSectionFilter;
+    const isExtentFilterActive = value == 'all' ? false : true;
     this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);
   }
 
