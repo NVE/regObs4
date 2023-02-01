@@ -307,6 +307,11 @@ export class SearchCriteriaService {
       params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(4));
       params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(4));
       params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(4));
+    } else {
+      params.delete(URL_PARAM_NW_LAT);
+      params.delete(URL_PARAM_NW_LON);
+      params.delete(URL_PARAM_SE_LAT);
+      params.delete(URL_PARAM_SE_LON);
     }
     params.apply();
   }
