@@ -94,16 +94,13 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
-    this.searchCriteriaService.resetEvent.subscribe(() => {
-      this.isAutomaticStationChecked = true;
-      this.nickName = '';
-    });
-    const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
 
     combineLatest([
       this.searchCriteriaService.searchCriteria$,
       this.userSettingService.currentGeoHazard$.pipe(
+        takeUntil(this.ngDestroy$),
         tap((geoHazard) => {
+          this.isAutomaticStationChecked = true;
           this.currentGeoHazard = geoHazard;
           this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV').subscribe((regTypes) => {
             const registrationTypesByGeoHazard = geoHazard.map((typesByGeoHazard) => regTypes[typesByGeoHazard]).flat();
@@ -121,22 +118,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.observationTypesOptions &&
         this.mapRegistrationTypesToView(criteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]);
       this.competenceOptions && this.isObserverCompetence(criteria.ObserverCompetence as number[]);
-      //if sc.ObserverNickName add later
-
+      this.nickName = criteria.ObserverNickName;
       this.cdr.markForCheck();
     });
-
-    this.searchCriteriaService.searchCriteria$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap((criteria) => {
-          this.nickName = criteria.ObserverNickName;
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe();
-
-    //this.searchCriteriaService.searchCriteria$.subscribe((sc) => this.initialize(sc as SearchCriteriaRequestDto));
   }
 
   async onRestartFilters() {
@@ -151,7 +135,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.chosenCompetenceValue = event.detail.value;
     const ids = event.detail.value.ids;
 
-    if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
+    if (event.detail.value.value === 'All') {
       this.searchCriteriaService.setCompetence(null);
     } else if (this.isAutomaticStationChecked) {
       ids.push(105);

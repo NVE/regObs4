@@ -7,6 +7,7 @@ import {
   firstValueFrom,
   map,
   Observable,
+  ReplaySubject,
   scan,
   shareReplay,
   startWith,
@@ -26,6 +27,7 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
+import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -382,13 +384,13 @@ export class SearchCriteriaService {
   async setAutomaticStations() {
     const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
 
-    console.log(currentObserverCriteria);
     if (currentObserverCriteria != null && currentObserverCriteria.length > 0) {
       const copyCriteria = [...currentObserverCriteria] as number[];
       copyCriteria.push(105);
       this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
     }
   }
+
   setFromDate(fromDate: string, removeToDate = false) {
     const returnObj = {} as SearchCriteriaRequestDto;
     if (fromDate) {
