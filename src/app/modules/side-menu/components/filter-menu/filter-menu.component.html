@@ -2,7 +2,8 @@
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
-  <app-observations-days-back></app-observations-days-back>
+  <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
+  <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
   <app-update-observations></app-update-observations>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label> {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }} </ion-label>
@@ -52,22 +53,20 @@
       >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
     </ion-label>
   </ion-item>
-
-  <!-- TODO: Finne ut hvordan vi implementerer navnesøk - aynskront eller med søkeknapp? -->
-  <!--
   <ion-item>
-    <ion-label class="no-margin-bottom" color="dark" position="stacked">Søk</ion-label>
+    <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
+      "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
+    }}</ion-label>
     <ion-searchbar
       [value]="nickName"
       [debounce]="1000"
       mode="ios"
       class="ion-no-padding"
-      placeholder="Søk på observatørnavn"
-      (ionChange)="setNickName($event.value.target)"
+      [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"
+      (ionChange)="setNickName($event)"
     >
     </ion-searchbar>
   </ion-item>
--->
 
   <ion-item>
     <ion-button (click)="onRestartFilters()" class="resetFiltersButton" type="button" fill="clear">

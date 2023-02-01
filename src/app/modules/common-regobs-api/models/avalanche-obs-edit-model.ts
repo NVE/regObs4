@@ -37,6 +37,11 @@ export interface AvalancheObsEditModel {
   DtAvalancheTime: string;
 
   /**
+   * Hull of avalanche polygon, List(lon, lat)
+   */
+  Extent?: Array<Array<number>>;
+
+  /**
    * Bruddhøyde
    */
   FractureHeight?: number;
@@ -67,6 +72,11 @@ export interface AvalancheObsEditModel {
   SnowLine?: number;
 
   /**
+   * Hull of avalanche starting zone, List(lon, lat)
+   */
+  StartExtent?: Array<Array<number>>;
+
+  /**
    * StartLat
    */
   StartLat?: number;
@@ -75,6 +85,11 @@ export interface AvalancheObsEditModel {
    * StartLong
    */
   StartLong?: number;
+
+  /**
+   * Hull of avalanche runout zone, List (lon, lat)
+   */
+  StopExtent?: Array<Array<number>>;
 
   /**
    * StopLat

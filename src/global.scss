@@ -441,9 +441,12 @@ ion-slides {
   align-items: center;
 }
 
-app-header {
-  z-index: -1;
-}
+// White screen css fix. Can be removed when webkit has been fixed.
+// See https://github.com/ionic-team/ionic-framework/issues/25760 and RO-2083.
+// Maybe this can be removed, can't see any difference.
+// app-header {
+//   z-index: -1;
+// }
 
 ion-toast {
   --button-color: var(--ion-color-varsom-blue-light-1);
@@ -474,7 +477,7 @@ ion-toast {
   margin-right: 4px;
 }
 
-.shadow-marker {
+.cluster-marker {
   // filter: drop-shadow(5px 0px 5px #000);
   &:after {
     content: '';
@@ -488,6 +491,31 @@ ion-toast {
     display: inline-block;
     z-index: -1;
   }
+}
+
+// White screen css fix. Can be removed when webkit has been fixed.
+// See https://github.com/ionic-team/ionic-framework/issues/25760 and RO-2083.
+// This fix removes the shadow below map clusters.
+.ios .cluster-marker:after {
+  display: none;
+}
+
+.obs-marker:hover svg,
+.obs-marker:focus svg,
+.active-map-marker svg {
+  overflow: visible;
+  transform: scale(1.05);
+}
+
+.cluster-marker:hover svg circle,
+.cluster-marker:focus svg circle {
+  stroke-width: 4;
+}
+
+.obs-marker:hover svg path,
+.obs-marker:focus svg path,
+.active-map-marker svg path {
+  stroke-width: 4;
 }
 
 .pull-last-bottom {
@@ -758,4 +786,29 @@ button.alert-button.alert-button-confirm {
   .alert-button-inner.sc-ion-alert-md {
     justify-content: center;
   }
+}
+
+.leaflet-editing-icon {
+  border-radius: 50%;
+}
+
+ion-modal.modal-fullscreen::part(content) {
+  border-radius: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+// White screen css fix for ion-item. See https://github.com/ionic-team/ionic-framework/issues/25760
+// and RO-2083.
+// Removes the negative z-index on the ::after psuedo element
+// This will allow hover, active, and focused states to continue to work. However, the background color will appear on
+// top of any content in ion-item instead of underneath it. If your hover, active, and focused state background colors
+// are too dark, this approach may hide content.
+.ios ion-item::part(native)::after {
+  z-index: 0;
+  pointer-events: none;
 }

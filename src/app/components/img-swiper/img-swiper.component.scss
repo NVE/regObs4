@@ -66,7 +66,7 @@
     }
   }
 
-  app-map-image {
+  app-static-map-image {
     height: 100%;
     width: 100%;
     display: inline-flex;
@@ -147,7 +147,7 @@
 
 @media screen and (min-width: 800px) {
   .slides-wrapper {
-    app-map-image {
+    app-static-map-image {
       max-height: 400px;
     }
     app-offline-image {
@@ -158,6 +158,17 @@
       .swiper-slide {
         min-height: 30vh;
         height: auto;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 650px) {
+  ion-slides {
+    .swiper-slide {
+      width: calc(80vw - 60px) !important;
+      &:last-child {
+        width: 80vw !important;
       }
     }
   }

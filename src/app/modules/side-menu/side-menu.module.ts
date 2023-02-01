@@ -12,9 +12,12 @@ import { FloodzonesLegendComponent } from './components/support-tiles-menu/legen
 import { ClayzonesLegendComponent } from './components/support-tiles-menu/legends/clayzones-legend/clayzones-legend.component';
 import { WeakenediceLegendComponent } from './components/support-tiles-menu/legends/weakenedice-legend/weakenedice-legend.component';
 import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/legends/steepness-common-legend/steepness-common-legend.component';
+import { DateRangeComponent } from './components/date-range/date-range.component';
+import { SharedComponentsModule } from '../registration/shared-components.module';
+import { NoLegendComponent } from './components/support-tiles-menu/legends/no-legend.component';
 
 @NgModule({
-  imports: [SharedModule],
+  imports: [SharedModule, SharedComponentsModule],
   declarations: [
     SideMenuComponent,
     FilterMenuComponent,
@@ -28,6 +31,8 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
     ClayzonesLegendComponent,
     WeakenediceLegendComponent,
     SteepnessCommonLegendComponent,
+    DateRangeComponent,
+    NoLegendComponent,
   ],
   exports: [SideMenuComponent, FilterMenuComponent],
 })

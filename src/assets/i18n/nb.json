@@ -82,7 +82,7 @@
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
-      "PermissionDenied": "For å hente posisjonen din må du endre lokasjonsinnstillinger",
+      "PermissionDenied": "Vi trenger tilgang til nøyaktig posisjon for å vise hvor du er",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din",
       "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
@@ -150,9 +150,19 @@
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss fra app",
+    "CUSTOM_TIMESPAN": "Egendefinert periode",
+    "DATE_RANGE": {
+      "LAST_WEEK": "Siste uke",
+      "LAST_X_DAYS": "Siste {{days}} dager",
+      "LAST_X_MONTHS": "Siste {{months}} måneder",
+      "LAST_X_WEEKS": "Siste {{weeks}} uker",
+      "TODAY": "I dag",
+      "YESTERDAY": "I går"
+    },
     "DAYS_BACK": "Dager tilbake",
     "DAY_BACK": "Dag tilbake",
     "DEACTIVATE_OBSERVATIONS": "Visning av observasjoner er deaktivert",
+    "END_DATE": "Sluttdato",
     "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
@@ -170,6 +180,7 @@
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
     "SHOW_TRIPS": "Vis turer",
+    "START_DATE": "Startdato",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TILES": {
@@ -179,7 +190,7 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
-    "TIME_FRAME": "Tidsrom",
+    "TIMESPAN": "Tidsrom",
     "TODAYS_OBSERVATIONS": "Kun dagens observasjoner",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdatert",
@@ -218,16 +229,20 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
-    "TITLE": "Observasjonsfilter",
-    "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observasjonstype"
-    },
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
       "AUTOMATIC_STATIONS": "Automatiske stasjoner",
       "LABEL": "Kompetanse",
       "TITLE": "Observatør"
-    }
+    },
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Søk på observatørnavn",
+      "TITLE": "Navn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
@@ -270,10 +285,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
-    "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten godkjenning for bruk av lokasjon."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
@@ -343,7 +354,11 @@
     },
     "DIRT": {
       "LAND_SLIDE_OBS": {
+        "AREA_TOTAL": "Tegn hele skredarealen",
         "AVAL_TRIGGER": "Skredutløser",
+        "CONFIRM_END_POSITION": "Bekreft sluttpunkt",
+        "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde",
+        "CONFIRM_START_POSITION": "Bekreft startpunkt",
         "DAMAGE_EXTENT": "Skadeomfang",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "DIRT_ACTIVITY_INFLUENCED": "Hva ble påvirket?",
@@ -352,6 +367,7 @@
         "DT_LAND_SLIDE_TIME_END": "Når skjedde skredet senest",
         "END_POSITION": "Sluttpunkt",
         "IN_MAP": "i kart",
+        "LANDSLIDE_AREA": "Skredområde",
         "LANDSLIDE_TYPE": "Type skred",
         "POSITION": "Skredposisjon",
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
@@ -531,11 +547,16 @@
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
+        "AREA_END": "Tegn utløpsområde",
+        "AREA_START": "Tegn løsneområde",
+        "AREA_TOTAL": "Tegn hele skredområdet",
+        "AVALANCHE_AREA": "Skredområde",
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
         "AVAL_CAUSE": "Svakt lag",
         "CASUALTIES_NUM": "Antall skredtatte",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
+        "CONFIRM_AVALANCHE_AREA": "Bekreft skredområde",
         "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall skredtatte eller involverte",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "EVACUATED_NUM": "Antall evakuerte",
@@ -872,9 +893,12 @@
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
+    "NO_LEGEND": "Dette kartlaget har ikke tegnforklaring enda.",
     "NO_OPACITY": "Heldekkende",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Løsne- og utløpsområder (Grønland)",
     "READ_MORE": "Les mer om støttekart",
     "STEEPNESS_COLOR_INFO": "Farger på terrengets bratthet i grader:",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Bratthetskart (Grønland)",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekartet er kun tilgjengelig offline med utløp aktiverte.",

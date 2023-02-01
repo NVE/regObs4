@@ -45,7 +45,7 @@ export const settings: ISettings = {
   observations: {
     maxObservationsToFetch: 5000,
     daysBack: {
-      Snow: [0, 1, 2, 3, 7, 7 * 2, 365],
+      Snow: [0, 1, 2, 3, 7, 7 * 2],
       Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
       Water: [0, 1, 2, 3, 7, 7 * 2],
       Soil: [0, 1, 2, 3, 7, 7 * 2],
@@ -58,7 +58,7 @@ export const settings: ISettings = {
         PROD: 'https://api.regobs.no/v5',
         DEMO: 'https://demo-api.regobs.no/v5',
         TEST: 'https://test-api.regobs.no/v5',
-        // 'TEST': 'http://localhost:40001'
+        //TEST: 'http://localhost:40001',
       },
       serviceUrl: {
         PROD: 'https://api.nve.no/hydrology/regobs/v3.5.0',
@@ -230,7 +230,55 @@ export const settings: ISettings = {
             enabled: true,
             checked: true,
             availableOffline: true,
+            bounds: [
+              [57.136239319177434, -0.17578125],
+              [57.136239319177434, 36.03515625],
+              [81.36128726057069, 36.03515625],
+              [81.36128726057069, -0.17578125],
+              [57.136239319177434, -0.17578125],
+            ],
           },
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
+        },
+        {
+          name: 'steepness-greenland',
+          description: 'STEEPNESS_GREENLAND_MAP_DESCRIPTION',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/BratthetGronland/MapServer/tile/{z}/{y}/{x}',
+          enabled: false,
+          checked: false,
+          opacity: 0.5,
+          geoHazardId: 10,
+          availableOffline: true,
+          bounds: [
+            [63.706357155206376, -55.30247736705827],
+            [63.706357155206376, -48.83886886210894],
+            [67.72977075500214, -48.83886886210894],
+            [67.72977075500214, -55.30247736705827],
+            [63.706357155206376, -55.30247736705827],
+          ],
+        },
+        {
+          name: 'outlets-greenland',
+          description: 'OUTLETS_GREENLAND_MAP_DESCRIPTION',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/UtlopGronland/MapServer/tile/{z}/{y}/{x}',
+          enabled: false,
+          checked: false,
+          opacity: 0.5,
+          geoHazardId: 10,
+          availableOffline: true,
+          bounds: [
+            [63.706357155206376, -55.30247736705827],
+            [63.706357155206376, -48.83886886210894],
+            [67.72977075500214, -48.83886886210894],
+            [67.72977075500214, -55.30247736705827],
+            [63.706357155206376, -55.30247736705827],
+          ],
         },
         {
           name: 'clayzones',
@@ -241,6 +289,13 @@ export const settings: ISettings = {
           opacity: 0.5,
           geoHazardId: 20,
           availableOffline: false,
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
         },
         {
           name: 'floodzoones',
@@ -251,6 +306,13 @@ export const settings: ISettings = {
           opacity: 0.5,
           geoHazardId: 60,
           availableOffline: false,
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
         },
         {
           name: 'weakenedice',
@@ -261,14 +323,14 @@ export const settings: ISettings = {
           opacity: 0.5,
           geoHazardId: 70,
           availableOffline: true,
+          bounds: [
+            [57.136239319177434, -0.17578125],
+            [57.136239319177434, 36.03515625],
+            [81.36128726057069, 36.03515625],
+            [81.36128726057069, -0.17578125],
+            [57.136239319177434, -0.17578125],
+          ],
         },
-      ],
-      supportTilesBounds: [
-        [57.136239319177434, -0.17578125],
-        [57.136239319177434, 36.03515625],
-        [81.36128726057069, 36.03515625],
-        [81.36128726057069, -0.17578125],
-        [57.136239319177434, -0.17578125],
       ],
     },
     search: {
@@ -291,6 +353,9 @@ export const settings: ISettings = {
     unknownMapCenter: [59.911197, 10.741059],
     flyToOnGpsZoom: 13,
     maxClusterRadius: 60, // 30,
+    extentColor: '#3344bb',
+    startExtentColor: '#33bb44',
+    endExtentColor: '#bb3344',
   },
   dateFormats: {
     angular: {

@@ -8,9 +8,11 @@
   "ADD_MENU": {
     "DRAFT_TITLE_ICE": "Kladde: Isobservation",
     "DRAFT_TITLE_SNOW": "Kladde: Sneobservation",
+    "DRAFT_TITLE_SOIL": "Udkast: Jordobservation",
     "DRAFT_TITLE_WATER": "Kladde: Vandobservation",
     "NEW_ICE_OBSERVATION": "Ny isobservation",
     "NEW_SNOW_OBSERVATION": "Ny sneobservation",
+    "NEW_SOIL_OBSERVATION": "Ny jordbundsobservation",
     "NEW_WATER_OBSERVATION": "Ny vandobservation"
   },
   "ALERT": {
@@ -177,7 +179,6 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "Opentopomap (verden)"
     },
-    "TIME_FRAME": "Tidsrum",
     "TODAYS_OBSERVATIONS": "Kun dagens observationer",
     "TOPO_MAP_CREDITS": "Topografisk kort leveret af",
     "UPDATE_OBSERVATIONS": "Opdateret",
@@ -218,8 +219,16 @@
   "OBSERVATION_FILTER": {
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
+      "AUTOMATIC_STATIONS": "Automatiske stationer",
       "LABEL": "Kompetence",
       "TITLE": "Observatør"
+    },
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Søg efter observatørens navn",
+      "TITLE": "Navn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observationstype"
     },
     "TITLE": "Observationsfilter"
   },
@@ -233,6 +242,7 @@
     "NO_OBSERVATIONS_TEXT": "Der er ingen observationer i kortudsnittet, prøv at ændre udsnittet eller udvid perioden du vil se observationer fra.",
     "SORT_BY_CHANGE_TIME": "Nyligt opdateret",
     "SORT_BY_OBS_TIME": "Nyligt observeret",
+    "SORT_BY_TEXT": "Bestil af",
     "TITLE": "Observationer"
   },
   "OFFLINE_MAP": {
@@ -330,6 +340,7 @@
           "HEADER": "Sletning mislykkedes",
           "MESSAGE": "Vi var ikke i stand til at slette observationen fra Regobs. Tjek venligst din netværksforbindelse, og prøv igen."
         },
+        "HEADER": "Slet observation",
         "MESSAGE": "Vil du slette denne observation fra Regobs?"
       }
     },
@@ -362,13 +373,21 @@
       "ABANDON": "Annuller mit arbejde",
       "CONFLICT": "En ny version blev gemt, mens du arbejdede. <br/> Vil du annullere dit arbejde og indlæse den nye version eller indsende din version og overskrive?",
       "EDIT_OBSERVATION": "Rediger observation",
+      "GONE": "Denne observation er slettet i Regobs. <br/> Vil du opgive dine ændringer eller indsende udkastet som en ny observation?",
       "LOGGED": "Problemt er logget.",
+      "OVERWRITE": "Indsend og overskriv",
       "PROBLEM": "Der er opstået et problem med din registrering",
       "PROBLEM_HELP_TEXT": "Observationer med fejl lagres i din telefon, og når problemet er løst, vil du kunne indsende observationen på ny.",
       "REFERENCE": "Reference",
       "SEND_EMAIL": "Send til os på email",
+      "SUBMIT_NEW": "Indsend som ny observation",
       "SUBTITLE": "Mangler netværk eller indsendelse tog for lang tid. Vi prøver igen efter en stund og håber, at nettet er forbedret.",
       "TITLE": "Indsendning fejlet"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Rediger observation",
+      "HEADER": "Synkronisering mislykkedes",
+      "MESSAGE": "Vi kunne ikke hente en ny kopi af denne observation fra Regobs. Du kan stadig redigere dette, men der er risiko for konflikt, når du indsender observationen senere, hvis den samme observation er blevet ændret et andet sted."
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Noter fra observationen",
@@ -410,6 +429,10 @@
         "TITLE": "Istykkelse"
       },
       "INCIDENT": {
+        "CASUALTIES_NUM": "Antal gennem isen",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være større end antallet i turgruppen",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være større en antallet gennem isen eller antallet i turgruppen",
+        "INVOLVED_NUM": "Antal i turgruppen",
         "SAFETY_GEAR_TID": "Redningsudstyr"
       }
     },
@@ -428,7 +451,7 @@
       "DAMAGE_EXTENT": "Skadeomfang",
       "DEAD_NUM": "Antal døde",
       "IMAGE_PLACEHOLDER": "+ Tilføj en beskrivelse af billedet",
-      "RESCUE_TID": "Red",
+      "RESCUE_TID": "Redning",
       "TITLE": "Ulykke / hændelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldigt billedformat",
@@ -529,12 +552,18 @@
         "INVOLVED_NUM": "Antal involveret",
         "LOCAL_KNOWLEDGE_TID": "Kendskab til området",
         "LOCAL_TOURIST_TID": "Lokal eller besøgende",
+        "MATERIAL_DAMAGES": "Materielle skader",
         "POSITION": "Lavineposition",
+        "REMOTELY_TRIGGERED": "Fjernudløst",
+        "SAFETY_GEAR_TID": "Afsender/modtager",
         "SET_AVALANCHE_POSITION": "Set lavineposition",
+        "SLOPE_ACTIVITY_TID": "Tur fase",
         "TERRAIN_START_ZONE": "Terræntype i frigivelsesområdet",
         "TIME": "Lavinetidspunkt (obligatorisk)",
         "TITLE": "Lavinehændelse",
-        "TRAJECTORY_NAME": "Navn på lavinespor"
+        "TRAFFIC_OBSTRUCTED": "Trafik er hindret",
+        "TRAJECTORY_NAME": "Navn på lavinespor",
+        "VALID_EXPOSITION": "Aspekt"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Tilføj til nyt lavineproblem",
@@ -555,6 +584,7 @@
         "TITLE": "Lavineproblem",
         "TOP": "Øverst",
         "UNKNOWN_TYPE": "Ukendt svagt lag",
+        "VALID_EXPOSITION": "Aspekt",
         "WEAK_LAYER": "Svagt lag",
         "WEAK_LAYER_DEPTH": "Svagt lags dybde"
       },
@@ -562,10 +592,13 @@
         "ADD_NEW": "Tilføj til ny test",
         "DISTANCE_FROM_TOP": "Afstand fra toppen (cm)",
         "FRACTURE_TYPE": "Brudtype",
+        "RB_RELEASE": "Procentdel af frigivet blok",
+        "RB_SCORE": "Rutschblock score",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antal slag",
         "TEST_TYPE": "Testtype",
         "TITLE": "Tests",
+        "X_DISTANCE": "Længde af snit",
         "Y_DISTANCE": "Kolonne længde"
       },
       "SNOW_PROFILE": {
@@ -579,7 +612,7 @@
         },
         "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
-        "IS_PROFILE_TO_GROUND": "Går profilen til bakken?",
+        "IS_PROFILE_TO_GROUND": "Går profilen til grunden?",
         "NORTH": "N",
         "NORTH_EAST": "NØ",
         "NORTH_WEST": "NV",
@@ -646,6 +679,7 @@
         "SUBFORMS": "Underskema",
         "SUPERIOR": "Overordnet",
         "TITLE": "Sneprofil",
+        "VALID_EXPOSITION": "Aspekt",
         "WEST": "V"
       },
       "SNOW_SURFACE": {
@@ -836,9 +870,12 @@
     "LOW": "Lav",
     "MARITINE_BORDER": "Marinegrænseflade",
     "MIDDLE": "Medium",
+    "NO_LEGEND": "Dette kortlag har endnu ingen forklaring.",
     "NO_OPACITY": "Heldækkende",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Potentielle udslipsområder og udløbszoner (Grønland)",
     "READ_MORE": "Læs mere om støttekort",
     "STEEPNESS_COLOR_INFO": "Farver indikerer stejlhedsgraden i terrænet:",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Kort over hældningsvinkler (Grønland)",
     "STEEPNESS_MAP_DESCRIPTION": "Stejlhedskort",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlægning. Kortet er automatisk genereret og kan have fejl og mangler feks. skråninger eller udløb som ikke vises korrekt.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekortet er kun tilgængeligt offline med udløbende aktiviteter",

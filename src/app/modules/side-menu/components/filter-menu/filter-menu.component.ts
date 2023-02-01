@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, SearchbarCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { map, take, takeUntil, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
@@ -85,10 +84,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     private userSettingService: UserSettingService,
     private searchCriteriaService: SearchCriteriaService,
     private translateService: TranslateService,
-    private searchService: SearchService,
     private cdr: ChangeDetectorRef,
-    private kdv: KdvService,
-    private logger: LoggingService
+    private kdv: KdvService
   ) {
     super();
   }
@@ -97,6 +94,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
+    this.searchCriteriaService.resetEvent.subscribe(() => {
+      this.isAutomaticStationChecked = true;
+      this.nickName = '';
+    });
+    const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
 
     combineLatest([
       this.searchCriteriaService.searchCriteria$,
@@ -142,16 +144,20 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   onSelectCompetenceChange(event) {
-    if (event.detail.value) {
-      const ids = [...event.detail.value.ids];
-      if (event.detail.value.value === 'All') {
-        this.searchCriteriaService.setCompetence(null);
-      } else if (this.isAutomaticStationChecked) {
-        ids.push(105);
-        this.searchCriteriaService.setCompetence(ids);
-      } else {
-        this.searchCriteriaService.setCompetence(ids);
-      }
+    if (!event.detail.value) {
+      return;
+    }
+
+    this.chosenCompetenceValue = event.detail.value;
+    const ids = event.detail.value.ids;
+
+    if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
+      this.searchCriteriaService.setCompetence(null);
+    } else if (this.isAutomaticStationChecked) {
+      ids.push(105);
+      this.searchCriteriaService.setCompetence(ids);
+    } else {
+      this.searchCriteriaService.setCompetence(ids);
     }
   }
 
@@ -180,11 +186,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     else this.searchCriteriaService.removeObservationType(obsType);
   }
 
-  setNickName(event) {
-    const nickName = event.target.value?.toLowerCase();
-    if (nickName) {
-      this.searchCriteriaService.setObserverNickName(nickName);
-    }
+  setNickName(newNick: SearchbarCustomEvent | null) {
+    let nickName = null;
+    newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
+    this.searchCriteriaService.setObserverNickName(nickName);
   }
 
   private async isObserverCompetence(searchCriteriaObserverCompetence: number[]) {

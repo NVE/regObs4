@@ -1,29 +1,22 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  ChangeDetectionStrategy,
-  OnDestroy,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectorRef,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges
 } from '@angular/core';
+import { booleanWithin, point } from '@turf/turf';
 import * as L from 'leaflet';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
 import { takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { point, booleanWithin } from '@turf/turf';
-import { ImageLocation } from '../../components/img-swiper/image-location.model';
-import { settings } from '../../../settings';
-import { SmartChanges } from '../../core/helpers/simple-changes.helper';
-import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
-import { GeoHazard } from 'src/app/modules/common-core/models';
-import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { SVALBARD_BOUNDS } from 'src/app/core/helpers/leaflet/svalbard-bounds';
+import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { settings } from '../../../settings';
+import { ImageLocation, ImageLocationStartStop } from '../../components/img-swiper/image-location.model';
+import { SmartChanges } from '../../core/helpers/simple-changes.helper';
+import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 
-const START_ICON = '/assets/icon/map/GPS_start.svg';
-const END_ICON = '/assets/icon/map/GPS_stop.svg';
-const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
+export const START_ICON = '/assets/icon/map/GPS_start.svg';
+export const END_ICON = '/assets/icon/map/GPS_stop.svg';
+export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
 
 @Component({
   selector: 'app-map-image',
@@ -102,7 +95,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
         this.setMarker(val.latLng, val.geoHazard);
       }
       if (val && val.startStopLocation) {
-        this.setStartStopLocation(val.startStopLocation.start, val.startStopLocation.stop);
+        this.setStartStopLocation(val.startStopLocation);
       }
       if (val && val.damageLocations && val.damageLocations.length > 0) {
         this.setDamageLocations(val.damageLocations);
@@ -164,25 +157,34 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     }).addTo(this.map);
   }
 
-  private setStartStopLocation(start: L.LatLng, stop: L.LatLng) {
-    if (start) {
-      L.marker(start, {
+  private setStartStopLocation(location: ImageLocationStartStop) {
+    if (location.start) {
+      L.marker(location.start, {
         icon: this.getStartStopIcon(true),
         interactive: false,
       }).addTo(this.map);
     }
-    if (stop) {
-      L.marker(stop, {
+    if (location.stop) {
+      L.marker(location.stop, {
         icon: this.getStartStopIcon(false),
         interactive: false,
       }).addTo(this.map);
     }
-    if (start && stop) {
-      L.polyline([start, stop], {
+    if (location.start && location.stop) {
+      L.polyline([location.start, location.stop], {
         color: 'red',
         weight: 6,
         opacity: 0.9,
       }).addTo(this.map);
+    }
+    if (location.totalPolygon) {
+      location.totalPolygon.addTo(this.map);
+    }
+    if (location.startPolygon) {
+      location.startPolygon.addTo(this.map);
+    }
+    if (location.endPolygon) {
+      location.endPolygon.addTo(this.map);
     }
   }
 

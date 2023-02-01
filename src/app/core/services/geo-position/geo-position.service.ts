@@ -13,7 +13,7 @@ import {
 import { filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { AlertController, ToastController, Platform } from '@ionic/angular';
+import { ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';
@@ -21,6 +21,7 @@ import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -77,7 +78,6 @@ export class GeoPositionService implements OnDestroy {
     private deviceOrientation: DeviceOrientation,
     private platform: Platform,
     private loggingService: LoggingService,
-    private alertController: AlertController,
     private toastController: ToastController,
     private translateService: TranslateService
   ) {
@@ -236,12 +236,22 @@ export class GeoPositionService implements OnDestroy {
   public async startTrackingComponent(name: string, forcePermissionDialog = false): Promise<void> {
     if (forcePermissionDialog) {
       this.loggingService.debug(`startTrackingComponent: name = ${name}. Check permissions...`, DEBUG_TAG);
-      const valid = await this.checkPermissions();
-      if (!valid) {
-        this.gpsPositionLog.next(this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied));
-        return;
+      let permission = await this.checkPermissions();
+      if (!permission) {
+        permission = await this.askForPermission();
+        if (!permission) {
+          this.gpsPositionLog.next(
+            this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied)
+          );
+          return;
+        } else if (Capacitor.getPlatform() === 'ios') {
+          // I Android vil appen bli pauset når vi kjører askForPermission(),
+          // så startWatchingPosition() vil bli kjørt når appen aktiveres igjen.
+          // I iOS vil ikke appen bli pauset, så vi må kjøre startWatchingPosition() manuelt
+          this.startWatchingPosition();
+        }
       }
-      this.loggingService.debug(`startTrackingComponent: name = ${name}. Permissions ok = ${valid}`, DEBUG_TAG);
+      this.loggingService.debug(`startTrackingComponent: name = ${name}. Permissions ok = ${permission}`, DEBUG_TAG);
     }
     this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name), name]);
   }
@@ -254,7 +264,12 @@ export class GeoPositionService implements OnDestroy {
     return this.trackingComponents.value.filter((x) => x !== name);
   }
 
-  private startSubscriptions() {
+  private async startSubscriptions() {
+    const permission = await this.checkPermissions();
+    if (!permission) {
+      this.loggingService.debug('We cannot watch postion or heading due to lacking permissions', DEBUG_TAG);
+      return false;
+    }
     this.startWatchingPosition();
     this.startWatchingHeading();
   }
@@ -280,7 +295,6 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private async startWatchingPosition(): Promise<void> {
-    await this.checkPermissions();
     const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
       if (err) {
         this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
@@ -341,47 +355,34 @@ export class GeoPositionService implements OnDestroy {
 
   private async checkPermissions(): Promise<boolean> {
     try {
-      if (isAndroidOrIos(this.platform)) {
-        await this.checkPermissionsApp();
-      }
+      const permissions = await Geolocation.checkPermissions();
+      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, permissions);
+      return permissions?.location === 'granted';
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
-      const errorMessage = this.translateService.instant('GEOLOCATION.POSITION_ERROR.PermissionDenied');
-      this.createToast(errorMessage);
-      return true; // continue anyway on error
+      this.loggingService.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
     }
+    return false;
   }
 
-  private async checkPermissionsApp(): Promise<boolean> {
-    const currentPermissions = await Geolocation.checkPermissions();
-    this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
-    const authorized = currentPermissions.location === 'granted';
-    if (!authorized) {
-      if (this.platform.is('ios')) {
-        await this.showPermissionDeniedError();
+  private async askForPermission(): Promise<boolean> {
+    try {
+      const permissions = await Geolocation.requestPermissions();
+      this.loggingService.debug('Geolocation permissions after request', DEBUG_TAG, permissions);
+      if (permissions?.location === 'denied') {
+        this.showPermissionDeniedToast();
         return false;
       }
-      // location is not authorized, request new. This only works on Android
-      const newPermissionsAfterRequest = await Geolocation.requestPermissions();
-      this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
-      if (newPermissionsAfterRequest?.location === 'denied') {
-        await this.showPermissionDeniedError();
-        return false;
-      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, `Error when requesting location permissions: ${err.message}`);
+      this.showPermissionDeniedToast();
+      return false;
     }
     return true;
   }
 
-  private async showPermissionDeniedError() {
-    const translations = await this.translateService
-      .get(['ALERT.OK', 'PERMISSION.LOCATION_DENIED_HEADER', 'PERMISSION.LOCATION_DENIED_MESSAGE'])
-      .toPromise();
-    const alert = await this.alertController.create({
-      header: translations['PERMISSION.LOCATION_DENIED_HEADER'],
-      message: translations['PERMISSION.LOCATION_DENIED_MESSAGE'],
-      buttons: [translations['ALERT.OK']],
-    });
-    await alert.present();
+  protected showPermissionDeniedToast() {
+    const errorMessage = this.translateService.instant('GEOLOCATION.POSITION_ERROR.PermissionDenied');
+    this.createToast(errorMessage);
   }
 
   private startWatchingHeading() {

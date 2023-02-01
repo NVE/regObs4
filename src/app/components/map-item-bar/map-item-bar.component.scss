@@ -2,8 +2,11 @@
   --img-wrapper-height: 22vh;
   --img-wrapper-width: 30vh;
   --img-wrapper-height-desktop: 18vh;
+  --img-size: 100px;
 
   position: absolute;
+  display: flex;
+  justify-content: center;
   left: 0;
   right: 0;
   bottom: 0;
@@ -13,6 +16,39 @@
   h5 {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .image {
+    position: relative;
+    height: var(--img-size);
+
+    img {
+      width: var(--img-size);
+      height: var(--img-size);
+      object-fit: cover;
+    }
+
+    &-count {
+      position: absolute;
+      display: flex;
+      width: 32px;
+      height: 32px;
+      top: 8px;
+      right: 9px;
+      background: var(--images-overflow-background);
+      color: var(--ion-text-color);
+      border-radius: 50%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &-show {
+      max-width: 400px;
+    }
+
+    &-show-not {
+      max-width: 400px;
+    }
   }
 
   .card-icon-item {
@@ -31,27 +67,12 @@
     }
   }
 
-  .img-wrapper {
-    position: absolute;
-    left: 0px;
-    width: var(--img-wrapper-width);
-    height: var(--img-wrapper-height);
-    top: calc(var(--img-wrapper-height) * -1);
-    display: flex;
-    justify-content: center;
-
-    &.full {
-      width: 100%;
-      max-width: none;
+  @media only screen and (max-width: 500px) {
+    .image-show {
+      max-width: 200px;
     }
-
-    app-img-swiper {
-      display: flex;
-      flex: 1;
-      flex-direction: row;
-      justify-content: left;
-      width: 100%;
-      height: 100%;
+    ion-col {
+      padding: 3px;
     }
   }
 }

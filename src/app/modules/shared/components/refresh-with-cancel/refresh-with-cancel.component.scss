@@ -5,7 +5,11 @@
   top: 0px;
   right: 0;
   height: 60px;
-  z-index: -1;
+
+  // White screen css fix. Can be removed when webkit has been fixed.
+  // See https://github.com/ionic-team/ionic-framework/issues/25760 and RO-2083.
+  // Maybe this can be removed, can't see any difference.
+  // z-index: -1;
 }
 
 ion-refresher {

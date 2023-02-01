@@ -4,6 +4,7 @@
   class="datetimepicker-button"
   [ngClass]="'datetimepicker-button--' + textAlign"
   (click)="openModal()"
+  [size]="buttonSize"
 >
   <div class="datetimepicker-button-inner-wrapper">
     {{ dateTime | date: dateTimeFormat }}

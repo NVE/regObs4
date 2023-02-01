@@ -65,6 +65,10 @@ app-map {
   justify-content: space-between;
 }
 
+.flex-space-evenly {
+  justify-content: space-evenly;
+}
+
 .flex-center {
   align-items: center;
 }
@@ -193,6 +197,10 @@ app-map {
   padding-left: 0;
 }
 
+.right-padding {
+  padding-right: 20px;
+}
+
 .edit-name-button {
   font-size: inherit;
   height: 100%;
@@ -230,4 +238,8 @@ app-map {
   background-color: transparent;
   position: relative;
   color: #000;
+}
+
+.bullet {
+  vertical-align: middle;
 }
