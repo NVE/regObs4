@@ -4,6 +4,7 @@ import moment from 'moment';
 import {
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   firstValueFrom,
   map,
   Observable,
@@ -15,7 +16,7 @@ import {
   tap,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
-import { GeoHazard } from 'src/app/modules/common-core/models';
+import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import {
   PositionDto,
   RegistrationTypeCriteriaDto,
@@ -165,6 +166,8 @@ export class SearchCriteriaService {
   get useMapExtent$() {
     return this.useMapExtent.asObservable();
   }
+  private currentGeoHazard: GeoHazard[];
+  resetEvent: Subject<void> = new Subject();
   /**
    * Current filter. Current language and geo hazards are always included
    */
@@ -193,7 +196,12 @@ export class SearchCriteriaService {
         )
       ),
       this.userSettingService.language$,
-      this.userSettingService.currentGeoHazard$,
+      this.userSettingService.currentGeoHazard$.pipe(
+        tap((geohazard) => {
+          this.currentGeoHazard !== undefined && this.restartSearchCriteria();
+          this.currentGeoHazard = geohazard;
+        })
+      ),
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
@@ -207,16 +215,42 @@ export class SearchCriteriaService {
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
       // - FromDtObsTime: fromDate URL param
-      map(([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]) => ({
-        ...criteria,
-        LangKey: langKey,
-        SelectedGeoHazards: geoHazards,
-        FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
-        Extent: useMapExtent ? extent : null,
-      })),
+      debounceTime(50),
+      map(
+        ([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]: [
+          SearchCriteriaRequestDto,
+          LangKey,
+          GeoHazard[],
+          string,
+          boolean,
+          WithinExtentCriteriaDto
+        ]) => {
+          return {
+            ...criteria,
+            LangKey: langKey,
+            SelectedGeoHazards: geoHazards,
+            FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
+            Extent: useMapExtent ? extent : null,
+          };
+        }
+      ),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
+  }
+
+  async restartSearchCriteria() {
+    const resetDate = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
+    const daysBackToIso = this.daysBackToIsoDateTime(resetDate);
+    const criteria: SearchCriteriaRequestDto = {
+      ObserverCompetence: null,
+      SelectedRegistrationTypes: null,
+      ObserverNickName: null,
+      FromDtObsTime: convertToIsoDateTime(daysBackToIso),
+      ToDtObsTime: null,
+    };
+    this.searchCriteriaChanges.next(criteria);
+    this.resetEvent.next();
   }
 
   // build search criteria from url parameters. Some params are stored in user settings

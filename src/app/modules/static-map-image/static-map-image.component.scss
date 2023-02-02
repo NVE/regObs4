@@ -1,0 +1,30 @@
+.container {
+  width: 100%;
+  height: 100%;
+
+  position: relative; // To make position absolute work for child elements
+
+  // To hide tiles overlapping with the map container.
+  // The map may start in the middle of a tile.
+  overflow: hidden;
+
+  // Tiles and graphics use position absolute.
+  // The actual position (top, left) is computed by the js code.
+
+  .tile {
+    position: absolute;
+    // Not sure if important is needed, but the swiper kept
+    // overriding these sizes when this was developed.
+    width: 256px !important;
+    height: 256px !important;
+    max-height: 256px !important;
+    max-width: 256px !important;
+
+    // Act like this is not images.
+    pointer-events: none;
+  }
+
+  .graphic {
+    position: absolute;
+  }
+}

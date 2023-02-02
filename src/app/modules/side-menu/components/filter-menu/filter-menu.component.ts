@@ -93,6 +93,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
+    this.searchCriteriaService.resetEvent.subscribe(() => {
+      this.isAutomaticStationChecked = true;
+      this.nickName = '';
+    });
     const searchCriteria = await firstValueFrom(this.searchCriteriaService.searchCriteria$);
 
     combineLatest([
@@ -122,8 +126,13 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   onSelectCompetenceChange(event) {
+    if (!event.detail.value) {
+      return;
+    }
+
     this.chosenCompetenceValue = event.detail.value;
     const ids = event.detail.value.ids;
+
     if (this.isAutomaticStationChecked && event.detail.value.value === 'All') {
       this.searchCriteriaService.setCompetence(null);
     } else if (this.isAutomaticStationChecked) {

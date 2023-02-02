@@ -286,10 +286,6 @@
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Permission to location denied",
-    "LOCATION_DENIED_MESSAGE": "Cannot show location in map without permission."
-  },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "About observations",
@@ -358,7 +354,11 @@
     },
     "DIRT": {
       "LAND_SLIDE_OBS": {
+        "AREA_TOTAL": "Define landslide boundaries",
         "AVAL_TRIGGER": "Landslide trigger",
+        "CONFIRM_END_POSITION": "Confirm end position",
+        "CONFIRM_LANDSLIDE_AREA": "Confirm landslide area",
+        "CONFIRM_START_POSITION": "Confirm start position",
         "DAMAGE_EXTENT": "Damage extent",
         "DESTRUCTIVE_SIZE": "Size",
         "DIRT_ACTIVITY_INFLUENCED": "What was affected?",
@@ -367,6 +367,7 @@
         "DT_LAND_SLIDE_TIME_END": "When did the landslide end",
         "END_POSITION": "End position",
         "IN_MAP": "in map",
+        "LANDSLIDE_AREA": "Landslide area",
         "LANDSLIDE_TYPE": "Landslide type",
         "POSITION": "Landslide position",
         "SET_LANDSLIDE_POSITION": "Set landslide position",
@@ -546,11 +547,16 @@
         "TITLE": "Avalanche Danger Assessment"
       },
       "AVALANCHE_OBS": {
+        "AREA_END": "Define runout zone",
+        "AREA_START": "Define starting zone",
+        "AREA_TOTAL": "Define avalanche boundaries",
+        "AVALANCHE_AREA": "Avalanche area",
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_CAUSE": "Weak layer",
         "CASUALTIES_NUM": "Number of casualties",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Cannot be greater than the number involved",
+        "CONFIRM_AVALANCHE_AREA": "Confirm avalanche area",
         "DEAD_NUM_ERROR_MESSAGE": "Cannot be greater than the number of casualties or involved",
         "DESTRUCTIVE_SIZE": "Size",
         "EVACUATED_NUM": "Number of evacuees",

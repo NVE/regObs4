@@ -56,9 +56,10 @@ describe('SearchCriteriaService', () => {
   });
 
   it('filter should contain language and geo hazard', fakeAsync(async () => {
-    tick(1);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(150);
     //check default criteria
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.LangKey).toEqual(LangKey.nb);
     expect(criteria.SelectedGeoHazards).toEqual([GeoHazard.Snow]);
     await service.applyQueryParams();
@@ -71,7 +72,7 @@ describe('SearchCriteriaService', () => {
       language: LangKey.en,
       currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water],
     });
-    tick(1);
+    tick(500);
     const criteria2 = await firstValueFrom(service.searchCriteria$);
     expect(criteria2.LangKey).toEqual(LangKey.en);
     expect(criteria2.SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
@@ -82,8 +83,9 @@ describe('SearchCriteriaService', () => {
 
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(150);
     //check that criteria contains correct from time. Should be 2 days earlier at midnight
     expect(criteria.FromDtObsTime).toEqual('2000-12-22T00:00:00.000+01:00');
 
@@ -93,13 +95,13 @@ describe('SearchCriteriaService', () => {
     const url = new URL(document.location.href);
     expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
   }));
-
   it('nick name filter should work', fakeAsync(async () => {
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setObserverNickName('Nick');
-    tick(1);
-
+    tick(500);
     //check that current criteria contains expected nick name
-    const criteria = await firstValueFrom(service.searchCriteria$);
+
     expect(criteria.ObserverNickName).toEqual('Nick');
     await service.applyQueryParams();
     //check that url contains nickname filter
@@ -108,10 +110,11 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('competence filter should set the right criteria and url', fakeAsync(async () => {
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setCompetence([150, 105]);
-    tick();
+    tick(500);
 
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
@@ -121,7 +124,7 @@ describe('SearchCriteriaService', () => {
   it('set new observation type should be ok', fakeAsync(async () => {
     const obsType = { Id: 81, SubTypes: [13] };
     service.setObservationType(obsType);
-    tick(1);
+    tick(500);
     //check that current criteria contains expected type
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
@@ -131,12 +134,16 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type should be ok', fakeAsync(async () => {
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
     const obsType2 = { Id: 81, SubTypes: [26] };
+    tick(500);
     await service.setObservationType(obsType1);
+    tick(500);
     await service.removeObservationType(obsType2);
+    tick(500);
     //check that criteria contains only obsType2
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
@@ -144,21 +151,27 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
     const obsType2 = { Id: 40, SubTypes: [26] };
+    tick(500);
     await service.setObservationType(obsType1);
     await service.removeObservationType(obsType2);
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    tick(500);
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
+
     await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual('81.13~81.26');
   }));
 
   it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType2 = { Id: 40, SubTypes: [26] };
+    tick(500);
     await service.removeObservationType(obsType2);
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual(null);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
@@ -167,10 +180,11 @@ describe('SearchCriteriaService', () => {
 
   orderByTestCases.forEach((test) => {
     it('orderBy filter should work', fakeAsync(async () => {
+      let criteria;
+      service.searchCriteria$.subscribe((c) => (criteria = c));
       service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
-      tick();
+      tick(100);
       //check that current criteria contains expected orderBy
-      const criteria = await firstValueFrom(service.searchCriteria$);
       expect(criteria.OrderBy).toEqual(test.apiValue);
       await service.applyQueryParams();
       const url = new URL(document.location.href);
@@ -200,11 +214,12 @@ describe('SearchCriteriaService', () => {
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
 
     tick(100);
 
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
     await service.applyQueryParams();
     const url = new URL(document.location.href);
@@ -213,11 +228,12 @@ describe('SearchCriteriaService', () => {
 
   it('toDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
 
     tick(100);
 
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
     await service.applyQueryParams();
     const url = new URL(document.location.href);
@@ -227,8 +243,6 @@ describe('SearchCriteriaService', () => {
   it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
-
-    tick(100);
 
     const url = new URL(document.location.href);
     expect(url.searchParams.get('toDate')).toBeNull();
@@ -277,8 +291,9 @@ describe('SearchCriteriaService url parsing', () => {
       mapService as unknown as MapService,
       new TestLoggingService()
     );
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
   }));
 
@@ -289,8 +304,9 @@ describe('SearchCriteriaService url parsing', () => {
       mapService as unknown as MapService,
       new TestLoggingService()
     );
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     expect(criteria.SelectedGeoHazards).toEqual([10]);
   }));
 
@@ -301,8 +317,9 @@ describe('SearchCriteriaService url parsing', () => {
       mapService as unknown as MapService,
       new TestLoggingService()
     );
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     expect(criteria.ObserverCompetence).toEqual(undefined);
   }));
 
@@ -314,9 +331,10 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     //check that current criteria contains expected nick name
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverNickName).toEqual('Oluf');
   }));
 
@@ -328,8 +346,9 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     expect(criteria.SelectedRegistrationTypes).toEqual([
       { Id: 10, SubTypes: [] },
       { Id: 81, SubTypes: [13, 26] },
@@ -344,9 +363,9 @@ describe('SearchCriteriaService url parsing', () => {
         mapService as unknown as MapService,
         new TestLoggingService()
       );
-
-      tick();
-      const criteria = await firstValueFrom(service.searchCriteria$);
+      let criteria;
+      service.searchCriteria$.subscribe((c) => (criteria = c));
+      tick(100);
       expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
     }));
   });
@@ -359,9 +378,11 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     //check that current criteria contains expected orderBy
-    const criteria = await firstValueFrom(service.searchCriteria$);
+
     expect(criteria.OrderBy).toEqual('DtChangeTime');
   }));
 
@@ -373,9 +394,10 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     //check that current criteria contains expected orderBy
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.OrderBy).toEqual('DtObsTime');
   }));
 
@@ -387,9 +409,10 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     //check that current criteria contains expected geo hazard
-    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedGeoHazards).toEqual([70]);
   }));
 
@@ -401,9 +424,11 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     //check that current criteria contains expected geo hazard
-    const criteria = await firstValueFrom(service.searchCriteria$);
+
     expect(criteria.SelectedGeoHazards).toEqual([10]);
   }));
 
@@ -417,10 +442,12 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
 
     //check that criteria contains correct from time. Should be 1 day earlier at midnight
-    const criteria = await firstValueFrom(service.searchCriteria$);
+
     expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
   }));
 
@@ -436,9 +463,9 @@ describe('SearchCriteriaService url parsing', () => {
       new TestLoggingService()
     );
 
-    tick();
-
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
 
     expect(criteria.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
     expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');

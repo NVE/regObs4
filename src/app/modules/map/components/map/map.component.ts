@@ -46,7 +46,7 @@ const DEBUG_TAG = 'MapComponent';
 const noObserverTripDescription = 'Turen har ikke beskrivelse';
 const observerTripsMinZoom = 10;
 
-const isTopoMapLayer = (mapId: string) => (<string[]>Object.values(TopoMapLayer)).includes(mapId);
+export const isTopoMapLayer = (mapId: string) => (<string[]>Object.values(TopoMapLayer)).includes(mapId);
 const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
   layerGroup.eachLayer((layer) => {
     if (layer instanceof L.TileLayer) {

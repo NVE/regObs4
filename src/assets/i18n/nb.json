@@ -82,7 +82,7 @@
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
-      "PermissionDenied": "For å hente posisjonen din må du endre lokasjonsinnstillinger",
+      "PermissionDenied": "Vi trenger tilgang til nøyaktig posisjon for å vise hvor du er",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din",
       "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
@@ -286,10 +286,6 @@
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
   },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
-    "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten godkjenning for bruk av lokasjon."
-  },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observasjoner",
@@ -358,7 +354,11 @@
     },
     "DIRT": {
       "LAND_SLIDE_OBS": {
+        "AREA_TOTAL": "Tegn hele skredarealen",
         "AVAL_TRIGGER": "Skredutløser",
+        "CONFIRM_END_POSITION": "Bekreft sluttpunkt",
+        "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde",
+        "CONFIRM_START_POSITION": "Bekreft startpunkt",
         "DAMAGE_EXTENT": "Skadeomfang",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "DIRT_ACTIVITY_INFLUENCED": "Hva ble påvirket?",
@@ -367,6 +367,7 @@
         "DT_LAND_SLIDE_TIME_END": "Når skjedde skredet senest",
         "END_POSITION": "Sluttpunkt",
         "IN_MAP": "i kart",
+        "LANDSLIDE_AREA": "Skredområde",
         "LANDSLIDE_TYPE": "Type skred",
         "POSITION": "Skredposisjon",
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
@@ -546,11 +547,16 @@
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
+        "AREA_END": "Tegn utløpsområde",
+        "AREA_START": "Tegn løsneområde",
+        "AREA_TOTAL": "Tegn hele skredområdet",
+        "AVALANCHE_AREA": "Skredområde",
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
         "AVAL_CAUSE": "Svakt lag",
         "CASUALTIES_NUM": "Antall skredtatte",
         "CASUALTIES_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall involverte",
+        "CONFIRM_AVALANCHE_AREA": "Bekreft skredområde",
         "DEAD_NUM_ERROR_MESSAGE": "Kan ikke være flere enn antall skredtatte eller involverte",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "EVACUATED_NUM": "Antall evakuerte",
