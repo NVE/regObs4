@@ -1,4 +1,4 @@
-<ion-list class="ion-no-margin">
+<ion-list class="ion-no-margin filtermenu-ios-scrollfix">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
@@ -33,7 +33,7 @@
   <ion-item *ngIf="competenceOptions">
     <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
       "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate
-    }}</ion-label>
+      }}</ion-label>
     <ion-select [interface]="popupType" [value]="chosenCompetenceValue" (ionChange)="onSelectCompetenceChange($event)">
       <ion-select-option *ngFor="let co of competenceOptions" [value]="co">
         {{ co.name }}
@@ -50,13 +50,13 @@
     >
     </ion-checkbox>
     <ion-label class="ion-padding-start"
-      >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
+    >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
     </ion-label>
   </ion-item>
   <ion-item>
     <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
       "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
-    }}</ion-label>
+      }}</ion-label>
     <ion-searchbar
       [value]="nickName"
       [debounce]="1000"

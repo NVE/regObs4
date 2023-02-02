@@ -16,9 +16,14 @@ ion-list {
   overflow: auto;
   max-height: 100vh;
   background: #fff;
+
   .item-height {
     max-height: 40px;
     display: flex;
     align-items: center;
   }
+}
+
+.filtermenu-ios-scrollfix {
+  padding-bottom: env(safe-area-inset-bottom);
 }
