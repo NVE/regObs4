@@ -202,7 +202,9 @@ describe('SearchCriteriaService', () => {
       BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
       TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
     };
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
     expect(criteria.Extent).toEqual(extent);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
