@@ -175,6 +175,7 @@ export const APP_PROVIDERS: Provider[] = [
   },
   {
     provide: SearchService,
-    useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
+    // useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
+    useClass: OfflineCapableSearchService,
   },
 ];

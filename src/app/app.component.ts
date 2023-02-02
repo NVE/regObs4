@@ -122,10 +122,10 @@ export class AppComponent {
             ),
           ];
 
-          if (isPlatform('hybrid')) {
-            const sqliteService = this.injector.get<SqliteService>(SqliteService);
-            observables.push(of(sqliteService.init()));
-          }
+          // if (isPlatform('hybrid')) {
+          const sqliteService = this.injector.get<SqliteService>(SqliteService);
+          observables.push(of(sqliteService.init()));
+          // }
 
           return forkJoin(observables);
         })
