@@ -116,7 +116,7 @@ export class ObservationListPage implements OnInit {
 
   refresh(): void {
     this.logger.debug('Refresh', 'PagedSearchResult');
-    this.searchResult.update();
+    this.searchResult.resetPaging();
   }
 
   ionViewWillEnter(): void {
