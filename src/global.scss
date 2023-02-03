@@ -26,6 +26,7 @@
 :root {
   --ion-background-color: #dcecf2;
   --ion-item-background: #fff;
+  --ion-segment-background: #eee;
   --ion-tab-bar-color: #172733;
   --ion-tab-bar-background-focused: #f4f8f9;
   --ion-tab-bar-background: #ffffff;
@@ -103,6 +104,7 @@
   --fab-fullscreen-top: calc(10px + var(--ion-safe-area-top, 0px));
   --border-radius-large: 16px;
   --images-overflow-background: #ececec;
+  --indicator-color: #fff;
 }
 
 .ion-color-varsom-orange {
@@ -328,10 +330,11 @@ ion-radio {
 }
 
 ion-segment {
-  background-color: var(--ion-item-background);
+  background-color: var(--ion-segment-background);
 
   ion-segment-button {
     font-weight: 600;
+    --indicator-color: #fff;
   }
 }
 
