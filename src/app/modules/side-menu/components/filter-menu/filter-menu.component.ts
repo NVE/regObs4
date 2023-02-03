@@ -71,7 +71,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
-  nickName: string;
+  nickName: string | null = null;
   observationTypesOptions: ObservationTypeView[] = [];
   competenceOptions: CompetenceItem[] = [];
   automaticStationCompetenceItem: CompetenceItem;

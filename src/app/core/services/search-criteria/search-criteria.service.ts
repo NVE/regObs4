@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import moment from 'moment';
 import {
+  BehaviorSubject,
   combineLatest,
   debounceTime,
   firstValueFrom,
@@ -27,6 +28,7 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
+import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 import { AUTOMATIC_STATIONS } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 
@@ -178,7 +180,10 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
-  private useMapExtent: true; //TODO: Trenger vi en funksjon for å skru av filter på kartutsnitt?
+  private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
+  get useMapExtent$() {
+    return this.useMapExtent.asObservable();
+  }
   private currentGeoHazard: GeoHazard[];
   resetEvent: Subject<void> = new Subject();
   /**
@@ -203,7 +208,10 @@ export class SearchCriteriaService {
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
         // Akkumuler alle søkekriterier vi setter via searchCriteria-subjecten
-        scan((allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }), {})
+        scan(
+          (allSearchCriteria, newSearchCriteria) => ({ ...allSearchCriteria, ...newSearchCriteria }),
+          {} as SearchCriteriaRequestDto
+        )
       ),
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$.pipe(
@@ -215,18 +223,24 @@ export class SearchCriteriaService {
       this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
-      this.mapService.mapView$.pipe(map((mapView) => this.createExtentCriteria(mapView))),
+      this.useMapExtent$,
+      this.mapService.mapView$.pipe(
+        map((mapView) => {
+          return this.createExtentCriteria(mapView);
+        })
+      ),
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
       // - FromDtObsTime: fromDate URL param
       debounceTime(50),
       map(
-        ([criteria, langKey, geoHazards, fromObsTime, extent]: [
+        ([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]: [
           SearchCriteriaRequestDto,
           LangKey,
           GeoHazard[],
           string,
+          boolean,
           WithinExtentCriteriaDto
         ]) => {
           return {
@@ -234,7 +248,7 @@ export class SearchCriteriaService {
             LangKey: langKey,
             SelectedGeoHazards: geoHazards,
             FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
-            Extent: extent,
+            Extent: useMapExtent ? extent : null,
           };
         }
       ),
@@ -339,6 +353,18 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
+
+    if (criteria.Extent != null) {
+      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(4));
+      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(4));
+      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(4));
+      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(4));
+    } else {
+      params.delete(URL_PARAM_NW_LAT);
+      params.delete(URL_PARAM_NW_LON);
+      params.delete(URL_PARAM_SE_LAT);
+      params.delete(URL_PARAM_SE_LON);
+    }
     params.apply();
   }
 
@@ -451,6 +477,10 @@ export class SearchCriteriaService {
       copyCriteria.push(AUTOMATIC_STATIONS);
       this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
     }
+  }
+
+  setExtentFilterActive(isExtentFilterActive: boolean) {
+    this.useMapExtent.next(isExtentFilterActive);
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

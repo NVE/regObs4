@@ -1,19 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { IonContent, IonInfiniteScroll } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, tap, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
 
+type MapSectionFilter = 'all' | 'mapBorders';
 const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
@@ -28,6 +30,8 @@ export class ObservationListPage implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
+  noMapExtentAvailable$: Observable<boolean>;
+  useMapExtentFilter$: Observable<MapSectionFilter>;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -44,7 +48,8 @@ export class ObservationListPage implements OnInit {
     searchRegistrationService: SearchRegistrationService,
     updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
-    private logger: LoggingService
+    private logger: LoggingService,
+    mapService: MapService
   ) {
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
@@ -72,6 +77,20 @@ export class ObservationListPage implements OnInit {
         })
       )
       .subscribe();
+
+    this.noMapExtentAvailable$ = mapService.mapView$.pipe(
+      startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
+      map((mapView) => mapView?.bounds == null),
+      distinctUntilChanged()
+    );
+
+    this.useMapExtentFilter$ = combineLatest([
+      this.noMapExtentAvailable$.pipe(map((noExtent) => !noExtent)),
+      this.searchCriteriaService.useMapExtent$,
+    ]).pipe(
+      map(([hasExtent, useExtent]) => hasExtent && useExtent),
+      map((useExtentFilter) => (useExtentFilter ? 'mapBorders' : 'all'))
+    );
   }
 
   ngOnInit() {
@@ -89,6 +108,12 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
+  toggleFilterByMapView(event: SegmentCustomEvent) {
+    const value = event.target.value as MapSectionFilter;
+    const isExtentFilterActive = value == 'all' ? false : true;
+    this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);
+  }
+
   refresh(): void {
     this.logger.debug('Refresh', 'PagedSearchResult');
     this.searchResult.resetPaging();
@@ -97,11 +122,7 @@ export class ObservationListPage implements OnInit {
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
-    this.refresh();
-  }
-
-  ionViewWillLeave(): void {
-    // this.loaded = false;
+    this.searchCriteriaService.setExtentFilterActive(true);
   }
 
   loadNextPage(): void {
