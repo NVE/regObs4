@@ -31,6 +31,7 @@ interface CompetenceItem {
 }
 
 const DEBUG_TAG = 'FilterMenuComponent';
+export const AUTOMATIC_STATIONS = 105;
 
 const COMPETANCE_FILTER = {
   [GeoHazard.Snow]: (kdv: KdvElement) => kdv.Id >= 100 && kdv.Id < 200,
@@ -71,8 +72,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
   nickName: string;
-  observationTypesOptions: ObservationTypeView[];
-  competenceOptions: CompetenceItem[];
+  observationTypesOptions: ObservationTypeView[] = [];
+  competenceOptions: CompetenceItem[] = [];
   automaticStationCompetenceItem: CompetenceItem;
   isAutomaticStationChecked: boolean;
   currentGeoHazard: GeoHazard[];
@@ -95,35 +96,40 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isMobileWeb = this.platform.is('mobileweb');
 
     combineLatest([
+      //combining both searchCriteria and currentGeoHazard to ensure they both are being resolved in a proper order
       this.searchCriteriaService.searchCriteria$,
       this.userSettingService.currentGeoHazard$.pipe(
         takeUntil(this.ngDestroy$),
         tap((geoHazard) => {
           this.isAutomaticStationChecked = true;
           this.currentGeoHazard = geoHazard;
+          //KdvViewRepositoryKey -> ObservationTypeView[]
           this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV').subscribe((regTypes) => {
             const registrationTypesByGeoHazard = geoHazard.map((typesByGeoHazard) => regTypes[typesByGeoHazard]).flat();
-            this.observationTypesOptions = this.convertTypesDtoToView(registrationTypesByGeoHazard);
+            this.observationTypesOptions = this.convertObservationTypesDtoToView(registrationTypesByGeoHazard);
           });
+          //KdvElement[] -> CompetenceItem[]
           this.kdv.getKdvRepositoryByKeyObservable('CompetenceLevelKDV').subscribe(async (competenceLevels) => {
             const competenceLevelsByGeoHazard = geoHazard
               .map((geoHazard) => COMPETANCE_FILTER[geoHazard])
               .map((f) => competenceLevels.filter(f));
-            this.competenceOptions = await this.sortCompetences(competenceLevelsByGeoHazard);
+            this.competenceOptions = await this.mapCompetences(competenceLevelsByGeoHazard);
           });
         })
       ),
     ]).subscribe(([criteria]) => {
-      this.observationTypesOptions &&
-        this.mapRegistrationTypesToView(criteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]);
-      this.competenceOptions && this.isObserverCompetence(criteria.ObserverCompetence as number[]);
+      //check boxes of chosen observation types in view
+      this.mapObservationTypesToView(criteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]);
+      //select chosen observer competence
+      this.setObserverCompetence(criteria.ObserverCompetence as number[]);
+      //set chosen nickname
       this.nickName = criteria.ObserverNickName;
       this.cdr.markForCheck();
     });
   }
 
-  async onRestartFilters() {
-    this.searchCriteriaService.restartSearchCriteria();
+  async onResetFilters() {
+    this.searchCriteriaService.resetSearchCriteria();
   }
   onSelectCompetenceChange(event) {
     if (!event.detail.value) {
@@ -133,12 +139,16 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.chosenCompetenceValue = event.detail.value;
     const ids = event.detail.value.ids;
 
-    if (this.currentGeoHazard.includes(10) && !this.isAutomaticStationChecked && event.detail.value.value === 'All') {
+    if (
+      this.currentGeoHazard.includes(GeoHazard.Snow) &&
+      !this.isAutomaticStationChecked &&
+      event.detail.value.value === 'All'
+    ) {
       this.searchCriteriaService.setCompetence(ids);
     } else if (event.detail.value.value === 'All') {
       this.searchCriteriaService.setCompetence(null);
     } else if (this.isAutomaticStationChecked) {
-      ids.push(105);
+      ids.push(AUTOMATIC_STATIONS);
       this.searchCriteriaService.setCompetence(ids);
     } else {
       this.searchCriteriaService.setCompetence(ids);
@@ -154,7 +164,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         ? this.searchCriteriaService.setCompetence(null)
         : this.searchCriteriaService.setAutomaticStations();
     } else {
-      //on removeAutomaticStations if 'All' is a selected option we add allIds to criteria except for 105
+      //on removeAutomaticStations if 'All' is a selected option we add allIds to criteria except for AUTOMATIC_STATIONS
       this.chosenCompetenceValue.value === 'All'
         ? this.searchCriteriaService.setCompetence(allIds.ids)
         : this.searchCriteriaService.removeAutomaticStations();
@@ -176,11 +186,13 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.setObserverNickName(nickName);
   }
 
-  private async isObserverCompetence(searchCriteriaObserverCompetence: number[]) {
-    this.chosenCompetenceValue = this.formatUrlToViewModel(searchCriteriaObserverCompetence);
+  private async setObserverCompetence(searchCriteriaObserverCompetence: number[]) {
+    this.chosenCompetenceValue = this.setActiveObserverCompetence(searchCriteriaObserverCompetence);
   }
 
-  private mapRegistrationTypesToView(searchCriteriaRegType: RegistrationTypeCriteriaDto[]) {
+  private mapObservationTypesToView(searchCriteriaRegType: RegistrationTypeCriteriaDto[]) {
+    if (!this.observationTypesOptions) return;
+
     if (!searchCriteriaRegType) {
       this.observationTypesOptions.forEach((type) => (type.isChecked = false));
       return;
@@ -200,12 +212,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     });
   }
 
-  private formatUrlToViewModel(ids: number[]): CompetenceItem {
+  private setActiveObserverCompetence(ids: number[]): CompetenceItem {
+    if (!this.competenceOptions) return;
+
     if (ids) {
       let newIds = ids.sort((id1, id2) => id1 - id2);
-      if (ids.includes(105)) {
-        newIds = ids.filter((i) => i !== 105);
-        //fetch out 105 and set checkbox
+      if (ids.includes(AUTOMATIC_STATIONS)) {
+        newIds = ids.filter((i) => i !== AUTOMATIC_STATIONS);
+        //fetch out AUTOMATIC_STATIONS and set checkbox
         this.isAutomaticStationChecked = true;
       } else {
         this.isAutomaticStationChecked = false;
@@ -215,7 +229,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       for (let i = 0; i < this.competenceOptions.length; i++) {
         if (
           compareArrays(
-            this.competenceOptions[i].ids.filter((i) => i != 105),
+            this.competenceOptions[i].ids.filter((i) => i != AUTOMATIC_STATIONS),
             newIds
           )
         ) {
@@ -225,7 +239,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       }
       return competenceOptionToSet;
     } else {
-      this.isAutomaticStationChecked = this.currentGeoHazard.includes(10) ? true : false;
+      this.isAutomaticStationChecked = this.currentGeoHazard.includes(GeoHazard.Snow) ? true : false;
       return this.competenceOptions.find((option) => option.value == 'All');
     }
   }
@@ -240,18 +254,18 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     };
   }
 
-  private async sortCompetences(unsortedCompetences: KdvElement[][]): Promise<CompetenceItem[]> {
+  private async mapCompetences(unsortedCompetences: KdvElement[][]): Promise<CompetenceItem[]> {
     this.automaticStationCompetenceItem = null;
     this.isAutomaticStationChecked = false;
     const competencesSorted: { [name: string]: CompetenceItem } = {};
     const allIds = unsortedCompetences
       .flat()
       .map((item) => item.Id)
-      .filter((id) => id !== 105);
+      .filter((id) => id !== AUTOMATIC_STATIONS);
     unsortedCompetences.map((arrOfFilteredCompetances) => {
       //create an array of all competnece ids available per geohazard
       arrOfFilteredCompetances.map((filteredCompetance) => {
-        //exclude automatic station id 105
+        //exclude automatic station id (check const AUTOMATIC_STATIONS)
         const filteredIds = allIds.filter(
           (id) => +id.toString().slice(1) >= +filteredCompetance.Id.toString().slice(1)
         );
@@ -272,15 +286,21 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         }
       });
     });
-    competencesSorted['All'].name = await firstValueFrom(
-      this.translateService.get('OBSERVATION_FILTER.COMPETANCE_FILTER.ALL')
-    );
+    this.translateCompetenceOptions(competencesSorted);
     this.chosenCompetenceValue = competencesSorted['All'];
     return Object.values(competencesSorted).reverse();
   }
 
+  private async translateCompetenceOptions(options: {
+    [name: string]: CompetenceItem;
+  }): Promise<{ [name: string]: CompetenceItem }> {
+    //currently option 'All' is the only option that requires translation
+    options['All'].name = await firstValueFrom(this.translateService.get('OBSERVATION_FILTER.COMPETANCE_FILTER.ALL'));
+    return options;
+  }
+
   //combine subtypes and types into one array
-  private convertTypesDtoToView(registrationTypesByGeoHazard: RegistrationTypeDto[]): ObservationTypeView[] {
+  private convertObservationTypesDtoToView(registrationTypesByGeoHazard: RegistrationTypeDto[]): ObservationTypeView[] {
     let arrToReturn: ObservationTypeView[] = [];
     registrationTypesByGeoHazard.map((type) => {
       const subtypestoReturn =

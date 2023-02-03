@@ -28,6 +28,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
+import { AUTOMATIC_STATIONS } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -207,7 +208,7 @@ export class SearchCriteriaService {
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$.pipe(
         tap((geohazard) => {
-          this.currentGeoHazard !== undefined && this.restartSearchCriteria();
+          this.currentGeoHazard !== undefined && this.resetSearchCriteria();
           this.currentGeoHazard = geohazard;
         })
       ),
@@ -242,7 +243,7 @@ export class SearchCriteriaService {
     );
   }
 
-  async restartSearchCriteria() {
+  async resetSearchCriteria() {
     const resetDate = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
     const daysBackToIso = this.daysBackToIsoDateTime(resetDate);
     const criteria: SearchCriteriaRequestDto = {
@@ -437,7 +438,7 @@ export class SearchCriteriaService {
     const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentObserverCriteria) {
       const copyCriteria = [...currentObserverCriteria] as number[];
-      const removed = copyCriteria.filter((i) => i !== 105);
+      const removed = copyCriteria.filter((i) => i !== AUTOMATIC_STATIONS);
       this.searchCriteriaChanges.next({ ObserverCompetence: removed });
     }
   }
@@ -445,9 +446,9 @@ export class SearchCriteriaService {
   async setAutomaticStations() {
     const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
 
-    if (currentObserverCriteria != null && currentObserverCriteria.length > 0) {
+    if (currentObserverCriteria != null && currentObserverCriteria?.length > 0) {
       const copyCriteria = [...currentObserverCriteria] as number[];
-      copyCriteria.push(105);
+      copyCriteria.push(AUTOMATIC_STATIONS);
       this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
     }
   }

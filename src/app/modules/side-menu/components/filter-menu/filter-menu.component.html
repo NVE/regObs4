@@ -69,8 +69,9 @@
   </ion-item>
 
   <ion-item>
-    <ion-button (click)="onRestartFilters()" class="resetFiltersButton" type="button" fill="clear">
-      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>Tilbakestill filtere
+    <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
+      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon
+      >{{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
     </ion-button>
   </ion-item>
 </ion-list>
