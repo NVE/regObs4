@@ -472,7 +472,7 @@ export class SearchCriteriaService {
   async setAutomaticStations() {
     const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
 
-    if (currentObserverCriteria != null && currentObserverCriteria?.length > 0) {
+    if (currentObserverCriteria?.length > 0) {
       const copyCriteria = [...currentObserverCriteria] as number[];
       copyCriteria.push(AUTOMATIC_STATIONS);
       this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
