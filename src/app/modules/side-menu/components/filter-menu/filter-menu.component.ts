@@ -3,7 +3,10 @@ import { Platform, SearchbarCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import {
+  AUTOMATIC_STATIONS,
+  SearchCriteriaService,
+} from 'src/app/core/services/search-criteria/search-criteria.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
@@ -31,7 +34,6 @@ interface CompetenceItem {
 }
 
 const DEBUG_TAG = 'FilterMenuComponent';
-export const AUTOMATIC_STATIONS = 105;
 
 const COMPETANCE_FILTER = {
   [GeoHazard.Snow]: (kdv: KdvElement) => kdv.Id >= 100 && kdv.Id < 200,

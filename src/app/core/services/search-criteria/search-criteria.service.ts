@@ -30,7 +30,6 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
-import { AUTOMATIC_STATIONS } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -38,6 +37,7 @@ const UrlDtoOrderByMap = new Map([
   ['changeTime', 'DtChangeTime'],
   ['obsTime', 'DtObsTime'],
 ]);
+export const AUTOMATIC_STATIONS = 105;
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
