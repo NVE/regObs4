@@ -190,9 +190,7 @@ export class OfflineCapableSearchService extends SearchService {
     if (count > 0) {
       for await (const registrations of this.pagedSearch(criteria, count)) {
         this.logger.debug(`Sync ${syncId}: Inserting ${registrations.length} registrations`, DEBUG_TAG);
-        for (const reg of registrations) {
-          await this.sqlite.insertRegistrations([reg], appMode, lang, syncId);
-        }
+        await this.sqlite.insertRegistrations(registrations, appMode, lang, syncId);
       }
     } else {
       this.logger.debug(`Sync ${syncId}: No new registrations to fetch`, DEBUG_TAG, { count, criteria });
