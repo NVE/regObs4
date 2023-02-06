@@ -45,7 +45,7 @@ const SYNC_TIMEOUT_MS = 5000; // Includes the debounce time
 const SYNC_INTERVAL = 120000;
 
 let _syncId = 0;
-const getSyncId = (appMode: AppMode, lang: LangKey) => {
+const createSyncId = (appMode: AppMode, lang: LangKey) => {
   _syncId = _syncId + 1;
   return `${_syncId}_${appMode}_${lang}`;
 };
@@ -194,7 +194,7 @@ export class OfflineCapableSearchService extends SearchService {
   }
 
   private async sync(appMode: AppMode, lang: LangKey) {
-    const syncId = getSyncId(appMode, lang);
+    const syncId = createSyncId(appMode, lang);
     this.logger.debug(`Sync ${syncId}: Starting`, DEBUG_TAG, { appMode });
 
     const syncRequests = [...this.syncRequests.value];
