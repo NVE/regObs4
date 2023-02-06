@@ -133,26 +133,36 @@ export class OfflineCapableSearchService extends SearchService {
    */
   private async *pagedSearch(criteria: SearchCriteriaRequestDto, count: number) {
     let nFetched = 0;
-    let offset = 0;
-    while (nFetched < count) {
-      const pageCriteria = {
-        NumberOfRecords: 500,
-        Offset: offset,
-        ...criteria,
-      };
 
+    const pageCriteria = {
+      NumberOfRecords: 500,
+      Offset: 0,
+      ...criteria,
+    };
+
+    const sendRequest = () => {
       this.logger.debug('Fetching paged search', DEBUG_TAG, { pageCriteria });
-      const registrations = await firstValueFrom(super.SearchSearch(pageCriteria));
+      return firstValueFrom(super.SearchSearch(pageCriteria));
+    };
 
-      if (registrations.length > 0) {
-        yield registrations;
-      } else {
+    let request = sendRequest();
+    let syncNotFinished = nFetched < count;
+    while (syncNotFinished) {
+      const registrations = await request;
+      nFetched += registrations.length;
+      pageCriteria.Offset = nFetched;
+
+      if (registrations.length === 0) {
         this.logger.debug('Got no registrations, finishing paged search', DEBUG_TAG, { pageCriteria, count, nFetched });
         return;
       }
 
-      nFetched += registrations.length;
-      offset = nFetched;
+      syncNotFinished = nFetched < count;
+      if (syncNotFinished) {
+        request = sendRequest();
+      }
+
+      yield registrations;
     }
   }
 
