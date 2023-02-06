@@ -51,7 +51,8 @@ const createSyncId = (appMode: AppMode, lang: LangKey) => {
 };
 
 /**
- * Will search for observations in the offline database instead of searching online through the Regobs API
+ * Search for observations in the offline database instead of searching online through the Regobs API.
+ * Tries to sync offline observations with the regobs api every time it gets a search request, and on an interval.
  */
 @Injectable()
 export class OfflineCapableSearchService extends SearchService {
