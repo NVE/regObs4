@@ -31,6 +31,7 @@ import {
   SearchCriteriaRequestDto,
   SearchService,
 } from 'src/app/modules/common-regobs-api';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
@@ -175,7 +176,7 @@ export class OfflineCapableSearchService extends SearchService {
     try {
       lastSyncMs = await this.sqlite.readRegistrationsSyncTime(appMode, lang);
     } catch (error) {
-      this.logger.error(error, DEBUG_TAG, `Sync ${syncId}: Failed to read last sync ms`);
+      this.logger.log(`Sync ${syncId}: Failed to read last sync ms`, error, LogLevel.Warning, DEBUG_TAG);
       lastSyncMs = 0;
     }
 
