@@ -36,8 +36,10 @@ import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 
-const DEBUG_TAG = 'OfflineCapableSearchService';
 type SyncRequestResult = 'success' | 'error';
+type SyncRequest = Subject<SyncRequestResult>[];
+
+const DEBUG_TAG = 'OfflineCapableSearchService';
 const SYNC_DEBOUNCE_MS = 500;
 const SYNC_TIMEOUT_MS = 5000; // Includes the debounce time
 const SYNC_INTERVAL = 120000;
@@ -53,7 +55,12 @@ const getSyncId = (appMode: AppMode, lang: LangKey) => {
  */
 @Injectable()
 export class OfflineCapableSearchService extends SearchService {
-  private syncRequests = new BehaviorSubject<Subject<SyncRequestResult>[]>([]);
+  /**
+   * En liste med sync-forespørsler.
+   * En forespørsel / SyncRequest er i seg selv en subject for å kunne gi beskjed tilbake til den som har bedt om
+   * syncing om at syncingen er ferdig, feilet osv.
+   */
+  private syncRequests = new BehaviorSubject<SyncRequest>([]);
 
   constructor(
     config: RegobsApiConfiguration,
