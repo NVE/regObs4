@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Platform, SearchbarCustomEvent } from '@ionic/angular';
+import { Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
@@ -133,7 +133,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   async onResetFilters() {
     this.searchCriteriaService.resetSearchCriteria();
   }
-  onSelectCompetenceChange(event) {
+
+  onSelectCompetenceChange(event: SelectCustomEvent) {
     if (!event.detail.value) {
       return;
     }
@@ -157,7 +158,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  async onCheckAutomaticStations(event) {
+  async onCheckAutomaticStations(event: CustomEvent) {
     this.isAutomaticStationChecked = event.detail.checked;
     //all ids are set on competenceOption 'All'
     const allIds = this.competenceOptions.find((option) => option.value === 'All');
