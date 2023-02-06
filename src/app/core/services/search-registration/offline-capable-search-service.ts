@@ -219,7 +219,7 @@ export class OfflineCapableSearchService extends SearchService {
       this.logger.debug(`Sync ${syncId}: criteria`, DEBUG_TAG, { criteria });
       await this.fetchAndInsertRegistrations(criteria, appMode, lang, syncId);
       await this.sqlite.updateRegistrationsSyncTime(newSyncTimeMs, appMode, lang, syncId);
-      this.logger.debug(`Sync ${syncId}: done`, DEBUG_TAG, { appMode, criteria, newSyncTimeMs, syncTimeCriterias });
+      this.logger.debug(`Sync ${syncId}: done`, DEBUG_TAG, { appMode, criteria, newSyncTimeMs });
 
       for (const syncReq of syncRequests) {
         syncReq.next('success');
