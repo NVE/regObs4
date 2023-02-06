@@ -126,6 +126,11 @@ export class OfflineCapableSearchService extends SearchService {
     );
   }
 
+  /**
+   * Hjelpemetode for å hente opp til 500 observasjoner av gangen fra apiet i forbindelse med syncing fra web til
+   * offline-database.
+   * Dette metoden er ikke relatert til pagingen i listevisningen eller mine observasjoner.
+   */
   private async *pagedSearch(criteria: SearchCriteriaRequestDto, count: number) {
     let nFetched = 0;
     let offset = 0;
