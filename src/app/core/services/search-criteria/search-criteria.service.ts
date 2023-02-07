@@ -37,6 +37,7 @@ const UrlDtoOrderByMap = new Map([
   ['changeTime', 'DtChangeTime'],
   ['obsTime', 'DtObsTime'],
 ]);
+export const AUTOMATIC_STATIONS = 105;
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const URL_PARAM_GEOHAZARD = 'hazard';
@@ -121,6 +122,23 @@ function isRegTypeValid(type: string) {
   return found;
 }
 
+//81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
+function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
+  if (!isRegTypeValid(type)) return;
+  //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
+  const splitUrlToArray = type.split('~').map((i) => i.split('.'));
+  //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
+  const regTypeCriteriaDto = splitUrlToArray
+    .map((i) => {
+      return { Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])] : [] };
+    })
+    .reduce((obj, item) => {
+      obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = { ...item });
+      return obj;
+    }, {});
+  return Object.values(regTypeCriteriaDto);
+}
+
 //[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
 function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
   if (types != null) {
@@ -198,7 +216,7 @@ export class SearchCriteriaService {
       this.userSettingService.language$,
       this.userSettingService.currentGeoHazard$.pipe(
         tap((geohazard) => {
-          this.currentGeoHazard !== undefined && this.restartSearchCriteria();
+          this.currentGeoHazard !== undefined && this.resetSearchCriteria();
           this.currentGeoHazard = geohazard;
         })
       ),
@@ -239,7 +257,7 @@ export class SearchCriteriaService {
     );
   }
 
-  async restartSearchCriteria() {
+  async resetSearchCriteria() {
     const resetDate = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
     const daysBackToIso = this.daysBackToIsoDateTime(resetDate);
     const criteria: SearchCriteriaRequestDto = {
@@ -279,7 +297,7 @@ export class SearchCriteriaService {
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
     const type = url.searchParams.get(URL_PARAM_TYPE);
-    const convertTypeFromUrlToCriteria = type != null ? this.convertRegTypeFromUrlToDto(type) : null;
+    const convertTypeFromUrlToCriteria = type != null ? convertRegTypeFromUrlToDto(type) : null;
 
     //I recommend to add spread operator on optional properties so that we dont send 'null' values to API.
     //example: ...(nickName && {ObserverCompetence: nickname})
@@ -361,23 +379,6 @@ export class SearchCriteriaService {
     return null;
   }
 
-  //81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
-  convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
-    if (!isRegTypeValid(type)) return;
-    //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
-    const splitUrlToArray = type.split('~').map((i) => i.split('.'));
-    //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
-    const regTypeCriteriaDto = splitUrlToArray
-      .map((i) => {
-        return { Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])] : [] };
-      })
-      .reduce((obj, item) => {
-        obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = { ...item });
-        return obj;
-      }, {});
-    return Object.values(regTypeCriteriaDto);
-  }
-
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
@@ -457,6 +458,25 @@ export class SearchCriteriaService {
 
   setOrderBy(order: SearchCriteriaOrderBy) {
     this.searchCriteriaChanges.next({ OrderBy: order });
+  }
+
+  async removeAutomaticStations() {
+    const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
+    if (currentObserverCriteria) {
+      const copyCriteria = [...currentObserverCriteria] as number[];
+      const removed = copyCriteria.filter((i) => i !== AUTOMATIC_STATIONS);
+      this.searchCriteriaChanges.next({ ObserverCompetence: removed });
+    }
+  }
+
+  async setAutomaticStations() {
+    const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
+
+    if (currentObserverCriteria?.length > 0) {
+      const copyCriteria = [...currentObserverCriteria] as number[];
+      copyCriteria.push(AUTOMATIC_STATIONS);
+      this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
+    }
   }
 
   setExtentFilterActive(isExtentFilterActive: boolean) {
