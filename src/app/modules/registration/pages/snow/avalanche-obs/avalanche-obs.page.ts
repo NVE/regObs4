@@ -97,7 +97,7 @@ export class AvalancheObsPage extends BasePage {
     }
     this.maxDate = this.getMaxDateForNow();
     if (!this.avalancheObs.DtAvalancheTime) {
-      this.avalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime
+      this.avalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime;
     }
   }
 
