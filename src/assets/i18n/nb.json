@@ -218,17 +218,35 @@
     "USER": "Bruker"
   },
   "OBSERVATION_FILTER": {
+    "COMPETANCE_FILTER": {
+      "ALL": "Alle",
+      "AUTOMATIC_STATIONS": "Automatiske stasjoner",
+      "LABEL": "Kompetanse",
+      "TITLE": "Observatør"
+    },
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Søk på observatørnavn",
+      "TITLE": "Navn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observasjonstype"
+    },
+    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
     "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle observasjoner",
     "FORMS": "Skjemaer",
     "IN_MAP_VIEW": "Observasjoner i kartutsnittet",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
-    "OBSERVATIONS": "Observasjoner"
+    "SORT_BY_CHANGE_TIME": "Oppdatert tid",
+    "SORT_BY_OBS_TIME": "Observert tid",
+    "SORT_BY_TEXT": "Sorter på",
+    "TITLE": "Observasjoner",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
