@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
 import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
+import { LangKey } from 'src/app/modules/common-core/models';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments } from '../draft/draft-model';
@@ -26,13 +27,13 @@ export class AddUpdateDeleteRegistrationService {
     private analytics: AnalyticService
   ) {}
 
-  private changedRegistrations = new Subject<RegistrationViewModel>();
+  private changedRegistrations = new Subject<{ reg: RegistrationViewModel; langKey: LangKey }>();
   private deletedRegistrationIds = new Subject<number>();
 
   /**
    * Emits uploaded registrations.
    */
-  get changedRegistrations$(): Observable<RegistrationViewModel> {
+  get changedRegistrations$(): Observable<{ reg: RegistrationViewModel; langKey: LangKey }> {
     return this.changedRegistrations.asObservable();
   }
 
@@ -71,7 +72,7 @@ export class AddUpdateDeleteRegistrationService {
     // Track observation type in GA
     this.analytics.trackDimension(AppCustomDimension.observationType, draft.simpleMode ? 'simple' : 'normal');
 
-    this.changedRegistrations.next(result);
+    this.changedRegistrations.next({ reg: result, langKey });
     return result;
   }
 
@@ -108,7 +109,7 @@ export class AddUpdateDeleteRegistrationService {
       })
     );
 
-    this.changedRegistrations.next(result);
+    this.changedRegistrations.next({ reg: result, langKey });
     return result;
   }
 

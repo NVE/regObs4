@@ -52,7 +52,7 @@ export class ObservationService {
     this._dataLoadObservable = this.getDataLoadObservable();
 
     // When a registration has been uploaded, update app cache
-    addUpdateDeleteRegistrationService.changedRegistrations$.subscribe((newRegistration) => {
+    addUpdateDeleteRegistrationService.changedRegistrations$.subscribe(({ reg: newRegistration }) => {
       this.addAlreadyFetchedObservation(newRegistration);
     });
 

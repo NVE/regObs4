@@ -33,6 +33,7 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -63,6 +64,7 @@ export class OfflineCapableSearchService extends SearchService {
    * syncing om at syncingen er ferdig, feilet osv.
    */
   private syncRequests = new BehaviorSubject<SyncRequest>([]);
+  private hasFreshSync = false;
 
   constructor(
     config: RegobsApiConfiguration,
@@ -70,25 +72,30 @@ export class OfflineCapableSearchService extends SearchService {
     private logger: LoggingService,
     private sqlite: SqliteService,
     private network: NetworkStatusService,
-    private userSettings: UserSettingService
+    private userSettings: UserSettingService,
+    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService
   ) {
     super(config, http);
 
+    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.changedRegistrations$]).subscribe(
+      ([appMode, { reg, langKey }]) => {
+        this.sqlite.insertRegistrations([reg], appMode, langKey, 'changedRegistrations$');
+      }
+    );
+
     combineLatest([
-      this.userSettings.appMode$.pipe(tap(() => this.logger.debug('AppMode changed', DEBUG_TAG))),
-
-      this.userSettings.language$.pipe(tap(() => this.logger.debug('Language change', DEBUG_TAG))),
-
+      this.userSettings.appMode$.pipe(tap(() => (this.hasFreshSync = false))),
+      this.userSettings.language$.pipe(tap(() => (this.hasFreshSync = false))),
       this.network.connected$.pipe(
         tap((hasNetwork) => this.logger.debug('Network status changed', DEBUG_TAG, { hasNetwork }))
       ),
-
       this.syncRequests.pipe(
         tap(() => this.logger.debug('Sync requests changed', DEBUG_TAG, { n: this.syncRequests.value.length })),
         filter((syncRequests) => syncRequests.length > 0)
       ),
     ])
       .pipe(
+        // TODO: We need to notify if no network and no sync has been done
         filter(([, , isConnected]) => isConnected),
         debounceTime(SYNC_DEBOUNCE_MS),
         // Include timer here so it is reset when a sync is triggered from a user action etc..
@@ -111,6 +118,10 @@ export class OfflineCapableSearchService extends SearchService {
     const syncRequest = new Subject<SyncRequestResult>();
     const syncRequests = this.syncRequests.value;
     this.syncRequests.next([...syncRequests, syncRequest]);
+
+    if (!this.hasFreshSync) {
+      return syncRequest;
+    }
 
     return syncRequest.pipe(
       timeout(SYNC_TIMEOUT_MS),
@@ -235,6 +246,7 @@ export class OfflineCapableSearchService extends SearchService {
       for (const syncReq of syncRequests) {
         syncReq.next('success');
       }
+      this.hasFreshSync = true;
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, `Sync ${syncId}: failed`);
       for (const syncReq of syncRequests) {
