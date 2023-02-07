@@ -174,19 +174,13 @@
     "TITLE": "Meine Beobachtungen"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle Beobachtungen",
     "FORMS": "Form",
-    "IN_MAP_VIEW": "Beobachtungen in Kartenansicht",
     "NO_OBSERVATIONS": "Keine Beobachtungen",
     "NO_OBSERVATIONS_TEXT": "Der Kartenausschnitt enthält keine Beobachtungen. Versuchen Sie, die Ansicht zu ändern oder den Zeitraum zu erweitern, von dem aus Sie Beobachtungen sehen möchten.",
     "TITLE": "Beobachtungen"
   },
   "OFFLINE_MAP": {
     "OFFLINE_MAP_PAGE_TITLE": "Offline-Karte"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Standortinformation nicht zugelassen",
-    "LOCATION_DENIED_MESSAGE": "Der Standort kann nicht ohne Erlaubnis in der Karte angezeigt werden."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
