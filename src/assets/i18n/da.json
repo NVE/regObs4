@@ -224,9 +224,7 @@
     "TITLE": "Observationsfilter"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle observationer",
     "FORMS": "Skemaer",
-    "IN_MAP_VIEW": "Observationer i kortudsnittet",
     "MAX_COUNT_REACHED_HEADER": "Ikke flere observationer",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observationer her. Hvis du ikke fandt det, som du leder efter, kan du prøve at zoome ind på kortet eller begrænse perioden, du vil se observationer for.",
     "NO_OBSERVATIONS": "Ingen observationer",
@@ -263,10 +261,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Kunne ikke gemme kortpakken på enheden. Prøv venligst igen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Kunne ikke gemme kortpakken på enheden. Er du sikker på at der er nok plads tilgængelig?"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tilgang til lokationen nægtet",
-    "LOCATION_DENIED_MESSAGE": "Kan ikke vise din lokation i kortet uden godkendelse fra brugeren af lokationen."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

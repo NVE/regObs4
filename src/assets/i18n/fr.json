@@ -179,9 +179,7 @@
     "TITLE": "Mes observations"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Toutes les observations",
     "FORMS": "Formulaires",
-    "IN_MAP_VIEW": "Observations dans la vue cartographique",
     "NO_OBSERVATIONS": "Aucune observation",
     "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations.",
     "OBSERVATIONS": "Observations"
@@ -214,10 +212,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Impossible de sauvegarder le jeu de carte sur le disque. Veuillez ré-essayer.",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Impossible de sauvegarder le jeu de carte. Y-a-t-il assez d'espace mémoire disponible?"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Autorisation de localisation refusée",
-    "LOCATION_DENIED_MESSAGE": "Impossible d'afficher l'emplacement sur la carte sans autorisation."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

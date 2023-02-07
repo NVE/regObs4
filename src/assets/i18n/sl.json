@@ -175,19 +175,13 @@
     "TITLE": "Moja opažanja"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Vsa opažanja",
     "FORMS": "Obrazci",
-    "IN_MAP_VIEW": "Opažanja na prikazanem delu zemljevida",
     "NO_OBSERVATIONS": "Brez opažanj",
     "NO_OBSERVATIONS_TEXT": "Na prikazanem delu zemljevida ni vnešenih opažanj. Poskusite spremeniti območje ali razširite željeno časovno obdobje za opažanja.",
     "OBSERVATIONS": "Opažanja"
   },
   "OFFLINE_MAP": {
     "OFFLINE_MAP_PAGE_TITLE": "Zemljevid brez povezave"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Dovoljenje za lokacijo zavrnjeno",
-    "LOCATION_DENIED_MESSAGE": "Lokacija na zemljevidu ne more biti prikazana brez dovoljenja."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
