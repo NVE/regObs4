@@ -214,9 +214,7 @@
     "USER": "Brukar"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alle observasjonar",
     "FORMS": "Skjema",
-    "IN_MAP_VIEW": "Observasjonar i kartutsnittet",
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjonar",
@@ -251,10 +249,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tilgang til posisjon nekta.",
-    "LOCATION_DENIED_MESSAGE": "Kan ikkje vise posisjonen din i kartet utan godkjenning for bruk av lokasjon. "
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
