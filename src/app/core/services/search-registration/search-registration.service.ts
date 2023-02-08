@@ -27,6 +27,7 @@ export class SearchResult<TViewModel> {
   static DEBUG_TAG = 'SearchResult';
   readonly registrations$: Observable<TViewModel[]>;
   private forceUpdate = new Subject<void>();
+  isFetching$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
@@ -45,7 +46,15 @@ export class SearchResult<TViewModel> {
   ) {
     return combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(true))]).pipe(
       map(([searchCriteria]) => searchCriteria),
+      tap(() => {
+        // We are fetching new data, so set isFetching to true
+        this.isFetching$.next(true);
+      }),
       switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
+      tap(() => {
+        // We are done fetching new data, so set isFetching to false
+        this.isFetching$.next(false);
+      }),
       shareReplay(1)
     );
   }

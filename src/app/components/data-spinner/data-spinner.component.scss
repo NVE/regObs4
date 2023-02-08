@@ -1,0 +1,35 @@
+:host {
+  --top-menubar-height: 44px;
+  --size: 50px;
+  --gap: 10px;
+
+  pointer-events: none;
+
+  position: fixed;
+  top: calc(var(--top-menubar-height) + var(--size) / 2);
+  left: 50%;
+  transform: translateX(-50%);
+
+  .container {
+    background: #fff;
+    padding: var(--gap);
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+
+    &.show {
+      opacity: 1;
+    }
+  }
+
+  ion-spinner {
+    width: var(--size);
+    height: var(--size);
+  }
+}

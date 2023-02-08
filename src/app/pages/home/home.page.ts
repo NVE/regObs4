@@ -58,6 +58,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
 
+  isFetchingObservations: Observable<boolean>;
+
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
@@ -96,6 +98,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   private async initSearch() {
     const searchResult = await this.createSearchResult();
+
+    this.isFetchingObservations = searchResult.isFetching$.asObservable();
 
     combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
       ([registrations, show]) => {
