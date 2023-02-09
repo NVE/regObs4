@@ -14,6 +14,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -47,7 +48,8 @@ export class RegobsAuthService {
     private accountService: AccountService,
     private storage: StorageBackend,
     private platform: Platform,
-    private accountApi: AccountService
+    private accountApi: AccountService,
+    private networkStatusService: NetworkStatusService
   ) {
     this.initComplete$ = this.authService.initComplete$.pipe(
       filter((isComplete) => isComplete),
@@ -129,13 +131,17 @@ export class RegobsAuthService {
     this.initComplete$
       .pipe(
         switchMap(() => (isAndroidOrIos(this.platform) ? this.platform.resume : from(this.platform.ready()))),
-        withLatestFrom(this.loggedInUser$)
+        withLatestFrom(this.loggedInUser$, this.networkStatusService.connected$)
       )
-      .subscribe(([, user]) => {
+      .subscribe(([, user, connected]) => {
         if (user?.token && this.isTokenOlderThan(user?.tokenIssuedAt, 300)) {
-          //token is older than 5 minutes, so refresh
-          this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
-          this.refreshToken();
+          if (connected) {
+            //token is older than 5 minutes and we have network, so refresh
+            this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
+            this.refreshToken();
+          } else {
+            this.logger.debug('App resumed. Refresh token skipped because we are offline', DEBUG_TAG);
+          }
         }
       });
   }
