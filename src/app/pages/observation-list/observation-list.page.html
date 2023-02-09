@@ -4,12 +4,25 @@
   <ng-container *ngIf="registrations$ | async as registrations; else skeleton">
     <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">
       <ion-item-divider>
-        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
       </ion-item-divider>
       <ion-grid>
         <ion-row>
           <ion-col>
-            <!--i kart utsnitt/ alle -->
+            <ion-segment
+              [value]="useMapExtentFilter$ | async"
+              (click)="toggleFilterByMapView($event)"
+              class="segment-button-class"
+              mode="ios"
+              [disabled]="noMapExtentAvailable$ | async"
+            >
+              <ion-segment-button value="mapBorders">
+                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="all">
+                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
+              </ion-segment-button>
+            </ion-segment>
           </ion-col>
           <ion-col>
             <!--titelen -->
@@ -50,12 +63,24 @@
   <ng-template #skeleton>
     <div class="loading-sceleton">
       <ion-item-divider>
-        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
       </ion-item-divider>
       <ion-grid>
         <ion-row>
           <ion-col>
-            <!--i kart utsnitt/ alle -->
+            <ion-segment
+              (ionChange)="toggleFilterByMapView($event)"
+              class="segment-button-class"
+              value="mapBorders"
+              mode="ios"
+            >
+              <ion-segment-button value="mapBorders">
+                <ion-label>I kartutsnitt</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="all">
+                <ion-label>Alle</ion-label>
+              </ion-segment-button>
+            </ion-segment>
           </ion-col>
           <ion-col>
             <!--titelen -->

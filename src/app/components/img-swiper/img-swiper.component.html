@@ -22,7 +22,11 @@
         [withFallbackText]="withFallbackText"
         preferSize="Large"
       ></app-remote-image>
-      <app-static-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()"></app-static-map-image>
+      <app-static-map-image
+        *ngSwitchCase="'location'"
+        [location]="slide.img"
+        (click)="onLocationClick()"
+      ></app-static-map-image>
       <div *ngIf="isDesktop" class="textOverlay">
         <p class="img-comment-header">
           <strong>{{ slide.header | translate }}</strong
@@ -43,7 +47,8 @@
     [attachment]="attachments[0]"
     preferSize="Large"
   ></app-remote-image>
-  <app-static-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()"> </app-static-map-image>
+  <app-static-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
+  </app-static-map-image>
   <ion-label *ngIf="showLabel && !isDesktop" [ngClass]="{ loaded: isLoaded }">
     <span class="img-comment-header" *ngIf="showIndex">{{ imageIndex + 1 }}/{{ imageLength }}&nbsp;</span>
     <span [ngClass]="{ 'img-comment-header': slides[activeIndex].description }" *ngIf="slides[activeIndex].header"

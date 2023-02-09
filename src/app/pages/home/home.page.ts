@@ -146,6 +146,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.checkForFirstStartup();
   }
 
+  ionViewWillEnter() {
+    this.searchCriteriaService.setExtentFilterActive(true);
+  }
+
   checkForFirstStartup() {
     this.userSettingService.userSetting$
       .pipe(
@@ -187,6 +191,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     const searchCriteriaWithLargerExtent = this.searchCriteriaService.searchCriteria$.pipe(
       //get current search criteria together with previous criteria, so we can check what's changed
       scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
+      //skip if extent is null (when showing 'all' observations in the list view) to avoid exceptions
+      filter(([, current]) => current.Extent != null),
       filter(([prev, current]) => {
         //will prevent zoom in to trigger new search
         let currentBounds;

@@ -3,7 +3,7 @@ import moment from 'moment-timezone';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
-import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { createMapView, MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
@@ -191,6 +191,28 @@ describe('SearchCriteriaService', () => {
       expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
     }));
   });
+
+  it('set correct extent criteria based on mapview coordinates', fakeAsync(async () => {
+    //create mapview with coordinates
+    const ms = new TestMapService();
+    const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
+    ms.mapView$ = of(mv);
+    service = new SearchCriteriaService(userSettingService, ms as unknown as MapService, new TestLoggingService());
+    const extent = {
+      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
+      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
+    };
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+    expect(criteria.Extent).toEqual(extent);
+    await service.applyQueryParams();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('nwLat')).toEqual('70.7978');
+    expect(url.searchParams.get('nwLon')).toEqual('21.4343');
+    expect(url.searchParams.get('seLat')).toEqual('67.5715');
+    expect(url.searchParams.get('seLon')).toEqual('33.1458');
+  }));
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
