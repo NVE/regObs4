@@ -97,7 +97,7 @@ export class AvalancheObsPage extends BasePage {
     }
     this.maxDate = this.getMaxDateForNow();
     if (!this.avalancheObs.DtAvalancheTime) {
-      this.avalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime
+      this.avalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime;
     }
   }
 
@@ -199,7 +199,7 @@ export class AvalancheObsPage extends BasePage {
         endExtent: this.avalancheObs.StopExtent,
         geoHazard: this.draft.registration.GeoHazardTID,
       },
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen',
     });
     modal.present();
     const result = await modal.onDidDismiss();

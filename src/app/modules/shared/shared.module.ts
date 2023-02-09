@@ -44,7 +44,7 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     MapImageModule,
     AuthModule,
     VirtualScrollerModule,
-    StaticMapImageModule
+    StaticMapImageModule,
   ],
   declarations: [
     ShadowCssDirective,
