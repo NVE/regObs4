@@ -1,4 +1,4 @@
-<ion-list class="ion-no-margin filtermenu-ios-scrollfix">
+<ion-list class="ion-no-margin filtermenu-scrollfix">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
@@ -71,7 +71,8 @@
   <ion-item>
     <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
       <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon
-      >{{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
+      >
+      {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
     </ion-button>
   </ion-item>
 </ion-list>

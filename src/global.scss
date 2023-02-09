@@ -18,7 +18,7 @@
   font-style: normal;
   font-weight: 400;
   src: url('/assets/fonts/Calibri.woff') format('woff2'), url('/assets/fonts/Calibri.woff') format('woff'),
-    url('/assets/fonts/Calibri.ttf') format('truetype');
+  url('/assets/fonts/Calibri.ttf') format('truetype');
   /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
 }
@@ -814,4 +814,8 @@ ion-modal.modal-fullscreen::part(content) {
 .ios ion-item::part(native)::after {
   z-index: 0;
   pointer-events: none;
+}
+
+.filtermenu-scrollfix {
+  padding-bottom: 20vh !important;
 }
