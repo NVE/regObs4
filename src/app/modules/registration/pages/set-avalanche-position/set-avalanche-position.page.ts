@@ -10,7 +10,7 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 import {
   LocationTime,
-  SetLocationInMapComponent
+  SetLocationInMapComponent,
 } from '../../components/set-location-in-map/set-location-in-map.component';
 import { IPolygon } from '../../models/polygon';
 
@@ -22,9 +22,9 @@ import { IPolygon } from '../../models/polygon';
 export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;
   @Input() endLatLng?: L.LatLng;
-  @Input() extent?: [number, number][]
-  @Input() startExtent?: [number, number][]
-  @Input() endExtent?: [number, number][]
+  @Input() extent?: [number, number][];
+  @Input() startExtent?: [number, number][];
+  @Input() endExtent?: [number, number][];
   @Input() relativeToLatLng?: L.LatLng;
   @Input() geoHazard: GeoHazard;
   @Input() showPolyline = true;
@@ -140,17 +140,13 @@ export class SetAvalanchePositionPage implements OnInit {
         icon: this.locationMarkerIcon,
       });
     }
-    let areaTotalText = "";
+    let areaTotalText = '';
     if (this.geoHazard == GeoHazard.Snow) {
       areaTotalText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL'];
     } else {
       areaTotalText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.AREA_TOTAL'];
     }
-    this.totalPolygon = this.constructPolygon(
-      areaTotalText,
-      this.extent,
-      settings.map.extentColor
-    );
+    this.totalPolygon = this.constructPolygon(areaTotalText, this.extent, settings.map.extentColor);
     this.startPolygon = this.constructPolygon(
       this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START'],
       this.startExtent,
@@ -184,31 +180,23 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   private setStartLocationText() {
-    this.confirmLocationText = this.translations[
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_START_POSITION'
-    ];
+    this.confirmLocationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_START_POSITION'];
     this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
     this.locationMarkerIconUrl = this.startImageUrl;
   }
 
   private setEndLocationText() {
-    this.confirmLocationText = this.translations[
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_END_POSITION'
-    ];
+    this.confirmLocationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_END_POSITION'];
     this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
     this.locationMarkerIconUrl = this.endImageUrl;
   }
 
   private setPolygonLocationText() {
     if (this.geoHazard == GeoHazard.Snow) {
-      this.confirmLocationText = this.translations[
-        'REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'
-      ];
+      this.confirmLocationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'];
       this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
     } else if (this.geoHazard == GeoHazard.Soil) {
-      this.confirmLocationText = this.translations[
-        'REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_LANDSLIDE_AREA'
-      ];
+      this.confirmLocationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_LANDSLIDE_AREA'];
       this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_AREA'];
     }
   }
@@ -217,33 +205,34 @@ export class SetAvalanchePositionPage implements OnInit {
     return {
       title,
       active: Boolean(extent),
-      polygon: extent ? new L.Polygon(
-        extent.map(([lng, lat]) => [lat, lng]),
-        {color},
-      ) : null,
+      polygon: extent
+        ? new L.Polygon(
+            extent.map(([lng, lat]) => [lat, lng]),
+            { color }
+          )
+        : null,
       color,
     };
   }
 
   private makePolygons() {
     if (!this.totalPolygon.polygon) {
-      const totalCircle = new L.Circle(
-        [(this.start.lat + this.end.lat) / 2, (this.start.lng + this.end.lng) / 2],
-        {radius: this.start.distanceTo(this.end) / 2}
-      );
+      const totalCircle = new L.Circle([(this.start.lat + this.end.lat) / 2, (this.start.lng + this.end.lng) / 2], {
+        radius: this.start.distanceTo(this.end) / 2,
+      });
       this.totalPolygon.polygon = L.PM.Utils.circleToPolygon(totalCircle, 5);
     }
     if (!this.startPolygon.polygon) {
       const startCircle = new L.Circle(
         [this.start.lat + (this.end.lat - this.start.lat) / 6, this.start.lng + (this.end.lng - this.start.lng) / 6],
-        {radius: this.start.distanceTo(this.end) / 6}
+        { radius: this.start.distanceTo(this.end) / 6 }
       );
       this.startPolygon.polygon = L.PM.Utils.circleToPolygon(startCircle, 5);
     }
     if (!this.endPolygon.polygon) {
       const endCircle = new L.Circle(
         [this.end.lat + (this.start.lat - this.end.lat) / 6, this.end.lng + (this.start.lng - this.end.lng) / 6],
-        {radius: this.start.distanceTo(this.end) / 6}
+        { radius: this.start.distanceTo(this.end) / 6 }
       );
       this.endPolygon.polygon = L.PM.Utils.circleToPolygon(endCircle, 5);
     }
@@ -279,7 +268,7 @@ export class SetAvalanchePositionPage implements OnInit {
         this.endMarker.addTo(this.map);
         this.endMarker.off('click');
         this.map.off('drag');
-        this.setPolygonLocationText()
+        this.setPolygonLocationText();
         if (this.geoHazard == GeoHazard.Snow || this.geoHazard == GeoHazard.Soil) {
           this.makePolygons();
           this.locationPolygon.next(this.totalPolygon);
