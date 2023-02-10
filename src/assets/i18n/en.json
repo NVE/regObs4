@@ -396,7 +396,8 @@
       "SEND_EMAIL": "Send to us by email",
       "SUBMIT_NEW": "Submit as new observation",
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
-      "TITLE": "Submission failed"
+      "TITLE": "Submission failed",
+      "UNAUTHORIZED": "Authorization failed. Could you please try to log out and in again and then try to submit the observation again?"
     },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Edit observation",

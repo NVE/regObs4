@@ -396,7 +396,8 @@
       "SEND_EMAIL": "Send til oss på e-post",
       "SUBMIT_NEW": "Send inn som ny observasjon",
       "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
-      "TITLE": "Innsending feilet"
+      "TITLE": "Innsending feilet",
+      "UNAUTHORIZED": "Vi lykkes ikke med å sjekke om du har tilgang. Prøv å sende inn på nytt. Om dette ikke hjelper, kan du forsøke å logge ut og inn igjen før du prøver å sende inn på nytt?"
     },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Rediger observasjon",

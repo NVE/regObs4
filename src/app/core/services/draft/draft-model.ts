@@ -19,6 +19,7 @@ export declare const enum RegistrationDraftErrorCode {
   GoneError = 27,
   ServerError = 30,
   Unknown = 40,
+  Unauthorized = 50,
 }
 
 export interface RegistrationDraftError {
