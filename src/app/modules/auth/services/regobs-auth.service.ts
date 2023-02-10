@@ -130,18 +130,15 @@ export class RegobsAuthService {
   private initRefreshTokenOnStartup() {
     this.initComplete$
       .pipe(
-        switchMap(() => (isAndroidOrIos(this.platform) ? this.platform.resume : from(this.platform.ready()))),
-        withLatestFrom(this.loggedInUser$, this.networkStatusService.connected$)
+        tap(this.logger.debug('Authorization initialized. Will try to refresh token when we come online', DEBUG_TAG)),
+        switchMap(() => this.networkStatusService.connected$.pipe(filter((connected) => connected === true))),
+        withLatestFrom(this.loggedInUser$)
       )
-      .subscribe(([, user, connected]) => {
+      .subscribe(([, user]) => {
         if (user?.token && this.isTokenOlderThan(user?.tokenIssuedAt, 300)) {
-          if (connected) {
-            //token is older than 5 minutes and we have network, so refresh
-            this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
-            this.refreshToken();
-          } else {
-            this.logger.debug('App resumed. Refresh token skipped because we are offline', DEBUG_TAG);
-          }
+          //token is older than 5 minutes and we have network, so refresh
+          this.logger.debug('We are online. Refresh token...', DEBUG_TAG);
+          this.refreshToken();
         }
       });
   }
