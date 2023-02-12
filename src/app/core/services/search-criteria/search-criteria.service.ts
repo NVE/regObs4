@@ -54,6 +54,7 @@ const URL_PARAM_COMPETENCE = 'competence';
 const URL_PARAM_REGISTRATION_TYPE = 'type';
 const URL_PARAM_SLUSH_FLOW = 'slushFlow';
 const URL_PARAM_ORDER_BY = 'orderBy';
+const URL_PARAM_REGION = 'regions';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
 
@@ -321,6 +322,7 @@ export class SearchCriteriaService {
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
     const regTypesRaw = url.searchParams.get(URL_PARAM_REGISTRATION_TYPE);
     const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : null;
+    const selectedRegions = this.readRegionsFromUrl(url.searchParams);
 
     const criteria: SearchCriteriaRequestDto = {};
 
@@ -350,6 +352,10 @@ export class SearchCriteriaService {
 
     if (orderBy) {
       criteria.OrderBy = orderBy;
+    }
+
+    if (selectedRegions?.length) {
+      criteria.SelectedRegions = selectedRegions;
     }
 
     if (geoHazards) {
@@ -389,6 +395,14 @@ export class SearchCriteriaService {
     }
   }
 
+  private readRegionsFromUrl(searchParams: URLSearchParams): number[] {
+    const regionsRaw = searchParams.get(URL_PARAM_REGION);
+    if (regionsRaw?.length > 0) {
+      return separatedStringToNumberArray(regionsRaw);
+    }
+    return null;
+  }
+
   async applyQueryParams() {
     const criteria = await firstValueFrom(this.searchCriteria$);
     const daysBack = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
@@ -413,6 +427,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
+    params.set(URL_PARAM_REGION, numberArrayToSeparatedString(criteria.SelectedRegions));
 
     if (this.isSlushFlow(criteria)) {
       params.set(URL_PARAM_SLUSH_FLOW, true);
@@ -443,6 +458,25 @@ export class SearchCriteriaService {
       return numericValue;
     }
     return null;
+  }
+
+  async addToRegionFilter(regionId: number) {
+    const { SelectedRegions } = await firstValueFrom(this.searchCriteria$);
+    const existingRegions = SelectedRegions || [];
+    this.searchCriteriaChanges.next({
+      SelectedRegions: existingRegions.includes(regionId) ? [...existingRegions] : [...existingRegions, regionId],
+    });
+  }
+
+  async removeFromRegionFilter(regionId: number) {
+    const { SelectedRegions } = await firstValueFrom(this.searchCriteria$);
+    if (!SelectedRegions || SelectedRegions?.length === 0) {
+      return;
+    }
+
+    this.searchCriteriaChanges.next({
+      SelectedRegions: SelectedRegions.filter((r) => r !== regionId),
+    });
   }
 
   setObserverNickName(nickName: string) {

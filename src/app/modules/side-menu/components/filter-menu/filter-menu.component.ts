@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
+import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, EMPTY, firstValueFrom, Observable, of } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   AUTOMATIC_STATIONS,
   SearchCriteriaService,
@@ -19,6 +19,7 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
 
 interface ObservationTypeView {
   name: string;
@@ -38,6 +39,18 @@ interface CompetenceItem {
   name: string;
   value: string;
   ids: number[];
+}
+
+interface AvalancheRegion {
+  id: number;
+  name: string;
+  type: 'A' | 'B';
+  polygon: any; // TODO: Fix polygon;
+  checked?: boolean;
+}
+
+function avalancheRegionTrackById(r: AvalancheRegion) {
+  return r.id;
 }
 
 const DEBUG_TAG = 'FilterMenuComponent';
@@ -102,6 +115,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       nickName: true,
     },
   };
+  regions$: Observable<AvalancheRegion[]>;
+
+  get avalancheRegionTrackById() {
+    return avalancheRegionTrackById;
+  }
 
   constructor(
     private platform: Platform,
@@ -109,9 +127,34 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     private searchCriteriaService: SearchCriteriaService,
     private translateService: TranslateService,
     private cdr: ChangeDetectorRef,
-    private kdv: KdvService
+    private kdv: KdvService,
+    private http: HttpClient
   ) {
     super();
+    this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
+      switchMap((geoHazards) =>
+        geoHazards.includes(GeoHazard.Snow)
+          ? http.get<AvalancheRegion[]>('./assets/json/avalancheRegions.json')
+          : of(null)
+      ),
+      switchMap((regions) =>
+        regions
+          ? searchCriteriaService.searchCriteria$.pipe(
+              map((searchCriteria) =>
+                regions.map((r) => ({ ...r, checked: (searchCriteria.SelectedRegions || []).includes(r.id) }))
+              )
+            )
+          : of(null)
+      )
+    );
+  }
+
+  regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
+    if (event.detail.checked) {
+      this.searchCriteriaService.addToRegionFilter(event.detail.value.id);
+    } else {
+      this.searchCriteriaService.removeFromRegionFilter(event.detail.value.id);
+    }
   }
 
   async ngOnInit() {
