@@ -132,7 +132,7 @@
     "@capacitor/cli": "^4.0.1",
     "@ionic/angular-toolkit": "^4.0.0",
     "@ionic/cli": "^6.18.1",
-    "@lokalise/node-api": "^7.0.0",
+    "@lokalise/node-api": "^9.6.0",
     "@sentry/cli": "^1.68.0",
     "@sentry/wizard": "^1.2.11",
     "@types/clone-deep": "^4.0.1",
