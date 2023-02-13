@@ -8,7 +8,6 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 // import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
-import { Zip } from '@ionic-native/zip/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { ErrorHandler, LOCALE_ID, APP_INITIALIZER, NgZone } from '@angular/core';
@@ -100,7 +99,6 @@ export const APP_PROVIDERS = [
   DeviceOrientation,
   File,
   AndroidPermissions,
-  Zip,
   InAppBrowser,
   SafariViewController,
   HTTP,
@@ -171,10 +169,6 @@ export const APP_PROVIDERS = [
   },
   {
     provide: BackgroundDownloadService,
-    // useClass: window.hasOwnProperty('cordova')
-    //   ? BackgroundDownloadNativeService
-    //   : BackgroundDownloadWebService
-    // TODO: Implement Download Manager for Android
     useClass: HttpClientDownloadService,
   },
 ];
