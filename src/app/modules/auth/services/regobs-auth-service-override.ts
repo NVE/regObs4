@@ -49,7 +49,12 @@ export class RegobsAuthServiceOverride extends AuthService {
       if (shouldClearTokens) {
         await this.clearTokens();
       }
-      this.notifyActionListers(AuthActionBuilder.RefreshFailed(error));
+      // Error message: 'Unable to obtain server configuration' means we didn't reach B2C,
+      // but since we refresh pretty often and we might be offline, we just ignore it.
+      // If we trigger a RefreshFailed action the token will be cleared by the auth library
+      if (error?.message?.toLowerCase().indexOf('unable to obtain server configuration') === -1) {
+        this.notifyActionListers(AuthActionBuilder.RefreshFailed(error));
+      }
     }
   }
 
