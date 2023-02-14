@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 
-export const ALLOWED_ATTACHMENT_FILE_TYPES = 'image/jpeg, image/png, image/svg+xml, image/webp'; // https://www.w3schools.com/tags/att_input_accept.asp
+export const ALLOWED_ATTACHMENT_FILE_TYPES = 'image/jpeg, image/png, image/webp'; // https://www.w3schools.com/tags/att_input_accept.asp
 
 @Injectable({
   providedIn: 'root',
