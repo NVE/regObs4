@@ -473,6 +473,8 @@
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
+    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
+    "LOG_IN_AND_RESEND": "Logg inn og prøv å sende på nytt",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",

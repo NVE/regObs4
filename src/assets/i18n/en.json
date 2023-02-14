@@ -473,6 +473,8 @@
     "INVALID_IMAGE": "Sorry, only JPEG images is supported",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
+    "LOG_IN_AND_SEND": "Log in and submit",
+    "LOG_IN_AND_RESEND": "Log in and try to send again",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location and time",
