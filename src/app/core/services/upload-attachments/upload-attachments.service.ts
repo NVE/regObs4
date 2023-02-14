@@ -95,8 +95,8 @@ export class UploadAttachmentsService {
       // If one of the attachment uploads fails we keep on sending the registration, tho we inform the user with a toast
       const errorMessage = await firstValueFrom(
         this.translateService.get(['REGISTRATION.IMAGE_UPLOAD_ERROR'], {
-          attachmentsLength: failedAttachments.length,
-          registrationUuid: draft.uuid,
+          failedAttachmentsCount: failedAttachments.length,
+          obsTime: this.formatDate(new Date(draft.registration.DtObsTime)),
         })
       );
       this.createToast(errorMessage);
@@ -105,11 +105,19 @@ export class UploadAttachmentsService {
     return [...alreadyUploaded, ...uploadedAttachments.map((p) => p.status === 'fulfilled' && p.value)];
   }
 
+  private formatDate(dt: Date) {
+    const padL = (nr, chr = `0`) => `${nr}`.padStart(2, chr);
+
+    return `${padL(dt.getDate())}.${padL(dt.getMonth() + 1)}.${dt.getFullYear()} ${padL(dt.getHours())}:${padL(
+      dt.getMinutes()
+    )}`;
+  }
+
   private async createToast(errorMessage: string) {
     const toast = await this.toastController.create({
       message: errorMessage['REGISTRATION.IMAGE_UPLOAD_ERROR'],
       mode: 'md',
-      duration: 4000,
+      duration: 10000,
     });
     toast.present();
   }
