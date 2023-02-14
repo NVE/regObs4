@@ -458,7 +458,6 @@
       "CAMERA_PERMISSION_MISSING": "You need to give the app permission to use the camera",
       "UNKNOWN": "Couldn't add image(s). It may be something wrong with the image file(s). Please try another image to check"
     },
-    "IMAGE_UPLOAD_ERROR": "Failed to upload: {attachmentsLength} attachments for registration: {registrationUuid}",
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
