@@ -143,9 +143,7 @@ export class AddUpdateDeleteRegistrationService {
     // Add attachment info to draft
     let registration = draft.registration;
     for (const attachment of uploadedAttachments) {
-      if (attachment) {
-        registration = addAttachmentToRegistration(attachment, registration);
-      }
+      registration = addAttachmentToRegistration(attachment, registration);
     }
 
     return {

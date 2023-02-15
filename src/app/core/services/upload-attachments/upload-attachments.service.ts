@@ -1,7 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
@@ -39,8 +37,6 @@ export class UploadAttachmentsService {
     private httpClient: HttpClient,
     private newAttachmentService: NewAttachmentService,
     private apiAttachmentService: ApiAttachmentService,
-    private translateService: TranslateService,
-    private toastController: ToastController,
     private loggingService: LoggingService,
     private userSettings: UserSettingService
   ) {}
@@ -89,25 +85,13 @@ export class UploadAttachmentsService {
     };
 
     // Upload all attachments concurrently
-    const uploadedAttachments = await Promise.allSettled(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
+    const uploadedAttachments = await Promise.all(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
 
     if (failedAttachments.length) {
-      // If one of the attachment uploads fails we continue on sending the registration but show the error toast
-      const errorMessage = await firstValueFrom(
-        this.translateService.get(['REGISTRATION.IMAGE_UPLOAD_ERROR'], {
-          attachmentsLength: failedAttachments.length,
-          registrationUuid: draft.uuid,
-        })
-      );
-      const toast = await this.toastController.create({
-        message: errorMessage['REGISTRATION.IMAGE_UPLOAD_ERROR'],
-        mode: 'md',
-        duration: 4000,
-      });
-      toast.present();
+      throw new UploadAttachmentError(draft.uuid, failedAttachments);
     }
-    // return attachments that returned a value
-    return [...alreadyUploaded, ...uploadedAttachments.map((p) => p.status === 'fulfilled' && p.value)];
+
+    return [...alreadyUploaded, ...uploadedAttachments];
   }
 
   // TODO: Add test
