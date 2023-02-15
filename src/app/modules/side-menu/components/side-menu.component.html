@@ -1,4 +1,4 @@
-<ion-list lines="full" class="ion-no-margin filtermenu-scrollfix" *ngIf="userSettings">
+<ion-list lines="full" class="ion-no-margin" *ngIf="userSettings">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">
       {{ "MENU.USER_SETTINGS" | translate }}
@@ -132,8 +132,7 @@
       <app-external-link src="https://www.geodata.no/">Geodata</app-external-link>
       {{ "MENU.AND" | translate }}
       <app-external-link src="https://opentopomap.org/">OpenTopoMap</app-external-link>.
-      {{ "MENU.SUPPORT_MAP_CREDITS" | translate }}
-      <app-external-link src="https://www.nve.no/">NVE</app-external-link>
+      {{ "MENU.SUPPORT_MAP_CREDITS" | translate }} <app-external-link src="https://www.nve.no/">NVE</app-external-link>
     </ion-label>
   </ion-item-divider>
 </ion-list>

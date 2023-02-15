@@ -56,7 +56,7 @@ export class SimpleSnowObsComponent implements OnInit {
   }
 
   filterSnowSurfaceTIDs = (tid: number): boolean => {
-    return ![108, 109, 110].includes(tid); //we don't want to show "... water drainage lines" and "Other"
+    return tid !== 108; //we don't want to show "Other"
   };
 
   filterDangerSignTIDs = (tid: number): boolean => {

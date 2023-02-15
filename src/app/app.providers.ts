@@ -15,6 +15,7 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 // import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
+import { Zip } from '@ionic-native/zip/ngx';
 import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -101,6 +102,7 @@ export const APP_PROVIDERS = [
   DeviceOrientation,
   File,
   AndroidPermissions,
+  Zip,
   InAppBrowser,
   SafariViewController,
   HTTP,
@@ -171,6 +173,10 @@ export const APP_PROVIDERS = [
   },
   {
     provide: BackgroundDownloadService,
+    // useClass: window.hasOwnProperty('cordova')
+    //   ? BackgroundDownloadNativeService
+    //   : BackgroundDownloadWebService
+    // TODO: Implement Download Manager for Android
     useClass: HttpClientDownloadService,
   },
   {
