@@ -15,6 +15,9 @@
       <ion-label class="ion-text-wrap" *ngIf="unknownError">
         {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
       </ion-label>
+      <ion-label class="ion-text-wrap" *ngIf="unauthorizedError">
+        {{ "REGISTRATION.FAILED.UNAUTHORIZED" | translate }}
+      </ion-label>
       <ion-label class="ion-text-wrap" *ngIf="registrationError">
         {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
         <ng-container *ngIf="draft.error.message">
