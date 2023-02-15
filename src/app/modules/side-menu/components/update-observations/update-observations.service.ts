@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class UpdateObservationsService {
-  private lastFetched = new Subject<Date>();
+  protected lastFetched = new Subject<Date>();
   private refreshRequested = new Subject<void>();
   readonly lastFetched$ = this.lastFetched.asObservable();
   readonly refreshRequested$ = this.refreshRequested.asObservable();
@@ -19,5 +19,11 @@ export class UpdateObservationsService {
 
   requestRefresh() {
     this.refreshRequested.next();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setOfflineObservationsLastFetched(date: Date) {
+    // Not implemented for standard platform, web.
+    // See UpdateObservationsOfflineService
   }
 }

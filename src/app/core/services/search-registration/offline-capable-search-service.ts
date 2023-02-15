@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import moment from 'moment';
 import {
   Observable,
   firstValueFrom,
   combineLatest,
-  distinctUntilChanged,
   switchMap,
   startWith,
   map,
@@ -15,12 +15,17 @@ import {
   catchError,
   TimeoutError,
   of,
-  concatMap,
   debounceTime,
-  filter,
   takeUntil,
   BehaviorSubject,
   timer,
+  EMPTY,
+  exhaustMap,
+  take,
+  concat,
+  withLatestFrom,
+  filter,
+  shareReplay,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import {
@@ -33,24 +38,23 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+import { TABS, TabsService } from 'src/app/pages/tabs/tabs.service';
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 
-type SyncRequestResult = 'success' | 'error';
-type SyncRequest = Subject<SyncRequestResult>[];
+type SyncRequest = Subject<void>;
+type CurrentSyncInfo = { appMode: AppMode; langKey: LangKey };
 
 const DEBUG_TAG = 'OfflineCapableSearchService';
 const SYNC_DEBOUNCE_MS = 500;
-const SYNC_TIMEOUT_MS = 5000; // Includes the debounce time
 const SYNC_INTERVAL = 120000;
-
-let _syncId = 0;
-const createSyncId = (appMode: AppMode, lang: LangKey) => {
-  _syncId = _syncId + 1;
-  return `${_syncId}_${appMode}_${lang}`;
-};
+const OUT_OF_SYNC_MS = 1000 * 60 * 15; // 15 minutes
+// Sync timeouts includes the debounce time
+const SYNC_TIMEOUT_MS_HAS_FRESH_DATA = 3000;
+const SYNC_TIMEOUT_MS_NO_FRESH_DATA = 300000; // 5 minutes
 
 /**
  * Search for observations in the offline database instead of searching online through the Regobs API.
@@ -63,79 +67,201 @@ export class OfflineCapableSearchService extends SearchService {
    * En forespørsel / SyncRequest er i seg selv en subject for å kunne gi beskjed tilbake til den som har bedt om
    * syncing om at syncingen er ferdig, feilet osv.
    */
-  private syncRequests = new BehaviorSubject<SyncRequest>([]);
-  private hasFreshSync = false;
+  private syncRequests = new BehaviorSubject<SyncRequest[]>([]);
+  private lastSyncTime$: Observable<number>;
+  private syncFinishedSuccessfully = new Subject<void>();
+  private outdatedObservationsToast: HTMLIonToastElement = null;
+  private outDatedObservationsToastDismisser = new Subject<void>();
 
   constructor(
     config: RegobsApiConfiguration,
     http: HttpClient,
     private logger: LoggingService,
     private sqlite: SqliteService,
-    private network: NetworkStatusService,
+    network: NetworkStatusService,
     private userSettings: UserSettingService,
-    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService
+    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
+    private toastController: ToastController,
+    tabsService: TabsService,
+    updateObsService: UpdateObservationsService
   ) {
     super(config, http);
 
+    this.lastSyncTime$ = combineLatest([
+      this.userSettings.appMode$,
+      this.userSettings.language$,
+      this.syncFinishedSuccessfully.pipe(startWith(true)),
+    ]).pipe(
+      switchMap(([appMode, langKey]) => this.readLastSyncTime(appMode, langKey)),
+      shareReplay(1)
+    );
+
+    // Update the last fetched time shown in filter menu whenever last fetched in offline db changes
+    this.lastSyncTime$
+      .pipe(map((lastFetchedMs) => new Date(lastFetchedMs)))
+      .subscribe((d) => updateObsService.setOfflineObservationsLastFetched(d));
+
+    const tabShouldShowOutDatedObsToast$ = tabsService.selectedTab$.pipe(
+      map((tab) => [TABS.HOME, TABS.OBSERVATION_LIST].includes(tab))
+    );
+
+    // Show or hide the "you have old observations" toast
+    combineLatest([tabShouldShowOutDatedObsToast$, this.lastSyncTime$])
+      .pipe(
+        switchMap(([tabShouldShowToast, lastSyncTimeMs]) => {
+          if (!tabShouldShowToast || !isOutOfSync(lastSyncTimeMs)) return this.dismissOldObservationsToast();
+
+          return concat(timer(5_000, 60_000)).pipe(
+            switchMap(() =>
+              isOutOfSync(lastSyncTimeMs)
+                ? this.showOrUpdateOldObservationsToast(lastSyncTimeMs)
+                : this.dismissOldObservationsToast()
+            ),
+            // If the user dismisses the toast, do not show it again.
+            // NB: The toast is shown again if lang or app mode changes, or if
+            takeUntil(this.outDatedObservationsToastDismisser)
+          );
+        })
+      )
+      .subscribe();
+
+    // Whenever appMode or language changes trigger a new sync
+    combineLatest([this.userSettings.appMode$, this.userSettings.language$]).subscribe(() => {
+      this.triggerSync();
+    });
+
+    // Save submitted or changed registrations to database
     combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.changedRegistrations$]).subscribe(
       ([appMode, { reg, langKey }]) => {
-        this.sqlite.insertRegistrations([reg], appMode, langKey, 'changedRegistrations$');
+        this.sqlite.insertRegistrations([reg], appMode, langKey);
       }
     );
 
+    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.deletedRegistrationIds$]).subscribe(
+      ([appMode, regId]) => {
+        // TODO: Implement sqlite delete registrations
+      }
+    );
+
+    // Sync of updated observations are triggered from this observable
     combineLatest([
-      this.userSettings.appMode$.pipe(tap(() => (this.hasFreshSync = false))),
-      this.userSettings.language$.pipe(tap(() => (this.hasFreshSync = false))),
-      this.network.connected$.pipe(
-        tap((hasNetwork) => this.logger.debug('Network status changed', DEBUG_TAG, { hasNetwork }))
-      ),
       this.syncRequests.pipe(
-        tap(() => this.logger.debug('Sync requests changed', DEBUG_TAG, { n: this.syncRequests.value.length })),
-        filter((syncRequests) => syncRequests.length > 0)
+        filter((syncRequests) => syncRequests.length > 0),
+        tap(() => this.logger.debug('Sync requests changed', DEBUG_TAG, { n: this.syncRequests.value.length }))
       ),
+      network.connected$,
     ])
       .pipe(
-        // TODO: We need to notify if no network and no sync has been done
-        filter(([, , isConnected]) => isConnected),
+        // Many things can trigger a sync. Use a debounce time to only start a sync when things has calmed down.
         debounceTime(SYNC_DEBOUNCE_MS),
-        // Include timer here so it is reset when a sync is triggered from a user action etc..
-        switchMap(([appMode, lang]) =>
-          timer(0, SYNC_INTERVAL).pipe(
-            tap((i) => {
-              if (i > 0) {
-                this.logger.debug(`Sync triggered from interval of ${SYNC_INTERVAL} ms`, DEBUG_TAG);
-              }
-            }),
-            map(() => ({ appMode, lang }))
-          )
-        ),
-        concatMap(({ appMode, lang }) => this.sync(appMode, lang))
+
+        // Include sync interval here so it is reset when a sync is triggered from a user action etc.
+        // EMPTY exits the pipe if we have no network
+        switchMap(([, hasNetwork]) => (hasNetwork ? this.startSyncInterval() : EMPTY)),
+
+        withLatestFrom(this.userSettings.appMode$, this.userSettings.language$),
+
+        // Start syncing, use exhaustMap to do one sync at a time, and let it finish / fail before starting the next one.
+        exhaustMap(([, appMode, langKey]) => this.startSyncing({ appMode, langKey }))
       )
       .subscribe();
   }
 
-  private triggerForceSync() {
-    const syncRequest = new Subject<SyncRequestResult>();
-    const syncRequests = this.syncRequests.value;
-    this.syncRequests.next([...syncRequests, syncRequest]);
+  SearchCount(criteria: SearchCriteriaRequestDto): Observable<SearchCountResponseDto> {
+    this.logger.debug('SearchCount triggered', DEBUG_TAG, { criteria });
+    return this.getDbChangesTriggeredBySync$().pipe(
+      switchMap((appMode) => this.sqlite.getRegistrationCount(criteria, appMode)),
+      map((count) => ({ TotalMatches: count }))
+    );
+  }
 
-    if (!this.hasFreshSync) {
-      return syncRequest;
+  SearchAtAGlance(criteria: SearchCriteriaRequestDto): Observable<AtAGlanceViewModel[]> {
+    this.logger.debug('SearchAtAGlance triggered', DEBUG_TAG, { criteria });
+    return this.getDbChangesTriggeredBySync$().pipe(
+      switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
+      map((registrations) => registrations.map((reg) => toAtAGlanceViewModel(reg)))
+    );
+  }
+
+  SearchSearch(criteria: SearchCriteriaRequestDto): Observable<RegistrationViewModel[]> {
+    this.logger.debug('SearchSearch triggered', DEBUG_TAG, { criteria });
+    return this.getDbChangesTriggeredBySync$().pipe(
+      switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode))
+    );
+  }
+
+  private async dismissOldObservationsToast() {
+    this.outDatedObservationsToastDismisser.next();
+  }
+
+  private async showOrUpdateOldObservationsToast(lastSyncMs: number) {
+    let message: string;
+    const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
+    if (lastSyncMs < twoWeeksAgo) {
+      // TODO: Oversettelser
+      message = `
+        <strong>Appen har ikke fått hentet observasjoner.</strong>
+        <br/>Det kan være du ikke har nett eller at appen ikke får kontakt med regobs.
+        Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen.
+      `;
+    } else {
+      const langKey = await firstValueFrom(this.userSettings.language$);
+      const lastUpdatedText = moment(lastSyncMs).locale(LangKey[langKey]).fromNow();
+      // TODO: Oversettelser
+      message = `
+        <strong>Observasjoner ble sist hentet for ${lastUpdatedText}.</strong>
+        <br/>Det kan være du ikke har nett eller at appen ikke får kontakt med regobs.
+        <br/>Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen.
+      `;
     }
 
-    return syncRequest.pipe(
-      timeout(SYNC_TIMEOUT_MS),
-      catchError((error) => {
-        if (error instanceof TimeoutError) {
-          this.logger.debug(`Waited for sync to finish in ${SYNC_TIMEOUT_MS} ms`, DEBUG_TAG);
-        } else {
-          this.logger.error(error, DEBUG_TAG, 'Unknown error happened while waiting for sync to finish');
-        }
+    if (this.outdatedObservationsToast == null) {
+      this.outdatedObservationsToast = await this.toastController.create({
+        message,
+        position: 'bottom',
+        icon: 'warning',
+        cssClass: 'sync-toast',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel',
+            handler: () => {
+              this.outDatedObservationsToastDismisser.next();
+            },
+          },
+        ],
+      });
 
-        const result: SyncRequestResult = 'error';
-        return of(result);
+      this.outDatedObservationsToastDismisser.pipe(take(1)).subscribe(() => {
+        this.outdatedObservationsToast.dismiss();
+        this.outdatedObservationsToast = null;
+      });
+
+      await this.outdatedObservationsToast.present();
+    } else {
+      this.outdatedObservationsToast.message = message;
+    }
+  }
+
+  private startSyncInterval() {
+    return timer(0, SYNC_INTERVAL).pipe(
+      tap((i) => {
+        if (i > 0) {
+          this.logger.debug(`Sync triggered from interval of ${SYNC_INTERVAL} ms`, DEBUG_TAG);
+        }
       })
     );
+  }
+
+  private async readLastSyncTime(appMode: AppMode, langKey: LangKey) {
+    let lastSyncMs: number;
+    try {
+      lastSyncMs = await this.sqlite.readRegistrationsSyncTime(appMode, langKey);
+    } catch (error) {
+      this.logger.log(`Failed to read last sync ms`, error, LogLevel.Warning, DEBUG_TAG);
+      lastSyncMs = 0;
+    }
+    return lastSyncMs;
   }
 
   /**
@@ -178,80 +304,70 @@ export class OfflineCapableSearchService extends SearchService {
     }
   }
 
-  private async getSyncTimeCriterias(
-    appMode: AppMode,
-    lang: LangKey,
-    syncId: string
-  ): Promise<Pick<SearchCriteriaRequestDto, 'FromDtChangeTime' | 'FromDtObsTime'>> {
-    let lastSyncMs: number;
-    try {
-      lastSyncMs = await this.sqlite.readRegistrationsSyncTime(appMode, lang);
-    } catch (error) {
-      this.logger.log(`Sync ${syncId}: Failed to read last sync ms`, error, LogLevel.Warning, DEBUG_TAG);
-      lastSyncMs = 0;
-    }
-
+  private async getSyncSearchCriteria(LangKey: LangKey): Promise<SearchCriteriaRequestDto> {
     const twoWeeksAgo = moment().subtract(14, 'days');
     const twoWeeksAgoMs = twoWeeksAgo.valueOf();
-    lastSyncMs = lastSyncMs < twoWeeksAgoMs ? twoWeeksAgoMs : lastSyncMs;
-    this.logger.debug(`Sync ${syncId}: last time ms`, DEBUG_TAG, { lastSyncMs });
+    const lastSyncMs = await firstValueFrom(this.lastSyncTime$);
+    const fromTime = lastSyncMs < twoWeeksAgoMs ? twoWeeksAgoMs : lastSyncMs;
 
     return {
-      FromDtChangeTime: moment(lastSyncMs).format(),
+      FromDtChangeTime: moment(fromTime).format(),
       FromDtObsTime: twoWeeksAgo.format(),
+      LangKey,
     };
   }
 
-  private async fetchAndInsertRegistrations(
-    criteria: SearchCriteriaRequestDto,
-    appMode: AppMode,
-    lang: LangKey,
-    syncId: string
-  ) {
+  private async fetchAndInsertRegistrations({ appMode, langKey }: CurrentSyncInfo) {
+    const criteria = await this.getSyncSearchCriteria(langKey);
+    this.logger.debug(`Sync criteria`, DEBUG_TAG, { criteria });
     const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
+
     if (count > 0) {
       for await (const registrations of this.pagedSearch(criteria, count)) {
-        this.logger.debug(`Sync ${syncId}: Inserting ${registrations.length} registrations`, DEBUG_TAG);
-        await this.sqlite.insertRegistrations(registrations, appMode, lang, syncId);
+        this.logger.debug(`Sync: Inserting ${registrations.length} registrations`, DEBUG_TAG);
+        await this.sqlite.insertRegistrations(registrations, appMode, langKey);
       }
     } else {
-      this.logger.debug(`Sync ${syncId}: No new registrations to fetch`, DEBUG_TAG, { count, criteria });
+      this.logger.debug(`Sync: No new registrations to fetch`, DEBUG_TAG, { count, criteria });
     }
   }
 
-  private async sync(appMode: AppMode, lang: LangKey) {
-    const syncId = createSyncId(appMode, lang);
-    this.logger.debug(`Sync ${syncId}: Starting`, DEBUG_TAG, { appMode });
+  private async startSyncing(syncInfo: CurrentSyncInfo) {
+    this.logger.debug(`Sync starting`, DEBUG_TAG, { syncInfo });
+    try {
+      await this.sync(syncInfo);
+      this.syncFinishedSuccessfully.next();
+    } catch (err) {
+      this.logger.error(err, DEBUG_TAG, 'Sync failed', { syncInfo });
+      // TODO: Show error toast ?
+    }
+  }
 
+  private async updateSyncTime({ appMode, langKey }: CurrentSyncInfo, newSyncTimeMs: number) {
+    await this.sqlite.updateRegistrationsSyncTime(newSyncTimeMs, appMode, langKey);
+  }
+
+  private async sync(syncInfo: CurrentSyncInfo) {
     const syncRequests = [...this.syncRequests.value];
     this.syncRequests.next([]);
 
     try {
-      const syncTimeCriterias = await this.getSyncTimeCriterias(appMode, lang, syncId);
-
       // Save new sync time before requesting new registrations,
       // so we can fetch registrations added while we request registrations later
       const newSyncTimeMs = moment().valueOf();
-
-      const criteria: SearchCriteriaRequestDto = {
-        ...syncTimeCriterias,
-        LangKey: lang,
-      };
-
-      this.logger.debug(`Sync ${syncId}: criteria`, DEBUG_TAG, { criteria });
-      await this.fetchAndInsertRegistrations(criteria, appMode, lang, syncId);
-      await this.sqlite.updateRegistrationsSyncTime(newSyncTimeMs, appMode, lang, syncId);
-      this.logger.debug(`Sync ${syncId}: done`, DEBUG_TAG, { appMode, criteria, newSyncTimeMs });
+      this.logger.debug('New sync time', DEBUG_TAG, { newSyncTimeMs });
+      await this.fetchAndInsertRegistrations(syncInfo);
+      await this.updateSyncTime(syncInfo, newSyncTimeMs);
 
       for (const syncReq of syncRequests) {
-        syncReq.next('success');
+        syncReq.next();
+        syncReq.complete();
       }
-      this.hasFreshSync = true;
     } catch (error) {
-      this.logger.error(error, DEBUG_TAG, `Sync ${syncId}: failed`);
       for (const syncReq of syncRequests) {
-        syncReq.next('error');
+        syncReq.error(error);
       }
+      throw error; // Picked up and logged by startSync
     }
   }
 
@@ -261,61 +377,98 @@ export class OfflineCapableSearchService extends SearchService {
     return registrations;
   }
 
-  private getSyncTriggeredObservable() {
-    const hasSynced = this.triggerForceSync();
-    return combineLatest([this.userSettings.appMode$, this.sqlite.hasChanges$.pipe(startWith(true))]).pipe(
-      map(([appMode]) => appMode),
-      takeUntil(hasSynced)
-    );
+  private triggerSync() {
+    const syncRequest = new Subject<void>();
+    const syncRequests = this.syncRequests.value;
+    this.syncRequests.next([...syncRequests, syncRequest]);
+    return syncRequest;
   }
 
-  SearchCount(criteria: SearchCriteriaRequestDto): Observable<SearchCountResponseDto> {
-    this.logger.debug('SearchCount triggered', DEBUG_TAG, { criteria });
-    return this.getSyncTriggeredObservable().pipe(
-      switchMap((appMode) => this.sqlite.getRegistrationCount(criteria, appMode)),
-      map((count) => ({ TotalMatches: count }))
-    );
-  }
-
-  SearchAtAGlance(criteria: SearchCriteriaRequestDto): Observable<AtAGlanceViewModel[]> {
-    this.logger.debug('SearchAtAGlance triggered', DEBUG_TAG, { criteria });
-    return this.getSyncTriggeredObservable().pipe(
-      switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
-      map((registrations) =>
-        registrations.map((reg) => ({
-          CompetenceLevelTID: reg.Observer?.CompetenceLevelTID,
-          DtObsTime: reg.DtObsTime,
-          FirstAttachmentId: reg.Attachments?.length ? reg.Attachments[0].AttachmentId : null,
-          FormNames: ['Ikke laget enda'],
-          GeoHazardTID: reg.GeoHazardTID,
-          Latitude: reg.ObsLocation?.Latitude,
-          Longitude: reg.ObsLocation?.Longitude,
-          NickName: reg.Observer?.NickName,
-          RegId: reg.RegId,
-          Title: reg.ObsLocation?.Title,
-        }))
+  /**
+   * Emiter enten når en sync er ferdig, eller når appen har ventet x sekunder på at en sync skal bli ferdig.
+   **/
+  private syncRequestWithTimeout$() {
+    return this.lastSyncTime$.pipe(
+      take(1),
+      map((lastSyncTimeMs) => {
+        const hasFreshSync = hasFreshSyncTime(lastSyncTimeMs);
+        // Bruk ulik timeout avhengig av hvor lenge det er siden forrige sync.
+        // Hvis det er lang tid siden forrige sync bør vi også la appen få god tid til å hente nytt.
+        // Hvis det er kort tid siden er det ikke så farlig å hente det aller nyeste, da venter vi bare kort tid.
+        const syncTimeoutMs = hasFreshSync ? SYNC_TIMEOUT_MS_HAS_FRESH_DATA : SYNC_TIMEOUT_MS_NO_FRESH_DATA;
+        return { lastSyncTimeMs, hasFreshSync, syncTimeoutMs };
+      }),
+      switchMap((args) =>
+        this.triggerSync().pipe(
+          map(() => 'success' as const),
+          timeout(args.syncTimeoutMs),
+          catchError((err) => this.handleSyncError(err, args))
+        )
       )
     );
   }
 
-  SearchSearch(criteria: SearchCriteriaRequestDto): Observable<RegistrationViewModel[]> {
-    this.logger.debug('SearchSearch triggered', DEBUG_TAG, { criteria });
-    return this.getSyncTriggeredObservable().pipe(
-      switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
-      distinctUntilChanged((prev, curr) => {
-        if (prev.length !== curr.length) {
-          return false;
-        }
-        for (let index = 0; index < prev.length; index++) {
-          const { RegId: prevRegId } = prev[index];
-          const { RegId: currRegId } = curr[index];
-          if (prevRegId !== currRegId) {
-            return false;
-          }
-        }
+  private getDbChangesTriggeredBySync$() {
+    // Dette fungerer sånn at hvis man er midt i en sync vil observablen fortsette å emite hver gang vi har
+    // endringer i databasen, helt til syncen har feilet pga timeout eller syncen er ferdig.
+    return this.userSettings.appMode$.pipe(
+      switchMap((selectedAppMode) =>
+        this.sqlite.hasChanges$.pipe(
+          filter((appModeWithChanges) => appModeWithChanges === selectedAppMode),
+          startWith(selectedAppMode)
+        )
+      ),
 
-        return true;
-      })
+      // If the sync successfully finished, wait 100 ms before emiting,
+      // we want this.sqlite.hasChanges$ to emit one last time.
+      // takeUntil(syncRequestWithTimeout).pipe(switchMap(res => res === 'success' ? timer(100) : of()))
+      takeUntil(this.syncRequestWithTimeout$())
     );
   }
+
+  private handleSyncError(
+    err: Error,
+    { hasFreshSync, syncTimeoutMs }: { hasFreshSync: boolean; syncTimeoutMs: number }
+  ) {
+    if (err instanceof TimeoutError && hasFreshSync) {
+      // No worries, we have fresh data, just log and continue
+      this.logger.debug(`Waited for sync to finish in ${syncTimeoutMs} ms`, DEBUG_TAG);
+    } else if (err instanceof TimeoutError && !hasFreshSync) {
+      // We do not have fresh data and sync did not complete within reasonable time
+      this.logger.log(
+        `Waited for sync to finish in ${syncTimeoutMs} ms, app does not have fresh data`,
+        err,
+        LogLevel.Warning,
+        DEBUG_TAG
+      );
+    } else {
+      this.logger.error(err, DEBUG_TAG, 'Unknown error happened while waiting for sync to finish');
+    }
+
+    return of('err' as const);
+  }
+}
+
+function toAtAGlanceViewModel(reg: RegistrationViewModel): AtAGlanceViewModel {
+  return {
+    CompetenceLevelTID: reg.Observer?.CompetenceLevelTID,
+    DtObsTime: reg.DtObsTime,
+    FirstAttachmentId: reg.Attachments?.length ? reg.Attachments[0].AttachmentId : null,
+    FormNames: (reg.Summaries || []).map((s) => s.RegistrationName),
+    GeoHazardTID: reg.GeoHazardTID,
+    Latitude: reg.ObsLocation?.Latitude,
+    Longitude: reg.ObsLocation?.Longitude,
+    NickName: reg.Observer?.NickName,
+    RegId: reg.RegId,
+    Title: reg.ObsLocation?.Title,
+  };
+}
+
+function hasFreshSyncTime(lastSyncTimeMs: number) {
+  return !isOutOfSync(lastSyncTimeMs);
+}
+
+function isOutOfSync(syncTime: number) {
+  const now = moment().valueOf();
+  return now - syncTime > OUT_OF_SYNC_MS;
 }

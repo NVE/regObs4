@@ -122,10 +122,14 @@ export class AppComponent {
             ),
           ];
 
-          // if (isPlatform('hybrid')) {
-          const sqliteService = this.injector.get<SqliteService>(SqliteService);
-          observables.push(of(sqliteService.init()));
-          // }
+          if (isPlatform('hybrid')) {
+            const sqliteService = this.injector.get<SqliteService>(SqliteService);
+            observables.push(
+              of(sqliteService.init()).pipe(
+                catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start sqliteService'))
+              )
+            );
+          }
 
           return forkJoin(observables);
         })
