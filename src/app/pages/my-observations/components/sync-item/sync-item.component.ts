@@ -1,6 +1,10 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import {
+  RegistrationDraft,
+  RegistrationDraftError,
+  RegistrationDraftErrorCode,
+} from 'src/app/core/services/draft/draft-model';
 import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
 
 @Component({
@@ -30,5 +34,15 @@ export class SyncItemComponent {
       (this.draft.registration.ObsLocation as ObsLocationViewModel)?.Title ||
       ''
     );
+  }
+
+  getErrorIconName(draftError: RegistrationDraftError): string {
+    switch (draftError?.code) {
+      case RegistrationDraftErrorCode.NoNetworkOrTimedOut:
+        return 'cloud-offline-outline';
+      case RegistrationDraftErrorCode.ConflictError:
+        return 'shuffle-outline';
+    }
+    return 'warning'; // default error icon
   }
 }
