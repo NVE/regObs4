@@ -8,12 +8,6 @@
 </ion-header>
 <ion-content class="ion-padding" *ngIf="userSettings">
   <ion-list lines="full">
-    <!-- Email receipt -->
-    <ion-item>
-      <ion-label> {{'SETTINGS.EMAIL_RECEIPT' | translate}} </ion-label>
-      <ion-toggle slot="end" [(ngModel)]="userSettings.emailReceipt" (ngModelChange)="updateSettings()"></ion-toggle>
-    </ion-item>
-
     <!-- Allow sending usage data -->
     <ion-item>
       <ion-label> {{'SETTINGS.ALLOW_ANALYTICS' | translate}} </ion-label>
