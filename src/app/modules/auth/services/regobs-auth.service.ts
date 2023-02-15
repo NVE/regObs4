@@ -246,16 +246,23 @@ export class RegobsAuthService {
     }
   }
 
-  private async showErrorMessage(status: number, message: string) {
-    const text = status === 401 ? 'UNAUTHORIZED' : status <= 0 ? 'SERVICE_UNAVAILABLE' : 'UNKNOWN_ERROR';
-    const messageText = `LOGIN.${text}`;
-    const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
+  private async showErrorMessage(status: number, messageFromServer: string) {
+    this.logger.debug(`SignInFailed: Status = ${status}, message = ${messageFromServer}`, DEBUG_TAG);
+    let messageKeyPostFix = 'UNKNOWN_ERROR';
+
+    if (status === 401) {
+      messageKeyPostFix = 'UNAUTHORIZED';
+    } else if (status <= 0 || messageFromServer === 'Unable To Obtain Server Configuration') {
+      messageKeyPostFix = 'SERVICE_UNAVAILABLE';
+    }
+    const messageKey = `LOGIN.${messageKeyPostFix}`;
+    const extraMessage = messageKeyPostFix === 'UNKNOWN_ERROR' ? ` ${messageFromServer}` : '';
     const translations = await lastValueFrom(
-      this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText])
+      this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageKey])
     );
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
-      message: `${translations[messageText]}${extraMessage}`,
+      message: `${translations[messageKey]}${extraMessage}`,
       buttons: [translations['ALERT.OK']],
     });
     await alert.present();
