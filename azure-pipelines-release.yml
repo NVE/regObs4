@@ -4,182 +4,176 @@
 # https://aka.ms/yaml
 
 trigger:
-- release/*
+  - release/*
 
 variables:
-- group: regobs
+  - group: regobs
+  - group: sentryProperties
 
 pool:
   vmImage: 'macOS-latest'
   demands: xcode
 
 steps:
-#- script: '/bin/bash -c "sudo xcode-select -s /Applications/Xcode_11.2.1.app/Contents/Developer"'
-#  displayName: 'Set Xcode version 11.2.1'
-#  enabled: false
+  #- script: '/bin/bash -c "sudo xcode-select -s /Applications/Xcode_11.2.1.app/Contents/Developer"'
+  #  displayName: 'Set Xcode version 11.2.1'
+  #  enabled: false
 
-- task: InstallAppleCertificate@2
-  displayName: 'Install Apple development certificate'
-  inputs:
-    certSecureFile: 'be7635ac-272e-49ca-9c52-329ecd19cfb3'
-    certPwd: '$(apple_dev_cert)'
+  - task: InstallAppleCertificate@2
+    displayName: 'Install Apple development certificate'
+    inputs:
+      certSecureFile: 'be7635ac-272e-49ca-9c52-329ecd19cfb3'
+      certPwd: '$(apple_dev_cert)'
 
-- task: InstallAppleCertificate@2
-  displayName: 'Install Apple App Store distribution certificate'
-  inputs:
-    certSecureFile: 'a38be812-1d9c-406b-ad7f-2458fa80814f'
-    certPwd: '$(apple.dist.cert.password)'
+  - task: InstallAppleCertificate@2
+    displayName: 'Install Apple App Store distribution certificate'
+    inputs:
+      certSecureFile: 'a38be812-1d9c-406b-ad7f-2458fa80814f'
+      certPwd: '$(apple.dist.cert.password)'
 
-- task: InstallAppleProvisioningProfile@1
-  displayName: 'Install an Apple App Store distribution provisioning profile'
-  inputs:
-    provProfileSecureFile: 'd606c023-431b-448b-b6a8-284e2bf10886'
+  - task: InstallAppleProvisioningProfile@1
+    displayName: 'Install an Apple App Store distribution provisioning profile'
+    inputs:
+      provProfileSecureFile: 'd606c023-431b-448b-b6a8-284e2bf10886'
 
-- task: InstallAppleProvisioningProfile@1
-  displayName: 'Install an Apple Development provisioning profile'
-  inputs:
-    provProfileSecureFile: 'c72d2dec-35b3-4566-a822-6cf9894bd00e'
+  - task: InstallAppleProvisioningProfile@1
+    displayName: 'Install an Apple Development provisioning profile'
+    inputs:
+      provProfileSecureFile: 'c72d2dec-35b3-4566-a822-6cf9894bd00e'
 
-- task: NodeTool@0
-  displayName: 'Use Node 14.x'
-  inputs:
-    versionSpec: 14.x
-    checkLatest: true
+  - task: NodeTool@0
+    displayName: 'Use Node 14.x'
+    inputs:
+      versionSpec: 14.x
+      checkLatest: true
 
-# Needed to sign Android apk/aab
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file: nve.keystore'
-  inputs:
-    secureFile: '3a7f7301-2d1f-419c-b23b-2b72418bc324'
-    retryCount: 5
+  # Needed to sign Android apk/aab
+  - task: DownloadSecureFile@1
+    displayName: 'Download secure file: nve.keystore'
+    inputs:
+      secureFile: '3a7f7301-2d1f-419c-b23b-2b72418bc324'
+      retryCount: 5
 
-#- task: DownloadSecureFile@1
-#  displayName: 'Download secure file: build.json'
-#  inputs:
-#    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
-#    retryCount: 5
+  #- task: DownloadSecureFile@1
+  #  displayName: 'Download secure file: build.json'
+  #  inputs:
+  #    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
+  #    retryCount: 5
 
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file: apikey.json'
-  inputs:
-    secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
-    retryCount: 5
+  - task: DownloadSecureFile@1
+    displayName: 'Download secure file: apikey.json'
+    inputs:
+      secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
+      retryCount: 5
 
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file sentry.properties'
-  inputs:
-    secureFile: '683ad87f-0bf5-482f-b962-c0fbd2a04a4a'
-    retryCount: 5
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: ./'
+    inputs:
+      SourceFolder: '$(Agent.TempDirectory)'
+      Contents: |
+        nve.keystore
+        build.json
+        sentry.properties
+      TargetFolder: ./
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: ./'
-  inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
-    Contents: |
-     nve.keystore
-     build.json
-     sentry.properties
-    TargetFolder: ./
+  - task: CopyFiles@2
+    displayName: 'Copy apikey.json to: ./src/assets'
+    inputs:
+      SourceFolder: '$(Agent.TempDirectory)'
+      Contents: apikey.json
+      TargetFolder: ./src/assets
 
-- task: CopyFiles@2
-  displayName: 'Copy apikey.json to: ./src/assets'
-  inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
-    Contents: apikey.json
-    TargetFolder: ./src/assets
+  #- script: 'echo "##vso[task.setvariable variable=NODE_OPTIONS]--max_old_space_size=8048"'
+  #  displayName: 'Set NODE_OPTIONS=--max_old_space_size=8048'
+  - script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_WIZARD]true"'
+    displayName: 'Set SENTRY_SKIP_WIZARD=true'
 
-#- script: 'echo "##vso[task.setvariable variable=NODE_OPTIONS]--max_old_space_size=8048"'
-#  displayName: 'Set NODE_OPTIONS=--max_old_space_size=8048'
-- script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_WIZARD]true"'
-  displayName: 'Set SENTRY_SKIP_WIZARD=true'
-  
-- script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_AUTO_RELEASE]true"'
-  displayName: 'Set SENTRY_SKIP_AUTO_RELEASE=true'
+  - script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_AUTO_RELEASE]true"'
+    displayName: 'Set SENTRY_SKIP_AUTO_RELEASE=true'
 
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    command: install
-    verbose: false
+  - task: Npm@1
+    displayName: 'npm install'
+    inputs:
+      command: install
+      verbose: false
 
-- task: Npm@1
-  displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run create-version-file'
+  - task: Npm@1
+    displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run create-version-file'
 
-- task: Npm@1
-  displayName: 'npm build production'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run build:prod'
+  - task: Npm@1
+    displayName: 'npm build production'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run build:prod'
 
-- task: Npm@1
-  displayName: 'Capacitor sync to native folders'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run cap:sync'
+  - task: Npm@1
+    displayName: 'Capacitor sync to native folders'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run cap:sync'
 
-#- task: Npm@1
-#  displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
-#  inputs:
-#    command: custom
-#    verbose: false
-#    customCommand: 'run sentry:create-release-and-upload-sourcemaps'
+  - task: Npm@1
+    displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run sentry:create-release-and-upload-sourcemaps'
 
-# TODO: Create ipa
-- task: Xcode@5
-  inputs:
-    actions: 'build'
-    configuration: 'Release'
-    sdk: 'iphoneos'
-    xcWorkspacePath: '$(system.defaultworkingdirectory)/ios/App/App.xcworkspace'
-    scheme: 'App'
-    packageApp: true
-    archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
-    exportPath: 'output/iphoneos/Release'
-    exportOptions: 'auto'
-    signingOption: 'manual'
-    #signingIdentity: 'iPhone Distribution'
-    #provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
-    provisioningProfileName: 'regobs-dist-2023-11-01'
-    teamId: '43L5B5X2PE'
+  # TODO: Create ipa
+  - task: Xcode@5
+    inputs:
+      actions: 'build'
+      configuration: 'Release'
+      sdk: 'iphoneos'
+      xcWorkspacePath: '$(system.defaultworkingdirectory)/ios/App/App.xcworkspace'
+      scheme: 'App'
+      packageApp: true
+      archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
+      exportPath: 'output/iphoneos/Release'
+      exportOptions: 'auto'
+      signingOption: 'manual'
+      #signingIdentity: 'iPhone Distribution'
+      #provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
+      provisioningProfileName: 'regobs-dist-2023-11-01'
+      teamId: '43L5B5X2PE'
 
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '11'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '11'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
 
-- task: Gradle@2
-  displayName: 'Create Android app bundle'
-  inputs:
-    gradleWrapperFile: 'android/gradlew'
-    workingDirectory: 'android/'
-    tasks: 'bundleRelease'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
-    sonarQubeRunAnalysis: false
-    spotBugsAnalysis: false
+  - task: Gradle@2
+    displayName: 'Create Android app bundle'
+    inputs:
+      gradleWrapperFile: 'android/gradlew'
+      workingDirectory: 'android/'
+      tasks: 'bundleRelease'
+      publishJUnitResults: false
+      javaHomeOption: 'JDKVersion'
+      sonarQubeRunAnalysis: false
+      spotBugsAnalysis: false
 
-- task: CmdLine@2
-  inputs:
-    script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
+  - task: CmdLine@2
+    inputs:
+      script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
-  inputs:
-    Contents: |
-     android/app/build/outputs/bundle/release/*.aab
-     output/iphoneos/Release/*.ipa
-    TargetFolder: '$(build.artifactStagingDirectory)'
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
+    inputs:
+      Contents: |
+        android/app/build/outputs/bundle/release/*.aab
+        output/iphoneos/Release/*.ipa
+      TargetFolder: '$(build.artifactStagingDirectory)'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
 #- task: AppStoreRelease@1
 #  displayName: 'Publish to the App Store TestFlight track'
 #  inputs:
