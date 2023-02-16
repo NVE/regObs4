@@ -55,12 +55,12 @@ export class TabsPage implements OnInit, OnDestroy {
     this.isAndroid = this.platform.is('android');
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
-    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([_, tab]) =>
+    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
       this.applyCurrentQueryParams(tab)
     );
   }
 
-  private applyCurrentQueryParams(path: string) {
+  private applyCurrentQueryParams(path: TABS | null) {
     if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
       this.searchCriteriaService.applyQueryParams();
     }
