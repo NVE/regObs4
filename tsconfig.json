@@ -15,20 +15,33 @@
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "target": "es2020",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
     "baseUrl": "./",
     "paths": {
-      "core-js/es7/reflect": ["../node_modules/core-js/proposals/reflect-metadata"],
-      "core-js/es6/*": ["../node_modules/core-js/es/*"],
-      "@varsom-regobs-common/*": ["./node_modules/@varsom-regobs-common/*"]
+      "core-js/es7/reflect": [
+        "../node_modules/core-js/proposals/reflect-metadata"
+      ],
+      "core-js/es6/*": [
+        "../node_modules/core-js/es/*"
+      ],
     },
     "skipLibCheck": true, // Skip lib check until issue is resolved: https://github.com/Turfjs/turf/issues/2017
-    "types": ["node", "google.analytics", "cordova", "jasmine"]
+    "types": [
+      "node",
+      "google.analytics",
+      "cordova",
+      "jasmine",
+    ]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "enableIvy": true
+    "enableIvy": true,
   }
 }
