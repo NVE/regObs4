@@ -38,6 +38,7 @@ src/environments/version.json
 nve.keystore
 build.json
 sentry.properties
+.env
 src/test-reports/
 .vscode/plugins.json
 .vscode/typings/jquery/jquery.d.ts

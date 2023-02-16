@@ -9,6 +9,7 @@ import { LoggingService } from './logging.service';
 import { LogLevel } from './log-level.model';
 import { FileLoggingService } from './file-logging.service';
 import { AppVersion } from 'src/app/core/models/app-version.model';
+import { makeFetchTransport } from '@sentry/browser';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,7 @@ export class SentryService implements LoggingService {
   configureLogging(appMode: AppMode) {
     Sentry.init({
       dsn: environment.production ? settings.sentryDsn : null,
-      transport: Sentry.Transports.FetchTransport,
+      transport: makeFetchTransport,
       environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
       enabled: environment.production,
       release: this.versionInfo.version,
@@ -69,7 +70,7 @@ export class SentryService implements LoggingService {
         category: tag,
         data: optionalParams,
         message,
-        level: level as unknown as Sentry.Severity,
+        level: level as unknown as Sentry.SeverityLevel,
       });
     }
     if (error && level === LogLevel.Error) {
