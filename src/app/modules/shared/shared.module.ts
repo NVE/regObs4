@@ -31,7 +31,6 @@ import { AbsPipe } from './pipes/abs.pipe';
 import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
 import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
-import { DataSpinnerComponent } from '../../components/data-spinner/data-spinner.component';
 
 @NgModule({
   imports: [
@@ -70,7 +69,6 @@ import { DataSpinnerComponent } from '../../components/data-spinner/data-spinner
     EditPictureInfoModalComponent,
     ShowFilterCriteriaComponent,
     CheckDaysOrWeeksBackComponent,
-    DataSpinnerComponent,
   ],
   exports: [
     CommonModule,
@@ -104,7 +102,6 @@ import { DataSpinnerComponent } from '../../components/data-spinner/data-spinner
     EditPictureInfoModalComponent,
     ShowFilterCriteriaComponent,
     CheckDaysOrWeeksBackComponent,
-    DataSpinnerComponent,
   ],
 })
 export class SharedModule {}

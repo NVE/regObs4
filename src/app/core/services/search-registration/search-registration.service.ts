@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   concatMap,
   distinctUntilChanged,
   map,
   Observable,
+  of,
   scan,
   shareReplay,
   startWith,
@@ -46,15 +48,14 @@ export class SearchResult<TViewModel> {
   ) {
     return combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(true))]).pipe(
       map(([searchCriteria]) => searchCriteria),
-      tap(() => {
-        // We are fetching new data, so set isFetching to true
-        this.isFetching$.next(true);
-      }),
+      // We are fetching new data, so set isFetching to true
+      tap(() => this.isFetching$.next(true)),
       switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
-      tap(() => {
-        // We are done fetching new data, so set isFetching to false
+      catchError(() => {
         this.isFetching$.next(false);
+        return of([]);
       }),
+      tap(() => this.isFetching$.next(false)),
       shareReplay(1)
     );
   }
