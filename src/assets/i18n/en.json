@@ -240,7 +240,9 @@
       "TITLE": "Name"
     },
     "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observation type"
+      "TITLE": "Observation type",
+      "NUM_OF_SELECTED_NONE": "Shows all",
+      "NUM_OF_SELECTED": "Chosen"
     },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
     "TITLE": "Observation filter"

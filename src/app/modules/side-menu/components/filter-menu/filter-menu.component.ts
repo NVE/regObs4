@@ -80,6 +80,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   isAutomaticStationChecked: boolean;
   currentGeoHazard: GeoHazard[];
   chosenCompetenceValue: CompetenceItem;
+  observationTypesSelectedCount = 0;
 
   constructor(
     private platform: Platform,
@@ -131,6 +132,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onResetFilters() {
+    this.observationTypesSelectedCount = 0;
     this.searchCriteriaService.resetSearchCriteria();
   }
 
@@ -209,10 +211,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         subtypes.push({ parentId: type.Id, id: type.Id });
       }
     });
+    console.log(this.observationTypesOptions);
     this.observationTypesOptions.forEach((obsType) => {
       const has = subtypes.some((s) => s.parentId == obsType.parentId && s.id == obsType.id);
       has ? (obsType.isChecked = true) : (obsType.isChecked = false);
     });
+    this.observationTypesSelectedCount = this.observationTypesOptions.filter((ot) => ot.isChecked === true).length;
   }
 
   private setActiveObserverCompetence(ids: number[]): CompetenceItem {

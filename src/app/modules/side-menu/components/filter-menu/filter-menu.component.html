@@ -6,7 +6,18 @@
   <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
   <app-update-observations></app-update-observations>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
-    <ion-label> {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }} </ion-label>
+    <ion-label>
+      {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
+      <span
+        >({{
+          observationTypesSelectedCount == 0
+            ? ("OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.NUM_OF_SELECTED_NONE" | translate)
+            : observationTypesSelectedCount +
+              " " +
+              ("OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.NUM_OF_SELECTED" | translate)
+        }})</span
+      >
+    </ion-label>
   </ion-list-header>
 
   <ion-item>
@@ -33,7 +44,7 @@
   <ion-item *ngIf="competenceOptions">
     <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
       "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate
-      }}</ion-label>
+    }}</ion-label>
     <ion-select [interface]="popupType" [value]="chosenCompetenceValue" (ionChange)="onSelectCompetenceChange($event)">
       <ion-select-option *ngFor="let co of competenceOptions" [value]="co">
         {{ co.name }}
@@ -50,13 +61,13 @@
     >
     </ion-checkbox>
     <ion-label class="ion-padding-start"
-    >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
+      >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
     </ion-label>
   </ion-item>
   <ion-item>
     <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
       "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
-      }}</ion-label>
+    }}</ion-label>
     <ion-searchbar
       [value]="nickName"
       [debounce]="1000"
@@ -70,8 +81,7 @@
 
   <ion-item>
     <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
-      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon
-      >
+      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
       {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
     </ion-button>
   </ion-item>
