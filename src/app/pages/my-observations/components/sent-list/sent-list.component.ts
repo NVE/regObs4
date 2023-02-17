@@ -5,7 +5,6 @@ import {
   EventEmitter,
   NgZone,
   OnDestroy,
-  OnInit,
   Output,
 } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
@@ -13,6 +12,7 @@ import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
+import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
@@ -45,6 +45,7 @@ export class SentListComponent implements OnDestroy {
   loadingMore = false;
   pageIndex: number;
   myObservationsUrl$: Observable<string>;
+  isOffline$: Observable<boolean>;
   private ngDestroy$ = new Subject<void>();
 
   constructor(
@@ -54,8 +55,14 @@ export class SentListComponent implements OnDestroy {
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    networkStatusService: NetworkStatusService
   ) {
+    this.isOffline$ = networkStatusService.connected$.pipe(
+      takeUntil(this.ngDestroy$),
+      map((connected) => !connected)
+    );
+
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
 
     addUpdateDeleteRegistrationService.changedRegistrations$

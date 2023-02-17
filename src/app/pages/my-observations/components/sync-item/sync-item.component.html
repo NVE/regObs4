@@ -17,7 +17,7 @@
   </ion-label>
 
   <!-- Show error icon if the app failed to post this draft -->
-  <ion-icon *ngIf="!loading && draft.error" slot="end" name="warning"></ion-icon>
+  <ion-icon *ngIf="!loading && draft.error" slot="end" [name]="getErrorIconName(draft.error)"></ion-icon>
 
   <!-- Show loading spinner if this draft is being posted right now -->
   <ion-spinner *ngIf="loading" slot="end"></ion-spinner>
