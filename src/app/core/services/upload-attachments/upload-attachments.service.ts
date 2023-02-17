@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
@@ -82,14 +82,14 @@ export class UploadAttachmentsService {
     };
 
     // Upload all attachments concurrently
-    const uploadedAttachments = await Promise.allSettled(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
+    const uploadedAttachments = await Promise.all(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
 
     if (failedAttachments.length) {
       // If one of the attachment uploads fails we keep on sending the registration, tho we inform the user with a toast
       this.showCouldnotUploadAllImagesAlert(failedAttachments.length, draft.registration.DtObsTime);
     }
-    // return attachments that returned a value
-    return [...alreadyUploaded, ...uploadedAttachments.map((p) => p.status === 'fulfilled' && p.value)];
+
+    return [...alreadyUploaded, ...uploadedAttachments];
   }
 
   private uploadAttachmentHandleError(

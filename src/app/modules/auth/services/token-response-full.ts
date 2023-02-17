@@ -28,9 +28,9 @@ export class TokenResponseFull extends TokenResponse {
   }
 
   isRefreshTokenValid(buffer: number = AUTH_EXPIRY_BUFFER): boolean {
-    if (this.expiresIn) {
+    if (this.refreshTokenExpiresIn) {
       const now = nowInSeconds();
-      return now < this.issuedAt + this.expiresIn + buffer;
+      return now < this.issuedAt + this.refreshTokenExpiresIn + buffer;
     } else {
       return true;
     }

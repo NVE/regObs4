@@ -16,7 +16,7 @@ export enum TABS {
   providedIn: 'root',
 })
 export class TabsService {
-  readonly selectedTab$: Observable<string>;
+  readonly selectedTab$: Observable<TABS | null>;
 
   constructor(location: Location, router: Router) {
     this.selectedTab$ = router.events.pipe(
@@ -24,11 +24,11 @@ export class TabsService {
       map(() => location.path()),
       distinctUntilChanged(),
       map((path) => this.parseTabFromPath(path)),
-      shareReplay() // All tabs subscribe to this, so share amongst subscribers
+      shareReplay(1) // All tabs subscribe to this, so share amongst subscribers
     );
   }
 
-  private parseTabFromPath(path: string) {
+  private parseTabFromPath(path: string): TABS | null {
     const cleanPath = path.includes('?') ? path.slice(0, path.indexOf('?')) : path;
     if (cleanPath.indexOf(TABS.OBSERVATION_LIST) > -1) {
       return TABS.OBSERVATION_LIST;
@@ -37,5 +37,6 @@ export class TabsService {
     } else if (cleanPath === '') {
       return TABS.HOME;
     }
+    return null;
   }
 }

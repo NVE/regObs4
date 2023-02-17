@@ -5,8 +5,11 @@
       <h3 class="ion-text-uppercase">{{ "MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate }}</h3>
     </ion-row>
     <ion-row>
-      <ion-label class="ion-text-wrap" color="medium">
+      <ion-label *ngIf="loadedRegistrations?.length" class="ion-text-wrap" color="medium">
         {{ "MY_OBSERVATIONS.SENT_SUBTITLE" | translate }}
+      </ion-label>
+      <ion-label *ngIf="!loadedRegistrations?.length && (isOffline$ | async)" class="ion-text-wrap" color="medium">
+        {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
       </ion-label>
     </ion-row>
   </ion-grid>

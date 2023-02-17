@@ -14,6 +14,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -47,7 +48,8 @@ export class RegobsAuthService {
     private accountService: AccountService,
     private storage: StorageBackend,
     private platform: Platform,
-    private accountApi: AccountService
+    private accountApi: AccountService,
+    private networkStatusService: NetworkStatusService
   ) {
     this.initComplete$ = this.authService.initComplete$.pipe(
       filter((isComplete) => isComplete),
@@ -128,13 +130,14 @@ export class RegobsAuthService {
   private initRefreshTokenOnStartup() {
     this.initComplete$
       .pipe(
-        switchMap(() => (isAndroidOrIos(this.platform) ? this.platform.resume : from(this.platform.ready()))),
+        tap(this.logger.debug('Authorization initialized. Will try to refresh token when we come online', DEBUG_TAG)),
+        switchMap(() => this.networkStatusService.connected$.pipe(filter((connected) => connected === true))),
         withLatestFrom(this.loggedInUser$)
       )
       .subscribe(([, user]) => {
         if (user?.token && this.isTokenOlderThan(user?.tokenIssuedAt, 300)) {
-          //token is older than 5 minutes, so refresh
-          this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
+          //token is older than 5 minutes and we have network, so refresh
+          this.logger.debug('We are online. Refresh token...', DEBUG_TAG);
           this.refreshToken();
         }
       });
@@ -243,16 +246,23 @@ export class RegobsAuthService {
     }
   }
 
-  private async showErrorMessage(status: number, message: string) {
-    const text = status === 401 ? 'UNAUTHORIZED' : status <= 0 ? 'SERVICE_UNAVAILABLE' : 'UNKNOWN_ERROR';
-    const messageText = `LOGIN.${text}`;
-    const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
+  private async showErrorMessage(status: number, messageFromServer: string) {
+    this.logger.debug(`SignInFailed: Status = ${status}, message = ${messageFromServer}`, DEBUG_TAG);
+    let messageKeyPostFix = 'UNKNOWN_ERROR';
+
+    if (status === 401) {
+      messageKeyPostFix = 'UNAUTHORIZED';
+    } else if (status <= 0 || messageFromServer === 'Unable To Obtain Server Configuration') {
+      messageKeyPostFix = 'SERVICE_UNAVAILABLE';
+    }
+    const messageKey = `LOGIN.${messageKeyPostFix}`;
+    const extraMessage = messageKeyPostFix === 'UNKNOWN_ERROR' ? ` ${messageFromServer}` : '';
     const translations = await lastValueFrom(
-      this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText])
+      this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageKey])
     );
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
-      message: `${translations[messageText]}${extraMessage}`,
+      message: `${translations[messageKey]}${extraMessage}`,
       buttons: [translations['ALERT.OK']],
     });
     await alert.present();
