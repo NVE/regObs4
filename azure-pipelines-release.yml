@@ -108,7 +108,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        $jsonString = Get-Content -Path ./environments/version.json
+        $jsonString = Get-Content -Path ./src/environments/version.json
         $jsonObj = $jsonString | ConvertFrom-Json
         Write-Host "##vso[task.setvariable variable=revision]$($jsonObj.revision)"
 
