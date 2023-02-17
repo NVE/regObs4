@@ -104,6 +104,14 @@ steps:
       verbose: false
       customCommand: 'run create-version-file'
 
+  - task: PowerShell@2
+    inputs:
+      targetType: inline
+      script: |
+        $jsonString = Get-Content -Path ./environments/version.json
+        $jsonObj = $jsonString | ConvertFrom-Json
+        Write-Host "##vso[task.setvariable variable=revision]$($jsonObj.revision)"
+
   - task: Npm@1
     displayName: 'npm build production'
     inputs:
@@ -123,7 +131,21 @@ steps:
     inputs:
       command: custom
       verbose: false
-      customCommand: 'run sentry:create-release-and-upload-sourcemaps'
+      customCommand: 'run sentry:create-release'
+
+  - task: Npm@1
+    displayName: 'npm upload sourcemaps to Sentry'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run sentry-cli releases files $npm_package_version upload-sourcemaps www -x .js -x .map --validate --dist $(revision) --verbose --rewrite --strip-common-prefix --url-prefix=~'
+  
+  - task: Npm@1
+    displayName: 'npm finalize sentry'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run sentry:finalize-release'
 
   # TODO: Create ipa
   - task: Xcode@5
