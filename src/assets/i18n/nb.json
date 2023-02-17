@@ -196,6 +196,7 @@
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Det er lett å dele observasjoner, bilder og vurderinger med andre.",
+    "OFFLINE": "Vi får ikke hentet observasjoner du har sendt inn. Har du nett?",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
@@ -367,7 +368,7 @@
       }
     },
     "DRAFTS": "Mine kladder",
-    "DRAFTS_DESCRIPTION": "Disse observasjonene er under arbeid og ikke sendt inn.",
+    "DRAFTS_DESCRIPTION": "Disse observasjonene er ikke sendt inn ennå.",
     "EDIT": "Rediger observasjon",
     "EMAIL": {
       "BODY": "Hei! Jeg har problemer med å sende inn denne registreringen. Kan dere hjelpe meg?",

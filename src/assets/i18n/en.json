@@ -196,7 +196,8 @@
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observations will appear here. Share your observations, pictures and assessements with others on Varsom.",
-    "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
+    "OFFLINE": "We cannot fetch your submitted observations. Are you offline?",
+    "SENT_SUBTITLE": "The following observations have been submitted and are stored in Regobs.",
     "TITLE": "My observations"
   },
   "MY_PROFILE": {
@@ -371,7 +372,7 @@
       }
     },
     "DRAFTS": "My drafts",
-    "DRAFTS_DESCRIPTION": "These observations are in progress and not submitted.",
+    "DRAFTS_DESCRIPTION": "These observations are not submitted yet.",
     "EDIT": "Edit observation",
     "EMAIL": {
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
