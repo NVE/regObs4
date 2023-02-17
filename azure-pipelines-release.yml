@@ -138,7 +138,7 @@ steps:
     inputs:
       command: custom
       verbose: false
-      customCommand: 'run sentry-cli releases files $npm_package_version upload-sourcemaps www -x .js -x .map --validate --dist $(revision) --verbose --rewrite --strip-common-prefix --url-prefix=~'
+      customCommand: 'run cross-env-shell sentry-cli releases files $npm_package_version upload-sourcemaps www -x .js -x .map --validate --dist $(revision) --verbose --rewrite --strip-common-prefix --url-prefix=~'
   
   - task: Npm@1
     displayName: 'npm finalize sentry'
