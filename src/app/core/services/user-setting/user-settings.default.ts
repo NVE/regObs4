@@ -16,7 +16,6 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey
   supportTiles: [],
   showMapCenter: false,
   showObservations: true,
-  emailReceipt: true,
   topoMap: TopoMap.default,
   showGeoSelectInfo: true,
   completedSimpleObsOnboarding: false,
