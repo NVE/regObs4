@@ -11,7 +11,6 @@ export interface UserSetting {
   supportTiles: Array<SupportTileStore>;
   showMapCenter: boolean;
   showObservations: boolean;
-  emailReceipt: boolean;
   topoMap: TopoMap;
   showGeoSelectInfo: boolean;
   completedSimpleObsOnboarding: boolean | undefined;
