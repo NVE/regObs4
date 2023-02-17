@@ -121,9 +121,9 @@
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
     "PASSWORD": "Passord",
-    "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
+    "SERVICE_UNAVAILABLE": "Vi har problemer med å nå tjenesten for innlogging. Har du nett? Det kan hende at tjenesten må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
     "TITLE": "Logg inn",
-    "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst fyll inn på nytt og prøv igjen.",
+    "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst prøv igjen.",
     "UNKNOWN_ERROR": "Det oppsto en feil ved innlogging. Melding fra server:"
   },
   "MAP_CENTER_INFO": {
@@ -473,6 +473,8 @@
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
+    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
+    "LOG_IN_AND_RESEND": "Logg inn og prøv å sende på nytt",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",
