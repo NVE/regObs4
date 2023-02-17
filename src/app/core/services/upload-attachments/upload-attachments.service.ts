@@ -1,11 +1,12 @@
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -40,9 +41,10 @@ export class UploadAttachmentsService {
     private newAttachmentService: NewAttachmentService,
     private apiAttachmentService: ApiAttachmentService,
     private translateService: TranslateService,
-    private toastController: ToastController,
+    private dateHelperService: DateHelperService,
     private loggingService: LoggingService,
-    private userSettings: UserSettingService
+    private userSettings: UserSettingService,
+    private alertController: AlertController
   ) {}
 
   /**
@@ -75,16 +77,7 @@ export class UploadAttachmentsService {
       try {
         return await this.uploadAttachment(attachment, draft);
       } catch (error) {
-        if (error instanceof HttpErrorResponse && error.status === 0) {
-          // Probably no network, stop trying to upload any attachments
-          throw error;
-        }
-
-        this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
-        failedAttachments.push({
-          id: attachment.id,
-          error,
-        });
+        this.uploadAttachmentHandleError(attachment, error, failedAttachments);
       }
     };
 
@@ -93,33 +86,46 @@ export class UploadAttachmentsService {
 
     if (failedAttachments.length) {
       // If one of the attachment uploads fails we keep on sending the registration, tho we inform the user with a toast
-      const errorMessage = await firstValueFrom(
-        this.translateService.get(['REGISTRATION.IMAGE_UPLOAD_ERROR'], {
-          failedAttachmentsCount: failedAttachments.length,
-          obsTime: this.formatDate(new Date(draft.registration.DtObsTime)),
-        })
-      );
-      this.createToast(errorMessage);
+      this.showCouldnotUploadAllImagesAlert(failedAttachments.length, draft.registration.DtObsTime);
     }
     // return attachments that returned a value
     return [...alreadyUploaded, ...uploadedAttachments.map((p) => p.status === 'fulfilled' && p.value)];
   }
 
-  private formatDate(dt: Date) {
-    const padL = (nr, chr = `0`) => `${nr}`.padStart(2, chr);
+  private uploadAttachmentHandleError(
+    attachment: AttachmentUploadEditModel,
+    error: Error,
+    failedAttachments: FailedAttachment[]
+  ) {
+    if (error instanceof HttpErrorResponse && error.status === 0) {
+      // Probably no network, stop trying to upload any attachments
+      throw error;
+    }
 
-    return `${padL(dt.getDate())}.${padL(dt.getMonth() + 1)}.${dt.getFullYear()} ${padL(dt.getHours())}:${padL(
-      dt.getMinutes()
-    )}`;
+    this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
+    failedAttachments.push({
+      id: attachment.id,
+      error,
+    });
   }
 
-  private async createToast(errorMessage: string) {
-    const toast = await this.toastController.create({
-      message: errorMessage['REGISTRATION.IMAGE_UPLOAD_ERROR'],
-      mode: 'md',
-      duration: 10000,
+  private async showCouldnotUploadAllImagesAlert(failedAttachmentsCount: number, date: string) {
+    const dateProperFormat = await this.dateHelperService.formatDateString(date);
+    const translations = await firstValueFrom(
+      this.translateService.get(['REGISTRATION.IMAGE_UPLOAD_ERROR', 'ALERT.OK'], {
+        failedAttachmentsCount: failedAttachmentsCount,
+        obsTime: dateProperFormat,
+      })
+    );
+    const alert = await this.alertController.create({
+      message: translations['REGISTRATION.IMAGE_UPLOAD_ERROR'],
+      buttons: [
+        {
+          text: translations['ALERT.OK'],
+        },
+      ],
     });
-    toast.present();
+    alert.present();
   }
 
   // TODO: Add test
