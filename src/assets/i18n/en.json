@@ -242,7 +242,7 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observation type",
       "NUM_OF_SELECTED_NONE": "Shows all",
-      "NUM_OF_SELECTED": "Chosen"
+      "NUM_OF_SELECTED": " {{selectedItemsCount}} chosen"
     },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
     "TITLE": "Observation filter"

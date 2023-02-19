@@ -15,6 +15,7 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
 import { DateRangeComponent } from './components/date-range/date-range.component';
 import { SharedComponentsModule } from '../registration/shared-components.module';
 import { NoLegendComponent } from './components/support-tiles-menu/legends/no-legend.component';
+import { SelectedItemsCounterLabelComponent } from './components/selected-items-counter-label/selected-items-counter-label.component';
 
 @NgModule({
   imports: [SharedModule, SharedComponentsModule],
@@ -24,6 +25,7 @@ import { NoLegendComponent } from './components/support-tiles-menu/legends/no-le
     SupportTilesMenuComponent,
     UserLoginComponent,
     ObservationsDaysBackComponent,
+    SelectedItemsCounterLabelComponent,
     UpdateObservationsComponent,
     SupportTileLegendLoaderComponent,
     SteepnessLegendComponent,

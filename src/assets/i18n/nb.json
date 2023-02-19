@@ -242,7 +242,7 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observasjonstype",
       "NUM_OF_SELECTED_NONE": "Viser alle",
-      "NUM_OF_SELECTED": "Valgt"
+      "NUM_OF_SELECTED": "{{selectedItemsCount}} valgt"
     },
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
     "TITLE": "Observasjonsfilter"

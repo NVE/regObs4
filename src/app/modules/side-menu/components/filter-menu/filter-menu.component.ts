@@ -211,7 +211,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         subtypes.push({ parentId: type.Id, id: type.Id });
       }
     });
-    console.log(this.observationTypesOptions);
     this.observationTypesOptions.forEach((obsType) => {
       const has = subtypes.some((s) => s.parentId == obsType.parentId && s.id == obsType.id);
       has ? (obsType.isChecked = true) : (obsType.isChecked = false);

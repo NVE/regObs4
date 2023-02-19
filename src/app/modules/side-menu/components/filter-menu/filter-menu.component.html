@@ -6,18 +6,9 @@
   <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
   <app-update-observations></app-update-observations>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
-    <ion-label>
-      {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
-      <span
-        >({{
-          observationTypesSelectedCount == 0
-            ? ("OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.NUM_OF_SELECTED_NONE" | translate)
-            : observationTypesSelectedCount +
-              " " +
-              ("OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.NUM_OF_SELECTED" | translate)
-        }})</span
-      >
-    </ion-label>
+    <app-selected-items-counter-label
+      [selectedItemsCount]="observationTypesSelectedCount"
+    ></app-selected-items-counter-label>
   </ion-list-header>
 
   <ion-item>
