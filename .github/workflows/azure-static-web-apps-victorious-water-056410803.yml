@@ -75,6 +75,7 @@ jobs:
       - id: set_version
         run: |
           content=`cat ./src/environments/version.json`
+          echo "::set-output name=packageJson::$content"
       - run: |
           echo '${{fromJson(steps.set_var.outputs.packageJson).version}}'
       - name: Create Sentry release
@@ -89,7 +90,7 @@ jobs:
           sourcemaps: './www'
           url_prefix: '~'
           strip_common_prefix: true
-          version: '${{fromJson(steps.set_var.outputs.packageJson).version}}'
+          version: '${{fromJson(steps.set_version.outputs.packageJson).version}}'
           
 
   close_pull_request_job:
