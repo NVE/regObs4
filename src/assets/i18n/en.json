@@ -240,12 +240,12 @@
       "TITLE": "Name"
     },
     "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observation type",
-      "NUM_OF_SELECTED_NONE": "Shows all",
-      "NUM_OF_SELECTED": " {{selectedItemsCount}} chosen"
+      "TITLE": "Observation type"
     },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
-    "TITLE": "Observation filter"
+    "TITLE": "Observation filter",
+    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
+    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Forms",

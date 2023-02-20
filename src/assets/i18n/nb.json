@@ -240,12 +240,12 @@
       "TITLE": "Navn"
     },
     "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observasjonstype",
-      "NUM_OF_SELECTED_NONE": "Viser alle",
-      "NUM_OF_SELECTED": "{{selectedItemsCount}} valgt"
+      "TITLE": "Observasjonstype"
     },
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
-    "TITLE": "Observasjonsfilter"
+    "TITLE": "Observasjonsfilter",
+    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Skjemaer",

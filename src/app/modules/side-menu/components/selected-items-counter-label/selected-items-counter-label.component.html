@@ -3,9 +3,8 @@
   <span
     >({{
       selectedItemsCount == 0
-        ? ("OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.NUM_OF_SELECTED_NONE" | translate)
-        : ("OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.NUM_OF_SELECTED"
-          | translate: { selectedItemsCount: selectedItemsCount })
+        ? ("OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate)
+        : ("OBSERVATION_FILTER.MULTISELECT_SHOW_COUNT" | translate: { selectedItemsCount: selectedItemsCount })
     }})</span
   >
 </ion-label>
