@@ -72,6 +72,11 @@ jobs:
           # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
           app_build_command: "npm run create-version-file && npm run build:prod"
           ###### End of Repository/Build Configurations ######
+      - id: set_version
+        run: |
+          content=`cat ./path/to/package.json`
+      - run: |
+          echo '${{fromJson(steps.set_var.outputs.packageJson).version}}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
@@ -84,6 +89,7 @@ jobs:
           sourcemaps: './www'
           url_prefix: '~'
           strip_common_prefix: true
+          version: '${{fromJson(steps.set_var.outputs.packageJson).version}}'
           
 
   close_pull_request_job:
