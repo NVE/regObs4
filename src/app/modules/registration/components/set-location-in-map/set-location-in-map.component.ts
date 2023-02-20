@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { IonInput } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
@@ -67,7 +68,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() locationTitle = 'REGISTRATION.OBS_LOCATION.TITLE';
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() mapReady = new EventEmitter<L.Map>();
-  @Input() showPolyline = true;
+
+  /**
+   * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
+   */
+  @Input() showPolyline = Capacitor.isNativePlatform();
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
