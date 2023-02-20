@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { IonInput } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
@@ -67,7 +68,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() locationTitle = 'REGISTRATION.OBS_LOCATION.TITLE';
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() mapReady = new EventEmitter<L.Map>();
-  @Input() showPolyline = true;
+
+  /**
+   * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
+   */
+  @Input() showPolyline = Capacitor.isNativePlatform();
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
@@ -77,6 +82,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private map: L.Map;
   followMode = false;
   private userposition: Position;
+  private pathLine: L.Polyline; // line between observation location and device location
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
@@ -390,14 +396,32 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       : this.userposition
       ? L.latLng(this.userposition.coords.latitude, this.userposition.coords.longitude)
       : this.locationMarker.getLatLng();
+
     const locationMarkerLatLng = this.locationMarker.getLatLng();
-    const path = [locationMarkerLatLng, from];
+
     if (this.map) {
+      const path = [locationMarkerLatLng, from];
+
+      if (!this.pathLine) {
+        this.pathLine = L.polyline(path, {
+          color: 'black',
+          weight: 6,
+          opacity: 0.9,
+          dashArray: '1,12',
+        });
+        if (this.showPolyline) {
+          this.pathLine.addTo(this.map);
+        }
+      } else {
+        this.pathLine.setLatLngs(path);
+      }
       if (this.fromMarker) {
         if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
           this.fromMarker.setOpacity(0);
+          this.pathLine.setStyle({ opacity: 0 });
         } else {
           this.fromMarker.setOpacity(1);
+          this.pathLine.setStyle({ opacity: 0.9 });
         }
       }
     }
