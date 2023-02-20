@@ -8,7 +8,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  npm_config_cache: $(Pipeline.Workspace)/.npm
+- group: sentryProperties
+- name: npm_config_cache
+  value: $(Pipeline.Workspace)/.npm
+  
 
 steps:
 - task: NodeTool@0
