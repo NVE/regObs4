@@ -90,7 +90,7 @@ jobs:
           sourcemaps: './www'
           url_prefix: '~'
           strip_common_prefix: true
-          version: '${{fromJson(steps.set_version.outputs.packageJson).version}}'
+          version: '${{fromJson(steps.set_version.outputs.packageJson).parameters.version.value}}.suffix'
           
 
   close_pull_request_job:
