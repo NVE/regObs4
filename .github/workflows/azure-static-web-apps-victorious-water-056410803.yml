@@ -81,6 +81,10 @@ jobs:
           # SENTRY_URL: https://sentry.io/
         with:
           environment: production
+          sourcemaps: './www'
+          url_prefix: '~'
+          strip_common_prefix: true
+          
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
