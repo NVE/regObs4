@@ -72,6 +72,15 @@ jobs:
           # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
           app_build_command: "npm run create-version-file && npm run build:prod"
           ###### End of Repository/Build Configurations ######
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          # SENTRY_URL: https://sentry.io/
+        with:
+          environment: production
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
