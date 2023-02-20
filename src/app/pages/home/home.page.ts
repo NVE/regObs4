@@ -99,7 +99,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private async initSearch() {
     const searchResult = await this.createSearchResult();
 
-    this.isFetchingObservations = searchResult.isFetching$.asObservable();
+    this.isFetchingObservations = searchResult.isFetching$;
 
     combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
       ([registrations, show]) => {

@@ -39,7 +39,8 @@
   },
   "DATA_LOAD": {
     "DATA": "Loading...",
-    "LOADING": "Loading"
+    "LOADING": "Loading",
+    "SPINNER_FETCH_OBSERVATIONS": "Fetching observations"
   },
   "DATE": "Date",
   "DAYS": {

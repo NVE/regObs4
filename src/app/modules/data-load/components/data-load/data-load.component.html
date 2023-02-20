@@ -1,3 +1,6 @@
-<div class="data-load animated" [ngClass]="{ fadeIn: show, fadeOut: !show }">
-  <ion-spinner></ion-spinner>
+<div class="spinner-container animated" [ngClass]="{ fadeIn: show, fadeOut: !show }">
+  <div class="data-load">
+    <ion-spinner></ion-spinner>
+  </div>
+  <span>{{ "DATA_LOAD.SPINNER_FETCH_OBSERVATIONS" | translate }}</span>
 </div>

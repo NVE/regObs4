@@ -39,7 +39,8 @@
   },
   "DATA_LOAD": {
     "DATA": "Laster data...",
-    "LOADING": "Laster"
+    "LOADING": "Laster",
+    "SPINNER_FETCH_OBSERVATIONS": "Henter observasjoner"
   },
   "DATE": "Dato",
   "DAYS": {
