@@ -42,7 +42,12 @@ steps:
     SourceFolder: '$(Agent.TempDirectory)'
     Contents: apikey.json
     TargetFolder: ./src/assets
-
+- task: Npm@1
+  displayName: 'npm build production'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run build:prod'
 - task: Npm@1
   displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
   inputs:
