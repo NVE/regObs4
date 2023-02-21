@@ -244,7 +244,9 @@
       "TITLE": "Observasjonstype"
     },
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
-    "TITLE": "Observasjonsfilter"
+    "TITLE": "Observasjonsfilter",
+    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Skjemaer",

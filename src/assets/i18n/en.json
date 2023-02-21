@@ -244,7 +244,9 @@
       "TITLE": "Observation type"
     },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
-    "TITLE": "Observation filter"
+    "TITLE": "Observation filter",
+    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
+    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Forms",
