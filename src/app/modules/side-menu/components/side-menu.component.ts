@@ -99,7 +99,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   provokeError() {
     const error = new Error('error button launched');
     this.loggingService.error(error, 'Error button', 'error button was launched to check if sentry works');
-    throw new Error('error button was launched to check if sentry works');
   }
 
   openStartWizard() {
