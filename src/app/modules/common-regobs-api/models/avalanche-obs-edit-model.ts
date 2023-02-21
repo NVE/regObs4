@@ -37,6 +37,11 @@ export interface AvalancheObsEditModel {
   DtAvalancheTime: string;
 
   /**
+   * Tid da skredet gikk.
+   */
+  DtEarliestAvalancheTime: string;
+
+  /**
    * Hull of avalanche polygon, List(lon, lat)
    */
   Extent?: Array<Array<number>>;
