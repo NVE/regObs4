@@ -220,13 +220,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.observationTripLayers = null;
   }
 
-  private async showOrHideObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
-    if (geojson == null) {
-      this.removeObserverTripMapLayers(map);
-      this.removeObserverTripEventHandlers.next();
-      return;
-    }
-
+  private async showObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
     // NB: The side menu icon has the same style
     const geojsonLayer = L.geoJSON(geojson, { style: { dashArray: '4', color: 'red', stroke: true } });
     this.observationTripLayers = [geojsonLayer];
@@ -301,9 +295,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     if (this.showObserverTrips) {
-      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
-        this.showOrHideObserverTripsLayer(map, geojson);
-      });
+      combineLatest([this.observerTripsService.toggledOn, this.observerTripsService.geojson$])
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe(([toggledOn, geojson]) => {
+          if (toggledOn && geojson) {
+            this.showObserverTripsLayer(map, geojson);
+          } else {
+            this.removeObserverTripMapLayers(map);
+            this.removeObserverTripEventHandlers.next();
+          }
+        });
     }
 
     this.offlineTopoLayerGroup.addTo(this.map);
