@@ -73,7 +73,7 @@ export class SnowProfilePage extends BasePage {
   }
 
   isEmpty() {
-    const isEmptyResult = this.noLayersInSnowProfile() && this.noTestsIncludedInSnowProfile();
+    const isEmptyResult = this.noLayersInSnowProfile() && this.noTestsIncludedInSnowProfile() && super.isEmpty();
     return Promise.resolve(isEmptyResult);
   }
 
