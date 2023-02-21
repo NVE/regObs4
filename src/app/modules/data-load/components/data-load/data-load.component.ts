@@ -7,4 +7,6 @@ import { Component, Input } from '@angular/core';
 export class DataLoadComponent {
   @Input()
   show: boolean;
+  @Input()
+  label: string;
 }
