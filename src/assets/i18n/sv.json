@@ -180,9 +180,7 @@
     "TITLE": "Mina observationer"
   },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Alla observationer",
     "FORMS": "Formulär",
-    "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
     "SORT_BY_CHANGE_TIME": "Uppdateringstidpunkt",
@@ -214,10 +212,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
-    "LOCATION_DENIED_MESSAGE": "Det går inte att visa plats på kartan utan tillstånd."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

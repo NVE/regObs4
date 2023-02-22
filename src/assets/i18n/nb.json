@@ -122,9 +122,9 @@
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
     "PASSWORD": "Passord",
-    "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
+    "SERVICE_UNAVAILABLE": "Vi har problemer med å nå tjenesten for innlogging. Har du nett? Det kan hende at tjenesten må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
     "TITLE": "Logg inn",
-    "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst fyll inn på nytt og prøv igjen.",
+    "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst prøv igjen.",
     "UNKNOWN_ERROR": "Det oppsto en feil ved innlogging. Melding fra server:"
   },
   "MAP_CENTER_INFO": {
@@ -208,6 +208,7 @@
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Det er lett å dele observasjoner, bilder og vurderinger med andre.",
+    "OFFLINE": "Vi får ikke hentet observasjoner du har sendt inn. Har du nett?",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
@@ -243,11 +244,12 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observasjonstype"
     },
-    "TITLE": "Observasjonsfilter"
+    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
+    "TITLE": "Observasjonsfilter",
+    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt"
   },
   "OBSERVATION_LIST": {
-    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt",
     "FORMS": "Skjemaer",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
@@ -256,7 +258,9 @@
     "SORT_BY_CHANGE_TIME": "Oppdatert tid",
     "SORT_BY_OBS_TIME": "Observert tid",
     "SORT_BY_TEXT": "Sorter på",
-    "TITLE": "Observasjoner"
+    "TITLE": "Observasjoner",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -377,7 +381,7 @@
       }
     },
     "DRAFTS": "Mine kladder",
-    "DRAFTS_DESCRIPTION": "Disse observasjonene er under arbeid og ikke sendt inn.",
+    "DRAFTS_DESCRIPTION": "Disse observasjonene er ikke sendt inn ennå.",
     "EDIT": "Rediger observasjon",
     "EMAIL": {
       "BODY": "Hei! Jeg har problemer med å sende inn denne registreringen. Kan dere hjelpe meg?",
@@ -396,7 +400,8 @@
       "SEND_EMAIL": "Send til oss på e-post",
       "SUBMIT_NEW": "Send inn som ny observasjon",
       "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
-      "TITLE": "Innsending feilet"
+      "TITLE": "Innsending feilet",
+      "UNAUTHORIZED": "Vi lykkes ikke med å sjekke om du har tilgang. Prøv å sende inn på nytt. Om dette ikke hjelper, kan du forsøke å logge ut og inn igjen før du prøver å sende inn på nytt?"
     },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Rediger observasjon",
@@ -453,6 +458,7 @@
     "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
+    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} bilde(r) ble ikke lastet opp for observasjon gjort {{obsTime}}. Send oss gjerne bildet/bildene på epost, så vi kan sjekke manuelt hva som er galt.",
     "IMAGE_ERROR": {
       "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
       "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
@@ -471,6 +477,8 @@
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
+    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
+    "LOG_IN_AND_RESEND": "Logg inn og prøv å sende på nytt",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",

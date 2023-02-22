@@ -46,6 +46,13 @@ jobs:
   build_and_deploy_develop:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      SENTRY_URL: ${{ secrets.SENTRY_URL }}
+      
+      
     name: Build and Deploy develop-branch (beta.regobs.no)
     steps:
       - uses: actions/checkout@v2
@@ -72,7 +79,20 @@ jobs:
           # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
           app_build_command: "npm run create-version-file && npm run build:prod"
           ###### End of Repository/Build Configurations ######
-
+      - id: set_version
+        run: |
+          content=`cat ./src/environments/version.json`
+          echo "::set-output name=packageJson::$content"
+      - run: |
+          echo '${{fromJson(steps.set_version.outputs.packageJson).version}}'
+      ###### Install Sentry CLI & Create new Sentry releas ######  
+      - run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sentry-cli releases new ${{fromJson(steps.set_version.outputs.packageJson).version}}
+          sentry-cli releases files ${{fromJson(steps.set_version.outputs.packageJson).version}} upload-sourcemaps www -x .js -x .map --dist ${{fromJson(steps.set_version.outputs.packageJson).revision}} --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+          sentry-cli releases finalize ${{fromJson(steps.set_version.outputs.packageJson).version}}
+ 
+ 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest

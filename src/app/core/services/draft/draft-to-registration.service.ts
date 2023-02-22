@@ -221,6 +221,9 @@ function handleError(error: Error): { code: RegistrationDraftErrorCode; message:
       code = RegistrationDraftErrorCode.Unknown;
       message = error.message || `Got an unknown http error: ${error.status} - ${error.statusText}`;
     }
+  } else if (error.message == 'No Token Defined!') {
+    code = RegistrationDraftErrorCode.Unauthorized;
+    message = error.message;
   } else {
     // Handle unknown errors
     code = RegistrationDraftErrorCode.Unknown;

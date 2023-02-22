@@ -8,6 +8,7 @@ trigger:
 
 variables:
 - group: regobs
+- group: sentryProperties
 
 pool:
   vmImage: 'macOS-latest'
@@ -65,12 +66,6 @@ steps:
     secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
     retryCount: 5
 
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file sentry.properties'
-  inputs:
-    secureFile: '683ad87f-0bf5-482f-b962-c0fbd2a04a4a'
-    retryCount: 5
-
 - task: CopyFiles@2
   displayName: 'Copy Files to: ./'
   inputs:
@@ -92,7 +87,7 @@ steps:
 #  displayName: 'Set NODE_OPTIONS=--max_old_space_size=8048'
 - script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_WIZARD]true"'
   displayName: 'Set SENTRY_SKIP_WIZARD=true'
-  
+
 - script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_AUTO_RELEASE]true"'
   displayName: 'Set SENTRY_SKIP_AUTO_RELEASE=true'
 

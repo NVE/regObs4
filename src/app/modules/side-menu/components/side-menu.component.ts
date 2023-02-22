@@ -16,6 +16,7 @@ import { ObserverTripsService } from 'src/app/core/services/observer-trips/obser
 import { SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
+import { LoggingService } from '../../shared/services/logging/logging.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -50,6 +51,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
+    private loggingService: LoggingService,
     private appVersionService: AppVersionService,
     private navController: NavController,
     private ngZone: NgZone,
@@ -92,6 +94,11 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   async showLegalTerms(): Promise<void> {
     const url = this.userSettingService.legalUrl;
     this.externalLinkService.openExternalLink(url);
+  }
+
+  provokeError() {
+    const error = new Error('error button launched');
+    this.loggingService.error(error, 'Error button', 'error button was launched to check if sentry works');
   }
 
   openStartWizard() {

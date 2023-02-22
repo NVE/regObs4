@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { IonInput } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
@@ -67,7 +68,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() locationTitle = 'REGISTRATION.OBS_LOCATION.TITLE';
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() mapReady = new EventEmitter<L.Map>();
-  @Input() showPolyline = true;
+
+  /**
+   * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
+   */
+  @Input() showPolyline = Capacitor.isNativePlatform();
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
@@ -77,6 +82,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private map: L.Map;
   followMode = false;
   private userposition: Position;
+  private pathLine: L.Polyline; // line between observation location and device location
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
@@ -245,7 +251,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const drawnItems = new L.FeatureGroup();
     this.map.addLayer(drawnItems);
     drawnItems.bringToFront();
-    
+
     new L.Control.Draw({
       edit: {
         featureGroup: drawnItems,
@@ -254,9 +260,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           selectedPathOptions: {
             dashArray: '10, 10',
             fill: true,
-            fillOpacity: 0.1
-          }
-        }
+            fillOpacity: 0.1,
+          },
+        },
       },
       draw: {
         polyline: false,
@@ -264,9 +270,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         rectangle: false,
         circle: false,
         circlemarker: false,
-        marker: false
-      }
-    })
+        marker: false,
+      },
+    });
 
     const locationPolygons = this.locationPolygons;
     let lastToggled: Date;
@@ -289,16 +295,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         }
       });
       if (!foundEnabled || !setEnabled) {
-        const idx = locationPolygons.map(p => p.active).indexOf(true);
-        if (idx > -1) { 
+        const idx = locationPolygons.map((p) => p.active).indexOf(true);
+        if (idx > -1) {
           locationPolygons[idx].polygon.editing.enable();
-        } 
+        }
       }
     };
     drawnItems.on('click', this.toggleEditingMode);
 
     this.locationPolygon?.subscribe((p) => {
-      p.polygon.setStyle({color: p.active ? p.color : 'rgb(0,0,0,0)'})
+      p.polygon.setStyle({ color: p.active ? p.color : 'rgb(0,0,0,0)' });
       drawnItems.addLayer(p.polygon);
       this.locationPolygons.push(p);
 
@@ -309,24 +315,22 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   togglePolygon(index: number): void {
-    const polygon = this.locationPolygons[index]
+    const polygon = this.locationPolygons[index];
     const currentState = polygon.active;
     polygon.active = !currentState;
     if (currentState) {
-      polygon.polygon.setStyle({color: 'rgb(0,0,0,0)'});
+      polygon.polygon.setStyle({ color: 'rgb(0,0,0,0)' });
       if (polygon.polygon.editing.enabled()) {
         this.toggleEditingMode();
       }
     } else {
-      polygon.polygon.setStyle({color: polygon.color});
-      const isOtherActive = this.locationPolygons
-        .map(p => p.active)
-        .slice(0, index)
-        .concat(
-          this.locationPolygons
-            .map(p => p.active)
-            .slice(index + 1)
-        ).indexOf(true) == -1;
+      polygon.polygon.setStyle({ color: polygon.color });
+      const isOtherActive =
+        this.locationPolygons
+          .map((p) => p.active)
+          .slice(0, index)
+          .concat(this.locationPolygons.map((p) => p.active).slice(index + 1))
+          .indexOf(true) == -1;
       if (isOtherActive) {
         this.toggleEditingMode();
       }
@@ -392,14 +396,32 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       : this.userposition
       ? L.latLng(this.userposition.coords.latitude, this.userposition.coords.longitude)
       : this.locationMarker.getLatLng();
+
     const locationMarkerLatLng = this.locationMarker.getLatLng();
-    const path = [locationMarkerLatLng, from];
+
     if (this.map) {
+      const path = [locationMarkerLatLng, from];
+
+      if (!this.pathLine) {
+        this.pathLine = L.polyline(path, {
+          color: 'black',
+          weight: 6,
+          opacity: 0.9,
+          dashArray: '1,12',
+        });
+        if (this.showPolyline) {
+          this.pathLine.addTo(this.map);
+        }
+      } else {
+        this.pathLine.setLatLngs(path);
+      }
       if (this.fromMarker) {
         if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
           this.fromMarker.setOpacity(0);
+          this.pathLine.setStyle({ opacity: 0 });
         } else {
           this.fromMarker.setOpacity(1);
+          this.pathLine.setStyle({ opacity: 0.9 });
         }
       }
     }

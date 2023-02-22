@@ -110,9 +110,7 @@ export class LandslideObsPage extends BasePage {
 
   async setLandslidePosition() {
     const reg = this.draft.registration;
-    const relativeToLatLng = reg.ObsLocation
-      ? L.latLng(reg.ObsLocation.Latitude, reg.ObsLocation.Longitude)
-      : null;
+    const relativeToLatLng = reg.ObsLocation ? L.latLng(reg.ObsLocation.Latitude, reg.ObsLocation.Longitude) : null;
     const startLatLng =
       reg.LandSlideObs.StartLat && reg.LandSlideObs.StartLong
         ? L.latLng(reg.LandSlideObs.StartLat, reg.LandSlideObs.StartLong)
@@ -132,7 +130,7 @@ export class LandslideObsPage extends BasePage {
         endExtent: reg.LandSlideObs.StopExtent,
         geoHazard: reg.GeoHazardTID,
       },
-      cssClass: "modal-fullscreen"
+      cssClass: 'modal-fullscreen',
     });
     modal.present();
     const result = await modal.onDidDismiss();

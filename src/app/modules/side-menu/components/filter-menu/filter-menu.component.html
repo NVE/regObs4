@@ -1,4 +1,4 @@
-<ion-list class="ion-no-margin">
+<ion-list class="ion-no-margin filtermenu-scrollfix">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
@@ -6,15 +6,17 @@
   <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
   <app-update-observations></app-update-observations>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
-    <ion-label> {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }} </ion-label>
+    <app-selected-items-counter-label
+      [selectedItemsCount]="observationTypesSelectedCount"
+    ></app-selected-items-counter-label>
   </ion-list-header>
 
-  <ion-item *ngIf="observationTypesOptions">
+  <ion-item>
     <ion-list lines="none">
       <ng-container *ngFor="let type of observationTypesOptions">
         <ion-item class="item-height">
           <ion-checkbox
-            [(ngModel)]="type.isChecked"
+            [checked]="type.isChecked"
             (ionChange)="setNewType($event, type.parentId, type.id)"
             color="varsom-dark-blue"
           >
@@ -40,12 +42,12 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item *ngIf="isShowAutomaticStation">
+  <ion-item *ngIf="automaticStationCompetenceItem">
     <ion-checkbox
       [checked]="isAutomaticStationChecked"
       color="varsom-dark-blue"
       mode="md"
-      [value]="automaticStation"
+      [value]="automaticStationCompetenceItem"
       (ionChange)="onCheckAutomaticStations($event)"
     >
     </ion-checkbox>
@@ -68,12 +70,10 @@
     </ion-searchbar>
   </ion-item>
 
-  <!-- TODO: Implementere reset filter funksjonalitet -->
-  <!--
-    <ion-item>
-      <ion-button class="resetFiltersButton" type="button" fill="clear">
-        <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>Tilbakestill filtere
-      </ion-button>
-    </ion-item>
-    -->
+  <ion-item>
+    <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
+      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
+      {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
+    </ion-button>
+  </ion-item>
 </ion-list>

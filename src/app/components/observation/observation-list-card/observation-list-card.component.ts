@@ -1,7 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
-import { AttachmentViewModel, AvalancheObsViewModel, LandslideViewModel, RegistrationViewModel, Summary } from 'src/app/modules/common-regobs-api/models';
+import {
+  AttachmentViewModel,
+  AvalancheObsViewModel,
+  LandslideViewModel,
+  RegistrationViewModel,
+  Summary,
+} from 'src/app/modules/common-regobs-api/models';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
@@ -114,7 +120,7 @@ export class ObservationListCardComponent implements OnChanges {
         ...this.obs2Latlng(obs.AvalancheObs),
         totalPolygon: this.extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
         startPolygon: this.extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
-        endPolygon: this.extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor)
+        endPolygon: this.extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor),
       };
     }
     if (obs.LandSlideObs) {
@@ -122,7 +128,7 @@ export class ObservationListCardComponent implements OnChanges {
         ...this.obs2Latlng(obs.LandSlideObs),
         totalPolygon: this.extent2Polygon(obs.LandSlideObs.Extent, settings.map.extentColor),
         startPolygon: this.extent2Polygon(obs.LandSlideObs.StartExtent, settings.map.startExtentColor),
-        endPolygon: this.extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor)
+        endPolygon: this.extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor),
       };
     }
     return undefined;
@@ -130,20 +136,18 @@ export class ObservationListCardComponent implements OnChanges {
 
   private obs2Latlng(obs: LandslideViewModel | AvalancheObsViewModel) {
     return {
-      start: obs.StartLat && obs.StartLong
-        ? L.latLng(obs.StartLat, obs.StartLong)
-        : undefined,
-      stop: obs.StopLat && obs.StopLong
-        ? L.latLng(obs.StopLat, obs.StopLong)
-        : undefined
-    }
+      start: obs.StartLat && obs.StartLong ? L.latLng(obs.StartLat, obs.StartLong) : undefined,
+      stop: obs.StopLat && obs.StopLong ? L.latLng(obs.StopLat, obs.StopLong) : undefined,
+    };
   }
 
   private extent2Polygon(extent: number[][], color: string) {
-    return extent ? new L.Polygon(
-      extent.map(([lng, lat]) => [lat, lng]),
-      {color}
-    ) : null
+    return extent
+      ? new L.Polygon(
+          extent.map(([lng, lat]) => [lat, lng]),
+          { color }
+        )
+      : null;
   }
 
   private getDamagePositions(obs: RegistrationViewModel) {

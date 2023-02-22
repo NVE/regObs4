@@ -52,6 +52,10 @@ export class FailedRegistrationComponent {
     return this.draft.error.code === RegistrationDraftErrorCode.ServerError;
   }
 
+  get unauthorizedError() {
+    return this.draft.error.code === RegistrationDraftErrorCode.Unauthorized;
+  }
+
   async openForEdit() {
     await this.draftService.save({
       ...this.draft,

@@ -122,7 +122,7 @@
     "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
     "PASSWORD": "Password",
-    "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
+    "SERVICE_UNAVAILABLE": "Could not connect to the login service. Do you have mobile network? Please wait a few minutes and try again.",
     "TITLE": "Log in",
     "UNAUTHORIZED": "Wrong username or password. Please retry.",
     "UNKNOWN_ERROR": "Error while logging in. Message from server:"
@@ -208,7 +208,8 @@
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observations will appear here. Share your observations, pictures and assessements with others on Varsom.",
-    "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
+    "OFFLINE": "We cannot fetch your submitted observations. Are you offline?",
+    "SENT_SUBTITLE": "The following observations have been submitted and are stored in Regobs.",
     "TITLE": "My observations"
   },
   "MY_PROFILE": {
@@ -243,11 +244,12 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observation type"
     },
-    "TITLE": "Observation filter"
+    "RESET_FILTER_BUTTON_TITLE": "Reset filters",
+    "TITLE": "Observation filter",
+    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
+    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen"
   },
   "OBSERVATION_LIST": {
-    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view",
     "FORMS": "Forms",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
@@ -256,7 +258,9 @@
     "SORT_BY_CHANGE_TIME": "Recently updated",
     "SORT_BY_OBS_TIME": "Recently observed",
     "SORT_BY_TEXT": "Order by",
-    "TITLE": "Observations"
+    "TITLE": "Observations",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
@@ -377,7 +381,7 @@
       }
     },
     "DRAFTS": "My drafts",
-    "DRAFTS_DESCRIPTION": "These observations are in progress and not submitted.",
+    "DRAFTS_DESCRIPTION": "These observations are not submitted yet.",
     "EDIT": "Edit observation",
     "EMAIL": {
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
@@ -396,7 +400,8 @@
       "SEND_EMAIL": "Send to us by email",
       "SUBMIT_NEW": "Submit as new observation",
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
-      "TITLE": "Submission failed"
+      "TITLE": "Submission failed",
+      "UNAUTHORIZED": "Authorization failed. Could you please try to log out and in again and then try to submit the observation again?"
     },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Edit observation",
@@ -458,6 +463,7 @@
       "CAMERA_PERMISSION_MISSING": "You need to give the app permission to use the camera",
       "UNKNOWN": "Couldn't add image(s). It may be something wrong with the image file(s). Please try another image to check"
     },
+    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} picture(s) for observation {{obsTime}} could not be uploaded. You can send us those pictures via email so we can check what went wrong.",
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
@@ -471,6 +477,8 @@
     "INVALID_IMAGE": "Sorry, only JPEG images is supported",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
+    "LOG_IN_AND_SEND": "Log in and submit",
+    "LOG_IN_AND_RESEND": "Log in and try to send again",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location and time",

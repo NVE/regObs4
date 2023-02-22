@@ -8,7 +8,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  npm_config_cache: $(Pipeline.Workspace)/.npm
+- group: sentryProperties
+- name: npm_config_cache
+  value: $(Pipeline.Workspace)/.npm
+  
 
 steps:
 - task: NodeTool@0
@@ -39,7 +42,6 @@ steps:
     SourceFolder: '$(Agent.TempDirectory)'
     Contents: apikey.json
     TargetFolder: ./src/assets
-
 - task: Npm@1
   displayName: 'npm run tests'
   inputs:

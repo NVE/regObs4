@@ -1,9 +1,12 @@
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import { AlertController, ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AttachmentService } from 'src/app/modules/common-regobs-api';
+import { AttachmentEditModel, AttachmentService } from 'src/app/modules/common-regobs-api';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -33,10 +36,13 @@ describe('UploadAttachmentsService', () => {
       httpClient,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
+      {} as TranslateService,
+      {} as DateHelperService,
       {} as LoggingService,
       {
         userSetting$: of({}),
-      } as UserSettingService
+      } as UserSettingService,
+      {} as AlertController
     );
 
     const draft: RegistrationDraft = {
@@ -105,10 +111,13 @@ describe('UploadAttachmentsService', () => {
       httpClient,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
+      {} as TranslateService,
+      {} as DateHelperService,
       jasmine.createSpyObj('LoggingService', ['debug']),
       {
         userSetting$: of({}),
-      } as UserSettingService
+      } as UserSettingService,
+      {} as AlertController
     );
 
     const draft: RegistrationDraft = {
@@ -131,7 +140,7 @@ describe('UploadAttachmentsService', () => {
     expect(result).toEqual(addAttachmentsResult);
   });
 
-  it('should throw an error containing regid and attachment ids', async () => {
+  it('should return failed attachment upload as undefined', async () => {
     const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
     const responseAttachmentUploadId = '12345-test-id';
 
@@ -183,6 +192,21 @@ describe('UploadAttachmentsService', () => {
     const saveAttachmentMeta$ = jasmine.createSpy();
     saveAttachmentMeta$.and.returnValue(of(true));
 
+    const translateService = {
+      get: (): Observable<string> => {
+        return of('Error');
+      },
+    };
+
+    const toastController = {
+      create: (): string => {
+        return '';
+      },
+      present: (): string => {
+        return '';
+      },
+    };
+
     const newAttachmentService = {
       getAttachments: (): Observable<AttachmentUploadEditModel[]> => {
         return of(fakeAttachments);
@@ -199,10 +223,13 @@ describe('UploadAttachmentsService', () => {
       httpClient,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
+      translateService as unknown as TranslateService,
+      {} as DateHelperService,
       loggingService,
       {
         userSetting$: of({}),
-      } as UserSettingService
+      } as UserSettingService,
+      {} as AlertController
     );
 
     const regUuid = '12345-abc';
@@ -216,15 +243,13 @@ describe('UploadAttachmentsService', () => {
       },
     };
 
-    // Test that uploadAllAttachments rejects with an error
-    // containing regid and attachment ids
-    const error = new UploadAttachmentError(regUuid, [
-      {
-        id: attachmentIdThatFails,
-        error: jasmine.any(Error) as unknown as Error,
-      },
-    ]);
-    await expectAsync(service.uploadAllAttachments(draft)).toBeRejectedWith(error);
+    const expected: AttachmentUploadEditModel[] = [
+      { id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
+      { id: '2-abc', type: 'Attachment', AttachmentUploadId: '12345-test-id' },
+      undefined,
+    ];
+    // Test that uploadAllAttachments returns one fulfilled promise without value
+    await expectAsync(service.uploadAllAttachments(draft)).toBeResolvedTo(expected);
 
     expect(loggingService.error).toHaveBeenCalled();
     expect(httpClient.post).toHaveBeenCalledTimes(2);
