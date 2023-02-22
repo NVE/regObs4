@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   concatMap,
   distinctUntilChanged,
   map,
   Observable,
+  of,
   scan,
   shareReplay,
   startWith,
@@ -27,6 +29,8 @@ export class SearchResult<TViewModel> {
   static DEBUG_TAG = 'SearchResult';
   readonly registrations$: Observable<TViewModel[]>;
   private forceUpdate = new Subject<void>();
+  private isFetching = new BehaviorSubject<boolean>(false);
+  isFetching$ = this.isFetching.asObservable();
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
@@ -45,7 +49,14 @@ export class SearchResult<TViewModel> {
   ) {
     return combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(true))]).pipe(
       map(([searchCriteria]) => searchCriteria),
+      // We are fetching new data, so set isFetching to true
+      tap(() => this.isFetching.next(true)),
       switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
+      catchError(() => {
+        this.isFetching.next(false);
+        return of([]);
+      }),
+      tap(() => this.isFetching.next(false)),
       shareReplay(1)
     );
   }

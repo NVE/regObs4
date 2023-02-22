@@ -52,11 +52,14 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private markerLayer: RegObsMarkerClusterLayer;
   private geoCoachMarksClosedSubject = new Subject<void>();
 
+  spinnerLabel = 'DATA_LOAD.SPINNER_FETCH_OBSERVATIONS';
   fullscreen$: Observable<boolean>;
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
+
+  isFetchingObservations: Observable<boolean>;
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
@@ -96,6 +99,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   private async initSearch() {
     const searchResult = await this.createSearchResult();
+
+    this.isFetchingObservations = searchResult.isFetching$;
 
     combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
       ([registrations, show]) => {
