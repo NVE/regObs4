@@ -96,11 +96,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     this.externalLinkService.openExternalLink(url);
   }
 
-  provokeError() {
-    const error = new Error('error button launched');
-    this.loggingService.error(error, 'Error button', 'error button was launched to check if sentry works');
-  }
-
   openStartWizard() {
     this.userSettings.showGeoSelectInfo = true;
     this.saveUserSettings();
