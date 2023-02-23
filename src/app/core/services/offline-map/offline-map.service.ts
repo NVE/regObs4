@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+import { Device } from '@capacitor/device';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { AlertController, Platform } from '@ionic/angular';
@@ -441,7 +442,7 @@ export class OfflineMapService {
       const neededSpace = await this.getNeededDiskSpaceForPackage(packageMetadataCombined);
 
       this.loggingService.debug(
-        `Available storage is ${this.helperService.humanReadableByteSize(this.availableDiskspace.available)}. 
+        `Available storage is ${this.helperService.humanReadableByteSize(this.availableDiskspace.available)}.
       Needs ${this.helperService.humanReadableByteSize(neededSpace)}`,
         DEBUG_TAG
       );
@@ -516,18 +517,21 @@ export class OfflineMapService {
     alert.present();
   }
 
-  private getDeviceFreeDiskSpace(externalStorage = false): Promise<number> {
+  private getDeviceFreeDiskSpace(): Promise<number> {
     if (!isAndroidOrIos(this.platform)) {
       return Promise.resolve(0);
     }
 
     return new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any)?.DiskSpacePlugin?.info(
-        { location: externalStorage ? 2 : 1 },
-        (success) => resolve(success.free),
-        (err) => reject(err)
-      );
+      Device.getInfo()
+        .then((info) => {
+          if (info?.realDiskFree) {
+            resolve(info.realDiskFree);
+          } else {
+            reject('Free disk size info not available');
+          }
+        })
+        .catch((err) => reject(err));
     });
   }
 

@@ -186,7 +186,6 @@
     "plist": "^3.0.5",
     "prettier": "2.7.1",
     "protractor": "~7.0.0",
-    "sqli-cordova-disk-space-plugin": "^1.0.3",
     "ts-node": "^10.2.1",
     "typescript": "4.6.4"
   },
@@ -213,7 +212,6 @@
       "cordova-plugin-safariviewcontroller": {},
       "cordova-plugin-androidx": {},
       "cordova-plugin-androidx-adapter": {},
-      "sqli-cordova-disk-space-plugin": {},
       "cordova-plugin-advanced-http": {
         "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
       }
