@@ -25,7 +25,10 @@
           class="ion-text-uppercase"
           >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.EARLIEST_TIME' | translate }}</ion-label
         >
-        <app-datetime-picker [(dateTime)]="avalancheObs.DtEarliestAvalancheTime" [maxDate]="avalancheObs.DtAvalancheTime"> </app-datetime-picker>
+        <app-datetime-picker
+        [(dateTime)]="avalancheObs.DtEarliestAvalancheTime"
+        [maxDate]="avalancheObs.DtAvalancheTime"
+        [resetable]="true"> </app-datetime-picker>
       </ion-item>
       <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
         <ion-label

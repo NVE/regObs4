@@ -25,6 +25,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() presentation: DatetimePresentation = 'date-time';
   @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
   @Input() datePickerOpen = false;
+  @Input() resetable = false;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
 
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
@@ -63,7 +64,7 @@ export class DatetimePickerComponent implements OnInit {
     this.datePickerOpen = false;
     this.datePickerOpenChange.emit(this.datePickerOpen);
 
-    if (event.detail.data && event.detail.role === 'confirm') {
+    if (event.detail.data && event.detail.role === 'confirm' || this.resetable) {
       this.dateTimeChange.emit(event.detail.data);
     }
   }
