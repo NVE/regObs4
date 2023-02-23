@@ -15,9 +15,6 @@ pool:
   demands: xcode
 
 steps:
-  #- script: '/bin/bash -c "sudo xcode-select -s /Applications/Xcode_11.2.1.app/Contents/Developer"'
-  #  displayName: 'Set Xcode version 11.2.1'
-  #  enabled: false
 
   - task: InstallAppleCertificate@2
     displayName: 'Install Apple development certificate'
@@ -47,18 +44,12 @@ steps:
       versionSpec: 14.x
       checkLatest: true
 
-  # Needed to sign Android apk/aab
+  # Needed for signing of Android apk/aab
   - task: DownloadSecureFile@1
     displayName: 'Download secure file: nve.keystore'
     inputs:
       secureFile: '3a7f7301-2d1f-419c-b23b-2b72418bc324'
       retryCount: 5
-
-  #- task: DownloadSecureFile@1
-  #  displayName: 'Download secure file: build.json'
-  #  inputs:
-  #    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
-  #    retryCount: 5
 
   - task: DownloadSecureFile@1
     displayName: 'Download secure file: apikey.json'
@@ -83,8 +74,6 @@ steps:
       Contents: apikey.json
       TargetFolder: ./src/assets
 
-  #- script: 'echo "##vso[task.setvariable variable=NODE_OPTIONS]--max_old_space_size=8048"'
-  #  displayName: 'Set NODE_OPTIONS=--max_old_space_size=8048'
   - script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_WIZARD]true"'
     displayName: 'Set SENTRY_SKIP_WIZARD=true'
 
@@ -104,20 +93,19 @@ steps:
       verbose: false
       customCommand: 'run create-version-file'
 
-  - task: PowerShell@2
-    inputs:
-      targetType: inline
-      script: |
-        $jsonString = Get-Content -Path ./src/environments/version.json
-        $jsonObj = $jsonString | ConvertFrom-Json
-        Write-Host "##vso[task.setvariable variable=revision]$($jsonObj.revision)"
-
   - task: Npm@1
     displayName: 'npm build production'
     inputs:
       command: custom
       verbose: false
       customCommand: 'run build:prod'
+
+  - task: Npm@1
+    displayName: 'Capacitor sync to native folders'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run cap:sync'
 
   # TODO: Create ipa
   - task: Xcode@5
@@ -166,8 +154,8 @@ steps:
         output/iphoneos/Release/*.ipa
       TargetFolder: '$(build.artifactStagingDirectory)'
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: drop'
+
+  # Sentry: Opplasting av kildekode til Sentry
 
   - task: oneLuckiDevJson2Variable@1
     displayName: 'Create environment variables from version.json file'
@@ -186,23 +174,8 @@ steps:
       sentry-cli releases files $(json.version) upload-sourcemaps www -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
       sentry-cli releases finalize $(json.version)
     displayName: 'Create Sentry release and upload sourcemaps to Sentry'
+  
+  # Sentry: Ferdig
 
-  - task: Npm@1
-    displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
-    inputs:
-      command: custom
-      verbose: false
-      customCommand: 'run sentry:create-release-and-upload-sourcemaps'
-
-#- task: AppStoreRelease@1
-#  displayName: 'Publish to the App Store TestFlight track'
-#  inputs:
-#    serviceEndpoint: 'App Store'
-#    appIdentifier: 'no.nve.regobs4'
-#    appType: 'iOS'
-#    releaseTrack: 'TestFlight'
-#    shouldSkipWaitingForProcessing: true
-#    teamName: 'Norges Vassdrags- og Energidirektorat'
-#    appSpecificId: '1450501601'
-#  continueOnError: true
-#  timeoutInMinutes: 60
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
