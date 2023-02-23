@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
 import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
@@ -26,7 +26,7 @@ export class AddUpdateDeleteRegistrationService {
     private analytics: AnalyticService
   ) {}
 
-  private changedRegistrations = new Subject<RegistrationViewModel>();
+  private changedRegistrations = new BehaviorSubject<RegistrationViewModel>(null);
   private deletedRegistrationIds = new Subject<number>();
 
   /**

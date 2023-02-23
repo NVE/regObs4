@@ -6,18 +6,35 @@ import {
   NgZone,
   OnDestroy,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import {
+  defaultIfEmpty,
+  distinctUntilChanged,
+  finalize,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
+import { SearchCriteria } from 'src/app/core/models/search-criteria';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import {
+  PagedSearchResult,
+  SearchRegistrationService,
+} from 'src/app/core/services/search-registration/search-registration.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
 
@@ -39,6 +56,8 @@ const MAX_REGISTRATIONS_COUNT = 100;
 })
 export class SentListComponent implements OnDestroy {
   loadedRegistrations: RegistrationViewModel[] = [];
+  myRegistrations$: Observable<RegistrationViewModel[]>;
+  searchResult: PagedSearchResult<RegistrationViewModel>;
   loaded = false;
   refreshFunc = this.refresh.bind(this);
   @Output() isEmpty = new EventEmitter<boolean>();
@@ -47,9 +66,14 @@ export class SentListComponent implements OnDestroy {
   myObservationsUrl$: Observable<string>;
   isOffline$: Observable<boolean>;
   private ngDestroy$ = new Subject<void>();
+  shouldDisableScroller$: Observable<boolean>;
+
+  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
 
   constructor(
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
+    private searchRegistrationService: SearchRegistrationService,
+    private searchCriteriaService: SearchCriteriaService,
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
     private regobsAuthService: RegobsAuthService,
@@ -62,21 +86,34 @@ export class SentListComponent implements OnDestroy {
       takeUntil(this.ngDestroy$),
       map((connected) => !connected)
     );
-
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
-
-    addUpdateDeleteRegistrationService.changedRegistrations$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((newRegistration) => {
-        const regsWithoutNewRegistration = this.loadedRegistrations.filter(
-          (reg) => reg.RegId !== newRegistration.RegId
-        );
-
-        this.loadedRegistrations = [newRegistration, ...regsWithoutNewRegistration];
-
-        this.isEmpty.next(false);
-        this.changeDetectorRef.detectChanges();
-      });
+    this.userSettingService.language$.subscribe((langKey) => {
+      const search = new BehaviorSubject<SearchCriteriaRequestDto>({ OrderBy: 'DtChangeTime', LangKey: langKey });
+      this.searchResult = this.searchRegistrationService.searchMyRegistrations(search);
+    });
+    this.myRegistrations$ = combineLatest([
+      this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete())),
+      addUpdateDeleteRegistrationService.changedRegistrations$,
+    ]).pipe(
+      map(([myRegistrations, newRegistration]) => {
+        if (!newRegistration) {
+          return myRegistrations;
+        } else {
+          // Since this.loadedRegistrations can be modified by the draftToRegService subscription above as well,
+          // add results to the end and filter unique observations in case the my-observations request returns after a
+          // new registration has been added
+          const regsWithoutNewRegistration = myRegistrations.filter((reg) => reg.RegId !== newRegistration.RegId);
+          return [newRegistration, ...regsWithoutNewRegistration];
+        }
+      })
+    );
+    this.shouldDisableScroller$ = combineLatest([
+      this.searchResult.allFetchedForCriteria$,
+      this.searchResult.maxItemsFetched$,
+    ]).pipe(
+      map(([allFetched, maxReached]) => allFetched || maxReached),
+      distinctUntilChanged()
+    );
   }
 
   ngOnDestroy(): void {
@@ -84,77 +121,21 @@ export class SentListComponent implements OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  async refresh(cancelPromise?: Promise<void>): Promise<void> {
-    await this.initRegistrationSubscription(cancelPromise);
+  refresh(): void {
+    this.loggingService.debug('Refresh', 'PagedSearchResult');
+    this.searchResult.resetPaging();
   }
 
-  private async initRegistrationSubscription(cancel?: Promise<void>): Promise<void> {
-    this.loadedRegistrations = [];
-    this.loaded = false;
-    this.changeDetectorRef.detectChanges();
-    this.pageIndex = 0;
-    try {
-      const result = await toPromiseWithCancel(this.getMyRegistrations$(0), cancel, 20000);
-      // Since this.loadedRegistrations can be modified by the draftToRegService subscription above as well,
-      // add results to the end and filter unique observations in case the my-observations request returns after a
-      // new registration has been added
-      this.loadedRegistrations = getUniqueRegistrations([...this.loadedRegistrations, ...result]);
-      this.isEmpty.emit(this.loadedRegistrations.length === 0);
-    } catch (error) {
-      this.loggingService.debug('Could not load my registrations', DEBUG_TAG, error);
-    } finally {
-      this.loaded = true;
-      this.changeDetectorRef.detectChanges();
-    }
-  }
-
-  private getMyRegistrations$(pageNumber: number): Observable<RegistrationViewModel[]> {
-    return combineLatest([this.userSettingService.language$, this.regobsAuthService.loggedInUser$]).pipe(
-      switchMap(([langKey, loggedInUser]) => {
-        if (loggedInUser.isLoggedIn) {
-          return this.observationService.getObservationsForCurrentUser(langKey, pageNumber, PAGE_SIZE);
-        }
-        return of([]);
-      }),
-      take(1)
-    );
-  }
-
-  loadNextPage(event: CustomEvent<RegistrationViewModel>): void {
-    const currentLength = this.loadedRegistrations.length;
-    const currentPageIndex = Math.floor(currentLength / PAGE_SIZE);
-    this.loadingMore = true;
-    this.getMyRegistrations$(currentPageIndex)
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.loadingMore = false;
-        })
-      )
-      .subscribe((nextPage) => {
-        // Filter unique registrations as the paging indexes can be a bit off when a new registration has been
-        // submitted after the first page has loaded
-        this.loadedRegistrations = getUniqueRegistrations(this.loadedRegistrations.concat(nextPage));
-        this.pageIndex += 1;
-        const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
-        target.complete();
-        if (nextPage.length < PAGE_SIZE || this.maxCountReached) {
-          target.disabled = true; //we have reached the end, so no need to load more pages from now
-        }
-        this.changeDetectorRef.detectChanges();
-      });
+  loadNextPage(): void {
+    this.searchResult.increasePage();
   }
 
   trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
     return obs ? obs.RegId.toString() : undefined;
   }
 
-  get maxCountReached(): boolean {
-    return this.loadedRegistrations.length >= MAX_REGISTRATIONS_COUNT;
-  }
-
-  get maxCount(): number {
-    return MAX_REGISTRATIONS_COUNT;
+  get maxCount() {
+    return PagedSearchResult.MAX_ITEMS;
   }
 
   private createMyObservationsUrl$(): Observable<string> {

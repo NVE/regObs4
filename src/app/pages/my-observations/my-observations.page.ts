@@ -23,8 +23,8 @@ export class MyObservationsPage {
     this.refresh();
   }
 
-  async refresh(cancelPromise?: Promise<void>): Promise<void> {
-    await this.sentListComponent.refresh(cancelPromise);
+  refresh(): void {
+    this.sentListComponent.refresh();
   }
 
   refreshDraftEmptyState(isEmpty: boolean): void {
