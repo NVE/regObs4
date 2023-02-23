@@ -122,7 +122,7 @@
     "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
     "PASSWORD": "Password",
-    "SERVICE_UNAVAILABLE": "Could not connect to the login service. Do you have mobile network? Please wait a few minutes and try again.",
+    "SERVICE_UNAVAILABLE": "Could not connect to the login service. Do you have mobile network? Please wait a few minutes and try again. If you are not connected to the internet, you may save observations as drafts and submit when you are connected again.",
     "TITLE": "Log in",
     "UNAUTHORIZED": "Wrong username or password. Please retry.",
     "UNKNOWN_ERROR": "Error while logging in. Message from server:"

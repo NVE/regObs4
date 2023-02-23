@@ -122,7 +122,7 @@
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
     "PASSWORD": "Passord",
-    "SERVICE_UNAVAILABLE": "Vi har problemer med å nå tjenesten for innlogging. Har du nett? Det kan hende at tjenesten må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
+    "SERVICE_UNAVAILABLE": "Vi har problemer med å nå tjenesten for innlogging. Har du nett? Det kan hende at tjenesten må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen. Hvis du ikke har nett, kan du lagre observasjoner som kladd og sende dem inn når du er tilkoblet nettet igjen.",
     "TITLE": "Logg inn",
     "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst prøv igjen.",
     "UNKNOWN_ERROR": "Det oppsto en feil ved innlogging. Melding fra server:"
