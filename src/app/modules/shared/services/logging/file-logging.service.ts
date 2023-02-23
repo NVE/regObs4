@@ -38,6 +38,8 @@ import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-compose
 import { EmailComposerService } from '../email-composer/email-composer.service';
 import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
+import { AppVersionService } from 'src/app/core/services/app-version/app-version.service';
+import { Device } from '@capacitor/device';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +60,8 @@ export class FileLoggingService {
     private file: File,
     private platform: Platform,
     private emailComposer: EmailComposer,
-    private emailComposerService: EmailComposerService
+    private emailComposerService: EmailComposerService,
+    private appVersionService: AppVersionService
   ) {
     this.defaultConfig = new LogProviderConfig({
       enableMetaLogging: false,
@@ -104,6 +107,7 @@ export class FileLoggingService {
         return Promise.resolve();
       }
       this.debug_metaLog('Data directory: ' + this.config.baseDir);
+      this.logVersionAndDeviceInfo();
       return this.file
         .checkDir(this.config.baseDir, this.config.logDir)
         .then(() => {
@@ -115,6 +119,24 @@ export class FileLoggingService {
           return this.createLogDir();
         });
     });
+  }
+
+  private logVersionAndDeviceInfo() {
+    let deviceInfoFormatted = 'no device info available';
+    Device.getInfo()
+      .then((deviceInfo) => {
+        if (deviceInfo) {
+          deviceInfoFormatted = `manufacturer = ${deviceInfo.manufacturer}, model = ${deviceInfo.model}, os = ${deviceInfo.operatingSystem}, osVersion = ${deviceInfo.osVersion}, webViewVersion = ${deviceInfo.webViewVersion}`;
+        }
+      })
+      .finally(() => {
+        const versionInfo = this.appVersionService.getAppVersion();
+        this.log(
+          `Version = ${versionInfo.version}, build = ${versionInfo.buildNumber}, ${deviceInfoFormatted}`,
+          null,
+          LogLevel.Info
+        );
+      });
   }
 
   isReady(): boolean {

@@ -19,7 +19,6 @@ export class SentryService implements LoggingService {
 
   constructor(appVersionService: AppVersionService, private fileLoggingService: FileLoggingService) {
     this.versionInfo = appVersionService.getAppVersion();
-    this.log(`Version = ${this.versionInfo.version}, build = ${this.versionInfo.buildNumber}`, null, LogLevel.Info);
   }
 
   error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
