@@ -114,31 +114,6 @@ steps:
       verbose: false
       customCommand: 'run build:prod'
 
-  - task: oneLuckiDevJson2Variable@1
-    displayName: 'Create environment variables from version.json file'
-    inputs:
-      jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
-      shouldPrefixVariables: true
-
-  - task: Bash@3
-    displayName: Install sentry-cli
-    inputs:
-      targetType: inline
-      script: curl -sL https://sentry.io/get-cli/ | sh
-
-  - script: |
-      sentry-cli releases new $(json.version)
-      sentry-cli releases files $(json.version) upload-sourcemaps www -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
-      sentry-cli releases finalize $(json.version)
-    displayName: 'Create Sentry release and upload sourcemaps to Sentry'
-
-  - task: Npm@1
-    displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
-    inputs:
-      command: custom
-      verbose: false
-      customCommand: 'run sentry:create-release-and-upload-sourcemaps'
-
   # TODO: Create ipa
   - task: Xcode@5
     inputs:
@@ -188,6 +163,32 @@ steps:
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: drop'
+
+  - task: oneLuckiDevJson2Variable@1
+    displayName: 'Create environment variables from version.json file'
+    inputs:
+      jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
+      shouldPrefixVariables: true
+
+  - task: Bash@3
+    displayName: Install sentry-cli
+    inputs:
+      targetType: inline
+      script: curl -sL https://sentry.io/get-cli/ | sh
+
+  - script: |
+      sentry-cli releases new $(json.version)
+      sentry-cli releases files $(json.version) upload-sourcemaps www -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+      sentry-cli releases finalize $(json.version)
+    displayName: 'Create Sentry release and upload sourcemaps to Sentry'
+
+  - task: Npm@1
+    displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run sentry:create-release-and-upload-sourcemaps'
+
 #- task: AppStoreRelease@1
 #  displayName: 'Publish to the App Store TestFlight track'
 #  inputs:
