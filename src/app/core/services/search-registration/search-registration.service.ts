@@ -5,7 +5,6 @@ import {
   combineLatest,
   concatMap,
   distinctUntilChanged,
-  filter,
   map,
   Observable,
   of,

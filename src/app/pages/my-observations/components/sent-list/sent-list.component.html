@@ -1,23 +1,23 @@
 <!-- A list of observations sent to server -->
-<ng-container *ngIf="myRegistrations$ | async as registrations; else skeleton">
+<ng-container *ngIf="myRegistrations; else skeleton">
   <ion-item-divider no-border>
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>
         <h3 class="ion-text-uppercase">{{ "MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate }}</h3>
       </ion-row>
       <ion-row>
-        <ion-label *ngIf="registrations?.length" class="ion-text-wrap" color="medium">
+        <ion-label *ngIf="myRegistrations?.length" class="ion-text-wrap" color="medium">
           {{ "MY_OBSERVATIONS.SENT_SUBTITLE" | translate }}
         </ion-label>
-        <ion-label *ngIf="!registrations?.length && (isOffline$ | async)" class="ion-text-wrap" color="medium">
+        <ion-label *ngIf="!myRegistrations?.length && (isOffline$ | async)" class="ion-text-wrap" color="medium">
           {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
         </ion-label>
       </ion-row>
     </ion-grid>
   </ion-item-divider>
-  <ion-list *ngIf="registrations.length > 0">
+  <ion-list *ngIf="myRegistrations.length > 0">
     <app-observation-list-card
-      *ngFor="let reg of registrations; trackBy: trackByIdFunc"
+      *ngFor="let reg of myRegistrations; trackBy: trackByIdFunc"
       [obs]="reg"
     ></app-observation-list-card>
   </ion-list>
