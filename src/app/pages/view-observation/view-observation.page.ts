@@ -8,8 +8,8 @@ import { takeUntil, switchMap } from 'rxjs/operators';
 import { from, Observable } from 'rxjs';
 import { EditMode } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { RegistrationService } from 'src/app/modules/common-regobs-api';
-import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { Capacitor } from '@capacitor/core';
+import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
 
 @Component({
   selector: 'app-view-observation',
@@ -24,7 +24,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private registrationService: RegistrationService,
-    private observationService: ObservationService,
+    private sqliteService: SqliteService,
     private userSettingService: UserSettingService,
     private popupInfoService: PopupInfoService
   ) {
@@ -45,7 +45,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   getRegistrationFromLocalDb(regId: number) {
     this.registrationViewModel$ = this.userSettingService.userSetting$.pipe(
-      switchMap((userSetting) => from(this.observationService.getObservationById(regId, userSetting.appMode)))
+      switchMap((userSetting) => from(this.sqliteService.loadRegistration(regId, userSetting.appMode)))
     );
   }
 }

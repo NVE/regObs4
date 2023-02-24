@@ -20,6 +20,7 @@ import {
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { Platform } from '@ionic/angular';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
 const dateToMs = (value: string): number => {
   const date = moment(value);
@@ -321,6 +322,29 @@ export class SqliteService {
     const result = await this.conn.query(statement);
     this.logger.debug('Count result', DEBUG_TAG, { result });
     return result.values[0].reg_count;
+  }
+
+  /**
+   * Load a single registration or null if not found
+   */
+  async loadRegistration(regId: number, appMode: AppMode): Promise<RegistrationViewModel> {
+    await this.isReady();
+    const statement = `SELECT data FROM registrations WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
+    this.logger.debug('Query', DEBUG_TAG, { statement });
+    const result = await this.conn.query(statement);
+    if (result?.values.length > 0) {
+      // The data property contains the json as a string
+      const registration = JSON.parse(result.values[0].data);
+      this.logger.debug('Query result', DEBUG_TAG, { registration });
+      return registration;
+    }
+    this.logger.log(
+      `Registration with id=${regId} and app_mode='${appMode}' not found`,
+      null,
+      LogLevel.Warning,
+      DEBUG_TAG
+    );
+    return null;
   }
 
   async insertRegistrations(registrations: RegistrationViewModel[], appMode: AppMode, lang: LangKey) {
