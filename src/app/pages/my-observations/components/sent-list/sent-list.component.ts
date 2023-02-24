@@ -34,7 +34,6 @@ const DEBUG_TAG = 'SentListComponent';
 export class SentListComponent implements OnDestroy {
   @Output() isEmpty = new EventEmitter<boolean>();
 
-  refreshFunc = this.refresh.bind(this);
   myRegistrations: RegistrationViewModel[];
   myObservationsUrl$: Observable<string>;
   searchResult: PagedSearchResult<RegistrationViewModel>;
@@ -64,7 +63,23 @@ export class SentListComponent implements OnDestroy {
 
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
 
-    this.userSettingService.language$.subscribe((langKey) => {
+    addUpdateDeleteRegistrationService.changedRegistrations$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((newRegistration) => {
+        if (!this.myRegistrations) return;
+        const regsWithoutNewRegistration = this.myRegistrations.filter((reg) => reg.RegId !== newRegistration.RegId);
+        // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
+        // add results to the end and filter unique observations in case the my-observations request returns after a
+        // new registration has been added
+        this.myRegistrations = [newRegistration, ...regsWithoutNewRegistration];
+
+        this.isEmpty.next(false);
+        this.cdr.detectChanges();
+      });
+  }
+
+  private initOnRefresh() {
+    this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>({
         OrderBy: 'DtChangeTime',
         LangKey: langKey,
@@ -73,27 +88,20 @@ export class SentListComponent implements OnDestroy {
     });
 
     this.searchResult.registrations$
-      .pipe(tap(() => this.scroll && this.scroll.complete()))
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap(() => this.scroll && this.scroll.complete())
+      )
       .subscribe((myRegistrations) => {
         this.myRegistrations = myRegistrations;
         this.cdr.detectChanges();
       });
 
-    addUpdateDeleteRegistrationService.changedRegistrations$.subscribe((newRegistration) => {
-      const regsWithoutNewRegistration = this.myRegistrations.filter((reg) => reg.RegId !== newRegistration.RegId);
-      // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
-      // add results to the end and filter unique observations in case the my-observations request returns after a
-      // new registration has been added
-      this.myRegistrations = [newRegistration, ...regsWithoutNewRegistration];
-
-      this.isEmpty.next(false);
-      this.cdr.detectChanges();
-    });
-
     this.shouldDisableScroller$ = combineLatest([
       this.searchResult.allFetchedForCriteria$,
       this.searchResult.maxItemsFetched$,
     ]).pipe(
+      takeUntil(this.ngDestroy$),
       map(([allFetched, maxReached]) => allFetched || maxReached),
       distinctUntilChanged()
     );
@@ -106,7 +114,7 @@ export class SentListComponent implements OnDestroy {
 
   refresh(): void {
     this.loggingService.debug('Refresh', DEBUG_TAG);
-    this.searchResult.resetPaging();
+    this.initOnRefresh();
   }
 
   loadNextPage(): void {
