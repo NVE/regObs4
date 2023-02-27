@@ -131,7 +131,7 @@ export class ObservationListPage implements OnInit {
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
-    // TODO: this.searchCriteriaService.setExtentFilterActive(true);
+    this.searchCriteriaService.setExtentFilterActive(true);
   }
 
   loadNextPage(): void {
