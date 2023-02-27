@@ -15,6 +15,7 @@ export interface MyPageData {
   MemberOfGroups?: Array<ObserverGroupDto>;
   MobPhoneNr?: string;
   NickName?: string;
+  ObserverId?: number;
   NumberOfObservations?: number;
   PendingInvitationsToGroups?: Array<ObserverGroupDto>;
   Roles?: Array<string>;

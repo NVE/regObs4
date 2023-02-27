@@ -9,7 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
 import { enterZone } from 'src/app/core/helpers/observable-helper';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
@@ -19,6 +19,7 @@ import {
   SearchRegistrationService,
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
@@ -52,6 +53,7 @@ export class SentListComponent implements OnDestroy {
     private searchRegistrationService: SearchRegistrationService,
     private userSettingService: UserSettingService,
     private loggingService: LoggingService,
+    private regobsAuthService: RegobsAuthService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
     networkStatusService: NetworkStatusService
@@ -78,10 +80,14 @@ export class SentListComponent implements OnDestroy {
       });
   }
 
-  private initOnRefresh() {
+  private async initOnRefresh() {
+    // we have to fetch observerId before sending search request
+    const myPageData = await firstValueFrom(this.regobsAuthService.myPageData$);
+
     this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>({
         OrderBy: 'DtChangeTime',
+        ObserverId: myPageData.ObserverId,
         LangKey: langKey,
       });
       this.searchResult = this.searchRegistrationService.searchMyRegistrations(searchCriteria);
