@@ -39,7 +39,7 @@ const UPGRADE_STATEMENTS = [
   {
     toVersion: 1,
     statements: [
-      `CREATE TABLE IF NOT EXISTS registrations (
+      `CREATE TABLE IF NOT EXISTS registration (
         reg_id INTEGER PRIMARY KEY NOT NULL,
         geo_hazard INTEGER NOT NULL,
         observer_id INTEGER NOT NULL,
@@ -51,19 +51,19 @@ const UPGRADE_STATEMENTS = [
 
       // TODO: Jeg har ikke sjekket hvordan man bruker indekser med sqlite / denne pluginen,
       //  Evt fjern før vi tar inn dette hvis vi ikke bruker det
-      'CREATE INDEX IF NOT EXISTS registrations_index_nick ON registrations (observer_nick);',
+      'CREATE INDEX IF NOT EXISTS registration_index_nick ON registration (observer_nick);',
 
-      'CREATE INDEX IF NOT EXISTS registrations_index_obs_time ON registrations (obs_time);',
+      'CREATE INDEX IF NOT EXISTS registration_index_obs_time ON registration (obs_time);',
 
-      'CREATE INDEX IF NOT EXISTS registrations_index_reg_time ON registrations (reg_time);',
+      'CREATE INDEX IF NOT EXISTS registration_index_reg_time ON registration (reg_time);',
 
-      'CREATE INDEX IF NOT EXISTS registrations_index_change_time ON registrations (change_time);',
+      'CREATE INDEX IF NOT EXISTS registration_index_change_time ON registration (change_time);',
     ],
   },
   {
     toVersion: 2,
     statements: [
-      'ALTER TABLE registrations ADD COLUMN app_mode TEXT;',
+      'ALTER TABLE registration ADD COLUMN app_mode TEXT;',
 
       `CREATE TABLE IF NOT EXISTS sync_time (
         sync_time_ms INTEGER NOT NULL,
@@ -74,8 +74,8 @@ const UPGRADE_STATEMENTS = [
   {
     toVersion: 3,
     statements: [
-      'ALTER TABLE registrations ADD COLUMN lat REAL;',
-      'ALTER TABLE registrations ADD COLUMN lon REAL;',
+      'ALTER TABLE registration ADD COLUMN lat REAL;',
+      'ALTER TABLE registration ADD COLUMN lon REAL;',
       // Remove sync time to force a new sync with lat lon
       'DELETE FROM sync_time;',
     ],
@@ -83,7 +83,7 @@ const UPGRADE_STATEMENTS = [
   {
     toVersion: 4,
     statements: [
-      'ALTER TABLE registrations ADD COLUMN lang INTEGER;',
+      'ALTER TABLE registration ADD COLUMN lang INTEGER;',
       'ALTER TABLE sync_time ADD COLUMN lang INTEGER;',
       // Remove sync time to force a new sync with langKey
       'DELETE FROM sync_time;',
@@ -191,7 +191,7 @@ export class SqliteService {
 
   private async truncateRegistrations() {
     this.logger.debug('Truncate registrations', DEBUG_TAG);
-    await this.conn.execute('DELETE FROM registrations;');
+    await this.conn.execute('DELETE FROM registration;');
   }
 
   private async truncateSyncTime() {
@@ -285,7 +285,7 @@ export class SqliteService {
 
   private async cleanupRegistrations() {
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
-    const statement = `DELETE FROM registrations WHERE reg_time < ${twoWeeksAgo}`;
+    const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo}`;
     this.logger.debug('Cleanup registrations', DEBUG_TAG, { statement });
     const result = await this.conn.execute(statement);
     this.logger.debug('DELETE result', DEBUG_TAG, result);
@@ -303,7 +303,7 @@ export class SqliteService {
   async selectRegistrations(searchCriteria: SearchCriteria, appMode: AppMode): Promise<RegistrationViewModel[]> {
     await this.isReady();
     const where = this.searchCriteriaToWhere(searchCriteria);
-    const statement = `SELECT data FROM registrations WHERE ${where} AND app_mode='${appMode}' ORDER BY change_time DESC ${this.parseLimit(
+    const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY change_time DESC ${this.parseLimit(
       searchCriteria
     )};`;
     this.logger.debug('Query', DEBUG_TAG, { statement, searchCriteria });
@@ -317,7 +317,7 @@ export class SqliteService {
   async getRegistrationCount(searchCriteria: SearchCriteria, appMode: AppMode): Promise<number> {
     await this.isReady();
     const where = this.searchCriteriaToWhere(searchCriteria);
-    const statement = `SELECT COUNT(*) AS reg_count FROM registrations WHERE ${where} AND app_mode='${appMode}'`;
+    const statement = `SELECT COUNT(*) AS reg_count FROM registration WHERE ${where} AND app_mode='${appMode}'`;
     this.logger.debug('Count', DEBUG_TAG, { statement, searchCriteria });
     const result = await this.conn.query(statement);
     this.logger.debug('Count result', DEBUG_TAG, { result });
@@ -329,7 +329,7 @@ export class SqliteService {
    */
   async loadRegistration(regId: number, appMode: AppMode): Promise<RegistrationViewModel> {
     await this.isReady();
-    const statement = `SELECT data FROM registrations WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
+    const statement = `SELECT data FROM registration WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
     this.logger.debug('Query', DEBUG_TAG, { statement });
     const result = await this.conn.query(statement);
     if (result?.values.length > 0) {
@@ -390,7 +390,7 @@ export class SqliteService {
     let result: capSQLiteChanges;
     if (statements.length) {
       this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: statements.length });
-      const sql = `INSERT OR REPLACE INTO registrations (${columns.join(',')}) VALUES ${statements.join(',')};
+      const sql = `INSERT OR REPLACE INTO registration (${columns.join(',')}) VALUES ${statements.join(',')};
       `;
       try {
         result = await this.conn.execute(sql);
