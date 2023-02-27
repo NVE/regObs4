@@ -646,7 +646,7 @@
         "PREVIEW": "Preview",
         "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
-        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE": "Slope angle",
         "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
