@@ -11,7 +11,6 @@ import {
 import { IonInfiniteScroll } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
-import { enterZone } from 'src/app/core/helpers/observable-helper';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 import {
@@ -22,7 +21,6 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { settings } from 'src/settings';
 
 const DEBUG_TAG = 'SentListComponent';
 
@@ -36,7 +34,6 @@ export class SentListComponent implements OnDestroy {
   @Output() isEmpty = new EventEmitter<boolean>();
 
   myRegistrations: RegistrationViewModel[];
-  myObservationsUrl$: Observable<string>;
   searchResult: PagedSearchResult<RegistrationViewModel>;
   isOffline$: Observable<boolean>;
   shouldDisableScroller$: Observable<boolean>;
@@ -55,7 +52,6 @@ export class SentListComponent implements OnDestroy {
     private loggingService: LoggingService,
     private regobsAuthService: RegobsAuthService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone,
     networkStatusService: NetworkStatusService
   ) {
     this.isOffline$ = networkStatusService.connected$.pipe(
@@ -63,21 +59,37 @@ export class SentListComponent implements OnDestroy {
       map((connected) => !connected)
     );
 
-    this.myObservationsUrl$ = this.createMyObservationsUrl$();
-
     addUpdateDeleteRegistrationService.changedRegistrations$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((newRegistration) => {
+      .subscribe((changedRegistration) => {
         if (!this.myRegistrations) return;
-        const regsWithoutNewRegistration = this.myRegistrations.filter((reg) => reg.RegId !== newRegistration.RegId);
+        const regsWithoutNewRegistration = this.regsWithoutNewOrDeletedRegistration(changedRegistration.RegId);
         // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
         // add results to the end and filter unique observations in case the my-observations request returns after a
         // new registration has been added
-        this.myRegistrations = [newRegistration, ...regsWithoutNewRegistration];
+        this.myRegistrations = [changedRegistration, ...regsWithoutNewRegistration];
 
         this.isEmpty.next(false);
         this.cdr.detectChanges();
       });
+
+    addUpdateDeleteRegistrationService.deletedRegistrationIds$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((deletedRegistrationId) => {
+        if (!this.myRegistrations) return;
+        const regsWithoutDeletedRegistration = this.regsWithoutNewOrDeletedRegistration(deletedRegistrationId);
+        // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
+        // add results to the end and filter unique observations in case the my-observations request returns after a
+        // new registration has been added
+        this.myRegistrations = [...regsWithoutDeletedRegistration];
+
+        this.isEmpty.next(false);
+        this.cdr.detectChanges();
+      });
+  }
+
+  private regsWithoutNewOrDeletedRegistration(registrationId: number): RegistrationViewModel[] {
+    return this.myRegistrations.filter((reg) => reg.RegId !== registrationId);
   }
 
   private async initOnRefresh() {
@@ -129,13 +141,5 @@ export class SentListComponent implements OnDestroy {
 
   trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
     return obs ? obs.RegId.toString() : undefined;
-  }
-
-  private createMyObservationsUrl$(): Observable<string> {
-    return this.userSettingService.userSetting$.pipe(
-      map((userSettings) => settings.services.regObs.webUrl[userSettings.appMode]),
-      distinctUntilChanged(),
-      enterZone(this.ngZone)
-    );
   }
 }
