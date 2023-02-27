@@ -189,6 +189,14 @@ export class SearchRegistrationService {
     );
   }
 
+  // search my registrations with paging
+  searchMyRegistrations(searchCriteria$: Observable<SearchCriteria>): PagedSearchResult<RegistrationViewModel> {
+    return new PagedSearchResult<RegistrationViewModel>(
+      searchCriteria$,
+      this.searchService.SearchPostSearchMyRegistrations.bind(this.searchService),
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
+    );
+  }
   /**
    * A fast search. Return only a summary of each observation.
    */

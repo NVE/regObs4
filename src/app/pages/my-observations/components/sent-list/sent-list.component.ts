@@ -6,56 +6,52 @@ import {
   NgZone,
   OnDestroy,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
-import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
-import { ObservationService } from 'src/app/core/services/observation/observation.service';
+import {
+  PagedSearchResult,
+  SearchRegistrationService,
+} from 'src/app/core/services/search-registration/search-registration.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { settings } from 'src/settings';
 
 const DEBUG_TAG = 'SentListComponent';
-const PAGE_SIZE = 10;
-const MAX_REGISTRATIONS_COUNT = 100;
 
 @Component({
   selector: 'app-sent-list',
   templateUrl: './sent-list.component.html',
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // A possible solution to not having custom methods for getting a users own observations.
-  // Not sure if this works, but useFactory can be used as a backup, as a new instance is guaranteed.
-  // providers: [
-  //   { provide: SearchCriteriaService: useClass: UserPageSearchCriteriaService },
-  //   { provide: ObservationService, useClass: ObservationService }
-  // ]
 })
 export class SentListComponent implements OnDestroy {
-  loadedRegistrations: RegistrationViewModel[] = [];
-  loaded = false;
-  refreshFunc = this.refresh.bind(this);
   @Output() isEmpty = new EventEmitter<boolean>();
-  loadingMore = false;
-  pageIndex: number;
-  myObservationsUrl$: Observable<string>;
+
+  myRegistrations: RegistrationViewModel[];
+  searchResult: PagedSearchResult<RegistrationViewModel>;
   isOffline$: Observable<boolean>;
+  shouldDisableScroller$: Observable<boolean>;
   private ngDestroy$ = new Subject<void>();
+
+  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
+
+  get maxCount() {
+    return PagedSearchResult.MAX_ITEMS;
+  }
 
   constructor(
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private observationService: ObservationService,
+    private searchRegistrationService: SearchRegistrationService,
     private userSettingService: UserSettingService,
-    private regobsAuthService: RegobsAuthService,
-    private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
-    private ngZone: NgZone,
+    private regobsAuthService: RegobsAuthService,
+    private cdr: ChangeDetectorRef,
     networkStatusService: NetworkStatusService
   ) {
     this.isOffline$ = networkStatusService.connected$.pipe(
@@ -63,20 +59,70 @@ export class SentListComponent implements OnDestroy {
       map((connected) => !connected)
     );
 
-    this.myObservationsUrl$ = this.createMyObservationsUrl$();
-
     addUpdateDeleteRegistrationService.changedRegistrations$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((newRegistration) => {
-        const regsWithoutNewRegistration = this.loadedRegistrations.filter(
-          (reg) => reg.RegId !== newRegistration.RegId
-        );
-
-        this.loadedRegistrations = [newRegistration, ...regsWithoutNewRegistration];
+      .subscribe((changedRegistration) => {
+        if (!this.myRegistrations) return;
+        const regsWithoutNewRegistration = this.regsWithoutNewOrDeletedRegistration(changedRegistration.RegId);
+        // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
+        // add results to the end and filter unique observations in case the my-observations request returns after a
+        // new registration has been added
+        this.myRegistrations = [changedRegistration, ...regsWithoutNewRegistration];
 
         this.isEmpty.next(false);
-        this.changeDetectorRef.detectChanges();
+        this.cdr.detectChanges();
       });
+
+    addUpdateDeleteRegistrationService.deletedRegistrationIds$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((deletedRegistrationId) => {
+        if (!this.myRegistrations) return;
+        const regsWithoutDeletedRegistration = this.regsWithoutNewOrDeletedRegistration(deletedRegistrationId);
+        // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
+        // add results to the end and filter unique observations in case the my-observations request returns after a
+        // new registration has been added
+        this.myRegistrations = [...regsWithoutDeletedRegistration];
+
+        this.isEmpty.next(false);
+        this.cdr.detectChanges();
+      });
+  }
+
+  private regsWithoutNewOrDeletedRegistration(registrationId: number): RegistrationViewModel[] {
+    return this.myRegistrations.filter((reg) => reg.RegId !== registrationId);
+  }
+
+  private async initOnRefresh() {
+    // we have to fetch observerId before sending search request
+    const myPageData = await firstValueFrom(this.regobsAuthService.myPageData$);
+
+    this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
+      const searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>({
+        OrderBy: 'DtChangeTime',
+        ObserverId: myPageData.ObserverId,
+        LangKey: langKey,
+      });
+      this.searchResult = this.searchRegistrationService.searchMyRegistrations(searchCriteria);
+    });
+
+    this.searchResult.registrations$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap(() => this.scroll && this.scroll.complete())
+      )
+      .subscribe((myRegistrations) => {
+        this.myRegistrations = myRegistrations;
+        this.cdr.detectChanges();
+      });
+
+    this.shouldDisableScroller$ = combineLatest([
+      this.searchResult.allFetchedForCriteria$,
+      this.searchResult.maxItemsFetched$,
+    ]).pipe(
+      takeUntil(this.ngDestroy$),
+      map(([allFetched, maxReached]) => allFetched || maxReached),
+      distinctUntilChanged()
+    );
   }
 
   ngOnDestroy(): void {
@@ -84,84 +130,16 @@ export class SentListComponent implements OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  async refresh(cancelPromise?: Promise<void>): Promise<void> {
-    await this.initRegistrationSubscription(cancelPromise);
+  refresh(): void {
+    this.loggingService.debug('Refresh', DEBUG_TAG);
+    this.initOnRefresh();
   }
 
-  private async initRegistrationSubscription(cancel?: Promise<void>): Promise<void> {
-    this.loadedRegistrations = [];
-    this.loaded = false;
-    this.changeDetectorRef.detectChanges();
-    this.pageIndex = 0;
-    try {
-      const result = await toPromiseWithCancel(this.getMyRegistrations$(0), cancel, 20000);
-      // Since this.loadedRegistrations can be modified by the draftToRegService subscription above as well,
-      // add results to the end and filter unique observations in case the my-observations request returns after a
-      // new registration has been added
-      this.loadedRegistrations = getUniqueRegistrations([...this.loadedRegistrations, ...result]);
-      this.isEmpty.emit(this.loadedRegistrations.length === 0);
-    } catch (error) {
-      this.loggingService.debug('Could not load my registrations', DEBUG_TAG, error);
-    } finally {
-      this.loaded = true;
-      this.changeDetectorRef.detectChanges();
-    }
-  }
-
-  private getMyRegistrations$(pageNumber: number): Observable<RegistrationViewModel[]> {
-    return combineLatest([this.userSettingService.language$, this.regobsAuthService.loggedInUser$]).pipe(
-      switchMap(([langKey, loggedInUser]) => {
-        if (loggedInUser.isLoggedIn) {
-          return this.observationService.getObservationsForCurrentUser(langKey, pageNumber, PAGE_SIZE);
-        }
-        return of([]);
-      }),
-      take(1)
-    );
-  }
-
-  loadNextPage(event: CustomEvent<RegistrationViewModel>): void {
-    const currentLength = this.loadedRegistrations.length;
-    const currentPageIndex = Math.floor(currentLength / PAGE_SIZE);
-    this.loadingMore = true;
-    this.getMyRegistrations$(currentPageIndex)
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.loadingMore = false;
-        })
-      )
-      .subscribe((nextPage) => {
-        // Filter unique registrations as the paging indexes can be a bit off when a new registration has been
-        // submitted after the first page has loaded
-        this.loadedRegistrations = getUniqueRegistrations(this.loadedRegistrations.concat(nextPage));
-        this.pageIndex += 1;
-        const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
-        target.complete();
-        if (nextPage.length < PAGE_SIZE || this.maxCountReached) {
-          target.disabled = true; //we have reached the end, so no need to load more pages from now
-        }
-        this.changeDetectorRef.detectChanges();
-      });
+  loadNextPage(): void {
+    this.searchResult.increasePage();
   }
 
   trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
     return obs ? obs.RegId.toString() : undefined;
-  }
-
-  get maxCountReached(): boolean {
-    return this.loadedRegistrations.length >= MAX_REGISTRATIONS_COUNT;
-  }
-
-  get maxCount(): number {
-    return MAX_REGISTRATIONS_COUNT;
-  }
-
-  private createMyObservationsUrl$(): Observable<string> {
-    return this.userSettingService.userSetting$.pipe(
-      map((userSettings) => settings.services.regObs.webUrl[userSettings.appMode]),
-      distinctUntilChanged(),
-      enterZone(this.ngZone)
-    );
   }
 }
