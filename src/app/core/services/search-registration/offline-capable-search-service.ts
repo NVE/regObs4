@@ -26,6 +26,8 @@ import {
   withLatestFrom,
   filter,
   shareReplay,
+  skipWhile,
+  distinctUntilChanged,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import {
@@ -101,12 +103,20 @@ export class OfflineCapableSearchService extends SearchService {
       .pipe(map((lastFetchedMs) => new Date(lastFetchedMs)))
       .subscribe((d) => updateObsService.setOfflineObservationsLastFetched(d));
 
-    const tabShouldShowOutDatedObsToast$ = tabsService.selectedTab$.pipe(
-      map((tab) => [TABS.HOME, TABS.OBSERVATION_LIST].includes(tab))
+    const canShowOutDatedObsToast$ = combineLatest([
+      tabsService.selectedTab$.pipe(map((tab) => [TABS.HOME, TABS.OBSERVATION_LIST].includes(tab))),
+      this.userSettings.userSetting$.pipe(
+        // Do not show the toast until start wizard is completed
+        map((userSettings) => userSettings.completedStartWizard && !userSettings.showGeoSelectInfo),
+        distinctUntilChanged()
+      ),
+    ]).pipe(
+      map(([tabShouldShowToast, startWizardCompleted]) => tabShouldShowToast && startWizardCompleted),
+      skipWhile((canShowToast) => canShowToast === false)
     );
 
     // Show or hide the "you have old observations" toast
-    combineLatest([tabShouldShowOutDatedObsToast$, this.lastSyncTime$])
+    combineLatest([canShowOutDatedObsToast$, this.lastSyncTime$])
       .pipe(
         switchMap(([tabShouldShowToast, lastSyncTimeMs]) => {
           if (!tabShouldShowToast || !isOutOfSync(lastSyncTimeMs)) return this.dismissOldObservationsToast();
