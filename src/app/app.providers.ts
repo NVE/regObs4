@@ -1,5 +1,5 @@
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone, Provider } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
@@ -45,6 +45,8 @@ import { SearchService } from './modules/common-regobs-api';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
+import { UpdateObservationsOfflineService } from './modules/side-menu/components/update-observations/update-observations-offline.service';
+import { UpdateObservationsService } from './modules/side-menu/components/update-observations/update-observations.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -89,7 +91,7 @@ export function initDb(dbService: OfflineDbService) {
 //   }
 // }
 
-export const APP_PROVIDERS = [
+export const APP_PROVIDERS: Provider[] = [
   StartWizardGuard,
   AuthGuard,
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -172,6 +174,10 @@ export const APP_PROVIDERS = [
   {
     provide: BackgroundDownloadService,
     useClass: HttpClientDownloadService,
+  },
+  {
+    provide: UpdateObservationsService,
+    useClass: isPlatform('hybrid') ? UpdateObservationsOfflineService : UpdateObservationsService,
   },
   {
     provide: SearchService,

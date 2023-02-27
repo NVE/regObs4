@@ -61,7 +61,7 @@ export class SentListComponent implements OnDestroy {
 
     addUpdateDeleteRegistrationService.changedRegistrations$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((changedRegistration) => {
+      .subscribe(({ reg: changedRegistration }) => {
         if (!this.myRegistrations) return;
         const regsWithoutNewRegistration = this.regsWithoutNewOrDeletedRegistration(changedRegistration.RegId);
         // Since this.myRegistrations can be modified by the draftToRegService subscription above as well,
