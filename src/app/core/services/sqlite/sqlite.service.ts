@@ -212,11 +212,7 @@ export class SqliteService {
     this.sqlite = new SQLiteConnection(CapacitorSQLite);
     await this.runUpgradeStatements();
     await this.openConn();
-
-    // await this.truncateRegistrations();
-    // await this.truncateSyncTime();
     await this.cleanupRegistrations();
-
     this.ready.next(true);
     this.printInitInfo();
   }
