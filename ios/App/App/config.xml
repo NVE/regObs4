@@ -44,11 +44,6 @@
     <param name="ios-package" value="SecureStorage"/>
   </feature>
 
-  <feature name="DiskSpacePlugin">
-    <param name="ios-package" value="DiskSpacePlugin"/>
-    <param name="onload" value="true"/>
-  </feature>
-
   
   <preference name="ScrollEnabled" value="false" />
   <preference name="android-minSdkVersion" value="24" />
