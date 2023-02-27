@@ -34,7 +34,7 @@ const toJson = (o: any) => {
 };
 
 const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';
-const DATABASE_NAME = 'regobs-registrations';
+const DATABASE_NAME = 'regobs-v2';
 const UPGRADE_STATEMENTS = [
   {
     toVersion: 1,
@@ -65,7 +65,7 @@ const UPGRADE_STATEMENTS = [
     statements: [
       'ALTER TABLE registration ADD COLUMN app_mode TEXT;',
 
-      `CREATE TABLE IF NOT EXISTS sync_time (
+      `CREATE TABLE IF NOT EXISTS registration_sync_time (
         sync_time_ms INTEGER NOT NULL,
         app_mode TEXT PRIMARY KEY NOT NULL);
       `,
@@ -77,16 +77,16 @@ const UPGRADE_STATEMENTS = [
       'ALTER TABLE registration ADD COLUMN lat REAL;',
       'ALTER TABLE registration ADD COLUMN lon REAL;',
       // Remove sync time to force a new sync with lat lon
-      'DELETE FROM sync_time;',
+      'DELETE FROM registration_sync_time;',
     ],
   },
   {
     toVersion: 4,
     statements: [
       'ALTER TABLE registration ADD COLUMN lang INTEGER;',
-      'ALTER TABLE sync_time ADD COLUMN lang INTEGER;',
+      'ALTER TABLE registration_sync_time ADD COLUMN lang INTEGER;',
       // Remove sync time to force a new sync with langKey
-      'DELETE FROM sync_time;',
+      'DELETE FROM registration_sync_time;',
     ],
   },
 ];
@@ -196,7 +196,7 @@ export class SqliteService {
 
   private async truncateSyncTime() {
     this.logger.debug('Truncate sync_time', DEBUG_TAG);
-    await this.conn.execute('DELETE FROM sync_time;');
+    await this.conn.execute('DELETE FROM registration_sync_time;');
   }
 
   private async printInitInfo() {
@@ -221,7 +221,7 @@ export class SqliteService {
     await this.isReady();
     this.logger.debug(`Update sync time`, DEBUG_TAG, { updateTimeMs, appMode });
     const result = await this.conn.execute(
-      `INSERT OR REPLACE INTO sync_time (sync_time_ms,app_mode,lang) VALUES (${updateTimeMs},'${appMode}',${lang});`
+      `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (${updateTimeMs},'${appMode}',${lang});`
     );
     this.logger.debug(`Sync time updated`, DEBUG_TAG, result);
   }
@@ -229,7 +229,9 @@ export class SqliteService {
   async readRegistrationsSyncTime(appMode: AppMode, lang: LangKey) {
     await this.isReady();
     this.logger.debug('Reading sync time', DEBUG_TAG, { appMode });
-    const result = await this.conn.query(`SELECT * FROM sync_time WHERE app_mode='${appMode}' AND lang=${lang};`);
+    const result = await this.conn.query(
+      `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
+    );
     this.logger.debug('Sync time', DEBUG_TAG, result);
     return result.values[0].sync_time_ms;
   }
