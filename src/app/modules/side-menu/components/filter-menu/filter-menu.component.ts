@@ -176,12 +176,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  setNewType(event: CustomEvent, parentId: number, typeId?: number) {
+  setNewType(event, parentId: number, typeId?: number) {
     //if parentid and subtypeid are the same it means there is no subtypes
     let obsType: RegistrationTypeCriteriaDto;
     if (parentId == typeId) obsType = { Id: parentId, SubTypes: [] };
     else obsType = { Id: parentId, SubTypes: [typeId] };
-    if (event.detail.checked) this.searchCriteriaService.setObservationType(obsType);
+    if (!event.currentTarget.checked) this.searchCriteriaService.setObservationType(obsType);
     else this.searchCriteriaService.removeObservationType(obsType);
   }
 
