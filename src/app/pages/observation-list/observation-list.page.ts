@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
@@ -51,8 +51,17 @@ export class ObservationListPage implements OnInit {
     private logger: LoggingService,
     mapService: MapService
   ) {
-    this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaService.searchCriteria$);
+    const searchCriteriaWhenThisPageIsActive$ = combineLatest([
+      searchCriteriaService.searchCriteria$,
+      this.tabsService.selectedTab$,
+    ]).pipe(
+      filter(([, selectedTab]) => selectedTab === TABS.OBSERVATION_LIST),
+      map(([criteria]) => criteria)
+    );
+    this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaWhenThisPageIsActive$);
+
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
+
     this.shouldDisableScroller$ = combineLatest([
       this.searchResult.allFetchedForCriteria$,
       this.searchResult.maxItemsFetched$,
@@ -122,7 +131,7 @@ export class ObservationListPage implements OnInit {
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
-    this.searchCriteriaService.setExtentFilterActive(true);
+    // TODO: this.searchCriteriaService.setExtentFilterActive(true);
   }
 
   loadNextPage(): void {
