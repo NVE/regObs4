@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+
 import moment from 'moment';
 import {
   Observable,
@@ -80,6 +82,7 @@ export class OfflineCapableSearchService extends SearchService {
     http: HttpClient,
     private logger: LoggingService,
     private sqlite: SqliteService,
+    private translateService: TranslateService,
     network: NetworkStatusService,
     private userSettings: UserSettingService,
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
@@ -204,25 +207,39 @@ export class OfflineCapableSearchService extends SearchService {
     this.outDatedObservationsToastDismisser.next();
   }
 
+  private showOrUpdateOldObservationsToastMessage(header: string, content: string): string {
+    return `<strong>${header}</strong><br/>${content}`;
+  }
+
   private async showOrUpdateOldObservationsToast(lastSyncMs: number) {
     let message: string;
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
+    const langKey = await firstValueFrom(this.userSettings.language$);
+    const lastUpdatedText = moment(lastSyncMs).locale(LangKey[langKey]).fromNow();
+    const translations = await firstValueFrom(
+      this.translateService.get(
+        [
+          'DATA_LOAD.NO_FETCHED_OBSERVATIONS',
+          'DATA_LOAD.SERVICE_UNAVAILABLE',
+          'DATA_LOAD.OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS',
+        ],
+        {
+          lastUpdatedText: lastUpdatedText,
+        }
+      )
+    );
+
     if (lastSyncMs < twoWeeksAgo) {
       // TODO: Oversettelser
-      message = `
-        <strong>Appen har ikke fått hentet observasjoner.</strong>
-        <br/>Det kan være du ikke har nett eller at appen ikke får kontakt med regobs.
-        Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen.
-      `;
+      message = this.showOrUpdateOldObservationsToastMessage(
+        translations['DATA_LOAD.NO_FETCHED_OBSERVATIONS'],
+        translations['DATA_LOAD.SERVICE_UNAVAILABLE']
+      );
     } else {
-      const langKey = await firstValueFrom(this.userSettings.language$);
-      const lastUpdatedText = moment(lastSyncMs).locale(LangKey[langKey]).fromNow();
-      // TODO: Oversettelser
-      message = `
-        <strong>Observasjoner ble sist hentet for ${lastUpdatedText}.</strong>
-        <br/>Det kan være du ikke har nett eller at appen ikke får kontakt med regobs.
-        <br/>Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen.
-      `;
+      message = this.showOrUpdateOldObservationsToastMessage(
+        translations['DATA_LOAD.OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS'],
+        translations['DATA_LOAD.SERVICE_UNAVAILABLE']
+      );
     }
 
     if (this.outdatedObservationsToast == null) {
