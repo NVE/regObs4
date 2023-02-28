@@ -4,7 +4,7 @@
     <!--ng-container *ngIf="!(isLoading$ | async); else isLoadingTemplate"-->
     <ion-text class="ion-align-self-start">
       <ng-container *ngIf="lastFetched$ | async as lastFetched">
-        {{ lastFetched | date: settings.dateFormats.angular.dateAndTime }}
+        {{ lastFetched !== "-" ? (lastFetched | date: settings.dateFormats.angular.dateAndTime) : lastFetched }}
       </ng-container>
     </ion-text>
     <ion-button size="small" fill="clear" slot="end">
