@@ -23,6 +23,18 @@
           [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
           position="stacked"
           class="ion-text-uppercase"
+          >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.EARLIEST_TIME' | translate }}</ion-label
+        >
+        <app-datetime-picker
+        [(dateTime)]="avalancheObs.DtEarliestAvalancheTime"
+        [maxDate]="avalancheObs.DtAvalancheTime"
+        [resetable]="true"> </app-datetime-picker>
+      </ion-item>
+      <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
+        <ion-label
+          [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
+          position="stacked"
+          class="ion-text-uppercase"
           >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label
         >
         <app-datetime-picker [(dateTime)]="avalancheObs.DtAvalancheTime" [maxDate]="maxDate"> </app-datetime-picker>
