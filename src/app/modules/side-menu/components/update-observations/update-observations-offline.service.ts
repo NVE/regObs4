@@ -11,7 +11,7 @@ export class UpdateObservationsOfflineService extends UpdateObservationsService 
     // Do nothing, only OfflineCapableSearchService should set this for offline capable platforms
   }
 
-  setOfflineObservationsLastFetched(date: Date | string) {
+  setOfflineObservationsLastFetched(date: Date) {
     this.lastFetched.next(date);
   }
 }

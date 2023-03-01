@@ -102,7 +102,7 @@ export class OfflineCapableSearchService extends SearchService {
     this.lastSyncTime$
       .pipe(
         map((lastFetchedMs) => {
-          if (lastFetchedMs == 0) return '-';
+          if (lastFetchedMs == 0) return null;
           else return new Date(lastFetchedMs);
         })
       )

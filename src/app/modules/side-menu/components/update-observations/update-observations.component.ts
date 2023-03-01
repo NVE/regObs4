@@ -11,7 +11,7 @@ import { UpdateObservationsService } from './update-observations.service';
 })
 export class UpdateObservationsComponent {
   settings = settings;
-  lastFetched$: Observable<Date | string>;
+  lastFetched$: Observable<Date>;
 
   constructor(private updateObservationsService: UpdateObservationsService) {
     this.lastFetched$ = updateObservationsService.lastFetched$;
