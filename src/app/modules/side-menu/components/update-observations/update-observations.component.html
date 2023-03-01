@@ -2,10 +2,8 @@
   <ion-label color="dark" position="stacked">{{ "MENU.UPDATE_OBSERVATIONS" | translate }}</ion-label>
   <ng-container>
     <!--ng-container *ngIf="!(isLoading$ | async); else isLoadingTemplate"-->
-    <ion-text class="ion-align-self-start">
-      <ng-container *ngIf="lastFetched$ | async as lastFetched">
-        {{ lastFetched !== null ? (lastFetched | date: settings.dateFormats.angular.dateAndTime) : "-" }}
-      </ng-container>
+    <ion-text class="ion-align-self-start" *ngIf="lastFetched$ | async as lastFetched; else noLastFetched">
+      {{ lastFetched | date: settings.dateFormats.angular.dateAndTime }}
     </ion-text>
     <ion-button size="small" fill="clear" slot="end">
       <svg-icon src="/assets/icon/refresh.svg"></svg-icon>
@@ -16,4 +14,7 @@
   <ion-text class="ion-align-self-start">
     <ion-spinner name="dots"></ion-spinner>
   </ion-text>
+</ng-template>
+<ng-template #noLastFetched>
+  <ion-text class="ion-align-self-start">-</ion-text>
 </ng-template>
