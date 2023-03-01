@@ -404,4 +404,14 @@ export class SqliteService {
 
     return result;
   }
+
+  /**
+   * Delete one or more registrations
+   */
+  async deleteRegistrations(regIds: number[], appMode: AppMode) {
+    await this.isReady();
+    const statement = `DELETE FROM registration WHERE reg_id IN (${regIds.join(',')}) AND app_mode='${appMode}'`;
+    const result = await this.conn.execute(statement);
+    this.logger.debug('DELETE result', DEBUG_TAG, result);
+  }
 }

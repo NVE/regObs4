@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { ObservationService } from '../../../core/services/observation/observation.service';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -25,7 +24,6 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 })
 export class SideMenuComponent implements OnInit, OnDestroy {
   userSettings: UserSetting;
-  lastUpdated: Date;
   settings = settings;
   TopoMap = TopoMap;
   LangKey = LangKey;
@@ -42,34 +40,25 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
+  observerTrips: ObserverTripsService;
 
-  private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
 
   constructor(
-    private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private emailComposer: EmailComposer,
     private translateService: TranslateService,
-    private loggingService: LoggingService,
     private appVersionService: AppVersionService,
     private navController: NavController,
     private ngZone: NgZone,
-    private dataMarshallService: DataMarshallService,
     private externalLinkService: ExternalLinkService,
-    public observerTrips: ObserverTripsService,
+    observerTrips: ObserverTripsService,
     private fileLoggingService: FileLoggingService
-  ) {}
+  ) {
+    this.observerTrips = observerTrips;
+  }
 
   async ngOnInit() {
     this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
-    this.lastUpdateSubscription = this.observationService
-      .getLastUpdatedForCurrentGeoHazardAsObservable()
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.lastUpdated = val;
-        });
-      });
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
@@ -83,9 +72,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.lastUpdateSubscription) {
-      this.lastUpdateSubscription.unsubscribe();
-    }
     if (this.userSettingSubscription) {
       this.userSettingSubscription.unsubscribe();
     }
@@ -133,10 +119,5 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   changeLanguage() {
     //save language setting
     this.userSettingService.saveUserSettings(this.userSettings);
-
-    //load observations from API in new language
-    this.observationService.forceUpdateObservationsForCurrentGeoHazard(
-      this.dataMarshallService.cancelObservationsPromise
-    );
   }
 }

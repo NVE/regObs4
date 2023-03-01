@@ -55,7 +55,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   spinnerLabel = 'DATA_LOAD.SPINNER_FETCH_OBSERVATIONS';
   fullscreen$: Observable<boolean>;
   showGeoSelectInfo = false;
-  dataLoadIds$: Observable<string[]>;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
 
@@ -142,12 +141,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
-    // TODO
-    // this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
-    //   map((val) => [val]),
-    //   enterZone(this.ngZone)
-    // );
-    this.dataLoadIds$ = of([]);
     this.checkForFirstStartup();
   }
 
