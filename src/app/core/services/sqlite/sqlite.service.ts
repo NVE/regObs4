@@ -89,6 +89,10 @@ const UPGRADE_STATEMENTS = [
       'DELETE FROM registration_sync_time;',
     ],
   },
+  {
+    toVersion: 5,
+    statements: ['ALTER TABLE registration ADD COLUMN observer_competence INTEGER;'],
+  },
 ];
 
 @Injectable({
@@ -281,6 +285,14 @@ export class SqliteService {
     }
   }
 
+  // competance = [105, 120, 130, 150];
+  // return either one competence or OR LIKE 105
+  private async queryCompetences(competenceIds: number[]) {
+    if (competenceIds.length == 1) {
+      return;
+    }
+  }
+
   private async cleanupRegistrations() {
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
     const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo}`;
@@ -351,6 +363,7 @@ export class SqliteService {
       'geo_hazard',
       'observer_id',
       'observer_nick',
+      'observer_competence',
       'data',
       'obs_time',
       'reg_time',
@@ -369,6 +382,7 @@ export class SqliteService {
     //   reg.GeoHazardTID,
     //   reg.Observer.ObserverID,
     //   `'${reg.Observer.NickName}'`,
+    //   `'${reg.Observer.CompetenceLevelTID}'`
     //   `'${JSON.stringify(reg)}'`,
     //   dateToMs(reg.DtObsTime),
     //   dateToMs(reg.DtRegTime),
@@ -379,7 +393,9 @@ export class SqliteService {
     // ].join(',')})`;
 
     const regToValues = (r: RegistrationViewModel) =>
-      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}','${toJson(r)}',` +
+      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}','${
+        r.Observer.CompetenceLevelTID
+      }', '${toJson(r)}',` +
       `${dateToMs(r.DtObsTime)},${dateToMs(r.DtRegTime)},${dateToMs(r.DtChangeTime)},'${appMode}',` +
       `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang})`;
 
