@@ -11,7 +11,6 @@ import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.se
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
-import { ObservationService } from '../observation/observation.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { WarningService } from '../warning/warning.service';
@@ -36,7 +35,6 @@ export class DataMarshallService implements OnReset {
   constructor(
     private ngZone: NgZone,
     private warningService: WarningService,
-    private observationService: ObservationService,
     private userSettingService: UserSettingService,
     private regobsAuthService: RegobsAuthService,
     private platform: Platform,
@@ -50,17 +48,6 @@ export class DataMarshallService implements OnReset {
 
   init(): void {
     this.ngZone.runOutsideAngular(() => {
-      // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
-      // this.subscriptions.push(
-      //   this.hasDaysBackChangedToLargerValue().subscribe(() => {
-      //     this.loggingService.debug(
-      //       'DaysBack has changed to a larger value. Update observations.',
-      //       DEBUG_TAG
-      //     );
-      //     this.updateObservations();
-      //   })
-      // );
-
       this.subscriptions.push(
         this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, langKey, geoHazards]) => {
           this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update warnings.', DEBUG_TAG);
@@ -70,8 +57,6 @@ export class DataMarshallService implements OnReset {
             AppCustomDimension.geoHazard,
             geoHazards.map((gh) => GeoHazard[gh]).join(',')
           );
-          // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
-          //this.updateObservations();
           this.warningService.updateWarnings();
         })
       );
@@ -166,31 +151,6 @@ export class DataMarshallService implements OnReset {
     this.subscriptions = [];
   }
 
-  cancelUpdateObservations(): void {
-    this.cancelUpdateObservationsSubject.next(true);
-  }
-
-  // TODO: Dette trenger vi i hvert fall ikke på web. Sjekk ut om vi trenger det i app!
-  // updateObservations(): void {
-  //   this.observationService.updateObservations(this.cancelObservationsPromise);
-  // }
-
-  /**
-   * Emits only when days back has changed to a larger value for current geoHazard
-   */
-  private hasDaysBackChangedToLargerValue() {
-    return this.userSettingService.currentGeoHazard$.pipe(
-      switchMap((currentGeoHazard) =>
-        this.userSettingService.daysBack$.pipe(
-          map((val) => val.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack),
-          distinctUntilChanged(),
-          pairwise(),
-          filter(([prev, next]) => next > prev)
-        )
-      )
-    );
-  }
-
   startForegroundUpdate(): void {
     if (this.foregroundUpdateInterval) {
       this.stopForegroundUpdate();
@@ -212,10 +172,6 @@ export class DataMarshallService implements OnReset {
         : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
 
-      const cancelPromiseForObservations = cancelTimer
-        ? Promise.race([this.cancelObservationsPromise, cancelTimer])
-        : this.cancelObservationsPromise;
-      await this.observationService.updateObservations(cancelPromiseForObservations);
       await this.warningService.updateWarnings(cancelTimer);
       await this.tripLoggerService.cleanupOldLegacyTrip();
       this.loggingService.debug('Background update completed', DEBUG_TAG);
