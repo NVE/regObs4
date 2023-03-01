@@ -91,7 +91,12 @@ const UPGRADE_STATEMENTS = [
   },
   {
     toVersion: 5,
-    statements: ['ALTER TABLE registration ADD COLUMN observer_competence INTEGER;'],
+    statements: [
+      'ALTER TABLE registration ADD COLUMN observer_competence INTEGER;',
+      'ALTER TABLE registration_sync_time ADD COLUMN observer_competence INTEGER;',
+      // Remove sync time to force a new sync with observer_competence
+      'DELETE FROM registration_sync_time;',
+    ],
   },
 ];
 
@@ -277,6 +282,9 @@ export class SqliteService {
     if (searchCriteria.Extent?.TopLeft?.Longitude != null) {
       where.push(`lon >= ${searchCriteria.Extent.TopLeft.Longitude}`);
     }
+    if (searchCriteria.ObserverCompetence != null) {
+      where.push(`observer_competence IN ${searchCriteria.ObserverCompetence.join(',')}`);
+    }
 
     if (where.length) {
       return where.join(' AND ');
@@ -363,7 +371,6 @@ export class SqliteService {
       'geo_hazard',
       'observer_id',
       'observer_nick',
-      'observer_competence',
       'data',
       'obs_time',
       'reg_time',
@@ -372,6 +379,7 @@ export class SqliteService {
       'lat',
       'lon',
       'lang',
+      'observer_competence',
     ];
 
     await this.isReady();
@@ -382,7 +390,6 @@ export class SqliteService {
     //   reg.GeoHazardTID,
     //   reg.Observer.ObserverID,
     //   `'${reg.Observer.NickName}'`,
-    //   `'${reg.Observer.CompetenceLevelTID}'`
     //   `'${JSON.stringify(reg)}'`,
     //   dateToMs(reg.DtObsTime),
     //   dateToMs(reg.DtRegTime),
@@ -390,14 +397,13 @@ export class SqliteService {
     //   `'${appMode}'`,
     //   reg.ObsLocation.Latitude,
     //   reg.ObsLocation.Longitude
+    //   `'${reg.Observer.CompetenceLevelTID}'`
     // ].join(',')})`;
 
     const regToValues = (r: RegistrationViewModel) =>
-      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}','${
-        r.Observer.CompetenceLevelTID
-      }', '${toJson(r)}',` +
+      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}', '${toJson(r)}',` +
       `${dateToMs(r.DtObsTime)},${dateToMs(r.DtRegTime)},${dateToMs(r.DtChangeTime)},'${appMode}',` +
-      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang})`;
+      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang}, '${r.Observer.CompetenceLevelTID}')`;
 
     const statements = registrations.map(regToValues);
 
