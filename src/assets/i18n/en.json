@@ -40,10 +40,10 @@
   "DATA_LOAD": {
     "DATA": "Loading...",
     "LOADING": "Loading",
-    "SPINNER_FETCH_OBSERVATIONS": "Fetching observations",
     "NO_FETCHED_OBSERVATIONS": "App didn't fetch observations",
-    "OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS": "Observations were last fetched on {{lastUpdatedText}}",
-    "SERVICE_UNAVAILABLE": "You may not have network connection or the app can't contact with regobs. You can try to update manually by clicking the refresh button in the filter menu."
+    "OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS": "Observations were last fetched on {{timeSinceLastUpdated}}",
+    "SERVICE_UNAVAILABLE": "You may not have network connection or the app can't contact with regobs. You can try to update manually by clicking the refresh button in the filter menu.",
+    "SPINNER_FETCH_OBSERVATIONS": "Fetching observations"
   },
   "DATE": "Date",
   "DAYS": {

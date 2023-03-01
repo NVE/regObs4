@@ -40,10 +40,10 @@
   "DATA_LOAD": {
     "DATA": "Laster data...",
     "LOADING": "Laster",
-    "SPINNER_FETCH_OBSERVATIONS": "Henter observasjoner",
     "NO_FETCHED_OBSERVATIONS": "Appen har ikke fått hentet observasjoner",
-    "OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS": "Observasjoner ble sist hentet for {{lastUpdatedText}}",
-    "SERVICE_UNAVAILABLE": "Det kan være du ikke har nett eller at appen ikke får kontakt med regobs. Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen"
+    "OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS": "Observasjoner ble sist hentet for {{timeSinceLastUpdated}}",
+    "SERVICE_UNAVAILABLE": "Det kan være du ikke har nett eller at appen ikke får kontakt med regobs. Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen",
+    "SPINNER_FETCH_OBSERVATIONS": "Henter observasjoner"
   },
   "DATE": "Dato",
   "DAYS": {

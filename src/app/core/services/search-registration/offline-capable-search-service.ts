@@ -215,7 +215,7 @@ export class OfflineCapableSearchService extends SearchService {
     let message: string;
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
     const langKey = await firstValueFrom(this.userSettings.language$);
-    const lastUpdatedText = moment(lastSyncMs).locale(LangKey[langKey]).fromNow();
+    const timeSinceLastUpdated = moment(lastSyncMs).locale(LangKey[langKey]).fromNow();
     const translations = await firstValueFrom(
       this.translateService.get(
         [
@@ -224,13 +224,12 @@ export class OfflineCapableSearchService extends SearchService {
           'DATA_LOAD.OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS',
         ],
         {
-          lastUpdatedText: lastUpdatedText,
+          timeSinceLastUpdated: timeSinceLastUpdated,
         }
       )
     );
 
     if (lastSyncMs < twoWeeksAgo) {
-      // TODO: Oversettelser
       message = this.showOrUpdateOldObservationsToastMessage(
         translations['DATA_LOAD.NO_FETCHED_OBSERVATIONS'],
         translations['DATA_LOAD.SERVICE_UNAVAILABLE']
