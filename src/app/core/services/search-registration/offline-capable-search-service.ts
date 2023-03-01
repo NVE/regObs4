@@ -100,7 +100,12 @@ export class OfflineCapableSearchService extends SearchService {
 
     // Update the last fetched time shown in filter menu whenever last fetched in offline db changes
     this.lastSyncTime$
-      .pipe(map((lastFetchedMs) => new Date(lastFetchedMs)))
+      .pipe(
+        map((lastFetchedMs) => {
+          if (lastFetchedMs == 0) return null;
+          else return new Date(lastFetchedMs);
+        })
+      )
       .subscribe((d) => updateObsService.setOfflineObservationsLastFetched(d));
 
     const canShowOutDatedObsToast$ = combineLatest([
