@@ -1,9 +1,11 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
-import { ObservationService } from 'src/app/core/services/observation/observation.service';
+import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
@@ -24,9 +26,10 @@ export class GoneRegistrationComponent {
   constructor(
     private draftToRegistrationService: DraftToRegistrationService,
     private draftRepository: DraftRepositoryService,
-    private observationService: ObservationService,
     private logger: LoggingService,
-    private navController: NavController
+    private navController: NavController,
+    private userSettingService: UserSettingService,
+    private sqliteService: SqliteService
   ) {}
 
   async submitAsNew(): Promise<void> {
@@ -37,20 +40,23 @@ export class GoneRegistrationComponent {
       `Submitting new draft with uuid ${newDraft.uuid} based on deleted registration with regId ${this.draft.regId}`,
       DEBUG_TAG
     );
-    this.draftToRegistrationService.markDraftAsReadyToSubmit(newDraft, false);
-    this.delete();
+    await this.draftToRegistrationService.markDraftAsReadyToSubmit(newDraft, false);
+    await this.delete();
     this.navigateToMyObservations(); //so we can see that the draft happily submits
   }
 
-  abandon(): void {
+  async abandon() {
     this.logger.debug(`Draft ${this.draft.uuid} abandoned`, DEBUG_TAG);
-    this.delete();
+    await this.delete();
     this.navigateToMyObservations(); //so we can see that the observation is gone
   }
 
-  private delete(): void {
-    this.draftRepository.delete(this.draft.uuid); //delete draft that was deleted in Regobs
-    this.observationService.deleteFetchedObservation(this.draft.regId); //delete observation from map and list view
+  private async delete() {
+    this.draftRepository.delete(this.draft.uuid); //delete draft that was deleted in Regobst
+
+    //delete observation from map and list view
+    const appMode = await firstValueFrom(this.userSettingService.appMode$);
+    this.sqliteService.deleteRegistrations([this.draft.regId], appMode);
   }
 
   navigateToMyObservations(): void {
