@@ -173,6 +173,7 @@ export class SqliteService {
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
     try {
       this.logger.debug('Create connection reference', DEBUG_TAG);
+      // Remember to update version if you added changes to tables
       this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 5, false);
       this.logger.debug('Open connection', DEBUG_TAG);
       await this.conn.open();
@@ -295,14 +296,6 @@ export class SqliteService {
     }
   }
 
-  // competance = [105, 120, 130, 150];
-  // return either one competence or OR LIKE 105
-  private async queryCompetences(competenceIds: number[]) {
-    if (competenceIds.length == 1) {
-      return;
-    }
-  }
-
   private async cleanupRegistrations() {
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
     const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo}`;
@@ -403,7 +396,7 @@ export class SqliteService {
     // ].join(',')})`;
 
     const regToValues = (r: RegistrationViewModel) =>
-      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}', '${toJson(r)}',` +
+      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}','${toJson(r)}',` +
       `${dateToMs(r.DtObsTime)},${dateToMs(r.DtRegTime)},${dateToMs(r.DtChangeTime)},'${appMode}',` +
       `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang},${r.Observer.CompetenceLevelTID})`;
 
