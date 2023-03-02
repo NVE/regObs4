@@ -41,7 +41,7 @@ export interface CompressionTestViewModel {
   PstY?: number;
 
   /**
-   * Amount of block that released in Rutchblock test
+   * Percentage of block that released in Rutchblock test
    */
   RbRelease?: number;
   StabilityEvalName?: string;

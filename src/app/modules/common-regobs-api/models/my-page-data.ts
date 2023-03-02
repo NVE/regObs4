@@ -15,8 +15,12 @@ export interface MyPageData {
   MemberOfGroups?: Array<ObserverGroupDto>;
   MobPhoneNr?: string;
   NickName?: string;
-  ObserverId?: number;
   NumberOfObservations?: number;
+
+  /**
+   * Returns unique id that identifies an observer
+   */
+  ObserverId?: number;
   PendingInvitationsToGroups?: Array<ObserverGroupDto>;
   Roles?: Array<string>;
   WorkPlace?: string;
