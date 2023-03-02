@@ -14,6 +14,7 @@ import {
   skipWhile,
   take,
   filter,
+  withLatestFrom,
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -27,6 +28,7 @@ import {
   URL_PARAM_SE_LAT,
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/coordinatesUrl';
+import { TABS, TabsService } from 'src/app/pages/tabs/tabs.service';
 
 const DEBUG_TAG = 'MapService';
 
@@ -120,7 +122,11 @@ export class MapService {
     this._showUserLocationSubject.next(value);
   }
 
-  constructor(private userSettingService: UserSettingService, private loggingService: LoggingService) {
+  constructor(
+    private userSettingService: UserSettingService,
+    private loggingService: LoggingService,
+    tabsService: TabsService
+  ) {
     this._showUserLocationSubject = new BehaviorSubject<boolean>(true);
     this._showUserLocationObservable = this._showUserLocationSubject.asObservable();
     this._followModeSubject = new BehaviorSubject<boolean>(false);
@@ -132,6 +138,16 @@ export class MapService {
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
       debounceTime(200),
       tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
+      withLatestFrom(tabsService.selectedTab$),
+      filter(([, tab]) => {
+        if (tab === TABS.HOME) {
+          return true;
+        }
+        this.loggingService.debug('Ignored last mapView update because home page is not active', DEBUG_TAG);
+        return false;
+      }), //only mapView changes when home page is active is relevant
+      map(([mapView]) => mapView),
+      tap((val) => this.loggingService.debug('MapView updated when home page is active', DEBUG_TAG, val)),
       shareReplay(1)
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
