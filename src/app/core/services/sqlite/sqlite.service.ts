@@ -35,6 +35,8 @@ const toJson = (o: any) => {
 
 const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';
 const DATABASE_NAME = 'regobs-v2';
+// IMPORTANT! Remember that you have to let sqlite know which version it should start with after you update the db.
+// Check the createConnection() methods
 const UPGRADE_STATEMENTS = [
   {
     toVersion: 1,
@@ -171,7 +173,7 @@ export class SqliteService {
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
     try {
       this.logger.debug('Create connection reference', DEBUG_TAG);
-      this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 4, false);
+      this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 5, false);
       this.logger.debug('Open connection', DEBUG_TAG);
       await this.conn.open();
     } catch (error) {
@@ -283,7 +285,7 @@ export class SqliteService {
       where.push(`lon >= ${searchCriteria.Extent.TopLeft.Longitude}`);
     }
     if (searchCriteria.ObserverCompetence != null) {
-      where.push(`observer_competence IN ${searchCriteria.ObserverCompetence.join(',')}`);
+      where.push(`observer_competence IN (${searchCriteria.ObserverCompetence.join(',')})`);
     }
 
     if (where.length) {
@@ -403,7 +405,7 @@ export class SqliteService {
     const regToValues = (r: RegistrationViewModel) =>
       `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}', '${toJson(r)}',` +
       `${dateToMs(r.DtObsTime)},${dateToMs(r.DtRegTime)},${dateToMs(r.DtChangeTime)},'${appMode}',` +
-      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang}, '${r.Observer.CompetenceLevelTID}')`;
+      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang},${r.Observer.CompetenceLevelTID})`;
 
     const statements = registrations.map(regToValues);
 
