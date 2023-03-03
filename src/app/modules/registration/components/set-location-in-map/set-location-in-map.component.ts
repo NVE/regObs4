@@ -7,10 +7,11 @@ import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
+import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
@@ -88,6 +89,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
+  private extentChanged = new Subject<IMapView>();
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
   locationPolygons: IPolygon[] = [];
@@ -148,6 +150,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           icon: locationMarkerIcon,
         });
       } else {
+        //TODO: Når trenger vi dette og blir det riktig når vi ikke lengre setter mapView fra stedfestingskartet?
         const lastView = await this.mapService.mapView$.pipe(take(1)).toPromise();
         if (lastView) {
           this.locationMarker = L.marker(lastView.center, {
@@ -164,6 +167,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       this.locale = params.lang;
     });
     this.updateMapViewInfo();
+
+    this.extentChanged.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.updateMapViewInfo();
+    });
   }
 
   ngOnDestroy(): void {
@@ -172,7 +179,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
-    return this.mapService.mapView$.pipe(
+    return this.extentChanged.pipe(
+      startWith(this.getCurrentMapView()),
       filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
       switchMap((mapView) =>
         this.locationService.getLocationWithinRadiusObservable(
@@ -196,6 +204,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
+  // bounds, center and zoom for this map
+  private getCurrentMapView(): IMapView {
+    return {
+      bounds: this.map.getBounds(),
+      center: this.map.getCenter(),
+      zoom: this.map.getZoom(),
+    };
+  }
+
   onMapReady(m: L.Map): void {
     this.map = m;
     this.locationMarker.setZIndexOffset(100).addTo(this.map);
@@ -208,7 +225,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     });
-    this.map.on('dragend', () => this.updateMapViewInfo());
+    this.map.on('dragend', () => {
+      this.extentChanged.next(this.getCurrentMapView());
+    });
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {

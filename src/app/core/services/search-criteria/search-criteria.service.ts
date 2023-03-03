@@ -187,7 +187,6 @@ export class SearchCriteriaService {
   get useMapExtent$() {
     return this.useMapExtent.asObservable();
   }
-  private mapViewWhenHomePageIsActive$: Observable<IMapView>;
   private currentGeoHazard: GeoHazard[];
   resetEvent: Subject<void> = new Subject();
   /**
@@ -198,10 +197,8 @@ export class SearchCriteriaService {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
-    private logger: LoggingService,
-    private tabsService: TabsService
+    private logger: LoggingService
   ) {
-    this.mapViewWhenHomePageIsActive$ = this.filterMapView();
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
 
@@ -230,7 +227,7 @@ export class SearchCriteriaService {
         map((daysBack) => this.daysBackToIsoDateTime(daysBack))
       ),
       this.useMapExtent$,
-      this.mapViewWhenHomePageIsActive$.pipe(
+      this.mapService.mapView$.pipe(
         map((mapView) => {
           return this.createExtentCriteria(mapView);
         })
@@ -260,27 +257,6 @@ export class SearchCriteriaService {
       ),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
-    );
-  }
-
-  private filterMapView(): Observable<IMapView> {
-    return this.mapService.mapView$.pipe(
-      withLatestFrom(this.tabsService.selectedTab$),
-      filter(([, tab], index) => {
-        if (index === 0 || tab === TABS.HOME) {
-          if (index === 0) {
-            this.logger.debug('First mapView received, criteria will change', DEBUG_TAG);
-          } else {
-            tap((mapView) =>
-              this.logger.debug('MapView updated and home page is active, criteria will change', DEBUG_TAG, mapView)
-            );
-          }
-          return true;
-        }
-        this.logger.debug('Ignored this mapView update because home page is not active', DEBUG_TAG);
-        return false;
-      }), //only mapView changes when home page is active is relevant
-      map(([mapView]) => mapView)
     );
   }
 

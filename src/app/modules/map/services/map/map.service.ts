@@ -54,6 +54,10 @@ export const parseCoordinatesFromUrl = (url: URL): IMapView => {
   }
 };
 
+/**
+ * Common data and functions for MapComponent.
+ * Some functions and data are based on the map on HomePage only
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -71,14 +75,23 @@ export class MapService {
   private _mapMoveStart$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
 
+  /**
+   * Extent, center and zoom for the map in HomePage
+   */
   get mapView$(): Observable<IMapView> {
     return this._mapView$;
   }
 
+  /**
+   * Extent, center, zoom and area info for the map in HomePage
+   */
   get mapViewAndAreaObservable$(): Observable<IMapViewAndArea> {
     return this._mapViewAndAreaObservable;
   }
 
+  /**
+   * Noticeable changes in extent, center and zoom for the map in HomePage
+   */
   get relevantMapChange$(): Observable<IMapView> {
     return this._relevantMapChange$;
   }
