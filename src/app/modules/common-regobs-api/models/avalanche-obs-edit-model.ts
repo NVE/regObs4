@@ -37,7 +37,7 @@ export interface AvalancheObsEditModel {
   DtAvalancheTime: string;
 
   /**
-   * Tid da skredet gikk.
+   * Tidligste tidspunkt da skredet gikk.
    */
   DtEarliestAvalancheTime?: string;
 

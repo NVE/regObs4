@@ -3,13 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  NgZone,
   OnDestroy,
   Output,
   ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
@@ -93,13 +92,9 @@ export class SentListComponent implements OnDestroy {
   }
 
   private async initOnRefresh() {
-    // we have to fetch observerId before sending search request
-    const myPageData = await firstValueFrom(this.regobsAuthService.myPageData$);
-
     this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>({
         OrderBy: 'DtChangeTime',
-        ObserverId: myPageData.ObserverId,
         LangKey: langKey,
       });
       this.searchResult = this.searchRegistrationService.searchMyRegistrations(searchCriteria);

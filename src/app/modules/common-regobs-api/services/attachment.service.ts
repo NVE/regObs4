@@ -22,10 +22,11 @@ class AttachmentService extends __BaseService {
   }
 
   /**
+   * Upload an image to a registration
    * @param file Attachment to upload
    * @return OK
    */
-  AttachmentPostResponse(file: Blob): __Observable<__StrictHttpResponse<string>> {
+  AttachmentPostResponse(file: Blob): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -39,23 +40,24 @@ class AttachmentService extends __BaseService {
       {
         headers: __headers,
         params: __params,
-        responseType: 'text'
+        responseType: 'json'
       });
 
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<string>;
+        return _r as __StrictHttpResponse<{}>;
       })
     );
   }
   /**
+   * Upload an image to a registration
    * @param file Attachment to upload
    * @return OK
    */
-  AttachmentPost(file: Blob): __Observable<string> {
+  AttachmentPost(file: Blob): __Observable<{}> {
     return this.AttachmentPostResponse(file).pipe(
-      __map(_r => _r.body as string)
+      __map(_r => _r.body as {})
     );
   }
 
