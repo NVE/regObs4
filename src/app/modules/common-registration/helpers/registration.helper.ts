@@ -125,9 +125,33 @@ export function isObservationModelEmptyForRegistrationTid(
   registrationTid: RegistrationTid
 ): boolean {
   if (regModel && registrationTid) {
-    return isEmpty(getRegistationPropertyForModel(regModel, registrationTid));
+    return isEmptyValidation(regModel, registrationTid);
   }
   return true;
+}
+
+function isEmptyValidation(
+  regModel: RegistrationEditModelWithRemoteOrLocalAttachments | RegistrationViewModel,
+  registrationTid: RegistrationTid
+) {
+  switch (registrationTid) {
+    // exclude DtAvalancheTime on AvalancheObs
+    case RegistrationTid.AvalancheObs:
+      return !hasAnyDataBesidesPropertyToExclude(regModel.AvalancheObs, 'DtAvalancheTime');
+    default:
+      return isEmpty(getRegistationPropertyForModel(regModel, registrationTid));
+  }
+}
+
+// if there is a need we can transform propertyToExclude into an array
+function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string) {
+  if (dataModel) {
+    const allValues = Object.values(dataModel);
+    if (dataModel[propertyToExclude] && allValues.length < 2) {
+      return false;
+    }
+    return true;
+  }
 }
 
 export function getRegistrationsWithData(draft: RegistrationDraft): RegistrationTid[] {
