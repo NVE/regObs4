@@ -227,9 +227,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     });
-    this.map.on('dragend', () => {
-      this.mapView.next(this.getCurrentMapView());
-    });
+    this.map.on('dragend', () => this.mapView.next(this.getCurrentMapView()));
+    this.map.on('zoomend', () => this.mapView.next(this.getCurrentMapView()));
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {
