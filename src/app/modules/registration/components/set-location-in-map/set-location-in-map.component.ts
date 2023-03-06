@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import { filter, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -89,7 +89,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
-  private extentChanged = new Subject<IMapView>();
+  private mapView = new Subject<IMapView>(); //extent, center and zoom for current map
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
   locationPolygons: IPolygon[] = [];
@@ -166,9 +166,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.translateService.onLangChange.subscribe((params: LangChangeEvent) => {
       this.locale = params.lang;
     });
-    this.updateMapViewInfo();
 
-    this.extentChanged.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+    this.mapView.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.updateMapViewInfo();
     });
   }
@@ -179,8 +178,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
-    return this.extentChanged.pipe(
-      startWith(this.getCurrentMapView()),
+    return this.mapView.pipe(
       filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
       switchMap((mapView) =>
         this.locationService.getLocationWithinRadiusObservable(
@@ -215,6 +213,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   onMapReady(m: L.Map): void {
     this.map = m;
+
+    // use initial map extent from home page
+    this.mapService.mapView$.pipe(take(1)).subscribe((mapView) => this.mapView.next(mapView));
+
     this.locationMarker.setZIndexOffset(100).addTo(this.map);
     if (this.fromMarker) {
       this.fromMarker.addTo(this.map);
@@ -226,7 +228,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       });
     });
     this.map.on('dragend', () => {
-      this.extentChanged.next(this.getCurrentMapView());
+      this.mapView.next(this.getCurrentMapView());
     });
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
