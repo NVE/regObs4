@@ -141,6 +141,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
+    this.userSettingService.appMode$.subscribe((v) => {
+      this.initSearch();
+    });
     this.checkForFirstStartup();
   }
 
