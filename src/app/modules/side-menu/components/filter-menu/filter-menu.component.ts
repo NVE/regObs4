@@ -97,7 +97,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       nickName: true,
     },
     web: {
-      observationType: false,
+      observationType: true,
       competence: true,
       nickName: true,
     },
