@@ -28,9 +28,10 @@ interface ObservationTypeView {
 }
 
 type PlatformType = 'app' | 'web';
+type FilterType = 'observationType' | 'competence' | 'nickName';
 
 type FilterSupportPerPlatform = {
-  [platformType in PlatformType]: { [filter: string]: boolean };
+  [platformType in PlatformType]: { [filter in FilterType]: boolean };
 };
 
 interface CompetenceItem {
@@ -96,7 +97,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       nickName: true,
     },
     web: {
-      observationType: true,
+      observationType: false,
       competence: true,
       nickName: true,
     },
@@ -150,6 +151,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.nickName = criteria.ObserverNickName;
       this.cdr.markForCheck();
     });
+  }
+
+  isSupported(filterType: FilterType): boolean {
+    return this.filterSupportPerPlatform[this.platformType][filterType];
   }
 
   async onResetFilters() {
