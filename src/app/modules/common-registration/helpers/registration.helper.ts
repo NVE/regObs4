@@ -130,7 +130,13 @@ export function isObservationModelEmptyForRegistrationTid(
   return true;
 }
 
-// if there is a need we can transform propertyToExclude into an array
+/*
+  If there is a need we can transform propertyToExclude into an array
+  For example in AvalancheObs we want to exclude DtAvalancheTime and Comment from isEmpty validation
+  Which will mean that user needs to fill other fields to make AvalancheObs count as non empty scheme.
+  In that case we send an array hasAnyDataBesidesPropertyToExclude(AvalancheObs, ['DtAvalancheTime', 'Comment'])
+  And refactor code so that it maintain arrays instead of string value
+*/
 export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string) {
   if (dataModel) {
     const allValues = Object.values(dataModel);

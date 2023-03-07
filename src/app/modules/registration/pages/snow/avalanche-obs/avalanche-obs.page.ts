@@ -86,7 +86,7 @@ export class AvalancheObsPage extends BasePage {
     );
   }
 
-  get dateIsDifferentThanObsTime() {
+  get dtAvalancheTimeIsDifferentThanObsTime() {
     return (
       this.avalancheObs.DtAvalancheTime &&
       !moment(this.avalancheObs.DtAvalancheTime).isSame(this.draft.registration.DtObsTime)
@@ -176,7 +176,8 @@ export class AvalancheObsPage extends BasePage {
   async isEmpty(): Promise<boolean> {
     if (
       this.avalancheObs.DtAvalancheTime &&
-      (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') || this.dateIsDifferentThanObsTime)
+      (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') ||
+        this.dtAvalancheTimeIsDifferentThanObsTime)
     ) {
       return false;
     }
