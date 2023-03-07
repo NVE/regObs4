@@ -5,7 +5,6 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
-  filter,
   firstValueFrom,
   map,
   Observable,
@@ -15,7 +14,6 @@ import {
   startWith,
   Subject,
   tap,
-  withLatestFrom,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -32,7 +30,6 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
-import { TABS, TabsService } from 'src/app/pages/tabs/tabs.service';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
