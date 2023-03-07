@@ -234,9 +234,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         });
     }
 
-    this.mapView.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe(() => {
-      this.updateMapViewInfo();
-    });
+    this.mapView
+      .pipe(
+        // ikke søke på nytt hvis kartsenter ikke flytter seg nevneverdig (f.eks. ved zoom)
+        distinctUntilChanged((prev, curr) => curr?.center?.distanceTo(prev?.center) < 5),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(() => {
+        this.updateMapViewInfo();
+      });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
