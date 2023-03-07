@@ -35,6 +35,8 @@ const toJson = (o: any) => {
 
 const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';
 const DATABASE_NAME = 'regobs-v2';
+// IMPORTANT! Remember that you have to let sqlite know which version it should start with after you update the db.
+// Check the createConnection() methods
 const UPGRADE_STATEMENTS = [
   {
     toVersion: 1,
@@ -86,6 +88,14 @@ const UPGRADE_STATEMENTS = [
       'ALTER TABLE registration ADD COLUMN lang INTEGER;',
       'ALTER TABLE registration_sync_time ADD COLUMN lang INTEGER;',
       // Remove sync time to force a new sync with langKey
+      'DELETE FROM registration_sync_time;',
+    ],
+  },
+  {
+    toVersion: 5,
+    statements: [
+      'ALTER TABLE registration ADD COLUMN observer_competence INTEGER;',
+      // Remove sync time to force a new sync with observer_competence
       'DELETE FROM registration_sync_time;',
     ],
   },
@@ -162,7 +172,8 @@ export class SqliteService {
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
     try {
       this.logger.debug('Create connection reference', DEBUG_TAG);
-      this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 4, false);
+      // Remember to update version if you added changes to tables
+      this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 5, false);
       this.logger.debug('Open connection', DEBUG_TAG);
       await this.conn.open();
     } catch (error) {
@@ -273,6 +284,9 @@ export class SqliteService {
     if (searchCriteria.Extent?.TopLeft?.Longitude != null) {
       where.push(`lon >= ${searchCriteria.Extent.TopLeft.Longitude}`);
     }
+    if (searchCriteria.ObserverCompetence?.length) {
+      where.push(`observer_competence IN (${searchCriteria.ObserverCompetence.join(',')})`);
+    }
 
     if (where.length) {
       return where.join(' AND ');
@@ -359,6 +373,7 @@ export class SqliteService {
       'lat',
       'lon',
       'lang',
+      'observer_competence',
     ];
 
     await this.isReady();
@@ -376,12 +391,13 @@ export class SqliteService {
     //   `'${appMode}'`,
     //   reg.ObsLocation.Latitude,
     //   reg.ObsLocation.Longitude
+    //   `'${reg.Observer.CompetenceLevelTID}'`
     // ].join(',')})`;
 
     const regToValues = (r: RegistrationViewModel) =>
       `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}','${toJson(r)}',` +
       `${dateToMs(r.DtObsTime)},${dateToMs(r.DtRegTime)},${dateToMs(r.DtChangeTime)},'${appMode}',` +
-      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang})`;
+      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang},${r.Observer.CompetenceLevelTID})`;
 
     const statements = registrations.map(regToValues);
 
