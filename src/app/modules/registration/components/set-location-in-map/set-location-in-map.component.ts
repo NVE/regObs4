@@ -6,8 +6,8 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
-import { Observable, Subject } from 'rxjs';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { firstValueFrom, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -150,10 +150,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           icon: locationMarkerIcon,
         });
       } else {
-        //TODO: Når trenger vi dette og blir det riktig når vi ikke lengre setter mapView fra stedfestingskartet?
-        const lastView = await this.mapService.mapView$.pipe(take(1)).toPromise();
-        if (lastView) {
-          this.locationMarker = L.marker(lastView.center, {
+        const homePageMapView = await firstValueFrom(this.mapService.mapView$);
+        if (homePageMapView) {
+          this.locationMarker = L.marker(homePageMapView.center, {
             icon: locationMarkerIcon,
           });
         } else {
@@ -165,10 +164,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
     this.translateService.onLangChange.subscribe((params: LangChangeEvent) => {
       this.locale = params.lang;
-    });
-
-    this.mapView.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      this.updateMapViewInfo();
     });
   }
 
@@ -238,6 +233,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           locations.forEach((loc) => this.addLocationIfNotExists(loc));
         });
     }
+
+    this.mapView.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.updateMapViewInfo();
+    });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
