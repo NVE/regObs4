@@ -92,8 +92,9 @@ describe('registration.helper', () => {
   });
 
   it('hasAnyDataBesidesPropertyToExclude should return true if there is other data except the excluded fields', () => {
-    viewModel.AvalancheActivityObs[0].Comment = 'this test is good';
-    expect(hasAnyDataBesidesPropertyToExclude(viewModel.AvalancheActivityObs[0], 'DtAvalancheTime')).toBeTrue();
+    const copyObject = { ...viewModel.AvalancheActivityObs[0] };
+    copyObject.Comment = 'this test is good';
+    expect(hasAnyDataBesidesPropertyToExclude(copyObject, 'DtAvalancheTime')).toBeTrue();
   });
 
   it('Empty registrationTid should return all attachments', () => {
