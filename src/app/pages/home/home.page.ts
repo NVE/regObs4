@@ -5,13 +5,23 @@ import { Capacitor } from '@capacitor/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, of, race, Subject, scan } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  pairwise,
+  take,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
   SearchResult,
 } from 'src/app/core/services/search-registration/search-registration.service';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { AtAGlanceViewModel, PositionDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
@@ -57,6 +67,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   showGeoSelectInfo = false;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
+  private prevAppMode: AppMode = null;
+  private currentAppMode: AppMode = null;
+  private searchResult: SearchResult<AtAGlanceViewModel>;
 
   isFetchingObservations: Observable<boolean>;
 
@@ -97,35 +110,37 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   private async initSearch() {
-    const searchResult = await this.createSearchResult();
+    this.searchResult = await this.createSearchResult();
 
-    this.isFetchingObservations = searchResult.isFetching$;
+    this.isFetchingObservations = this.searchResult.isFetching$;
 
-    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
+    combineLatest([this.searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
       ([registrations, show]) => {
         this.redrawObservationMarkers(show ? registrations : []);
       }
     );
 
-    searchResult.registrations$.subscribe(() => {
+    this.searchResult.registrations$.subscribe(() => {
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
     });
 
-    // search triggered manually
+    //this.userSettingService.appMode$.subscribe(() => this.searchResult.update());
+    this.userSettingService.appMode$.pipe(pairwise()).subscribe((v) => {
+      this.prevAppMode = v[0];
+      this.currentAppMode = v[1];
+    });
+
     this.updateObservationsService.refreshRequested$
-      .pipe(
-        withLatestFrom(this.tabsService.selectedTab$),
-        tap(([, tab]) => {
-          if (tab === TABS.HOME) {
-            searchResult.update();
-            this.loggingService.debug('Search manually triggered', DEBUG_TAG);
-          } else {
-            this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
-          }
-        })
-      )
-      .subscribe();
+      .pipe(withLatestFrom(this.tabsService.selectedTab$))
+      .subscribe(([, tab]) => {
+        if (tab === TABS.HOME) {
+          this.searchResult.update();
+          this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+        } else {
+          this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+        }
+      });
   }
 
   get appname(): string {
@@ -141,9 +156,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
-    this.userSettingService.appMode$.subscribe((v) => {
-      this.initSearch();
-    });
     this.checkForFirstStartup();
   }
 
@@ -237,6 +249,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   async onEnter() {
+    if (this.prevAppMode && this.currentAppMode && !(this.prevAppMode === this.currentAppMode)) {
+      this.searchResult.update();
+    }
     this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (userSettings.showGeoSelectInfo) {
