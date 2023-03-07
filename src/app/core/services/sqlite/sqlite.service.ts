@@ -93,7 +93,11 @@ const UPGRADE_STATEMENTS = [
   },
   {
     toVersion: 5,
-    statements: ['ALTER TABLE registration ADD COLUMN observer_competence INTEGER;'],
+    statements: [
+      'ALTER TABLE registration ADD COLUMN observer_competence INTEGER;',
+      // Remove sync time to force a new sync with observer_competence
+      'DELETE FROM registration_sync_time;',
+    ],
   },
 ];
 
@@ -280,7 +284,7 @@ export class SqliteService {
     if (searchCriteria.Extent?.TopLeft?.Longitude != null) {
       where.push(`lon >= ${searchCriteria.Extent.TopLeft.Longitude}`);
     }
-    if (!searchCriteria.ObserverCompetence?.length) {
+    if (searchCriteria.ObserverCompetence?.length) {
       where.push(`observer_competence IN (${searchCriteria.ObserverCompetence.join(',')})`);
     }
 
