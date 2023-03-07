@@ -174,7 +174,10 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
-    if (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') || this.dateIsDifferentThanObsTime) {
+    if (
+      this.avalancheObs.DtAvalancheTime &&
+      (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') || this.dateIsDifferentThanObsTime)
+    ) {
       return false;
     }
 
