@@ -27,6 +27,13 @@ interface ObservationTypeView {
   parentId: number;
 }
 
+type PlatformType = 'app' | 'web';
+type FilterType = 'observationType' | 'competence' | 'nickName';
+
+type FilterSupportPerPlatform = {
+  [platformType in PlatformType]: { [filter in FilterType]: boolean };
+};
+
 interface CompetenceItem {
   name: string;
   value: string;
@@ -73,6 +80,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
+  platformType: PlatformType;
   nickName: string | null = null;
   observationTypesOptions: ObservationTypeView[] = [];
   competenceOptions: CompetenceItem[] = [];
@@ -81,6 +89,19 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   currentGeoHazard: GeoHazard[];
   chosenCompetenceValue: CompetenceItem;
   observationTypesSelectedCount = 0;
+
+  filterSupportPerPlatform: FilterSupportPerPlatform = {
+    app: {
+      observationType: false,
+      competence: true,
+      nickName: true,
+    },
+    web: {
+      observationType: true,
+      competence: true,
+      nickName: true,
+    },
+  };
 
   constructor(
     private platform: Platform,
@@ -97,6 +118,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
+    this.platformType = this.isIosOrAndroid ? 'app' : 'web';
 
     combineLatest([
       //combining both searchCriteria and currentGeoHazard to ensure they both are being resolved in a proper order
@@ -129,6 +151,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.nickName = criteria.ObserverNickName;
       this.cdr.markForCheck();
     });
+  }
+
+  isSupported(filterType: FilterType): boolean {
+    return this.filterSupportPerPlatform[this.platformType][filterType];
   }
 
   async onResetFilters() {
