@@ -5,6 +5,7 @@ import {
   combineLatest,
   concatMap,
   distinctUntilChanged,
+  firstValueFrom,
   map,
   Observable,
   of,
@@ -200,6 +201,16 @@ export class SearchRegistrationService {
         this.searchService.SearchCountMyRegistrations(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
+
+  /*async searchRegIdsFromDeletedRegistrations(
+    searchCriteria$: Observable<SearchCriteria>
+  ): Promise<Observable<number[]>> {
+    const searchCriteria = await firstValueFrom(searchCriteria$);
+    const list = await this.searchService.SearchRegIdsFromDeletedRegistrations(
+      searchCriteria as SearchCriteriaRequestDto
+    );
+    return list;
+  }*/
   /**
    * A fast search. Return only a summary of each observation.
    */
