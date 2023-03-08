@@ -30,12 +30,43 @@ class SearchService extends __BaseService {
   static readonly SearchGetSearchCriteriaPath = '/Search/SearchCriteria/{geoHazards}/{langKey}';
   static readonly SearchSearchCriteriaPath = '/Search/SearchCriteria';
   static readonly SearchAtAGlancePath = '/Search/AtAGlance';
+  static readonly SearchRegIdsFromDeletedRegistrations = '/Search/DeletedRegIds';
 
   constructor(
     config: __Configuration,
     http: HttpClient
   ) {
     super(config, http);
+  }
+
+
+  SearchRegIdsFromDeletedRegistrationsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<number>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = criteria;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/Search/DeletedRegIds`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<number>>;
+      })
+    );
+  }
+
+  SearchRegIdsFromDeletedRegistrations(criteria: SearchCriteriaRequestDto): __Observable<Array<number>> {
+    return this.SearchRegIdsFromDeletedRegistrationsResponse(criteria).pipe(
+      __map(_r => _r.body as Array<number>)
+    );
   }
 
   /**
