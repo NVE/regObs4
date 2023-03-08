@@ -39,7 +39,12 @@ class SearchService extends __BaseService {
     super(config, http);
   }
 
-
+  /**
+   * Returns a list of regIds of deleted registrations
+   * @param criteria Use this to filter out registrations and change ordering of them.
+   * The attribute "ObserverGuid" is deprecated and will be removed in the future.
+   * @return OK
+   */
   SearchRegIdsFromDeletedRegistrationsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<number>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
@@ -63,6 +68,12 @@ class SearchService extends __BaseService {
     );
   }
 
+   /**
+   * Returns a list of regIds of deleted registrations
+   * @param criteria Use this to filter out registrations and change ordering of them.
+   * The attribute "ObserverGuid" is deprecated and will be removed in the future.
+   * @return OK
+   */
   SearchRegIdsFromDeletedRegistrations(criteria: SearchCriteriaRequestDto): __Observable<Array<number>> {
     return this.SearchRegIdsFromDeletedRegistrationsResponse(criteria).pipe(
       __map(_r => _r.body as Array<number>)
