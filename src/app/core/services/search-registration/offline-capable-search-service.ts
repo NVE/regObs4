@@ -358,6 +358,8 @@ export class OfflineCapableSearchService extends SearchService {
       for await (const registrations of this.pagedSearch(criteria, count)) {
         this.logger.debug(`Sync: Inserting ${registrations.length} registrations`, DEBUG_TAG);
         await this.sqlite.insertRegistrations(registrations, appMode, langKey);
+        const regIdsFromDeletedRegs = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
+        await this.sqlite.deleteRegistrations(regIdsFromDeletedRegs, appMode, langKey);
       }
     } else {
       this.logger.debug(`Sync: No new registrations to fetch`, DEBUG_TAG, { count, criteria });
