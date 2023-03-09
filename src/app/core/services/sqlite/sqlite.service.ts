@@ -297,7 +297,7 @@ export class SqliteService {
 
   private async cleanupRegistrations() {
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
-    const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo}`;
+    const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo};`;
     this.logger.debug('Cleanup registrations', DEBUG_TAG, { statement });
     const result = await this.conn.execute(statement);
     this.logger.debug('DELETE result', DEBUG_TAG, result);
@@ -404,8 +404,7 @@ export class SqliteService {
     let result: capSQLiteChanges;
     if (statements.length) {
       this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: statements.length });
-      const sql = `INSERT OR REPLACE INTO registration (${columns.join(',')}) VALUES ${statements.join(',')};
-      `;
+      const sql = `INSERT OR REPLACE INTO registration (${columns.join(',')}) VALUES ${statements.join(',')};`;
       try {
         result = await this.conn.execute(sql);
       } catch (error) {
@@ -426,8 +425,14 @@ export class SqliteService {
    */
   async deleteRegistrations(regIds: number[], appMode: AppMode) {
     await this.isReady();
-    const statement = `DELETE FROM registration WHERE reg_id IN (${regIds.join(',')}) AND app_mode='${appMode}'`;
-    const result = await this.conn.execute(statement);
-    this.logger.debug('DELETE result', DEBUG_TAG, result);
+    const statement = `DELETE FROM registration WHERE reg_id IN (${regIds.join(', ')}) AND app_mode='${appMode}';`;
+    let result: capSQLiteChanges;
+    try {
+      result = await this.conn.execute(statement);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Failed to delete registrations', { result, statement });
+      throw error;
+    }
+    this.logger.debug('DELETE result', DEBUG_TAG, { result, statement });
   }
 }
