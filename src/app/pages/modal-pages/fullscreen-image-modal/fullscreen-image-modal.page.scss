@@ -5,9 +5,16 @@
   height: 100%;
   background-color: #000;
   img {
+    object-fit: cover;
     max-width: 100%;
-    max-height: 100%;
   }
+}
+
+.close-button {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top));
+  right: 10px;
+  z-index: 9999;
 }
 
 .swiper-button-custom {

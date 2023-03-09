@@ -4,4 +4,7 @@
   </div>
   <button *ngIf="!isFirst" class="swiper-button-prev swiper-button-custom" (click)="changeImage(false)"></button>
   <button *ngIf="!isLast" class="swiper-button-next swiper-button-custom" (click)="changeImage(true)"></button>
+  <ion-fab-button (click)="closeModal()" class="close-button">
+    <ion-icon name="close"></ion-icon>
+  </ion-fab-button>
 </ion-content>
