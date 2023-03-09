@@ -170,16 +170,15 @@ export class TripLoggerService {
         concatMap(() => this.deleteLegacyTripsFromDb()),
         concatMap(() => this.infoMessage(false))
       )
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.tripStartedSubject.next(false);
         },
-        async (error) => {
+        error: async (error) => {
           this.loggingService.error(error, DEBUG_TAG, 'Could not stop trip');
-          this.tripStartedSubject.next(false);
           await this.showTripErrorMessage(false);
-        }
-      );
+        },
+      });
   }
 
   private deleteLegacyTripsFromDb() {
