@@ -352,15 +352,32 @@ export class OfflineCapableSearchService extends SearchService {
     const criteria = await this.getSyncSearchCriteria(langKey);
     this.logger.debug(`Sync criteria`, DEBUG_TAG, { criteria });
     const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
+    this.SearchCount;
 
     if (count > 0) {
       for await (const registrations of this.pagedSearch(criteria, count)) {
         this.logger.debug(`Sync: Inserting ${registrations.length} registrations`, DEBUG_TAG);
-        const registrationsWithoutDeleted = await super.SearchRegIdsFromDeletedRegistrations(criteria);
         await this.sqlite.insertRegistrations(registrations, appMode, langKey);
       }
     } else {
       this.logger.debug(`Sync: No new registrations to fetch`, DEBUG_TAG, { count, criteria });
+    }
+  }
+
+  //how to compare if the registrations differ? count inisde app and count outside app
+  private async fetchAndDeleteRegistrations({ appMode, langKey }: CurrentSyncInfo) {
+    const criteria = {
+      FromDtChangeTime: moment().subtract(14, 'days').format(),
+      FromDtObsTime: moment().subtract(14, 'days').format(),
+      LangKey: langKey,
+    } as SearchCriteriaRequestDto;
+    const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
+    const appCount = await firstValueFrom(this.SearchCount(criteria));
+
+    if (count !== appCount) {
+      const registrationsWithoutDeleted = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
+      this.logger.debug(`Sync: Deleting registrations ${registrationsWithoutDeleted}`, DEBUG_TAG);
+      await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
     }
   }
 
@@ -389,6 +406,7 @@ export class OfflineCapableSearchService extends SearchService {
       const newSyncTimeMs = moment().valueOf();
       this.logger.debug('New sync time', DEBUG_TAG, { newSyncTimeMs });
       await this.fetchAndInsertRegistrations(syncInfo);
+      await this.fetchAndDeleteRegistrations(syncInfo);
       await this.updateSyncTime(syncInfo, newSyncTimeMs);
 
       for (const syncReq of syncRequests) {
