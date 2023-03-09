@@ -18,7 +18,7 @@
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}} </ion-label>
       </ion-list-header>
-      <ion-item [ngClass]="{'hasWarning': dayIsDifferentThanObsTime}">
+      <ion-item [ngClass]="{'hasWarning': dayDtAvalancheTimeIsDifferentThanDayObsTime}">
         <ion-label
           [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
           position="stacked"
@@ -32,7 +32,7 @@
         >
         </app-datetime-picker>
       </ion-item>
-      <ion-item [ngClass]="{'hasWarning': dayIsDifferentThanObsTime}">
+      <ion-item [ngClass]="{'hasWarning': dayDtAvalancheTimeIsDifferentThanDayObsTime}">
         <ion-label
           [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
           position="stacked"
@@ -51,7 +51,7 @@
           {{"REGISTRATION.SET_TIME.NOW" | translate}}
         </ion-button>
       </ion-item>
-      <ion-item *ngIf="dayIsDifferentThanObsTime">
+      <ion-item *ngIf="dayDtAvalancheTimeIsDifferentThanDayObsTime">
         <ion-label color="danger" class="ion-text-wrap">
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>

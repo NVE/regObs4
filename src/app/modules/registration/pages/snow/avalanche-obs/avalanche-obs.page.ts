@@ -77,7 +77,7 @@ export class AvalancheObsPage extends BasePage {
     return this.draft.registration.Incident;
   }
 
-  get dayIsDifferentThanObsTime() {
+  get dayDtAvalancheTimeIsDifferentThanDayObsTime() {
     return (
       this.avalancheObs.DtAvalancheTime &&
       !moment(this.avalancheObs.DtAvalancheTime)

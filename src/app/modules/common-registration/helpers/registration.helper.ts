@@ -131,11 +131,8 @@ export function isObservationModelEmptyForRegistrationTid(
 }
 
 /*
-  If there is a need we can transform propertyToExclude into an array
-  For example in AvalancheObs we want to exclude DtAvalancheTime and Comment from isEmpty validation
-  Which will mean that user needs to fill other fields to make AvalancheObs count as non empty scheme.
-  In that case we send an array hasAnyDataBesidesPropertyToExclude(AvalancheObs, ['DtAvalancheTime', 'Comment'])
-  And refactor code so that it maintain arrays instead of string value
+  If in AvalancheObs data model we want to exclude DtAvalancheTime from 'isEmpty' validation we need to pass that property
+  in the function. In that case we set hasAnyDataBesidesPropertyToExclude(AvalancheObs, 'DtAvalancheTime')
 */
 export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string) {
   if (dataModel) {
