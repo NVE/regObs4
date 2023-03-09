@@ -480,12 +480,18 @@ export class OfflineCapableSearchService extends SearchService {
   }
 }
 
+function registrationToFormNames(reg: RegistrationViewModel) {
+  const registrationNames = (reg.Summaries || []).map((s) => s.RegistrationName);
+  const uniqueRegistrationNames = new Set(registrationNames);
+  return [...uniqueRegistrationNames];
+}
+
 function toAtAGlanceViewModel(reg: RegistrationViewModel): AtAGlanceViewModel {
   return {
     CompetenceLevelTID: reg.Observer?.CompetenceLevelTID,
     DtObsTime: reg.DtObsTime,
     FirstAttachmentId: reg.Attachments?.length ? reg.Attachments[0].AttachmentId : null,
-    FormNames: (reg.Summaries || []).map((s) => s.RegistrationName),
+    FormNames: registrationToFormNames(reg),
     GeoHazardTID: reg.GeoHazardTID,
     Latitude: reg.ObsLocation?.Latitude,
     Longitude: reg.ObsLocation?.Longitude,
