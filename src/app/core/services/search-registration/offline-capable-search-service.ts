@@ -364,9 +364,14 @@ export class OfflineCapableSearchService extends SearchService {
   }
 
   private async fetchAndDeleteRegistrations({ appMode, langKey }: CurrentSyncInfo) {
-    const criteria = await this.getSyncSearchCriteria(langKey);
+    const twoWeeksAgo = moment().subtract(14, 'days').format();
+    const criteria = {
+      FromDtChangeTime: twoWeeksAgo,
+      FromDtObsTime: twoWeeksAgo,
+      LangKey: langKey,
+    };
     const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
-    const appCount = await firstValueFrom(this.SearchCount(criteria));
+    const { TotalMatches: appCount } = await firstValueFrom(this.SearchCount(criteria));
 
     if (count !== appCount) {
       const registrationsWithoutDeleted = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
