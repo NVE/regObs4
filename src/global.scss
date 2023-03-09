@@ -274,6 +274,11 @@ ion-modal.offline-map-modal::part(backdrop) {
   z-index: 20;
 }
 
+ion-modal::part(content) {
+  width: 90%;
+  height: 90%;
+}
+
 ion-alert {
   button.full-width {
     width: 100%;

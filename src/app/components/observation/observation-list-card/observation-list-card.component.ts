@@ -13,7 +13,6 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
-import * as utils from '@nano-sql/core/lib/utilities';
 import * as L from 'leaflet';
 import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/modal-map-image.page';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -180,13 +179,6 @@ export class ObservationListCardComponent implements OnChanges {
     this.attachments = getAllAttachmentsFromViewModel(this.obs);
   }
 
-  getImageUrl(
-    attachment: AttachmentViewModel,
-    size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Large'
-  ): string {
-    return attachment.UrlFormats[size] || attachment.Url;
-  }
-
   getRegistrationNames(): string {
     return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
   }
@@ -197,7 +189,8 @@ export class ObservationListCardComponent implements OnChanges {
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: `${this.getImageUrl(image, 'Original')}?r=${utils.uuid()}`,
+        allImages: attachments,
+        imgIndex: event.index,
         header: image.RegistrationName,
         description: image.Comment,
         href: image.Href,

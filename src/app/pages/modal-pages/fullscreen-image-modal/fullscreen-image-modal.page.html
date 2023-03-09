@@ -1,9 +1,7 @@
-<ion-content (click)="closeModal()">
-  <ion-slides>
-    <ion-slide>
-      <div class="swiper-zoom-container">
-        <img [src]="imgSrc" onerror="this.style.display='none'" />
-      </div>
-    </ion-slide>
-  </ion-slides>
+<ion-content>
+  <div class="img-container">
+    <img [src]="currentImage" onerror="this.style.display='none'" />
+  </div>
+  <button *ngIf="!isFirst" class="swiper-button-prev swiper-button-custom" (click)="changeImage(false)"></button>
+  <button *ngIf="!isLast" class="swiper-button-next swiper-button-custom" (click)="changeImage(true)"></button>
 </ion-content>
