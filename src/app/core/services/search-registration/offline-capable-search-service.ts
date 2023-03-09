@@ -358,27 +358,20 @@ export class OfflineCapableSearchService extends SearchService {
       for await (const registrations of this.pagedSearch(criteria, count)) {
         this.logger.debug(`Sync: Inserting ${registrations.length} registrations`, DEBUG_TAG);
         await this.sqlite.insertRegistrations(registrations, appMode, langKey);
-        const regIdsFromDeletedRegs = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
-        await this.sqlite.deleteRegistrations(regIdsFromDeletedRegs, appMode, langKey);
       }
     } else {
       this.logger.debug(`Sync: No new registrations to fetch`, DEBUG_TAG, { count, criteria });
     }
   }
 
-  //how to compare if the registrations differ? count inisde app and count outside app
   private async fetchAndDeleteRegistrations({ appMode, langKey }: CurrentSyncInfo) {
-    const criteria = {
-      FromDtChangeTime: moment().subtract(14, 'days').format(),
-      FromDtObsTime: moment().subtract(14, 'days').format(),
-      LangKey: langKey,
-    } as SearchCriteriaRequestDto;
+    const criteria = await this.getSyncSearchCriteria(langKey);
     const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
     const appCount = await firstValueFrom(this.SearchCount(criteria));
 
     if (count !== appCount) {
       const registrationsWithoutDeleted = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
-      this.logger.debug(`Sync: Deleting registrations ${registrationsWithoutDeleted}`, DEBUG_TAG);
+      this.logger.debug(`Sync: Deleting registrations: ${registrationsWithoutDeleted}`, DEBUG_TAG);
       await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
     }
   }
