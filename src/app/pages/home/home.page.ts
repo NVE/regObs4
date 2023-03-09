@@ -6,22 +6,12 @@ import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  pairwise,
-  take,
-  takeUntil,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
   SearchResult,
 } from 'src/app/core/services/search-registration/search-registration.service';
-import { AppMode } from 'src/app/modules/common-core/models';
 import { AtAGlanceViewModel, PositionDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
@@ -67,9 +57,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   showGeoSelectInfo = false;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
-  private prevAppMode: AppMode = null;
-  private currentAppMode: AppMode = null;
   private searchResult: SearchResult<AtAGlanceViewModel>;
+  private shouldSearchResultUpdateOnEnter: boolean;
 
   isFetchingObservations: Observable<boolean>;
 
@@ -106,6 +95,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       .pipe(filter((tab) => tab === TABS.HOME))
       .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
 
+    this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.initSearch();
   }
 
@@ -123,12 +113,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.searchResult.registrations$.subscribe(() => {
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
-    });
-
-    //this.userSettingService.appMode$.subscribe(() => this.searchResult.update());
-    this.userSettingService.appMode$.pipe(pairwise()).subscribe((v) => {
-      this.prevAppMode = v[0];
-      this.currentAppMode = v[1];
     });
 
     this.updateObservationsService.refreshRequested$
@@ -161,6 +145,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ionViewWillEnter() {
     this.searchCriteriaService.setExtentFilterActive(true);
+  }
+
+  checkIfShouldSearchCriteriaUpdateOnEnter() {
+    if (this.shouldSearchResultUpdateOnEnter && this.searchResult) {
+      this.searchResult.update();
+      this.shouldSearchResultUpdateOnEnter = false;
+    }
   }
 
   checkForFirstStartup() {
@@ -249,9 +240,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   async onEnter() {
-    if (this.prevAppMode && this.currentAppMode && !(this.prevAppMode === this.currentAppMode)) {
-      this.searchResult.update();
-    }
+    this.checkIfShouldSearchCriteriaUpdateOnEnter();
     this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (userSettings.showGeoSelectInfo) {
