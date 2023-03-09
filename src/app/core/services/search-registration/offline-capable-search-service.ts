@@ -352,7 +352,6 @@ export class OfflineCapableSearchService extends SearchService {
     const criteria = await this.getSyncSearchCriteria(langKey);
     this.logger.debug(`Sync criteria`, DEBUG_TAG, { criteria });
     const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
-    this.SearchCount;
 
     if (count > 0) {
       for await (const registrations of this.pagedSearch(criteria, count)) {
