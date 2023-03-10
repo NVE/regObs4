@@ -3,7 +3,7 @@ import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 import { GeoHazard } from '../../common-core/models';
 import { RegistrationViewModel } from '../../common-regobs-api';
 import { RegistrationTid } from '../models/registration-tid.enum';
-import { getAllAttachmentsFromViewModel } from './registration.helper';
+import { getAllAttachmentsFromViewModel, hasAnyDataBesidesPropertyToExclude } from './registration.helper';
 import { SyncStatus } from '../registration.models';
 import { removeEmptyRegistrations } from './registration.helper';
 
@@ -26,6 +26,11 @@ const viewModel: RegistrationViewModel = {
     {
       RegistrationTID: RegistrationTid.GeneralObservation,
       UrlFormats: { Medium: 'common' },
+    },
+  ],
+  AvalancheActivityObs: [
+    {
+      DtAvalancheTime: new Date(1970).toISOString(),
     },
   ],
   Summaries: [
@@ -80,6 +85,16 @@ describe('registration.helper', () => {
 
     const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draftWithEmptyRegistrations);
     expect(draftWithoutEmptyRegistrations).toEqual(draft);
+  });
+
+  it('hasAnyDataBesidesPropertyToExclude should return false if there is no other data except the excluded fields', () => {
+    expect(hasAnyDataBesidesPropertyToExclude(viewModel.AvalancheActivityObs[0], 'DtAvalancheTime')).toBeFalse();
+  });
+
+  it('hasAnyDataBesidesPropertyToExclude should return true if there is other data except the excluded fields', () => {
+    const copyObject = { ...viewModel.AvalancheActivityObs[0] };
+    copyObject.Comment = 'this test is good';
+    expect(hasAnyDataBesidesPropertyToExclude(copyObject, 'DtAvalancheTime')).toBeTrue();
   });
 
   it('Empty registrationTid should return all attachments', () => {

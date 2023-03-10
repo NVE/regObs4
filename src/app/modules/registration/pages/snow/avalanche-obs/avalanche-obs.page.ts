@@ -4,7 +4,10 @@ import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import moment from 'moment';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
-import { createEmptyRegistration } from 'src/app/modules/common-registration/registration.helpers';
+import {
+  createEmptyRegistration,
+  hasAnyDataBesidesPropertyToExclude,
+} from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
@@ -74,12 +77,19 @@ export class AvalancheObsPage extends BasePage {
     return this.draft.registration.Incident;
   }
 
-  get dateIsDifferentThanObsTime() {
+  get dayDtAvalancheTimeIsDifferentThanDayObsTime() {
     return (
       this.avalancheObs.DtAvalancheTime &&
       !moment(this.avalancheObs.DtAvalancheTime)
         .startOf('day')
         .isSame(moment(this.draft.registration.DtObsTime).startOf('day'))
+    );
+  }
+
+  get dtAvalancheTimeIsDifferentThanObsTime() {
+    return (
+      this.avalancheObs.DtAvalancheTime &&
+      !moment(this.avalancheObs.DtAvalancheTime).isSame(this.draft.registration.DtObsTime)
     );
   }
 
@@ -164,10 +174,14 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
-    const isEmpty = await super.isEmpty();
-    if (!isEmpty) {
+    if (
+      this.avalancheObs.DtAvalancheTime &&
+      (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') ||
+        this.dtAvalancheTimeIsDifferentThanObsTime)
+    ) {
       return false;
     }
+
     const isIncidentEmpty = await super.isEmpty(RegistrationTid.Incident);
     return isIncidentEmpty;
   }
