@@ -188,7 +188,7 @@ export class ObservationListCardComponent implements OnChanges {
     const image = attachments[event.index] as AttachmentViewModel & { Href: string };
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
-      cssClass: 'full-image-screen-modal',
+      cssClass: 'modal-fullscreen',
       componentProps: {
         allImages: attachments,
         imgIndex: event.index,
