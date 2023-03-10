@@ -88,7 +88,7 @@ export class OfflineCapableSearchService extends SearchService {
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private toastController: ToastController,
     tabsService: TabsService,
-    updateObsService: UpdateObservationsService
+    private updateObsService: UpdateObservationsService
   ) {
     super(config, http);
 
@@ -109,7 +109,7 @@ export class OfflineCapableSearchService extends SearchService {
           else return new Date(lastFetchedMs);
         })
       )
-      .subscribe((d) => updateObsService.setOfflineObservationsLastFetched(d));
+      .subscribe((d) => this.updateObsService.setOfflineObservationsLastFetched(d));
 
     const canShowOutDatedObsToast$ = combineLatest([
       tabsService.selectedTab$.pipe(map((tab) => [TABS.HOME, TABS.OBSERVATION_LIST].includes(tab))),
@@ -377,6 +377,7 @@ export class OfflineCapableSearchService extends SearchService {
       const registrationsWithoutDeleted = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
       this.logger.debug(`Sync: Deleting registrations: ${registrationsWithoutDeleted}`, DEBUG_TAG);
       await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
+      this.updateObsService.requestRefresh();
     }
   }
 
