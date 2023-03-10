@@ -143,6 +143,7 @@ export class SnowProfilePage extends BasePage {
   private async openImageModal(src: string) {
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
+      cssClass: 'full-image-screen-modal',
       componentProps: {
         snowProfile: src,
       },

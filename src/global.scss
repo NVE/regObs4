@@ -274,7 +274,7 @@ ion-modal.offline-map-modal::part(backdrop) {
   z-index: 20;
 }
 
-ion-modal::part(content) {
+ion-modal.full-image-screen-modal::part(content) {
   width: 100%;
   height: 100%;
 }
