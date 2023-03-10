@@ -45,9 +45,6 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
       this.isDesktop = false;
       this.screenOrientation.unlock();
     }
-    this.slideOptions = {
-      initialSlide: this.imgIndex,
-    };
 
     if (this.allImages && this.imgIndex >= 0) {
       this.slideOptions = {
