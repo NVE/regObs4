@@ -1,6 +1,13 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
-import * as utils from '@nano-sql/core/lib/utilities';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  ViewChild,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
+import { IonSlides, ModalController, Platform } from '@ionic/angular';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
@@ -9,75 +16,67 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
   selector: 'app-fullscreen-image-modal',
   templateUrl: './fullscreen-image-modal.page.html',
   styleUrls: ['./fullscreen-image-modal.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullscreenImageModalPage implements OnInit, OnDestroy {
-  @Input() imgSrc?: string;
+  @ViewChild(IonSlides) slider: IonSlides;
+
+  @Input() snowProfile?: string;
   @Input() imgIndex?: number;
   @Input() allImages?: AttachmentViewModel[];
   @Input() header: string;
   @Input() description: string;
   @Input() href?: string;
-  currentImage: string;
-  currentImageIndex: number;
-  isLast = true;
-  isFirst = true;
+  activeImageIndex: number;
+  isLastSlide = true;
+  isFirstSlide = true;
+  isDesktop = true;
+  slideOptions;
 
   constructor(
     private modalController: ModalController,
+    private cdr: ChangeDetectorRef,
     private screenOrientation: ScreenOrientation,
     private platform: Platform
   ) {}
 
   ngOnInit(): void {
     if (isAndroidOrIos(this.platform)) {
+      this.isDesktop = false;
       this.screenOrientation.unlock();
     }
-
-    if (this.imgSrc) {
-      this.currentImage = this.imgSrc;
-    }
+    this.slideOptions = {
+      initialSlide: this.imgIndex,
+    };
 
     if (this.allImages && this.imgIndex >= 0) {
-      this.currentImageIndex = this.imgIndex;
-      this.renderImage(this.currentImageIndex);
+      this.slideOptions = {
+        initialSlide: this.imgIndex,
+      };
     }
   }
 
-  private getImageUrl(
-    attachment: AttachmentViewModel,
-    size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Large'
-  ): string {
-    return attachment.UrlFormats[size] || attachment.Url;
-  }
-
-  checkImagePosition(index: number) {
-    if (this.allImages.length === index + 1) {
-      this.isLast = true;
-    } else {
-      this.isLast = false;
-    }
-
-    if (index === 0) {
-      this.isFirst = true;
-    } else {
-      this.isFirst = false;
+  private updateUi() {
+    if (!this.cdr['destroyed']) {
+      this.cdr.detectChanges();
     }
   }
 
-  renderImage2(index: number) {
-    const img = this.allImages[index] as AttachmentViewModel & { Href: string };
-    return `${this.getImageUrl(img, 'Original')}?r=${utils.uuid()}`;
+  async onSlideTransitionEnd() {
+    const activeImageIndex = await this.slider.getActiveIndex();
+    this.isFirstSlide = activeImageIndex === 0;
+    this.isLastSlide = this.allImages.length === activeImageIndex + 1;
+    this.updateUi();
   }
 
-  renderImage(index: number) {
-    this.checkImagePosition(index);
-    const img = this.allImages[index] as AttachmentViewModel & { Href: string };
-    this.currentImage = `${this.getImageUrl(img, 'Original')}?r=${utils.uuid()}`;
+  next() {
+    this.slider.slideNext();
+    this.updateUi();
   }
 
-  changeImage(next: boolean) {
-    next ? this.currentImageIndex++ : this.currentImageIndex--;
-    this.renderImage(this.currentImageIndex);
+  prev() {
+    this.slider.slidePrev();
+    this.updateUi();
   }
 
   ngOnDestroy(): void {

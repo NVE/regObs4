@@ -144,7 +144,7 @@ export class SnowProfilePage extends BasePage {
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: src,
+        snowProfile: src,
       },
     });
     modal.present();
