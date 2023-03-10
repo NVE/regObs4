@@ -10,9 +10,12 @@
   }
 }
 
-ion-slides {
-  width: 100%;
+.container {
+  display: flex;
+  align-items: center;
   height: 100%;
+  width: 100%;
+  background-color: #000;
 }
 
 ion-fab-button {

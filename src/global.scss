@@ -275,8 +275,6 @@ ion-modal.offline-map-modal::part(backdrop) {
 }
 
 ion-modal.full-image-screen-modal::part(content) {
-  width: 100%;
-  height: 100%;
 }
 
 ion-alert {
@@ -414,6 +412,11 @@ ion-modal.numeric-input-modal::part(content) {
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   backface-visibility: hidden;
+}
+
+.swiper-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 app-map,
