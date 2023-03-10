@@ -18,6 +18,16 @@
   background-color: #000;
 }
 
+@media only screen and (min-width: 600px) {
+  .container {
+    align-items: unset;
+  }
+}
+
+ion-slide {
+  width: 100% !important;
+}
+
 ion-fab-button {
   --background: #fff;
   --color: #3389fd;
