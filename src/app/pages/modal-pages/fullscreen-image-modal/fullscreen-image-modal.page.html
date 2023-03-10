@@ -1,9 +1,19 @@
 <ion-content>
-  <div class="img-container">
+  <!--<div class="img-container">
     <img [src]="currentImage" onerror="this.style.display='none'" />
   </div>
   <button *ngIf="!isFirst" class="swiper-button-prev swiper-button-custom" (click)="changeImage(false)"></button>
   <button *ngIf="!isLast" class="swiper-button-next swiper-button-custom" (click)="changeImage(true)"></button>
+  <ion-fab-button (click)="closeModal()" class="close-button">
+    <ion-icon name="close"></ion-icon>
+  </ion-fab-button> -->
+  <ion-slides>
+    <ion-slide *ngFor="let slide of allImages; let i =index">
+      <div class="img-container">
+        <img [src]="renderImage2(i)" onerror="this.style.display='none'" />
+      </div>
+    </ion-slide>
+  </ion-slides>
   <ion-fab-button (click)="closeModal()" class="close-button">
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>

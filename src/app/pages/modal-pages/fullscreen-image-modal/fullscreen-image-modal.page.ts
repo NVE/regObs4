@@ -64,6 +64,11 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
     }
   }
 
+  renderImage2(index: number) {
+    const img = this.allImages[index] as AttachmentViewModel & { Href: string };
+    return `${this.getImageUrl(img, 'Original')}?r=${utils.uuid()}`;
+  }
+
   renderImage(index: number) {
     this.checkImagePosition(index);
     const img = this.allImages[index] as AttachmentViewModel & { Href: string };
