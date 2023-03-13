@@ -27,57 +27,16 @@ class SearchService extends __BaseService {
   static readonly SearchPostSearchMyRegistrationsPath = '/Search/MyRegistrations';
   static readonly SearchCountMyRegistrationsPath = '/Search/MyRegistrationsCount';
   static readonly SearchCountPath = '/Search/Count';
+  static readonly SearchGetRegIdsFromDeletedRegistrationsPath = '/Search/DeletedRegistrations';
   static readonly SearchGetSearchCriteriaPath = '/Search/SearchCriteria/{geoHazards}/{langKey}';
   static readonly SearchSearchCriteriaPath = '/Search/SearchCriteria';
   static readonly SearchAtAGlancePath = '/Search/AtAGlance';
-  static readonly SearchRegIdsFromDeletedRegistrations = '/Search/DeletedRegIds';
 
   constructor(
     config: __Configuration,
     http: HttpClient
   ) {
     super(config, http);
-  }
-
-  /**
-   * Returns a list of regIds of deleted registrations
-   * @param criteria Use this to filter out registrations and change ordering of them.
-   * The attribute "ObserverGuid" is deprecated and will be removed in the future.
-   * @return OK
-   */
-  SearchRegIdsFromDeletedRegistrationsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<number>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    __body = criteria;
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/Search/DeletedRegIds`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<number>>;
-      })
-    );
-  }
-
-   /**
-   * Returns a list of regIds of deleted registrations
-   * @param criteria Use this to filter out registrations and change ordering of them.
-   * The attribute "ObserverGuid" is deprecated and will be removed in the future.
-   * @return OK
-   */
-  SearchRegIdsFromDeletedRegistrations(criteria: SearchCriteriaRequestDto): __Observable<Array<number>> {
-    return this.SearchRegIdsFromDeletedRegistrationsResponse(criteria).pipe(
-      __map(_r => _r.body as Array<number>)
-    );
   }
 
   /**
@@ -255,6 +214,46 @@ class SearchService extends __BaseService {
   SearchCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountResponseDto> {
     return this.SearchCountResponse(criteria).pipe(
       __map(_r => _r.body as SearchCountResponseDto)
+    );
+  }
+
+  /**
+   * Returns list of regIds from deleted registrations that can be filtered with criteria model.
+   * Used with offline syncing on mobile devices.
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchGetRegIdsFromDeletedRegistrationsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<number>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = criteria;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/Search/DeletedRegistrations`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<number>>;
+      })
+    );
+  }
+  /**
+   * Returns list of regIds from deleted registrations that can be filtered with criteria model.
+   * Used with offline syncing on mobile devices.
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchGetRegIdsFromDeletedRegistrations(criteria: SearchCriteriaRequestDto): __Observable<Array<number>> {
+    return this.SearchGetRegIdsFromDeletedRegistrationsResponse(criteria).pipe(
+      __map(_r => _r.body as Array<number>)
     );
   }
 

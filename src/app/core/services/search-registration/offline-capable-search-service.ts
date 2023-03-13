@@ -374,7 +374,7 @@ export class OfflineCapableSearchService extends SearchService {
     const { TotalMatches: appCount } = await firstValueFrom(this.SearchCount(criteria));
 
     if (count !== appCount) {
-      const registrationsWithoutDeleted = await firstValueFrom(super.SearchRegIdsFromDeletedRegistrations(criteria));
+      const registrationsWithoutDeleted = await firstValueFrom(super.SearchGetRegIdsFromDeletedRegistrations(criteria));
       this.logger.debug(`Sync: Deleting registrations: ${registrationsWithoutDeleted}`, DEBUG_TAG);
       await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
       this.updateObsService.requestRefresh();
