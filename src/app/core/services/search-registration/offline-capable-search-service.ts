@@ -88,7 +88,7 @@ export class OfflineCapableSearchService extends SearchService {
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private toastController: ToastController,
     tabsService: TabsService,
-    updateObsService: UpdateObservationsService
+    private updateObsService: UpdateObservationsService
   ) {
     super(config, http);
 
@@ -109,7 +109,7 @@ export class OfflineCapableSearchService extends SearchService {
           else return new Date(lastFetchedMs);
         })
       )
-      .subscribe((d) => updateObsService.setOfflineObservationsLastFetched(d));
+      .subscribe((d) => this.updateObsService.setOfflineObservationsLastFetched(d));
 
     const canShowOutDatedObsToast$ = combineLatest([
       tabsService.selectedTab$.pipe(map((tab) => [TABS.HOME, TABS.OBSERVATION_LIST].includes(tab))),
@@ -363,6 +363,25 @@ export class OfflineCapableSearchService extends SearchService {
     }
   }
 
+  private async removeDeletedRegistrations({ appMode, langKey }: CurrentSyncInfo) {
+    const twoWeeksAgo = moment().subtract(14, 'days').format();
+    const criteria = {
+      FromDtChangeTime: twoWeeksAgo,
+      FromDtObsTime: twoWeeksAgo,
+      LangKey: langKey,
+    };
+    const [{ TotalMatches: count }, appCount] = await Promise.all([
+      firstValueFrom(super.SearchCount(criteria)),
+      this.sqlite.getRegistrationCount(criteria, appMode),
+    ]);
+
+    if (count !== appCount) {
+      const registrationsWithoutDeleted = await firstValueFrom(super.SearchGetRegIdsFromDeletedRegistrations(criteria));
+      this.logger.debug(`Sync: Deleting registrations: ${registrationsWithoutDeleted}`, DEBUG_TAG);
+      await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
+    }
+  }
+
   private async startSyncing(syncInfo: CurrentSyncInfo) {
     this.logger.debug(`Sync starting`, DEBUG_TAG, { syncInfo });
     try {
@@ -387,7 +406,7 @@ export class OfflineCapableSearchService extends SearchService {
       // so we can fetch registrations added while we request registrations later
       const newSyncTimeMs = moment().valueOf();
       this.logger.debug('New sync time', DEBUG_TAG, { newSyncTimeMs });
-      await this.fetchAndInsertRegistrations(syncInfo);
+      await Promise.all([this.fetchAndInsertRegistrations(syncInfo), this.removeDeletedRegistrations(syncInfo)]);
       await this.updateSyncTime(syncInfo, newSyncTimeMs);
 
       for (const syncReq of syncRequests) {

@@ -200,6 +200,7 @@ export class SearchRegistrationService {
         this.searchService.SearchCountMyRegistrations(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
+
   /**
    * A fast search. Return only a summary of each observation.
    */
