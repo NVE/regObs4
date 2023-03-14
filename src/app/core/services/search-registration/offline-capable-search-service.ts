@@ -508,7 +508,9 @@ function toAtAGlanceViewModel(reg: RegistrationViewModel): AtAGlanceViewModel {
   return {
     CompetenceLevelTID: reg.Observer?.CompetenceLevelTID,
     DtObsTime: reg.DtObsTime,
+    AttachmentsCount: reg.Attachments?.length || 0,
     FirstAttachmentId: reg.Attachments?.length ? reg.Attachments[0].AttachmentId : null,
+    FirstAttachmentUrl: reg.Attachments?.length ? reg.Attachments[0].UrlFormats.Thumbnail : null,
     FormNames: registrationToFormNames(reg),
     GeoHazardTID: reg.GeoHazardTID,
     Latitude: reg.ObsLocation?.Latitude,
