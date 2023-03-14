@@ -158,7 +158,6 @@ export class OfflineCapableSearchService extends SearchService {
     combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.deletedRegistrationIds$]).subscribe(
       ([appMode, regId]) => {
         this.sqlite.deleteRegistrations([regId], appMode);
-        updateObsService.requestRefresh();
       }
     );
 
