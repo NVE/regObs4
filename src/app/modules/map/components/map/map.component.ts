@@ -560,6 +560,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
+    this.loggingService.debug(
+      `updateMapView: updateMapViewOnExtentChange = ${this.updateMapViewOnExtentChange}, isActive = ${this.isActive.value}`,
+      DEBUG_TAG
+    );
     if (this.updateMapViewOnExtentChange && this.isActive.value) {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),

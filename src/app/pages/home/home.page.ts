@@ -242,11 +242,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   async onEnter() {
     this.checkIfShouldSearchCriteriaUpdateOnEnter();
     this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    if (userSettings.showGeoSelectInfo) {
-      this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
-      return;
-    }
+    // const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    // if (userSettings.showGeoSelectInfo) {
+    //   this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
+    //   return;
+    // }
     this.loggingService.debug('Activate map updates and GeoLocation', DEBUG_TAG);
     this.mapComponent.componentIsActive(true);
     this.updateInfoBoxHeight();
