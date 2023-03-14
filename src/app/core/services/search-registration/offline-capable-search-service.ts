@@ -370,14 +370,15 @@ export class OfflineCapableSearchService extends SearchService {
       FromDtObsTime: twoWeeksAgo,
       LangKey: langKey,
     };
-    const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
-    const { TotalMatches: appCount } = await firstValueFrom(this.SearchCount(criteria));
+    const [{ TotalMatches: count }, appCount] = await Promise.all([
+      firstValueFrom(super.SearchCount(criteria)),
+      this.sqlite.getRegistrationCount(criteria, appMode),
+    ]);
 
     if (count !== appCount) {
       const registrationsWithoutDeleted = await firstValueFrom(super.SearchGetRegIdsFromDeletedRegistrations(criteria));
       this.logger.debug(`Sync: Deleting registrations: ${registrationsWithoutDeleted}`, DEBUG_TAG);
       await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
-      this.updateObsService.requestRefresh();
     }
   }
 
@@ -405,8 +406,7 @@ export class OfflineCapableSearchService extends SearchService {
       // so we can fetch registrations added while we request registrations later
       const newSyncTimeMs = moment().valueOf();
       this.logger.debug('New sync time', DEBUG_TAG, { newSyncTimeMs });
-      await this.fetchAndInsertRegistrations(syncInfo);
-      await this.fetchAndDeleteRegistrations(syncInfo);
+      await Promise.all([this.fetchAndInsertRegistrations(syncInfo), this.fetchAndDeleteRegistrations(syncInfo)]);
       await this.updateSyncTime(syncInfo, newSyncTimeMs);
 
       for (const syncReq of syncRequests) {
