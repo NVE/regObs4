@@ -10,7 +10,7 @@ import {
   fromEvent,
   firstValueFrom,
 } from 'rxjs';
-import { filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { filter, map, distinctUntilChanged, startWith, skipWhile, take } from 'rxjs/operators';
 import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { ToastController, Platform } from '@ionic/angular';
@@ -22,6 +22,7 @@ import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Capacitor } from '@capacitor/core';
+import { UserSettingService } from '../user-setting/user-setting.service';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -79,7 +80,8 @@ export class GeoPositionService implements OnDestroy {
     private platform: Platform,
     private loggingService: LoggingService,
     private toastController: ToastController,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private userSettings: UserSettingService
   ) {
     this.startGeolocationTrackingSubscription();
   }
@@ -102,7 +104,18 @@ export class GeoPositionService implements OnDestroy {
       map((val) => val.length > 0),
       distinctUntilChanged()
     );
-    combineLatest([this.getPlatformIsActiveObservable(), anyComponentsTracking])
+    combineLatest([
+      this.getPlatformIsActiveObservable(),
+      anyComponentsTracking,
+      // Vi lytter på om start wizard og coach marks er ferdig her,
+      // for å unngå at popup om lokasjon dukker opp for tidlig.
+      this.userSettings.userSetting$.pipe(
+        // showGeoSelectInfo er om coach marks er ferdig
+        map((userSettings) => userSettings.completedStartWizard && !userSettings.showGeoSelectInfo),
+        skipWhile((startWizardCompleted) => startWizardCompleted === false),
+        take(1)
+      ),
+    ])
       .pipe(
         map(([platformIsActive, anyComponentsTracking]) => (platformIsActive && anyComponentsTracking ? true : false))
       )
