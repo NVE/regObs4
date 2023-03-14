@@ -86,6 +86,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearch(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
+    console.log('[DEBUG][SearchService] SearchSearch triggered', criteria); //TODO: Fjerne dette når vi ikke har bruk for logging lengre
     return this.SearchSearchResponse(criteria).pipe(
       __map(_r => _r.body as Array<RegistrationViewModel>)
     );
@@ -136,6 +137,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchPostSearchMyRegistrations(criteria: SearchCriteriaExclUserRequestDto): __Observable<Array<RegistrationViewModel>> {
+    console.log('[DEBUG][SearchService] SearchPostSearchMyRegistrations triggered', criteria); //TODO: Fjerne dette når vi ikke har bruk for logging lengre
     return this.SearchPostSearchMyRegistrationsResponse(criteria).pipe(
       __map(_r => _r.body as Array<RegistrationViewModel>)
     );
@@ -389,6 +391,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchAtAGlance(criteria: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {
+    console.log('[DEBUG][SearchService] SearchAtAGlance triggered', criteria); //TODO: Fjerne dette når vi ikke har bruk for logging lengre
     return this.SearchAtAGlanceResponse(criteria).pipe(
       __map(_r => _r.body as Array<AtAGlanceViewModel>)
     );
