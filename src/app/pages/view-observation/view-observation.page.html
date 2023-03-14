@@ -7,5 +7,20 @@
   </ion-toolbar>
 </ion-header>
 <ion-content *ngIf="registrationViewModel$ | async as registration">
-  <app-observation-list-card [obs]="registration"></app-observation-list-card>
+  <app-observation-list-card *ngIf="registration.reg" [obs]="registration.reg"></app-observation-list-card>
+
+  <ion-card *ngIf="!registration.reg">
+    <ion-card-header>
+      <ion-card-title>Fant ikke observasjonen.</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
+
+      <div *ngIf="registration.err">
+        <p>Feilmelding:</p>
+        <pre>{{ registration.err.message }}</pre>
+      </div>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
