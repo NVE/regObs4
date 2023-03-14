@@ -49,6 +49,19 @@ const previousUsedPlaceIcon = L.icon({
   shadowSize: [41, 41],
 });
 
+/**
+ * @returns true hvis currentView.center ikke er satt eller er nesten lik previousView.center
+ */
+export function mapCenterIsStableOrNotAvailable(previousView: IMapView, currentView: IMapView): boolean {
+  if (currentView == null || currentView.center == null) {
+    return true;
+  }
+  if (previousView == null || previousView.center == null || currentView.center.distanceTo(previousView.center) > 5) {
+    return false; // første gang vi får kartsenter eller kartsenter er flyttet
+  }
+  return true;
+}
+
 @Component({
   selector: 'app-set-location-in-map',
   templateUrl: './set-location-in-map.component.html',
@@ -150,9 +163,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           icon: locationMarkerIcon,
         });
       } else {
-        const homePageMapView = await firstValueFrom(this.mapService.mapView$);
-        if (homePageMapView) {
-          this.locationMarker = L.marker(homePageMapView.center, {
+        const initialMapView = await firstValueFrom(this.mapService.mapView$);
+        if (initialMapView) {
+          this.locationMarker = L.marker(initialMapView.center, {
             icon: locationMarkerIcon,
           });
         } else {
@@ -237,7 +250,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.mapView
       .pipe(
         // ikke søke på nytt hvis kartsenter ikke flytter seg nevneverdig (f.eks. ved zoom)
-        distinctUntilChanged((prev, curr) => curr?.center?.distanceTo(prev?.center) < 5),
+        distinctUntilChanged((prev, curr) => mapCenterIsStableOrNotAvailable(prev, curr)),
         takeUntil(this.ngDestroy$)
       )
       .subscribe(() => {
