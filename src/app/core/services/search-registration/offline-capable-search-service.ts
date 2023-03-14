@@ -290,9 +290,8 @@ export class OfflineCapableSearchService extends SearchService {
       lastSyncMs = await this.sqlite.readRegistrationsSyncTime(appMode, langKey);
     } catch (error) {
       this.logger.log(`Failed to read last sync ms`, error, LogLevel.Warning, DEBUG_TAG);
-      lastSyncMs = 0;
     }
-    return lastSyncMs;
+    return lastSyncMs || 0;
   }
 
   /**
