@@ -363,7 +363,7 @@ export class OfflineCapableSearchService extends SearchService {
     }
   }
 
-  private async fetchAndDeleteRegistrations({ appMode, langKey }: CurrentSyncInfo) {
+  private async removeDeletedRegistrations({ appMode, langKey }: CurrentSyncInfo) {
     const twoWeeksAgo = moment().subtract(14, 'days').format();
     const criteria = {
       FromDtChangeTime: twoWeeksAgo,
@@ -406,7 +406,7 @@ export class OfflineCapableSearchService extends SearchService {
       // so we can fetch registrations added while we request registrations later
       const newSyncTimeMs = moment().valueOf();
       this.logger.debug('New sync time', DEBUG_TAG, { newSyncTimeMs });
-      await Promise.all([this.fetchAndInsertRegistrations(syncInfo), this.fetchAndDeleteRegistrations(syncInfo)]);
+      await Promise.all([this.fetchAndInsertRegistrations(syncInfo), this.removeDeletedRegistrations(syncInfo)]);
       await this.updateSyncTime(syncInfo, newSyncTimeMs);
 
       for (const syncReq of syncRequests) {
