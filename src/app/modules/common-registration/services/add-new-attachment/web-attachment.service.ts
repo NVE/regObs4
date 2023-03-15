@@ -11,9 +11,9 @@ import { NewAttachmentService } from './new-attachment.service';
 
 const METADATA_KEY = 'REGOBS_IMAGE_METADATA';
 const IMAGE_PREFIX = 'REGOBS_IMAGE';
-const MAX_PREVIEW_WIDTH = 500;
-const MAX_PREVIEW_HEIGHT = 500;
-const PREVIEW_JPG_QUALITY = 1;
+const MAX_PREVIEW_WIDTH = 1000;
+const MAX_PREVIEW_HEIGHT = 1000;
+const PREVIEW_JPG_QUALITY = 0.5;
 
 @Injectable()
 export class WebAttachmentService extends NewAttachmentService {
