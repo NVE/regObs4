@@ -7,6 +7,9 @@
   color: #495057;
   border: none;
 }
+input[type='datetime-local'] {
+  width: 100%;
+}
 
 input[type='datetime-local']::-webkit-calendar-picker-indicator {
   opacity: 1;
@@ -24,9 +27,11 @@ input[type='datetime-local']:focus {
 
 input::-webkit-datetime-edit-fields-wrapper {
   position: relative;
-  left: 10%;
+  left: 3%;
+  width: 100%;
 }
 input::-webkit-datetime-edit {
   position: relative;
-  left: 10%;
+  left: 3%;
+  width: 100%;
 }
