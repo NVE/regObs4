@@ -96,31 +96,35 @@ ion-list {
 }
 
 .center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  width: 300px;
+  height: 300px;
+  margin-top: 150px;
+  display: inline-block;
+  position: relative;
 
   .rectangle {
     position: absolute;
-    left: -36px;
-    top: -30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .pin1 {
     position: absolute;
-    left: -77px;
+    right: 30%;
+    bottom: 23%;
   }
 
   .pin2 {
     position: absolute;
-    left: 41px;
-    top: 51px;
+    left: 25%;
+    top: 10%;
   }
 
   .pin3 {
     position: absolute;
-    left: -41px;
-    top: -72px;
+    left: 11%;
+    top: 35%;
   }
 }
 
