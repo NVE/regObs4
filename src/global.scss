@@ -411,6 +411,11 @@ ion-modal.numeric-input-modal::part(content) {
   backface-visibility: hidden;
 }
 
+.swiper-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 app-map,
 app-map-image,
 ion-slides {
