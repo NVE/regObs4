@@ -12,7 +12,7 @@
             <ion-segment
               [value]="useMapExtentFilter$ | async"
               (click)="toggleFilterByMapView($event)"
-              class="segment-button-class"
+              class="map-extent-filter-toggle segment-button-class"
               mode="ios"
               [disabled]="noMapExtentAvailable$ | async"
             >
