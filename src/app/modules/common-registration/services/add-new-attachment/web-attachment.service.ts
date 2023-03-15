@@ -91,6 +91,10 @@ export class WebAttachmentService extends NewAttachmentService {
     return this.database.get<string>(key);
   }
 
+  /**
+   * This code is based on a codepen by Mirco Bellagamba.
+   * See https://codepen.io/mirco-bellagamba/pen/vYGpBGO
+   */
   private createPreviewBlob(data: Blob): Promise<Blob> {
     this.logger.debug('Creating preview blob', this.DEBUG_TAG, { size: data.size });
     const blobUrl = window.URL.createObjectURL(data);
@@ -217,7 +221,10 @@ export class WebAttachmentService extends NewAttachmentService {
   }
 }
 
-// TODO: https://labs.madisoft.it/javascript-image-compression-and-resizing/
+/**
+ * This code is based on a codepen by Mirco Bellagamba.
+ * See https://codepen.io/mirco-bellagamba/pen/vYGpBGO
+ */
 function calculateSize(img: HTMLImageElement) {
   let width = img.width;
   let height = img.height;
