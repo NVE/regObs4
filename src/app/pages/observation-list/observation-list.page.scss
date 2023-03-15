@@ -34,8 +34,15 @@
 }
 
 ion-grid {
-  margin: 0 1rem;
   padding: 0;
+}
+
+.filter-panel {
+  margin: 0 1rem;
+}
+
+.order-by-select {
+  align-items: flex-end;
 }
 
 ion-row {
@@ -46,6 +53,7 @@ ion-row {
 ion-col {
   padding: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
