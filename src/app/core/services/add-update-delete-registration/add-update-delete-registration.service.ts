@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
+import { firstValueFrom, Observable, Subject, tap, timeout } from 'rxjs';
 import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { LangKey } from 'src/app/modules/common-core/models';
