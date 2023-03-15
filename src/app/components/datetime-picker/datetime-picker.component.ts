@@ -63,7 +63,7 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   confirm() {
-    this.modal.dismiss(this.tempDate, 'confirm');
+    this.modal.dismiss(this.dateTime, 'confirm');
   }
 
   /**
@@ -84,10 +84,16 @@ export class DatetimePickerComponent implements OnInit {
       //validate user input
       const correctDateFormat = moment(event).toISOString(true);
       const min = moment(this.minDate).toISOString(true);
+      const max = moment(this.maxDate).toISOString(true);
       if (correctDateFormat < min) {
         this.updateTempDateTime(min);
         this.dateTimeChange.emit(min);
         this.dateTime = min;
+        return;
+      } else if (correctDateFormat > max) {
+        this.updateTempDateTime(max);
+        this.dateTimeChange.emit(max);
+        this.dateTime = max;
         return;
       }
 
@@ -103,6 +109,6 @@ export class DatetimePickerComponent implements OnInit {
    */
   updateTempDateTime(event: string) {
     if (!event || Array.isArray(event)) return false;
-    this.tempDate = event;
+    this.dateTime = event;
   }
 }
