@@ -21,7 +21,6 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 export class FullscreenImageModalPage implements OnInit, OnDestroy {
   @ViewChild(IonSlides) slider: IonSlides;
 
-  @Input() snowProfile?: string;
   @Input() imgIndex?: number;
   @Input() allImages?: AttachmentViewModel[];
   @Input() header: string;

@@ -145,7 +145,8 @@ export class SnowProfilePage extends BasePage {
       component: FullscreenImageModalPage,
       cssClass: 'modal-fullscreen',
       componentProps: {
-        snowProfile: src,
+        imgIndex: 0,
+        allImages: [src],
       },
     });
     modal.present();
