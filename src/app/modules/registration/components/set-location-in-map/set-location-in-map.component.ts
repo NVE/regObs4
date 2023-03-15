@@ -54,6 +54,7 @@ const previousUsedPlaceIcon = L.icon({
   styleUrls: ['./set-location-in-map.component.scss'],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
+  platform = Capacitor.isNativePlatform();
   @Input() geoHazard: GeoHazard;
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
@@ -72,7 +73,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   /**
    * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
    */
-  @Input() showPolyline = Capacitor.isNativePlatform();
+  @Input() showPolyline = this.platform;
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
@@ -99,6 +100,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   locationName: string;
 
   maxDate: string;
+  minDate: string;
 
   locale: string;
 
@@ -497,13 +499,18 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   setToNow() {
     const now = moment().toISOString(true);
     this.maxDate = this.getMaxDateForNow();
+    this.minDate = this.getMinDateForNow();
     this.localDate = now;
   }
 
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().minutes(59).toISOString(true);
+    return moment().minutes(59).format('YYYY-MM-DD[T]HH:mm');
+  }
+
+  getMinDateForNow() {
+    return moment().subtract(30, 'years').format('YYYY-MM-DD[T]HH:mm');
   }
 
   setTranslatedAccuracies() {

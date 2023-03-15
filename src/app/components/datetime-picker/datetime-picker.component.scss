@@ -1,3 +1,32 @@
 :host {
   width: 100%;
 }
+
+.input-field {
+  width: 40%;
+  color: #495057;
+  border: none;
+}
+
+input[type='datetime-local']::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  display: block;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  border-width: thin;
+  position: absolute;
+  left: 5%;
+}
+input[type='datetime-local']:focus {
+  outline: none;
+}
+
+input::-webkit-datetime-edit-fields-wrapper {
+  position: relative;
+  left: 10%;
+}
+input::-webkit-datetime-edit {
+  position: relative;
+  left: 10%;
+}
