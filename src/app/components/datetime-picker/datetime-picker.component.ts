@@ -80,8 +80,6 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   updateDateOnWeb(event: string) {
-    // we have to add time zone here otherwise date-helper will assume there is a timezone difference and will add
-    // +00 in the UI which we want to avoid
     if (event) {
       //validate user input
       const correctDateFormat = moment(event).toISOString(true);
