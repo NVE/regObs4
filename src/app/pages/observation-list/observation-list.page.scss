@@ -79,6 +79,18 @@ ion-item-divider {
   }
 }
 
+@media only screen and (min-width: 700px) {
+  .center {
+    margin-top: 20vh;
+  }
+}
+
+@media only screen and (max-width: 699px) {
+  .center {
+    margin-top: 5vh;
+  }
+}
+
 virtual-scroller,
 ion-list {
   // width: 100%;
@@ -98,7 +110,6 @@ ion-list {
 .center {
   width: 300px;
   height: 300px;
-  margin-top: 150px;
   display: inline-block;
   position: relative;
 
