@@ -7,6 +7,8 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 
 const DEBUG_TAG = 'UploadSingleAttachmentService';
 
+export type HttpEventClb = (ev: HttpEvent<any>) => void;
+
 /**
  * Upload a single registration attachment (only images yet)
  */
@@ -20,12 +22,13 @@ export class UploadSingleAttachmentService {
     private loggingService: LoggingService
   ) {}
 
-  private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel) {
+  private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel, clb: HttpEventClb) {
     this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);
     // Here we can keep track of upload progress if we want to
     // if (event.type === HttpEventType.UploadProgress) {
     //   // Track upload progress
     // }
+    clb(event);
   }
 
   private onHttpResponseEvent(event: HttpResponse<string>) {
@@ -55,12 +58,15 @@ export class UploadSingleAttachmentService {
     }) as Observable<HttpEvent<string>>;
   }
 
-  async upload(attachment: AttachmentUploadEditModel, blob: Blob) {
+  async upload(attachment: AttachmentUploadEditModel, blob: Blob, onHttpEvent?: HttpEventClb) {
     this.loggingService.debug('Uploading attachment', DEBUG_TAG, { attachment, size: blob.size });
     // TODO: Add error handling
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const clb: HttpEventClb = onHttpEvent || (() => {});
+
     const request = this.sendPostRequestWithImageBlob(blob).pipe(
-      tap((event) => this.onHttpEvent(event, attachment)),
+      tap((event) => this.onHttpEvent(event, attachment, clb)),
       filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
       map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
       tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`))

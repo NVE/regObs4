@@ -1,13 +1,17 @@
+import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { debounce, debounceTime, filter, from, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
+import { filter, from, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
-import { UploadSingleAttachmentService } from 'src/app/core/services/upload-attachments/upload-single-attachment.service';
+import {
+  HttpEventClb,
+  UploadSingleAttachmentService,
+} from 'src/app/core/services/upload-attachments/upload-single-attachment.service';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
-import { NewAttachmentService } from './new-attachment.service';
+import { AddAttachmentState, NewAttachmentService } from './new-attachment.service';
 
 const METADATA_KEY = 'REGOBS_IMAGE_METADATA';
 const IMAGE_PREFIX = 'REGOBS_IMAGE';
@@ -49,11 +53,23 @@ export class WebAttachmentService extends NewAttachmentService {
       ref,
     };
 
+    this.uploadStarted(attachment);
     const logInfo = { registrationId, attachmentId };
+    const uploadCallback: HttpEventClb = (event) => {
+      if (event.type === HttpEventType.UploadProgress) {
+        const progress = event.loaded / event.total;
+        if (progress < 1) {
+          this.handleUploadProgress(progress, attachment);
+          return;
+        }
+      }
+
+      this.handleUploadFinished(attachment);
+    };
 
     this.logger.debug('Creating preview image and starting image upload', this.DEBUG_TAG, logInfo);
     const createPreviewPromise = this.createPreviewBlob(data);
-    const uploadAttachmentPromise = this.uploadSingleAttachmentService.upload(attachment, data);
+    const uploadAttachmentPromise = this.uploadSingleAttachmentService.upload(attachment, data, uploadCallback);
 
     // Save preview blob and metadata
     const previewBlob = await createPreviewPromise;
@@ -65,6 +81,31 @@ export class WebAttachmentService extends NewAttachmentService {
     const uploadedAttachment = await uploadAttachmentPromise;
     await this.saveAttachmentMeta(registrationId, uploadedAttachment);
     this.logger.debug('Metadata updated with upload id', this.DEBUG_TAG, logInfo);
+  }
+
+  private uploadStarted(attachment: AttachmentUploadEditModel) {
+    const stateForAttachment: AddAttachmentState = {
+      id: attachment.id,
+      state: 'in-progress',
+      progress: 0,
+    };
+    const oldAttachmentStates = this.addNewAttachmentState.value;
+    this.addNewAttachmentState.next([...oldAttachmentStates.filter((s) => s.id !== attachment.id), stateForAttachment]);
+  }
+
+  private handleUploadFinished(attachment: AttachmentUploadEditModel) {
+    const oldAttachmentStates = this.addNewAttachmentState.value;
+    this.addNewAttachmentState.next([...oldAttachmentStates.filter((s) => s.id !== attachment.id)]);
+  }
+
+  private handleUploadProgress(progress: number, attachment: AttachmentUploadEditModel) {
+    const stateForAttachment: AddAttachmentState = {
+      id: attachment.id,
+      state: 'in-progress',
+      progress,
+    };
+    const oldAttachmentStates = this.addNewAttachmentState.value;
+    this.addNewAttachmentState.next([...oldAttachmentStates.filter((s) => s.id !== attachment.id), stateForAttachment]);
   }
 
   private blobToBase64(data: Blob): Promise<string> {

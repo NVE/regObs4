@@ -21,10 +21,11 @@ import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { firstValueFrom, Observable } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { ALLOWED_ATTACHMENT_FILE_TYPES, DropZoneService } from './drop-zone.service';
 import { NgxFileDropEntry } from 'ngx-file-drop';
+import { AddAttachmentState } from 'src/app/modules/common-registration/services/add-new-attachment/new-attachment.service';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -36,6 +37,8 @@ const ERRORS_TO_IGNORE = [
   'User cancelled photos app',
   'User cancelled camera app',
 ];
+
+interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachmentState {}
 
 @Component({
   selector: 'app-edit-images',
@@ -64,7 +67,7 @@ export class EditImagesComponent implements OnInit {
   selectedFile: Blob = null;
   aboutToDrop = false;
 
-  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
+  newAttachments$: Observable<NewAttachment[]>;
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
     if (this.existingAttachments == null) {
@@ -76,24 +79,38 @@ export class EditImagesComponent implements OnInit {
   }
 
   constructor(
+    public newAttachmentService: NewAttachmentService,
     private translateService: TranslateService,
     private platform: Platform,
     private file: File,
     private logger: LoggingService,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
-    private newAttachmentService: NewAttachmentService,
     private dropZoneService: DropZoneService
   ) {}
 
   ngOnInit() {
     this.isHybrid = this.platform.is('hybrid');
 
-    this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(this.draftUuid, {
-      ref: this.ref,
-      type: this.attachmentType,
-      registrationTid: this.registrationTid,
-    });
+    this.newAttachments$ = combineLatest([
+      this.newAttachmentService.getAttachmentsWithBlob(this.draftUuid, {
+        ref: this.ref,
+        type: this.attachmentType,
+        registrationTid: this.registrationTid,
+      }),
+      this.newAttachmentService.addNewAttachmentState,
+    ]).pipe(
+      map(([attachments, uploadState]) =>
+        attachments.map((attachment) => {
+          // Check if we have an upload state for this attachment
+          const state = uploadState.find((s) => s.id === attachment.id) || {};
+          return {
+            ...attachment,
+            ...state,
+          } as NewAttachment;
+        })
+      )
+    );
   }
 
   setNewAttachmentComment(attachment: AttachmentUploadEditModel, comment: AttachmentUploadEditModel['Comment']) {
