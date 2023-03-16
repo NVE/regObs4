@@ -269,7 +269,8 @@ export class SetAvalanchePositionPage implements OnInit {
         this.endMarker.off('click');
         this.map.off('drag');
         this.setPolygonLocationText();
-        if (this.geoHazard == GeoHazard.Snow || this.geoHazard == GeoHazard.Soil) {
+        const startStopEqual = this.start.lat == this.end.lat && this.start.lng == this.end.lng;
+        if ((this.geoHazard == GeoHazard.Snow || this.geoHazard == GeoHazard.Soil) && !startStopEqual) {
           this.makePolygons();
           this.locationPolygon.next(this.totalPolygon);
           this.locationPolygon.next(this.startPolygon);

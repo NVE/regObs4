@@ -261,8 +261,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             dashArray: '10, 10',
             fill: true,
             fillOpacity: 0.1,
-          },
-        },
+          }
+        }
       },
       draw: {
         polyline: false,
@@ -283,7 +283,17 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
       let foundEnabled = false;
       let setEnabled = false;
-      locationPolygons.forEach((polygon) => {
+      locationPolygons.forEach((polygon) => { 
+        polygon.polygon.options = {
+          ...polygon.polygon.options,
+          poly: {
+            allowIntersection: false,
+            drawError: {
+              color: polygon.color
+            }
+          },
+        }
+
         if (foundEnabled && !setEnabled && polygon.active) {
           setEnabled = true;
           polygon.polygon.editing.enable();
