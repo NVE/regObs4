@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { debounceTime, filter, from, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
+import { debounce, debounceTime, filter, from, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
 import { UploadSingleAttachmentService } from 'src/app/core/services/upload-attachments/upload-single-attachment.service';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
@@ -49,13 +49,22 @@ export class WebAttachmentService extends NewAttachmentService {
       ref,
     };
 
-    const [uploadedAttachment, previewBlob] = await Promise.all([
-      this.uploadSingleAttachmentService.upload(attachment, data),
-      this.createPreviewBlob(data),
-    ]);
+    const logInfo = { registrationId, attachmentId };
 
+    this.logger.debug('Creating preview image and starting image upload', this.DEBUG_TAG, logInfo);
+    const createPreviewPromise = this.createPreviewBlob(data);
+    const uploadAttachmentPromise = this.uploadSingleAttachmentService.upload(attachment, data);
+
+    // Save preview blob and metadata
+    const previewBlob = await createPreviewPromise;
     await this.saveImageToDB(previewBlob, attachmentId);
-    this.saveAttachmentMeta(registrationId, uploadedAttachment);
+    await this.saveAttachmentMeta(registrationId, attachment);
+    this.logger.debug('Metadata and preview image saved', this.DEBUG_TAG, logInfo);
+
+    // Wait for upload to finish, then save updated metadata with attachment id
+    const uploadedAttachment = await uploadAttachmentPromise;
+    await this.saveAttachmentMeta(registrationId, uploadedAttachment);
+    this.logger.debug('Metadata updated with upload id', this.DEBUG_TAG, logInfo);
   }
 
   private blobToBase64(data: Blob): Promise<string> {
@@ -160,7 +169,6 @@ export class WebAttachmentService extends NewAttachmentService {
   protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
     return this.hasChange.pipe(
       startWith(true),
-      debounceTime(500),
       switchMap(() => this.readMetadataFromDb(registrationId)),
       tap((metadata) => this.logger.debug('Metadata', this.DEBUG_TAG, { metadata }))
     );
