@@ -31,7 +31,13 @@
       ></ion-progress-bar>
     </div>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
-      <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeNewImage(attachment)">
+      <ion-fab-button
+        size="small"
+        color="dark"
+        class="map-control-fab"
+        (click)="removeNewImage(attachment)"
+        [disabled]="attachment.state === 'in-progress'"
+      >
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
