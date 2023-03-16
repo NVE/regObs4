@@ -1,10 +1,15 @@
-<ion-select
-  cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-  [interface]="popupType"
-  (ionChange)="save()"
-  [(ngModel)]="selectedDaysBack"
->
-  <ion-select-option *ngFor="let item of daysBackOptions" [value]="item.val">
-    <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
-  </ion-select-option>
-</ion-select>
+<ion-item slot="header">
+  <ion-label color="dark" position="stacked">
+    {{ "MENU.TIMESPAN" | translate }}
+  </ion-label>
+  <ion-select
+    cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+    [interface]="popupType"
+    (ionChange)="save()"
+    [(ngModel)]="selectedDaysBack"
+  >
+    <ion-select-option *ngFor="let item of daysBackOptions" [value]="item.val">
+      <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
+    </ion-select-option>
+  </ion-select>
+</ion-item>
