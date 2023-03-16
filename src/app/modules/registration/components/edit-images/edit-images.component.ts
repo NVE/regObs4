@@ -276,15 +276,15 @@ export class EditImagesComponent implements OnInit {
     return attachment.id;
   }
 
-  async dropped(droppedFiles: NgxFileDropEntry[]): Promise<void> {
+  dropped(droppedFiles: NgxFileDropEntry[]) {
     for (const droppedFile of droppedFiles) {
-      try {
-        const file = await this.dropZoneService.getFile(droppedFile);
-        this.attachImageToDraft(file, MIME_TYPE);
-      } catch (err) {
-        this.logger.error(err, 'Could not add attachment');
-        this.showErrorToast('Could not add image'); // TODO: Add better error message
-      }
+      this.dropZoneService
+        .getFile(droppedFile)
+        .then((file) => this.attachImageToDraft(file, MIME_TYPE))
+        .catch((err) => {
+          this.logger.error(err, 'Could not add attachment');
+          this.showErrorToast('Could not add image'); // TODO: Add better error message
+        });
     }
   }
 }
