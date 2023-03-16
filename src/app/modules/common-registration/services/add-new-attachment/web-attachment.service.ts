@@ -78,6 +78,7 @@ export class WebAttachmentService extends NewAttachmentService {
     this.logger.debug('Metadata and preview image saved', this.DEBUG_TAG, logInfo);
 
     // Wait for upload to finish, then save updated metadata with attachment id
+    // TODO: After attachment has been uploaded, check if it has been deleted in the meantime, if so just forget it
     const uploadedAttachment = await uploadAttachmentPromise;
     await this.saveAttachmentMeta(registrationId, uploadedAttachment);
     this.logger.debug('Metadata updated with upload id', this.DEBUG_TAG, logInfo);
