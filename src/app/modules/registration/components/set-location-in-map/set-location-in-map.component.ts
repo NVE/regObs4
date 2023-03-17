@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
 import { firstValueFrom, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -30,6 +30,8 @@ export interface LocationTime {
   source: number;
   spatialAccuracy: number;
 }
+
+const INITIAL_ZOOM_MINIMUM = 15;
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -185,6 +187,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
+  get initialZoom$(): Observable<number> {
+    return this.mapService.mapView$.pipe(
+      map((mapView) => (mapView?.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM))
+    );
+  }
+
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
     return this.mapView.pipe(
       filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
@@ -277,7 +285,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       .subscribe((pos) => this.positionChange(pos));
 
     if (!this.followMode) {
-      this.map.setView(this.locationMarker.getLatLng(), 15);
+      this.map.setView(this.locationMarker.getLatLng(), INITIAL_ZOOM_MINIMUM);
     }
 
     this.initPolygons();

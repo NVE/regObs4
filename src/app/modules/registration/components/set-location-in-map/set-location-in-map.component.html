@@ -5,6 +5,7 @@
     (mapReady)="onMapReady($event)"
     [center]="locationMarker.getLatLng()"
     [geoTag]="'SetLocationInMapComponent'"
+    [zoom]="initialZoom$ | async"
   ></app-map>
   <div class="bottom-background flex-row">
     <div class="bottom-info flex-col flex-grow">
