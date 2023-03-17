@@ -6,7 +6,7 @@
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
       </ion-item-divider>
-      <ion-grid>
+      <ion-grid class="filter-panel">
         <ion-row>
           <ion-col>
             <ion-segment
@@ -30,7 +30,7 @@
           <ion-col>
             <!--bilde galleri toggle-->
           </ion-col>
-          <ion-col>
+          <ion-col class="order-by-select">
             <ng-container *ngIf="orderBy$ | async as orderBy">
               <div class="select-wrapper">
                 <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
@@ -65,7 +65,7 @@
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
       </ion-item-divider>
-      <ion-grid>
+      <ion-grid class="filter-panel">
         <ion-row>
           <ion-col>
             <ion-segment
@@ -88,7 +88,7 @@
           <ion-col>
             <!--bilde galleri toggle-->
           </ion-col>
-          <ion-col>
+          <ion-col class="order-by-select">
             <div class="select-wrapper">
               <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
               <ion-select (ionChange)="handleChangeSorting($event)" [interface]="popupType">
@@ -124,7 +124,7 @@
       </ion-col>
     </ion-row>
     <ion-row class="full-grid-row">
-      <ion-col class="ion-text-center ion-margin-horizontal">
+      <ion-col class="col-flex-direction ion-text-center ion-margin-horizontal">
         <h2>{{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
         <h3 class="ion-text-wrap">{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
       </ion-col>
