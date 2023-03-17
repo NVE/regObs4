@@ -110,7 +110,8 @@
     "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
     "LINE_3": "Data in Varsom is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
     "LINE_4": "When publishing images with observations in Varsom, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
-    "LINE_5": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
+    "LINE_5": "Observations can be edited or deleted within 48 hours after they are registered.",
+    "LINE_6": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
     "OK": "Ok, I accept"
   },
   "LOGIN": {
