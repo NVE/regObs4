@@ -320,12 +320,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private getPolygons(): PolygonsToPlot {
-    // getLatLngs on polygons may return nested arrays with depth of 3 therefore we use flat(3)
+    // getLatLngs on polygons may return nested arrays with depth of 3 therefore we use flat(3) to simplify the result
     const polygons = {} as PolygonsToPlot;
     const startStoplocation = this.location?.startStopLocation;
     if (startStoplocation?.totalPolygon) {
-      const d = startStoplocation.totalPolygon.getLatLngs().flat(3);
-      polygons.totalPolygon = d;
+      polygons.totalPolygon = startStoplocation.totalPolygon.getLatLngs().flat(3);
     }
     if (startStoplocation?.startPolygon) {
       polygons.startPolygon = startStoplocation.startPolygon.getLatLngs().flat(3);
@@ -406,16 +405,16 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private createPolygons(polygons: LatLng[], w: number, n: number, zoom: number, fill: string) {
-    // find lowest x point
     const mercatorPoints = this.getMercatorPointsFromPolygonsLtLng(polygons, zoom);
-    const listOfX = mercatorPoints.map((l) => l.lat);
-    const svg_x0 = Math.min(...listOfX) - SVG_PADDING;
+    const listOfXPoints = mercatorPoints.map((l) => l.lat);
+    const listOfYPoints = mercatorPoints.map((l) => l.lng);
+    // find lowest x point
+    const svg_x0 = Math.min(...listOfXPoints) - SVG_PADDING;
     //find lowest y point
-    const listOfY = mercatorPoints.map((l) => l.lng);
-    const svg_y0 = Math.min(...listOfY) - SVG_PADDING;
+    const svg_y0 = Math.min(...listOfYPoints) - SVG_PADDING;
     // get width and height to set viewBox size
-    const width = Math.max(...listOfX);
-    const height = Math.max(...listOfY);
+    const width = Math.max(...listOfXPoints);
+    const height = Math.max(...listOfYPoints);
     const polylinesPointsToString = this.createPolylinesPointsFromMercatorPoints(mercatorPoints, svg_x0, svg_y0)
       .flat()
       .join(',');
