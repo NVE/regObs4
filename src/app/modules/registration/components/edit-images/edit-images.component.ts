@@ -299,7 +299,7 @@ export class EditImagesComponent implements OnInit {
         .getFile(droppedFile)
         .then((file) => this.attachImageToDraft(file, MIME_TYPE))
         .catch((err) => {
-          this.logger.error(err, 'Could not add attachment');
+          this.logger.error(err, DEBUG_TAG, 'Could not add attachment');
           this.showErrorToast('Could not add image'); // TODO: Add better error message
         });
     }

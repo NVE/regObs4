@@ -84,9 +84,15 @@ export class WebAttachmentService extends NewAttachmentService {
 
     // Wait for upload to finish, then save updated metadata with attachment id
     // TODO: After attachment has been uploaded, check if it has been deleted in the meantime, if so just forget it
-    const uploadedAttachment = await uploadAttachmentPromise;
-    await this.saveAttachmentMeta(registrationId, uploadedAttachment);
-    this.logger.debug('Metadata updated with upload id', this.DEBUG_TAG, logInfo);
+    let uploadedAttachment: AttachmentUploadEditModel;
+    try {
+      uploadedAttachment = await uploadAttachmentPromise;
+      await this.saveAttachmentMeta(registrationId, uploadedAttachment);
+      this.logger.debug('Metadata updated with upload id', this.DEBUG_TAG, logInfo);
+    } catch (error) {
+      await this.removeAttachmentInner(registrationId, attachment.id);
+      throw error;
+    }
   }
 
   private uploadStarted(attachment: AttachmentUploadEditModel) {
