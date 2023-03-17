@@ -283,17 +283,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
       let foundEnabled = false;
       let setEnabled = false;
-      locationPolygons.forEach((polygon) => { 
-        polygon.polygon.options = {
-          ...polygon.polygon.options,
-          poly: {
-            allowIntersection: false,
-            drawError: {
-              color: polygon.color
-            }
-          },
-        }
-
+      locationPolygons.forEach((polygon) => {
         if (foundEnabled && !setEnabled && polygon.active) {
           setEnabled = true;
           polygon.polygon.editing.enable();
