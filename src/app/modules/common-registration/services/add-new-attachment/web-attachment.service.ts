@@ -1,6 +1,6 @@
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { filter, from, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
+import { from, Observable, of, startWith, Subject, switchMap, tap } from 'rxjs';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
 import {
   HttpEventClb,
@@ -23,6 +23,7 @@ const PREVIEW_JPG_QUALITY = 0.5;
 export class WebAttachmentService extends NewAttachmentService {
   protected DEBUG_TAG = 'WebAttachmentService';
   private hasChange = new Subject<void>();
+  private blobCache = new Map<AttachmentUploadEditModel['id'], Blob>();
 
   constructor(
     protected logger: LoggingService,
@@ -53,7 +54,11 @@ export class WebAttachmentService extends NewAttachmentService {
       ref,
     };
 
+    // Save metadata early on so the view can update
+    this.blobCache.set(attachmentId, data);
+    await this.saveAttachmentMeta(registrationId, attachment);
     this.uploadStarted(attachment);
+
     const logInfo = { registrationId, attachmentId };
     const uploadCallback: HttpEventClb = (event) => {
       if (event.type === HttpEventType.UploadProgress) {
@@ -133,6 +138,7 @@ export class WebAttachmentService extends NewAttachmentService {
     this.logger.debug('Saving image to db', this.DEBUG_TAG, { attachmentId, size: data.size, key });
     const base64 = await this.blobToBase64(data);
     await this.database.set(key, base64);
+    this.blobCache.delete(attachmentId);
     this.hasChange.next();
   }
 
@@ -217,15 +223,19 @@ export class WebAttachmentService extends NewAttachmentService {
   }
 
   getBlob(registrationId: string, attachmentId: string): Observable<Blob> {
-    return this.getAttachmentsObservable(registrationId).pipe(
-      map((attachmens) => attachmens.find((a) => a.id === attachmentId)),
-      filter((a) => a != null),
-      switchMap(() => this.readImageFromDB(attachmentId)),
-      switchMap((base64) => fetch(base64).then((res) => res.blob()))
+    if (this.blobCache.has(attachmentId)) {
+      return of(this.blobCache.get(attachmentId));
+    }
+
+    return from(
+      this.readImageFromDB(attachmentId)
+        .then((base64) => fetch(base64))
+        .then((res) => res.blob())
     );
   }
 
   private async removeAttachmentInner(registrationId: string, attachmentId: string) {
+    this.blobCache.delete(attachmentId); // Remove from cache if it exists there
     const imageKey = this.getImageKey(attachmentId);
     const metadataKey = this.getMetadataKey(registrationId);
     this.logger.debug('Remove attachment', this.DEBUG_TAG, { metadataKey, imageKey });
