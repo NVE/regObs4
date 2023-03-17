@@ -307,8 +307,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             dashArray: '10, 10',
             fill: true,
             fillOpacity: 0.1,
-          },
-        },
+          }
+        }
       },
       draw: {
         polyline: false,
