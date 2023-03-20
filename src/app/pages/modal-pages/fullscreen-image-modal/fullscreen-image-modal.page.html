@@ -15,16 +15,6 @@
   <ion-fab-button size="small" (click)="closeModal()" class="close-button">
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
-  <button
-    *ngIf="!isFirstSlide && isDesktop"
-    class="swiper-button-prev swiper-button-custom"
-    (click)="prev(); $event.stopPropagation()"
-  ></button>
-  <button
-    *ngIf="!isLastSlide && isDesktop"
-    class="swiper-button-next swiper-button-custom"
-    (click)="next(); $event.stopPropagation()"
-  ></button>
 </div>
 
 <ng-template #slideWeb>
@@ -32,16 +22,8 @@
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
   <div class="img-container">
-    <img [src]="allImages[activeIndex].Url || allImages[activeIndex]" (click)="closeModal()" />
-    <button
-      *ngIf="!isFirstSlide && isDesktop"
-      class="swiper-button-prev swiper-button-custom"
-      (click)="prevSlide()"
-    ></button>
-    <button
-      *ngIf="!isLastSlide && isDesktop"
-      class="swiper-button-next swiper-button-custom"
-      (click)="nextSlide()"
-    ></button>
+    <img [src]="allImages[activeImageIndex].Url || allImages[activeImageIndex]" (click)="closeModal()" />
+    <button *ngIf="!isFirstSlide" class="swiper-button-prev swiper-button-custom" (click)="prevSlide()"></button>
+    <button *ngIf="!isLastSlide" class="swiper-button-next swiper-button-custom" (click)="nextSlide()"></button>
   </div>
 </ng-template>
