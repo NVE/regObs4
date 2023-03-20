@@ -140,7 +140,7 @@ export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToEx
   if (dataModel) {
     const dataModelCopy = { ...dataModel };
     delete dataModelCopy[propertyToExclude];
-    const allValues = Object.values(dataModelCopy).filter((v) => v !== propertyToExclude);
+    const allValues = Object.values(dataModelCopy);
     return allValues.some((v) => v);
   }
 }
