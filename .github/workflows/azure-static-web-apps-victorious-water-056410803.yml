@@ -89,7 +89,7 @@ jobs:
       - run: |
           curl -sL https://sentry.io/get-cli/ | bash
           sentry-cli releases new ${{fromJson(steps.set_version.outputs.packageJson).version}}
-          sentry-cli releases files ${{fromJson(steps.set_version.outputs.packageJson).version}} upload-sourcemaps www -x .js -x .map --dist ${{fromJson(steps.set_version.outputs.packageJson).revision}} --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+          sentry-cli releases files ${{fromJson(steps.set_version.outputs.packageJson).version}} upload-sourcemaps www -x .js -x .map --dist ${{fromJson(steps.set_version.outputs.packageJson).revision}} --log-level=debug --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
           sentry-cli releases finalize ${{fromJson(steps.set_version.outputs.packageJson).version}}
  
  
