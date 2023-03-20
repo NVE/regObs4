@@ -121,6 +121,10 @@ export abstract class BasePage extends NgDestoryBase {
     return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
+  protected async hasAttachments(registrationType = this.registrationTid): Promise<boolean> {
+    return this.basePageService.draftRepository.hasAttachments(this.draft, registrationType);
+  }
+
   /**
    * Reset the registration if the user confirms.
    * @returns {boolean} true if the user wants to reset
