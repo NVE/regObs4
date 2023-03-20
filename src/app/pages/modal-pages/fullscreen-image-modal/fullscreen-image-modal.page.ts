@@ -42,18 +42,17 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.isHybrid = true;
+    this.isHybrid = isAndroidOrIos(this.platform);
 
     if (this.allImages && this.imgIndex >= 0) {
+      this.activeIndex = this.imgIndex;
+      this.checkIfLastOrFirstSlide();
       if (this.isHybrid) {
         this.isDesktop = false;
         this.screenOrientation.unlock();
         this.slideOptions = {
           initialSlide: this.imgIndex,
         };
-      } else {
-        this.activeIndex = this.imgIndex;
-        this.checkIfLastOrFirstSlide();
       }
     }
   }
