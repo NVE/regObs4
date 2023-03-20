@@ -135,12 +135,13 @@ export function isObservationModelEmptyForRegistrationTid(
   in the function. In that case we set hasAnyDataBesidesPropertyToExclude(AvalancheObs, 'DtAvalancheTime')
 */
 export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string) {
+  // have to remove the property to exclude from the object and then check values on the rest
+  //
   if (dataModel) {
-    const allValues = Object.values(dataModel);
-    if (dataModel[propertyToExclude] && allValues.length < 2) {
-      return false;
-    }
-    return true;
+    const dataModelCopy = { ...dataModel };
+    delete dataModelCopy[propertyToExclude];
+    const allValues = Object.values(dataModelCopy).filter((v) => v !== propertyToExclude);
+    return allValues.some((v) => v);
   }
 }
 
