@@ -19,6 +19,7 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
+  isHybrid: boolean;
 
   @Output() changeDaysBack = new EventEmitter<number>();
 
@@ -27,7 +28,8 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
   }
 
   ngOnInit(): void {
-    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
+    this.isHybrid = isAndroidOrIos(this.platform);
+    this.popupType = this.isHybrid ? 'action-sheet' : 'popover';
     this.userSettingService.currentGeoHazard$.pipe(takeUntil(this.ngDestroy$)).subscribe((currentGeoHazard) => {
       this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
     });

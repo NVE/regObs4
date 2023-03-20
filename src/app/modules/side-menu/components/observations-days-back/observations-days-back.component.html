@@ -1,7 +1,17 @@
-<ion-item slot="header">
-  <ion-label color="dark" position="stacked">
-    {{ "MENU.TIMESPAN" | translate }}
-  </ion-label>
+<ng-container *ngIf="!isHybrid; else mobileTimespan">
+  <ng-container *ngTemplateOutlet="selectTimespan"> </ng-container>
+</ng-container>
+
+<ng-template #mobileTimespan>
+  <ion-item slot="header">
+    <ion-label color="dark" position="stacked">
+      {{ "MENU.TIMESPAN" | translate }}
+    </ion-label>
+    <ng-container *ngTemplateOutlet="selectTimespan"> </ng-container>
+  </ion-item>
+</ng-template>
+
+<ng-template #selectTimespan>
   <ion-select
     cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
     [interface]="popupType"
@@ -12,4 +22,4 @@
       <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
     </ion-select-option>
   </ion-select>
-</ion-item>
+</ng-template>
