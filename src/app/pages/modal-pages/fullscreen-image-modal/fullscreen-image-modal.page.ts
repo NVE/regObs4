@@ -30,7 +30,9 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   isLastSlide = true;
   isFirstSlide = true;
   isDesktop = true;
+  activeIndex: number;
   slideOptions;
+  isHybrid: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -40,15 +42,19 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (isAndroidOrIos(this.platform)) {
-      this.isDesktop = false;
-      this.screenOrientation.unlock();
-    }
+    this.isHybrid = true;
 
     if (this.allImages && this.imgIndex >= 0) {
-      this.slideOptions = {
-        initialSlide: this.imgIndex,
-      };
+      if (this.isHybrid) {
+        this.isDesktop = false;
+        this.screenOrientation.unlock();
+        this.slideOptions = {
+          initialSlide: this.imgIndex,
+        };
+      } else {
+        this.activeIndex = this.imgIndex;
+        this.checkIfLastOrFirstSlide();
+      }
     }
   }
 
@@ -59,9 +65,9 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   }
 
   async onSlideTransitionEnd() {
-    const activeImageIndex = await this.slider.getActiveIndex();
-    this.isFirstSlide = activeImageIndex === 0;
-    this.isLastSlide = this.allImages.length === activeImageIndex + 1;
+    this.activeIndex = await this.slider.getActiveIndex();
+    this.isFirstSlide = this.activeIndex === 0;
+    this.isLastSlide = this.allImages.length === this.activeIndex + 1;
     this.updateUi();
   }
 
@@ -72,6 +78,23 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
 
   prev() {
     this.slider.slidePrev();
+    this.updateUi();
+  }
+
+  checkIfLastOrFirstSlide() {
+    this.isLastSlide = this.allImages.length === this.activeIndex + 1;
+    this.isFirstSlide = this.activeIndex === 0;
+  }
+
+  nextSlide() {
+    !this.isLastSlide && ++this.activeIndex;
+    this.checkIfLastOrFirstSlide();
+    this.updateUi();
+  }
+
+  prevSlide() {
+    !this.isFirstSlide && --this.activeIndex;
+    this.checkIfLastOrFirstSlide();
     this.updateUi();
   }
 
