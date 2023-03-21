@@ -1,9 +1,13 @@
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import {
+  AttachmentUploadEditModel,
+  RegistrationTid,
+  SyncStatus,
+} from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
-import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
+import { firstValueFrom, Observable, of, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
@@ -46,14 +50,14 @@ class TestDatabaseService {
 describe('DraftRepositoryService', () => {
   let service: DraftRepositoryService;
   let database: TestDatabaseService;
-  let newAttachmentService: NewAttachmentService;
+  let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
   let userSettingService: UserSettingService;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({});
 
     database = new TestDatabaseService();
-    newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['removeAttachments']);
+    newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['removeAttachments', 'getAttachments']);
     userSettingService = new UserSettingService(null, null);
     service = new DraftRepositoryService(
       new TestLoggingService(),
@@ -416,5 +420,39 @@ describe('DraftRepositoryService', () => {
       Comment: 'comment',
       GeoHazardTID: GeoHazard.Ice,
     });
+  });
+
+  it('hasAttachments() should work', async () => {
+    const attachments: AttachmentUploadEditModel[] = [
+      {
+        id: '1',
+        type: 'Attachment',
+        AttachmentId: 1,
+        RegistrationTID: RegistrationTid.SnowSurfaceObservation,
+      },
+    ];
+
+    const draft = await service.create(GeoHazard.Snow);
+    draft.registration.DtObsTime = '2022-02-13 08:00';
+    draft.registration.SnowSurfaceObservation = {
+      Comment: 'comment',
+      SnowDepth: 3.5,
+    };
+
+    // no new attachments yet
+    newAttachmentService.getAttachments.and.returnValue(of([]));
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeFalse();
+
+    // fake that we have a new attachment
+    newAttachmentService.getAttachments.and.returnValue(of(attachments));
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeTrue();
+
+    // remove the new attachment
+    newAttachmentService.getAttachments.and.returnValue(of([]));
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeFalse();
+
+    // fake that we have a remote attachment
+    draft.registration.Attachments = [{ RegistrationTID: RegistrationTid.SnowSurfaceObservation }];
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeTrue();
   });
 });

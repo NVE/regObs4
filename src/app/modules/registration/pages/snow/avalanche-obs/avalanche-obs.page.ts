@@ -174,11 +174,17 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
+    // we need to ignore the default value of DtAvalancheTime
     if (
       this.avalancheObs.DtAvalancheTime &&
       (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') ||
         this.dtAvalancheTimeIsDifferentThanObsTime)
     ) {
+      return false;
+    }
+
+    const hasAttachments = await super.hasAttachments(RegistrationTid.AvalancheObs);
+    if (hasAttachments) {
       return false;
     }
 

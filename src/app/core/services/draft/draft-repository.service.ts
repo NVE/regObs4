@@ -112,18 +112,27 @@ export class DraftRepositoryService {
     let isEmpty = isObservationModelEmptyForRegistrationTid(draft.registration, registrationTid);
 
     if (isEmpty) {
-      const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, registrationTid);
-      isEmpty = existingAttachments.length === 0;
-    }
-
-    if (isEmpty) {
-      const newAttachments = await firstValueFrom(
-        this.newAttachmentSerivice.getAttachments(draft.uuid, { registrationTid })
-      );
-      isEmpty = newAttachments.length === 0;
+      isEmpty = !(await this.hasAttachments(draft, registrationTid));
     }
 
     return isEmpty;
+  }
+
+  /**
+   * @returns true if given draft has any attachments (new local or already uploaded) for given registration type
+   */
+  async hasAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<boolean> {
+    const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, registrationTid);
+    let hasAttachments = existingAttachments.length > 0;
+
+    if (!hasAttachments) {
+      const newAttachments = await firstValueFrom(
+        this.newAttachmentSerivice.getAttachments(draft.uuid, { registrationTid })
+      );
+      hasAttachments = newAttachments.length > 0;
+    }
+
+    return hasAttachments;
   }
 
   /**
@@ -225,7 +234,7 @@ export class DraftRepositoryService {
     await this.databaseService.set(key, updatedDraft);
 
     this.logger.debug(
-      `Draft ${draft.uuid} saved in ${this.millisSince(start)} ms 
+      `Draft ${draft.uuid} saved in ${this.millisSince(start)} ms
       in environment ${appMode}`,
       DEBUG_TAG,
       draft
