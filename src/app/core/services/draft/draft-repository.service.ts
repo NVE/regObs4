@@ -122,9 +122,8 @@ export class DraftRepositoryService {
    * @returns true if given draft has any attachments (new local or already uploaded) for given registration type
    */
   async hasAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<boolean> {
-    let hasAttachments = false;
     const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, registrationTid);
-    hasAttachments = existingAttachments.length > 0;
+    let hasAttachments = existingAttachments.length > 0;
 
     if (!hasAttachments) {
       const newAttachments = await firstValueFrom(
