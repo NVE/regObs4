@@ -214,6 +214,7 @@ export class SearchCriteriaService {
         )
       ),
       this.userSettingService.language$,
+      this.userSettingService.userSetting$.pipe(map((us) => us.preferredNumberOfRecords)),
       this.userSettingService.currentGeoHazard$.pipe(
         tap((geohazard) => {
           this.currentGeoHazard !== undefined && this.resetSearchCriteria();
@@ -235,9 +236,10 @@ export class SearchCriteriaService {
       // - FromDtObsTime: fromDate URL param
       debounceTime(50),
       map(
-        ([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]: [
+        ([criteria, langKey, numOfRecords, geoHazards, fromObsTime, useMapExtent, extent]: [
           SearchCriteriaRequestDto,
           LangKey,
+          number,
           GeoHazard[],
           string,
           boolean,
@@ -249,6 +251,7 @@ export class SearchCriteriaService {
             SelectedGeoHazards: geoHazards,
             FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
             Extent: useMapExtent ? extent : null,
+            ...(numOfRecords && { NumberOfRecords: numOfRecords }),
           };
         }
       ),
@@ -381,6 +384,10 @@ export class SearchCriteriaService {
 
   setObserverNickName(nickName: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
+  }
+
+  setNumberOfRecords(numberOfRecords: number) {
+    this.searchCriteriaChanges.next({ NumberOfRecords: numberOfRecords });
   }
 
   setCompetence(competenceCriteria: number[]) {

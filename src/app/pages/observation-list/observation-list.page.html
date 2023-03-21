@@ -8,11 +8,11 @@
       </ion-item-divider>
       <ion-grid class="filter-panel">
         <ion-row>
-          <ion-col>
+          <ion-col class="display-none-on-small">
             <ion-segment
               [value]="useMapExtentFilter$ | async"
               (click)="toggleFilterByMapView($event)"
-              class="map-extent-filter-toggle segment-button-class"
+              class="segment-button-class"
               mode="ios"
               [disabled]="noMapExtentAvailable$ | async"
             >
@@ -24,15 +24,29 @@
               </ion-segment-button>
             </ion-segment>
           </ion-col>
-          <ion-col>
-            <!--titelen -->
+          <!--<ion-col>
+            titelen
+          </ion-col>-->
+          <ion-col class="display-none-on-small">
+            <div class="select-wrapper select-wrapper-short">
+              <span>{{'OBSERVATION_LIST.NUMBER_OBS_PER_PAGE' | translate}}</span>
+              <ion-select
+                (ionChange)="handleChangeNumberObsPerPage($event)"
+                [value]="numOfRecords"
+                [interface]="popupType"
+              >
+                <ion-select-option *ngFor="let numPerPage of numberObsPerPageOptions" [value]="numPerPage"
+                  >{{numPerPage}}</ion-select-option
+                >
+              </ion-select>
+            </div>
           </ion-col>
+          <!--<ion-col>
+            bilde galleri toggle
+          </ion-col>-->
           <ion-col>
-            <!--bilde galleri toggle-->
-          </ion-col>
-          <ion-col class="order-by-select">
             <ng-container *ngIf="orderBy$ | async as orderBy">
-              <div class="select-wrapper">
+              <div class="select-wrapper select-wrapper-wide">
                 <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
                 <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
                   <ion-select-option value="DtObsTime">
@@ -67,7 +81,7 @@
       </ion-item-divider>
       <ion-grid class="filter-panel">
         <ion-row>
-          <ion-col>
+          <ion-col class="display-none-on-small">
             <ion-segment
               (ionChange)="toggleFilterByMapView($event)"
               class="segment-button-class"
@@ -75,21 +89,35 @@
               mode="ios"
             >
               <ion-segment-button value="mapBorders">
-                <ion-label>I kartutsnitt</ion-label>
+                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
               </ion-segment-button>
               <ion-segment-button value="all">
-                <ion-label>Alle</ion-label>
+                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
               </ion-segment-button>
             </ion-segment>
           </ion-col>
-          <ion-col>
-            <!--titelen -->
+          <!--<ion-col>
+           titelen
+          </ion-col> -->
+          <ion-col class="display-none-on-small">
+            <div class="select-wrapper select-wrapper-short">
+              <span>{{'OBSERVATION_LIST.NUMBER_OBS_PER_PAGE' | translate}}</span>
+              <ion-select
+                (ionChange)="handleChangeNumberObsPerPage($event)"
+                [value]="numOfRecords"
+                [interface]="popupType"
+              >
+                <ion-select-option *ngFor="let numPerPage of numberObsPerPageOptions" [value]="numPerPage"
+                  >{{numPerPage}}</ion-select-option
+                >
+              </ion-select>
+            </div>
           </ion-col>
+          <!--<ion-col>
+            bilde galleri toggle
+          </ion-col>-->
           <ion-col>
-            <!--bilde galleri toggle-->
-          </ion-col>
-          <ion-col class="order-by-select">
-            <div class="select-wrapper">
+            <div class="select-wrapper select-wrapper-wide">
               <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
               <ion-select (ionChange)="handleChangeSorting($event)" [interface]="popupType">
                 <ion-select-option value="DtObsTime">

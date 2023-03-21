@@ -134,7 +134,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       map((pageInfo) => ({
         ...searchCriteria,
         Offset: pageInfo.offset,
-        NumberOfRecords: pageInfo.items,
+        NumberOfRecords: searchCriteria.NumberOfRecords || pageInfo.items,
       })),
       // Search for matching registrations.
       // Use concatMap here and not switchMap as we want to include all pages if increasePage() is called before
