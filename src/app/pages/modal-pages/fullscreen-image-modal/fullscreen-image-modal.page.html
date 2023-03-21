@@ -1,26 +1,29 @@
-<div class="container">
+<div class="container" *ngIf="isHybrid; else slideWeb">
   <ion-slides #slider [options]="slideOptions" (ionSlideTransitionEnd)="onSlideTransitionEnd()">
     <ion-slide *ngFor="let slide of allImages; let i=index">
       <div class="img-container">
-        <!--Fullscreen image modal is used by both observation list card and snow profile scheme. Observation card
-          sends an array of attachments of type AttachmentViewModel where every object has property Url which is an img src.
-          Snow profile sends only array of strings(img src itself) therefore no Url property exists there and we can just use
-the string as an img src-->
-        <img [src]="slide.Url || slide" onerror="this.style.display='none'" />
+        <div class="swiper-zoom-container">
+          <!--Fullscreen image modal is used by both observation list card and snow profile scheme. Observation card
+            sends an array of attachments of type AttachmentViewModel where every object has property Url which is an img src.
+            Snow profile sends only array of strings(img src itself) therefore no Url property exists there and we can just use
+  the string as an img src -->
+          <img [src]="slide.Url || slide" onerror="this.style.display='none'" (click)="closeModal()" />
+        </div>
       </div>
     </ion-slide>
   </ion-slides>
   <ion-fab-button size="small" (click)="closeModal()" class="close-button">
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
-  <button
-    *ngIf="!isFirstSlide && isDesktop"
-    class="swiper-button-prev swiper-button-custom"
-    (click)="prev(); $event.stopPropagation()"
-  ></button>
-  <button
-    *ngIf="!isLastSlide && isDesktop"
-    class="swiper-button-next swiper-button-custom"
-    (click)="next(); $event.stopPropagation()"
-  ></button>
 </div>
+
+<ng-template #slideWeb>
+  <ion-fab-button size="small" (click)="closeModal()" class="close-button">
+    <ion-icon name="close"></ion-icon>
+  </ion-fab-button>
+  <div class="img-container">
+    <img [src]="allImages[activeImageIndex].Url || allImages[activeImageIndex]" (click)="closeModal()" />
+    <button *ngIf="!isFirstSlide" class="swiper-button-prev swiper-button-custom" (click)="prevSlide()"></button>
+    <button *ngIf="!isLastSlide" class="swiper-button-next swiper-button-custom" (click)="nextSlide()"></button>
+  </div>
+</ng-template>

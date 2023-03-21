@@ -26,11 +26,11 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   @Input() header: string;
   @Input() description: string;
   @Input() href?: string;
-  activeImageIndex: number;
   isLastSlide = true;
   isFirstSlide = true;
-  isDesktop = true;
+  activeImageIndex: number;
   slideOptions;
+  isHybrid: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -40,15 +40,17 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (isAndroidOrIos(this.platform)) {
-      this.isDesktop = false;
-      this.screenOrientation.unlock();
-    }
+    this.isHybrid = isAndroidOrIos(this.platform);
 
     if (this.allImages && this.imgIndex >= 0) {
-      this.slideOptions = {
-        initialSlide: this.imgIndex,
-      };
+      this.activeImageIndex = this.imgIndex;
+      this.checkIfLastOrFirstSlide();
+      if (this.isHybrid) {
+        this.screenOrientation.unlock();
+        this.slideOptions = {
+          initialSlide: this.imgIndex,
+        };
+      }
     }
   }
 
@@ -59,9 +61,9 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   }
 
   async onSlideTransitionEnd() {
-    const activeImageIndex = await this.slider.getActiveIndex();
-    this.isFirstSlide = activeImageIndex === 0;
-    this.isLastSlide = this.allImages.length === activeImageIndex + 1;
+    this.activeImageIndex = await this.slider.getActiveIndex();
+    this.isFirstSlide = this.activeImageIndex === 0;
+    this.isLastSlide = this.allImages.length === this.activeImageIndex + 1;
     this.updateUi();
   }
 
@@ -72,6 +74,23 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
 
   prev() {
     this.slider.slidePrev();
+    this.updateUi();
+  }
+
+  checkIfLastOrFirstSlide() {
+    this.isLastSlide = this.allImages.length === this.activeImageIndex + 1;
+    this.isFirstSlide = this.activeImageIndex === 0;
+  }
+
+  nextSlide() {
+    !this.isLastSlide && ++this.activeImageIndex;
+    this.checkIfLastOrFirstSlide();
+    this.updateUi();
+  }
+
+  prevSlide() {
+    !this.isFirstSlide && --this.activeImageIndex;
+    this.checkIfLastOrFirstSlide();
     this.updateUi();
   }
 
