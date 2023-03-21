@@ -118,11 +118,11 @@ export abstract class BasePage extends NgDestoryBase {
   }
 
   async isEmpty(registrationType = this.registrationTid): Promise<boolean> {
-    return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
+    return await this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
   protected async hasAttachments(registrationType = this.registrationTid): Promise<boolean> {
-    return this.basePageService.draftRepository.hasAttachments(this.draft, registrationType);
+    return await this.basePageService.draftRepository.hasAttachments(this.draft, registrationType);
   }
 
   /**
