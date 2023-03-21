@@ -112,7 +112,7 @@ export class DraftRepositoryService {
     let isEmpty = isObservationModelEmptyForRegistrationTid(draft.registration, registrationTid);
 
     if (isEmpty) {
-      isEmpty = !this.hasAttachments(draft, registrationTid);
+      isEmpty = !(await this.hasAttachments(draft, registrationTid));
     }
 
     return isEmpty;
