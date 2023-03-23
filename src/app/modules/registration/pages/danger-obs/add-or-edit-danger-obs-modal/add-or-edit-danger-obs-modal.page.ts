@@ -31,6 +31,10 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     return name != 'Soil' ? name : 'Dirt';
   }
 
+  get isValid(): boolean {
+    return !this.dangerSignTid ? false : true;
+  }
+
   constructor(
     private modalController: ModalController,
     private translateService: TranslateService,
