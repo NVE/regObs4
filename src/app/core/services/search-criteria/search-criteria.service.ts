@@ -180,6 +180,12 @@ export class SearchCriteriaService {
   // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
   // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
+
+  private useDaysBack: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  get useDaysBack$(): Observable<boolean> {
+    return this.useDaysBack.asObservable();
+  }
+
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
   get useMapExtent$() {
     return this.useMapExtent.asObservable();
@@ -258,15 +264,14 @@ export class SearchCriteriaService {
   }
 
   async resetSearchCriteria() {
-    const resetDate = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
-    const daysBackToIso = this.daysBackToIsoDateTime(resetDate);
     const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
-      FromDtObsTime: convertToIsoDateTime(daysBackToIso),
+      FromDtObsTime: null,
       ToDtObsTime: null,
     };
+    this.useDaysBack.next(true);
     this.searchCriteriaChanges.next(criteria);
     this.resetEvent.next();
   }
@@ -292,6 +297,10 @@ export class SearchCriteriaService {
     let toObsTime: string;
     if (url.searchParams.get(URL_PARAM_TODATE)) {
       toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
+    }
+
+    if (fromObsTime && toObsTime) {
+      this.useDaysBack.next(false);
     }
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
@@ -397,12 +406,15 @@ export class SearchCriteriaService {
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
-    const returnObj = {} as SearchCriteriaRequestDto;
+    const dateCriteria: Pick<SearchCriteriaRequestDto, 'FromDtObsTime' | 'ToDtObsTime'> = {};
     if (fromDate) {
-      returnObj.FromDtObsTime = moment(fromDate).startOf('day').toISOString(true);
-      if (removeToDate) returnObj.ToDtObsTime = null;
+      dateCriteria.FromDtObsTime = moment(fromDate).startOf('day').toISOString(true);
+      if (removeToDate) {
+        dateCriteria.ToDtObsTime = null;
+      }
     }
-    this.searchCriteriaChanges.next(returnObj);
+
+    this.searchCriteriaChanges.next(dateCriteria);
   }
 
   setToDate(toDate: string) {

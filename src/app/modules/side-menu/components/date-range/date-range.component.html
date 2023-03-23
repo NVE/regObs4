@@ -9,8 +9,8 @@
       </ion-text>
     </ion-item>
     <div slot="content">
-      <ion-list>
-        <ion-radio-group [ngModel]="mode.value" (ionChange)="changeMode($event)">
+      <ion-list *ngIf="mode$ | async as mode">
+        <ion-radio-group [value]="mode" (ionChange)="changeMode($event)">
           <ion-item>
             <ion-radio value="predefined" slot="start" (click)="changeDateAndSetMode()"></ion-radio>
             <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>

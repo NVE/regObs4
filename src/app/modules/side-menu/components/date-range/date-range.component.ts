@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { BehaviorSubject, map, Observable, takeUntil, combineLatest, concatMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, takeUntil, combineLatest, concatMap, switchMap } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
@@ -19,9 +19,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   toDate: string;
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
-  mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
   cachedDays: number | null = null;
+
+  mode$: Observable<'predefined' | 'custom'>;
   modeText$: Observable<string>;
 
   constructor(
@@ -30,35 +31,28 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     private translateService: TranslateService
   ) {
     super();
-    this.modeText$ = combineLatest([
-      this.mode,
-      this.userSettingService.language$,
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        concatMap((days) => this.getReadableDays(days)),
-        map((x) => x[Object.keys(x)[0]])
-      ),
-    ]).pipe(
-      map(([mode, language, translations]) => {
-        switch (mode) {
-          case 'predefined':
-            return translations;
-          case 'custom':
-            return this.generateDateRange(language);
+    this.mode$ = this.searchCriteriaService.useDaysBack$.pipe(
+      map((useDaysBack) => (useDaysBack ? 'predefined' : 'custom'))
+    );
+    this.modeText$ = this.searchCriteriaService.useDaysBack$.pipe(
+      switchMap((useDaysBack) => {
+        if (useDaysBack) {
+          return this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
+            concatMap((days) => this.getReadableDays(days)),
+            map((x) => x[Object.keys(x)[0]])
+          );
         }
+        return this.userSettingService.language$.pipe(map((language) => this.generateDateRange(language)));
       })
     );
   }
 
   ngOnInit() {
-    this.searchCriteriaService.resetEvent.subscribe(() => this.mode.next('predefined'));
     this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$)).subscribe((criteria) => {
       this.fromDate = criteria.FromDtObsTime;
       this.toDate = criteria.ToDtObsTime;
       if (this.cachedDays === null || this.cachedDays !== 0) {
         this.cachedDays = moment().diff(moment(this.fromDate), 'days');
-      }
-      if (criteria.FromDtObsTime && criteria.ToDtObsTime) {
-        this.mode.next('custom');
       }
     });
   }
@@ -113,7 +107,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
       }
     }
     this.searchCriteriaService.setFromDate(date.format('YYYY-MM-DD'), true);
-    this.mode.next(mode);
   }
 
   private getReadableDays(day: number): Observable<string> {
@@ -157,8 +150,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   changeMode($event: CustomEvent<IRadioGroupRadioGroupChangeEventDetail>) {
-    if ($event.detail.value === 'predefined' || $event.detail.value === 'custom') {
-      this.mode.next($event.detail.value);
+    if ($event.detail.value === 'predefined') {
+      this.searchCriteriaService.
+    } || $event.detail.value === 'custom') {
+
     }
   }
 }
