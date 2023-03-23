@@ -290,7 +290,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
       "DOWNLOAD_ERROR": "Download error",
       "UNZIP_ERROR": "Unzip error",
-      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}",
+      "WAITING_FOR_NETWORK": "Waiting for network"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"

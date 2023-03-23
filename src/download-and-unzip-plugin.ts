@@ -4,8 +4,11 @@ export interface JobStatus {
   /** Between 0 and 1. 0 is not started, 1 is done. */
   progress: number;
 
-  /** May be: SUCCESS, WORK_IN_PROGRESS, ERROR, UNKNOWN  */
+  /** May be: SUCCESS, WORK_IN_PROGRESS, PENDING, ERROR, UNKNOWN  */
   status: string;
+
+  /** You might get a reason here if status is PENDING OR ERROR */
+  reason: string;
 
   /** Ongoing (last started) task type */
   task: 'download' | 'unzip';
