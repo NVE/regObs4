@@ -68,7 +68,8 @@ ion-item-divider {
 }
 
 @media only screen and (max-width: 899px) {
-  .map-extent-filter-toggle {
+  .map-extent-filter-toggle,
+  .header {
     display: none;
   }
 }
@@ -82,6 +83,9 @@ ion-item-divider {
 @media only screen and (max-width: 465px) {
   ion-col {
     padding: 5px 0;
+  }
+  .filter-panel {
+    display: none;
   }
 }
 
