@@ -295,6 +295,10 @@ export class SqliteService {
     }
   }
 
+  private getOrderBy(searchCriteria: SearchCriteria): string {
+    return searchCriteria.OrderBy === 'DtChangeTime' ? 'change_time' : 'obs_time';
+  }
+
   private async cleanupRegistrations() {
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
     const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo};`;
@@ -315,7 +319,8 @@ export class SqliteService {
   async selectRegistrations(searchCriteria: SearchCriteria, appMode: AppMode): Promise<RegistrationViewModel[]> {
     await this.isReady();
     const where = this.searchCriteriaToWhere(searchCriteria);
-    const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY change_time DESC ${this.parseLimit(
+    const orderBy = this.getOrderBy(searchCriteria);
+    const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY ${orderBy} DESC ${this.parseLimit(
       searchCriteria
     )};`;
     this.logger.debug('Query', DEBUG_TAG, { statement, searchCriteria });
