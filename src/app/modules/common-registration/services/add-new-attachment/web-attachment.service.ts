@@ -65,11 +65,8 @@ export class WebAttachmentService extends NewAttachmentService {
         const progress = event.loaded / event.total;
         if (progress < 1) {
           this.handleUploadProgress(progress, attachment);
-          return;
         }
       }
-
-      this.handleUploadFinished(attachment);
     };
 
     this.logger.debug('Creating preview image and starting image upload', this.DEBUG_TAG, logInfo);
@@ -92,6 +89,8 @@ export class WebAttachmentService extends NewAttachmentService {
     } catch (error) {
       await this.removeAttachmentInner(registrationId, attachment.id);
       throw error;
+    } finally {
+      this.handleUploadFinished(attachment);
     }
   }
 
