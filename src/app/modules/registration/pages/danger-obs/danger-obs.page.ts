@@ -35,6 +35,10 @@ export class DangerObsPage extends BasePage {
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
   }
 
+  get GeoHazardName(): string {
+    const name = GeoHazard[this.draft.registration.GeoHazardTID];
+    return name != 'Soil' ? name : 'Dirt';
+  }
   onBeforeLeave() {
     if (this.dangerSignKdvSubscription) {
       this.dangerSignKdvSubscription.unsubscribe();
@@ -42,7 +46,7 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
+    const kdvKey = `${this.GeoHazardName}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
       this.zone.run(() => {
         this.dangerSignKdv = val;
