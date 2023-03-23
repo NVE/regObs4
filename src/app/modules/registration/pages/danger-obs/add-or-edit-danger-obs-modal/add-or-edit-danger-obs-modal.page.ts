@@ -32,7 +32,11 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   }
 
   get isValid(): boolean {
-    return !this.dangerSignTid ? false : true;
+    if (this.dangerSignTid || !this.showDangerSignSelect) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   constructor(
