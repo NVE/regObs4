@@ -4,7 +4,7 @@
   <ng-container *ngIf="registrations$ | async as registrations; else skeleton">
     <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">
       <ion-item-divider>
-        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
+        <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
       </ion-item-divider>
       <ion-grid class="filter-panel">
         <ion-row>
