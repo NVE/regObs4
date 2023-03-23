@@ -4,10 +4,9 @@ import { takeUntil } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
-import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -19,15 +18,17 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
+  isNativePlatform: boolean;
 
   @Output() changeDaysBack = new EventEmitter<number>();
 
-  constructor(private userSettingService: UserSettingService, private platform: Platform) {
+  constructor(private userSettingService: UserSettingService) {
     super();
   }
 
   ngOnInit(): void {
-    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
+    this.isNativePlatform = Capacitor.isNativePlatform();
+    this.popupType = this.isNativePlatform ? 'action-sheet' : 'popover';
     this.userSettingService.currentGeoHazard$.pipe(takeUntil(this.ngDestroy$)).subscribe((currentGeoHazard) => {
       this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
     });
