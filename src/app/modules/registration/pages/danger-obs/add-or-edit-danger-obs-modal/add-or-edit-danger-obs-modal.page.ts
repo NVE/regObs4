@@ -37,7 +37,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   async ngOnInit() {
     this.showDangerSignCheckbox = this.geoHazard != GeoHazard.Ice;
-    this.geoHazardName = this.kdvService.getKdvName(this.geoHazard);
+    this.geoHazardName = this.kdvService.getCorrectGeoHazardName(this.geoHazard);
     const tranlations = await this.translateService.get(this.getAreaArray()).toPromise();
     this.commentTranslations = await this.translateService
       .get(['REGISTRATION.DANGER_OBS.AREA', 'REGISTRATION.DANGER_OBS.DESCRIPTION'])

@@ -35,7 +35,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
   }
 
   // used to return correct name on Soil, as it is still returned as Dirt from API
-  public getKdvName(GeoHazardTID: number): string {
+  public getCorrectGeoHazardName(GeoHazardTID: number): string {
     const name = GeoHazard[GeoHazardTID];
     return name != 'Soil' ? name : 'Dirt';
   }

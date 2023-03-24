@@ -41,7 +41,7 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const geoHazardName = this.kdvService.getKdvName(this.draft.registration.GeoHazardTID);
+    const geoHazardName = this.kdvService.getCorrectGeoHazardName(this.draft.registration.GeoHazardTID);
     const kdvKey = `${geoHazardName}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
       this.zone.run(() => {
