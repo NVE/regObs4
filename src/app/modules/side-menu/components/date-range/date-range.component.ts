@@ -89,8 +89,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   changeDateAndSetMode(days?: number): void {
-    const mode = days !== undefined ? 'predefined' : 'custom';
-    let date;
+    let date: moment.Moment;
 
     if (days !== undefined) {
       if (days === 0) {
@@ -106,6 +105,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
         date = moment().subtract(days, 'days');
       }
     }
+    this.searchCriteriaService.setUseDaysBack(true);
     this.searchCriteriaService.setFromDate(date.format('YYYY-MM-DD'), true);
   }
 
@@ -151,9 +151,9 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
 
   changeMode($event: CustomEvent<IRadioGroupRadioGroupChangeEventDetail>) {
     if ($event.detail.value === 'predefined') {
-      this.searchCriteriaService.
-    } || $event.detail.value === 'custom') {
-
+      this.searchCriteriaService.setUseDaysBack(true);
+    } else if ($event.detail.value === 'custom') {
+      this.searchCriteriaService.setUseDaysBack(false);
     }
   }
 }

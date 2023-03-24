@@ -177,13 +177,21 @@ export class SearchCriteriaService {
   // this.searchCriteria.next(...).
   // Fordelen med å bruke en replaysubject her er faktisk at historikken for søkrekriteriene huskes, som kan være
   // interessant å logge hvis man får en error feks.
-  // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
-  // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
 
   private useDaysBack: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   get useDaysBack$(): Observable<boolean> {
     return this.useDaysBack.asObservable();
+  }
+
+  /**
+   * Bytt mellom å bruke filter på antall dager tilbake eller å velge fra- og til-dato
+   * @param useDaysBack hvis true => bruk filter på antall dager tilbake, hvis false => velg fra- og til-dato
+   */
+  setUseDaysBack(useDaysBack: boolean) {
+    if (this.useDaysBack.value != useDaysBack) {
+      this.useDaysBack.next(useDaysBack);
+    }
   }
 
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
@@ -226,9 +234,7 @@ export class SearchCriteriaService {
           this.currentGeoHazard = geohazard;
         })
       ),
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
-      ),
+      this.userSettingService.daysBackForCurrentGeoHazard$,
       this.useMapExtent$,
       this.mapService.mapView$.pipe(
         map((mapView) => {
@@ -238,22 +244,23 @@ export class SearchCriteriaService {
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
-      // - FromDtObsTime: fromDate URL param
       debounceTime(50),
       map(
-        ([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]: [
+        ([criteria, langKey, geoHazards, daysBack, useMapExtent, extent]: [
           SearchCriteriaRequestDto,
           LangKey,
           GeoHazard[],
-          string,
+          number,
           boolean,
           WithinExtentCriteriaDto
         ]) => {
+          //this.useDaysBack ? this.daysBackToIsoDateTime(daysBack) : criteria.FromDtObsTime
+
           return {
             ...criteria,
             LangKey: langKey,
             SelectedGeoHazards: geoHazards,
-            FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
+            FromDtObsTime: this.useDaysBack.value ? this.daysBackToIsoDateTime(daysBack) : criteria.FromDtObsTime,
             Extent: useMapExtent ? extent : null,
           };
         }
@@ -271,7 +278,7 @@ export class SearchCriteriaService {
       FromDtObsTime: null,
       ToDtObsTime: null,
     };
-    this.useDaysBack.next(true);
+    this.setUseDaysBack(true);
     this.searchCriteriaChanges.next(criteria);
     this.resetEvent.next();
   }
@@ -287,16 +294,18 @@ export class SearchCriteriaService {
     const daysBackNumeric = this.convertToPositiveInteger(daysBack);
 
     let fromObsTime: string;
-    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
-      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
-    }
     if (daysBackNumeric != null) {
       fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
+      this.setUseDaysBack(true);
     }
-
+    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
+      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+      this.setUseDaysBack(false);
+    }
     let toObsTime: string;
     if (url.searchParams.get(URL_PARAM_TODATE)) {
       toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
+      this.setUseDaysBack(false);
     }
 
     if (fromObsTime && toObsTime) {
