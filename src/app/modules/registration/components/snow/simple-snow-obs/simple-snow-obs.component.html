@@ -2,7 +2,7 @@
   <app-kdv-icon-select
     title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS"
     kdvKey="Snow_SkiConditionsKDV"
-    [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"
+    [(value)]="snowSurfaceObservation.SkiConditionsTID"
     (valueChange)="save()"
     [filter]="filterSnowSurfaceTIDs"
   >
@@ -11,7 +11,7 @@
   <app-kdv-icon-select
     title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
     kdvKey="Snow_SnowSurfaceKDV"
-    [(value)]="draft.registration.SnowSurfaceObservation.SnowSurfaceTID"
+    [(value)]="snowSurfaceObservation.SnowSurfaceTID"
     (valueChange)="save()"
     [filter]="filterSnowSurfaceTIDs"
   >
@@ -40,7 +40,7 @@
 
   <div class="inline numeric-side-by-side">
     <app-numeric-input
-      [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
+      [(value)]="snowSurfaceObservation.NewSnowDepth24"
       title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
       [min]="0"
       [max]="999"
@@ -53,7 +53,7 @@
     ></app-numeric-input>
 
     <app-numeric-input
-      [(value)]="draft.registration.SnowSurfaceObservation.SnowDepth"
+      [(value)]="snowSurfaceObservation.SnowDepth"
       title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
       [min]="0"
       [max]="9999"
