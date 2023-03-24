@@ -4,7 +4,6 @@ import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -35,10 +34,6 @@ export class DangerObsPage extends BasePage {
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
   }
 
-  get GeoHazardName(): string {
-    const name = GeoHazard[this.draft.registration.GeoHazardTID];
-    return name != 'Soil' ? name : 'Dirt';
-  }
   onBeforeLeave() {
     if (this.dangerSignKdvSubscription) {
       this.dangerSignKdvSubscription.unsubscribe();
@@ -46,7 +41,8 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const kdvKey = `${this.GeoHazardName}_DangerSignKDV` as KdvKey;
+    const geoHazardName = this.kdvService.getKdvName(this.draft.registration.GeoHazardTID);
+    const kdvKey = `${geoHazardName}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
       this.zone.run(() => {
         this.dangerSignKdv = val;

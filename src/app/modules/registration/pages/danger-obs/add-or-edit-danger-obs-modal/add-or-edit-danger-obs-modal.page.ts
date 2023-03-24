@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 const COMMENT_SEPARATOR = ': ';
 @Component({
@@ -23,23 +24,20 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   commentTranslations: string[];
   showDangerSignSelect = true;
   showDangerSignCheckbox = false;
+  geoHazardName: string;
 
   interfaceOptions = {};
-
-  get GeoHazardName(): string {
-    const name = GeoHazard[this.geoHazard];
-    return name != 'Soil' ? name : 'Dirt';
-  }
 
   constructor(
     private modalController: ModalController,
     private translateService: TranslateService,
+    private kdvService: KdvService,
     private ngZone: NgZone
   ) {}
 
   async ngOnInit() {
     this.showDangerSignCheckbox = this.geoHazard != GeoHazard.Ice;
-
+    this.geoHazardName = this.kdvService.getKdvName(this.geoHazard);
     const tranlations = await this.translateService.get(this.getAreaArray()).toPromise();
     this.commentTranslations = await this.translateService
       .get(['REGISTRATION.DANGER_OBS.AREA', 'REGISTRATION.DANGER_OBS.DESCRIPTION'])

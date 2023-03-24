@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppMode, LangKey } from 'src/app/modules/common-core/models';
+import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { of, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -32,6 +32,12 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
 
   protected getDebugTag(): string {
     return 'KdvService';
+  }
+
+  // used to return correct name on Soil, as it is still returned as Dirt from API
+  public getKdvName(GeoHazardTID: number): string {
+    const name = GeoHazard[GeoHazardTID];
+    return name != 'Soil' ? name : 'Dirt';
   }
 
   public getKdvRepositoryByKeyObservable(key: KdvKey): Observable<KdvElement[]> {
