@@ -762,7 +762,11 @@ export class OfflineMapService {
     isDownloading: boolean,
     description?: string
   ) {
-    this.loggingService.error(error, DEBUG_TAG, `Error downloading map ${metadata.name}: ${description}`);
+    let message = `Error downloading map ${metadata.name}`;
+    if (description) {
+      message = `${message}: ${description}`;
+    }
+    this.loggingService.error(error, DEBUG_TAG, message, metadata);
     metadata.error = error || new Error('Unknown error');
     const errorMessageKey = isDownloading ? 'OFFLINE_MAP.STATUS.DOWNLOAD_ERROR' : 'OFFLINE_MAP.STATUS.UNZIP_ERROR';
     metadata.progress.description = await firstValueFrom(this.translateService.get(errorMessageKey));
