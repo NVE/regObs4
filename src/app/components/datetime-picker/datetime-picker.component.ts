@@ -4,8 +4,9 @@ import { OverlayEventDetail, DatetimePresentation } from '@ionic/core/components
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { firstValueFrom } from 'rxjs';
 import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
-import { DatePipe } from '@angular/common';
 import moment from 'moment';
+import { Capacitor } from '@capacitor/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-datetime-picker',
@@ -17,17 +18,20 @@ import moment from 'moment';
  * The date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
  */
 export class DatetimePickerComponent implements OnInit {
-  // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
-  // We need datePipe.transform to show the current date in the input node on web
-  _dateTime: string;
-  @Input() set dateTime(value: string) {
-    this._dateTime = this.datePipe.transform(value, 'yyyy-MM-ddTHH:mm');
-  }
+  @Input() dateTime;
 
-  get dateTime(): string {
-    return this._dateTime;
+  // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00  to web supported format yyyy-MM-DDTHH:mm
+  set dateFormatForWeb(value: string) {
+    this.dateTime = value;
   }
-  @Input() platform: boolean;
+  get dateFormatForWeb(): string {
+    //console.log('converted date', moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DDTHH:mm'));
+    if (this.dateTime) {
+      return moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DDTHH:mm');
+    } else {
+      return '';
+    }
+  }
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
   @Input() minDate: string; // Sets the min date selectable from the date picker
   @Input() maxDate: string; // Sets the max date selectable from the date picker
@@ -37,20 +41,25 @@ export class DatetimePickerComponent implements OnInit {
   @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
   @Input() datePickerOpen = false;
   @Input() resetable = false;
+  @Input() onTouch?: () => void;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
-
-  private tempDate: string;
+  isPlatformNative = false; //Capacitor.isNativePlatform();
 
   @ViewChild(IonModal) modal: IonModal;
 
-  constructor(private userSettings: UserSettingService, private datePipe: DatePipe) {}
+  constructor(private userSettings: UserSettingService) {}
 
   async ngOnInit(): Promise<void> {
+    console.log('input val', this.dateTime);
     if (!this.language) {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
       this.language = getLangKeyString(userSetting.language);
     }
+  }
+
+  onTouched() {
+    this.onTouch?.();
   }
 
   openModal() {
@@ -79,26 +88,27 @@ export class DatetimePickerComponent implements OnInit {
     }
   }
 
-  updateDateOnWeb(event: string) {
-    if (event) {
-      //validate user input
-      const correctDateFormat = moment(event).toISOString(true);
+  updateDateOnWeb(dateInput: string) {
+    //validate user input and format again to yyyy-mm-ddThh:mm:ss.000+01:00
+    console.log(dateInput);
+    if (dateInput) {
+      const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);
       const max = moment(this.maxDate).toISOString(true);
-      if (correctDateFormat < min) {
+      if (dateFormatWithTimeZone < min) {
         this.updateTempDateTime(min);
         this.dateTimeChange.emit(min);
         this.dateTime = min;
         return;
-      } else if (correctDateFormat > max) {
+      } else if (dateFormatWithTimeZone > max) {
         this.updateTempDateTime(max);
         this.dateTimeChange.emit(max);
         this.dateTime = max;
         return;
       }
 
-      this.updateTempDateTime(correctDateFormat);
-      this.dateTimeChange.emit(correctDateFormat);
+      this.updateTempDateTime(dateFormatWithTimeZone);
+      this.dateTimeChange.emit(dateFormatWithTimeZone);
     }
   }
 
@@ -107,8 +117,8 @@ export class DatetimePickerComponent implements OnInit {
    * @param event - CustomEvent<DatetimeChangeEventDetail>
    * @returns false if the event.detail.value is not defined or if it is an array.
    */
-  updateTempDateTime(event: string) {
-    if (!event || Array.isArray(event)) return false;
-    this.dateTime = event;
+  updateTempDateTime(dateInput: string): boolean {
+    if (!dateInput || Array.isArray(dateInput)) return false;
+    this.dateTime = dateInput;
   }
 }

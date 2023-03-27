@@ -16,14 +16,16 @@ import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail }
 })
 export class DateRangeComponent extends NgDestoryBase implements OnInit {
   fromDate: string;
-  toDate: string;
-  minDate = new Date('2010-01-01T00:00:00').toISOString();
-  maxDate = new Date().toISOString();
+  toDate: string | null = null;
+  minDate = moment(new Date('2010-01-01T00:00:00')).format('YYYY-MM-DD[T]HH:mm');
+  minDateToDate = '';
+  maxDate = moment(new Date()).format('YYYY-MM-DD[T]HH:mm');
   mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
   cachedDays: number | null = null;
   modeText$: Observable<string>;
-
+  cons: () => void;
+  //.format('YYYY-MM-DD[T]HH:mm')
   constructor(
     private searchCriteriaService: SearchCriteriaService,
     private userSettingService: UserSettingService,
@@ -52,8 +54,10 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   ngOnInit() {
     this.searchCriteriaService.resetEvent.subscribe(() => this.mode.next('predefined'));
     this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$)).subscribe((criteria) => {
-      this.fromDate = criteria.FromDtObsTime;
-      this.toDate = criteria.ToDtObsTime;
+      this.fromDate = moment(criteria.FromDtObsTime).format('YYYY-MM-DD[T]HH:mm');
+      if (criteria.ToDtObsTime) {
+        this.toDate = moment(criteria.ToDtObsTime).format('YYYY-MM-DD[T]HH:mm');
+      }
       if (this.cachedDays === null || this.cachedDays !== 0) {
         this.cachedDays = moment().diff(moment(this.fromDate), 'days');
       }
@@ -91,6 +95,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   setToDate(date: string): void {
+    console.log('yuppi');
     this.searchCriteriaService.setToDate(date);
   }
 
@@ -159,6 +164,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   changeMode($event: CustomEvent<IRadioGroupRadioGroupChangeEventDetail>) {
     if ($event.detail.value === 'predefined' || $event.detail.value === 'custom') {
       this.mode.next($event.detail.value);
+      this.toDate = null;
     }
   }
 }

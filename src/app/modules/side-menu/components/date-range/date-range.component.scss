@@ -27,3 +27,7 @@ ion-item::part(native) {
 ion-item::part(native) {
   border-bottom: 1px solid #dedede;
 }
+
+.no-margin {
+  margin-inline-end: 0px;
+}

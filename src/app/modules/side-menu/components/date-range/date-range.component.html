@@ -10,7 +10,7 @@
     </ion-item>
     <div slot="content">
       <ion-list>
-        <ion-radio-group [ngModel]="mode.value" (ionChange)="changeMode($event)">
+        <ion-radio-group style="width: 800px" [ngModel]="mode.value" (ionChange)="changeMode($event)">
           <ion-item>
             <ion-radio value="predefined" slot="start" (click)="changeDateAndSetMode()"></ion-radio>
             <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>
@@ -20,35 +20,30 @@
             <ion-label>{{ "MENU.CUSTOM_TIMESPAN" | translate }}</ion-label>
             <ion-radio slot="start" value="custom"></ion-radio>
           </ion-item>
-
-          <ion-item class="white-background" *ngIf="mode.value === 'custom'">
-            <ion-label slot="start">{{ "MENU.START_DATE" | translate }}</ion-label>
-            <app-datetime-picker
-              presentation="date"
-              [(dateTime)]="fromDate"
-              [minDate]="minDate"
-              [maxDate]="toDate || maxDate"
-              (dateTimeChange)="setFromDate($event)"
-              dateTimeFormat="dd. MMM yyyy"
-              textAlign="right"
-              buttonSize="large"
-            ></app-datetime-picker>
-          </ion-item>
-
-          <ion-item class="white-background" *ngIf="mode.value === 'custom'">
-            <ion-label slot="start">{{ "MENU.END_DATE" | translate }}</ion-label>
-            <app-datetime-picker
-              presentation="date"
-              [(dateTime)]="toDate"
-              [minDate]="fromDate || minDate"
-              [maxDate]="maxDate"
-              (dateTimeChange)="setToDate($event)"
-              dateTimeFormat="dd. MMM yyyy"
-              textAlign="right"
-              buttonSize="large"
-            ></app-datetime-picker>
-          </ion-item>
         </ion-radio-group>
+        <ion-item class="white-background" *ngIf="mode.value === 'custom'">
+          <label class="no-margin" slot="start">{{ "MENU.START_DATE" | translate }}</label>
+          <app-datetime-picker
+            presentation="date"
+            [(dateTime)]="fromDate"
+            [minDate]="minDate"
+            [maxDate]="toDate || maxDate"
+            (dateTimeChange)="setFromDate($event)"
+            textAlign="right"
+          ></app-datetime-picker>
+        </ion-item>
+
+        <ion-item class="white-background no-margin" *ngIf="mode.value === 'custom'">
+          <label class="no-margin" slot="start">{{ "MENU.END_DATE" | translate }}</label>
+          <app-datetime-picker
+            presentation="date"
+            [(dateTime)]="toDate"
+            [minDate]="fromDate || minDate"
+            [maxDate]="maxDate"
+            (dateTimeChange)="setToDate($event)"
+            textAlign="right"
+          ></app-datetime-picker>
+        </ion-item>
       </ion-list>
     </div>
   </ion-accordion>

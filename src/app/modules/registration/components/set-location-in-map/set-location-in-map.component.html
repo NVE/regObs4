@@ -116,9 +116,8 @@
           </div>
           <div class="flex-row">
             <div class="flex-grow box edit-button no-padding">
-              <ion-icon *ngIf="platform" name="calendar"></ion-icon>&nbsp;
+              <ion-icon *ngIf="isPlatformNative" name="calendar"></ion-icon>&nbsp;
               <app-datetime-picker
-                [platform]="platform"
                 [(dateTime)]="localDate"
                 [maxDate]="maxDate"
                 [minDate]="minDate"

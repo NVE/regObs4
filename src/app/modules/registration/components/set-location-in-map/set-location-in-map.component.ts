@@ -54,7 +54,7 @@ const previousUsedPlaceIcon = L.icon({
   styleUrls: ['./set-location-in-map.component.scss'],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
-  platform = Capacitor.isNativePlatform();
+  isPlatformNative = Capacitor.isNativePlatform();
   @Input() geoHazard: GeoHazard;
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
@@ -73,7 +73,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   /**
    * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
    */
-  @Input() showPolyline = this.platform;
+  @Input() showPolyline = this.isPlatformNative;
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
