@@ -23,13 +23,9 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   commentTranslations: string[];
   showDangerSignSelect = true;
   showDangerSignCheckbox = false;
+  geoHazardName: string;
 
   interfaceOptions = {};
-
-  get GeoHazardName(): string {
-    const name = GeoHazard[this.geoHazard];
-    return name != 'Soil' ? name : 'Dirt';
-  }
 
   get isValid(): boolean {
     if (this.dangerSignTid || !this.showDangerSignSelect) {
@@ -47,7 +43,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   async ngOnInit() {
     this.showDangerSignCheckbox = this.geoHazard != GeoHazard.Ice;
-
+    this.geoHazardName = GeoHazard[this.geoHazard];
     const tranlations = await this.translateService.get(this.getAreaArray()).toPromise();
     this.commentTranslations = await this.translateService
       .get(['REGISTRATION.DANGER_OBS.AREA', 'REGISTRATION.DANGER_OBS.DESCRIPTION'])
