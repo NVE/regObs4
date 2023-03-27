@@ -8,6 +8,7 @@ import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 /**
  * Used to add or edit danger observations.
@@ -41,8 +42,7 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const geoHazardName = this.kdvService.getCorrectGeoHazardName(this.draft.registration.GeoHazardTID);
-    const kdvKey = `${geoHazardName}_DangerSignKDV` as KdvKey;
+    const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
       this.zone.run(() => {
         this.dangerSignKdv = val;

@@ -34,15 +34,13 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     return 'KdvService';
   }
 
-  // used to return correct name on Soil, as it is still returned as Dirt from API
-  public getCorrectGeoHazardName(GeoHazardTID: number): string {
-    const name = GeoHazard[GeoHazardTID];
-    return name != 'Soil' ? name : 'Dirt';
-  }
-
   public getKdvRepositoryByKeyObservable(key: KdvKey): Observable<KdvElement[]> {
     return this.data$.pipe(
       map((kdvElementsresponse) => {
+        // used to return correct name on Soil, as it is still returned as Dirt from API
+        if (key.includes('Soil')) {
+          key = key.replace('Soil', 'Dirt') as KdvKey;
+        }
         const kdvsForGivenKey = kdvElementsresponse.KdvRepositories[key];
         if (!kdvsForGivenKey) {
           this.logger.log(`No KDVs for '${key}', returning empty array`, null, LogLevel.Warning, this.getDebugTag());
