@@ -51,7 +51,6 @@ export class DatetimePickerComponent implements OnInit {
   constructor(private userSettings: UserSettingService) {}
 
   async ngOnInit(): Promise<void> {
-    console.log('input val', this.dateTime);
     if (!this.language) {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
       this.language = getLangKeyString(userSetting.language);
@@ -90,7 +89,6 @@ export class DatetimePickerComponent implements OnInit {
 
   updateDateOnWeb(dateInput: string) {
     //validate user input and format again to yyyy-mm-ddThh:mm:ss.000+01:00
-    console.log(dateInput);
     if (dateInput) {
       const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);
