@@ -285,7 +285,7 @@ export class SearchCriteriaService {
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
 
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
-    const daysBackNumeric = this.convertToPositiveInteger(daysBack);
+    const daysBackNumeric = this.convertToInt(daysBack);
 
     let fromObsTime: string;
     let toObsTime: string;
@@ -385,12 +385,12 @@ export class SearchCriteriaService {
     params.apply();
   }
 
-  private convertToPositiveInteger(value: string): number {
+  private convertToInt(value: string): number {
     if (typeof value !== 'string') {
       return null;
     }
     const numericValue = Number(value);
-    if (Number.isInteger(numericValue) && numericValue > 0) {
+    if (Number.isInteger(numericValue)) {
       return numericValue;
     }
     return null;
