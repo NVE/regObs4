@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
-import { Platform } from '@ionic/angular';
+import { Platform, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
@@ -15,14 +15,13 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
   styleUrls: ['./observations-days-back.component.scss'],
 })
 export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
-  selectedDaysBack: number;
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
 
   @Output() changeDaysBack = new EventEmitter<number>();
 
-  constructor(private userSettingService: UserSettingService, private platform: Platform) {
+  constructor(public userSettingService: UserSettingService, private platform: Platform) {
     super();
   }
 
@@ -31,12 +30,6 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
     this.userSettingService.currentGeoHazard$.pipe(takeUntil(this.ngDestroy$)).subscribe((currentGeoHazard) => {
       this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
     });
-
-    this.userSettingService.daysBackForCurrentGeoHazard$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((selectedDaysBack) => {
-        this.selectedDaysBack = selectedDaysBack;
-      });
   }
 
   getDaysBackArray(geoHazard: GeoHazard) {
@@ -45,10 +38,11 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
     }));
   }
 
-  async save(): Promise<void> {
-    const daysBack = await this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: this.selectedDaysBack });
-    if (typeof daysBack === 'number') {
-      this.changeDaysBack.emit(daysBack);
+  async save(event: SelectCustomEvent<number>): Promise<void> {
+    const newDaysBack = event.detail.value;
+    const savedDaysBack = await this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: newDaysBack });
+    if (typeof savedDaysBack === 'number') {
+      this.changeDaysBack.emit(savedDaysBack);
     }
   }
 }
