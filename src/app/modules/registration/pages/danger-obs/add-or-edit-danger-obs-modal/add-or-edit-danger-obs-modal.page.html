@@ -43,6 +43,11 @@
       placeholder="REGISTRATION.DANGER_OBS.COMMENT_PLACEHOLDER"
     ></app-text-comment>
   </ion-list>
-  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="dangerObs">
+  <app-modal-save-or-delete-buttons
+    [saveDisabled]="!isValid"
+    (saveClicked)="ok()"
+    (deleteClicked)="delete()"
+    [showDelete]="dangerObs"
+  >
   </app-modal-save-or-delete-buttons>
 </ion-content>

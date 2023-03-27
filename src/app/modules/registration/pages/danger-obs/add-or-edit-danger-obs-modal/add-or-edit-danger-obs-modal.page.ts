@@ -28,6 +28,14 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   interfaceOptions = {};
 
+  get isValid(): boolean {
+    if (this.dangerSignTid || !this.showDangerSignSelect) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   constructor(
     private modalController: ModalController,
     private translateService: TranslateService,
