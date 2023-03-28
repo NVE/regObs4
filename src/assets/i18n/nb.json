@@ -241,6 +241,8 @@
       "LABEL": "Kompetanse",
       "TITLE": "Observatør"
     },
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt",
+    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
     "NICK_FILTER": {
       "PLACEHOLDER": "Søk på observatørnavn",
       "TITLE": "Navn"
@@ -249,9 +251,7 @@
       "TITLE": "Observasjonstype"
     },
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
-    "TITLE": "Observasjonsfilter",
-    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
-    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt"
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Skjemaer",
@@ -463,12 +463,12 @@
     "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
-    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} bilde(r) ble ikke lastet opp for observasjon gjort {{obsTime}}. Send oss gjerne bildet/bildene på epost, så vi kan sjekke manuelt hva som er galt.",
     "IMAGE_ERROR": {
       "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
       "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
       "UNKNOWN": "Vi fikk ikke til å legge til bildet/bildene. Det kan være noe galt med en bildefil eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
     },
+    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} bilde(r) ble ikke lastet opp for observasjon gjort {{obsTime}}. Send oss gjerne bildet/bildene på epost, så vi kan sjekke manuelt hva som er galt.",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
@@ -482,8 +482,8 @@
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
-    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
     "LOG_IN_AND_RESEND": "Logg inn og prøv å sende på nytt",
+    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",

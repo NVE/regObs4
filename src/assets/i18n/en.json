@@ -241,6 +241,8 @@
       "LABEL": "Competence",
       "TITLE": "Observer"
     },
+    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen",
+    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
     "NICK_FILTER": {
       "PLACEHOLDER": "Search by observer name",
       "TITLE": "Name"
@@ -249,9 +251,7 @@
       "TITLE": "Observation type"
     },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
-    "TITLE": "Observation filter",
-    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
-    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen"
+    "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Forms",
@@ -482,8 +482,8 @@
     "INVALID_IMAGE": "Sorry, only JPEG images is supported",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
-    "LOG_IN_AND_SEND": "Log in and submit",
     "LOG_IN_AND_RESEND": "Log in and try to send again",
+    "LOG_IN_AND_SEND": "Log in and submit",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location and time",
