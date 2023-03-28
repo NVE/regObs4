@@ -32,6 +32,10 @@ ion-item::part(native) {
   margin-inline-end: 6px;
 }
 
+ion-item {
+  --background-focused: none;
+}
+
 .custom-date-wrapper {
   display: flex;
   flex-direction: column;
