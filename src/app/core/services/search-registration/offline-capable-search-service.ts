@@ -255,20 +255,22 @@ export class OfflineCapableSearchService extends SearchService {
 
   private async removeDeletedRegistrations({ appMode, langKey }: CurrentSyncInfo) {
     const twoWeeksAgo = moment().subtract(14, 'days').format();
-    const criteria = {
+    const criteria: SearchCriteriaRequestDto = {
       FromDtChangeTime: twoWeeksAgo,
       FromDtObsTime: twoWeeksAgo,
       LangKey: langKey,
     };
-    const [{ TotalMatches: count }, appCount] = await Promise.all([
+    const [{ TotalMatches: apiCount }, appCount] = await Promise.all([
       firstValueFrom(super.SearchCount(criteria)),
       this.sqlite.getRegistrationCount(criteria, appMode),
     ]);
 
-    if (count !== appCount) {
+    if (appCount > apiCount) {
       const registrationsWithoutDeleted = await firstValueFrom(super.SearchGetRegIdsFromDeletedRegistrations(criteria));
       this.logger.debug(`Sync: Deleting registrations: ${registrationsWithoutDeleted}`, DEBUG_TAG);
       await this.sqlite.deleteRegistrations(registrationsWithoutDeleted, appMode);
+    } else {
+      this.logger.debug('Sync: No need to delete registrations', DEBUG_TAG, { appCount, apiCount, appMode, langKey });
     }
   }
 
@@ -296,8 +298,9 @@ export class OfflineCapableSearchService extends SearchService {
       // so we can fetch registrations added while we request registrations later
       const newSyncTimeMs = moment().valueOf();
       this.logger.debug('New sync time', DEBUG_TAG, { newSyncTimeMs });
-      await Promise.all([this.fetchAndInsertRegistrations(syncInfo), this.removeDeletedRegistrations(syncInfo)]);
+      await this.fetchAndInsertRegistrations(syncInfo);
       await this.updateSyncTime(syncInfo, newSyncTimeMs);
+      await this.removeDeletedRegistrations(syncInfo);
 
       for (const syncReq of syncRequests) {
         syncReq.next();
