@@ -5,6 +5,12 @@
   <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
   <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
   <app-update-observations></app-update-observations>
+  <ion-item>
+    <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
+      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
+      {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
+    </ion-button>
+  </ion-item>
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
@@ -81,11 +87,4 @@
       </ion-searchbar>
     </ion-item>
   </ng-container>
-
-  <ion-item>
-    <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
-      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
-      {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
-    </ion-button>
-  </ion-item>
 </ion-list>

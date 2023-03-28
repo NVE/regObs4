@@ -273,6 +273,7 @@ export class SearchCriteriaService {
       // ToDtObsTime: null,
     };
     this.setUseDaysBack(true);
+    await this.userSettingService.resetDaysBackForCurrentGeoHazard();
     this.searchCriteriaChanges.next(criteria);
     this.resetEvent.next();
   }
