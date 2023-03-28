@@ -1,7 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 
 import moment from 'moment';
 import {
@@ -24,12 +22,9 @@ import {
   EMPTY,
   exhaustMap,
   take,
-  concat,
   withLatestFrom,
   filter,
   shareReplay,
-  skipWhile,
-  distinctUntilChanged,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import {
@@ -43,7 +38,6 @@ import {
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
-import { TABS, TabsService } from 'src/app/pages/tabs/tabs.service';
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
@@ -74,20 +68,15 @@ export class OfflineCapableSearchService extends SearchService {
   private syncRequests = new BehaviorSubject<SyncRequest[]>([]);
   private lastSyncTime$: Observable<number>;
   private syncFinishedSuccessfully = new Subject<void>();
-  private outdatedObservationsToast: HTMLIonToastElement = null;
-  private outDatedObservationsToastDismisser = new Subject<void>();
 
   constructor(
     config: RegobsApiConfiguration,
     http: HttpClient,
     private logger: LoggingService,
     private sqlite: SqliteService,
-    private translateService: TranslateService,
     network: NetworkStatusService,
     private userSettings: UserSettingService,
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private toastController: ToastController,
-    tabsService: TabsService,
     private updateObsService: UpdateObservationsService
   ) {
     super(config, http);
@@ -110,38 +99,6 @@ export class OfflineCapableSearchService extends SearchService {
         })
       )
       .subscribe((d) => this.updateObsService.setOfflineObservationsLastFetched(d));
-
-    const canShowOutDatedObsToast$ = combineLatest([
-      tabsService.selectedTab$.pipe(map((tab) => [TABS.HOME, TABS.OBSERVATION_LIST].includes(tab))),
-      this.userSettings.userSetting$.pipe(
-        // Do not show the toast until start wizard is completed
-        map((userSettings) => userSettings.completedStartWizard && !userSettings.showGeoSelectInfo),
-        distinctUntilChanged()
-      ),
-    ]).pipe(
-      map(([tabShouldShowToast, startWizardCompleted]) => tabShouldShowToast && startWizardCompleted),
-      skipWhile((canShowToast) => canShowToast === false)
-    );
-
-    // Show or hide the "you have old observations" toast
-    combineLatest([canShowOutDatedObsToast$, this.lastSyncTime$])
-      .pipe(
-        switchMap(([tabShouldShowToast, lastSyncTimeMs]) => {
-          if (!tabShouldShowToast || !isOutOfSync(lastSyncTimeMs)) return this.dismissOldObservationsToast();
-
-          return concat(timer(5_000, 60_000)).pipe(
-            switchMap(() =>
-              isOutOfSync(lastSyncTimeMs)
-                ? this.showOrUpdateOldObservationsToast(lastSyncTimeMs)
-                : this.dismissOldObservationsToast()
-            ),
-            // If the user dismisses the toast, do not show it again.
-            // NB: The toast is shown again if lang or app mode changes, or if
-            takeUntil(this.outDatedObservationsToastDismisser)
-          );
-        })
-      )
-      .subscribe();
 
     // Whenever appMode or language changes trigger a new sync
     combineLatest([this.userSettings.appMode$, this.userSettings.language$]).subscribe(() => {
@@ -206,72 +163,6 @@ export class OfflineCapableSearchService extends SearchService {
     return this.getDbChangesTriggeredBySync$().pipe(
       switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode))
     );
-  }
-
-  private async dismissOldObservationsToast() {
-    this.outDatedObservationsToastDismisser.next();
-  }
-
-  private showOrUpdateOldObservationsToastMessage(header: string, content: string): string {
-    return `<strong>${header}</strong><br/>${content}`;
-  }
-
-  private async showOrUpdateOldObservationsToast(lastSyncMs: number) {
-    let message: string;
-    const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
-    const langKey = await firstValueFrom(this.userSettings.language$);
-    const timeSinceLastUpdated = moment(lastSyncMs).locale(LangKey[langKey]).fromNow();
-    const translations = await firstValueFrom(
-      this.translateService.get(
-        [
-          'DATA_LOAD.NO_FETCHED_OBSERVATIONS',
-          'DATA_LOAD.SERVICE_UNAVAILABLE',
-          'DATA_LOAD.OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS',
-        ],
-        {
-          timeSinceLastUpdated: timeSinceLastUpdated,
-        }
-      )
-    );
-
-    if (lastSyncMs < twoWeeksAgo) {
-      message = this.showOrUpdateOldObservationsToastMessage(
-        translations['DATA_LOAD.NO_FETCHED_OBSERVATIONS'],
-        translations['DATA_LOAD.SERVICE_UNAVAILABLE']
-      );
-    } else {
-      message = this.showOrUpdateOldObservationsToastMessage(
-        translations['DATA_LOAD.OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS'],
-        translations['DATA_LOAD.SERVICE_UNAVAILABLE']
-      );
-    }
-
-    if (this.outdatedObservationsToast == null) {
-      this.outdatedObservationsToast = await this.toastController.create({
-        message,
-        position: 'bottom',
-        icon: 'warning',
-        cssClass: 'sync-toast',
-        buttons: [
-          {
-            text: 'OK',
-            role: 'cancel',
-            handler: () => {
-              this.outDatedObservationsToastDismisser.next();
-            },
-          },
-        ],
-      });
-
-      this.outDatedObservationsToastDismisser.pipe(take(1)).subscribe(() => {
-        this.outdatedObservationsToast.dismiss();
-        this.outdatedObservationsToast = null;
-      });
-
-      await this.outdatedObservationsToast.present();
-    } else {
-      this.outdatedObservationsToast.message = message;
-    }
   }
 
   private startSyncInterval() {
