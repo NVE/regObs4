@@ -20,12 +20,12 @@ export class DatetimePickerComponent implements OnInit {
   @Input() dateTime;
   @Input() dateInputType?: 'datetime-local' | 'date' = 'datetime-local';
 
-  // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00  to web supported format yyyy-MM-DDTHH:mm
+  // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00 to web supported format yyyy-MM-DDTHH:mm
   set dateFormatForWeb(value: string) {
     this.dateTime = value;
   }
+
   get dateFormatForWeb(): string {
-    //console.log('converted date', moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DDTHH:mm'));
     if (this.dateTime) {
       const formatedDate =
         this.dateInputType == 'datetime-local'
@@ -36,6 +36,7 @@ export class DatetimePickerComponent implements OnInit {
       return '';
     }
   }
+
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
   @Input() minDate: string; // Sets the min date selectable from the date picker
   @Input() maxDate: string; // Sets the max date selectable from the date picker
@@ -47,7 +48,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() resetable = false;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
-  isPlatformNative = false; //Capacitor.isNativePlatform();
+  isPlatformNative = Capacitor.isNativePlatform();
 
   @ViewChild(IonModal) modal: IonModal;
 
@@ -86,14 +87,9 @@ export class DatetimePickerComponent implements OnInit {
     }
   }
 
-  selected(event) {
-    console.log(event);
-  }
-
   updateDateOnWeb(dateInput: string) {
-    //validate user input and format again to yyyy-mm-ddThh:mm:ss.000+01:00
-    console.log('dateinput picker', dateInput);
     if (dateInput) {
+      //validate user input and format to use timezone again yyyy-mm-ddThh:mm:ss.000+01:00
       const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);
       const max = moment(this.maxDate).toISOString(true);
