@@ -26,7 +26,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   cachedDays: number | null = null;
   modeText$: Observable<string>;
   cons: () => void;
-  //.format('YYYY-MM-DD[T]HH:mm')
   constructor(
     private searchCriteriaService: SearchCriteriaService,
     private userSettingService: UserSettingService,
@@ -56,9 +55,9 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   ngOnInit() {
     this.searchCriteriaService.resetEvent.subscribe(() => this.mode.next('predefined'));
     this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$)).subscribe((criteria) => {
-      this.fromDate = this.dateHelperService.webInputFormateDateString(criteria.FromDtObsTime);
+      this.fromDate = this.dateHelperService.getWebDateInputFormat(criteria.FromDtObsTime);
       if (criteria.ToDtObsTime) {
-        this.toDate = this.dateHelperService.webInputFormateDateString(criteria.ToDtObsTime);
+        this.toDate = this.dateHelperService.getWebDateInputFormat(criteria.ToDtObsTime);
       }
       if (this.cachedDays === null || this.cachedDays !== 0) {
         this.cachedDays = moment().diff(moment(this.fromDate), 'days');
@@ -92,13 +91,12 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  //min="2023-03-24T00:00"
   setFromDate(date: string): void {
-    this.fromDate = this.dateHelperService.webInputFormateDateString(date);
+    this.fromDate = this.dateHelperService.getWebDateInputFormat(date);
   }
 
   setToDate(date: string): void {
-    this.toDate = this.dateHelperService.webInputFormateDateString(date);
+    this.toDate = this.dateHelperService.getWebDateInputFormat(date);
   }
 
   onClickSetDate() {
