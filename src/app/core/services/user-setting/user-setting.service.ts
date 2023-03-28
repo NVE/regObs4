@@ -295,13 +295,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       }
     }
     if (daysBack != null) {
-      for (const geoHazard of userSetting.currentGeoHazard) {
-        const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
-        if (existingValue.daysBack !== daysBack) {
-          existingValue.daysBack = daysBack;
-          changed = true;
-        }
-      }
+      changed = this.setDaysBackForCurrentGeoHazard(daysBack, userSetting);
     }
     if (changed) {
       this.saveUserSettings(userSetting);
@@ -309,5 +303,31 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     } else {
       return new Promise((resolve) => resolve(false));
     }
+  }
+
+  /**
+   * Reset daysBack to default for current geo hazard
+   */
+  async resetDaysBackForCurrentGeoHazard(): Promise<void> {
+    const currentGeoHazards = await firstValueFrom(this.currentGeoHazard$);
+    const defaultDaysBackForCurrentGeoHazard = DEFAULT_USER_SETTINGS(null).observationDaysBack.find(
+      (x) => x.geoHazard === currentGeoHazards[0]
+    );
+    const userSettings = await firstValueFrom(this.userSetting$);
+    if (this.setDaysBackForCurrentGeoHazard(defaultDaysBackForCurrentGeoHazard.daysBack, userSettings)) {
+      this.saveUserSettings(userSettings);
+    }
+  }
+
+  private setDaysBackForCurrentGeoHazard(daysBack: number, userSettings: UserSetting): boolean {
+    let changed = false;
+    for (const geoHazard of userSettings.currentGeoHazard) {
+      const existingValue = userSettings.observationDaysBack.find((x) => x.geoHazard === geoHazard);
+      if (existingValue.daysBack !== daysBack) {
+        existingValue.daysBack = daysBack;
+        changed = true;
+      }
+    }
+    return changed;
   }
 }
