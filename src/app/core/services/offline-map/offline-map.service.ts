@@ -294,11 +294,18 @@ export class OfflineMapService {
           done.next();
           done.complete();
           this.onUnzipStepComplete(parts, mapPackage, partNumber);
+        } else if (status.status === 'PENDING') {
+          this.reportThatWeAreWaiting(mapPackage, status.progress, partNumber, parts.length, 'Downloading');
         } else if (status.status === 'ERROR') {
           done.next();
           done.complete();
           const isDownloading = status.task === 'download';
-          this.onUnzipOrDownloadError(mapPackage, null, isDownloading);
+          this.onUnzipOrDownloadError(
+            mapPackage,
+            null,
+            isDownloading,
+            `Status: ${status.status}, reason: ${status.reason}`
+          );
         } else {
           if (part) {
             const partOfStep: 'Downloading' | 'Unzipping' = status.task === 'download' ? 'Downloading' : 'Unzipping';
@@ -378,6 +385,25 @@ export class OfflineMapService {
         }),
       (error) => this.onUnzipOrDownloadError(mapPackage, error, false)
     );
+  }
+
+  private async reportThatWeAreWaiting(
+    mapPackage: OfflineMapPackage,
+    progress: number,
+    partNumber: number,
+    totalParts: number,
+    taskType: 'Downloading' | 'Unzipping'
+  ): Promise<void> {
+    this.onProgress(mapPackage, {
+      step: ProgressStep.download,
+      percentage: this.calculateTotalProgress(progress, partNumber, totalParts, taskType),
+      description: await firstValueFrom(
+        this.translateService.get('OFFLINE_MAP.STATUS.WAITING_FOR_NETWORK', {
+          n: partNumber + 1,
+          totalParts,
+        })
+      ),
+    });
   }
 
   private async reportProgress(
@@ -730,8 +756,17 @@ export class OfflineMapService {
     this.downloadAndUnzipProgress.next([...unzipProgress, metadata]);
   }
 
-  private async onUnzipOrDownloadError(metadata: OfflineMapPackage, error: Error, isDownloading: boolean) {
-    this.loggingService.error(error, DEBUG_TAG, `Error downloading map ${metadata.name}`);
+  private async onUnzipOrDownloadError(
+    metadata: OfflineMapPackage,
+    error: Error,
+    isDownloading: boolean,
+    description?: string
+  ) {
+    let message = `Error downloading map ${metadata.name}`;
+    if (description) {
+      message = `${message}: ${description}`;
+    }
+    this.loggingService.error(error, DEBUG_TAG, message, metadata);
     metadata.error = error || new Error('Unknown error');
     const errorMessageKey = isDownloading ? 'OFFLINE_MAP.STATUS.DOWNLOAD_ERROR' : 'OFFLINE_MAP.STATUS.UNZIP_ERROR';
     metadata.progress.description = await firstValueFrom(this.translateService.get(errorMessageKey));

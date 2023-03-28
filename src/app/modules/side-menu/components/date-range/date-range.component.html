@@ -9,25 +9,25 @@
       </ion-text>
     </ion-item>
     <div slot="content">
-      <ion-list>
-        <ion-radio-group [ngModel]="mode.value" (ionChange)="changeMode($event)">
-          <ion-item>
-            <ion-radio value="predefined" slot="start" (click)="changeDateAndSetMode()"></ion-radio>
-            <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>
+      <ion-list *ngIf="mode$ | async as mode">
+        <ion-radio-group [value]="mode" (ionChange)="changeMode($event)">
+          <ion-item (click)="setUseDaysBack()">
+            <ion-radio slot="start" value="predefined"></ion-radio>
+            <app-observations-days-back (changeDaysBack)="setUseDaysBack()"></app-observations-days-back>
           </ion-item>
 
           <ion-item>
-            <ion-label>{{ "MENU.CUSTOM_TIMESPAN" | translate }}</ion-label>
             <ion-radio slot="start" value="custom"></ion-radio>
+            <ion-label>{{ "MENU.CUSTOM_TIMESPAN" | translate }}</ion-label>
           </ion-item>
 
-          <ion-item class="white-background" *ngIf="mode.value === 'custom'">
+          <ion-item class="white-background" *ngIf="mode === 'custom'">
             <ion-label slot="start">{{ "MENU.START_DATE" | translate }}</ion-label>
             <app-datetime-picker
               presentation="date"
-              [(dateTime)]="fromDate"
+              [dateTime]="fromDate$ | async"
               [minDate]="minDate"
-              [maxDate]="toDate || maxDate"
+              [maxDate]="(toDate$ | async) || maxDate"
               (dateTimeChange)="setFromDate($event)"
               dateTimeFormat="dd. MMM yyyy"
               textAlign="right"
@@ -35,12 +35,12 @@
             ></app-datetime-picker>
           </ion-item>
 
-          <ion-item class="white-background" *ngIf="mode.value === 'custom'">
+          <ion-item class="white-background" *ngIf="mode === 'custom'">
             <ion-label slot="start">{{ "MENU.END_DATE" | translate }}</ion-label>
             <app-datetime-picker
               presentation="date"
-              [(dateTime)]="toDate"
-              [minDate]="fromDate || minDate"
+              [dateTime]="toDate$ | async"
+              [minDate]="(fromDate$ | async) || minDate"
               [maxDate]="maxDate"
               (dateTimeChange)="setToDate($event)"
               dateTimeFormat="dd. MMM yyyy"

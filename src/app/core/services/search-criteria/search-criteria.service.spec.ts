@@ -83,17 +83,22 @@ describe('SearchCriteriaService', () => {
 
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    await userSettingService.saveGeoHazardsAndDaysBack({ daysBack: 1 });
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
-    //check that criteria contains correct from time. Should be 2 days earlier at midnight
-    expect(criteria.FromDtObsTime).toEqual('2000-12-22T00:00:00.000+01:00');
+    //check that criteria contains correct from time. Should be 1 days earlier at midnight
+    expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
 
     await service.applyQueryParams();
 
-    //check fromDate parameter in url. Should be 2 days earlier based on local time
+    //check daysBack parameter in url. Should be 1 days earlier based on local time
     const url = new URL(document.location.href);
-    expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
+    expect(url.searchParams.get('daysBack')).toEqual('1');
+
+    // Check that fromDate and toDate are not in url while daysBack are there
+    expect(url.searchParams.get('fromDate')).toBeNull();
+    expect(url.searchParams.get('toDate')).toBeNull();
   }));
   it('nick name filter should work', fakeAsync(async () => {
     let criteria;

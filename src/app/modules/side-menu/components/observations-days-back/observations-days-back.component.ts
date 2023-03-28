@@ -7,6 +7,7 @@ import { settings } from '../../../../../settings';
 import { SelectInterface } from '@ionic/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { Capacitor } from '@capacitor/core';
+import { SelectCustomEvent } from '@ionic/angular';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -14,7 +15,6 @@ import { Capacitor } from '@capacitor/core';
   styleUrls: ['./observations-days-back.component.scss'],
 })
 export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
-  selectedDaysBack: number;
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
@@ -32,12 +32,6 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
     this.userSettingService.currentGeoHazard$.pipe(takeUntil(this.ngDestroy$)).subscribe((currentGeoHazard) => {
       this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
     });
-
-    this.userSettingService.daysBackForCurrentGeoHazard$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((selectedDaysBack) => {
-        this.selectedDaysBack = selectedDaysBack;
-      });
   }
 
   getDaysBackArray(geoHazard: GeoHazard) {
@@ -46,10 +40,11 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
     }));
   }
 
-  async save(): Promise<void> {
-    const daysBack = await this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: this.selectedDaysBack });
-    if (typeof daysBack === 'number') {
-      this.changeDaysBack.emit(daysBack);
+  async save(event: SelectCustomEvent<number>): Promise<void> {
+    const newDaysBack = event.detail.value;
+    const savedDaysBack = await this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: newDaysBack });
+    if (typeof savedDaysBack === 'number') {
+      this.changeDaysBack.emit(savedDaysBack);
     }
   }
 }
