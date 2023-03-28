@@ -250,7 +250,7 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observasjonstype"
     },
-    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
+    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill alle filtre",
     "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
