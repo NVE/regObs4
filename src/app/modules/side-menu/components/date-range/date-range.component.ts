@@ -8,6 +8,7 @@ import { IonAccordionGroup } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { getLangKeyString } from '../../../common-core/helpers';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 @Component({
   selector: 'app-date-range',
@@ -17,9 +18,9 @@ import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail }
 export class DateRangeComponent extends NgDestoryBase implements OnInit {
   fromDate: string;
   toDate: string | null = null;
-  minDate = moment(new Date('2010-01-01T00:00:00')).format('YYYY-MM-DD[T]HH:mm');
+  minDate = moment(new Date('2010-01-01')).format('YYYY-MM-DD');
   minDateToDate = '';
-  maxDate = moment(new Date()).format('YYYY-MM-DD[T]HH:mm');
+  maxDate = moment(new Date()).format('YYYY-MM-DD');
   mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
   cachedDays: number | null = null;
@@ -29,7 +30,8 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   constructor(
     private searchCriteriaService: SearchCriteriaService,
     private userSettingService: UserSettingService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private dateHelperService: DateHelperService
   ) {
     super();
     this.modeText$ = combineLatest([
@@ -54,9 +56,9 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   ngOnInit() {
     this.searchCriteriaService.resetEvent.subscribe(() => this.mode.next('predefined'));
     this.searchCriteriaService.searchCriteria$.pipe(takeUntil(this.ngDestroy$)).subscribe((criteria) => {
-      this.fromDate = moment(criteria.FromDtObsTime).format('YYYY-MM-DD[T]HH:mm');
+      this.fromDate = this.dateHelperService.webInputFormateDateString(criteria.FromDtObsTime);
       if (criteria.ToDtObsTime) {
-        this.toDate = moment(criteria.ToDtObsTime).format('YYYY-MM-DD[T]HH:mm');
+        this.toDate = this.dateHelperService.webInputFormateDateString(criteria.ToDtObsTime);
       }
       if (this.cachedDays === null || this.cachedDays !== 0) {
         this.cachedDays = moment().diff(moment(this.fromDate), 'days');
@@ -90,13 +92,18 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     }
   }
 
+  //min="2023-03-24T00:00"
   setFromDate(date: string): void {
-    this.searchCriteriaService.setFromDate(date);
+    this.fromDate = this.dateHelperService.webInputFormateDateString(date);
   }
 
   setToDate(date: string): void {
-    console.log('yuppi');
-    this.searchCriteriaService.setToDate(date);
+    this.toDate = this.dateHelperService.webInputFormateDateString(date);
+  }
+
+  onClickSetDate() {
+    this.searchCriteriaService.setFromDate(moment(this.fromDate).toISOString(true));
+    this.toDate && this.searchCriteriaService.setToDate(moment(this.toDate).toISOString(true));
   }
 
   changeDateAndSetMode(days?: number): void {

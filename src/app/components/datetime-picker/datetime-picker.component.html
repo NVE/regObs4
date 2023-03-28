@@ -44,9 +44,10 @@
 <ng-template #showWebDateInput>
   <input
     class="input-field date"
-    type="datetime-local"
+    [type]="dateInputType"
     id="dateFormatForWeb"
     name="dateFormatForWeb"
+    (onSelect)="selected($event)"
     (change)="updateDateOnWeb($event.target.value)"
     [value]="dateFormatForWeb"
     (blur)="updateDateOnWeb($event.target.value)"

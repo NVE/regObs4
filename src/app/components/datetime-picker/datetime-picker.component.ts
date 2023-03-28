@@ -6,7 +6,6 @@ import { firstValueFrom } from 'rxjs';
 import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
 import moment from 'moment';
 import { Capacitor } from '@capacitor/core';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-datetime-picker',
@@ -19,6 +18,7 @@ import { FormControl } from '@angular/forms';
  */
 export class DatetimePickerComponent implements OnInit {
   @Input() dateTime;
+  @Input() dateInputType?: 'datetime-local' | 'date' = 'datetime-local';
 
   // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00  to web supported format yyyy-MM-DDTHH:mm
   set dateFormatForWeb(value: string) {
@@ -27,7 +27,11 @@ export class DatetimePickerComponent implements OnInit {
   get dateFormatForWeb(): string {
     //console.log('converted date', moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DDTHH:mm'));
     if (this.dateTime) {
-      return moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DDTHH:mm');
+      const formatedDate =
+        this.dateInputType == 'datetime-local'
+          ? moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DD[T]HH:mm')
+          : moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DD');
+      return formatedDate;
     } else {
       return '';
     }
@@ -41,7 +45,6 @@ export class DatetimePickerComponent implements OnInit {
   @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
   @Input() datePickerOpen = false;
   @Input() resetable = false;
-  @Input() onTouch?: () => void;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
   isPlatformNative = false; //Capacitor.isNativePlatform();
@@ -55,10 +58,6 @@ export class DatetimePickerComponent implements OnInit {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
       this.language = getLangKeyString(userSetting.language);
     }
-  }
-
-  onTouched() {
-    this.onTouch?.();
   }
 
   openModal() {
@@ -87,8 +86,13 @@ export class DatetimePickerComponent implements OnInit {
     }
   }
 
+  selected(event) {
+    console.log(event);
+  }
+
   updateDateOnWeb(dateInput: string) {
     //validate user input and format again to yyyy-mm-ddThh:mm:ss.000+01:00
+    console.log('dateinput picker', dateInput);
     if (dateInput) {
       const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);

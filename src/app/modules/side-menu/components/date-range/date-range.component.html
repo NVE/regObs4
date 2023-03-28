@@ -21,28 +21,37 @@
             <ion-radio slot="start" value="custom"></ion-radio>
           </ion-item>
         </ion-radio-group>
-        <ion-item class="white-background" *ngIf="mode.value === 'custom'">
-          <label class="no-margin" slot="start">{{ "MENU.START_DATE" | translate }}</label>
-          <app-datetime-picker
-            presentation="date"
-            [(dateTime)]="fromDate"
-            [minDate]="minDate"
-            [maxDate]="toDate || maxDate"
-            (dateTimeChange)="setFromDate($event)"
-            textAlign="right"
-          ></app-datetime-picker>
-        </ion-item>
+        <ion-item *ngIf="mode.value === 'custom'">
+          <div class="custom-date-wrapper">
+            <div>
+              <label>{{ "MENU.START_DATE" | translate }}</label>
+              <app-datetime-picker
+                presentation="date"
+                dateInputType="date"
+                [(dateTime)]="fromDate"
+                [minDate]="minDate"
+                [maxDate]="toDate || maxDate"
+                (dateTimeChange)="setFromDate($event)"
+                textAlign="right"
+              ></app-datetime-picker>
+            </div>
 
-        <ion-item class="white-background no-margin" *ngIf="mode.value === 'custom'">
-          <label class="no-margin" slot="start">{{ "MENU.END_DATE" | translate }}</label>
-          <app-datetime-picker
-            presentation="date"
-            [(dateTime)]="toDate"
-            [minDate]="fromDate || minDate"
-            [maxDate]="maxDate"
-            (dateTimeChange)="setToDate($event)"
-            textAlign="right"
-          ></app-datetime-picker>
+            <div>
+              <label>{{ "MENU.END_DATE" | translate }}</label>
+              <app-datetime-picker
+                presentation="date"
+                dateInputType="date"
+                [(dateTime)]="toDate"
+                [minDate]="fromDate || minDate"
+                [maxDate]="maxDate"
+                (dateTimeChange)="setToDate($event)"
+                textAlign="right"
+              ></app-datetime-picker>
+            </div>
+            <ion-button (click)="onClickSetDate()" size="default" expand="block" fill="solid" color="primary">
+              Filtrer
+            </ion-button>
+          </div>
         </ion-item>
       </ion-list>
     </div>
