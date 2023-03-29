@@ -247,6 +247,8 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observasjonstype"
     },
+    "REGION_FILTER_B_REGIONS_TITLE": "B-regioner",
+    "REGION_FILTER_TITLE_SNOW": "Snøskredregioner",
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill alle filtre",
     "TITLE": "Observasjonsfilter"
   },

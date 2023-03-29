@@ -40,9 +40,8 @@
   <!-- Avalanche Regions -->
   <ng-container *ngIf="regions$ | async as regions">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <!-- TODO: Translations -->
       <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
-        Snøskredregioner
+        {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
       </app-selected-items-counter-label>
     </ion-list-header>
 
@@ -58,14 +57,12 @@
               color="varsom-dark-blue"
             >
             </ion-checkbox>
-            <ion-label class="ion-padding-start"
-              >{{ region.name }}<span *ngIf="region.type === 'B'">&nbsp;(B)</span></ion-label
-            >
+            <ion-label class="ion-padding-start">{{ region.name }}</ion-label>
           </ion-item>
         </ng-container>
 
         <!-- Skilletekst -->
-        <ion-item class="unselectable">B-regioner</ion-item>
+        <ion-item class="unselectable">{{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}</ion-item>
 
         <!-- B regioner -->
         <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
@@ -77,9 +74,7 @@
               color="varsom-dark-blue"
             >
             </ion-checkbox>
-            <ion-label class="ion-padding-start"
-              >{{ region.name }}<span *ngIf="region.type === 'B'">&nbsp;(B)</span></ion-label
-            >
+            <ion-label class="ion-padding-start">{{ region.name }}<span>&nbsp;(B)</span></ion-label>
           </ion-item>
         </ng-container>
       </ion-list>
