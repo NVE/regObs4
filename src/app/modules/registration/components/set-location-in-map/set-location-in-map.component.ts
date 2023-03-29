@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
 import { firstValueFrom, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -257,6 +257,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
     this.mapView
       .pipe(
+        startWith(this.getCurrentMapView()),
         // ikke søke på nytt hvis kartsenter ikke flytter seg nevneverdig (f.eks. ved zoom)
         distinctUntilChanged((prev, curr) => mapCenterIsStableOrNotAvailable(prev, curr)),
         takeUntil(this.ngDestroy$)
@@ -307,8 +308,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             dashArray: '10, 10',
             fill: true,
             fillOpacity: 0.1,
-          }
-        }
+          },
+        },
       },
       draw: {
         polyline: false,
