@@ -14,9 +14,9 @@
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label
-        [selectedItemsCount]="observationTypesSelectedCount"
-      ></app-selected-items-counter-label>
+      <app-selected-items-counter-label [selectedItemsCount]="observationTypesSelectedCount">
+        {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
+      </app-selected-items-counter-label>
     </ion-list-header>
 
     <ion-item>
