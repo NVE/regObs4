@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
@@ -32,6 +32,7 @@ export class ObservationListPage implements OnInit {
   popupType: SelectInterface;
   noMapExtentAvailable$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
+  isFetchingObservations$: Observable<boolean>;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -59,7 +60,7 @@ export class ObservationListPage implements OnInit {
       map(([criteria]) => criteria)
     );
     this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaWhenThisPageIsActive$);
-
+    this.isFetchingObservations$ = this.searchResult.isFetching$;
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
 
     this.shouldDisableScroller$ = combineLatest([
@@ -117,10 +118,13 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
-  toggleFilterByMapView(event: SegmentCustomEvent) {
-    const value = event.target.value as MapSectionFilter;
-    const isExtentFilterActive = value == 'all' ? false : true;
-    this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);
+  async toggleFilterByMapView(event: SegmentCustomEvent) {
+    const isDisabled = await firstValueFrom(this.noMapExtentAvailable$);
+    if (!isDisabled) {
+      const value = event.target.value as MapSectionFilter;
+      const isExtentFilterActive = value == 'all' ? false : true;
+      this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);
+    }
   }
 
   refresh(): void {
