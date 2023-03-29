@@ -166,20 +166,21 @@ export class TripLoggerService {
       .pipe(
         take(1),
         filter((trip) => !!trip),
+        tap((trip) => this.loggingService.debug('Stopping trip', DEBUG_TAG, trip)),
         concatMap((trip) => this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid })),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         concatMap(() => this.infoMessage(false))
       )
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
+          this.loggingService.debug('Trip stopped', DEBUG_TAG);
           this.tripStartedSubject.next(false);
         },
-        async (error) => {
+        error: async (error) => {
           this.loggingService.error(error, DEBUG_TAG, 'Could not stop trip');
-          this.tripStartedSubject.next(false);
           await this.showTripErrorMessage(false);
-        }
-      );
+        },
+      });
   }
 
   private deleteLegacyTripsFromDb() {
