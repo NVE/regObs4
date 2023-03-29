@@ -282,6 +282,7 @@ export class SearchCriteriaService {
     const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,
+      SelectedRegions: null,
       ObserverNickName: null,
       PropertyFilters: null,
       // FromDtObsTime: null, Do not remove FromDtObsTime filter, if so we would fetch all obs from dawn of time
