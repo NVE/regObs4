@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, EMPTY, firstValueFrom, Observable, of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, share, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   AUTOMATIC_STATIONS,
   SearchCriteriaService,
@@ -20,6 +20,7 @@ import {
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 interface ObservationTypeView {
   name: string;
@@ -115,7 +116,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       nickName: true,
     },
   };
-  regions$: Observable<AvalancheRegion[]>;
+
+  regions$: Observable<{ a: AvalancheRegion[]; b: AvalancheRegion[] }>;
+  nRegionsSelected$: Observable<number>;
 
   get avalancheRegionTrackById() {
     return avalancheRegionTrackById;
@@ -128,23 +131,43 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     private translateService: TranslateService,
     private cdr: ChangeDetectorRef,
     private kdv: KdvService,
-    private http: HttpClient
+    private http: HttpClient,
+    private logger: LoggingService
   ) {
     super();
     this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
-      switchMap((geoHazards) =>
-        geoHazards.includes(GeoHazard.Snow)
-          ? http.get<AvalancheRegion[]>('./assets/json/avalancheRegions.json')
-          : of(null)
-      ),
+      switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : of(null))),
+      share()
+    );
+    this.nRegionsSelected$ = this.regions$.pipe(
+      map((regions) => {
+        if (regions) {
+          return [...regions.a.filter((r) => r.checked), ...regions.b.filter((r) => r.checked)].length;
+        }
+        return 0;
+      })
+    );
+  }
+
+  private getSnowRegions() {
+    // Fetch avalanche regions from assets
+    return this.http.get<AvalancheRegion[]>('./assets/json/avalancheRegions.json').pipe(
+      tap(() => this.logger.debug('Fetched regions from assets', DEBUG_TAG)),
+      // Use search criteria to mark what regions are checked
       switchMap((regions) =>
-        regions
-          ? searchCriteriaService.searchCriteria$.pipe(
-              map((searchCriteria) =>
-                regions.map((r) => ({ ...r, checked: (searchCriteria.SelectedRegions || []).includes(r.id) }))
-              )
-            )
-          : of(null)
+        this.searchCriteriaService.searchCriteria$.pipe(
+          map((searchCriteria) => {
+            const markChecked = (r: AvalancheRegion) => ({
+              ...r,
+              checked: (searchCriteria.SelectedRegions || []).includes(r.id),
+            });
+
+            return {
+              a: regions.filter((r) => r.type === 'A').map((r) => markChecked(r)),
+              b: regions.filter((r) => r.type === 'B').map((r) => markChecked(r)),
+            };
+          })
+        )
       )
     );
   }

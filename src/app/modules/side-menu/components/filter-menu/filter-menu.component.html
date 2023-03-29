@@ -41,12 +41,34 @@
   <ng-container *ngIf="regions$ | async as regions">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
       <!-- TODO: Translations -->
-      <ion-label>Snøskredregioner</ion-label>
+      <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
+        Snøskredregioner
+      </app-selected-items-counter-label>
     </ion-list-header>
 
     <ion-item>
       <ion-list lines="none" style="max-height: 400px">
-        <ng-container *ngFor="let region of regions; trackBy: avalancheRegionTrackById">
+        <!-- A regioner -->
+        <ng-container *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
+          <ion-item class="item-height">
+            <ion-checkbox
+              [value]="region"
+              [checked]="region.checked"
+              (ionChange)="regionCheckBoxChanged($event)"
+              color="varsom-dark-blue"
+            >
+            </ion-checkbox>
+            <ion-label class="ion-padding-start"
+              >{{ region.name }}<span *ngIf="region.type === 'B'">&nbsp;(B)</span></ion-label
+            >
+          </ion-item>
+        </ng-container>
+
+        <!-- Skilletekst -->
+        <ion-item class="unselectable">B-regioner</ion-item>
+
+        <!-- B regioner -->
+        <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
           <ion-item class="item-height">
             <ion-checkbox
               [value]="region"
