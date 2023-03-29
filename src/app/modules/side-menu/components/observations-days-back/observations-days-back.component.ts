@@ -22,7 +22,7 @@ export class ObservationsDaysBackComponent extends NgDestoryBase implements OnIn
 
   @Output() changeDaysBack = new EventEmitter<number>();
 
-  constructor(private userSettingService: UserSettingService) {
+  constructor(public userSettingService: UserSettingService) {
     super();
   }
 
