@@ -31,12 +31,17 @@ export class SearchResult<TViewModel> {
   private forceUpdate = new Subject<void>();
   private isFetching = new BehaviorSubject<boolean>(false);
   isFetching$ = this.isFetching.asObservable();
+  private logger: LoggingService;
+  private debugTag = 'SearchResult';
+  error$ = new Subject<Error>();
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
-    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>
+    fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
+    logger: LoggingService
   ) {
     this.registrations$ = this.createRegistrationsObservable(searchCriteria$, fetchFunc);
+    this.logger = logger;
   }
 
   update() {
@@ -51,11 +56,15 @@ export class SearchResult<TViewModel> {
       map(([searchCriteria]) => searchCriteria),
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetching.next(true)),
-      switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
-      catchError(() => {
-        this.isFetching.next(false);
-        return of([]);
-      }),
+      switchMap((criteria) =>
+        fetchFunc(criteria as SearchCriteriaRequestDto).pipe(
+          catchError((err) => {
+            this.logger.error(err, this.debugTag, 'Could not fetch registrations');
+            this.error$.next(err);
+            return of([]);
+          })
+        )
+      ),
       tap(() => this.isFetching.next(false)),
       shareReplay(1)
     );
@@ -75,14 +84,19 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   allFetchedForCriteria$ = this.allFetchedForCriteria.pipe(distinctUntilChanged());
   private maxItemsFetched = new BehaviorSubject<boolean>(false);
   maxItemsFetched$ = this.maxItemsFetched.pipe(distinctUntilChanged());
+  error$ = new Subject<Error>();
+  private logger: LoggingService;
+  private debugTag = 'PagedSearchResult';
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
     // Not sure what is best here, provide SearchService to this class, or provide the flexibility to create these
     // functions outside
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
+    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>,
+    logger: LoggingService
   ) {
+    this.logger = logger;
     this.registrations$ = searchCriteria$.pipe(
       // For every new search criteria, create a paged search and check what the total count is
       switchMap((searchCriteria) =>
@@ -141,6 +155,11 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       // the current search is finished.
       concatMap((searchCriteria) =>
         fetchFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+          catchError((err) => {
+            this.logger.error(err, this.debugTag, 'Could not fetch registrations');
+            this.error$.next(err);
+            return of([]);
+          }),
           // Include search criteria with search results so that we know which search criteria the results belong to
           map((result) => ({ searchCriteria, result }))
         )
@@ -174,7 +193,8 @@ export class SearchRegistrationService {
   search(searchCriteria$: Observable<SearchCriteria>): SearchResult<RegistrationViewModel> {
     return new SearchResult<RegistrationViewModel>(
       searchCriteria$,
-      this.searchService.SearchSearch.bind(this.searchService)
+      this.searchService.SearchSearch.bind(this.searchService),
+      this.logger
     );
   }
 
@@ -185,7 +205,8 @@ export class SearchRegistrationService {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
       this.searchService.SearchSearch.bind(this.searchService),
-      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches)),
+      this.logger
     );
   }
 
@@ -197,7 +218,8 @@ export class SearchRegistrationService {
       searchCriteria$,
       this.searchService.SearchPostSearchMyRegistrations.bind(this.searchService),
       (searchCriteria) =>
-        this.searchService.SearchCountMyRegistrations(searchCriteria).pipe(map((result) => result.TotalMatches))
+        this.searchService.SearchCountMyRegistrations(searchCriteria).pipe(map((result) => result.TotalMatches)),
+      this.logger
     );
   }
 
@@ -207,7 +229,8 @@ export class SearchRegistrationService {
   atAGlance(searchCriteria$: Observable<SearchCriteria>): SearchResult<AtAGlanceViewModel> {
     return new SearchResult<AtAGlanceViewModel>(
       searchCriteria$.pipe(map((c) => ({ ...c, NumberOfRecords: 100000 }))),
-      this.searchService.SearchAtAGlance.bind(this.searchService)
+      this.searchService.SearchAtAGlance.bind(this.searchService),
+      this.logger
     );
   }
 }

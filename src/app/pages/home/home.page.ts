@@ -1,12 +1,26 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewChecked, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { ToastController } from '@ionic/angular';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable, race, Subject, scan, ReplaySubject, from } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  exhaustMap,
+  filter,
+  finalize,
+  map,
+  skip,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
@@ -45,7 +59,7 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
+export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -65,6 +79,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
+  private onDestroy$ = new Subject<void>();
 
   constructor(
     router: Router,
@@ -79,6 +94,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     private mapService: MapService,
+    private toastService: ToastController,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -99,8 +115,53 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     this.initSearch();
   }
 
+  private async showSearchErrorToast() {
+    const toast = await this.toastService.create({
+      message: 'Failed to fetch registrations from regobs api',
+      position: 'bottom',
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    await toast.present();
+    return toast;
+  }
+
   private async initSearch() {
+    if (this.searchResult) {
+      throw new Error('Search already created');
+    }
+
     this.searchResult = await this.createSearchResult();
+
+    this.searchResult.error$
+      .pipe(
+        // Use exhaustmap to avoid multiple error toasts at once
+        exhaustMap(() =>
+          from(this.showSearchErrorToast()).pipe(
+            switchMap((toast) =>
+              // We have created the toast,
+              // now wait until user dismisses it or navigates away
+              // or we get a "successfull" search
+              from(toast.onDidDismiss()).pipe(
+                takeUntil(
+                  race(
+                    this.searchResult.registrations$.pipe(filter((regs) => regs.length > 0)),
+                    this.tabsService.selectedTab$.pipe(skip(1))
+                  )
+                ),
+                finalize(() => toast.dismiss())
+              )
+            )
+          )
+        ),
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe();
 
     this.isFetchingObservations = this.searchResult.isFetching$;
 
@@ -136,6 +197,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.updateInfoBoxHeight();
+  }
+
+  public ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   ngOnInit() {
