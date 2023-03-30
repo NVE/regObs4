@@ -50,6 +50,10 @@
           [item]="item"
         ></app-summary-item>
       </ion-list>
+
+      
+      <app-simple-water-obs *ngIf="showSimpleWaterMode(draft)" [draft]="draft"></app-simple-water-obs>
+      
     </div>
   </ion-content>
   <app-send-button *ngIf="!hideSendButton(draft)" [draft]="draft"></app-send-button>

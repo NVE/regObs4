@@ -243,24 +243,7 @@ export class SummaryItemService {
     draft: RegistrationDraft,
     attachments: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem[]> {
-    return [
-      await this.getRegItem(
-        draft,
-        '/registration/water/water-level',
-        'REGISTRATION.WATER.WATER_LEVEL.TITLE',
-        draft.registration.WaterLevel2 ? draft.registration.WaterLevel2.Comment : '',
-        RegistrationTid.WaterLevel2,
-        attachments
-      ),
-      await this.getRegItem(
-        draft,
-        '/registration/water/damage',
-        'REGISTRATION.WATER.DAMAGE.TITLE',
-        '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
-        RegistrationTid.DamageObs,
-        attachments
-      ),
-    ];
+    return [];
   }
 
   private async getRegItem(

@@ -1,0 +1,25 @@
+.summary-item:hover {
+  cursor: pointer;
+  --background: var(--ion-color-varsom-blue-light-3);
+}
+
+ion-label {
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  text-overflow: unset;
+}
+
+.simple-mode-title > h2 {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.simple-mode-sub {
+  font-weight: 400;
+  font-size: 18px;
+  color: #333;
+}
+

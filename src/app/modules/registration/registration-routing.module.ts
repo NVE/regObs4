@@ -24,14 +24,6 @@ const routes: Routes = [
       import('./pages/general-comment/general-comment.module').then((m) => m.GeneralCommentPageModule),
   },
   {
-    path: 'registration/water/water-level/:id',
-    loadChildren: () => import('./pages/water/water-level/water-level.module').then((m) => m.WaterLevelPageModule),
-  },
-  {
-    path: 'registration/water/damage/:id',
-    loadChildren: () => import('./pages/water/damage/damage.module').then((m) => m.DamagePageModule),
-  },
-  {
     path: 'registration/ice/ice-cover/:id',
     loadChildren: () => import('./pages/ice/ice-cover/ice-cover.module').then((m) => m.IceCoverPageModule),
   },

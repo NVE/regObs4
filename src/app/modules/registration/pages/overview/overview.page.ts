@@ -81,7 +81,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
     this.summaryItems$ = this.draft$.pipe(
       switchMap((draft) => {
-        if (this.showSimpleMode(draft)) {
+        if (this.showSimpleMode(draft) || draft.registration.GeoHazardTID == GeoHazard.Water) {
           return from(this.getLocationAndTimeSummaryItem(draft));
         } else {
           return this.summaryItemService.getSummaryItems$(uuid);
@@ -107,6 +107,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
       return false;
     }
     return draft.simpleMode;
+  }
+
+  showSimpleWaterMode(draft: RegistrationDraft): boolean {
+    return draft.registration.GeoHazardTID == GeoHazard.Water;
   }
 
   draftHasStatusSync(draft: RegistrationDraft): boolean {
