@@ -100,10 +100,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     this.registrations$ = searchCriteria$.pipe(
       // For every new search criteria, create a paged search and check what the total count is
       switchMap((searchCriteria) =>
-        combineLatest([
-          this.createPagedSearch(searchCriteria, fetchFunc),
-          countFunc(searchCriteria as SearchCriteriaRequestDto),
-        ])
+        combineLatest([this.createPagedSearch(searchCriteria, fetchFunc), this.createCount(searchCriteria, countFunc)])
       ),
       // Save search state
       tap(([registrations, totalCount]) => {
@@ -135,6 +132,19 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     this.pageInfo.next({ offset: 0, items: PagedSearchResult.PAGE_SIZE });
     this.allFetchedForCriteria.next(false);
     this.maxItemsFetched.next(false);
+  }
+
+  protected createCount(
+    searchCriteria: SearchCriteria,
+    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
+  ): Observable<number> {
+    return countFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+      catchError((err) => {
+        this.logger.error(err, this.debugTag, 'Could not count registrations');
+        this.error$.next(err);
+        return of(0);
+      })
+    );
   }
 
   protected createPagedSearch(
