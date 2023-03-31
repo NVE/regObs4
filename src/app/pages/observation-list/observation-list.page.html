@@ -1,65 +1,70 @@
 <app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ng-container *ngIf="registrations$ | async as registrations; else skeleton">
-    <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">
-      <ion-item-divider>
-        <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
-      </ion-item-divider>
-      <ion-grid class="filter-panel">
-        <ion-row>
-          <ion-col>
-            <ion-segment
-              [value]="useMapExtentFilter$ | async"
-              (click)="toggleFilterByMapView($event)"
-              class="map-extent-filter-toggle segment-button-class"
-              mode="ios"
-              [disabled]="noMapExtentAvailable$ | async"
-            >
-              <ion-segment-button value="mapBorders">
-                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
-              </ion-segment-button>
-              <ion-segment-button value="all">
-                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
-              </ion-segment-button>
-            </ion-segment>
-          </ion-col>
-          <ion-col>
-            <!--titelen -->
-          </ion-col>
-          <ion-col>
-            <!--bilde galleri toggle-->
-          </ion-col>
-          <ion-col class="order-by-select">
-            <ng-container *ngIf="orderBy$ | async as orderBy">
-              <div class="select-wrapper">
-                <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
-                <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
-                  <ion-select-option value="DtObsTime">
-                    {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
-                  >
-                  <ion-select-option value="DtChangeTime"
-                    >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
-                  >
-                </ion-select>
-              </div>
-            </ng-container>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc;" [obs]="obs">
-      </app-observation-list-card>
-    </ion-list>
-    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-    <ion-row *ngIf="(searchResult.maxItemsFetched$ | async) === true" class="full-grid-row max-count-reached">
-      <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
-      </ion-col>
-    </ion-row>
+  <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
+    <ng-container *ngIf="registrations$ | async as registrations">
+      <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">
+        <ion-item-divider>
+          <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
+        </ion-item-divider>
+        <ion-grid class="filter-panel">
+          <ion-row>
+            <ion-col>
+              <ion-segment
+                [value]="useMapExtentFilter$ | async"
+                (click)="toggleFilterByMapView($event)"
+                class="map-extent-filter-toggle segment-button-class"
+                mode="ios"
+                [disabled]="noMapExtentAvailable$ | async"
+              >
+                <ion-segment-button value="mapBorders">
+                  <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="all">
+                  <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+            </ion-col>
+            <ion-col>
+              <!--titelen -->
+            </ion-col>
+            <ion-col>
+              <!--bilde galleri toggle-->
+            </ion-col>
+            <ion-col class="order-by-select">
+              <ng-container *ngIf="orderBy$ | async as orderBy">
+                <div class="select-wrapper">
+                  <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
+                  <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
+                    <ion-select-option value="DtObsTime">
+                      {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
+                    >
+                    <ion-select-option value="DtChangeTime"
+                      >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
+                    >
+                  </ion-select>
+                </div>
+              </ng-container>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc;" [obs]="obs">
+        </app-observation-list-card>
+      </ion-list>
+      <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+        <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+      <ion-row *ngIf="(searchResult.maxItemsFetched$ | async) === true" class="full-grid-row max-count-reached">
+        <ion-col class="ion-text-center ion-margin-horizontal">
+          <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
+          <h3 class="ion-text-wrap">
+            {{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}
+          </h3>
+        </ion-col>
+      </ion-row>
+    </ng-container>
   </ng-container>
+
   <ng-template #skeleton>
     <div class="loading-sceleton">
       <ion-item-divider>
@@ -72,6 +77,7 @@
               (ionChange)="toggleFilterByMapView($event)"
               class="segment-button-class"
               value="mapBorders"
+              disabled=""
               mode="ios"
             >
               <ion-segment-button value="mapBorders">
