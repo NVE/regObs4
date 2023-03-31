@@ -19,6 +19,13 @@
   background-color: #000;
 }
 
+.swiper-button-custom {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-size: 10px 40px;
+}
+
 ion-fab-button {
   --background: #fff;
   --color: #3389fd;
@@ -28,9 +35,6 @@ ion-fab-button {
   z-index: 9999;
 }
 
-.swiper-button-custom {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-size: 10px 40px;
+ion-slides {
+  overflow: visible;
 }
