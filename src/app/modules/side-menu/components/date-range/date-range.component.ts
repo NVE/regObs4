@@ -94,13 +94,13 @@ export class DateRangeComponent extends NgDestoryBase {
 export function generateDateRange(fromDate?: string, toDate?: string) {
   let dateRange = '';
   if (fromDate) {
-    dateRange = moment(fromDate).format('DD/MM/YY');
+    dateRange = moment(fromDate).format('DD.MM.yyyy');
   }
   if (toDate) {
     if (fromDate) {
       dateRange += ' - ';
     }
-    dateRange += moment(toDate).format('DD/MM/YY');
+    dateRange += moment(toDate).format('DD.MM.yyyy');
   }
   return dateRange;
 }
