@@ -1,13 +1,13 @@
-<ion-accordion-group (ionChange)="toggleAccordion($event)">
+<ion-accordion-group *ngIf="!isNativePlatform; else observationsDaysBackOnly" (ionChange)="toggleAccordion($event)">
   <ion-accordion value="first">
     <ion-item slot="header" color="light">
       <ion-label color="dark" position="stacked">
         {{ "MENU.TIMESPAN" | translate }}
       </ion-label>
       <ng-container *ngIf="useDaysBack$ | async; else showDateRange">
-        <ng-container *ngIf="daysBackSubject | async as daysBack">
+        <ng-container *ngIf="{ daysBack: daysBackSubject | async } as daysBack">
           <ion-text *ngIf="!isOpen" class="ion-align-self-start">
-            <app-check-days-or-weeks-back [daysBack]="daysBack"></app-check-days-or-weeks-back>
+            <app-check-days-or-weeks-back [daysBack]="daysBack.daysBack"></app-check-days-or-weeks-back>
           </ion-text>
         </ng-container>
       </ng-container>
@@ -15,7 +15,7 @@
     <div slot="content">
       <ion-list *ngIf="mode$ | async as mode">
         <ion-radio-group [value]="mode" (ionChange)="changeMode($event)">
-          <ion-item (click)="setUseDaysBack($event)">
+          <ion-item>
             <ion-radio slot="start" value="predefined"></ion-radio>
             <app-observations-days-back (changeDaysBack)="setUseDaysBack($event)"></app-observations-days-back>
           </ion-item>
@@ -64,4 +64,8 @@
       <span>{{ dateRangeText }}</span>
     </ion-text>
   </ng-container>
+</ng-template>
+
+<ng-template #observationsDaysBackOnly>
+  <app-observations-days-back (changeDaysBack)="setUseDaysBack($event)"></app-observations-days-back>
 </ng-template>
