@@ -25,7 +25,7 @@ export class CommentBarComponent {
   regName: string;
   commentName: string;
   comment: string;
-  reg: {Comment: string, ObsComment: string};
+  reg: { Comment: string; ObsComment: string };
 
   constructor(
     private modalController: ModalController,
@@ -33,7 +33,8 @@ export class CommentBarComponent {
     private logger: LoggingService
   ) {
     this.regName = getRegistrationName(this.registrationTid);
-    this.commentName = this.registrationTid == RegistrationTid.GeneralObservation ? "ObsComment" : "Comment";
+    this.commentName = this.registrationTid == RegistrationTid.GeneralObservation ? 'ObsComment' : 'Comment';
+    console.log(this.draft);
   }
 
   onChange(comment: string) {
