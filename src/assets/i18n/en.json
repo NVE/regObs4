@@ -762,7 +762,8 @@
         "WHERE_IS_DAMAGE_LOCATION": "Where is the damage located?"
       },
       "POSITION": {
-        "TITLE": "Area drawing"
+        "TITLE": "Flood area",
+        "SET_FLOOD_POSITION": "Setflood area"
       },
       "WATER_LEVEL": {
         "ADD_NEW": "Add new",
