@@ -762,6 +762,9 @@
         "WHAT_IS_DAMAGED": "What is damaged?",
         "WHERE_IS_DAMAGE_LOCATION": "Where is the damage located?"
       },
+      "POSITION": {
+        "TITLE": "Area drawing"
+      },
       "WATER_LEVEL": {
         "ADD_NEW": "Add new",
         "ADD_PICTURE": "Add picture of",
@@ -770,6 +773,7 @@
         "DESCRIBE_HEIGHT": "Describe height",
         "DESCRIBE_SITUATION": "How would you describe the situation?",
         "DT_REQUIRED_TEXT": "Time is required!",
+        "FLOOD_AREA_TITLE": "Confirm flood area",
         "HOW_DO_YOU_READ": "How do you read the water level?",
         "MARKED_WITH": "I have marked the water level with",
         "MARKING": "Marking",

@@ -1,20 +1,23 @@
 <ion-list lines="full">
   <app-edit-images-bar
     [draft]="draft"
-    [registrationTid]="10"
+    [registrationTid]="60"
     modalTitlePostfix="GEO_HAZARDS.WATER"
   ></app-edit-images-bar>
-  <app-text-comment
-    title="DIALOGS.COMMENT"
-    placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER"
-    [(value)]="draft.registration.GeneralObservation.ObsComment"
-    (valueChange)="save()"
-  ></app-text-comment>
-  <ion-list-header class="ion-text-uppercase">
-    <ion-label> {{ "REGISTRATION.ADD_WEB_URL.TITLE" | translate }} </ion-label>
-  </ion-list-header>
-  <app-add-web-url-item
-    (weburlsChange)="save()"
-    [(weburls)]="draft.registration.GeneralObservation.Urls"
-  ></app-add-web-url-item>
+  <app-comment-bar [registrationTid]="60" [draft]="draft"></app-comment-bar>
+  <ion-item (click)="setFloodPosition()">
+    <ion-label>
+      <h2>{{ "REGISTRATION.WATER.POSITION.TITLE" | translate }}</h2></ion-label
+    >
+    <ion-text color="medium" class="ion-align-self-start ion-text-wrap">
+      <!--<ng-container *ngIf="avalancheObs.StartLat else noPosition">
+        {{ avalancheObs.StartLat | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, {{
+        avalancheObs.StartLong | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{
+        avalancheObs.StopLat | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, {{
+        avalancheObs.StopLong | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+      </ng-container>-->
+    </ion-text>
+    <ion-icon *ngIf="waterLevel2.Extent" slot="end" color="success" name="checkmark-circle"></ion-icon>
+    <ion-icon slot="end" class="item-detail-icon" name="chevron-forward"> </ion-icon>
+  </ion-item>
 </ion-list>

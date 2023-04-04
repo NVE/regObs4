@@ -16,6 +16,8 @@ import { EditImagesPage } from '../../components/edit-images/edit-images.page';
 import { EditImagesBarComponent } from '../../components/snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
 import { CoachMarksSimpleObsComponent } from 'src/app/components/coach-marks/coach-marks-simple-obs/coach-marks-simple-obs.component';
 
+import { SetFloodPositionPage } from '../set-flood-position/set-flood-position.page';
+
 const routes: Routes = [
   {
     path: '',
@@ -31,6 +33,7 @@ const routes: Routes = [
     SendButtonComponent,
     SummaryItemComponent,
     ThumbnailsComponent,
+    SetFloodPositionPage,
     FailedRegistrationComponent,
     VersionConflictComponent,
     GoneRegistrationComponent,
