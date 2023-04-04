@@ -349,7 +349,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       }
     };
     drawnItems.on('click', this.toggleEditingMode);
-
     this.locationPolygon?.subscribe((p) => {
       p.polygon.setStyle({ color: p.active ? p.color : 'rgb(0,0,0,0)' });
       drawnItems.addLayer(p.polygon);

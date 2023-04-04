@@ -1,0 +1,25 @@
+<ion-header *ngIf="!(fullscreen$ | async)">
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title> {{ '' | translate }} </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-set-location-in-map
+    [geoHazard]="geoHazard"
+    (mapReady)="onMapReady($event)"
+    [fromMarker]="fromMarker"
+    [locationMarker]="locationMarker"
+    (locationTimeSet)="onLocationSet()"
+    [locationPolygon]="locationPolygon"
+    confirmLocationText="REGISTRATION.WATER.WATER_LEVEL.FLOOD_AREA_TITLE"
+    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE"
+    [showPreviousUsedLocations]="false"
+    locationTitle="locationText"
+    [showPolyline]="false"
+    [setObsTime]="false"
+  >
+  </app-set-location-in-map>
+</ion-content>
