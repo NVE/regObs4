@@ -1,12 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import L from 'leaflet';
-import { BehaviorSubject, Subject } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
-import { DangerObsEditModel, SnowSurfaceEditModel, Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
-import { SetAvalanchePositionPage } from '../../../pages/set-avalanche-position/set-avalanche-position.page';
+import { Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
 import { SetFloodPositionPage } from '../../../pages/set-flood-position/set-flood-position.page';
 
 /**
@@ -18,14 +15,9 @@ import { SetFloodPositionPage } from '../../../pages/set-flood-position/set-floo
   styleUrls: ['./simple-water-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SimpleWaterObsComponent implements OnInit {
+export class SimpleWaterObsComponent {
   @Input() draft: RegistrationDraft;
-  isAreaDrawingTouched = new Subject<boolean>();
   constructor(private draftRepository: DraftRepositoryService, private modalController: ModalController) {}
-
-  ngOnInit(): void {
-    console.log(this.draft);
-  }
 
   get waterLevel2(): Waterlevel2EditModel {
     if (!this.draft.registration.WaterLevel2) {

@@ -166,17 +166,15 @@ export class SetAvalanchePositionPage implements OnInit {
     setTimeout(() => {
       this.updateMarkers();
     });
-    if (this.geoHazard !== GeoHazard.Water) {
-      this.ngZone.runOutsideAngular(() => {
-        this.map.on('drag', () => this.updatePolyline());
-        this.updatePolyline();
-      });
-    }
+    this.ngZone.runOutsideAngular(() => {
+      this.map.on('drag', () => this.updatePolyline());
+      this.updatePolyline();
+    });
   }
 
   ionViewDidEnter() {
     this.swipeBackService.disableSwipeBack();
-    this.geoHazard !== GeoHazard.Water && this.updatePolyline();
+    this.updatePolyline();
   }
 
   ionViewWillLeave() {
@@ -245,7 +243,6 @@ export class SetAvalanchePositionPage implements OnInit {
   private updateMarkers() {
     this.startMarker.remove();
     this.endMarker.remove();
-
     if (!this.start) {
       this.locationMarker.setIcon(this.startIcon);
       this.setStartLocationText();
