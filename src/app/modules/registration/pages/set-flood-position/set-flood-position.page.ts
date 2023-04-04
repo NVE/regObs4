@@ -1,12 +1,11 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
-import { firstValueFrom, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IPolygon, Polygon, TotalPolygon } from '../../models/polygon';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-set-flood-position.page',
@@ -35,9 +34,7 @@ export class SetFloodPositionPage implements OnInit {
   constructor(
     private fullscreenService: FullscreenService,
     private cdr: ChangeDetectorRef,
-    private translateService: TranslateService,
-    private modalController: ModalController,
-    private ngZone: NgZone
+    private modalController: ModalController
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -66,6 +63,7 @@ export class SetFloodPositionPage implements OnInit {
       color,
     };
   }
+
   //this method is reused!!!
   private makePolygons() {
     if (!this.totalPolygon.polygon) {

@@ -763,7 +763,8 @@
         "WHERE_IS_DAMAGE_LOCATION": "Hvor er skadepunktet?"
       },
       "POSITION": {
-        "TITLE": "Inntegning av område"
+        "TITLE": "Inntegning av område",
+        "SET_FLOOD_POSITION": "Sett flomposisjon"
       },
       "WATER_LEVEL": {
         "ADD_NEW": "Legg til ny",

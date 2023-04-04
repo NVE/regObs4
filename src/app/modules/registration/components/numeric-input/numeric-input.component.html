@@ -11,7 +11,7 @@
     [color]="color"
     position="stacked"
     class="no-white-space-wrap"
-    [ngClass]="{ 'ion-text-uppercase': !simpleObsMode, 'simple-mode-title': simpleObsMode }"
+    [ngClass]="{ 'ion-text-uppercase': !simpleObsMode, 'simple-mode-title ion-label-fat': simpleObsMode }"
   >
     {{ title | translate }} {{ isValid == false ? "(" + (errorMessage | translate) + ")" : null }}
   </ion-label>
