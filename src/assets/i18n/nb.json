@@ -761,6 +761,9 @@
         "WHAT_IS_DAMAGED": "Hva er skadet?",
         "WHERE_IS_DAMAGE_LOCATION": "Hvor er skadepunktet?"
       },
+      "POSITION": {
+        "TITLE": "Inntegning av område"
+      },
       "WATER_LEVEL": {
         "ADD_NEW": "Legg til ny",
         "ADD_PICTURE": "Legg til bilde av",
@@ -769,6 +772,7 @@
         "DESCRIBE_HEIGHT": "Beskriv høyde",
         "DESCRIBE_SITUATION": "Hvordan vil du beskrive situasjonen?",
         "DT_REQUIRED_TEXT": "Tidspunkt er obligatorisk!",
+        "FLOOD_AREA_TITLE": "Bekreft flom område",
         "HOW_DO_YOU_READ": "Hvordan leser du av vannstanden?",
         "MARKED_WITH": "Jeg har markert vannstanden med",
         "MARKING": "Markering",

@@ -1,6 +1,13 @@
 :host {
-  --bottom-content-height: 94px;
   --map-center-info-height: 0px;
+}
+
+.water-simple-obs-bottom {
+  bottom: 65px;
+}
+
+.regular-bottom {
+  bottom: 94px;
 }
 
 app-map {
@@ -9,7 +16,6 @@ app-map {
   top: 0;
   left: 0;
   right: 0;
-  bottom: var(--bottom-content-height);
 }
 
 .bottom-background {
