@@ -5,7 +5,9 @@ import '@geoman-io/leaflet-geoman-free';
 import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { IPolygon, Polygon, TotalPolygon } from '../../models/polygon';
+import { IPolygon, PolygonArea } from '../../models/polygon';
+import { constructPolygon, makePolygons } from 'src/app/modules/common-registration/helpers/polygon.helper';
+import { settings } from 'src/settings';
 
 @Component({
   selector: 'app-set-flood-position.page',
@@ -39,8 +41,8 @@ export class SetFloodPositionPage implements OnInit {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  ngOnInit() {
-    this.totalPolygon = this.constructPolygon('flood', this.extent, TotalPolygon);
+  async ngOnInit() {
+    this.totalPolygon = constructPolygon(this.extent, settings.map.extentColor, PolygonArea);
     if (this.relativeToLatLng) {
       this.fromMarker = L.marker(this.relativeToLatLng, {
         icon: this.locationMarkerIcon,
@@ -48,37 +50,11 @@ export class SetFloodPositionPage implements OnInit {
     }
   }
 
-  //reused
-  private constructPolygon(title: string, extent: [number, number][], Type: typeof Polygon) {
-    const color = 'red';
-    return {
-      title,
-      active: Boolean(extent),
-      polygon: extent
-        ? new Type(
-            extent.map(([lng, lat]) => [lat, lng]),
-            { color }
-          )
-        : null,
-      color,
-    };
-  }
-
-  //this method is reused!!!
-  private makePolygons() {
-    if (!this.totalPolygon.polygon) {
-      const fallbackLatlng = L.latLng(59.1, 10.3);
-      const totalCircle = new L.Circle(this.relativeToLatLng || fallbackLatlng, {
-        radius: 150,
-      });
-      this.totalPolygon.polygon = new TotalPolygon(L.PM.Utils.circleToPolygon(totalCircle, 5).getLatLngs());
-      this.totalPolygon.active = true;
-    }
-  }
-
   private updateMarkers() {
     this.map.off('drag');
-    this.makePolygons();
+    const polygons = makePolygons('total', this.totalPolygon, this.relativeToLatLng);
+    this.totalPolygon.polygon = polygons.polygon;
+    this.totalPolygon.active = true;
     this.locationPolygon.next(this.totalPolygon);
     this.cdr.detectChanges();
   }

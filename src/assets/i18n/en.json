@@ -764,7 +764,7 @@
       },
       "POSITION": {
         "TITLE": "Flood area",
-        "SET_FLOOD_POSITION": "Setflood area"
+        "SET_FLOOD_POSITION": "Set flood area"
       },
       "WATER_LEVEL": {
         "ADD_NEW": "Add new",
