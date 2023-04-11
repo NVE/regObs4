@@ -23,7 +23,7 @@ describe('DateRangeComponent', () => {
       mapService as unknown as MapService,
       new TestLoggingService()
     );
-    component = new DateRangeComponent(searchCriteriaService, userSettingService, null);
+    component = new DateRangeComponent(searchCriteriaService, userSettingService);
   }));
 
   it('should create', () => {
