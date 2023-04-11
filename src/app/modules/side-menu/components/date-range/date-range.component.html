@@ -5,9 +5,11 @@
         {{ "MENU.TIMESPAN" | translate }}
       </ion-label>
       <ng-container *ngIf="useDaysBack$ | async; else showDateRange">
-        <ng-container *ngIf="{ daysBack: daysBackSubject | async } as daysBack">
+        <ng-container>
           <ion-text *ngIf="!isOpen" class="ion-align-self-start">
-            <app-check-days-or-weeks-back [daysBack]="daysBack.daysBack"></app-check-days-or-weeks-back>
+            <app-check-days-or-weeks-back
+              [daysBack]="userSettingService.daysBackForCurrentGeoHazard$ | async"
+            ></app-check-days-or-weeks-back>
           </ion-text>
         </ng-container>
       </ng-container>

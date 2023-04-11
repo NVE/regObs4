@@ -25,9 +25,8 @@ export class DateRangeComponent extends NgDestoryBase {
   useDaysBack$: Observable<boolean>;
   readableDays$: Observable<string>;
   dateRangeText$: Observable<string>;
-  daysBackSubject = new Subject<number>();
 
-  constructor(private searchCriteriaService: SearchCriteriaService, private userSettingService: UserSettingService) {
+  constructor(private searchCriteriaService: SearchCriteriaService, public userSettingService: UserSettingService) {
     super();
     this.mode$ = this.searchCriteriaService.useDaysBack$.pipe(
       map((useDaysBack) => (useDaysBack ? 'predefined' : 'custom'))
@@ -42,8 +41,6 @@ export class DateRangeComponent extends NgDestoryBase {
     this.dateRangeText$ = combineLatest([this.fromDate$, this.toDate$]).pipe(
       map(([fromDate, toDate]) => generateDateRange(fromDate, toDate))
     );
-
-    this.userSettingService.daysBackForCurrentGeoHazard$.subscribe((v) => this.daysBackSubject.next(v));
   }
 
   /**
@@ -77,8 +74,8 @@ export class DateRangeComponent extends NgDestoryBase {
     this.searchCriteriaService.setToDate(date);
   }
 
-  setUseDaysBack(date: number): void {
-    this.daysBackSubject.next(date);
+  setUseDaysBack(daysBack: number): void {
+    this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack });
     this.searchCriteriaService.setUseDaysBack(true);
   }
 
