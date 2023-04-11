@@ -8,7 +8,6 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 @Component({
   selector: 'app-simple-water-obs',
   templateUrl: './simple-water-obs.component.html',
-  styleUrls: ['./simple-water-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleWaterObsComponent implements OnInit {

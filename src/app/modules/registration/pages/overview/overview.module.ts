@@ -14,7 +14,6 @@ import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-ico
 import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.component';
 import { EditImagesPage } from '../../components/edit-images/edit-images.page';
 import { EditImagesBarComponent } from '../../components/snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
-import { CommentBarComponent } from '../../components/comment-bar/comment-bar.component';
 import { CoachMarksSimpleObsComponent } from 'src/app/components/coach-marks/coach-marks-simple-obs/coach-marks-simple-obs.component';
 
 const routes: Routes = [
@@ -39,7 +38,6 @@ const routes: Routes = [
     SimpleWaterObsComponent,
     CoachMarksSimpleObsComponent,
     EditImagesBarComponent,
-    CommentBarComponent,
     EditImagesPage,
     KdvIconSelectComponent,
   ],

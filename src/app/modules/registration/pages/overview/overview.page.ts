@@ -55,8 +55,6 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
     private logger: LoggingService,
-    private translateService: TranslateService,
-    private alertController: AlertController,
     private draftRepository: DraftRepositoryService,
     private confirmationModalService: ConfirmationModalService
   ) {
@@ -81,7 +79,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
     this.summaryItems$ = this.draft$.pipe(
       switchMap((draft) => {
-        if (this.showSimpleMode(draft) || draft.registration.GeoHazardTID == GeoHazard.Water) {
+        if (this.showSimpleSnowMode(draft) || this.showSimpleWaterMode(draft)) {
           return from(this.getLocationAndTimeSummaryItem(draft));
         } else {
           return this.summaryItemService.getSummaryItems$(uuid);
@@ -102,7 +100,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     return [await this.summaryItemService.getLocationAndTimeSummaryItem(draft)];
   }
 
-  showSimpleMode(draft: RegistrationDraft): boolean {
+  showSimpleSnowMode(draft: RegistrationDraft): boolean {
     if (this.syncFailed(draft)) {
       return false;
     }
