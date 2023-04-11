@@ -130,6 +130,12 @@ export class ObservationListCardComponent implements OnChanges {
         endPolygon: this.extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor),
       };
     }
+
+    if (obs.WaterLevel2) {
+      return {
+        totalPolygon: this.extent2Polygon(obs.WaterLevel2.Extent, settings.map.extentColor),
+      };
+    }
     return undefined;
   }
 

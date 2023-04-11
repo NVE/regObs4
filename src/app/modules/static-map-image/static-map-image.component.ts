@@ -249,7 +249,10 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private getStartZoom() {
     // If start / stop avalanche should be plotted, start more zoomed in. If we are zoomed out we cant see the
     // avalanche path.
-    if (this.location?.startStopLocation?.start && this.location?.startStopLocation?.stop) {
+    if (
+      (this.location?.startStopLocation?.start && this.location?.startStopLocation?.stop) ||
+      this.location?.startStopLocation?.totalPolygon
+    ) {
       return 14;
     }
     return settings.map.tiles.zoomLevelObservationList;
