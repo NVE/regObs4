@@ -14,3 +14,9 @@ ion-radio {
   margin-right: 20px;
   margin-left: 4px;
 }
+
+@media only screen and (min-width: 465px) {
+  ion-select {
+    padding: 0;
+  }
+}
