@@ -241,6 +241,9 @@ export class SummaryItemService {
     draft: RegistrationDraft,
     attachments: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem[]> {
+    // We have no spesific summary items for water yet because of the new simple form,
+    // but we would need to add more later when we get more fields in the simple form so
+    // that they are shown in error summary view
     return [];
   }
 
