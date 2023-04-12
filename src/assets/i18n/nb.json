@@ -328,6 +328,7 @@
       "COMMENT": "Kommentar",
       "COMMENT_PLACEHOLDER": "Her kan du gi ytterligere beskrivelse av faretegnet",
       "DESCRIPTION": "Beskrivelse",
+      "DROPDOWN_TITLE": "Faretegn (obligatorisk)",
       "FOR_MUNICIPAL": "For kommunen",
       "FOR_REGION": "Fylket/varslingsregion",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",
