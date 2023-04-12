@@ -1,16 +1,16 @@
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AttachmentEditModel, AttachmentService } from 'src/app/modules/common-regobs-api';
 import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { UploadAttachmentError, UploadAttachmentsService } from './upload-attachments.service';
+import { UploadAttachmentsService } from './upload-attachments.service';
+import { UploadSingleAttachmentService } from './upload-single-attachment.service';
 
 describe('UploadAttachmentsService', () => {
   let service: UploadAttachmentsService;
@@ -33,9 +33,8 @@ describe('UploadAttachmentsService', () => {
     };
 
     service = new UploadAttachmentsService(
-      httpClient,
       newAttachmentService as unknown as NewAttachmentService,
-      {} as AttachmentService,
+      {} as UploadSingleAttachmentService,
       {} as TranslateService,
       {} as DateHelperService,
       {} as LoggingService,
@@ -108,9 +107,8 @@ describe('UploadAttachmentsService', () => {
     };
 
     service = new UploadAttachmentsService(
-      httpClient,
       newAttachmentService as unknown as NewAttachmentService,
-      {} as AttachmentService,
+      {} as UploadSingleAttachmentService,
       {} as TranslateService,
       {} as DateHelperService,
       jasmine.createSpyObj('LoggingService', ['debug']),
@@ -198,15 +196,6 @@ describe('UploadAttachmentsService', () => {
       },
     };
 
-    const toastController = {
-      create: (): string => {
-        return '';
-      },
-      present: (): string => {
-        return '';
-      },
-    };
-
     const newAttachmentService = {
       getAttachments: (): Observable<AttachmentUploadEditModel[]> => {
         return of(fakeAttachments);
@@ -220,9 +209,8 @@ describe('UploadAttachmentsService', () => {
     const loggingService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
 
     service = new UploadAttachmentsService(
-      httpClient,
       newAttachmentService as unknown as NewAttachmentService,
-      {} as AttachmentService,
+      {} as UploadSingleAttachmentService,
       translateService as unknown as TranslateService,
       {} as DateHelperService,
       loggingService,
