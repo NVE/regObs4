@@ -34,11 +34,6 @@ input[type='date'] {
   }
 }
 
-input[type='datetime-local']::-webkit-calendar-picker-indicator,
-input[type='date']::-webkit-calendar-picker-indicator {
-}
-//clean here!!!!
-
 input::-webkit-datetime-edit-fields-wrapper {
   position: relative;
   left: 11%;

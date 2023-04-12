@@ -21,9 +21,6 @@ export class DatetimePickerComponent implements OnInit {
   @Input() dateInputType?: 'datetime-local' | 'date' = 'datetime-local';
 
   // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00 to web supported format yyyy-MM-DDTHH:mm
-  set dateFormatForWeb(value: string) {
-    this.dateTime = value;
-  }
 
   get dateFormatForWeb(): string {
     if (this.dateTime) {
@@ -89,19 +86,17 @@ export class DatetimePickerComponent implements OnInit {
 
   updateDateOnWeb(dateInput: string) {
     if (dateInput) {
-      //validate user input and format to use timezone again yyyy-mm-ddThh:mm:ss.000+01:00
+      //validate user input and format to use timezone yyyy-mm-ddThh:mm:ss.000+01:00
       const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);
       const max = moment(this.maxDate).toISOString(true);
       if (dateFormatWithTimeZone < min) {
         this.updateTempDateTime(min);
         this.dateTimeChange.emit(min);
-        this.dateTime = min;
         return;
       } else if (dateFormatWithTimeZone > max) {
         this.updateTempDateTime(max);
         this.dateTimeChange.emit(max);
-        this.dateTime = max;
         return;
       }
 

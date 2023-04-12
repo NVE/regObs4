@@ -10,7 +10,7 @@
     </ion-item>
     <div slot="content">
       <ion-list>
-        <ion-radio-group style="width: 800px" [ngModel]="mode.value" (ionChange)="changeMode($event)">
+        <ion-radio-group [ngModel]="mode.value" (ionChange)="changeMode($event)">
           <ion-item>
             <ion-radio value="predefined" slot="start" (click)="changeDateAndSetMode()"></ion-radio>
             <app-observations-days-back (changeDaysBack)="changeDateAndSetMode($event)"></app-observations-days-back>
@@ -31,8 +31,8 @@
                 [(dateTime)]="fromDate"
                 [minDate]="minDate"
                 [maxDate]="toDate || maxDate"
-                (dateTimeChange)="setFromDate($event)"
                 textAlign="right"
+                (dateTimeChange)="setFromDate($event)"
               ></app-datetime-picker>
             </div>
 
@@ -44,8 +44,8 @@
                 [(dateTime)]="toDate"
                 [minDate]="fromDate || minDate"
                 [maxDate]="maxDate"
-                (dateTimeChange)="setToDate($event)"
                 textAlign="right"
+                (dateTimeChange)="setToDate($event)"
               ></app-datetime-picker>
             </div>
             <ion-button (click)="onClickSetDate()" size="default" expand="block" fill="solid" color="primary">

@@ -1,5 +1,5 @@
 <ion-button
-  *ngIf="this.isPlatformNative; else showWebDateInput"
+  *ngIf="isPlatformNative; else showWebDateInput"
   fill="clear"
   expand="block"
   class="datetimepicker-button"
@@ -45,7 +45,6 @@
   <input
     class="input-field date"
     [type]="dateInputType"
-    id="dateFormatForWeb"
     name="dateFormatForWeb"
     (change)="updateDateOnWeb($event.target.value)"
     [value]="dateFormatForWeb"
