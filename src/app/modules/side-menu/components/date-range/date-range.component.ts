@@ -172,4 +172,14 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
       this.toDate = null;
     }
   }
+
+  // startdato input ignores min and max values on keydown therefore we hardcode a method for that
+  preventKeydownIfInputDateIsBigger(event) {
+    if (this.toDate && event.currentTarget.value >= this.toDate && event.which === 38) {
+      event.preventDefault();
+    }
+    if (event.currentTarget.value >= this.maxDate && event.which === 38) {
+      event.preventDefault();
+    }
+  }
 }

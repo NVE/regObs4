@@ -32,6 +32,7 @@
                 [minDate]="minDate"
                 [maxDate]="toDate || maxDate"
                 textAlign="right"
+                [preventKeydown]="preventKeydownIfInputDateIsBigger"
                 (dateTimeChange)="setFromDate($event)"
               ></app-datetime-picker>
             </div>

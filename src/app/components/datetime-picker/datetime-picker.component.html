@@ -46,6 +46,7 @@
     class="input-field date"
     [type]="dateInputType"
     name="dateFormatForWeb"
+    (keydown)="preventKeydownIfDateIsBigger($event)"
     (change)="updateDateOnWeb($event.target.value)"
     [value]="dateFormatForWeb"
     (blur)="updateDateOnWeb($event.target.value)"

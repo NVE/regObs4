@@ -43,6 +43,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
   @Input() datePickerOpen = false;
   @Input() resetable = false;
+  @Input() preventKeydown? = null;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
   isPlatformNative = Capacitor.isNativePlatform();
@@ -113,5 +114,11 @@ export class DatetimePickerComponent implements OnInit {
   updateTempDateTime(dateInput: string): boolean {
     if (!dateInput || Array.isArray(dateInput)) return false;
     this.dateTime = dateInput;
+  }
+
+  preventKeydownIfDateIsBigger(event) {
+    if (this.preventKeydown) {
+      this.preventKeydown(event);
+    }
   }
 }
