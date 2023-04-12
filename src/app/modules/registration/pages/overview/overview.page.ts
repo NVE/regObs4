@@ -108,6 +108,9 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   showSimpleWaterMode(draft: RegistrationDraft): boolean {
+    if (this.syncFailed(draft)) {
+      return false;
+    }
     return draft.registration.GeoHazardTID == GeoHazard.Water;
   }
 
