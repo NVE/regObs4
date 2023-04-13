@@ -4,10 +4,21 @@
     [registrationTid]="10"
     modalTitlePostfix="GEO_HAZARDS.WATER"
   ></app-edit-images-bar>
-  <app-comment-bar [registrationTid]="10" [draft]="draft"></app-comment-bar>
+  <app-text-comment
+    title="DIALOGS.COMMENT"
+    placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER"
+    [(value)]="generalObservation.ObsComment"
+    (valueChange)="save()"
+  ></app-text-comment>
+  <ion-list-header class="ion-text-uppercase">
+    <ion-label> {{ "REGISTRATION.ADD_WEB_URL.TITLE" | translate }} </ion-label>
+  </ion-list-header>
+  <app-add-web-url-item (weburlsChange)="save()" [(weburls)]="generalObservation.Urls"></app-add-web-url-item>
   <ion-item (click)="setFloodPosition()">
     <ion-label>
-      <h2 class="ion-label-fat">{{ "REGISTRATION.WATER.POSITION.TITLE" | translate }}</h2></ion-label
+      <h2 class="ion-label-fat">
+        {{ "REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_SUMMARY_TITLE" | translate }}
+      </h2></ion-label
     >
     <ion-text color="medium" class="ion-align-self-start ion-text-wrap"> </ion-text>
     <ion-icon *ngIf="waterLevel2.Extent" slot="end" color="success" name="checkmark-circle"></ion-icon>
