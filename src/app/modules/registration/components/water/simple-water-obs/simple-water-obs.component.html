@@ -14,9 +14,6 @@
     <ion-label> {{ "REGISTRATION.ADD_WEB_URL.TITLE" | translate }} </ion-label>
   </ion-list-header>
   <app-add-web-url-item (weburlsChange)="save()" [(weburls)]="generalObservation.Urls"></app-add-web-url-item>
-  =======
-  <app-comment-bar [registrationTid]="10" [draft]="draft"></app-comment-bar>
-
   <ion-item (click)="setFloodPosition()">
     <ion-label>
       <h2 class="ion-label-fat">
