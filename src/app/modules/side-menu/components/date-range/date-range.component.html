@@ -29,10 +29,8 @@
                 presentation="date"
                 dateInputType="date"
                 [(dateTime)]="fromDate"
-                [minDate]="minDate"
-                [maxDate]="toDate || maxDate"
+                [maxDate]="toDate"
                 textAlign="right"
-                [preventKeydown]="preventKeydownIfInputDateIsBigger"
                 (dateTimeChange)="setFromDate($event)"
               ></app-datetime-picker>
             </div>
@@ -43,8 +41,7 @@
                 presentation="date"
                 dateInputType="date"
                 [(dateTime)]="toDate"
-                [minDate]="fromDate || minDate"
-                [maxDate]="maxDate"
+                [minDate]="fromDate"
                 textAlign="right"
                 (dateTimeChange)="setToDate($event)"
               ></app-datetime-picker>

@@ -19,8 +19,12 @@ export class DateHelperService {
   }
 
   // input type datetime on web doesnt accept time zones so we have to change format so that it can read min max dates correctly
-  getWebDateInputFormat(dateString: string) {
+  getWebDateInputFormat(dateString: string): string {
     return moment(dateString).format('YYYY-MM-DD');
+  }
+
+  getWebDateTimeLocalInputFormat(dateTimeLocalString: string): string {
+    return moment(dateTimeLocalString).format('yyyy-MM-DD[T]HH:mm');
   }
 
   async formatDate(

@@ -52,12 +52,12 @@ export class LandslideObsPage extends BasePage {
       this.draft.registration.LandSlideObs.Urls = [];
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTimeEnd) {
-      this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
+      this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).format('yyyy-MM-DD[T]HH:mm');
     } else {
       this.maxDateStart = this.getMaxDateForNow();
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTime) {
-      this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
+      this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).format('yyyy-MM-DD[T]HH:mm');
     }
     this.maxDateEnd = this.getMaxDateForNow();
   }
@@ -65,11 +65,11 @@ export class LandslideObsPage extends BasePage {
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().toISOString(true);
+    return moment().format('yyyy-MM-DD[T]HH:mm');
   }
 
   dtTimeChanged() {
-    this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
+    this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).format('yyyy-MM-DD[T]HH:mm');
     if (
       this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
       moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).isBefore(
@@ -81,7 +81,7 @@ export class LandslideObsPage extends BasePage {
   }
 
   dtEndTimeChanged() {
-    this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
+    this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).format('yyyy-MM-DD[T]HH:mm');
     if (
       this.draft.registration.LandSlideObs.DtLandSlideTime &&
       moment(this.draft.registration.LandSlideObs.DtLandSlideTime).isAfter(
@@ -101,11 +101,11 @@ export class LandslideObsPage extends BasePage {
   }
 
   setDtLandSlideTimeToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().toISOString(true);
+    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().format('yyyy-MM-DD[T]HH:mm');
   }
 
   setDtLandSlideTimeEndToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(true);
+    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().format('yyyy-MM-DD[T]HH:mm');
   }
 
   async setLandslidePosition() {

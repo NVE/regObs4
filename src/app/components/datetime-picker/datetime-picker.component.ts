@@ -21,6 +21,9 @@ export class DatetimePickerComponent implements OnInit {
   @Input() dateInputType?: 'datetime-local' | 'date' = 'datetime-local';
 
   // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00 to web supported format yyyy-MM-DDTHH:mm
+  set dateFormatForWeb(value: string) {
+    this.dateTime = value;
+  }
 
   get dateFormatForWeb(): string {
     if (this.dateTime) {
@@ -46,7 +49,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() preventKeydown? = null;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
-  isPlatformNative = Capacitor.isNativePlatform();
+  isPlatformNative = false;
 
   @ViewChild(IonModal) modal: IonModal;
 
@@ -57,6 +60,8 @@ export class DatetimePickerComponent implements OnInit {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
       this.language = getLangKeyString(userSetting.language);
     }
+    this.maxDate = !this.maxDate ? moment(new Date()).format('YYYY-MM-DD') : this.maxDate;
+    this.minDate = !this.minDate ? moment(new Date('2010-01-01')).format('YYYY-MM-DD') : this.minDate;
   }
 
   openModal() {
@@ -87,7 +92,6 @@ export class DatetimePickerComponent implements OnInit {
 
   updateDateOnWeb(dateInput: string) {
     if (dateInput) {
-      //validate user input and format to use timezone yyyy-mm-ddThh:mm:ss.000+01:00
       const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);
       const max = moment(this.maxDate).toISOString(true);
@@ -113,12 +117,13 @@ export class DatetimePickerComponent implements OnInit {
    */
   updateTempDateTime(dateInput: string): boolean {
     if (!dateInput || Array.isArray(dateInput)) return false;
-    this.dateTime = dateInput;
+    this.dateTime = moment(dateInput).format('yyyy-MM-DD[T]HH:mm');
   }
 
-  preventKeydownIfDateIsBigger(event) {
-    if (this.preventKeydown) {
-      this.preventKeydown(event);
+  // input ignores min and max values on keydown therefore we hardcode a method to prevent that
+  preventKeydownIfDateIsBigger(event, maxDate) {
+    if (event.currentTarget.value >= maxDate && event.which === 38) {
+      event.preventDefault();
     }
   }
 }

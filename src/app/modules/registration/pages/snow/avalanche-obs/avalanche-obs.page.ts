@@ -86,6 +86,10 @@ export class AvalancheObsPage extends BasePage {
     );
   }
 
+  get dtAvalancheTime() {
+    return moment(this.avalancheObs.DtAvalancheTime).format('yyyy-MM-DD[T]HH:mm');
+  }
+
   get dtAvalancheTimeIsDifferentThanObsTime() {
     return (
       this.avalancheObs.DtAvalancheTime &&
@@ -114,7 +118,7 @@ export class AvalancheObsPage extends BasePage {
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().minutes(59).toISOString(true);
+    return moment().minutes(59).format('yyyy-MM-DD[T]HH:mm');
   }
 
   async reset() {

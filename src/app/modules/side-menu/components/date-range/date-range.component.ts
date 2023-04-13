@@ -18,9 +18,7 @@ import { DateHelperService } from 'src/app/modules/shared/services/date-helper/d
 export class DateRangeComponent extends NgDestoryBase implements OnInit {
   fromDate: string;
   toDate: string | null = null;
-  minDate = moment(new Date('2010-01-01')).format('YYYY-MM-DD');
   minDateToDate = '';
-  maxDate = moment(new Date()).format('YYYY-MM-DD');
   mode: BehaviorSubject<'predefined' | 'custom'> = new BehaviorSubject('predefined');
   isOpen = false;
   cachedDays: number | null = null;
@@ -170,16 +168,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     if ($event.detail.value === 'predefined' || $event.detail.value === 'custom') {
       this.mode.next($event.detail.value);
       this.toDate = null;
-    }
-  }
-
-  // startdato input ignores min and max values on keydown therefore we hardcode a method for that
-  preventKeydownIfInputDateIsBigger(event) {
-    if (this.toDate && event.currentTarget.value >= this.toDate && event.which === 38) {
-      event.preventDefault();
-    }
-    if (event.currentTarget.value >= this.maxDate && event.which === 38) {
-      event.preventDefault();
     }
   }
 }
