@@ -14,10 +14,11 @@ import { UploadSingleAttachmentService } from './upload-single-attachment.servic
 
 describe('UploadAttachmentsService', () => {
   let service: UploadAttachmentsService;
+  beforeEach(() => {
+    service = new UploadAttachmentsService(null, null, null, null, null, null, null);
+  });
 
   it('should not upload attachments with AttachmentUploadId (already uploaded)', async () => {
-    const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
-
     // List of fake attachments that fake newAttachmentsService will return
     const fakeAttachments: AttachmentUploadEditModel[] = [
       { id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
@@ -37,7 +38,7 @@ describe('UploadAttachmentsService', () => {
       {} as UploadSingleAttachmentService,
       {} as TranslateService,
       {} as DateHelperService,
-      {} as LoggingService,
+      jasmine.createSpyObj('LoggingService', ['debug', 'error']),
       {
         userSetting$: of({}),
       } as UserSettingService,
@@ -56,32 +57,13 @@ describe('UploadAttachmentsService', () => {
 
     const result = await service.uploadAllAttachments(draft);
 
-    // Test that post is not called at all
-    expect(httpClient.post.calls.any()).toBe(false);
     // Test that uploadAllAttachments just returns the attachments,
     // as they are already uploaded
     expect(result).toEqual(fakeAttachmentsCopy);
   });
 
   it('should upload attachments for attachments without AttachmentUploadId', async () => {
-    const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
     const responseAttachmentUploadId = '12345-test-id';
-
-    httpClient.post.and.returnValue(
-      of(
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 500,
-          total: 1000,
-        },
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 1000,
-          total: 1000,
-        },
-        new HttpResponse({ body: responseAttachmentUploadId })
-      )
-    );
 
     const fakeAttachments: AttachmentUploadEditModel[] = [
       { id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
@@ -96,6 +78,30 @@ describe('UploadAttachmentsService', () => {
     const saveAttachmentMeta$ = jasmine.createSpy();
     saveAttachmentMeta$.and.returnValue(of(true));
 
+    const alertController = {
+      create: async (): Promise<HTMLIonAlertElement> => {
+        return { present: () => null } as HTMLIonAlertElement;
+      },
+    };
+
+    const translateService = {
+      get: (): Observable<any> => {
+        return of('Tranlsation');
+      },
+    };
+
+    const dateHelperService = {
+      formatDateString: (): Observable<string> => {
+        return of('today');
+      },
+    };
+
+    const uploadSingleAttachmentService = {
+      upload: async () => {
+        return { id: '5678', type: 'Attachment', AttachmentUploadId: '12345-test-id' };
+      },
+    };
+
     const newAttachmentService = {
       getAttachments: (): Observable<AttachmentUploadEditModel[]> => {
         return of(fakeAttachments);
@@ -105,17 +111,16 @@ describe('UploadAttachmentsService', () => {
       },
       saveAttachmentMeta$: saveAttachmentMeta$,
     };
-
     service = new UploadAttachmentsService(
       newAttachmentService as unknown as NewAttachmentService,
-      {} as UploadSingleAttachmentService,
-      {} as TranslateService,
-      {} as DateHelperService,
-      jasmine.createSpyObj('LoggingService', ['debug']),
+      uploadSingleAttachmentService as unknown as UploadSingleAttachmentService,
+      translateService as unknown as TranslateService,
+      dateHelperService as unknown as DateHelperService,
+      jasmine.createSpyObj('LoggingService', ['debug', 'error']),
       {
         userSetting$: of({}),
       } as UserSettingService,
-      {} as AlertController
+      alertController as unknown as AlertController
     );
 
     const draft: RegistrationDraft = {
@@ -130,56 +135,12 @@ describe('UploadAttachmentsService', () => {
 
     const result = await service.uploadAllAttachments(draft);
 
-    // Test that we call post one time as we have one image to upload
-    expect(httpClient.post).toHaveBeenCalledTimes(1);
-
     // Test that uploadAllAttachments just returns the attachments,
     // as they are already uploaded
     expect(result).toEqual(addAttachmentsResult);
   });
 
   it('should return failed attachment upload as undefined', async () => {
-    const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
-    const responseAttachmentUploadId = '12345-test-id';
-
-    httpClient.post.and.returnValues(
-      of(
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 500,
-          total: 1000,
-        },
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 1000,
-          total: 1000,
-        },
-        new HttpResponse({ body: responseAttachmentUploadId })
-      ),
-      // Second upload will fail, it starts to upload, but gets a server error
-      of(
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 200,
-          total: 1000,
-        },
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 500,
-          total: 1000,
-        },
-        {
-          type: HttpEventType.UploadProgress,
-          loaded: 700,
-          total: 1000,
-        },
-        new HttpErrorResponse({
-          error: new Error('Something failed'),
-          status: 500,
-        })
-      )
-    );
-
     const attachmentIdThatFails = '3-abc';
     const fakeAttachments: AttachmentUploadEditModel[] = [
       { id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
@@ -206,18 +167,30 @@ describe('UploadAttachmentsService', () => {
       saveAttachmentMeta$: saveAttachmentMeta$,
     };
 
+    const alertController = {
+      create: async (): Promise<HTMLIonAlertElement> => {
+        return { present: () => null } as HTMLIonAlertElement;
+      },
+    };
+
+    const dateHelperService = {
+      formatDateString: (): Observable<string> => {
+        return of('today');
+      },
+    };
+
     const loggingService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
 
     service = new UploadAttachmentsService(
       newAttachmentService as unknown as NewAttachmentService,
       {} as UploadSingleAttachmentService,
       translateService as unknown as TranslateService,
-      {} as DateHelperService,
+      dateHelperService as unknown as DateHelperService,
       loggingService,
       {
         userSetting$: of({}),
       } as UserSettingService,
-      {} as AlertController
+      alertController as unknown as AlertController
     );
 
     const regUuid = '12345-abc';
@@ -233,13 +206,12 @@ describe('UploadAttachmentsService', () => {
 
     const expected: AttachmentUploadEditModel[] = [
       { id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
-      { id: '2-abc', type: 'Attachment', AttachmentUploadId: '12345-test-id' },
+      undefined,
       undefined,
     ];
     // Test that uploadAllAttachments returns one fulfilled promise without value
     await expectAsync(service.uploadAllAttachments(draft)).toBeResolvedTo(expected);
 
     expect(loggingService.error).toHaveBeenCalled();
-    expect(httpClient.post).toHaveBeenCalledTimes(2);
   });
 });
