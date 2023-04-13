@@ -1,0 +1,16 @@
+<ion-item class="summary-item">
+  <ion-label class="ion-padding-vertical ion-padding-end">
+    <h2 class="ion-label-fat">{{ "DIALOGS.COMMENT" | translate }}</h2>
+  </ion-label>
+  <ion-textarea
+    autocapitalize="sentences"
+    type="textarea"
+    [rows]="1"
+    [ngModel]="comment || (draft.registration[regName] && draft.registration[regName][commentName])"
+    (ngModel)="(comment)"
+    [autoGrow]="true"
+    placeholder="Enter text"
+    [ngClass]="'simple-mode-sub'"
+    (ngModelChange)="onChange($event)"
+  ></ion-textarea>
+</ion-item>
