@@ -75,6 +75,8 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   allFetchedForCriteria$ = this.allFetchedForCriteria.pipe(distinctUntilChanged());
   private maxItemsFetched = new BehaviorSubject<boolean>(false);
   maxItemsFetched$ = this.maxItemsFetched.pipe(distinctUntilChanged());
+  private isFetching = new BehaviorSubject<boolean>(false);
+  isFetching$ = this.isFetching.asObservable();
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
@@ -85,12 +87,18 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   ) {
     this.registrations$ = searchCriteria$.pipe(
       // For every new search criteria, create a paged search and check what the total count is
+      tap(() => this.isFetching.next(true)),
       switchMap((searchCriteria) =>
         combineLatest([
           this.createPagedSearch(searchCriteria, fetchFunc),
           countFunc(searchCriteria as SearchCriteriaRequestDto),
         ])
       ),
+      catchError(() => {
+        this.isFetching.next(false);
+        return of([]);
+      }),
+
       // Save search state
       tap(([registrations, totalCount]) => {
         this.allFetchedForCriteria.next(registrations.length >= totalCount);
@@ -98,6 +106,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       }),
       // Map to registrations
       map(([registrations]) => registrations),
+      tap(() => this.isFetching.next(false)),
       // Expensive observable, so share results if many subscribers
       shareReplay(1)
     );

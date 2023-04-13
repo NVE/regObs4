@@ -39,7 +39,7 @@
       <app-failed-registration *ngIf="draft.error && draftHasStatusSync(draft)" [draft]="draft">
       </app-failed-registration>
 
-      <app-simple-snow-obs *ngIf="showSimpleMode(draft)" [draft]="draft"></app-simple-snow-obs>
+      <app-simple-snow-obs *ngIf="showSimpleSnowMode(draft)" [draft]="draft"></app-simple-snow-obs>
 
       <ion-list lines="full">
         <!-- "Summary" items for each form -->
@@ -51,11 +51,9 @@
         ></app-summary-item>
       </ion-list>
 
-      
       <app-simple-water-obs *ngIf="showSimpleWaterMode(draft)" [draft]="draft"></app-simple-water-obs>
-      
     </div>
   </ion-content>
   <app-send-button *ngIf="!hideSendButton(draft)" [draft]="draft"></app-send-button>
-  <app-coach-marks-simple-obs *ngIf="showSimpleMode(draft)"></app-coach-marks-simple-obs>
+  <app-coach-marks-simple-obs *ngIf="showSimpleSnowMode(draft)"></app-coach-marks-simple-obs>
 </ng-container>
