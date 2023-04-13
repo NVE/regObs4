@@ -132,9 +132,8 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
-  async toggleFilterByMapView(event: SegmentCustomEvent) {
-    const isDisabled = await firstValueFrom(this.disableMapExtentToggle$);
-    if (!isDisabled) {
+  toggleFilterByMapView(event: SegmentCustomEvent) {
+    if (!event.target.disabled) {
       const value = event.target.value as MapSectionFilter;
       const isExtentFilterActive = value == 'all' ? false : true;
       this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);
