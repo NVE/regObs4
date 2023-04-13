@@ -244,7 +244,16 @@ export class SummaryItemService {
     // We have no spesific summary items for water yet because of the new simple form,
     // but we would need to add more later when we get more fields in the simple form so
     // that they are shown in error summary view
-    return [];
+    return [
+      await this.getRegItem(
+        draft,
+        '/registration',
+        'REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_SUMMARY_TITLE',
+        '',
+        RegistrationTid.WaterLevel2,
+        attachments
+      ),
+    ];
   }
 
   private async getRegItem(

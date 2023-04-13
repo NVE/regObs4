@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import L from 'leaflet';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
+import { GeneralObservationEditModel, Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
 import { SetFloodPositionPage } from '../../../pages/set-flood-position/set-flood-position.page';
 
 /**
@@ -24,6 +24,14 @@ export class SimpleWaterObsComponent {
     }
     return this.draft.registration.WaterLevel2;
   }
+
+  get generalObservation(): GeneralObservationEditModel {
+    if (!this.draft.registration.GeneralObservation) {
+      this.draft.registration.GeneralObservation = {};
+    }
+    return this.draft.registration.GeneralObservation;
+  }
+
   async save(): Promise<void> {
     this.draftRepository.save(this.draft);
   }

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.WATER.POSITION.SET_FLOOD_POSITION' | translate }} </ion-title>
+    <ion-title> {{ 'REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_TITLE' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -14,7 +14,7 @@
     [locationMarker]="locationMarker"
     (locationTimeSet)="onLocationSet()"
     [locationPolygon]="locationPolygon"
-    confirmLocationText="REGISTRATION.WATER.WATER_LEVEL.FLOOD_AREA_TITLE"
+    confirmLocationText="REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_CONFIRM"
     fromLocationText="REGISTRATION.OBS_LOCATION.TITLE"
     [showPreviousUsedLocations]="false"
     [showPolyline]="false"
