@@ -177,7 +177,7 @@ describe('SearchCriteriaService', () => {
     const obsType2 = { Id: 40, SubTypes: [26] };
     tick(500);
     await service.removeObservationType(obsType2);
-    expect(criteria.SelectedRegistrationTypes).toEqual(null);
+    expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual(null);
