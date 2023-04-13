@@ -240,7 +240,6 @@ export class SetAvalanchePositionPage implements OnInit {
           this.totalPolygon = makePolygons('total', this.totalPolygon, undefined, this.start, this.end);
           this.startPolygon = makePolygons('start', this.startPolygon, undefined, this.start, this.end);
           this.endPolygon = makePolygons('end', this.endPolygon, undefined, this.start, this.end);
-          //this.makePolygons();
           this.locationPolygon.next(this.totalPolygon);
           this.locationPolygon.next(this.startPolygon);
           this.locationPolygon.next(this.endPolygon);

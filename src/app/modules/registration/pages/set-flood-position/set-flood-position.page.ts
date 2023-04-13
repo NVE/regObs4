@@ -12,7 +12,6 @@ import { settings } from 'src/settings';
 @Component({
   selector: 'app-set-flood-position.page',
   templateUrl: './set-flood-position.page.html',
-  styleUrls: ['./set-flood-position.page.scss'],
 })
 export class SetFloodPositionPage implements OnInit {
   @Input() extent?: [number, number][];

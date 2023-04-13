@@ -81,11 +81,6 @@ const routes: Routes = [
         (m) => m.AvalancheEvaluationPageModule
       ),
   },
-  /*{
-    path: 'registration/water/flood-obs/:id',
-    loadChildren: () =>
-      import('./pages/set-flood-position/set-flood-position-page.module').then((m) => m.SetFloodPositionPageModule),
-  },*/
   {
     path: 'registration/:id',
     loadChildren: () =>
