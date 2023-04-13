@@ -9,6 +9,7 @@ import { SaveAsDraftRouteGuard } from '../save-as-draft.guard';
 import { VersionConflictComponent } from '../../components/version-conflict/version-conflict.component';
 import { GoneRegistrationComponent } from '../../components/gone-registration/gone-registration.component';
 import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
+import { SimpleWaterObsComponent } from '../../components/water/simple-water-obs/simple-water-obs.component';
 import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
 import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.component';
 import { EditImagesPage } from '../../components/edit-images/edit-images.page';
@@ -34,6 +35,7 @@ const routes: Routes = [
     VersionConflictComponent,
     GoneRegistrationComponent,
     SimpleSnowObsComponent,
+    SimpleWaterObsComponent,
     CoachMarksSimpleObsComponent,
     EditImagesBarComponent,
     EditImagesPage,

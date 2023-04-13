@@ -1,0 +1,20 @@
+<ion-list lines="full">
+  <app-edit-images-bar
+    [draft]="draft"
+    [registrationTid]="10"
+    modalTitlePostfix="GEO_HAZARDS.WATER"
+  ></app-edit-images-bar>
+  <app-text-comment
+    title="DIALOGS.COMMENT"
+    placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER"
+    [(value)]="draft.registration.GeneralObservation.ObsComment"
+    (valueChange)="save()"
+  ></app-text-comment>
+  <ion-list-header class="ion-text-uppercase">
+    <ion-label> {{ "REGISTRATION.ADD_WEB_URL.TITLE" | translate }} </ion-label>
+  </ion-list-header>
+  <app-add-web-url-item
+    (weburlsChange)="save()"
+    [(weburls)]="draft.registration.GeneralObservation.Urls"
+  ></app-add-web-url-item>
+</ion-list>
