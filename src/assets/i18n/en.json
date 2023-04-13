@@ -762,10 +762,6 @@
         "WHAT_IS_DAMAGED": "What is damaged?",
         "WHERE_IS_DAMAGE_LOCATION": "Where is the damage located?"
       },
-      "POSITION": {
-        "TITLE": "Flood area",
-        "SET_FLOOD_POSITION": "Set flood area"
-      },
       "WATER_LEVEL": {
         "ADD_NEW": "Add new",
         "ADD_PICTURE": "Add picture of",
@@ -774,7 +770,6 @@
         "DESCRIBE_HEIGHT": "Describe height",
         "DESCRIBE_SITUATION": "How would you describe the situation?",
         "DT_REQUIRED_TEXT": "Time is required!",
-        "FLOOD_AREA_TITLE": "Confirm flood area",
         "HOW_DO_YOU_READ": "How do you read the water level?",
         "MARKED_WITH": "I have marked the water level with",
         "MARKING": "Marking",
@@ -786,6 +781,9 @@
         "OBSERVATION_TIMING": "What do you register?",
         "REGISTRATION_METHOD": "How do you register?",
         "RELATIVE": "The height is relative to",
+        "SET_FLOOD_POSITION_CONFIRM": "Confirm flood area",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Flood area",
+        "SET_FLOOD_POSITION_TITLE": "Set flood area",
         "TITLE": "Water Level",
         "WATER_LEVEL_METERS": "Water level in meters",
         "WATER_MARKING": "Water level marking",
