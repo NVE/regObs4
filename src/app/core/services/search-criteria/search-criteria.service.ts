@@ -48,7 +48,7 @@ const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_COMPETENCE = 'competence';
-const URL_PARAM_TYPE = 'type';
+const URL_PARAM_REGISTRATION_TYPE = 'type';
 const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
@@ -259,6 +259,7 @@ export class SearchCriteriaService {
         SelectedGeoHazards: geoHazards,
         Extent: useMapExtent ? extent : null,
       })),
+      map((criteria) => removeEmpty(criteria)),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
@@ -304,22 +305,46 @@ export class SearchCriteriaService {
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
-    const type = url.searchParams.get(URL_PARAM_TYPE);
-    const convertTypeFromUrlToCriteria = type != null ? convertRegTypeFromUrlToDto(type) : null;
+    const regTypesRaw = url.searchParams.get(URL_PARAM_REGISTRATION_TYPE);
+    const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : null;
 
-    //I recommend to add spread operator on optional properties so that we dont send 'null' values to API.
-    //example: ...(nickName && {ObserverCompetence: nickname})
-    const criteria = {
-      SelectedGeoHazards: geoHazards,
-      FromDtObsTime: fromObsTime,
-      ObserverNickName: nickName,
-      ObserverCompetence: observerCompetence,
-      SelectedRegistrationTypes: convertTypeFromUrlToCriteria,
-      ToDtObsTime: toObsTime,
-      OrderBy: orderBy,
-    } as SearchCriteriaRequestDto;
+    const criteria: SearchCriteriaRequestDto = {};
 
-    this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards, daysBack: daysBackNumeric });
+    if (fromObsTime) {
+      criteria.FromDtObsTime = fromObsTime;
+    }
+
+    if (nickName) {
+      criteria.ObserverNickName = nickName;
+    }
+
+    if (observerCompetence) {
+      criteria.ObserverCompetence = observerCompetence;
+    }
+
+    if (regTypes) {
+      criteria.SelectedRegistrationTypes = regTypes;
+    }
+
+    if (toObsTime) {
+      criteria.ToDtObsTime = toObsTime;
+    }
+
+    if (orderBy) {
+      criteria.OrderBy = orderBy;
+    }
+
+    if (geoHazards) {
+      criteria.SelectedGeoHazards = geoHazards;
+      if (daysBackNumeric) {
+        this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards, daysBack: daysBackNumeric });
+      } else {
+        this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards });
+      }
+    } else if (daysBackNumeric) {
+      this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: daysBackNumeric });
+    }
+
     return criteria;
   }
 
@@ -327,24 +352,23 @@ export class SearchCriteriaService {
     return UrlDtoOrderByMap.get(orderBy);
   }
 
-  private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
-    let geoHazards: number[] = [GeoHazard.Snow];
-
-    //read param used in (old) regobs.no
+  private readGeoHazardsFromUrl(searchParams: URLSearchParams): GeoHazard[] {
+    // read param used in (old) regobs.no
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
     if (geoHazardsParamValueOld?.length) {
-      geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
+      const geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
       new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
+      return geoHazards;
     }
 
-    //read param on new format
+    // read param on new format
     const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
     if (geoHazardsParamValue?.length > 0) {
-      const geoHazardsToArray = separatedStringToNumberArray(geoHazardsParamValue);
-      isGeoHazardValid(geoHazardsToArray) && (geoHazards = geoHazardsToArray);
+      const geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
+      if (isGeoHazardValid(geoHazards)) {
+        return geoHazards;
+      }
     }
-
-    return geoHazards;
   }
 
   async applyQueryParams() {
@@ -369,7 +393,7 @@ export class SearchCriteriaService {
     }
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
-    params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
+    params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
 
     if (criteria.Extent != null) {
@@ -520,4 +544,10 @@ export class SearchCriteriaService {
     }
     return null;
   }
+}
+
+function removeEmpty(criteria: SearchCriteriaRequestDto) {
+  const entries = Object.entries(criteria);
+  const notEmpty = entries.filter(([, value]) => value != null);
+  return Object.fromEntries(notEmpty);
 }
