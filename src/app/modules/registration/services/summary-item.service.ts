@@ -9,7 +9,7 @@ import {
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from 'src/app/modules/common-regobs-api/models';
+import { GeneralObservationEditModel, ObserverGroupDto, UrlEditModel } from 'src/app/modules/common-regobs-api/models';
 import { NavController } from '@ionic/angular';
 import { RouterDirection } from '@ionic/core';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
@@ -156,14 +156,12 @@ export class SummaryItemService {
       ...(await this.getGeoHazardItems(draft, attachmentsToUse)),
     ];
 
-    summaryItems.splice(
-      draft.registration.GeoHazardTID == GeoHazard.Water ? 2 : summaryItems.length,
-      0,
+    summaryItems.push(
       await this.getRegItem(
         draft,
         '/registration/general-comment',
         'REGISTRATION.GENERAL_COMMENT.TITLE',
-        draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
+        getGenerelObsText(draft.registration.GeneralObservation),
         RegistrationTid.GeneralObservation,
         attachmentsToUse
       )
@@ -243,24 +241,10 @@ export class SummaryItemService {
     draft: RegistrationDraft,
     attachments: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem[]> {
-    return [
-      await this.getRegItem(
-        draft,
-        '/registration/water/water-level',
-        'REGISTRATION.WATER.WATER_LEVEL.TITLE',
-        draft.registration.WaterLevel2 ? draft.registration.WaterLevel2.Comment : '',
-        RegistrationTid.WaterLevel2,
-        attachments
-      ),
-      await this.getRegItem(
-        draft,
-        '/registration/water/damage',
-        'REGISTRATION.WATER.DAMAGE.TITLE',
-        '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
-        RegistrationTid.DamageObs,
-        attachments
-      ),
-    ];
+    // We have no spesific summary items for water yet because of the new simple form,
+    // but we would need to add more later when we get more fields in the simple form so
+    // that they are shown in error summary view
+    return [];
   }
 
   private async getRegItem(
@@ -435,3 +419,28 @@ export class SummaryItemService {
     ];
   }
 }
+
+// Helper function to get short text description for a url item
+const getUrlText = (url: UrlEditModel): string => {
+  if (url.UrlDescription) {
+    return `${url.UrlDescription} (${url.UrlLine})`;
+  }
+  return url.UrlLine;
+};
+
+// Helper function to get short text description for a general obs item
+const getGenerelObsText = (go: GeneralObservationEditModel): string => {
+  const texts = [];
+  if (go?.ObsComment) {
+    texts.push(go.ObsComment);
+  }
+  if (go?.Urls) {
+    for (const url of go.Urls) {
+      texts.push(getUrlText(url));
+    }
+  }
+  if (texts.length) {
+    return texts.join(', ');
+  }
+  return '';
+};

@@ -12,7 +12,6 @@ import { SetFloodPositionPage } from '../../../pages/set-flood-position/set-floo
 @Component({
   selector: 'app-simple-water-obs',
   templateUrl: './simple-water-obs.component.html',
-  styleUrls: ['./simple-water-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleWaterObsComponent {
