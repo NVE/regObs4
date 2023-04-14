@@ -60,7 +60,6 @@ export class UploadSingleAttachmentService {
 
   async upload(attachment: AttachmentUploadEditModel, blob: Blob, onHttpEvent?: HttpEventClb) {
     this.loggingService.debug('Uploading attachment', DEBUG_TAG, { attachment, size: blob.size });
-    // TODO: Add error handling
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const clb: HttpEventClb = onHttpEvent || (() => {});

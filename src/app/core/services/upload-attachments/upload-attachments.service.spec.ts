@@ -1,4 +1,3 @@
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'clone-deep';
@@ -6,7 +5,6 @@ import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UploadAttachmentsService } from './upload-attachments.service';
