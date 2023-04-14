@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
+import { firstValueFrom, Observable, Subject, tap, timeout } from 'rxjs';
 import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
-import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { RegistrationEditModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments } from '../draft/draft-model';
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -21,6 +23,7 @@ import { addAttachmentToRegistration } from './attachmentHelpers';
 })
 export class AddUpdateDeleteRegistrationService {
   constructor(
+    private newAttachmentsService: NewAttachmentService,
     private uploadAttachmentsService: UploadAttachmentsService,
     private regobsApiRegistrationService: RegistrationService,
     private userSettings: UserSettingService,
@@ -56,7 +59,8 @@ export class AddUpdateDeleteRegistrationService {
    */
   async add(draft: RegistrationDraft): Promise<RegistrationViewModel> {
     const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
-    const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+    const uploadedAttachments = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+    const registration = this.addAttachmentToRegistration(uploadedAttachments, draft.registration);
     const langKey = await firstValueFrom(this.userSettings.language$);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
@@ -95,7 +99,8 @@ export class AddUpdateDeleteRegistrationService {
 
     const langKey = await firstValueFrom(this.userSettings.language$);
     const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
-    const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+    const uploadedAttachments = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+    const registration = this.addAttachmentToRegistration(uploadedAttachments, draft.registration);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
     // Send registration to regobs
@@ -138,21 +143,20 @@ export class AddUpdateDeleteRegistrationService {
   /**
    * @returns A new draft with updated attachment info
    */
-  private async uploadAttachments(draft: RegistrationDraft): Promise<RegistrationDraft> {
+  private async uploadAttachments(draft: RegistrationDraft): Promise<AttachmentUploadEditModel[]> {
     const uploadedAttachments = await this.uploadAttachmentsService.uploadAllAttachments(draft);
+    return uploadedAttachments;
+  }
 
-    // Add attachment info to draft
-    let registration = draft.registration;
-    for (const attachment of uploadedAttachments) {
+  private addAttachmentToRegistration(attachments: AttachmentUploadEditModel[], registration: RegistrationEditModel) {
+    let updatedRegistration = { ...registration };
+    for (const attachment of attachments) {
       if (attachment) {
-        registration = addAttachmentToRegistration(attachment, registration);
+        // Legg til fotograf / copyright info her ?
+        updatedRegistration = addAttachmentToRegistration(attachment, updatedRegistration);
       }
     }
-
-    return {
-      ...draft,
-      registration,
-    };
+    return updatedRegistration;
   }
 
   private addMetadata(registration: RegistrationEditModelWithRemoteOrLocalAttachments, draft: RegistrationDraft) {
