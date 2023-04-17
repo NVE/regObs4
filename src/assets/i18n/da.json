@@ -552,7 +552,6 @@
         "SET_AVALANCHE_POSITION": "Set lavineposition",
         "SLOPE_ACTIVITY_TID": "Tur fase",
         "TERRAIN_START_ZONE": "Terræntype i frigivelsesområdet",
-        "TIME": "Lavinetidspunkt (obligatorisk)",
         "TITLE": "Lavinehændelse",
         "TRAFFIC_OBSTRUCTED": "Trafik er hindret",
         "TRAJECTORY_NAME": "Navn på lavinespor",

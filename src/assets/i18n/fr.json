@@ -416,7 +416,6 @@
         "POSITION": "Localisation de l'avalanche",
         "SET_AVALANCHE_POSITION": "Définir la localisation de l'avalanche",
         "TERRAIN_START_ZONE": "Type de terrain de la zone de départ",
-        "TIME": "Heure de l'avalanche (obligatoire)",
         "TITLE": "Incident d'avalanche",
         "TRAJECTORY_NAME": "Nom du couloir d'avalanche",
         "VALID_EXPOSITION": "Orientation"
