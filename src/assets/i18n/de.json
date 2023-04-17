@@ -386,7 +386,6 @@
         "POSITION": "Lawinenposition",
         "SET_AVALANCHE_POSITION": "Lawinenposition eingeben",
         "TERRAIN_START_ZONE": "Geländetyp im Anbruchgebiet",
-        "TIME": "Lawinenzeit (erforderlich)",
         "TITLE": "Lawinenvorfall",
         "TRAJECTORY_NAME": "Name der Lawinenbahn",
         "VALID_EXPOSITION": "Exposition"
