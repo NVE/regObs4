@@ -22,7 +22,7 @@
         </ion-list-header>
         <app-numeric-input
           [(value)]="profile.CylinderDiameter"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER"
+          labelTitle="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER"
           [max]="999"
           [min]="0"
           suffix="cm"
@@ -33,7 +33,7 @@
         <app-numeric-input
           [(value)]="profile.TareWeight"
           (valueChange)="recalculateLayersAndSave()"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT"
+          labelTitle="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT"
           [max]="999"
           [min]="0"
           suffix="g"

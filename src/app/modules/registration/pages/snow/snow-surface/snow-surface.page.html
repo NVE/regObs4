@@ -19,23 +19,23 @@
         <ion-label> {{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}} </ion-label>
       </ion-list-header>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT"
         kdvKey="Snow_SnowDriftKDV"
         [(value)]="draft.registration.SnowSurfaceObservation.SnowDriftTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
         kdvKey="Snow_SnowSurfaceKDV"
         [(value)]="draft.registration.SnowSurfaceObservation.SnowSurfaceTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG"
         kdvKey="Snow_SurfaceWaterContentKDV"
         [(value)]="draft.registration.SnowSurfaceObservation.SurfaceWaterContentTID"
       ></app-kdv-select>
       <app-numeric-input
         [(value)]="draft.registration.SnowSurfaceObservation.NewSnowDepth24"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
         [min]="0"
         [max]="999"
         [decimalPlaces]="0"
@@ -44,7 +44,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="draft.registration.SnowSurfaceObservation.NewSnowLine"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE"
         [min]="0"
         [max]="8848"
         [decimalPlaces]="0"
@@ -52,7 +52,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="draft.registration.SnowSurfaceObservation.SnowDepth"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
         [min]="0"
         [max]="9999"
         [decimalPlaces]="0"
@@ -61,7 +61,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="draft.registration.SnowSurfaceObservation.SnowLine"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE"
         [min]="0"
         [max]="8848"
         [decimalPlaces]="0"
@@ -69,7 +69,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="draft.registration.SnowSurfaceObservation.HeightLimitLayeredSnow"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW"
         [min]="0"
         [max]="8848"
         [decimalPlaces]="0"
@@ -77,7 +77,7 @@
         placeholder="REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER"
       ></app-numeric-input>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS"
+        labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS"
         kdvKey="Snow_SkiConditionsKDV"
         [(value)]="draft.registration.SnowSurfaceObservation.SkiConditionsTID"
       ></app-kdv-select>
@@ -86,7 +86,7 @@
         <ion-label> {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_HEADER' | translate}} </ion-label>
       </ion-list-header>
       <app-text-comment
-        title="REGISTRATION.DANGER_OBS.COMMENT"
+        labelTitle="REGISTRATION.DANGER_OBS.COMMENT"
         [(value)]="draft.registration.SnowSurfaceObservation.Comment"
       ></app-text-comment>
       <ion-item-divider>

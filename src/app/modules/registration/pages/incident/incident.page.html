@@ -15,19 +15,19 @@
   >
     <ion-list>
       <app-kdv-select
-        title="REGISTRATION.INCIDENT.ACTIVITY"
+        labelTitle="REGISTRATION.INCIDENT.ACTIVITY"
         kdvKey="Ice_ActivityInfluencedKDV"
         [(value)]="incident.ActivityInfluencedTID"
       ></app-kdv-select>
       <app-numeric-input
-        title="REGISTRATION.ICE.INCIDENT.INVOLVED_NUM"
+        labelTitle="REGISTRATION.ICE.INCIDENT.INVOLVED_NUM"
         [min]="0"
         [(value)]="incident.InvolvedNum"
         (valueChange)="groupValidate()"
       >
       </app-numeric-input>
       <app-numeric-input
-        title="REGISTRATION.ICE.INCIDENT.CASUALTIES_NUM"
+        labelTitle="REGISTRATION.ICE.INCIDENT.CASUALTIES_NUM"
         [color]="!isCasualtiesValid ? 'danger' : 'medium'"
         [min]="0"
         [isValid]="isCasualtiesValid"
@@ -36,7 +36,7 @@
         (valueChange)="groupValidate()"
       ></app-numeric-input>
       <app-numeric-input
-        title="REGISTRATION.INCIDENT.DEAD_NUM"
+        labelTitle="REGISTRATION.INCIDENT.DEAD_NUM"
         [color]="!isDeadValid ? 'danger' : 'medium'"
         [min]="0"
         [isValid]="isDeadValid"
@@ -45,16 +45,16 @@
         (valueChange)="groupValidate()"
       ></app-numeric-input>
       <app-kdv-select
-        title="REGISTRATION.INCIDENT.RESCUE_TID"
+        labelTitle="REGISTRATION.INCIDENT.RESCUE_TID"
         kdvKey="RescueKDV"
         [(value)]="incident.RescueTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.ICE.INCIDENT.SAFETY_GEAR_TID"
+        labelTitle="REGISTRATION.ICE.INCIDENT.SAFETY_GEAR_TID"
         kdvKey="Ice_SafetyGearKDV"
         [(value)]="incident.SafetyGearTID"
       ></app-kdv-select>
-      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment"></app-text-comment>
+      <app-text-comment labelTitle="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment"></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}} </ion-label>
       </ion-list-header>

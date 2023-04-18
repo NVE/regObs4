@@ -20,7 +20,7 @@
       </ion-toggle>
     </ion-item>
     <app-kdv-select
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.TEST_TYPE"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.TEST_TYPE"
       kdvKey="Snow_PropagationKDV"
       [(value)]="compressionTest.PropagationTID"
       (valueChange)="checkTestType()"
@@ -36,13 +36,13 @@
       <app-select
         [(selectedValue)]="compressionTest.TapsFracture"
         [options]="tapsArray"
-        title="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"
+        labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"
       ></app-select>
     </ion-item>
     <app-numeric-input
       *ngIf="!isCTNorECTXorRB7() && !isNull()"
       [(value)]="compressionTest.FractureDepth"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.DISTANCE_FROM_TOP"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.DISTANCE_FROM_TOP"
       [min]="0"
       [max]="999"
       [decimalPlaces]="0"
@@ -52,7 +52,7 @@
     <app-numeric-input
       *ngIf="isPST()"
       [(value)]="compressionTest.PstX"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.X_DISTANCE"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.X_DISTANCE"
       [min]="0"
       [max]="999"
       [decimalPlaces]="0"
@@ -62,7 +62,7 @@
     <app-numeric-input
       *ngIf="isPST()"
       [(value)]="compressionTest.PstY"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.Y_DISTANCE"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.Y_DISTANCE"
       [min]="0"
       [max]="999"
       [decimalPlaces]="0"
@@ -72,7 +72,7 @@
     <app-numeric-input
       *ngIf="rbReleaseVisible()"
       [(value)]="compressionTest.RbRelease"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.RB_RELEASE"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.RB_RELEASE"
       [min]="0"
       [max]="100"
       [decimalPlaces]="0"
@@ -81,17 +81,18 @@
     </app-numeric-input>
     <app-kdv-select
       *ngIf="testFractureVisible()"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.FRACTURE_TYPE"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.FRACTURE_TYPE"
       kdvKey="Snow_ComprTestFractureKDV"
       [(value)]="compressionTest.ComprTestFractureTID"
     ></app-kdv-select>
     <app-kdv-select
       *ngIf="!isLBT() && !isNull()"
-      title="REGISTRATION.SNOW.COMPRESSION_TEST.STABILITY_EVAL"
+      labelTitle="REGISTRATION.SNOW.COMPRESSION_TEST.STABILITY_EVAL"
       kdvKey="Snow_StabilityEvalKDV"
       [(value)]="compressionTest.StabilityEvalTID"
     ></app-kdv-select>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="compressionTest.Comment"> </app-text-comment>
+    <app-text-comment labelTitle="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="compressionTest.Comment">
+    </app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons
     [saveDisabled]="!isValid"

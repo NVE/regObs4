@@ -11,7 +11,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
   styleUrls: ['./kdv-select.component.scss'],
 })
 export class KdvSelectComponent implements OnInit, OnDestroy {
-  @Input() title: string;
+  @Input() labelTitle: string;
   @Input() kdvKey: KdvKey;
   @Input() value: number;
   @Output() valueChange = new EventEmitter();
@@ -22,7 +22,7 @@ export class KdvSelectComponent implements OnInit, OnDestroy {
   @Input() useDescription: boolean;
   @Input() filter: (number) => boolean;
   @Input() getIconFunc: (kdvElement: KdvElement) => string;
-  @Input() obsLocMode: boolean = false;
+  @Input() obsLocMode = false;
   private kdvelements: KdvElement[] = [];
 
   private subscription: Subscription;
