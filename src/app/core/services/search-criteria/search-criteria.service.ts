@@ -20,6 +20,7 @@ import { Immutable } from 'src/app/core/models/immutable';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import {
   PositionDto,
+  PropertyFilter,
   RegistrationTypeCriteriaDto,
   SearchCriteriaRequestDto,
   WithinExtentCriteriaDto,
@@ -31,6 +32,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
+import { SearchCriteria } from '../../models/search-criteria';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -49,9 +51,17 @@ const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_COMPETENCE = 'competence';
 const URL_PARAM_REGISTRATION_TYPE = 'type';
+const URL_PARAM_SLUSH_FLOW = 'slushFlow';
 const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
+
+export const SLUSH_FLOW_ID = 30;
+export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
+  Name: 'AvalancheObs.AvalancheTID',
+  Operator: 0,
+  Value: SLUSH_FLOW_ID.toString(),
+};
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
@@ -84,7 +94,7 @@ function competenceFromDtoToUrl(competence: number[]): string {
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
-    const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
+    const keyValue = [...UrlDtoOrderByMap].find(([, val]) => val == value)[0];
     return keyValue;
   }
   return null;
@@ -270,6 +280,7 @@ export class SearchCriteriaService {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
+      PropertyFilters: null,
       // FromDtObsTime: null, Do not remove FromDtObsTime filter, if so we would fetch all obs from dawn of time
       // ToDtObsTime: null,
     };
@@ -284,6 +295,7 @@ export class SearchCriteriaService {
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
+    const slushFlow = url.searchParams.get(URL_PARAM_SLUSH_FLOW);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
 
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
@@ -328,6 +340,10 @@ export class SearchCriteriaService {
 
     if (toObsTime) {
       criteria.ToDtObsTime = toObsTime;
+    }
+
+    if (slushFlow && slushFlow === 'true') {
+      criteria.PropertyFilters = [CRITERIA_SLUSH_FLOW];
     }
 
     if (orderBy) {
@@ -395,6 +411,12 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
+
+    if (this.isSlushFlow(criteria)) {
+      params.set(URL_PARAM_SLUSH_FLOW, true);
+    } else {
+      params.delete(URL_PARAM_SLUSH_FLOW);
+    }
 
     if (criteria.Extent != null) {
       params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(4));
@@ -528,6 +550,22 @@ export class SearchCriteriaService {
 
   setExtentFilterActive(isExtentFilterActive: boolean) {
     this.useMapExtent.next(isExtentFilterActive);
+  }
+
+  /** Filter by slush flow */
+  setSlushFlow(slushFlow = true) {
+    if (slushFlow) {
+      this.searchCriteriaChanges.next({ PropertyFilters: [CRITERIA_SLUSH_FLOW] });
+    } else {
+      this.searchCriteriaChanges.next({ PropertyFilters: null });
+    }
+  }
+
+  /**
+   * @returns true if slush flow filter is on
+   */
+  isSlushFlow(criteria: SearchCriteria): boolean {
+    return criteria.PropertyFilters?.length === 1 && criteria.PropertyFilters[0] === CRITERIA_SLUSH_FLOW;
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {

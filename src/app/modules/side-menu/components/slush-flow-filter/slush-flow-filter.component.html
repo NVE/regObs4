@@ -1,0 +1,4 @@
+<ion-item *ngIf="visible$ | async" class="item-height">
+  <ion-checkbox [checked]="value$ | async" (ionChange)="setValue($event)" color="varsom-dark-blue"> </ion-checkbox>
+  <ion-label class="ion-padding-start">{{ caption$ | async }}</ion-label>
+</ion-item>

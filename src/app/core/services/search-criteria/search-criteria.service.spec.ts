@@ -5,6 +5,7 @@ import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { createMapView, MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { SearchCriteria } from '../../models/search-criteria';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
@@ -254,6 +255,52 @@ describe('SearchCriteriaService', () => {
     const url = new URL(document.location.href);
     expect(url.searchParams.get('toDate')).toBeNull();
   }));
+
+  it('slush flow filter should set the right criteria and url when turned on', fakeAsync(async () => {
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    service.setSlushFlow();
+    tick(500);
+    //check that current criteria contains filter by slush flow
+    expect(criteria.PropertyFilters.length).toEqual(1);
+    const filter = criteria.PropertyFilters[0];
+    expect(filter.Name).toEqual('AvalancheObs.AvalancheTID');
+    expect(filter.Value).toEqual('30');
+    expect(filter.Operator).toEqual(0);
+
+    await service.applyQueryParams();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('slushFlow')).toEqual('true');
+  }));
+
+  it('slush flow filter should be removed from criteria and url when turned off', fakeAsync(async () => {
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    service.setSlushFlow(false);
+    tick(500);
+    //check that current criteria does not contain filter by slush flow
+    expect(criteria.PropertyFilters).toBeUndefined();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.has('slushFlow')).toBeFalse();
+  }));
+
+  it('slush flow filter should be removed from criteria and url when we change geo hazard', fakeAsync(async () => {
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+
+    service.setSlushFlow(); //turn filter by slush flow on
+
+    userSettingService.saveUserSettings({
+      ...(await firstValueFrom(userSettingService.userSetting$)),
+      language: LangKey.nn,
+      currentGeoHazard: [GeoHazard.Ice],
+    });
+    tick(500);
+    //check that current criteria does not contain filter by slush flow
+    expect(criteria.PropertyFilters).toBeUndefined();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('slushFlow')).toBeNull();
+  }));
 });
 
 //a separate suite because we want to add url parameters before we create the service
@@ -476,5 +523,39 @@ describe('SearchCriteriaService url parsing', () => {
 
     expect(criteria.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
     expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+  }));
+
+  it('slush flow filter should be activated by url', fakeAsync(async () => {
+    new UrlParams().set('slushFlow', true).apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+    //check that current criteria contains filter by slush flow
+    expect(criteria.PropertyFilters.length).toEqual(1);
+    const filter = criteria.PropertyFilters[0];
+    expect(filter.Name).toEqual('AvalancheObs.AvalancheTID');
+    expect(filter.Value).toEqual('30');
+    expect(filter.Operator).toEqual(0);
+  }));
+
+  it('slush flow filter should be deactivated by url', fakeAsync(async () => {
+    new UrlParams().set('slushFlow', false).apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+    //check that current criteria does not contain filter by slush flow
+    expect(criteria.PropertyFilters).toBeUndefined();
   }));
 });
