@@ -80,6 +80,7 @@ export { SearchCriteriaRequestDto } from './models/search-criteria-request-dto';
 export { RegistrationTypeCriteriaDto } from './models/registration-type-criteria-dto';
 export { WithinRadiusCriteriaDto } from './models/within-radius-criteria-dto';
 export { WithinExtentCriteriaDto } from './models/within-extent-criteria-dto';
+export { PropertyFilter } from './models/property-filter';
 export { PositionDto } from './models/position-dto';
 export { SearchCriteriaExclUserRequestDto } from './models/search-criteria-excl-user-request-dto';
 export { SearchCountResponseDto } from './models/search-count-response-dto';
