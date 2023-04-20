@@ -23,6 +23,7 @@ import {
   SearchCriteriaRequestDto,
   SearchService,
 } from 'src/app/modules/common-regobs-api';
+import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 export class SearchResult<TViewModel> {
@@ -217,6 +218,18 @@ export class SearchRegistrationService {
     return new SearchResult<AtAGlanceViewModel>(
       searchCriteria$.pipe(map((c) => ({ ...c, NumberOfRecords: 100000 }))),
       this.searchService.SearchAtAGlance.bind(this.searchService)
+    );
+  }
+
+  searchAttachments(
+    searchCriteria$: Observable<SearchCriteria>
+  ): PagedSearchResult<SearchRegistrationsWithAttachments> {
+    return new PagedSearchResult<SearchRegistrationsWithAttachments>(
+      searchCriteria$,
+      this.searchService.SearchAttachments.bind(this.searchService),
+      (searchCriteria) =>
+        //implement count function for attachments
+        this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
 }

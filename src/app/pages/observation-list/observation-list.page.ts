@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
@@ -14,8 +14,10 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
+import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 
 type MapSectionFilter = 'all' | 'mapBorders';
+type ViewType = 'grid' | 'list';
 const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
@@ -26,13 +28,17 @@ const DEBUG_TAG = 'ObservationListPage';
 })
 export class ObservationListPage implements OnInit {
   searchResult: PagedSearchResult<RegistrationViewModel>;
+  attachmentsResult: PagedSearchResult<SearchRegistrationsWithAttachments>;
   registrations$: Observable<RegistrationViewModel[]>;
   shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
+  isNative: boolean;
   noMapExtentAvailable$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
   isFetchingObservations$: Observable<boolean>;
+  viewType: ViewType = 'list';
+  viewType$ = new BehaviorSubject<ViewType>('list');
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -46,20 +52,36 @@ export class ObservationListPage implements OnInit {
 
   constructor(
     private searchCriteriaService: SearchCriteriaService,
-    searchRegistrationService: SearchRegistrationService,
+    private searchRegistrationService: SearchRegistrationService,
     updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private logger: LoggingService,
     mapService: MapService
   ) {
-    const searchCriteriaWhenThisPageIsActive$ = combineLatest([
+    const searchCriteriaWhenThisPageIsActiveAndViewTypeList$ = combineLatest([
       searchCriteriaService.searchCriteria$,
       this.tabsService.selectedTab$,
+      this.viewType$,
     ]).pipe(
-      filter(([, selectedTab]) => selectedTab === TABS.OBSERVATION_LIST),
+      filter(([, selectedTab, viewType]) => selectedTab === TABS.OBSERVATION_LIST && viewType === 'list'),
+      tap(([, , viewType]) => this.logger.debug(`ViewType has changed to ${viewType} `, DEBUG_TAG)),
       map(([criteria]) => criteria)
     );
-    this.searchResult = searchRegistrationService.pagedSearch(searchCriteriaWhenThisPageIsActive$);
+
+    const searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$ = combineLatest([
+      searchCriteriaService.searchCriteria$,
+      this.tabsService.selectedTab$,
+      this.viewType$,
+    ]).pipe(
+      filter(([, selectedTab, viewType]) => selectedTab === TABS.OBSERVATION_LIST && viewType === 'grid'),
+      tap(([, , viewType]) => this.logger.debug(`ViewType has changed to ${viewType} `, DEBUG_TAG)),
+      map(([criteria]) => criteria)
+    );
+
+    this.searchResult = this.searchRegistrationService.pagedSearch(searchCriteriaWhenThisPageIsActiveAndViewTypeList$);
+    this.attachmentsResult = this.searchRegistrationService.searchAttachments(
+      searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
+    );
     this.isFetchingObservations$ = this.searchResult.isFetching$;
     this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
 
@@ -110,8 +132,8 @@ export class ObservationListPage implements OnInit {
         else return searchCriteria.OrderBy;
       })
     );
-
-    this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
+    this.isNative = Capacitor.isNativePlatform();
+    this.popupType = this.isNative ? 'action-sheet' : 'popover';
   }
 
   handleChangeSorting(event) {
@@ -127,9 +149,17 @@ export class ObservationListPage implements OnInit {
     }
   }
 
+  async changeViewType(id: ViewType) {
+    if (!id || (id !== 'grid' && id !== 'list')) {
+      return;
+    }
+    this.viewType = id;
+    this.viewType$.next(id);
+  }
+
   refresh(): void {
     this.logger.debug('Refresh', 'PagedSearchResult');
-    this.searchResult.resetPaging();
+    this.viewType === 'list' ? this.searchResult.resetPaging() : this.attachmentsResult.resetPaging();
   }
 
   ionViewWillEnter(): void {

@@ -1,0 +1,81 @@
+virtual-scroller,
+ion-list {
+  max-width: 960px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  opacity: 0;
+  transition: opacity 1s linear;
+  gap: 10px;
+  &.loaded {
+    opacity: 1;
+  }
+}
+
+img {
+  height: 200px;
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.img-skeleton {
+  height: 200px;
+  width: 160px;
+}
+
+@media only screen and (min-width: 700px) {
+  .center {
+    margin-top: 20vh;
+  }
+}
+
+@media only screen and (max-width: 699px) {
+  .center {
+    margin-top: 5vh;
+  }
+}
+
+.center {
+  width: 300px;
+  height: 300px;
+  display: inline-block;
+  position: relative;
+
+  .rectangle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .pin1 {
+    position: absolute;
+    right: 30%;
+    bottom: 23%;
+  }
+
+  .pin2 {
+    position: absolute;
+    left: 25%;
+    top: 10%;
+  }
+
+  .pin3 {
+    position: absolute;
+    left: 11%;
+    top: 35%;
+  }
+}
+
+.grid-absolute {
+  position: absolute;
+  top: 0;
+  background-color: #dcecf2;
+  z-index: 2;
+
+  ion-row {
+    justify-content: center;
+    align-items: center;
+  }
+}

@@ -14,6 +14,7 @@ import { SearchCountResponseDto } from '../models/search-count-response-dto';
 import { SearchSideBarDto } from '../models/search-side-bar-dto';
 import { SearchSideBarRequestDto } from '../models/search-side-bar-request-dto';
 import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
+import { SearchRegistrationsWithAttachments } from '../models/search-registrations-with-attachments';
 
 /**
  * Search for registrations.
@@ -218,6 +219,46 @@ class SearchService extends __BaseService {
       __map(_r => _r.body as SearchCountResponseDto)
     );
   }
+
+  /**
+   * Search for images only
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchAttachmentsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchRegistrationsWithAttachments>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = criteria;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/Search/Attachments`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<SearchRegistrationsWithAttachments>;
+      })
+    );
+  }
+
+  /**
+   * Search for images only
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchAttachments(criteria: SearchCriteriaRequestDto): __Observable<SearchRegistrationsWithAttachments> {
+    return this.SearchAttachmentsResponse(criteria).pipe(
+      __map(_r => _r.body as SearchRegistrationsWithAttachments)
+    );
+  }
+
 
   /**
    * Returns list of regIds from deleted registrations that can be filtered with criteria model.

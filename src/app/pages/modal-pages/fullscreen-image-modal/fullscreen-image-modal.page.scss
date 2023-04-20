@@ -38,3 +38,15 @@ ion-fab-button {
 ion-slides {
   overflow: visible;
 }
+
+ion-item {
+  --background: #dcecf2;
+  font-size: 14px;
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+  font-weight: 600;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: var(--ion-color-varsom-blue);
+}

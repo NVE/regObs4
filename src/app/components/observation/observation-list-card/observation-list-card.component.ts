@@ -185,16 +185,12 @@ export class ObservationListCardComponent implements OnChanges {
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
     const attachments = getAllAttachmentsFromViewModel(this.obs);
-    const image = attachments[event.index] as AttachmentViewModel & { Href: string };
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       cssClass: 'modal-fullscreen',
       componentProps: {
         allImages: attachments,
         imgIndex: event.index,
-        header: image.RegistrationName,
-        description: image.Comment,
-        href: image.Href,
       },
     });
     modal.present();
