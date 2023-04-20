@@ -1,5 +1,6 @@
 /* tslint:disable */
 import { WithinExtentCriteriaDto } from './within-extent-criteria-dto';
+import { PropertyFilter } from './property-filter';
 import { WithinRadiusCriteriaDto } from './within-radius-criteria-dto';
 import { RegistrationTypeCriteriaDto } from './registration-type-criteria-dto';
 
@@ -81,6 +82,12 @@ export interface SearchCriteriaRequestDto {
    * Field to order by. You may use these fields: DtObsTime, DtRegTime, DtChangeTime. Default is DtObsTime. A few other fields may also work
    */
   OrderBy?: string;
+
+  /**
+   * Find registrations with given property value.
+   * [Obsolete("Experimental feature that may be changed or removed in later versions")]
+   */
+  PropertyFilters?: Array<PropertyFilter>;
   Radius?: WithinRadiusCriteriaDto;
 
   /**
