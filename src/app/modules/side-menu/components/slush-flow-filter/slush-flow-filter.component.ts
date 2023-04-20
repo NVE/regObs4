@@ -10,6 +10,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 @Component({
   selector: 'app-slush-flow-filter',
   templateUrl: './slush-flow-filter.component.html',
+  styleUrls: ['./slush-flow-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SlushFlowFilterComponent extends NgDestoryBase implements OnInit {
