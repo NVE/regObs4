@@ -33,6 +33,7 @@ import { UrlParams } from './url-params';
 import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 import { SearchCriteria } from '../../models/search-criteria';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -62,6 +63,7 @@ export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
   Operator: 0,
   Value: SLUSH_FLOW_ID.toString(),
 };
+const REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN = 80;
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
@@ -501,6 +503,13 @@ export class SearchCriteriaService {
   }
 
   async removeObservationType(typeToRemove: RegistrationTypeCriteriaDto) {
+    if (
+      typeToRemove.Id === REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN &&
+      typeToRemove.SubTypes.includes(RegistrationTid.AvalancheObs)
+    ) {
+      //removes filter by slush flow if filter by avalanche obs is removed
+      this.searchCriteriaChanges.next({ PropertyFilters: null });
+    }
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
       const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
@@ -553,11 +562,21 @@ export class SearchCriteriaService {
   }
 
   /** Filter by slush flow */
-  setSlushFlow(slushFlow = true) {
+  async setSlushFlow(slushFlow = true) {
+    const avalacheObsType = {
+      Id: REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN,
+      SubTypes: [RegistrationTid.AvalancheObs],
+    };
     if (slushFlow) {
       this.searchCriteriaChanges.next({ PropertyFilters: [CRITERIA_SLUSH_FLOW] });
+
+      // turn on avalancheObs automatically since slush flow is a type of avalancheObs
+      this.setObservationType(avalacheObsType);
     } else {
       this.searchCriteriaChanges.next({ PropertyFilters: null });
+
+      // turn off avalancheObs automatically since slush flow is a type of avalancheObs
+      this.removeObservationType(avalacheObsType);
     }
   }
 
