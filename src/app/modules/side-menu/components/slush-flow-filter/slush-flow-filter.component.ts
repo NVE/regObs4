@@ -41,7 +41,7 @@ export class SlushFlowFilterComponent extends NgDestoryBase implements OnInit {
         if (slushFlowKdv) {
           return slushFlowKdv.Name;
         }
-        return "Sørpeskred'"; // fallback name
+        return "Slush flow'"; // fallback name
       })
     );
 

@@ -503,13 +503,7 @@ export class SearchCriteriaService {
   }
 
   async removeObservationType(typeToRemove: RegistrationTypeCriteriaDto) {
-    if (
-      typeToRemove.Id === REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN &&
-      typeToRemove.SubTypes.includes(RegistrationTid.AvalancheObs)
-    ) {
-      //removes filter by slush flow if filter by avalanche obs is removed
-      this.searchCriteriaChanges.next({ PropertyFilters: null });
-    }
+    this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
       const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
@@ -585,6 +579,15 @@ export class SearchCriteriaService {
    */
   isSlushFlow(criteria: SearchCriteria): boolean {
     return criteria.PropertyFilters?.length === 1 && criteria.PropertyFilters[0] === CRITERIA_SLUSH_FLOW;
+  }
+
+  private removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove: RegistrationTypeCriteriaDto) {
+    if (
+      typeToRemove.Id === REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN &&
+      typeToRemove.SubTypes.includes(RegistrationTid.AvalancheObs)
+    ) {
+      this.searchCriteriaChanges.next({ PropertyFilters: null });
+    }
   }
 
   private daysBackToIsoDateTime(daysBack: number): string {
