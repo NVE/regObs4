@@ -210,6 +210,7 @@
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observations will appear here. Share your observations, pictures and assessements with others on Varsom.",
     "OFFLINE": "We cannot fetch your submitted observations. Are you offline?",
+    "SEARCH_ERROR": "We cannot fetch your submitted observations due to an error. Please try again and let us know if the problem persist",
     "SENT_SUBTITLE": "The following observations have been submitted and are stored in Regobs.",
     "TITLE": "My observations"
   },

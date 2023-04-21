@@ -210,6 +210,7 @@
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Det er lett å dele observasjoner, bilder og vurderinger med andre.",
     "OFFLINE": "Vi får ikke hentet observasjoner du har sendt inn. Har du nett?",
+    "SEARCH_ERROR": "P.g.a. en feil får vi ikke hentet observasjoner du har sendt inn. Prøv gjerne igjen og gi oss beskjed hvis problemet vedvarer.",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },

@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { catchError, distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
-import { SearchCriteria } from 'src/app/core/models/search-criteria';
+import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 import {
@@ -11,7 +19,8 @@ import {
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'SentListComponent';
@@ -22,14 +31,18 @@ const DEBUG_TAG = 'SentListComponent';
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SentListComponent implements OnDestroy {
+export class SentListComponent implements OnInit, OnDestroy {
   @Output() isEmpty = new EventEmitter<boolean>();
 
-  myRegistrations$: Observable<RegistrationViewModel[]>;
+  myRegistrations: RegistrationViewModel[];
   searchResult: PagedSearchResult<RegistrationViewModel>;
   isOffline$: Observable<boolean>;
+  error$ = new BehaviorSubject(false);
   shouldDisableScroller$: Observable<boolean>;
   private ngDestroy$ = new Subject<void>();
+  private submittedRegistrations$: Observable<RegistrationViewModel[]>;
+  private deletedRegIds$: Observable<number[]>;
+  private registrationsSubscription: Subscription;
 
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
 
@@ -42,66 +55,63 @@ export class SentListComponent implements OnDestroy {
     private searchRegistrationService: SearchRegistrationService,
     private userSettingService: UserSettingService,
     private logger: LoggingService,
-    networkStatusService: NetworkStatusService
+    networkStatusService: NetworkStatusService,
+    private cdr: ChangeDetectorRef
   ) {
     this.isOffline$ = networkStatusService.connected$.pipe(
       takeUntil(this.ngDestroy$),
       map((connected) => !connected)
     );
 
-    const searchCriteria$: Observable<SearchCriteria> = this.userSettingService.language$.pipe(
-      takeUntil(this.ngDestroy$),
-      map((langKey) => {
-        return {
-          OrderBy: 'DtChangeTime',
-          LangKey: langKey,
-        };
-      })
+    this.submittedRegistrations$ = addUpdateDeleteRegistrationService.changedRegistrations$.pipe(
+      map((changedReg) => changedReg.reg),
+      scan((allChanged, changedReg) => [changedReg, ...allChanged], [])
     );
-    this.searchResult = this.searchRegistrationService.searchMyRegistrations(searchCriteria$);
 
-    const submittedRegistrations$: Observable<RegistrationViewModel[]> =
-      addUpdateDeleteRegistrationService.changedRegistrations$.pipe(
-        map((changedReg) => changedReg.reg),
-        scan((allChanged, changedReg) => [changedReg, ...allChanged], [])
-      );
-
-    const deletedRegIds$: Observable<number[]> = addUpdateDeleteRegistrationService.deletedRegistrationIds$.pipe(
+    this.deletedRegIds$ = addUpdateDeleteRegistrationService.deletedRegistrationIds$.pipe(
       scan((acc, value) => [value, ...acc], [])
     );
+  }
 
-    //TODO: Håndtere at søket feiler, nå vises skjelettet
-    this.myRegistrations$ = combineLatest([
+  initSearch() {
+    this.error$.next(false);
+
+    if (this.registrationsSubscription != null) {
+      this.registrationsSubscription.unsubscribe;
+    }
+
+    this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
+      const searchCriteria = new BehaviorSubject<SearchCriteriaRequestDto>({
+        OrderBy: 'DtChangeTime',
+        LangKey: langKey,
+      });
+      this.searchResult = this.searchRegistrationService.searchMyRegistrations(searchCriteria);
+    });
+
+    this.registrationsSubscription = combineLatest([
       this.searchResult.registrations$,
-      submittedRegistrations$.pipe(startWith([])),
-      deletedRegIds$.pipe(startWith([])),
-    ]).pipe(
-      map(([registrations, submittedRegistrations, deletedRegIds]) => {
-        const changedRegIds = submittedRegistrations.map((reg: RegistrationViewModel) => reg.RegId).join(',');
-        this.logger.debug(
-          `MyRegistrations refreshed. ${submittedRegistrations.length} submitted: ${changedRegIds}, ${
-            deletedRegIds.length
-          } deleted: ${deletedRegIds.join(',')}`,
-          DEBUG_TAG,
-          registrations
-        );
-        if (submittedRegistrations.length) {
-          registrations = getUniqueRegistrations([...submittedRegistrations, ...registrations]);
-        }
-        if (deletedRegIds.length) {
-          registrations = registrations.filter((reg) => !deletedRegIds.includes(reg.RegId));
-        }
-        if (submittedRegistrations.length || deletedRegIds.length) {
-          this.logger.debug('Registrations after filtering', DEBUG_TAG, registrations);
-        }
-        return registrations;
-      }),
-      catchError((error) => {
-        this.logger.error(error, DEBUG_TAG, error.message);
-        return of([]);
-      }),
-      tap(() => this.scroll && this.scroll.complete())
-    );
+      this.submittedRegistrations$.pipe(startWith([])),
+      this.deletedRegIds$.pipe(startWith([])),
+    ])
+      .pipe(
+        map(([myRegistrations, submittedRegistrations, deletedRegIds]) => {
+          return this.mergeRegistrations(myRegistrations, submittedRegistrations, deletedRegIds);
+        }),
+        tap(() => this.scroll && this.scroll.complete())
+      )
+      .subscribe({
+        next: (myRegistrations) => {
+          this.error$.next(false);
+          this.myRegistrations = myRegistrations;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.myRegistrations = [];
+          this.error$.next(true);
+          this.cdr.detectChanges();
+          this.logger.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
+        },
+      });
 
     this.shouldDisableScroller$ = combineLatest([
       this.searchResult.allFetchedForCriteria$,
@@ -113,6 +123,10 @@ export class SentListComponent implements OnDestroy {
     );
   }
 
+  ngOnInit() {
+    this.initSearch();
+  }
+
   ngOnDestroy(): void {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
@@ -120,6 +134,7 @@ export class SentListComponent implements OnDestroy {
 
   refresh(): void {
     this.logger.debug('Refresh triggered', DEBUG_TAG);
+    this.initSearch();
     this.searchResult.resetPaging();
   }
 
@@ -129,5 +144,30 @@ export class SentListComponent implements OnDestroy {
 
   trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
     return obs ? obs.RegId.toString() : undefined;
+  }
+
+  private mergeRegistrations(
+    myRegistrations: RegistrationViewModel[],
+    submittedRegistrations: RegistrationViewModel[],
+    deletedRegIds: number[]
+  ): RegistrationViewModel[] {
+    const changedRegIds = submittedRegistrations.map((reg: RegistrationViewModel) => reg.RegId).join(',');
+    this.logger.debug(
+      `MyRegistrations refreshed. ${submittedRegistrations.length} submitted: ${changedRegIds}, ${
+        deletedRegIds.length
+      } deleted: ${deletedRegIds.join(',')}`,
+      DEBUG_TAG,
+      myRegistrations
+    );
+    if (submittedRegistrations.length) {
+      myRegistrations = getUniqueRegistrations([...submittedRegistrations, ...myRegistrations]);
+    }
+    if (deletedRegIds.length) {
+      myRegistrations = myRegistrations.filter((reg) => !deletedRegIds.includes(reg.RegId));
+    }
+    if (submittedRegistrations.length || deletedRegIds.length) {
+      this.logger.debug('Registrations after filtering', DEBUG_TAG, myRegistrations);
+    }
+    return myRegistrations;
   }
 }

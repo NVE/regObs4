@@ -1,5 +1,5 @@
 <!-- A list of observations sent to server -->
-<ng-container *ngIf="myRegistrations$ | async as myRegistrations; else skeleton">
+<ng-container *ngIf="myRegistrations; else skeleton">
   <ion-item-divider no-border>
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>
@@ -11,6 +11,9 @@
         </ion-label>
         <ion-label *ngIf="!myRegistrations?.length && (isOffline$ | async)" class="ion-text-wrap" color="medium">
           {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
+        </ion-label>
+        <ion-label *ngIf="error$ | async" class="ion-text-wrap" color="medium">
+          {{ "MY_OBSERVATIONS.SEARCH_ERROR" | translate }}
         </ion-label>
       </ion-row>
     </ion-grid>
