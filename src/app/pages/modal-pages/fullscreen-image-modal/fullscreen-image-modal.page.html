@@ -23,10 +23,10 @@
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
   <div class="img-container">
-    <div style="position: relative">
+    <div class="img-frame">
       <img [src]="allImages[activeImageIndex].Url || allImages[activeImageIndex]" (click)="closeModal()" />
-      <ion-item *ngIf="href as href" class="link-title" (click)="navigateToItem(href.url)">
-        {{ href.title | translate }}
+      <ion-item *ngIf="href as href" class="link-title">
+        <a [href]="href.url" target="_blank"> {{ href.title | translate }}</a>
       </ion-item>
     </div>
     <button *ngIf="!isFirstSlide" class="swiper-button-prev swiper-button-custom" (click)="prevSlide()"></button>

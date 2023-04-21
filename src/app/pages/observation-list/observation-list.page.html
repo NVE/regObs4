@@ -30,13 +30,13 @@
           <span>{{'OBSERVATION_LIST.SORT_BY_VIEW' | translate}}:</span>
           <ion-button
             id="list"
-            [ngClass]="viewType == 'list' && 'active'"
+            [ngClass]="viewType$.getValue() == 'list' && 'active'"
             (click)="changeViewType($event.currentTarget.id)"
             ><img alt="list view" src="../../../assets/icon/reorder.svg"
           /></ion-button>
           <ion-button
             id="grid"
-            [ngClass]="viewType == 'grid' && 'active'"
+            [ngClass]="viewType$.getValue() == 'grid' && 'active'"
             (click)="changeViewType($event.currentTarget.id)"
             ><img alt="images view" src="../../../assets/icon/grid_view.svg"
           /></ion-button>
@@ -59,10 +59,10 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <app-images-grid *ngIf="viewType==='grid'" [attachmentsResult]="attachmentsResult"></app-images-grid>
+  <app-images-grid *ngIf="viewType$.getValue()==='grid'" [attachmentsResult]="attachmentsResult"></app-images-grid>
   <!--LIST VIEW START-->
   <!--We could place it in a separate component-->
-  <ng-container *ngIf="viewType==='list'">
+  <ng-container *ngIf="viewType$.getValue()==='list'">
     <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
       <ng-container *ngIf="registrations$ | async as registrations">
         <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">

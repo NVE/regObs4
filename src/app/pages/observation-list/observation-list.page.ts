@@ -9,12 +9,13 @@ import {
   PagedSearchResult,
   SearchRegistrationService,
 } from 'src/app/core/services/search-registration/search-registration.service';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
+import { UrlParams } from 'src/app/core/services/search-criteria/url-params';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -37,7 +38,6 @@ export class ObservationListPage implements OnInit {
   noMapExtentAvailable$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
   isFetchingObservations$: Observable<boolean>;
-  viewType: ViewType = 'list';
   viewType$ = new BehaviorSubject<ViewType>('list');
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
@@ -58,25 +58,12 @@ export class ObservationListPage implements OnInit {
     private logger: LoggingService,
     mapService: MapService
   ) {
-    const searchCriteriaWhenThisPageIsActiveAndViewTypeList$ = combineLatest([
-      searchCriteriaService.searchCriteria$,
-      this.tabsService.selectedTab$,
-      this.viewType$,
-    ]).pipe(
-      filter(([, selectedTab, viewType]) => selectedTab === TABS.OBSERVATION_LIST && viewType === 'list'),
-      tap(([, , viewType]) => this.logger.debug(`ViewType has changed to ${viewType} `, DEBUG_TAG)),
-      map(([criteria]) => criteria)
-    );
+    const url = new URL(document.location.href);
+    const viewTypeInParams = url.searchParams.get('viewType') as ViewType;
+    if (viewTypeInParams === 'grid' || viewTypeInParams === 'list') this.viewType$.next(viewTypeInParams);
 
-    const searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$ = combineLatest([
-      searchCriteriaService.searchCriteria$,
-      this.tabsService.selectedTab$,
-      this.viewType$,
-    ]).pipe(
-      filter(([, selectedTab, viewType]) => selectedTab === TABS.OBSERVATION_LIST && viewType === 'grid'),
-      tap(([, , viewType]) => this.logger.debug(`ViewType has changed to ${viewType} `, DEBUG_TAG)),
-      map(([criteria]) => criteria)
-    );
+    const searchCriteriaWhenThisPageIsActiveAndViewTypeList$ = this.filterCriteriaByView('list');
+    const searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$ = this.filterCriteriaByView('grid');
 
     this.searchResult = this.searchRegistrationService.pagedSearch(searchCriteriaWhenThisPageIsActiveAndViewTypeList$);
     this.attachmentsResult = this.searchRegistrationService.searchAttachments(
@@ -136,6 +123,23 @@ export class ObservationListPage implements OnInit {
     this.popupType = this.isNative ? 'action-sheet' : 'popover';
   }
 
+  filterCriteriaByView(viewType: ViewType): Observable<SearchCriteriaRequestDto> {
+    return combineLatest([
+      this.searchCriteriaService.searchCriteria$,
+      this.tabsService.selectedTab$,
+      this.viewType$,
+    ]).pipe(
+      filter(([, selectedTab, viewT]) => selectedTab === TABS.OBSERVATION_LIST && viewT === viewType),
+      tap(([, , viewT]) => {
+        this.logger.debug(`ViewType has changed to ${viewT} `, DEBUG_TAG);
+        const params = new UrlParams();
+        params.set('viewType', viewT);
+        params.apply();
+      }),
+      map(([criteria]) => criteria as SearchCriteriaRequestDto)
+    );
+  }
+
   handleChangeSorting(event) {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
@@ -153,13 +157,12 @@ export class ObservationListPage implements OnInit {
     if (!id || (id !== 'grid' && id !== 'list')) {
       return;
     }
-    this.viewType = id;
     this.viewType$.next(id);
   }
 
   refresh(): void {
     this.logger.debug('Refresh', 'PagedSearchResult');
-    this.viewType === 'list' ? this.searchResult.resetPaging() : this.attachmentsResult.resetPaging();
+    this.viewType$.getValue() === 'list' ? this.searchResult.resetPaging() : this.attachmentsResult.resetPaging();
   }
 
   ionViewWillEnter(): void {

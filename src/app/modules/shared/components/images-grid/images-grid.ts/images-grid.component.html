@@ -1,5 +1,5 @@
 <ng-container *ngIf="!(isFetchingAttachments$ | async); else skeleton">
-  <ng-container *ngIf="attachments$ | async as attachments">
+  <ng-container *ngIf="attachments$ | async as attachments; else skeleton">
     <ion-list class="loaded" *ngIf="attachments.length > 0; else empty">
       <ng-container *ngFor="let attachment of attachments">
         <img
@@ -37,10 +37,10 @@
       </div>
     </ion-row>
     <ion-row class="col-flex-direction ion-text-center ion-margin-horizontal">
-      <h2>{{ "OBSERVATION_LIST.NO_ATTACHMENTS" | translate }}</h2>
+      <h2>{{ "OBSERVATION_LIST.NO_IMAGES" | translate }}</h2>
     </ion-row>
     <ion-row class="col-flex-direction ion-text-center ion-margin-horizontal"
-      ><h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_ATTACHMENTS_TEXT" | translate }}</h3></ion-row
+      ><h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_IMAGES_TEXT" | translate }}</h3></ion-row
     >
   </ion-grid>
 </ng-template>
