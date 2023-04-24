@@ -25,6 +25,9 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 
 const DEBUG_TAG = 'SentListComponent';
 
+/**
+ * Show a list of observations submitted by current observer
+ */
 @Component({
   selector: 'app-sent-list',
   templateUrl: './sent-list.component.html',
