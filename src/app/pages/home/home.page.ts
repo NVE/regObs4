@@ -1,13 +1,34 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewChecked, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { ToastController } from '@ionic/angular';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { Immutable } from 'src/app/core/models/immutable';
+import {
+  combineLatest,
+  firstValueFrom,
+  Observable,
+  race,
+  Subject,
+  scan,
+  Subscription,
+  BehaviorSubject,
+  from,
+} from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  exhaustMap,
+  filter,
+  finalize,
+  map,
+  skip,
+  switchMap,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
@@ -52,7 +73,7 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
+export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -67,11 +88,14 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   private searchResult: SearchResult<AtAGlanceViewModel>;
   private shouldSearchResultUpdateOnEnter: boolean;
 
-  isFetchingObservations: Observable<boolean>;
+  isFetchingObservations$: Observable<boolean>;
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
+  private registrationsSubscription: Subscription;
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
+  error$ = new BehaviorSubject(false);
+  private onDestroy$ = new Subject<void>();
 
   constructor(
     router: Router,
@@ -86,6 +110,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     private mapService: MapService,
+    private toastService: ToastController,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -104,18 +129,36 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.initSearch();
+    this.initObservationsErrorToast();
   }
 
   private async initSearch() {
+    this.loggingService.debug('initSearch...', DEBUG_TAG);
+    this.error$.next(false);
+
+    if (this.registrationsSubscription != null) {
+      this.registrationsSubscription.unsubscribe;
+    }
+
     this.searchResult = await this.createSearchResult();
 
-    this.isFetchingObservations = this.searchResult.isFetching$;
+    this.isFetchingObservations$ = this.searchResult.isFetching$;
 
-    combineLatest([this.searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
-      ([registrations, show]) => {
-        this.redrawObservationMarkers(show ? registrations : []);
-      }
-    );
+    this.registrationsSubscription = combineLatest([
+      this.searchResult.registrations$,
+      this.userSettingService.showObservations$,
+    ])
+      .pipe(map(([registrations, show]) => (show ? registrations : [])))
+      .subscribe({
+        next: (registrations) => {
+          this.error$.next(false);
+          this.redrawObservationMarkers(registrations);
+        },
+        error: (err) => {
+          this.error$.next(true);
+          this.loggingService.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
+        },
+      });
 
     this.searchResult.registrations$.subscribe(() => {
       this.lastFetched = new Date();
@@ -126,12 +169,57 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       .pipe(withLatestFrom(this.tabsService.selectedTab$))
       .subscribe(([, tab]) => {
         if (tab === TABS.HOME) {
-          this.searchResult.update();
+          this.initSearch().then(() => this.searchResult.update());
           this.loggingService.debug('Search manually triggered', DEBUG_TAG);
         } else {
           this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
         }
       });
+  }
+
+  private initObservationsErrorToast() {
+    this.error$
+      .pipe(
+        filter((error) => error),
+        // Use exhaustmap to avoid multiple error toasts at once
+        exhaustMap(() =>
+          from(this.showSearchErrorToast()).pipe(
+            switchMap((toast) =>
+              // We have created the toast,
+              // now wait until user dismisses it or navigates away
+              // or we get a "successfull" search
+              from(toast.onDidDismiss()).pipe(
+                takeUntil(
+                  race(
+                    //this.searchResult.registrations$.pipe(filter((regs) => regs.length > 0)),
+                    this.error$.pipe(filter((error) => !error)),
+                    this.tabsService.selectedTab$.pipe(skip(1))
+                  )
+                ),
+                finalize(() => toast.dismiss())
+              )
+            )
+          )
+        ),
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe();
+  }
+
+  private async showSearchErrorToast() {
+    const toast = await this.toastService.create({
+      message: 'TODO: Failed to fetch registrations from regobs api',
+      position: 'bottom',
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    await toast.present();
+    return toast;
   }
 
   get appname(): string {
