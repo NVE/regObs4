@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import '@geoman-io/leaflet-geoman-free';
 import { IPolygon, Polygon, PolygonArea } from '../../registration/models/polygon';
 
 type PolygonType = 'total' | 'start' | 'end';

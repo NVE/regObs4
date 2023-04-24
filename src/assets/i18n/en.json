@@ -311,7 +311,8 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {
-      "TITLE": "Add web url",
+      "LABEL": "Web urls",
+      "TITLE": "Add",
       "URL": "Url"
     },
     "ANONYMIZE": {

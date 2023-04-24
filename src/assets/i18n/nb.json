@@ -311,7 +311,8 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {
-      "TITLE": "Legg til weblenke",
+      "LABEL": "Weblenker",
+      "TITLE": "Legg til",
       "URL": "Url"
     },
     "ANONYMIZE": {

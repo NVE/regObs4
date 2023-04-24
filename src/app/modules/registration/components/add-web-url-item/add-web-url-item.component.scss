@@ -1,0 +1,25 @@
+ion-icon {
+  margin-right: 0.5rem;
+  font-size: 24px;
+}
+
+ion-item::part(native) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+ion-item {
+  > div {
+    margin-bottom: 0.5rem;
+  }
+}
+
+span {
+  font-size: 14px;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+}

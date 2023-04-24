@@ -82,6 +82,11 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'registration/water/set-flood-area/:id',
+    loadChildren: () =>
+      import('./pages/water/set-flood-area/set-flood-area.module').then((m) => m.SetFloodAreaPageModule),
+  },
+  {
     path: 'registration/:id',
     loadChildren: () =>
       import('src/app/pages/view-observation/view-observation.module').then((m) => m.ViewObservationPageModule),
