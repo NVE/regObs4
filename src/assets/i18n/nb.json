@@ -311,7 +311,8 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {
-      "TITLE": "Legg til weblenke",
+      "LABEL": "Weblenker",
+      "TITLE": "Legg til",
       "URL": "Url"
     },
     "ANONYMIZE": {
@@ -781,6 +782,9 @@
         "OBSERVATION_TIMING": "Hva registrerer du?",
         "REGISTRATION_METHOD": "Hvordan registrerer du?",
         "RELATIVE": "Høyden er relativ til",
+        "SET_FLOOD_POSITION_CONFIRM": "Bekreft flomområde",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Inntegning av område",
+        "SET_FLOOD_POSITION_TITLE": "Sett flomposisjon",
         "TITLE": "Vannstand",
         "WATER_LEVEL_METERS": "Vannstand i meter",
         "WATER_MARKING": "Vannstandsmarkering",

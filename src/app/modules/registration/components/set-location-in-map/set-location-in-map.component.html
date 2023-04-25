@@ -1,5 +1,6 @@
 <div>
   <app-map
+    [ngClass]="geoHazard === 60 ? 'water-simple-obs-bottom' : 'regular-bottom'"
     *ngIf="locationMarker"
     [showSupportMaps]="false"
     (mapReady)="onMapReady($event)"
@@ -147,20 +148,8 @@
           </div>
         </div>
       </div>
-      <div *ngIf="locationPolygons" class="">
-        <ion-item *ngFor="let polygon of locationPolygons; index as i" class="flex-space right-padding">
-          <ion-label>
-            <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
-            <span>{{ locationPolygons[i].title }}</span>
-          </ion-label>
-          <ion-toggle
-            [checked]="polygon.active"
-            (ionChange)="togglePolygon(i)"
-            slot="end"
-            [style.background.color]="polygon.polygon.options.color"
-          ></ion-toggle>
-        </ion-item>
-      </div>
+      <!-- We don't want to show the toggle section in the water observastion-->
+      <ng-container *ngIf="geoHazard == 60; else polygonsToggle"> </ng-container>
       <div class="confirm-button-col">
         <ion-button expand="block" color="varsom-orange" (click)="confirm()">{{
           confirmLocationText | translate
@@ -169,6 +158,24 @@
     </div>
   </div>
 </div>
+
+<ng-template #polygonsToggle>
+  <div *ngIf="locationPolygons" class="">
+    <ion-item *ngFor="let polygon of locationPolygons; index as i" class="flex-space right-padding">
+      <ion-label>
+        <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
+        <span>{{ locationPolygons[i].title }}</span>
+      </ion-label>
+      <ion-toggle
+        [checked]="polygon.active"
+        (ionChange)="togglePolygon(i)"
+        slot="end"
+        [style.background.color]="polygon.polygon.options.color"
+      ></ion-toggle>
+    </ion-item>
+  </div>
+</ng-template>
+
 <ng-template #editLocationTemplate>
   <ion-input
     #editLocationNameInput
@@ -179,6 +186,7 @@
   >
   </ion-input>
 </ng-template>
+
 <ng-template #viewInfoTemplate>
   <ng-container *ngIf="!isLoading">
     <ng-container *ngIf="viewInfo && viewInfo.location">

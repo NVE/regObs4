@@ -40,6 +40,7 @@
       </app-failed-registration>
 
       <app-simple-snow-obs *ngIf="showSimpleSnowMode(draft)" [draft]="draft"></app-simple-snow-obs>
+      <app-simple-water-obs *ngIf="showSimpleWaterMode(draft)" [draft]="draft"></app-simple-water-obs>
 
       <ion-list lines="full">
         <!-- "Summary" items for each form -->
@@ -50,8 +51,6 @@
           [item]="item"
         ></app-summary-item>
       </ion-list>
-
-      <app-simple-water-obs *ngIf="showSimpleWaterMode(draft)" [draft]="draft"></app-simple-water-obs>
     </div>
   </ion-content>
   <app-send-button *ngIf="!hideSendButton(draft)" [draft]="draft"></app-send-button>

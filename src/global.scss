@@ -241,6 +241,12 @@ ion-list {
   }
 }
 
+.ion-label-fat {
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: #333 !important;
+}
+
 .action-sheet-group.sc-ion-action-sheet-ios {
   /* https://github.com/ionic-team/ionic/issues/17233 */
   overflow-y: scroll !important;
