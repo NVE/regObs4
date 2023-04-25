@@ -18,13 +18,13 @@
         <ion-label> {{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}} </ion-label>
       </ion-list-header>
       <app-kdv-select
-        labelTitle="REGISTRATION.SNOW.WEATHER.PRECIPITATION"
+        label="REGISTRATION.SNOW.WEATHER.PRECIPITATION"
         kdvKey="Snow_PrecipitationKDV"
         [(value)]="draft.registration.WeatherObservation.PrecipitationTID"
       ></app-kdv-select>
       <app-numeric-input
         [(value)]="draft.registration.WeatherObservation.AirTemperature"
-        labelTitle="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE"
+        label="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE"
         [min]="-150"
         [max]="60"
         suffix="°C"
@@ -33,7 +33,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="draft.registration.WeatherObservation.WindSpeed"
-        labelTitle="REGISTRATION.SNOW.WEATHER.WIND_SPEED"
+        label="REGISTRATION.SNOW.WEATHER.WIND_SPEED"
         [min]="0"
         [max]="50"
         suffix="m/s"
@@ -42,7 +42,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="draft.registration.WeatherObservation.CloudCover"
-        labelTitle="REGISTRATION.SNOW.WEATHER.CLOUD_COVER"
+        label="REGISTRATION.SNOW.WEATHER.CLOUD_COVER"
         [min]="0"
         [max]="100"
         suffix="%"
@@ -56,14 +56,14 @@
         <app-select
           [(selectedValue)]="draft.registration.WeatherObservation.WindDirection"
           [options]="windDirectionOptions"
-          labelTitle="REGISTRATION.SNOW.WEATHER.WIND_DIRECTION"
+          label="REGISTRATION.SNOW.WEATHER.WIND_DIRECTION"
         ></app-select>
       </ion-item>
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_HEADER' | translate}} </ion-label>
       </ion-list-header>
       <app-text-comment
-        labelTitle="REGISTRATION.DANGER_OBS.COMMENT"
+        label="REGISTRATION.DANGER_OBS.COMMENT"
         [(value)]="draft.registration.WeatherObservation.Comment"
       ></app-text-comment>
       <ion-item-divider>

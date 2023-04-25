@@ -16,7 +16,7 @@
     <ion-list lines="full" reorder="true">
       <app-numeric-input
         [(value)]="iceThickness.SnowDepth"
-        labelTitle="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL"
+        label="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL"
         [min]="0"
         [max]="999"
         [decimalPlaces]="2"
@@ -26,7 +26,7 @@
       ></app-numeric-input>
       <app-numeric-input
         [(value)]="iceThickness.SlushSnow"
-        labelTitle="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL"
+        label="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL"
         [min]="0"
         [max]="999"
         [decimalPlaces]="2"
@@ -56,7 +56,7 @@
       <app-numeric-input
         [readonly]="true"
         [(value)]="iceThickness.IceThicknessSum"
-        labelTitle="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM"
+        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM"
         [min]="0"
         [max]="999"
         [decimalPlaces]="2"
@@ -69,7 +69,7 @@
         *ngIf="isWaterBefore"
         [color]="!waterHeightBefore ? 'danger' : 'medium'"
         [(value)]="waterHeightBefore"
-        labelTitle="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
+        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
         [min]="0.01"
         [max]="999"
         [decimalPlaces]="2"
@@ -84,7 +84,7 @@
         *ngIf="isWaterAfter === true"
         [color]="!waterHeightAfter ? 'danger' : 'medium'"
         [(value)]="waterHeightAfter"
-        labelTitle="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
+        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
         [min]="0.01"
         [max]="999"
         [decimalPlaces]="2"
@@ -97,7 +97,7 @@
         *ngIf="isWaterAfter === false"
         [color]="waterDepthAfter === undefined ? 'danger' : 'medium'"
         [(value)]="waterDepthAfter"
-        labelTitle="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO"
+        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO"
         [min]="0"
         [max]="999"
         [decimalPlaces]="2"

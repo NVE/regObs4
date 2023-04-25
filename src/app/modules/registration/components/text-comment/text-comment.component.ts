@@ -6,7 +6,7 @@ import { Component, Input, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./text-comment.component.scss'],
 })
 export class TextCommentComponent {
-  @Input() labelTitle: string;
+  @Input() label: string;
   @Input() placeholder: string;
   @Input() value: string;
   @Output() valueChange = new EventEmitter();

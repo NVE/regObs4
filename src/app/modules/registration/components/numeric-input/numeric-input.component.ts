@@ -17,7 +17,7 @@ export class NumericInputComponent {
   @Input() isValid = true;
   @Input() errorMessage?: string;
   @Output() valueChange = new EventEmitter();
-  @Input() labelTitle: string;
+  @Input() label: string;
   @Input() placeholder: string;
   @Input() convertRatio: number;
   @Input() readonly = false;
@@ -49,7 +49,7 @@ export class NumericInputComponent {
           max: this.max,
           suffix: this.suffix,
           decimalSeparator: this.decimalSeparator,
-          title: this.labelTitle,
+          title: this.label,
         },
       });
       modal.present();

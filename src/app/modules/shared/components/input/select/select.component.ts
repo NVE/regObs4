@@ -16,7 +16,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   styleUrls: ['./select.component.scss'],
 })
 export class SelectComponent implements OnInit {
-  @Input() labelTitle: string;
+  @Input() label: string;
   @Input() subTitle: string;
   @Input() selectedValue: number | string;
   @Output() selectedValueChange = new EventEmitter();
@@ -87,8 +87,8 @@ export class SelectComponent implements OnInit {
 
   async getTitleTranslations() {
     let titleTextTranslated: string;
-    if (this.labelTitle) {
-      titleTextTranslated = await firstValueFrom(this.translateService.get(this.labelTitle));
+    if (this.label) {
+      titleTextTranslated = await firstValueFrom(this.translateService.get(this.label));
     }
     let subTitleTextTranslated: string;
     if (this.subTitle) {

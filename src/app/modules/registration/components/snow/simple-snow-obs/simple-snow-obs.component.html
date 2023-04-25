@@ -1,6 +1,6 @@
 <ion-list lines="full">
   <app-kdv-icon-select
-    title="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS"
+    label="REGISTRATION.SNOW.SNOW_SURFACE.SKI_CONDITIONS"
     kdvKey="Snow_SkiConditionsKDV"
     [(value)]="snowSurfaceObservation.SkiConditionsTID"
     (valueChange)="save()"
@@ -9,7 +9,7 @@
   </app-kdv-icon-select>
 
   <app-kdv-icon-select
-    title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
+    label="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE"
     kdvKey="Snow_SnowSurfaceKDV"
     [(value)]="snowSurfaceObservation.SnowSurfaceTID"
     (valueChange)="save()"
@@ -23,7 +23,7 @@
   ></app-edit-images-bar>
 
   <app-kdv-icon-select
-    title="REGISTRATION.DANGER_OBS.TITLE"
+    label="REGISTRATION.DANGER_OBS.TITLE"
     kdvKey="Snow_DangerSignKDV"
     [(value)]="dangerSignTIDs"
     (valueChange)="save()"
@@ -41,7 +41,7 @@
   <div class="inline numeric-side-by-side">
     <app-numeric-input
       [(value)]="snowSurfaceObservation.NewSnowDepth24"
-      labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
+      label="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
       [min]="0"
       [max]="999"
       [decimalPlaces]="0"
@@ -54,7 +54,7 @@
 
     <app-numeric-input
       [(value)]="snowSurfaceObservation.SnowDepth"
-      labelTitle="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
+      label="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
       [min]="0"
       [max]="9999"
       [decimalPlaces]="0"

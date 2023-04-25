@@ -43,27 +43,27 @@
     </ion-item>
     <ng-container *ngIf="!noAvalancheActivity">
       <app-kdv-select
-        labelTitle="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES"
+        label="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES"
         kdvKey="Snow_EstimatedNumKDV"
         [(value)]="avalancheActivityCopy.EstimatedNumTID"
       ></app-kdv-select>
       <app-kdv-select
-        labelTitle="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
+        label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
         kdvKey="Snow_AvalancheExtKDV"
         [(value)]="avalancheActivityCopy.AvalancheExtTID"
       ></app-kdv-select>
       <app-kdv-select
-        labelTitle="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER"
         kdvKey="Snow_AvalTriggerSimpleKDV"
         [(value)]="avalancheActivityCopy.AvalTriggerSimpleTID"
       ></app-kdv-select>
       <app-kdv-select
-        labelTitle="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE"
         kdvKey="Snow_DestructiveSizeKDV"
         [(value)]="avalancheActivityCopy.DestructiveSizeTID"
       ></app-kdv-select>
       <app-kdv-select
-        labelTitle="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
+        label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
         kdvKey="Snow_AvalPropagationKDV"
         [(value)]="avalancheActivityCopy.AvalPropagationTID"
       ></app-kdv-select>
@@ -74,7 +74,7 @@
       ></app-exposed-height>
       <app-valid-exposition [(validExposition)]="avalancheActivityCopy.ValidExposition"></app-valid-exposition>
     </ng-container>
-    <app-text-comment labelTitle="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment">
+    <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment">
     </app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">

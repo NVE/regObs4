@@ -11,7 +11,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
   styleUrls: ['./kdv-select.component.scss'],
 })
 export class KdvSelectComponent implements OnInit, OnDestroy {
-  @Input() labelTitle: string;
+  @Input() label: string;
   @Input() kdvKey: KdvKey;
   @Input() value: number;
   @Output() valueChange = new EventEmitter();
