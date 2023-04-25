@@ -1,7 +1,7 @@
 <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
   <ng-container *ngIf="registrations$ | async as registrations">
     <ion-list class="loaded" *ngIf="registrations.length > 0; else empty">
-      <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc" [obs]="obs">
+      <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackById" [obs]="obs">
       </app-observation-list-card>
     </ion-list>
     <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">

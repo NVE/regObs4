@@ -5,12 +5,15 @@ import { PagedSearchResult } from 'src/app/core/services/search-registration/sea
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 
+/**
+ * View observation cards in a list
+ */
 @Component({
-  selector: 'app-list-view',
-  templateUrl: './list-view.component.html',
-  styleUrls: ['./list-view.component.scss'],
+  selector: 'app-observation-list-view',
+  templateUrl: './observation-list-view.component.html',
+  styleUrls: ['./observation-list-view.component.scss'],
 })
-export class ListViewComponent implements OnInit {
+export class ObservationListViewComponent implements OnInit {
   @Input() searchResult: PagedSearchResult<RegistrationViewModel>;
 
   isFetchingObservations$: Observable<boolean>;
@@ -18,8 +21,6 @@ export class ListViewComponent implements OnInit {
   shouldDisableScroller$: Observable<boolean>;
 
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
-
-  trackByIdFunc = this.trackByIdFuncInternal.bind(this);
 
   get maxCount() {
     return PagedSearchResult.MAX_ITEMS;
@@ -44,7 +45,7 @@ export class ListViewComponent implements OnInit {
     this.searchResult.increasePage();
   }
 
-  private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
+  trackById(_, obs: RegistrationViewModel) {
     return obs ? obs.RegId : undefined;
   }
 }

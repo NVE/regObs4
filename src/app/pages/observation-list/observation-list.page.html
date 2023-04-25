@@ -62,7 +62,10 @@
     </ion-row>
   </ion-grid>
   <app-images-grid *ngIf="viewType$.getValue()==='grid'" [attachmentsResult]="attachmentsResult"></app-images-grid>
-  <app-list-view *ngIf="viewType$.getValue()==='list'" [searchResult]="searchResult"></app-list-view>
+  <app-observation-list-view
+    *ngIf="viewType$.getValue()==='list'"
+    [searchResult]="searchResult"
+  ></app-observation-list-view>
   <app-geo-fab slot="fixed"></app-geo-fab>
 </ion-content>
 <app-add-menu></app-add-menu>
