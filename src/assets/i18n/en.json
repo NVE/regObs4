@@ -261,10 +261,10 @@
     "SORT_BY_CHANGE_TIME": "Recently updated",
     "SORT_BY_OBS_TIME": "Recently observed",
     "SORT_BY_TEXT": "Order by",
-    "SORT_BY_VIEW": "View",
     "TITLE": "Observations",
     "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view"
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view",
+    "VIEW_TYPE": "View"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",

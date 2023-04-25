@@ -13,6 +13,12 @@ ion-list {
   }
 }
 
+@media only screen and (max-width: 1000px) {
+  ion-list {
+    margin: 0 1rem;
+  }
+}
+
 img {
   height: 200px;
   min-width: 160px;

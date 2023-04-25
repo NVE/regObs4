@@ -16,7 +16,12 @@
   justify-content: center;
   max-width: 100%;
   a {
+    display: inherit;
     text-decoration: none;
+    img {
+      width: 20px;
+      margin-left: 0.3rem;
+    }
   }
 }
 

@@ -20,6 +20,7 @@ import { UrlParams } from 'src/app/core/services/search-criteria/url-params';
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
 const DEBUG_TAG = 'ObservationListPage';
+const URL_VIEW_TYPE_PARAM = 'view';
 
 @Component({
   selector: 'app-observation-list',
@@ -30,26 +31,16 @@ const DEBUG_TAG = 'ObservationListPage';
 export class ObservationListPage implements OnInit {
   searchResult: PagedSearchResult<RegistrationViewModel>;
   attachmentsResult: PagedSearchResult<SearchRegistrationsWithAttachments>;
-  registrations$: Observable<RegistrationViewModel[]>;
-  shouldDisableScroller$: Observable<boolean>;
   orderBy$: Observable<string>;
   popupType: SelectInterface;
   isNative: boolean;
   noMapExtentAvailable$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
-  isFetchingObservations$: Observable<boolean>;
   viewType$ = new BehaviorSubject<ViewType>('list');
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
-  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
 
-  trackByIdFunc = this.trackByIdFuncInternal.bind(this);
   refreshFunc = this.refresh.bind(this);
-
-  get maxCount() {
-    return PagedSearchResult.MAX_ITEMS;
-  }
-
   constructor(
     private searchCriteriaService: SearchCriteriaService,
     private searchRegistrationService: SearchRegistrationService,
@@ -59,7 +50,7 @@ export class ObservationListPage implements OnInit {
     mapService: MapService
   ) {
     const url = new URL(document.location.href);
-    const viewTypeInParams = url.searchParams.get('viewType') as ViewType;
+    const viewTypeInParams = url.searchParams.get(URL_VIEW_TYPE_PARAM) as ViewType;
     if (viewTypeInParams === 'grid' || viewTypeInParams === 'list') this.viewType$.next(viewTypeInParams);
 
     const searchCriteriaWhenThisPageIsActiveAndViewTypeList$ = this.filterCriteriaByView('list');
@@ -69,18 +60,6 @@ export class ObservationListPage implements OnInit {
     this.attachmentsResult = this.searchRegistrationService.searchAttachments(
       searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
     );
-    this.isFetchingObservations$ = this.searchResult.isFetching$;
-    this.registrations$ = this.searchResult.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
-
-    this.shouldDisableScroller$ = combineLatest([
-      this.searchResult.allFetchedForCriteria$,
-      this.searchResult.maxItemsFetched$,
-    ]).pipe(
-      map(([allFetched, maxReached]) => allFetched || maxReached),
-      distinctUntilChanged()
-    );
-
-    this.searchResult.registrations$.subscribe(() => updateObservationsService.setLastFetched(new Date()));
 
     //search triggered manually
     updateObservationsService.refreshRequested$
@@ -123,7 +102,7 @@ export class ObservationListPage implements OnInit {
     this.popupType = this.isNative ? 'action-sheet' : 'popover';
   }
 
-  filterCriteriaByView(viewType: ViewType): Observable<SearchCriteriaRequestDto> {
+  private filterCriteriaByView(viewType: ViewType): Observable<SearchCriteriaRequestDto> {
     return combineLatest([
       this.searchCriteriaService.searchCriteria$,
       this.tabsService.selectedTab$,
@@ -133,7 +112,7 @@ export class ObservationListPage implements OnInit {
       tap(([, , viewT]) => {
         this.logger.debug(`ViewType has changed to ${viewT} `, DEBUG_TAG);
         const params = new UrlParams();
-        params.set('viewType', viewT);
+        params.set(URL_VIEW_TYPE_PARAM, viewT);
         params.apply();
       }),
       map(([criteria]) => criteria as SearchCriteriaRequestDto)
@@ -169,13 +148,5 @@ export class ObservationListPage implements OnInit {
     this.logger.debug('ionViewWillEnter', 'PagedSearchResult');
     this.content.scrollToTop();
     this.searchCriteriaService.setExtentFilterActive(true);
-  }
-
-  loadNextPage(): void {
-    this.searchResult.increasePage();
-  }
-
-  private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
-    return obs ? obs.RegId : undefined;
   }
 }

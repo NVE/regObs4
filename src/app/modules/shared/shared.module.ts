@@ -32,6 +32,7 @@ import { RemoteImageComponent } from './components/remote-image/remote-image.com
 import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
 import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
 import { ImagesGridComponent } from './components/images-grid/images-grid.ts/images-grid.component';
+import { ListViewComponent } from './components/list-view/list-view.component';
 
 @NgModule({
   imports: [
@@ -56,6 +57,7 @@ import { ImagesGridComponent } from './components/images-grid/images-grid.ts/ima
     FormatDatePipe,
     ObservationListCardComponent,
     ObservationSkeletonComponent,
+    ListViewComponent,
     ImgSwiperComponent,
     HeaderComponent,
     RefreshWithCancelComponent,
@@ -79,6 +81,7 @@ import { ImagesGridComponent } from './components/images-grid/images-grid.ts/ima
     IonicModule,
     TranslateModule,
     RouterModule,
+    ListViewComponent,
     ShadowCssDirective,
     AngularSvgIconModule,
     MapImageModule,

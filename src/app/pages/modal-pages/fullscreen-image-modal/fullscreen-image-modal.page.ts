@@ -105,9 +105,4 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   closeModal(): void {
     this.modalController.dismiss();
   }
-
-  navigateToItem(url: string) {
-    this.router.navigateByUrl(url);
-    this.closeModal();
-  }
 }
