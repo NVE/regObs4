@@ -18,12 +18,12 @@
     </ion-item>
     <ng-container *ngIf="!noWeakLayers">
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
+        label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
         kdvKey="Snow_AvalCauseKDV"
         [(value)]="avalancheEvalProblemCopy.AvalCauseTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH"
+        label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH"
         kdvKey="Snow_AvalCauseDepthKDV"
         [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"
       ></app-kdv-select>
@@ -36,13 +36,13 @@
       <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}} </ion-label>
     </ion-list-header>
     <app-kdv-select
-      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
+      label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
       kdvKey="Snow_AvalancheExtKDV"
       [(value)]="avalancheEvalProblemCopy.AvalancheExtTID"
       [filter]="avalancheExtKdvFilter"
     ></app-kdv-select>
     <app-kdv-select
-      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY"
+      label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY"
       kdvKey="Snow_AvalTriggerSimpleKDV"
       [(value)]="avalancheEvalProblemCopy.AvalTriggerSimpleTID"
     ></app-kdv-select>
@@ -55,7 +55,7 @@
       <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate}} </ion-label>
     </ion-list-header>
     <app-kdv-select
-      title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
+      label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
       kdvKey="Snow_AvalPropagationKDV"
       [(value)]="avalancheEvalProblemCopy.AvalPropagationTID"
     ></app-kdv-select>
@@ -65,7 +65,7 @@
       [(exposedHight2)]="avalancheEvalProblemCopy.ExposedHeight2"
     ></app-exposed-height>
     <app-valid-exposition [(validExposition)]="avalancheEvalProblemCopy.ValidExposition"></app-valid-exposition>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheEvalProblemCopy.Comment">
+    <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheEvalProblemCopy.Comment">
     </app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">

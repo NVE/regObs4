@@ -15,7 +15,7 @@
       <ng-container *ngIf="useCylinder else noCylinder">
         <app-numeric-input
           [(value)]="layer.Thickness"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
           [max]="999"
           [min]="0"
           suffix="cm"
@@ -26,7 +26,7 @@
         </app-numeric-input>
         <app-numeric-input
           [(value)]="layer.Weight"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WEIGHT"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WEIGHT"
           [max]="9999"
           [min]="0"
           [convertRatio]="1000"
@@ -91,7 +91,7 @@
 <ng-template #noCylinder>
   <app-numeric-input
     [(value)]="layer.Thickness"
-    title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
+    label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
     [max]="999"
     [min]="0"
     suffix="cm"
@@ -102,7 +102,7 @@
   </app-numeric-input>
   <app-numeric-input
     [(value)]="layer.Density"
-    title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.DENSITY"
+    label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.DENSITY"
     [max]="9999"
     [min]="0"
     suffix="kg/m³"

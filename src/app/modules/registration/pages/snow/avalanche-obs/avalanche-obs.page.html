@@ -76,23 +76,23 @@
           >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION' | translate}}</ion-label
         >
         <app-select
-          title="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
+          label="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
           [(selectedValue)]="avalancheObs.ValidExposition"
           [options]="expoArray"
         ></app-select>
       </ion-item>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE"
         kdvKey="Snow_DestructiveSizeKDV"
         [(value)]="avalancheObs.DestructiveSizeTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TYPE"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TYPE"
         kdvKey="Snow_AvalancheKDV"
         [(value)]="avalancheObs.AvalancheTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER"
         kdvKey="Snow_AvalancheTriggerKDV"
         [(value)]="avalancheObs.AvalancheTriggerTID"
       ></app-kdv-select>
@@ -103,18 +103,18 @@
         <ion-toggle [(ngModel)]="avalancheObs.RemotelyTriggered"></ion-toggle>
       </ion-item>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE"
         kdvKey="Snow_TerrainStartZoneKDV"
         [(value)]="avalancheObs.TerrainStartZoneTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE"
         kdvKey="Snow_AvalCauseKDV"
         [(value)]="avalancheObs.AvalCauseTID"
       ></app-kdv-select>
       <app-numeric-input
         [(value)]="avalancheObs.FractureHeight"
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH"
         [min]="0"
         [max]="9999"
         suffix="cm"
@@ -123,7 +123,7 @@
       </app-numeric-input>
       <app-numeric-input
         [(value)]="avalancheObs.FractureWidth"
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH"
         [min]="0"
         [max]="99999"
         suffix="m"
@@ -131,12 +131,12 @@
       >
       </app-numeric-input>
       <app-text-comment
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME"
         [max]="100"
         [rows]="2"
         [(value)]="avalancheObs.Trajectory"
       ></app-text-comment>
-      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheObs.Comment"> </app-text-comment>
+      <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheObs.Comment"> </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
       </ion-list-header>
@@ -152,12 +152,12 @@
         <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}} </ion-label>
       </ion-list-header>
       <app-kdv-select
-        title="REGISTRATION.INCIDENT.ACTIVITY"
+        label="REGISTRATION.INCIDENT.ACTIVITY"
         kdvKey="Snow_ActivityInfluencedKDV"
         [(value)]="incident.ActivityInfluencedTID"
       ></app-kdv-select>
       <app-numeric-input
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
         [color]="!isInvolvedValid ? 'danger' : 'medium'"
         [min]="0"
         [(value)]="incident.InvolvedNum"
@@ -165,7 +165,7 @@
       >
       </app-numeric-input>
       <app-numeric-input
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
         [color]="!isCasualtiesValid ? 'danger' : 'medium'"
         [isValid]="isCasualtiesValid"
         errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM_ERROR_MESSAGE"
@@ -175,7 +175,7 @@
       >
       </app-numeric-input>
       <app-numeric-input
-        title="REGISTRATION.INCIDENT.DEAD_NUM"
+        label="REGISTRATION.INCIDENT.DEAD_NUM"
         [color]="!isDeadValid ? 'danger' : 'medium'"
         [isValid]="isDeadValid"
         [errorMessage]="!isErrorMessageHarmAndDead ? 'REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM_ERROR_MESSAGE' : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'"
@@ -185,7 +185,7 @@
       >
       </app-numeric-input>
       <app-numeric-input
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
         [errorMessage]="!isErrorMessageHarmAndDead ? 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM_ERROR_MESSAGE' : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'"
         [isValid]="isHarmedValid"
         [color]="!isHarmedValid ? 'danger' : 'medium'"
@@ -201,7 +201,7 @@
         <ion-toggle [(ngModel)]="incident.TrafficObstructed"></ion-toggle>
       </ion-item>
       <app-numeric-input
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.EVACUATED_NUM"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.EVACUATED_NUM"
         [(value)]="incident.EvacuatedNum"
         [min]="0"
       ></app-numeric-input>
@@ -212,14 +212,14 @@
         <ion-toggle [(ngModel)]="incident.MaterialDamages"></ion-toggle>
       </ion-item>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID"
         kdvKey="Snow_SlopeActivityKDV"
         [(value)]="incident.SlopeActivityTID"
       ></app-kdv-select>
-      <app-kdv-select title="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV" [(value)]="incident.RescueTID">
+      <app-kdv-select label="REGISTRATION.INCIDENT.RESCUE_TID" kdvKey="RescueKDV" [(value)]="incident.RescueTID">
       </app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.SAFETY_GEAR_TID"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.SAFETY_GEAR_TID"
         kdvKey="Snow_SafetyGearKDV"
         [(value)]="incident.SafetyGearTID"
       ></app-kdv-select>
@@ -229,11 +229,11 @@
         [(value)]="incident.LocalTouristTID"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_KNOWLEDGE_TID"
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.LOCAL_KNOWLEDGE_TID"
         kdvKey="LocalKnowledgeKDV"
         [(value)]="incident.LocalKnowledgeTID"
       ></app-kdv-select>
-      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment"> </app-text-comment>
+      <app-text-comment label="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment"> </app-text-comment>
       <ion-item-divider>
         <ion-label class="ion-text-wrap"> {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }} </ion-label>
       </ion-item-divider>

@@ -14,7 +14,7 @@
       </ion-list-header>
       <app-numeric-input
         [(value)]="layer.Thickness"
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
         [min]="0"
         suffix="cm"
         [decimalPlaces]="2"
@@ -22,13 +22,13 @@
       >
       </app-numeric-input>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS"
         kdvKey="Snow_HardnessKDV"
         [(value)]="layer.HardnessTID"
         [filter]="hardnessFilter"
       ></app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM"
         kdvKey="Snow_GrainFormKDV"
         [(value)]="layer.GrainFormPrimaryTID"
         [filter]="grainFormFilter"
@@ -42,12 +42,12 @@
         <app-select
           [(selectedValue)]="layer.GrainSizeAvg"
           [options]="grainSizeOptions"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE"
         >
         </app-select>
       </ion-item>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS"
         kdvKey="Snow_WetnessKDV"
         [(value)]="layer.WetnessTID"
         [filter]="wetnessFilter"
@@ -65,13 +65,13 @@
     </ion-button>
     <ion-list lines="full" *ngIf="showMore">
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM"
         kdvKey="Snow_HardnessKDV"
         [(value)]="layer.HardnessBottomTID"
       >
       </app-kdv-select>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
         kdvKey="Snow_GrainFormKDV"
         [(value)]="layer.GrainFormSecondaryTID"
         [getIconFunc]="getIconFunc"
@@ -84,17 +84,17 @@
         <app-select
           [(selectedValue)]="layer.GrainSizeAvgMax"
           [options]="grainSizeOptions"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE"
         >
         </app-select>
       </ion-item>
       <app-kdv-select
-        title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
         kdvKey="Snow_CriticalLayerKDV"
         [(value)]="layer.CriticalLayerTID"
       >
       </app-kdv-select>
-      <app-text-comment title="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
+      <app-text-comment label="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
     </ion-list>
     <ion-grid class="ion-no-padding">
       <ion-row>

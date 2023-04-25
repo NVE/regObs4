@@ -14,7 +14,7 @@
     </ion-fab>
     <app-text-comment
       [(value)]="attachment.Comment"
-      title="{{ pictureCommentText | translate }}"
+      label="{{ pictureCommentText | translate }}"
       rows="2"
       placeholder="{{ pictureCommentPlaceholder | translate }}"
     ></app-text-comment>
@@ -45,7 +45,7 @@
     <app-text-comment
       [value]="attachment.Comment"
       (valueChange)="setNewAttachmentComment(attachment, $event)"
-      title="{{ pictureCommentText | translate }}"
+      label="{{ pictureCommentText | translate }}"
       rows="2"
       placeholder="{{ pictureCommentPlaceholder | translate }}"
     ></app-text-comment>

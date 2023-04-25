@@ -35,14 +35,14 @@
       </ion-item>
       <app-numeric-input
         [(value)]="snowProfile.SlopeAngle"
-        title="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE"
         [min]="0"
         [max]="59"
         suffix="°"
         placeholder="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE_PLACEHOLDER"
         [decimalPlaces]="0"
       ></app-numeric-input>
-      <app-text-comment title="DIALOGS.COMMENT" [(value)]="snowProfile.Comment"> </app-text-comment>
+      <app-text-comment label="DIALOGS.COMMENT" [(value)]="snowProfile.Comment"> </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{'REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS' | translate}} </ion-label>
       </ion-list-header>

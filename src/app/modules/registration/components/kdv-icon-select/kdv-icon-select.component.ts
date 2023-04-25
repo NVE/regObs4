@@ -22,7 +22,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KdvIconSelectComponent {
-  @Input() title: string;
+  @Input() label: string;
   @Input() kdvKey: KdvKey;
 
   /**
