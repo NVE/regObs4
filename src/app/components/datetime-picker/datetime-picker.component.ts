@@ -96,16 +96,13 @@ export class DatetimePickerComponent implements OnInit {
       const min = moment(this.minDate).toISOString(true);
       const max = moment(this.maxDate).toISOString(true);
       if (dateFormatWithTimeZone < min) {
-        this.updateTempDateTime(min);
         this.dateTimeChange.emit(min);
         return;
       } else if (dateFormatWithTimeZone > max) {
-        this.updateTempDateTime(max);
         this.dateTimeChange.emit(max);
         return;
       }
 
-      this.updateTempDateTime(dateFormatWithTimeZone);
       this.dateTimeChange.emit(dateFormatWithTimeZone);
     }
   }
