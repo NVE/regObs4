@@ -12,6 +12,7 @@ import { StarRatingHelper } from '../../../../components/competence/star-helper'
 import { AccountService, MyPageData, ObserverGroupDto } from 'src/app/modules/common-regobs-api';
 import { ModalController } from '@ionic/angular';
 import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/edit-picture-info-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-information',
@@ -67,7 +68,8 @@ export class UserInformation implements OnInit {
     private externalLinkService: ExternalLinkService,
     private userGroupService: UserGroupService,
     private accountApiService: AccountService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -91,6 +93,11 @@ export class UserInformation implements OnInit {
           : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))
       )
     );
+  }
+
+  navigateBack() {
+    const prevUrl = localStorage.getItem('prevUrl') || '/';
+    this.router.navigate([prevUrl]);
   }
 
   signIn(): Promise<void> {
