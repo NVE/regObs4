@@ -101,6 +101,12 @@
   "HELP": {
     "TITLE": "Help"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "MESSAGE": "Failed to fetch observations",
+      "BUTTON": "Dismiss"
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "About Varsom data",
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",

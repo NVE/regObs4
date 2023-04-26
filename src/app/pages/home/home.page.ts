@@ -3,6 +3,7 @@ import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChi
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -94,7 +95,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private mapCenterInfoHeight = new Subject<number>();
   private registrationsSubscription: Subscription;
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
-  error$ = new BehaviorSubject(false);
+  observationSearchError$ = new BehaviorSubject(false);
   private onDestroy$ = new Subject<void>();
 
   constructor(
@@ -111,6 +112,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     private mapService: MapService,
     private toastService: ToastController,
+    private translateService: TranslateService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -130,11 +132,22 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.initSearch();
     this.initObservationsErrorToast();
+
+    this.updateObservationsService.refreshRequested$
+      .pipe(withLatestFrom(this.tabsService.selectedTab$))
+      .subscribe(([, tab]) => {
+        if (tab === TABS.HOME) {
+          this.initSearch().then(() => this.searchResult.update());
+          this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+        } else {
+          this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+        }
+      });
   }
 
   private async initSearch() {
     this.loggingService.debug('initSearch...', DEBUG_TAG);
-    this.error$.next(false);
+    this.observationSearchError$.next(false);
 
     if (this.registrationsSubscription != null) {
       this.registrationsSubscription.unsubscribe;
@@ -151,11 +164,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       .pipe(map(([registrations, show]) => (show ? registrations : [])))
       .subscribe({
         next: (registrations) => {
-          this.error$.next(false);
+          this.observationSearchError$.next(false);
           this.redrawObservationMarkers(registrations);
         },
         error: (err) => {
-          this.error$.next(true);
+          this.observationSearchError$.next(true);
           this.loggingService.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
         },
       });
@@ -164,21 +177,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
     });
-
-    this.updateObservationsService.refreshRequested$
-      .pipe(withLatestFrom(this.tabsService.selectedTab$))
-      .subscribe(([, tab]) => {
-        if (tab === TABS.HOME) {
-          this.initSearch().then(() => this.searchResult.update());
-          this.loggingService.debug('Search manually triggered', DEBUG_TAG);
-        } else {
-          this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
-        }
-      });
   }
 
   private initObservationsErrorToast() {
-    this.error$
+    this.observationSearchError$
       .pipe(
         filter((error) => error),
         // Use exhaustmap to avoid multiple error toasts at once
@@ -192,7 +194,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
                 takeUntil(
                   race(
                     //this.searchResult.registrations$.pipe(filter((regs) => regs.length > 0)),
-                    this.error$.pipe(filter((error) => !error)),
+                    this.observationSearchError$.pipe(filter((error) => !error)),
                     this.tabsService.selectedTab$.pipe(skip(1))
                   )
                 ),
@@ -207,12 +209,18 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   private async showSearchErrorToast() {
+    const translations = await firstValueFrom(
+      this.translateService.get([
+        'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE',
+        'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON',
+      ])
+    );
     const toast = await this.toastService.create({
-      message: 'TODO: Failed to fetch registrations from regobs api',
+      message: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE'],
       position: 'bottom',
       buttons: [
         {
-          text: 'Dismiss',
+          text: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON'],
           role: 'cancel',
         },
       ],
@@ -315,7 +323,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         let currentBounds;
         if (current.Extent) {
           currentBounds = withinExtentCriteriaToBounds(current.Extent);
-          if (!prev) {
+          if (!prev || this.observationSearchError$.getValue()) {
             this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
           }

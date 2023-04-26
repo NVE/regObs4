@@ -101,6 +101,12 @@
   "HELP": {
     "TITLE": "Hjelp"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "MESSAGE": "Fikk ikke hentet observasjoner",
+      "BUTTON": "Lukk"
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "Om data i Varsom",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
