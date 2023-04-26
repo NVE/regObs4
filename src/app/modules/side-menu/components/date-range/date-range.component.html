@@ -63,7 +63,7 @@
 </ion-accordion-group>
 
 <ng-template #showDateRange>
-  <ng-container *ngIf="dateRangeText$ | async as dateRangeText">
+  <ng-container *ngIf="dateRangeText">
     <ion-text *ngIf="!isOpen" class="ion-align-self-start">
       <span>{{ dateRangeText }}</span>
     </ion-text>
