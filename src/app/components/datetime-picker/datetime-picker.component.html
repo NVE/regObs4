@@ -48,7 +48,7 @@
     name="dateFormatForWeb"
     (keydown)="preventKeydownIfDateIsBigger($event, maxDate)"
     (change)="updateDateOnWeb($event.target.value)"
-    [(value)]="dateFormatForWeb"
+    [value]="dateFormatForWeb"
     (blur)="updateDateOnWeb($event.target.value)"
     [min]="minDate"
     [max]="maxDate"

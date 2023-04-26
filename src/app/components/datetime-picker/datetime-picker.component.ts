@@ -17,14 +17,10 @@ import { Capacitor } from '@capacitor/core';
  * The date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
  */
 export class DatetimePickerComponent implements OnInit {
-  @Input() dateTime;
+  @Input() dateTime: string;
   @Input() dateInputType?: 'datetime-local' | 'date' = 'datetime-local';
 
-  // We have to change dateTime value format yyyy-mm-ddThh:mm:ss.000+01:00 to web supported format yyyy-MM-DDTHH:mm
-  set dateFormatForWeb(value: string) {
-    this.dateTime = value;
-  }
-
+  // For web only. We have to change dateTime moment format (which is also supported by ionic) yyyy-mm-ddThh:mm:ss.000+01:00 to web supported format yyyy-MM-DDTHH:mm
   get dateFormatForWeb(): string {
     if (this.dateTime) {
       const formatedDate =
@@ -38,18 +34,19 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
-  @Input() minDate: string; // Sets the min date selectable from the date picker
-  @Input() maxDate: string; // Sets the max date selectable from the date picker
+  @Input() minDate = moment(new Date()).format('YYYY-MM-DD'); // Sets the min date selectable from the date picker
+  @Input() maxDate = moment(new Date('2010-01-01')).format('YYYY-MM-DD'); // Sets the max date selectable from the date picker
   @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
   @Input() presentation: DatetimePresentation = 'date-time';
   @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
   @Input() datePickerOpen = false;
   @Input() resetable = false;
-  @Input() preventKeydown? = null;
+
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
-  isPlatformNative = Capacitor.isNativePlatform();
+
+  isPlatformNative = true; //Capacitor.isNativePlatform();
 
   @ViewChild(IonModal) modal: IonModal;
 
@@ -60,8 +57,6 @@ export class DatetimePickerComponent implements OnInit {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
       this.language = getLangKeyString(userSetting.language);
     }
-    this.maxDate = !this.maxDate ? moment(new Date()).format('YYYY-MM-DD') : this.maxDate;
-    this.minDate = !this.minDate ? moment(new Date('2010-01-01')).format('YYYY-MM-DD') : this.minDate;
   }
 
   openModal() {
@@ -117,8 +112,8 @@ export class DatetimePickerComponent implements OnInit {
     this.dateTime = moment(dateInput).format();
   }
 
-  // input ignores min and max values on keydown therefore we hardcode a method to prevent that
-  preventKeydownIfDateIsBigger(event, maxDate) {
+  // input ignores min and max values on keydown therefore a hardcoded method to prevent that
+  preventKeydownIfDateIsBigger(event, maxDate: string) {
     if (event.currentTarget.value >= maxDate && event.which === 38) {
       event.preventDefault();
     }
