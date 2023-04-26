@@ -49,7 +49,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() preventKeydown? = null;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
-  isPlatformNative = false;
+  isPlatformNative = true;
 
   @ViewChild(IonModal) modal: IonModal;
 
