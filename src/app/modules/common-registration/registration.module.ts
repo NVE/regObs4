@@ -14,6 +14,7 @@ import FileAttachmentService from './services/add-new-attachment/file-attachment
 import { isPlatform } from '@ionic/angular';
 import { RegobsApiModuleWithConfig } from '../common-regobs-api';
 import { LocalStorageAttachmentService } from './services/add-new-attachment/local-storage.attachment.service';
+import { WebAttachmentService } from './services/add-new-attachment/web-attachment.service';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -75,7 +76,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: isPlatform('hybrid') ? FileAttachmentService : LocalStorageAttachmentService,
+          useClass: isPlatform('hybrid') ? FileAttachmentService : WebAttachmentService,
         },
         TranslateService,
       ],

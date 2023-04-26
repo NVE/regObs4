@@ -93,6 +93,13 @@ steps:
     verbose: false
 
 - task: Npm@1
+  displayName: 'Add nn app translation fallback values from nb'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run translations:add-nn-app-fallback'
+
+- task: Npm@1
   displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
   inputs:
     command: custom

@@ -239,11 +239,14 @@
                 <li [@legalText1]="state">{{'LEGAL_TERMS.LINE_1' | translate}}</li>
                 <li [@legalText2]="state">{{'LEGAL_TERMS.LINE_2' | translate}}</li>
                 <li [@legalText3]="state">{{'LEGAL_TERMS.LINE_3' | translate}}</li>
-                <li [@legalText3]="state">
+                <li [@legalText4]="state">
                   <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
                 </li>
-                <li [@legalText3]="state">
-                  <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate:{legalUrl: legalUrl}"></span>
+                <li [@legalText5]="state">
+                  <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
+                </li>
+                <li [@legalText6]="state">
+                  <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate:{legalUrl: legalUrl}"></span>
                 </li>
               </ul>
             </h3>

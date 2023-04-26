@@ -14,6 +14,7 @@ import { SearchCountResponseDto } from '../models/search-count-response-dto';
 import { SearchSideBarDto } from '../models/search-side-bar-dto';
 import { SearchSideBarRequestDto } from '../models/search-side-bar-request-dto';
 import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
+import { SearchRegistrationsWithAttachments } from '../models/search-registrations-with-attachments';
 
 /**
  * Search for registrations.
@@ -27,6 +28,7 @@ class SearchService extends __BaseService {
   static readonly SearchPostSearchMyRegistrationsPath = '/Search/MyRegistrations';
   static readonly SearchCountMyRegistrationsPath = '/Search/MyRegistrationsCount';
   static readonly SearchCountPath = '/Search/Count';
+  static readonly SearchGetRegIdsFromDeletedRegistrationsPath = '/Search/DeletedRegistrations';
   static readonly SearchGetSearchCriteriaPath = '/Search/SearchCriteria/{geoHazards}/{langKey}';
   static readonly SearchSearchCriteriaPath = '/Search/SearchCriteria';
   static readonly SearchAtAGlancePath = '/Search/AtAGlance';
@@ -85,6 +87,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearch(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
+    console.log('[DEBUG][SearchService] SearchSearch triggered', criteria); //TODO: Fjerne dette når vi ikke har bruk for logging lengre
     return this.SearchSearchResponse(criteria).pipe(
       __map(_r => _r.body as Array<RegistrationViewModel>)
     );
@@ -135,6 +138,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchPostSearchMyRegistrations(criteria: SearchCriteriaExclUserRequestDto): __Observable<Array<RegistrationViewModel>> {
+    console.log('[DEBUG][SearchService] SearchPostSearchMyRegistrations triggered', criteria); //TODO: Fjerne dette når vi ikke har bruk for logging lengre
     return this.SearchPostSearchMyRegistrationsResponse(criteria).pipe(
       __map(_r => _r.body as Array<RegistrationViewModel>)
     );
@@ -213,6 +217,86 @@ class SearchService extends __BaseService {
   SearchCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountResponseDto> {
     return this.SearchCountResponse(criteria).pipe(
       __map(_r => _r.body as SearchCountResponseDto)
+    );
+  }
+
+  /**
+   * Search for images only
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchAttachmentsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchRegistrationsWithAttachments>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = criteria;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/Search/Attachments`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<SearchRegistrationsWithAttachments>;
+      })
+    );
+  }
+
+  /**
+   * Search for images only
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchAttachments(criteria: SearchCriteriaRequestDto): __Observable<SearchRegistrationsWithAttachments> {
+    return this.SearchAttachmentsResponse(criteria).pipe(
+      __map(_r => _r.body as SearchRegistrationsWithAttachments)
+    );
+  }
+
+
+  /**
+   * Returns list of regIds from deleted registrations that can be filtered with criteria model.
+   * Used with offline syncing on mobile devices.
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchGetRegIdsFromDeletedRegistrationsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<number>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = criteria;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/Search/DeletedRegistrations`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<number>>;
+      })
+    );
+  }
+  /**
+   * Returns list of regIds from deleted registrations that can be filtered with criteria model.
+   * Used with offline syncing on mobile devices.
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchGetRegIdsFromDeletedRegistrations(criteria: SearchCriteriaRequestDto): __Observable<Array<number>> {
+    return this.SearchGetRegIdsFromDeletedRegistrationsResponse(criteria).pipe(
+      __map(_r => _r.body as Array<number>)
     );
   }
 
@@ -348,6 +432,7 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchAtAGlance(criteria: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {
+    console.log('[DEBUG][SearchService] SearchAtAGlance triggered', criteria); //TODO: Fjerne dette når vi ikke har bruk for logging lengre
     return this.SearchAtAGlanceResponse(criteria).pipe(
       __map(_r => _r.body as Array<AtAGlanceViewModel>)
     );

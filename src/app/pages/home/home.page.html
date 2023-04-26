@@ -6,6 +6,7 @@
     [geoTag]="'HomePage'"
     [showObserverTrips]="true"
     [activateFollowModeOnStartup]="activateFollowModeInMapOnStartup"
+    [updateMapViewOnExtentChange]="true"
   ></app-map>
 
   <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>

@@ -6,11 +6,12 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
-import { Observable, Subject } from 'rxjs';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { firstValueFrom, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
+import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
@@ -30,6 +31,8 @@ export interface LocationTime {
   spatialAccuracy: number;
 }
 
+const INITIAL_ZOOM_MINIMUM = 15;
+
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
   shadowUrl: 'leaflet/marker-shadow.png',
@@ -47,6 +50,19 @@ const previousUsedPlaceIcon = L.icon({
   shadowUrl: 'leaflet/marker-shadow.png',
   shadowSize: [41, 41],
 });
+
+/**
+ * @returns true hvis currentView.center ikke er satt eller er nesten lik previousView.center
+ */
+export function mapCenterIsStableOrNotAvailable(previousView: IMapView, currentView: IMapView): boolean {
+  if (currentView == null || currentView.center == null) {
+    return true;
+  }
+  if (previousView == null || previousView.center == null || currentView.center.distanceTo(previousView.center) > 5) {
+    return false; // første gang vi får kartsenter eller kartsenter er flyttet
+  }
+  return true;
+}
 
 @Component({
   selector: 'app-set-location-in-map',
@@ -89,6 +105,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
+  private mapView = new Subject<IMapView>(); //extent, center and zoom for current map
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
   locationPolygons: IPolygon[] = [];
@@ -150,9 +167,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           icon: locationMarkerIcon,
         });
       } else {
-        const lastView = await this.mapService.mapView$.pipe(take(1)).toPromise();
-        if (lastView) {
-          this.locationMarker = L.marker(lastView.center, {
+        const initialMapView = await firstValueFrom(this.mapService.mapView$);
+        if (initialMapView) {
+          this.locationMarker = L.marker(initialMapView.center, {
             icon: locationMarkerIcon,
           });
         } else {
@@ -165,7 +182,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.translateService.onLangChange.subscribe((params: LangChangeEvent) => {
       this.locale = params.lang;
     });
-    this.updateMapViewInfo();
   }
 
   ngOnDestroy(): void {
@@ -173,8 +189,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
+  get initialZoom$(): Observable<number> {
     return this.mapService.mapView$.pipe(
+      map((mapView) => (mapView?.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM))
+    );
+  }
+
+  private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
+    return this.mapView.pipe(
       filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
       switchMap((mapView) =>
         this.locationService.getLocationWithinRadiusObservable(
@@ -198,8 +220,21 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
+  // bounds, center and zoom for this map
+  private getCurrentMapView(): IMapView {
+    return {
+      bounds: this.map.getBounds(),
+      center: this.map.getCenter(),
+      zoom: this.map.getZoom(),
+    };
+  }
+
   onMapReady(m: L.Map): void {
     this.map = m;
+
+    // use initial map extent from home page
+    this.mapService.mapView$.pipe(take(1)).subscribe((mapView) => this.mapView.next(mapView));
+
     this.locationMarker.setZIndexOffset(100).addTo(this.map);
     if (this.fromMarker) {
       this.fromMarker.addTo(this.map);
@@ -210,7 +245,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     });
-    this.map.on('dragend', () => this.updateMapViewInfo());
+    this.map.on('dragend', () => this.mapView.next(this.getCurrentMapView()));
+    this.map.on('zoomend', () => this.mapView.next(this.getCurrentMapView()));
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {
@@ -220,6 +256,17 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           locations.forEach((loc) => this.addLocationIfNotExists(loc));
         });
     }
+
+    this.mapView
+      .pipe(
+        startWith(this.getCurrentMapView()),
+        // ikke søke på nytt hvis kartsenter ikke flytter seg nevneverdig (f.eks. ved zoom)
+        distinctUntilChanged((prev, curr) => mapCenterIsStableOrNotAvailable(prev, curr)),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(() => {
+        this.updateMapViewInfo();
+      });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
@@ -241,7 +288,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       .subscribe((pos) => this.positionChange(pos));
 
     if (!this.followMode) {
-      this.map.setView(this.locationMarker.getLatLng(), 15);
+      this.map.setView(this.locationMarker.getLatLng(), INITIAL_ZOOM_MINIMUM);
     }
 
     this.initPolygons();
@@ -304,7 +351,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       }
     };
     drawnItems.on('click', this.toggleEditingMode);
-
     this.locationPolygon?.subscribe((p) => {
       p.polygon.setStyle({ color: p.active ? p.color : 'rgb(0,0,0,0)' });
       drawnItems.addLayer(p.polygon);

@@ -13,7 +13,6 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
-import * as utils from '@nano-sql/core/lib/utilities';
 import * as L from 'leaflet';
 import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/modal-map-image.page';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -131,6 +130,12 @@ export class ObservationListCardComponent implements OnChanges {
         endPolygon: this.extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor),
       };
     }
+
+    if (obs.WaterLevel2) {
+      return {
+        totalPolygon: this.extent2Polygon(obs.WaterLevel2.Extent, settings.map.extentColor),
+      };
+    }
     return undefined;
   }
 
@@ -180,27 +185,18 @@ export class ObservationListCardComponent implements OnChanges {
     this.attachments = getAllAttachmentsFromViewModel(this.obs);
   }
 
-  getImageUrl(
-    attachment: AttachmentViewModel,
-    size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Large'
-  ): string {
-    return attachment.UrlFormats[size] || attachment.Url;
-  }
-
   getRegistrationNames(): string {
     return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
   }
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
     const attachments = getAllAttachmentsFromViewModel(this.obs);
-    const image = attachments[event.index] as AttachmentViewModel & { Href: string };
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
+      cssClass: 'modal-fullscreen',
       componentProps: {
-        imgSrc: `${this.getImageUrl(image, 'Original')}?r=${utils.uuid()}`,
-        header: image.RegistrationName,
-        description: image.Comment,
-        href: image.Href,
+        allImages: attachments,
+        imgIndex: event.index,
       },
     });
     modal.present();

@@ -40,9 +40,6 @@
   "DATA_LOAD": {
     "DATA": "Laster data...",
     "LOADING": "Laster",
-    "NO_FETCHED_OBSERVATIONS": "Appen har ikke fått hentet observasjoner",
-    "OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS": "Observasjoner ble sist hentet for {{timeSinceLastUpdated}}",
-    "SERVICE_UNAVAILABLE": "Det kan være du ikke har nett eller at appen ikke får kontakt med Regobs. Du kan prøve å oppdatere manuelt med oppdateringsknappen i filtermenyen",
     "SPINNER_FETCH_OBSERVATIONS": "Henter observasjoner"
   },
   "DATE": "Dato",
@@ -110,7 +107,8 @@
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
     "LINE_3": "Observasjoner produseres av brukerne og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
     "LINE_4": "Når du publiserer bilder på observasjoner aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
-    "LINE_5": "Les mer i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkår</a>.",
+    "LINE_5": "Observasjoner kan kun endres eller slettes inntil 48 timer etter at de er registrert.",
+    "LINE_6": "Les mer i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkår</a>.",
     "OK": "Ok, jeg aksepterer"
   },
   "LOGIN": {
@@ -240,6 +238,8 @@
       "LABEL": "Kompetanse",
       "TITLE": "Observatør"
     },
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt",
+    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
     "NICK_FILTER": {
       "PLACEHOLDER": "Søk på observatørnavn",
       "TITLE": "Navn"
@@ -247,15 +247,15 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observasjonstype"
     },
-    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filtre",
-    "TITLE": "Observasjonsfilter",
-    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
-    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt"
+    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill alle filtre",
+    "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Skjemaer",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
+    "NO_IMAGES": "Ingen bilder",
+    "NO_IMAGES_TEXT": "Det er ingen observasjoner med bilder i kartutsnittet. Forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
     "SORT_BY_CHANGE_TIME": "Oppdatert tid",
@@ -263,7 +263,8 @@
     "SORT_BY_TEXT": "Sorter på",
     "TITLE": "Observasjoner",
     "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt"
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt",
+    "VIEW_TYPE": "Visning"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -289,7 +290,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
       "DOWNLOAD_ERROR": "Nedlasting feilet",
       "UNZIP_ERROR": "Utpakking feilet",
-      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}",
+      "WAITING_FOR_NETWORK": "Venter på nettverk"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
@@ -312,7 +314,8 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {
-      "TITLE": "Legg til weblenke",
+      "LABEL": "Weblenker",
+      "TITLE": "Legg til",
       "URL": "Url"
     },
     "ANONYMIZE": {
@@ -329,6 +332,7 @@
       "COMMENT": "Kommentar",
       "COMMENT_PLACEHOLDER": "Her kan du gi ytterligere beskrivelse av faretegnet",
       "DESCRIPTION": "Beskrivelse",
+      "DROPDOWN_TITLE": "Faretegn (obligatorisk)",
       "FOR_MUNICIPAL": "For kommunen",
       "FOR_REGION": "Fylket/varslingsregion",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",
@@ -422,6 +426,7 @@
       "TAKE_NEW_PHOTO": "Ta et nytt bilde",
       "TITLE": "Bilde og notat"
     },
+    "GO_TO": "Gå til observasjon",
     "GROUP": {
       "SUBTITLE": "Del observasjonen med",
       "TITLE": "Del med gruppe"
@@ -461,12 +466,12 @@
     "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
-    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} bilde(r) ble ikke lastet opp for observasjon gjort {{obsTime}}. Send oss gjerne bildet/bildene på epost, så vi kan sjekke manuelt hva som er galt.",
     "IMAGE_ERROR": {
       "ALBUM_READ_PERMISSION_MISSING": "Du må gi appen tillatelse til å lese fra fotoalbumet",
       "CAMERA_PERMISSION_MISSING": "Du må gi appen tillatelse til å bruke kameraet",
       "UNKNOWN": "Vi fikk ikke til å legge til bildet/bildene. Det kan være noe galt med en bildefil eller en annen feil. Prøv gjerne et annet bilde for å sjekke"
     },
+    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} bilde(r) ble ikke lastet opp for observasjon gjort {{obsTime}}. Send oss gjerne bildet/bildene på epost, så vi kan sjekke manuelt hva som er galt.",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
@@ -480,8 +485,8 @@
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat. Kun JPEG er støttet",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
-    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
     "LOG_IN_AND_RESEND": "Logg inn og prøv å sende på nytt",
+    "LOG_IN_AND_SEND": "Logg inn for å sende observasjon",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",
@@ -781,6 +786,9 @@
         "OBSERVATION_TIMING": "Hva registrerer du?",
         "REGISTRATION_METHOD": "Hvordan registrerer du?",
         "RELATIVE": "Høyden er relativ til",
+        "SET_FLOOD_POSITION_CONFIRM": "Bekreft flomområde",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Inntegning av område",
+        "SET_FLOOD_POSITION_TITLE": "Sett flomposisjon",
         "TITLE": "Vannstand",
         "WATER_LEVEL_METERS": "Vannstand i meter",
         "WATER_MARKING": "Vannstandsmarkering",
@@ -930,7 +938,7 @@
   },
   "TRIP": {
     "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
-    "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil automatisk ble stoppet ved midnatt.",
+    "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil stoppes automatisk ved midnatt.",
     "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
     "ERROR_POSITION": "Kan ikke starte tur uten GPS posisjon.",
     "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",

@@ -253,9 +253,10 @@ ng update
 ncu -u
 ```
 
-# How to update models from Regobs API
+# How to update models and services from Regobs API
 
-Check the api endpoint named "swagger" in ng-swagger-gen.json is the endpoint you like to base the models on.
+Check the api endpoint named "swagger" in ng-swagger-gen.json is the endpoint you like to base the models on. If you want to update based on changes on localhost you
+should change "swagger" property in ng-swagger-gen.json file
 
 ```
 npm run generate-swagger-api-module

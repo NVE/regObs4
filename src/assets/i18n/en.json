@@ -40,9 +40,6 @@
   "DATA_LOAD": {
     "DATA": "Loading...",
     "LOADING": "Loading",
-    "NO_FETCHED_OBSERVATIONS": "App didn't fetch observations",
-    "OBSERVATIONS_LAST_UPDATE_OLDER_THAN_TWO_WEEKS": "Observations were last fetched on {{timeSinceLastUpdated}}",
-    "SERVICE_UNAVAILABLE": "You may not have network connection or the app can't contact with Regobs. You can try to update manually by clicking the refresh button in the filter menu.",
     "SPINNER_FETCH_OBSERVATIONS": "Fetching observations"
   },
   "DATE": "Date",
@@ -110,7 +107,8 @@
     "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
     "LINE_3": "Data in Varsom is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
     "LINE_4": "When publishing images with observations in Varsom, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
-    "LINE_5": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
+    "LINE_5": "Observations can be edited or deleted within 48 hours after they are registered.",
+    "LINE_6": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
     "OK": "Ok, I accept"
   },
   "LOGIN": {
@@ -240,6 +238,8 @@
       "LABEL": "Competence",
       "TITLE": "Observer"
     },
+    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen",
+    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
     "NICK_FILTER": {
       "PLACEHOLDER": "Search by observer name",
       "TITLE": "Name"
@@ -248,14 +248,14 @@
       "TITLE": "Observation type"
     },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
-    "TITLE": "Observation filter",
-    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
-    "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen"
+    "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
     "FORMS": "Forms",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
+    "NO_IMAGES": "No images",
+    "NO_IMAGES_TEXT": "There are no images found in the map section, try to change the view or expand the period you want to see observations from",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
     "SORT_BY_CHANGE_TIME": "Recently updated",
@@ -263,7 +263,8 @@
     "SORT_BY_TEXT": "Order by",
     "TITLE": "Observations",
     "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view"
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view",
+    "VIEW_TYPE": "View"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
@@ -289,7 +290,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
       "DOWNLOAD_ERROR": "Download error",
       "UNZIP_ERROR": "Unzip error",
-      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}",
+      "WAITING_FOR_NETWORK": "Waiting for network"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
@@ -312,7 +314,8 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {
-      "TITLE": "Add web url",
+      "LABEL": "Web urls",
+      "TITLE": "Add",
       "URL": "Url"
     },
     "ANONYMIZE": {
@@ -329,6 +332,7 @@
       "COMMENT": "Comment",
       "COMMENT_PLACEHOLDER": "Provide description of the danger sign",
       "DESCRIPTION": "Description",
+      "DROPDOWN_TITLE": "Danger Sign (required)",
       "FOR_MUNICIPAL": "For the municipality",
       "FOR_REGION": "County / Warning region",
       "GENERAL_ON_MOUNTAIN": "Generally in the mountains",
@@ -422,6 +426,7 @@
       "TAKE_NEW_PHOTO": "Take a new photo",
       "TITLE": "Images and notes"
     },
+    "GO_TO": "Go to observation",
     "GROUP": {
       "SUBTITLE": "Share observation with",
       "TITLE": "Share with group"
@@ -480,8 +485,8 @@
     "INVALID_IMAGE": "Sorry, only JPEG images is supported",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
-    "LOG_IN_AND_SEND": "Log in and submit",
     "LOG_IN_AND_RESEND": "Log in and try to send again",
+    "LOG_IN_AND_SEND": "Log in and submit",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location and time",
@@ -781,6 +786,9 @@
         "OBSERVATION_TIMING": "What do you register?",
         "REGISTRATION_METHOD": "How do you register?",
         "RELATIVE": "The height is relative to",
+        "SET_FLOOD_POSITION_CONFIRM": "Confirm flood area",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Flood area",
+        "SET_FLOOD_POSITION_TITLE": "Set flood area",
         "TITLE": "Water Level",
         "WATER_LEVEL_METERS": "Water level in meters",
         "WATER_MARKING": "Water level marking",

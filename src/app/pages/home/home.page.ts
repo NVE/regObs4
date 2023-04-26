@@ -5,8 +5,8 @@ import { Capacitor } from '@capacitor/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, of, race, Subject, scan } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
@@ -57,6 +57,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   showGeoSelectInfo = false;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
+  private searchResult: SearchResult<AtAGlanceViewModel>;
+  private shouldSearchResultUpdateOnEnter: boolean;
 
   isFetchingObservations: Observable<boolean>;
 
@@ -93,39 +95,36 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       .pipe(filter((tab) => tab === TABS.HOME))
       .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
 
+    this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.initSearch();
   }
 
   private async initSearch() {
-    const searchResult = await this.createSearchResult();
+    this.searchResult = await this.createSearchResult();
 
-    this.isFetchingObservations = searchResult.isFetching$;
+    this.isFetchingObservations = this.searchResult.isFetching$;
 
-    combineLatest([searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
+    combineLatest([this.searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
       ([registrations, show]) => {
         this.redrawObservationMarkers(show ? registrations : []);
       }
     );
 
-    searchResult.registrations$.subscribe(() => {
+    this.searchResult.registrations$.subscribe(() => {
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
     });
 
-    // search triggered manually
     this.updateObservationsService.refreshRequested$
-      .pipe(
-        withLatestFrom(this.tabsService.selectedTab$),
-        tap(([, tab]) => {
-          if (tab === TABS.HOME) {
-            searchResult.update();
-            this.loggingService.debug('Search manually triggered', DEBUG_TAG);
-          } else {
-            this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
-          }
-        })
-      )
-      .subscribe();
+      .pipe(withLatestFrom(this.tabsService.selectedTab$))
+      .subscribe(([, tab]) => {
+        if (tab === TABS.HOME) {
+          this.searchResult.update();
+          this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+        } else {
+          this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+        }
+      });
   }
 
   get appname(): string {
@@ -146,6 +145,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
 
   ionViewWillEnter() {
     this.searchCriteriaService.setExtentFilterActive(true);
+  }
+
+  checkIfShouldSearchCriteriaUpdateOnEnter() {
+    if (this.shouldSearchResultUpdateOnEnter && this.searchResult) {
+      this.searchResult.update();
+      this.shouldSearchResultUpdateOnEnter = false;
+    }
   }
 
   checkForFirstStartup() {
@@ -234,13 +240,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   async onEnter() {
-    this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    if (userSettings.showGeoSelectInfo) {
-      this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
-      return;
-    }
-    this.loggingService.debug('Activate map updates and GeoLocation', DEBUG_TAG);
+    this.checkIfShouldSearchCriteriaUpdateOnEnter();
+    this.loggingService.debug('Home page onEnter, so activate map updates and GeoLocation', DEBUG_TAG);
     this.mapComponent.componentIsActive(true);
     this.updateInfoBoxHeight();
   }

@@ -39,7 +39,8 @@
   },
   "DATA_LOAD": {
     "DATA": "Lastar data...",
-    "LOADING": "Lastar"
+    "LOADING": "Lastar",
+    "SPINNER_FETCH_OBSERVATIONS": "Hentar observasjonar"
   },
   "DATE": "Dato",
   "DAYS": {
@@ -106,7 +107,8 @@
     "LINE_2": "Hugs at varselet er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. Dei lokale tilhøva der du er kan vere meir komplekse og avvike frå det som er varsla. ",
     "LINE_3": "Observasjonar produserast av brukerane. Dei er ikkje kvalitetsikra og kan innehalde feil og manglar. NVE tek ikkje ansvar for kvaliteten og gyldigheita av observasjonar frå brukarane. ",
     "LINE_4": "Når du publiserer bilder på observasjonar aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
-    "LINE_5": "Les meir i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukarvilkår</a>.",
+    "LINE_5": "Observasjonar kan kun endres eller slettes inntil 48 timer etter at de er registrert.",
+    "LINE_6": "Les meir i <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkåra</a>.",
     "OK": "Greit, eg aksepterar"
   },
   "LOGIN": {
@@ -149,8 +151,18 @@
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss frå app",
+    "CUSTOM_TIMESPAN": "Avgrensa tidsrom",
+    "DATE_RANGE": {
+      "LAST_WEEK": "Sist veke",
+      "LAST_X_DAYS": "Siste {{days}} dagar",
+      "LAST_X_MONTHS": "Siste {{months}} månader",
+      "LAST_X_WEEKS": "Siste {{weeks}} veker",
+      "TODAY": "I dag",
+      "YESTERDAY": "I går"
+    },
     "DAYS_BACK": "Dagar tilbake",
     "DAY_BACK": "Dag tilbake",
+    "END_DATE": "Sluttdato",
     "ERROR_REPORT_DESCRIPTION": "Vær vennleg og beskriv feilen. Skjermbilete kan leggast ved. ",
     "ERROR_REPORT_SUBJECT": "Feilrapport frå",
     "GENERAL": "Generelt",
@@ -167,6 +179,7 @@
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjonar",
     "SHOW_TRIPS": "Vis turar",
+    "START_DATE": "Startdato",
     "START_WIZARD": "Start vegvisaren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TILES": {
@@ -176,6 +189,7 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
+    "TIMESPAN": "Tidsrom",
     "TODAYS_OBSERVATIONS": "Berre observasjonar frå i dag",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdatert",
@@ -213,13 +227,33 @@
     "TITLE": "Min side",
     "USER": "Brukar"
   },
+  "OBSERVATION_FILTER": {
+    "COMPETANCE_FILTER": {
+      "ALL": "Alle",
+      "AUTOMATIC_STATIONS": "Automatiske stasjonar",
+      "LABEL": "Kompetanse",
+      "TITLE": "Observatør"
+    },
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt",
+    "MULTISELECT_SHOW_NO_COUNT": "Visar alle",
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Søk på observatørnamn",
+      "TITLE": "Namn"
+    },
+    "RESET_FILTER_BUTTON_TITLE": "Tilbakestill filter"
+  },
   "OBSERVATION_LIST": {
     "FORMS": "Skjema",
     "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjonar",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjonar i kartutsnittet. Prøv å endre utsnittet eller forleng perioda du vil sjå observasjonar frå.",
-    "TITLE": "Observasjonar"
+    "SORT_BY_CHANGE_TIME": "Oppdatert tid",
+    "SORT_BY_OBS_TIME": "Observert tid",
+    "SORT_BY_TEXT": "Sorter på",
+    "TITLE": "Observasjonar",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
@@ -245,7 +279,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Lastar ned {{n}} av {{totalParts}}",
       "DOWNLOAD_ERROR": "Nedlasting feilet",
       "UNZIP_ERROR": "Utpakking feilet",
-      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}",
+      "WAITING_FOR_NETWORK": "Venter på nettverk"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
@@ -283,6 +318,7 @@
       "COMMENT": "Kommentar",
       "COMMENT_PLACEHOLDER": "Her kan du gje ei utvida skildring av fareteiknet",
       "DESCRIPTION": "Skildring",
+      "DROPDOWN_TITLE": "Fareteikn (påkrevd)",
       "FOR_MUNICIPAL": "For kommunen",
       "FOR_REGION": "Fylket/varslingsregionen",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",
@@ -487,6 +523,7 @@
         "CASUALTIES_NUM": "Antall skredtatte",
         "DEAD_NUM": "Antal døde",
         "DESTRUCTIVE_SIZE": "Storleik",
+        "EARLIEST_TIME": "Tidligaste skredtidspunkt",
         "EVACUATED_NUM": "Antal evakuerte",
         "FRACTURE_HEIGTH": "Brothøyde (cm)",
         "FRACTURE_WIDTH": "Brotbreidd (m)",
@@ -504,7 +541,7 @@
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
         "SLOPE_ACTIVITY_TID": "Turfase",
         "TERRAIN_START_ZONE": "Terrengtype i losneområdet",
-        "TIME": "Skredtidspunkt (påkrevd)",
+        "TIME": "Seinaste skredtidspunkt (påkrevd)",
         "TITLE": "Skredhending",
         "TRAFFIC_OBSTRUCTED": "Trafikk hindra",
         "TRAJECTORY_NAME": "Skredbanenamn",

@@ -92,6 +92,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showObserverTrips = false;
 
   /**
+   * Update MapService.mapView$ when extent changes
+   */
+  @Input() updateMapViewOnExtentChange = false;
+
+  /**
    * Set to true to show the user location in map.
    * NB: activateFollowModeOnStartup controls if the map should start following the user or not.
    */
@@ -373,7 +378,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => this.onMapMoveEnd());
+      this.map.on('moveend', () => this.updateMapView());
     });
 
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
@@ -545,10 +550,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mapService.sendMapMoveStart();
   }
 
-  private onMapMoveEnd() {
-    this.updateMapView();
-  }
-
   private disableFollowMode() {
     if (!this.isDoingMoveAction) {
       this.loggingService.debug('Disable follow mode!', DEBUG_TAG);
@@ -559,11 +560,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
-    this.mapService.updateMapView({
-      bounds: this.map.getBounds(),
-      center: this.map.getCenter(),
-      zoom: this.map.getZoom(),
-    });
+    if (this.updateMapViewOnExtentChange && this.isActive.value) {
+      this.mapService.updateMapView({
+        bounds: this.map.getBounds(),
+        center: this.map.getCenter(),
+        zoom: this.map.getZoom(),
+      });
+    }
   }
 
   private getTileLayerDefaultOptions(useRetinaMap = false): IRegObsTileLayerOptions {

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { DangerObsEditModel } from 'src/app/modules/common-regobs-api';
+import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
 
 /**
  * Simplified snow registration schema.
@@ -14,7 +14,7 @@ import { DangerObsEditModel } from 'src/app/modules/common-regobs-api';
   styleUrls: ['./simple-snow-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SimpleSnowObsComponent implements OnInit {
+export class SimpleSnowObsComponent {
   @Input() draft: RegistrationDraft;
 
   /**
@@ -40,16 +40,17 @@ export class SimpleSnowObsComponent implements OnInit {
     this.draft.registration.DangerObs = dangerObservations;
   }
 
-  constructor(private draftRepository: DraftRepositoryService) {}
-
-  async ngOnInit(): Promise<void> {
+  /**
+   * Nullsafe getter. Will create an empty snow surface obs if needed
+   */
+  get snowSurfaceObservation(): SnowSurfaceEditModel {
     if (this.draft.registration.SnowSurfaceObservation == null) {
       this.draft.registration.SnowSurfaceObservation = {};
     }
-    if (this.draft.registration.DangerObs == null) {
-      this.draft.registration.DangerObs = [];
-    }
+    return this.draft.registration.SnowSurfaceObservation;
   }
+
+  constructor(private draftRepository: DraftRepositoryService) {}
 
   async save(): Promise<void> {
     this.draftRepository.save(this.draft);

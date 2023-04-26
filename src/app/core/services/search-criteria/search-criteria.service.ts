@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  filter,
   firstValueFrom,
   map,
   Observable,
@@ -16,9 +17,10 @@ import {
   tap,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
-import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import {
   PositionDto,
+  PropertyFilter,
   RegistrationTypeCriteriaDto,
   SearchCriteriaRequestDto,
   WithinExtentCriteriaDto,
@@ -30,6 +32,8 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { UrlParams } from './url-params';
 import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
+import { SearchCriteria } from '../../models/search-criteria';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -47,10 +51,19 @@ const URL_PARAM_FROMDATE = 'fromDate';
 const URL_PARAM_TODATE = 'toDate';
 const URL_PARAM_NICKNAME = 'nick';
 const URL_PARAM_COMPETENCE = 'competence';
-const URL_PARAM_TYPE = 'type';
+const URL_PARAM_REGISTRATION_TYPE = 'type';
+const URL_PARAM_SLUSH_FLOW = 'slushFlow';
 const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
+
+export const SLUSH_FLOW_ID = 30;
+export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
+  Name: 'AvalancheObs.AvalancheTID',
+  Operator: 0,
+  Value: SLUSH_FLOW_ID.toString(),
+};
+const REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN = 80;
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
@@ -83,7 +96,7 @@ function competenceFromDtoToUrl(competence: number[]): string {
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
   if (value) {
-    const keyValue = [...UrlDtoOrderByMap].find(([key, val]) => val == value)[0];
+    const keyValue = [...UrlDtoOrderByMap].find(([, val]) => val == value)[0];
     return keyValue;
   }
   return null;
@@ -177,9 +190,23 @@ export class SearchCriteriaService {
   // this.searchCriteria.next(...).
   // Fordelen med å bruke en replaysubject her er faktisk at historikken for søkrekriteriene huskes, som kan være
   // interessant å logge hvis man får en error feks.
-  // For å logge alle valg brukeren har gjort som påvirker searchCriteria-subjecten kan man
-  // feks gjøre som på linje 60 - 64
   private searchCriteriaChanges: Subject<SearchCriteriaRequestDto> = new ReplaySubject<SearchCriteriaRequestDto>();
+
+  private useDaysBack: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  get useDaysBack$(): Observable<boolean> {
+    return this.useDaysBack.asObservable();
+  }
+
+  /**
+   * Bytt mellom å bruke filter på antall dager tilbake eller å velge fra- og til-dato
+   * @param useDaysBack hvis true => bruk filter på antall dager tilbake, hvis false => velg fra- og til-dato
+   */
+  setUseDaysBack(useDaysBack: boolean) {
+    if (this.useDaysBack.value != useDaysBack) {
+      this.useDaysBack.next(useDaysBack);
+    }
+  }
+
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
   get useMapExtent$() {
     return this.useMapExtent.asObservable();
@@ -204,6 +231,14 @@ export class SearchCriteriaService {
       .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange].slice(-10), []))
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history));
 
+    // When days-back changes, set dates in search criteria
+    combineLatest([
+      this.userSettingService.daysBackForCurrentGeoHazard$,
+      this.useDaysBack$.pipe(filter((useDaysBack) => useDaysBack)),
+    ]).subscribe(([daysBack]) => {
+      this.searchCriteriaChanges.next({ FromDtObsTime: this.daysBackToIsoDateTime(daysBack), ToDtObsTime: null });
+    });
+
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
@@ -220,9 +255,6 @@ export class SearchCriteriaService {
           this.currentGeoHazard = geohazard;
         })
       ),
-      this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-        map((daysBack) => this.daysBackToIsoDateTime(daysBack))
-      ),
       this.useMapExtent$,
       this.mapService.mapView$.pipe(
         map((mapView) => {
@@ -232,41 +264,30 @@ export class SearchCriteriaService {
     ]).pipe(
       // Kombiner søkerekriterer som ligger utenfor denne servicen med de vi har i denne servicen, feks valgt språk.
       // Vi overskriver utvalgte søkekriterier med de som settes manuelt i filtermenyen:
-      // - FromDtObsTime: fromDate URL param
       debounceTime(50),
-      map(
-        ([criteria, langKey, geoHazards, fromObsTime, useMapExtent, extent]: [
-          SearchCriteriaRequestDto,
-          LangKey,
-          GeoHazard[],
-          string,
-          boolean,
-          WithinExtentCriteriaDto
-        ]) => {
-          return {
-            ...criteria,
-            LangKey: langKey,
-            SelectedGeoHazards: geoHazards,
-            FromDtObsTime: convertToIsoDateTime(criteria.FromDtObsTime || fromObsTime),
-            Extent: useMapExtent ? extent : null,
-          };
-        }
-      ),
+      map(([criteria, langKey, geoHazards, useMapExtent, extent]) => ({
+        ...criteria,
+        LangKey: langKey,
+        SelectedGeoHazards: geoHazards,
+        Extent: useMapExtent ? extent : null,
+      })),
+      map((criteria) => removeEmpty(criteria)),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
   }
 
   async resetSearchCriteria() {
-    const resetDate = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
-    const daysBackToIso = this.daysBackToIsoDateTime(resetDate);
     const criteria: SearchCriteriaRequestDto = {
       ObserverCompetence: null,
       SelectedRegistrationTypes: null,
       ObserverNickName: null,
-      FromDtObsTime: convertToIsoDateTime(daysBackToIso),
-      ToDtObsTime: null,
+      PropertyFilters: null,
+      // FromDtObsTime: null, Do not remove FromDtObsTime filter, if so we would fetch all obs from dawn of time
+      // ToDtObsTime: null,
     };
+    this.setUseDaysBack(true);
+    await this.userSettingService.resetDaysBackForCurrentGeoHazard();
     this.searchCriteriaChanges.next(criteria);
     this.resetEvent.next();
   }
@@ -276,42 +297,72 @@ export class SearchCriteriaService {
     const url = new URL(document.location.href);
 
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
+    const slushFlow = url.searchParams.get(URL_PARAM_SLUSH_FLOW);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
 
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
-    const daysBackNumeric = this.convertToPositiveInteger(daysBack);
+    const daysBackNumeric = this.convertToInt(daysBack);
 
     let fromObsTime: string;
-    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
-      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
-    }
-    if (daysBackNumeric != null) {
-      fromObsTime = this.daysBackToIsoDateTime(daysBackNumeric);
+    let toObsTime: string;
+    if (daysBackNumeric == null) {
+      if (url.searchParams.get(URL_PARAM_FROMDATE)) {
+        fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+      }
+
+      if (url.searchParams.get(URL_PARAM_TODATE)) {
+        toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
+      }
     }
 
-    let toObsTime: string;
-    if (url.searchParams.get(URL_PARAM_TODATE)) {
-      toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
-    }
+    this.setUseDaysBack(!fromObsTime);
 
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
-    const type = url.searchParams.get(URL_PARAM_TYPE);
-    const convertTypeFromUrlToCriteria = type != null ? convertRegTypeFromUrlToDto(type) : null;
+    const regTypesRaw = url.searchParams.get(URL_PARAM_REGISTRATION_TYPE);
+    const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : null;
 
-    //I recommend to add spread operator on optional properties so that we dont send 'null' values to API.
-    //example: ...(nickName && {ObserverCompetence: nickname})
-    const criteria = {
-      SelectedGeoHazards: geoHazards,
-      FromDtObsTime: fromObsTime,
-      ObserverNickName: nickName,
-      ObserverCompetence: observerCompetence,
-      SelectedRegistrationTypes: convertTypeFromUrlToCriteria,
-      ToDtObsTime: toObsTime,
-      OrderBy: orderBy,
-    } as SearchCriteriaRequestDto;
+    const criteria: SearchCriteriaRequestDto = {};
 
-    this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards, daysBack: daysBackNumeric });
+    if (fromObsTime) {
+      criteria.FromDtObsTime = fromObsTime;
+    }
+
+    if (nickName) {
+      criteria.ObserverNickName = nickName;
+    }
+
+    if (observerCompetence) {
+      criteria.ObserverCompetence = observerCompetence;
+    }
+
+    if (regTypes) {
+      criteria.SelectedRegistrationTypes = regTypes;
+    }
+
+    if (toObsTime) {
+      criteria.ToDtObsTime = toObsTime;
+    }
+
+    if (slushFlow && slushFlow === 'true') {
+      criteria.PropertyFilters = [CRITERIA_SLUSH_FLOW];
+    }
+
+    if (orderBy) {
+      criteria.OrderBy = orderBy;
+    }
+
+    if (geoHazards) {
+      criteria.SelectedGeoHazards = geoHazards;
+      if (daysBackNumeric) {
+        this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards, daysBack: daysBackNumeric });
+      } else {
+        this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards });
+      }
+    } else if (daysBackNumeric) {
+      this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: daysBackNumeric });
+    }
+
     return criteria;
   }
 
@@ -319,40 +370,55 @@ export class SearchCriteriaService {
     return UrlDtoOrderByMap.get(orderBy);
   }
 
-  private readGeoHazardsFromUrl(searchParams: URLSearchParams): number[] {
-    let geoHazards: number[] = [GeoHazard.Snow];
-
-    //read param used in (old) regobs.no
+  private readGeoHazardsFromUrl(searchParams: URLSearchParams): GeoHazard[] {
+    // read param used in (old) regobs.no
     const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
     if (geoHazardsParamValueOld?.length) {
-      geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
+      const geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
       new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
+      return geoHazards;
     }
 
-    //read param on new format
+    // read param on new format
     const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
     if (geoHazardsParamValue?.length > 0) {
-      const geoHazardsToArray = separatedStringToNumberArray(geoHazardsParamValue);
-      isGeoHazardValid(geoHazardsToArray) && (geoHazards = geoHazardsToArray);
+      const geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
+      if (isGeoHazardValid(geoHazards)) {
+        return geoHazards;
+      }
     }
-
-    return geoHazards;
   }
 
   async applyQueryParams() {
-    const currentCriteria = (await firstValueFrom(this.searchCriteria$)) as SearchCriteriaRequestDto;
-    currentCriteria && this.setUrlParams(currentCriteria);
+    const criteria = await firstValueFrom(this.searchCriteria$);
+    const daysBack = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
+    const useDaysBack = this.useDaysBack.value;
+
+    this.setUrlParams(criteria as SearchCriteriaRequestDto, useDaysBack ? daysBack : null);
   }
 
-  private setUrlParams(criteria: SearchCriteriaRequestDto) {
+  private setUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null) {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
-    params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
-    params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
+    if (daysBack != null) {
+      params.set(URL_PARAM_DAYSBACK, daysBack.toString()); // Convert to string so that 0 is accepted as a value
+      params.delete(URL_PARAM_FROMDATE);
+      params.delete(URL_PARAM_TODATE);
+    } else {
+      params.delete(URL_PARAM_DAYSBACK);
+      params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
+      params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
+    }
     params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
-    params.set(URL_PARAM_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
+    params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
+
+    if (this.isSlushFlow(criteria)) {
+      params.set(URL_PARAM_SLUSH_FLOW, true);
+    } else {
+      params.delete(URL_PARAM_SLUSH_FLOW);
+    }
 
     if (criteria.Extent != null) {
       params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(4));
@@ -368,12 +434,12 @@ export class SearchCriteriaService {
     params.apply();
   }
 
-  private convertToPositiveInteger(value: string): number {
+  private convertToInt(value: string): number {
     if (typeof value !== 'string') {
       return null;
     }
     const numericValue = Number(value);
-    if (Number.isInteger(numericValue) && numericValue > 0) {
+    if (Number.isInteger(numericValue)) {
       return numericValue;
     }
     return null;
@@ -397,17 +463,22 @@ export class SearchCriteriaService {
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
-    const returnObj = {} as SearchCriteriaRequestDto;
     if (fromDate) {
-      returnObj.FromDtObsTime = moment(fromDate).startOf('day').toISOString(true);
-      if (removeToDate) returnObj.ToDtObsTime = null;
+      const dateCriteria: Pick<SearchCriteriaRequestDto, 'FromDtObsTime' | 'ToDtObsTime'> = {
+        FromDtObsTime: moment(fromDate).startOf('day').toISOString(true),
+      };
+      if (removeToDate) {
+        dateCriteria.ToDtObsTime = null;
+      }
+      this.searchCriteriaChanges.next(dateCriteria);
+      this.setUseDaysBack(false);
     }
-    this.searchCriteriaChanges.next(returnObj);
   }
 
   setToDate(toDate: string) {
     if (toDate) {
       this.searchCriteriaChanges.next({ ToDtObsTime: moment(toDate).endOf('day').toISOString(true) });
+      this.setUseDaysBack(false);
     }
   }
 
@@ -432,6 +503,7 @@ export class SearchCriteriaService {
   }
 
   async removeObservationType(typeToRemove: RegistrationTypeCriteriaDto) {
+    this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
       const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
@@ -483,6 +555,41 @@ export class SearchCriteriaService {
     this.useMapExtent.next(isExtentFilterActive);
   }
 
+  /** Filter by slush flow */
+  async setSlushFlow(slushFlow = true) {
+    const avalacheObsType = {
+      Id: REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN,
+      SubTypes: [RegistrationTid.AvalancheObs],
+    };
+    if (slushFlow) {
+      this.searchCriteriaChanges.next({ PropertyFilters: [CRITERIA_SLUSH_FLOW] });
+
+      // turn on avalancheObs automatically since slush flow is a type of avalancheObs
+      this.setObservationType(avalacheObsType);
+    } else {
+      this.searchCriteriaChanges.next({ PropertyFilters: null });
+
+      // turn off avalancheObs automatically since slush flow is a type of avalancheObs
+      this.removeObservationType(avalacheObsType);
+    }
+  }
+
+  /**
+   * @returns true if slush flow filter is on
+   */
+  isSlushFlow(criteria: SearchCriteria): boolean {
+    return criteria.PropertyFilters?.length === 1 && criteria.PropertyFilters[0] === CRITERIA_SLUSH_FLOW;
+  }
+
+  private removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove: RegistrationTypeCriteriaDto) {
+    if (
+      typeToRemove.Id === REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN &&
+      typeToRemove.SubTypes.includes(RegistrationTid.AvalancheObs)
+    ) {
+      this.searchCriteriaChanges.next({ PropertyFilters: null });
+    }
+  }
+
   private daysBackToIsoDateTime(daysBack: number): string {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString(true);
   }
@@ -497,4 +604,10 @@ export class SearchCriteriaService {
     }
     return null;
   }
+}
+
+function removeEmpty(criteria: SearchCriteriaRequestDto) {
+  const entries = Object.entries(criteria);
+  const notEmpty = entries.filter(([, value]) => value != null);
+  return Object.fromEntries(notEmpty);
 }

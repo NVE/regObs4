@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, HostBinding } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
@@ -16,7 +16,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   styleUrls: ['./select.component.scss'],
 })
 export class SelectComponent implements OnInit {
-  @Input() title: string;
+  @Input() label: string;
   @Input() subTitle: string;
   @Input() selectedValue: number | string;
   @Output() selectedValueChange = new EventEmitter();
@@ -87,8 +87,8 @@ export class SelectComponent implements OnInit {
 
   async getTitleTranslations() {
     let titleTextTranslated: string;
-    if (this.title) {
-      titleTextTranslated = await firstValueFrom(this.translateService.get(this.title));
+    if (this.label) {
+      titleTextTranslated = await firstValueFrom(this.translateService.get(this.label));
     }
     let subTitleTextTranslated: string;
     if (this.subTitle) {

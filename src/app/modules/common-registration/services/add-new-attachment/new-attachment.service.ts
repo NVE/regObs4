@@ -1,14 +1,4 @@
-import {
-  distinctUntilChanged,
-  map,
-  Observable,
-  take,
-  catchError,
-  of,
-  forkJoin,
-  switchMap,
-  OperatorFunction,
-} from 'rxjs';
+import { map, Observable, take, catchError, of, forkJoin, switchMap, OperatorFunction, BehaviorSubject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import {
@@ -35,12 +25,20 @@ export interface GetAttachmentFilterOptions {
 
 type AttachmentFilter = OperatorFunction<AttachmentUploadEditModel[], AttachmentUploadEditModel[]>;
 
+export interface AddAttachmentState {
+  id: AttachmentUploadEditModel['id'];
+  state: 'done' | 'error' | 'in-progress';
+  progress?: number;
+}
+
 /**
  * Handle storage of new registration attachments on client before they are sent to server
  */
 export abstract class NewAttachmentService {
   protected logger: LoggingService;
   protected DEBUG_TAG = 'NewAttachmentService';
+
+  addNewAttachmentState = new BehaviorSubject<AddAttachmentState[]>([]);
 
   abstract addAttachment(
     registrationId: string,

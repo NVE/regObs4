@@ -4,11 +4,11 @@ import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 /**
  * Used to add or edit danger observations.

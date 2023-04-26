@@ -19,7 +19,7 @@
       </ion-list-header>
       <app-text-comment
         [(value)]="draft.registration.GeneralObservation.ObsComment"
-        title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
+        label="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
       ></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
@@ -35,9 +35,6 @@
       <ion-item-divider>
         <ion-label class="ion-text-wrap"> {{'REGISTRATION.GENERAL_COMMENT.DESCRIPTION' | translate}} </ion-label>
       </ion-item-divider>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}} </ion-label>
-      </ion-list-header>
       <app-add-web-url-item [(weburls)]="draft.registration.GeneralObservation.Urls"></app-add-web-url-item>
     </ion-list>
   </app-registration-content-wrapper>

@@ -1,133 +1,71 @@
 <app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ng-container *ngIf="registrations$ | async as registrations; else skeleton">
-    <ion-list class="loaded" *ngIf="(registrations.length > 0) else empty">
-      <ion-item-divider>
-        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
-      </ion-item-divider>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-segment
-              [value]="useMapExtentFilter$ | async"
-              (click)="toggleFilterByMapView($event)"
-              class="segment-button-class"
-              mode="ios"
-              [disabled]="noMapExtentAvailable$ | async"
-            >
-              <ion-segment-button value="mapBorders">
-                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
-              </ion-segment-button>
-              <ion-segment-button value="all">
-                <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
-              </ion-segment-button>
-            </ion-segment>
-          </ion-col>
-          <ion-col>
-            <!--titelen -->
-          </ion-col>
-          <ion-col>
-            <!--bilde galleri toggle-->
-          </ion-col>
-          <ion-col>
-            <ng-container *ngIf="orderBy$ | async as orderBy">
-              <div class="select-wrapper">
-                <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
-                <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
-                  <ion-select-option value="DtObsTime">
-                    {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
-                  >
-                  <ion-select-option value="DtChangeTime"
-                    >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
-                  >
-                </ion-select>
-              </div>
-            </ng-container>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <app-observation-list-card *ngFor="let obs of registrations; trackBy: trackByIdFunc;" [obs]="obs">
-      </app-observation-list-card>
-    </ion-list>
-    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-    <ion-row *ngIf="(searchResult.maxItemsFetched$ | async) === true" class="full-grid-row max-count-reached">
-      <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
+  <ion-item-divider>
+    <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
+  </ion-item-divider>
+  <ion-grid class="filter-panel">
+    <ion-row>
+      <ion-col>
+        <ion-segment
+          [value]="useMapExtentFilter$ | async"
+          (click)="toggleFilterByMapView($event)"
+          class="map-extent-filter-toggle segment-button-class"
+          mode="ios"
+          [disabled]="noMapExtentAvailable$ | async"
+        >
+          <ion-segment-button value="mapBorders">
+            <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="all">
+            <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
+          </ion-segment-button>
+        </ion-segment>
       </ion-col>
-    </ion-row>
-  </ng-container>
-  <ng-template #skeleton>
-    <div class="loading-sceleton">
-      <ion-item-divider>
-        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
-      </ion-item-divider>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-segment
-              (ionChange)="toggleFilterByMapView($event)"
-              class="segment-button-class"
-              value="mapBorders"
-              mode="ios"
-            >
-              <ion-segment-button value="mapBorders">
-                <ion-label>I kartutsnitt</ion-label>
-              </ion-segment-button>
-              <ion-segment-button value="all">
-                <ion-label>Alle</ion-label>
-              </ion-segment-button>
-            </ion-segment>
-          </ion-col>
-          <ion-col>
-            <!--titelen -->
-          </ion-col>
-          <ion-col>
-            <!--bilde galleri toggle-->
-          </ion-col>
-          <ion-col>
-            <div class="select-wrapper">
-              <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}</span>
-              <ion-select (ionChange)="handleChangeSorting($event)" [interface]="popupType">
-                <ion-select-option value="DtObsTime">
-                  {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
-                >
-                <ion-select-option value="DtChangeTime"
-                  >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}
-                </ion-select-option>
-              </ion-select>
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <app-observation-skeleton></app-observation-skeleton>
-      <app-observation-skeleton></app-observation-skeleton>
-      <app-observation-skeleton></app-observation-skeleton>
-    </div>
-  </ng-template>
-  <app-geo-fab slot="fixed"></app-geo-fab>
-</ion-content>
-<app-add-menu></app-add-menu>
-<ng-template #empty>
-  <ion-grid class="full-grid">
-    <ion-row class="full-grid-row">
-      <ion-col class="ion-align-self-center">
-        <div class="center">
-          <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
-          <svg-icon class="pin1" src="/assets/images/empty-states/pin.svg"></svg-icon>
-          <svg-icon class="pin2" src="/assets/images/empty-states/pin.svg"></svg-icon>
-          <svg-icon class="pin3" src="/assets/images/empty-states/pin.svg"></svg-icon>
+      <ion-col>
+        <!--titelen -->
+      </ion-col>
+      <ion-col>
+        <div *ngIf="!isNative" class="button-container">
+          <span>{{'OBSERVATION_LIST.VIEW_TYPE' | translate}}:</span>
+          <button
+            id="list"
+            [ngClass]="viewType$.getValue() == 'list' && 'active'"
+            (click)="changeViewType($event.currentTarget.id)"
+          >
+            <img alt="list view" src="../../../assets/icon/reorder.svg" />
+          </button>
+          <button
+            id="grid"
+            [ngClass]="viewType$.getValue() == 'grid' && 'active'"
+            (click)="changeViewType($event.currentTarget.id)"
+          >
+            <img alt="images view" src="../../../assets/icon/grid_view.svg" />
+          </button>
         </div>
       </ion-col>
-    </ion-row>
-    <ion-row class="full-grid-row">
-      <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
-        <h3 class="ion-text-wrap">{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
+      <ion-col class="order-by-select">
+        <ng-container *ngIf="orderBy$ | async as orderBy">
+          <div class="select-wrapper">
+            <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}:</span>
+            <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
+              <ion-select-option value="DtObsTime">
+                {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
+              >
+              <ion-select-option value="DtChangeTime"
+                >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
+              >
+            </ion-select>
+          </div>
+        </ng-container>
       </ion-col>
     </ion-row>
   </ion-grid>
-</ng-template>
+  <app-images-grid *ngIf="viewType$.getValue()==='grid'" [attachmentsResult]="attachmentsResult"></app-images-grid>
+  <app-observation-list-view
+    *ngIf="viewType$.getValue()==='list'"
+    [searchResult]="searchResult"
+  ></app-observation-list-view>
+  <app-geo-fab slot="fixed"></app-geo-fab>
+</ion-content>
+<app-add-menu></app-add-menu>

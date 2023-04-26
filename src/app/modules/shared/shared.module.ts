@@ -31,6 +31,8 @@ import { AbsPipe } from './pipes/abs.pipe';
 import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
 import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
+import { ImagesGridComponent } from './components/images-grid/images-grid.ts/images-grid.component';
+import { ObservationListViewComponent } from './components/list-view/observation-list-view.component';
 
 @NgModule({
   imports: [
@@ -55,6 +57,7 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     FormatDatePipe,
     ObservationListCardComponent,
     ObservationSkeletonComponent,
+    ObservationListViewComponent,
     ImgSwiperComponent,
     HeaderComponent,
     RefreshWithCancelComponent,
@@ -69,6 +72,7 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     EditPictureInfoModalComponent,
     ShowFilterCriteriaComponent,
     CheckDaysOrWeeksBackComponent,
+    ImagesGridComponent,
   ],
   exports: [
     CommonModule,
@@ -77,6 +81,7 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     IonicModule,
     TranslateModule,
     RouterModule,
+    ObservationListViewComponent,
     ShadowCssDirective,
     AngularSvgIconModule,
     MapImageModule,
@@ -102,6 +107,7 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     EditPictureInfoModalComponent,
     ShowFilterCriteriaComponent,
     CheckDaysOrWeeksBackComponent,
+    ImagesGridComponent,
   ],
 })
 export class SharedModule {}

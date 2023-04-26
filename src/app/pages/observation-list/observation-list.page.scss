@@ -34,19 +34,29 @@
 }
 
 ion-grid {
-  margin: 0 1rem;
   padding: 0;
+}
+
+.filter-panel {
+  margin: 0 1rem;
+
+  .active {
+    background: #fff;
+    pointer-events: none;
+  }
 }
 
 ion-row {
   max-width: 960px;
-  margin: 0 auto;
+  margin: 10px auto;
+  gap: 10px;
 }
 
 ion-col {
   padding: 0;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 ion-item-divider {
@@ -56,6 +66,13 @@ ion-item-divider {
   h3 {
     margin-top: 24px;
     margin-bottom: 0px;
+  }
+}
+
+@media only screen and (max-width: 899px) {
+  .map-extent-filter-toggle,
+  .header {
+    display: none;
   }
 }
 
@@ -69,53 +86,23 @@ ion-item-divider {
   ion-col {
     padding: 5px 0;
   }
-}
-
-virtual-scroller,
-ion-list {
-  // width: 100%;
-  // height: 100%;
-  opacity: 0;
-  transition: opacity 1s linear;
-
-  &.loaded {
-    opacity: 1;
+  .filter-panel {
+    display: none;
   }
 }
 
-.last-item {
-  height: 50px;
-}
-
-.center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  .rectangle {
-    position: absolute;
-    left: -36px;
-    top: -30px;
+.button-container {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  button {
+    width: 40px;
+    height: 35px;
+    background-color: transparent;
+    border-radius: 5px;
   }
-
-  .pin1 {
-    position: absolute;
-    left: -77px;
+  img {
+    width: 60%;
   }
-
-  .pin2 {
-    position: absolute;
-    left: 41px;
-    top: 51px;
-  }
-
-  .pin3 {
-    position: absolute;
-    left: -41px;
-    top: -72px;
-  }
-}
-
-.max-count-reached {
-  padding-bottom: 50px;
 }

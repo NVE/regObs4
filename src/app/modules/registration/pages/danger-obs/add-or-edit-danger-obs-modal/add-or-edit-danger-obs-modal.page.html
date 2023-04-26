@@ -24,9 +24,9 @@
     </ion-item>
     <app-kdv-select
       (valueChange)="dropdownChanged($event)"
-      title="REGISTRATION.DANGER_OBS.TITLE"
+      label="REGISTRATION.DANGER_OBS.DROPDOWN_TITLE"
       *ngIf="showDangerSignSelect"
-      kdvKey="{{ GeoHazardName }}_DangerSignKDV"
+      kdvKey="{{ geoHazardName }}_DangerSignKDV"
       [(value)]="dangerSignTid"
     >
     </app-kdv-select>
@@ -34,15 +34,20 @@
       <ion-label color="medium" position="stacked" class="ion-text-uppercase"
         >{{'REGISTRATION.DANGER_OBS.AREA' | translate}}
       </ion-label>
-      <app-select title="REGISTRATION.DANGER_OBS.AREA" [(selectedValue)]="tmpArea" [options]="areaArr"></app-select>
+      <app-select label="REGISTRATION.DANGER_OBS.AREA" [(selectedValue)]="tmpArea" [options]="areaArr"></app-select>
     </ion-item>
     <app-text-comment
       [(value)]="comment"
-      title="REGISTRATION.DANGER_OBS.COMMENT"
+      label="REGISTRATION.DANGER_OBS.COMMENT"
       rows="2"
       placeholder="REGISTRATION.DANGER_OBS.COMMENT_PLACEHOLDER"
     ></app-text-comment>
   </ion-list>
-  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="dangerObs">
+  <app-modal-save-or-delete-buttons
+    [saveDisabled]="!isValid"
+    (saveClicked)="ok()"
+    (deleteClicked)="delete()"
+    [showDelete]="dangerObs"
+  >
   </app-modal-save-or-delete-buttons>
 </ion-content>

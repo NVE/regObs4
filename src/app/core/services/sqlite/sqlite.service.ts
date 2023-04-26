@@ -159,12 +159,10 @@ export class SqliteService {
   }
 
   private async reset() {
-    this.ready.next(false);
     this.logger.debug('Reset', DEBUG_TAG);
     await this.closeConn();
     await this.openConn();
     this.logger.debug('Reset done', DEBUG_TAG);
-    this.ready.next(true);
   }
 
   private async openConn() {
@@ -176,6 +174,7 @@ export class SqliteService {
       this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 5, false);
       this.logger.debug('Open connection', DEBUG_TAG);
       await this.conn.open();
+      this.ready.next(true);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Failed to create/open connection');
       throw error;
@@ -184,6 +183,7 @@ export class SqliteService {
 
   private async closeConn() {
     this.logger.debug('Closing connection', DEBUG_TAG);
+    this.ready.next(false);
     try {
       await this.sqlite.closeConnection(DATABASE_NAME, false);
       this.logger.debug('Connection closed', DEBUG_TAG);
@@ -244,7 +244,7 @@ export class SqliteService {
       `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
     );
     this.logger.debug('Sync time', DEBUG_TAG, result);
-    return result.values[0].sync_time_ms;
+    return result.values[0]?.sync_time_ms;
   }
 
   private searchCriteriaToWhere(searchCriteria: SearchCriteria): string {
@@ -295,6 +295,10 @@ export class SqliteService {
     }
   }
 
+  private getOrderBy(searchCriteria: SearchCriteria): string {
+    return searchCriteria.OrderBy === 'DtChangeTime' ? 'change_time' : 'obs_time';
+  }
+
   private async cleanupRegistrations() {
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
     const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo};`;
@@ -315,7 +319,8 @@ export class SqliteService {
   async selectRegistrations(searchCriteria: SearchCriteria, appMode: AppMode): Promise<RegistrationViewModel[]> {
     await this.isReady();
     const where = this.searchCriteriaToWhere(searchCriteria);
-    const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY change_time DESC ${this.parseLimit(
+    const orderBy = this.getOrderBy(searchCriteria);
+    const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY ${orderBy} DESC ${this.parseLimit(
       searchCriteria
     )};`;
     this.logger.debug('Query', DEBUG_TAG, { statement, searchCriteria });

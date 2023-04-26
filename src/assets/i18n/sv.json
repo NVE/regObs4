@@ -94,7 +94,6 @@
     "LINE_2": "En prognos är ett planeringsverktyg och kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering. Förhållandena kan vara komplexa och skiljer sig från prognosen.",
     "LINE_3": "Observationer har producerats av användarna och är tillgängliga «som de är». Datan kan innehålla fel och utelämnanden. NVE lämnar inga garanterar för fel och utelämnanden i uppgifterna.",
     "LINE_4": "När du publicerar bilder på observationer accepterar du att bilderna kan återanvändas (licensierat under <a href='https://data.norge.no/nlod/no/'>Norsk lisens for offentlige data</a>).",
-    "LINE_5": "Läs mer i våra <a href=\"{{legalUrl}}\" target=\"_blank\">användarvillkor</a>.",
     "OK": "Okej, jag accepterar"
   },
   "LOGIN": {
@@ -437,7 +436,6 @@
         "SAFETY_GEAR_TID": "Tranciever",
         "SET_AVALANCHE_POSITION": "Välj lavinens position",
         "TERRAIN_START_ZONE": "Terräng i startzonen",
-        "TIME": "Tid för lavinen (obligatoriskt)",
         "TITLE": "Lavintillbud",
         "TRAJECTORY_NAME": "Namn på lavinbana",
         "VALID_EXPOSITION": "Väderstreck"

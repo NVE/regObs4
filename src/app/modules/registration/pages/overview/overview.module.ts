@@ -14,6 +14,7 @@ import { ThumbnailsComponent } from '../../components/thumbnails/thumbnails.comp
 import { EditImagesPage } from '../../components/edit-images/edit-images.page';
 import { EditImagesBarComponent } from '../../components/snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
 import { CoachMarksSimpleObsComponent } from 'src/app/components/coach-marks/coach-marks-simple-obs/coach-marks-simple-obs.component';
+import { SimpleWaterObsComponent } from '../../components/water/simple-water-obs/simple-water-obs.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
     VersionConflictComponent,
     GoneRegistrationComponent,
     SimpleSnowObsComponent,
+    SimpleWaterObsComponent,
     CoachMarksSimpleObsComponent,
     EditImagesBarComponent,
     EditImagesPage,

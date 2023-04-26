@@ -16,6 +16,7 @@ import { DateRangeComponent } from './components/date-range/date-range.component
 import { SharedComponentsModule } from '../registration/shared-components.module';
 import { NoLegendComponent } from './components/support-tiles-menu/legends/no-legend.component';
 import { SelectedItemsCounterLabelComponent } from './components/selected-items-counter-label/selected-items-counter-label.component';
+import { SlushFlowFilterComponent } from './components/slush-flow-filter/slush-flow-filter.component';
 
 @NgModule({
   imports: [SharedModule, SharedComponentsModule],
@@ -35,6 +36,7 @@ import { SelectedItemsCounterLabelComponent } from './components/selected-items-
     SteepnessCommonLegendComponent,
     DateRangeComponent,
     NoLegendComponent,
+    SlushFlowFilterComponent,
   ],
   exports: [SideMenuComponent, FilterMenuComponent],
 })

@@ -1,10 +1,21 @@
-<ion-select
-  cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-  [interface]="popupType"
-  (ionChange)="save()"
-  [(ngModel)]="selectedDaysBack"
->
-  <ion-select-option *ngFor="let item of daysBackOptions" [value]="item.val">
-    <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
-  </ion-select-option>
-</ion-select>
+<ng-container *ngIf="isNativePlatform; else selectTimeSpan">
+  <ion-item slot="header">
+    <ion-label color="dark" position="stacked">
+      {{ "MENU.TIMESPAN" | translate }}
+    </ion-label>
+    <ng-component *ngTemplateOutlet="selectTimeSpan"></ng-component>
+  </ion-item>
+</ng-container>
+
+<ng-template #selectTimeSpan>
+  <ion-select
+    cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+    [interface]="popupType"
+    (ionChange)="save($event)"
+    [value]="userSettingService.daysBackForCurrentGeoHazard$ | async"
+  >
+    <ion-select-option *ngFor="let item of daysBackOptions" [value]="item.val">
+      <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
+    </ion-select-option>
+  </ion-select>
+</ng-template>

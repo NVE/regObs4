@@ -97,8 +97,10 @@ public class DownloadAndUnzipPlugin extends Plugin {
                     } else {
                         //unzipping has not started so report download progress
                         final Context context = getContext();
-                        double downloadProgress = this.getDownloadProgress(context, fileRef);
-                        result.put("progress", downloadProgress);
+                        DownloadStatus downloadStatus = this.getDownloadStatus(context, fileRef);
+                        result.put("progress", downloadStatus.progress);
+                        result.put("status", downloadStatus.getStatusString());
+                        result.put("reason", downloadStatus.getReasonString());
                         result.put("task", "download");
                     }
                 }
@@ -150,8 +152,8 @@ public class DownloadAndUnzipPlugin extends Plugin {
         }
     }
 
-    private double getDownloadProgress(final Context context, final long fileReference) {
-        double progress = 0;
+    private DownloadStatus getDownloadStatus(final Context context, final long fileReference) {
+        double progress = 0; int status = 0; int reason = 0;
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(fileReference);
@@ -160,14 +162,18 @@ public class DownloadAndUnzipPlugin extends Plugin {
             if (cursor.moveToFirst()) {
                 int downloadedBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
                 int totalBytes = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-                progress = downloadedBytes / totalBytes;
+                status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+                reason = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON));
+                if (totalBytes != 0) {
+                  progress = downloadedBytes / totalBytes;
+                }
             }
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
-        return progress;
+        return new DownloadStatus(progress, status, reason);
     }
 
     private void unzipWithZip4j(String zipFilePath, String destinationPath, final long fileReference, PluginCall call) {

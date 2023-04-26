@@ -1,6 +1,16 @@
+$regular-map-bottom-spread: 94px;
+$long-map-bottom-spread: 64px;
+
 :host {
-  --bottom-content-height: 94px;
   --map-center-info-height: 0px;
+}
+
+.water-simple-obs-bottom {
+  bottom: $long-map-bottom-spread;
+}
+
+.regular-bottom {
+  bottom: $regular-map-bottom-spread;
 }
 
 app-map {
@@ -9,7 +19,6 @@ app-map {
   top: 0;
   left: 0;
   right: 0;
-  bottom: var(--bottom-content-height);
 }
 
 .bottom-background {

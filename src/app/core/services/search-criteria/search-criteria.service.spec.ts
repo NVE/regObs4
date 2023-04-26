@@ -5,6 +5,7 @@ import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { createMapView, MapService } from 'src/app/modules/map/services/map/map.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { SearchCriteria } from '../../models/search-criteria';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
 import { UrlParams } from './url-params';
@@ -83,17 +84,22 @@ describe('SearchCriteriaService', () => {
 
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    await userSettingService.saveGeoHazardsAndDaysBack({ daysBack: 1 });
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
-    //check that criteria contains correct from time. Should be 2 days earlier at midnight
-    expect(criteria.FromDtObsTime).toEqual('2000-12-22T00:00:00.000+01:00');
+    //check that criteria contains correct from time. Should be 1 days earlier at midnight
+    expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
 
     await service.applyQueryParams();
 
-    //check fromDate parameter in url. Should be 2 days earlier based on local time
+    //check daysBack parameter in url. Should be 1 days earlier based on local time
     const url = new URL(document.location.href);
-    expect(url.searchParams.get('fromDate')).toEqual('2000-12-22');
+    expect(url.searchParams.get('daysBack')).toEqual('1');
+
+    // Check that fromDate and toDate are not in url while daysBack are there
+    expect(url.searchParams.get('fromDate')).toBeNull();
+    expect(url.searchParams.get('toDate')).toBeNull();
   }));
   it('nick name filter should work', fakeAsync(async () => {
     let criteria;
@@ -172,7 +178,7 @@ describe('SearchCriteriaService', () => {
     const obsType2 = { Id: 40, SubTypes: [26] };
     tick(500);
     await service.removeObservationType(obsType2);
-    expect(criteria.SelectedRegistrationTypes).toEqual(null);
+    expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('type')).toEqual(null);
@@ -248,6 +254,52 @@ describe('SearchCriteriaService', () => {
 
     const url = new URL(document.location.href);
     expect(url.searchParams.get('toDate')).toBeNull();
+  }));
+
+  it('slush flow filter should set the right criteria and url when turned on', fakeAsync(async () => {
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    service.setSlushFlow();
+    tick(500);
+    //check that current criteria contains filter by slush flow
+    expect(criteria.PropertyFilters.length).toEqual(1);
+    const filter = criteria.PropertyFilters[0];
+    expect(filter.Name).toEqual('AvalancheObs.AvalancheTID');
+    expect(filter.Value).toEqual('30');
+    expect(filter.Operator).toEqual(0);
+
+    await service.applyQueryParams();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('slushFlow')).toEqual('true');
+  }));
+
+  it('slush flow filter should be removed from criteria and url when turned off', fakeAsync(async () => {
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    service.setSlushFlow(false);
+    tick(500);
+    //check that current criteria does not contain filter by slush flow
+    expect(criteria.PropertyFilters).toBeUndefined();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.has('slushFlow')).toBeFalse();
+  }));
+
+  it('slush flow filter should be removed from criteria and url when we change geo hazard', fakeAsync(async () => {
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+
+    service.setSlushFlow(); //turn filter by slush flow on
+
+    userSettingService.saveUserSettings({
+      ...(await firstValueFrom(userSettingService.userSetting$)),
+      language: LangKey.nn,
+      currentGeoHazard: [GeoHazard.Ice],
+    });
+    tick(500);
+    //check that current criteria does not contain filter by slush flow
+    expect(criteria.PropertyFilters).toBeUndefined();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.get('slushFlow')).toBeNull();
   }));
 });
 
@@ -471,5 +523,39 @@ describe('SearchCriteriaService url parsing', () => {
 
     expect(criteria.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
     expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+  }));
+
+  it('slush flow filter should be activated by url', fakeAsync(async () => {
+    new UrlParams().set('slushFlow', true).apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+    //check that current criteria contains filter by slush flow
+    expect(criteria.PropertyFilters.length).toEqual(1);
+    const filter = criteria.PropertyFilters[0];
+    expect(filter.Name).toEqual('AvalancheObs.AvalancheTID');
+    expect(filter.Value).toEqual('30');
+    expect(filter.Operator).toEqual(0);
+  }));
+
+  it('slush flow filter should be deactivated by url', fakeAsync(async () => {
+    new UrlParams().set('slushFlow', false).apply();
+    service = new SearchCriteriaService(
+      userSettingService,
+      mapService as unknown as MapService,
+      new TestLoggingService()
+    );
+
+    let criteria: SearchCriteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+    //check that current criteria does not contain filter by slush flow
+    expect(criteria.PropertyFilters).toBeUndefined();
   }));
 });

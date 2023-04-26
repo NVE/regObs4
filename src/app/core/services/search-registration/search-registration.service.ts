@@ -23,6 +23,7 @@ import {
   SearchCriteriaRequestDto,
   SearchService,
 } from 'src/app/modules/common-regobs-api';
+import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 export class SearchResult<TViewModel> {
@@ -75,6 +76,8 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   allFetchedForCriteria$ = this.allFetchedForCriteria.pipe(distinctUntilChanged());
   private maxItemsFetched = new BehaviorSubject<boolean>(false);
   maxItemsFetched$ = this.maxItemsFetched.pipe(distinctUntilChanged());
+  private isFetching = new BehaviorSubject<boolean>(false);
+  isFetching$ = this.isFetching.asObservable();
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
@@ -85,12 +88,18 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   ) {
     this.registrations$ = searchCriteria$.pipe(
       // For every new search criteria, create a paged search and check what the total count is
+      tap(() => this.isFetching.next(true)),
       switchMap((searchCriteria) =>
         combineLatest([
           this.createPagedSearch(searchCriteria, fetchFunc),
           countFunc(searchCriteria as SearchCriteriaRequestDto),
         ])
       ),
+      catchError(() => {
+        this.isFetching.next(false);
+        return of([]);
+      }),
+
       // Save search state
       tap(([registrations, totalCount]) => {
         this.allFetchedForCriteria.next(registrations.length >= totalCount);
@@ -98,6 +107,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       }),
       // Map to registrations
       map(([registrations]) => registrations),
+      tap(() => this.isFetching.next(false)),
       // Expensive observable, so share results if many subscribers
       shareReplay(1)
     );
@@ -200,6 +210,7 @@ export class SearchRegistrationService {
         this.searchService.SearchCountMyRegistrations(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
+
   /**
    * A fast search. Return only a summary of each observation.
    */
@@ -207,6 +218,18 @@ export class SearchRegistrationService {
     return new SearchResult<AtAGlanceViewModel>(
       searchCriteria$.pipe(map((c) => ({ ...c, NumberOfRecords: 100000 }))),
       this.searchService.SearchAtAGlance.bind(this.searchService)
+    );
+  }
+
+  searchAttachments(
+    searchCriteria$: Observable<SearchCriteria>
+  ): PagedSearchResult<SearchRegistrationsWithAttachments> {
+    return new PagedSearchResult<SearchRegistrationsWithAttachments>(
+      searchCriteria$,
+      this.searchService.SearchAttachments.bind(this.searchService),
+      (searchCriteria) =>
+        //implement count function for attachments
+        this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
 }

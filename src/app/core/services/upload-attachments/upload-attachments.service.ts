@@ -1,15 +1,15 @@
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
 import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
+import { UploadSingleAttachmentService } from './upload-single-attachment.service';
 
 const DEBUG_TAG = 'UploadAttachmentsService';
 
@@ -37,9 +37,8 @@ export class UploadAttachmentError extends Error {
 })
 export class UploadAttachmentsService {
   constructor(
-    private httpClient: HttpClient,
     private newAttachmentService: NewAttachmentService,
-    private apiAttachmentService: ApiAttachmentService,
+    private uploadSingleAttachmentService: UploadSingleAttachmentService,
     private translateService: TranslateService,
     private dateHelperService: DateHelperService,
     private loggingService: LoggingService,
@@ -69,6 +68,11 @@ export class UploadAttachmentsService {
     // Some attachments may already be uploaded
     const alreadyUploaded = attachmentsWithDefaultSettingsMetadata.filter((a) => a.AttachmentUploadId != null);
     const attachmentsToUpload = attachmentsWithDefaultSettingsMetadata.filter((a) => a.AttachmentUploadId == null);
+
+    this.loggingService.debug('Attachment upload state', DEBUG_TAG, {
+      nAlreadyUploaded: alreadyUploaded.length,
+      nToUpload: attachmentsToUpload.length,
+    });
 
     // Error handling
     // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
@@ -159,59 +163,12 @@ export class UploadAttachmentsService {
     return attachments.map((a) => setPhotographer(setCopyright(a)));
   }
 
-  private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel) {
-    this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);
-    // Here we can keep track of upload progress if we want to
-    // if (event.type === HttpEventType.UploadProgress) {
-    //   // Track upload progress
-    // }
-  }
-
-  private onHttpResponseEvent(event: HttpResponse<string>) {
-    if (event instanceof HttpErrorResponse) {
-      // This is already an error and contains useful info, so we can just throw it
-      throw event;
-    }
-    if (!event.ok) {
-      throw new Error(`Could not upload attachment: Status: ${event.statusText}`);
-    }
-    return event.body;
-  }
-
-  private sendPostRequestWithImageBlob(blob: Blob) {
-    const attachmentPostPath = `${this.apiAttachmentService.rootUrl}${ApiAttachmentService.AttachmentPostPath}`;
-
-    const formData = new FormData();
-    formData.append('file', blob);
-
-    return this.httpClient.post(attachmentPostPath, formData, {
-      responseType: 'json',
-      // reportProgress makes this a stream that returns HttpEvents, not just the final response.
-      // We can use the events to track the upload progress.
-      reportProgress: true,
-      observe: 'events',
-      headers: { 'ngsw-bypass': '' },
-    }) as Observable<HttpEvent<string>>;
-  }
-
   private async uploadAttachment(
     attachment: AttachmentUploadEditModel,
     draft: RegistrationDraft
   ): Promise<AttachmentUploadEditModel> {
     const blob = await firstValueFrom(this.newAttachmentService.getBlob(draft.uuid, attachment.id));
-
-    const request = this.sendPostRequestWithImageBlob(blob).pipe(
-      tap((event) => this.onHttpEvent(event, attachment)),
-      filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
-      map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
-      tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`))
-    );
-
-    const uploadedAttachment = {
-      ...attachment,
-      // The response body contains only the AttachmentUploadId
-      AttachmentUploadId: await firstValueFrom(request),
-    };
+    const uploadedAttachment = await this.uploadSingleAttachmentService.upload(attachment, blob);
 
     // Update metadata
     await firstValueFrom(this.newAttachmentService.saveAttachmentMeta$(draft.uuid, uploadedAttachment));

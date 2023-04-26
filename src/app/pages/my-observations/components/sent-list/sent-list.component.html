@@ -1,5 +1,5 @@
 <!-- A list of observations sent to server -->
-<ng-container *ngIf="myRegistrations; else skeleton">
+<ng-container *ngIf="myRegistrations$ | async as myRegistrations; else skeleton">
   <ion-item-divider no-border>
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>

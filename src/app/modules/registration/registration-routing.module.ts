@@ -24,14 +24,6 @@ const routes: Routes = [
       import('./pages/general-comment/general-comment.module').then((m) => m.GeneralCommentPageModule),
   },
   {
-    path: 'registration/water/water-level/:id',
-    loadChildren: () => import('./pages/water/water-level/water-level.module').then((m) => m.WaterLevelPageModule),
-  },
-  {
-    path: 'registration/water/damage/:id',
-    loadChildren: () => import('./pages/water/damage/damage.module').then((m) => m.DamagePageModule),
-  },
-  {
     path: 'registration/ice/ice-cover/:id',
     loadChildren: () => import('./pages/ice/ice-cover/ice-cover.module').then((m) => m.IceCoverPageModule),
   },
@@ -88,6 +80,11 @@ const routes: Routes = [
       import('./pages/snow/avalanche-evaluation/avalanche-evaluation.module').then(
         (m) => m.AvalancheEvaluationPageModule
       ),
+  },
+  {
+    path: 'registration/water/set-flood-area/:id',
+    loadChildren: () =>
+      import('./pages/water/set-flood-area/set-flood-area.module').then((m) => m.SetFloodAreaPageModule),
   },
   {
     path: 'registration/:id',
