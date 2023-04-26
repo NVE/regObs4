@@ -34,6 +34,7 @@ export class DateHelperService {
     showTime = true,
     currentTimeZone: string = null
   ) {
+    console.log(date);
     const timezone = currentTimeZone || moment().format('Z');
     if (!date.isValid()) {
       return '';
@@ -52,6 +53,7 @@ export class DateHelperService {
     if (showTime) {
       parts.push(date.format('HH:mm'));
       if (date.format('Z') !== timezone) {
+        console.log(date.format('Z'));
         parts.push(`(${date.format('Z')})`);
       }
     }
