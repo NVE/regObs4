@@ -49,7 +49,7 @@ export class DatetimePickerComponent implements OnInit {
   @Input() preventKeydown? = null;
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
-  isPlatformNative = true;
+  isPlatformNative = Capacitor.isNativePlatform();
 
   @ViewChild(IonModal) modal: IonModal;
 
@@ -114,7 +114,7 @@ export class DatetimePickerComponent implements OnInit {
    */
   updateTempDateTime(dateInput: string): boolean {
     if (!dateInput || Array.isArray(dateInput)) return false;
-    this.dateTime = moment(dateInput).format('yyyy-MM-DD[T]HH:mm');
+    this.dateTime = moment(dateInput).format();
   }
 
   // input ignores min and max values on keydown therefore we hardcode a method to prevent that

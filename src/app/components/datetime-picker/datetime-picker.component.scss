@@ -12,35 +12,18 @@
   border: none;
 }
 
-input[type='datetime-local'],
 input[type='date'] {
-  width: 100%;
+  width: 70%;
 
   &:focus {
     outline: none;
   }
+}
 
-  &::-webkit-calendar-picker-indicator,
-  ::-webkit-calendar-picker-indicator {
-    opacity: 1;
-    display: block;
-    background-repeat: no-repeat;
-    width: 16px;
-    height: 16px;
-    border-width: thin;
-    position: absolute;
-    z-index: 4000;
-    left: 5%;
+input[type='datetime-local'] {
+  width: 75%;
+
+  &:focus {
+    outline: none;
   }
-}
-
-input::-webkit-datetime-edit-fields-wrapper {
-  position: relative;
-  left: 11%;
-  width: 100%;
-}
-input::-webkit-datetime-edit {
-  position: relative;
-  left: 11%;
-  width: 100%;
 }
