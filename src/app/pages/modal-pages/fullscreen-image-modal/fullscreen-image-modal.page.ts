@@ -11,6 +11,9 @@ import { IonSlides, ModalController, Platform } from '@ionic/angular';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
+import { Router } from '@angular/router';
+
+type HrefType = { title: string; url: string };
 
 @Component({
   selector: 'app-fullscreen-image-modal',
@@ -21,11 +24,9 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 export class FullscreenImageModalPage implements OnInit, OnDestroy {
   @ViewChild(IonSlides) slider: IonSlides;
 
-  @Input() imgIndex?: number;
-  @Input() allImages?: AttachmentViewModel[];
-  @Input() header: string;
-  @Input() description: string;
-  @Input() href?: string;
+  @Input() imgIndex: number;
+  @Input() allImages: AttachmentViewModel[];
+  @Input() href?: HrefType;
   isLastSlide = true;
   isFirstSlide = true;
   activeImageIndex: number;
@@ -36,7 +37,8 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private cdr: ChangeDetectorRef,
     private screenOrientation: ScreenOrientation,
-    private platform: Platform
+    private platform: Platform,
+    private router: Router
   ) {}
 
   ngOnInit(): void {

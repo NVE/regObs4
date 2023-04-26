@@ -12,6 +12,7 @@
       </div>
     </ion-slide>
   </ion-slides>
+
   <ion-fab-button size="small" (click)="closeModal()" class="close-button">
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
@@ -22,7 +23,14 @@
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
   <div class="img-container">
-    <img [src]="allImages[activeImageIndex].Url || allImages[activeImageIndex]" (click)="closeModal()" />
+    <div class="img-frame">
+      <img [src]="allImages[activeImageIndex].Url || allImages[activeImageIndex]" (click)="closeModal()" />
+      <ion-item *ngIf="href as href" class="link-title">
+        <a [href]="href.url" target="_blank">
+          <span>{{ href.title | translate }}</span> <img src="../../../../assets/icon/newTab.svg" alt="new tab"
+        /></a>
+      </ion-item>
+    </div>
     <button *ngIf="!isFirstSlide" class="swiper-button-prev swiper-button-custom" (click)="prevSlide()"></button>
     <button *ngIf="!isLastSlide" class="swiper-button-next swiper-button-custom" (click)="nextSlide()"></button>
   </div>

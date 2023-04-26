@@ -254,6 +254,8 @@
     "FORMS": "Forms",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
+    "NO_IMAGES": "No images",
+    "NO_IMAGES_TEXT": "There are no images found in the map section, try to change the view or expand the period you want to see observations from",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
     "SORT_BY_CHANGE_TIME": "Recently updated",
@@ -261,7 +263,8 @@
     "SORT_BY_TEXT": "Order by",
     "TITLE": "Observations",
     "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view"
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view",
+    "VIEW_TYPE": "View"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
@@ -423,6 +426,7 @@
       "TAKE_NEW_PHOTO": "Take a new photo",
       "TITLE": "Images and notes"
     },
+    "GO_TO": "Go to observation",
     "GROUP": {
       "SUBTITLE": "Share observation with",
       "TITLE": "Share with group"

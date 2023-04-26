@@ -1,0 +1,46 @@
+<ng-container *ngIf="!(isFetchingAttachments$ | async); else skeleton">
+  <ng-container *ngIf="attachments$ | async as attachments; else skeleton">
+    <ion-list class="loaded" *ngIf="attachments.length > 0; else empty">
+      <ng-container *ngFor="let attachment of attachments">
+        <img
+          *ngFor="let imgUrl of attachment.Attachments; let attachmentIndex = index"
+          [src]="imgUrl.Url"
+          (click)="openImage(attachmentIndex, attachment.Attachments, attachment.RegId)"
+        />
+      </ng-container>
+    </ion-list>
+    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-row *ngIf="(attachments.maxItemsFetched$ | async) === true" class="full-grid-row max-count-reached">
+      <ion-col class="ion-text-center ion-margin-horizontal">
+        <h2>{{ "OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER" | translate }}</h2>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+</ng-container>
+
+<ng-template #skeleton>
+  <ion-list class="loaded">
+    <ion-skeleton-text animated *ngFor="let _ of fakeArray" class="img-skeleton"></ion-skeleton-text>
+  </ion-list>
+</ng-template>
+
+<ng-template #empty>
+  <ion-grid class="full-grid grid-absolute">
+    <ion-row class="full-grid-row">
+      <div class="center">
+        <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
+        <svg-icon class="pin1" src="/assets/images/empty-states/pin.svg"></svg-icon>
+        <svg-icon class="pin2" src="/assets/images/empty-states/pin.svg"></svg-icon>
+        <svg-icon class="pin3" src="/assets/images/empty-states/pin.svg"></svg-icon>
+      </div>
+    </ion-row>
+    <ion-row class="col-flex-direction ion-text-center ion-margin-horizontal">
+      <h2>{{ "OBSERVATION_LIST.NO_IMAGES" | translate }}</h2>
+    </ion-row>
+    <ion-row class="col-flex-direction ion-text-center ion-margin-horizontal"
+      ><h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_IMAGES_TEXT" | translate }}</h3></ion-row
+    >
+  </ion-grid>
+</ng-template>
