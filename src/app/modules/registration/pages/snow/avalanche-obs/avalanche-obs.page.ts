@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import moment from 'moment';
+
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 import {
   createEmptyRegistration,
@@ -14,6 +15,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
+import { DATE_FORMAT_HOURS } from '../../../../shared/services/date-helper/date-format';
 
 /**
  * Used to register both avalanche observations and incidents, so this page contains two forms.
@@ -87,7 +89,7 @@ export class AvalancheObsPage extends BasePage {
   }
 
   get dtAvalancheTime() {
-    return moment(this.avalancheObs.DtAvalancheTime).format('yyyy-MM-DD[T]HH:mm');
+    return moment(this.avalancheObs.DtAvalancheTime).format(DATE_FORMAT_HOURS);
   }
 
   get dtAvalancheTimeIsDifferentThanObsTime() {
@@ -118,7 +120,7 @@ export class AvalancheObsPage extends BasePage {
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().minutes(59).format('yyyy-MM-DD[T]HH:mm');
+    return moment().minutes(59).format(DATE_FORMAT_HOURS);
   }
 
   async reset() {

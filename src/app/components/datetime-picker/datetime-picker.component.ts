@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
-import { OverlayEventDetail, DatetimePresentation } from '@ionic/core/components';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { firstValueFrom } from 'rxjs';
-import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
-import moment from 'moment';
 import { Capacitor } from '@capacitor/core';
+import moment from 'moment';
+import { firstValueFrom } from 'rxjs';
+import { OverlayEventDetail, DatetimePresentation } from '@ionic/core/components';
+import { IonModal } from '@ionic/angular';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
+import { DATE_FORMAT, DATE_FORMAT_HOURS } from 'src/app/modules/shared/services/date-helper/date-format';
 
 @Component({
   selector: 'app-datetime-picker',
@@ -14,7 +16,8 @@ import { Capacitor } from '@capacitor/core';
 })
 /**
  * Component for displaying a date and time picker.
- * The date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
+ * In the mobile app date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
+ * Web version uses the regular input with browser calendar
  */
 export class DatetimePickerComponent implements OnInit {
   @Input() dateTime: string;
@@ -25,8 +28,8 @@ export class DatetimePickerComponent implements OnInit {
     if (this.dateTime) {
       const formatedDate =
         this.dateInputType == 'datetime-local'
-          ? moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DD[T]HH:mm')
-          : moment(new Date(this.dateTime).toISOString()).format('yyyy-MM-DD');
+          ? moment(new Date(this.dateTime).toISOString()).format(DATE_FORMAT_HOURS)
+          : moment(new Date(this.dateTime).toISOString()).format(DATE_FORMAT);
       return formatedDate;
     } else {
       return '';
@@ -34,8 +37,8 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
-  @Input() minDate = moment(new Date('2010-01-01')).format('YYYY-MM-DD'); // Sets the min date selectable from the date picker
-  @Input() maxDate = moment(new Date()).format('YYYY-MM-DD'); // Sets the max date selectable from the date picker
+  @Input() minDate = moment(new Date('2010-01-01')).format(DATE_FORMAT); // Sets the min date selectable from the date picker
+  @Input() maxDate = moment(new Date()).format(DATE_FORMAT); // Sets the max date selectable from the date picker
   @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
   @Input() presentation: DatetimePresentation = 'date-time';
@@ -85,7 +88,11 @@ export class DatetimePickerComponent implements OnInit {
     }
   }
 
-  updateDateOnWeb(dateInput: string) {
+  /**
+   * Checks the user input and emits it with time zones. If min or max date is incorrect it sets the defaults
+   * @param date - string
+   */
+  changeDateOnWeb(dateInput: string) {
     if (dateInput) {
       const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
       const min = moment(this.minDate).toISOString(true);

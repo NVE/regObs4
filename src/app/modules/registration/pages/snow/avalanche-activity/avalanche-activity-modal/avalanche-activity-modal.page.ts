@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController } from '@ionic/angular';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import moment from 'moment';
+import { ModalController } from '@ionic/angular';
+import { Component, OnInit, Input } from '@angular/core';
 
+import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
+import { DATE_FORMAT } from '../../../../../shared/services/date-helper/date-format';
 @Component({
   selector: 'app-avalanche-activity-modal',
   templateUrl: './avalanche-activity-modal.page.html',
@@ -101,7 +102,7 @@ export class AvalancheActivityModalPage implements OnInit {
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().minutes(59).format('yyyy-MM-DD');
+    return moment().minutes(59).format(DATE_FORMAT);
   }
 
   cancel() {

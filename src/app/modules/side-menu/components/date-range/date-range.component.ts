@@ -88,16 +88,16 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   setFromDate(date: string): void {
-    this.fromDate = this.dateHelperService.getWebDateInputFormat(date);
+    this.fromDate = date;
   }
 
   setToDate(date: string): void {
-    this.toDate = this.dateHelperService.getWebDateInputFormat(date);
+    this.toDate = date;
   }
 
   onClickSetDate() {
-    this.searchCriteriaService.setFromDate(moment(this.fromDate).toISOString(true));
-    this.toDate && this.searchCriteriaService.setToDate(moment(this.toDate).toISOString(true));
+    this.searchCriteriaService.setFromDate(this.fromDate);
+    this.toDate && this.searchCriteriaService.setToDate(this.toDate);
   }
 
   setUseDaysBack(daysBack: number): void {

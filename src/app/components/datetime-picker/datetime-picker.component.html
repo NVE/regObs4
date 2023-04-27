@@ -47,9 +47,9 @@
     [type]="dateInputType"
     name="dateFormatForWeb"
     (keydown)="preventKeydownIfDateIsBigger($event, maxDate)"
-    (change)="updateDateOnWeb($event.target.value)"
+    (change)="changeDateOnWeb($event.target.value)"
     [value]="dateFormatForWeb"
-    (blur)="updateDateOnWeb($event.target.value)"
+    (blur)="changeDateOnWeb($event.target.value)"
     [min]="minDate"
     [max]="maxDate"
   />

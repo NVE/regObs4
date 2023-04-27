@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 
+import { DATE_FORMAT, DATE_FORMAT_HOURS } from './date-format';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,11 +22,11 @@ export class DateHelperService {
 
   // input type datetime on web doesnt accept time zones so we have to change format so that it can read min max dates correctly
   getWebDateInputFormat(dateString: string): string {
-    return moment(dateString).format('YYYY-MM-DD');
+    return moment(dateString).format(DATE_FORMAT);
   }
 
   getWebDateTimeLocalInputFormat(dateTimeLocalString: string): string {
-    return moment(dateTimeLocalString).format('yyyy-MM-DD[T]HH:mm');
+    return moment(dateTimeLocalString).format(DATE_FORMAT_HOURS);
   }
 
   async formatDate(
@@ -52,7 +54,6 @@ export class DateHelperService {
     if (showTime) {
       parts.push(date.format('HH:mm'));
       if (date.format('Z') !== timezone) {
-        console.log(date.format('Z'));
         parts.push(`(${date.format('Z')})`);
       }
     }

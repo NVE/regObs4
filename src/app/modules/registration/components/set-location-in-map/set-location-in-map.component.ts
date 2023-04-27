@@ -8,6 +8,7 @@ import 'leaflet-draw';
 import moment from 'moment';
 import { firstValueFrom, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -23,6 +24,7 @@ import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
+import { DATE_FORMAT_HOURS } from 'src/app/modules/shared/services/date-helper/date-format';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -552,11 +554,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().minutes(59).format('YYYY-MM-DD[T]HH:mm');
+    return moment().minutes(59).format(DATE_FORMAT_HOURS);
   }
 
   getMinDateForNow() {
-    return moment().subtract(30, 'years').format('YYYY-MM-DD[T]HH:mm');
+    return moment().subtract(30, 'years').format(DATE_FORMAT_HOURS);
   }
 
   setTranslatedAccuracies() {
