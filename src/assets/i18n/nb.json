@@ -103,7 +103,7 @@
   },
   "HOME_PAGE": {
     "OBSERVATIONS_SEARCH_ERROR": {
-      "MESSAGE": "Fikk ikke hentet observasjoner",
+      "MESSAGE": "Fikk ikke hentet observasjoner. Bruk oppfrisk-knappen i filter-menyen for å prøve på nytt",
       "BUTTON": "Lukk"
     }
   },

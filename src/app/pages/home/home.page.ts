@@ -30,6 +30,7 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
+import { Immutable } from 'src/app/core/models/immutable';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
@@ -166,17 +167,14 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         next: (registrations) => {
           this.observationSearchError$.next(false);
           this.redrawObservationMarkers(registrations);
+          this.lastFetched = new Date();
+          this.updateObservationsService.setLastFetched(this.lastFetched);
         },
         error: (err) => {
-          this.observationSearchError$.next(true);
           this.loggingService.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
+          this.observationSearchError$.next(true);
         },
       });
-
-    this.searchResult.registrations$.subscribe(() => {
-      this.lastFetched = new Date();
-      this.updateObservationsService.setLastFetched(this.lastFetched);
-    });
   }
 
   private initObservationsErrorToast() {
@@ -193,7 +191,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
               from(toast.onDidDismiss()).pipe(
                 takeUntil(
                   race(
-                    //this.searchResult.registrations$.pipe(filter((regs) => regs.length > 0)),
                     this.observationSearchError$.pipe(filter((error) => !error)),
                     this.tabsService.selectedTab$.pipe(skip(1))
                   )
