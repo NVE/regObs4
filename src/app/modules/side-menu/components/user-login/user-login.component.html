@@ -6,7 +6,7 @@
     </ion-label>
   </ion-item>
   <ng-container *ngIf="loggedInUser.isLoggedIn">
-    <ion-item routerLink="/login" routerDirection="forward" detail="true">
+    <ion-item (click)="storeCurLocation()" routerLink="/login" routerDirection="forward" detail="true">
       <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">
         {{ loggedInUser.email }}

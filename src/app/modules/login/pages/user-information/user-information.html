@@ -1,7 +1,7 @@
 <ion-header *ngIf="loggedInUser$ | async as loggedInUser">
   <ion-toolbar appHeaderColor mode="ios">
     <ion-buttons slot="start">
-      <ion-back-button text="" defaultHref="/"></ion-back-button>
+      <a role="button" (click)="navigateBack()"> <ion-back-button text="" defaultHref="/"></ion-back-button></a>
     </ion-buttons>
     <ion-title>
       {{ loggedInUser.isLoggedIn ? ('MY_PROFILE.TITLE' | translate) : ('LOGIN.TITLE' | translate) }}
@@ -59,7 +59,7 @@
       </div>
     </ion-row>
 
-    <!-- TODO: edit functionality in api v5. 
+    <!-- TODO: edit functionality in api v5.
        <ion-row>
       <ion-col>
         <h2>{{'MY_PROFILE.NICKNAME' | translate}}</h2>
@@ -122,11 +122,11 @@
       </ion-col>
     </ion-row>
     <ion-row class="ion-padding-top">
-       Generere GeoHazard listen ved å hente de ut 
+       Generere GeoHazard listen ved å hente de ut
       <ion-col size="3" size-xs="5" size-sm="3" size-md="2">
         <p class="no-margin" *ngFor="let geoHazard of geoHazards">{{geoHazard.GeoHazardName | translate}}</p>
       </ion-col>
-       Hente ut kompetansen riktig ved å koble opp mot API 
+       Hente ut kompetansen riktig ved å koble opp mot API
       <ion-col class="star-container" size="auto" size-xs="7" size-sm="9" size-md="10" pullMd="1" pullSm="2" pullXs="1">
         <app-competence class="stars" *ngFor="let geoHazard of geoHazards" [competenceLevel]="getCompetenceFromGeoHazard(geoHazard.GeoHazardTID)"></app-competence>
       </ion-col>
@@ -160,7 +160,7 @@
   </ion-grid>
 </ion-content>
 <ng-template #login>
-  <ion-button class="logout-button" expand="block" type="submit" color="varsom-orange" (click)="signIn()">
+  <ion-button class="login-button" expand="block" type="submit" color="varsom-orange" (click)="signIn()">
     {{ 'LOGIN.LOGIN' | translate }}
   </ion-button>
 </ng-template>
