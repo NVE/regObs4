@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map, Observable, combineLatest, Subject, firstValueFrom } from 'rxjs';
+import { map, Observable, combineLatest, firstValueFrom } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
 import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-date-range',
@@ -19,22 +20,34 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   useDaysBack$: Observable<boolean>;
   dateRangeText: string;
 
-  minDate = new Date('2010-01-01T00:00:00').toISOString();
-  maxDate = new Date().toISOString();
+  minDate;
+  maxDate;
   isOpen = false;
   isNativePlatform: boolean;
-  mode$: Observable<'predefined' | 'custom'>;
   modeText$: Observable<string>;
   fromDate$: Observable<string>;
   toDate$: Observable<string>;
+  dateRangeText$: Observable<string>;
+  mode: 'predefined' | 'custom';
+
   constructor(
     private searchCriteriaService: SearchCriteriaService,
     public userSettingService: UserSettingService,
     private dateHelperService: DateHelperService
   ) {
     super();
-    this.mode$ = this.searchCriteriaService.useDaysBack$.pipe(
-      map((useDaysBack) => (useDaysBack ? 'predefined' : 'custom'))
+    this.isNativePlatform = Capacitor.isNativePlatform();
+    this.fromDate$ = this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.FromDtObsTime));
+
+    this.toDate$ = this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime));
+
+    this.useDaysBack$ = this.searchCriteriaService.useDaysBack$;
+    this.searchCriteriaService.useDaysBack$.subscribe((useDaysBack) => {
+      this.mode = useDaysBack ? 'predefined' : 'custom';
+    });
+
+    this.dateRangeText$ = combineLatest([this.fromDate$, this.toDate$]).pipe(
+      map(([fromDate, toDate]) => generateDateRange(fromDate, toDate))
     );
   }
 
@@ -46,7 +59,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     );
     this.toDate = await firstValueFrom(
       this.searchCriteriaService.searchCriteria$.pipe(
-        map((criteria) => this.dateHelperService.getWebDateInputFormat(criteria.ToDtObsTime))
+        map((criteria) => criteria.ToDtObsTime && this.dateHelperService.getWebDateInputFormat(criteria.ToDtObsTime))
       )
     );
   }
@@ -85,7 +98,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   onClickSetDate() {
     this.searchCriteriaService.setFromDate(moment(this.fromDate).toISOString(true));
     this.toDate && this.searchCriteriaService.setToDate(moment(this.toDate).toISOString(true));
-    this.dateRangeText = generateDateRange(this.fromDate, this.toDate);
   }
 
   setUseDaysBack(daysBack: number): void {

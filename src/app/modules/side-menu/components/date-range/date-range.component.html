@@ -15,7 +15,7 @@
       </ng-container>
     </ion-item>
     <div slot="content">
-      <ion-list *ngIf="mode$ | async as mode">
+      <ion-list>
         <ion-radio-group [value]="mode" (ionChange)="changeMode($event)">
           <ion-item>
             <ion-radio slot="start" value="predefined"></ion-radio>
@@ -27,7 +27,7 @@
             <ion-label>{{ "MENU.CUSTOM_TIMESPAN" | translate }}</ion-label>
           </ion-item>
         </ion-radio-group>
-        <ion-item class="date-range" *ngIf="mode.value === 'custom'">
+        <ion-item class="date-range" *ngIf="mode === 'custom'">
           <div class="custom-date-wrapper">
             <div>
               <label>{{ "MENU.START_DATE" | translate }}</label>
@@ -35,7 +35,6 @@
                 presentation="date"
                 dateInputType="date"
                 [(dateTime)]="fromDate"
-                [maxDate]="toDate"
                 textAlign="right"
                 (dateTimeChange)="setFromDate($event)"
               ></app-datetime-picker>
@@ -63,7 +62,7 @@
 </ion-accordion-group>
 
 <ng-template #showDateRange>
-  <ng-container *ngIf="dateRangeText">
+  <ng-container *ngIf="dateRangeText$ | async as dateRangeText">
     <ion-text *ngIf="!isOpen" class="ion-align-self-start">
       <span>{{ dateRangeText }}</span>
     </ion-text>

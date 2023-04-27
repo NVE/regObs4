@@ -34,8 +34,8 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
-  @Input() minDate = moment(new Date()).format('YYYY-MM-DD'); // Sets the min date selectable from the date picker
-  @Input() maxDate = moment(new Date('2010-01-01')).format('YYYY-MM-DD'); // Sets the max date selectable from the date picker
+  @Input() minDate = moment(new Date('2010-01-01')).format('YYYY-MM-DD'); // Sets the min date selectable from the date picker
+  @Input() maxDate = moment(new Date()).format('YYYY-MM-DD'); // Sets the max date selectable from the date picker
   @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
   @Input() presentation: DatetimePresentation = 'date-time';
@@ -46,7 +46,7 @@ export class DatetimePickerComponent implements OnInit {
   @Output() datePickerOpenChange = new EventEmitter<boolean>();
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
 
-  isPlatformNative = true; //Capacitor.isNativePlatform();
+  isPlatformNative = Capacitor.isNativePlatform();
 
   @ViewChild(IonModal) modal: IonModal;
 
