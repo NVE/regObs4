@@ -160,7 +160,6 @@
     "ERROR_END_DATE": "Sluttdato kan ikke være tidligere enn startdato",
     "ERROR_REPORT_DESCRIPTION": "Vennligst beskriv feilen. Dersom du har skjermbilder, kan du legge de ved. Vi har lagt ved loggfiler som kan hjelpe oss å finne feilen. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "ERROR_REPORT_SUBJECT": "Feilrapport fra",
-    "ERROR_START_DATE": "Startdato kan ikke være senere enn sluttdato",
     "GENERAL": "Generelt",
     "HIDE_OBSERVATIONS": "Skjul observasjoner",
     "LAST_UPDATED": "Sist oppdatert",

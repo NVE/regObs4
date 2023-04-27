@@ -29,7 +29,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   toDate$: Observable<string>;
   dateRangeText$: Observable<string>;
   mode: 'predefined' | 'custom';
-  isFromDateLaterThanToDate = false;
   isToDateEarlierThanFromDate = false;
 
   constructor(
@@ -57,7 +56,7 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.searchCriteria$
       .pipe(map((criteria) => this.dateHelperService.getWebDateInputFormat(criteria.FromDtObsTime)))
       .subscribe((fromDate) => {
-        this.resetDateRangeErrors();
+        this.isToDateEarlierThanFromDate = false;
         this.fromDate = fromDate;
       });
     this.searchCriteriaService.searchCriteria$
@@ -90,11 +89,6 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  private resetDateRangeErrors() {
-    this.isFromDateLaterThanToDate = false;
-    this.isToDateEarlierThanFromDate = false;
-  }
-
   setFromDate(date: string): void {
     this.fromDate = date;
   }
@@ -104,15 +98,11 @@ export class DateRangeComponent extends NgDestoryBase implements OnInit {
   }
 
   onClickSetDate() {
-    this.resetDateRangeErrors();
+    this.isToDateEarlierThanFromDate = false;
     const toDate = this.toDate && moment(this.toDate).toISOString(true);
     const fromDate = moment(this.fromDate).toISOString(true);
     if (toDate && toDate < fromDate) {
       this.isToDateEarlierThanFromDate = true;
-      return;
-    }
-    if (toDate && fromDate > toDate) {
-      this.isFromDateLaterThanToDate = true;
       return;
     }
     this.searchCriteriaService.setFromDate(this.fromDate);

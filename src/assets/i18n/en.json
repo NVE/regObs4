@@ -168,7 +168,6 @@
     "ERROR_END_DATE": "End date cannot be sooner than start date",
     "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach. We have attached logs which may help us in troubleshooting. You can remove these if you wish.",
     "ERROR_REPORT_SUBJECT": "Error report from",
-    "ERROR_START_DATE": "Start date cannot be later than end date",
     "GENERAL": "General",
     "HIDE_OBSERVATIONS": "Hide observations",
     "LAST_UPDATED": "Last updated",
