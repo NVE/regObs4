@@ -46,11 +46,16 @@
                 presentation="date"
                 dateInputType="date"
                 [(dateTime)]="toDate"
-                [minDate]="fromDate"
                 textAlign="right"
                 (dateTimeChange)="setToDate($event)"
               ></app-datetime-picker>
             </div>
+            <label class="error-message" *ngIf="isFromDateLaterThanToDate">{{
+              "MENU.ERROR_START_DATE" | translate
+            }}</label>
+            <label class="error-message" *ngIf="isToDateEarlierThanFromDate">{{
+              "MENU.ERROR_END_DATE" | translate
+            }}</label>
             <ion-button (click)="onClickSetDate()" size="default" expand="block" fill="solid" color="primary">
               Filtrer
             </ion-button>

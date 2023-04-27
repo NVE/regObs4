@@ -37,7 +37,7 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
-  @Input() minDate = moment(new Date('2010-01-01')).format(DATE_FORMAT); // Sets the min date selectable from the date picker
+  @Input() minDate?: string; // Sets the min date selectable from the date picker
   @Input() maxDate = moment(new Date()).format(DATE_FORMAT); // Sets the max date selectable from the date picker
   @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
@@ -94,18 +94,7 @@ export class DatetimePickerComponent implements OnInit {
    */
   changeDateOnWeb(dateInput: string) {
     if (dateInput) {
-      const dateFormatWithTimeZone = moment(dateInput).toISOString(true);
-      const min = moment(this.minDate).toISOString(true);
-      const max = moment(this.maxDate).toISOString(true);
-      if (dateFormatWithTimeZone < min) {
-        this.dateTimeChange.emit(min);
-        return;
-      } else if (dateFormatWithTimeZone > max) {
-        this.dateTimeChange.emit(max);
-        return;
-      }
-
-      this.dateTimeChange.emit(dateFormatWithTimeZone);
+      this.dateTimeChange.emit(moment(dateInput).toISOString(true));
     }
   }
 
@@ -117,12 +106,5 @@ export class DatetimePickerComponent implements OnInit {
   updateTempDateTime(dateInput: string): boolean {
     if (!dateInput || Array.isArray(dateInput)) return false;
     this.dateTime = moment(dateInput).format();
-  }
-
-  // input ignores min and max values on keydown therefore a hardcoded method to prevent that
-  preventKeydownIfDateIsBigger(event, maxDate: string) {
-    if (event.currentTarget.value >= maxDate && event.which === 38) {
-      event.preventDefault();
-    }
   }
 }

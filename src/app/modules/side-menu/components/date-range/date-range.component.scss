@@ -28,6 +28,10 @@ ion-item::part(native) {
   border-bottom: 1px solid #dedede;
 }
 
+.error-message {
+  color: #e3000f;
+}
+
 .no-margin {
   margin-inline-end: 6px;
 }

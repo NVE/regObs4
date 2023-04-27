@@ -130,6 +130,7 @@
               <ion-icon slot="start" name="clock"></ion-icon>&nbsp;{{ "REGISTRATION.SET_TIME.NOW" | translate }}
             </div>
           </div>
+          <label class="error-message" *ngIf="dateInputErrorMessage">{{ dateInputErrorMessage }}</label>
           <div *ngIf="isDesktop" class="flex-row">
             <app-kdv-select
               class="flex-grow selectors"

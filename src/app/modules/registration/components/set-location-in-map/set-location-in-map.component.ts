@@ -24,7 +24,6 @@ import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
-import { DATE_FORMAT_HOURS } from 'src/app/modules/shared/services/date-helper/date-format';
 import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 export interface LocationTime {
@@ -114,6 +113,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   locationPolygons: IPolygon[] = [];
   locationPolygonEditIdx = -1;
   toggleEditingMode: () => void;
+  dateInputErrorMessage = '';
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
@@ -489,12 +489,35 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  confirm(): void {
+  async confirm(): Promise<void> {
+    this.dateInputErrorMessage = '';
     const obsLocation = this.getLocation();
     let obsTime: string = undefined;
     if (this.setObsTime) {
+      if (this.localDate) {
+        if (this.localDate > this.maxDate) {
+          const translation = await firstValueFrom(
+            this.translateService.get(['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_LATER'], {
+              maxDate: moment(this.maxDate).format('DD.MM.YYYY HH:mm'),
+            })
+          );
+          this.dateInputErrorMessage = translation['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_LATER'];
+          return;
+        }
+        if (this.localDate < this.minDate) {
+          const translation = await firstValueFrom(
+            this.translateService.get(['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_SOONER'], {
+              minDate: moment(this.minDate).format('DD.MM.YYYY HH:mm'),
+            })
+          );
+          this.dateInputErrorMessage = translation['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_SOONER'];
+          return;
+        }
+      }
+
       obsTime = this.localDate || moment().toISOString(true);
     }
+
     const locationTime = {
       location: obsLocation,
       datetime: obsTime,
