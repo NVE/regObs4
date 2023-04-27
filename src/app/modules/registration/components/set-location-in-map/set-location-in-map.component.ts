@@ -25,6 +25,7 @@ import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { DATE_FORMAT_HOURS } from 'src/app/modules/shared/services/date-helper/date-format';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -131,6 +132,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   constructor(
     private mapService: MapService,
+    private dateHelper: DateHelperService,
     private helperService: HelperService,
     private ngZone: NgZone,
     private mapSearchService: MapSearchService,
@@ -546,19 +548,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   setToNow() {
     const now = moment().toISOString(true);
-    this.maxDate = this.getMaxDateForNow();
-    this.minDate = this.getMinDateForNow();
+    this.maxDate = this.dateHelper.getMaxDateForNowWithHours();
+    this.minDate = this.dateHelper.getMinDateForNowWithHours();
     this.localDate = now;
-  }
-
-  getMaxDateForNow() {
-    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
-    // Workaround is to set minutes to 59.
-    return moment().minutes(59).format(DATE_FORMAT_HOURS);
-  }
-
-  getMinDateForNow() {
-    return moment().subtract(30, 'years').format(DATE_FORMAT_HOURS);
   }
 
   setTranslatedAccuracies() {

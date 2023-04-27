@@ -16,6 +16,7 @@ import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import { DATE_FORMAT_HOURS } from '../../../../shared/services/date-helper/date-format';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 /**
  * Used to register both avalanche observations and incidents, so this page contains two forms.
@@ -102,6 +103,7 @@ export class AvalancheObsPage extends BasePage {
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
+    private dateHelper: DateHelperService,
     private modalController: ModalController
   ) {
     super(RegistrationTid.AvalancheObs, basePageService, activatedRoute);
@@ -111,16 +113,10 @@ export class AvalancheObsPage extends BasePage {
     if (!this.draft.registration.Incident) {
       this.draft.registration.Incident = {};
     }
-    this.maxDate = this.getMaxDateForNow();
+    this.maxDate = this.dateHelper.getMaxDateForNowWithHours();
     if (!this.avalancheObs.DtAvalancheTime) {
       this.avalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime;
     }
-  }
-
-  getMaxDateForNow() {
-    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
-    // Workaround is to set minutes to 59.
-    return moment().minutes(59).format(DATE_FORMAT_HOURS);
   }
 
   async reset() {

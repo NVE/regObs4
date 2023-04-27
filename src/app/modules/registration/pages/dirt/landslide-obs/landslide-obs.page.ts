@@ -9,6 +9,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import { BasePageService } from '../../base-page-service';
 import { DATE_FORMAT_HOURS } from '../../../../shared/services/date-helper/date-format';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 /**
  * Form to register landslide observations
@@ -26,6 +27,7 @@ export class LandslideObsPage extends BasePage {
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
+    private dateHelper: DateHelperService,
     private modalController: ModalController
   ) {
     super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
@@ -56,18 +58,12 @@ export class LandslideObsPage extends BasePage {
     if (this.draft.registration.LandSlideObs.DtLandSlideTimeEnd) {
       this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).format(DATE_FORMAT_HOURS);
     } else {
-      this.maxDateStart = this.getMaxDateForNow();
+      this.maxDateStart = this.dateHelper.getMaxDateForNowWithHours();
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTime) {
       this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).format(DATE_FORMAT_HOURS);
     }
-    this.maxDateEnd = this.getMaxDateForNow();
-  }
-
-  getMaxDateForNow() {
-    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
-    // Workaround is to set minutes to 59.
-    return moment().format(DATE_FORMAT_HOURS);
+    this.maxDateEnd = this.dateHelper.getMaxDateForNowWithHours();
   }
 
   dtTimeChanged() {

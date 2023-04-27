@@ -10,6 +10,16 @@ import { DATE_FORMAT, DATE_FORMAT_HOURS } from './date-format';
 export class DateHelperService {
   constructor(private translateService: TranslateService) {}
 
+  getMaxDateForNowWithHours() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).format(DATE_FORMAT_HOURS);
+  }
+
+  getMinDateForNowWithHours() {
+    return moment().subtract(30, 'years').format(DATE_FORMAT_HOURS);
+  }
+
   formatDateString(
     dateString: string,
     showMonthNames = true,
