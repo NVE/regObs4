@@ -73,7 +73,11 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
 
 export function separatedStringToNumberArray(separatedString: string): number[] {
   if (separatedString?.length) {
-    const textWithoutDelimiter = separatedString.replace(URL_PARAM_ARRAY_DELIMITER, '');
+    // TODO: Typescript compiler cant find replaceAll on string, we should consider changing to a later es spec
+    const hasReplaceAll = separatedString as unknown as {
+      replaceAll: (toReplace: string, replaceWith: string) => string;
+    };
+    const textWithoutDelimiter = hasReplaceAll.replaceAll(URL_PARAM_ARRAY_DELIMITER, '');
     const textContainsOnlyNumbers = !isNaN(+textWithoutDelimiter);
     if (textContainsOnlyNumbers) {
       return separatedString
