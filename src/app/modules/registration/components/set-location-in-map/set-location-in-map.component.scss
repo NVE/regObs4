@@ -171,6 +171,12 @@ app-map {
   min-height: 46px;
 }
 
+@media screen and (max-width: 435px) {
+  .location-name {
+    max-width: 200px;
+  }
+}
+
 .leaflet-usermarker:before {
   content: '';
   position: absolute;
