@@ -202,8 +202,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     const searchCriteriaWithLargerExtent = this.searchCriteriaService.searchCriteria$.pipe(
       //get current search criteria together with previous criteria, so we can check what's changed
       scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
-      //skip if extent is null (when showing 'all' observations in the list view) to avoid exceptions
-      // filter(([, current]) => current.Extent != null),
       filter(([prev, current]: [Immutable<SearchCriteriaRequestDto>, Immutable<SearchCriteriaRequestDto>]) => {
         // Two geographical properties on search criteria can be used to specify search extent:
         // SelectedRegions and Extent. We need to check if both of them has changed to see if we should send a new
