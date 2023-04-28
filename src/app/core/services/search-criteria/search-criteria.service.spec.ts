@@ -334,8 +334,8 @@ describe('SearchCriteriaService url parsing', () => {
     expect(separatedStringToNumberArray('70ikkelov20')).toEqual([]);
     expect(separatedStringToNumberArray('helt feil')).toEqual([]);
     expect(separatedStringToNumberArray('10')).toEqual([10]);
-    expect(separatedStringToNumberArray('70~20')).toEqual([70, 20]);
-    expect(separatedStringToNumberArray('~70~20~')).toEqual([]);
+    expect(separatedStringToNumberArray('70~20~30~3001')).toEqual([70, 20, 30, 3001]);
+    expect(separatedStringToNumberArray('~70~20~')).toEqual([70, 20]);
   });
 
   it('competence url filter works properly', fakeAsync(async () => {
