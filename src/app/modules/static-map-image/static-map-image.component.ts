@@ -537,10 +537,10 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
 
   private startSizeFinder() {
     // Read map container size
-    interval(60)
+    interval(500)
       .pipe(
         // When we have a valid size emitted on size$, stop the interval
-        takeUntil(race(this.size$, this.ngDestroy$, interval(500)))
+        takeUntil(race(this.size$, this.ngDestroy$))
       )
       .subscribe(() => this.updateContainerSize());
   }
