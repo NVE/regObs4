@@ -247,6 +247,8 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observation type"
     },
+    "REGION_FILTER_B_REGIONS_TITLE": "B regions",
+    "REGION_FILTER_TITLE_SNOW": "Avalanche regions",
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
     "TITLE": "Observation filter"
   },

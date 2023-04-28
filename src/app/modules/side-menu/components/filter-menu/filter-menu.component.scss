@@ -23,3 +23,7 @@ ion-list {
     align-items: center;
   }
 }
+
+.unselectable {
+  cursor: default;
+}

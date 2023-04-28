@@ -34,7 +34,7 @@ export class ObservationListPage implements OnInit {
   orderBy$: Observable<string>;
   popupType: SelectInterface;
   isNative: boolean;
-  noMapExtentAvailable$: Observable<boolean>;
+  disableMapExtentToggle$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
   viewType$ = new BehaviorSubject<ViewType>('list');
 
@@ -76,17 +76,26 @@ export class ObservationListPage implements OnInit {
       )
       .subscribe();
 
-    this.noMapExtentAvailable$ = mapService.mapView$.pipe(
+    const noMapExtentAvailable$ = mapService.mapView$.pipe(
       startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
       map((mapView) => mapView?.bounds == null),
       distinctUntilChanged()
     );
 
+    const selectedRegionsFilterActive$ = this.searchCriteriaService.searchCriteria$.pipe(
+      map((criteria) => (criteria.SelectedRegions || []).length > 0)
+    );
+
+    this.disableMapExtentToggle$ = combineLatest([noMapExtentAvailable$, selectedRegionsFilterActive$]).pipe(
+      map(([noMapExtent, regionsSelected]) => noMapExtent || regionsSelected)
+    );
+
     this.useMapExtentFilter$ = combineLatest([
-      this.noMapExtentAvailable$.pipe(map((noExtent) => !noExtent)),
+      noMapExtentAvailable$.pipe(map((noExtent) => !noExtent)),
       this.searchCriteriaService.useMapExtent$,
+      selectedRegionsFilterActive$,
     ]).pipe(
-      map(([hasExtent, useExtent]) => hasExtent && useExtent),
+      map(([hasExtent, useExtent, regionFilter]) => !regionFilter && hasExtent && useExtent),
       map((useExtentFilter) => (useExtentFilter ? 'mapBorders' : 'all'))
     );
   }
@@ -123,9 +132,8 @@ export class ObservationListPage implements OnInit {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
-  async toggleFilterByMapView(event: SegmentCustomEvent) {
-    const isDisabled = await firstValueFrom(this.noMapExtentAvailable$);
-    if (!isDisabled) {
+  toggleFilterByMapView(event: SegmentCustomEvent) {
+    if (!event.target.disabled) {
       const value = event.target.value as MapSectionFilter;
       const isExtentFilterActive = value == 'all' ? false : true;
       this.searchCriteriaService.setExtentFilterActive(isExtentFilterActive);

@@ -14,9 +14,9 @@
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label
-        [selectedItemsCount]="observationTypesSelectedCount"
-      ></app-selected-items-counter-label>
+      <app-selected-items-counter-label [selectedItemsCount]="observationTypesSelectedCount">
+        {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
+      </app-selected-items-counter-label>
     </ion-list-header>
 
     <ion-item>
@@ -33,6 +33,50 @@
           </ion-item>
         </ng-container>
         <app-slush-flow-filter> </app-slush-flow-filter>
+      </ion-list>
+    </ion-item>
+  </ng-container>
+
+  <!-- Avalanche Regions -->
+  <ng-container *ngIf="regions$ | async as regions">
+    <ion-list-header color="varsom-blue" class="ion-no-margin">
+      <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
+        {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
+      </app-selected-items-counter-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-list lines="none" style="max-height: 400px">
+        <!-- A regioner -->
+        <ng-container *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
+          <ion-item class="item-height">
+            <ion-checkbox
+              [value]="region"
+              [checked]="region.checked"
+              (ionChange)="regionCheckBoxChanged($event)"
+              color="varsom-dark-blue"
+            >
+            </ion-checkbox>
+            <ion-label class="ion-padding-start">{{ region.name }}</ion-label>
+          </ion-item>
+        </ng-container>
+
+        <!-- Skilletekst -->
+        <ion-item class="unselectable">{{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}</ion-item>
+
+        <!-- B regioner -->
+        <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
+          <ion-item class="item-height">
+            <ion-checkbox
+              [value]="region"
+              [checked]="region.checked"
+              (ionChange)="regionCheckBoxChanged($event)"
+              color="varsom-dark-blue"
+            >
+            </ion-checkbox>
+            <ion-label class="ion-padding-start">{{ region.name }}<span>&nbsp;(B)</span></ion-label>
+          </ion-item>
+        </ng-container>
       </ion-list>
     </ion-item>
   </ng-container>

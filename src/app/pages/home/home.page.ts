@@ -7,14 +7,21 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { Immutable } from 'src/app/core/models/immutable';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   SearchRegistrationService,
   SearchResult,
 } from 'src/app/core/services/search-registration/search-registration.service';
-import { AtAGlanceViewModel, PositionDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api/models';
+import {
+  AtAGlanceViewModel,
+  PositionDto,
+  SearchCriteriaRequestDto,
+  WithinExtentCriteriaDto,
+} from 'src/app/modules/common-regobs-api/models';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { enterZone } from '../../core/helpers/observable-helper';
@@ -195,10 +202,28 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     const searchCriteriaWithLargerExtent = this.searchCriteriaService.searchCriteria$.pipe(
       //get current search criteria together with previous criteria, so we can check what's changed
       scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
-      //skip if extent is null (when showing 'all' observations in the list view) to avoid exceptions
-      filter(([, current]) => current.Extent != null),
-      filter(([prev, current]) => {
-        //will prevent zoom in to trigger new search
+      filter(([prev, current]: [Immutable<SearchCriteriaRequestDto>, Immutable<SearchCriteriaRequestDto>]) => {
+        // Two geographical properties on search criteria can be used to specify search extent:
+        // SelectedRegions and Extent. We need to check if both of them has changed to see if we should send a new
+        // AtAGlance request
+
+        // Start by comparing SelectedRegions for current and previous criteria if Extent filter is not active
+        if (!current.Extent) {
+          if (current.SelectedRegions?.length) {
+            const regionsLengthHasChanged = current.SelectedRegions.length !== (prev?.SelectedRegions?.length || 0);
+            if (!regionsLengthHasChanged) {
+              return current.SelectedRegions.some((r, i) => prev.SelectedRegions[i] !== r);
+            }
+            return regionsLengthHasChanged;
+          } else {
+            // No extent and no selected regions, should not happen, but return true as a fallback to trigger a search
+            this.loggingService.log('No extent and no selected regions', null, LogLevel.Warning, DEBUG_TAG);
+            return true;
+          }
+        }
+
+        // This will prevent zoom in to trigger new search if the new extent is inside the
+        // previous extent
         let currentBounds;
         if (current.Extent) {
           currentBounds = withinExtentCriteriaToBounds(current.Extent);
