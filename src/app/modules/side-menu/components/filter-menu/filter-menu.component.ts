@@ -149,37 +149,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     );
   }
 
-  private getSnowRegions() {
-    // Fetch avalanche regions from assets
-    return this.http.get<AvalancheRegion[]>('./assets/json/avalancheRegions.json').pipe(
-      tap(() => this.logger.debug('Fetched regions from assets', DEBUG_TAG)),
-      // Use search criteria to mark what regions are checked
-      switchMap((regions) =>
-        this.searchCriteriaService.searchCriteria$.pipe(
-          map((searchCriteria) => {
-            const markChecked = (r: AvalancheRegion) => ({
-              ...r,
-              checked: (searchCriteria.SelectedRegions || []).includes(r.id),
-            });
-
-            return {
-              a: regions.filter((r) => r.type === 'A').map((r) => markChecked(r)),
-              b: regions.filter((r) => r.type === 'B').map((r) => markChecked(r)),
-            };
-          })
-        )
-      )
-    );
-  }
-
-  regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
-    if (event.detail.checked) {
-      this.searchCriteriaService.addToRegionFilter(event.detail.value.id);
-    } else {
-      this.searchCriteriaService.removeFromRegionFilter(event.detail.value.id);
-    }
-  }
-
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
@@ -217,6 +186,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.nickName = criteria.ObserverNickName;
       this.cdr.markForCheck();
     });
+  }
+
+  regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
+    if (event.detail.checked) {
+      this.searchCriteriaService.addToRegionFilter(event.detail.value.id);
+    } else {
+      this.searchCriteriaService.removeFromRegionFilter(event.detail.value.id);
+    }
   }
 
   isSupported(filterType: FilterType): boolean {
@@ -408,5 +385,28 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
     const noDuplicates = removeDuplicatesFromObservationTypes(arrToReturn);
     return noDuplicates;
+  }
+
+  private getSnowRegions() {
+    // Fetch avalanche regions from assets
+    return this.http.get<AvalancheRegion[]>('./assets/json/avalancheRegions.json').pipe(
+      tap(() => this.logger.debug('Fetched regions from assets', DEBUG_TAG)),
+      // Use search criteria to mark what regions are checked
+      switchMap((regions) =>
+        this.searchCriteriaService.searchCriteria$.pipe(
+          map((searchCriteria) => {
+            const markChecked = (r: AvalancheRegion) => ({
+              ...r,
+              checked: (searchCriteria.SelectedRegions || []).includes(r.id),
+            });
+
+            return {
+              a: regions.filter((r) => r.type === 'A').map((r) => markChecked(r)),
+              b: regions.filter((r) => r.type === 'B').map((r) => markChecked(r)),
+            };
+          })
+        )
+      )
+    );
   }
 }
