@@ -1,9 +1,5 @@
 <div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)"></div>
-<app-map-controls
-  [showMapSearch]="showMapSearch"
-  [showFullscreenToggle]="showFullscreenToggle"
-  [showGpsCenter]="showGpsCenter"
-></app-map-controls>
+<app-map-controls [showFullscreenToggle]="showFullscreenToggle" [showGpsCenter]="showGpsCenter"></app-map-controls>
 
 <div
   #observerTripsContainer

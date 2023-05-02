@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-map-search',
@@ -6,9 +8,11 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./map-search.component.scss'],
 })
 export class MapSearchComponent {
-  @Input() mapSearchOpen = false;
-
-  openModal() {
-    this.mapSearchOpen = true;
+  constructor(private modalController: ModalController) {}
+  async openModal(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: ModalSearchPage,
+    });
+    modal.present();
   }
 }
