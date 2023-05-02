@@ -63,7 +63,7 @@
         [convertRatio]="100"
         suffix="cm"
       ></app-numeric-input>
-      <app-yes-no-select [(value)]="isWaterBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
+      <app-yes-no-select [(value)]="isWaterBefore" label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
       </app-yes-no-select>
       <app-numeric-input
         *ngIf="isWaterBefore"
@@ -78,7 +78,7 @@
         suffix="cm"
       >
       </app-numeric-input>
-      <app-yes-no-select [(value)]="isWaterAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE">
+      <app-yes-no-select [(value)]="isWaterAfter" label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE">
       </app-yes-no-select>
       <app-numeric-input
         *ngIf="isWaterAfter === true"

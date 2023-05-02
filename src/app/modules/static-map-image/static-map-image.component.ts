@@ -42,6 +42,7 @@ import {
   skipWhile,
   Subject,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { ImageLocation } from '../../components/img-swiper/image-location.model';
 import { settings } from '../../../settings';
@@ -162,6 +163,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     })),
     distinctUntilChanged((prev, curr) => prev.h === curr.h && prev.w === curr.w),
     map(({ w, h }) => ({ w: +w, h: +h })),
+    tap(({ w, h }) => console.log('al', { w, h })),
     share()
   );
 
