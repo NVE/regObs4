@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
 import { ModalController } from '@ionic/angular';
 
@@ -9,6 +9,7 @@ import { ModalController } from '@ionic/angular';
 })
 export class MapSearchComponent {
   constructor(private modalController: ModalController) {}
+
   async openModal(): Promise<void> {
     const modal = await this.modalController.create({
       component: ModalSearchPage,
