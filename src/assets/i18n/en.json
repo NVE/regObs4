@@ -269,6 +269,7 @@
     "NO_IMAGES_TEXT": "There are no images found in the map section, try to change the view or expand the period you want to see observations from",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
+    "NO_OBSERVATIONS_TEXT_WEB": "There are no observations that matches current filter. If you didn't find what you looked for you may try to change the filter.",
     "SORT_BY_CHANGE_TIME": "Recently updated",
     "SORT_BY_OBS_TIME": "Recently observed",
     "SORT_BY_TEXT": "Order by",

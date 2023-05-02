@@ -99,7 +99,7 @@
   </ng-template>
 
   <ng-template #empty>
-    <ion-grid *ngIf="!(error$ | async) && registrations != null" class="full-grid">
+    <ion-grid *ngIf="!(error$ | async) && registrations != null && isNative" class="full-grid">
       <ion-row class="full-grid-row">
         <div class="center">
           <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
@@ -108,16 +108,24 @@
           <svg-icon class="pin3" src="/assets/images/empty-states/pin.svg"></svg-icon>
         </div>
       </ion-row>
-      <ion-row class="col-flex-direction ion-text-center ion-margin-horizontal">
+      <ion-row class="error ion-text-center ion-margin-horizontal">
         <h2>{{ "OBSERVATION_LIST.NO_OBSERVATIONS" | translate }}</h2>
       </ion-row>
-      <ion-row class="col-flex-direction ion-text-center ion-margin-horizontal">
+      <ion-row class="error ion-text-center ion-margin-horizontal">
         <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_OBSERVATIONS_TEXT" | translate }}</h3></ion-row
       >
     </ion-grid>
-    <ion-grid *ngIf="error$ | async" class="full-grid, error">
-      <ion-row class="full-grid-row">
-        <ion-col class="col-flex-direction ion-text-center ion-margin-horizontal">
+    <ion-grid *ngIf="!(error$ | async) && registrations != null && !isNative" class="full-grid">
+      <ion-row class="error ion-text-center ion-margin-horizontal">
+        <h2>{{ "OBSERVATION_LIST.NO_OBSERVATIONS" | translate }}</h2>
+      </ion-row>
+      <ion-row class="error ion-text-center ion-margin-horizontal">
+        <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_OBSERVATIONS_TEXT_WEB" | translate }}</h3></ion-row
+      >
+    </ion-grid>
+    <ion-grid *ngIf="error$ | async">
+      <ion-row>
+        <ion-col class="error ion-text-center ion-margin-horizontal">
           <h2>{{ "OBSERVATION_LIST.SEARCH_ERROR_TITLE" | translate }}</h2>
           <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.SEARCH_ERROR_DESCRIPTION" | translate }}</h3>
         </ion-col>
