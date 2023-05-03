@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
-  catchError,
   combineLatest,
   concatMap,
   distinctUntilChanged,
   finalize,
   map,
   Observable,
-  of,
   scan,
   shareReplay,
   startWith,

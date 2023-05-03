@@ -23,16 +23,10 @@
       *ngFor="let reg of myRegistrations; trackBy: trackByIdFunc"
       [obs]="reg"
     ></app-observation-list-card>
+    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-list>
-  <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-    <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-  <ion-row *ngIf="(searchResult.maxItemsFetched$ | async) === true" class="full-grid-row max-count-reached">
-    <ion-col class="ion-text-center ion-margin-horizontal">
-      <h2>{{ "OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER" | translate }}</h2>
-      <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT" | translate: { maxCount: maxCount } }}</h3>
-    </ion-col>
-  </ion-row>
 </ng-container>
 <ng-template #skeleton>
   <app-observation-skeleton></app-observation-skeleton>

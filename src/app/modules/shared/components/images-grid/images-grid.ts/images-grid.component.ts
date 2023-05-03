@@ -14,9 +14,6 @@ import { HasRegId } from 'src/app/modules/common-registration/registration.helpe
 export class ImagesGridComponent {
   @Input() attachments: SearchRegistrationsWithAttachments[];
 
-  // fakeArray to show more components when the skeleton loads
-  fakeArray = new Array(30);
-
   constructor(private logger: LoggingService, private modalController: ModalController) {}
 
   trackById(_, obs: HasRegId) {

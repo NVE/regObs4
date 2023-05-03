@@ -195,7 +195,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.error$.next(false); // Clear current error messages if any
 
     if (subscription != null) {
-      subscription.unsubscribe;
+      subscription.unsubscribe();
     }
 
     searchResult.isFetching$

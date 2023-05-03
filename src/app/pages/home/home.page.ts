@@ -151,7 +151,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.observationSearchError$.next(false);
 
     if (this.registrationsSubscription != null) {
-      this.registrationsSubscription.unsubscribe;
+      this.registrationsSubscription.unsubscribe();
     }
 
     this.searchResult = await this.createSearchResult();
@@ -215,6 +215,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     const toast = await this.toastService.create({
       message: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE'],
       position: 'bottom',
+      cssClass: 'toast',
       buttons: [
         {
           text: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON'],
