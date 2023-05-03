@@ -9,7 +9,7 @@ import { SelectOption } from '../../../shared/components/input/select/select-opt
 export class YesNoSelectComponent {
   @Input() value: boolean;
   @Input() labelColor = 'medium';
-  @Input() label: string;
+  @Input() title: string;
   @Output() valueChange = new EventEmitter();
 
   options: SelectOption[] = [
