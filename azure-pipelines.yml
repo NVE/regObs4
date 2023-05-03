@@ -2,64 +2,63 @@
 # https://aka.ms/yaml
 
 trigger:
-- develop
+  - develop
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-- group: sentryProperties
-- name: npm_config_cache
-  value: $(Pipeline.Workspace)/.npm
-  
+  - group: sentryProperties
+  - name: npm_config_cache
+    value: $(Pipeline.Workspace)/.npm
 
 steps:
-- task: NodeTool@0
-  displayName: 'Use Node 14.x'
-  inputs:
-    versionSpec: 14.x
-    checkLatest: true
+  - task: NodeTool@0
+    displayName: 'Use Node 18.x'
+    inputs:
+      versionSpec: 18.x
+      checkLatest: true
 
-- task: Cache@2
-  inputs:
-    key: 'npm | "$(Agent.OS)" | package-lock.json'
-    restoreKeys: |
-       npm | "$(Agent.OS)"
-    path: $(npm_config_cache)
-  displayName: Cache npm
+  - task: Cache@2
+    inputs:
+      key: 'npm | "$(Agent.OS)" | package-lock.json'
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+      path: $(npm_config_cache)
+    displayName: Cache npm
 
-- script: npm ci
+  - script: npm ci
 
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file'
-  inputs:
-    secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
-    retryCount: 5
+  - task: DownloadSecureFile@1
+    displayName: 'Download secure file'
+    inputs:
+      secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
+      retryCount: 5
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: ./src/assets'
-  inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
-    Contents: apikey.json
-    TargetFolder: ./src/assets
-- task: Npm@1
-  displayName: 'npm run tests'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run test-ci'
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: ./src/assets'
+    inputs:
+      SourceFolder: '$(Agent.TempDirectory)'
+      Contents: apikey.json
+      TargetFolder: ./src/assets
+  - task: Npm@1
+    displayName: 'npm run tests'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run test-ci'
 
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results **/TESTS-*.xml'
-  condition: succeededOrFailed() 
-  inputs:
-    testResultsFiles: '**/TESTS-*.xml'
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results **/TESTS-*.xml'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: '**/TESTS-*.xml'
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage from **/cobertura-coverage.xml'
-  condition: succeededOrFailed() 
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
-    failIfCoverageEmpty: true
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage from **/cobertura-coverage.xml'
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+      failIfCoverageEmpty: true
