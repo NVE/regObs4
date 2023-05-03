@@ -33,13 +33,13 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_WATER_056410803 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
-          action: "upload"
+          action: 'upload'
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
+          app_location: '/' # App source code path
           # api_location: "api" # Api source code path - optional
-          output_location: "www" # Built app content directory - optional
-          app_build_command: "npm run create-version-file && npm run build"
+          output_location: 'www' # Built app content directory - optional
+          app_build_command: 'npm run create-version-file && npm run build'
           ###### End of Repository/Build Configurations ######
 
   # Run when we push to develop
@@ -51,8 +51,7 @@ jobs:
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       SENTRY_URL: ${{ secrets.SENTRY_URL }}
-      
-      
+
     name: Build and Deploy develop-branch (beta.regobs.no)
     steps:
       - uses: actions/checkout@v2
@@ -70,29 +69,28 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_WATER_056410803 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
-          action: "upload"
+          action: 'upload'
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
+          app_location: '/' # App source code path
           # api_location: "api" # Api source code path - optional
-          output_location: "www" # Built app content directory - optional
+          output_location: 'www' # Built app content directory - optional
           # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
-          app_build_command: "npm run translations:add-nn-app-fallback && npm run create-version-file && npm run build:prod"
+          app_build_command: 'npm run translations:add-nn-app-fallback && npm run create-version-file && npm run build:prod'
           ###### End of Repository/Build Configurations ######
       - id: set_version
         run: |
-          content=cat package.json | jq -r '.version'
+          content=`cat ./src/environments/version.json`
           echo "::set-output name=packageJson::$content"
       - run: |
           echo '${{fromJson(steps.set_version.outputs.packageJson).version}}'
-      ###### Install Sentry CLI & Create new Sentry releas ######  
+      ###### Install Sentry CLI & Create new Sentry releas ######
       - run: |
-          curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION=2.17.5 bash
+          curl -sL https://sentry.io/get-cli/ | bash
           sentry-cli releases new ${{fromJson(steps.set_version.outputs.packageJson).version}}
           sentry-cli releases files ${{fromJson(steps.set_version.outputs.packageJson).version}} upload-sourcemaps www -x .js -x .map --dist ${{fromJson(steps.set_version.outputs.packageJson).revision}} --log-level=debug --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
           sentry-cli releases finalize ${{fromJson(steps.set_version.outputs.packageJson).version}}
- 
- 
+
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
@@ -103,4 +101,4 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_WATER_056410803 }}
-          action: "close"
+          action: 'close'
