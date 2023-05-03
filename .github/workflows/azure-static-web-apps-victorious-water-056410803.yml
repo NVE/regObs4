@@ -16,6 +16,8 @@ jobs:
   build_and_deploy_pull_request:
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
+    env:
+      SHELL: ${{ vars.SHELL}}
     name: Build and Deploy Pull Request
     steps:
       - uses: actions/checkout@v2

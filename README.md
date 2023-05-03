@@ -4,7 +4,7 @@ This is the Varsom RegObs app version 4. It is based on code from version 3 but 
 
 ## Installation
 
-1. Installer node v14 [Installer node v14.x.x](https://nodejs.org/download/release/latest-v14.x/) (.msi-fil for
+1. Installer node v16 [Installer node v16.x.x](https://nodejs.org/download/release/latest-v16.x/) (.msi-fil for
    Windows) **
    Ikke nyere eller
    eldre versjon**
@@ -308,7 +308,7 @@ Overwrite /assets/json/regions-simple-polygons.json
 For hver commit til develop-branchen skal Lokalise automatisk hente endringer fra github. Hvis ikke dette fungerer kan en "pull" til
 Lokalise fra Github trigges manuelt fra Lokalise.
 
-For å bruke script som går mot Lokalise trengs en api-key som kan opprettes under din bruker i Lokalise. Legg den i `translations\lokalise-api-key.json` med innhold 
+For å bruke script som går mot Lokalise trengs en api-key som kan opprettes under din bruker i Lokalise. Legg den i `translations\lokalise-api-key.json` med innhold
 
 ```
 {"apiKey": "..."}
