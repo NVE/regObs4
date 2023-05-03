@@ -92,12 +92,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   private isFetchingObservations = new BehaviorSubject(false);
   isFetchingObservations$: Observable<boolean>;
+  private toast: HTMLIonToastElement; // Shows error message if observation search fail
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
-  observationSearchError$ = new BehaviorSubject(false); // True if last search failed
-  private onDestroy$ = new Subject<void>();
   private refreshRequested$ = new Observable<unknown>();
 
   constructor(
@@ -127,14 +126,14 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
       });
 
-    this.tabsService.selectedTab$
-      .pipe(filter((tab) => tab === TABS.HOME))
-      .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
+    this.tabsService.selectedTab$.pipe(filter((tab) => tab === TABS.HOME)).subscribe(() => {
+      this.toast?.dismiss(); // Hide error message when we arrive at this page
+      this.updateObservationsService.setLastFetched(this.lastFetched);
+    });
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
     this.initSearch();
-    this.initObservationsErrorToast();
 
     this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
       withLatestFrom(this.tabsService.selectedTab$),
@@ -165,13 +164,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     let registrations: AtAGlanceViewModel[] = [];
     try {
       registrations = await firstValueFrom(this.searchService.SearchAtAGlance(searchCriteria).pipe(timeout(120000)));
-      this.observationSearchError$.next(false);
+      this.hideErrorToast();
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        //TODO!
-      }
       this.loggingService.log('Error in search', error, LogLevel.Warning, DEBUG_TAG);
-      this.observationSearchError$.next(true);
+      this.showSearchErrorToast();
       this.rememberExtent(null); // To trigger new search on next pan or zoom
     }
     return registrations;
@@ -187,42 +183,15 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     );
   }
 
-  private initObservationsErrorToast() {
-    this.observationSearchError$
-      .pipe(
-        filter((error) => error),
-        // Use exhaustmap to avoid multiple error toasts at once
-        exhaustMap(() =>
-          from(this.showSearchErrorToast()).pipe(
-            switchMap((toast) =>
-              // We have created the toast,
-              // now wait until user dismisses it or navigates away
-              // or we get a "successfull" search
-              from(toast.onDidDismiss()).pipe(
-                takeUntil(
-                  race(
-                    this.observationSearchError$.pipe(filter((error) => !error)),
-                    this.tabsService.selectedTab$.pipe(skip(1))
-                  )
-                ),
-                finalize(() => toast.dismiss())
-              )
-            )
-          )
-        ),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
-  }
-
   private async showSearchErrorToast() {
+    await this.hideErrorToast();
     const translations = await firstValueFrom(
       this.translateService.get([
         'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE',
         'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON',
       ])
     );
-    const toast = await this.toastService.create({
+    this.toast = await this.toastService.create({
       message: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE'],
       position: 'bottom',
       cssClass: 'toast',
@@ -233,9 +202,21 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         },
       ],
     });
+    this.toast.onDidDismiss().then(() => {
+      this.toast = null;
+    });
+    await this.toast.present();
+  }
 
-    await toast.present();
-    return toast;
+  private async hideErrorToast() {
+    if (this.toast) {
+      await this.toast.dismiss();
+      this.toast = null;
+    }
+  }
+
+  private isErrorToastVisible(): boolean {
+    return this.toast != null;
   }
 
   get appname(): string {
@@ -326,12 +307,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
           }
         }
 
-        // This will prevent zoom in to trigger new search if the new extent is inside the
-        // previous extent
+        // This will prevent zoom in to trigger new search if the new extent is inside the previous extent
         let currentBounds;
         if (current.Extent) {
           currentBounds = withinExtentCriteriaToBounds(current.Extent);
-          if (!prev || this.observationSearchError$.getValue()) {
+          if (!prev || this.isErrorToastVisible()) {
             this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
           }
