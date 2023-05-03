@@ -103,7 +103,7 @@
   },
   "HOME_PAGE": {
     "OBSERVATIONS_SEARCH_ERROR": {
-      "MESSAGE": "Failed to fetch observations. Please use refresh-button in filter menu to try again",
+      "MESSAGE": "Failed to fetch observations. Please try again by pan/zoom or use refresh button",
       "BUTTON": "Dismiss"
     }
   },

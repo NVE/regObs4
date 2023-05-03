@@ -14,9 +14,9 @@ import {
   race,
   Subject,
   scan,
-  Subscription,
   BehaviorSubject,
   from,
+  TimeoutError,
 } from 'rxjs';
 import {
   debounceTime,
@@ -26,16 +26,17 @@ import {
   finalize,
   map,
   skip,
+  startWith,
   switchMap,
   takeUntil,
+  tap,
+  timeout,
   withLatestFrom,
 } from 'rxjs/operators';
 import { Immutable } from 'src/app/core/models/immutable';
+import { SearchCriteria } from 'src/app/core/models/search-criteria';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import {
-  SearchRegistrationService,
-  SearchResult,
-} from 'src/app/core/services/search-registration/search-registration.service';
+import { SearchService } from 'src/app/modules/common-regobs-api';
 import {
   AtAGlanceViewModel,
   PositionDto,
@@ -87,22 +88,22 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   showGeoSelectInfo = false;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
-  private searchResult: SearchResult<AtAGlanceViewModel>;
   private shouldSearchResultUpdateOnEnter: boolean;
 
+  private isFetchingObservations = new BehaviorSubject(false);
   isFetchingObservations$: Observable<boolean>;
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
-  private registrationsSubscription: Subscription;
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
-  observationSearchError$ = new BehaviorSubject(false);
+  observationSearchError$ = new BehaviorSubject(false); // True if last search failed
   private onDestroy$ = new Subject<void>();
+  private refreshRequested$ = new Observable<unknown>();
 
   constructor(
     router: Router,
     route: ActivatedRoute,
-    private searchRegistrationService: SearchRegistrationService,
+    private searchService: SearchService,
     private updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private fullscreenService: FullscreenService,
@@ -131,50 +132,59 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
+    this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
     this.initSearch();
     this.initObservationsErrorToast();
 
-    this.updateObservationsService.refreshRequested$
-      .pipe(withLatestFrom(this.tabsService.selectedTab$))
-      .subscribe(([, tab]) => {
+    this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
+      withLatestFrom(this.tabsService.selectedTab$),
+      filter(([, tab]) => {
         if (tab === TABS.HOME) {
-          this.initSearch().then(() => this.searchResult.update());
           this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+          return true;
         } else {
           this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+          return false;
         }
-      });
+      })
+    );
   }
 
   private async initSearch() {
     this.loggingService.debug('initSearch...', DEBUG_TAG);
-    this.observationSearchError$.next(false);
 
-    if (this.registrationsSubscription != null) {
-      this.registrationsSubscription.unsubscribe();
+    const criteria$ = await this.createSearchCriteria$();
+    this.createRegistrations$(criteria$).subscribe((registrations) => {
+      this.redrawObservationMarkers(registrations);
+      this.lastFetched = new Date();
+      this.updateObservationsService.setLastFetched(this.lastFetched);
+    });
+  }
+
+  private async runApiSearch(searchCriteria: SearchCriteriaRequestDto): Promise<AtAGlanceViewModel[]> {
+    let registrations: AtAGlanceViewModel[] = [];
+    try {
+      registrations = await firstValueFrom(this.searchService.SearchAtAGlance(searchCriteria).pipe(timeout(120000)));
+      this.observationSearchError$.next(false);
+    } catch (error) {
+      if (error instanceof TimeoutError) {
+        //TODO!
+      }
+      this.loggingService.log('Error in search', error, LogLevel.Warning, DEBUG_TAG);
+      this.observationSearchError$.next(true);
+      this.rememberExtent(null); // To trigger new search on next pan or zoom
     }
+    return registrations;
+  }
 
-    this.searchResult = await this.createSearchResult();
-
-    this.isFetchingObservations$ = this.searchResult.isFetching$;
-
-    this.registrationsSubscription = combineLatest([
-      this.searchResult.registrations$,
-      this.userSettingService.showObservations$,
-    ])
-      .pipe(map(([registrations, show]) => (show ? registrations : [])))
-      .subscribe({
-        next: (registrations) => {
-          this.observationSearchError$.next(false);
-          this.redrawObservationMarkers(registrations);
-          this.lastFetched = new Date();
-          this.updateObservationsService.setLastFetched(this.lastFetched);
-        },
-        error: (err) => {
-          this.loggingService.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
-          this.observationSearchError$.next(true);
-        },
-      });
+  private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
+    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true))]).pipe(
+      map(([searchCriteria]) => searchCriteria),
+      // We are fetching new data, so set isFetching to true
+      tap(() => this.isFetchingObservations.next(true)),
+      switchMap((criteria: SearchCriteriaRequestDto) => this.runApiSearch(criteria)),
+      tap(() => this.isFetchingObservations.next(false))
+    );
   }
 
   private initObservationsErrorToast() {
@@ -249,8 +259,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   checkIfShouldSearchCriteriaUpdateOnEnter() {
-    if (this.shouldSearchResultUpdateOnEnter && this.searchResult) {
-      this.searchResult.update();
+    if (this.shouldSearchResultUpdateOnEnter) {
+      this.updateObservationsService.requestRefresh();
       this.shouldSearchResultUpdateOnEnter = false;
     }
   }
@@ -286,7 +296,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     });
   }
 
-  private async createSearchResult(): Promise<SearchResult<AtAGlanceViewModel>> {
+  private async createSearchCriteria$(): Promise<Observable<Immutable<SearchCriteriaRequestDto>>> {
     const startTime = performance.now();
     await firstValueFrom(this.mapService.relevantMapChangeWithInitialView$);
     this.loggingService.debug(
@@ -342,15 +352,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
           return this.rememberExtent(currentBounds);
         }
       }),
-      map(([, current]) => current) //return current criteria
+      map(([, current]) => current)
     );
-    return this.searchRegistrationService.atAGlance(searchCriteriaWithLargerExtent);
-
-    // Du kan bruke denne for å teste søk uten kartutsnitt i stedet
-    // const searchCriteriaWithoutExtent = this.searchCriteriaService.searchCriteria$.pipe(
-    //   map((criteria) => ({ ...criteria, Extent: undefined }))
-    // );
-    // return this.searchRegistrationService.atAGlance(searchCriteriaWithoutExtent);
+    return searchCriteriaWithLargerExtent;
   }
 
   private rememberExtent(bounds: L.LatLngBounds): boolean {
