@@ -1,4 +1,5 @@
 <ion-button
+  *ngIf="isPlatformNative; else showWebDateInput"
   fill="clear"
   expand="block"
   class="datetimepicker-button"
@@ -27,9 +28,9 @@
     <ion-content>
       <ion-datetime
         [value]="dateTime"
-        (ionChange)="updateTempDateTime($event)"
-        [max]="maxDate"
+        (ionChange)="updateTempDateTime($event.detail.value)"
         [min]="minDate"
+        [max]="maxDate"
         id="datetime"
         [firstDayOfWeek]="1"
         [locale]="language"
@@ -39,3 +40,16 @@
     </ion-content>
   </ng-template>
 </ion-modal>
+
+<ng-template #showWebDateInput>
+  <input
+    class="input-field date"
+    [type]="dateInputType"
+    name="dateFormatForWeb"
+    (change)="changeDateOnWeb($event.target.value)"
+    [value]="dateFormatForWeb"
+    (blur)="changeDateOnWeb($event.target.value)"
+    [min]="minDate"
+    [max]="maxDate"
+  />
+</ng-template>

@@ -8,6 +8,7 @@ import 'leaflet-draw';
 import moment from 'moment';
 import { firstValueFrom, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -23,6 +24,7 @@ import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -70,6 +72,7 @@ export function mapCenterIsStableOrNotAvailable(previousView: IMapView, currentV
   styleUrls: ['./set-location-in-map.component.scss'],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
+  isPlatformNative = Capacitor.isNativePlatform();
   @Input() geoHazard: GeoHazard;
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
@@ -88,7 +91,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   /**
    * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
    */
-  @Input() showPolyline = Capacitor.isNativePlatform();
+  @Input() showPolyline = this.isPlatformNative;
   @Input() allowEditLocationName = false;
   @Input() setObsTime = false;
   @Input() localDate: string;
@@ -110,12 +113,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   locationPolygons: IPolygon[] = [];
   locationPolygonEditIdx = -1;
   toggleEditingMode: () => void;
+  dateInputErrorMessage = '';
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
   locationName: string;
 
   maxDate: string;
+  minDate: string;
 
   locale: string;
 
@@ -127,6 +132,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   constructor(
     private mapService: MapService,
+    private dateHelper: DateHelperService,
     private helperService: HelperService,
     private ngZone: NgZone,
     private mapSearchService: MapSearchService,
@@ -483,12 +489,35 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  confirm(): void {
+  async confirm(): Promise<void> {
+    this.dateInputErrorMessage = '';
     const obsLocation = this.getLocation();
     let obsTime: string = undefined;
     if (this.setObsTime) {
+      if (this.localDate) {
+        if (this.localDate > this.maxDate) {
+          const translation = await firstValueFrom(
+            this.translateService.get(['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_LATER'], {
+              maxDate: moment(this.maxDate).format('DD.MM.YYYY HH:mm'),
+            })
+          );
+          this.dateInputErrorMessage = translation['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_LATER'];
+          return;
+        }
+        if (this.localDate < this.minDate) {
+          const translation = await firstValueFrom(
+            this.translateService.get(['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_SOONER'], {
+              minDate: moment(this.minDate).format('DD.MM.YYYY HH:mm'),
+            })
+          );
+          this.dateInputErrorMessage = translation['REGISTRATION.OBS_LOCATION.DATE_CANNOT_BE_SOONER'];
+          return;
+        }
+      }
+
       obsTime = this.localDate || moment().toISOString(true);
     }
+
     const locationTime = {
       location: obsLocation,
       datetime: obsTime,
@@ -542,14 +571,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   setToNow() {
     const now = moment().toISOString(true);
-    this.maxDate = this.getMaxDateForNow();
+    this.maxDate = this.dateHelper.getMaxDateForNowWithHours();
+    this.minDate = this.dateHelper.getMinDateForNowWithHours();
     this.localDate = now;
-  }
-
-  getMaxDateForNow() {
-    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
-    // Workaround is to set minutes to 59.
-    return moment().minutes(59).toISOString(true);
   }
 
   setTranslatedAccuracies() {

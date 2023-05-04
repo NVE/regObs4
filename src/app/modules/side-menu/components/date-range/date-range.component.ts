@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map, Observable, combineLatest, Subject } from 'rxjs';
+import { map, Observable, combineLatest } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
 import { IonAccordionGroup } from '@ionic/angular';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 import { Capacitor } from '@capacitor/core';
 
 @Component({
@@ -13,34 +14,56 @@ import { Capacitor } from '@capacitor/core';
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
 })
-export class DateRangeComponent extends NgDestoryBase {
-  minDate = new Date('2010-01-01T00:00:00').toISOString();
-  maxDate = new Date().toISOString();
+export class DateRangeComponent extends NgDestoryBase implements OnInit {
+  fromDate: string;
+  toDate: string | null = null;
+  useDaysBack$: Observable<boolean>;
+  dateRangeText: string;
+
+  minDate;
+  maxDate;
   isOpen = false;
   isNativePlatform: boolean;
-  mode$: Observable<'predefined' | 'custom'>;
   modeText$: Observable<string>;
   fromDate$: Observable<string>;
   toDate$: Observable<string>;
-  useDaysBack$: Observable<boolean>;
-  readableDays$: Observable<string>;
   dateRangeText$: Observable<string>;
+  mode: 'predefined' | 'custom';
+  isToDateEarlierThanFromDate = false;
 
-  constructor(private searchCriteriaService: SearchCriteriaService, public userSettingService: UserSettingService) {
+  constructor(
+    private searchCriteriaService: SearchCriteriaService,
+    public userSettingService: UserSettingService,
+    private dateHelperService: DateHelperService
+  ) {
     super();
-    this.mode$ = this.searchCriteriaService.useDaysBack$.pipe(
-      map((useDaysBack) => (useDaysBack ? 'predefined' : 'custom'))
-    );
     this.isNativePlatform = Capacitor.isNativePlatform();
     this.fromDate$ = this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.FromDtObsTime));
 
     this.toDate$ = this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime));
 
     this.useDaysBack$ = this.searchCriteriaService.useDaysBack$;
+    this.searchCriteriaService.useDaysBack$.subscribe((useDaysBack) => {
+      this.mode = useDaysBack ? 'predefined' : 'custom';
+    });
 
     this.dateRangeText$ = combineLatest([this.fromDate$, this.toDate$]).pipe(
       map(([fromDate, toDate]) => generateDateRange(fromDate, toDate))
     );
+  }
+
+  async ngOnInit() {
+    this.searchCriteriaService.searchCriteria$
+      .pipe(map((criteria) => this.dateHelperService.getWebDateInputFormat(criteria.FromDtObsTime)))
+      .subscribe((fromDate) => {
+        this.isToDateEarlierThanFromDate = false;
+        this.fromDate = fromDate;
+      });
+    this.searchCriteriaService.searchCriteria$
+      .pipe(
+        map((criteria) => criteria.ToDtObsTime && this.dateHelperService.getWebDateInputFormat(criteria.ToDtObsTime))
+      )
+      .subscribe((toDate) => (this.toDate = toDate));
   }
 
   /**
@@ -67,11 +90,23 @@ export class DateRangeComponent extends NgDestoryBase {
   }
 
   setFromDate(date: string): void {
-    this.searchCriteriaService.setFromDate(date);
+    this.fromDate = date;
   }
 
   setToDate(date: string): void {
-    this.searchCriteriaService.setToDate(date);
+    this.toDate = date;
+  }
+
+  onClickSetDate() {
+    this.isToDateEarlierThanFromDate = false;
+    const toDate = this.toDate && moment(this.toDate).toISOString(true);
+    const fromDate = moment(this.fromDate).toISOString(true);
+    if (toDate && toDate < fromDate) {
+      this.isToDateEarlierThanFromDate = true;
+      return;
+    }
+    this.searchCriteriaService.setFromDate(this.fromDate);
+    this.toDate && this.searchCriteriaService.setToDate(this.toDate);
   }
 
   setUseDaysBack(daysBack: number): void {

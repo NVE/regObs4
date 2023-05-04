@@ -27,3 +27,34 @@ ion-item::part(native) {
 ion-item::part(native) {
   border-bottom: 1px solid #dedede;
 }
+
+.error-message {
+  color: #e3000f;
+}
+
+.no-margin {
+  margin-inline-end: 6px;
+}
+
+ion-item {
+  --background-focused: none;
+}
+
+.custom-date-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0.5rem 0;
+  ion-button {
+    margin: 0;
+    width: 50%;
+  }
+  > div {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+  }
+  div:first-of-type {
+    border-bottom: 1px solid #dedede;
+  }
+}

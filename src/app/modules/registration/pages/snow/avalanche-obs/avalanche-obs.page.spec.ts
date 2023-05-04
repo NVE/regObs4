@@ -7,7 +7,7 @@ describe('AvalancheObsPage', () => {
   let component: AvalancheObsPage;
   beforeEach(() => {
     const basePageService = new BasePageService(null, null, null, null, null, null);
-    component = new AvalancheObsPage(basePageService, null, null);
+    component = new AvalancheObsPage(basePageService, null, null, null);
     component.draft = {
       registration: {
         DtObsTime: new Date(2020, 0, 1).toISOString(),

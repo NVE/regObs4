@@ -1,12 +1,15 @@
+import * as L from 'leaflet';
+import moment from 'moment';
+import { ModalController } from '@ionic/angular';
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { ModalController } from '@ionic/angular';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
-import * as L from 'leaflet';
 import { BasePageService } from '../../base-page-service';
-import { ActivatedRoute } from '@angular/router';
-import moment from 'moment';
+import { DATE_FORMAT_HOURS } from '../../../../shared/services/date-helper/date-format';
+import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 
 /**
  * Form to register landslide observations
@@ -24,6 +27,7 @@ export class LandslideObsPage extends BasePage {
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
+    private dateHelper: DateHelperService,
     private modalController: ModalController
   ) {
     super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
@@ -52,24 +56,18 @@ export class LandslideObsPage extends BasePage {
       this.draft.registration.LandSlideObs.Urls = [];
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTimeEnd) {
-      this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
+      this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).format(DATE_FORMAT_HOURS);
     } else {
-      this.maxDateStart = this.getMaxDateForNow();
+      this.maxDateStart = this.dateHelper.getMaxDateForNowWithHours();
     }
     if (this.draft.registration.LandSlideObs.DtLandSlideTime) {
-      this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
+      this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).format(DATE_FORMAT_HOURS);
     }
-    this.maxDateEnd = this.getMaxDateForNow();
-  }
-
-  getMaxDateForNow() {
-    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
-    // Workaround is to set minutes to 59.
-    return moment().toISOString(true);
+    this.maxDateEnd = this.dateHelper.getMaxDateForNowWithHours();
   }
 
   dtTimeChanged() {
-    this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
+    this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).format(DATE_FORMAT_HOURS);
     if (
       this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
       moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).isBefore(
@@ -81,7 +79,7 @@ export class LandslideObsPage extends BasePage {
   }
 
   dtEndTimeChanged() {
-    this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
+    this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).format(DATE_FORMAT_HOURS);
     if (
       this.draft.registration.LandSlideObs.DtLandSlideTime &&
       moment(this.draft.registration.LandSlideObs.DtLandSlideTime).isAfter(
@@ -101,11 +99,11 @@ export class LandslideObsPage extends BasePage {
   }
 
   setDtLandSlideTimeToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().toISOString(true);
+    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().format(DATE_FORMAT_HOURS);
   }
 
   setDtLandSlideTimeEndToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(true);
+    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().format(DATE_FORMAT_HOURS);
   }
 
   async setLandslidePosition() {

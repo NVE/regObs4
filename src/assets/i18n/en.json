@@ -171,6 +171,7 @@
     "DAY_BACK": "Day back",
     "DEACTIVATE_OBSERVATIONS": "Displaying observations has been disabled",
     "END_DATE": "End date",
+    "ERROR_END_DATE": "End date cannot be sooner than start date",
     "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach. We have attached logs which may help us in troubleshooting. You can remove these if you wish.",
     "ERROR_REPORT_SUBJECT": "Error report from",
     "GENERAL": "General",
@@ -503,6 +504,8 @@
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location and time",
       "CURRENT_LOCATION": "Current position",
+      "DATE_CANNOT_BE_LATER": "Date cannot be later than {{maxDate}}",
+      "DATE_CANNOT_BE_SOONER": "Date cannot be sonner than {{minDate}}",
       "EXACT": "Exact",
       "HIDE_DETAILS": "Hide details",
       "MORETHANONEKM": "More than 1 km",

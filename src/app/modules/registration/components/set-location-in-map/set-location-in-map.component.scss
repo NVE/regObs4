@@ -13,6 +13,10 @@ $long-map-bottom-spread: 64px;
   bottom: $regular-map-bottom-spread;
 }
 
+.error-message {
+  color: #e3000f;
+}
+
 app-map {
   position: absolute;
   display: block;
@@ -98,6 +102,7 @@ app-map {
   justify-content: space-between;
   gap: 4px;
   align-items: center;
+  max-width: 50px;
 }
 
 .details-row {

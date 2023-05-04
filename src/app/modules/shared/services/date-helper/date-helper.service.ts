@@ -2,11 +2,23 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 
+import { DATE_FORMAT, DATE_FORMAT_HOURS } from './date-format';
+
 @Injectable({
   providedIn: 'root',
 })
 export class DateHelperService {
   constructor(private translateService: TranslateService) {}
+
+  getMaxDateForNowWithHours() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).format(DATE_FORMAT_HOURS);
+  }
+
+  getMinDateForNowWithHours() {
+    return moment().subtract(30, 'years').format(DATE_FORMAT_HOURS);
+  }
 
   formatDateString(
     dateString: string,
@@ -16,6 +28,15 @@ export class DateHelperService {
     currentTimeZone: string = null
   ) {
     return this.formatDate(moment.parseZone(dateString), showMonthNames, showYear, showTime, currentTimeZone);
+  }
+
+  // input type datetime on web doesnt accept time zones so we have to change format so that it can read min max dates correctly
+  getWebDateInputFormat(dateString: string): string {
+    return moment(dateString).format(DATE_FORMAT);
+  }
+
+  getWebDateTimeLocalInputFormat(dateTimeLocalString: string): string {
+    return moment(dateTimeLocalString).format(DATE_FORMAT_HOURS);
   }
 
   async formatDate(

@@ -119,13 +119,18 @@
           </div>
           <div class="flex-row">
             <div class="flex-grow box edit-button no-padding">
-              <ion-icon name="calendar"></ion-icon>&nbsp;
-              <app-datetime-picker [(dateTime)]="localDate" [maxDate]="maxDate"></app-datetime-picker>
+              <ion-icon *ngIf="isPlatformNative" style="margin-right: 0.5rem" name="calendar"></ion-icon>&nbsp;
+              <app-datetime-picker
+                [(dateTime)]="localDate"
+                [maxDate]="maxDate"
+                [minDate]="minDate"
+              ></app-datetime-picker>
             </div>
             <div class="box edit-button" (click)="setToNow()">
               <ion-icon slot="start" name="clock"></ion-icon>&nbsp;{{ "REGISTRATION.SET_TIME.NOW" | translate }}
             </div>
           </div>
+          <label class="error-message" *ngIf="dateInputErrorMessage">{{ dateInputErrorMessage }}</label>
           <div *ngIf="isDesktop" class="flex-row">
             <app-kdv-select
               class="flex-grow selectors"
