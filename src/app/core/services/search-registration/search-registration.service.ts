@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
-  catchError,
   combineLatest,
   concatMap,
   distinctUntilChanged,
+  finalize,
   map,
   Observable,
-  of,
   scan,
   shareReplay,
   startWith,
@@ -53,11 +52,10 @@ export class SearchResult<TViewModel> {
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetching.next(true)),
       switchMap((criteria) => fetchFunc(criteria as SearchCriteriaRequestDto)),
-      catchError(() => {
-        this.isFetching.next(false);
-        return of([]);
-      }),
       tap(() => this.isFetching.next(false)),
+      finalize(() => {
+        this.isFetching.next(false); // ensures that we reset fetching flag on error
+      }),
       shareReplay(1)
     );
   }
@@ -95,11 +93,6 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
           countFunc(searchCriteria as SearchCriteriaRequestDto),
         ])
       ),
-      catchError(() => {
-        this.isFetching.next(false);
-        return of([]);
-      }),
-
       // Save search state
       tap(([registrations, totalCount]) => {
         this.allFetchedForCriteria.next(registrations.length >= totalCount);
@@ -108,6 +101,9 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       // Map to registrations
       map(([registrations]) => registrations),
       tap(() => this.isFetching.next(false)),
+      finalize(() => {
+        this.isFetching.next(false); // ensures that we reset fetching flag on error
+      }),
       // Expensive observable, so share results if many subscribers
       shareReplay(1)
     );

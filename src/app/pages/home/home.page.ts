@@ -1,18 +1,42 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewChecked, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, race, Subject, scan } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { Immutable } from 'src/app/core/models/immutable';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
-  SearchRegistrationService,
-  SearchResult,
-} from 'src/app/core/services/search-registration/search-registration.service';
+  combineLatest,
+  firstValueFrom,
+  Observable,
+  race,
+  Subject,
+  scan,
+  BehaviorSubject,
+  from,
+  TimeoutError,
+} from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  exhaustMap,
+  filter,
+  finalize,
+  map,
+  skip,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+  timeout,
+  withLatestFrom,
+} from 'rxjs/operators';
+import { Immutable } from 'src/app/core/models/immutable';
+import { SearchCriteria } from 'src/app/core/models/search-criteria';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchService } from 'src/app/modules/common-regobs-api';
 import {
   AtAGlanceViewModel,
   PositionDto,
@@ -52,7 +76,7 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
+export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -64,19 +88,21 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   showGeoSelectInfo = false;
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
-  private searchResult: SearchResult<AtAGlanceViewModel>;
   private shouldSearchResultUpdateOnEnter: boolean;
 
-  isFetchingObservations: Observable<boolean>;
+  private isFetchingObservations = new BehaviorSubject(false);
+  isFetchingObservations$: Observable<boolean>;
+  private toast: HTMLIonToastElement; // Shows error message if observation search fail
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
+  private refreshRequested$ = new Observable<unknown>();
 
   constructor(
     router: Router,
     route: ActivatedRoute,
-    private searchRegistrationService: SearchRegistrationService,
+    private searchService: SearchService,
     private updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private fullscreenService: FullscreenService,
@@ -86,6 +112,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     private mapService: MapService,
+    private toastService: ToastController,
+    private translateService: TranslateService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -98,40 +126,97 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
         this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
       });
 
-    this.tabsService.selectedTab$
-      .pipe(filter((tab) => tab === TABS.HOME))
-      .subscribe(() => this.updateObservationsService.setLastFetched(this.lastFetched));
-
-    this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
-    this.initSearch();
-  }
-
-  private async initSearch() {
-    this.searchResult = await this.createSearchResult();
-
-    this.isFetchingObservations = this.searchResult.isFetching$;
-
-    combineLatest([this.searchResult.registrations$, this.userSettingService.showObservations$]).subscribe(
-      ([registrations, show]) => {
-        this.redrawObservationMarkers(show ? registrations : []);
-      }
-    );
-
-    this.searchResult.registrations$.subscribe(() => {
-      this.lastFetched = new Date();
+    this.tabsService.selectedTab$.pipe(filter((tab) => tab === TABS.HOME)).subscribe(() => {
+      this.toast?.dismiss(); // Hide error message when we arrive at this page
       this.updateObservationsService.setLastFetched(this.lastFetched);
     });
 
-    this.updateObservationsService.refreshRequested$
-      .pipe(withLatestFrom(this.tabsService.selectedTab$))
-      .subscribe(([, tab]) => {
+    this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
+    this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
+    this.initSearch();
+
+    this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
+      withLatestFrom(this.tabsService.selectedTab$),
+      filter(([, tab]) => {
         if (tab === TABS.HOME) {
-          this.searchResult.update();
           this.loggingService.debug('Search manually triggered', DEBUG_TAG);
+          return true;
         } else {
           this.loggingService.debug('Ignored manually triggered search because page is not active', DEBUG_TAG);
+          return false;
         }
-      });
+      })
+    );
+  }
+
+  private async initSearch() {
+    this.loggingService.debug('initSearch...', DEBUG_TAG);
+
+    const criteria$ = await this.createSearchCriteria$();
+    this.createRegistrations$(criteria$).subscribe((registrations) => {
+      this.redrawObservationMarkers(registrations);
+      this.lastFetched = new Date();
+      this.updateObservationsService.setLastFetched(this.lastFetched);
+    });
+  }
+
+  private async runApiSearch(searchCriteria: SearchCriteriaRequestDto): Promise<AtAGlanceViewModel[]> {
+    let registrations: AtAGlanceViewModel[] = [];
+    try {
+      registrations = await firstValueFrom(this.searchService.SearchAtAGlance(searchCriteria).pipe(timeout(120000)));
+      this.hideErrorToast();
+    } catch (error) {
+      this.loggingService.log('Error in search', error, LogLevel.Warning, DEBUG_TAG);
+      this.showSearchErrorToast();
+      this.rememberExtent(null); // To trigger new search on next pan or zoom
+    }
+    return registrations;
+  }
+
+  private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
+    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true))]).pipe(
+      map(([searchCriteria]) => searchCriteria),
+      // We are fetching new data, so set isFetching to true
+      tap(() => this.isFetchingObservations.next(true)),
+      switchMap((criteria: SearchCriteriaRequestDto) => this.runApiSearch(criteria)),
+      tap(() => this.isFetchingObservations.next(false))
+    );
+  }
+
+  private async showSearchErrorToast() {
+    await this.hideErrorToast();
+    const translations = await firstValueFrom(
+      this.translateService.get([
+        'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE',
+        'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON',
+      ])
+    );
+    this.toast = await this.toastService.create({
+      message: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE'],
+      position: 'bottom',
+      cssClass: 'toast',
+      buttons: [
+        {
+          text: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON'],
+          role: 'cancel',
+        },
+      ],
+    });
+    this.toast.onDidDismiss().then(() => {
+      this.toast = null;
+    });
+    await this.toast.present();
+  }
+
+  private async hideErrorToast() {
+    if (this.toast) {
+      await this.toast.dismiss();
+      this.toast = null;
+    }
+  }
+
+  private isErrorToastVisible(): boolean {
+    return this.toast != null;
   }
 
   get appname(): string {
@@ -155,8 +240,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   }
 
   checkIfShouldSearchCriteriaUpdateOnEnter() {
-    if (this.shouldSearchResultUpdateOnEnter && this.searchResult) {
-      this.searchResult.update();
+    if (this.shouldSearchResultUpdateOnEnter) {
+      this.updateObservationsService.requestRefresh();
       this.shouldSearchResultUpdateOnEnter = false;
     }
   }
@@ -192,7 +277,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     });
   }
 
-  private async createSearchResult(): Promise<SearchResult<AtAGlanceViewModel>> {
+  private async createSearchCriteria$(): Promise<Observable<Immutable<SearchCriteriaRequestDto>>> {
     const startTime = performance.now();
     await firstValueFrom(this.mapService.relevantMapChangeWithInitialView$);
     this.loggingService.debug(
@@ -222,12 +307,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
           }
         }
 
-        // This will prevent zoom in to trigger new search if the new extent is inside the
-        // previous extent
+        // This will prevent zoom in to trigger new search if the new extent is inside the previous extent
         let currentBounds;
         if (current.Extent) {
           currentBounds = withinExtentCriteriaToBounds(current.Extent);
-          if (!prev) {
+          if (!prev || this.isErrorToastVisible()) {
             this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
           }
@@ -248,15 +332,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
           return this.rememberExtent(currentBounds);
         }
       }),
-      map(([, current]) => current) //return current criteria
+      map(([, current]) => current)
     );
-    return this.searchRegistrationService.atAGlance(searchCriteriaWithLargerExtent);
-
-    // Du kan bruke denne for å teste søk uten kartutsnitt i stedet
-    // const searchCriteriaWithoutExtent = this.searchCriteriaService.searchCriteria$.pipe(
-    //   map((criteria) => ({ ...criteria, Extent: undefined }))
-    // );
-    // return this.searchRegistrationService.atAGlance(searchCriteriaWithoutExtent);
+    return searchCriteriaWithLargerExtent;
   }
 
   private rememberExtent(bounds: L.LatLngBounds): boolean {

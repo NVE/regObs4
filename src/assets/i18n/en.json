@@ -101,6 +101,12 @@
   "HELP": {
     "TITLE": "Help"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "MESSAGE": "Failed to fetch observations. Please try again by pan/zoom or use refresh button",
+      "BUTTON": "Dismiss"
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "About Varsom data",
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
@@ -210,6 +216,7 @@
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observations will appear here. Share your observations, pictures and assessements with others on Varsom.",
     "OFFLINE": "We cannot fetch your submitted observations. Are you offline?",
+    "SEARCH_ERROR": "We cannot fetch your submitted observations due to an error. Please try again and let us know if the problem persist",
     "SENT_SUBTITLE": "The following observations have been submitted and are stored in Regobs.",
     "TITLE": "My observations"
   },
@@ -253,6 +260,8 @@
     "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
+    "SEARCH_ERROR_TITLE": "Search failed",
+    "SEARCH_ERROR_DESCRIPTION": "Search for observations failed. Please try again and let us know if the problem persists.",
     "FORMS": "Forms",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
@@ -260,6 +269,7 @@
     "NO_IMAGES_TEXT": "There are no images found in the map section, try to change the view or expand the period you want to see observations from",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
+    "NO_OBSERVATIONS_TEXT_WEB": "There are no observations that matches current filter. If you didn't find what you looked for you may try to change the filter.",
     "SORT_BY_CHANGE_TIME": "Recently updated",
     "SORT_BY_OBS_TIME": "Recently observed",
     "SORT_BY_TEXT": "Order by",

@@ -101,6 +101,12 @@
   "HELP": {
     "TITLE": "Hjelp"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "MESSAGE": "Fikk ikke hentet observasjoner. Prøv på nytt ved å zoome/panorere eller bruk oppfrisk-knappen i filter-menyen",
+      "BUTTON": "Lukk"
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "Om data i Varsom",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
@@ -210,6 +216,7 @@
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Det er lett å dele observasjoner, bilder og vurderinger med andre.",
     "OFFLINE": "Vi får ikke hentet observasjoner du har sendt inn. Har du nett?",
+    "SEARCH_ERROR": "P.g.a. en feil får vi ikke hentet observasjoner du har sendt inn. Prøv gjerne igjen og gi oss beskjed hvis problemet vedvarer.",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
@@ -253,13 +260,16 @@
     "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
+    "SEARCH_ERROR_TITLE": "Søket feilet",
+    "SEARCH_ERROR_DESCRIPTION": "Søk etter observasjoner feilet. Vennligst forsøk igjen ved å bruke oppfrisk-funksjonen eller endre filteret. Hvis problemet vedvarer er det supert om du gir oss beskjed.",
     "FORMS": "Skjemaer",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_IMAGES": "Ingen bilder",
     "NO_IMAGES_TEXT": "Det er ingen observasjoner med bilder i kartutsnittet. Forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
-    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
+    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet. Forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
+    "NO_OBSERVATIONS_TEXT_WEB": "Fant ingen observasjoner som passer med filteret du har valgt. Om du ikke fant det du lette etter, kan du prøve å endre filteret.",
     "SORT_BY_CHANGE_TIME": "Oppdatert tid",
     "SORT_BY_OBS_TIME": "Observert tid",
     "SORT_BY_TEXT": "Sorter på",
