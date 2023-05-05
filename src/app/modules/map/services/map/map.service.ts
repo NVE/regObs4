@@ -28,6 +28,8 @@ import {
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/coordinatesUrl';
 
+type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
+
 const DEBUG_TAG = 'MapService';
 
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
@@ -152,7 +154,9 @@ export class MapService {
           return false;
         }
 
-        return prev.bounds.equals(curr.bounds);
+        // 5 decimal places = 1.1112 m at equator.
+        // See https://wiki.openstreetmap.org/wiki/Precision_of_coordinates
+        return (prev.bounds.equals as WithMargin)(curr.bounds, 0.00001);
       }),
       tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
       shareReplay(1)
