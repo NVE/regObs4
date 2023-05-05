@@ -188,7 +188,9 @@ export class MapService {
       debounceTime(500),
       pairwise(),
       map(([prev, next]) => {
-        if (!prev) {
+        // If coming from list view, center may be null if
+        // app started on list view with bounds
+        if (!prev?.center) {
           return 9999;
         }
         return prev.center.distanceTo(next.center);
