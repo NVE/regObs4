@@ -263,6 +263,19 @@ export class SearchCriteriaService {
       this.userSettingService.currentGeoHazard$,
       this.useMapExtent$,
       this.mapService.mapView$.pipe(
+        distinctUntilChanged((prev, curr) => {
+          if (prev?.bounds == null && curr?.bounds == null) {
+            // If both are null or underfined
+            return true;
+          }
+
+          // Compare only bounds, we create the extent from bounds
+          if (prev?.bounds && curr?.bounds) {
+            return prev.bounds.equals(curr.bounds);
+          }
+
+          return false;
+        }),
         map((mapView) => {
           return this.createExtentCriteria(mapView);
         })
