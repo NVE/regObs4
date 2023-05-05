@@ -20,7 +20,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { fromWorker } from 'observable-webworker';
 import { IRegionInViewInput, IRegionInViewOutput } from '../../web-workers/region-in-view-models';
-import L, { LatLng, LatLngBounds } from 'leaflet';
+import L from 'leaflet';
 import {
   URL_PARAM_NW_LAT,
   URL_PARAM_NW_LON,
@@ -31,13 +31,8 @@ import {
 const DEBUG_TAG = 'MapService';
 
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
-  const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
-  const leafletBounds = new LatLngBounds(
-    new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
-    new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
-  );
-  const center = new LatLng(bounds.getCenter().x, bounds.getCenter().y);
-  const mapView: IMapView = { bounds: leafletBounds, center: center, zoom: null };
+  const bounds = L.latLngBounds([nwLat, nwLon], [seLat, seLon]);
+  const mapView: IMapView = { bounds, center: null, zoom: null };
   return mapView;
 };
 
@@ -106,7 +101,8 @@ export class MapService {
   get relevantMapChangeWithInitialView$(): Observable<IMapView> {
     return concat(
       this._mapView$.pipe(
-        filter((mapView) => mapView !== null),
+        filter((mapView) => mapView != null),
+        filter((mapView) => mapView.center != null),
         take(1)
       ),
       this._relevantMapChange$
