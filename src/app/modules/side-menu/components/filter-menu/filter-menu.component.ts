@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, EMPTY, firstValueFrom, Observable, of } from 'rxjs';
-import { map, share, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
+import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   AUTOMATIC_STATIONS,
   SearchCriteriaService,
@@ -137,7 +137,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     super();
     this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
       switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : of(null))),
-      share()
+      shareReplay(1, 500)
     );
     this.nRegionsSelected$ = this.regions$.pipe(
       map((regions) => {
