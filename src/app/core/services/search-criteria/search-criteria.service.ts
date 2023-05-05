@@ -59,6 +59,7 @@ const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_REGION = 'regions';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
+const ULR_COORDS_PRECISION = 8;
 
 export const SLUSH_FLOW_ID = 30;
 export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
@@ -457,10 +458,10 @@ export class SearchCriteriaService {
     }
 
     if (criteria.Extent != null) {
-      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(4));
-      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(4));
-      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(4));
-      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(4));
+      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
+      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
+      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
+      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(ULR_COORDS_PRECISION));
     } else {
       params.delete(URL_PARAM_NW_LAT);
       params.delete(URL_PARAM_NW_LON);
