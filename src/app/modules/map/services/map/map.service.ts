@@ -140,6 +140,10 @@ export class MapService {
     this._mapViewSubject = new BehaviorSubject<IMapView>(mapViewFromUrl);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
       distinctUntilChanged((prev, curr) => {
+        if (prev == null) {
+          return false;
+        }
+
         if (prev.zoom !== curr.zoom) {
           return false;
         }
