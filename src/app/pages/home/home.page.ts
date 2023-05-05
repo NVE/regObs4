@@ -323,6 +323,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
           if (this.lastSearchBounds?.contains(currentBounds)) {
             this.loggingService.debug('Extent inside previous extent, no need to fetch observations again', DEBUG_TAG);
             return false; //will stop this criteria change to propagate when we zoom in
+          } else if (this.lastSearchBounds?.equals(currentBounds)) {
+            this.loggingService.debug('Extent equals previous extent, no need to fetch observations again', DEBUG_TAG);
+            return false; //will stop this criteria change to propagate when we zoom in
           } else {
             this.loggingService.debug('Extent outside previous extent, need to fetch observations again', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
