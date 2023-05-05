@@ -217,7 +217,7 @@ export class SearchCriteriaService {
   get useMapExtent$() {
     return this.useMapExtent.asObservable().pipe(distinctUntilChanged());
   }
-  private currentGeoHazard: GeoHazard[];
+
   resetEvent: Subject<void> = new Subject();
   /**
    * Current filter. Current language and geo hazards are always included
@@ -245,6 +245,11 @@ export class SearchCriteriaService {
       this.searchCriteriaChanges.next({ FromDtObsTime: this.daysBackToIsoDateTime(daysBack), ToDtObsTime: null });
     });
 
+    // Reset search criteria when geohazard changes
+    this.userSettingService.currentGeoHazard$.pipe(skip(1)).subscribe(() => {
+      this.resetSearchCriteria();
+    });
+
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
@@ -255,12 +260,7 @@ export class SearchCriteriaService {
         )
       ),
       this.userSettingService.language$,
-      this.userSettingService.currentGeoHazard$.pipe(
-        tap((geohazard) => {
-          this.currentGeoHazard !== undefined && this.resetSearchCriteria();
-          this.currentGeoHazard = geohazard;
-        })
-      ),
+      this.userSettingService.currentGeoHazard$,
       this.useMapExtent$,
       this.mapService.mapView$.pipe(
         map((mapView) => {
