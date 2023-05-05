@@ -16,8 +16,8 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
-import { BehaviorSubject, combineLatest, from, fromEventPattern, race, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEventPattern, race, Subject, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -297,6 +297,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     timer(50)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(() => {
+        // Invalidate map size before we set bounds in case map container size has changed
+        this.map.invalidateSize();
+
         if (this.bounds) {
           this.map.fitBounds(this.bounds, { animate: false });
         }
@@ -330,22 +333,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
       this.configureTileLayers(userSetting);
-      if (userSetting.showMapCenter) {
-        this.updateMapView();
-      }
     });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
     });
-
-    this.mapService.centerMapToUser$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap(() => from(this.geoPositionService.choosePositionMethod(DEBUG_TAG)))
-      )
-      .subscribe();
 
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
       this.disableFollowMode();
@@ -354,8 +347,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
       });
     });
-
     this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      this.geoPositionService.choosePositionMethod(DEBUG_TAG);
+
       this.zone.runOutsideAngular(() => {
         if (this.userMarker) {
           const currentPosition = this.userMarker.getPosition();
@@ -375,10 +369,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.zone.runOutsideAngular(() => {
       this.map.on('movestart', () => this.onMapMove());
       this.map.on('zoomstart', () => this.onMapMove());
-    });
-
-    this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => this.updateMapView());
     });
 
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
@@ -409,19 +399,23 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
     this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
 
-    this.startInvalidateSizeMapTimer();
+    this.zone.runOutsideAngular(() => {
+      this.startInvalidateSizeMapTimer();
 
-    fromEventPattern(
-      (handler) => this.map.on('resize', handler),
-      (handler) => this.map.off('resize', handler)
-    )
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        filter(() => this.isActive.value)
+      fromEventPattern(
+        (handler) => this.map.on('resize moveend', handler),
+        (handler) => this.map.off('resize moveend', handler)
       )
-      .subscribe(() => {
-        this.updateMapView();
-      });
+        .pipe(
+          takeUntil(this.ngDestroy$),
+          filter(() => this.isActive.value),
+          debounceTime(200),
+          skip(1)
+        )
+        .subscribe(() => {
+          this.updateMapView();
+        });
+    });
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
