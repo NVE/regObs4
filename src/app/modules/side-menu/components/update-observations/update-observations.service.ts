@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 
 /**
  * Use this to update the info box in the filter panel with observation search status
@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class UpdateObservationsService {
-  protected lastFetched = new Subject<Date>();
+  protected lastFetched = new ReplaySubject<Date>();
   private refreshRequested = new Subject<void>();
   readonly lastFetched$ = this.lastFetched.asObservable();
   readonly refreshRequested$ = this.refreshRequested.asObservable();
