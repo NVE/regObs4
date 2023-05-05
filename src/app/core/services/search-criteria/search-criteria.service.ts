@@ -505,17 +505,30 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  setCompetence(competenceCriteria: number[]) {
+  async setCompetence(competenceCriteria: number[]) {
+    const { ObserverCompetence: currentCompetence } = await firstValueFrom(this.searchCriteria$);
+
     //[105, 120, 130]   //[140, 130]
     if (!competenceCriteria) {
-      this.searchCriteriaChanges.next({ ObserverCompetence: null });
+      if (currentCompetence != null) {
+        this.searchCriteriaChanges.next({ ObserverCompetence: null });
+      }
       return;
     }
-    const removedDuplicates = competenceCriteria.reduce((compArr, item) => {
-      if (!compArr.includes(item)) compArr.push(item);
-      return compArr;
-    }, [] as number[]);
-    this.searchCriteriaChanges.next({ ObserverCompetence: removedDuplicates });
+
+    const newCompetenceSet = new Set(competenceCriteria);
+    const oldCompetenceSet = new Set(currentCompetence || []);
+
+    if (newCompetenceSet.size !== oldCompetenceSet.size) {
+      this.searchCriteriaChanges.next({ ObserverCompetence: [...newCompetenceSet.values()] });
+    }
+
+    for (const comp of newCompetenceSet) {
+      if (!oldCompetenceSet.has(comp)) {
+        this.searchCriteriaChanges.next({ ObserverCompetence: [...newCompetenceSet.values()] });
+        break;
+      }
+    }
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
