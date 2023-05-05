@@ -300,6 +300,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
             this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
           }
+        } else {
+          currentBounds = L.latLngBounds([-90, -180], [90, 180]);
         }
         const previousCriteriaWithoutExtent = { ...prev, Extent: null };
         const currentCriteriaWithoutExtent = { ...current, Extent: null };
