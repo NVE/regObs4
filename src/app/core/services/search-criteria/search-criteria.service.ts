@@ -273,7 +273,9 @@ export class SearchCriteriaService {
 
           // Compare only bounds, we create the extent from bounds
           if (prev?.bounds && curr?.bounds) {
-            return prev.bounds.equals(curr.bounds);
+            const maxMargin = 1 / 10 ** ULR_COORDS_PRECISION;
+            type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
+            return (prev.bounds.equals as WithMargin)(curr.bounds, maxMargin);
           }
 
           return false;
