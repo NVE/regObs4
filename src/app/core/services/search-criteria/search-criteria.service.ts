@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  distinctUntilChanged,
   filter,
   firstValueFrom,
   map,
@@ -214,7 +215,7 @@ export class SearchCriteriaService {
 
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
   get useMapExtent$() {
-    return this.useMapExtent.asObservable();
+    return this.useMapExtent.asObservable().pipe(distinctUntilChanged());
   }
   private currentGeoHazard: GeoHazard[];
   resetEvent: Subject<void> = new Subject();
