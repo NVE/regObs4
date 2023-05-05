@@ -59,7 +59,7 @@ const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_REGION = 'regions';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
-const ULR_COORDS_PRECISION = 8;
+const ULR_COORDS_PRECISION = 4;
 
 export const SLUSH_FLOW_ID = 30;
 export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
@@ -273,9 +273,8 @@ export class SearchCriteriaService {
 
           // Compare only bounds, we create the extent from bounds
           if (prev?.bounds && curr?.bounds) {
-            const maxMargin = 1 / 10 ** ULR_COORDS_PRECISION;
             type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
-            return (prev.bounds.equals as WithMargin)(curr.bounds, maxMargin);
+            return (prev.bounds.equals as WithMargin)(curr.bounds, 0.0001);
           }
 
           return false;
