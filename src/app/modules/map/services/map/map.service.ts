@@ -143,7 +143,17 @@ export class MapService {
     const mapViewFromUrl = parseCoordinatesFromUrl(new URL(document.location.href));
     this._mapViewSubject = new BehaviorSubject<IMapView>(mapViewFromUrl);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
-      debounceTime(200),
+      distinctUntilChanged((prev, curr) => {
+        if (prev.zoom !== curr.zoom) {
+          return false;
+        }
+
+        if (prev.center.distanceTo(curr.center) > 10) {
+          return false;
+        }
+
+        return prev.bounds.equals(curr.bounds);
+      }),
       tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
       shareReplay(1)
     );
