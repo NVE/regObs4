@@ -153,7 +153,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.loggingService.debug('initSearch...', DEBUG_TAG);
 
     const criteria$ = await this.createSearchCriteria$();
-    this.createRegistrations$(criteria$).subscribe((registrations) => {
+    const criteriaWhenOnHomePageOnly$ = combineLatest([criteria$, this.tabsService.selectedTab$]).pipe(
+      filter(([, tab]) => tab === TABS.HOME),
+      map(([criteria]) => criteria)
+    );
+    this.createRegistrations$(criteriaWhenOnHomePageOnly$).subscribe((registrations) => {
       this.redrawObservationMarkers(registrations);
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
