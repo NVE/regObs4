@@ -153,7 +153,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.loggingService.debug('initSearch...', DEBUG_TAG);
 
     const criteria$ = await this.createSearchCriteria$();
-    this.createRegistrations$(criteria$).subscribe((registrations) => {
+    const criteriaWhenOnHomePageOnly$ = combineLatest([criteria$, this.tabsService.selectedTab$]).pipe(
+      filter(([, tab]) => tab === TABS.HOME),
+      map(([criteria]) => criteria)
+    );
+    this.createRegistrations$(criteriaWhenOnHomePageOnly$).subscribe((registrations) => {
       this.redrawObservationMarkers(registrations);
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
@@ -292,21 +296,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         // SelectedRegions and Extent. We need to check if both of them has changed to see if we should send a new
         // AtAGlance request
 
-        // Start by comparing SelectedRegions for current and previous criteria if Extent filter is not active
-        if (!current.Extent) {
-          if (current.SelectedRegions?.length) {
-            const regionsLengthHasChanged = current.SelectedRegions.length !== (prev?.SelectedRegions?.length || 0);
-            if (!regionsLengthHasChanged) {
-              return current.SelectedRegions.some((r, i) => prev.SelectedRegions[i] !== r);
-            }
-            return regionsLengthHasChanged;
-          } else {
-            // No extent and no selected regions, should not happen, but return true as a fallback to trigger a search
-            this.loggingService.log('No extent and no selected regions', null, LogLevel.Warning, DEBUG_TAG);
-            return true;
-          }
-        }
-
         // This will prevent zoom in to trigger new search if the new extent is inside the previous extent
         let currentBounds;
         if (current.Extent) {
@@ -315,13 +304,26 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
             this.loggingService.debug('First search critera request, so need to fetch observations', DEBUG_TAG);
             return this.rememberExtent(currentBounds);
           }
+        } else {
+          currentBounds = L.latLngBounds([-90, -180], [90, 180]);
         }
         const previousCriteriaWithoutExtent = { ...prev, Extent: null };
         const currentCriteriaWithoutExtent = { ...current, Extent: null };
         if (JSON.stringify(previousCriteriaWithoutExtent) === JSON.stringify(currentCriteriaWithoutExtent)) {
+          if (!current.Extent) {
+            this.loggingService.debug(
+              'No change in criteria and no extent, no need to fetch observations again',
+              DEBUG_TAG
+            );
+            return false;
+          }
+
           //only extent is changed in criteria
           if (this.lastSearchBounds?.contains(currentBounds)) {
             this.loggingService.debug('Extent inside previous extent, no need to fetch observations again', DEBUG_TAG);
+            return false; //will stop this criteria change to propagate when we zoom in
+          } else if (this.lastSearchBounds?.equals(currentBounds)) {
+            this.loggingService.debug('Extent equals previous extent, no need to fetch observations again', DEBUG_TAG);
             return false; //will stop this criteria change to propagate when we zoom in
           } else {
             this.loggingService.debug('Extent outside previous extent, need to fetch observations again', DEBUG_TAG);

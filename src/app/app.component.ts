@@ -5,7 +5,7 @@ import { UserSettingService } from './core/services/user-setting/user-setting.se
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
-import { Observable, from, forkJoin, of } from 'rxjs';
+import { Observable, from, forkJoin, of, Subject } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
@@ -29,6 +29,9 @@ const DEBUG_TAG = 'AppComponent';
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;
   isDesktop: boolean;
+
+  private filterMenuOpened = new Subject<boolean>();
+  filterMenuOpened$ = this.filterMenuOpened.asObservable();
 
   constructor(
     private platform: Platform,
@@ -74,6 +77,10 @@ export class AppComponent {
           this.afterAppInitialized();
         },
       });
+  }
+
+  filterMenuWillOpen() {
+    this.filterMenuOpened.next(true);
   }
 
   private afterAppInitialized() {

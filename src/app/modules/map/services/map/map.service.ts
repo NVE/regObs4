@@ -20,7 +20,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { fromWorker } from 'observable-webworker';
 import { IRegionInViewInput, IRegionInViewOutput } from '../../web-workers/region-in-view-models';
-import L, { LatLng, LatLngBounds } from 'leaflet';
+import L from 'leaflet';
 import {
   URL_PARAM_NW_LAT,
   URL_PARAM_NW_LON,
@@ -28,16 +28,13 @@ import {
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/coordinatesUrl';
 
+type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
+
 const DEBUG_TAG = 'MapService';
 
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
-  const bounds = new L.Bounds([nwLat, nwLon], [seLat, seLon]);
-  const leafletBounds = new LatLngBounds(
-    new LatLng(bounds.getBottomRight().x, bounds.getBottomRight().y),
-    new LatLng(bounds.getTopLeft().x, bounds.getTopLeft().y)
-  );
-  const center = new LatLng(bounds.getCenter().x, bounds.getCenter().y);
-  const mapView: IMapView = { bounds: leafletBounds, center: center, zoom: null };
+  const bounds = L.latLngBounds([nwLat, nwLon], [seLat, seLon]);
+  const mapView: IMapView = { bounds, center: null, zoom: null };
   return mapView;
 };
 
@@ -106,7 +103,8 @@ export class MapService {
   get relevantMapChangeWithInitialView$(): Observable<IMapView> {
     return concat(
       this._mapView$.pipe(
-        filter((mapView) => mapView !== null),
+        filter((mapView) => mapView != null),
+        filter((mapView) => mapView.center != null),
         take(1)
       ),
       this._relevantMapChange$
@@ -143,7 +141,23 @@ export class MapService {
     const mapViewFromUrl = parseCoordinatesFromUrl(new URL(document.location.href));
     this._mapViewSubject = new BehaviorSubject<IMapView>(mapViewFromUrl);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
-      debounceTime(200),
+      distinctUntilChanged((prev, curr) => {
+        if (prev == null) {
+          return false;
+        }
+
+        if (prev.zoom !== curr.zoom) {
+          return false;
+        }
+
+        if (prev.center.distanceTo(curr.center) > 10) {
+          return false;
+        }
+
+        // 5 decimal places = 1.1112 m at equator.
+        // See https://wiki.openstreetmap.org/wiki/Precision_of_coordinates
+        return (prev.bounds.equals as WithMargin)(curr.bounds, 0.00001);
+      }),
       tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
       shareReplay(1)
     );
@@ -174,7 +188,9 @@ export class MapService {
       debounceTime(500),
       pairwise(),
       map(([prev, next]) => {
-        if (!prev) {
+        // If coming from list view, center may be null if
+        // app started on list view with bounds
+        if (!prev?.center) {
           return 9999;
         }
         return prev.center.distanceTo(next.center);

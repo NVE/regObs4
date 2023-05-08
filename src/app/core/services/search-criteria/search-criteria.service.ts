@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  distinctUntilChanged,
   filter,
   firstValueFrom,
   map,
@@ -12,6 +13,7 @@ import {
   ReplaySubject,
   scan,
   shareReplay,
+  skip,
   startWith,
   Subject,
   tap,
@@ -57,6 +59,7 @@ const URL_PARAM_ORDER_BY = 'orderBy';
 const URL_PARAM_REGION = 'regions';
 const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
+const ULR_COORDS_PRECISION = 4;
 
 export const SLUSH_FLOW_ID = 30;
 export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
@@ -214,9 +217,9 @@ export class SearchCriteriaService {
 
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
   get useMapExtent$() {
-    return this.useMapExtent.asObservable();
+    return this.useMapExtent.asObservable().pipe(distinctUntilChanged());
   }
-  private currentGeoHazard: GeoHazard[];
+
   resetEvent: Subject<void> = new Subject();
   /**
    * Current filter. Current language and geo hazards are always included
@@ -244,6 +247,11 @@ export class SearchCriteriaService {
       this.searchCriteriaChanges.next({ FromDtObsTime: this.daysBackToIsoDateTime(daysBack), ToDtObsTime: null });
     });
 
+    // Reset search criteria when geohazard changes
+    this.userSettingService.currentGeoHazard$.pipe(skip(1)).subscribe(() => {
+      this.resetSearchCriteria();
+    });
+
     this.searchCriteria$ = combineLatest([
       this.searchCriteriaChanges.pipe(
         startWith(criteria),
@@ -254,14 +262,23 @@ export class SearchCriteriaService {
         )
       ),
       this.userSettingService.language$,
-      this.userSettingService.currentGeoHazard$.pipe(
-        tap((geohazard) => {
-          this.currentGeoHazard !== undefined && this.resetSearchCriteria();
-          this.currentGeoHazard = geohazard;
-        })
-      ),
+      this.userSettingService.currentGeoHazard$,
       this.useMapExtent$,
       this.mapService.mapView$.pipe(
+        distinctUntilChanged((prev, curr) => {
+          if (prev?.bounds == null && curr?.bounds == null) {
+            // If both are null or underfined
+            return true;
+          }
+
+          // Compare only bounds, we create the extent from bounds
+          if (prev?.bounds && curr?.bounds) {
+            type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
+            return (prev.bounds.equals as WithMargin)(curr.bounds, 0.0001);
+          }
+
+          return false;
+        }),
         map((mapView) => {
           return this.createExtentCriteria(mapView);
         })
@@ -442,10 +459,10 @@ export class SearchCriteriaService {
     }
 
     if (criteria.Extent != null) {
-      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(4));
-      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(4));
-      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(4));
-      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(4));
+      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
+      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
+      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
+      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(ULR_COORDS_PRECISION));
     } else {
       params.delete(URL_PARAM_NW_LAT);
       params.delete(URL_PARAM_NW_LON);
@@ -489,17 +506,30 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  setCompetence(competenceCriteria: number[]) {
+  async setCompetence(competenceCriteria: number[]) {
+    const { ObserverCompetence: currentCompetence } = await firstValueFrom(this.searchCriteria$);
+
     //[105, 120, 130]   //[140, 130]
     if (!competenceCriteria) {
-      this.searchCriteriaChanges.next({ ObserverCompetence: null });
+      if (currentCompetence != null) {
+        this.searchCriteriaChanges.next({ ObserverCompetence: null });
+      }
       return;
     }
-    const removedDuplicates = competenceCriteria.reduce((compArr, item) => {
-      if (!compArr.includes(item)) compArr.push(item);
-      return compArr;
-    }, [] as number[]);
-    this.searchCriteriaChanges.next({ ObserverCompetence: removedDuplicates });
+
+    const newCompetenceSet = new Set(competenceCriteria);
+    const oldCompetenceSet = new Set(currentCompetence || []);
+
+    if (newCompetenceSet.size !== oldCompetenceSet.size) {
+      this.searchCriteriaChanges.next({ ObserverCompetence: [...newCompetenceSet.values()] });
+    }
+
+    for (const comp of newCompetenceSet) {
+      if (!oldCompetenceSet.has(comp)) {
+        this.searchCriteriaChanges.next({ ObserverCompetence: [...newCompetenceSet.values()] });
+        break;
+      }
+    }
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
