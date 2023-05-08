@@ -1,11 +1,21 @@
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
-import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpEventType } from '@angular/common/http';
+import {
+  HttpRequest,
+  HttpInterceptor,
+  HttpHandler,
+  HttpEvent,
+  HttpEventType,
+  HttpResponse,
+} from '@angular/common/http';
 import { EMPTY, from, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { settings } from '../../../settings';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegobsAuthService, TOKEN_RESPONSE_FULL_KEY } from 'src/app/modules/auth/services/regobs-auth.service';
 import { StorageBackend } from '@openid/appauth';
+import { ApiVersionService } from '../services/api-version/api-version.service';
+
+const DEBUG_TAG = 'ApiInterceptor';
 
 /**
  * Sender innloggings-token med kall til Regobs API der kallene krever at man er logget inn.
@@ -16,7 +26,8 @@ export class ApiInterceptor implements HttpInterceptor {
   constructor(
     private regobsAuthService: RegobsAuthService,
     private loggerService: LoggingService,
-    private storage: StorageBackend
+    private storage: StorageBackend,
+    private apiVersionService: ApiVersionService
   ) {}
 
   //return true if given url belongs to any of the protected Regobs API urls in any environment
@@ -58,7 +69,19 @@ export class ApiInterceptor implements HttpInterceptor {
         })
       );
     }
-    return next.handle(req);
+    return next.handle(req).pipe(
+      tap((httpEvent) => {
+        if (httpEvent.type === 0) {
+          return; // Skip request
+        }
+        if (httpEvent instanceof HttpResponse) {
+          if (httpEvent.headers.has('sunset')) {
+            const sunsetDate = httpEvent.headers.get('sunset');
+            this.apiVersionService.setSunsetDate(sunsetDate);
+          }
+        }
+      })
+    );
   }
 
   private addAuthHeader(request: HttpRequest<unknown>): Observable<HttpRequest<unknown>> {

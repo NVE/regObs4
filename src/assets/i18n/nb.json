@@ -25,6 +25,9 @@
     "UNDO": "Angre",
     "WARNING": "Advarsel"
   },
+  "API": {
+    "SUNSET": "Du bør oppgradere appen! Appen din bruker en utdatert versjon av Regobs-API'et som stenges når som helst og uten nærmere varsel etter {{ sunsetDate }}. En rekke funksjoner i appen vil deretter slutte å virke."
+  },
   "CLOSE": "Lukk",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til egne observasjoner",
