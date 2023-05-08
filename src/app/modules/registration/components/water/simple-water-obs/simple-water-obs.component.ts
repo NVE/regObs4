@@ -19,9 +19,6 @@ export class SimpleWaterObsComponent {
   constructor(private draftRepository: DraftRepositoryService, private navController: NavController) {}
 
   get waterLevel2(): Waterlevel2EditModel {
-    if (!this.draft.registration.WaterLevel2) {
-      this.draft.registration.WaterLevel2 = {};
-    }
     return this.draft.registration.WaterLevel2;
   }
 
