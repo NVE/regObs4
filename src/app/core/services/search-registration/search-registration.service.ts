@@ -255,9 +255,7 @@ export class SearchRegistrationService {
     return new PagedSearchResult<SearchRegistrationsWithAttachments>(
       searchCriteria$,
       this.searchService.SearchAttachments.bind(this.searchService),
-      (searchCriteria) =>
-        //implement count function for attachments
-        this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
 }

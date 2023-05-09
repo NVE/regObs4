@@ -182,7 +182,12 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
 
     const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));
 
-    this.registrations$ = search$.pipe(switchMap((result) => result.registrations$));
+    this.registrations$ = search$.pipe(
+      switchMap((result) => result.registrations$),
+      tap(() => {
+        this.scroll && this.scroll.complete();
+      })
+    );
     this.isFetchingObservations$ = search$.pipe(switchMap((result) => result.isFetching$));
     this.error$ = search$.pipe(
       switchMap((result) => result.error$),
