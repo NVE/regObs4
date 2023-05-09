@@ -64,6 +64,17 @@ export function mapCenterIsStableOrNotAvailable(previousView: IMapView, currentV
   return true;
 }
 
+/**
+ * @returns radius in m for given bounds or default radius if bounds have no extent
+ */
+function computeMapViewRadius(bounds: L.LatLngBounds): number {
+  const radius = Math.round(bounds.getNorthWest().distanceTo(bounds.getSouthEast()) / 2);
+  if (radius) {
+    return radius;
+  }
+  return 3000;
+}
+
 @Component({
   selector: 'app-set-location-in-map',
   templateUrl: './set-location-in-map.component.html',
@@ -195,13 +206,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
     return this.mapView.pipe(
+      startWith(this.getCurrentMapView()),
       filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
       switchMap((mapView) =>
         this.locationService.getLocationWithinRadiusObservable(
           this.geoHazard,
           mapView.center.lat,
           mapView.center.lng,
-          Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2)
+          computeMapViewRadius(mapView.bounds)
         )
       )
     );
