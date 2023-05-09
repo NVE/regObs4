@@ -14,12 +14,12 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { RegobsAuthService, TOKEN_RESPONSE_FULL_KEY } from 'src/app/modules/auth/services/regobs-auth.service';
 import { StorageBackend } from '@openid/appauth';
 import { ApiVersionService } from '../services/api-version/api-version.service';
-
-const DEBUG_TAG = 'ApiInterceptor';
+import { Capacitor } from '@capacitor/core';
 
 /**
  * Sender innloggings-token med kall til Regobs API der kallene krever at man er logget inn.
- * Hvis api-kallet feiler pga. innloggingsfeil (HTTP 401), prøver vi å fornye tokenet og kjører kallet en gang til
+ * Hvis api-kallet feiler pga. innloggingsfeil (HTTP 401), prøver vi å fornye tokenet og kjører kallet en gang til.
+ * Sjekker også om vi får sunset-header i repons fra API'et for å varsle om at vi bruker et utdatert API.
  */
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
@@ -74,7 +74,7 @@ export class ApiInterceptor implements HttpInterceptor {
         if (httpEvent.type === 0) {
           return; // Skip request
         }
-        if (httpEvent instanceof HttpResponse) {
+        if (Capacitor.isNativePlatform() && httpEvent instanceof HttpResponse) {
           if (httpEvent.headers.has('sunset')) {
             const sunsetDate = httpEvent.headers.get('sunset');
             this.apiVersionService.setSunsetDate(sunsetDate);
