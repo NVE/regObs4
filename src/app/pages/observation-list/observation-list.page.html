@@ -1,6 +1,6 @@
 <app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
-  <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab>
+  <app-geo-fab slot="fixed"></app-geo-fab>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-item-divider>
     <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>

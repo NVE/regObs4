@@ -43,7 +43,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   private attachmentsResultSubscription: Subscription;
   listResultRegistrations: RegistrationViewModel[];
   attachmentsResultRegistrations: SearchRegistrationsWithAttachments[];
-  showGeoSelectInfo = false;
+
   orderBy$: Observable<string>;
   error$ = new BehaviorSubject(false);
   popupType: SelectInterface;
