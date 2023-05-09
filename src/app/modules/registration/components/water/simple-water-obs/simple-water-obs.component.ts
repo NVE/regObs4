@@ -55,7 +55,7 @@ export class SimpleWaterObsComponent {
     if (isEmpty) {
       this.draft.registration.GeneralObservation = null;
     }
-    this.draftRepository.save(this.draft);
+    await this.draftRepository.save(this.draft);
   }
 
   nav() {
