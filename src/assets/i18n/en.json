@@ -25,6 +25,9 @@
     "UNDO": "Undo",
     "WARNING": "Warning"
   },
+  "API": {
+    "SUNSET": "Please upgrade the app! Your app use an outdated version of the Regobs-API. The API will shut down any time and without further notice after {{ sunsetDate }}, and then you will lose a lot of features."
+  },
   "CLOSE": "Close",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Add your observations",
