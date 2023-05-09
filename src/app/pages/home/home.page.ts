@@ -334,7 +334,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
           return this.rememberExtent(currentBounds);
         }
       }),
-      map(([, current]) => current)
+      map(([, current]) => current),
+      map((criteria) => ({ ...criteria, NumberOfRecords: 100000 }))
     );
     return searchCriteriaWithLargerExtent;
   }
