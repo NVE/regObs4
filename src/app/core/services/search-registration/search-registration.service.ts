@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   concatMap,
   distinctUntilChanged,
+  distinctUntilKeyChanged,
   finalize,
   map,
   Observable,
+  of,
+  ReplaySubject,
   scan,
   shareReplay,
   startWith,
@@ -76,6 +80,27 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   maxItemsFetched$ = this.maxItemsFetched.pipe(distinctUntilChanged());
   private isFetching = new BehaviorSubject<boolean>(false);
   isFetching$ = this.isFetching.asObservable();
+  private forceUpdate = new Subject<void>();
+
+  private countError = new ReplaySubject<Error>(1);
+  private searchError = new ReplaySubject<Error>(1);
+  error$: Observable<{ hasError: boolean; searchError?: Error; countError?: Error }> = combineLatest([
+    this.countError.pipe(startWith(null)),
+    this.searchError.pipe(startWith(null)),
+  ]).pipe(
+    map(([countError, searchError]) => {
+      if (searchError || countError) {
+        return { hasError: true, searchError, countError };
+      }
+      return { hasError: false };
+    }),
+    distinctUntilKeyChanged('hasError')
+  );
+
+  private lastFetched = new Subject<Date>();
+  lastFetched$ = combineLatest([this.error$, this.lastFetched]).pipe(
+    map(([{ hasError }, lastFetched]) => (hasError ? null : lastFetched))
+  );
 
   constructor(
     searchCriteria$: Observable<SearchCriteria>,
@@ -84,13 +109,19 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
     countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
   ) {
-    this.registrations$ = searchCriteria$.pipe(
+    this.registrations$ = combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(null))]).pipe(
       // For every new search criteria, create a paged search and check what the total count is
       tap(() => this.isFetching.next(true)),
-      switchMap((searchCriteria) =>
+      switchMap(([searchCriteria]) =>
         combineLatest([
           this.createPagedSearch(searchCriteria, fetchFunc),
-          countFunc(searchCriteria as SearchCriteriaRequestDto),
+          countFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+            tap(() => this.countError.next(null)),
+            catchError((err) => {
+              this.countError.next(err);
+              return of(0);
+            })
+          ),
         ])
       ),
       // Save search state
@@ -109,13 +140,8 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     );
   }
 
-  // Do we need to handle this ??
   update() {
-    const { offset: oldOffset, items: oldItems } = this.pageInfo.value;
-    this.pageInfo.next({
-      offset: 0,
-      items: oldOffset * oldItems,
-    });
+    this.forceUpdate.next();
   }
 
   increasePage() {
@@ -147,6 +173,12 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       // the current search is finished.
       concatMap((searchCriteria) =>
         fetchFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+          tap(() => this.lastFetched.next(new Date())),
+          tap(() => this.searchError.next(null)),
+          catchError((err) => {
+            this.searchError.next(err);
+            return of([]);
+          }),
           // Include search criteria with search results so that we know which search criteria the results belong to
           map((result) => ({ searchCriteria, result }))
         )
