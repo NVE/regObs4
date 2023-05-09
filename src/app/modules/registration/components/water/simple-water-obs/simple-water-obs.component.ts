@@ -35,7 +35,7 @@ export class SimpleWaterObsComponent {
     if (!this.draft.registration.GeneralObservation) {
       this.draft.registration.GeneralObservation = {};
     }
-    this.draft.registration.GeneralObservation.Comment = value;
+    this.draft.registration.GeneralObservation.ObsComment = value;
     await this.save();
   }
 
