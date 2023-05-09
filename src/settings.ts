@@ -57,8 +57,8 @@ export const settings: ISettings = {
       apiUrl: {
         PROD: 'https://api.regobs.no/v5',
         DEMO: 'https://demo-api.regobs.no/v5',
-        TEST: 'https://test-api.regobs.no/v5',
-        //TEST: 'http://localhost:40001',
+        //TEST: 'https://test-api.regobs.no/v5',
+        TEST: 'http://localhost:40001',
       },
       serviceUrl: {
         PROD: 'https://api.nve.no/hydrology/regobs/v3.5.0',

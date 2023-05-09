@@ -8,11 +8,11 @@
   <app-text-comment
     label="DIALOGS.COMMENT"
     placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER"
-    [(value)]="generalObservation.ObsComment"
-    (valueChange)="save()"
+    [value]="generalObservation.ObsComment"
+    (valueChange)="saveComment($event)"
   ></app-text-comment>
 
-  <app-add-web-url-item (weburlsChange)="save()" [(weburls)]="generalObservation.Urls"></app-add-web-url-item>
+  <app-add-web-url-item (weburlsChange)="saveUrl($event)" [weburls]="generalObservation.Urls"></app-add-web-url-item>
 
   <ion-item (click)="nav()">
     <ion-label>

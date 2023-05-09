@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { GeneralObservationEditModel, Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
+import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { GeneralObservationEditModel, UrlEditModel, Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
 
 /**
  * Simplified water registration schema.'
@@ -24,12 +26,35 @@ export class SimpleWaterObsComponent {
 
   get generalObservation(): GeneralObservationEditModel {
     if (!this.draft.registration.GeneralObservation) {
-      this.draft.registration.GeneralObservation = {};
+      return {};
     }
     return this.draft.registration.GeneralObservation;
   }
 
+  async saveComment(value: string) {
+    if (!this.draft.registration.GeneralObservation) {
+      this.draft.registration.GeneralObservation = {};
+    }
+    this.draft.registration.GeneralObservation.Comment = value;
+    await this.save();
+  }
+
+  async saveUrl(value: UrlEditModel[]) {
+    if (!this.draft.registration.GeneralObservation) {
+      this.draft.registration.GeneralObservation = {};
+    }
+    this.draft.registration.GeneralObservation.Urls = value;
+    await this.save();
+  }
+
   async save(): Promise<void> {
+    const isEmpty = isObservationModelEmptyForRegistrationTid(
+      this.draft.registration,
+      RegistrationTid.GeneralObservation
+    );
+    if (isEmpty) {
+      this.draft.registration.GeneralObservation = null;
+    }
     this.draftRepository.save(this.draft);
   }
 
