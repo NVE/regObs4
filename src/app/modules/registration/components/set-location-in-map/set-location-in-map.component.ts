@@ -6,8 +6,17 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
-import { firstValueFrom, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { concat, firstValueFrom, fromEventPattern, Observable, Subject } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs/operators';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
@@ -115,7 +124,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
-  private mapView = new Subject<IMapView>(); //extent, center and zoom for current map
+  private mapView$: Observable<IMapView>;
+
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
   locationPolygons: IPolygon[] = [];
@@ -205,9 +215,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
-    return this.mapView.pipe(
-      startWith(this.getCurrentMapView()),
-      filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
+    return this.mapView$.pipe(
+      filter((mapView) => mapView && mapView.center != null && mapView.bounds != null),
       switchMap((mapView) =>
         this.locationService.getLocationWithinRadiusObservable(
           this.geoHazard,
@@ -242,8 +251,20 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   onMapReady(m: L.Map): void {
     this.map = m;
 
-    // use initial map extent from home page
-    this.mapService.mapView$.pipe(take(1)).subscribe((mapView) => this.mapView.next(mapView));
+    this.mapView$ = concat(
+      // Start with mapview from mapservice
+      this.mapService.mapView$.pipe(take(1)),
+
+      // Listen to events that can change the map view
+      fromEventPattern(
+        (handler) => this.map.on('resize moveend dragend', handler),
+        (handler) => this.map.off('resize moveend dragend', handler)
+      ).pipe(
+        takeUntil(this.ngDestroy$),
+        debounceTime(200),
+        map(() => this.getCurrentMapView())
+      )
+    ).pipe(shareReplay(1));
 
     this.locationMarker.setZIndexOffset(100).addTo(this.map);
     if (this.fromMarker) {
@@ -255,8 +276,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     });
-    this.map.on('dragend', () => this.mapView.next(this.getCurrentMapView()));
-    this.map.on('zoomend', () => this.mapView.next(this.getCurrentMapView()));
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {
@@ -267,9 +286,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         });
     }
 
-    this.mapView
+    this.mapView$
       .pipe(
-        startWith(this.getCurrentMapView()),
         // ikke søke på nytt hvis kartsenter ikke flytter seg nevneverdig (f.eks. ved zoom)
         distinctUntilChanged((prev, curr) => mapCenterIsStableOrNotAvailable(prev, curr)),
         takeUntil(this.ngDestroy$)
