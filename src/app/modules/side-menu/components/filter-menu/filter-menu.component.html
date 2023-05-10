@@ -23,10 +23,12 @@
       <ion-list lines="none">
         <ng-container *ngFor="let type of observationTypesOptions">
           <ion-item class="item-height">
+            <!-- if slush flow filter is set, disable filter by observation type because it cannot be combined -->
             <ion-checkbox
               [checked]="type.isChecked"
               (click)="setNewType($event, type.parentId, type.id)"
               color="varsom-dark-blue"
+              [disabled]="slushFlowFilterIsActive$ | async"
             >
             </ion-checkbox>
             <ion-label class="ion-padding-start">{{ type.name }}</ion-label>

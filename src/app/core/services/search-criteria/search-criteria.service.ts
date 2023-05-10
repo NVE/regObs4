@@ -221,6 +221,7 @@ export class SearchCriteriaService {
   }
 
   resetEvent: Subject<void> = new Subject();
+
   /**
    * Current filter. Current language and geo hazards are always included
    */
@@ -636,6 +637,7 @@ export class SearchCriteriaService {
 
       // turn on avalancheObs automatically since slush flow is a type of avalancheObs
       this.setObservationType(avalacheObsType);
+      //this.searchCriteriaChanges.next({ SelectedRegistrationTypes: [avalacheObsType] });
     } else {
       this.searchCriteriaChanges.next({ PropertyFilters: null });
 
