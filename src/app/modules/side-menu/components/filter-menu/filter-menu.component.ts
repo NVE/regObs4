@@ -30,7 +30,7 @@ interface ObservationTypeView {
 }
 
 type PlatformType = 'app' | 'web';
-type FilterType = 'observationType' | 'competence' | 'nickName';
+type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
 
 type FilterSupportPerPlatform = {
   [platformType in PlatformType]: { [filter in FilterType]: boolean };
@@ -109,11 +109,13 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       observationType: false,
       competence: true,
       nickName: true,
+      region: false,
     },
     web: {
       observationType: true,
       competence: true,
       nickName: true,
+      region: true,
     },
   };
 
