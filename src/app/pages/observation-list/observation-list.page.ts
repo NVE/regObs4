@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
@@ -11,7 +20,6 @@ import {
 } from 'src/app/core/services/search-registration/search-registration.service';
 import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
-import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
@@ -37,21 +45,18 @@ const URL_VIEW_TYPE_PARAM = 'view';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {
-  listResult: PagedSearchResult<RegistrationViewModel>;
-  attachmentsResult: PagedSearchResult<SearchRegistrationsWithAttachments>;
-  private listResultSubscription: Subscription;
-  private attachmentsResultSubscription: Subscription;
-  listResultRegistrations: RegistrationViewModel[];
-  attachmentsResultRegistrations: SearchRegistrationsWithAttachments[];
+  listSearch: PagedSearchResult<RegistrationViewModel>;
+  imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
 
+  registrations$: Observable<RegistrationViewModel[] | SearchRegistrationsWithAttachments[]>;
   orderBy$: Observable<string>;
-  error$ = new BehaviorSubject(false);
+  error$: Observable<boolean>;
   popupType: SelectInterface;
   isNative: boolean;
   disableMapExtentToggle$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
   viewType$ = new BehaviorSubject<ViewType>('list');
-  isFetchingObservations$ = new BehaviorSubject(false);
+  isFetchingObservations$: Observable<boolean>;
   shouldDisableScroller$: Observable<boolean>;
 
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -66,7 +71,6 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     private updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private logger: LoggingService,
-    private cdr: ChangeDetectorRef,
     mapService: MapService
   ) {
     super();
@@ -116,18 +120,11 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     );
   }
 
-  get currentSearchResult(): PagedSearchResult<HasRegId> {
+  get currentSearch(): PagedSearchResult<HasRegId> {
     if (this.viewType$.getValue() === 'grid') {
-      return this.attachmentsResult;
+      return this.imageSearch;
     }
-    return this.listResult;
-  }
-
-  get registrations() {
-    if (this.viewType$.getValue() === 'grid') {
-      return this.attachmentsResultRegistrations;
-    }
-    return this.listResultRegistrations;
+    return this.listSearch;
   }
 
   get maxCount() {
@@ -168,71 +165,51 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     );
   }
 
+  private _searchInitiated = false;
+
   private initSearch() {
-    this.listResult = this.searchRegistrationService.pagedSearch(
-      this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$
-    );
-    this.attachmentsResult = this.searchRegistrationService.searchAttachments(
-      this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
-    );
-    this.handleSearchResultSubscription(
-      this.listResult,
-      this.listResultSubscription,
-      (registrations) => (this.listResultRegistrations = registrations)
-    );
-    this.handleSearchResultSubscription(
-      this.attachmentsResult,
-      this.attachmentsResultSubscription,
-      (registrations) => (this.attachmentsResultRegistrations = registrations)
-    );
-  }
-
-  private handleSearchResultSubscription<T extends HasRegId>(
-    searchResult: PagedSearchResult<T>,
-    subscription: Subscription,
-    handleRegistrationsReturned: (registrations: T[]) => void
-  ) {
-    this.error$.next(false); // Clear current error messages if any
-
-    if (subscription != null) {
-      subscription.unsubscribe();
+    if (this._searchInitiated) {
+      throw new Error('Already initiated');
     }
 
-    searchResult.isFetching$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((fetching) => this.isFetchingObservations$.next(fetching));
+    this.listSearch = this.searchRegistrationService.pagedSearch(
+      this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$
+    );
 
-    searchResult.registrations$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        tap(() => {
-          this.scroll && this.scroll.complete();
-        })
-      )
-      .subscribe({
-        next: (regs) => {
-          this.error$.next(false);
-          handleRegistrationsReturned(regs);
-          this.cdr.detectChanges();
-          this.updateObservationsService.setLastFetched(new Date());
-        },
-        error: (err) => {
-          handleRegistrationsReturned([]);
-          this.error$.next(true);
-          this.updateObservationsService.setLastFetched(null);
-          this.cdr.detectChanges();
-          this.logger.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
-        },
-      });
+    this.imageSearch = this.searchRegistrationService.searchAttachments(
+      this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
+    );
 
-    this.shouldDisableScroller$ = combineLatest([
-      searchResult.allFetchedForCriteria$,
-      searchResult.maxItemsFetched$,
-    ]).pipe(
-      takeUntil(this.ngDestroy$),
+    const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));
+
+    this.registrations$ = search$.pipe(
+      switchMap((result) => result.registrations$),
+      tap(() => {
+        this.scroll && this.scroll.complete();
+      })
+    );
+    this.isFetchingObservations$ = search$.pipe(switchMap((result) => result.isFetching$));
+    this.error$ = search$.pipe(
+      switchMap((result) => result.error$),
+      map(({ hasError }) => hasError)
+    );
+    this.shouldDisableScroller$ = search$.pipe(
+      switchMap((search) => combineLatest([search.allFetchedForCriteria$, search.maxItemsFetched$])),
       map(([allFetched, maxReached]) => allFetched || maxReached),
       distinctUntilChanged()
     );
+
+    // Update last fetched time in filter menu
+    search$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap((result) => result.lastFetched$)
+      )
+      .subscribe((lastFetched) => {
+        this.updateObservationsService.setLastFetched(lastFetched);
+      });
+
+    this._searchInitiated = true;
   }
 
   handleChangeSorting(event) {
@@ -247,16 +224,13 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     }
   }
 
-  async changeViewType(id: ViewType) {
-    if (!id || (id !== 'grid' && id !== 'list')) {
-      return;
-    }
+  changeViewType(id: ViewType) {
     this.viewType$.next(id);
   }
 
   refresh(): void {
     this.logger.debug('Refresh', DEBUG_TAG);
-    this.initSearch();
+    this.currentSearch.update();
   }
 
   ionViewWillEnter(): void {
@@ -266,7 +240,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   }
 
   loadNextPage(): void {
-    this.currentSearchResult.increasePage();
+    this.currentSearch.increasePage();
   }
 
   trackById(_, obs: HasRegId) {
