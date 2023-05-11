@@ -126,7 +126,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     return avalancheRegionTrackById;
   }
 
-  slushFlowFilterIsActive$ = new BehaviorSubject(false);
+  slushFlowFilterIsActive = false;
 
   constructor(
     private platform: Platform,
@@ -188,8 +188,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.setObserverCompetence(criteria.ObserverCompetence as number[]);
       //set chosen nickname
       this.nickName = criteria.ObserverNickName;
+      this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
       this.cdr.markForCheck();
-      this.slushFlowFilterIsActive$.next(this.searchCriteriaService.isSlushFlow(criteria));
     });
   }
 
