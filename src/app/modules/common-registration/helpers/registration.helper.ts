@@ -134,14 +134,13 @@ export function isObservationModelEmptyForRegistrationTid(
   If in AvalancheObs data model we want to exclude DtAvalancheTime from 'isEmpty' validation we need to pass that property
   in the function. In that case we set hasAnyDataBesidesPropertyToExclude(AvalancheObs, 'DtAvalancheTime')
 */
-export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string) {
+export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string[]) {
   // have to remove the property to exclude from the object and then check values on the rest
-  //
   if (dataModel) {
     const dataModelCopy = { ...dataModel };
-    delete dataModelCopy[propertyToExclude];
-    const allValues = Object.values(dataModelCopy);
-    return allValues.some((v) => v);
+    propertyToExclude.forEach((p) => delete dataModelCopy[p]);
+    const isEmtpy = isEmpty(dataModelCopy);
+    return !isEmtpy;
   }
 }
 

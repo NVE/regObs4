@@ -54,9 +54,6 @@ export class SetFloodAreaPage implements OnInit {
       if (!this.draft.registration.WaterLevel2) {
         this.draft.registration.WaterLevel2 = {};
       }
-      if (!this.draft.registration.GeneralObservation) {
-        this.draft.registration.GeneralObservation = {};
-      }
       this.relativeToLatLng = this.draft.registration.ObsLocation
         ? L.latLng(this.draft.registration.ObsLocation.Latitude, this.draft.registration.ObsLocation.Longitude)
         : null;

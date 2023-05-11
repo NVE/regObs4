@@ -2,11 +2,18 @@
  * Contains helper functions needed when posting registration data to regobs api.
  */
 
+import { Observable, distinctUntilChanged, combineLatest, map } from 'rxjs';
+import { getAllAttachmentsFromEditModel } from 'src/app/modules/common-registration/registration.helpers';
 import {
   AttachmentUploadEditModel,
+  ExistingAttachmentType,
+  ExistingOrNewAttachment,
+  NewAttachmentType,
   WaterLevelMeasurementUploadModel,
 } from 'src/app/modules/common-registration/registration.models';
 import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { attachmentsComparator } from '../../helpers/attachment-comparator';
+import { RegistrationDraft } from '../draft/draft-model';
 
 /**
  * Add an attachment to a registration object / draft.
@@ -50,6 +57,47 @@ export function addAttachmentToRegistration(
   }
 
   return draftCopy;
+}
+
+/**
+ * Compares two versions of a draft and returns true if existing (remote) attachments has changed
+ */
+function existingAttachmentsHasNotChanged(
+  previous: RegistrationDraft,
+  current: RegistrationDraft,
+  registrationTid: number
+) {
+  const preExistingAttachments = getAllAttachmentsFromEditModel(previous.registration, registrationTid);
+  const curExistingAttachments = getAllAttachmentsFromEditModel(current.registration, registrationTid);
+
+  // Check if existing attachments has changed
+  const changed = attachmentsComparator(preExistingAttachments, curExistingAttachments, 'AttachmentId');
+  return changed;
+}
+
+/**
+ * @returns an observable array of both new attachments and already uploaded attachments for given draft uuid
+ */
+export function getNewAndExistingAttachmentsForDraft$(
+  registrationTid: number,
+  draft: Observable<RegistrationDraft>,
+  attachments: Observable<AttachmentUploadEditModel[]>
+): Observable<ExistingOrNewAttachment[]> {
+  const draft$ = draft.pipe(
+    distinctUntilChanged((prev, curr) => existingAttachmentsHasNotChanged(prev, curr, registrationTid))
+  );
+  const newAttachments$ = attachments.pipe(
+    distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id'))
+  );
+  return combineLatest([draft$, newAttachments$]).pipe(
+    map(([draft, newAttachments]) => {
+      const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, registrationTid);
+      return [
+        ...existingAttachments.map((attachment) => ({ type: 'existing' as ExistingAttachmentType, attachment })),
+        ...newAttachments.map((attachment) => ({ type: 'new' as NewAttachmentType, attachment })),
+      ];
+    })
+  );
 }
 
 function addDamageObsAttachment(attachment: AttachmentEditModel, draft: RegistrationEditModel, ref: string) {
