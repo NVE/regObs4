@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   AUTOMATIC_STATIONS,
@@ -126,6 +126,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     return avalancheRegionTrackById;
   }
 
+  slushFlowFilterIsActive = false;
+
   constructor(
     private platform: Platform,
     private userSettingService: UserSettingService,
@@ -186,6 +188,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.setObserverCompetence(criteria.ObserverCompetence as number[]);
       //set chosen nickname
       this.nickName = criteria.ObserverNickName;
+      this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
       this.cdr.markForCheck();
     });
   }
