@@ -14,7 +14,9 @@
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label [selectedItemsCount]="observationTypesSelectedCount">
+      <app-selected-items-counter-label
+        [selectedItemsCount]="slushFlowFilterIsActive ? 1 : observationTypesSelectedCount"
+      >
         {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
       </app-selected-items-counter-label>
     </ion-list-header>
@@ -23,10 +25,12 @@
       <ion-list lines="none">
         <ng-container *ngFor="let type of observationTypesOptions">
           <ion-item class="item-height">
+            <!-- if slush flow filter is set, disable filter by observation type because it cannot be combined -->
             <ion-checkbox
-              [checked]="type.isChecked"
+              [checked]="!slushFlowFilterIsActive && type.isChecked"
               (click)="setNewType($event, type.parentId, type.id)"
               color="varsom-dark-blue"
+              [disabled]="slushFlowFilterIsActive"
             >
             </ion-checkbox>
             <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
