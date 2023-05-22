@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
@@ -21,6 +21,7 @@ export class ModalSearchPage implements OnInit {
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
 
+  @ViewChild('searchInput') searchInput;
   constructor(
     private modalController: ModalController,
     private mapSearchService: MapSearchService,
@@ -48,6 +49,13 @@ export class ModalSearchPage implements OnInit {
         });
       })
     );
+  }
+
+  // set autofocus on input field
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      (this.searchInput.el.childNodes[0] as HTMLIonInputElement).focus();
+    }, 100);
   }
 
   doSearch() {
