@@ -65,7 +65,9 @@ export class AddMenuComponent implements OnInit {
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
 
-  private convertDraftToDate(draft: RegistrationDraft): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
+  private convertDraftToDate(
+    draft: RegistrationDraft
+  ): Observable<{ id: string; geoHazard: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999; date: string }> {
     return from(this.getDate(draft.lastSavedTime)).pipe(
       map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
     );
