@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { IonInput, ModalController, ViewDidEnter } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
@@ -13,7 +13,7 @@ import { NumberHelper } from '../../../../core/helpers/number-helper';
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
 })
-export class ModalSearchPage implements OnInit {
+export class ModalSearchPage implements OnInit, ViewDidEnter {
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
   searchField: UntypedFormControl;
@@ -21,12 +21,17 @@ export class ModalSearchPage implements OnInit {
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
 
-  @ViewChild('searchInput') searchInput;
+  @ViewChild(IonInput) searchInput: IonInput;
+
   constructor(
     private modalController: ModalController,
     private mapSearchService: MapSearchService,
     private ngZone: NgZone
   ) {}
+
+  ionViewDidEnter(): void {
+    this.searchInput.setFocus();
+  }
 
   ngOnInit() {
     this.searchField = new UntypedFormControl();
@@ -49,13 +54,6 @@ export class ModalSearchPage implements OnInit {
         });
       })
     );
-  }
-
-  // set autofocus on input field
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      (this.searchInput.el.childNodes[0] as HTMLIonInputElement).focus();
-    }, 100);
   }
 
   doSearch() {

@@ -7,7 +7,6 @@
           <ion-input
             placeholder="{{'MAP_SEARCH.SEARCH_TEXT'|translate}}"
             [formControl]="searchField"
-            #searchInput
             (ionBlur)="doSearch()"
           ></ion-input>
           <ion-icon slot="end" name="close" (click)="closeModal()"></ion-icon>
