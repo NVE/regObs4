@@ -110,6 +110,7 @@ ion-item-divider {
 .center {
   width: 300px;
   height: 300px;
+  margin: auto;
   display: inline-block;
   position: relative;
 
@@ -190,4 +191,5 @@ ion-item-divider {
 
 .error {
   flex-direction: column;
+  width: 95%;
 }
