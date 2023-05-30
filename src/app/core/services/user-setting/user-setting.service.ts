@@ -34,9 +34,27 @@ import nnData from '@angular/common/locales/nn';
 import frData from '@angular/common/locales/fr';
 import daData from '@angular/common/locales/da';
 import { SupportTile } from '../../models/support-tile.model';
-import { isArraysEqual } from '../../../modules/common-core/helpers/arrays';
+import { isArraysEqual } from 'src/app/modules/common-core/helpers/arrays';
+import {
+  URL_PARAM_DAYSBACK,
+  URL_PARAM_GEOHAZARD,
+  URL_PARAM_GEOHAZARDS_OLD,
+  isGeoHazardValid,
+  separatedStringToNumberArray,
+} from '../search-criteria/url-params';
 
 const DEBUG_TAG = 'UserSettingService';
+
+function convertToInt(value: string): number {
+  if (typeof value !== 'string') {
+    return null;
+  }
+  const numericValue = Number(value);
+  if (Number.isInteger(numericValue)) {
+    return numericValue;
+  }
+  return null;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -91,7 +109,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
     super();
     this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
-      concatMap((val) => (val ? of(val) : this.getUserSettingsFromDbOrDefaultSettings())),
+      concatMap((val) => (val ? of(val) : this.getUserSettingsFromQueryParametersOrDbOrDefaultSettings())),
       tap((val) => {
         this.loggingService?.debug('User settings is: ', DEBUG_TAG, val);
       }),
@@ -145,14 +163,46 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       shareReplay(1)
     );
 
-    (this.daysBackForCurrentGeoHazard$ = combineLatest([this.daysBack$, this.currentGeoHazard$]).pipe(
+    this.daysBackForCurrentGeoHazard$ = combineLatest([this.daysBack$, this.currentGeoHazard$]).pipe(
       map(([daysBack, currentGeoHazard]) => {
         const geoHazard = currentGeoHazard[0];
         const daysBackForCurrentGeoHazard = daysBack.find((x) => x.geoHazard === geoHazard);
         return daysBackForCurrentGeoHazard?.daysBack;
-      })
-    )),
-      tap((val) => this.loggingService.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val));
+      }),
+      distinctUntilChanged(),
+      tap((val) => this.loggingService?.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val)),
+      shareReplay(1)
+    );
+  }
+
+  private parseUrlParameters() {
+    const url = new URL(document.location.href);
+    const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
+    const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
+    const daysBackNumeric = convertToInt(daysBack);
+    return {
+      geoHazards,
+      daysBack: daysBackNumeric,
+    };
+  }
+
+  private readGeoHazardsFromUrl(searchParams: URLSearchParams): GeoHazard[] {
+    // read param on new format
+    const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
+    if (geoHazardsParamValue?.length > 0) {
+      const geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
+      if (isGeoHazardValid(geoHazards)) {
+        return geoHazards;
+      }
+    }
+
+    // read param used in (old) regobs.no
+    const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
+    if (geoHazardsParamValueOld?.length) {
+      const geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
+      // new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
+      return geoHazards;
+    }
   }
 
   public init() {
@@ -243,8 +293,37 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     return supportTilesForCurrentGeoHazard;
   }
 
-  private getUserSettingsFromDbOrDefaultSettings(): Observable<UserSetting> {
-    return this.getUserSettingsFromDb().pipe(map((result) => (result ? result : DEFAULT_USER_SETTINGS(null))));
+  private getUserSettingsFromQueryParametersOrDbOrDefaultSettings(): Observable<UserSetting> {
+    const urlSettings = this.parseUrlParameters();
+    return this.getUserSettingsFromDb().pipe(
+      map((result) => (result ? result : DEFAULT_USER_SETTINGS(null))),
+
+      // Set geoHazard from url
+      map((userSettings) => {
+        if (urlSettings.geoHazards?.length) {
+          return { ...userSettings, currentGeoHazard: urlSettings.geoHazards };
+        }
+        return userSettings;
+      }),
+
+      // Set daysback from url
+      map((userSettings) => {
+        if (urlSettings.daysBack) {
+          const daysBackForOtherGeoHazards = userSettings.observationDaysBack.filter(
+            (v) => userSettings.currentGeoHazard.indexOf(v.geoHazard) === -1
+          );
+          const daysBackForCurrentGeoHazards = userSettings.currentGeoHazard.map((geoHazard) => ({
+            geoHazard,
+            daysBack: urlSettings.daysBack,
+          }));
+          return {
+            ...userSettings,
+            observationDaysBack: [...daysBackForOtherGeoHazards, ...daysBackForCurrentGeoHazards],
+          };
+        }
+        return userSettings;
+      })
+    );
   }
 
   private getUserSettingsFromDb(): Observable<UserSetting> {

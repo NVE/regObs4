@@ -19,7 +19,6 @@ import {
   tap,
 } from 'rxjs';
 import { Immutable } from 'src/app/core/models/immutable';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import {
   PositionDto,
   PropertyFilter,
@@ -31,8 +30,25 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { UrlParams } from './url-params';
-import { URL_PARAM_NW_LAT, URL_PARAM_NW_LON, URL_PARAM_SE_LAT, URL_PARAM_SE_LON } from './coordinatesUrl';
+import {
+  separatedStringToNumberArray,
+  URL_PARAM_ARRAY_DELIMITER,
+  URL_PARAM_COMPETENCE,
+  URL_PARAM_DAYSBACK,
+  URL_PARAM_FROMDATE,
+  URL_PARAM_GEOHAZARD,
+  URL_PARAM_NICKNAME,
+  URL_PARAM_NW_LAT,
+  URL_PARAM_NW_LON,
+  URL_PARAM_ORDER_BY,
+  URL_PARAM_REGION,
+  URL_PARAM_REGISTRATION_TYPE,
+  URL_PARAM_SE_LAT,
+  URL_PARAM_SE_LON,
+  URL_PARAM_SLUSH_FLOW,
+  URL_PARAM_TODATE,
+  UrlParams,
+} from './url-params';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 import { SearchCriteria } from '../../models/search-criteria';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
@@ -46,19 +62,7 @@ const UrlDtoOrderByMap = new Map([
 export const AUTOMATIC_STATIONS = 105;
 
 const DEBUG_TAG = 'SearchCriteriaService';
-const URL_PARAM_GEOHAZARD = 'hazard';
-const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
-const URL_PARAM_DAYSBACK = 'daysBack';
-const URL_PARAM_FROMDATE = 'fromDate';
-const URL_PARAM_TODATE = 'toDate';
-const URL_PARAM_NICKNAME = 'nick';
-const URL_PARAM_COMPETENCE = 'competence';
-const URL_PARAM_REGISTRATION_TYPE = 'type';
-const URL_PARAM_SLUSH_FLOW = 'slushFlow';
-const URL_PARAM_ORDER_BY = 'orderBy';
-const URL_PARAM_REGION = 'regions';
-const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
-const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
+
 const ULR_COORDS_PRECISION = 4;
 
 export const SLUSH_FLOW_ID = 30;
@@ -73,24 +77,6 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Latitude: latLng.lat,
   Longitude: latLng.lng,
 });
-
-export function separatedStringToNumberArray(separatedString: string): number[] {
-  if (separatedString?.length) {
-    // TODO: Typescript compiler cant find replaceAll on string, we should consider changing to a later es spec
-    const hasReplaceAll = separatedString as unknown as {
-      replaceAll: (toReplace: string, replaceWith: string) => string;
-    };
-    const textWithoutDelimiter = hasReplaceAll.replaceAll(URL_PARAM_ARRAY_DELIMITER, '');
-    const textContainsOnlyNumbers = !isNaN(+textWithoutDelimiter);
-    if (textContainsOnlyNumbers) {
-      return separatedString
-        .split(URL_PARAM_ARRAY_DELIMITER)
-        .filter((x) => x.trim().length && !isNaN(parseInt(x)))
-        .map(Number);
-    }
-  }
-  return [];
-}
 
 function competenceFromUrlToDto(competence: string): number[] {
   if (competence && !isCompetenceUrlValid(competence)) return;
@@ -115,18 +101,6 @@ function numberArrayToSeparatedString(numbers: number[]): string {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
   }
   return '';
-}
-
-function isGeoHazardValid(hazards: number[]): boolean {
-  hazards.sort((a, b) => b - a);
-  let isValid = false;
-  for (const haz of VALID_GEO_HAZARDS) {
-    if (haz.toString() === hazards.toString()) {
-      isValid = true;
-      break;
-    }
-  }
-  return isValid;
 }
 
 function isCompetenceUrlValid(competence: string): RegExpMatchArray {
@@ -320,23 +294,18 @@ export class SearchCriteriaService {
   private readUrlParams(): SearchCriteriaRequestDto {
     const url = new URL(document.location.href);
 
-    const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
     const slushFlow = url.searchParams.get(URL_PARAM_SLUSH_FLOW);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
 
-    const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
-    const daysBackNumeric = this.convertToInt(daysBack);
-
     let fromObsTime: string;
     let toObsTime: string;
-    if (daysBackNumeric == null) {
-      if (url.searchParams.get(URL_PARAM_FROMDATE)) {
-        fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
-      }
 
-      if (url.searchParams.get(URL_PARAM_TODATE)) {
-        toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
-      }
+    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
+      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+    }
+
+    if (url.searchParams.get(URL_PARAM_TODATE)) {
+      toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
     }
 
     this.setUseDaysBack(!fromObsTime);
@@ -381,41 +350,11 @@ export class SearchCriteriaService {
       criteria.SelectedRegions = selectedRegions;
     }
 
-    if (geoHazards) {
-      criteria.SelectedGeoHazards = geoHazards;
-      if (daysBackNumeric) {
-        this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards, daysBack: daysBackNumeric });
-      } else {
-        this.userSettingService.saveGeoHazardsAndDaysBack({ geoHazards: geoHazards });
-      }
-    } else if (daysBackNumeric) {
-      this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack: daysBackNumeric });
-    }
-
     return criteria;
   }
 
   private readOrderBy(orderBy: string): string {
     return UrlDtoOrderByMap.get(orderBy);
-  }
-
-  private readGeoHazardsFromUrl(searchParams: URLSearchParams): GeoHazard[] {
-    // read param used in (old) regobs.no
-    const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
-    if (geoHazardsParamValueOld?.length) {
-      const geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
-      new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
-      return geoHazards;
-    }
-
-    // read param on new format
-    const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
-    if (geoHazardsParamValue?.length > 0) {
-      const geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
-      if (isGeoHazardValid(geoHazards)) {
-        return geoHazards;
-      }
-    }
   }
 
   private readRegionsFromUrl(searchParams: URLSearchParams): number[] {
@@ -470,17 +409,6 @@ export class SearchCriteriaService {
       params.delete(URL_PARAM_SE_LON);
     }
     params.apply();
-  }
-
-  private convertToInt(value: string): number {
-    if (typeof value !== 'string') {
-      return null;
-    }
-    const numericValue = Number(value);
-    if (Number.isInteger(numericValue)) {
-      return numericValue;
-    }
-    return null;
   }
 
   async addToRegionFilter(regionId: number) {
