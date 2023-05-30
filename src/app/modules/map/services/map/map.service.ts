@@ -26,7 +26,7 @@ import {
   URL_PARAM_NW_LON,
   URL_PARAM_SE_LAT,
   URL_PARAM_SE_LON,
-} from 'src/app/core/services/search-criteria/coordinatesUrl';
+} from 'src/app/core/services/search-criteria/url-params';
 
 type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
 

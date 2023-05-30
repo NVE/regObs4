@@ -7,8 +7,8 @@ import { createMapView, MapService } from 'src/app/modules/map/services/map/map.
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { SearchCriteria } from '../../models/search-criteria';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { SearchCriteriaOrderBy, SearchCriteriaService, separatedStringToNumberArray } from './search-criteria.service';
-import { UrlParams } from './url-params';
+import { SearchCriteriaOrderBy, SearchCriteriaService } from './search-criteria.service';
+import { separatedStringToNumberArray, UrlParams } from './url-params';
 
 export class TestMapService {
   mapView$: Observable<IMapView>;
@@ -101,6 +101,7 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('fromDate')).toBeNull();
     expect(url.searchParams.get('toDate')).toBeNull();
   }));
+
   it('nick name filter should work', fakeAsync(async () => {
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
