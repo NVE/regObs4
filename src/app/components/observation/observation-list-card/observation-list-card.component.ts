@@ -287,7 +287,13 @@ export class ObservationListCardComponent implements OnChanges {
   async edit() {
     this.isLoadingObsForEdit = true;
     const uuid = this.obs.ExternalReferenceId;
+
     try {
+      if (!uuid) {
+        await this.notifyAboutMissingExternalReferenceId();
+        return;
+      }
+
       const draft = await this.draftRepository.load(uuid);
       if (!draft) {
         let registrationDataToEdit: RegistrationViewModel = this.obs;
@@ -314,6 +320,17 @@ export class ObservationListCardComponent implements OnChanges {
       this.cdr.markForCheck();
     }
     this.router.navigate(['registration', 'edit', uuid]);
+  }
+
+  private async notifyAboutMissingExternalReferenceId() {
+    // This alert is not translated and that is OK, this is a weird case that can only happen with registrations
+    // submitted directly to the database, outside of the API
+    const alert = await this.alertController.create({
+      header: 'Missing ExternalReferenceId',
+      message: 'Error: This observation is missing ExternalReferenceId and cannot be edited.',
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {
