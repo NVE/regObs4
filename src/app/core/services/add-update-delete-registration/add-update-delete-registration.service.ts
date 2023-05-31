@@ -58,8 +58,9 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
   async add(draft: RegistrationDraft): Promise<RegistrationViewModel> {
-    const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
-    const uploadedAttachments = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+    draft = removeEmptyRegistrations(draft);
+    const uploadedAttachments = await this.uploadAttachments(draft);
+
     const registration = this.addAttachmentToRegistration(uploadedAttachments, draft.registration);
     const langKey = await firstValueFrom(this.userSettings.language$);
     const registrationWithMeta = this.addMetadata(registration, draft);
@@ -98,8 +99,8 @@ export class AddUpdateDeleteRegistrationService {
     }
 
     const langKey = await firstValueFrom(this.userSettings.language$);
-    const draftWithoutEmptyRegistrations = removeEmptyRegistrations(draft);
-    const uploadedAttachments = await this.uploadAttachments(draftWithoutEmptyRegistrations);
+    draft = removeEmptyRegistrations(draft);
+    const uploadedAttachments = await this.uploadAttachments(draft);
     const registration = this.addAttachmentToRegistration(uploadedAttachments, draft.registration);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
