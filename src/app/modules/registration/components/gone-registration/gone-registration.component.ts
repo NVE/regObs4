@@ -6,7 +6,6 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'VersionConflictComponent';
@@ -33,8 +32,7 @@ export class GoneRegistrationComponent {
   ) {}
 
   async submitAsNew(): Promise<void> {
-    const uuid = uuidv4();
-    await this.draftRepository.copyDraftAndSave(this.draft, uuid);
+    const uuid = await this.draftRepository.copyDraftAndSave(this.draft);
     const newDraft = await this.draftRepository.load(uuid);
     this.logger.debug(
       `Submitting new draft with uuid ${newDraft.uuid} based on deleted registration with regId ${this.draft.regId}`,

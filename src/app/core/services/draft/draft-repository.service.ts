@@ -173,6 +173,7 @@ export class DraftRepositoryService {
    */
   async saveAsDraft(viewModel: RegistrationViewModel) {
     this.throwIfMissingRegId(viewModel.RegId);
+    this.throwIfMissingUuid(viewModel.ExternalReferenceId);
     await this.cloneAndSave(viewModel, viewModel.ExternalReferenceId, viewModel.RegId);
   }
 
@@ -180,22 +181,12 @@ export class DraftRepositoryService {
    * Create and save a copy of a registration already sent to server
    * The copy will have a new uuid and no regId
    * @param draft the registration you like to copy
-   * @param uuid a unique GUID
    */
-  async copyDraftAndSave(draft: RegistrationDraft, uuid: string) {
+  async copyDraftAndSave(draft: RegistrationDraft) {
     this.throwIfMissingRegId(draft.regId);
+    const uuid = uuidv4();
     await this.cloneAndSave(draft.registration, uuid, null);
-  }
-
-  /**
-   * Create and save a copy of a registration already sent to server
-   * The copy will have a new uuid and no regId
-   * @param viewModel the registration you like to copy
-   * @param uuid a unique GUID
-   */
-  async copyViewModelAndSave(viewModel: RegistrationViewModel, uuid: string) {
-    this.throwIfMissingRegId(viewModel.RegId);
-    await this.cloneAndSave(viewModel, uuid, null);
+    return uuid;
   }
 
   private async cloneAndSave(viewModel: RegistrationViewModel, uuid: string, regId: number) {
@@ -211,6 +202,12 @@ export class DraftRepositoryService {
     await this.save(draft);
   }
 
+  private throwIfMissingUuid(uuid: string) {
+    if (!uuid) {
+      throw new Error('Missing uuid / ExternalReferenceId.');
+    }
+  }
+
   private throwIfMissingRegId(regId: number) {
     if (!regId) {
       throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
@@ -222,6 +219,8 @@ export class DraftRepositoryService {
    * @param draft the registration to save
    */
   async save(draft: RegistrationDraft): Promise<void> {
+    this.throwIfMissingUuid(draft.uuid);
+
     const start = Date.now();
 
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
@@ -248,6 +247,10 @@ export class DraftRepositoryService {
    * @returns registration with given uuid or undefined if not found
    */
   async load(uuid: string): Promise<RegistrationDraft | undefined> {
+    if (!uuid) {
+      return undefined;
+    }
+
     const start = Date.now();
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(uuid, appMode);
@@ -272,6 +275,7 @@ export class DraftRepositoryService {
    * @param uuid uuid of the registration you want to delete
    */
   async delete(uuid: string): Promise<void> {
+    this.throwIfMissingUuid(uuid);
     await this.newAttachmentSerivice.removeAttachments(uuid);
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(uuid, appMode);
@@ -290,6 +294,7 @@ export class DraftRepositoryService {
    * @returns a key for given draft uuid and given app mode
    */
   private createKey(uuid: string, appMode: AppMode): string {
+    this.throwIfMissingUuid(uuid);
     return `${this.createKeyForAllDrafts(appMode)}.${uuid}`;
   }
 
