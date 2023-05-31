@@ -394,32 +394,41 @@ describe('DraftRepositoryService', () => {
     });
   });
 
-  it('copyViewModelAndSave works', async () => {
-    const viewModel: RegistrationViewModel = {
-      RegId: 42,
-      ExternalReferenceId: 'externalReferenceId',
-      DtObsTime: 'obsTime',
-      GeoHazardTID: GeoHazard.Ice,
-      GeneralObservation: {
-        Comment: 'comment',
+  it('copyDraftAndSave works', async () => {
+    const draft: RegistrationDraft = {
+      uuid: 'original-uuid',
+      regId: 123456,
+      simpleMode: false,
+      syncStatus: SyncStatus.Draft,
+      registration: {
+        DtObsTime: 'obsTime',
         GeoHazardTID: GeoHazard.Ice,
+        GeneralObservation: {
+          Comment: 'comment',
+          GeoHazardTID: GeoHazard.Ice,
+        },
       },
     };
-    await service.copyViewModelAndSave(viewModel, 'uuid');
+
+    const newUuid = await service.copyDraftAndSave(draft);
 
     //the copy should be saved in the database
     expect(database.store.size).toBe(1);
-    expect(database.store.has('drafts.TEST.uuid')).toBeTrue();
+    expect(database.store.has(`drafts.TEST.${newUuid}`)).toBeTrue();
 
-    const draft = await service.load('uuid');
+    const newDraft = await service.load(newUuid);
 
-    expect(draft.regId).toBeNull(); //this is a new observation, so the regId should be null
+    expect(newDraft.regId).toBeNull(); //this is a new observation, so the regId should be null
 
     //check that the draft contains a copy of the viewModel
-    expect(draft.registration.GeneralObservation).toEqual({
+    expect(newDraft.registration.GeneralObservation).toEqual({
       Comment: 'comment',
       GeoHazardTID: GeoHazard.Ice,
     });
+
+    // Check that this is a new object
+    newDraft.registration.GeneralObservation.Comment = 'Test';
+    expect(draft.registration.GeneralObservation.Comment).toBe('comment');
   });
 
   it('hasAttachments() should work', async () => {
