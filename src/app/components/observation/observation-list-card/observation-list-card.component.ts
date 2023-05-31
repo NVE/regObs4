@@ -290,6 +290,8 @@ export class ObservationListCardComponent implements OnChanges {
     try {
       const draft = await this.draftRepository.load(uuid);
       if (!draft) {
+        let registrationDataToEdit: RegistrationViewModel = this.obs;
+
         //we don't have a local working copy of this registration yet, so fetch it and save as draft
         this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
         const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
@@ -299,8 +301,11 @@ export class ObservationListCardComponent implements OnChanges {
             this.isLoadingObsForEdit = false;
             return;
           }
+        } else {
+          registrationDataToEdit = registrationFromServer;
         }
-        await this.draftRepository.saveAsDraft(this.obs); //save cached copy from card as draft
+
+        await this.draftRepository.saveAsDraft(registrationDataToEdit); //save cached copy from card as draft
       } else {
         this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
       }
