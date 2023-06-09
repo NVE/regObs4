@@ -44,13 +44,13 @@ export interface DownloadAndUnzipPlugin {
    * Stop download or unzip of a file with a specific file reference number.
    * @param a reference to the job you like to cancel
    */
-  cancelJob({ fileReference: number }): Promise<void>;
+  cancelJob({ fileReference }: { fileReference: number }): Promise<void>;
 
   /**
    * Query about status and progress for a specific download/unzip job.
    * @param a reference to the job in question
    */
-  getJobStatus({ fileReference: number }): Promise<JobStatus>;
+  getJobStatus({ fileReference }: { fileReference: number }): Promise<JobStatus>;
 }
 
 export const DownloadAndUnzip = registerPlugin<DownloadAndUnzipPlugin>('DownloadAndUnzip');
