@@ -11,7 +11,6 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 // import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
@@ -110,7 +109,6 @@ export const APP_PROVIDERS: Provider[] = [
   EmailComposer,
   SQLite,
   Network,
-  ScreenOrientation,
   Diagnostic,
   {
     provide: HTTP_INTERCEPTORS,

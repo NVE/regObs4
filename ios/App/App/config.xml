@@ -36,10 +36,6 @@
     <param name="ios-package" value="SafariViewController"/>
   </feature>
 
-  <feature name="CDVOrientation">
-    <param name="ios-package" value="CDVOrientation"/>
-  </feature>
-
   <feature name="SecureStorage">
     <param name="ios-package" value="SecureStorage"/>
   </feature>

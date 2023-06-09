@@ -1,14 +1,5 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnDestroy,
-  ViewChild,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IonSlides, ModalController, Platform } from '@ionic/angular';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
@@ -21,7 +12,7 @@ type HrefType = { title: string; url: string };
   styleUrls: ['./fullscreen-image-modal.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FullscreenImageModalPage implements OnInit, OnDestroy {
+export class FullscreenImageModalPage implements OnInit {
   @ViewChild(IonSlides) slider: IonSlides;
 
   @Input() imgIndex: number;
@@ -36,7 +27,6 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private cdr: ChangeDetectorRef,
-    private screenOrientation: ScreenOrientation,
     private platform: Platform,
     private router: Router
   ) {}
@@ -48,7 +38,6 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
       this.activeImageIndex = this.imgIndex;
       this.checkIfLastOrFirstSlide();
       if (this.isHybrid) {
-        this.screenOrientation.unlock();
         this.slideOptions = {
           initialSlide: this.imgIndex,
         };
@@ -94,12 +83,6 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
     !this.isFirstSlide && --this.activeImageIndex;
     this.checkIfLastOrFirstSlide();
     this.updateUi();
-  }
-
-  ngOnDestroy(): void {
-    if (isAndroidOrIos(this.platform)) {
-      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-    }
   }
 
   closeModal(): void {
