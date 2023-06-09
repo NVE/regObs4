@@ -189,7 +189,7 @@
     "prettier": "2.7.1",
     "protractor": "~7.0.0",
     "ts-node": "^10.2.1",
-    "typescript": "4.6.4"
+    "typescript": "^4.8.4"
   },
   "description": "Report incidents in nature",
   "cordova": {
