@@ -8,9 +8,7 @@ import { SwipeBackService } from './core/services/swipe-back/swipe-back.service'
 import { Observable, from, forkJoin, of, Subject } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
-import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
@@ -41,7 +39,6 @@ export class AppComponent {
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
-    private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
     private fileLoggingService: FileLoggingService,
     private auth: AuthService,
@@ -92,20 +89,11 @@ export class AppComponent {
     this.breakpointService.onResize(event.target.innerWidth);
   }
 
-  private lockScreenOrientation() {
-    if (isAndroidOrIos(this.platform)) {
-      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-    }
-  }
-
   private initServices(): (src: Observable<unknown>) => Observable<unknown> {
     return (src: Observable<UserSetting>) =>
       src.pipe(
         concatMap((userSettings) => {
           const observables = [
-            of(this.lockScreenOrientation()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))
-            ),
             from(this.dbHelperService.init()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))
             ),
