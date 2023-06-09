@@ -77,7 +77,7 @@
     "@ionic-native/safari-view-controller": "^5.36.0",
     "@ionic-native/screen-orientation": "^5.36.0",
     "@ionic-native/sqlite": "^5.36.0",
-    "@ionic/angular": "^6.2.7",
+    "@ionic/angular": "^6.7.5",
     "@ionic/storage-angular": "^3.0.6",
     "@mapbox/leaflet-pip": "^1.1.0",
     "@mapbox/sphericalmercator": "^1.2.0",
