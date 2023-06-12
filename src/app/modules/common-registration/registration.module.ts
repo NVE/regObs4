@@ -3,8 +3,7 @@ import { CoreModule } from 'src/app/modules/common-core/core.module';
 import { KdvElementsService, HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { OfflineDbServiceOptions } from './services/offline-db/offline-db-service.options';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HttpConnectivityInterceptor } from 'ngx-connectivity';
+import { HttpClient } from '@angular/common/http';
 import { NewAttachmentService } from './services/add-new-attachment/new-attachment.service';
 import { throwError } from 'rxjs';
 import { RegobsRegistrationPipesModule } from './registration.pipes';
@@ -68,11 +67,6 @@ export class RegistrationModule {
           provide: OfflineDbServiceOptions,
           useFactory: offlineDbServiceOptionsFactory,
           deps: [FOR_ROOT_OPTIONS_TOKEN],
-        },
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: HttpConnectivityInterceptor,
-          multi: true,
         },
         {
           provide: NewAttachmentService,
