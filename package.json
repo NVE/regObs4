@@ -106,7 +106,6 @@
     "lru-fast": "^0.2.2",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
-    "ngx-connectivity": "0.0.5",
     "ngx-file-drop": "^12.0.0",
     "ngx-leaflet-edgebuffer": "^1.0.6",
     "ngx-logger": "^4.2.1",
