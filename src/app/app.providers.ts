@@ -1,7 +1,6 @@
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone, Provider } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
-import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
@@ -101,7 +100,6 @@ export const APP_PROVIDERS: Provider[] = [
   },
   DeviceOrientation,
   File,
-  AndroidPermissions,
   InAppBrowser,
   SafariViewController,
   HTTP,
