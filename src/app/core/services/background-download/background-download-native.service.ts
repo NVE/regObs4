@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { CancelPromise } from './cancel-promise.model';
 import { BackgroundDownloadService } from './background-download.service';
 import { Observable } from 'rxjs';

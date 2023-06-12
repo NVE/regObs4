@@ -2,8 +2,8 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 // import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 // import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-// import { Geolocation } from '@ionic-native/geolocation/ngx';
-// import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+// import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
+// import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 
 // import { HomePage } from './home.page';
 // import { Platform } from '@ionic/angular';

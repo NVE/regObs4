@@ -29,12 +29,12 @@
  */
 
 import { formatDate } from '@angular/common';
-import { Entry, File } from '@ionic-native/file/ngx';
+import { Entry, File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import * as _ from 'lodash';
 import { ILogProviderConfig } from './file-logging.config';
-import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
+import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
 import { EmailComposerService } from '../email-composer/email-composer.service';
 import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';

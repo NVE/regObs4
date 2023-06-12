@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SQLite, SQLiteObject, SQLiteDatabaseConfig } from '@ionic-native/sqlite/ngx';
+import { SQLite, SQLiteObject, SQLiteDatabaseConfig } from '@awesome-cordova-plugins/sqlite/ngx';
 import { Platform } from '@ionic/angular';
 import { settings } from '../../../../settings';
 import '../../helpers/ionic/platform-helper';

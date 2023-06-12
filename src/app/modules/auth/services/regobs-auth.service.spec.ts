@@ -1,8 +1,8 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { TranslateModule } from '@ngx-translate/core';
 import { StorageBackend } from '@openid/appauth';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
