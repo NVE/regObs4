@@ -9,7 +9,7 @@ export interface GeoPositionLog {
 }
 
 /**
- * Copied from @ionic-native/geolocation/ngx
+ * Copied from @awesome-cordova-plugins/geolocation/ngx
  */
 export interface PositionError {
   /**

@@ -17,7 +17,7 @@ import { DataLoadService } from '../../../modules/data-load/services/data-load.s
 import { IWarningGroup } from './warning-group.interface';
 import { IIceWarningApiResult } from './ice-warning-api-result.interface';
 import { Platform } from '@ionic/angular';
-import { HTTP } from '@ionic-native/http/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
 import { toPromiseWithCancel } from '../../helpers/observable-helper';
