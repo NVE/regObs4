@@ -127,7 +127,6 @@ export const settings: ISettings = {
       minZoomSupportMaps: 5,
       maxZoom: 18,
       zoomLevelObservationList: 12,
-      edgeBufferTiles: 0,
       updateWhenIdle: false,
 
       topoMapLayers: {
