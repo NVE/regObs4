@@ -1,19 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="no.nve.regobs4" android:versionName="4.8.2" android:versionCode="230425414">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="no.nve.regobs4" android:versionName="4.8.3" android:versionCode="230613409">
 
   <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/AppTheme">
 
-    <!--
-      To force screen orientation to portrait,
-      we can use
-      android:screenOrientation="portrait"
-    -->
-    <activity
-      android:name="no.nve.regobs4.MainActivity"
-      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-      android:exported="true"
-      android:label="@string/title_activity_main"
-      android:launchMode="singleTask"
-      android:theme="@style/AppTheme.NoActionBarLaunch">
+    
+    <activity android:name="no.nve.regobs4.MainActivity" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:exported="true" android:label="@string/title_activity_main" android:launchMode="singleTask" android:theme="@style/AppTheme.NoActionBarLaunch">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
