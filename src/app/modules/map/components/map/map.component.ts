@@ -570,7 +570,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       maxNativeZoom: settings.map.tiles.maxZoom,
       detectRetina: useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
-      edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
     };
   }
 
