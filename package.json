@@ -108,7 +108,6 @@
     "ngx-file-drop": "^12.0.0",
     "ngx-logger": "^4.2.1",
     "ngx-markdown": "^14.0.1",
-    "ngx-virtual-scroller": "^4.0.3",
     "observable-webworker": "^3.4.0",
     "pouchdb-adapter-idb": "^7.2.2",
     "rxdb": "^9.15.0",

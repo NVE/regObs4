@@ -26,7 +26,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { CompetenceComponent } from '../../components/competence/competence.component';
 import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
-import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AbsPipe } from './pipes/abs.pipe';
 import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
@@ -45,7 +44,6 @@ import { ObservationListViewComponent } from './components/list-view/observation
     RouterModule,
     MapImageModule,
     AuthModule,
-    VirtualScrollerModule,
     StaticMapImageModule,
   ],
   declarations: [
@@ -101,7 +99,6 @@ import { ObservationListViewComponent } from './components/list-view/observation
     GeoFabComponent,
     CompetenceComponent,
     AuthModule,
-    VirtualScrollerModule,
     AbsPipe,
     RemoteImageComponent,
     EditPictureInfoModalComponent,
