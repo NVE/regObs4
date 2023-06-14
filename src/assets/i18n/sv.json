@@ -25,10 +25,16 @@
     "UNDO": "Ångra",
     "WARNING": "Varning"
   },
+  "API": {
+    "SUNSET": "Du bör uppgradera appen! Din app använder en föråldrad version av Regobs API som kommer att stängas av när som helst och utan ytterligare meddelande efter {{ sunsetDate }}. Ett antal funktioner i appen kommer då att sluta fungera."
+  },
   "CLOSE": "Stäng",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Lägg till egna observationer",
     "SELECT_GEO_HAZARD": "Välj en naturfara",
+    "SKI_CONDITIONS": "Nu kan du även rapportera skidföre!",
+    "TOGGLE_OBSERVATION": "Växla mellan enkel och fullständig observation",
+    "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå på för att lämna in observationer av situationen där du befinner dig - enkelt och snabbt. Detta är superanvändbar data för prognostjänsten och andra användare. \n\n Stäng av för att få alla alternativ för att lämna in observationer – som tidigare.",
     "VIEW_WARNINGS": "Se varningar från varsom.no"
   },
   "COMPETENCE": {
@@ -36,7 +42,8 @@
   },
   "DATA_LOAD": {
     "DATA": "Läser data...",
-    "LOADING": "Läser"
+    "LOADING": "Läser",
+    "SPINNER_FETCH_OBSERVATIONS": "Hämtar observationer"
   },
   "DATE": "Datum",
   "DAYS": {
@@ -76,6 +83,15 @@
     "W": "V"
   },
   "DRAFT": "Utkast",
+  "GEOLOCATION": {
+    "POSITION_ERROR": {
+      "INVALID": "Det går inte att visa din position pga ofullständiga positionsdata",
+      "PermissionDenied": "Vi behöver tillgång till din exakta position för att visa var du är",
+      "PositionUnavailable": "Kan inte hitta din position",
+      "Timeout": "Det tog för lång tid att få din position",
+      "UNSUPPORTED": "Enheten kan inte ge dig positionsdata"
+    }
+  },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Registrerar tur"
   },
@@ -88,12 +104,20 @@
   "HELP": {
     "TITLE": "Hjälp"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "BUTTON": "Stäng",
+      "MESSAGE": "Det gick inte att hämta observationer. Försök igen genom att zooma/panorera eller använd uppdateringsknappen i filtermenyn"
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "Om data i Varsom",
     "LINE_1": "Använd varningar, observationer och kartor på egen risk. Det kan finnas fel och information kan saknas.",
     "LINE_2": "En prognos är ett planeringsverktyg och kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering. Förhållandena kan vara komplexa och skiljer sig från prognosen.",
     "LINE_3": "Observationer har producerats av användarna och är tillgängliga «som de är». Datan kan innehålla fel och utelämnanden. NVE lämnar inga garanterar för fel och utelämnanden i uppgifterna.",
     "LINE_4": "När du publicerar bilder på observationer accepterar du att bilderna kan återanvändas (licensierat under <a href='https://data.norge.no/nlod/no/'>Norsk lisens for offentlige data</a>).",
+    "LINE_5": "Observationer kan endast ändras eller raderas upp till 48 timmar efter att de har registrerats.",
+    "LINE_6": "Läs mer i våra <a href=\"{{legalUrl}}\" target=\"_blank\">användarvillkor</a>.",
     "OK": "Okej, jag accepterar"
   },
   "LOGIN": {
@@ -115,6 +139,7 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "möh",
+    "AWAY_FROM": "bort",
     "COPIED_TO_CLIPBOARD": "Kopierade till urklipp",
     "EAST_SHORT": "O",
     "NORTH_SHORT": "N",
@@ -136,7 +161,19 @@
     "CONTACT_REGOBS": "Kontakta oss",
     "CONTACT_REGOBS_ERROR": "Rapportera fel",
     "CONTACT_SUBJECT": "Kontakta oss från appen",
+    "CUSTOM_TIMESPAN": "Anpassad period",
+    "DATE_RANGE": {
+      "LAST_WEEK": "Förra veckan",
+      "LAST_X_DAYS": "Senaste {{days}} dagarna",
+      "LAST_X_MONTHS": "Senaste {{months}} månaderna",
+      "LAST_X_WEEKS": "Senaste {{weeks}} veckorna",
+      "TODAY": "Idag",
+      "YESTERDAY": "Igår"
+    },
     "DAYS_BACK": "Dagar tillbaka",
+    "DAY_BACK": "Dag tillbaka",
+    "DEACTIVATE_OBSERVATIONS": "Visning av observationer är inaktiverad",
+    "END_DATE": "Slutdatum",
     "ERROR_REPORT_DESCRIPTION": "Vänligen beskriv ditt problem nedan. Om du har skärmdumpar vänligen bifoga. Vi har lagt till loggfiler som kan hjälpa oss att felsöka problemet. Du kan ta bort dessa om du så önskar.",
     "ERROR_REPORT_SUBJECT": "Felrapport från",
     "GENERAL": "Generell",
@@ -146,12 +183,15 @@
     "MAP_LEGENDS": "Teckenförklaring för karta",
     "MAP_SETTINGS": "Kartval",
     "MAP_SETTINGS_FOR": "Kartval för",
+    "NO_EMAIL_APP": "E-post kan inte skickas, eftersom vi inte kan komma i kontakt med e-postappen på telefon. På iPhone måste du ha appen \"Mail\"",
     "OPACITY": "Genomskinlighet",
     "OTHER": "Övrig",
     "SHOW": "Visa",
+    "SHOWING_OBSERVATIONS": "Observationer",
     "SHOW_MAP_CENTER": "Visa kartcenter",
     "SHOW_OBSERVATIONS": "Se observationer",
     "SHOW_TRIPS": "Visa turer",
+    "START_DATE": "Startdatum",
     "START_WIZARD": "Starta guiden",
     "SUPPORT_MAP_CREDITS": "Supportkartor tillhandahållna av",
     "TILES": {
@@ -161,6 +201,7 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (värld)"
     },
+    "TIMESPAN": "Tidsperiod",
     "TODAYS_OBSERVATIONS": "Endast dagens observationer",
     "TOPO_MAP_CREDITS": "Topografisk karta tillhandahållen av",
     "UPDATE_OBSERVATIONS": "Uppdaterad",
@@ -172,22 +213,76 @@
   },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Laddar fler observationer ...",
+    "MAX_COUNT_REACHED_HEADER": "Inga fler observationer",
+    "MAX_COUNT_REACHED_TEXT": "Vi visar max {{ maxCount }} observationer här. Du kan se mer på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\"> din sida på webben </a>",
     "MY_SENT_OBSERVATIONS": "Mina inskickade observationer",
     "NO_OBSERVATIONS": "Dela dina observationer!",
     "NO_OBSERVATIONS_TEXT": "Här hittar du observationer du själv har gjort. Dela dina observationer, bilder och bedömningar med andra.",
+    "OFFLINE": "Vi kan inte hämta de observationer som du har skickat in. Är du offline?",
+    "SEARCH_ERROR": "På grund av ett fel kan vi inte hämta de synpunkter du har lämnat. Försök igen och meddela oss om problemet kvarstår.",
     "SENT_SUBTITLE": "Dessa observationer lämnas in och lagras i Regobs.",
     "TITLE": "Mina observationer"
   },
+  "MY_PROFILE": {
+    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\"> Läs mer om kompetens </a>",
+    "COPYRIGHT": "upphovsrätt",
+    "EDIT": "Redigera",
+    "MY_COMPETENCE": "Min kompetens",
+    "MY_GROUPS": "Mina grupper",
+    "MY_GROUPS_TEXT": "Du kan redigera en observation i en grupp upp till 48 timmar efter att den har skickats in.<br/>För att ändra gruppnamn, gruppbeskrivning och medlemmar, <a href=\"mailto:regobs@nve.no\">vänligen kontakta oss</a>.",
+    "MY_NVE_ACCOUNT": "Mitt NVE-konto",
+    "MY_PICTURES": "Mina bilder",
+    "NICKNAME": "Användarnamn",
+    "NICKNAME_TEXT": "Användarnamn är ett namn som är synligt för alla och som visas tillsammans med observationer du gör",
+    "NO_GROUPS": "Du är inte medlem i någon grupp",
+    "PHOTOGRAPHER": "Fotograf",
+    "PUBLISH_PHOTOS": "När du publicerar bilder av observationer accepterar du att de är licensierade under NLOD och kan återanvändas. <a href=\"https://data.norge.no/nlod/no/\"> Läs mer om data </a>",
+    "SAVE": "Spara",
+    "TITLE": "Min sida",
+    "USER": "Användare"
+  },
+  "OBSERVATION_FILTER": {
+    "COMPETANCE_FILTER": {
+      "ALL": "Alla",
+      "AUTOMATIC_STATIONS": "Automatiska stationer",
+      "LABEL": "Kompetens",
+      "TITLE": "Observatör"
+    },
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} markerade",
+    "MULTISELECT_SHOW_NO_COUNT": "Visa alla",
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Sök på observatörnamn",
+      "TITLE": "Namn"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Observationstyp"
+    },
+    "REGION_FILTER_B_REGIONS_TITLE": "B-områden",
+    "REGION_FILTER_TITLE_SNOW": "Prognosområden",
+    "RESET_FILTER_BUTTON_TITLE": "Återställ alla filter",
+    "TITLE": "Observationsfilter"
+  },
   "OBSERVATION_LIST": {
     "FORMS": "Formulär",
+    "MAX_COUNT_REACHED_HEADER": "Inga fler observationer",
+    "MAX_COUNT_REACHED_TEXT": "Vi visar max {{ maxCount }} observationer här. Om du inte hittade det du letade efter, försök att zooma in på kartan eller avgränsa perioden du vill se observationer från.",
+    "NO_IMAGES": "Inga bilder",
+    "NO_IMAGES_TEXT": "Det finns inga observationer med bilder i kartutsnittet. Försök att ändra utsnittet eller förläng perioden från vilken du vill se observationer.",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
+    "NO_OBSERVATIONS_TEXT_WEB": "Hittade inga observationer som passade med det filter du har valt. Om du inte hittade det du letade efter kan du prova att byta filter.",
+    "SEARCH_ERROR_DESCRIPTION": "Sökningen efter observationer misslyckades. Försök igen genom att använda uppdateringsfunktionen eller ändra filtret. Kontakta oss om problemet kvarstår.",
+    "SEARCH_ERROR_TITLE": "Sökningen misslyckades",
     "SORT_BY_CHANGE_TIME": "Uppdateringstidpunkt",
     "SORT_BY_OBS_TIME": "Observationstidpunkt",
     "SORT_BY_TEXT": "Sortera efter",
-    "TITLE": "Observationer"
+    "TITLE": "Observationer",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alla",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt",
+    "VIEW_TYPE": "Visning"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Vill du ta bort det här kartpaketet?",
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
     "DOWNLOAD_ERROR_MESSAGE": "Nedladdningen misslyckades. Är du ansluten till internet?",
     "MAP_PACKAGE_DETAILS_PAGE": {
@@ -203,13 +298,17 @@
       "TRY_AGAIN_BUTTON": "Försök igen"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekartor",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} paket",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} paket",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} tillgängligt",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
       "DOWNLOAD_ERROR": "Nedladdningen misslyckades",
       "UNZIP_ERROR": "Uppackning av filer misslyckades",
-      "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Packar upp {{n}} av {{totalParts}}",
+      "WAITING_FOR_NETWORK": "Väntar på nätverk"
     },
-    "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Det gick inte att spara kartpaketet på disk. Var god försök igen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
   },
   "POPUP_DISCLAMER": {
@@ -230,8 +329,13 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Lägg till foton",
     "ADD_WEB_URL": {
+      "LABEL": "Länkar",
       "TITLE": "Lägg till en webblänk",
       "URL": "Url"
+    },
+    "ANONYMIZE": {
+      "CHECK_TO_ANONYMIZE": "Kryssa för att anonymisera",
+      "TITLE": "Anonymisering"
     },
     "BACK_TO_OBSERVATION": "Tillbaka till min observation",
     "CONFIRM_RESET": "Är du säker på att du vill återställa alla fält?",
@@ -258,14 +362,29 @@
       "TITLE": "Tecken på fara"
     },
     "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Radera utkast",
+        "HEADER": "Radera utkast",
+        "MESSAGE_EDIT": "Vill du radera alla ändringar som du har gjort i denna observation?",
+        "MESSAGE_NEW": "Denna observation har inte skickats in till Regobs. Vill du ta bort den?"
+      },
       "SUBMITTED_REGISTRATION": {
-        "HEADER": "Radera observation"
+        "BUTTON": "Ta bort observation från Regobs",
+        "FAILED": {
+          "HEADER": "Borttagningen misslyckades",
+          "MESSAGE": "Vi kunde inte ta bort observationen från Regobs. Kolla gärna om du har internet och försök igen."
+        },
+        "HEADER": "Radera observation",
+        "MESSAGE": "Skulle du vilja ta bort denna observation från Regobs för gott?"
       }
     },
-    "DELETE_CONFIRM": "Är du säker?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
+        "AREA_TOTAL": "Rita hela jordskredsområdet",
         "AVAL_TRIGGER": "Jordskredet utlöst av",
+        "CONFIRM_END_POSITION": "Bekräfta slutpunkt",
+        "CONFIRM_LANDSLIDE_AREA": "Bekräfta jordskredsområde",
+        "CONFIRM_START_POSITION": "Bekräfta startpunkt",
         "DAMAGE_EXTENT": "Skadeomfattning",
         "DESTRUCTIVE_SIZE": "Storlek",
         "DIRT_ACTIVITY_INFLUENCED": "Vad påverkades?",
@@ -274,6 +393,7 @@
         "DT_LAND_SLIDE_TIME_END": "När inträffade jordskredet senast",
         "END_POSITION": "Slutpunkt",
         "IN_MAP": "i kartan",
+        "LANDSLIDE_AREA": "Område för jordskred",
         "LANDSLIDE_TYPE": "Typ av jordskred",
         "POSITION": "Position för jordskred",
         "SET_LANDSLIDE_POSITION": "Ange position för jordskredet",
@@ -289,14 +409,25 @@
       "SUBJECT": "Registreringen misslyckades"
     },
     "FAILED": {
+      "ABANDON": "Ignorera mina ändringar",
+      "CONFLICT": "Medan du arbetade har observationen ändrats någon annanstans. <br/> Vill du ignorera dina ändringar eller vill du skicka in och skriva över ändringar som gjorts någon annanstans?",
       "EDIT_OBSERVATION": "Redigera observation",
+      "GONE": "Denna observation har raderats i Regobs. <br/> Vill du ignorera dina ändringar eller vill du skicka in utkastet som en ny observation?",
       "LOGGED": "Problemet har registrerats.",
+      "OVERWRITE": "Skicka och skriv över",
       "PROBLEM": "Det har uppstått ett problem med din registrering",
       "PROBLEM_HELP_TEXT": "Observationer med fel lagras i din telefon och när problemet är löst kan du skicka in det igen.",
       "REFERENCE": "Referens",
       "SEND_EMAIL": "Skicka till oss via e-post",
+      "SUBMIT_NEW": "Skicka in som en ny observation",
       "SUBTITLE": "Det saknas nätverk eller registreringen tog för lång tid. Vi försöker igen efter ett tag och hoppas att nätverket har förbättrats.",
-      "TITLE": "Registreringen misslyckades"
+      "TITLE": "Registreringen misslyckades",
+      "UNAUTHORIZED": "Vi har inte lyckats kontrollera om du har tillgång. Försök att skicka in igen. Om detta inte hjälper, kan du försöka logga ut och in igen och försöka skicka igen?"
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Redigera observation",
+      "HEADER": "Synkroniseringen misslyckades",
+      "MESSAGE": "Vi kunde inte hämta en ny version av observationen från Regobs. Du kan fortfarande redigera den, men det finns en risk för konflikter när du försöker skicka in den om flera personer har arbetat med samma observation eller om du har arbetat med observationen på flera enheter."
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Anteckningar från observationen",
@@ -309,6 +440,7 @@
       "TAKE_NEW_PHOTO": "Ta ett nytt foto",
       "TITLE": "Bild och anteckning"
     },
+    "GO_TO": "Gå till observation",
     "GROUP": {
       "SUBTITLE": "Dela observation med",
       "TITLE": "Dela med gruppen"
@@ -338,12 +470,22 @@
         "TITLE": "Istjocklek"
       },
       "INCIDENT": {
-        "INVOLVED_NUM": "Antal i turföljet"
+        "CASUALTIES_NUM": "Antal genom isen",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan inte vara mer än antalet i turföljet",
+        "DEAD_NUM_ERROR_MESSAGE": "Kan inte vara mer än antalet genom isen eller antalet i turföljet",
+        "INVOLVED_NUM": "Antal i turföljet",
+        "SAFETY_GEAR_TID": "Räddningsutrustning"
       }
     },
     "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Bildbeskrivning",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Lägg till en beskrivning till bilden",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "Du måste ge appen behörighet att läsa från fotoalbumet",
+      "CAMERA_PERMISSION_MISSING": "Du måste ge appen tillstånd att använda kameran",
+      "UNKNOWN": "Vi kunde inte lägga till bilderna. Det kan vara något fel med en bildfil eller något annat fel. Testa gärna en annan bild för att kontrollera"
+    },
+    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} bild(er) laddades inte upp för observation gjord {{obsTime}}. Vänligen skicka oss bilderna via e-post så att vi manuellt kan kontrollera vad som är fel.",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivning",
@@ -351,11 +493,14 @@
       "DAMAGE_EXTENT": "Skada omfattning",
       "DEAD_NUM": "Antal avlidna",
       "IMAGE_PLACEHOLDER": "+ Lägg till bildbeskrivning",
+      "RESCUE_TID": "Räddning",
       "TITLE": "Olycka / tillbud"
     },
     "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hela centimeter",
+    "LOG_IN_AND_RESEND": "Logga in och försök skicka igen",
+    "LOG_IN_AND_SEND": "Logga in för att skicka observation",
     "NONE": "Ej vald",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekräfta position och tid",
@@ -363,6 +508,8 @@
       "EXACT": "Exakt",
       "HIDE_DETAILS": "Dölj detaljer",
       "MORETHANONEKM": "Mer än 1 km",
+      "NAME_LOCATION": "Namnge platsen",
+      "NAME_LOCATION_TOOLTIP": "Att namnge platsen gör det möjligt att skapa en tidsserie vid samma observationspunkt",
       "SHOW_DETAILS": "Visa detaljer",
       "SOURCE": "Källa",
       "TITLE": "Observationspunkt och -tid",
@@ -372,6 +519,17 @@
       "DATE_AND_TIME": "Datum och tid",
       "MY_OBSERVATION": "Min observation",
       "SHARE_WITH_GROUP": "Dela med gruppen",
+      "SIMPLE": {
+        "CONFIRM": {
+          "CANCEL": "Avbryt",
+          "HEADER": "Växla till enkelt läge",
+          "MESSAGE": "Observationen innehåller data som inte kan visas i enkelt läge. Vill du radera data som vi inte kan visa?",
+          "YES": "Radera data och växla till enkel registrering"
+        },
+        "HEADER_QUESTION": "Hur är det här nu?",
+        "IMAGES_MODAL_TITLE": "Bilder på {{registrationType}}",
+        "TOGGLE": "Enkel observation"
+      },
       "TITLE": "Observation"
     },
     "REQUIRED_FIELDS_MISSING": "Vissa fält är ogiltiga. Vill du återställa formuläret och gå tillbaka?",
@@ -385,6 +543,7 @@
       "NO": "Nej, kassera",
       "YES": "Ja, spara"
     },
+    "SELECTION_COUNT": "{{ count }} har valts",
     "SEND": "Skicka in",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekräfta skadeplats",
@@ -419,24 +578,39 @@
         "TITLE": "Bedömning av lavinfara"
       },
       "AVALANCHE_OBS": {
+        "AREA_END": "Rita utloppsområdet",
+        "AREA_START": "Rita startzonen",
+        "AREA_TOTAL": "Rita hela skredområdet",
+        "AVALANCHE_AREA": "Lavinområde",
         "AVALANCHE_TRIGGER": "Lavinen utlöst av",
         "AVALANCHE_TYPE": "Lavintyp",
         "AVAL_CAUSE": "Svagt lager",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Kan inte vara fler än antalet inblandade",
+        "CONFIRM_AVALANCHE_AREA": "Bekräfta lavinområde",
+        "DEAD_NUM_ERROR_MESSAGE": "Får inte vara fler än antalet avlidna eller inblandade personer",
         "DESTRUCTIVE_SIZE": "Storlek",
+        "EARLIEST_TIME": "Tidigaste skredtid",
         "EVACUATED_NUM": "Antal evakuerade",
         "FRACTURE_HEIGTH": "Brottkant höjd (cm)",
         "FRACTURE_WIDTH": "Brottkant bredd (m)",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Det totala antalet döda och skadade får inte vara fler än det antal personer som avlidit eller varit inblandade i lavinen",
         "HARMED_NUM": "Endast antal skadade",
+        "HARMED_NUM_ERROR_MESSAGE": "Kan inte vara fler än antalet inblandade",
         "INCIDENT_DESCRIPTION": "Olycka eller skada",
         "INCIDENT_PLACEHOLDER": "Orsakade lavinen till skada, olycka eller nästan olycka? Varför och hur hände det? Kunde situationen ha undvikits?",
         "INVOLVED_NUM": "Antal inblandade",
-        "MATERIAL_DAMAGES": "Skador på egendom",
+        "LOCAL_KNOWLEDGE_TID": "Kännedom om området",
+        "LOCAL_TOURIST_TID": "Lokal eller tillresande",
+        "MATERIAL_DAMAGES": "Materiella skador",
         "POSITION": "Lavinens position ",
         "REMOTELY_TRIGGERED": "Fjärrutlöst",
         "SAFETY_GEAR_TID": "Tranciever",
         "SET_AVALANCHE_POSITION": "Välj lavinens position",
+        "SLOPE_ACTIVITY_TID": "Turfas",
         "TERRAIN_START_ZONE": "Terräng i startzonen",
+        "TIME": "Senaste lavintid (obligatorisk)",
         "TITLE": "Lavintillbud",
+        "TRAFFIC_OBSTRUCTED": "Trafiken hindras",
         "TRAJECTORY_NAME": "Namn på lavinbana",
         "VALID_EXPOSITION": "Väderstreck"
       },
@@ -473,8 +647,8 @@
         "TAPS_FRACTURE": "Antal slag",
         "TEST_TYPE": "Testtyp",
         "TITLE": "Test",
-        "X_DISTANCE": "Kapad längd",
-        "Y_DISTANCE": "Kolonnlängd"
+        "X_DISTANCE": "Snittets längd",
+        "Y_DISTANCE": "Kolumnens längd"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -564,6 +738,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "För snö utan farligt lager",
         "NEW_SNOW_DEPTH": "Nysnö 24H (cm)",
         "NEW_SNOW_LINE": "Gräns nysnö (möh)",
+        "SKI_CONDITIONS": "Före",
         "SNOW_DEPTH": "Snödjup (cm)",
         "SNOW_DRIFT": "Snödrev",
         "SNOW_LINE": "Snögräns (möh)",
@@ -624,6 +799,9 @@
         "OBSERVATION_TIMING": "Vad registrerar du?",
         "REGISTRATION_METHOD": "Hur registrerar du?",
         "RELATIVE": "Höjden är relativt till",
+        "SET_FLOOD_POSITION_CONFIRM": "Bekräfta översvämningsområdet",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Registrering av området",
+        "SET_FLOOD_POSITION_TITLE": "Sätt position för översvämning",
         "TITLE": "Vattennivån",
         "WATER_LEVEL_METERS": "Vattennivån i meter",
         "WATER_MARKING": "Vattennivån märkning",
@@ -650,6 +828,7 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan läsa om vår användning av data i vår <a href=\"{{legalUrl}}\" target=\"_blank\">sekretesspolicy</a>.",
     "RESET": "Återställ app",
     "RESETTING": "App återställs. Vänta ...",
+    "SEND_LOGS": "Skicka loggar till Regobs-teamet",
     "SHOW_ADVANCED": "Visa avancerade inställningar",
     "SIZE_OF_TILES_CACHE": "Kartbladstorlek lagrad på telefonen",
     "TILES_CACHE_SIZE": "Antal kartblad lagrade på telefonen",
@@ -659,6 +838,9 @@
     "USE_RETINA_MAP": "Använd högupplösta kartor"
   },
   "SET_NICK_ALERT": {
+    "ERROR": "Kunde inte spara användarnamn. Vänligen försök igen senare.",
+    "HELP_TEXT": "Du måste lägga till ett användarnamn. Smeknamnet kommer att visas i dina observationer.",
+    "INPUT_TEXT": "Ange användarnamn",
     "NICK": "Användarnamn"
   },
   "START_WIZARD": {
@@ -714,7 +896,7 @@
     "CLAY_LEGEND_TEXT_7": "Liten / ingen havs påverkan",
     "CLAY_LEGEND_TEXT_8": "Utloppsområde",
     "CLAY_LEGEND_TEXT_9": "Potentiell lavinfara",
-    "CLAY_MAP_DISCLAMER": "Den här temakartan saknas i offlinekartorna.",
+    "CLAY_MAP_DISCLAMER": "Det här kartlagret ingår inte i offlinekartpaketen.",
     "CLAY_ZONES_MAP_DESCRIPTION": "Kvicklera/Jordskred",
     "FLOOD_LEGEND_TEXT_1": "Aktuella",
     "FLOOD_LEGEND_TEXT_10": "200-årsöversvämning",
@@ -730,7 +912,7 @@
     "FLOOD_LEGEND_TEXT_8": "50-årsöversvämning",
     "FLOOD_LEGEND_TEXT_9": "100-årsöversvämning",
     "FLOOD_LEGEND_TEXT_YEAR": "Översvämning lågpunkt kl",
-    "FLOOD_MAP_DISCLAMER": "Den här temakartan saknas i offlinekartorna.",
+    "FLOOD_MAP_DISCLAMER": "Det här kartlagret ingår inte i offlinekartpaketen.",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Översvämningszoner",
     "HIGH": "Hög",
     "ICE_LEGEND_TEXT_1": "Bruten is längs stranden",
@@ -745,16 +927,19 @@
     "LOW": "Låg",
     "MARITINE_BORDER": "Havsgräns",
     "MIDDLE": "Medel",
+    "NO_LEGEND": "Det här kartlagret har ingen teckenförklaring ännu.",
     "NO_OPACITY": "Solid",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Startzoner og lavinbanor (Grönland)",
     "READ_MORE": "Lär mer om kartorna",
     "STEEPNESS_COLOR_INFO": "Färger anger branthet i terrängen",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Lutningskarta (Grönland)",
     "STEEPNESS_MAP_DESCRIPTION": "Lutningskarta",
     "STEEPNESS_MAP_DISCLAMER": "<i>Endast</i> för turplanering. Kartan produceras automatiskt och kan ha fel och information kan saknas, t.ex. brant terräng visas inte.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Temakartan är endast tillgänglig offline med utloppszoner aktiverade.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kort utloppszon (50% av lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medel utloppszon (25% oav lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger lavinbanor:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszon för laviner",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
   },

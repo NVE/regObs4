@@ -92,8 +92,7 @@
     "LINE_1": "Uporaba opozoril, podatkov in zemljevidov na lastno odgovornost. Lahko so prisotne napake in opustitve informacij.",
     "LINE_2": "Opozorila so samo orodje za načrtovanje in se lahko razlikujejo od dejanske situacije. Vedno naredite svojo oceno stanja. Pogoji, v katerih ste, so lahko bolj zapleteni in se lahko razlikujejo od opozoril.",
     "LINE_3": "Podatki na Regobs so pridobljeni s strani uporabnikov in so dostopni, »takšni, kot so«. Lahko vsebujejo napake in opustitve informacij. NVE (Norwegian Water Resources and Energy Directorate) ne jamči za pravilnost in popolnost podatkov ter za ocene stanja s strani uporabnikov.",
-    "OK": "Ok, sprejemam",
-    "TERMS": "Podatki na Varsom Regobs so pridobljeni s strani uporabnikov aplikacije Regobs in so dostopni, »takšni, kot so«. Informacije lahko vsebujejo napake in opustitve. NVE (Norwegian Water Resources and Energy Directorate) ne jamči za kvaliteto ali točnost informacij, ki so dostopne na Regobs in ne prevzema odgovornosti za podatke, ki so nepravilni ali zavajajoči. Število zvezdic ob uporabniškem imenu (1-5) nakazuje nivo usposobljenosti osebe, ki je prispevala opažanje. Brez zvezdic je nivo usposobljenosti neznan ali nizek."
+    "OK": "Ok, sprejemam"
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Spremeni geslo",
@@ -226,7 +225,6 @@
         "HEADER": "Izbriši opažanje"
       }
     },
-    "DELETE_CONFIRM": "Ali ste prepričani?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Sprožilec plazu",
@@ -451,7 +449,6 @@
           "WATER_EQUIVALENT": "Vodni ekvivalent",
           "WEIGHT": "Teža (g)"
         },
-        "SNOW_PROFILE_HELP_TEXT": "Na žalost v trenutni verziji aplikacije Varsom Regobs nimamo obrazca za snežni profil. Lahko naložite sliko ročno narisanega profila ali sliko profila iz katere izmed ostalih podobnih aplikacij. Na regobs.no lahko s pomočjo obrazcev in grafov posodobite informacije o snežnem profilu.",
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Dodaj novo točko",
           "DEPTH": "Globina (cm)",
