@@ -1,0 +1,6 @@
+"NSCameraUsageDescription" = "Aggiungi foto all'osservazione";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "La vostra posizione viene utilizzata per mostrare la vostra posizione sulle mappe e per impostare i punti di osservazione.";
+"NSLocationAlwaysUsageDescription" = "La vostra posizione viene utilizzata per mostrare la vostra posizione sulle mappe e per impostare i punti di osservazione.";
+"NSLocationWhenInUseUsageDescription" = "La vostra posizione viene utilizzata per mostrare la vostra posizione sulle mappe e per impostare i punti di osservazione.";
+"NSPhotoLibraryAddUsageDescription" = "Salva le foto scattate con Regobs sul tuo telefono";
+"NSPhotoLibraryUsageDescription" = "Aggiungere le immagini all'osservazione";
