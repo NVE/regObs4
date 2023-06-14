@@ -396,6 +396,7 @@ export const settings: ISettings = {
       { lang: 'de', name: 'Deutsch' },
       { lang: 'sl', name: 'Slovenski' },
       { lang: 'fr', name: 'Français' },
+      { lang: 'it', name: 'Italiano' },
     ],
   },
   legalUrl: {

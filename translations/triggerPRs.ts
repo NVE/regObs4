@@ -13,7 +13,7 @@ eg: npm run translations:pr ios web
 `;
 const project_id = '419823565e6f3f0e272628.64744704';
 const api = new LokaliseApi({ apiKey });
-const langsToExport = ['nn', 'sv', 'da', 'fr', 'sl', 'de'];
+const langsToExport = ['nn', 'sv', 'da', 'fr', 'sl', 'de', 'it'];
 
 async function trigger(params: DownloadFileParams) {
   console.log('Trigger download using params', params);
