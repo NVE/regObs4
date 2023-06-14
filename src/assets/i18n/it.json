@@ -5,6 +5,16 @@
     "LINK_TEXT": "Vai a abonner.varsom.no",
     "TITLE": "Varsom Abonner"
   },
+  "ADD_MENU": {
+    "DRAFT_TITLE_ICE": "Bozza: Osservazione del ghiaccio",
+    "DRAFT_TITLE_SNOW": "Bozza: Osservazione della neve",
+    "DRAFT_TITLE_SOIL": "Bozza: Osservazione della terra",
+    "DRAFT_TITLE_WATER": "Bozza: Osservazione dell'acqua",
+    "NEW_ICE_OBSERVATION": "Nuova osservazione del ghiaccio",
+    "NEW_SNOW_OBSERVATION": "Nuova osservazione della neve",
+    "NEW_SOIL_OBSERVATION": "Nuova osservazione della terra",
+    "NEW_WATER_OBSERVATION": "Nuova osservazione dell'acqua"
+  },
   "ALERT": {
     "CANCEL": "Annulla",
     "DEFAULT_HEADER": "Ops!",
@@ -15,9 +25,16 @@
     "UNDO": "Annulla",
     "WARNING": "Avviso"
   },
+  "API": {
+    "SUNSET": "Dovresti aggiornare l'app! La tua app utilizza una versione obsoleta dell'API Regobs che verrà chiusa in qualsiasi momento e senza ulteriore avviso dopo il giorno {{ sunsetDate }}. Una serie di funzioni nell'app smetterà quindi di funzionare."
+  },
+  "CLOSE": "Chiudere",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Aggiungi le tue osservazioni",
     "SELECT_GEO_HAZARD": "Seleziona pericolo naturale",
+    "SKI_CONDITIONS": "Ora potete anche segnalare le condizioni dello sci!",
+    "TOGGLE_OBSERVATION": "Passa dall'osservazione semplice a quella completa",
+    "TOGGLE_OBSERVATION_EXTRA_INFO": "Attiva per inviare osservazioni della tua situazione attuale, in modo semplice e rapido. Questi sono dati super utili i scrittori del bollettino e altri utenti.\n \nSpegni per ottenere tutte le opzioni per inviare osservazioni, come prima.",
     "VIEW_WARNINGS": "Mostra avvisi da varsom.no"
   },
   "COMPETENCE": {
@@ -25,7 +42,8 @@
   },
   "DATA_LOAD": {
     "DATA": "Caricamento...",
-    "LOADING": "Caricando"
+    "LOADING": "Caricando",
+    "SPINNER_FETCH_OBSERVATIONS": "Recupero delle osservazioni"
   },
   "DATE": "Data",
   "DAYS": {
@@ -65,6 +83,15 @@
     "W": "O"
   },
   "DRAFT": "Bozza",
+  "GEOLOCATION": {
+    "POSITION_ERROR": {
+      "INVALID": "Impossibile mostrare la propria posizione a causa di dati di localizzazione incompleti",
+      "PermissionDenied": "Abbiamo bisogno di accedere alla tua posizione esatta per mostrare dove ti trovi",
+      "PositionUnavailable": "Impossibile ottenere la tua posizione",
+      "Timeout": "Ci è voluto troppo tempo per ottenere la tua posizione",
+      "UNSUPPORTED": "Il dispositivo non è in grado di fornire dati sulla posizione"
+    }
+  },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Registrando percorso"
   },
@@ -77,17 +104,26 @@
   "HELP": {
     "TITLE": "Aiuto"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "BUTTON": "Chiudere",
+      "MESSAGE": "Impossibile recuperare le osservazioni. Riprovare con lo zoom o con il panning o utilizzare il pulsante di aggiornamento nel menu dei filtri."
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "Informazioni sui dati in Varsom Regobs",
     "LINE_1": "Usa gli avvisi, dati e mappe sul tuo rischio. Errori e omissioni sono possibili.",
     "LINE_2": "Il bollettino è un stumento di pianificazione e può essere diverso dalla situazione incontrata in campo. Una propria evaluazione deve sempre essere fatta. Condizione possono essere complesse e differenti da che è indicata nel bollettino.",
     "LINE_3": "Dati su Regobs sono prodotti dagli utenti ed e sono disponibili come sono. Errori ed emissioni sono possibili. NVE non fa garanzie contro errori o emissioni nei dati.",
-    "OK": "Ok, accetto.",
-    "TERMS": "Dati su Regobs sono prodotti dagli utenti ed e sono disponibili come sono. Errori ed emissioni sono possibili. NVE non prende responsibilità per dati che sono incorrette o fourvianti. Il numero di stelle accanto al nickname (1-5) indica il livello di competenza della persona che ha provvisto l'osservazione. Se non ci sono stelle, il livello di competenza e basso non è conosciuto."
+    "LINE_4": "Quando pubblichi immagini di osservazioni, accetti che le immagini possano essere riutilizzate (concesse in licenza ai sensi della <a href='https://data.norge.no/nlod/no/'> licenza norvegese per i dati pubblici </a> ).",
+    "LINE_5": "Le osservazioni possono essere modificate o cancellate solo fino a 48 ore dopo la loro registrazione.",
+    "LINE_6": "Leggi ulteriori informazioni nei nostri <a href=\"{{legalUrl}}\" target=\"_blank\"> termini di utilizzo </a> .",
+    "OK": "Ok, accetto."
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Cambia password",
     "CREATE_USER": "Crea utente",
+    "DELETE_PROFILE": "Elimina profilo e i miei dati",
     "EMAIL": "Email",
     "FORGOT_PASSWORD": "Dimenticato password",
     "IS_LOGGING_IN": "Effettuare il login",
@@ -103,9 +139,12 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "quota",
+    "AWAY_FROM": "via",
     "COPIED_TO_CLIPBOARD": "Copiato negli appunti",
     "EAST_SHORT": "E",
-    "NORTH_SHORT": "N"
+    "NORTH_SHORT": "N",
+    "WEATHER_ERROR": "Previsioni meteo non trovate!",
+    "WEATHER_FROM": "Previsioni meteo su"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Di distanza",
@@ -118,10 +157,23 @@
   "MENU": {
     "ABOUT_REGOBS": "Sui dati in Regobs",
     "AND": "e",
+    "CONTACT_DESCRIPTION": "Abbiamo allegato i file di registro. È possibile rimuovere questi allegati se non si desidera inviare i log",
     "CONTACT_REGOBS": "Contattaci",
     "CONTACT_REGOBS_ERROR": "Segnala Errore",
     "CONTACT_SUBJECT": "Contattaci dall'app",
+    "CUSTOM_TIMESPAN": "Periodo personalizzato",
+    "DATE_RANGE": {
+      "LAST_WEEK": "La settimana scorsa",
+      "LAST_X_DAYS": "Ultimi {{days}} giorni",
+      "LAST_X_MONTHS": "Ultimi {{months}} mesi",
+      "LAST_X_WEEKS": "Ultime {{weeks}} settimane",
+      "TODAY": "Oggi",
+      "YESTERDAY": "Ieri"
+    },
     "DAYS_BACK": "Giorni fa",
+    "DAY_BACK": "Giorno indietro",
+    "DEACTIVATE_OBSERVATIONS": "La visualizzazione delle osservazioni è disabilitata",
+    "END_DATE": "Data di fine",
     "ERROR_REPORT_DESCRIPTION": "La preghiamo di Descrivere il problema qua sotto. Allega un screenshot se ce l'ha.",
     "ERROR_REPORT_SUBJECT": "Rapproto errori da",
     "GENERAL": "Generale",
@@ -131,12 +183,15 @@
     "MAP_LEGENDS": "Leggenda della mappa",
     "MAP_SETTINGS": "Impostazioni della mappa",
     "MAP_SETTINGS_FOR": "Impostazioni della mappa per",
+    "NO_EMAIL_APP": "L'e-mail non può essere inviata, perché non possiamo metterci in contatto con l'app di posta elettronica sul telefono. Su iPhone devi avere l'app 'Mail'",
     "OPACITY": "Transparenza",
     "OTHER": "Altro",
     "SHOW": "Mostra",
+    "SHOWING_OBSERVATIONS": "osservazioni",
     "SHOW_MAP_CENTER": "Mostra is centro della mappa",
     "SHOW_OBSERVATIONS": "Mostra osservazioni",
     "SHOW_TRIPS": "Mostra uscite",
+    "START_DATE": "Data di inizio",
     "START_WIZARD": "Avvio guidata rapida",
     "SUPPORT_MAP_CREDITS": "Mappe di supporto fornite da",
     "TILES": {
@@ -146,7 +201,7 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (mondo)"
     },
-    "TIME_FRAME": "Periodo di tempo",
+    "TIMESPAN": "Periodo di tempo",
     "TODAYS_OBSERVATIONS": "Solo oggi",
     "TOPO_MAP_CREDITS": "Mappe topografiche fornite da",
     "UPDATE_OBSERVATIONS": "Aggiornato",
@@ -158,31 +213,112 @@
   },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Carica più osservazioni...",
+    "MAX_COUNT_REACHED_HEADER": "Niente più osservazioni",
+    "MAX_COUNT_REACHED_TEXT": "Qui mostriamo max {{ maxCount }} osservazioni. Puoi vedere di più sulla <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\"> tua pagina sul Web </a>",
     "MY_SENT_OBSERVATIONS": "Le mie osservazioni",
     "NO_OBSERVATIONS": "Condividi le tuoi osservazioni!",
     "NO_OBSERVATIONS_TEXT": "Le tue osservazioni appariranno qui.  Condividi le tue osservazioni, immagini, e valutazioni con altri sportivi usando Varsom Regobs.",
+    "OFFLINE": "Non possiamo recuperare le osservazioni che hai inviato. Hai internet?",
+    "SEARCH_ERROR": "A causa di un errore, non siamo in grado di recuperare le osservazioni inviate. La preghiamo di riprovare e di farci sapere se il problema persiste.",
     "SENT_SUBTITLE": "Queste osservazioni sono inviate e archiviate in Regobs.",
     "TITLE": "Le mie osservazioni"
   },
+  "MY_PROFILE": {
+    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\"> Ulteriori informazioni sulla competenza </a>",
+    "COPYRIGHT": "Diritto d'autore",
+    "EDIT": "Modificare",
+    "MY_COMPETENCE": "La mia competenza",
+    "MY_GROUPS": "I miei gruppi",
+    "MY_GROUPS_TEXT": "È possibile modificare un'osservazione in un gruppo fino a 48 ore dopo il suo invio.<br/>Per modificare il nome del gruppo, la descrizione del gruppo e i membri, <a href=\"mailto:regobs@nve.no\">contattateci</a>.",
+    "MY_NVE_ACCOUNT": "Il mio account NVE",
+    "MY_PICTURES": "Le mie immagini",
+    "NICKNAME": "Il mio soprannome",
+    "NICKNAME_TEXT": "Il soprannome è un nome visibile a tutti e appare insieme alle osservazioni che fai",
+    "NO_GROUPS": "Non sei un membro di nessun gruppo",
+    "PHOTOGRAPHER": "Fotografo",
+    "PUBLISH_PHOTOS": "Quando pubblichi immagini di osservazioni, accetti che siano concesse in licenza ai sensi del NLOD e possano essere riutilizzate. <a href=\"https://data.norge.no/nlod/no/\"> Ulteriori informazioni sui dati </a>",
+    "SAVE": "Salvare",
+    "TITLE": "La mia pagina",
+    "USER": "Utente"
+  },
+  "OBSERVATION_FILTER": {
+    "COMPETANCE_FILTER": {
+      "ALL": "Tutti",
+      "AUTOMATIC_STATIONS": "Stazioni automatiche",
+      "LABEL": "Competenza",
+      "TITLE": "Osservatore"
+    },
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} selezionato",
+    "MULTISELECT_SHOW_NO_COUNT": "Mostra tutti",
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Cerca per nome dell'osservatore",
+      "TITLE": "Nome"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Tipo di osservazione"
+    },
+    "REGION_FILTER_B_REGIONS_TITLE": "Regioni B",
+    "REGION_FILTER_TITLE_SNOW": "Regioni valanghe",
+    "RESET_FILTER_BUTTON_TITLE": "Reimposta tutti i filtri",
+    "TITLE": "Filtro di osservazioni"
+  },
   "OBSERVATION_LIST": {
-    "ALL_OBSERVATIONS": "Tutte le osservazioni",
     "FORMS": "Moduli",
-    "IN_MAP_VIEW": "Vedi osservazioni nella mappa",
+    "MAX_COUNT_REACHED_HEADER": "Niente più osservazioni",
+    "MAX_COUNT_REACHED_TEXT": "Qui mostriamo max {{ maxCount }} osservazioni. Se non hai trovato quello che stavi cercando, prova a ingrandire la mappa o a restringere il periodo da cui vuoi vedere le osservazioni.",
+    "NO_IMAGES": "Nessuna immagine",
+    "NO_IMAGES_TEXT": "Non ci sono osservazioni con immagini nella sezione mappa. Prova a modificare la sezione o a prolungare il periodo da cui vuoi vedere le osservazioni.",
     "NO_OBSERVATIONS": "Nessune osservazioni",
     "NO_OBSERVATIONS_TEXT": "Non vi sono osservazioni in questa sezione di mappa. Prova a cambiare sezione o aumentare il periodo di tempo usato per ricercare osservazioni.",
-    "OBSERVATIONS": "Osservazioni"
+    "NO_OBSERVATIONS_TEXT_WEB": "Non sono state trovate osservazioni che corrispondono al filtro selezionato. Se non hai trovato ciò che cercavi, puoi prova a cambiare il filtro.",
+    "SEARCH_ERROR_DESCRIPTION": "La ricerca delle osservazioni non è riuscita. Riprovare utilizzando la funzione di aggiornamento o cambiando il filtro. Se il problema persiste, vi preghiamo di comunicarcelo.",
+    "SEARCH_ERROR_TITLE": "La ricerca è fallita",
+    "SORT_BY_CHANGE_TIME": "Tempo aggiornato",
+    "SORT_BY_OBS_TIME": "Tempo osservato",
+    "SORT_BY_TEXT": "Ordina per",
+    "TITLE": "Osservazioni",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Tutti",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "Nella sezione mappa",
+    "VIEW_TYPE": "Vista"
   },
   "OFFLINE_MAP": {
-    "OFFLINE_MAP_PAGE_TITLE": "Mappa offline"
-  },
-  "PERMISSION": {
-    "LOCATION_DENIED_HEADER": "Autorizzazione a locazione rifiutata",
-    "LOCATION_DENIED_MESSAGE": "Non è possibile mostrare la posizione nella mappa senza autorizzazione."
+    "DELETE_PACKAGE_CONFIRM": "Vuoi eliminare questo pacchetto di mappe?",
+    "DISKSPACE_ERROR_MESSAGE": "Spiacenti, non hai abbastanza spazio disponibile sul tuo telefono per salvare il pacchetto mappe. Libera spazio e riprova.",
+    "DOWNLOAD_ERROR_MESSAGE": "Impossibile scaricare il pacchetto mappa. Assicurati di avere una connessione Internet stabile e funzionante.",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Annulla il download",
+      "DELETE_BUTTON": "Eliminare",
+      "DOWNLOAD_BUTTON": "Scaricare",
+      "HEADER": "Pacchetto mappe {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Scaricato {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Stato:",
+      "PACKAGE_PRODUCED_DATE": "Prodotto:",
+      "PACKAGE_SIZE": "Dimensioni:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Riprova"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Mappa offline",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pacchetti",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} pacchetto",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} disponibile",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Scarico {{n}} di {{totalParts}}",
+      "DOWNLOAD_ERROR": "Scaricamento fallito",
+      "UNZIP_ERROR": "Disimballaggio fallito",
+      "UNZIP_PART_X_OF_Y": "Disimballaggio {{n}} di {{totalParts}}",
+      "WAITING_FOR_NETWORK": "In attesa di rete"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Impossibile salvare il pacchetto di mappe su disco. Riprova!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Impossibile salvare il pacchetto mappa su disco. Sei sicuro che ci sia abbastanza spazio disponibile?"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Inormazioni sulle osservazioni.",
       "MESSAGE": "Dati su Regobs sono prodotti dagli utenti ed e sono disponibili come sono. Errori ed emissioni sono possibili. NVE non fa garanzie contro errori o emissioni nei dati. Considera le osservazioni in luce della competeza dell'osservatore, come mostrato dalle stelle accanto al nome."
+    },
+    "ABOUT_OFFLINE_SUPPORT_MAPS": {
+      "HEADER": "Mappa offline",
+      "MESSAGE": "Il livello di mappa selezionato è disponibile solo online e potrebbe non funzionare bene in aree con copertura limitata."
     },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "Sulle mappe",
@@ -193,17 +329,25 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Agguingi immagini",
     "ADD_WEB_URL": {
+      "LABEL": "link web",
       "TITLE": "Aggiungi Url",
       "URL": "Url"
+    },
+    "ANONYMIZE": {
+      "CHECK_TO_ANONYMIZE": "Seleziona per anonimizzare",
+      "TITLE": "Anonimizzazione"
     },
     "BACK_TO_OBSERVATION": "Torna all'osservazione",
     "CONFIRM_RESET": "Sei sicuro che vuoi reimpostare tutti i campi?",
     "COPIED_TO_CLIPBOARD": "Copiato negli appunti",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Impossibile caricare l'immagine da regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Hai internet?",
     "DANGER_OBS": {
       "AREA": "Area",
       "COMMENT": "Commento",
       "COMMENT_PLACEHOLDER": "Ulteriori informazioni sui segni di preicolo",
       "DESCRIPTION": "Descrizione",
+      "DROPDOWN_TITLE": "Segno di pericolo (obbligatorio)",
       "FOR_MUNICIPAL": "Per il municipio",
       "FOR_REGION": "Regione",
       "GENERAL_ON_MOUNTAIN": "Generalmente in montagna",
@@ -218,11 +362,30 @@
       "RIGHT_HERE": "Qua",
       "TITLE": "Segno di pericolo"
     },
-    "DELETE": "Elimina osservazione",
-    "DELETE_CONFIRM": "Sei sicuro?",
+    "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Elimina bozza",
+        "HEADER": "Elimina bozza",
+        "MESSAGE_EDIT": "Vuoi eliminare eventuali modifiche apportate a questa osservazione?",
+        "MESSAGE_NEW": "Questa osservazione non è stata inviata a Regobs. Vuoi eliminarlo?"
+      },
+      "SUBMITTED_REGISTRATION": {
+        "BUTTON": "Eliminare l'osservazione da Regobs",
+        "FAILED": {
+          "HEADER": "Eliminazione non riuscita",
+          "MESSAGE": "Non siamo riusciti a cancellare l'osservazione da Regobs. Controllare se si è online e riprovare."
+        },
+        "HEADER": "Elimina osservazione",
+        "MESSAGE": "Vuoi eliminare definitivamente questa osservazione da Regobs?"
+      }
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
+        "AREA_TOTAL": "Disegnare l'intera area della frana",
         "AVAL_TRIGGER": "Causa della frana",
+        "CONFIRM_END_POSITION": "Confermare il punto finale",
+        "CONFIRM_LANDSLIDE_AREA": "Confermare l'area della frana",
+        "CONFIRM_START_POSITION": "Confermare il punto di partenza",
         "DAMAGE_EXTENT": "Estensioni di danni",
         "DESTRUCTIVE_SIZE": "Estensione",
         "DIRT_ACTIVITY_INFLUENCED": "Cosa è colpita?",
@@ -231,6 +394,7 @@
         "DT_LAND_SLIDE_TIME_END": "Quando è finita la frana?",
         "END_POSITION": "Posizione finale",
         "IN_MAP": "nella mappa",
+        "LANDSLIDE_AREA": "Area della frana",
         "LANDSLIDE_TYPE": "Tipo di frana",
         "POSITION": "Posizione della frana",
         "SET_LANDSLIDE_POSITION": "Indica la posizione della frana",
@@ -240,19 +404,31 @@
     },
     "DRAFTS": "Le mie bozze",
     "DRAFTS_DESCRIPTION": "Queste osservazioni sono in processo e non sono inviate.",
+    "EDIT": "Modifica osservazione",
     "EMAIL": {
       "BODY": "Ciao! Io ho problemi inviare questa registrazione. Potete aiutarmi?",
       "SUBJECT": "Registrazione fallita."
     },
     "FAILED": {
+      "ABANDON": "Elimina le mie modifiche",
+      "CONFLICT": "Mentre lavoravi, l'osservazione è stata cambiata altrove. <br/> Vuoi eliminare le tue modifiche o vuoi inviare e sovrascrivere le modifiche apportate altrove?",
       "EDIT_OBSERVATION": "Modifica osservazione",
+      "GONE": "Questa osservazione è stata eliminata in Regobs. <br/> Vuoi eliminare le modifiche o vuoi inviare la bozza come nuova osservazione?",
       "LOGGED": "Il promema è registrato.",
+      "OVERWRITE": "Invia e sovrascrivi",
       "PROBLEM": "C'è stato un problema con la registrazione.",
       "PROBLEM_HELP_TEXT": "Osserzazioni con problemi di registrazione sono memorizzate nel telefono, e quando il problema è risolto puoi inviarle di nuovo.",
       "REFERENCE": "Referenza",
       "SEND_EMAIL": "Inviaci per E-Mail.",
+      "SUBMIT_NEW": "Invia come nuova osservazione",
       "SUBTITLE": "Errore di rete o timeout. Riproviamo in un'attimo e speriamo che la rete sia migliore.",
-      "TITLE": "Registrazione fallita."
+      "TITLE": "Registrazione fallita.",
+      "UNAUTHORIZED": "Non siamo in grado di verificare se hai accesso. Prova a inviare di nuovo. Se questo non risolve il problema, prova a disconnetterti e ad accedere di nuovo prima di provare a inviare di nuovo."
+    },
+    "FETCH_FOR_EDIT_FAILED": {
+      "CONFIRM_BUTTON": "Modifica osservazione",
+      "HEADER": "Sincronizzazione fallita",
+      "MESSAGE": "Non siamo riusciti a recuperare un'edizione recente dell'osservazione da Regobs. Puoi ancora modificarlo, ma c'è la possibilità di incontrare conflitti quando provi a inviarlo se più persone hanno lavorato alla stessa osservazione o hai lavorato all'osservazione su più dispositivi."
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Note per l'osservazione",
@@ -265,6 +441,7 @@
       "TAKE_NEW_PHOTO": "Preni una nuova foto",
       "TITLE": "Note"
     },
+    "GO_TO": "Vai all'osservazione",
     "GROUP": {
       "SUBTITLE": "Condivide osservazione con",
       "TITLE": "Condividere con gruppo"
@@ -292,34 +469,68 @@
         "ICE_TYPE": "Tipo di ghiaccio",
         "SLUSH_SNOW_BEFORE_DRILL": "Neve bagniata prima di forare (cm)",
         "TITLE": "Altezza di ghiaccio"
+      },
+      "INCIDENT": {
+        "CASUALTIES_NUM": "Numero passate per il ghiaccio",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Non può essere superiore al numero del gruppo",
+        "DEAD_NUM_ERROR_MESSAGE": "Non può essere superiore al numero di persone passate per il ghiaccio o al numero di persone che fanno parte del gruppo di visita.",
+        "INVOLVED_NUM": "Numero nel gruppo",
+        "SAFETY_GEAR_TID": "Attrezzature di salvataggio"
       }
     },
     "IMAGES": "Immagini",
     "IMAGE_DESCRIPTION": "Descrizione dell'imagine",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Aggiungi una descrizione all'immagine",
+    "IMAGE_ERROR": {
+      "ALBUM_READ_PERMISSION_MISSING": "Devi autorizzare l'app a leggere dall'album fotografico",
+      "CAMERA_PERMISSION_MISSING": "È necessario autorizzare l'app all'uso della fotocamera.",
+      "UNKNOWN": "Non siamo stati in grado di aggiungere le immagini. Potrebbe esserci qualcosa di sbagliato in un file immagine o qualche altro errore. Sentiti libero di provare un'altra immagine per controllare"
+    },
+    "IMAGE_UPLOAD_ERROR": "L'immagine (o le immagini) {{failedAttachmentsCount}} non sono state caricate per l'osservazione effettuata {{obsTime}}. Si prega di inviare le immagini via e-mail, in modo da poter verificare manualmente il problema.",
     "INCIDENT": {
       "ACTIVITY": "Attività",
       "COMMENT": "Commento",
       "COMMENT_PLACEHOLDER": "Perché e successo? È tutto bene? Potrebbe essere evitato?",
       "DAMAGE_EXTENT": "Estensioni di danni",
+      "DEAD_NUM": "Numero di morti",
       "IMAGE_PLACEHOLDER": "+ Aggiungi una descrizione dell'immagine",
+      "RESCUE_TID": "Salvataggio",
       "TITLE": "Incidente"
     },
     "INVALID_IMAGE": "Questa immagine è  invalia.",
     "IN_CM": "In centimetri",
     "IN_FULL_CM": "In centimetri senza cifre decimali",
+    "LOG_IN_AND_RESEND": "Accedi e riprova a inviare",
+    "LOG_IN_AND_SEND": "Accedi per inviare l'osservazione",
     "NONE": "Nessuno selettato",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Conferma locazione",
       "CURRENT_LOCATION": "Locazione attuale",
+      "EXACT": "Esatto",
       "HIDE_DETAILS": "Nascondi dettagli",
+      "MORETHANONEKM": "Più di 1 km",
+      "NAME_LOCATION": "Assegna un nome al luogo",
+      "NAME_LOCATION_TOOLTIP": "Il nome della località consente di creare una serie temporale nello stesso punto di osservazione.",
       "SHOW_DETAILS": "Mostra dettagli",
-      "TITLE": "Locazione della osservazione"
+      "SOURCE": "Indicazione della fonte",
+      "TITLE": "Locazione della osservazione",
+      "UNCERTAINTY": "Incertezza di posizione"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Data e ora",
       "MY_OBSERVATION": "La mia osservazione",
       "SHARE_WITH_GROUP": "Condividere con gruppo",
+      "SIMPLE": {
+        "CONFIRM": {
+          "CANCEL": "Annulla",
+          "HEADER": "Passa alla modalità semplice",
+          "MESSAGE": "L'osservazione contiene dati che non possono essere visualizzati in modalità semplice. Vuoi eliminare i dati che non possiamo visualizzare?",
+          "YES": "Cancellare i dati e passare alla modalità semplice"
+        },
+        "HEADER_QUESTION": "Com'è la situazione qui adesso?",
+        "IMAGES_MODAL_TITLE": "Immagini di {{registrationType}}",
+        "TOGGLE": "Osservazione semplice"
+      },
       "TITLE": "Osservazione"
     },
     "REQUIRED_FIELDS_MISSING": "Ci sono campi invalide. Voui resettare la forma e andare indietro?",
@@ -333,6 +544,7 @@
       "NO": "No, scarta.",
       "YES": "Si, salva"
     },
+    "SELECTION_COUNT": "{{ count }} selezionato",
     "SEND": "Invia",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Conferma locazione di danni",
@@ -367,19 +579,39 @@
         "TITLE": "Evaluazione del pericolo valanghivo"
       },
       "AVALANCHE_OBS": {
+        "AREA_END": "Marca la zona di deposito",
+        "AREA_START": "Marca la zona di distacco",
+        "AREA_TOTAL": "Marca l'area della valanga",
+        "AVALANCHE_AREA": "Area della valanga",
         "AVALANCHE_TRIGGER": "Sensitività",
         "AVALANCHE_TYPE": "Tipo di valanga",
         "AVAL_CAUSE": "Strato debole",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Non può essere superiore al numero di persone coinvolte",
+        "CONFIRM_AVALANCHE_AREA": "Confermare l'area della valanga",
+        "DEAD_NUM_ERROR_MESSAGE": "Non può essere superiore al numero di morti o di persone coinvolte.",
         "DESTRUCTIVE_SIZE": "Dimensioni",
+        "EARLIEST_TIME": "Il prima tempo possibile di distacco",
+        "EVACUATED_NUM": "Numero di evacuati",
         "FRACTURE_HEIGTH": "Spessore (cm)",
         "FRACTURE_WIDTH": "Larghezza",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "Il numero totale dei morti e dei soli feriti non può essere superiore al numero delle vittime di valanghe o delle persone coinvolte",
+        "HARMED_NUM": "Numero di soli feriti",
+        "HARMED_NUM_ERROR_MESSAGE": "Non può essere superiore al numero di persone coinvolte",
         "INCIDENT_DESCRIPTION": "Incidente o lesione",
         "INCIDENT_PLACEHOLDER": "Ci sono stati danni, incidenti o uno scampato pericolo causata dalla valanga? Come e perchè e successo? Era evitabile?",
+        "INVOLVED_NUM": "Numero di persone coinvolte",
+        "LOCAL_KNOWLEDGE_TID": "Conoscenza dell'area",
+        "LOCAL_TOURIST_TID": "Locale o visitatore",
+        "MATERIAL_DAMAGES": "Danni materiali",
         "POSITION": "Posizione della valanga",
+        "REMOTELY_TRIGGERED": "Staccato a remoto",
+        "SAFETY_GEAR_TID": "Ricetrasmettitore",
         "SET_AVALANCHE_POSITION": "Indica la posizione della valaga",
+        "SLOPE_ACTIVITY_TID": "Fase del tour",
         "TERRAIN_START_ZONE": "Tipo di terreno nella zona di distacco",
-        "TIME": "Data e ora del distacco (richiesto)",
+        "TIME": "Ultima ora di valanga (obbligatorio)",
         "TITLE": "Incidente valanghivo",
+        "TRAFFIC_OBSTRUCTED": "Traffico ostruito",
         "TRAJECTORY_NAME": "Traiettoria valanghiva",
         "VALID_EXPOSITION": "Esposizione"
       },
@@ -410,10 +642,14 @@
         "ADD_NEW": "Aggiungi un nuovo test",
         "DISTANCE_FROM_TOP": "Altezza dalla superficie (cm)",
         "FRACTURE_TYPE": "Carattere della frattura",
+        "RB_RELEASE": "Percentuale di blocco staccato",
+        "RB_SCORE": "Risultato Rutschblock",
         "STABILITY_EVAL": "Stabilitá",
         "TAPS_FRACTURE": "Numero di colpi",
         "TEST_TYPE": "Tipo di test",
-        "TITLE": "Test di stabilità"
+        "TITLE": "Test di stabilità",
+        "X_DISTANCE": "Lunghezza di taglio",
+        "Y_DISTANCE": "Lunghezza della colonna"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -424,11 +660,17 @@
           "SINGLE_TEST": "Test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Generando anteprima...",
         "IS_PROFILE_TO_GROUND": "Il profilo è fino all terreno?",
+        "NORTH": "N",
+        "NORTH_EAST": "NE",
+        "NORTH_WEST": "NO",
         "PREVIEW": "Anteprima",
         "PREVIEW_ERROR": "Non è possibile gerenare la anteprima",
         "PREVIEW_ITEM": "Vedi profilo",
+        "SLOPE_ANGLE": "Ripidità",
+        "SLOPE_ANGLE_PLACEHOLDER": "Solo gradi interi",
         "SNOW_DENSITY": {
           "CYLINDER": "Cilindro",
           "CYLINDER_DIAMETER": "Diameto del cilindro (cm)",
@@ -445,7 +687,6 @@
           "WATER_EQUIVALENT": "equivalente in acqua della neve",
           "WEIGHT": "Peso (g)"
         },
-        "SNOW_PROFILE_HELP_TEXT": "Purtroppo non abbiamo una forma per profili nella versione attuale dell'app Varsom Regobs. Poui caricare un'immagine del profilo eseguito a mano o esportare da un app a terza parte come Ullr Labs Avalanche. Su regobs.no puoi aggiornare l'informazione sul profilo con con gli strumenti forniti li.",
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Aggiungi un punto nuovo",
           "DEPTH": "Altezza dalla superficie (cm)",
@@ -456,6 +697,9 @@
           "TEMPERATURE": "Temperatura (°C)",
           "TITLE": "Profilo di temperatura"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SO",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Aggiungi strato",
           "ADD_LAYER_BOTTOM": "Aggiungi strato in basso",
@@ -484,7 +728,9 @@
         },
         "SUBFORMS": "Sottomaschera",
         "SUPERIOR": "Principale",
-        "TITLE": "Profilo del manto nevoso"
+        "TITLE": "Profilo del manto nevoso",
+        "VALID_EXPOSITION": "Esposizione",
+        "WEST": "O"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Descrivi la superficie dell manto nevoso",
@@ -493,6 +739,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Per neve senza strati pericolosi",
         "NEW_SNOW_DEPTH": "Neve fresca 24 ore (cm)",
         "NEW_SNOW_LINE": "Limite della nevicata (m)",
+        "SKI_CONDITIONS": "Condizioni per sci",
         "SNOW_DEPTH": "Altezza manto nevoso (cm)",
         "SNOW_DRIFT": "Saltazione",
         "SNOW_LINE": "Limite dell'innevamento",
@@ -553,6 +800,9 @@
         "OBSERVATION_TIMING": "Cosa registri?",
         "REGISTRATION_METHOD": "Come registri?",
         "RELATIVE": "L'altezza è indicata relativamente a",
+        "SET_FLOOD_POSITION_CONFIRM": "Conferma l'area di inondazione",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Tracciatura del sito",
+        "SET_FLOOD_POSITION_TITLE": "Impostare la posizione dell'inondazione",
         "TITLE": "Livello dell'acqua",
         "WATER_LEVEL_METERS": "Livello dell'acqua in metri",
         "WATER_MARKING": "Marca del livello d'acqua",
@@ -579,6 +829,7 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "Puoi leggere di più sul nostro utilizzo di data nella nostra tutela della riservatezza.",
     "RESET": "Resetta l'app",
     "RESETTING": "Resettando, prega attendere...",
+    "SEND_LOGS": "Invia i log al team di Regobs",
     "SHOW_ADVANCED": "Mostra impostazioni avanzate",
     "SIZE_OF_TILES_CACHE": "Dimensioni delle tessere di mappa salvate su questo apparecchio",
     "TILES_CACHE_SIZE": "Numero di tessere di mappa salvate su questo apparecchio",
@@ -586,6 +837,12 @@
     "UPDATE_DROPDOWNS": "Aggiorna i menu",
     "USE_IN_WORLD": "Fuori di Norvegia",
     "USE_RETINA_MAP": "Usa mappe ad alta resoluzione"
+  },
+  "SET_NICK_ALERT": {
+    "ERROR": "Impossibile salvare il soprannome. Riprova più tardi.",
+    "HELP_TEXT": "È necessario aggiungere un nickname. Il nickname verrà visualizzato nelle osservazioni.",
+    "INPUT_TEXT": "Inserisci il soprannome",
+    "NICK": "Soprannome"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
@@ -640,6 +897,7 @@
     "CLAY_LEGEND_TEXT_7": "Nessuno / basso impatto marino.",
     "CLAY_LEGEND_TEXT_8": "Zona di scarico",
     "CLAY_LEGEND_TEXT_9": "Potenziale pericolo di valanga",
+    "CLAY_MAP_DISCLAMER": "Questo livello di mappa non è incluso nei pacchetti di mappe offline.",
     "CLAY_ZONES_MAP_DESCRIPTION": "Zone di argilla",
     "FLOOD_LEGEND_TEXT_1": "Attuale",
     "FLOOD_LEGEND_TEXT_10": "Alluivione a 200 anni",
@@ -655,6 +913,7 @@
     "FLOOD_LEGEND_TEXT_8": "Alluivione a 50 anni",
     "FLOOD_LEGEND_TEXT_9": "Alluivione a 100 anni",
     "FLOOD_LEGEND_TEXT_YEAR": "Tempo di inondazione",
+    "FLOOD_MAP_DISCLAMER": "Questo livello di mappa non è incluso nei pacchetti di mappe offline.",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Zone di alluvione",
     "HIGH": "Alta",
     "ICE_LEGEND_TEXT_1": "Ghiaccio rotta lungo la costa",
@@ -669,14 +928,19 @@
     "LOW": "Basso",
     "MARITINE_BORDER": "Confine marino",
     "MIDDLE": "Medio",
+    "NO_LEGEND": "Questo livello cartografico non ha ancora una legenda.",
     "NO_OPACITY": "Solido",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Aree di distacco e deposito (Groenlandia)",
     "READ_MORE": "Per sapere di più sulle mappe",
     "STEEPNESS_COLOR_INFO": "I colori indicano l'inclinazione del terreno",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Mappa della pendenza (Groenlandia)",
     "STEEPNESS_MAP_DESCRIPTION": "Mappa con colorazione di inclinazione",
     "STEEPNESS_MAP_DISCLAMER": "La mappa è generata la computer e può contenere errori. Terreno ripido non incidata sulla mappa può essere presente. La mappa è un stumento per pianeggamento, e deve essere usato con occhio critico.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "La mappa di supporto è disponibile solo offline con zone di deposito attivate.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Zone di deposito corte (50% di valanghe correranno più lungo)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Zone di deposito medie (25% di valanghe correranno più lungo)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Zone di deposito lunghe (5% di valanghe correranno più lungo). Valanghe con una zona di deposito ancora più lunga di che è indicato nella mappa sono possibili.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colori zone di deposito valanghe:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Mappa con colorazione di inclinazione e zone di deposito",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Ghiaccio debole"
   },
