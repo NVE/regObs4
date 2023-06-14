@@ -1,5 +1,6 @@
-"NSCameraUsageDescription" = "Lägg till bilder i observationen";
-"NSLocationAlwaysUsageDescription" = "Din plats används för att visa din position på kartan och för att fastställa positionen när observationer registreras.";
-"NSLocationWhenInUseUsageDescription" = "Din plats används för att visa din position på kartan och för att fastställa positionen när observationer registreras.";
-"NSPhotoLibraryAddUsageDescription" = "Lägg till bilder i observationen";
-"NSPhotoLibraryUsageDescription" = "Lägg till bilder i observationen";
+"NSCameraUsageDescription" = "Lägg till bilder till observationen";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Din position används för att visa din position på kartor och för att ange observationspunkter";
+"NSLocationAlwaysUsageDescription" = "Din position används för att visa din position på kartor och för att ange observationspunkter";
+"NSLocationWhenInUseUsageDescription" = "Din position används för att visa din position på kartor och för att ange observationspunkter";
+"NSPhotoLibraryAddUsageDescription" = "Spara foton du tar med regobs på din telefon";
+"NSPhotoLibraryUsageDescription" = "Lägg tillbilder i observationen";
