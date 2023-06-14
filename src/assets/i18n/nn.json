@@ -348,7 +348,6 @@
         "MESSAGE": "Vil du slette denne observasjonen frå Regobs for godt?"
       }
     },
-    "DELETE_CONFIRM": "Er du sikker?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Skredutløysar",
@@ -401,7 +400,7 @@
       "DESCRIPTION": "Her kan du laste opp bilete av område eller andre relevante observasjonar,",
       "SUBTITLE": "Bilete av observasjonen",
       "TAKE_NEW_PHOTO": "Ta eit nytt bilete",
-      "TITLE": "Bilde og notat"
+      "TITLE": "Bilete og notat"
     },
     "GROUP": {
       "SUBTITLE": "Del observasjon med",
@@ -521,7 +520,6 @@
         "AVALANCHE_TYPE": "Skredtype",
         "AVAL_CAUSE": "Svakt lag",
         "CASUALTIES_NUM": "Antall skredtatte",
-        "DEAD_NUM": "Antal døde",
         "DESTRUCTIVE_SIZE": "Storleik",
         "EARLIEST_TIME": "Tidligaste skredtidspunkt",
         "EVACUATED_NUM": "Antal evakuerte",
@@ -536,7 +534,6 @@
         "MATERIAL_DAMAGES": "Materielle skadar",
         "POSITION": "Skredposisjon",
         "REMOTELY_TRIGGERED": "Fjernutløst",
-        "RESCUE_TID": "Redning",
         "SAFETY_GEAR_TID": "Sendar/mottakar",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
         "SLOPE_ACTIVITY_TID": "Turfase",
