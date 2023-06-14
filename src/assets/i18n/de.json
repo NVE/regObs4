@@ -92,8 +92,7 @@
     "LINE_1": "Für die Richtigkeit, Vollständigkeit und Aktualität kann keine Garantie übernommen werden.",
     "LINE_2": "Eine Warnung ist ein Planungswerkzeug und kann von der tatsächlichen Situation abweichen. Machen Sie immer Ihre eigene Bewertung. Die Bedingungen können komplex sein und von der Warnung abweichen.",
     "LINE_3": "Die Daten zu RegObs werden von den Benutzern erstellt und sind 'wie sie sind' verfügbar. Es können Fehler und Auslassungen enthalten sein. NVE übernimmt keine Garantie für Fehler und Auslassungen in den Daten.​",
-    "OK": "Ok, ich akzeptiere",
-    "TERMS": "Daten zu Varsom RegObs werden von den Nutzern von RegObs erstellt und sind 'so wie sie sind' verfügbar. Die Informationen können Fehler und Auslassungen enthalten. NVE übernimmt keine Garantie für die Qualität oder Richtigkeit der auf RegObs enthaltenen Informationen und übernimmt keine Verantwortung für falsche oder irreführende Daten. Die Anzahl der Sterne neben einem Benutzernamen (1-5) gibt die Kompetenzstufe der beobachtenden Person an. Ohne Sterne ist die Kompetenz unbekannt oder gering."
+    "OK": "Ok, ich akzeptiere"
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Passwort ändern",
@@ -226,7 +225,6 @@
         "HEADER": "Beobachtung löschen"
       }
     },
-    "DELETE_CONFIRM": "Sind Sie sicher?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Erdrutschauslöser",
@@ -452,7 +450,6 @@
           "WATER_EQUIVALENT": "Wasseräquivalent",
           "WEIGHT": "Gewicht (g)"
         },
-        "SNOW_PROFILE_HELP_TEXT": "Leider haben wir in der aktuellen Version der Varsom Regobs App kein Formular für Schneeprofile. Sie können jedoch ein Bild eines handgezeichneten Profils oder einen Export aus einer Drittanbieter-App wie Ullr Labs Avalanche hochladen. Auf regobs.no können Sie die Profilinformationen mit den dort bereitgestellten Formularen und Plots aktualisieren.",
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Neuen Punkt hinzufügen",
           "DEPTH": "Tiefe (cm)",
@@ -691,7 +688,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Mittlere Auslaufzonen (25% der Lawinen reichen weiter)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange Auslaufzonen (5% der Lawinen reichen weiter)\nEinige Lawinen haben möglicherweise längere Auslaufzonen, wie die auf der Karte angezeigten.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Hangneigungskarte mit Auslaufzonen",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Nur</i> für die Reiseplanung. Die Karte wird automatisch erstellt und kann Fehler und Auslassungen aufweisen, z.B. steiles Gelände oder Unebenheiten werden nicht angezeigt.\n<br/>\n<br/>\nFarben geben Auslaufzonen für Lawinen wieder:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Geschwächtes Eis"
   },
   "TABS": {
