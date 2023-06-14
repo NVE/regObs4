@@ -1,4 +1,5 @@
 "NSCameraUsageDescription" = "Ajouter des photos aux observations";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "La localisation est utilisée pour indiquer votre position sur la carte et pour définir la position initiale lorsque vous documentez des observations.";
 "NSLocationAlwaysUsageDescription" = "La localisation est utilisée pour indiquer votre position sur la carte et pour documenter le lieu initial des observations.";
 "NSLocationWhenInUseUsageDescription" = "La localisation est utilisée pour indiquer votre position sur la carte et pour documenter le lieu initial des observations.";
 "NSPhotoLibraryAddUsageDescription" = "Ajouter des photos aux observations";
