@@ -56,7 +56,6 @@ interface IMapTileSettings {
   minZoomSupportMaps: number;
   maxZoom: number;
   zoomLevelObservationList: number;
-  edgeBufferTiles: number;
   updateWhenIdle: boolean;
 
   /**

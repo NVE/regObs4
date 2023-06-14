@@ -6,7 +6,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { Platform } from '@ionic/angular';
-import { HTTP } from '@ionic-native/http/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';

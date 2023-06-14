@@ -15,9 +15,9 @@ variables:
 
 steps:
 - task: NodeTool@0
-  displayName: 'Use Node 14.x'
+  displayName: 'Use Node 18.10.x'
   inputs:
-    versionSpec: 14.x
+    versionSpec: 18.10.x
     checkLatest: true
 
 - task: Cache@2

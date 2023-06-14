@@ -1,20 +1,23 @@
+/* eslint-disable no-console */
+
 import { writeFileSync, readFileSync } from 'fs';
 import { AppVersion } from './src/app/core/models/app-version.model';
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const AndroidManifest = require('manifest-android');
-const plist = require('plist');
+import * as AndroidManifest from 'manifest-android';
+import * as plist from 'plist';
+import { execSync } from 'child_process';
 
 const IOS_PLIST_PATH = 'ios/App/App/Info.plist';
 
 async function getVersion(): Promise<AppVersion> {
-  const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
-  const branch = (await exec('git rev-parse --abbrev-ref HEAD')).stdout.toString().trim();
+  const revision = execSync('git rev-parse --short HEAD').toString().trim();
+  const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
   const date = new Date();
-  const y = date.getFullYear().toString().substr(2);
-  const mm = (date.getMonth()+1).toLocaleString('no', { minimumIntegerDigits: 2 });
+  const y = date.getFullYear().toString().substring(2);
+  const mm = (date.getMonth() + 1).toLocaleString('no', { minimumIntegerDigits: 2 });
   const dd = date.getDate().toLocaleString('no', { minimumIntegerDigits: 2 });
-  const time = Math.floor((date.getHours() * 60 + date.getMinutes()) / 2).toLocaleString('no', { minimumIntegerDigits: 3 });
+  const time = Math.floor((date.getHours() * 60 + date.getMinutes()) / 2).toLocaleString('no', {
+    minimumIntegerDigits: 3,
+  });
   const buildNumber = parseInt(y + mm + dd + time, 10);
 
   return {
@@ -30,24 +33,39 @@ function updateAndroidManifest(appVersion: AppVersion) {
   const path = './android/app/src/main/AndroidManifest.xml';
   const androidManifest = new AndroidManifest();
   androidManifest.load({ file: path }, (err) => {
-    if(err) {
+    if (err) {
       console.error(err);
       return;
     }
     androidManifest.version = `${appVersion.version}.${appVersion.buildNumber}`;
     androidManifest.save({ file: path }, (err) => {
-      if(err) {
+      if (err) {
         console.error(err);
       }
-    })
+    });
   });
 }
 
-function updateIosVersion(version) {
-  const plistJson = plist.parse(readFileSync(IOS_PLIST_PATH, 'utf8'));
-  plistJson.CFBundleVersion = version.buildNumber.toString();
-  plistJson.CFBundleShortVersionString = version.version.toString();
-  writeFileSync(IOS_PLIST_PATH, plist.build(plistJson));
+function updateIosVersion(version: AppVersion) {
+  const plistJson = plist.parse(readFileSync(IOS_PLIST_PATH, 'utf8')) as plist.PlistObject;
+
+  // plist data can be string | number | boolean | Date | Buffer | PlistObject | PlistArray;
+  if (
+    typeof plistJson === 'string' ||
+    plistJson instanceof String ||
+    typeof plistJson === 'number' ||
+    typeof plistJson === 'boolean' ||
+    plistJson instanceof Date ||
+    Buffer.isBuffer(plistJson) ||
+    Array.isArray(plistJson)
+  ) {
+    throw new Error('plist data has invalid type');
+  }
+
+  const newPlist = { ...plistJson };
+  newPlist.CFBundleVersion = version.buildNumber.toString();
+  newPlist.CFBundleShortVersionString = version.version.toString();
+  writeFileSync(IOS_PLIST_PATH, plist.build(newPlist));
 }
 
 async function updateVersion() {
@@ -61,7 +79,6 @@ async function updateVersion() {
   writeFileSync('src/environments/version.json', JSON.stringify(version), { encoding: 'utf8' });
   updateAndroidManifest(version);
   updateIosVersion(version);
-
 }
 
 updateVersion();
