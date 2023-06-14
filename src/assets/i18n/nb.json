@@ -106,8 +106,8 @@
   },
   "HOME_PAGE": {
     "OBSERVATIONS_SEARCH_ERROR": {
-      "MESSAGE": "Fikk ikke hentet observasjoner. Prøv på nytt ved å zoome/panorere eller bruk oppfrisk-knappen i filter-menyen",
-      "BUTTON": "Lukk"
+      "BUTTON": "Lukk",
+      "MESSAGE": "Fikk ikke hentet observasjoner. Prøv på nytt ved å zoome/panorere eller bruk oppfrisk-knappen i filter-menyen"
     }
   },
   "LEGAL_TERMS": {
@@ -263,8 +263,6 @@
     "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
-    "SEARCH_ERROR_TITLE": "Søket feilet",
-    "SEARCH_ERROR_DESCRIPTION": "Søk etter observasjoner feilet. Vennligst forsøk igjen ved å bruke oppfrisk-funksjonen eller endre filteret. Hvis problemet vedvarer er det supert om du gir oss beskjed.",
     "FORMS": "Skjemaer",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
@@ -273,6 +271,8 @@
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet. Forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS_TEXT_WEB": "Fant ingen observasjoner som passer med filteret du har valgt. Om du ikke fant det du lette etter, kan du prøve å endre filteret.",
+    "SEARCH_ERROR_DESCRIPTION": "Søk etter observasjoner feilet. Vennligst forsøk igjen ved å bruke oppfrisk-funksjonen eller endre filteret. Hvis problemet vedvarer er det supert om du gir oss beskjed.",
+    "SEARCH_ERROR_TITLE": "Søket feilet",
     "SORT_BY_CHANGE_TIME": "Oppdatert tid",
     "SORT_BY_OBS_TIME": "Observert tid",
     "SORT_BY_TEXT": "Sorter på",
