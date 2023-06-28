@@ -13,6 +13,7 @@ import { LoggingService } from '../../services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -65,7 +66,9 @@ export class AddMenuComponent implements OnInit {
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
 
-  private convertDraftToDate(draft: RegistrationDraft): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
+  private convertDraftToDate(
+    draft: RegistrationDraft
+  ): Observable<{ id: string; geoHazard: RegistrationEditModel['GeoHazardTID']; date: string }> {
     return from(this.getDate(draft.lastSavedTime)).pipe(
       map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
     );
