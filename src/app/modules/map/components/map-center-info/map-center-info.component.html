@@ -46,11 +46,11 @@
     </ion-row>
 
     <ion-row name="weather-link-row">
-      <a href="js:;" (click)="$event.stopPropagation(); loadYr(mapCenter.lat, mapCenter.lng)" class="weather-link">
+      <div role="link" (click)="$event.stopPropagation(); loadYr(mapCenter.lat, mapCenter.lng)" class="weather-link">
         {{ "MAP_CENTER_INFO.WEATHER_FROM" | translate }}
         <ion-icon name="yry" class="yr-icon yr-y"></ion-icon>
         <ion-icon name="yrr" class="yr-icon yr-r"></ion-icon>
-      </a>
+      </div>
     </ion-row>
   </ion-grid>
 </div>
