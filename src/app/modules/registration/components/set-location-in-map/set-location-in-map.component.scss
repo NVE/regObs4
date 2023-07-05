@@ -193,6 +193,12 @@ app-map {
   padding: 10px 15px;
 }
 
+@media screen and (max-width: 435px) {
+  .box {
+    padding: 10px 6px;
+  }
+}
+
 .selectors {
   border: 2px solid #d7d6d6;
   z-index: 20;
