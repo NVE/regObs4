@@ -25,6 +25,9 @@
     "UNDO": "Annuler",
     "WARNING": "Alerte"
   },
+  "API": {
+    "SUNSET": "Veuillez mettre à jour l'application. Votre application utilise une version obsolète de l'API Regobs. L'API s'arrêtera à tout moment et sans préavis après {{ sunsetDate }}, et de nombreuses fonctionnalités seront perdues."
+  },
   "CLOSE": "Fermer",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Ajoutez vos observations",
@@ -36,7 +39,8 @@
   },
   "DATA_LOAD": {
     "DATA": "Chargement...",
-    "LOADING": "Chargement"
+    "LOADING": "Chargement",
+    "SPINNER_FETCH_OBSERVATIONS": "Récupération des observations"
   },
   "DATE": "Date",
   "DAYS": {
@@ -88,13 +92,19 @@
   "HELP": {
     "TITLE": "Aide"
   },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "BUTTON": "Rejeter",
+      "MESSAGE": "Aucune observation récupérée. Veuillez réessayer en zoomant/dézoomant ou en utilisant le bouton d'actualisation."
+    }
+  },
   "LEGAL_TERMS": {
     "HEADER": "À propos des données Varsom Regobs",
     "LINE_1": "Utilisez les bulletins, les données et les cartes à vos propres risques. Des erreurs et/ou omissions peuvent être présentes.",
     "LINE_2": "Un bulletin est un outil de préparation de sorties et peut différer de la situation réelle et locale. Faites toujours votre propre évaluation locale. Les conditions peuvent être complexes et différer du bulletin.",
     "LINE_3": "Les données sur Regobs sont produites par la communauté des utilisateurs et sont disponibles \"en l'état\". Elles peuvent contenir des erreurs et des omissions. NVE n'offre aucune garantie quant aux erreurs, omissions et évaluations produites par les utilisateurs.",
-    "OK": "Oui, j'accepte",
-    "TERMS": "Les données sur Varsom Regobs sont produites par la communauté des utilisateurs de Regobs et sont disponibles telles quelles, \"en l'état\". Les informations peuvent contenir des erreurs et des omissions. NVE ne garantit pas la qualité ou l'exactitude des informations qui se trouvent sur Regobs et n'endosse pas la responsabilité des données incorrectes ou trompeuses. Le nombre d'étoiles à côté d'un nom d'utilisateur (de 1 à 5) indique le niveau de compétence de la personne qui fournit les observations. Sans étoile, la compétence est inconnue ou faible."
+    "LINE_6": "Pour en savoir plus, veuillez consulter nos <a href=\"{{legalUrl}}\" target=\"_blank\">conditions d'utilisation</a>.",
+    "OK": "Oui, j'accepte"
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Modifier le mot de passe",
@@ -133,8 +143,18 @@
     "CONTACT_REGOBS": "Contactez-nous",
     "CONTACT_REGOBS_ERROR": "Signaler une erreur",
     "CONTACT_SUBJECT": "Contact depuis l'application",
-    "DAYS_BACK": "Passé",
+    "CUSTOM_TIMESPAN": "Personnalisation de la période",
+    "DATE_RANGE": {
+      "LAST_WEEK": "La semaine dernière",
+      "LAST_X_DAYS": "{{days}} jour(s) précédent(s)",
+      "LAST_X_MONTHS": "{{months}} mois précédent(s)",
+      "LAST_X_WEEKS": "{{weeks}} semaine(s) précédente(s)",
+      "TODAY": "Aujourd'hui",
+      "YESTERDAY": "Hier"
+    },
+    "DAYS_BACK": "jours précédents",
     "DAY_BACK": "Jour précédent",
+    "END_DATE": "Date de fin",
     "ERROR_REPORT_DESCRIPTION": "Veuillez décrire votre problème ici. Si vous avez des captures d'écran, veuillez les joindre.",
     "ERROR_REPORT_SUBJECT": "Rapport d'erreur de",
     "GENERAL": "Général",
@@ -151,6 +171,7 @@
     "SHOW_MAP_CENTER": "Pointer le centre de la carte",
     "SHOW_OBSERVATIONS": "Afficher les observations",
     "SHOW_TRIPS": "Afficher les itinéraires des sorties",
+    "START_DATE": "Date de début",
     "START_WIZARD": "Assistant de démarrage",
     "SUPPORT_MAP_CREDITS": "Autres fonds de cartes fournis par",
     "TILES": {
@@ -160,6 +181,7 @@
       "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (monde)"
     },
+    "TIMESPAN": "Période d'intérêt",
     "TODAYS_OBSERVATIONS": "Uniquement en date d'aujourd'hui",
     "TOPO_MAP_CREDITS": "Cartes topographiques fournies par",
     "UPDATE_OBSERVATIONS": "Mise à jour",
@@ -174,14 +196,47 @@
     "MY_SENT_OBSERVATIONS": "Mes observations envoyées",
     "NO_OBSERVATIONS": "Partagez vos observations !",
     "NO_OBSERVATIONS_TEXT": "Vos observations apparaîtront ici. Partagez vos observations, photos et évaluations avec d'autres personnes sur Varsom Regobs.",
+    "OFFLINE": "Nous ne pouvons pas récupérer les observations que vous avez soumises. Êtes-vous hors ligne ?",
+    "SEARCH_ERROR": "Nous ne pouvons pas récupérer les observations que vous avez soumises à cause d'une erreur. Veuillez réessayer et faites nous remonter le problème s'il persiste.",
     "SENT_SUBTITLE": "Les observations suivantes ont été soumises et sont maintenant enregistrées dans Regobs.",
     "TITLE": "Mes observations"
   },
+  "OBSERVATION_FILTER": {
+    "COMPETANCE_FILTER": {
+      "ALL": "Tout",
+      "AUTOMATIC_STATIONS": "Station automatique",
+      "LABEL": "Compétence",
+      "TITLE": "Observateur"
+    },
+    "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} choisi",
+    "MULTISELECT_SHOW_NO_COUNT": "Tout afficher",
+    "NICK_FILTER": {
+      "PLACEHOLDER": "Recherche par nom d'observateur",
+      "TITLE": "Nom"
+    },
+    "OBSERVATION_TYPE_FILTER": {
+      "TITLE": "Type d'observation"
+    },
+    "REGION_FILTER_B_REGIONS_TITLE": "Zone B",
+    "REGION_FILTER_TITLE_SNOW": "Massif",
+    "RESET_FILTER_BUTTON_TITLE": "Réinitialiser les filtres"
+  },
   "OBSERVATION_LIST": {
     "FORMS": "Formulaires",
+    "NO_IMAGES": "Aucune image",
+    "NO_IMAGES_TEXT": "Il n'y a pas d'images dans la portion de carte sélectionnée et pour la période, essayez d'agrandir la zone géographique ou d'étendre la période sur laquelle vous cherchez des observations ",
     "NO_OBSERVATIONS": "Aucune observation",
     "NO_OBSERVATIONS_TEXT": "Il n'y a pas d'observations dans la portion de carte affichée ; essayez de modifier l'emprise de la carte ou d'étendre la période pour laquelle vous souhaiteriez consulter des observations.",
-    "TITLE": "Observations"
+    "NO_OBSERVATIONS_TEXT_WEB": "Aucune observation ne correspond au filtre choisi. Si vous n'avez pas trouvé ce que vous cherchiez, vous pouvez essayer de modifier le filtre.",
+    "SEARCH_ERROR_DESCRIPTION": "La recherche d'observation a échoué. Veuillez réessayer et faites nous remonter le problème s'il persiste.",
+    "SEARCH_ERROR_TITLE": "La recherche a échoué",
+    "SORT_BY_CHANGE_TIME": "Récemment mis à jour",
+    "SORT_BY_OBS_TIME": "Observé récemment",
+    "SORT_BY_TEXT": "Trier par",
+    "TITLE": "Observations",
+    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Tout",
+    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "Dans la vue de la carte",
+    "VIEW_TYPE": "Voir"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
@@ -207,7 +262,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Téléchargement de la partie {{n}} sur {{totalParts}}",
       "DOWNLOAD_ERROR": "Erreur lors du téléchargement",
       "UNZIP_ERROR": "Erreur lors de la décompression",
-      "UNZIP_PART_X_OF_Y": "Décompression de la partie {{n}} sur {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Décompression de la partie {{n}} sur {{totalParts}}",
+      "WAITING_FOR_NETWORK": "En attente de réseau"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Impossible de sauvegarder le jeu de carte sur le disque. Veuillez ré-essayer.",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Impossible de sauvegarder le jeu de carte. Y-a-t-il assez d'espace mémoire disponible?"
@@ -226,6 +282,7 @@
   "REGISTRATION": {
     "ADD_IMAGES": "Ajouter des photos",
     "ADD_WEB_URL": {
+      "LABEL": "Adresse web",
       "TITLE": "Ajouter l'URL du site web",
       "URL": "URL"
     },
@@ -237,6 +294,7 @@
       "COMMENT": "Commentaire",
       "COMMENT_PLACEHOLDER": "Fournir une description du signe d'instabilité",
       "DESCRIPTION": "Description",
+      "DROPDOWN_TITLE": "Signe de danger (obligatoire)",
       "FOR_MUNICIPAL": "Pour la municipalité",
       "FOR_REGION": "Comté/ zone de prévision",
       "GENERAL_ON_MOUNTAIN": "En général en montagne",
@@ -256,10 +314,13 @@
         "HEADER": "Supprimer l'observation"
       }
     },
-    "DELETE_CONFIRM": "Êtes-vous sûr ?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
+        "AREA_TOTAL": "Définir l'emprise du glissement de terrain",
         "AVAL_TRIGGER": "Élément déclencheur du glissement de terrain",
+        "CONFIRM_END_POSITION": "Confirmer le point d'arrêt",
+        "CONFIRM_LANDSLIDE_AREA": "Confirmer l'emprise du glissement de terrain",
+        "CONFIRM_START_POSITION": "Confirmer le point de départ",
         "DAMAGE_EXTENT": "Étendue des dégâts",
         "DESTRUCTIVE_SIZE": "Taille",
         "DIRT_ACTIVITY_INFLUENCED": "Qu'est-ce qui a été touché ?",
@@ -268,6 +329,7 @@
         "DT_LAND_SLIDE_TIME_END": "Quand le glissement de terrain s'est-il arrêté?",
         "END_POSITION": "Position d 'arrêt",
         "IN_MAP": "sur la carte",
+        "LANDSLIDE_AREA": "Emprise du glissement de terrain",
         "LANDSLIDE_TYPE": "Type de glissement de terrain",
         "POSITION": "Position du glissement de terrain",
         "SET_LANDSLIDE_POSITION": "Définir la position du glissement de terrain",
@@ -290,7 +352,8 @@
       "REFERENCE": "Référence",
       "SEND_EMAIL": "Envoi par e-mél",
       "SUBTITLE": "Le réseau est inexistant ou la soumission a pris trop de temps. Nous réessayerons après un certain temps en espérant que le réseau se soit amélioré.",
-      "TITLE": "La soumission a échoué"
+      "TITLE": "La soumission a échoué",
+      "UNAUTHORIZED": "L'autorisation a échoué. Pourriez-vous essayer de vous déconnecter et de vous reconnecter, puis soumettre à nouveau l'observation ?"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notes",
@@ -303,6 +366,7 @@
       "TAKE_NEW_PHOTO": "Prendre une nouvelle photo",
       "TITLE": "Notes"
     },
+    "GO_TO": "Afficher l'observation.",
     "GROUP": {
       "SUBTITLE": "Partagez l'observation avec",
       "TITLE": "Partager avec le groupe"
@@ -335,6 +399,7 @@
     "IMAGES": "Images",
     "IMAGE_DESCRIPTION": "Description de l'image",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Ajouter une description de l'image",
+    "IMAGE_UPLOAD_ERROR": "{{failedAttachmentsCount}} photo/s de l'observation {{obsTime}} n'a/ont pas pu être téléchargée/s. Vous pouvez nous envoyer cette/ces photos par e-mail afin que nous puissions vérifier ce qui n'a pas fonctionné.",
     "INCIDENT": {
       "ACTIVITY": "Activité pratiquée",
       "COMMENT": "Description",
@@ -346,6 +411,8 @@
     "INVALID_IMAGE": "Désolé, cette photo n'est pas valide",
     "IN_CM": "En centimètres",
     "IN_FULL_CM": "En centimètres, nombre entier sans décimales",
+    "LOG_IN_AND_RESEND": "Connectez-vous et essayez d'envoyer à nouveau",
+    "LOG_IN_AND_SEND": "Se connecter et envoyer",
     "NONE": "Non sélectionné",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirmer la localisation",
@@ -358,6 +425,14 @@
       "DATE_AND_TIME": "Date et heure",
       "MY_OBSERVATION": "Mon observation",
       "SHARE_WITH_GROUP": "Partager avec le groupe",
+      "SIMPLE": {
+        "CONFIRM": {
+          "YES": "Supprimer les données et basculer en mode simple"
+        },
+        "HEADER_QUESTION": "Que se passe-t-il ici et maintenant ?",
+        "IMAGES_MODAL_TITLE": "Photo de {{registrationType}}",
+        "TOGGLE": "Observation rapide "
+      },
       "TITLE": "Observation"
     },
     "REQUIRED_FIELDS_MISSING": "Certains champs ne sont pas valides. Voulez-vous réinitialiser le formulaire et revenir en arrière ?",
@@ -371,6 +446,7 @@
       "NO": "Non, annuler",
       "YES": "Oui, enregistrer"
     },
+    "SELECTION_COUNT": "{{ count }} sélectionné(s)",
     "SEND": "Soumettre",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirmer la localisation",
@@ -405,18 +481,39 @@
         "TITLE": "Évaluation de l'estimation du risque avalanche"
       },
       "AVALANCHE_OBS": {
+        "AREA_END": "Définir la zone d'écoulement",
+        "AREA_START": "Définir la zone de départ",
+        "AREA_TOTAL": "Définir l'emprise de l'avalanche",
+        "AVALANCHE_AREA": "Emprise de l'avalanche",
         "AVALANCHE_TRIGGER": "Sensibilité au déclenchement",
         "AVALANCHE_TYPE": "Type d'avalanche",
         "AVAL_CAUSE": "Couche fragile",
+        "CASUALTIES_NUM": "Nombre de victimes",
+        "CASUALTIES_NUM_ERROR_MESSAGE": "Ne peut pas être supérieur au nombre de personne(s) impliquée(s)",
+        "CONFIRM_AVALANCHE_AREA": "Confirmer l'emprise de l'avalanche",
+        "DEAD_NUM_ERROR_MESSAGE": "Ne peut pas être supérieur au nombre de personne(s) impliquée(s) ou décédée(s)",
         "DESTRUCTIVE_SIZE": "Taille",
+        "EARLIEST_TIME": "Heure de l'avalanche la plus précoce",
+        "EVACUATED_NUM": "Nombre de personne(s) évacuée(s)",
         "FRACTURE_HEIGTH": "Épaisseur de la fracture (cm)",
         "FRACTURE_WIDTH": "Largeur de la fracture (m)",
+        "HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE": "La somme des personnes blessées et décédées ne peut pas être supérieure au nombre de personne(s) impliquée(s) ou décédée(s)",
+        "HARMED_NUM": "Nombre de personne(s) blessée(s)",
+        "HARMED_NUM_ERROR_MESSAGE": "Ne peut pas être supérieur au nombre de personne(s) impliquée(s)",
         "INCIDENT_DESCRIPTION": "Accident ou blessure",
         "INCIDENT_PLACEHOLDER": "L'avalanche a-t-elle causé des dégâts, un accident (effectif ou évité de justesse) ? Pourquoi et comment cela s'est-il produit? La situation aurait-elle pu être évitée?",
+        "INVOLVED_NUM": "Nombre de personne(s) impliquée(s)",
+        "LOCAL_KNOWLEDGE_TID": "Connaissance de la zone",
+        "LOCAL_TOURIST_TID": "Local ou voyageur",
+        "MATERIAL_DAMAGES": "Dégâts matériels",
         "POSITION": "Localisation de l'avalanche",
+        "REMOTELY_TRIGGERED": "Déclenché à distance",
+        "SAFETY_GEAR_TID": "DVA",
         "SET_AVALANCHE_POSITION": "Définir la localisation de l'avalanche",
+        "SLOPE_ACTIVITY_TID": "Phase de la course",
         "TERRAIN_START_ZONE": "Type de terrain de la zone de départ",
         "TITLE": "Incident d'avalanche",
+        "TRAFFIC_OBSTRUCTED": "Circulation coupée",
         "TRAJECTORY_NAME": "Nom du couloir d'avalanche",
         "VALID_EXPOSITION": "Orientation"
       },
@@ -447,10 +544,14 @@
         "ADD_NEW": "Ajouter un test supplémentaire",
         "DISTANCE_FROM_TOP": "Distance depuis la surface de la neige (cm)",
         "FRACTURE_TYPE": "Type de rupture",
+        "RB_RELEASE": "Pourcentage du bloc libéré",
+        "RB_SCORE": "Score du Rutschblock",
         "STABILITY_EVAL": "Stabilité",
         "TAPS_FRACTURE": "Nombre de coups",
         "TEST_TYPE": "Type de test et premiers résultats",
-        "TITLE": "Tests"
+        "TITLE": "Tests",
+        "X_DISTANCE": "Longueur critique de rupture",
+        "Y_DISTANCE": "Longueur de la colonne"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -488,7 +589,6 @@
           "WATER_EQUIVALENT": "Équivalent en eau",
           "WEIGHT": "Poids (g)"
         },
-        "SNOW_PROFILE_HELP_TEXT": "Malheureusement, nous ne disposons pas de fonctionnalité pour les profils de neige dans la version actuelle de l'application Varsom Regobs. Mais vous pouvez télécharger une photo d'un profil dessiné à la main ou une exportation à partir d'une application tierce comme Ullr Labs Avalanche. Sur regobs.no, vous pouvez mettre à jour les informations du profil à l'aide des formulaires et des tracés qui y sont fournis.",
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Ajouter une nouvelle mesure",
           "DEPTH": "Profondeur - par rapport à la surface (cm)",
@@ -541,6 +641,7 @@
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Manteau neigeux constitué",
         "NEW_SNOW_DEPTH": "Neige fraîche sur les dernières 24 heures (cm)",
         "NEW_SNOW_LINE": "Altitude où débute cette neige fraîche (m)",
+        "SKI_CONDITIONS": "Conditions pour le ski",
         "SNOW_DEPTH": "Épaisseur (cm)",
         "SNOW_DRIFT": "Transport de neige par le vent",
         "SNOW_LINE": "Limite de l'enneigement (m)",
@@ -601,6 +702,9 @@
         "OBSERVATION_TIMING": "Comment le renseignez-vous?",
         "REGISTRATION_METHOD": "Que renseignez-vous?",
         "RELATIVE": "La hauteur est relative à",
+        "SET_FLOOD_POSITION_CONFIRM": "Confirmer la zone inondée",
+        "SET_FLOOD_POSITION_SUMMARY_TITLE": "Zone inondée",
+        "SET_FLOOD_POSITION_TITLE": "Définir la zone inondée",
         "TITLE": "Hauteur d'eau",
         "WATER_LEVEL_METERS": "Hauteur d'eau en mètres",
         "WATER_MARKING": "Relevé d'indice(s) sur la hauteur de l'eau",
@@ -627,6 +731,7 @@
     "READ_MORE_IN_LICENSE_AGREEMENT": "Vous pouvez consulter l'utilisation des données dans <a href=\"{{legalUrl}}\" target=\"_blank\">notre politique de confidentialité</a>.",
     "RESET": "Réinitialiser l'application",
     "RESETTING": "Réinitialisation de l'application. Veuillez patienter...",
+    "SEND_LOGS": "Envoyer les fichiers log à l'équipe Regobs",
     "SHOW_ADVANCED": "Paramètres avancés",
     "SIZE_OF_TILES_CACHE": "Espace mémoire utilisé par les tuiles enregistrées sur l'appareil",
     "TILES_CACHE_SIZE": "Nombre de tuiles enregistrées sur l'appareil",
@@ -723,9 +828,12 @@
     "LOW": "Faible",
     "MARITINE_BORDER": "Bord de mer",
     "MIDDLE": "Intermédiaire",
+    "NO_LEGEND": "Cette couche cartographique n’a pas encore de légende.",
     "NO_OPACITY": "Complètement opaque",
+    "OUTLETS_GREENLAND_MAP_DESCRIPTION": "Zones de départ potentielles et zones d'écoulement (Groenland)",
     "READ_MORE": "En savoir plus sur ces cartes",
     "STEEPNESS_COLOR_INFO": "La couleur indique l'inclinaison de pente du terrain",
+    "STEEPNESS_GREENLAND_MAP_DESCRIPTION": "Carte des angles de pente (Groenland)",
     "STEEPNESS_MAP_DESCRIPTION": "Carte des pentes",
     "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
     "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",

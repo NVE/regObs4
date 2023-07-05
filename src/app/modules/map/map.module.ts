@@ -7,7 +7,6 @@ import { FullscreenToggleComponent } from './components/map-controls/fullscreen-
 import { GpsCenterComponent } from './components/map-controls/gps-center/gps-center.component';
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
 import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
-import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -31,7 +30,6 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     TranslateModule,
     RouterModule,
     LeafletModule,
-    LeafletEdgeBufferModule,
     ModalSearchPageModule,
     ModalMapImagePageModule,
     SupportMapInfoPageModule,

@@ -5,7 +5,7 @@ import { settings } from '../../../../settings';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
-import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from 'src/app/modules/common-core/models';

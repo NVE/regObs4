@@ -5,12 +5,12 @@ import { Subscription } from 'rxjs';
 //   Geoposition,
 //   Geolocation,
 //   PositionError
-// } from '@ionic-native/geolocation/ngx';
+// } from '@awesome-cordova-plugins/geolocation/ngx';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TripLogState } from '../trip-logger/trip-log-state.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
-//TODO: Har kommentert ut denne servicen når vi fjernet @ionic-native/geolocation/ngx, siden det later til at den ikke er i bruk. Vurder om vi skal slette servicen!
+//TODO: Har kommentert ut denne servicen når vi fjernet @awesome-cordova-plugins/geolocation/ngx, siden det later til at den ikke er i bruk. Vurder om vi skal slette servicen!
 @Injectable()
 export class BackgroundGeolocationWebService implements BackgroundGeolocationService {
   watchSubscription?: Subscription;

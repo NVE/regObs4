@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   AUTOMATIC_STATIONS,
@@ -30,7 +30,7 @@ interface ObservationTypeView {
 }
 
 type PlatformType = 'app' | 'web';
-type FilterType = 'observationType' | 'competence' | 'nickName';
+type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
 
 type FilterSupportPerPlatform = {
   [platformType in PlatformType]: { [filter in FilterType]: boolean };
@@ -109,11 +109,13 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       observationType: false,
       competence: true,
       nickName: true,
+      region: false,
     },
     web: {
       observationType: true,
       competence: true,
       nickName: true,
+      region: true,
     },
   };
 
@@ -123,6 +125,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   get avalancheRegionTrackById() {
     return avalancheRegionTrackById;
   }
+
+  slushFlowFilterIsActive = false;
 
   constructor(
     private platform: Platform,
@@ -184,6 +188,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.setObserverCompetence(criteria.ObserverCompetence as number[]);
       //set chosen nickname
       this.nickName = criteria.ObserverNickName;
+      this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
       this.cdr.markForCheck();
     });
   }

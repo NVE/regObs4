@@ -5,7 +5,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable } from '@angular/core';
 
 const ROOT_DIR = 'attachments';

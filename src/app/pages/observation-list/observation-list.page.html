@@ -1,5 +1,6 @@
 <app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
+  <app-geo-fab slot="fixed"></app-geo-fab>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-item-divider>
     <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
@@ -64,16 +65,18 @@
 
   <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
     <ng-container *ngIf="viewType$ | async as viewType">
-      <ion-list class="loaded" *ngIf="registrations?.length > 0; else empty">
-        <app-observation-list-view
-          *ngIf="viewType==='list'"
-          [registrations]="listResultRegistrations"
-        ></app-observation-list-view>
-        <app-images-grid *ngIf="viewType==='grid'" [attachments]="attachmentsResultRegistrations"></app-images-grid>
-        <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-          <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </ion-list>
+      <ng-container *ngIf="registrations$ | async as registrations">
+        <ion-list class="loaded" *ngIf="registrations?.length > 0; else empty">
+          <app-observation-list-view
+            *ngIf="viewType==='list'"
+            [registrations]="registrations"
+          ></app-observation-list-view>
+          <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid>
+          <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+            <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ion-list>
+      </ng-container>
     </ng-container>
   </ng-container>
 
@@ -91,7 +94,7 @@
   </ng-template>
 
   <ng-template #empty>
-    <ion-grid *ngIf="!(error$ | async) && registrations != null && isNative" class="full-grid">
+    <ion-grid *ngIf="!(error$ | async) && isNative" class="full-grid">
       <ion-row class="full-grid-row">
         <div class="center">
           <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
@@ -107,7 +110,7 @@
         <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_OBSERVATIONS_TEXT" | translate }}</h3></ion-row
       >
     </ion-grid>
-    <ion-grid *ngIf="!(error$ | async) && registrations != null && !isNative" class="full-grid">
+    <ion-grid *ngIf="!(error$ | async) && !isNative" class="full-grid">
       <ion-row class="error ion-text-center ion-margin-horizontal">
         <h2>{{ "OBSERVATION_LIST.NO_OBSERVATIONS" | translate }}</h2>
       </ion-row>

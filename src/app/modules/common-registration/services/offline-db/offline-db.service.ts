@@ -2,7 +2,7 @@ import { Injectable, isDevMode } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { OfflineDbServiceOptions } from './offline-db-service.options';
 import { RegistrationSchema } from '../../db/schemas/registration.schema';
-import { createRxDatabase, addRxPlugin, RxJsonSchema } from 'rxdb/plugins/core';
+import { createRxDatabase, addRxPlugin, RxJsonSchema, RxDatabase } from 'rxdb/plugins/core';
 import { RxRegistrationDatabase, RxRegistrationCollections } from '../../db/RxDB';
 import { GenericSchema } from '../../db/schemas/generic.schema';
 import { from, Observable } from 'rxjs';
@@ -115,9 +115,21 @@ export class OfflineDbService {
       (window as unknown)['db'] = db; // write to window for debugging
     }
 
-    await Promise.all(this.getCollections().map((colData) => db.collection(colData)));
+    await Promise.all(this.getCollections().map((colData) => this.initCollection(db, colData)));
 
     return db;
+  }
+
+  private async initCollection(
+    db: RxDatabase<{ [key: string]: RxRegistrationCollections }>,
+    args: { name: string; schema: RxJsonSchema }
+  ) {
+    try {
+      await db.collection(args);
+    } catch (error) {
+      await db.removeCollection(args.name);
+      await db.collection(args);
+    }
   }
 
   private getCollections() {

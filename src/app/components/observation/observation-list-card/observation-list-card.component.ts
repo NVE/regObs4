@@ -287,9 +287,17 @@ export class ObservationListCardComponent implements OnChanges {
   async edit() {
     this.isLoadingObsForEdit = true;
     const uuid = this.obs.ExternalReferenceId;
+
     try {
+      if (!uuid) {
+        await this.notifyAboutMissingExternalReferenceId();
+        return;
+      }
+
       const draft = await this.draftRepository.load(uuid);
       if (!draft) {
+        let registrationDataToEdit: RegistrationViewModel = this.obs;
+
         //we don't have a local working copy of this registration yet, so fetch it and save as draft
         this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
         const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
@@ -299,8 +307,11 @@ export class ObservationListCardComponent implements OnChanges {
             this.isLoadingObsForEdit = false;
             return;
           }
+        } else {
+          registrationDataToEdit = registrationFromServer;
         }
-        await this.draftRepository.saveAsDraft(this.obs); //save cached copy from card as draft
+
+        await this.draftRepository.saveAsDraft(registrationDataToEdit); //save cached copy from card as draft
       } else {
         this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
       }
@@ -309,6 +320,17 @@ export class ObservationListCardComponent implements OnChanges {
       this.cdr.markForCheck();
     }
     this.router.navigate(['registration', 'edit', uuid]);
+  }
+
+  private async notifyAboutMissingExternalReferenceId() {
+    // This alert is not translated and that is OK, this is a weird case that can only happen with registrations
+    // submitted directly to the database, outside of the API
+    const alert = await this.alertController.create({
+      header: 'Missing ExternalReferenceId',
+      message: 'Error: This observation is missing ExternalReferenceId and cannot be edited.',
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {

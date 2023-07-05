@@ -97,7 +97,7 @@ export class UserInformation implements OnInit {
 
   navigateBack() {
     const prevUrl = localStorage.getItem('prevUrl') || '/';
-    this.router.navigate([prevUrl]);
+    this.router.navigateByUrl(prevUrl);
   }
 
   signIn(): Promise<void> {

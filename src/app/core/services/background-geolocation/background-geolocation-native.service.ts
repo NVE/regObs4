@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BackgroundGeolocationService } from './background-geolocation.service';
-// import { BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
+// import { BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@awesome-cordova-plugins/background-geolocation';
 import { Platform } from '@ionic/angular';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TranslateService } from '@ngx-translate/core';

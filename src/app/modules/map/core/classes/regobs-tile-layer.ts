@@ -7,7 +7,6 @@ import { bboxPolygon, booleanWithin } from '@turf/turf';
 const DEBUG_TAG = 'RegObsOfflineAwareTileLayer';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
-  edgeBufferTiles?: number;
   excludeBounds?: Polygon[];
 }
 

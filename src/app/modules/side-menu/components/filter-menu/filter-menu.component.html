@@ -14,7 +14,9 @@
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label [selectedItemsCount]="observationTypesSelectedCount">
+      <app-selected-items-counter-label
+        [selectedItemsCount]="slushFlowFilterIsActive ? 1 : observationTypesSelectedCount"
+      >
         {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
       </app-selected-items-counter-label>
     </ion-list-header>
@@ -23,10 +25,12 @@
       <ion-list lines="none">
         <ng-container *ngFor="let type of observationTypesOptions">
           <ion-item class="item-height">
+            <!-- if slush flow filter is set, disable filter by observation type because it cannot be combined -->
             <ion-checkbox
-              [checked]="type.isChecked"
+              [checked]="!slushFlowFilterIsActive && type.isChecked"
               (click)="setNewType($event, type.parentId, type.id)"
               color="varsom-dark-blue"
+              [disabled]="slushFlowFilterIsActive"
             >
             </ion-checkbox>
             <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
@@ -38,47 +42,49 @@
   </ng-container>
 
   <!-- Avalanche Regions -->
-  <ng-container *ngIf="regions$ | async as regions">
-    <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
-        {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
-      </app-selected-items-counter-label>
-    </ion-list-header>
+  <ng-container *ngIf="isSupported('region')">
+    <ng-container *ngIf="regions$ | async as regions">
+      <ion-list-header color="varsom-blue" class="ion-no-margin">
+        <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
+          {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
+        </app-selected-items-counter-label>
+      </ion-list-header>
 
-    <ion-item>
-      <ion-list lines="none" style="max-height: 400px">
-        <!-- A regioner -->
-        <ng-container *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
-          <ion-item class="item-height">
-            <ion-checkbox
-              [value]="region"
-              [checked]="region.checked"
-              (ionChange)="regionCheckBoxChanged($event)"
-              color="varsom-dark-blue"
-            >
-            </ion-checkbox>
-            <ion-label class="ion-padding-start">{{ region.name }}</ion-label>
-          </ion-item>
-        </ng-container>
+      <ion-item>
+        <ion-list lines="none" style="max-height: 400px">
+          <!-- A regioner -->
+          <ng-container *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
+            <ion-item class="item-height">
+              <ion-checkbox
+                [value]="region"
+                [checked]="region.checked"
+                (ionChange)="regionCheckBoxChanged($event)"
+                color="varsom-dark-blue"
+              >
+              </ion-checkbox>
+              <ion-label class="ion-padding-start">{{ region.name }}</ion-label>
+            </ion-item>
+          </ng-container>
 
-        <!-- Skilletekst -->
-        <ion-item class="unselectable">{{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}</ion-item>
+          <!-- Skilletekst -->
+          <ion-item class="unselectable">{{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}</ion-item>
 
-        <!-- B regioner -->
-        <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
-          <ion-item class="item-height">
-            <ion-checkbox
-              [value]="region"
-              [checked]="region.checked"
-              (ionChange)="regionCheckBoxChanged($event)"
-              color="varsom-dark-blue"
-            >
-            </ion-checkbox>
-            <ion-label class="ion-padding-start">{{ region.name }}<span>&nbsp;(B)</span></ion-label>
-          </ion-item>
-        </ng-container>
-      </ion-list>
-    </ion-item>
+          <!-- B regioner -->
+          <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
+            <ion-item class="item-height">
+              <ion-checkbox
+                [value]="region"
+                [checked]="region.checked"
+                (ionChange)="regionCheckBoxChanged($event)"
+                color="varsom-dark-blue"
+              >
+              </ion-checkbox>
+              <ion-label class="ion-padding-start">{{ region.name }}<span>&nbsp;(B)</span></ion-label>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ion-item>
+    </ng-container>
   </ng-container>
 
   <ng-container *ngIf="isSupported('competence')">

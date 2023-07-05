@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AbonnerBannerComponent } from './abonner-banner.component';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { TestModule } from '../../../modules/test/test.module';
 
 describe('AbonnerBannerComponent', () => {

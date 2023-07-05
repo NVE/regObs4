@@ -20,7 +20,7 @@ import { GeoPositionLog, PositionError } from './geo-position-log.interface';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 import { Capacitor } from '@capacitor/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 

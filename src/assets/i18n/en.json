@@ -106,8 +106,8 @@
   },
   "HOME_PAGE": {
     "OBSERVATIONS_SEARCH_ERROR": {
-      "MESSAGE": "Failed to fetch observations. Please try again by pan/zoom or use refresh button",
-      "BUTTON": "Dismiss"
+      "BUTTON": "Dismiss",
+      "MESSAGE": "Failed to fetch observations. Please try again by pan/zoom or use refresh button"
     }
   },
   "LEGAL_TERMS": {
@@ -263,8 +263,6 @@
     "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
-    "SEARCH_ERROR_TITLE": "Search failed",
-    "SEARCH_ERROR_DESCRIPTION": "Search for observations failed. Please try again and let us know if the problem persists.",
     "FORMS": "Forms",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
@@ -273,6 +271,8 @@
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
     "NO_OBSERVATIONS_TEXT_WEB": "There are no observations that matches current filter. If you didn't find what you looked for you may try to change the filter.",
+    "SEARCH_ERROR_DESCRIPTION": "Search for observations failed. Please try again and let us know if the problem persists.",
+    "SEARCH_ERROR_TITLE": "Search failed",
     "SORT_BY_CHANGE_TIME": "Recently updated",
     "SORT_BY_OBS_TIME": "Recently observed",
     "SORT_BY_TEXT": "Order by",
