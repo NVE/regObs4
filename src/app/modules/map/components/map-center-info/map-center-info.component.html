@@ -1,4 +1,4 @@
-<!-- 
+<!--
   NB! Root elements in this view has positon: absolute..
  -->
 
@@ -45,8 +45,8 @@
       </ng-container>
     </ion-row>
 
-    <ion-row name="weather-link-row" (click)="$event.stopPropagation(); loadYr(mapCenter.lat, mapCenter.lng)">
-      <div class="weather-link">
+    <ion-row name="weather-link-row">
+      <div role="link" class="weather-link" (click)="$event.stopPropagation(); loadYr(mapCenter.lat, mapCenter.lng)">
         {{ "MAP_CENTER_INFO.WEATHER_FROM" | translate }}
         <ion-icon name="yry" class="yr-icon yr-y"></ion-icon>
         <ion-icon name="yrr" class="yr-icon yr-r"></ion-icon>

@@ -187,29 +187,36 @@ export class MapCenterInfoComponent extends NgDestoryBase {
       'GET',
       `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`
     );
-    const apiResponse = await firstValueFrom(
-      this.http.request(apiReq).pipe(
-        filter((_r) => _r instanceof HttpResponse),
-        map((_r) => (_r as StrictHttpResponse<YrSearch>).body)
-      )
-    );
 
-    if (apiResponse.totalResults) {
-      const id = apiResponse._embedded.location[0].id;
-      const url =
-        {
-          nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
-          nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
-        }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
-      this.externalLinkService.openExternalLink(url);
-    } else {
-      const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.WEATHER_ERROR'));
-      const toast = await this.toastController.create({
-        message: toastText,
-        mode: 'md',
-        duration: 2000,
-      });
-      toast.present();
+    try {
+      const apiResponse = await firstValueFrom(
+        this.http.request(apiReq).pipe(
+          filter((_r) => _r instanceof HttpResponse),
+          map((_r) => (_r as StrictHttpResponse<YrSearch>).body)
+        )
+      );
+
+      if (apiResponse.totalResults) {
+        const id = apiResponse._embedded.location[0].id;
+        const url =
+          {
+            nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
+            nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
+          }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
+        this.externalLinkService.openExternalLink(url);
+      } else await this.toastOnYrError();
+    } catch {
+      await this.toastOnYrError();
     }
+  }
+
+  private async toastOnYrError() {
+    const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.WEATHER_ERROR'));
+    const toast = await this.toastController.create({
+      message: toastText,
+      mode: 'md',
+      duration: 2000,
+    });
+    toast.present();
   }
 }
