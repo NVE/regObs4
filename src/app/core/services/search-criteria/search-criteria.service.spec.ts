@@ -119,7 +119,7 @@ describe('SearchCriteriaService', () => {
   it('competence filter should set the right criteria and url', fakeAsync(async () => {
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
-    service.setCompetence([150, 105]);
+    service.addCompetence([150, 105]);
     tick(500);
 
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
