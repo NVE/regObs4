@@ -64,7 +64,11 @@ export class ExternalLinkService {
   }
 
   openExternalLinkFallback(url: string) {
-    this.inAppBrowser.create(url, '_system', 'location=yes,hardwareback=yes');
+    // we use setTimeout to force browser to run inappbrowser on the main thread, otherwise it wil be blocked
+    // in Safari
+    setTimeout(() => {
+      this.inAppBrowser.create(url, '_system', 'location=yes,hardwareback=yes, usewkwebview=yes');
+    });
   }
 
   private ensureCorrectUrl(url: string) {
