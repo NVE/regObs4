@@ -95,35 +95,29 @@
         {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
       </ion-label>
     </ion-list-header>
-    <ng-container *ngIf="competenceOptions$ | async as competenceOptions">
-      <ion-item>
-        <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
-          "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate
-        }}</ion-label>
-        <ion-select
-          [interface]="popupType"
-          [value]="chosenCompetenceValue"
-          (ionChange)="onSelectCompetenceChange($event)"
+
+    <ion-item>
+      <ion-label position="stacked" class="margin-bottom">
+        {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
+      </ion-label>
+
+      <ion-list lines="none">
+        <ion-item
+          class="item-height"
+          *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById"
         >
-          <ion-select-option *ngFor="let co of competenceOptions" [value]="co">
-            {{ co.name }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="automaticStationCompetenceItem">
-        <ion-checkbox
-          [checked]="isAutomaticStationChecked"
-          color="varsom-dark-blue"
-          mode="md"
-          [value]="automaticStationCompetenceItem"
-          (ionChange)="onCheckAutomaticStations($event, competenceOptions)"
-        >
-        </ion-checkbox>
-        <ion-label class="ion-padding-start"
-          >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
-        </ion-label>
-      </ion-item>
-    </ng-container>
+          <ion-checkbox
+            [value]="competence"
+            [checked]="competence.checked"
+            (ionChange)="competenceCheckboxChanged($event)"
+            color="varsom-dark-blue"
+          ></ion-checkbox>
+          <ion-label [title]="competence.descriptions.join('<br />')" class="ion-padding-start">{{
+            competence.name
+          }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-item>
   </ng-container>
 
   <ng-container *ngIf="isSupported('nickName')">
