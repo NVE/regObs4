@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TrackByFunction } from '@angular/core';
 import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
@@ -50,9 +50,9 @@ interface AvalancheRegion {
   checked?: boolean;
 }
 
-function avalancheRegionTrackById(r: AvalancheRegion) {
+const avalancheRegionTrackById: TrackByFunction<AvalancheRegion> = (index: number, r: AvalancheRegion) => {
   return r.id;
-}
+};
 
 const DEBUG_TAG = 'FilterMenuComponent';
 
