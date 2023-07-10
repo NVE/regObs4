@@ -177,7 +177,7 @@ export class AvalancheObsPage extends BasePage {
     // we need to ignore the default value of DtAvalancheTime
     if (
       this.avalancheObs.DtAvalancheTime &&
-      (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, 'DtAvalancheTime') ||
+      (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, ['DtAvalancheTime']) ||
         this.dtAvalancheTimeIsDifferentThanObsTime)
     ) {
       return false;
