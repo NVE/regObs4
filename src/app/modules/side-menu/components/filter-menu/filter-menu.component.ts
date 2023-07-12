@@ -8,24 +8,14 @@ import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import {
-  RegistrationTypeCriteriaDto,
-  RegistrationTypeDto,
-  RegistrationTypeSubTypeDto,
-} from 'src/app/modules/common-regobs-api';
+import { RegistrationTypeCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { SearchCriteriaModelService } from 'src/app/core/services/search-criteria/search-criteria-model.service';
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
-
-interface ObservationTypeView {
-  name: string;
-  id: number;
-  isChecked: boolean;
-  parentId: number;
-}
+import { ObservationTypeOptions, ObservationTypeView } from './observationTypeOptions';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -56,28 +46,6 @@ const competenceOptionTrackById: TrackByFunction<CompetenceOption> = (index: num
 
 const DEBUG_TAG = 'FilterMenuComponent';
 
-//create view model
-function mapRegistrationSubtypes(subtypes: RegistrationTypeSubTypeDto[], parentId: number): ObservationTypeView[] {
-  return subtypes.map((st) => {
-    return { name: st.Name, parentId: parentId, id: st.Id, isChecked: false };
-  });
-}
-
-function mapRegistrationType(type: RegistrationTypeDto): ObservationTypeView[] {
-  return [{ name: type.Name, parentId: type.Id, id: type.Id, isChecked: false }];
-}
-
-function removeDuplicatesFromObservationTypes(arr: ObservationTypeView[]): ObservationTypeView[] {
-  return arr.reduce((cur, element) => {
-    if (cur && cur.filter((i) => i.id === element.id).length > 0) {
-      return cur;
-    } else {
-      cur.push(element);
-      return cur;
-    }
-  }, [] as ObservationTypeView[]);
-}
-
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
   if (prev.length !== curr.length) {
@@ -105,7 +73,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   currentGeoHazard: GeoHazard[];
   observationTypes$: Observable<ObservationTypeView[]>;
-  observationTypesSelectedCount = 0;
+  nTypesSelected$: Observable<number>;
 
   filterSupportPerPlatform: FilterSupportPerPlatform = {
     app: {
@@ -149,6 +117,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     private searchCriteriaModelService: SearchCriteriaModelService
   ) {
     super();
+
+    this.isMobileWeb = this.platform.is('mobileweb');
+    this.platformType = this.isIosOrAndroid ? 'app' : 'web';
     this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
       switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : of(null))),
       shareReplay(1, 500)
@@ -172,19 +143,40 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.userSettingService.currentGeoHazard$.subscribe((curGeohazard) => (this.currentGeoHazard = curGeohazard));
 
     this.observationTypes$ = combineLatest([
-      this.kdv.getViewRepositoryByKeyObservable('RegistrationTypesV'),
+      this.searchCriteriaModelService
+        .getObservationTypesFilterOptions$()
+        .pipe(map((obsTypesList) => new ObservationTypeOptions(obsTypesList))),
       this.searchCriteriaService.searchCriteria$.pipe(
-        distinctUntilChanged((prev, curr) => prev.SelectedRegistrationTypes === curr.SelectedRegistrationTypes)
+        map((searchCriteria) => searchCriteria.SelectedRegistrationTypes || [])
+        // this is skipping state changes from time to time confuding not only nTypesSelected$, but also not chaning true to false on isChecked
+        // if user checks boxes quickly
+        // distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
       ),
-      this.userSettingService.currentGeoHazard$,
     ]).pipe(
-      map(([options, criteria, geoHazard]) => {
-        const registrationTypesByGeoHazard = geoHazard.map((typesByGeoHazard) => options[typesByGeoHazard]).flat();
-        const optionsFiltered = this.convertObservationTypesDtoToView(registrationTypesByGeoHazard);
-        return this.mapObservationTypesToView(
-          optionsFiltered,
-          criteria.SelectedRegistrationTypes as RegistrationTypeCriteriaDto[]
-        );
+      map(([obsTypesOptions, obsTypes]) => {
+        // assure that we set boxes back to false since we dont handle proper isChecked => false mutation yet
+        for (const v of obsTypesOptions.optionsToReturnMap.values()) {
+          v.isChecked = false;
+        }
+        obsTypes.forEach((type) => {
+          if (type.SubTypes.length > 0) {
+            type.SubTypes.forEach((subtype) => {
+              obsTypesOptions.optionsToReturnMap.get(+`${type.Id}.${subtype}`).isChecked = true;
+            });
+          } else {
+            obsTypesOptions.optionsToReturnMap.get(type.Id).isChecked = true;
+          }
+        });
+        return obsTypesOptions.options;
+      })
+    );
+
+    this.nTypesSelected$ = this.observationTypes$.pipe(
+      map((obsType) => {
+        if (obsType) {
+          return [...obsType.filter((ot) => ot.isChecked)].length;
+        }
+        return 0;
       })
     );
 
@@ -205,6 +197,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     ]).pipe(
       map(([competenceOptions, competences]) => {
         // Set all active competences to checked
+        // we dont check non active competences to false
         for (const competence of competences) {
           competenceOptions.idToItem.get(competence).checked = true;
         }
@@ -240,7 +233,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async onResetFilters() {
-    this.observationTypesSelectedCount = 0;
     this.searchCriteriaService.resetSearchCriteria();
   }
 
@@ -257,45 +249,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     let nickName = null;
     newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
     this.searchCriteriaService.setObserverNickName(nickName);
-  }
-
-  private mapObservationTypesToView(
-    observationTypesOptions: ObservationTypeView[],
-    searchCriteriaRegType: RegistrationTypeCriteriaDto[]
-  ): ObservationTypeView[] {
-    if (!searchCriteriaRegType) {
-      observationTypesOptions.forEach((type) => (type.isChecked = false));
-      return observationTypesOptions;
-    }
-
-    const subtypes = [];
-    searchCriteriaRegType.forEach((type) => {
-      if (type.SubTypes.length > 0) {
-        type.SubTypes.forEach((subtype) => subtypes.push({ parentId: type.Id, id: subtype }));
-      } else {
-        subtypes.push({ parentId: type.Id, id: type.Id });
-      }
-    });
-    observationTypesOptions.forEach((obsType) => {
-      const has = subtypes.some((s) => s.parentId == obsType.parentId && s.id == obsType.id);
-      has ? (obsType.isChecked = true) : (obsType.isChecked = false);
-    });
-
-    this.observationTypesSelectedCount = observationTypesOptions.filter((ot) => ot.isChecked === true).length;
-    return observationTypesOptions;
-  }
-
-  //combine subtypes and types into one array
-  private convertObservationTypesDtoToView(registrationTypesByGeoHazard: RegistrationTypeDto[]): ObservationTypeView[] {
-    let arrToReturn: ObservationTypeView[] = [];
-    registrationTypesByGeoHazard.map((type) => {
-      const subtypestoReturn =
-        type.SubTypes.length > 0 ? mapRegistrationSubtypes(type.SubTypes, type.Id) : mapRegistrationType(type);
-      arrToReturn = [...arrToReturn, ...subtypestoReturn];
-    });
-
-    const noDuplicates = removeDuplicatesFromObservationTypes(arrToReturn);
-    return noDuplicates;
   }
 
   private getSnowRegions() {

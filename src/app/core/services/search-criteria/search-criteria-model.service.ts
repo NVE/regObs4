@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, combineLatest, map, switchMap, timeout } from 'rxjs';
-import { ObserverCompetenceLevelDto, SearchService, SearchSideBarDto } from 'src/app/modules/common-regobs-api';
+import {
+  ObserverCompetenceLevelDto,
+  RegistrationTypeDto,
+  SearchService,
+  SearchSideBarDto,
+} from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { HttpClient } from '@angular/common/http';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -70,6 +75,23 @@ export class SearchCriteriaModelService {
       switchMap((params) =>
         this.getModel$(params).pipe(
           map((result) => result.ObserverCompetenceLevels),
+          map((result) => {
+            const apiGeoHazardNames = params.geoHazards.map((g) => GEOHAZARDMAP[g]);
+            return apiGeoHazardNames.map((g) => result[g]).flat();
+          })
+        )
+      )
+    );
+  }
+
+  /**
+   * Get observation types filter model from API.
+   */
+  getObservationTypesFilterOptions$(): Observable<RegistrationTypeDto[]> {
+    return this.getParams$().pipe(
+      switchMap((params) =>
+        this.getModel$(params).pipe(
+          map((result) => result.RegistrationTypes),
           map((result) => {
             const apiGeoHazardNames = params.geoHazards.map((g) => GEOHAZARDMAP[g]);
             return apiGeoHazardNames.map((g) => result[g]).flat();

@@ -14,32 +14,28 @@
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label
-        [selectedItemsCount]="slushFlowFilterIsActive ? 1 : observationTypesSelectedCount"
-      >
+      <app-selected-items-counter-label [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)">
         {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
       </app-selected-items-counter-label>
     </ion-list-header>
 
     <ion-item>
-      <ng-container *ngIf="observationTypes$ | async as observationTypes">
-        <ion-list lines="none">
-          <ng-container *ngFor="let type of observationTypes; trackBy: obsTypeTrackById">
-            <ion-item class="item-height">
-              <!-- if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-              <ion-checkbox
-                [checked]="!slushFlowFilterIsActive && type.isChecked"
-                (click)="setNewType($event, type.parentId, type.id)"
-                color="varsom-dark-blue"
-                [disabled]="slushFlowFilterIsActive"
-              >
-              </ion-checkbox>
-              <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
-            </ion-item>
-          </ng-container>
-          <app-slush-flow-filter> </app-slush-flow-filter>
-        </ion-list>
-      </ng-container>
+      <ion-list lines="none">
+        <ng-container *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
+          <ion-item class="item-height">
+            <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
+            <ion-checkbox
+              [checked]="!slushFlowFilterIsActive && type.isChecked"
+              (click)="setNewType($event, type.parentId, type.id)"
+              color="varsom-dark-blue"
+              [disabled]="slushFlowFilterIsActive"
+            >
+            </ion-checkbox>
+            <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
+          </ion-item>
+        </ng-container>
+        <app-slush-flow-filter> </app-slush-flow-filter>
+      </ion-list>
     </ion-item>
   </ng-container>
 
