@@ -1,15 +1,25 @@
 import { Injectable, Injector } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, distinctUntilChanged } from 'rxjs/operators';
-import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { environment } from '../../../../environments/environment';
-import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { AppCustomDimension } from '../enums/app-custom-dimension.enum';
 import { AppEventAction } from '../enums/app-event-action.enum';
 import { AppEventCategory } from '../enums/app-event-category.enum';
 import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils';
+
+// In order to have IntelliSense on the custom events we need to declare Plausible on the global window element.
+
+// This code comes from https://www.lekoarts.de/garden/how-to-add-plausible-analytics-to-gatsby#:~:text=%23-,TypeScript,-In%20order%20to
+declare global {
+  interface Window {
+    plausible: (
+      name: string,
+      options?: { callback?: () => void; props?: { [key: string]: string | number | boolean } }
+    ) => void;
+  }
+}
 
 const DEBUG_TAG = 'AnalyticService';
 @Injectable({
@@ -20,62 +30,38 @@ export class AnalyticService {
     return this.injector.get(Router);
   }
 
-  constructor(
-    private injector: Injector,
-    private loggingService: LoggingService,
-    private appVersionService: AppVersionService
-  ) {}
+  constructor(private injector: Injector, private loggingService: LoggingService) {}
+
+  private isTrackingOn() {
+    return window.plausible && environment.production;
+  }
 
   trackView(url: string) {
-    if (ga) {
-      const safeUrl = removeOauthTokenFromUrl(url);
-      this.loggingService.debug(`Tracking pageview ${safeUrl}`, DEBUG_TAG);
-      ga('set', 'page', url);
-      ga('send', 'pageview');
-    }
+    if (!this.isTrackingOn()) return;
+    const safeUrl = removeOauthTokenFromUrl(url);
+    this.loggingService.debug(`Tracking pageview ${safeUrl}`, DEBUG_TAG);
+    window.plausible('Track view', { props: { safeUrl } });
   }
 
   trackDimension(dimension: AppCustomDimension, value: string | number | boolean) {
-    if (ga) {
-      this.loggingService.debug(`Tracking dimension ${dimension}: ${value}`, DEBUG_TAG);
-      ga('set', dimension, value);
-      ga('send', 'pageview');
-    }
+    if (!this.isTrackingOn()) return;
+    this.loggingService.debug(`Tracking dimension ${dimension}: ${value}`, DEBUG_TAG);
+    window.plausible('Track dimension', { props: { [dimension]: value } });
   }
 
   trackEvent(eventCategory: AppEventCategory, eventAction: AppEventAction, eventLabel?: string, eventValue?: number) {
-    if (ga) {
-      this.loggingService.debug(
-        `Tracking event eventCategory:${eventCategory}, eventAction:${eventAction},` +
-          ` eventLabel:${eventLabel || ''}, eventValue: ${eventValue || ''}`,
-        DEBUG_TAG
-      );
-      ga('send', 'event', {
-        eventCategory,
-        eventAction,
-        eventLabel,
-        eventValue,
-      });
-    }
-  }
-
-  disable() {
-    this.loggingService.debug('Disable Google Analytics', DEBUG_TAG);
-    window[`ga-disable-${settings.googleAnalytics.trackerId}`] = true;
-  }
-
-  enable() {
+    if (!this.isTrackingOn()) return;
     this.loggingService.debug(
-      `Enable Google Analytics ${environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)'}`,
+      `Tracking event eventCategory:${eventCategory}, eventAction:${eventAction},` +
+        ` eventLabel:${eventLabel || ''}, eventValue: ${eventValue || ''}`,
       DEBUG_TAG
     );
-    if (environment.production) {
-      window[`ga-disable-${settings.googleAnalytics.trackerId}`] = false;
-    }
+
+    window.plausible('Track event', { props: { eventCategory, eventAction, eventLabel, eventValue } });
   }
 
   init() {
-    if (!ga) {
+    if (!window.plausible) {
       this.loggingService.log(
         'Could not load Google Analytics script. Probably ad blocker installed.',
         null,
@@ -84,37 +70,14 @@ export class AnalyticService {
       );
       return;
     }
-    this.loggingService.debug(
-      `Init Google Analytics ${environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)'}`,
-      DEBUG_TAG
-    );
-    if (!environment.production) {
-      // Disable sending events unless production build
-      this.disable();
+    if (!this.isTrackingOn()) {
+      this.loggingService.debug('Init Plausible (DEV-MODE! Analytics data is not sent to server!)', DEBUG_TAG);
+      return;
     }
-
-    this.loggingService.debug('Setup google analytics', DEBUG_TAG);
-    if (window.localStorage) {
-      ga('create', settings.googleAnalytics.trackerId, 'auto', {
-        storage: 'none',
-        clientId: window.localStorage.getItem('ga_clientId'),
-      });
-      ga('set', 'checkProtocolTask', null);
-      ga(function (tracker) {
-        window.localStorage.setItem('ga_clientId', tracker.get('clientId'));
-      });
-    } else {
-      ga('create', settings.googleAnalytics.trackerId, 'auto');
-    }
-
-    const appVersion = this.appVersionService.getAppVersion();
-    ga('set', 'appName', 'regObs4');
-    ga('set', 'anonymizeIp', settings.googleAnalytics.anonymizeIp);
-    ga('set', 'appVersion', appVersion.version);
-    ga('send', 'pageview');
-
+    this.loggingService.debug('Init Plausible', DEBUG_TAG);
+    this.loggingService.debug('Setup Plausible', DEBUG_TAG);
     this.startTrackingPageViews();
-    this.loggingService.debug('Google analytics setup completed', DEBUG_TAG);
+    this.loggingService.debug('Plausible setup completed', DEBUG_TAG);
   }
 
   private startTrackingPageViews() {
