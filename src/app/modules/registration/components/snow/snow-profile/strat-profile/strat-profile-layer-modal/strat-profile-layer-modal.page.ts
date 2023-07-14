@@ -22,6 +22,7 @@ export class StratProfileLayerModalPage implements OnInit {
   @Input() draft: RegistrationDraft;
   @Input() index: number;
 
+  isThicknessValid = true;
   addNew: boolean;
   private initialRegistationState: RegistrationDraft;
 
@@ -84,6 +85,11 @@ export class StratProfileLayerModalPage implements OnInit {
     });
   }
 
+  isValid() {
+    this.isThicknessValid = this.layer.Thickness && this.layer.Thickness > 0 ? true : false;
+    return this.isThicknessValid;
+  }
+
   private initLayer() {
     this.addNew = this.layer === undefined;
     if (this.addNew) {
@@ -118,6 +124,9 @@ export class StratProfileLayerModalPage implements OnInit {
       this.draft.registration.SnowProfile2.StratProfile.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
+      if (!this.isValid()) {
+        return;
+      }
       this.draft.registration.SnowProfile2.StratProfile.Layers.splice(this.index, 0, this.layer);
     }
     await this.save();

@@ -15,8 +15,11 @@
       <app-numeric-input
         [(value)]="layer.Thickness"
         label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
-        [min]="0"
         suffix="cm"
+        [color]="!isThicknessValid ? 'danger' : 'medium'"
+        [isValid]="isThicknessValid"
+        (valueChange)="isValid()"
+        errorMessage="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS_VALIDATION"
         [decimalPlaces]="2"
         [convertRatio]="100"
       >
