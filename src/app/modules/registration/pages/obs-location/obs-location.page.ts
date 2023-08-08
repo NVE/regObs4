@@ -24,6 +24,7 @@ import { LocationService } from 'src/app/modules/common-regobs-api';
 export class ObsLocationPage implements OnInit, OnDestroy {
   locationMarker: L.Marker;
   isLoaded = false;
+  allowEditLocationName = true;
   selectedLocation: ObsLocationsResponseDtoV2;
   draft: RegistrationDraft;
   fullscreen$: Observable<boolean>;
@@ -79,13 +80,16 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.setLocationMarker(location.Latitude, location.Longitude);
       this.selectedLocation = {
         Name: location.LocationName || location.LocationDescription,
+        Description: location.LocationDescription,
         Id: locationId,
       };
     } else if (this.hasLocation(this.draft)) {
       const obsLocation = this.draft.registration.ObsLocation;
+      this.allowEditLocationName = obsLocation.LocationName && obsLocation.ObsLocationID ? false : true;
       this.setLocationMarker(obsLocation.Latitude, obsLocation.Longitude);
       this.selectedLocation = {
         Name: obsLocation.LocationName || obsLocation.LocationDescription,
+        Description: obsLocation.LocationDescription,
         Id: obsLocation.ObsLocationID,
       };
     }

@@ -109,7 +109,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
    * Show a dotted line between the location you choose and the location of the device. Defaults to true in native mode.
    */
   @Input() showPolyline = Capacitor.isNativePlatform();
-  @Input() allowEditLocationName = false;
+  @Input() allowEditLocationName: boolean;
   @Input() setObsTime = false;
   @Input() localDate: string;
   @Input() sourceTid: number;
@@ -143,7 +143,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
   get canEditLocationName() {
-    return this.allowEditLocationName && !(this.selectedLocation && this.selectedLocation.Id);
+    return this.allowEditLocationName;
   }
 
   constructor(
@@ -534,10 +534,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       Longitude: this.locationMarker.getLatLng().lng,
       UTMSourceTID: UtmSource.SelectedInMap,
     };
+    // check if location name is the same as location description if yes then allow edition
     if (this.editLocationName && this.locationName && this.locationName.length > 0) {
       obsLocation.ObsLocationID = undefined;
       obsLocation.LocationName = this.locationName.substring(0, 60);
-    } else if (this.selectedLocation) {
+    } else if (this.selectedLocation?.Name !== this.selectedLocation?.Description) {
       obsLocation.ObsLocationID = this.selectedLocation.Id;
       obsLocation.LocationName = this.selectedLocation.Name;
     }
