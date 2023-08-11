@@ -98,7 +98,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   get legalUrl() {
-    const language = this.userSettingInMemory.value.language;
+    const language = this.userSettingInMemory.value?.language;
     if (language == LangKey.nb || language == LangKey.nn) {
       return settings.legalUrl.nb;
     } else {
