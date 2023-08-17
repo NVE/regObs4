@@ -8,6 +8,7 @@ import { AppCustomDimension } from '../enums/app-custom-dimension.enum';
 import { AppEventAction } from '../enums/app-event-action.enum';
 import { AppEventCategory } from '../enums/app-event-category.enum';
 import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils';
+import { Capacitor } from '@capacitor/core';
 
 // In order to have IntelliSense on the custom events we need to declare Plausible on the global window element.
 
@@ -33,7 +34,7 @@ export class AnalyticService {
   constructor(private injector: Injector, private loggingService: LoggingService) {}
 
   private isTrackingOn() {
-    return window.plausible && environment.production;
+    return window.plausible;
   }
 
   trackView(url: string) {
@@ -63,7 +64,7 @@ export class AnalyticService {
   init() {
     if (!window.plausible) {
       this.loggingService.log(
-        'Could not load Google Analytics script. Probably ad blocker installed.',
+        'Could not load Plausible script. Probably ad blocker installed.',
         null,
         LogLevel.Warning,
         DEBUG_TAG
@@ -75,8 +76,9 @@ export class AnalyticService {
       return;
     }
     this.loggingService.debug('Init Plausible', DEBUG_TAG);
-    this.loggingService.debug('Setup Plausible', DEBUG_TAG);
     this.startTrackingPageViews();
+    // track platform
+    this.trackDimension(AppCustomDimension.platform, Capacitor.isNativePlatform() ? 'app' : 'web');
     this.loggingService.debug('Plausible setup completed', DEBUG_TAG);
   }
 
