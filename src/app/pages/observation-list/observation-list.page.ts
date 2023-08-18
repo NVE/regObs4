@@ -96,22 +96,16 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
       )
       .subscribe();
 
-    const noMapExtentAvailable$ = mapService.mapView$.pipe(
-      startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
-      map((mapView) => mapView?.bounds == null),
-      distinctUntilChanged()
-    );
-
     const selectedRegionsFilterActive$ = this.searchCriteriaService.searchCriteria$.pipe(
       map((criteria) => (criteria.SelectedRegions || []).length > 0)
     );
 
-    this.disableMapExtentToggle$ = combineLatest([noMapExtentAvailable$, selectedRegionsFilterActive$]).pipe(
+    this.disableMapExtentToggle$ = combineLatest([mapService.noMapExtentAvailable$, selectedRegionsFilterActive$]).pipe(
       map(([noMapExtent, regionsSelected]) => noMapExtent || regionsSelected)
     );
 
     this.useMapExtentFilter$ = combineLatest([
-      noMapExtentAvailable$.pipe(map((noExtent) => !noExtent)),
+      mapService.noMapExtentAvailable$.pipe(map((noExtent) => !noExtent)),
       this.searchCriteriaService.useMapExtent$,
       selectedRegionsFilterActive$,
     ]).pipe(

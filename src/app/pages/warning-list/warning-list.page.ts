@@ -1,12 +1,13 @@
 import { Component, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
+import { map, switchMap, tap, takeUntil, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -28,6 +29,7 @@ export class WarningListPage implements OnInit {
   trackByFunc = this.trackByInternal.bind(this);
   loaded = false;
   myFooterFn = this.footerFn.bind(this);
+  noMapExtentAvailable$: Observable<boolean>;
 
   @ViewChildren(WarningListItemComponent)
   warningListItems: QueryList<WarningListItemComponent>;
@@ -47,11 +49,15 @@ export class WarningListPage implements OnInit {
   constructor(
     private warningService: WarningService,
     private userSettingService: UserSettingService,
+    mapService: MapService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    mapService.noMapExtentAvailable$.subscribe((isExtent) => {
+      this.selectedTab = isExtent ? 'all' : 'inMapView';
+    });
+  }
 
   ngOnInit() {
-    this.selectedTab = 'inMapView';
     this.segmentPageSubject = new BehaviorSubject<SelectedTab>(this.selectedTab);
     this.segmentPageObservable = this.segmentPageSubject.asObservable();
   }

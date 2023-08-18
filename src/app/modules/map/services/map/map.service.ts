@@ -14,6 +14,7 @@ import {
   skipWhile,
   take,
   filter,
+  startWith,
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -68,6 +69,7 @@ export class MapService {
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
+  private _noMapExtentAvailable$: Observable<boolean>;
   private _mapMoveStartSubject: any;
   private _mapMoveStart$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
@@ -77,6 +79,13 @@ export class MapService {
    */
   get mapView$(): Observable<IMapView> {
     return this._mapView$;
+  }
+
+  /**
+   * Extent, center and zoom for the map in HomePage
+   */
+  get noMapExtentAvailable$(): Observable<boolean> {
+    return this._noMapExtentAvailable$;
   }
 
   /**
@@ -160,6 +169,11 @@ export class MapService {
       }),
       tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
       shareReplay(1)
+    );
+    this._noMapExtentAvailable$ = this.mapView$.pipe(
+      startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
+      map((mapView) => mapView?.bounds == null),
+      distinctUntilChanged()
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapMoveStartSubject = new BehaviorSubject<void>(null);
