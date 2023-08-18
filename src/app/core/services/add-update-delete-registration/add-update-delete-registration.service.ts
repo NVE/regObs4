@@ -74,7 +74,7 @@ export class AddUpdateDeleteRegistrationService {
       })
     );
 
-    // Track observation type in GA
+    // Track observation type in plausible
     this.analytics.trackDimension(AppCustomDimension.observationType, draft.simpleMode ? 'simple' : 'normal');
 
     this.changedRegistrations.next({ reg: result, langKey });

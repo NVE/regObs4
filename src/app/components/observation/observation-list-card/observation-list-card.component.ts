@@ -221,14 +221,6 @@ export class ObservationListCardComponent implements OnChanges {
     return `${baseUrl}/Registration/${this.obs.RegId}${loginHint ? `?login_hint=${loginHint}` : ''}`;
   }
 
-  async openWeb(): Promise<void> {
-    const baseUrl = await this.getBaseUrl();
-    const user = await this.regobsAuthService.getLoggedInUserAsPromise();
-    const url = this.getRegistrationUrl(baseUrl, user.email);
-    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Click, url, this.obs.RegId);
-    this.externalLinkService.openExternalLink(url);
-  }
-
   private async canShareNative(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {
       return false;

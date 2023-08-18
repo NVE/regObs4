@@ -21,34 +21,11 @@
     <!-- add to homescreen for ios -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <!-- download plausible script.local which lets hybrid apps log analytics. Capacitor runs app via localhost on a mobile device -->
+    <script defer data-domain="regobs.no" src="https://plausible.io/js/script.local.js"></script>
   </head>
 
   <body>
     <app-root></app-root>
-    <script>
-      // Instructs analytics.js to use the name `ga`.
-      window.GoogleAnalyticsObject = "ga";
-
-      // Creates an initial analytics ga() function.
-      // The queued commands will be executed once analytics.js loads.
-      // This is used later in analytics.service.ts
-      window.ga =
-        window.ga ||
-        function () {
-          (ga.q = ga.q || []).push(arguments);
-        };
-
-      // Sets the time (as an integer) this tag was executed.
-      // Used for timing hits.
-      ga.l = +new Date();
-
-      window.addEventListener("load", function () {
-        console.log("Page loaded. Adding analytics.js script tag to load ga.");
-        var tag = document.createElement("script");
-        tag.async = 1;
-        tag.src = "https://www.google-analytics.com/analytics.js";
-        document.getElementsByTagName("head")[0].appendChild(tag);
-      });
-    </script>
   </body>
 </html>

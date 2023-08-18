@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
 import { Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, pairwise, switchMap, take } from 'rxjs/operators';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
@@ -66,17 +66,7 @@ export class DataMarshallService implements OnReset {
             map((userSetting) => userSetting.consentForSendingAnalytics),
             distinctUntilChanged()
           )
-          .subscribe((consent) => {
-            if (consent) {
-              this.analyticService.enable();
-              this.loggingService.enable();
-              this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent);
-            } else {
-              this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent);
-              this.analyticService.disable();
-              this.loggingService.disable();
-            }
-          })
+          .subscribe((consent) => this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent))
       );
       this.subscriptions.push(
         this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
