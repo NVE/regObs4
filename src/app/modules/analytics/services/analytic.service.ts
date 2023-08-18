@@ -11,7 +11,7 @@ import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils
 import { Capacitor } from '@capacitor/core';
 
 // In order to have IntelliSense on the custom events we need to declare Plausible on the global window element.
-// This code comes from https://www.lekoarts.de/garden/how-to-add-plausible-analytics-to-gatsby#:~:text=%23-,TypeScript,-In%20order%20to
+// This code comes from https://www.lekoarts.de/garden/how-to-add-plausible-analytics-to-gatsby#typescript
 declare global {
   interface Window {
     plausible: (
