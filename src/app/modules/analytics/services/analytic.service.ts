@@ -32,7 +32,7 @@ export class AnalyticService {
 
   constructor(private injector: Injector, private loggingService: LoggingService) {}
 
-  private isTrackingOn() {
+  private isTrackingOn(): boolean {
     return window.plausible && environment.production;
   }
 
