@@ -17,7 +17,6 @@ import { DraftToRegistrationService } from './core/services/draft/draft-to-regis
 import { BreakpointService } from './core/services/breakpoint.service';
 import { Keyboard } from '@capacitor/keyboard';
 import { SqliteService } from './core/services/sqlite/sqlite.service';
-import { AnalyticService } from './modules/analytics/services/analytic.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -45,7 +44,6 @@ export class AppComponent {
     private auth: AuthService,
     private draftToRegService: DraftToRegistrationService,
     private breakpointService: BreakpointService,
-    private analyticService: AnalyticService,
     private injector: Injector
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
