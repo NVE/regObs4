@@ -17,7 +17,7 @@ export class AppResetService {
   ) {}
 
   async resetApp(): Promise<void> {
-    await Promise.all(this.services.map((s) => Promise.resolve(s.appOnReset())));
+    await Promise.all(this.services.map((s) => Promise.resolve(s.appOnReset ? s.appOnReset() : true)));
     await this.dbHelperService.resetDb((table) => {
       this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
     });

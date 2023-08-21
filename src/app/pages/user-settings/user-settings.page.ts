@@ -178,6 +178,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   private async doReset() {
     this.stopSubscriptions();
-    return this.appResetService.resetApp();
+    return await this.appResetService.resetApp();
   }
 }
