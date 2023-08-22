@@ -153,11 +153,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.loggingService.debug('initSearch...', DEBUG_TAG);
 
     const criteria$ = await this.createSearchCriteria$();
-    const criteriaWhenOnHomePageOnly$ = combineLatest([criteria$, this.tabsService.selectedTab$]).pipe(
-      filter(([, tab]) => tab === TABS.HOME),
-      map(([criteria]) => criteria)
-    );
-    this.createRegistrations$(criteriaWhenOnHomePageOnly$).subscribe((registrations) => {
+    this.createRegistrations$(criteria$).subscribe((registrations) => {
       this.redrawObservationMarkers(registrations);
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
@@ -178,7 +174,19 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
-    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true))]).pipe(
+    return combineLatest([
+      searchCriteria$,
+      this.tabsService.selectedTab$,
+      this.userSettingService.showObservations$,
+      this.refreshRequested$.pipe(startWith(true)),
+    ]).pipe(
+      filter(([, , showObservations]) => {
+        if (!showObservations) {
+          this.markerLayer.clearLayers();
+        }
+        return showObservations;
+      }),
+      filter(([, tab]) => tab === TABS.HOME),
       map(([searchCriteria]) => searchCriteria),
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetchingObservations.next(true)),
@@ -295,7 +303,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         // Two geographical properties on search criteria can be used to specify search extent:
         // SelectedRegions and Extent. We need to check if both of them has changed to see if we should send a new
         // AtAGlance request
-
         // This will prevent zoom in to trigger new search if the new extent is inside the previous extent
         let currentBounds;
         if (current.Extent) {
