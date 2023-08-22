@@ -26,6 +26,7 @@ export class WarningListPage implements OnInit {
   title = 'WARNING_LIST.TITLE';
   noFavourites = false;
   noRelevant = false;
+  disableInMapViewTab = false;
   trackByFunc = this.trackByInternal.bind(this);
   loaded = false;
   myFooterFn = this.footerFn.bind(this);
@@ -54,6 +55,7 @@ export class WarningListPage implements OnInit {
   ) {
     mapService.noMapExtentAvailable$.subscribe((isExtent) => {
       this.selectedTab = isExtent ? 'all' : 'inMapView';
+      this.disableInMapViewTab = isExtent;
     });
   }
 

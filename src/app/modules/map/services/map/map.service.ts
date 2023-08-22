@@ -35,7 +35,8 @@ const DEBUG_TAG = 'MapService';
 
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
   const bounds = L.latLngBounds([nwLat, nwLon], [seLat, seLon]);
-  const mapView: IMapView = { bounds, center: null, zoom: null };
+
+  const mapView: IMapView = { bounds, center: bounds.getCenter(), zoom: null };
   return mapView;
 };
 
@@ -82,7 +83,7 @@ export class MapService {
   }
 
   /**
-   * Extent, center and zoom for the map in HomePage
+   * Checks if extent in url is available
    */
   get noMapExtentAvailable$(): Observable<boolean> {
     return this._noMapExtentAvailable$;
@@ -233,10 +234,7 @@ export class MapService {
   }
 
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
-    const currenteMapViewAndGeoHazards = combineLatest([
-      this.relevantMapChange$,
-      this.userSettingService.currentGeoHazard$,
-    ]).pipe(
+    const currenteMapViewAndGeoHazards = combineLatest([this.mapView$, this.userSettingService.currentGeoHazard$]).pipe(
       map(([mapView, geoHazards]) => ({
         mapView,
         bounds: [
