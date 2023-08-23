@@ -86,7 +86,7 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   isValid() {
-    this.isThicknessValid = this.layer.Thickness && this.layer.Thickness > 0 ? true : false;
+    this.isThicknessValid = this.layer.Thickness ? (this.layer.Thickness > 0 ? true : false) : true;
     return this.isThicknessValid;
   }
 
@@ -114,6 +114,9 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async ok(gotoIndex?: number) {
+    if (!this.isValid()) {
+      return;
+    }
     if (!this.draft.registration.SnowProfile2) {
       this.draft.registration.SnowProfile2 = {};
     }
@@ -124,9 +127,6 @@ export class StratProfileLayerModalPage implements OnInit {
       this.draft.registration.SnowProfile2.StratProfile.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      if (!this.isValid()) {
-        return;
-      }
       this.draft.registration.SnowProfile2.StratProfile.Layers.splice(this.index, 0, this.layer);
     }
     await this.save();
