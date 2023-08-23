@@ -723,7 +723,7 @@
           "SHOW_MORE": "Vis flere valg",
           "SIZE": "Kornstørrelse (mm)",
           "THICKNESS": "Tykkelse (cm)",
-          "THICKNESS_VALIDATION": "Tykkelse kan ikke være tom eller 0",
+          "THICKNESS_VALIDATION": "Tykkelse må være mer enn 0",
           "TITLE": "Lagdeling",
           "TOTAL_THICKNESS": "Total tykkelse",
           "WETNESS": "Fuktighet"
