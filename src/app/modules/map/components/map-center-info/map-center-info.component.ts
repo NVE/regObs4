@@ -196,15 +196,17 @@ export class MapCenterInfoComponent extends NgDestoryBase {
         )
       );
 
-      if (apiResponse.totalResults) {
-        const id = apiResponse._embedded.location[0].id;
-        const url =
-          {
-            nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
-            nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
-          }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
-        this.externalLinkService.openExternalLink(url);
-      } else await this.toastOnYrError();
+      if (!apiResponse.totalResults) {
+        throw new Error();
+      }
+
+      const id = apiResponse._embedded.location[0].id;
+      const url =
+        {
+          nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
+          nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
+        }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
+      this.externalLinkService.openExternalLink(url);
     } catch {
       await this.toastOnYrError();
     }
