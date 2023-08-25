@@ -1,9 +1,9 @@
 /* tslint:disable */
 import { LatLngObject } from './lat-lng-object';
 export interface ObsLocationsResponseDtoV2 {
+  Description?: string;
   Distance?: number;
   GeoHazardId?: number;
-  Description?: string;
   Id?: number;
   LatLngObject?: LatLngObject;
   Name?: string;

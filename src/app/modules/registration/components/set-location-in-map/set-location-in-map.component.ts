@@ -423,6 +423,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngZone.run(() => {
       this.mapService.followMode = false;
       this.selectedLocation = location;
+      this.allowEditLocationName = false;
       this.setLocationMarkerLatLng(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude));
       this.map.panTo(this.locationMarker.getLatLng());
     });
@@ -431,6 +432,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private moveLocationMarkerToCenter(): void {
     this.mapService.followMode = false;
     this.selectedLocation = null;
+    this.allowEditLocationName = true;
     const center = this.map.getCenter();
     this.locationMarker.setLatLng(center);
     this.updatePathAndDistance();
