@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { map, switchMap, tap, takeUntil, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { map, switchMap, tap, takeUntil, distinctUntilChanged, startWith, delay } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
@@ -17,7 +17,7 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   styleUrls: ['./warning-list.page.scss'],
 })
 export class WarningListPage implements OnInit {
-  selectedTab: SelectedTab;
+  selectedTab: SelectedTab = 'inMapView';
   warningGroups: IVirtualScrollItem<WarningGroup>[] = [];
   private segmentPageSubject: BehaviorSubject<SelectedTab>;
   private segmentPageObservable: Observable<SelectedTab>;
