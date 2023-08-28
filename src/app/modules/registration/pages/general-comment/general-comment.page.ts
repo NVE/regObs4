@@ -16,17 +16,13 @@ export class GeneralCommentPage extends BasePage {
   }
   async isEmpty(): Promise<boolean> {
     //check if the existing generalObservation has any data besides excluded fields
-    if (this.draft.registration.GeneralObservation.GeoHazardTID) {
-      if (
-        hasAnyDataBesidesPropertyToExclude(this.draft.registration.GeneralObservation, [
-          'GeoHazardTID',
-          'GeoHazardName',
-        ])
-      ) {
-        return false;
-      } else return true;
+    if (
+      this.draft.registration.GeneralObservation.GeoHazardTID &&
+      hasAnyDataBesidesPropertyToExclude(this.draft.registration.GeneralObservation, ['GeoHazardTID', 'GeoHazardName'])
+    ) {
+      return false;
     }
-    // check if there are any attachments connected to the generalObservation
+    // check if there are any attachments connected to the generalObservationG
     const hasAttachments = await super.hasAttachments(RegistrationTid.GeneralObservation);
     if (hasAttachments) {
       return false;
