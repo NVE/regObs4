@@ -22,7 +22,7 @@ export class GeneralCommentPage extends BasePage {
     ) {
       return false;
     }
-    // check if there are any attachments connected to the generalObservationG
+    // check if there are any attachments connected to the generalObservation
     const hasAttachments = await super.hasAttachments(RegistrationTid.GeneralObservation);
     if (hasAttachments) {
       return false;
