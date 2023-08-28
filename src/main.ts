@@ -7,6 +7,8 @@ import { environment } from './environments/environment';
 import { NanoSql } from './nanosql';
 import '@angular/compiler';
 
+import { defineCustomElement } from '@varsom/observation-components/dist/components/varsom-observation';
+
 if (environment.production) {
   enableProdMode();
 }
@@ -28,3 +30,5 @@ document.addEventListener(typeof cordova !== 'undefined' ? 'deviceready' : 'DOMC
     startApp(); // Try to start app anyway
   }
 });
+
+defineCustomElement();

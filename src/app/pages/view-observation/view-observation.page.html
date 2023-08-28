@@ -7,6 +7,10 @@
   </ion-toolbar>
 </ion-header>
 <ion-content *ngIf="registrationViewModel$ | async as registration">
+  <div lang="no" *ngIf="registration.reg">
+    <varsom-observation [json]="registration.reg"></varsom-observation>
+  </div>
+
   <app-observation-list-card *ngIf="registration.reg" [obs]="registration.reg"></app-observation-list-card>
 
   <ion-card *ngIf="!registration.reg">
