@@ -640,7 +640,8 @@ export class OfflineMapService {
         path: metadataPath,
         encoding: Encoding.UTF8,
       });
-      const metadata = JSON.parse(readFileResult.data) as OfflineTilesMetadata;
+      const content = readFileResult.data as string;
+      const metadata = JSON.parse(content) as OfflineTilesMetadata;
       this.loggingService.debug('Metadata:', DEBUG_TAG, metadata);
 
       offlineMapPackage.maps[map] = {

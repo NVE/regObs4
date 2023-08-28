@@ -2,7 +2,6 @@
 	"appId": "no.nve.regobs4",
 	"appName": "Varsom",
 	"webDir": "www",
-	"bundledWebRuntime": false,
 	"server": {
 		"iosScheme": "ionic"
 	},
