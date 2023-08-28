@@ -1,6 +1,6 @@
 <app-header [title]="title"></app-header>
-<ion-segment mode="md" slot="fixed" [(ngModel)]="selectedTab" (ngModelChange)="onSegmentChange()">
-  <ion-segment-button mode="md" value="inMapView" [disabled]="disableInMapViewTab">
+<ion-segment mode="md" slot="fixed" [value]="selectedTab$ | async" (ionChange)="onSegmentChange($event)">
+  <ion-segment-button mode="md" value="inMapView" [disabled]="mapService.noMapExtentAvailable$ | async">
     <ion-label>{{'WARNING_LIST.RELEVANT'|translate}}</ion-label>
   </ion-segment-button>
   <ion-segment-button mode="md" value="all">
@@ -34,7 +34,12 @@
     </div>
     <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer"> </ion-item-divider>
   </ion-virtual-scroll>
-  <div id="abonner-banner" *ngIf="selectedTab === 'inMapView'" class="ion-margin" [ngClass]="{'loaded': loaded}">
+  <div
+    id="abonner-banner"
+    *ngIf="(selectedTab$ | async) === 'inMapView'"
+    class="ion-margin"
+    [ngClass]="{'loaded': loaded}"
+  >
     <app-abonner-banner></app-abonner-banner>
   </div>
 </ion-content>
