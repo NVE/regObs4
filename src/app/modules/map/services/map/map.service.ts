@@ -14,6 +14,7 @@ import {
   skipWhile,
   take,
   filter,
+  startWith,
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -34,7 +35,8 @@ const DEBUG_TAG = 'MapService';
 
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
   const bounds = L.latLngBounds([nwLat, nwLon], [seLat, seLon]);
-  const mapView: IMapView = { bounds, center: null, zoom: null };
+
+  const mapView: IMapView = { bounds, center: bounds.getCenter(), zoom: null };
   return mapView;
 };
 
@@ -68,6 +70,7 @@ export class MapService {
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
+  private _noMapExtentAvailable$: Observable<boolean>;
   private _mapMoveStartSubject: any;
   private _mapMoveStart$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
@@ -77,6 +80,13 @@ export class MapService {
    */
   get mapView$(): Observable<IMapView> {
     return this._mapView$;
+  }
+
+  /**
+   * Checks if extent in url is available
+   */
+  get noMapExtentAvailable$(): Observable<boolean> {
+    return this._noMapExtentAvailable$;
   }
 
   /**
@@ -161,6 +171,11 @@ export class MapService {
       tap((val) => this.loggingService.debug('MapView updated', DEBUG_TAG, val)),
       shareReplay(1)
     );
+    this._noMapExtentAvailable$ = this.mapView$.pipe(
+      startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
+      map((mapView) => mapView?.bounds == null),
+      distinctUntilChanged()
+    );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapMoveStartSubject = new BehaviorSubject<void>(null);
     this._mapMoveStart$ = this._mapMoveStartSubject.asObservable();
@@ -219,10 +234,8 @@ export class MapService {
   }
 
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
-    const currenteMapViewAndGeoHazards = combineLatest([
-      this.relevantMapChange$,
-      this.userSettingService.currentGeoHazard$,
-    ]).pipe(
+    const currenteMapViewAndGeoHazards = combineLatest([this.mapView$, this.userSettingService.currentGeoHazard$]).pipe(
+      filter(([mapview]) => mapview != null),
       map(([mapView, geoHazards]) => ({
         mapView,
         bounds: [

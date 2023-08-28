@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
+import { Component, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { SegmentCustomEvent } from '@ionic/angular';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -15,11 +17,11 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   templateUrl: './warning-list.page.html',
   styleUrls: ['./warning-list.page.scss'],
 })
-export class WarningListPage implements OnInit {
-  selectedTab: SelectedTab;
+export class WarningListPage {
+  private selectedTab = new BehaviorSubject<SelectedTab>('inMapView');
+  selectedTab$ = this.selectedTab.asObservable();
+
   warningGroups: IVirtualScrollItem<WarningGroup>[] = [];
-  private segmentPageSubject: BehaviorSubject<SelectedTab>;
-  private segmentPageObservable: Observable<SelectedTab>;
   private ngDestroySubject: Subject<void>;
   refreshFunc = this.refresh.bind(this);
   title = 'WARNING_LIST.TITLE';
@@ -33,11 +35,11 @@ export class WarningListPage implements OnInit {
   warningListItems: QueryList<WarningListItemComponent>;
 
   get showNoFavourites() {
-    return this.selectedTab === 'favourites' && this.noFavourites;
+    return this.selectedTab.value === 'favourites' && this.noFavourites;
   }
 
   get showNoRelevantEmptyState() {
-    return this.selectedTab === 'inMapView' && this.noRelevant;
+    return this.selectedTab.value === 'inMapView' && this.noRelevant;
   }
 
   get showEmptyState() {
@@ -47,14 +49,9 @@ export class WarningListPage implements OnInit {
   constructor(
     private warningService: WarningService,
     private userSettingService: UserSettingService,
+    public mapService: MapService,
     private ngZone: NgZone
   ) {}
-
-  ngOnInit() {
-    this.selectedTab = 'inMapView';
-    this.segmentPageSubject = new BehaviorSubject<SelectedTab>(this.selectedTab);
-    this.segmentPageObservable = this.segmentPageSubject.asObservable();
-  }
 
   closeAllOpen() {
     if (this.warningListItems) {
@@ -67,7 +64,7 @@ export class WarningListPage implements OnInit {
   ionViewDidEnter() {
     this.ngDestroySubject = new Subject();
     this.loaded = false;
-    combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
+    combineLatest([this.selectedTab$, this.userSettingService.currentGeoHazard$])
       .pipe(
         switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
         takeUntil(this.ngDestroySubject)
@@ -79,13 +76,16 @@ export class WarningListPage implements OnInit {
           this.hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad();
         });
       });
-    combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
+    combineLatest([this.selectedTab$, this.userSettingService.currentGeoHazard$])
       .pipe(takeUntil(this.ngDestroySubject))
       .subscribe(([selectedTab, currentGeoHazard]) => {
         this.ngZone.run(() => {
           this.setTitle(selectedTab, currentGeoHazard);
         });
       });
+    this.mapService.noMapExtentAvailable$.pipe(takeUntil(this.ngDestroySubject)).subscribe((noExtentAvailable) => {
+      this.selectedTab.next(noExtentAvailable ? 'all' : 'inMapView');
+    });
   }
 
   private hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad() {
@@ -237,7 +237,7 @@ export class WarningListPage implements OnInit {
   }
 
   private footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
-    if (this.selectedTab !== 'inMapView' && index === items.length - 1) {
+    if (this.selectedTab.value !== 'inMapView' && index === items.length - 1) {
       return 'footer';
     }
   }
@@ -252,7 +252,7 @@ export class WarningListPage implements OnInit {
     this.ngDestroySubject.complete();
   }
 
-  onSegmentChange() {
-    this.segmentPageSubject.next(this.selectedTab);
+  onSegmentChange(event: SegmentCustomEvent) {
+    this.selectedTab.next(event.detail.value as SelectedTab);
   }
 }
