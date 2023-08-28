@@ -32,9 +32,9 @@ interface AvalancheRegion {
   checked?: boolean;
 }
 
-function obsTypeTrackById(t: ObservationTypeView) {
+const obsTypeTrackById: TrackByFunction<ObservationTypeView> = (index: number, t: ObservationTypeView) => {
   return t.id;
-}
+};
 
 const avalancheRegionTrackById: TrackByFunction<AvalancheRegion> = (index: number, r: AvalancheRegion) => {
   return r.id;
