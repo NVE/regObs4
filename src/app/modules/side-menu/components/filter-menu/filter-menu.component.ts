@@ -146,11 +146,24 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.searchCriteriaModelService
         .getObservationTypesFilterOptions$()
         .pipe(map((obsTypesList) => new ObservationTypeOptions(obsTypesList))),
+
       this.searchCriteriaService.searchCriteria$.pipe(
-        map((searchCriteria) => searchCriteria.SelectedRegistrationTypes || [])
-        // this is skipping state changes from time to time confuding not only nTypesSelected$, but also not chaning true to false on isChecked
-        // if user checks boxes quickly
-        // distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
+        map((searchCriteria) => searchCriteria.SelectedRegistrationTypes || []),
+        // Sort ids, so distinct check is easier
+        map((regTypes) => [...regTypes].sort((a, b) => a.Id - b.Id)),
+        distinctUntilChanged((prev, curr) => {
+          if (prev.length !== curr.length) {
+            return false;
+          }
+
+          // Length is the same, check if any items has changed
+          if (prev.some((p, i) => curr[i].Id !== p.Id)) {
+            return false;
+          }
+
+          // Check if any subTypes has changed
+          return prev.every((p, i) => arrayHasNotChanged(p.SubTypes || [], curr[i].SubTypes || []));
+        })
       ),
     ]).pipe(
       map(([obsTypesOptions, obsTypes]) => {
