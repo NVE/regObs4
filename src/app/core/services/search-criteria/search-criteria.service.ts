@@ -59,7 +59,6 @@ const UrlDtoOrderByMap = new Map([
   ['changeTime', 'DtChangeTime'],
   ['obsTime', 'DtObsTime'],
 ]);
-export const AUTOMATIC_STATIONS = 105;
 
 const DEBUG_TAG = 'SearchCriteriaService';
 
@@ -434,30 +433,25 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
-  async setCompetence(competenceCriteria: number[]) {
+  async addCompetence(competenceIds: number[]) {
     const { ObserverCompetence: currentCompetence } = await firstValueFrom(this.searchCriteria$);
+    let newCompetence: number[];
+    if (!currentCompetence) {
+      newCompetence = [...competenceIds];
+    } else {
+      // Use a set to filter out duplicates
+      newCompetence = [...new Set([...currentCompetence, ...competenceIds])];
+    }
+    this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
+  }
 
-    //[105, 120, 130]   //[140, 130]
-    if (!competenceCriteria) {
-      if (currentCompetence != null) {
-        this.searchCriteriaChanges.next({ ObserverCompetence: null });
-      }
+  async removeCompetence(competenceIds: number[]) {
+    const { ObserverCompetence: currentCompetence } = await firstValueFrom(this.searchCriteria$);
+    if (!currentCompetence) {
       return;
     }
-
-    const newCompetenceSet = new Set(competenceCriteria);
-    const oldCompetenceSet = new Set(currentCompetence || []);
-
-    if (newCompetenceSet.size !== oldCompetenceSet.size) {
-      this.searchCriteriaChanges.next({ ObserverCompetence: [...newCompetenceSet.values()] });
-    }
-
-    for (const comp of newCompetenceSet) {
-      if (!oldCompetenceSet.has(comp)) {
-        this.searchCriteriaChanges.next({ ObserverCompetence: [...newCompetenceSet.values()] });
-        break;
-      }
-    }
+    const newCompetence = currentCompetence.filter((c) => !competenceIds.includes(c));
+    this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
   }
 
   setFromDate(fromDate: string, removeToDate = false) {
@@ -484,7 +478,7 @@ export class SearchCriteriaService {
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
 
     if (currentTypesCriteria) {
-      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+      const copyCriteria: RegistrationTypeCriteriaDto[] = JSON.parse(JSON.stringify(currentTypesCriteria));
       const criteriaToUpdateIndex = copyCriteria.findIndex((i) => i.Id === newType.Id);
 
       if (criteriaToUpdateIndex != -1) {
@@ -495,7 +489,7 @@ export class SearchCriteriaService {
         this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
       } else
         this.searchCriteriaChanges.next({
-          SelectedRegistrationTypes: [...(currentTypesCriteria as RegistrationTypeCriteriaDto[]), newType],
+          SelectedRegistrationTypes: [...copyCriteria, newType],
         });
     } else this.searchCriteriaChanges.next({ SelectedRegistrationTypes: [newType] });
   }
@@ -504,7 +498,7 @@ export class SearchCriteriaService {
     this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
-      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+      const copyCriteria: RegistrationTypeCriteriaDto[] = JSON.parse(JSON.stringify(currentTypesCriteria));
 
       const criteriaToUpdateWithIndex = copyCriteria.findIndex((criteria) => criteria.Id == typeToRemove.Id);
 
@@ -528,25 +522,6 @@ export class SearchCriteriaService {
 
   setOrderBy(order: SearchCriteriaOrderBy) {
     this.searchCriteriaChanges.next({ OrderBy: order });
-  }
-
-  async removeAutomaticStations() {
-    const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
-    if (currentObserverCriteria) {
-      const copyCriteria = [...currentObserverCriteria] as number[];
-      const removed = copyCriteria.filter((i) => i !== AUTOMATIC_STATIONS);
-      this.searchCriteriaChanges.next({ ObserverCompetence: removed });
-    }
-  }
-
-  async setAutomaticStations() {
-    const { ObserverCompetence: currentObserverCriteria } = await firstValueFrom(this.searchCriteria$);
-
-    if (currentObserverCriteria?.length > 0) {
-      const copyCriteria = [...currentObserverCriteria] as number[];
-      copyCriteria.push(AUTOMATIC_STATIONS);
-      this.searchCriteriaChanges.next({ ObserverCompetence: copyCriteria });
-    }
   }
 
   setExtentFilterActive(isExtentFilterActive: boolean) {

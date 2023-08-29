@@ -4,7 +4,7 @@
  *
  * Usage: npm run translations:update-fallback
  */
-import { LangKey } from '../src/app/modules/common-core/models';
+import { GeoHazard, LangKey } from '../src/app/modules/common-core/models';
 import { settings } from '../src/settings';
 import { get, RequestOptions } from 'https';
 import { IncomingMessage } from 'http';
@@ -42,8 +42,13 @@ async function download(url: string, path: string) {
 }
 
 const requests = [];
+const allGeoHazards = `${GeoHazard.Snow},${GeoHazard.Water},${GeoHazard.Soil},${GeoHazard.Ice}`;
 for (const { lang } of <{ lang: string }[]>settings.language.supportedLanguages) {
   const langKey = LangKey[lang];
+
+  const searchCriteriaUrl = `${settings.services.regObs.apiUrl.PROD}/Search/SearchCriteria/${allGeoHazards}/${langKey}`;
+  const searchCriteriaPath = path.resolve(__dirname, '..', `src/assets/json/searchcriteria.${lang.toLowerCase()}.json`);
+  requests.push(download(searchCriteriaUrl, searchCriteriaPath));
 
   const kdvUrl = `${settings.services.regObs.apiUrl.PROD}/KdvElements?langkey=${langKey}&isActive=true&sortOrder=true`;
   const kdvPath = path.resolve(__dirname, '..', `src/assets/json/kdvelements.${lang.toLowerCase()}.json`);

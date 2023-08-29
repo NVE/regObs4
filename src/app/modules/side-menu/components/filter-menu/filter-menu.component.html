@@ -14,18 +14,16 @@
 
   <ng-container *ngIf="isSupported('observationType')">
     <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label
-        [selectedItemsCount]="slushFlowFilterIsActive ? 1 : observationTypesSelectedCount"
-      >
+      <app-selected-items-counter-label [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)">
         {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
       </app-selected-items-counter-label>
     </ion-list-header>
 
     <ion-item>
       <ion-list lines="none">
-        <ng-container *ngFor="let type of observationTypesOptions">
+        <ng-container *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
           <ion-item class="item-height">
-            <!-- if slush flow filter is set, disable filter by observation type because it cannot be combined -->
+            <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
             <ion-checkbox
               [checked]="!slushFlowFilterIsActive && type.isChecked"
               (click)="setNewType($event, type.parentId, type.id)"
@@ -93,32 +91,28 @@
         {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
       </ion-label>
     </ion-list-header>
-    <ion-item *ngIf="competenceOptions">
-      <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
-        "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate
-      }}</ion-label>
-      <ion-select
-        [interface]="popupType"
-        [value]="chosenCompetenceValue"
-        (ionChange)="onSelectCompetenceChange($event)"
-      >
-        <ion-select-option *ngFor="let co of competenceOptions" [value]="co">
-          {{ co.name }}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item *ngIf="automaticStationCompetenceItem">
-      <ion-checkbox
-        [checked]="isAutomaticStationChecked"
-        color="varsom-dark-blue"
-        mode="md"
-        [value]="automaticStationCompetenceItem"
-        (ionChange)="onCheckAutomaticStations($event)"
-      >
-      </ion-checkbox>
-      <ion-label class="ion-padding-start"
-        >{{ "OBSERVATION_FILTER.COMPETANCE_FILTER.AUTOMATIC_STATIONS" | translate }}
+
+    <ion-item>
+      <ion-label position="stacked" class="margin-bottom">
+        {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
       </ion-label>
+
+      <ion-list lines="none">
+        <ion-item
+          class="item-height"
+          *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById"
+        >
+          <ion-checkbox
+            [value]="competence"
+            [checked]="competence.checked"
+            (ionChange)="competenceCheckboxChanged($event)"
+            color="varsom-dark-blue"
+          ></ion-checkbox>
+          <ion-label [title]="competence.descriptions.join('<br />')" class="ion-padding-start">{{
+            competence.name
+          }}</ion-label>
+        </ion-item>
+      </ion-list>
     </ion-item>
   </ng-container>
 
