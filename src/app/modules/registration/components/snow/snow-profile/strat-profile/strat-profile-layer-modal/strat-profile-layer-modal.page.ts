@@ -86,8 +86,13 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   isValid() {
-    this.isThicknessValid = this.layer.Thickness ? (this.layer.Thickness > 0 ? true : false) : true;
-    return this.isThicknessValid;
+    if (this.layer.Thickness && this.layer.Thickness > 0) {
+      this.isThicknessValid = true;
+      return true;
+    } else {
+      this.isThicknessValid = false;
+      return false;
+    }
   }
 
   private initLayer() {
