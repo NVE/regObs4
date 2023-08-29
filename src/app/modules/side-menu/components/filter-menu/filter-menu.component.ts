@@ -271,11 +271,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       // Use search criteria to mark what regions are checked
       switchMap((regions) =>
         this.searchCriteriaService.searchCriteria$.pipe(
-          distinctUntilChanged((prev, curr) => prev.SelectedRegions === curr.SelectedRegions),
-          map((searchCriteria) => {
+          map((searchCriteria) => searchCriteria.SelectedRegions || []),
+          distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr)),
+          map((selectedRegions) => {
             const markChecked = (r: AvalancheRegion) => ({
               ...r,
-              checked: (searchCriteria.SelectedRegions || []).includes(r.id),
+              checked: selectedRegions.includes(r.id),
             });
 
             return {
