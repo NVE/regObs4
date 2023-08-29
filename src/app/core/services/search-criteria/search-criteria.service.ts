@@ -478,7 +478,7 @@ export class SearchCriteriaService {
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
 
     if (currentTypesCriteria) {
-      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+      const copyCriteria: RegistrationTypeCriteriaDto[] = JSON.parse(JSON.stringify(currentTypesCriteria));
       const criteriaToUpdateIndex = copyCriteria.findIndex((i) => i.Id === newType.Id);
 
       if (criteriaToUpdateIndex != -1) {
@@ -489,7 +489,7 @@ export class SearchCriteriaService {
         this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
       } else
         this.searchCriteriaChanges.next({
-          SelectedRegistrationTypes: [...(currentTypesCriteria as RegistrationTypeCriteriaDto[]), newType],
+          SelectedRegistrationTypes: [...copyCriteria, newType],
         });
     } else this.searchCriteriaChanges.next({ SelectedRegistrationTypes: [newType] });
   }
@@ -498,7 +498,7 @@ export class SearchCriteriaService {
     this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
-      const copyCriteria = [...currentTypesCriteria] as RegistrationTypeCriteriaDto[];
+      const copyCriteria: RegistrationTypeCriteriaDto[] = JSON.parse(JSON.stringify(currentTypesCriteria));
 
       const criteriaToUpdateWithIndex = copyCriteria.findIndex((criteria) => criteria.Id == typeToRemove.Id);
 
