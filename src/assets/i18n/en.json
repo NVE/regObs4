@@ -722,6 +722,7 @@
           "SHOW_MORE": "Show more options",
           "SIZE": "Grain Size (mm)",
           "THICKNESS": "Thickness (cm)",
+          "THICKNESS_VALIDATION": "Thickness must be more than 0",
           "TITLE": "Layers",
           "TOTAL_THICKNESS": "Total thickness",
           "WETNESS": "Wetness"
