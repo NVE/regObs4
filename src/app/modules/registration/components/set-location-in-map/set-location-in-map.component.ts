@@ -540,7 +540,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (this.editLocationName && this.locationName && this.locationName.length > 0) {
       obsLocation.ObsLocationID = undefined;
       obsLocation.LocationName = this.locationName.substring(0, 60);
-    } else if (this.selectedLocation?.Name !== this.selectedLocation?.Description) {
+    } else if (this.selectedLocation?.Name !== this.selectedLocation?.LocationDescription) {
       obsLocation.ObsLocationID = this.selectedLocation.Id;
       obsLocation.LocationName = this.selectedLocation.Name;
     }

@@ -80,7 +80,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.setLocationMarker(location.Latitude, location.Longitude);
       this.selectedLocation = {
         Name: location.LocationName || location.LocationDescription,
-        Description: location.LocationDescription,
+        LocationDescription: location.LocationDescription,
         Id: locationId,
       };
     } else if (this.hasLocation(this.draft)) {
@@ -89,7 +89,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.setLocationMarker(obsLocation.Latitude, obsLocation.Longitude);
       this.selectedLocation = {
         Name: obsLocation.LocationName || obsLocation.LocationDescription,
-        Description: obsLocation.LocationDescription,
+        LocationDescription: obsLocation.LocationDescription,
         Id: obsLocation.ObsLocationID,
       };
     }
