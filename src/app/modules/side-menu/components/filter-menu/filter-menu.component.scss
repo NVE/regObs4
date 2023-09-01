@@ -16,6 +16,16 @@ ion-list {
   overflow: auto;
   max-height: 100vh;
   background: #fff;
+  ion-item {
+    ion-icon {
+      font-size: 1.4em;
+      margin-right: 2rem;
+    }
+
+    svg-icon {
+      margin-top: 6px;
+    }
+  }
 
   .item-height {
     max-height: 40px;

@@ -60,13 +60,6 @@
     <ion-toggle [checked]="observerTrips.toggledOn | async" (ionChange)="observerTrips.toggle()"></ion-toggle>
   </ion-item>
   <ion-item>
-    <ion-icon slot="start" name="eye" color="varsom-blue"></ion-icon>
-    <ion-label class="menu-label">
-      {{ "MENU.SHOW_OBSERVATIONS" | translate }}
-    </ion-label>
-    <ion-toggle [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
-  </ion-item>
-  <ion-item>
     <ion-label position="stacked" color="dark" class="stacked-label">{{ "MENU.MAP" | translate }}</ion-label>
     <ion-select
       cancelText="{{ 'DIALOGS.CANCEL' | translate }}"

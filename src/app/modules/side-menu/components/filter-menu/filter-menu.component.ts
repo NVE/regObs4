@@ -1,5 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TrackByFunction } from '@angular/core';
-import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, SelectCustomEvent } from '@ionic/angular';
+import {
+  CheckboxCustomEvent,
+  Platform,
+  SearchbarCustomEvent,
+  SelectCustomEvent,
+  ToggleCustomEvent,
+} from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -103,6 +109,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   currentGeoHazard: GeoHazard[];
   chosenCompetenceValue: CompetenceItem;
   observationTypesSelectedCount = 0;
+  isShowObservationChecked: Observable<boolean>;
 
   filterSupportPerPlatform: FilterSupportPerPlatform = {
     app: {
@@ -158,6 +165,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
+    this.isShowObservationChecked = this.userSettingService.showObservations$;
 
     combineLatest([
       //combining both searchCriteria and currentGeoHazard to ensure they both are being resolved in a proper order
@@ -191,6 +199,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
       this.cdr.markForCheck();
     });
+  }
+
+  async saveShowObservation(value: ToggleCustomEvent) {
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
+    userSettings.showObservations = value.detail.checked;
+    this.userSettingService.saveUserSettings(userSettings);
   }
 
   regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
