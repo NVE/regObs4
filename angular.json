@@ -44,6 +44,11 @@
                 "glob": "*.min.js",
                 "input": "./node_modules/@turf/turf/",
                 "output": "turf/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@varsom/observation-components/dist/collection/src/assets",
+                "output": "src/assets"
               }
             ],
             "styles": [

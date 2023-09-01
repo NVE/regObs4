@@ -7,6 +7,7 @@ import { takeUntil, map, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { EditMode } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { SearchService } from 'src/app/modules/common-regobs-api';
+import { TranslateService } from '@ngx-translate/core';
 
 interface RegistrationResult {
   reg?: RegistrationViewModel;
@@ -23,12 +24,16 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   editMode$: Observable<EditMode>;
   registrationViewModel$: Observable<RegistrationResult>;
 
+  lang: string;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private popupInfoService: PopupInfoService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    translateService: TranslateService
   ) {
     super();
+    this.lang = translateService.currentLang;
   }
 
   ngOnInit() {

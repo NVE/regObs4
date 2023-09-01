@@ -88,6 +88,7 @@
     "@sentry/browser": "^7.37.2",
     "@turf/turf": "^6.5.0",
     "@types/leaflet-draw": "^1.0.6",
+    "@varsom/observation-components": "^0.2.2",
     "angular-svg-icon": "^12.0.0",
     "clone-deep": "^4.0.1",
     "cordova-plugin-device": "^2.0.3",
