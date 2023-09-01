@@ -100,12 +100,6 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
 
     this.showObservations$ = this.userSetting.showObservations$;
 
-    const noMapExtentAvailable$ = mapService.mapView$.pipe(
-      startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
-      map((mapView) => mapView?.bounds == null),
-      distinctUntilChanged()
-    );
-
     const selectedRegionsFilterActive$ = this.searchCriteriaService.searchCriteria$.pipe(
       map((criteria) => (criteria.SelectedRegions || []).length > 0)
     );
