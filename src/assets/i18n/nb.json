@@ -244,7 +244,6 @@
   "OBSERVATION_FILTER": {
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
-      "AUTOMATIC_STATIONS": "Automatiske stasjoner",
       "LABEL": "Kompetanse",
       "TITLE": "Observatør"
     },
@@ -723,6 +722,7 @@
           "SHOW_MORE": "Vis flere valg",
           "SIZE": "Kornstørrelse (mm)",
           "THICKNESS": "Tykkelse (cm)",
+          "THICKNESS_VALIDATION": "Tykkelse må være mer enn 0",
           "TITLE": "Lagdeling",
           "TOTAL_THICKNESS": "Total tykkelse",
           "WETNESS": "Fuktighet"
