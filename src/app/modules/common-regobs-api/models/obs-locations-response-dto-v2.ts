@@ -5,6 +5,7 @@ export interface ObsLocationsResponseDtoV2 {
   GeoHazardId?: number;
   Id?: number;
   LatLngObject?: LatLngObject;
+  LocationDescription?: string;
   Name?: string;
   ObserverGroupId?: number;
   ObserverGroupName?: string;
