@@ -262,6 +262,7 @@
     "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
+    "EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED": "Toggle observations on in the left side menu.",
     "FORMS": "Forms",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
