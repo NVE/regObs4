@@ -2,13 +2,11 @@ import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone, Provider } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
-import { Diagnostic } from '@awesome-cordova-plugins/diagnostic/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
@@ -106,8 +104,6 @@ export const APP_PROVIDERS: Provider[] = [
   WebView,
   EmailComposer,
   SQLite,
-  Network,
-  Diagnostic,
   {
     provide: HTTP_INTERCEPTORS,
     useClass: ApiInterceptor, // TODO: Move to auth module

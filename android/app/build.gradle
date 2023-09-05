@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    namespace "no.nve.regobs4"
+    compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "no.nve.regobs4"
         minSdkVersion rootProject.ext.minSdkVersion

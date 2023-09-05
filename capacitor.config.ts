@@ -5,18 +5,17 @@ const config: CapacitorConfig = {
   appId: 'no.nve.regobs4',
   appName: 'Varsom',
   webDir: 'www',
-  bundledWebRuntime: false,
   server: {
-    iosScheme: 'ionic'
+    iosScheme: 'ionic',
   },
   plugins: {
-    'SplashScreen': {
-      'launchAutoHide': false
+    SplashScreen: {
+      launchAutoHide: false,
     },
     Keyboard: {
       resize: KeyboardResize.Ionic,
       resizeOnFullScreen: true,
-      style: KeyboardStyle.Default
+      style: KeyboardStyle.Default,
     },
   },
   cordova: {
@@ -37,9 +36,9 @@ const config: CapacitorConfig = {
       AndroidPersistentFileLocation: 'Compatibility',
       WKWebViewOnly: 'true',
       ResolveServiceWorkerRequests: 'true',
-      AndroidXEnabled: 'true'
-    }
-  }
+      AndroidXEnabled: 'true',
+    },
+  },
 };
 
 export default config;

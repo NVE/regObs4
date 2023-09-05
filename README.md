@@ -41,8 +41,8 @@ A few tips on development environment setup on Windows:
 
 ```
 ANDROID_SDK_ROOT=C:\android\sdk
-JDK_HOME=C:\Program Files\Android\Android Studio\jre
-GRADLE_USER_HOME=C:\gradle\cache
+JDK_HOME=C:\Program Files\Android\Android Studio\jbr
+
 ```
 
 - An example of search path that may work:
@@ -51,8 +51,8 @@ GRADLE_USER_HOME=C:\gradle\cache
 C:\android\sdk\tools\bin
 C:\android\sdk\platform-tools
 C:\android\sdk\emulator
-C:\Program Files\Android\Android Studio\jre\bin
-C:\gradle\gradle-6.7.1\bin
+C:\Program Files\Android\Android Studio\jbr\bin
+
 ```
 
 - You have to uninstall the regular RegObs app from your phone in order to debug
