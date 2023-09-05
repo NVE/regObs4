@@ -282,7 +282,7 @@ export const settings: ISettings = {
         {
           name: 'clayzones',
           description: 'CLAY_ZONES_MAP_DESCRIPTION',
-          url: 'https://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           checked: true,
           opacity: 0.5,
