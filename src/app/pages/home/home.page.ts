@@ -273,6 +273,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         if (!showGeoSelectInfo) {
           this.geoCoachMarksClosedSubject.next();
           this.geoCoachMarksClosedSubject.complete();
+          this.mapComponent.componentIsActive(true);
         }
       });
   }
