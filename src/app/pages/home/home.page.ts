@@ -51,7 +51,6 @@ import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.
 import { enterZone } from '../../core/helpers/observable-helper';
 import { RouterPage } from '../../core/helpers/routed-page';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
-import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
@@ -111,7 +110,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     private ngZone: NgZone,
     private searchCriteriaService: SearchCriteriaService,
     private loggingService: LoggingService,
-    private usageAnalyticsConsentService: UsageAnalyticsConsentService,
     private mapService: MapService,
     private toastService: ToastController,
     private translateService: TranslateService,
@@ -275,14 +273,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         if (!showGeoSelectInfo) {
           this.geoCoachMarksClosedSubject.next();
           this.geoCoachMarksClosedSubject.complete();
-          this.showUsageAnalyticsDialog();
         }
       });
-  }
-
-  async showUsageAnalyticsDialog() {
-    await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
-    this.mapComponent.componentIsActive(true);
   }
 
   async onMapReady(leafletMap: L.Map) {

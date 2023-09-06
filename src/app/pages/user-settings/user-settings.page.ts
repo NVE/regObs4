@@ -1,12 +1,12 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NavController, AlertController, LoadingController, Platform } from '@ionic/angular';
+import { NavController, LoadingController, Platform } from '@ionic/angular';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
@@ -28,9 +28,8 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
-  showAdvanced = false;
   isUpdating = false;
-  version: AppVersion;
+  version$: Observable<AppVersion>;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
   isDesktopView: boolean;
@@ -55,7 +54,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private loggingService: LoggingService,
     private translateService: TranslateService,
-    private alertController: AlertController,
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
     private appResetService: AppResetService,
@@ -64,7 +62,9 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private breakpointService: BreakpointService,
     private platform: Platform,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+    this.version$ = appVersionService.appVersion$;
+  }
 
   async ngOnInit() {
     if (this.platform.is('desktop')) {
@@ -81,10 +81,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
         });
       })
     );
-    const appver = await this.appVersionService.getAppVersion();
-    this.ngZone.run(() => {
-      this.version = appver;
-    });
   }
 
   ngOnDestroy(): void {
@@ -108,10 +104,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   updateSettings() {
     this.userSettingService.saveUserSettings(this.userSettings);
-  }
-
-  async toggleAdvanced() {
-    this.showAdvanced = !this.showAdvanced;
   }
 
   async updateDropdowns() {
@@ -157,7 +149,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async reset() {
-    const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
+    const message = await firstValueFrom(this.translateService.get('SETTINGS.RESETTING'));
     const loading = await this.loadingController.create({
       message,
     });

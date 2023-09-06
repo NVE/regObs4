@@ -40,6 +40,7 @@ import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
 import { AppVersionService } from 'src/app/core/services/app-version/app-version.service';
 import { Device } from '@capacitor/device';
+import { firstValueFrom, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -129,8 +130,8 @@ export class FileLoggingService {
           deviceInfoFormatted = `manufacturer = ${deviceInfo.manufacturer}, model = ${deviceInfo.model}, os = ${deviceInfo.operatingSystem}, osVersion = ${deviceInfo.osVersion}, webViewVersion = ${deviceInfo.webViewVersion}`;
         }
       })
-      .finally(() => {
-        const versionInfo = this.appVersionService.getAppVersion();
+      .finally(async () => {
+        const versionInfo = await firstValueFrom(this.appVersionService.appVersion$);
         this.log(
           `Version = ${versionInfo.version}, build = ${versionInfo.buildNumber}, ${deviceInfoFormatted}`,
           null,

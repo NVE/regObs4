@@ -105,7 +105,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   async contactError() {
     let additionalSubjectText;
     if (Capacitor.isNativePlatform()) {
-      const appVersion = await this.appVersionService.getAppVersion();
+      const appVersion = await firstValueFrom(this.appVersionService.appVersion$);
       additionalSubjectText = ` : ${Capacitor.getPlatform()} ${appVersion.version} ${appVersion.buildNumber} ${
         appVersion.revision
       }`;

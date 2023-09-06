@@ -10,6 +10,7 @@ import { LogLevel } from './log-level.model';
 import { FileLoggingService } from './file-logging.service';
 import { AppVersion } from 'src/app/core/models/app-version.model';
 import { makeFetchTransport } from '@sentry/browser';
+import { take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class SentryService implements LoggingService {
   private versionInfo: AppVersion;
 
   constructor(appVersionService: AppVersionService, private fileLoggingService: FileLoggingService) {
-    this.versionInfo = appVersionService.getAppVersion();
+    appVersionService.appVersion$.pipe(take(1)).subscribe((appVersion) => (this.versionInfo = appVersion));
   }
 
   error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {

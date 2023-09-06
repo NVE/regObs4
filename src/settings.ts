@@ -381,10 +381,6 @@ export const settings: ISettings = {
   foregroundUpdateIntervalMs: 2 * 60 * 1000, // 2 minutes
   backgroundFetchTimeout: 20 * 1000, // 20 seconds
   popupDisclamerRefreshTimeMs: 1000 * 60 * 60 * 24 * 30, // 30 days
-  googleAnalytics: {
-    trackerId: 'UA-32394009-4',
-    anonymizeIp: true,
-  },
   language: {
     fallbackLang: 'en',
     supportedLanguages: [

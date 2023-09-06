@@ -61,14 +61,6 @@ export class DataMarshallService implements OnReset {
         })
       );
       this.subscriptions.push(
-        this.userSettingService.userSetting$
-          .pipe(
-            map((userSetting) => userSetting.consentForSendingAnalytics),
-            distinctUntilChanged()
-          )
-          .subscribe((consent) => this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent))
-      );
-      this.subscriptions.push(
         this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
           this.analyticService.trackDimension(AppCustomDimension.showMapCenter, showMapCenter.toString());
         })

@@ -20,8 +20,6 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey
   showGeoSelectInfo: true,
   completedSimpleObsOnboarding: false,
   useRetinaMap: false,
-  consentForSendingAnalytics: true,
-  consentForSendingAnalyticsDialogCompleted: false,
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
   preferCompleteSnowObservations: false,
