@@ -81,6 +81,8 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     const viewTypeInParams = url.searchParams.get(URL_VIEW_TYPE_PARAM) as ViewType;
     if (viewTypeInParams === 'grid' || viewTypeInParams === 'list') this.viewType$.next(viewTypeInParams);
 
+    this.showObservations$ = this.userSettingService.showObservations$;
+
     this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$ = this.filterCriteriaByView('list');
     this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$ = this.filterCriteriaByView('grid');
 
@@ -98,8 +100,6 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
         })
       )
       .subscribe();
-
-    this.showObservations$ = this.userSettingService.showObservations$;
 
     mapService.mapView$.pipe(
       startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
@@ -157,9 +157,13 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     return combineLatest([
       this.searchCriteriaService.searchCriteria$,
       this.tabsService.selectedTab$,
+      this.showObservations$,
       this.viewType$,
     ]).pipe(
-      filter(([, selectedTab, viewT]) => selectedTab === TABS.OBSERVATION_LIST && viewT === viewType),
+      filter(
+        ([, selectedTab, showObservations, viewT]) =>
+          selectedTab === TABS.OBSERVATION_LIST && showObservations === true && viewT === viewType
+      ),
       tap(([, , viewT]) => {
         this.logger.debug(`ViewType has changed to ${viewT} `, DEBUG_TAG);
         const params = new UrlParams();
