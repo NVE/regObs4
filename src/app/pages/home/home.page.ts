@@ -86,6 +86,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   spinnerLabel = 'DATA_LOAD.SPINNER_FETCH_OBSERVATIONS';
   fullscreen$: Observable<boolean>;
   showGeoSelectInfo = false;
+  showObservations$: Observable<boolean>; // Show observations when this is true
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
   private shouldSearchResultUpdateOnEnter: boolean;
@@ -133,6 +134,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
+    this.showObservations$ = this.userSettingService.showObservations$;
     this.initSearch();
 
     this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
@@ -178,7 +180,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
-    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true))]).pipe(
+    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true)), this.showObservations$]).pipe(
+      filter(([, , showObservations]) => showObservations === true), // Do not search if observations is hidden
       map(([searchCriteria]) => searchCriteria),
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetchingObservations.next(true)),
@@ -237,6 +240,12 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.checkForFirstStartup();
+
+    this.showObservations$.subscribe((showObservations) => {
+      if (!showObservations) {
+        this.markerLayer.clearLayers(); // Hide observations in map
+      }
+    });
   }
 
   ionViewWillEnter() {
