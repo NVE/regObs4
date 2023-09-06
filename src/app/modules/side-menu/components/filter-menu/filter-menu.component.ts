@@ -72,7 +72,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   competenceItems$: Observable<CompetenceOption[]>;
 
   currentGeoHazard: GeoHazard[];
-  isShowObservationChecked: Observable<boolean>;
+  showObservations$: Observable<boolean>;
   observationTypes$: Observable<ObservationTypeView[]>;
   nTypesSelected$: Observable<number>;
 
@@ -140,7 +140,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
-    this.isShowObservationChecked = this.userSettingService.showObservations$;
+    this.showObservations$ = this.userSettingService.showObservations$;
 
     this.userSettingService.currentGeoHazard$.subscribe((curGeohazard) => (this.currentGeoHazard = curGeohazard));
 
