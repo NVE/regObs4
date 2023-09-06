@@ -27,7 +27,6 @@ import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regob
 import { UrlParams } from 'src/app/core/services/search-criteria/url-params';
 import { HasRegId } from 'src/app/modules/common-registration/registration.helpers';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -48,7 +47,7 @@ const URL_VIEW_TYPE_PARAM = 'view';
 export class ObservationListPage extends NgDestoryBase implements OnInit {
   listSearch: PagedSearchResult<RegistrationViewModel>;
   imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
-  showObservations$: Observable<boolean>;
+
   registrations$: Observable<RegistrationViewModel[] | SearchRegistrationsWithAttachments[]>;
   orderBy$: Observable<string>;
   error$: Observable<boolean>;
@@ -72,7 +71,6 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     private updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private logger: LoggingService,
-    private userSetting: UserSettingService,
     mapService: MapService
   ) {
     super();
@@ -98,7 +96,11 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
       )
       .subscribe();
 
-    this.showObservations$ = this.userSetting.showObservations$;
+    const noMapExtentAvailable$ = mapService.mapView$.pipe(
+      startWith({ bounds: null }), // In case mapService.MapView does not emit on startup
+      map((mapView) => mapView?.bounds == null),
+      distinctUntilChanged()
+    );
 
     const selectedRegionsFilterActive$ = this.searchCriteriaService.searchCriteria$.pipe(
       map((criteria) => (criteria.SelectedRegions || []).length > 0)
@@ -171,13 +173,11 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     }
 
     this.listSearch = this.searchRegistrationService.pagedSearch(
-      this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$,
-      TABS.OBSERVATION_LIST
+      this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$
     );
 
     this.imageSearch = this.searchRegistrationService.searchAttachments(
-      this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$,
-      TABS.OBSERVATION_LIST
+      this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
     );
 
     const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));

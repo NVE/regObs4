@@ -6,7 +6,6 @@ import {
   concatMap,
   distinctUntilChanged,
   distinctUntilKeyChanged,
-  filter,
   finalize,
   map,
   Observable,
@@ -29,8 +28,6 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TABS, TabsService } from 'src/app/pages/tabs/tabs.service';
-import { UserSettingService } from '../user-setting/user-setting.service';
 
 export class SearchResult<TViewModel> {
   static DEBUG_TAG = 'SearchResult';
@@ -109,26 +106,11 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     searchCriteria$: Observable<SearchCriteria>,
     // Not sure what is best here, provide SearchService to this class, or provide the flexibility to create these
     // functions outside
-    tab: string,
-    selectedTab$: Observable<TABS>,
-    showObservations$: Observable<boolean>,
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
     countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
   ) {
-    console.log('tab from service', tab);
-
-    this.registrations$ = combineLatest([
-      searchCriteria$,
-      selectedTab$,
-      showObservations$,
-      this.forceUpdate.pipe(startWith(null)),
-    ]).pipe(
+    this.registrations$ = combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(null))]).pipe(
       // For every new search criteria, create a paged search and check what the total count is
-      filter(([, selectedTab, showObs]) => {
-        if (tab) {
-          return tab === selectedTab && showObs;
-        } else return true;
-      }),
       tap(() => this.isFetching.next(true)),
       switchMap(([searchCriteria]) =>
         combineLatest([
@@ -220,12 +202,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   providedIn: 'root',
 })
 export class SearchRegistrationService {
-  constructor(
-    private searchService: SearchService,
-    private logger: LoggingService,
-    private tabService: TabsService,
-    private userSettings: UserSettingService
-  ) {}
+  constructor(private searchService: SearchService, private logger: LoggingService) {}
 
   /**
    * Normal search.
@@ -242,12 +219,9 @@ export class SearchRegistrationService {
   /**
    * Normal search with paging
    */
-  pagedSearch(searchCriteria$: Observable<SearchCriteria>, tab: TABS): PagedSearchResult<RegistrationViewModel> {
+  pagedSearch(searchCriteria$: Observable<SearchCriteria>): PagedSearchResult<RegistrationViewModel> {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
-      tab,
-      this.tabService.selectedTab$,
-      this.userSettings.showObservations$,
       this.searchService.SearchSearch.bind(this.searchService),
       (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
@@ -256,15 +230,9 @@ export class SearchRegistrationService {
   /**
    *  Search my registrations with paging
    */
-  searchMyRegistrations(
-    searchCriteria$: Observable<SearchCriteria>,
-    tab: TABS = null
-  ): PagedSearchResult<RegistrationViewModel> {
+  searchMyRegistrations(searchCriteria$: Observable<SearchCriteria>): PagedSearchResult<RegistrationViewModel> {
     return new PagedSearchResult<RegistrationViewModel>(
       searchCriteria$,
-      tab,
-      this.tabService.selectedTab$,
-      this.userSettings.showObservations$,
       this.searchService.SearchPostSearchMyRegistrations.bind(this.searchService),
       (searchCriteria) =>
         this.searchService.SearchCountMyRegistrations(searchCriteria).pipe(map((result) => result.TotalMatches))
@@ -282,14 +250,10 @@ export class SearchRegistrationService {
   }
 
   searchAttachments(
-    searchCriteria$: Observable<SearchCriteria>,
-    tab: TABS
+    searchCriteria$: Observable<SearchCriteria>
   ): PagedSearchResult<SearchRegistrationsWithAttachments> {
     return new PagedSearchResult<SearchRegistrationsWithAttachments>(
       searchCriteria$,
-      tab,
-      this.tabService.selectedTab$,
-      this.userSettings.showObservations$,
       this.searchService.SearchAttachments.bind(this.searchService),
       (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
