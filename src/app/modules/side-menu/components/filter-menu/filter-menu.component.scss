@@ -20,14 +20,12 @@ ion-list {
   overflow: auto;
   max-height: 100vh;
   background: #fff;
+
+  // Air between icons and text in 'Show observations-toggle'
   ion-item {
     ion-icon {
       font-size: 1.4em;
       margin-right: 2rem;
-    }
-
-    svg-icon {
-      margin-top: 6px;
     }
   }
 
