@@ -84,24 +84,24 @@ export const settings: ISettings = {
       Snow: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
         webUrl: {
-          nb: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
-          en: 'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+          nb: 'https://www.varsom.no/snoskred/varsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+          en: 'https://www.varsom.no/en/snow/forecast/warning/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
         },
         featureName: 'omradeID',
       },
       Soil: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
         webUrl: {
-          nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
-          en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+          nb: 'https://www.varsom.no/flom-og-jordskred/varsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+          en: 'https://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
         },
         featureName: 'fylkesnummer',
       },
       Water: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api',
         webUrl: {
-          nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
-          en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+          nb: 'https://www.varsom.no/flom-og-jordskred/varsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+          en: 'https://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
         },
         featureName: 'fylkesnummer',
       },
@@ -399,7 +399,7 @@ export const settings: ISettings = {
     ],
   },
   legalUrl: {
-    en: 'https://www.varsom.no/en/about/regobs/regobs-terms-of-service/',
+    en: 'https://varsom.no/en/about/regobs/regobs-about-data-terms-of-service-and-privacy-policy/',
     nb: 'https://varsom.no/om-varsom/regobs/regobs-brukervilkar/',
   },
 };
