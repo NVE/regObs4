@@ -65,18 +65,19 @@
 
   <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
     <ng-container *ngIf="viewType$ | async as viewType">
-      <ng-container *ngIf="registrations$ | async as registrations">
-        <ion-list class="loaded" *ngIf="registrations?.length > 0; else empty">
-          <app-observation-list-view
-            *ngIf="viewType==='list'"
-            [registrations]="registrations"
-          ></app-observation-list-view>
-          <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid>
-          <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-            <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-          </ion-infinite-scroll>
-        </ion-list>
-      </ng-container>
+      <ng-container *ngIf="(showObservations$ | async); else disabled">
+        <ng-container *ngIf="registrations$ | async as registrations">
+          <ion-list class="loaded" *ngIf="registrations?.length > 0; else empty">
+            <app-observation-list-view
+              *ngIf="viewType==='list'"
+              [registrations]="registrations"
+            ></app-observation-list-view>
+            <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid>
+            <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+              <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </ion-list> </ng-container
+      ></ng-container>
     </ng-container>
   </ng-container>
 
@@ -91,6 +92,13 @@
         <ion-skeleton-text animated *ngFor="let _ of fakeArray" class="img-skeleton"></ion-skeleton-text>
       </ion-list>
     </ng-container>
+  </ng-template>
+
+  <ng-template #disabled>
+    <div class="disabled-info">
+      <strong>{{ 'MENU.DEACTIVATE_OBSERVATIONS' | translate }}</strong>
+      <div>{{ 'OBSERVATION_LIST.EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED' | translate }}</div>
+    </div>
   </ng-template>
 
   <ng-template #empty>

@@ -5,17 +5,14 @@ import { settings } from '../../../../settings';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
-import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
-import { LoggingService } from '../../shared/services/logging/logging.service';
 
 @Component({
   selector: 'app-side-menu',

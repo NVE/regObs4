@@ -194,3 +194,14 @@ ion-item-divider {
   flex-direction: column;
   width: 95%;
 }
+
+// Empty state when observations disabled
+.disabled-info {
+  width: 300px;
+
+  // Position centered
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

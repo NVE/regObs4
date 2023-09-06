@@ -27,6 +27,7 @@ import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regob
 import { UrlParams } from 'src/app/core/services/search-criteria/url-params';
 import { HasRegId } from 'src/app/modules/common-registration/registration.helpers';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -48,6 +49,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   listSearch: PagedSearchResult<RegistrationViewModel>;
   imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
 
+  showObservations$: Observable<boolean>;
   registrations$: Observable<RegistrationViewModel[] | SearchRegistrationsWithAttachments[]>;
   orderBy$: Observable<string>;
   error$: Observable<boolean>;
@@ -71,12 +73,15 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     private updateObservationsService: UpdateObservationsService,
     private tabsService: TabsService,
     private logger: LoggingService,
+    private userSettingService: UserSettingService,
     mapService: MapService
   ) {
     super();
     const url = new URL(document.location.href);
     const viewTypeInParams = url.searchParams.get(URL_VIEW_TYPE_PARAM) as ViewType;
     if (viewTypeInParams === 'grid' || viewTypeInParams === 'list') this.viewType$.next(viewTypeInParams);
+
+    this.showObservations$ = this.userSettingService.showObservations$;
 
     this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$ = this.filterCriteriaByView('list');
     this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$ = this.filterCriteriaByView('grid');
@@ -146,9 +151,13 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     return combineLatest([
       this.searchCriteriaService.searchCriteria$,
       this.tabsService.selectedTab$,
+      this.showObservations$,
       this.viewType$,
     ]).pipe(
-      filter(([, selectedTab, viewT]) => selectedTab === TABS.OBSERVATION_LIST && viewT === viewType),
+      filter(
+        ([, selectedTab, showObservations, viewT]) =>
+          selectedTab === TABS.OBSERVATION_LIST && showObservations === true && viewT === viewType
+      ),
       tap(([, , viewT]) => {
         this.logger.debug(`ViewType has changed to ${viewT} `, DEBUG_TAG);
         const params = new UrlParams();

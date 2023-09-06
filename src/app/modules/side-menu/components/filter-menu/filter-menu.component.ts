@@ -1,7 +1,7 @@
+import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, ToggleCustomEvent } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction } from '@angular/core';
-import { CheckboxCustomEvent, Platform, SearchbarCustomEvent } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
@@ -72,6 +72,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   competenceItems$: Observable<CompetenceOption[]>;
 
   currentGeoHazard: GeoHazard[];
+  showObservations$: Observable<boolean>;
   observationTypes$: Observable<ObservationTypeView[]>;
   nTypesSelected$: Observable<number>;
 
@@ -139,6 +140,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
+    this.showObservations$ = this.userSettingService.showObservations$;
 
     this.userSettingService.currentGeoHazard$.subscribe((curGeohazard) => (this.currentGeoHazard = curGeohazard));
 
@@ -223,6 +225,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.nickName = criteria.ObserverNickName;
       this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
     });
+  }
+
+  async saveShowObservation(value: ToggleCustomEvent) {
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
+    userSettings.showObservations = value.detail.checked;
+    this.userSettingService.saveUserSettings(userSettings);
   }
 
   competenceCheckboxChanged(event: CheckboxCustomEvent<CompetenceOption>) {

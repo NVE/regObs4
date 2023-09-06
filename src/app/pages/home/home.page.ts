@@ -86,6 +86,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   spinnerLabel = 'DATA_LOAD.SPINNER_FETCH_OBSERVATIONS';
   fullscreen$: Observable<boolean>;
   showGeoSelectInfo = false;
+  showObservations$: Observable<boolean>; // Show observations when this is true
   private lastFetched: Date = null;
   private lastSearchBounds: L.LatLngBounds = null;
   private shouldSearchResultUpdateOnEnter: boolean;
@@ -133,6 +134,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
+    this.showObservations$ = this.userSettingService.showObservations$;
     this.initSearch();
 
     this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
@@ -153,11 +155,15 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.loggingService.debug('initSearch...', DEBUG_TAG);
 
     const criteria$ = await this.createSearchCriteria$();
-    const criteriaWhenOnHomePageOnly$ = combineLatest([criteria$, this.tabsService.selectedTab$]).pipe(
-      filter(([, tab]) => tab === TABS.HOME),
+    const criteriaWhenOnHomePageOnlyAndShowObservationsIsTrue$ = combineLatest([
+      criteria$,
+      this.tabsService.selectedTab$,
+      this.showObservations$,
+    ]).pipe(
+      filter(([, tab, showObservations]) => tab === TABS.HOME && showObservations === true),
       map(([criteria]) => criteria)
     );
-    this.createRegistrations$(criteriaWhenOnHomePageOnly$).subscribe((registrations) => {
+    this.createRegistrations$(criteriaWhenOnHomePageOnlyAndShowObservationsIsTrue$).subscribe((registrations) => {
       this.redrawObservationMarkers(registrations);
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
@@ -237,6 +243,12 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.checkForFirstStartup();
+
+    this.showObservations$.subscribe((showObservations) => {
+      if (!showObservations) {
+        this.markerLayer.clearLayers(); // Hide observations in map
+      }
+    });
   }
 
   ionViewWillEnter() {

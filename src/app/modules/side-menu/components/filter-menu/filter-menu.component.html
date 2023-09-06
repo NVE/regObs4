@@ -2,134 +2,148 @@
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
-  <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
-  <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
-  <app-update-observations></app-update-observations>
   <ion-item>
-    <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
-      <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
-      {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
-    </ion-button>
+    <ion-icon name="eye" color="varsom-blue"></ion-icon>
+    <ion-label class="menu-label">
+      {{ "MENU.SHOW_OBSERVATIONS" | translate }}
+    </ion-label>
+    <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)"></ion-toggle>
   </ion-item>
 
-  <ng-container *ngIf="isSupported('observationType')">
-    <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <app-selected-items-counter-label [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)">
-        {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
-      </app-selected-items-counter-label>
-    </ion-list-header>
-
+  <ng-container *ngIf="showObservations$ | async">
+    <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
+    <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
+    <app-update-observations></app-update-observations>
     <ion-item>
-      <ion-list lines="none">
-        <ng-container *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
-          <ion-item class="item-height">
-            <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-            <ion-checkbox
-              [checked]="!slushFlowFilterIsActive && type.isChecked"
-              (click)="setNewType($event, type.parentId, type.id)"
-              color="varsom-dark-blue"
-              [disabled]="slushFlowFilterIsActive"
-            >
-            </ion-checkbox>
-            <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
-          </ion-item>
-        </ng-container>
-        <app-slush-flow-filter> </app-slush-flow-filter>
-      </ion-list>
+      <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
+        <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
+        {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
+      </ion-button>
     </ion-item>
-  </ng-container>
 
-  <!-- Avalanche Regions -->
-  <ng-container *ngIf="isSupported('region')">
-    <ng-container *ngIf="regions$ | async as regions">
+    <ng-container *ngIf="isSupported('observationType')">
       <ion-list-header color="varsom-blue" class="ion-no-margin">
-        <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
-          {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
+        <app-selected-items-counter-label
+          [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)"
+        >
+          {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
         </app-selected-items-counter-label>
       </ion-list-header>
 
       <ion-item>
-        <ion-list lines="none" style="max-height: 400px">
-          <!-- A regioner -->
-          <ng-container *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
+        <ion-list lines="none">
+          <ng-container *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
             <ion-item class="item-height">
+              <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
               <ion-checkbox
-                [value]="region"
-                [checked]="region.checked"
-                (ionChange)="regionCheckBoxChanged($event)"
+                [checked]="!slushFlowFilterIsActive && type.isChecked"
+                (click)="setNewType($event, type.parentId, type.id)"
                 color="varsom-dark-blue"
+                [disabled]="slushFlowFilterIsActive"
               >
               </ion-checkbox>
-              <ion-label class="ion-padding-start">{{ region.name }}</ion-label>
+              <ion-label class="ion-padding-start">{{ type.name }}</ion-label>
             </ion-item>
           </ng-container>
-
-          <!-- Skilletekst -->
-          <ion-item class="unselectable">{{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}</ion-item>
-
-          <!-- B regioner -->
-          <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
-            <ion-item class="item-height">
-              <ion-checkbox
-                [value]="region"
-                [checked]="region.checked"
-                (ionChange)="regionCheckBoxChanged($event)"
-                color="varsom-dark-blue"
-              >
-              </ion-checkbox>
-              <ion-label class="ion-padding-start">{{ region.name }}<span>&nbsp;(B)</span></ion-label>
-            </ion-item>
-          </ng-container>
+          <app-slush-flow-filter> </app-slush-flow-filter>
         </ion-list>
       </ion-item>
     </ng-container>
-  </ng-container>
 
-  <ng-container *ngIf="isSupported('competence')">
-    <ion-list-header color="varsom-blue" class="ion-no-margin">
-      <ion-label>
-        {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
-      </ion-label>
-    </ion-list-header>
+    <!-- Avalanche Regions -->
+    <ng-container *ngIf="isSupported('region')">
+      <ng-container *ngIf="regions$ | async as regions">
+        <ion-list-header color="varsom-blue" class="ion-no-margin">
+          <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
+            {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
+          </app-selected-items-counter-label>
+        </ion-list-header>
 
-    <ion-item>
-      <ion-label position="stacked" class="margin-bottom">
-        {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
-      </ion-label>
+        <ion-item>
+          <ion-list lines="none" style="max-height: 400px">
+            <!-- A regioner -->
+            <ng-container *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
+              <ion-item class="item-height">
+                <ion-checkbox
+                  [value]="region"
+                  [checked]="region.checked"
+                  (ionChange)="regionCheckBoxChanged($event)"
+                  color="varsom-dark-blue"
+                >
+                </ion-checkbox>
+                <ion-label class="ion-padding-start">{{ region.name }}</ion-label>
+              </ion-item>
+            </ng-container>
 
-      <ion-list lines="none">
-        <ion-item
-          class="item-height"
-          *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById"
-        >
-          <ion-checkbox
-            [value]="competence"
-            [checked]="competence.checked"
-            (ionChange)="competenceCheckboxChanged($event)"
-            color="varsom-dark-blue"
-          ></ion-checkbox>
-          <ion-label [title]="competence.descriptions.join('<br />')" class="ion-padding-start">{{
-            competence.name
-          }}</ion-label>
+            <!-- Skilletekst -->
+            <ion-item class="unselectable">{{
+              "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate
+            }}</ion-item>
+
+            <!-- B regioner -->
+            <ng-container *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
+              <ion-item class="item-height">
+                <ion-checkbox
+                  [value]="region"
+                  [checked]="region.checked"
+                  (ionChange)="regionCheckBoxChanged($event)"
+                  color="varsom-dark-blue"
+                >
+                </ion-checkbox>
+                <ion-label class="ion-padding-start">{{ region.name }}<span>&nbsp;(B)</span></ion-label>
+              </ion-item>
+            </ng-container>
+          </ion-list>
         </ion-item>
-      </ion-list>
-    </ion-item>
-  </ng-container>
+      </ng-container>
+    </ng-container>
 
-  <ng-container *ngIf="isSupported('nickName')">
-    <ion-item>
-      <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
-        "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
-      }}</ion-label>
-      <ion-searchbar
-        [value]="nickName"
-        [debounce]="1000"
-        mode="ios"
-        class="ion-no-padding"
-        [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"
-        (ionChange)="setNickName($event)"
-      >
-      </ion-searchbar>
-    </ion-item>
+    <ng-container *ngIf="isSupported('competence')">
+      <ion-list-header color="varsom-blue" class="ion-no-margin">
+        <ion-label>
+          {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
+        </ion-label>
+      </ion-list-header>
+
+      <ion-item>
+        <ion-label position="stacked" class="margin-bottom">
+          {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
+        </ion-label>
+
+        <ion-list lines="none">
+          <ion-item
+            class="item-height"
+            *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById"
+          >
+            <ion-checkbox
+              [value]="competence"
+              [checked]="competence.checked"
+              (ionChange)="competenceCheckboxChanged($event)"
+              color="varsom-dark-blue"
+            ></ion-checkbox>
+            <ion-label [title]="competence.descriptions.join('<br />')" class="ion-padding-start">{{
+              competence.name
+            }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-item>
+    </ng-container>
+
+    <ng-container *ngIf="isSupported('nickName')">
+      <ion-item>
+        <ion-label class="no-margin-bottom" color="dark" position="stacked">{{
+          "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
+        }}</ion-label>
+        <ion-searchbar
+          [value]="nickName"
+          [debounce]="1000"
+          mode="ios"
+          class="ion-no-padding"
+          [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"
+          (ionChange)="setNickName($event)"
+        >
+        </ion-searchbar>
+      </ion-item>
+    </ng-container>
   </ng-container>
 </ion-list>
