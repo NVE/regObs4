@@ -155,11 +155,15 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.loggingService.debug('initSearch...', DEBUG_TAG);
 
     const criteria$ = await this.createSearchCriteria$();
-    const criteriaWhenOnHomePageOnly$ = combineLatest([criteria$, this.tabsService.selectedTab$]).pipe(
-      filter(([, tab]) => tab === TABS.HOME),
+    const criteriaWhenOnHomePageOnlyAndShowObservationsIsTrue$ = combineLatest([
+      criteria$,
+      this.tabsService.selectedTab$,
+      this.showObservations$,
+    ]).pipe(
+      filter(([, tab, showObservations]) => tab === TABS.HOME && showObservations === true),
       map(([criteria]) => criteria)
     );
-    this.createRegistrations$(criteriaWhenOnHomePageOnly$).subscribe((registrations) => {
+    this.createRegistrations$(criteriaWhenOnHomePageOnlyAndShowObservationsIsTrue$).subscribe((registrations) => {
       this.redrawObservationMarkers(registrations);
       this.lastFetched = new Date();
       this.updateObservationsService.setLastFetched(this.lastFetched);
@@ -180,8 +184,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
-    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true)), this.showObservations$]).pipe(
-      filter(([, , showObservations]) => showObservations === true), // Do not search if observations is hidden
+    return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true))]).pipe(
       map(([searchCriteria]) => searchCriteria),
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetchingObservations.next(true)),
