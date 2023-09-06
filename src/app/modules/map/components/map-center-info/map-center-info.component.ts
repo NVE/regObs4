@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, Eleme
 import { ToastController } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapService } from '../../services/map/map.service';
@@ -18,6 +18,8 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { StrictHttpResponse } from 'src/app/modules/common-regobs-api/strict-http-response';
+import * as turf from '@turf/turf';
+import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -103,7 +105,11 @@ export class MapCenterInfoComponent extends NgDestoryBase {
           this.steepness = null;
           this.cdr.markForCheck();
         }),
-        switchMap((newMapView) => this.getLocationInfo$(newMapView.center))
+        switchMap((newMapView) => iif(
+          () => turf.booleanPointInPolygon([newMapView.center.lng, newMapView.center.lat], NORWAY_BOUNDS),
+          this.getLocationInfo$(newMapView.center),
+          of(null)
+        ))
       )
       .subscribe((locationInfo) => {
         if (locationInfo != null) {

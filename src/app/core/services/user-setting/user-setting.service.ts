@@ -44,6 +44,8 @@ import {
 } from '../search-criteria/url-params';
 
 const DEBUG_TAG = 'UserSettingService';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const SETTINGS_OVERRIDE = require('../../../../assets/json/settings-override.json')
 
 function convertToInt(value: string): number {
   if (typeof value !== 'string') {
@@ -297,6 +299,19 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     const urlSettings = this.parseUrlParameters();
     return this.getUserSettingsFromDb().pipe(
       map((result) => (result ? result : DEFAULT_USER_SETTINGS(null))),
+
+      // Apply any overrides due to new default settings (see json/settings-override.json)
+      map((result) => {
+        const overrides: [Date, string, object][] = SETTINGS_OVERRIDE
+            .map(([dateStr, key, val]) => [new Date(dateStr as string), key, val] as [Date, string, object])
+            .filter(([date, ..._]) => !result.lastOverridden || date > result.lastOverridden);
+        if (overrides.length) {
+          overrides.forEach(([_, key, val]) => { result[key as string] = val; })
+          result.lastOverridden = new Date(Math.max(...overrides.map(([date, ..._]) => date.getTime())))
+          this.saveUserSettingsToDb(result)
+        };
+        return result;
+      }),
 
       // Set geoHazard from url
       map((userSettings) => {

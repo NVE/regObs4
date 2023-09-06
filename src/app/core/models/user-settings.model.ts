@@ -24,6 +24,7 @@ export interface UserSetting {
   infoAboutOfflineSupportMapsRecievedTimestamps?: { [name: string]: number };
   copyright?: string;
   photographer?: string;
+  lastOverridden?: Date;
 
   /**
    * true = use full/complete snow obs schemas
