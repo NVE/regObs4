@@ -156,16 +156,18 @@ export class SummaryItemService {
       ...(await this.getGeoHazardItems(draft, attachmentsToUse)),
     ];
 
-    summaryItems.push(
-      await this.getRegItem(
-        draft,
-        '/registration/general-comment',
-        'REGISTRATION.GENERAL_COMMENT.TITLE',
-        getGenerelObsText(draft.registration.GeneralObservation),
-        RegistrationTid.GeneralObservation,
-        attachmentsToUse
-      )
-    );
+    if (draft.registration.GeoHazardTID != 70) {
+      summaryItems.push(
+        await this.getRegItem(
+          draft,
+          '/registration/general-comment',
+          'REGISTRATION.GENERAL_COMMENT.TITLE',
+          getGenerelObsText(draft.registration.GeneralObservation),
+          RegistrationTid.GeneralObservation,
+          attachmentsToUse
+        )
+      );
+    }
 
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
