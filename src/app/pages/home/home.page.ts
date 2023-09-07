@@ -246,7 +246,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
     this.showObservations$.subscribe((showObservations) => {
       if (!showObservations) {
-        this.markerLayer.clearLayers(); // Hide observations in map
+        this.markerLayer?.clearLayers(); // Hide observations in map
       }
     });
   }
