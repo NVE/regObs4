@@ -160,7 +160,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
 
-    this.isActive = new BehaviorSubject(this.autoActivate);
+    this.isActive = new BehaviorSubject(false);
   }
 
   options: L.MapOptions;
@@ -180,6 +180,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       maxBounds: new L.LatLngBounds(new L.LatLng(90.0, -180.0), new L.LatLng(-90, 180.0)),
       maxBoundsViscosity: 1.0,
     };
+    if (!this.isActive.value && this.autoActivate) {
+      this.isActive.next(this.autoActivate);
+    }
     try {
       if (this.center === undefined || this.zoom === undefined) {
         const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();

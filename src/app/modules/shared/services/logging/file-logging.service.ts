@@ -130,12 +130,13 @@ export class FileLoggingService {
           deviceInfoFormatted = `manufacturer = ${deviceInfo.manufacturer}, model = ${deviceInfo.model}, os = ${deviceInfo.operatingSystem}, osVersion = ${deviceInfo.osVersion}, webViewVersion = ${deviceInfo.webViewVersion}`;
         }
       })
-      .finally(async () => {
-        const versionInfo = await firstValueFrom(this.appVersionService.appVersion$);
-        this.log(
-          `Version = ${versionInfo.version}, build = ${versionInfo.buildNumber}, ${deviceInfoFormatted}`,
-          null,
-          LogLevel.Info
+      .finally(() => {
+        firstValueFrom(this.appVersionService.appVersion$).then((versionInfo) =>
+          this.log(
+            `Version = ${versionInfo.version}, build = ${versionInfo.buildNumber}, ${deviceInfoFormatted}`,
+            null,
+            LogLevel.Info
+          )
         );
       });
   }
