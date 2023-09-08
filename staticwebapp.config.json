@@ -8,6 +8,7 @@
   "navigationFallback": {
     "rewrite": "index.html",
     "exclude": [
+      "/ngsw.json",
       "/assets/*",
       "/leaflet/*",
       "/svg/*",
