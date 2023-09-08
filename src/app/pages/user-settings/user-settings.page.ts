@@ -4,7 +4,7 @@ import { UserSetting } from '../../core/models/user-settings.model';
 import { NavController, LoadingController, Platform } from '@ionic/angular';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
-import { AppVersionService } from '../../core/services/app-version/app-version.service';
+import * as version from '../../../environments/version.json';
 import { AppVersion } from '../../core/models/app-version.model';
 import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
@@ -34,6 +34,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   private versionClicks = 0;
   isDesktopView: boolean;
   isDesktopPlatform: boolean;
+  version: AppVersion = version;
 
   get appModeOptions() {
     const options: SelectOption[] = [
@@ -54,7 +55,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private loggingService: LoggingService,
     private translateService: TranslateService,
-    private appVersionService: AppVersionService,
     private loadingController: LoadingController,
     private appResetService: AppResetService,
     private navController: NavController,
@@ -62,9 +62,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private breakpointService: BreakpointService,
     private platform: Platform,
     private confirmationModalService: ConfirmationModalService
-  ) {
-    this.version$ = appVersionService.appVersion$;
-  }
+  ) {}
 
   async ngOnInit() {
     if (this.platform.is('desktop')) {

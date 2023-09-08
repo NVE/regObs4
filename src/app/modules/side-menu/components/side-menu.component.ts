@@ -6,7 +6,7 @@ import { firstValueFrom, Subscription } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import { TranslateService } from '@ngx-translate/core';
-import { AppVersionService } from '../../../core/services/app-version/app-version.service';
+import version from '../../../../environments/version.json';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
@@ -44,7 +44,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   constructor(
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
-    private appVersionService: AppVersionService,
     private navController: NavController,
     private ngZone: NgZone,
     private externalLinkService: ExternalLinkService,
@@ -102,12 +101,11 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     this.contact('MENU.CONTACT_SUBJECT', 'MENU.CONTACT_DESCRIPTION');
   }
 
-  async contactError() {
+  contactError() {
     let additionalSubjectText;
     if (Capacitor.isNativePlatform()) {
-      const appVersion = await firstValueFrom(this.appVersionService.appVersion$);
-      additionalSubjectText = ` : ${Capacitor.getPlatform()} ${appVersion.version} ${appVersion.buildNumber} ${
-        appVersion.revision
+      additionalSubjectText = ` : ${Capacitor.getPlatform()} ${version.version} ${version.buildNumber} ${
+        version.revision
       }`;
     }
     this.contact('MENU.CONTACT_REGOBS_ERROR', 'MENU.ERROR_REPORT_DESCRIPTION', additionalSubjectText);

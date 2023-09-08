@@ -9,7 +9,7 @@
 <ion-content class="ion-padding" *ngIf="userSettings">
   <ion-list lines="full">
     <!-- App version -->
-    <ion-item *ngIf="version$ | async as version" (click)="versionClick()">
+    <ion-item *ngIf="version" (click)="versionClick()">
       <ion-label position="stacked" color="medium" class="ion-text-uppercase"
         >{{'SETTINGS.APP_VERSION' | translate}}
       </ion-label>
