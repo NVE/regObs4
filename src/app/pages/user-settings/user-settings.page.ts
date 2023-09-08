@@ -29,7 +29,6 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
   isUpdating = false;
-  version$: Observable<AppVersion>;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
   isDesktopView: boolean;
