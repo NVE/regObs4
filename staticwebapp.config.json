@@ -5,6 +5,9 @@
       "statusCode": 404
     }
   ],
+  "platform": {
+    "apiRuntime": "node:18"
+  },
   "navigationFallback": {
     "rewrite": "index.html",
     "exclude": [
