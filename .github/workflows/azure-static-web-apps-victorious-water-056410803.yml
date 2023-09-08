@@ -23,6 +23,7 @@ jobs:
           submodules: true
       - name: Create apiKey.json file
         env:
+          DISABLE_JAVA__BUILD: true
           REGOBS_API_KEY: ${{secrets.REGOBS_APPTOKEN}}
         shell: bash
         run: |
@@ -47,6 +48,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
+      DISABLE_JAVA__BUILD: true
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
@@ -59,6 +61,7 @@ jobs:
           submodules: true
       - name: Create apiKey.json file
         env:
+          DISABLE_JAVA__BUILD: true
           REGOBS_API_KEY: ${{secrets.REGOBS_APPTOKEN}}
         shell: bash
         run: |
