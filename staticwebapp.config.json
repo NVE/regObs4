@@ -1,6 +1,29 @@
 {
-    "navigationFallback": {
-        "rewrite": "index.html",
-        "exclude": ["/assets/*", "/leaflet/*", "/svg/*", "/turf/*", "/*.txt", "/*.js", "/*.js.map", "/*.png", "/*.txt", "/*.ttf", "/*.woff", "/*.woff2", "/*.otf", "/*.css", "/*.css.map"]
+  "routes": [
+    {
+      "route": "/ngsw.json",
+      "statusCode": 404
     }
+  ],
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": [
+      "/ngsw.json",
+      "/assets/*",
+      "/leaflet/*",
+      "/svg/*",
+      "/turf/*",
+      "/*.txt",
+      "/*.js",
+      "/*.js.map",
+      "/*.png",
+      "/*.txt",
+      "/*.ttf",
+      "/*.woff",
+      "/*.woff2",
+      "/*.otf",
+      "/*.css",
+      "/*.css.map"
+    ]
+  }
 }
