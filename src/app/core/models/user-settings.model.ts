@@ -15,8 +15,6 @@ export interface UserSetting {
   showGeoSelectInfo: boolean;
   completedSimpleObsOnboarding: boolean | undefined;
   useRetinaMap: boolean;
-  consentForSendingAnalytics: boolean;
-  consentForSendingAnalyticsDialogCompleted: boolean;
   featureToggleDeveloperMode: boolean;
   featureToggeGpsDebug: boolean;
   infoAboutObservationsRecievedTimestamps?: { [name: string]: number };

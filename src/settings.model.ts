@@ -99,7 +99,6 @@ export interface ISettings {
   foregroundUpdateIntervalMs: number;
   backgroundFetchTimeout: number;
   popupDisclamerRefreshTimeMs: number;
-  googleAnalytics: any;
   language: any;
   legalUrl: {
     nb: string;

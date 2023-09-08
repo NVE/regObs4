@@ -1,25 +1,20 @@
 import { Injectable } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import * as Sentry from '@sentry/browser';
-import { AppVersionService } from '../../../../core/services/app-version/app-version.service';
+import version from '../../../../../environments/version.json';
 import { settings } from '../../../../../settings';
 import { environment } from '../../../../../environments/environment';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { LoggingService } from './logging.service';
 import { LogLevel } from './log-level.model';
 import { FileLoggingService } from './file-logging.service';
-import { AppVersion } from 'src/app/core/models/app-version.model';
 import { makeFetchTransport } from '@sentry/browser';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SentryService implements LoggingService {
-  private versionInfo: AppVersion;
-
-  constructor(appVersionService: AppVersionService, private fileLoggingService: FileLoggingService) {
-    this.versionInfo = appVersionService.getAppVersion();
-  }
+  constructor(private fileLoggingService: FileLoggingService) {}
 
   error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
     this.log(message, error, LogLevel.Error, tag, ...optionalParams);
@@ -35,8 +30,8 @@ export class SentryService implements LoggingService {
       transport: makeFetchTransport,
       environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
       enabled: environment.production,
-      release: this.versionInfo.version,
-      dist: this.versionInfo.revision,
+      release: version.version,
+      dist: version.revision,
     });
   }
 

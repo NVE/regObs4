@@ -2,17 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/worker",
-    "lib": [
-      "es2018",
-      "webworker"
-    ],
-    "types": [
-      "node",
-      "google.analytics",
-      "cordova"
-    ]
+    "lib": ["es2018", "webworker"],
+    "types": ["node", "cordova"]
   },
-  "include": [
-    "src/**/*.worker.ts"
-  ]
+  "include": ["src/**/*.worker.ts"]
 }

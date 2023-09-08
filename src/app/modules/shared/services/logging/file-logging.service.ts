@@ -38,7 +38,7 @@ import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/em
 import { EmailComposerService } from '../email-composer/email-composer.service';
 import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
-import { AppVersionService } from 'src/app/core/services/app-version/app-version.service';
+import version from '../../../../../environments/version.json';
 import { Device } from '@capacitor/device';
 
 @Injectable({
@@ -60,8 +60,7 @@ export class FileLoggingService {
     private file: File,
     private platform: Platform,
     private emailComposer: EmailComposer,
-    private emailComposerService: EmailComposerService,
-    private appVersionService: AppVersionService
+    private emailComposerService: EmailComposerService
   ) {
     this.defaultConfig = new LogProviderConfig({
       enableMetaLogging: false,
@@ -130,9 +129,8 @@ export class FileLoggingService {
         }
       })
       .finally(() => {
-        const versionInfo = this.appVersionService.getAppVersion();
         this.log(
-          `Version = ${versionInfo.version}, build = ${versionInfo.buildNumber}, ${deviceInfoFormatted}`,
+          `Version = ${version.version}, build = ${version.buildNumber}, ${deviceInfoFormatted}`,
           null,
           LogLevel.Info
         );

@@ -813,10 +813,6 @@
     }
   },
   "SETTINGS": {
-    "ALLOW_ANALYTICS": "Allow sending app usage data",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom by letting us know how you use the application.",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "This data is anonymous and cannot be linked to you personally.",
-    "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
     "APPMODE": "App mode",
     "APP_VERSION": "Version",
     "CONFIRM_RESET": "Are you sure you want to reset app?",
@@ -824,7 +820,6 @@
     "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
     "DROPDOWNS_UPDATED": "Dropdowns updated!",
     "EMAIL_RECEIPT": "Email receipt",
-    "HIDE_ADVANCED": "Hide advanced settings",
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
@@ -832,7 +827,6 @@
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SEND_LOGS": "Send logs to the Regobs-team",
-    "SHOW_ADVANCED": "Show advanced settings",
     "SIZE_OF_TILES_CACHE": "Size of tiles saved on device",
     "TILES_CACHE_SIZE": "Number of tiles saved on device",
     "TITLE": "Settings",
