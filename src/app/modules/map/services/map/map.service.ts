@@ -4,10 +4,8 @@ import { Observable, combineLatest, BehaviorSubject, Subject, of, concat } from 
 import {
   switchMap,
   shareReplay,
-  debounceTime,
   distinctUntilChanged,
   tap,
-  pairwise,
   map,
   bufferWhen,
   scan,
@@ -68,7 +66,7 @@ export class MapService {
   private _showUserLocationObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
-  private _mapViewSubject: Subject<IMapView>;
+  private _mapViewSubject: BehaviorSubject<IMapView>;
   private _mapView$: Observable<IMapView>;
   private _noMapExtentAvailable$: Observable<boolean>;
   private _mapMoveStartSubject: any;
@@ -200,8 +198,8 @@ export class MapService {
 
   private getMapMetersChanged() {
     return this.mapView$.pipe(
-      debounceTime(500),
-      pairwise(),
+      // As pairWise(), but always emiting first value
+      scan(([, lastVal], newVal) => [lastVal, newVal], [null, this._mapViewSubject.value]),
       map(([prev, next]) => {
         // If coming from list view, center may be null if
         // app started on list view with bounds

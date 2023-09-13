@@ -14,7 +14,7 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey
   ],
   completedStartWizard: false,
   supportTiles: [],
-  showMapCenter: false,
+  showMapCenter: true,
   showObservations: true,
   topoMap: TopoMap.default,
   showGeoSelectInfo: true,
@@ -23,4 +23,5 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
   preferCompleteSnowObservations: false,
+  lastOverridden: null,
 });

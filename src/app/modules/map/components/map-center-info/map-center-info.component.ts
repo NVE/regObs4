@@ -1,9 +1,9 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
-import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
+import { catchError, debounceTime, filter, map, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
@@ -16,8 +16,10 @@ import { ViewInfo } from '../../services/map-search/view-info.model';
 import { Capacitor } from '@capacitor/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
 import { StrictHttpResponse } from 'src/app/modules/common-regobs-api/strict-http-response';
+import * as turf from '@turf/turf';
+import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -28,7 +30,7 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapCenterInfoComponent extends NgDestoryBase {
+export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private userPos: Position; // Caches the gps position for distance and height diff computation
   private lastUserPos: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
   private _userAltitude: number = null; // Cached user altitude from server fetched when we can't trust the GPS altitude
@@ -67,11 +69,11 @@ export class MapCenterInfoComponent extends NgDestoryBase {
   }
 
   constructor(
-    mapService: MapService,
+    private mapService: MapService,
     private mapSearchService: MapSearchService,
     private toastController: ToastController,
     private translateService: TranslateService,
-    geoPositionService: GeoPositionService,
+    private geoPositionService: GeoPositionService,
     private helperService: HelperService,
     private cdr: ChangeDetectorRef,
     private loggingService: LoggingService,
@@ -80,19 +82,27 @@ export class MapCenterInfoComponent extends NgDestoryBase {
   ) {
     super();
 
+    // We call detectChanges after every new mapView or gps pos has been processed, so
+    // no need for this component to be in the regular change detection loop.
+    this.cdr.detach();
+  }
+
+  ngOnInit(): void {
     // When we get a new gps position, update cached position.
     // If followMode is on, we do not need to show distance and relative height.
-    combineLatest([geoPositionService.currentPosition$, mapService.followMode$])
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(([newPos, followMode]) => {
-        this.userPos = followMode ? null : newPos;
-        this.fixGpsPosHeight();
-        this.cdr.markForCheck();
+    combineLatest([this.geoPositionService.currentPosition$, this.mapService.followMode$])
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap(([newPos, followMode]) => (this.userPos = followMode ? null : newPos)),
+        switchMap(() => this.fixGpsPosHeight())
+      )
+      .subscribe(() => {
+        this.cdr.detectChanges();
       });
 
     //fetch location info from Regobs API on map pan or zoom
     //update location, elevation and steepness when/if we get results from the API
-    mapService.relevantMapChangeWithInitialView$
+    this.mapService.relevantMapChangeWithInitialView$
       .pipe(
         takeUntil(this.ngDestroy$),
         tap((newMapView) => {
@@ -101,9 +111,16 @@ export class MapCenterInfoComponent extends NgDestoryBase {
           this.location = null;
           this.elevation = null;
           this.steepness = null;
-          this.cdr.markForCheck();
+          this.cdr.detectChanges();
         }),
-        switchMap((newMapView) => this.getLocationInfo$(newMapView.center))
+        debounceTime(1500),
+        switchMap((newMapView) =>
+          iif(
+            () => turf.booleanPointInPolygon([newMapView.center.lng, newMapView.center.lat], NORWAY_BOUNDS),
+            this.getLocationInfo$(newMapView.center),
+            of(null)
+          )
+        )
       )
       .subscribe((locationInfo) => {
         if (locationInfo != null) {
@@ -112,7 +129,7 @@ export class MapCenterInfoComponent extends NgDestoryBase {
           this.steepness = locationInfo.steepness;
         }
         this.loading = false;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
   }
 
@@ -123,9 +140,8 @@ export class MapCenterInfoComponent extends NgDestoryBase {
       if (!this.lastUserPos || this.lastUserPos.distanceTo(latLng) > 5) {
         this.lastUserPos = latLng;
         const locationInfo = await firstValueFrom(this.getLocationInfo$(latLng));
-        if (locationInfo && locationInfo.elevation) {
+        if (locationInfo?.elevation) {
           this._userAltitude = locationInfo.elevation;
-          this.cdr.markForCheck();
           this.loggingService.debug(
             `Device altitude ${this.userPos.coords.altitude} adjusted to ${locationInfo.elevation} ` +
               `in ${Date.now() - start}ms`,
@@ -156,7 +172,7 @@ export class MapCenterInfoComponent extends NgDestoryBase {
   private getLocationInfo$(latLng: L.LatLng): Observable<ViewInfo> {
     return this.mapSearchService.getViewInfo(latLng).pipe(
       timeout(LOCATION_INFO_REQUEST_TIMEOUT),
-      catchError(() => of({} as ViewInfo))
+      catchError(() => of(null))
     );
   }
 
