@@ -19,11 +19,18 @@ steps:
 #  displayName: 'Set Xcode version 11.2.1'
 #  enabled: false
 
-- task: InstallAppleCertificate@2
-  displayName: 'Install Apple development certificate'
-  inputs:
-    certSecureFile: 'be7635ac-272e-49ca-9c52-329ecd19cfb3'
-    certPwd: '$(apple_dev_cert)'
+# jolokv: Commented out installation of dev stuff.
+# Can be removed if pipeline runs OK later. 
+# - task: InstallAppleCertificate@2
+#   displayName: 'Install Apple development certificate'
+#   inputs:
+#     certSecureFile: 'be7635ac-272e-49ca-9c52-329ecd19cfb3'
+#     certPwd: '$(apple_dev_cert)'
+
+# - task: InstallAppleProvisioningProfile@1
+#   displayName: 'Install an Apple Development provisioning profile'
+#   inputs:
+#     provProfileSecureFile: 'c72d2dec-35b3-4566-a822-6cf9894bd00e'
 
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple App Store distribution certificate'
@@ -35,11 +42,6 @@ steps:
   displayName: 'Install an Apple App Store distribution provisioning profile'
   inputs:
     provProfileSecureFile: 'd606c023-431b-448b-b6a8-284e2bf10886'
-
-- task: InstallAppleProvisioningProfile@1
-  displayName: 'Install an Apple Development provisioning profile'
-  inputs:
-    provProfileSecureFile: 'c72d2dec-35b3-4566-a822-6cf9894bd00e'
 
 - task: NodeTool@0
   displayName: 'Use Node 14.x'
