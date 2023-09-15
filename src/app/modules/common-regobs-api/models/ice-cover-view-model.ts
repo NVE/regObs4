@@ -1,4 +1,5 @@
 /* tslint:disable */
+import { UrlViewModel } from './url-view-model';
 export interface IceCoverViewModel {
 
   /**
@@ -31,4 +32,5 @@ export interface IceCoverViewModel {
    * Skøytebarhet. IceSkateabilityKD unique identifier
    */
   IceSkateabilityTID?: number;
+  Urls?: Array<UrlViewModel>;
 }

@@ -51,6 +51,7 @@
         [(existingAttachments)]="draft.registration.Attachments"
         [onBeforeAdd]="getSaveFunc()"
       ></app-edit-images>
+      <app-add-web-url-item [(weburls)]="draft.registration.IceCoverObs.Urls"></app-add-web-url-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
