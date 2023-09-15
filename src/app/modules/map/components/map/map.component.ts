@@ -586,23 +586,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         layer.addTo(this.layerGroup);
       }
 
-      for (const supportMaps of this.userSettingService.getSupportTilesOptions(userSetting)) {
-        if (!supportMaps.enabled) {
+      for (const supportMap of this.userSettingService.getSupportTilesOptions(userSetting)) {
+        if (!supportMap.enabled) {
           continue;
         }
 
-        const options = {
+        const options: L.TileLayerOptions = {
           ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
           zIndex: MapLayerZIndex.OnlineSupportLayer,
           updateInterval: 600,
           keepBuffer: 0,
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: supportMaps.bounds,
+          bounds: supportMap.bounds,
         };
 
-        const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
-        layer.setOpacity(supportMaps.opacity);
+        if (supportMap.maxNativeZoom) {
+          options.maxNativeZoom = supportMap.maxNativeZoom;
+        }
+
+        const layer = this.createSupportMapTileLayer(supportMap.name, supportMap.url, options);
+        layer.setOpacity(supportMap.opacity);
         layer.addTo(this.layerGroup);
       }
     });
