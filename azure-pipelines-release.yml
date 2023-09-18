@@ -44,9 +44,10 @@ steps:
     provProfileSecureFile: 'd606c023-431b-448b-b6a8-284e2bf10886'
 
 - task: NodeTool@0
-  displayName: 'Use Node 14.x'
+  displayName: 'Use Node 18.10.x'
   inputs:
-    versionSpec: 14.x
+    versionSource: 'spec'
+    versionSpec: 18.10.x
     checkLatest: true
 
 # Needed to sign Android apk/aab
