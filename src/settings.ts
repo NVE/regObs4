@@ -125,7 +125,7 @@ export const settings: ISettings = {
       defaultZoom: 5,
       minZoom: 2,
       minZoomSupportMaps: 5,
-      maxZoom: 18,
+      maxZoom: 20,
       zoomLevelObservationList: 12,
       updateWhenIdle: false,
 
@@ -138,6 +138,7 @@ export const settings: ISettings = {
               [57.98808405905049, 4.626617431640625],
               [71.15939141681443, 30.816650390624996],
             ],
+            maxNativeZoom: 20,
           },
           supportsOffline: true,
         },
@@ -157,6 +158,7 @@ export const settings: ISettings = {
           url: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            maxNativeZoom: 18,
           },
         },
         openTopo: {
@@ -164,12 +166,15 @@ export const settings: ISettings = {
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             // subdomains: [] ?
+            maxNativeZoom: 17,
           },
         },
         arcGisOnline: {
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            // Says zoom level 23 on metadata page, but all tiles show "No map data avaialable" on zoom 20+
+            maxNativeZoom: 19,
           },
         },
       },
@@ -222,6 +227,7 @@ export const settings: ISettings = {
           opacity: 0.5,
           geoHazardId: 10,
           availableOffline: false,
+          maxNativeZoom: 16,
           subTile: {
             name: 'steepness-outlet',
             description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
@@ -236,6 +242,7 @@ export const settings: ISettings = {
               [81.36128726057069, -0.17578125],
               [57.136239319177434, -0.17578125],
             ],
+            maxNativeZoom: 16,
           },
           bounds: [
             [57.136239319177434, -0.17578125],
@@ -261,6 +268,7 @@ export const settings: ISettings = {
             [67.72977075500214, -55.30247736705827],
             [63.706357155206376, -55.30247736705827],
           ],
+          maxNativeZoom: 17,
         },
         {
           name: 'outlets-greenland',
@@ -278,6 +286,7 @@ export const settings: ISettings = {
             [67.72977075500214, -55.30247736705827],
             [63.706357155206376, -55.30247736705827],
           ],
+          maxNativeZoom: 17,
         },
         {
           name: 'clayzones',
@@ -295,6 +304,7 @@ export const settings: ISettings = {
             [81.36128726057069, -0.17578125],
             [57.136239319177434, -0.17578125],
           ],
+          maxNativeZoom: 16,
         },
         {
           name: 'floodzoones',
@@ -312,6 +322,7 @@ export const settings: ISettings = {
             [81.36128726057069, -0.17578125],
             [57.136239319177434, -0.17578125],
           ],
+          maxNativeZoom: 17,
         },
         {
           name: 'weakenedice',
@@ -329,6 +340,7 @@ export const settings: ISettings = {
             [81.36128726057069, -0.17578125],
             [57.136239319177434, -0.17578125],
           ],
+          maxNativeZoom: 19,
         },
       ],
     },

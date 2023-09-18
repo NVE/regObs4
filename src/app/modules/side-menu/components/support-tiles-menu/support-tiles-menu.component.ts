@@ -2,9 +2,9 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { setObservableTimeout, NgDestoryBase } from '../../../../core/helpers/observable-helper';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
-import { takeUntil, take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 interface PopupSubscription {
   subscription: Subscription;
@@ -78,7 +78,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   async saveSettings(supportTile: SupportTile) {
-    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
     this.userSettingService.saveUserSettings({
       ...currentSettings,
       supportTiles: this.addOrUpdateSupportTileSettings(supportTile, currentSettings.supportTiles),

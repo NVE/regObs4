@@ -56,18 +56,18 @@ const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
 };
 
 // Bug in leaflet? When using detectRetina, we need to offset native zooms.
+// https://github.com/Leaflet/Leaflet/issues/8850
 const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean): L.TileLayerOptions => {
-  if (detectRetina) {
+  if (detectRetina && L.Browser.retina) {
     return {
       minNativeZoom: Math.max(0, map.rootTile.z - 1),
       maxNativeZoom: Math.max(0, map.zMax - 1),
     };
-  } else {
-    return {
-      minNativeZoom: map.rootTile.z,
-      maxNativeZoom: map.zMax,
-    };
   }
+  return {
+    minNativeZoom: map.rootTile.z,
+    maxNativeZoom: map.zMax,
+  };
 };
 
 const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
@@ -570,39 +570,51 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private getTileLayerDefaultOptions(useRetinaMap = false): IRegObsTileLayerOptions {
     return {
       minZoom: settings.map.tiles.minZoom,
-      maxZoom: this.getMaxZoom(useRetinaMap),
-      maxNativeZoom: settings.map.tiles.maxZoom,
+      maxZoom: settings.map.tiles.maxZoom,
       detectRetina: useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
     };
   }
 
   private configureTileLayers(userSetting: UserSetting) {
+    const useRetinaMap = userSetting.useRetinaMap && L.Browser.retina;
+
     this.zone.runOutsideAngular(() => {
       this.layerGroup.clearLayers();
-      this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
+      this.map.setMaxZoom(useRetinaMap ? settings.map.tiles.maxZoom - 1 : settings.map.tiles.maxZoom);
 
-      for (const layer of this.getTopoMapLayers(userSetting.topoMap, userSetting.useRetinaMap)) {
+      for (const layer of this.getTopoMapLayers(userSetting.topoMap, useRetinaMap)) {
         layer.addTo(this.layerGroup);
       }
 
-      for (const supportMaps of this.userSettingService.getSupportTilesOptions(userSetting)) {
-        if (!supportMaps.enabled) {
+      for (const supportMap of this.userSettingService.getSupportTilesOptions(userSetting)) {
+        if (!supportMap.enabled) {
           continue;
         }
 
-        const options = {
+        const options: L.TileLayerOptions = {
           ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
           zIndex: MapLayerZIndex.OnlineSupportLayer,
           updateInterval: 600,
           keepBuffer: 0,
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: supportMaps.bounds,
+          bounds: supportMap.bounds,
         };
 
-        const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
-        layer.setOpacity(supportMaps.opacity);
+        if (supportMap.maxNativeZoom) {
+          let maxNativeZoom = supportMap.maxNativeZoom;
+
+          if (useRetinaMap) {
+            // https://github.com/Leaflet/Leaflet/issues/8850
+            maxNativeZoom = maxNativeZoom - 1;
+          }
+
+          options.maxNativeZoom = maxNativeZoom;
+        }
+
+        const layer = this.createSupportMapTileLayer(supportMap.name, supportMap.url, options);
+        layer.setOpacity(supportMap.opacity);
         layer.addTo(this.layerGroup);
       }
     });
@@ -622,10 +634,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private getMaxZoom(detectRetina: boolean) {
-    return detectRetina && L.Browser.retina ? settings.map.tiles.maxZoom + 2 : settings.map.tiles.maxZoom;
-  }
-
   private *getTopoMapLayers(topoMap: TopoMap, useRetinaMap: boolean) {
     const topoMapLayers = settings.map.tiles.topoMaps[topoMap] || DEFAULT_BASEMAP;
 
@@ -641,6 +649,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         ...(defaultLayerSettings.options || {}),
         ...(layerSettings.options || {}),
       };
+
+      if (useRetinaMap && options.maxNativeZoom) {
+        // https://github.com/Leaflet/Leaflet/issues/8850
+        options.maxNativeZoom = options.maxNativeZoom - 1;
+      }
 
       if (defaultLayerSettings.supportsOffline && isAndroidOrIos(this.platform)) {
         yield new RegObsOfflineAwareTileLayer(
