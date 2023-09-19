@@ -3,19 +3,25 @@ import { DateHelperService } from '../../shared/services/date-helper/date-helper
 import {
   ExistingAttachmentType,
   ExistingOrNewAttachment,
+  KdvKey,
   NewAttachmentType,
   RegistrationTid,
 } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
-import { GeneralObservationEditModel, ObserverGroupDto, UrlEditModel } from 'src/app/modules/common-regobs-api/models';
+import {
+  GeneralObservationEditModel,
+  ObserverGroupDto,
+  RegistrationEditModel,
+  UrlEditModel,
+} from 'src/app/modules/common-regobs-api/models';
 import { NavController } from '@ionic/angular';
 import { RouterDirection } from '@ionic/core';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { combineLatest, distinctUntilChanged, from, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, firstValueFrom, from, map, Observable, switchMap } from 'rxjs';
 import deepEqual from 'fast-deep-equal';
 import {
   getAllAttachmentsFromEditModel,
@@ -24,7 +30,7 @@ import {
   isObservationModelEmptyForRegistrationTid,
 } from '../../common-registration/registration.helpers';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
-import { NewAttachmentService } from '../../common-registration/registration.services';
+import { KdvService, NewAttachmentService } from '../../common-registration/registration.services';
 
 /**
  *
@@ -92,7 +98,8 @@ export class SummaryItemService {
     private newAttachmentService: NewAttachmentService,
     private dateHelperService: DateHelperService,
     private userGroupService: UserGroupService,
-    private navController: NavController
+    private navController: NavController,
+    private kdv: KdvService
   ) {}
 
   getSummaryItems$(uuid: string): Observable<ISummaryItem[]> {
@@ -289,7 +296,7 @@ export class SummaryItemService {
         draft,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
-        '',
+        await this.getDangerObsSummary(draft.registration.DangerObs, 'Dirt_DangerSignKDV'),
         RegistrationTid.DangerObs,
         attachments
       ),
@@ -304,13 +311,53 @@ export class SummaryItemService {
     ];
   }
 
+  private async getIceCoverSummary(model: RegistrationEditModel['IceCoverObs']): Promise<string> {
+    const texts = [];
+    if (model?.IceCoverTID) {
+      const values = await firstValueFrom(this.kdv.getKdvRepositoryByKeyObservable('Ice_IceCoverKDV'));
+      const selectedValue = values.find((v) => v.Id === model.IceCoverTID);
+      if (selectedValue) {
+        texts.push(selectedValue.Name);
+      }
+    }
+    if (model?.Comment) {
+      texts.push(model.Comment);
+    }
+    return texts.join(', ');
+  }
+
+  private getIceThicknessSummary(model: RegistrationEditModel['IceThickness']): string {
+    const texts = [];
+    if (model?.IceThicknessSum != null) {
+      texts.push(`${model.IceThicknessSum} cm`);
+    }
+    if (model?.Comment) {
+      texts.push(model.Comment);
+    }
+    return texts.join(', ');
+  }
+
+  private async getDangerObsSummary(model: RegistrationEditModel['DangerObs'], kdv: KdvKey): Promise<string> {
+    let texts = '';
+    if (model?.length) {
+      const kdvs = await firstValueFrom(this.kdv.getKdvRepositoryByKeyObservable(kdv));
+      texts = model
+        .map((dangerSign) => dangerSign.DangerSignTID)
+        .map((tid) => kdvs.find((v) => v.Id === tid))
+        .filter((text) => text != null)
+        .map((kdv) => kdv.Name)
+        .join(', ');
+    }
+    return texts;
+  }
+
   private async getIceItems(draft: RegistrationDraft, attachments: ExistingOrNewAttachment[]): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
         '/registration/ice/ice-cover',
         'REGISTRATION.ICE.ICE_COVER.TITLE',
-        draft.registration.IceCoverObs ? draft.registration.IceCoverObs.Comment : '',
+        await this.getIceCoverSummary(draft.registration.IceCoverObs),
         RegistrationTid.IceCoverObs,
         attachments
       ),
@@ -318,7 +365,7 @@ export class SummaryItemService {
         draft,
         '/registration/ice/ice-thickness',
         'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
-        draft.registration.IceThickness ? draft.registration.IceThickness.Comment : '',
+        this.getIceThicknessSummary(draft.registration.IceThickness),
         RegistrationTid.IceThickness,
         attachments
       ),
@@ -326,7 +373,7 @@ export class SummaryItemService {
         draft,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
-        '',
+        await this.getDangerObsSummary(draft.registration.DangerObs, 'Ice_DangerSignKDV'),
         RegistrationTid.DangerObs,
         attachments
       ),
@@ -359,7 +406,7 @@ export class SummaryItemService {
         draft,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
-        '',
+        await this.getDangerObsSummary(draft.registration.DangerObs, 'Snow_DangerSignKDV'),
         RegistrationTid.DangerObs,
         attachments
       ),
