@@ -18,6 +18,7 @@
 
 <ng-template #popover>
   <ion-select
+    [placeholder]="valueText | translate"
     *ngIf="options && options.length"
     (click)="getFilteredOptions()"
     (ionChange)="onChange($event)"

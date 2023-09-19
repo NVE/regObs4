@@ -3,6 +3,7 @@
     {{ label | translate }}
   </ion-label>
   <app-select
+    *ngIf="selectOptions$ | async as selectOptions"
     [(selectedValue)]="value"
     [options]="selectOptions"
     [disabled]="disabled"
