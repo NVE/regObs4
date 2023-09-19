@@ -329,7 +329,7 @@ export class SummaryItemService {
   private getIceThicknessSummary(model: RegistrationEditModel['IceThickness']): string {
     const texts = [];
     if (model?.IceThicknessSum != null) {
-      texts.push(`${model.IceThicknessSum} cm`);
+      texts.push(`${model.IceThicknessSum * 100} cm`);
     }
     if (model?.Comment) {
       texts.push(model.Comment);
