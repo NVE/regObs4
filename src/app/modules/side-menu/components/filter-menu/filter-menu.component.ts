@@ -211,8 +211,12 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       ),
     ]).pipe(
       map(([competenceOptions, competences]) => {
+        // Reset all checked properties before values from search criteria are applied
+        for (const competence of competenceOptions.options) {
+          competence.checked = false;
+        }
+
         // Set all active competences to checked
-        // we dont check non active competences to false
         for (const competence of competences) {
           competenceOptions.idToItem.get(competence).checked = true;
         }

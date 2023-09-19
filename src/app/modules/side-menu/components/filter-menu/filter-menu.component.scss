@@ -16,7 +16,6 @@
 
 ion-list {
   width: 100%;
-  padding-top: env(safe-area-inset-top);
   overflow: auto;
   max-height: 100vh;
   background: #fff;
@@ -34,6 +33,10 @@ ion-list {
     display: flex;
     align-items: center;
   }
+}
+
+.main-list {
+  padding-top: env(safe-area-inset-top);
 }
 
 .unselectable {
