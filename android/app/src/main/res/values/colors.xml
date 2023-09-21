@@ -3,6 +3,6 @@
     <color tools:ignore="UnusedResources" name="colorPrimary">#3F51B5</color>
     <color tools:ignore="UnusedResources" name="colorPrimaryDark">#303F9F</color>
     <color tools:ignore="UnusedResources" name="colorAccent">#FF4081</color>
-  <color tools:ignore="UnusedResources" name="colorSplashBackground">#044962</color>
+    <color tools:ignore="UnusedResources" name="colorSplashBackground">#00425F</color>
 </resources>
 
