@@ -48,7 +48,7 @@ steps:
   inputs:
     versionSource: 'spec'
     versionSpec: 18.10.x
-    checkLatest: true
+    checkLatest: false
 
 # Needed to sign Android apk/aab
 - task: DownloadSecureFile@1
