@@ -75,6 +75,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   showObservations$: Observable<boolean>;
   observationTypes$: Observable<ObservationTypeView[]>;
   nTypesSelected$: Observable<number>;
+  noCompetenceFilterActive$: Observable<boolean>;
 
   filterSupportPerPlatform: FilterSupportPerPlatform = {
     app: {
@@ -195,6 +196,13 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       })
     );
 
+    const competenceCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
+      map((searchCriteria) => searchCriteria.ObserverCompetence || []),
+      distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
+    );
+
+    this.noCompetenceFilterActive$ = competenceCriteria$.pipe(map((c) => c.length === 0));
+
     this.competenceItems$ = combineLatest([
       this.searchCriteriaModelService.getCompetenceFilterOptions$().pipe(
         // The values in this pipe starts as arrays of ObserverCompetenceLevelDto for all selected geohazards.
@@ -204,11 +212,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         map((competenceList) => new CompetenceOptions(competenceList))
       ),
 
-      // Get search criteria changes for observer competence
-      this.searchCriteriaService.searchCriteria$.pipe(
-        map((searchCriteria) => searchCriteria.ObserverCompetence || []),
-        distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
-      ),
+      competenceCriteria$,
     ]).pipe(
       map(([competenceOptions, competences]) => {
         // Reset all checked properties before values from search criteria are applied
