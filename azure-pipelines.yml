@@ -17,7 +17,7 @@ steps:
     displayName: 'Use Node 18.10.x'
     inputs:
       versionSpec: 18.10.x
-      checkLatest: true
+      checkLatest: false
 
   - task: Cache@2
     inputs:
