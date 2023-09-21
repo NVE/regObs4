@@ -108,6 +108,9 @@
       <ion-item>
         <ion-label position="stacked" class="margin-bottom">
           {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
+          <span *ngIf="noCompetenceFilterActive$ | async">
+            &nbsp;({{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }})
+          </span>
         </ion-label>
 
         <ion-list lines="none">
