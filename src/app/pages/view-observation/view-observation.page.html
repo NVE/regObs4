@@ -1,11 +1,34 @@
 <ion-header>
   <ion-toolbar appHeaderColor mode="ios">
+    <!-- Back button -->
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
+
     <ion-title> {{'REGISTRATION.OVERVIEW.TITLE' | translate}} </ion-title>
+
+    <ion-buttons slot="end" class="ion-hide-md-down">
+      <!-- Nickname button - takes user to my page so they can log out etc -->
+      <ng-container *ngIf="loggedInUser$ | async as user; else loginTemplate">
+        <ion-button fill="outline" (click)="goToMyPage()">
+          <ion-icon slot="start" name="person-circle"></ion-icon>
+          {{ user }}
+        </ion-button>
+      </ng-container>
+
+      <!-- Login button -->
+      <ng-template #loginTemplate>
+        <ion-button fill="outline" (click)="signIn()" [disabled]="isLoggingIn$ | async">
+          <ion-icon slot="start" name="person-circle"></ion-icon>
+          {{ 'LOGIN.LOGIN' | translate }}
+        </ion-button>
+      </ng-template>
+
+      <!-- Button to open right side menu with login, settings etc -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <ion-content *ngIf="registrationViewModel$ | async as registration">
   <app-observation-list-card *ngIf="registration.reg" [obs]="registration.reg"></app-observation-list-card>
 
