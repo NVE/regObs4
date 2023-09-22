@@ -56,10 +56,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   ngOnInit() {
     this.isLoggingIn$ = merge(this._isLoggingIn, this.authService.isLoggingIn$);
 
-    this.loggedInUser$ = this.authService.loggedInUser$.pipe(
-      filter((user) => user.isLoggedIn),
-      map((user) => user.email)
-    );
+    this.loggedInUser$ = this.authService.loggedInUser$.pipe(map((user) => (user.isLoggedIn ? user.email : null)));
 
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
     const id = this.activatedRoute.snapshot.params['id'];
