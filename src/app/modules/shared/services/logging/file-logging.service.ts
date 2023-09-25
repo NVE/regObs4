@@ -40,6 +40,7 @@ import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
 import version from '../../../../../environments/version.json';
 import { Device } from '@capacitor/device';
+import { getCircularReplacer } from 'src/app/core/helpers/circular-replacer';
 
 @Injectable({
   providedIn: 'root',
@@ -392,7 +393,7 @@ export class FileLoggingService {
 
   private stringify(objects: any[]): string {
     if (objects && objects.length > 0) {
-      return JSON.stringify(objects);
+      return JSON.stringify(objects, getCircularReplacer());
     }
     return '';
   }
