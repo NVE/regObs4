@@ -5,11 +5,10 @@ import { UserSettingService } from './core/services/user-setting/user-setting.se
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
-import { Observable, from, forkJoin, of, Subject } from 'rxjs';
+import { Observable, Subject, firstValueFrom } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
-import { switchMap, take, concatMap, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 import { AuthService } from 'ionic-appauth';
@@ -53,27 +52,23 @@ export class AppComponent {
     });
   }
 
-  initializeApp(): void {
+  private async initializeApp(): Promise<void> {
+    await this.platform.ready();
+
+    // Set up file logging first if native app
+    await this.fileLoggingService.init({});
+
     if (this.platform.is('ios')) {
       Keyboard.setAccessoryBarVisible({ isVisible: true });
     }
 
-    this.platform.ready().then(() => {
-      this.breakpointService.onResize(this.platform.width());
-    });
+    const userSettings = await firstValueFrom(this.userSettings.userSetting$);
+    const result = await Promise.allSettled(this.initServices(userSettings));
+    this.logIfError(result);
 
-    from(this.fileLoggingService.init({}))
-      .pipe(switchMap(() => this.getUserSettings().pipe(this.initServices())))
-      .subscribe({
-        next: () => {
-          this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
-          this.afterAppInitialized();
-        },
-        error: (err) => {
-          this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
-          this.afterAppInitialized();
-        },
-      });
+    this.breakpointService.onResize(this.platform.width());
+
+    this.afterAppInitialized();
   }
 
   filterMenuWillOpen() {
@@ -89,49 +84,30 @@ export class AppComponent {
     this.breakpointService.onResize(event.target.innerWidth);
   }
 
-  private initServices(): (src: Observable<unknown>) => Observable<unknown> {
-    return (src: Observable<UserSetting>) =>
-      src.pipe(
-        concatMap((userSettings) => {
-          const observables = [
-            from(this.dbHelperService.init()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))
-            ),
-            of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not configure logging'))
-            ),
-            from(this.offlineImageService.cleanupOldItems()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not cleanup old items'))
-            ),
-            of(this.shortcutService.init()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init shortcutService'))
-            ),
-            from(this.auth.init()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init auth service'))
-            ),
-            of(this.dataMarshallService.init()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init dataMarshallService'))
-            ),
-            of(this.draftToRegService.createSubscriptions()).pipe(
-              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start draftToRegService'))
-            ),
-          ];
-
-          if (isPlatform('hybrid')) {
-            const sqliteService = this.injector.get<SqliteService>(SqliteService);
-            observables.push(
-              of(sqliteService.init()).pipe(
-                catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start sqliteService'))
-              )
-            );
-          }
-
-          return forkJoin(observables);
-        })
-      );
+  private async logIfError(results: PromiseSettledResult<unknown>[]) {
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        this.loggingService.error(result.reason, DEBUG_TAG, 'Failed in app.component initServices');
+      }
+    }
   }
 
-  private getUserSettings() {
-    return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
+  private initSqliteIfNative() {
+    if (isPlatform('hybrid')) {
+      const sqliteService = this.injector.get<SqliteService>(SqliteService);
+      return sqliteService.init();
+    }
+  }
+
+  private initServices(userSettings: UserSetting): Promise<unknown>[] {
+    return [
+      this.dbHelperService.init(),
+      this.loggingService.configureLogging(userSettings.appMode),
+      this.shortcutService.init(),
+      this.auth.init(),
+      this.dataMarshallService.init(),
+      this.draftToRegService.createSubscriptions(),
+      this.initSqliteIfNative(),
+    ];
   }
 }
