@@ -6,17 +6,22 @@ import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import moment from 'moment';
 import { SearchCriteria } from '../../models/search-criteria';
 import {
+  BehaviorSubject,
   catchError,
   concatMap,
   debounceTime,
   exhaustMap,
   filter,
   firstValueFrom,
-  of,
+  map,
   ReplaySubject,
   Subject,
+  switchMap,
+  takeUntil,
   tap,
+  throwError,
   timeout,
+  timer,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { Platform } from '@ionic/angular';
@@ -112,22 +117,38 @@ export class SqliteService {
   private conn: SQLiteDBConnection;
 
   private ready = new ReplaySubject<boolean>(1);
-  private isReady$ = this.ready.asObservable().pipe(filter((ready) => ready === true));
+
+  private isReady$ = this.ready.asObservable().pipe(
+    filter((ready) => ready === true),
+    switchMap(() => timer(0, 500)),
+    exhaustMap(() => this.conn.isTransactionActive()),
+    map((capSqliteResult) => !!capSqliteResult?.result),
+    filter((isTransactionActive) => !isTransactionActive)
+  );
 
   private requestReset = new Subject<void>();
+
+  private _hasCrashed = new BehaviorSubject(false);
+
+  get hasCrashed() {
+    return this._hasCrashed.value;
+  }
+
+  hasCrashed$ = this._hasCrashed.asObservable().pipe(filter((x) => x === true));
 
   private isReady(): Promise<boolean> {
     return firstValueFrom(
       this.isReady$.pipe(
         timeout(5000),
         catchError((err) => {
-          this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out. Did white screen occur?');
+          this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out. Will try reset.');
           this.requestReset.next();
           return this.isReady$.pipe(
             timeout(10000),
             catchError((err) => {
+              this._hasCrashed.next(true);
               this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out after reset');
-              return of(true);
+              return throwError(() => err);
             })
           );
         })
@@ -144,6 +165,7 @@ export class SqliteService {
     // Use a concatmap to avoid opening the connection while it is being closed.
     this.pauseResumeEvent
       .pipe(
+        takeUntil(this.hasCrashed$),
         tap((state) => this.logger.debug('App state changed', DEBUG_TAG, { state })),
         concatMap((state) => (state === 'pause' ? this.closeConn() : this.openConn()))
       )
@@ -153,16 +175,22 @@ export class SqliteService {
     this.requestReset
       .pipe(
         debounceTime(2000),
+        takeUntil(this.hasCrashed$),
         exhaustMap(() => this.reset())
       )
       .subscribe();
   }
 
   private async reset() {
-    this.logger.debug('Reset', DEBUG_TAG);
-    await this.closeConn();
-    await this.openConn();
-    this.logger.debug('Reset done', DEBUG_TAG);
+    try {
+      this.logger.debug('Reset', DEBUG_TAG);
+      await this.closeConn();
+      await this.openConn();
+      this.logger.debug('Reset done', DEBUG_TAG);
+    } catch (error) {
+      this._hasCrashed.next(true);
+      throw error;
+    }
   }
 
   private async openConn() {
@@ -218,12 +246,17 @@ export class SqliteService {
   }
 
   async init() {
-    await this.platform.ready();
-    this.logger.debug('Initializing sqlite', DEBUG_TAG);
-    this.sqlite = new SQLiteConnection(CapacitorSQLite);
-    await this.runUpgradeStatements();
-    await this.openConn();
-    await this.cleanupRegistrations();
+    try {
+      await this.platform.ready();
+      this.logger.debug('Initializing sqlite', DEBUG_TAG);
+      this.sqlite = new SQLiteConnection(CapacitorSQLite);
+      await this.runUpgradeStatements();
+      await this.openConn();
+    } catch (error) {
+      this._hasCrashed.next(true);
+      throw error;
+    }
+
     this.ready.next(true);
     this.printInitInfo();
   }
@@ -231,8 +264,9 @@ export class SqliteService {
   async updateRegistrationsSyncTime(updateTimeMs: number, appMode: AppMode, lang: LangKey) {
     await this.isReady();
     this.logger.debug(`Update sync time`, DEBUG_TAG, { updateTimeMs, appMode });
-    const result = await this.conn.execute(
-      `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (${updateTimeMs},'${appMode}',${lang});`
+    const result = await this.conn.run(
+      `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (?,?,?);`,
+      [updateTimeMs, appMode, lang]
     );
     this.logger.debug(`Sync time updated`, DEBUG_TAG, result);
   }
@@ -381,41 +415,46 @@ export class SqliteService {
       'observer_competence',
     ];
 
+    // NB: Same order as columns above
+    const regToValues = (r: RegistrationViewModel) => [
+      r.RegId,
+      r.GeoHazardTID,
+      r.Observer.ObserverID,
+      r.Observer.NickName,
+      toJson(r),
+      dateToMs(r.DtObsTime),
+      dateToMs(r.DtRegTime),
+      dateToMs(r.DtChangeTime),
+      appMode,
+      r.ObsLocation.Latitude,
+      r.ObsLocation.Longitude,
+      lang,
+      r.Observer.CompetenceLevelTID,
+    ];
+
     await this.isReady();
 
-    // NB: Same order as columns above
-    // const regToValues = (reg: RegistrationViewModel) => `(${[
-    //   reg.RegId,
-    //   reg.GeoHazardTID,
-    //   reg.Observer.ObserverID,
-    //   `'${reg.Observer.NickName}'`,
-    //   `'${JSON.stringify(reg)}'`,
-    //   dateToMs(reg.DtObsTime),
-    //   dateToMs(reg.DtRegTime),
-    //   dateToMs(reg.DtChangeTime),
-    //   `'${appMode}'`,
-    //   reg.ObsLocation.Latitude,
-    //   reg.ObsLocation.Longitude
-    //   `'${reg.Observer.CompetenceLevelTID}'`
-    // ].join(',')})`;
-
-    const regToValues = (r: RegistrationViewModel) =>
-      `(${r.RegId},${r.GeoHazardTID},${r.Observer.ObserverID},'${r.Observer.NickName}','${toJson(r)}',` +
-      `${dateToMs(r.DtObsTime)},${dateToMs(r.DtRegTime)},${dateToMs(r.DtChangeTime)},'${appMode}',` +
-      `${r.ObsLocation.Latitude},${r.ObsLocation.Longitude},${lang},${r.Observer.CompetenceLevelTID})`;
-
-    const statements = registrations.map(regToValues);
-
     let result: capSQLiteChanges;
-    if (statements.length) {
-      this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: statements.length });
-      const sql = `INSERT OR REPLACE INTO registration (${columns.join(',')}) VALUES ${statements.join(',')};`;
+    if (registrations.length) {
+      this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: registrations.length });
+      const cols = columns.join(',');
+      const vals = columns.map(() => '?').join(',');
+      const sql = `INSERT OR REPLACE INTO registration (${cols}) VALUES (${vals});`;
+
+      const values = registrations.map((r) => regToValues(r));
+
       try {
-        result = await this.conn.execute(sql);
+        result = await this.conn.executeSet([
+          {
+            statement: sql,
+            values,
+          },
+        ]);
       } catch (error) {
-        this.logger.debug(`Execute error: ${sql}`, DEBUG_TAG);
+        this.logger.debug(`Execute error`, DEBUG_TAG, { sql });
         throw error;
       }
+
       this.logger.debug(`Execute result`, DEBUG_TAG, result);
       this.hasChanges.next(appMode);
     } else {
