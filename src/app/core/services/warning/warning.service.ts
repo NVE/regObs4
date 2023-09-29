@@ -205,7 +205,7 @@ export class WarningService {
           )
         ).pipe(map((result) => [].concat(...result)))
       ),
-      tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, result))
+      tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, { result }))
     );
   }
 

@@ -205,7 +205,7 @@ export class SearchCriteriaService {
     private logger: LoggingService
   ) {
     const criteria = this.readUrlParams();
-    this.logger.debug('Criteria from URL params: ', DEBUG_TAG, criteria);
+    this.logger.debug('Criteria from URL params: ', DEBUG_TAG, { criteria });
 
     // Log last 10 changes made (nb, does not include langKey, extent etc, and only logs the change, not entire critera)
     this.searchCriteriaChanges

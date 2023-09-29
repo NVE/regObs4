@@ -126,8 +126,8 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.appMode$ = this.userSetting$.pipe(
       map((val) => val.appMode),
       distinctUntilChanged(),
-      tap((val) => {
-        this.loggingService?.debug('App mode is: ', DEBUG_TAG, val);
+      tap((appMode) => {
+        this.loggingService?.debug('App mode is: ', DEBUG_TAG, { appMode });
       }),
       shareReplay(1)
     );
@@ -171,7 +171,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         return daysBackForCurrentGeoHazard?.daysBack;
       }),
       distinctUntilChanged(),
-      tap((val) => this.loggingService?.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val)),
+      tap((val) => this.loggingService?.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, { val })),
       shareReplay(1)
     );
   }

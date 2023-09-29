@@ -356,7 +356,7 @@ export class FileLoggingService {
     }
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]): void {
+  log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }): void {
     let msg = `[${level?.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
     if (optionalParams) {
       msg += `. Params: ${this.stringify(optionalParams)}`;
@@ -384,16 +384,25 @@ export class FileLoggingService {
    * @param error
    */
   err(message: string, error?: any): void {
-    let logMessage = 'ERROR! ' + message;
-    if (error) {
-      logMessage += ': ' + this.stringify(error);
+    this.logInternal(message, true);
+
+    if (error == null) {
+      return;
     }
-    this.logInternal(logMessage, true);
+
+    const errorTypeAndMessage = error.toString?.();
+    if (errorTypeAndMessage) {
+      this.logInternal(errorTypeAndMessage, true);
+    }
+
+    if (error.stack != null) {
+      this.logInternal(error.stack, true);
+    }
   }
 
-  private stringify(objects: any[]): string {
-    if (objects && objects.length > 0) {
-      return JSON.stringify(objects, getCircularReplacer());
+  private stringify(data: { [key: string]: any }): string {
+    if (data) {
+      return JSON.stringify(data, getCircularReplacer());
     }
     return '';
   }
