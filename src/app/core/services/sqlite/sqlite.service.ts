@@ -169,7 +169,11 @@ export class SqliteService {
         tap((state) => this.logger.debug('App state changed', DEBUG_TAG, { state })),
         concatMap((state) => (state === 'pause' ? this.closeConn() : this.openConn()))
       )
-      .subscribe();
+      .subscribe({
+        error: () => {
+          this._hasCrashed.next(true);
+        },
+      });
     this.platform.pause.subscribe(() => this.pauseResumeEvent.next('pause'));
     this.platform.resume.subscribe(() => this.pauseResumeEvent.next('resume'));
     this.requestReset
@@ -194,14 +198,36 @@ export class SqliteService {
   }
 
   private async openConn() {
+    const readonly = false;
+    const encrypted = false;
+    // Remember to update version if you added changes to tables
+    const version = 5;
+
     // This issue comment tries to explain the difference between createConnection and open
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
+    // https://github.com/jepiqueau/angular-sqlite-app-starter/blob/4e46dcef4d7c7033b1df41c7fe2094b6916e3133/src/app/services/database.service.ts
     try {
-      this.logger.debug('Create connection reference', DEBUG_TAG);
-      // Remember to update version if you added changes to tables
-      this.conn = await this.sqlite.createConnection(DATABASE_NAME, false, 'no-encryption', 5, false);
-      this.logger.debug('Open connection', DEBUG_TAG);
-      await this.conn.open();
+      this.logger.debug('Check connection status', DEBUG_TAG);
+      const isConnection = await this.sqlite.isConnection(DATABASE_NAME, readonly);
+      const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
+      this.logger.debug('Connection status', DEBUG_TAG, { isConnection, checkConnectionsConsistency });
+
+      if (!isConnection.result || !checkConnectionsConsistency.result) {
+        this.logger.debug('Create connection reference', DEBUG_TAG);
+        this.conn = await this.sqlite.createConnection(DATABASE_NAME, encrypted, 'no-encryption', version, readonly);
+      } else {
+        this.logger.debug('Retrieve connection', DEBUG_TAG);
+        this.conn = await this.sqlite.retrieveConnection(DATABASE_NAME, readonly);
+      }
+
+      this.logger.debug('Check isDBOpen', DEBUG_TAG);
+      const isOpen = await this.conn.isDBOpen();
+      this.logger.debug('isDBOpen', DEBUG_TAG, { isOpen });
+      if (!isOpen.result) {
+        this.logger.debug('Open connection', DEBUG_TAG);
+        await this.conn.open();
+      }
+
       this.ready.next(true);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Failed to create/open connection');
@@ -212,11 +238,20 @@ export class SqliteService {
   private async closeConn() {
     this.logger.debug('Closing connection', DEBUG_TAG);
     this.ready.next(false);
+
     try {
       await this.sqlite.closeConnection(DATABASE_NAME, false);
       this.logger.debug('Connection closed', DEBUG_TAG);
     } catch (error) {
-      this.logger.error(error, DEBUG_TAG, 'Failed to close connection');
+      const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
+      const connectionMaybeAlreadyClosed = (error as Error)?.message?.includes(
+        'No available connection for database regobs-v2'
+      );
+      const logLevel = connectionMaybeAlreadyClosed ? LogLevel.Warning : LogLevel.Error;
+      this.logger.log('Failed to close connection', error, logLevel, DEBUG_TAG, {
+        checkConnectionsConsistency,
+        connectionMaybeAlreadyClosed,
+      });
     }
   }
 
