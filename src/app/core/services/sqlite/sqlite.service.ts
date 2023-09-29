@@ -258,7 +258,7 @@ export class SqliteService {
   private async runUpgradeStatements() {
     this.logger.debug('Running upgrade statements');
     for (const stmt of UPGRADE_STATEMENTS) {
-      this.logger.debug('Upgrade statement', DEBUG_TAG, stmt);
+      this.logger.debug('Upgrade statement', DEBUG_TAG, { stmt });
       await this.sqlite.addUpgradeStatement(DATABASE_NAME, stmt.toVersion, stmt.statements);
     }
   }
@@ -303,7 +303,7 @@ export class SqliteService {
       `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (?,?,?);`,
       [updateTimeMs, appMode, lang]
     );
-    this.logger.debug(`Sync time updated`, DEBUG_TAG, result);
+    this.logger.debug(`Sync time updated`, DEBUG_TAG, { result });
   }
 
   async readRegistrationsSyncTime(appMode: AppMode, lang: LangKey) {
@@ -312,7 +312,7 @@ export class SqliteService {
     const result = await this.conn.query(
       `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
     );
-    this.logger.debug('Sync time', DEBUG_TAG, result);
+    this.logger.debug('Sync time', DEBUG_TAG, { result });
     return result.values[0]?.sync_time_ms;
   }
 
@@ -373,7 +373,7 @@ export class SqliteService {
     const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo};`;
     this.logger.debug('Cleanup registrations', DEBUG_TAG, { statement });
     const result = await this.conn.execute(statement);
-    this.logger.debug('DELETE result', DEBUG_TAG, result);
+    this.logger.debug('DELETE result', DEBUG_TAG, { result });
   }
 
   private parseLimit(c: SearchCriteria) {
@@ -490,7 +490,7 @@ export class SqliteService {
         throw error;
       }
 
-      this.logger.debug(`Execute result`, DEBUG_TAG, result);
+      this.logger.debug(`Execute result`, DEBUG_TAG, { result });
       this.hasChanges.next(appMode);
     } else {
       this.logger.debug(`Nothing to insert`, DEBUG_TAG);

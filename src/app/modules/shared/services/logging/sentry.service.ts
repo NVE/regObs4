@@ -16,12 +16,12 @@ import { makeFetchTransport } from '@sentry/browser';
 export class SentryService implements LoggingService {
   constructor(private fileLoggingService: FileLoggingService) {}
 
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
-    this.log(message, error, LogLevel.Error, tag, ...optionalParams);
+  error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
+    this.log(message, error, LogLevel.Error, tag, optionalParams);
   }
 
-  debug(message: string, tag?: string, ...optionalParams: any[]) {
-    this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
+  debug(message: string, tag?: string, optionalParams?: { [key: string]: any }) {
+    this.log(message, null, LogLevel.Debug, tag, optionalParams);
   }
 
   configureLogging(appMode: AppMode) {
@@ -57,15 +57,20 @@ export class SentryService implements LoggingService {
     }
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
+  log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }) {
+    this.fileLoggingService.log(message, error, level, tag, optionalParams);
     if (message && (level === LogLevel.Warning || level === LogLevel.Info || level === LogLevel.Error)) {
-      Sentry.addBreadcrumb({
+      const breadcrumb: Sentry.Breadcrumb = {
         category: tag,
-        data: optionalParams,
         message,
         level: level as unknown as Sentry.SeverityLevel,
-      });
+      };
+
+      if (optionalParams != null) {
+        breadcrumb.data = { ...optionalParams };
+      }
+
+      Sentry.addBreadcrumb(breadcrumb);
     }
     if (error && level === LogLevel.Error) {
       if (error) {

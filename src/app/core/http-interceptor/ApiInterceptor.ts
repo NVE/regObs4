@@ -91,7 +91,7 @@ export class ApiInterceptor implements HttpInterceptor {
       // take(1) makes the observable complete after getting the first loggedInUser.
       take(1),
       catchError((err) => {
-        this.loggerService.debug('Could not get valid token', 'API interceptor', err);
+        this.loggerService.debug('Could not get valid token', 'API interceptor', { err });
         this.regobsAuthService.signIn();
         return EMPTY; //TODO: Why this?
       }),
