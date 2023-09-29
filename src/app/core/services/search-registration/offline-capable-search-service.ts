@@ -25,10 +25,8 @@ import {
   withLatestFrom,
   filter,
   shareReplay,
-  throwError,
   defaultIfEmpty,
   from,
-  defer,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import {
@@ -46,6 +44,7 @@ import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registr
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
+import { Platform } from '@ionic/angular';
 
 type SyncRequest = Subject<void>;
 type CurrentSyncInfo = { appMode: AppMode; langKey: LangKey };
@@ -90,7 +89,8 @@ export class OfflineCapableSearchService extends SearchService {
     private network: NetworkStatusService,
     private userSettings: UserSettingService,
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private updateObsService: UpdateObservationsService
+    private updateObsService: UpdateObservationsService,
+    platform: Platform
   ) {
     super(config, http);
 
@@ -142,6 +142,16 @@ export class OfflineCapableSearchService extends SearchService {
         this.sqlite.deleteRegistrations([regId], appMode);
       });
 
+    const isPaused = new BehaviorSubject<boolean>(false);
+
+    platform.pause.subscribe(() => {
+      isPaused.next(true);
+    });
+
+    platform.resume.subscribe(() => {
+      isPaused.next(false);
+    });
+
     // Sync of updated observations are triggered from this observable
     combineLatest([
       this.syncRequests.pipe(
@@ -149,6 +159,7 @@ export class OfflineCapableSearchService extends SearchService {
         tap(() => this.logger.debug('Sync requests changed', DEBUG_TAG, { n: this.syncRequests.value.length }))
       ),
       network.connected$,
+      isPaused.pipe(tap((isPaused) => this.logger.debug('Paused state changed', DEBUG_TAG, { isPaused }))),
     ])
       .pipe(
         takeUntil(this.sqlite.hasCrashed$),
@@ -158,7 +169,7 @@ export class OfflineCapableSearchService extends SearchService {
 
         // Include sync interval here so it is reset when a sync is triggered from a user action etc.
         // EMPTY exits the pipe if we have no network
-        switchMap(([, hasNetwork]) => (hasNetwork ? this.startSyncInterval() : EMPTY)),
+        switchMap(([, hasNetwork, isPaused]) => (hasNetwork && !isPaused ? this.startSyncInterval() : EMPTY)),
 
         withLatestFrom(this.userSettings.appMode$, this.userSettings.language$),
 
