@@ -25,6 +25,10 @@ import {
   withLatestFrom,
   filter,
   shareReplay,
+  throwError,
+  defaultIfEmpty,
+  from,
+  defer,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import {
@@ -49,10 +53,9 @@ type CurrentSyncInfo = { appMode: AppMode; langKey: LangKey };
 const DEBUG_TAG = 'OfflineCapableSearchService';
 const SYNC_DEBOUNCE_MS = 500;
 const SYNC_INTERVAL = 120000;
-const OUT_OF_SYNC_MS = 1000 * 60 * 15; // 15 minutes
-// Sync timeouts includes the debounce time
-const SYNC_TIMEOUT_MS_HAS_FRESH_DATA = 3000;
-const SYNC_TIMEOUT_MS_NO_FRESH_DATA = 300000; // 5 minutes
+
+const OUT_OF_SYNC_MS = 259_200_000; // ms = 3 days
+const SYNC_TIMEOUT = 10_000; // 10 seconds
 
 /**
  * Search for observations in the offline database instead of searching online through the Regobs API.
@@ -65,27 +68,43 @@ export class OfflineCapableSearchService extends SearchService {
    * En forespørsel / SyncRequest er i seg selv en subject for å kunne gi beskjed tilbake til den som har bedt om
    * syncing om at syncingen er ferdig, feilet osv.
    */
-  private syncRequests = new BehaviorSubject<SyncRequest[]>([]);
-  private lastSyncTime$: Observable<number>;
-  private syncFinishedSuccessfully = new Subject<void>();
+  private readonly syncRequests = new BehaviorSubject<SyncRequest[]>([]);
+  private readonly lastSyncTime$: Observable<number>;
+  private readonly syncFinishedSuccessfully = new Subject<void>();
+
+  // Some syncing is more imprtant than other, and should be awaited.
+  // When AppMode or Language changes or user requests a refresh,
+  // this property is replaced with a new observable that emits when
+  // the sync is complete.
+  // If a sync is periodic, the app already has fresh data, so the sync can
+  // just be done in the background. For periodic syncs, this property is not
+  // replaced.
+  // See waitForImpartantSyncToFinishOrTimeout()
+  private importantSync$: Observable<void> = of(null);
 
   constructor(
     config: RegobsApiConfiguration,
     http: HttpClient,
     private logger: LoggingService,
     private sqlite: SqliteService,
-    network: NetworkStatusService,
+    private network: NetworkStatusService,
     private userSettings: UserSettingService,
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private updateObsService: UpdateObservationsService
   ) {
     super(config, http);
 
+    this.updateObsService.offlineMode = true;
+    this.sqlite.hasCrashed$.pipe(take(1)).subscribe(() => {
+      this.updateObsService.offlineMode = false;
+    });
+
     this.lastSyncTime$ = combineLatest([
       this.userSettings.appMode$,
       this.userSettings.language$,
       this.syncFinishedSuccessfully.pipe(startWith(true)),
     ]).pipe(
+      takeUntil(this.sqlite.hasCrashed$),
       switchMap(([appMode, langKey]) => this.readLastSyncTime(appMode, langKey)),
       shareReplay(1)
     );
@@ -93,6 +112,7 @@ export class OfflineCapableSearchService extends SearchService {
     // Update the last fetched time shown in filter menu whenever last fetched in offline db changes
     this.lastSyncTime$
       .pipe(
+        takeUntil(this.sqlite.hasCrashed$),
         map((lastFetchedMs) => {
           if (lastFetchedMs == 0) return null;
           else return new Date(lastFetchedMs);
@@ -100,23 +120,27 @@ export class OfflineCapableSearchService extends SearchService {
       )
       .subscribe((d) => this.updateObsService.setOfflineObservationsLastFetched(d));
 
-    // Whenever appMode or language changes trigger a new sync
-    combineLatest([this.userSettings.appMode$, this.userSettings.language$]).subscribe(() => {
-      this.triggerSync();
-    });
+    // Whenever appMode or language changes, or user force a refresh - trigger a new sync
+    combineLatest([this.userSettings.appMode$, this.userSettings.language$, this.updateObsService.refreshRequested$])
+      .pipe(takeUntil(this.sqlite.hasCrashed$))
+      .subscribe(() => {
+        this.lastSyncTime$;
+        const syncRequest = this.triggerSync();
+        this.importantSync$ = syncRequest;
+      });
 
     // Save submitted or changed registrations to database
-    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.changedRegistrations$]).subscribe(
-      ([appMode, { reg, langKey }]) => {
+    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.changedRegistrations$])
+      .pipe(takeUntil(this.sqlite.hasCrashed$))
+      .subscribe(([appMode, { reg, langKey }]) => {
         this.sqlite.insertRegistrations([reg], appMode, langKey);
-      }
-    );
+      });
 
-    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.deletedRegistrationIds$]).subscribe(
-      ([appMode, regId]) => {
+    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.deletedRegistrationIds$])
+      .pipe(takeUntil(this.sqlite.hasCrashed$))
+      .subscribe(([appMode, regId]) => {
         this.sqlite.deleteRegistrations([regId], appMode);
-      }
-    );
+      });
 
     // Sync of updated observations are triggered from this observable
     combineLatest([
@@ -127,6 +151,8 @@ export class OfflineCapableSearchService extends SearchService {
       network.connected$,
     ])
       .pipe(
+        takeUntil(this.sqlite.hasCrashed$),
+
         // Many things can trigger a sync. Use a debounce time to only start a sync when things has calmed down.
         debounceTime(SYNC_DEBOUNCE_MS),
 
@@ -144,24 +170,76 @@ export class OfflineCapableSearchService extends SearchService {
 
   SearchCount(criteria: SearchCriteriaRequestDto): Observable<SearchCountResponseDto> {
     this.logger.debug('SearchCount triggered', DEBUG_TAG, { criteria });
-    return this.getDbChangesTriggeredBySync$().pipe(
+    return from(this.initOfflineSearch()).pipe(
       switchMap((appMode) => this.sqlite.getRegistrationCount(criteria, appMode)),
-      map((count) => ({ TotalMatches: count }))
+      map((count) => ({ TotalMatches: count })),
+      tap(() => this.logger.debug('Used offline query for Count', DEBUG_TAG, { criteria })),
+      catchError((error) => {
+        this.logBeforeOnlineFallback(error, 'SearchCount', criteria);
+        return super.SearchCount(criteria);
+      })
     );
   }
 
   SearchAtAGlance(criteria: SearchCriteriaRequestDto): Observable<AtAGlanceViewModel[]> {
     this.logger.debug('SearchAtAGlance triggered', DEBUG_TAG, { criteria });
-    return this.getDbChangesTriggeredBySync$().pipe(
+    return from(this.initOfflineSearch()).pipe(
       switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
-      map((registrations) => registrations.map((reg) => toAtAGlanceViewModel(reg)))
+      map((registrations) => registrations.map((reg) => toAtAGlanceViewModel(reg))),
+      tap(() => this.logger.debug('Used offline query for AtAGlance', DEBUG_TAG, { criteria })),
+      catchError((error) => {
+        this.logBeforeOnlineFallback(error, 'SearchAtAGlance', criteria);
+        return super.SearchAtAGlance(criteria);
+      })
     );
   }
 
   SearchSearch(criteria: SearchCriteriaRequestDto): Observable<RegistrationViewModel[]> {
     this.logger.debug('SearchSearch triggered', DEBUG_TAG, { criteria });
-    return this.getDbChangesTriggeredBySync$().pipe(
-      switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode))
+    return from(this.initOfflineSearch()).pipe(
+      switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
+      tap(() => this.logger.debug('Used offline query for Search', DEBUG_TAG, { criteria })),
+      catchError((error) => {
+        this.logBeforeOnlineFallback(error, 'SearchSearch', criteria);
+        return super.SearchSearch(criteria);
+      })
+    );
+  }
+
+  private logBeforeOnlineFallback(error: Error, methodName: keyof SearchService, criteria: SearchCriteriaRequestDto) {
+    let logLevel: LogLevel;
+    if (error && error instanceof TimeoutError) {
+      logLevel = LogLevel.Warning;
+    } else {
+      logLevel = LogLevel.Error;
+    }
+    this.logger.log(`Handling error with online fallback for ${methodName}`, error, logLevel, DEBUG_TAG, { criteria });
+  }
+
+  private async initOfflineSearch(): Promise<AppMode> {
+    if (this.sqlite.hasCrashed) {
+      throw new Error('Db has crashed');
+    }
+
+    await this.waitForImportantSyncToFinishOrTimeout();
+    const appMode = await firstValueFrom(this.userSettings.appMode$);
+    return appMode;
+  }
+
+  private async waitForImportantSyncToFinishOrTimeout(): Promise<void> {
+    const isConnected = await firstValueFrom(this.network.connected$);
+    // If we are not connected, do not wait for syncing to finish
+    if (!isConnected) {
+      return;
+    }
+
+    await firstValueFrom(
+      this.importantSync$.pipe(
+        // If this.importantSync$ observable already is completed when we subscribe,
+        // it is considered "empty" and would not continue without defaultIfEmpty.
+        defaultIfEmpty(null),
+        timeout(SYNC_TIMEOUT)
+      )
     );
   }
 
@@ -281,7 +359,6 @@ export class OfflineCapableSearchService extends SearchService {
       this.syncFinishedSuccessfully.next();
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Sync failed', { syncInfo });
-      // TODO: Show error toast ?
     }
   }
 
@@ -314,7 +391,22 @@ export class OfflineCapableSearchService extends SearchService {
     }
   }
 
+  private async checkIfOutOfSync(appMode: AppMode) {
+    const langKey = await firstValueFrom(this.userSettings.language$);
+    // Read last sync time directly from db, to avoid getting a cached value from lastSyncTime$
+    // lastSyncTime$ can give us a wrong cached value if we change language or appMode without network coverage,
+    // then a new db query will be executed imediately without waiting for a new sync to complete.
+    const syncTime = await this.readLastSyncTime(appMode, langKey);
+    if (isOutOfSync(syncTime)) {
+      // Let user know that offline db is out of sync
+      // By throwing an error here, we force an online request in catchError,
+      // or if online request also fails, the user gets a "Could not fetch observations" message
+      throw new Error('Out of sync');
+    }
+  }
+
   private async selectRegistrationsFromDb(criteria: SearchCriteriaRequestDto, appMode: AppMode) {
+    await this.checkIfOutOfSync(appMode);
     const registrations = await this.sqlite.selectRegistrations(criteria, appMode);
     this.logger.debug('DB result', DEBUG_TAG, { n: registrations.length });
     return registrations;
@@ -325,70 +417,6 @@ export class OfflineCapableSearchService extends SearchService {
     const syncRequests = this.syncRequests.value;
     this.syncRequests.next([...syncRequests, syncRequest]);
     return syncRequest;
-  }
-
-  /**
-   * Emiter enten når en sync er ferdig, eller når appen har ventet x sekunder på at en sync skal bli ferdig.
-   **/
-  private syncRequestWithTimeout$() {
-    return this.lastSyncTime$.pipe(
-      take(1),
-      map((lastSyncTimeMs) => {
-        const hasFreshSync = hasFreshSyncTime(lastSyncTimeMs);
-        // Bruk ulik timeout avhengig av hvor lenge det er siden forrige sync.
-        // Hvis det er lang tid siden forrige sync bør vi også la appen få god tid til å hente nytt.
-        // Hvis det er kort tid siden er det ikke så farlig å hente det aller nyeste, da venter vi bare kort tid.
-        const syncTimeoutMs = hasFreshSync ? SYNC_TIMEOUT_MS_HAS_FRESH_DATA : SYNC_TIMEOUT_MS_NO_FRESH_DATA;
-        return { lastSyncTimeMs, hasFreshSync, syncTimeoutMs };
-      }),
-      switchMap((args) =>
-        this.triggerSync().pipe(
-          map(() => 'success' as const),
-          timeout(args.syncTimeoutMs),
-          catchError((err) => this.handleSyncError(err, args))
-        )
-      )
-    );
-  }
-
-  private getDbChangesTriggeredBySync$() {
-    // Dette fungerer sånn at hvis man er midt i en sync vil observablen fortsette å emite hver gang vi har
-    // endringer i databasen, helt til syncen har feilet pga timeout eller syncen er ferdig.
-    return this.userSettings.appMode$.pipe(
-      switchMap((selectedAppMode) =>
-        this.sqlite.hasChanges$.pipe(
-          filter((appModeWithChanges) => appModeWithChanges === selectedAppMode),
-          startWith(selectedAppMode)
-        )
-      ),
-
-      // If the sync successfully finished, wait 100 ms before emiting,
-      // we want this.sqlite.hasChanges$ to emit one last time.
-      // takeUntil(syncRequestWithTimeout).pipe(switchMap(res => res === 'success' ? timer(100) : of()))
-      takeUntil(this.syncRequestWithTimeout$())
-    );
-  }
-
-  private handleSyncError(
-    err: Error,
-    { hasFreshSync, syncTimeoutMs }: { hasFreshSync: boolean; syncTimeoutMs: number }
-  ) {
-    if (err instanceof TimeoutError && hasFreshSync) {
-      // No worries, we have fresh data, just log and continue
-      this.logger.debug(`Waited for sync to finish in ${syncTimeoutMs} ms`, DEBUG_TAG);
-    } else if (err instanceof TimeoutError && !hasFreshSync) {
-      // We do not have fresh data and sync did not complete within reasonable time
-      this.logger.log(
-        `Waited for sync to finish in ${syncTimeoutMs} ms, app does not have fresh data`,
-        err,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
-    } else {
-      this.logger.error(err, DEBUG_TAG, 'Unknown error happened while waiting for sync to finish');
-    }
-
-    return of('err' as const);
   }
 }
 
@@ -413,10 +441,6 @@ function toAtAGlanceViewModel(reg: RegistrationViewModel): AtAGlanceViewModel {
     RegId: reg.RegId,
     Title: reg.ObsLocation?.Title,
   };
-}
-
-function hasFreshSyncTime(lastSyncTimeMs: number) {
-  return !isOutOfSync(lastSyncTimeMs);
 }
 
 function isOutOfSync(syncTime: number) {

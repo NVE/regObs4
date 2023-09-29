@@ -41,8 +41,6 @@ import { SearchService } from './modules/common-regobs-api';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
-import { UpdateObservationsOfflineService } from './modules/side-menu/components/update-observations/update-observations-offline.service';
-import { UpdateObservationsService } from './modules/side-menu/components/update-observations/update-observations.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -166,10 +164,6 @@ export const APP_PROVIDERS: Provider[] = [
   {
     provide: BackgroundDownloadService,
     useClass: HttpClientDownloadService,
-  },
-  {
-    provide: UpdateObservationsService,
-    useClass: isPlatform('hybrid') ? UpdateObservationsOfflineService : UpdateObservationsService,
   },
   {
     provide: SearchService,

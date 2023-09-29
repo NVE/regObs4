@@ -8,10 +8,18 @@ import { ReplaySubject, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class UpdateObservationsService {
-  protected lastFetched = new ReplaySubject<Date>();
+  offlineMode = false;
+  private lastFetched = new ReplaySubject<Date>();
+  private lastFetchedOffline = new ReplaySubject<Date>();
   private refreshRequested = new Subject<void>();
-  readonly lastFetched$ = this.lastFetched.asObservable();
   readonly refreshRequested$ = this.refreshRequested.asObservable();
+
+  get lastFetched$() {
+    if (this.offlineMode) {
+      return this.lastFetchedOffline.asObservable();
+    }
+    return this.lastFetched.asObservable();
+  }
 
   setLastFetched(date: Date) {
     this.lastFetched.next(date);
@@ -21,9 +29,7 @@ export class UpdateObservationsService {
     this.refreshRequested.next();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setOfflineObservationsLastFetched(date: Date) {
-    // Not implemented for standard platform, web.
-    // See UpdateObservationsOfflineService
+    this.lastFetchedOffline.next(date);
   }
 }
