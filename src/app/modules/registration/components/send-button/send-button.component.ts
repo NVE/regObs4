@@ -15,6 +15,7 @@ import {
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'SendButtonComponent';
 const DELETE_OBS_TIMEOUT_MS = 5000;
@@ -169,7 +170,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
       header: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.HEADER'],
       message: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.MESSAGE'],
     });
-    this.logger.debug(`Delete of registration with regID ${this.draft.regId} failed`, DEBUG_TAG, err);
+    this.logger.log(`Delete of registration with regID ${this.draft.regId} failed`, err, LogLevel.Warning, DEBUG_TAG);
     await alert.present();
   }
 

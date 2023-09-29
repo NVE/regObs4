@@ -60,7 +60,7 @@ export class ObserverTripsService {
   isAuthorized: Observable<boolean> = this.authorizedState.pipe(
     map((state) => state === AuthorizedState.Authorized),
     distinctUntilChanged(),
-    tap((isAuthorized) => this.logger.debug('Authorized', DEBUG_TAG, isAuthorized))
+    tap((isAuthorized) => this.logger.debug('Authorized', DEBUG_TAG, { isAuthorized }))
   );
 
   constructor(

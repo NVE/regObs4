@@ -236,7 +236,7 @@ export class DraftRepositoryService {
       `Draft ${draft.uuid} saved in ${this.millisSince(start)} ms
       in environment ${appMode}`,
       DEBUG_TAG,
-      draft
+      { draft }
     );
     this.shouldLoad.next();
   }

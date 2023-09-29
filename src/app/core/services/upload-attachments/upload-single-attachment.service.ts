@@ -68,7 +68,7 @@ export class UploadSingleAttachmentService {
       tap((event) => this.onHttpEvent(event, attachment, clb)),
       filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
       map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
-      tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`))
+      tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`, DEBUG_TAG))
     );
 
     const uploadedAttachment = {

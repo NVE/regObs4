@@ -188,7 +188,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
       const propName = getRegistrationName(registrationTid);
       const property = draft.registration[propName];
       if (!isEmpty(property)) {
-        this.logger.debug(`Draft ${draft.uuid}. RegistrationTID: ${propName} has data. Not available in simple mode`);
+        this.logger.debug(
+          `Draft ${draft.uuid}. RegistrationTID: ${propName} has data. Not available in simple mode`,
+          DEBUG_TAG
+        );
         return true;
       }
     }

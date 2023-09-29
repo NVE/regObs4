@@ -82,7 +82,7 @@ export class ShortcutService {
             data: s.url, // Must be a well-formed URI
           },
         }));
-        this.loggingService.debug('Adding dynamic shortcuts:', DEBUG_TAG, shortcutsFull);
+        this.loggingService.debug('Adding dynamic shortcuts:', DEBUG_TAG, { shortcutsFull });
         w.plugins.Shortcuts.setDynamic(
           shortcutsFull,
           () => {

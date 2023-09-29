@@ -103,7 +103,7 @@ export class OfflineMapService {
       path: await this.getRootFileUrl(),
     });
     const packageNames = await this.getFolderNamesWithCompleteFiles(readDirResult.files);
-    this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
+    this.loggingService.debug('packageNames', DEBUG_TAG, { packageNames });
 
     // Read all package metadata
     const packages = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
@@ -621,7 +621,7 @@ export class OfflineMapService {
    * @returns map package metadata
    */
   private async getMetadata(packageName: string): Promise<OfflineMapPackage> {
-    this.loggingService.debug('Reading metadata for package:', DEBUG_TAG, packageName);
+    this.loggingService.debug('Reading metadata for package:', DEBUG_TAG, { packageName });
     const path = await this.getMapPackageFileUrl(packageName);
     const completeFile = await this.readCompleteFile(packageName);
 
@@ -635,7 +635,7 @@ export class OfflineMapService {
     const maps = await this.getMapsInPackageFolder(packageName);
     for (const map of maps) {
       const metadataPath = `${path}/${map}/${METADATA_FILE}`;
-      this.loggingService.debug('Metadata path:', DEBUG_TAG, metadataPath);
+      this.loggingService.debug('Metadata path:', DEBUG_TAG, { metadataPath });
       const readFileResult = await Filesystem.readFile({
         path: metadataPath,
         encoding: Encoding.UTF8,
@@ -907,10 +907,10 @@ export class OfflineMapService {
     const folderUrl = `${path}/${dirName}`;
     await Filesystem.rmdir({ path: folderUrl, recursive: true })
       .then(() => {
-        this.loggingService.debug(`removed folder: ${folderUrl}`);
+        this.loggingService.debug(`removed folder: ${folderUrl}`, DEBUG_TAG);
       })
       .catch((err) => {
-        this.loggingService.error(err, 'background download native', `remove folder failed: ${folderUrl}`);
+        this.loggingService.error(err, DEBUG_TAG, `remove folder failed: ${folderUrl}`);
       });
   }
 

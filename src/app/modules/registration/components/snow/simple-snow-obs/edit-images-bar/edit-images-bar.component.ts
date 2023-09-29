@@ -78,12 +78,10 @@ export class EditImagesBarComponent {
 
     const { data } = await modal.onWillDismiss();
     if (data != null && !deepEqual(data.existingAttachments, this.draft.registration.Attachments)) {
-      this.logger.debug(
-        'Existing (remote) attachments changed, saving draft...',
-        DEBUG_TAG,
-        { changed: data.existingAttachments },
-        { original: this.draft.registration.Attachments }
-      );
+      this.logger.debug('Existing (remote) attachments changed, saving draft...', DEBUG_TAG, {
+        changed: data.existingAttachments,
+        original: this.draft.registration.Attachments,
+      });
       this.draft.registration.Attachments = data.existingAttachments;
       this.draftRepository.save(this.draft);
     } else {

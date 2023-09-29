@@ -106,7 +106,9 @@ export class UploadAttachmentsService {
       throw error;
     }
 
-    this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
+    this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', {
+      attachmentId: attachment.AttachmentId,
+    });
     failedAttachments.push({
       id: attachment.id,
       error,

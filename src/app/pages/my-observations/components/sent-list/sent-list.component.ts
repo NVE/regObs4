@@ -160,7 +160,7 @@ export class SentListComponent implements OnInit, OnDestroy {
         deletedRegIds.length
       } deleted: ${deletedRegIds.join(',')}`,
       DEBUG_TAG,
-      myRegistrations
+      { myRegistrations }
     );
     if (submittedRegistrations.length) {
       myRegistrations = getUniqueRegistrations([...submittedRegistrations, ...myRegistrations]);
@@ -169,7 +169,7 @@ export class SentListComponent implements OnInit, OnDestroy {
       myRegistrations = myRegistrations.filter((reg) => !deletedRegIds.includes(reg.RegId));
     }
     if (submittedRegistrations.length || deletedRegIds.length) {
-      this.logger.debug('Registrations after filtering', DEBUG_TAG, myRegistrations);
+      this.logger.debug('Registrations after filtering', DEBUG_TAG, { myRegistrations });
     }
     return myRegistrations;
   }

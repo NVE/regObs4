@@ -23,17 +23,38 @@ export class ConsoleLoggingService implements LoggingService {
 
   setUser(user: LoggedInUser): void {}
 
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
-    this.log(message, error, LogLevel.Error, tag, ...optionalParams);
+  error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
+    this.log(message, error, LogLevel.Error, tag, optionalParams);
   }
 
-  debug(message: string, tag?: string, ...optionalParams: any[]) {
-    this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
+  debug(message: string, tag?: string, optionalParams?: { [key: string]: any }) {
+    this.log(message, null, LogLevel.Debug, tag, optionalParams);
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
-    optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
+  log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }) {
+    const logLevel = level || LogLevel.Debug;
+    const msg = `[${logLevel.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
+    const hasOptionalParams = Object.keys(optionalParams || {}).length > 0;
+
+    let logger: Console['error'] | Console['warn'] | Console['log'];
+    switch (logLevel) {
+      case LogLevel.Error:
+        logger = console.error;
+        break;
+      case LogLevel.Warning:
+        logger = console.warn;
+        break;
+      default:
+        logger = console.log;
+        break;
+    }
+
+    if (hasOptionalParams) {
+      logger(msg, optionalParams);
+    } else {
+      logger(msg);
+    }
+
     if (error) {
       console.error(error);
     }
