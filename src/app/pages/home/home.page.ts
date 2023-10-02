@@ -7,25 +7,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import {
-  combineLatest,
-  firstValueFrom,
-  Observable,
-  race,
-  Subject,
-  scan,
-  BehaviorSubject,
-  from,
-  TimeoutError,
-} from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, race, Subject, scan, BehaviorSubject } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
-  exhaustMap,
   filter,
-  finalize,
   map,
-  skip,
   startWith,
   switchMap,
   takeUntil,
