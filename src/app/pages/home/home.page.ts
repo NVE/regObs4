@@ -7,8 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { combineLatest, firstValueFrom, Observable, race, Subject, scan, BehaviorSubject } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, race, Subject, scan, BehaviorSubject, of } from 'rxjs';
 import {
+  catchError,
+  concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -79,7 +81,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   private isFetchingObservations = new BehaviorSubject(false);
   isFetchingObservations$: Observable<boolean>;
-  private toast: HTMLIonToastElement; // Shows error message if observation search fail
+
+  private showErrorToast = new Subject<boolean>();
+  private errorToast: HTMLIonToastElement; // Shows error message if observation search fail
 
   @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
   private mapCenterInfoHeight = new Subject<number>();
@@ -113,14 +117,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       });
 
     this.tabsService.selectedTab$.pipe(filter((tab) => tab === TABS.HOME)).subscribe(() => {
-      this.toast?.dismiss(); // Hide error message when we arrive at this page
+      this.errorToast?.dismiss(); // Hide error message when we arrive at this page
       this.updateObservationsService.setLastFetched(this.lastFetched);
     });
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
     this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
     this.showObservations$ = this.userSettingService.showObservations$;
-    this.initSearch();
 
     this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
       withLatestFrom(this.tabsService.selectedTab$),
@@ -134,6 +137,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         }
       })
     );
+
+    this.initSearch();
   }
 
   private async initSearch() {
@@ -148,24 +153,26 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       filter(([, tab, showObservations]) => tab === TABS.HOME && showObservations === true),
       map(([criteria]) => criteria)
     );
-    this.createRegistrations$(criteriaWhenOnHomePageOnlyAndShowObservationsIsTrue$).subscribe((registrations) => {
-      this.redrawObservationMarkers(registrations);
-      this.lastFetched = new Date();
-      this.updateObservationsService.setLastFetched(this.lastFetched);
-    });
-  }
 
-  private async runApiSearch(searchCriteria: SearchCriteriaRequestDto): Promise<AtAGlanceViewModel[]> {
-    let registrations: AtAGlanceViewModel[] = [];
-    try {
-      registrations = await firstValueFrom(this.searchService.SearchAtAGlance(searchCriteria).pipe(timeout(120000)));
-      this.hideErrorToast();
-    } catch (error) {
-      this.loggingService.log('Error in search', error, LogLevel.Warning, DEBUG_TAG);
-      this.showSearchErrorToast();
-      this.rememberExtent(null); // To trigger new search on next pan or zoom
-    }
-    return registrations;
+    this.showErrorToast
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        debounceTime(100),
+        concatMap((showToast) => {
+          // Use concatMap to always let the last call complete before calling again
+          if (showToast) {
+            return this.showSearchErrorToast();
+          }
+          return this.hideErrorToast();
+        })
+      )
+      .subscribe();
+
+    this.createRegistrations$(criteriaWhenOnHomePageOnlyAndShowObservationsIsTrue$)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((registrations) => {
+        this.redrawObservationMarkers(registrations);
+      });
   }
 
   private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
@@ -173,20 +180,44 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       map(([searchCriteria]) => searchCriteria),
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetchingObservations.next(true)),
-      switchMap((criteria: SearchCriteriaRequestDto) => this.runApiSearch(criteria)),
-      tap(() => this.isFetchingObservations.next(false))
+
+      switchMap((criteria: SearchCriteriaRequestDto) =>
+        this.searchService.SearchAtAGlance(criteria).pipe(
+          timeout(120000),
+
+          // Successfull search handling
+          tap(() => this.showErrorToast.next(false)),
+          tap(() => (this.lastFetched = new Date())),
+
+          // Error handling
+          catchError((err) => {
+            this.loggingService.log('Error in search', err, LogLevel.Warning, DEBUG_TAG);
+            this.lastFetched = null;
+            this.rememberExtent(null); // To trigger new search on next pan or zoom
+            this.showErrorToast.next(true);
+            return of([]);
+          })
+        )
+      ),
+
+      tap(() => this.isFetchingObservations.next(false)),
+      tap(() => this.updateObservationsService.setLastFetched(this.lastFetched))
     );
   }
 
   private async showSearchErrorToast() {
-    await this.hideErrorToast();
+    if (this.errorToast != null) {
+      // Error toast already visible
+      return;
+    }
+
     const translations = await firstValueFrom(
       this.translateService.get([
         'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE',
         'HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.BUTTON',
       ])
     );
-    this.toast = await this.toastService.create({
+    this.errorToast = await this.toastService.create({
       message: translations['HOME_PAGE.OBSERVATIONS_SEARCH_ERROR.MESSAGE'],
       position: 'bottom',
       cssClass: 'toast',
@@ -197,21 +228,21 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         },
       ],
     });
-    this.toast.onDidDismiss().then(() => {
-      this.toast = null;
+    this.errorToast.onDidDismiss().then(() => {
+      this.errorToast = null;
     });
-    await this.toast.present();
+    await this.errorToast.present();
   }
 
   private async hideErrorToast() {
-    if (this.toast) {
-      await this.toast.dismiss();
-      this.toast = null;
+    if (this.errorToast) {
+      await this.errorToast.dismiss();
+      this.errorToast = null;
     }
   }
 
   private isErrorToastVisible(): boolean {
-    return this.toast != null;
+    return this.errorToast != null;
   }
 
   get appname(): string {
