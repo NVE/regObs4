@@ -239,9 +239,10 @@ export class RegobsAuthService {
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
         this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
-        await this.navCtrl.navigateForward(returnUrl);
+        // Use replaceUrl to remove /auth/callback from history
+        await this.navCtrl.navigateForward(returnUrl, { replaceUrl: true });
       } else {
-        await this.navCtrl.navigateRoot('');
+        await this.navCtrl.navigateRoot('', { replaceUrl: true });
       }
     }
   }
