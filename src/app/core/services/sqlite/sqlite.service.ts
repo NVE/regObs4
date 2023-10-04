@@ -1,7 +1,13 @@
 /* eslint-disable max-len */
 import { Injectable } from '@angular/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { CapacitorSQLite, capSQLiteChanges, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
+import {
+  CapacitorSQLite,
+  capSQLiteChanges,
+  capSQLiteResult,
+  SQLiteConnection,
+  SQLiteDBConnection,
+} from '@capacitor-community/sqlite';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import moment from 'moment';
 import { SearchCriteria } from '../../models/search-criteria';
@@ -13,7 +19,6 @@ import {
   exhaustMap,
   filter,
   firstValueFrom,
-  map,
   ReplaySubject,
   Subject,
   switchMap,
@@ -106,6 +111,8 @@ const UPGRADE_STATEMENTS = [
   },
 ];
 
+const READONLY = false;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -121,10 +128,48 @@ export class SqliteService {
   private isReady$ = this.ready.asObservable().pipe(
     filter((ready) => ready === true),
     switchMap(() => timer(0, 500)),
-    exhaustMap(() => this.conn.isTransactionActive()),
-    map((capSqliteResult) => !!capSqliteResult?.result),
-    filter((isTransactionActive) => !isTransactionActive)
+    exhaustMap(() => this.isDbOpenAndReady()),
+    filter((isReady) => isReady)
   );
+
+  private async isDbOpenAndReady() {
+    let ready = true;
+    let err = null;
+    let level = LogLevel.Info;
+    let isConnection: capSQLiteResult = null;
+    let checkConnectionsConsistency: capSQLiteResult = null;
+    let isDbOpen: capSQLiteResult = null;
+    let isTransactionActive: capSQLiteResult = null;
+
+    try {
+      isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
+      ready = !!isConnection?.result;
+
+      if (ready) {
+        checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
+        isDbOpen = await this.conn.isDBOpen();
+        ready = !!isDbOpen?.result;
+      }
+
+      if (ready) {
+        isTransactionActive = await this.conn.isTransactionActive();
+        ready = !isTransactionActive?.result;
+      }
+    } catch (error) {
+      err = error;
+      ready = false;
+      level = LogLevel.Error;
+    }
+
+    this.logger.log('isDbOpenAndReady', err, level, DEBUG_TAG, {
+      ready,
+      isConnection,
+      checkConnectionsConsistency,
+      isDbOpen,
+      isTransactionActive,
+    });
+    return ready;
+  }
 
   private requestReset = new Subject<void>();
 
@@ -134,19 +179,29 @@ export class SqliteService {
     return this._hasCrashed.value;
   }
 
+  /**
+   * Throws if db has crashed
+   */
+  checkHasCrashed() {
+    if (this.hasCrashed) {
+      throw new Error('Db has crashed');
+    }
+  }
+
   hasCrashed$ = this._hasCrashed.asObservable().pipe(filter((x) => x === true));
 
   private isReady(): Promise<boolean> {
+    this.checkHasCrashed();
+
     return firstValueFrom(
       this.isReady$.pipe(
-        timeout(5000),
+        timeout(30_000),
         catchError((err) => {
           this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out. Will try reset.');
           this.requestReset.next();
           return this.isReady$.pipe(
-            timeout(10000),
+            timeout(60_000),
             catchError((err) => {
-              this._hasCrashed.next(true);
               this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out after reset');
               return throwError(() => err);
             })
@@ -187,18 +242,18 @@ export class SqliteService {
 
   private async reset() {
     try {
-      this.logger.debug('Reset', DEBUG_TAG);
+      this.logger.log('Reset', null, LogLevel.Info, DEBUG_TAG);
       await this.closeConn();
       await this.openConn();
-      this.logger.debug('Reset done', DEBUG_TAG);
+      this.logger.log('Reset done', null, LogLevel.Info, DEBUG_TAG);
     } catch (error) {
+      this.logger.log('Failed to reset db', error, LogLevel.Warning, DEBUG_TAG, { error });
       this._hasCrashed.next(true);
       throw error;
     }
   }
 
   private async openConn() {
-    const readonly = false;
     const encrypted = false;
     // Remember to update version if you added changes to tables
     const version = 5;
@@ -207,25 +262,33 @@ export class SqliteService {
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
     // https://github.com/jepiqueau/angular-sqlite-app-starter/blob/4e46dcef4d7c7033b1df41c7fe2094b6916e3133/src/app/services/database.service.ts
     try {
-      this.logger.debug('Check connection status', DEBUG_TAG);
-      const isConnection = await this.sqlite.isConnection(DATABASE_NAME, readonly);
+      const isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
       const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
-      this.logger.debug('Connection status', DEBUG_TAG, { isConnection, checkConnectionsConsistency });
+      this.logger.log('Connection status', null, LogLevel.Info, DEBUG_TAG, {
+        isConnection,
+        checkConnectionsConsistency,
+      });
 
       if (!isConnection.result || !checkConnectionsConsistency.result) {
-        this.logger.debug('Create connection reference', DEBUG_TAG);
-        this.conn = await this.sqlite.createConnection(DATABASE_NAME, encrypted, 'no-encryption', version, readonly);
+        this.logger.log('Create connection', null, LogLevel.Info, DEBUG_TAG, {
+          DATABASE_NAME,
+          encrypted,
+          version,
+          READONLY,
+        });
+        this.conn = await this.sqlite.createConnection(DATABASE_NAME, encrypted, 'no-encryption', version, READONLY);
       } else {
-        this.logger.debug('Retrieve connection', DEBUG_TAG);
-        this.conn = await this.sqlite.retrieveConnection(DATABASE_NAME, readonly);
+        this.logger.log('Retrieve connection', null, LogLevel.Info, DEBUG_TAG);
+        this.conn = await this.sqlite.retrieveConnection(DATABASE_NAME, READONLY);
       }
 
-      this.logger.debug('Check isDBOpen', DEBUG_TAG);
+      this.logger.log('Check isDBOpen', null, LogLevel.Info, DEBUG_TAG);
       const isOpen = await this.conn.isDBOpen();
-      this.logger.debug('isDBOpen', DEBUG_TAG, { isOpen });
+      this.logger.log('isDBOpen', null, LogLevel.Info, DEBUG_TAG, { isOpen });
       if (!isOpen.result) {
-        this.logger.debug('Open connection', DEBUG_TAG);
+        this.logger.log('Open connection', null, LogLevel.Info, DEBUG_TAG);
         await this.conn.open();
+        this.logger.log('Connection opened', null, LogLevel.Info, DEBUG_TAG);
       }
 
       this.ready.next(true);
@@ -236,12 +299,12 @@ export class SqliteService {
   }
 
   private async closeConn() {
-    this.logger.debug('Closing connection', DEBUG_TAG);
+    this.logger.log('Closing connection', null, LogLevel.Info, DEBUG_TAG);
     this.ready.next(false);
 
     try {
       await this.sqlite.closeConnection(DATABASE_NAME, false);
-      this.logger.debug('Connection closed', DEBUG_TAG);
+      this.logger.log('Connection closed', null, LogLevel.Info, DEBUG_TAG);
     } catch (error) {
       const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
       const connectionMaybeAlreadyClosed = (error as Error)?.message?.includes(
@@ -283,7 +346,7 @@ export class SqliteService {
   async init() {
     try {
       await this.platform.ready();
-      this.logger.debug('Initializing sqlite', DEBUG_TAG);
+      this.logger.log('Create SQLiteConnection', null, LogLevel.Info, DEBUG_TAG);
       this.sqlite = new SQLiteConnection(CapacitorSQLite);
       await this.runUpgradeStatements();
       await this.openConn();
@@ -486,7 +549,7 @@ export class SqliteService {
           },
         ]);
       } catch (error) {
-        this.logger.debug(`Execute error`, DEBUG_TAG, { sql });
+        this.logger.error(error, DEBUG_TAG, `Execute error`, { sql });
         throw error;
       }
 
