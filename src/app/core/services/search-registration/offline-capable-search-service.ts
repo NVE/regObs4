@@ -54,7 +54,7 @@ const SYNC_DEBOUNCE_MS = 500;
 const SYNC_INTERVAL = 120000;
 
 const OUT_OF_SYNC_MS = 259_200_000; // ms = 3 days
-const SYNC_TIMEOUT = 10_000; // 10 seconds
+const SYNC_TIMEOUT = 8_000; // 10 seconds
 
 /**
  * Search for observations in the offline database instead of searching online through the Regobs API.
@@ -104,15 +104,14 @@ export class OfflineCapableSearchService extends SearchService {
       this.userSettings.language$,
       this.syncFinishedSuccessfully.pipe(startWith(true)),
     ]).pipe(
-      takeUntil(this.sqlite.hasCrashed$),
       switchMap(([appMode, langKey]) => this.readLastSyncTime(appMode, langKey)),
+      takeUntil(this.sqlite.hasCrashed$),
       shareReplay(1)
     );
 
     // Update the last fetched time shown in filter menu whenever last fetched in offline db changes
     this.lastSyncTime$
       .pipe(
-        takeUntil(this.sqlite.hasCrashed$),
         map((lastFetchedMs) => {
           if (lastFetchedMs == 0) return null;
           else return new Date(lastFetchedMs);
@@ -162,8 +161,6 @@ export class OfflineCapableSearchService extends SearchService {
       isPaused.pipe(tap((isPaused) => this.logger.debug('Paused state changed', DEBUG_TAG, { isPaused }))),
     ])
       .pipe(
-        takeUntil(this.sqlite.hasCrashed$),
-
         // Many things can trigger a sync. Use a debounce time to only start a sync when things has calmed down.
         debounceTime(SYNC_DEBOUNCE_MS),
 
@@ -174,7 +171,9 @@ export class OfflineCapableSearchService extends SearchService {
         withLatestFrom(this.userSettings.appMode$, this.userSettings.language$),
 
         // Start syncing, use exhaustMap to do one sync at a time, and let it finish / fail before starting the next one.
-        exhaustMap(([, appMode, langKey]) => this.startSyncing({ appMode, langKey }))
+        exhaustMap(([, appMode, langKey]) => this.startSyncing({ appMode, langKey })),
+
+        takeUntil(this.sqlite.hasCrashed$)
       )
       .subscribe();
   }
@@ -228,10 +227,7 @@ export class OfflineCapableSearchService extends SearchService {
   }
 
   private async initOfflineSearch(): Promise<AppMode> {
-    if (this.sqlite.hasCrashed) {
-      throw new Error('Db has crashed');
-    }
-
+    this.sqlite.checkHasCrashed();
     await this.waitForImportantSyncToFinishOrTimeout();
     const appMode = await firstValueFrom(this.userSettings.appMode$);
     return appMode;
