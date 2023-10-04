@@ -20,6 +20,7 @@ import { NetworkStatusService } from '../network-status/network-status.service';
 import { UploadAttachmentError } from '../upload-attachments/upload-attachments.service';
 import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
 import { DraftRepositoryService } from './draft-repository.service';
+import { getHttpErrorResponseMessageAndCode } from '../../helpers/http-error-response-helper';
 
 const DEBUG_TAG = 'DraftToRegistrationService';
 
@@ -188,39 +189,7 @@ function handleError(error: Error): { code: RegistrationDraftErrorCode; message:
     code = RegistrationDraftErrorCode.AttachmentError;
     message = error.message;
   } else if (error instanceof HttpErrorResponse) {
-    // Handle Http Errors
-    if (error.status === 0) {
-      (code = RegistrationDraftErrorCode.NoNetworkOrTimedOut),
-        (message = error.message || 'Response failed with status code 0, probably no network?');
-    } else if (error.status === HttpStatusCode.BadRequest) {
-      code = RegistrationDraftErrorCode.RegistrationError;
-      // Regobs api returns additional info for bad requests.
-      // Put this info into a readable error message.
-      let messages = [];
-      if (error.error?.Message) {
-        messages.push(error.error.Message);
-      }
-      if (error.error?.ModelState) {
-        messages = [...messages, ...Object.values(error.error.ModelState)];
-      }
-      if (messages.length > 0) {
-        message = messages.join(' ');
-      } else {
-        message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
-      }
-    } else if (error.status === HttpStatusCode.Conflict) {
-      code = RegistrationDraftErrorCode.ConflictError;
-      message = error.message || `Registration conflict ${error.status} - ${error.statusText}`;
-    } else if (error.status === HttpStatusCode.Gone) {
-      code = RegistrationDraftErrorCode.GoneError;
-      message = error.message || `Registration is deleted in Regobs ${error.status} - ${error.statusText}`;
-    } else if (error.status > HttpStatusCode.BadRequest) {
-      code = RegistrationDraftErrorCode.ServerError;
-      message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
-    } else {
-      code = RegistrationDraftErrorCode.Unknown;
-      message = error.message || `Got an unknown http error: ${error.status} - ${error.statusText}`;
-    }
+    ({ code, message } = getHttpErrorResponseMessageAndCode(error));
   } else if (error.message == 'No Token Defined!') {
     code = RegistrationDraftErrorCode.Unauthorized;
     message = error.message;
