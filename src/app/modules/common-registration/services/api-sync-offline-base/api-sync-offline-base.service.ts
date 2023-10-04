@@ -126,7 +126,13 @@ export abstract class ApiSyncOfflineBaseService<T> {
   private getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey).pipe(
       catchError((err) => {
-        this.logger.error(err, this.getDebugTag(), 'Could not get data from API. Fallback to offline storage');
+        this.logger.log(
+          'Could not get data from API. Fallback to offline storage',
+          err,
+          LogLevel.Warning,
+          this.getDebugTag(),
+          { error: err, appMode, langKey }
+        );
         return this.getOfflineDataOrFallbackToAssets(appMode, langKey);
       })
     );
