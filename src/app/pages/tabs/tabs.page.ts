@@ -69,7 +69,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.showCoachMarksOnStartup$ = of(true).pipe(
+    this.showCoachMarksOnStartup$ = of(Capacitor.isNativePlatform()).pipe(
       switchMap((isNative) => (isNative ? this.userSettingService.userSetting$ : EMPTY)),
       map((userSettings) => userSettings.showGeoSelectInfo),
       takeWhile((showCoachMarks) => showCoachMarks, true)
