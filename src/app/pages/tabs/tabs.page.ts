@@ -1,13 +1,14 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, EMPTY, Observable, of, Subscription } from 'rxjs';
+import { map, switchMap, takeWhile } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-tabs',
@@ -29,6 +30,7 @@ export class TabsPage implements OnInit, OnDestroy {
   isAndroid: boolean;
   fullscreen$: Observable<boolean>;
   showTrips = false;
+  showCoachMarksOnStartup$: Observable<boolean>;
 
   get showBadge(): boolean {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
@@ -67,6 +69,12 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.showCoachMarksOnStartup$ = of(true).pipe(
+      switchMap((isNative) => (isNative ? this.userSettingService.userSetting$ : EMPTY)),
+      map((userSettings) => userSettings.showGeoSelectInfo),
+      takeWhile((showCoachMarks) => showCoachMarks, true)
+    );
+
     this.warningGroupInMapViewSubscription = this.warningService.warningGroupInMapViewObservable$
       .pipe(
         map((warningsInView) => {

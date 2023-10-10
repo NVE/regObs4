@@ -18,4 +18,4 @@
     </ng-container>
   </ion-tab-bar>
 </ion-tabs>
-<app-coach-marks-main-screen></app-coach-marks-main-screen>
+<app-coach-marks-main-screen *ngIf="showCoachMarksOnStartup$ | async"></app-coach-marks-main-screen>
