@@ -62,6 +62,10 @@ const routes: Routes = [
     path: 'legacy-trip',
     loadChildren: () => import('./pages/legacy-trip/legacy-trip.module').then((m) => m.LegacyTripPageModule),
   },
+  {
+    path: 'obskorps',
+    loadChildren: () => import('./pages/obskorps/obskorps.module').then((m) => m.ObskorpsPageModule),
+  },
 ];
 
 @NgModule({

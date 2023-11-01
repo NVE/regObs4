@@ -14,6 +14,7 @@ import { BreakpointService } from '../../../../core/services/breakpoint.service'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showMenuButton = true;
+  @Input() showFilterButton = true;
   @Input() fullscreenSupport = false;
   @Input() title: string;
   @Input() defaultHref = '/';
