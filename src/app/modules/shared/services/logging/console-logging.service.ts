@@ -44,6 +44,9 @@ export class ConsoleLoggingService implements LoggingService {
       case LogLevel.Warning:
         logger = console.warn;
         break;
+      case LogLevel.Debug:
+        logger = console.debug;
+        break;
       default:
         logger = console.log;
         break;
@@ -56,7 +59,7 @@ export class ConsoleLoggingService implements LoggingService {
     }
 
     if (error) {
-      console.error(error);
+      logger(error);
     }
   }
 }
