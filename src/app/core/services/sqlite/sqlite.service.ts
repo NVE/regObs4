@@ -112,6 +112,7 @@ const UPGRADE_STATEMENTS = [
 ];
 
 const READONLY = false;
+const CONNECTION_LOCK = 'sqlite-connection';
 
 @Injectable({
   providedIn: 'root',
@@ -258,44 +259,48 @@ export class SqliteService {
     // Remember to update version if you added changes to tables
     const version = 5;
 
+    const openConn = async () => {
+      const isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
+      try {
+        const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
+        this.logger.log('Connection status', null, LogLevel.Info, DEBUG_TAG, {
+          isConnection,
+          checkConnectionsConsistency,
+        });
+
+        if (!isConnection.result || !checkConnectionsConsistency.result) {
+          this.logger.log('Create connection', null, LogLevel.Info, DEBUG_TAG, {
+            DATABASE_NAME,
+            encrypted,
+            version,
+            READONLY,
+          });
+          this.conn = await this.sqlite.createConnection(DATABASE_NAME, encrypted, 'no-encryption', version, READONLY);
+        } else {
+          this.logger.log('Retrieve connection', null, LogLevel.Info, DEBUG_TAG);
+          this.conn = await this.sqlite.retrieveConnection(DATABASE_NAME, READONLY);
+        }
+
+        this.logger.log('Check isDBOpen', null, LogLevel.Info, DEBUG_TAG);
+        const isOpen = await this.conn.isDBOpen();
+        this.logger.log('isDBOpen', null, LogLevel.Info, DEBUG_TAG, { isOpen });
+        if (!isOpen.result) {
+          this.logger.log('Open connection', null, LogLevel.Info, DEBUG_TAG);
+          await this.conn.open();
+          this.logger.log('Connection opened', null, LogLevel.Info, DEBUG_TAG);
+        }
+
+        this.ready.next(true);
+      } catch (error) {
+        this.logger.error(error, DEBUG_TAG, 'Failed to create/open connection');
+        throw error;
+      }
+    };
+
     // This issue comment tries to explain the difference between createConnection and open
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
     // https://github.com/jepiqueau/angular-sqlite-app-starter/blob/4e46dcef4d7c7033b1df41c7fe2094b6916e3133/src/app/services/database.service.ts
-    try {
-      const isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
-      const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
-      this.logger.log('Connection status', null, LogLevel.Info, DEBUG_TAG, {
-        isConnection,
-        checkConnectionsConsistency,
-      });
-
-      if (!isConnection.result || !checkConnectionsConsistency.result) {
-        this.logger.log('Create connection', null, LogLevel.Info, DEBUG_TAG, {
-          DATABASE_NAME,
-          encrypted,
-          version,
-          READONLY,
-        });
-        this.conn = await this.sqlite.createConnection(DATABASE_NAME, encrypted, 'no-encryption', version, READONLY);
-      } else {
-        this.logger.log('Retrieve connection', null, LogLevel.Info, DEBUG_TAG);
-        this.conn = await this.sqlite.retrieveConnection(DATABASE_NAME, READONLY);
-      }
-
-      this.logger.log('Check isDBOpen', null, LogLevel.Info, DEBUG_TAG);
-      const isOpen = await this.conn.isDBOpen();
-      this.logger.log('isDBOpen', null, LogLevel.Info, DEBUG_TAG, { isOpen });
-      if (!isOpen.result) {
-        this.logger.log('Open connection', null, LogLevel.Info, DEBUG_TAG);
-        await this.conn.open();
-        this.logger.log('Connection opened', null, LogLevel.Info, DEBUG_TAG);
-      }
-
-      this.ready.next(true);
-    } catch (error) {
-      this.logger.error(error, DEBUG_TAG, 'Failed to create/open connection');
-      throw error;
-    }
+    await navigator.locks.request(CONNECTION_LOCK, openConn);
   }
 
   private async closeConn() {
