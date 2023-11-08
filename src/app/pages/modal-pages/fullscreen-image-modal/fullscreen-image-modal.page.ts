@@ -3,6 +3,7 @@ import { IonSlides, ModalController, Platform } from '@ionic/angular';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
+import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 
 type HrefType = { title: string; url: string };
 
@@ -16,7 +17,7 @@ export class FullscreenImageModalPage implements OnInit {
   @ViewChild(IonSlides) slider: IonSlides;
 
   @Input() imgIndex: number;
-  @Input() allImages: AttachmentViewModel[];
+  @Input() allImages: (AttachmentViewModel & {Href?: string})[];
   @Input() href?: HrefType;
   isLastSlide = true;
   isFirstSlide = true;
@@ -28,7 +29,8 @@ export class FullscreenImageModalPage implements OnInit {
     private modalController: ModalController,
     private cdr: ChangeDetectorRef,
     private platform: Platform,
-    private router: Router
+    private router: Router,
+    private externalLinkService: ExternalLinkService
   ) {}
 
   ngOnInit(): void {
@@ -87,5 +89,9 @@ export class FullscreenImageModalPage implements OnInit {
 
   closeModal(): void {
     this.modalController.dismiss();
+  }
+
+  viewHrefModal(url: string): void {
+    this.externalLinkService.openExternalLink(url);
   }
 }

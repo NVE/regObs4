@@ -10,6 +10,9 @@
           <img [src]="slide.Url || slide" onerror="this.style.display='none'" (click)="closeModal()" />
         </div>
       </div>
+      <ion-fab-button *ngIf="slide.Href" size="small" (click)="viewHrefModal(slide.Href)" class="view-button">
+        <ion-icon name="eye-outline"></ion-icon>
+      </ion-fab-button>
     </ion-slide>
   </ion-slides>
 
@@ -21,6 +24,13 @@
 <ng-template #slideWeb>
   <ion-fab-button size="small" (click)="closeModal()" class="close-button">
     <ion-icon name="close"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button
+    *ngIf="allImages[activeImageIndex].Href"
+    size="small"
+    (click)="viewHrefModal(allImages[activeImageIndex].Href)"
+    class="view-button">
+    <ion-icon name="eye-outline"></ion-icon>
   </ion-fab-button>
   <div class="img-container">
     <div class="img-frame">
