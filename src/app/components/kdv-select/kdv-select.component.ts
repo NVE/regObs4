@@ -1,6 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, combineLatest, debounceTime, map, startWith } from 'rxjs';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
@@ -11,7 +20,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KdvSelectComponent implements OnInit {
+export class KdvSelectComponent implements OnInit, OnChanges {
   @Input() label: string;
   @Input() kdvKey: KdvKey;
   @Input() value: number;
@@ -26,12 +35,21 @@ export class KdvSelectComponent implements OnInit {
   @Input() obsLocMode = false;
 
   selectOptions$: Observable<SelectOption[]>;
+  private hasChanges = new Subject<void>();
 
   constructor(private kdvService: KdvService) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ngOnChanges(changes: SimpleChanges): void {
+    this.hasChanges.next();
+  }
+
   ngOnInit() {
-    this.selectOptions$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).pipe(
-      map((kdvs) =>
+    this.selectOptions$ = combineLatest([
+      this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey),
+      this.hasChanges.pipe(startWith(null), debounceTime(50)),
+    ]).pipe(
+      map(([kdvs]) =>
         kdvs.map((kdv) => ({
           id: kdv.Id,
           text: this.useDescription ? kdv.Description : kdv.Name,
