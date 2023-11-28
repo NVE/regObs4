@@ -35,13 +35,13 @@ steps:
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple App Store distribution certificate'
   inputs:
-    certSecureFile: 'a38be812-1d9c-406b-ad7f-2458fa80814f'
-    certPwd: '$(apple.dist.cert.password)'
+    certSecureFile: 'distribution.p12'
+    certPwd: '$(apple.dist.cert.password_nov2024)'
 
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple App Store distribution provisioning profile'
   inputs:
-    provProfileSecureFile: 'd606c023-431b-448b-b6a8-284e2bf10886'
+    provProfileSecureFile: 'AppStore_Distribution_28nov2023.mobileprovision'
 
 - task: NodeTool@0
   displayName: 'Use Node 18.10.x'
@@ -157,8 +157,10 @@ steps:
     signingOption: 'manual'
     #signingIdentity: 'iPhone Distribution'
     #provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
-    provisioningProfileName: 'regobs-dist-2023-11-01'
+    #provisioningProfileName: 'regobs-dist-2023-11-01'
     teamId: '43L5B5X2PE'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
 
 - task: JavaToolInstaller@0
   inputs:
