@@ -80,7 +80,7 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-menu-toggle auto-hide="false" *ngIf="isIosOrAndroid">
+  <ion-menu-toggle auto-hide="false" *ngIf="offlineMapsAvailable">
     <ion-item routerLink="/offline-map" routerDirection="forward" detail="true">
       <ion-icon slot="start" name="download-outline" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">

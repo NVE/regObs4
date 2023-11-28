@@ -35,8 +35,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     langKey: LangKey[lang.lang],
   }));
   popupType: SelectInterface;
-  isIosOrAndroid: boolean;
-  isMobileWeb: boolean;
   observerTrips: ObserverTripsService;
 
   private userSettingSubscription: Subscription;
