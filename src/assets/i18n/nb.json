@@ -381,7 +381,7 @@
     },
     "DIRT": {
       "LAND_SLIDE_OBS": {
-        "AREA_TOTAL": "Tegn hele skredarealen",
+        "AREA_TOTAL": "Tegn hele skredarealet",
         "AVAL_TRIGGER": "Skredutløser",
         "CONFIRM_END_POSITION": "Bekreft sluttpunkt",
         "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde",
