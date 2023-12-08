@@ -4,7 +4,7 @@ import moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
-import { Observable, from, BehaviorSubject, throwError, firstValueFrom } from 'rxjs';
+import { Observable, from, BehaviorSubject, throwError, firstValueFrom, of } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import { TripService } from 'src/app/modules/common-regobs-api/services';
 import { switchMap, take, map, concatMap, filter, tap, catchError } from 'rxjs/operators';
@@ -16,6 +16,16 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 import { AppMode } from 'src/app/modules/common-core/models';
+import { HttpErrorResponse } from '@angular/common/http';
+
+export const isTripNotFoundError = (err: unknown) => {
+  if (!(err instanceof HttpErrorResponse)) {
+    return false;
+  }
+
+  const hasTripNotFoundError = err.error?.ModelState?.Trip?.[0]?.toLowerCase?.().includes('trip not found');
+  return !!hasTripNotFoundError;
+};
 
 const DEBUG_TAG = 'TripLoggerService';
 
@@ -161,13 +171,26 @@ export class TripLoggerService {
     await alert.present();
   }
 
+  private stopTripAndSucceedIfTripNotFound(trip: LegacyTrip) {
+    return this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid }).pipe(
+      catchError((err) => {
+        if (isTripNotFoundError(err)) {
+          this.loggingService.debug('Trip not found, probably stopped by API at midnight', DEBUG_TAG, trip);
+          return of(true);
+        }
+
+        return throwError(() => err);
+      })
+    );
+  }
+
   private callStopLegacyTripApiAndDeleteFromDb() {
     this.getLegacyTripAsObservable()
       .pipe(
         take(1),
         filter((trip) => !!trip),
         tap((trip) => this.loggingService.debug('Stopping trip', DEBUG_TAG, trip)),
-        concatMap((trip) => this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid })),
+        concatMap((trip) => this.stopTripAndSucceedIfTripNotFound(trip)),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         concatMap(() => this.infoMessage(false))
       )
