@@ -185,7 +185,7 @@ export class TripLoggerService {
       timeout(5000),
       catchError((err) => {
         if (isTripNotFoundError(err)) {
-          this.loggingService.debug('Trip not found, probably stopped by API at midnight', DEBUG_TAG, trip);
+          this.loggingService.debug('Trip not found, probably stopped by API at midnight', DEBUG_TAG, { trip });
           return of(true);
         }
 
@@ -199,7 +199,8 @@ export class TripLoggerService {
     this.getLegacyTripAsObservable()
       .pipe(
         take(1),
-        tap((trip) => this.loggingService.log('Stopping trip', null, LogLevel.Info, DEBUG_TAG, trip)),
+        tap((trip) => this.loggingService.log('Stopping trip', null, LogLevel.Info, DEBUG_TAG, { trip })),
+        // EMPTY makes the observable just complete if no trip is found in db - trip is falsy
         concatMap((trip) => (trip ? this.stopTripAndSucceedIfTripNotFound(trip) : EMPTY)),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         concatMap(() => this.infoMessage(false))
