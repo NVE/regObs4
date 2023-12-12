@@ -1,5 +1,64 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { isTripNotFoundError } from './trip-logger.service';
+import { isTripFromToday, isTripNotFoundError } from './trip-logger.service';
+import { LegacyTrip } from './legacy-trip.model';
+import moment from 'moment';
+
+describe('isTripFromToday', () => {
+  it('Should return true if trip is from today', () => {
+    const trip: LegacyTrip = {
+      id: 'legacytrip',
+      timestamp: moment().unix(),
+      request: {},
+    };
+
+    const result = isTripFromToday(trip);
+
+    expect(result).toBeTrue();
+  });
+
+  it('Should return false if trip is from yesterday', () => {
+    const trip: LegacyTrip = {
+      id: 'legacytrip',
+      timestamp: moment().subtract(1, 'day').unix(),
+      request: {},
+    };
+
+    const result = isTripFromToday(trip);
+    expect(result).toBeFalse();
+  });
+
+  it('Should return false if timestamp is zero', () => {
+    const trip: LegacyTrip = {
+      id: 'legacytrip',
+      timestamp: 0,
+      request: {},
+    };
+
+    const result = isTripFromToday(trip);
+    expect(result).toBeFalse();
+  });
+
+  it('Should return false if timestamp is null', () => {
+    const trip: LegacyTrip = {
+      id: 'legacytrip',
+      timestamp: null,
+      request: {},
+    };
+
+    const result = isTripFromToday(trip);
+    expect(result).toBeFalse();
+  });
+
+  it('Should return false if trip is null', () => {
+    const result = isTripFromToday(null);
+    expect(result).toBeFalse();
+  });
+
+  it('Should return false if trip is undefined', () => {
+    const result = isTripFromToday(undefined);
+    expect(result).toBeFalse();
+  });
+});
 
 describe('isTripNotFoundError', () => {
   it('should return true for HttpErrorResponse objects with trip error', () => {

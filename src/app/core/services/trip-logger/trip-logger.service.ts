@@ -4,10 +4,10 @@ import moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
-import { Observable, from, BehaviorSubject, throwError, firstValueFrom, of } from 'rxjs';
+import { Observable, from, BehaviorSubject, throwError, firstValueFrom, of, EMPTY } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import { TripService } from 'src/app/modules/common-regobs-api/services';
-import { switchMap, take, map, concatMap, filter, tap, catchError } from 'rxjs/operators';
+import { switchMap, take, map, concatMap, filter, tap, catchError, timeout } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,6 +17,13 @@ import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+
+export const isTripFromToday = (trip: LegacyTrip) => {
+  const tripStartedTime = moment.unix(trip?.timestamp);
+  const midnight = moment().startOf('day');
+  return tripStartedTime.isAfter(midnight);
+};
 
 export const isTripNotFoundError = (err: unknown) => {
   if (!(err instanceof HttpErrorResponse)) {
@@ -50,7 +57,9 @@ export class TripLoggerService {
     this.userSettingService.appMode$
       .pipe(switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode))))
       .subscribe((legacyTrip) => {
-        this.tripStartedSubject.next(legacyTrip != null);
+        // Server stops trips around midnight, we can neglect trips from yesterday or earlier
+        const isRunning = isTripFromToday(legacyTrip);
+        this.tripStartedSubject.next(isRunning);
       });
   }
 
@@ -173,6 +182,7 @@ export class TripLoggerService {
 
   private stopTripAndSucceedIfTripNotFound(trip: LegacyTrip) {
     return this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid }).pipe(
+      timeout(5000),
       catchError((err) => {
         if (isTripNotFoundError(err)) {
           this.loggingService.debug('Trip not found, probably stopped by API at midnight', DEBUG_TAG, trip);
@@ -185,12 +195,12 @@ export class TripLoggerService {
   }
 
   private callStopLegacyTripApiAndDeleteFromDb() {
+    this.loggingService.debug('callStopLegacyTripApiAndDeleteFromDb', DEBUG_TAG);
     this.getLegacyTripAsObservable()
       .pipe(
         take(1),
-        filter((trip) => !!trip),
-        tap((trip) => this.loggingService.debug('Stopping trip', DEBUG_TAG, trip)),
-        concatMap((trip) => this.stopTripAndSucceedIfTripNotFound(trip)),
+        tap((trip) => this.loggingService.log('Stopping trip', null, LogLevel.Info, DEBUG_TAG, trip)),
+        concatMap((trip) => (trip ? this.stopTripAndSucceedIfTripNotFound(trip) : EMPTY)),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         concatMap(() => this.infoMessage(false))
       )
@@ -217,7 +227,7 @@ export class TripLoggerService {
   cleanupOldLegacyTrip(): Promise<unknown> {
     return this.getLegacyTripAsObservable()
       .pipe(
-        filter((trip) => trip && trip.timestamp < moment().startOf('day').unix()),
+        filter((trip) => !isTripFromToday(trip)),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         take(1)
       )
