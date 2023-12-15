@@ -1,4 +1,5 @@
 "NSCameraUsageDescription" = "Dodajte slike k opažanjem";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Lokacija se uporablja za prikaz vašega položaja na zemljevidu in za določitev začetnega položaja pri dokumentiranju opažanj.";
 "NSLocationAlwaysUsageDescription" = "Lokacijske storitve so uporabljene za natančen prikaz vašega položaja na zemljevidu ter za določitev prvotne lokacije vaših opažanj";
 "NSLocationWhenInUseUsageDescription" = "Lokacijske storitve so uporabljene za natančen prikaz vašega položaja na zemljevidu ter za določitev prvotne lokacije vaših opažanj";
 "NSPhotoLibraryAddUsageDescription" = "Dodajte slike k opažanjem";
