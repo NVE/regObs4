@@ -713,10 +713,6 @@
     }
   },
   "SETTINGS": {
-    "ALLOW_ANALYTICS": "Autoriser l'envoi de données nécessaires à l'utilisation de l'app",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Aidez-nous à améliorer Varsom Regobs en nous faisant remonter comment vous utilisez l'application.",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Ces données sont anonymes et ne peuvent vous être associées.",
-    "ALLOW_ANALYTICS_HEADER": "Partager les statistiques d'utilisation",
     "APPMODE": "Mode de l'application",
     "APP_VERSION": "Version de l'application",
     "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser l'application ?",
@@ -724,7 +720,6 @@
     "DROPDOWNS_FAILED": "Impossible de mettre à jour le(s) changement(s). Veuillez vérifier la disponibilité du réseau et réessayez plus tard.",
     "DROPDOWNS_UPDATED": "Changement(s) mis à jour !",
     "EMAIL_RECEIPT": "Réception par e-mél",
-    "HIDE_ADVANCED": "Masquer les paramètres avancés",
     "LANGUAGE": "Langue",
     "NORWAY_ONLY": "En Norvège uniquement",
     "NUMBER_OF_TILES_IN_CACHE": "Taille du cache des tuiles hors connexion",
@@ -732,7 +727,6 @@
     "RESET": "Réinitialiser l'application",
     "RESETTING": "Réinitialisation de l'application. Veuillez patienter...",
     "SEND_LOGS": "Envoyer les fichiers log à l'équipe Regobs",
-    "SHOW_ADVANCED": "Paramètres avancés",
     "SIZE_OF_TILES_CACHE": "Espace mémoire utilisé par les tuiles enregistrées sur l'appareil",
     "TILES_CACHE_SIZE": "Nombre de tuiles enregistrées sur l'appareil",
     "TITLE": "Paramètres",

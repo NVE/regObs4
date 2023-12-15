@@ -810,10 +810,6 @@
     }
   },
   "SETTINGS": {
-    "ALLOW_ANALYTICS": "Tillåt att skicka användningsdata",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Hjälp oss att förbättra Varsom genom att låta oss veta hur du använder applikationen.",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denna information är anonym och kan inte kopplas till dig personligen.",
-    "ALLOW_ANALYTICS_HEADER": "Dela användningsstatistik",
     "APPMODE": "Appläge",
     "APP_VERSION": "Version",
     "CONFIRM_RESET": "Är du säker på att du vill återställa appen?",
@@ -821,7 +817,6 @@
     "DROPDOWNS_FAILED": "Det gick inte att uppdatera rullgardinsmenyerna. Kontrollera om du har ett nätverk och försök igen senare.",
     "DROPDOWNS_UPDATED": "Rullgardinsmenyerna uppdaterade!",
     "EMAIL_RECEIPT": "Kvitto via e-post",
-    "HIDE_ADVANCED": "Dölj avancerade inställningar",
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Endast i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maximalt antal kartblad offline",
@@ -829,7 +824,6 @@
     "RESET": "Återställ app",
     "RESETTING": "App återställs. Vänta ...",
     "SEND_LOGS": "Skicka loggar till Regobs-teamet",
-    "SHOW_ADVANCED": "Visa avancerade inställningar",
     "SIZE_OF_TILES_CACHE": "Kartbladstorlek lagrad på telefonen",
     "TILES_CACHE_SIZE": "Antal kartblad lagrade på telefonen",
     "TITLE": "Inställningar",

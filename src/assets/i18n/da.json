@@ -750,10 +750,6 @@
     }
   },
   "SETTINGS": {
-    "ALLOW_ANALYTICS": "Tillad sending af brugsdata",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Hjælp ps med at forbedre Varsom Regobs ved at lade os vide hvordan du bruger applikationen.",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne data er anonym og kan ikke knyttes til dig personligt.",
-    "ALLOW_ANALYTICS_HEADER": "Del brugsstatistik",
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
     "CONFIRM_RESET": "Er du sikker på, at du vil nulstille appen?",
@@ -761,7 +757,6 @@
     "DROPDOWNS_FAILED": "Kan ikke opdatere nedtrækningsmenuer. Venligst tjek om du har netværk og prøv igen lidt senere.",
     "DROPDOWNS_UPDATED": "Nedtræksmenuer opdateret!",
     "EMAIL_RECEIPT": "Kvittering på e-post",
-    "HIDE_ADVANCED": "Skjul avancerede indstillinger",
     "LANGUAGE": "Sprog",
     "NORWAY_ONLY": "Kun i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt antal offline kortark",
@@ -769,7 +764,6 @@
     "RESET": "Nulstil app.",
     "RESETTING": "App nulstilles. Venligst vent...",
     "SEND_LOGS": "Send logs til Regobs-teamet",
-    "SHOW_ADVANCED": "Vis avancerede indstillinger",
     "SIZE_OF_TILES_CACHE": "Størrelse på kortark lageret på telefonen",
     "TILES_CACHE_SIZE": "Antal kortark lageret på telefonen",
     "TITLE": "Indstillinger",

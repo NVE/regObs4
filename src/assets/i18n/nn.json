@@ -737,10 +737,6 @@
     }
   },
   "SETTINGS": {
-    "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
-    "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å gjere Varsom RegObs betre med å la oss sjå korleis du bruker applikasjonen. ",
-    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Disse dataene er anonymisert og kan ikkje knyttast til deg personleg.",
-    "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "App-modus",
     "APP_VERSION": "Versjon",
     "CONFIRM_RESET": "Er du sikker på at du vil resetje app?",
@@ -748,7 +744,6 @@
     "DROPDOWNS_FAILED": "Klarte ikkje å oppdatere nedtrekksmenyar. Vennlegast sjekk om du har nettverk og prøv igjen litt seinare.",
     "DROPDOWNS_UPDATED": "Nedtrekksmenyar oppdatert!",
     "EMAIL_RECEIPT": "Kvittering på e-post",
-    "HIDE_ADVANCED": "Skjul avanserte innstillingar",
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Berre i Noreg",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt tal på offline kartblad. ",
@@ -756,7 +751,6 @@
     "RESET": "Tilbakestill app",
     "RESETTING": "Appen resetjast. Vær vennleg å vent...",
     "SEND_LOGS": "Send loggar til Regobs-teamet",
-    "SHOW_ADVANCED": "Vis avanserte innstillingar",
     "SIZE_OF_TILES_CACHE": "Storleik til kartblad lagra på telefonen",
     "TILES_CACHE_SIZE": "Tal på kartblad lagra på telefonen",
     "TITLE": "Innstillingar",
