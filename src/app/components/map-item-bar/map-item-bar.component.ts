@@ -1,12 +1,13 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
 import { Router } from '@angular/router';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AtAGlanceViewModel, AttachmentViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { StarRatingHelper } from '../competence/star-helper';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -30,15 +31,17 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   geoHazard: GeoHazard;
   attachments: AttachmentViewModel[] = [];
   masl: number;
-  competenceLevel: number;
+  starCount: number;
   showAdditionalAttachmentCount: boolean;
 
   private subscription: Subscription;
   private appMode: AppMode;
+  competenceLevelName: string;
 
   // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
 
   constructor(
+    private kdvService: KdvService,
     private router: Router,
     private zone: NgZone,
     private userSettingService: UserSettingService,
@@ -81,6 +84,14 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     }
   }
 
+  private getCompetenceKdvById(id: number): Promise<KdvElement> {
+    return firstValueFrom(
+      this.kdvService
+        .getKdvRepositoryByKeyObservable('CompetenceLevelKDV')
+        .pipe(map((kdvs) => kdvs.find((kdv) => kdv.Id === id)))
+    );
+  }
+
   show(item: MapItem) {
     this.showAdditionalAttachmentCount = true;
     this.zone.run(async () => {
@@ -88,7 +99,8 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.NickName;
-      this.competenceLevel = StarRatingHelper.getStarRating(item.CompetenceLevelTID);
+      this.starCount = StarRatingHelper.getStarRating(item.CompetenceLevelTID);
+      this.competenceLevelName = (await this.getCompetenceKdvById(item.CompetenceLevelTID))?.Name;
       this.geoHazard = item.GeoHazardTID;
       // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       // this.setDistanceAndType(item);
