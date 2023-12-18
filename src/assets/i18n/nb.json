@@ -334,7 +334,7 @@
       "URL": "Url"
     },
     "ANONYMIZE": {
-      "CHECK_TO_ANONYMIZE": "Huk av for å anonymisere",
+      "CHECK_TO_ANONYMIZE": "Send inn anonymt",
       "TITLE": "Anonymisering"
     },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
