@@ -7,7 +7,7 @@ import { NanoSql } from '../../../../nanosql';
 import { Observable, from, BehaviorSubject, throwError, firstValueFrom, of, EMPTY } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import { TripService } from 'src/app/modules/common-regobs-api/services';
-import { switchMap, take, map, concatMap, filter, tap, catchError, timeout } from 'rxjs/operators';
+import { switchMap, take, map, concatMap, tap, catchError, timeout } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -88,6 +88,10 @@ export class TripLoggerService {
   }
 
   getLegacyTripAsObservable(): Observable<LegacyTrip> {
+    return this.getLegacyTripDbResult$().pipe(map((trip) => (isTripFromToday(trip) ? trip : null)));
+  }
+
+  private getLegacyTripDbResult$(): Observable<LegacyTrip> {
     return this.userSettingService.appMode$.pipe(
       switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode)))
     );
@@ -97,7 +101,11 @@ export class TripLoggerService {
     const result = (await NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode)
       .query('select')
       .exec()) as LegacyTrip[];
-    return result[0];
+
+    const trip = result[0];
+    const hasTrip = trip != null;
+    this.loggingService.debug('getLegacyTripFromDbByAppMode', DEBUG_TAG, { hasTrip, trip, appMode });
+    return trip;
   }
 
   startLegacyTrip(tripDto: CreateTripDto): Observable<void> {
@@ -108,6 +116,7 @@ export class TripLoggerService {
     };
     return this.userSettingService.appMode$.pipe(
       take(1),
+      tap((appMode) => this.loggingService.debug('Starting legacy trip', DEBUG_TAG, { appMode, legacyTrip })),
       switchMap((appMode) =>
         this.tripService
           .TripPost(tripDto)
@@ -120,6 +129,7 @@ export class TripLoggerService {
       tap(() => this.tripStartedSubject.next(true)),
       switchMap(() => this.infoMessage(true)),
       catchError((err) => {
+        this.loggingService.error(err, DEBUG_TAG, 'Error during startLegacyTrip', { legacyTrip });
         this.tripStartedSubject.next(false);
         return throwError(err);
       })
@@ -196,7 +206,7 @@ export class TripLoggerService {
 
   private callStopLegacyTripApiAndDeleteFromDb() {
     this.loggingService.debug('callStopLegacyTripApiAndDeleteFromDb', DEBUG_TAG);
-    this.getLegacyTripAsObservable()
+    this.getLegacyTripDbResult$()
       .pipe(
         take(1),
         tap((trip) => this.loggingService.log('Stopping trip', null, LogLevel.Info, DEBUG_TAG, { trip })),
@@ -219,6 +229,7 @@ export class TripLoggerService {
 
   private deleteLegacyTripsFromDb() {
     return this.userSettingService.appMode$.pipe(
+      tap((appMode) => this.loggingService.debug('Will delete legacy trips', DEBUG_TAG, { appMode })),
       concatMap((appMode) =>
         from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec())
       )
@@ -226,13 +237,13 @@ export class TripLoggerService {
   }
 
   cleanupOldLegacyTrip(): Promise<unknown> {
-    return this.getLegacyTripAsObservable()
-      .pipe(
-        filter((trip) => !isTripFromToday(trip)),
-        concatMap(() => this.deleteLegacyTripsFromDb()),
-        take(1)
+    return firstValueFrom(
+      this.getLegacyTripDbResult$().pipe(
+        take(1),
+        map((trip) => trip && !isTripFromToday(trip)),
+        concatMap((hasOldTrip) => (hasOldTrip ? this.deleteLegacyTripsFromDb() : EMPTY))
       )
-      .toPromise();
+    );
   }
 
   private infoMessage(started: boolean) {
