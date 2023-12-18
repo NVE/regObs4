@@ -307,7 +307,7 @@
       "URL": "Url"
     },
     "ANONYMIZE": {
-      "CHECK_TO_ANONYMIZE": "Huk av for å sende inn anonymt"
+      "CHECK_TO_ANONYMIZE": "Send inn anonymt"
     },
     "BACK_TO_OBSERVATION": "Tilbake til observasjonen min",
     "CONFIRM_RESET": "Er du sikker på at du vil nullstille alle felt?",
