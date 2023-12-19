@@ -7,6 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class CompetenceComponent {
   readonly maxCompetenceLevel = 5;
-
-  @Input() competenceLevel = 0;
+  @Input() competenceLevelName: string = null;
+  @Input() starCount = 0;
 }

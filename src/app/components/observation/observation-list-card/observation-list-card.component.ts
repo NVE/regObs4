@@ -65,13 +65,14 @@ export class ObservationListCardComponent implements OnChanges {
   loaded = false;
   imageHeader = '';
   imageDecription = '';
-  competenceLevel: number;
+  starCount: number;
   geoHazard: GeoHazard;
   userCanEdit = false;
   isLoadingObsForEdit = false;
 
   attachments: AttachmentViewModel[] = [];
   location: ImageLocation;
+  competenceLevelName: string;
 
   constructor(
     private modalController: ModalController,
@@ -97,7 +98,8 @@ export class ObservationListCardComponent implements OnChanges {
     this.dtObsDate = this.obs.DtObsTime;
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
-    this.competenceLevel = getStarCount(this.obs.Observer.CompetenceLevelName);
+    this.competenceLevelName = this.obs.Observer.CompetenceLevelName;
+    this.starCount = getStarCount(this.obs.Observer.CompetenceLevelName);
     this.updateImages();
     this.loaded = true;
     this.userCanEdit = await this.checkIfUserCanEdit();

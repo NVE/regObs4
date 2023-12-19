@@ -1,13 +1,15 @@
 <div class="competence-wrapper">
-  <ng-container *ngIf="competenceLevel > 0; else noCompetence">
+  <ng-container *ngIf="starCount > 0; else noStars">
     <ng-container *ngFor="let index of [0, 1, 2, 3, 4]">
-      <svg-icon *ngIf="competenceLevel <= index; else filledStar" src="/assets/icon/star.svg"></svg-icon>
+      <svg-icon *ngIf="starCount <= index; else filledStar" src="/assets/icon/star.svg"></svg-icon>
     </ng-container>
   </ng-container>
 </div>
 <ng-template #filledStar>
   <svg-icon src="/assets/icon/star.svg" class="filledStar"></svg-icon>
 </ng-template>
-<ng-template #noCompetence>
-  <ion-label class="small-text">({{ "COMPETENCE.UNKNOWN" | translate }})</ion-label>
+<ng-template #noStars>
+  <ion-label class="small-text">
+    ({{ competenceLevelName != null ? competenceLevelName : ("COMPETENCE.UNKNOWN" | translate) }})
+  </ion-label>
 </ng-template>
