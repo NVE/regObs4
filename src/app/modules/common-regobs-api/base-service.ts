@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { HttpClient, HttpParameterCodec, HttpParams } from '@angular/common/http';
 import { RegobsApiConfiguration } from './regobs-api-configuration';
+import { Injectable } from '@angular/core';
 
 /**
  * Custom parameter codec to correctly handle the plus sign in parameter
@@ -28,6 +29,7 @@ const PARAMETER_CODEC = new ParameterCodec();
 /**
  * Base class for API services
  */
+@Injectable()
 export class BaseService {
   constructor(
     protected config: RegobsApiConfiguration,
