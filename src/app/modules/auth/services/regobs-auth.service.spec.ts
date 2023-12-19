@@ -22,7 +22,7 @@ describe('RegobsAuthService', () => {
         SharedModule,
         HttpClientModule,
         TranslateModule.forRoot(),
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot([], {}),
       ],
       providers: [{ provide: LoggingService, useClass: TestLoggingService }, SafariViewController, InAppBrowser],
     });

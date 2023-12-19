@@ -5,8 +5,6 @@ import { getTestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { NanoSql } from './nanosql';
 
-declare const require: any;
-
 // First, initialize the Angular testing environment.
 
 // Second arg is the nanosql database mode to use.
