@@ -4,7 +4,7 @@ This is the Varsom RegObs app version 4. It is based on code from version 3 but 
 
 ## Installation
 
-1. Installer node v18.10.x (.msi-fil for
+1. Installer node v18.13.x (.msi-fil for
    Windows) **
    Ikke nyere eller
    eldre versjon**
