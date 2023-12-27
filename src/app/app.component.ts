@@ -14,8 +14,9 @@ import { FileLoggingService } from './modules/shared/services/logging/file-loggi
 import { AuthService } from 'ionic-appauth';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
-import { Keyboard } from '@capacitor/keyboard';
 import { SqliteService } from './core/services/sqlite/sqlite.service';
+import { Keyboard } from '@capacitor/keyboard';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -58,7 +59,7 @@ export class AppComponent {
     // Set up file logging first if native app
     await this.fileLoggingService.init({});
 
-    if (this.platform.is('ios')) {
+    if (Capacitor.isPluginAvailable('Keyboard') && this.platform.is('ios')) {
       Keyboard.setAccessoryBarVisible({ isVisible: true });
     }
 
