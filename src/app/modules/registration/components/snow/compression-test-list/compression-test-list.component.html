@@ -20,7 +20,7 @@
         ({{ compressionTest.ComprTestFractureTID | kdvDescription: "Snow_ComprTestFractureKDV" | async }})</ng-container
       >
       <ng-container *ngIf="compressionTest.FractureDepth > 0">
-        @{{ compressionTest.FractureDepth | metersToCm: 0 }}cm
+        &#64;{{ compressionTest.FractureDepth | metersToCm: 0 }}cm
       </ng-container>
     </ion-label>
     <ion-icon slot="end" name="link" *ngIf="compressionTest.IncludeInSnowProfile"></ion-icon>

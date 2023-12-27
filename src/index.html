@@ -24,6 +24,29 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <!-- download plausible script.local which lets hybrid apps log analytics. Capacitor runs app via localhost on a mobile device -->
     <script defer data-domain="regobs.no" src="https://plausible.io/js/script.local.js"></script>
+    <script>
+      // TODO: Temporarily move some polyfill stuff here,
+      // remove it if we do not need it any more.
+
+      window.global = window;
+
+      //TODO: Remove this when we upgrade rxdb
+      //It is needed by the library generate-function which is used by our version of rxdb
+      //To make it to work we had to install the library 'util' and create this polyfill:
+      window.process = { env: { DEBUG: undefined } };
+
+      // window.__Zone_disable_customElements = true;
+
+      // // https://github.com/ionic-team/capacitor/issues/1564
+      // class FileReaderA extends window.FileReader {
+      //   constructor() {
+      //     super();
+      //     const zoneOriginalInstance = this['__zone_symbol__originalInstance'];
+      //     return zoneOriginalInstance || this;
+      //   }
+      // }
+      // window.FileReader = FileReaderA;
+    </script>
   </head>
 
   <body>

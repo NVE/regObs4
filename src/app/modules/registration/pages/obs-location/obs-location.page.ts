@@ -56,7 +56,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     if (id) {
       // Edit an existing draft
       this.draft = await this.draftService.load(id);
-      this.geoHazard = this.draft.registration.GeoHazardTID;
+      this.geoHazard = this.draft.registration.GeoHazardTID as GeoHazard;
     } else if (geoHazard) {
       // New draft - will be created later
       if (isNaN(geoHazard)) {
