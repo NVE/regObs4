@@ -17,8 +17,13 @@ import { BreakpointService } from './core/services/breakpoint.service';
 import { SqliteService } from './core/services/sqlite/sqlite.service';
 import { Keyboard } from '@capacitor/keyboard';
 import { Capacitor } from '@capacitor/core';
+import { register as registerSwiperCustomElements } from 'swiper/element/bundle';
 
 const DEBUG_TAG = 'AppComponent';
+
+// This is Ionics preferred place to register swiper custom elements
+// See: https://ionicframework.com/docs/angular/slides#getting-started
+registerSwiperCustomElements();
 
 @Component({
   selector: 'app-root',

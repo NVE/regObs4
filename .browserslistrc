@@ -1,11 +1,10 @@
-# This file is currently used by autoprefixer to adjust CSS to support the below specified browsers
-# For additional information regarding the format and rule options, please see:
-# https://github.com/browserslist/browserslist#queries
-#
-# For IE 9-11 support, please remove 'not' from the last line of the file and adjust as needed
+# Updated after upgrading to ionic 7
 
-> 0.5%
-last 2 versions
-Firefox ESR
-not dead
-not IE 9-11
+# See https://ionicframework.com/docs/updating/7-0#browser-support
+
+Chrome >=79
+ChromeAndroid >=79
+Firefox >=70
+Edge >=79
+Safari >=14
+iOS >=14

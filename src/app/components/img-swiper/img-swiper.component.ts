@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+// import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject } from 'rxjs';
 import { ImageLocation } from './image-location.model';
@@ -65,7 +65,8 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   private ngDestroy$ = new Subject<void>();
   private touchStart$ = new Subject<void>();
 
-  @ViewChild(IonSlides) slider: IonSlides;
+  // @ViewChild(IonSlides) slider: IonSlides;
+  slider: any;
 
   get isEmpty() {
     return this.state === 'empty';
@@ -157,18 +158,18 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   private init() {
-    this.slides = [];
-    if (this.location) {
-      this.slides.push({
-        type: 'location',
-        img: this.location,
-        header: 'REGISTRATION.OBS_LOCATION.TITLE',
-      });
-    }
-    this.slides = [...this.getLocationSlides(), ...this.getImageSlides()];
-    this.activeIndex = 0;
-    this.state = this.calculateNewState();
-    this.updateUi();
+    // this.slides = [];
+    // if (this.location) {
+    //   this.slides.push({
+    //     type: 'location',
+    //     img: this.location,
+    //     header: 'REGISTRATION.OBS_LOCATION.TITLE',
+    //   });
+    // }
+    // this.slides = [...this.getLocationSlides(), ...this.getImageSlides()];
+    // this.activeIndex = 0;
+    // this.state = this.calculateNewState();
+    // this.updateUi();
   }
 
   private updateUi() {

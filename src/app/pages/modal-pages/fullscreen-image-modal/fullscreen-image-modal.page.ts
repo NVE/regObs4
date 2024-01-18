@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IonSlides, ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
@@ -13,7 +13,8 @@ type HrefType = { title: string; url: string };
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullscreenImageModalPage implements OnInit {
-  @ViewChild(IonSlides) slider: IonSlides;
+  // @ViewChild(IonSlides) slider: IonSlides;
+  slider: any;
 
   @Input() imgIndex: number;
   @Input() allImages: AttachmentViewModel[];

@@ -1,15 +1,20 @@
-<div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{ 'animated-background': isSwiper, loaded: isSwiperLoaded }">
-  <ion-slides
-    #slider
-    *ngIf="isSwiper"
+<div class="slides-wrapper animated-background loaded" *ngIf="!isEmpty">
+  <!-- [ngClass]="{ 'animated-background': isSwiper, loaded: isSwiperLoaded }" -->
+  <!--
     [options]="slideOptions"
     [pager]="true"
+
     [ngClass]="{ loaded: isSwiperLoaded }"
     (ionSlideTransitionEnd)="onSlideTransitionEnd()"
     (ionSlidesDidLoad)="slidesLoaded()"
     (ionSlideTouchStart)="onSlideTouchStart()"
-  >
-    <ion-slide
+
+   -->
+  <swiper-container #slider [navigation]="isDesktop && moreThanFourPics" class="loaded">
+    <swiper-slide> Test 1</swiper-slide>
+    <swiper-slide> Test 2</swiper-slide>
+    <swiper-slide> Test 3</swiper-slide>
+    <!-- <swiper-slide
       class="slideGrid"
       *ngFor="let slide of slides; let i = index"
       [ngSwitch]="slide.type"
@@ -33,13 +38,8 @@
           >&nbsp;{{ slide.description | translate }}
         </p>
       </div>
-    </ion-slide>
-  </ion-slides>
-
-  <ng-container *ngIf="isDesktop && moreThanFourPics">
-    <div *ngIf="isPreviousImgAvailable()" class="swiper-button-prev" (click)="prev(); $event.stopPropagation()"></div>
-    <div *ngIf="isNextImgAvailable()" class="swiper-button-next" (click)="next(); $event.stopPropagation()"></div>
-  </ng-container>
+    </swiper-slide> -->
+  </swiper-container>
 
   <app-remote-image
     *ngIf="isSingleImage"

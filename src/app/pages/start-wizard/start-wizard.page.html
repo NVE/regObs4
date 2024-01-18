@@ -1,18 +1,14 @@
 <ion-content>
-  <ng-container *ngIf="!isIosOrAndroid">
-    <div *ngIf="!reachedStart" class="swiper-button-prev" (click)="slidePrev()"></div>
-    <div *ngIf="!reachedEnd" class="swiper-button-next" (click)="slideNext()"></div>
-  </ng-container>
-  <ion-slides
+  <swiper-container
+    #slides
     class="onboarding"
-    [options]="{autoplay:false}"
     pager="true"
-    (ionSlideReachEnd)="ionSlideReachEnd()"
-    (ionSlidePrevStart)="ionSlidePrevStart()"
-    (ionSlideReachStart)="ionSlideReachStart()"
-    (ionSlideTransitionStart)="ionSlideTransitionStart()"
+    [navigation]="isDesktop"
+    (swiperreachend)="ionSlideReachEnd()"
+    (swiperslideprevtransitionstart)="ionSlidePrevStart()"
+    (swipertransitionstart)="ionSlideTransitionStart($event)"
   >
-    <ion-slide>
+    <swiper-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
@@ -52,8 +48,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
@@ -92,8 +88,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
@@ -130,8 +126,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
@@ -181,9 +177,6 @@
                 src="/assets/images/onboarding/eye.svg"
               ></svg-icon>
             </div>
-            <!-- <div class="animated-element-wrapper">
-              <h3 class="animated-element text" [@moveUp]="state">{{'START_WIZARD.PAGE_3.BUTTON_TEXT' | translate}}</h3>
-            </div> -->
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
@@ -193,8 +186,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
@@ -223,8 +216,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-grid class="full-grid legal-grid">
         <ion-row class="legal-info-row">
           <ion-col class="ion-padding ion-align-self-bottom">
@@ -253,8 +246,8 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-slide>
-  </ion-slides>
+    </swiper-slide>
+  </swiper-container>
 </ion-content>
 <ion-footer>
   <ion-toolbar color="varsom-blue">

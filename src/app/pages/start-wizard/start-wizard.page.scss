@@ -63,7 +63,7 @@ ion-list {
 ion-content {
   --ion-background-color: #fff;
 
-  ion-slides {
+  swiper-container {
     height: 100%;
 
     .full-grid {
@@ -97,8 +97,9 @@ ion-content {
       }
     }
 
-    ion-slide {
+    swiper-slide {
       overflow: hidden;
+      text-align: center;
     }
 
     h2 {
