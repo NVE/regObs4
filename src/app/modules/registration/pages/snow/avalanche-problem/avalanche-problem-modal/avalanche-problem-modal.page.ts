@@ -23,12 +23,20 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   isNew = false;
   avalancheExtKdvFilter: (id: number) => boolean;
 
+  setAvalCauseTID(value: AvalancheEvalProblem2EditModel['AvalCauseTID']) {
+    this.avalancheEvalProblemCopy.AvalCauseTID = value;
+    this.avalancheExtKdvFilter = this.getAvalancheExtKdvFilter();
+    if (!this.avalancheExtKdvFilter(this.avalancheEvalProblemCopy.AvalancheExtTID)) {
+      this.avalancheEvalProblemCopy.AvalancheExtTID = null;
+    }
+  }
+
   get noWeakLayers() {
     return this.avalancheEvalProblemCopy.AvalCauseTID === NO_WEAK_LAYER_KDV_VALUE;
   }
 
   set noWeakLayers(val: boolean) {
-    this.avalancheEvalProblemCopy.AvalCauseTID = val ? NO_WEAK_LAYER_KDV_VALUE : undefined;
+    this.setAvalCauseTID(val ? NO_WEAK_LAYER_KDV_VALUE : undefined);
   }
 
   avalancheProblemView: AvalancheProblemKeys[];
@@ -40,8 +48,6 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   constructor(private modalController: ModalController, private kdvService: KdvService) {}
 
   ngOnInit() {
-    this.avalancheExtKdvFilter = this.internalAvalancheExtKdvFilter.bind(this);
-
     if (this.avalancheEvalProblem) {
       this.avalancheEvalProblemCopy = { ...this.avalancheEvalProblem };
     } else {
@@ -55,6 +61,7 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     ]).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView]) => {
       this.avalancheProblemView = avalancheProblemView as AvalancheProblemKeys[];
       this.avalancheCauseAttributes = this.getAvalancheCauseAttributes(snowCauseAttributesKdvElements);
+      this.avalancheExtKdvFilter = this.getAvalancheExtKdvFilter();
     });
   }
 
@@ -64,12 +71,12 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     }
   }
 
-  internalAvalancheExtKdvFilter(id: number) {
+  private getAvalancheExtKdvFilter() {
     const avalCauseTid = this.avalancheEvalProblemCopy.AvalCauseTID || 0;
-    const views = this.avalancheProblemView
+    const extTids = this.avalancheProblemView
       .filter((v) => v.AvalCauseTID === avalCauseTid)
       .map((v) => v.AvalancheExtTID);
-    return views.indexOf(id) >= 0;
+    return (tid: AvalancheEvalProblem2EditModel['AvalancheExtTID']) => extTids.indexOf(tid) >= 0;
   }
 
   getAvalancheCauseAttributes(kdvElements: KdvElement[]): {
