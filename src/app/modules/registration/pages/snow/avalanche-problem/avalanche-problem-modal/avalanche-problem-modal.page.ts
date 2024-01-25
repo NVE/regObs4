@@ -23,12 +23,19 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   isNew = false;
   avalancheExtKdvFilter: (id: number) => boolean;
 
+  setAvalCauseTID(value: AvalancheEvalProblem2EditModel['AvalCauseTID']) {
+    this.avalancheEvalProblemCopy.AvalCauseTID = value;
+    // Filteret på AvalancheExt (skredtype) verdier baserer seg på hvilken AvalCause (skredproblem) som er valgt.
+    // Oppdater derfor filteret når AvalCause endrer seg.
+    this.updateAvalancheExtKdvFilter();
+  }
+
   get noWeakLayers() {
     return this.avalancheEvalProblemCopy.AvalCauseTID === NO_WEAK_LAYER_KDV_VALUE;
   }
 
   set noWeakLayers(val: boolean) {
-    this.avalancheEvalProblemCopy.AvalCauseTID = val ? NO_WEAK_LAYER_KDV_VALUE : undefined;
+    this.setAvalCauseTID(val ? NO_WEAK_LAYER_KDV_VALUE : undefined);
   }
 
   avalancheProblemView: AvalancheProblemKeys[];
@@ -40,8 +47,6 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   constructor(private modalController: ModalController, private kdvService: KdvService) {}
 
   ngOnInit() {
-    this.avalancheExtKdvFilter = this.internalAvalancheExtKdvFilter.bind(this);
-
     if (this.avalancheEvalProblem) {
       this.avalancheEvalProblemCopy = { ...this.avalancheEvalProblem };
     } else {
@@ -55,6 +60,7 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     ]).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView]) => {
       this.avalancheProblemView = avalancheProblemView as AvalancheProblemKeys[];
       this.avalancheCauseAttributes = this.getAvalancheCauseAttributes(snowCauseAttributesKdvElements);
+      this.updateAvalancheExtKdvFilter();
     });
   }
 
@@ -64,12 +70,19 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     }
   }
 
-  internalAvalancheExtKdvFilter(id: number) {
+  private updateAvalancheExtKdvFilter() {
     const avalCauseTid = this.avalancheEvalProblemCopy.AvalCauseTID || 0;
-    const views = this.avalancheProblemView
+    const extTids = this.avalancheProblemView
       .filter((v) => v.AvalCauseTID === avalCauseTid)
       .map((v) => v.AvalancheExtTID);
-    return views.indexOf(id) >= 0;
+
+    this.avalancheExtKdvFilter = (tid: AvalancheEvalProblem2EditModel['AvalancheExtTID']) => extTids.indexOf(tid) >= 0;
+
+    // Sjekk om filteret fortsatt sier at den AvalancheExt vi har valgt er gyldig.
+    // Hvis den ikke er gyldig, nullstill AvalancheExt-verdien.
+    if (!this.avalancheExtKdvFilter(this.avalancheEvalProblemCopy.AvalancheExtTID)) {
+      this.avalancheEvalProblemCopy.AvalancheExtTID = null;
+    }
   }
 
   getAvalancheCauseAttributes(kdvElements: KdvElement[]): {

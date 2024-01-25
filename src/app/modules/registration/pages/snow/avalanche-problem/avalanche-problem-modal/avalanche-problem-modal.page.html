@@ -20,7 +20,8 @@
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
         kdvKey="Snow_AvalCauseKDV"
-        [(value)]="avalancheEvalProblemCopy.AvalCauseTID"
+        [value]="avalancheEvalProblemCopy.AvalCauseTID"
+        (valueChange)="setAvalCauseTID($event)"
       ></app-kdv-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH"
