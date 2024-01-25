@@ -104,3 +104,13 @@ app-img-swiper {
 .edit-icon {
   margin-right: 5px;
 }
+
+@media only screen and (max-width: 415px) {
+  // link-title is the edit button, should have been renamed..
+  // On small screens, constrain the edit button size so that
+  // the share button is not pushed outside of the obs card
+  .link-title {
+    max-width: 45%;
+    text-wrap: wrap;
+  }
+}
