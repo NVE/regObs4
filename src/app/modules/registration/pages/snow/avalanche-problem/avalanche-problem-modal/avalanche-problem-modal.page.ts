@@ -12,6 +12,12 @@ interface AvalancheProblemKeys {
   AvalCauseTID: number;
 }
 
+/**
+ * Modal for å legge til ett enkelt skredproblem.
+ *
+ * NB: Noen av valgene i skjemaet styres dynamisk av tabellen AvalCauseAttributeFlags.
+ * De valgene som har "IsActive" satt til 1 vil vises i skjemaet.
+ */
 @Component({
   selector: 'app-avalanche-problem-modal',
   templateUrl: './avalanche-problem-modal.page.html',
@@ -100,6 +106,11 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
       case 1:
         return this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID === kdvElement.Id;
       case 2:
+        // NB: Valg "Laget der bruddet skjer er tynt < 3 cm" ble fjernet i januar 2024.
+        // Case 2 kan derfor fjernes når det har gått litt tid og vi er sånn passe sikre på at de
+        // fleste bruker oppdaterte språkfiler uten dette valget.
+        // Feks etter mai 2024.
+        // Se https://nveprojects.atlassian.net/browse/RO-2573.
         return this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID === kdvElement.Id;
       case 4:
         return this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID === kdvElement.Id;
@@ -123,6 +134,11 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
 
   resetAvalancheCauseFields() {
     this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID = undefined;
+    // NB: Valg "Laget der bruddet skjer er tynt < 3 cm" ble fjernet i januar 2024.
+    // Linja nedenfor, som resetter AvalCauseAttributeThinTID kan derfor fjernes
+    // når det har gått litt tid og vi er sånn passe sikre på at de fleste bruker
+    // oppdaterte språkfiler uten dette valget. Feks etter mai 2024.
+    // Se https://nveprojects.atlassian.net/browse/RO-2573.
     this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID = undefined;
     this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID = undefined;
     this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID = undefined;
@@ -144,6 +160,11 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
             this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID = val.selected ? val.kdvElement.Id : undefined;
             break;
           case 2:
+            // NB: Valg "Laget der bruddet skjer er tynt < 3 cm" ble fjernet i januar 2024.
+            // Case 2 kan derfor fjernes når det har gått litt tid og vi er sånn passe sikre på at de
+            // fleste bruker oppdaterte språkfiler uten dette valget.
+            // Feks etter mai 2024.
+            // Se https://nveprojects.atlassian.net/browse/RO-2573.
             this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID = val.selected ? val.kdvElement.Id : undefined;
             break;
           case 4:
