@@ -10,6 +10,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { RegistrationDraft } from '../draft/draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { UploadSingleAttachmentService } from './upload-single-attachment.service';
+import { setCopyrightAndPhotographer } from './set-metadata';
 
 const DEBUG_TAG = 'UploadAttachmentsService';
 
@@ -63,7 +64,8 @@ export class UploadAttachmentsService {
     const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
 
     // TODO: What about existing attachments? Do we need to set default metadata on those as well?
-    const attachmentsWithDefaultSettingsMetadata = await this.setCopyrightAndPhotographer(attachments);
+    const userSettings = await firstValueFrom(this.userSettings.userSetting$);
+    const attachmentsWithDefaultSettingsMetadata = setCopyrightAndPhotographer(userSettings, attachments);
 
     // Some attachments may already be uploaded
     const alreadyUploaded = attachmentsWithDefaultSettingsMetadata.filter((a) => a.AttachmentUploadId != null);
@@ -132,37 +134,6 @@ export class UploadAttachmentsService {
       ],
     });
     alert.present();
-  }
-
-  // TODO: Add test
-  private async setCopyrightAndPhotographer(attachments: AttachmentUploadEditModel[]) {
-    const userSettings = await firstValueFrom(this.userSettings.userSetting$);
-
-    const setCopyright =
-      userSettings.copyright == null
-        ? (a) => a
-        : (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
-            if (attachment.Copyright == null) {
-              return {
-                ...attachment,
-                Copyright: userSettings.copyright,
-              };
-            }
-          };
-
-    const setPhotographer =
-      userSettings.photographer == null
-        ? (a) => a
-        : (attachment: AttachmentUploadEditModel): AttachmentUploadEditModel => {
-            if (attachment.Photographer == null) {
-              return {
-                ...attachment,
-                Photographer: userSettings.photographer,
-              };
-            }
-          };
-
-    return attachments.map((a) => setPhotographer(setCopyright(a)));
   }
 
   private async uploadAttachment(
