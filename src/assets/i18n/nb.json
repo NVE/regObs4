@@ -111,7 +111,7 @@
     }
   },
   "LEGAL_TERMS": {
-    "HEADER": "Om data i Varsom",
+    "HEADER": "Om data og tilgjengelighet",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
     "LINE_3": "Observasjoner produseres av brukerne og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
@@ -155,7 +155,7 @@
     "SEARCH_TEXT": "Søk etter sted"
   },
   "MENU": {
-    "ABOUT_REGOBS": "Om data i Varsom",
+    "ABOUT_REGOBS": "Om data og tilgjengelighet",
     "AND": "og",
     "CONTACT_DESCRIPTION": "Vi har lagt ved loggfiler. Du kan fjerne disse vedleggene om du ikke ønsker å sende inn logger",
     "CONTACT_REGOBS": "Kontakt oss",
