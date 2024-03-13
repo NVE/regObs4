@@ -135,8 +135,8 @@ export const settings: ISettings = {
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             bounds: [
-              [57.98808405905049, 4.626617431640625],
-              [71.15939141681443, 30.816650390624996],
+              [57.9, 4.626617431640625],
+              [71.15939141681443, 31.3],
             ],
             maxNativeZoom: 20,
           },
@@ -150,7 +150,7 @@ export const settings: ISettings = {
               [73.7357239, 7.4670978],
               [81.1569081, 36.0502348],
             ],
-            maxNativeZoom: 13,
+            maxNativeZoom: 15,
           },
           supportsOffline: true,
         },
