@@ -87,6 +87,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   }
 
   async send(): Promise<void> {
+    this.logger.debug('User requested send', DEBUG_TAG, { uuid: this.draft.uuid });
     this.isSending.next(true);
     try {
       // Redirect user to log in if not authenticated
@@ -148,6 +149,10 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   }
 
   private async deleteFromRegobs(): Promise<void> {
+    this.logger.debug('User requested delete from regobs', DEBUG_TAG, {
+      regId: this.draft.regId,
+      uuid: this.draft.uuid,
+    });
     try {
       await this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS);
     } catch (err) {
