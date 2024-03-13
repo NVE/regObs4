@@ -5,7 +5,6 @@ import { AnalyticService } from 'src/app/modules/analytics/services/analytic.ser
 import { LangKey } from 'src/app/modules/common-core/models';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
-import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationEditModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments } from '../draft/draft-model';
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
@@ -23,7 +22,6 @@ import { addAttachmentToRegistration } from './attachmentHelpers';
 })
 export class AddUpdateDeleteRegistrationService {
   constructor(
-    private newAttachmentsService: NewAttachmentService,
     private uploadAttachmentsService: UploadAttachmentsService,
     private regobsApiRegistrationService: RegistrationService,
     private userSettings: UserSettingService,
