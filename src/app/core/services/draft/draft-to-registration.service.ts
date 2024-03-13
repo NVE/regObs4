@@ -64,6 +64,8 @@ export class DraftToRegistrationService {
    * @param ignoreVersionCheck set this to true to overwrite conflicting versions on server
    */
   async markDraftAsReadyToSubmit(draft: RegistrationDraft, ignoreVersionCheck = false): Promise<void> {
+    this.loggerService.debug('Marking draft as ready to submit', DEBUG_TAG, { draft, ignoreVersionCheck });
+
     const { error, ...draftToUpdate } = draft;
     if (error) {
       this.loggerService.debug('Draft had error, will remove error when saving to retry upload', DEBUG_TAG, {
@@ -74,19 +76,31 @@ export class DraftToRegistrationService {
 
     // Mark draft as ready to submit
     const syncStatus = ignoreVersionCheck ? SyncStatus.SyncAndIgnoreVersionCheck : SyncStatus.Sync;
-    this.draftService.save({
+    const updatedDraft = {
       ...draftToUpdate,
       syncStatus: syncStatus,
-    });
+    };
+    this.loggerService.debug('Saving draft with updated sync status', DEBUG_TAG, { updatedDraft, ignoreVersionCheck });
+    this.draftService.save(updatedDraft);
   }
 
   private startUploadingRegistrations() {
     // Listen for drafts ready to submit to regobs api, and network status
     this.draftService.drafts$.subscribe((drafts) => {
+      this.loggerService.debug('Drafts updated, checking for drafts to sync', DEBUG_TAG, {
+        registrationsUploading: this.registrationsUploading,
+        drafts: drafts.map((d) => d.uuid),
+      });
+
       const draftsToSync = drafts
         .filter((d) => d.syncStatus === SyncStatus.Sync || d.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
         .filter((d) => d.error == null)
         .filter((d) => !this.registrationsUploading.includes(d.uuid));
+
+      this.loggerService.debug('Drafts to sync', DEBUG_TAG, {
+        draftsToSync: draftsToSync.map((d) => d.uuid),
+        registrationsUploading: this.registrationsUploading,
+      });
 
       for (const draft of draftsToSync) {
         this.addOrUpdateRegistrationWithTracker(draft);
@@ -126,6 +140,8 @@ export class DraftToRegistrationService {
   }
 
   private async addOrUpdateRegistration(draft: RegistrationDraft) {
+    this.loggerService.debug('Add or update registration', DEBUG_TAG, { draft });
+
     // No need to upload if we do not have a connection.
     // We need to set the network error anyway so that we know we have tried to upload this.
     const connected = await firstValueFrom(this.networkStatus.connected$);
@@ -144,15 +160,21 @@ export class DraftToRegistrationService {
         await this.addUpdateDeleteRegistrationService.add(draft);
       }
 
+      this.loggerService.debug(`Add or update complete, deleting draft`, DEBUG_TAG, { uuid: draft.uuid });
       await this.draftService.delete(draft.uuid);
     } catch (error) {
       const { message, code } = handleError(error);
-      this.loggerService.error(error, DEBUG_TAG, message);
+      this.loggerService.error(error, DEBUG_TAG, 'Got error during add, update or draft delete', {
+        message,
+        code,
+        uuid: draft.uuid,
+      });
       await this.draftService.save({ ...draft, error: { code, message, timestamp: Date.now() } });
     }
   }
 
   private async setNetworkErrorOnDraft(draft: RegistrationDraft) {
+    this.loggerService.debug('Setting network error on draft', DEBUG_TAG, { uuid: draft.uuid });
     await this.draftService.save({
       ...draft,
       error: {
@@ -174,7 +196,7 @@ export class DraftToRegistrationService {
     }
 
     const { error, ...draftWithoutError } = draft;
-    this.loggerService.debug('Removing network error from draft', DEBUG_TAG, { error, draftId: draft.uuid });
+    this.loggerService.debug('Removing network error from draft', DEBUG_TAG, { error, uuid: draft.uuid });
     await this.draftService.save(draftWithoutError);
   }
 }

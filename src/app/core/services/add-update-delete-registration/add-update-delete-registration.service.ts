@@ -10,6 +10,9 @@ import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments } 
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { addAttachmentToRegistration } from './attachmentHelpers';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'AddUpdateDeleteRegistrationService';
 
 /**
  * Service for adding or updating a registration in regobs, or deleting an existing registration.
@@ -25,7 +28,8 @@ export class AddUpdateDeleteRegistrationService {
     private uploadAttachmentsService: UploadAttachmentsService,
     private regobsApiRegistrationService: RegistrationService,
     private userSettings: UserSettingService,
-    private analytics: AnalyticService
+    private analytics: AnalyticService,
+    private logger: LoggingService
   ) {}
 
   private changedRegistrations = new Subject<{ reg: RegistrationViewModel; langKey: LangKey }>();
@@ -56,6 +60,8 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
   async add(draft: RegistrationDraft): Promise<RegistrationViewModel> {
+    this.logger.debug('Add registration', DEBUG_TAG, { draft });
+
     draft = removeEmptyRegistrations(draft);
     const uploadedAttachments = await this.uploadAttachments(draft);
 
@@ -63,14 +69,18 @@ export class AddUpdateDeleteRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
+    const data: RegistrationService.RegistrationInsertParams = {
+      registration: registrationWithMeta,
+      langKey,
+      externalReferenceId: draft.uuid,
+    };
+
+    this.logger.debug('RegistrationInsert', DEBUG_TAG, data);
+
     // Send registration to regobs
-    const result = await firstValueFrom(
-      this.regobsApiRegistrationService.RegistrationInsert({
-        registration: registrationWithMeta,
-        langKey,
-        externalReferenceId: draft.uuid,
-      })
-    );
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert(data));
+
+    this.logger.debug('RegistrationInsert result', DEBUG_TAG, { result, externalReferenceId: draft.uuid });
 
     // Track observation type in plausible
     this.analytics.trackDimension(AppCustomDimension.observationType, draft.simpleMode ? 'simple' : 'normal');
@@ -92,6 +102,8 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
   async update(draft: RegistrationDraft, ignoreVersionCheck = false): Promise<RegistrationViewModel> {
+    this.logger.debug('Update registration', DEBUG_TAG, { draft, ignoreVersionCheck });
+
     if (!draft.regId) {
       throw new Error('Update operation needs regid');
     }
@@ -102,16 +114,20 @@ export class AddUpdateDeleteRegistrationService {
     const registration = this.addAttachmentToRegistration(uploadedAttachments, draft.registration);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
+    const data: RegistrationService.RegistrationInsertOrUpdateParams = {
+      registration: registrationWithMeta,
+      langKey,
+      externalReferenceId: draft.uuid,
+      id: draft.regId,
+      ignoreVersionCheck: ignoreVersionCheck,
+    };
+
+    this.logger.debug('RegistrationInsertOrUpdate', DEBUG_TAG, data);
+
     // Send registration to regobs
-    const result = await firstValueFrom(
-      this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
-        registration: registrationWithMeta,
-        langKey,
-        externalReferenceId: draft.uuid,
-        id: draft.regId,
-        ignoreVersionCheck: ignoreVersionCheck,
-      })
-    );
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate(data));
+
+    this.logger.debug('RegistrationInsertOrUpdate result', DEBUG_TAG, { result, externalReferenceId: draft.uuid });
 
     this.changedRegistrations.next({ reg: result, langKey });
     return result;
@@ -128,6 +144,8 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {TimeoutError} if the request timed out
    */
   async delete(regId: number, timeoutInMillis = 10000): Promise<void> {
+    this.logger.debug('Delete registration', DEBUG_TAG, { regId, timeoutInMillis });
+
     if (regId == null) {
       throw new Error('regId required');
     }
@@ -143,7 +161,9 @@ export class AddUpdateDeleteRegistrationService {
    * @returns A new draft with updated attachment info
    */
   private async uploadAttachments(draft: RegistrationDraft): Promise<AttachmentUploadEditModel[]> {
+    this.logger.debug('Upload all attachments', DEBUG_TAG, { draft });
     const uploadedAttachments = await this.uploadAttachmentsService.uploadAllAttachments(draft);
+    this.logger.debug('Attachments uploaded', DEBUG_TAG, { draft: draft.uuid, uploadedAttachments });
     return uploadedAttachments;
   }
 
@@ -155,6 +175,7 @@ export class AddUpdateDeleteRegistrationService {
         updatedRegistration = addAttachmentToRegistration(attachment, updatedRegistration);
       }
     }
+    this.logger.debug('Added attachments to registration', DEBUG_TAG, { updatedRegistration });
     return updatedRegistration;
   }
 

@@ -275,6 +275,7 @@ export class DraftRepositoryService {
    * @param uuid uuid of the registration you want to delete
    */
   async delete(uuid: string): Promise<void> {
+    this.logger.debug(`Deleting draft`, DEBUG_TAG, { uuid });
     this.throwIfMissingUuid(uuid);
     await this.newAttachmentSerivice.removeAttachments(uuid);
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
