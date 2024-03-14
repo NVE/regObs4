@@ -135,12 +135,25 @@ export const settings: ISettings = {
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             bounds: [
-              [57.98808405905049, 4.626617431640625],
-              [71.15939141681443, 30.816650390624996],
+              [57.9, 4.626617431640625],
+              [71.15939141681443, 31.3],
             ],
             maxNativeZoom: 20,
           },
           supportsOffline: true,
+        },
+        npolarFkb: {
+          url: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/FKB_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer + 1, // + 1 to force it above npolarBasiskart
+            bounds: [
+              [78.02, 11.71],
+              [78.951, 16.35],
+            ],
+            minZoom: 11,
+            maxNativeZoom: 17,
+          },
+          supportsOffline: false,
         },
         npolarBasiskart: {
           url: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
@@ -189,6 +202,9 @@ export const settings: ISettings = {
             excludeBounds: [NORWAY_BOUNDS, SVALBARD_BOUNDS],
           },
           {
+            layer: 'npolarFkb',
+          },
+          {
             layer: 'npolarBasiskart',
           },
           {
@@ -202,6 +218,9 @@ export const settings: ISettings = {
               zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
             },
             excludeBounds: [NORWAY_BOUNDS, SVALBARD_BOUNDS],
+          },
+          {
+            layer: 'npolarFkb',
           },
           {
             layer: 'npolarBasiskart',
