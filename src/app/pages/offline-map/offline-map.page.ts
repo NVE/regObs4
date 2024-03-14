@@ -12,7 +12,7 @@ import { CompoundPackage, CompoundPackageMetadata, CompoundPackageFeature } from
 import { TranslateService } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
-const PACKAGE_INDEX_URL = 'https://offlinemap.blob.core.windows.net/metadata/packageIndex_v4.json';
+const PACKAGE_INDEX_URL = 'https://offlinemap.blob.core.windows.net/metadata/packageIndex_v5.json';
 const filledTileOpacity = 0.8;
 const notFilledTileOpacity = 0.1;
 const documentStyle = getComputedStyle(document.body);
