@@ -11,4 +11,5 @@ export enum TopoMapLayer {
   statensKartverk = 'statensKartverk',
   geoDataLandskap = 'geoDataLandskap',
   npolarBasiskart = 'npolarBasiskart',
+  npolarFkb = 'npolarFkb',
 }
