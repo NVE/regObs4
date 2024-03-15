@@ -7,31 +7,31 @@
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/ostlandet/",
-      "counties": ["01", "02", "03", "04", "05", "06", "07", "08"]
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/ostlandet/",
+      "counties": ["03", "31", "32", "33", "34", "39", "40"]
     },
     {
       "name": "Rogaland - Agder",
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/rogaland-agder/",
-      "counties": ["09", "10", "11"]
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/rogaland-agder/",
+      "counties": ["42", "11"]
     },
     {
-      "name": "Sogn og Fjordane - Hordaland",
+      "name": "Vestland",
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/sogn-og-fjordane-hordaland/",
-      "counties": ["12", "14"]
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/vestland/",
+      "counties": ["46"]
     },
     {
       "name": "Trøndelag - Møre og Romsdal",
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/trondelag-more-og-romsdal/",
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/trondelag-more-og-romsdal/",
       "counties": ["15", "50"]
     },
     {
@@ -39,7 +39,7 @@
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/nordland/",
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/nordland/",
       "counties": ["18"]
     },
     {
@@ -47,16 +47,16 @@
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/troms/",
-      "counties": ["19"]
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/troms/",
+      "counties": ["55"]
     },
     {
       "name": "Finnmark",
       "validFrom": "2018-10-18",
       "validTo": "2018-10-26",
       "iceTableDate": "2018-10-18",
-      "url": "http://www.varsom.no/isvarsling/isvarsler/finnmark/",
-      "counties": ["20"]
+      "url": "https://www.varsom.no/is/isvarsling/regionale-isvarsler/finnmark/",
+      "counties": ["56"]
     }
   ]
 }

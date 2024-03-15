@@ -27,13 +27,13 @@
     </div>
     <ion-label (click)="navigateToWeb($event, warningGroup)">
       <h2>{{ warningGroup.key.groupName }}</h2>
-      <p>
+      <!-- TODO: KOmmentert ut inntil vi finner ut hvorfor vi viser feil datoer her p>
         <span *ngIf="warningGroup.validFrom"
           >{{ "WARNING_LIST.VALID_FROM" | translate }}:
           {{ warningGroup.validFrom | formatDate: true:false:false | async }}</span
         >
         <span *ngIf="warningGroup.validTo"> - {{ warningGroup.validTo | formatDate: true:false:false | async }}</span>
-      </p>
+      </p-->
     </ion-label>
   </ion-item>
   <ion-item-options side="end" (ionSwipe)="itemSwiped()">
