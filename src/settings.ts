@@ -404,8 +404,8 @@ export const settings: ISettings = {
     daysBeforeUpdate: 1,
   },
   images: {
-    size: 3600,
-    quality: 80,
+    size: 2500,
+    quality: 60,
   },
   sentryDsn: 'https://2e07df8503a34dc9973eedd05e7a0f49@sentry.io/170000',
   errorEmailAddress: 'regobs@nve.no',
