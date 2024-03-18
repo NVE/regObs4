@@ -4,15 +4,14 @@ import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.m
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
-import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
-import { CompoundPackage, CompoundPackageMetadata, CompoundPackageFeature } from './metadata.model';
+import { CompoundPackage, CompoundPackageFeature } from './metadata.model';
 import { TranslateService } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { PackageIndexService } from 'src/app/core/services/offline-map/package-index.service';
 
-const PACKAGE_INDEX_URL = 'https://offlinemap.blob.core.windows.net/metadata/packageIndex_v5.json';
 const filledTileOpacity = 0.8;
 const notFilledTileOpacity = 0.1;
 const documentStyle = getComputedStyle(document.body);
@@ -29,8 +28,6 @@ const errorTileStyle = {
   ...downloadedTileStyle,
   color: documentStyle.getPropertyValue('--ion-color-danger'),
 };
-
-type PackageIndex = CompoundPackageMetadata[];
 
 interface PackageTotals {
   numPackages: number;
@@ -49,7 +46,6 @@ export class OfflineMapPage extends NgDestoryBase {
   private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   packageTotals$: Observable<PackageTotals>;
   readonly allPackages$: Observable<OfflineMapPackage[]>;
-  private packagesOnServer$: Observable<Map<string, CompoundPackage>>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
   showTileCard = true;
   tilesLayer: L.GeoJSON;
@@ -65,22 +61,10 @@ export class OfflineMapPage extends NgDestoryBase {
     private offlineMapService: OfflineMapService,
     private alertController: AlertController,
     private translateService: TranslateService,
-    private zone: NgZone,
-    http: HttpClient
+    private packageIndex: PackageIndexService,
+    private zone: NgZone
   ) {
     super();
-    // Download package index from azure
-    this.packagesOnServer$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(
-      // Map downloaded package index to a packageName => package map
-      map((packageIndex) => {
-        const nameAndPkg: [string, CompoundPackage][] = packageIndex.map((p) => [
-          CompoundPackage.GetNameFromXYZ(...p.xyz),
-          new CompoundPackage(p),
-        ]);
-        return new Map(nameAndPkg);
-      }),
-      shareReplay()
-    );
 
     this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$.pipe(
       map((items) => items.sort((a, b) => b.downloadStart - a.downloadStart))
@@ -129,17 +113,17 @@ export class OfflineMapPage extends NgDestoryBase {
 
     map.addLayer(this.tilesLayer);
 
-    this.packagesOnServer$.subscribe((packageMap) => {
-      packageMap.forEach((mapPackage) => {
+    this.packageIndex.packages$.subscribe((packages) => {
+      packages.forEach((mapPackage) => {
         this.tilesLayer.addData(mapPackage.getFeature());
       });
     });
 
-    combineLatest([this.installedPackages$, this.packagesOnServer$])
+    combineLatest([this.installedPackages$, this.packageIndex.packages$])
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(([installedPackages, packagesOnServer]) => {
+      .subscribe(([installedPackages, packageIndex]) => {
         this.installedPackages = installedPackages;
-        this.packagesOnServer = packagesOnServer;
+        this.packagesOnServer = packageIndex;
         this.setStyleForPackages();
       });
 
