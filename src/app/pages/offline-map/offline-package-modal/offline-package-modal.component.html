@@ -70,14 +70,29 @@
       </ion-row>
       <ion-row class="buttons-container" *ngIf="packageStatus.error">
         <ion-col>
-          <ion-button expand="block" color="varsom-orange" (click)="startDownload()">{{
+          <ion-button expand="block" (click)="startDownload()">{{
             "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.TRY_AGAIN_BUTTON" | translate
           }}</ion-button>
         </ion-col>
-        <ion-col *ngIf="!!packageStatus.downloadComplete || packageStatus.error">
+        <ion-col>
           <ion-button (click)="delete()" expand="block" color="danger">{{
             "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate
           }}</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="buttons-container" *ngIf="packageStatus.downloadComplete">
+        <ion-col>
+          <!-- TODO: Vis hvis det finnes en nyere versjon -->
+          <ion-button expand="block" (click)="update()">
+            <ion-icon slot="start" name="refresh"></ion-icon>
+            {{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON" | translate }}
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="delete()" expand="block" color="danger">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            {{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate }}
+          </ion-button>
         </ion-col>
       </ion-row>
     </div>
@@ -90,13 +105,9 @@
   </ion-row>
   <ion-row>
     <ion-col>
-      <ion-button
-        [disabled]="isCheckingAvailableDiskspace"
-        (click)="startDownload()"
-        expand="block"
-        color="varsom-orange"
-        >{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DOWNLOAD_BUTTON" | translate }}</ion-button
-      >
+      <ion-button [disabled]="isCheckingAvailableDiskspace" (click)="startDownload()" expand="block">{{
+        "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DOWNLOAD_BUTTON" | translate
+      }}</ion-button>
     </ion-col>
   </ion-row>
 </ng-template>

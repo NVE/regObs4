@@ -290,12 +290,13 @@
       "DELETE_BUTTON": "Slett",
       "DOWNLOAD_BUTTON": "Last ned",
       "HEADER": "Kartpakke {{name}}",
-      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "PACKAGE_DOWNLOADED_DATE": "Lastet ned {{date}}",
       "PACKAGE_DOWNLOAD_STATUS": "Status:",
       "PACKAGE_PRODUCED_DATE": "Produsert:",
       "PACKAGE_SIZE": "Størrelse:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
-      "TRY_AGAIN_BUTTON": "Prøv på nytt"
+      "TRY_AGAIN_BUTTON": "Prøv på nytt",
+      "UPDATE_BUTTON": "Oppdater"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakker",
