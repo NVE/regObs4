@@ -81,8 +81,13 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     this.offlineMapService.cancelDownloadPackage(map);
   }
 
-  delete() {
+  async delete() {
     this.offlineMapService.removeMapPackageByName(this.packageOnServer.getName());
+  }
+
+  async update() {
+    await this.delete();
+    this.startDownload();
   }
 
   dismiss() {
