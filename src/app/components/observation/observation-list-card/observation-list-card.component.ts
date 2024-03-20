@@ -70,7 +70,7 @@ export class ObservationListCardComponent implements OnChanges {
   userCanEdit = false;
   isLoadingObsForEdit = false;
 
-  attachments: AttachmentViewModel[] = [];
+  attachments: (AttachmentViewModel & {Href?: string})[] = [];
   location: ImageLocation;
   competenceLevelName: string;
 

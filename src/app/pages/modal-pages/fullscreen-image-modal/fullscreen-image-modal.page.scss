@@ -63,3 +63,10 @@ ion-item {
   width: 100%;
   color: var(--ion-color-varsom-blue);
 }
+
+.view-button {
+  position: absolute;
+  top: calc(85px + env(safe-area-inset-top));
+  right: 10px;
+  z-index: 9999;
+}
