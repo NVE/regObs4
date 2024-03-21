@@ -328,7 +328,7 @@ export const settings: ISettings = {
         {
           name: 'floodzoones',
           description: 'FLOOD_ZONES_MAP_DESCRIPTION',
-          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://nve.geodataonline.no/arcgis/rest/services/Flomsoner2/MapServer',
           enabled: true,
           checked: true,
           opacity: 0.5,
@@ -342,6 +342,8 @@ export const settings: ISettings = {
             [57.136239319177434, -0.17578125],
           ],
           maxNativeZoom: 17,
+          mapServerType: 'wms',
+          wmsLayers: [13, 14, 16, 17, 18, 19, 21]
         },
         {
           name: 'weakenedice',

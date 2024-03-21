@@ -5,6 +5,8 @@ export interface SupportTile extends SubTile {
   opacity: L.TileLayerOptions['opacity'];
   geoHazardId: GeoHazard;
   subTile?: SubTile;
+  mapServerType?: 'wmts' | 'wms';
+  wmsLayers?: number[];
 }
 
 export interface SubTile extends SubTileStore {

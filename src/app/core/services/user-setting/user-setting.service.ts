@@ -286,6 +286,8 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
             ...tile.subTile,
             opacity: tile.opacity,
             geoHazardId: tile.geoHazardId,
+            mapServerType: tile.mapServerType,
+            wmsLayers: tile.wmsLayers,
           });
           delete tile.subTile;
         });
@@ -362,7 +364,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  appOnReset() {}
+  appOnReset() { }
 
   appOnResetComplete() {
     this.loggingService.debug('App reset complete. Re-init observables.', DEBUG_TAG);

@@ -40,6 +40,7 @@ import {
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapService } from '../../services/map/map.service';
+import { DynamicMapLayer } from 'esri-leaflet'
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -613,22 +614,28 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           options.maxNativeZoom = maxNativeZoom;
         }
 
-        const layer = this.createSupportMapTileLayer(supportMap.name, supportMap.url, options);
+        const layer = this.createSupportMapTileLayer(supportMap.name, supportMap.url, supportMap.mapServerType, supportMap.wmsLayers, options);
         layer.setOpacity(supportMap.opacity);
         layer.addTo(this.layerGroup);
       }
     });
   }
 
-  private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsTileLayer {
+  private createSupportMapTileLayer(name: string, url: string, mapServerType: string, wmsLayers: number[], options: L.TileLayerOptions): RegObsTileLayer {
     if (isAndroidOrIos(this.platform)) {
-      return new RegObsOfflineAwareTileLayer(
-        name,
-        url,
-        options,
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService
-      );
+      if (mapServerType === 'wms') {
+        return new DynamicMapLayer({ url, opacity: options.opacity, layers: wmsLayers });
+      } else {
+        return new RegObsOfflineAwareTileLayer(
+          name,
+          url,
+          options,
+          this.offlineMapService.offlineTilesRegistry,
+          this.loggingService
+        );
+      }
+    } else if (mapServerType === 'wms') {
+      return new DynamicMapLayer({ url, opacity: options.opacity, layers: wmsLayers });
     } else {
       return new RegObsTileLayer(url, options);
     }
