@@ -45,7 +45,7 @@
           <span *ngIf="!!packageStatus.downloadComplete"
             >{{
               "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOADED_DATE"
-                | translate: { date: packageStatus.downloadComplete * 1000 | date: "short" }
+                | translate: { date: getDownloadCompleteDate(packageStatus) | date: "short" }
             }}
           </span>
           <span *ngIf="!packageStatus.downloadComplete">({{ getPercentage(packageStatus) + "%" }})</span>
@@ -81,7 +81,7 @@
         </ion-col>
       </ion-row>
       <ion-row class="buttons-container" *ngIf="packageStatus.downloadComplete">
-        <ion-col>
+        <ion-col *ngIf="isPackageOutdated">
           <!-- TODO: Vis hvis det finnes en nyere versjon -->
           <ion-button expand="block" (click)="update()">
             <ion-icon slot="start" name="refresh"></ion-icon>
