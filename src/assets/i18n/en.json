@@ -295,7 +295,8 @@
       "PACKAGE_PRODUCED_DATE": "Produced:",
       "PACKAGE_SIZE": "Size:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
-      "TRY_AGAIN_BUTTON": "Try again"
+      "TRY_AGAIN_BUTTON": "Try again",
+      "UPDATE_BUTTON": "Update"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
     "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",

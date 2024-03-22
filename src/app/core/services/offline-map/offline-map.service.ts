@@ -7,8 +7,18 @@ import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import JSZip from 'jszip';
 import moment from 'moment';
-import { BehaviorSubject, firstValueFrom, from, interval, Observable, Subject, Subscription } from 'rxjs';
-import { exhaustMap, finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  from,
+  interval,
+  Observable,
+  ReplaySubject,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import { exhaustMap, finalize, map, mergeMap, switchMap, take, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
 import { DownloadAndUnzip } from 'src/download-and-unzip-plugin';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
@@ -20,6 +30,8 @@ import { OfflineMapPackage, OfflineTilesMetadata } from './offline-map.model';
 import { OfflineTilesRegistry } from './offline-tiles-registry';
 import { ProgressStep } from './progress-step.model';
 import { Progress } from './progress.model';
+import { PackageIndexService } from './package-index.service';
+import { isPackageOutdated } from './utils';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -55,6 +67,8 @@ export class OfflineMapService {
   private rootFileUrl = '';
   offlineTilesRegistry = new OfflineTilesRegistry();
 
+  hasOutdatedPackages$ = new ReplaySubject<boolean>();
+
   constructor(
     private loggingService: LoggingService,
     private webView: WebView,
@@ -62,7 +76,8 @@ export class OfflineMapService {
     private platform: Platform,
     private helperService: HelperService,
     private translateService: TranslateService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private packageIndex: PackageIndexService
   ) {
     // Start with map packages already downloaded
     this.getMapPackages()
@@ -87,6 +102,18 @@ export class OfflineMapService {
         setTimeout(() => {
           this.availableDiskspace = val;
         });
+      });
+
+    combineLatest([this.packageIndex.packages$, this.packages$])
+      .pipe(take(1))
+      .subscribe(([packageIndex, downloadedPackages]) => {
+        for (const downloadedPackage of downloadedPackages) {
+          const serverPackage = packageIndex.get(downloadedPackage.name);
+          if (serverPackage && isPackageOutdated(downloadedPackage, serverPackage)) {
+            this.hasOutdatedPackages$.next(true);
+            return;
+          }
+        }
       });
 
     this.packages$.subscribe((packages) => this.registerOfflineMapPackages(packages));
