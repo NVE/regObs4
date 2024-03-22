@@ -328,7 +328,7 @@ export const settings: ISettings = {
         {
           name: 'floodzoones',
           description: 'FLOOD_ZONES_MAP_DESCRIPTION',
-          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner2/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           checked: true,
           opacity: 0.5,
