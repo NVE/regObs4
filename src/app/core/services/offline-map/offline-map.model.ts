@@ -1,6 +1,7 @@
 import { CompoundPackage } from '../../../pages/offline-map/metadata.model';
 import { Progress } from './progress.model';
 
+/** Opplysninger om nedlasta kart på telefonen */
 export interface OfflineTilesMetadata {
   mapId: string;
   rootTile: {
@@ -11,6 +12,7 @@ export interface OfflineTilesMetadata {
   zMax: number;
   template: string;
   url?: string;
+  lastModified?: string;
 }
 
 export interface OfflinePackageMetadata {
