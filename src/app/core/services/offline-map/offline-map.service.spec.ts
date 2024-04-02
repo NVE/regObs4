@@ -1,20 +1,26 @@
 import { Platform } from '@ionic/angular';
 import { Platforms } from '@ionic/core';
-import { of } from 'rxjs';
+import { ReplaySubject, of } from 'rxjs';
 import { TestLoggingService } from '../../../modules/shared/services/logging/test-logging.service';
 import { CompoundPackage } from '../../../pages/offline-map/metadata.model';
 import { OfflineMapService } from './offline-map.service';
 import { ProgressStep } from './progress-step.model';
+import { PackageIndexService } from './package-index.service';
 
 describe('OfflineMapService', () => {
   let offlineMapService: OfflineMapService;
   let platformMock: Platform;
+  let packageIndexServiceMock: PackageIndexService;
 
   beforeEach(() => {
     platformMock = jasmine.createSpyObj('Platform', {
       is: (platformName: Platforms) => false,
     });
-    offlineMapService = new OfflineMapService(new TestLoggingService(), null, null, platformMock, null, null, null);
+    const packages = new ReplaySubject<Map<string, CompoundPackage>>();
+    packageIndexServiceMock = jasmine.createSpyObj('PackageIndexService', {}, {
+      packages$: packages.asObservable(),
+    });
+    offlineMapService = new OfflineMapService(new TestLoggingService(), null, null, platformMock, null, null, null, packageIndexServiceMock);
   });
 
   it('progress value for 10% for download step of part 1 of 2 should be 0.10 / 4 =  0.025', () => {
