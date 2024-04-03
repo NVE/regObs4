@@ -50,6 +50,7 @@
           <ion-label>{{ item.name }}</ion-label>
           <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
           <ion-label>{{ formatProgressIfDownloading(item) }}</ion-label>
+          <ion-icon slot="end" *ngIf="isPackageOutdated(item)" (click)="update(item, $event)" name="refresh"></ion-icon>
           <ion-icon slot="end" *ngIf="item.error" name="warning-outline"></ion-icon>
           <ion-icon
             slot="end"

@@ -11,6 +11,7 @@ import { CompoundPackage, CompoundPackageFeature } from './metadata.model';
 import { TranslateService } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { PackageIndexService } from 'src/app/core/services/offline-map/package-index.service';
+import { isPackageOutdated } from 'src/app/core/services/offline-map/utils';
 
 const filledTileOpacity = 0.8;
 const notFilledTileOpacity = 0.1;
@@ -269,7 +270,7 @@ export class OfflineMapPage extends NgDestoryBase {
           {
             text: translations['DIALOGS.DELETE'],
             handler: () => {
-              this.offlineMapService.removeMapPackageByName(map.name);
+              this.delete(map);
             },
           },
         ],
@@ -278,6 +279,25 @@ export class OfflineMapPage extends NgDestoryBase {
     } else {
       this.offlineMapService.cancelDownloadPackage(map);
     }
+  }
+
+  isPackageOutdated(offlinePackage: OfflineMapPackage): boolean {
+    if (offlinePackage.downloadComplete) {
+      const packageOnServer = this.packagesOnServer.get(offlinePackage.name);
+      return isPackageOutdated(offlinePackage, packageOnServer);
+    }
+    return false;
+  }
+
+  async update(map: OfflineMapPackage, event: Event) {
+    event.stopPropagation();
+    await this.delete(map);
+    const packageOnServer = this.packagesOnServer.get(map.name);
+    this.offlineMapService.downloadPackage(packageOnServer, false);
+  }
+
+  private async delete(map: OfflineMapPackage) {
+    this.offlineMapService.removeMapPackageByName(map.name);
   }
 
   isDownloaded(map: OfflineMapPackage): boolean {
