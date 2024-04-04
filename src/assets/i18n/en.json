@@ -404,7 +404,7 @@
     },
     "DRAFTS": "My drafts",
     "DRAFTS_DESCRIPTION": "These observations are not submitted yet.",
-    "EDIT": "Edit observation",
+    "EDIT": "Edit",
     "EMAIL": {
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
       "SUBJECT": "Registration failed"
