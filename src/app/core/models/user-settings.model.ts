@@ -29,4 +29,9 @@ export interface UserSetting {
    * false/undefined = use simple snow obs schema
    */
   preferCompleteSnowObservations: boolean;
+
+  /**
+   * Ikke mas om utdaterte kartpakker før dette tidspunktet er passert
+   */
+  suppressOfflineMapUpdateNotificationUntil?: Date;
 }

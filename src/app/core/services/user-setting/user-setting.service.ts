@@ -75,6 +75,9 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   public readonly userSetting$: Observable<UserSetting>;
   public readonly daysBackForCurrentGeoHazard$: Observable<number>;
 
+  /** Hvis true er det på lov å mase om utdaterte kartpakker */
+  public readonly offlineMapUpdateNotificationNotSuppressed$: Observable<boolean>;
+
   private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
   // private userSettingsReady = new BehaviorSubject(false);
 
@@ -172,6 +175,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       }),
       distinctUntilChanged(),
       tap((val) => this.loggingService?.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, { val })),
+      shareReplay(1)
+    );
+
+    this.offlineMapUpdateNotificationNotSuppressed$ = this.userSetting$.pipe(
+      map((userSetting) => userSetting.suppressOfflineMapUpdateNotificationUntil),
+      map((date) => date == null || date < new Date()),
+      distinctUntilChanged(),
       shareReplay(1)
     );
   }
@@ -362,7 +372,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  appOnReset() {}
+  appOnReset() { }
 
   appOnResetComplete() {
     this.loggingService.debug('App reset complete. Re-init observables.', DEBUG_TAG);

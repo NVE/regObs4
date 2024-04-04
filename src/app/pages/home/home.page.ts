@@ -46,6 +46,7 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { TabsService, TABS } from '../tabs/tabs.service';
 import { RegObsGeoJson } from './geojson';
 import { RegObsMarkerClusterLayer } from './markerCluster.layer';
+import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -104,6 +105,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     private mapService: MapService,
     private toastService: ToastController,
     private translateService: TranslateService,
+    private offlineMapService: OfflineMapService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -138,6 +140,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       })
     );
 
+    this.warnAboutOutdatedMapPackages();
     this.initSearch();
   }
 
@@ -447,6 +450,45 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       this.mapCenterInfoHeight.next(height);
     } else {
       this.mapCenterInfoHeight.next(0);
+    }
+  }
+
+  private async warnAboutOutdatedMapPackages() {
+    if (Capacitor.isNativePlatform()) {
+      // Vis advarsel om utdaterte kartpakker hvis aktuelt
+      combineLatest([this.userSettingService.offlineMapUpdateNotificationNotSuppressed$, this.offlineMapService.hasOutdatedPackages$]).pipe(
+        filter(([notificationNotSuppressed, hasOutdatedPackages]) => notificationNotSuppressed && hasOutdatedPackages)
+      ).subscribe(async () => {
+        const translations = await firstValueFrom(this.translateService.get(['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE', 'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS', 'CLOSE']));
+        const toast = await this.toastService.create({
+          message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
+          position: 'bottom',
+          cssClass: 'toast',
+          buttons: [
+            {
+              text: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
+              role: 'suppress',
+              handler: async () => {
+                // Lagrer at bruker ikke vil ha beskjed før om 30 dager
+                const oneMonthAhead = new Date();
+                oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
+
+                const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
+                this.userSettingService.saveUserSettings({
+                  ...currentSettings,
+                  suppressOfflineMapUpdateNotificationUntil: oneMonthAhead,
+                });
+              },
+            },
+            {
+              text: translations['CLOSE'],
+              role: 'cancel',
+            },
+          ],
+        });
+        await toast.present();
+      }
+      )
     }
   }
 }
