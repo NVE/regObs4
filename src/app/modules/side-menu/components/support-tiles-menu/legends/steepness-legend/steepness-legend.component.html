@@ -30,5 +30,6 @@
     <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OFFLINE_DISCLAMER' | translate"></p>
     <br />
   </ng-container>
+  <!-- Bratthetskart MED utløpssoner markerer ikke høyde 27-30 med grønn farge -->
+  <app-steepness-common-legend [show27to30]="!isOutletsActive(supportTiles)"></app-steepness-common-legend>
 </ng-container>
-<app-steepness-common-legend [show27to30]="false"></app-steepness-common-legend>
