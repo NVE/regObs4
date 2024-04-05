@@ -456,39 +456,55 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private async warnAboutOutdatedMapPackages() {
     if (Capacitor.isNativePlatform()) {
       // Vis advarsel om utdaterte kartpakker hvis aktuelt
-      combineLatest([this.userSettingService.offlineMapUpdateNotificationNotSuppressed$, this.offlineMapService.hasOutdatedPackages$]).pipe(
-        filter(([notificationNotSuppressed, hasOutdatedPackages]) => notificationNotSuppressed && hasOutdatedPackages)
-      ).subscribe(async () => {
-        const translations = await firstValueFrom(this.translateService.get(['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE', 'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS', 'CLOSE']));
-        const toast = await this.toastService.create({
-          message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
-          position: 'bottom',
-          cssClass: 'toast',
-          buttons: [
-            {
-              text: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
-              role: 'suppress',
-              handler: async () => {
-                // Lagrer at bruker ikke vil ha beskjed før om 30 dager
-                const oneMonthAhead = new Date();
-                oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
-
-                const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
-                this.userSettingService.saveUserSettings({
-                  ...currentSettings,
-                  suppressOfflineMapUpdateNotificationUntil: oneMonthAhead,
-                });
+      combineLatest([
+        this.userSettingService.offlineMapUpdateNotificationNotSuppressed$,
+        this.offlineMapService.hasOutdatedPackages$,
+        this.userSettingService.userSetting$,
+      ])
+        .pipe(
+          filter(
+            ([notificationNotSuppressed, hasOutdatedPackages, userSetting]) =>
+              notificationNotSuppressed &&
+              hasOutdatedPackages &&
+              !userSetting.showGeoSelectInfo && // Ikke vis mens bruker ser på coachmarks
+              userSetting.completedStartWizard
+          )
+        )
+        .subscribe(async () => {
+          const translations = await firstValueFrom(
+            this.translateService.get([
+              'OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE',
+              'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS',
+              'CLOSE',
+            ])
+          );
+          const toast = await this.toastService.create({
+            message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
+            position: 'bottom',
+            cssClass: 'toast',
+            buttons: [
+              {
+                text: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
+                role: 'suppress',
+                handler: async () => {
+                  // Lagrer at bruker ikke vil ha beskjed før om 30 dager
+                  const oneMonthAhead = new Date();
+                  oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
+                  const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
+                  this.userSettingService.saveUserSettings({
+                    ...currentSettings,
+                    suppressOfflineMapUpdateNotificationUntil: oneMonthAhead.toISOString(),
+                  });
+                },
               },
-            },
-            {
-              text: translations['CLOSE'],
-              role: 'cancel',
-            },
-          ],
+              {
+                text: translations['CLOSE'],
+                role: 'cancel',
+              },
+            ],
+          });
+          await toast.present();
         });
-        await toast.present();
-      }
-      )
     }
   }
 }

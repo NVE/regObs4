@@ -105,7 +105,7 @@ export class OfflineMapService {
       });
 
     combineLatest([this.packageIndex.packages$, this.packages$])
-      .pipe(take(1))
+      .pipe(takeUntil(this.hasOutdatedPackages$))
       .subscribe(([packageIndex, downloadedPackages]) => {
         for (const downloadedPackage of downloadedPackages) {
           const serverPackage = packageIndex.get(downloadedPackage.name);

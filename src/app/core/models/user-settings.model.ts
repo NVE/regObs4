@@ -33,5 +33,5 @@ export interface UserSetting {
   /**
    * Ikke mas om utdaterte kartpakker før dette tidspunktet er passert
    */
-  suppressOfflineMapUpdateNotificationUntil?: Date;
+  suppressOfflineMapUpdateNotificationUntil?: string; // i ISO8601-format
 }

@@ -180,7 +180,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
     this.offlineMapUpdateNotificationNotSuppressed$ = this.userSetting$.pipe(
       map((userSetting) => userSetting.suppressOfflineMapUpdateNotificationUntil),
-      map((date) => date == null || date < new Date()),
+      map((date) => date == null || new Date(date) < new Date()),
       distinctUntilChanged(),
       shareReplay(1)
     );
@@ -372,7 +372,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  appOnReset() { }
+  appOnReset() {}
 
   appOnResetComplete() {
     this.loggingService.debug('App reset complete. Re-init observables.', DEBUG_TAG);
