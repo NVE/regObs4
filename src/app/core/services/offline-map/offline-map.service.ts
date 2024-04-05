@@ -32,6 +32,7 @@ import { ProgressStep } from './progress-step.model';
 import { Progress } from './progress.model';
 import { PackageIndexService } from './package-index.service';
 import { isPackageOutdated } from './utils';
+import { OnReset } from 'src/app/modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -46,7 +47,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
 @Injectable({
   providedIn: 'root',
 })
-export class OfflineMapService {
+export class OfflineMapService implements OnReset {
   private packages: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
 
@@ -941,8 +942,7 @@ export class OfflineMapService {
       });
   }
 
-  // TODO: Kan vi bruke disse til noe?
-  // Dette blir kalt når brukeren trykker "resett app" i innstillinger, så her må alle kartpakker slettes fra disk..
-  // appOnReset(): void | Promise<any> {}
-  // appOnResetComplete(): void | Promise<any> {}
+  appOnReset(): void | Promise<any> {
+    this.hasOutdatedPackages$.next(false); // så vi slipper å få en ny advarsel hvis vi resetter appen
+  }
 }
