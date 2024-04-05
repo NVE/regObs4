@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
@@ -104,6 +104,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     private loggingService: LoggingService,
     private mapService: MapService,
     private toastService: ToastController,
+    private alertService: AlertController,
     private translateService: TranslateService,
     private offlineMapService: OfflineMapService,
     @Inject(DOCUMENT) private document: Document
@@ -475,35 +476,38 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
             this.translateService.get([
               'OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE',
               'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS',
-              'CLOSE',
+              'ALERT.OK',
             ])
           );
-          const toast = await this.toastService.create({
+          const toast = await this.alertService.create({
+            cssClass: 'multiline-alert-checkbox', // in global.scss
             message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
-            position: 'bottom',
-            cssClass: 'toast',
+            backdropDismiss: false,
+            inputs: [
+              {
+                type: 'checkbox',
+                label: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
+                value: 'suppress',
+              },
+            ],
             buttons: [
               {
-                text: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
-                role: 'suppress',
-                handler: async () => {
-                  // Lagrer at bruker ikke vil ha beskjed før om 30 dager
-                  const oneMonthAhead = new Date();
-                  oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
-                  const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
-                  this.userSettingService.saveUserSettings({
-                    ...currentSettings,
-                    suppressOfflineMapUpdateNotificationUntil: oneMonthAhead.toISOString(),
-                  });
-                },
-              },
-              {
-                text: translations['CLOSE'],
-                role: 'cancel',
+                text: translations['ALERT.OK'],
+                role: 'confirm',
               },
             ],
           });
           await toast.present();
+          const result = await toast.onDidDismiss();
+          if (result.data.values.includes('suppress')) {
+            const oneMonthAhead = new Date();
+            oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
+            const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
+            this.userSettingService.saveUserSettings({
+              ...currentSettings,
+              suppressOfflineMapUpdateNotificationUntil: oneMonthAhead.toISOString(),
+            });
+          }
         });
     }
   }
