@@ -7,6 +7,11 @@ import { Observable } from 'rxjs';
 import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map.model';
 import { takeUntil, tap } from 'rxjs/operators';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { getDownloadCompleteDate, isPackageOutdated } from 'src/app/core/services/offline-map/utils';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { filter } from 'rxjs/operators';
+
+const DEBUG_TAG = 'OfflinePackageModalComponent';
 
 /**
  * Shows detail info about a specific offline map package. From here you may download or delete the package.
@@ -25,20 +30,34 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   center: number[];
   tileLayer: L.GeoJSON;
   isCheckingAvailableDiskspace: boolean;
-
+  isPackageOutdated: boolean;
   offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
 
   constructor(
     private modalController: ModalController,
     private offlineMapService: OfflineMapService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private logger: LoggingService
   ) {
     super();
+  }
+
+  getDownloadCompleteDate(downloadedPackage: OfflineMapPackage): Date {
+    return getDownloadCompleteDate(downloadedPackage);
   }
 
   ngOnInit(): void {
     this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
+      filter((packageStatus) => packageStatus !== undefined), // Denne blir undefined etter vi har slettet pakken
+      tap((packageStatus) => {
+        this.isPackageOutdated = isPackageOutdated(packageStatus, this.packageOnServer);
+        this.logger.debug('isPackageOutdated', DEBUG_TAG, {
+          isPackageOutdated: this.isPackageOutdated,
+          packageStatus,
+          packageOnServer: this.packageOnServer,
+        });
+      }),
       tap(() => this.cdr.detectChanges())
     );
     this.tileLayer = new L.GeoJSON(this.feature);
@@ -81,8 +100,13 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     this.offlineMapService.cancelDownloadPackage(map);
   }
 
-  delete() {
+  async delete() {
     this.offlineMapService.removeMapPackageByName(this.packageOnServer.getName());
+  }
+
+  async update() {
+    await this.delete();
+    this.startDownload();
   }
 
   dismiss() {

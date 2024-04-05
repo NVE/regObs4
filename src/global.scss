@@ -836,3 +836,16 @@ ion-modal.modal-fullscreen::part(content) {
 ion-toast.sync-toast {
   --ion-safe-area-bottom: 64px;
 }
+
+// For å tillate at høyden på label til checkbox i alert
+// som lages i home.page.ts warnAboutOutdatedMapPackages blir riktig
+.multiline-alert-checkbox {
+  .alert-checkbox-label {
+    white-space: unset;
+  }
+
+  button.alert-tappable {
+    height: fit-content;
+    contain: content;
+  }
+}

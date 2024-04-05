@@ -295,9 +295,14 @@
       "PACKAGE_PRODUCED_DATE": "Produced:",
       "PACKAGE_SIZE": "Size:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
-      "TRY_AGAIN_BUTTON": "Try again"
+      "TRY_AGAIN_BUTTON": "Try again",
+      "UPDATE_BUTTON": "Update"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
+    "OUTDATED_PACKAGES": {
+      "MESSAGE": "You have outdated offline maps. Please update them get the latest maps.",
+      "SUPPRESS": "Remind me in 30 days"
+    },
     "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
     "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
     "SPACE_AVAILABLE": "{{spaceAvailable}} free",

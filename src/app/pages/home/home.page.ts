@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
@@ -13,6 +13,7 @@ import {
   concatMap,
   debounceTime,
   distinctUntilChanged,
+  exhaustMap,
   filter,
   map,
   startWith,
@@ -46,6 +47,7 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { TabsService, TABS } from '../tabs/tabs.service';
 import { RegObsGeoJson } from './geojson';
 import { RegObsMarkerClusterLayer } from './markerCluster.layer';
+import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -103,7 +105,9 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     private loggingService: LoggingService,
     private mapService: MapService,
     private toastService: ToastController,
+    private alertService: AlertController,
     private translateService: TranslateService,
+    private offlineMapService: OfflineMapService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
@@ -138,6 +142,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       })
     );
 
+    this.warnAboutOutdatedMapPackages();
     this.initSearch();
   }
 
@@ -447,6 +452,68 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       this.mapCenterInfoHeight.next(height);
     } else {
       this.mapCenterInfoHeight.next(0);
+    }
+  }
+
+  private async createOutdatedMapPackagesAlert() {
+    const translations = await firstValueFrom(
+      this.translateService.get([
+        'OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE',
+        'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS',
+        'ALERT.OK',
+      ])
+    );
+    const toast = await this.alertService.create({
+      cssClass: 'multiline-alert-checkbox', // in global.scss
+      message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
+      backdropDismiss: false,
+      inputs: [
+        {
+          type: 'checkbox',
+          label: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
+          value: 'suppress',
+        },
+      ],
+      buttons: [
+        {
+          text: translations['ALERT.OK'],
+          role: 'confirm',
+        },
+      ],
+    });
+    await toast.present();
+    const result = await toast.onDidDismiss();
+    if (result.data.values.includes('suppress')) {
+      const oneMonthAhead = new Date();
+      oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
+      const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
+      this.userSettingService.saveUserSettings({
+        ...currentSettings,
+        suppressOfflineMapUpdateNotificationUntil: oneMonthAhead.toISOString(),
+      });
+    }
+  }
+
+  private async warnAboutOutdatedMapPackages() {
+    if (Capacitor.isNativePlatform()) {
+      // Vis advarsel om utdaterte kartpakker hvis aktuelt
+      combineLatest([
+        this.userSettingService.offlineMapUpdateNotificationNotSuppressed$,
+        this.offlineMapService.hasOutdatedPackages$,
+        this.userSettingService.userSetting$,
+      ])
+        .pipe(
+          filter(
+            ([notificationNotSuppressed, hasOutdatedPackages, userSetting]) =>
+              notificationNotSuppressed &&
+              hasOutdatedPackages &&
+              !userSetting.showGeoSelectInfo && // Ikke vis mens bruker ser på coachmarks
+              userSetting.completedStartWizard
+          ),
+          // exhaustMap ignores other values until the promise completes,
+          exhaustMap(() => this.createOutdatedMapPackagesAlert())
+        )
+        .subscribe();
     }
   }
 }

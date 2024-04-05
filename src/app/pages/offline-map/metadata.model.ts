@@ -3,6 +3,7 @@ import moment from 'moment';
 
 type XYZ = [number, number, number];
 
+/** Opplysninger om et offlinekart for et begrenset område */
 export interface PackageMetadata {
   name: string;
   lastModified: string; // in UTC
@@ -10,6 +11,7 @@ export interface PackageMetadata {
   sizeInMib: number;
 }
 
+/** Opplysninger om en sammensatt kartpakke. Består gjerne av både bakgrunnskart og hjelpekart (f.eks. svekket is) */
 export interface CompoundPackageMetadata {
   id: string;
   xyz: XYZ;
@@ -71,11 +73,15 @@ export class CompoundPackage {
     return CompoundPackage.GetNameFromXYZ(x, y, z);
   }
 
+  /** Returnerer produksjonstidspunkt for den nyeste pakka. Hvis produksjonstidspunkt mangler, returneres 01.01.1970 00:00 */
   getLastModified(): Date {
-    if (this.metadata.maps.length === 0) {
-      return null;
+    let latestDate = moment(0);
+    for (const map of this.metadata.maps) {
+      if (map.lastModified) {
+        latestDate = moment.max(latestDate, moment(map.lastModified));
+      }
     }
-    return moment.max(this.metadata.maps.map((p) => moment(p.lastModified))).toDate();
+    return latestDate.toDate();
   }
 
   getParts(): Part[] {
