@@ -13,6 +13,7 @@ import {
   concatMap,
   debounceTime,
   distinctUntilChanged,
+  exhaustMap,
   filter,
   map,
   startWith,
@@ -454,6 +455,45 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     }
   }
 
+  private async createOutdatedMapPackagesAlert() {
+    const translations = await firstValueFrom(
+      this.translateService.get([
+        'OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE',
+        'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS',
+        'ALERT.OK',
+      ])
+    );
+    const toast = await this.alertService.create({
+      cssClass: 'multiline-alert-checkbox', // in global.scss
+      message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
+      backdropDismiss: false,
+      inputs: [
+        {
+          type: 'checkbox',
+          label: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
+          value: 'suppress',
+        },
+      ],
+      buttons: [
+        {
+          text: translations['ALERT.OK'],
+          role: 'confirm',
+        },
+      ],
+    });
+    await toast.present();
+    const result = await toast.onDidDismiss();
+    if (result.data.values.includes('suppress')) {
+      const oneMonthAhead = new Date();
+      oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
+      const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
+      this.userSettingService.saveUserSettings({
+        ...currentSettings,
+        suppressOfflineMapUpdateNotificationUntil: oneMonthAhead.toISOString(),
+      });
+    }
+  }
+
   private async warnAboutOutdatedMapPackages() {
     if (Capacitor.isNativePlatform()) {
       // Vis advarsel om utdaterte kartpakker hvis aktuelt
@@ -469,46 +509,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
               hasOutdatedPackages &&
               !userSetting.showGeoSelectInfo && // Ikke vis mens bruker ser på coachmarks
               userSetting.completedStartWizard
-          )
+          ),
+          // exhaustMap ignores other values until the promise completes,
+          exhaustMap(() => this.createOutdatedMapPackagesAlert())
         )
-        .subscribe(async () => {
-          const translations = await firstValueFrom(
-            this.translateService.get([
-              'OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE',
-              'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS',
-              'ALERT.OK',
-            ])
-          );
-          const toast = await this.alertService.create({
-            cssClass: 'multiline-alert-checkbox', // in global.scss
-            message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
-            backdropDismiss: false,
-            inputs: [
-              {
-                type: 'checkbox',
-                label: translations['OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS'],
-                value: 'suppress',
-              },
-            ],
-            buttons: [
-              {
-                text: translations['ALERT.OK'],
-                role: 'confirm',
-              },
-            ],
-          });
-          await toast.present();
-          const result = await toast.onDidDismiss();
-          if (result.data.values.includes('suppress')) {
-            const oneMonthAhead = new Date();
-            oneMonthAhead.setDate(oneMonthAhead.getDate() + 30);
-            const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
-            this.userSettingService.saveUserSettings({
-              ...currentSettings,
-              suppressOfflineMapUpdateNotificationUntil: oneMonthAhead.toISOString(),
-            });
-          }
-        });
+        .subscribe();
     }
   }
 }
