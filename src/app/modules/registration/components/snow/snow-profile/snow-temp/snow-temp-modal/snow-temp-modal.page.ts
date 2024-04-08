@@ -77,8 +77,25 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
     this.modalController.dismiss();
   }
 
+  findDeepestPoint(): number {
+    if (this.tempProfile.Layers.length) {
+      return this.tempProfile.Layers.reduce((prev, current) => (prev.Depth > current.Depth ? prev : current)).Depth;
+    }
+    return 0;
+  }
+
   addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? this.tempProfile.Layers.length : 0, undefined);
+    let index = this.tempProfile.Layers.length;
+    let depth = this.findDeepestPoint();
+    if (this.hasLayers) {
+      const lastLayer = this.tempProfile.Layers[this.tempProfile.Layers.length - 1];
+      depth = lastLayer.Depth + 10;
+    }
+    const newLayer = {
+      Depth: depth,
+      SnowTemp: undefined,
+    };
+    this.addOrEditLayer(index, newLayer);
   }
 
   async addOrEditLayer(index: number, layer: SnowTempObsModel) {
