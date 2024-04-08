@@ -840,8 +840,14 @@ ion-toast.sync-toast {
 // For å tillate at høyden på label til checkbox i alert
 // som lages i home.page.ts warnAboutOutdatedMapPackages blir riktig
 .multiline-alert-checkbox {
+  .alert-message {
+    font-size: larger;
+  }
+
   .alert-checkbox-label {
     white-space: unset;
+    font-size: small;
+    font-weight: 400;
   }
 
   button.alert-tappable {
