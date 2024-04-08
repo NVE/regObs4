@@ -300,7 +300,8 @@
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "OUTDATED_PACKAGES": {
-      "MESSAGE": "Du har utdaterte offlinekart. Gå til offlinekart i menyen for å få de siste kartene.",
+      "HEADER": "Offlinekart er utdatert",
+      "MESSAGE": "Du har utdaterte offlinekart. Gå til offlinekart i menyen for å oppdatere kartene.",
       "SUPPRESS": "Ikke vis dette igjen før om en måned"
     },
     "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakker",

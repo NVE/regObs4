@@ -300,7 +300,8 @@
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
     "OUTDATED_PACKAGES": {
-      "MESSAGE": "You have outdated offline maps. Please update them get the latest maps.",
+      "HEADER": "Outdated offline maps",
+      "MESSAGE": "You have outdated offline maps. Please go to offline maps in the menu to update the maps.",
       "SUPPRESS": "Remind me in 30 days"
     },
     "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",

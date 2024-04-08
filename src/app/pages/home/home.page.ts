@@ -458,6 +458,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private async createOutdatedMapPackagesAlert() {
     const translations = await firstValueFrom(
       this.translateService.get([
+        'OFFLINE_MAP.OUTDATED_PACKAGES.HEADER',
         'OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE',
         'OFFLINE_MAP.OUTDATED_PACKAGES.SUPPRESS',
         'ALERT.OK',
@@ -465,6 +466,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     );
     const toast = await this.alertService.create({
       cssClass: 'multiline-alert-checkbox', // in global.scss
+      header: translations['OFFLINE_MAP.OUTDATED_PACKAGES.HEADER'],
       message: translations['OFFLINE_MAP.OUTDATED_PACKAGES.MESSAGE'],
       backdropDismiss: false,
       inputs: [
