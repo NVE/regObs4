@@ -45,3 +45,25 @@
 .expand-icon {
   color: var(--ion-text-color-heading);
 }
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-right: 0;
+  line-height: 24px;
+  width: 72px;
+  font-size: 24px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+
+  .button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    ion-label {
+      font-size: 14px;
+    }
+  }
+}

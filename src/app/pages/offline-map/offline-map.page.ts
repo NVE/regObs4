@@ -3,7 +3,7 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, of, Subject } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
@@ -56,6 +56,8 @@ export class OfflineMapPage extends NgDestoryBase {
   featureMap = new Map<string, { feature: CompoundPackageFeature; layer: L.Layer }>();
   expanded = false; //show list of downloads if this is true
 
+  nPackagesToUpdate$ = new Subject<number>();
+
   constructor(
     private helperService: HelperService,
     private modalController: ModalController,
@@ -95,6 +97,16 @@ export class OfflineMapPage extends NgDestoryBase {
     );
   }
 
+  private checkPackagesToUpdate() {
+    let n = 0;
+    for (const p of this.installedPackages.values()) {
+      if (this.isPackageOutdated(p)) {
+        n++;
+      }
+    }
+    this.nPackagesToUpdate$.next(n);
+  }
+
   onMapReady(map: L.Map) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).LEAFLET_MAP = map;
@@ -126,6 +138,7 @@ export class OfflineMapPage extends NgDestoryBase {
         this.installedPackages = installedPackages;
         this.packagesOnServer = packageIndex;
         this.setStyleForPackages();
+        this.checkPackagesToUpdate();
       });
 
     this.downloadAndUnzipProgress$

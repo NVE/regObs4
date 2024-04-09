@@ -285,6 +285,7 @@
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
+    "ERROR_ICON_LABEL": "Error",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
       "DELETE_BUTTON": "Delete",
@@ -298,6 +299,7 @@
       "TRY_AGAIN_BUTTON": "Try again",
       "UPDATE_BUTTON": "Update"
     },
+    "N_PACKAGES_TO_UPDATE": "{{n}} map packages should be updated",
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
     "OUTDATED_PACKAGES": {
       "HEADER": "Outdated offline maps",
