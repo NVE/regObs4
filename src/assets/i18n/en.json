@@ -299,7 +299,7 @@
       "TRY_AGAIN_BUTTON": "Try again",
       "UPDATE_BUTTON": "Update"
     },
-    "N_PACKAGES_TO_UPDATE": "{{n}} map packages should be updated",
+    "N_PACKAGES_TO_UPDATE": "{{n}} map package(s) should be updated",
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
     "OUTDATED_PACKAGES": {
       "HEADER": "Outdated offline maps",
