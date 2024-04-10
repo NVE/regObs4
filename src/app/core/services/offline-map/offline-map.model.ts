@@ -25,7 +25,7 @@ export interface OfflinePackageMetadata {
 
 export interface OfflineMapPackage extends OfflinePackageMetadata {
   name: string;
-  size?: number;
+  size?: number; // Size in bytes ? TODO: Rename to sizeInBytes if this really is in bytes
   progress?: Progress;
   downloadStart?: number; //in epoch seconds
   downloadComplete?: number; //in epoch seconds

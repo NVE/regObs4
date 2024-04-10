@@ -41,6 +41,7 @@ import { SearchService } from './modules/common-regobs-api';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
+import { OfflineMapTestService } from './core/services/offline-map/offline-map-test.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -168,5 +169,9 @@ export const APP_PROVIDERS: Provider[] = [
   {
     provide: SearchService,
     useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
+  },
+  {
+    provide: OfflineMapService,
+    useClass: isPlatform('hybrid') ? OfflineMapService : OfflineMapTestService,
   },
 ];
