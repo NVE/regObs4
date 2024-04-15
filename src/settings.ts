@@ -359,7 +359,10 @@ export const settings: ISettings = {
             [81.36128726057069, -0.17578125],
             [57.136239319177434, -0.17578125],
           ],
-          maxNativeZoom: 19,
+          // maxNativeZoom som om zoomOffset allerede var tatt med i beregningen.
+          // I dette tilfellet svarer karttjenesten med 500 for zoomnivå større enn 12.
+          maxNativeZoom: 17,
+          zoomOffset: -5,
         },
       ],
     },
