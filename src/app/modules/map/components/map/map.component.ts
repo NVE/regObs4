@@ -600,6 +600,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
           bounds: supportMap.bounds,
+          zoomOffset: supportMap.zoomOffset,
         };
 
         if (supportMap.maxNativeZoom) {

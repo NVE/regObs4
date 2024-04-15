@@ -13,6 +13,7 @@ export interface SubTile extends SubTileStore {
   availableOffline?: boolean;
   bounds: L.TileLayerOptions['bounds'];
   maxNativeZoom?: L.TileLayerOptions['maxNativeZoom'];
+  zoomOffset?: L.TileLayerOptions['zoomOffset'];
 }
 
 export interface SupportTileStore extends SubTileStore {
