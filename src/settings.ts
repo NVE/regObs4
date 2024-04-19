@@ -359,7 +359,7 @@ export const settings: ISettings = {
             [81.36128726057069, -0.17578125],
             [57.136239319177434, -0.17578125],
           ],
-          maxNativeZoom: 16,
+          maxNativeZoom: 17,
         },
       ],
     },
