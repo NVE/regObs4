@@ -29,7 +29,7 @@ import { BackgroundGeolocationWebService } from './core/services/background-geol
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
-import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
+// import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { initTranslateService } from './custom-translate.loader';
 import {
@@ -37,7 +37,7 @@ import {
   IRegistrationModuleOptions,
 } from './modules/common-registration/module.options';
 import { OfflineDbService } from './modules/common-registration/registration.services';
-import { SearchService } from './modules/common-regobs-api';
+// import { SearchService } from './modules/common-regobs-api';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
@@ -166,10 +166,10 @@ export const APP_PROVIDERS: Provider[] = [
     provide: BackgroundDownloadService,
     useClass: HttpClientDownloadService,
   },
-  {
-    provide: SearchService,
-    useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
-  },
+  // {
+  //   provide: SearchService,
+  //   useClass: isPlatform('hybrid') ? OfflineCapableSearchService : SearchService,
+  // },
   {
     provide: OfflineMapService,
     useClass: isPlatform('hybrid') ? OfflineMapService : OfflineMapTestService,

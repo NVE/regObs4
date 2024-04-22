@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
-import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
+// import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
@@ -27,8 +27,8 @@ export class GoneRegistrationComponent {
     private draftRepository: DraftRepositoryService,
     private logger: LoggingService,
     private navController: NavController,
-    private userSettingService: UserSettingService,
-    private sqliteService: SqliteService
+    // private sqliteService: SqliteService
+    private userSettingService: UserSettingService
   ) {}
 
   async submitAsNew(): Promise<void> {
@@ -52,9 +52,10 @@ export class GoneRegistrationComponent {
   private async delete() {
     this.draftRepository.delete(this.draft.uuid); //delete draft that was deleted in Regobst
 
+    // TODO: Hva skjer når denne sqlite-koden kalles fra web?
     //delete observation from map and list view
-    const appMode = await firstValueFrom(this.userSettingService.appMode$);
-    this.sqliteService.deleteRegistrations([this.draft.regId], appMode);
+    // const appMode = await firstValueFrom(this.userSettingService.appMode$);
+    // this.sqliteService.deleteRegistrations([this.draft.regId], appMode);
   }
 
   navigateToMyObservations(): void {
