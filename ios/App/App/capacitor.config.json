@@ -35,5 +35,20 @@
 			"ResolveServiceWorkerRequests": "true",
 			"AndroidXEnabled": "true"
 		}
-	}
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"CAPCameraPlugin",
+		"ClipboardPlugin",
+		"DevicePlugin",
+		"FilesystemPlugin",
+		"GeolocationPlugin",
+		"KeyboardPlugin",
+		"CAPNetworkPlugin",
+		"SharePlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin",
+		"CDVPlugin"
+	]
 }
