@@ -407,8 +407,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.startInvalidateSizeMapTimer();
 
       fromEventPattern(
-        (handler) => this.map.on('resize moveend', handler),
-        (handler) => this.map.off('resize moveend', handler)
+        (handler) => this.map.on('resize moveend zoomend', handler),
+        (handler) => this.map.off('resize moveend zoomend', handler)
       )
         .pipe(
           takeUntil(this.ngDestroy$),
