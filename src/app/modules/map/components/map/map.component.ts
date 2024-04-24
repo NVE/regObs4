@@ -413,8 +413,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
           takeUntil(this.ngDestroy$),
           filter(() => this.isActive.value),
-          debounceTime(200),
-          skip(1)
+          debounceTime(200)
         )
         .subscribe(() => {
           this.updateMapView();
