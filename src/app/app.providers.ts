@@ -42,6 +42,7 @@ import { ConsoleLoggingService } from './modules/shared/services/logging/console
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
 import { OfflineMapTestService } from './core/services/offline-map/offline-map-test.service';
+import { DraftRepositoryService } from './core/services/draft/draft-repository.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -156,6 +157,7 @@ export const APP_PROVIDERS: Provider[] = [
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
   { provide: 'OnReset', useExisting: UserSettingService, multi: true },
   { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
+  { provide: 'OnReset', useExisting: DraftRepositoryService, multi: true },
 
   // Custom native/web providers
   {
