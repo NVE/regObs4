@@ -29,6 +29,7 @@ import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft } from './draft-model';
 import { viewModelToEditModel } from './reg-to-draft';
+import { OnReset } from 'src/app/modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'DraftRepositoryService';
 
@@ -41,7 +42,7 @@ const DEBUG_TAG = 'DraftRepositoryService';
 @Injectable({
   providedIn: 'root',
 })
-export class DraftRepositoryService {
+export class DraftRepositoryService implements OnReset {
   //used to spread the word about changes in drafts
   private shouldLoad: BehaviorSubject<void> = new BehaviorSubject(null);
 
@@ -63,6 +64,14 @@ export class DraftRepositoryService {
       // clone the drafts before they are returned
       map((drafts) => cloneDeep(drafts))
     );
+  }
+
+  async appOnReset() {
+    this.logger.debug('App Reset, deleting all drafts', DEBUG_TAG);
+    const drafts = await this.loadAll();
+    for (const draft of drafts) {
+      await this.delete(draft.uuid);
+    }
   }
 
   /**
