@@ -32,6 +32,7 @@ import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
+import { settings } from 'src/settings';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -181,22 +182,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.followMode = !this.locationMarker && !this.fromMarker;
     this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
+      let latLng: L.LatLngExpression = settings.map.unknownMapCenter;
       if (this.fromMarker) {
-        this.locationMarker = L.marker(this.fromMarker.getLatLng(), {
-          icon: locationMarkerIcon,
-        });
+        latLng = this.fromMarker.getLatLng();
       } else {
         const initialMapView = await firstValueFrom(this.mapService.mapView$);
         if (initialMapView) {
-          this.locationMarker = L.marker(initialMapView.center, {
-            icon: locationMarkerIcon,
-          });
-        } else {
-          this.locationMarker = L.marker(L.latLng(59.1, 10.3), {
-            icon: locationMarkerIcon,
-          });
+          latLng = initialMapView.center;
         }
       }
+      this.locationMarker = L.marker(latLng, { icon: locationMarkerIcon });
     }
     this.translateService.onLangChange.subscribe((params: LangChangeEvent) => {
       this.locale = params.lang;
