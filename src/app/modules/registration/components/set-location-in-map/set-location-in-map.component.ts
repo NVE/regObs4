@@ -40,7 +40,7 @@ export interface LocationTime {
   spatialAccuracy: number;
 }
 
-const INITIAL_ZOOM_MINIMUM = 15;
+const INITIAL_ZOOM_MINIMUM = 7;
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
