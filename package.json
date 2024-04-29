@@ -108,7 +108,7 @@
     "ngx-markdown": "^14.0.1",
     "observable-webworker": "^3.4.0",
     "pouchdb-adapter-idb": "^7.2.2",
-    "rxdb": "^9.15.0",
+    "rxdb": "^15.18.4",
     "rxjs": "^7.8.1",
     "source-sans-pro": "^3.6.0",
     "tslib": "^2.3.1",
