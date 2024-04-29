@@ -126,6 +126,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
   private mapView$: Observable<IMapView>;
+  initialZoom$: Observable<number>;
 
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
@@ -163,6 +164,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    this.initialZoom$ = this.mapService.mapView$.pipe(
+      take(1),
+      map((mapView) => (mapView?.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM))
+    );
+
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
       this.isDesktop = isDesktop;
     });
@@ -201,12 +207,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-  }
-
-  get initialZoom$(): Observable<number> {
-    return this.mapService.mapView$.pipe(
-      map((mapView) => (mapView?.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM))
-    );
   }
 
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
