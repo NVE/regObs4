@@ -311,7 +311,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       .subscribe((pos) => this.positionChange(pos));
 
     if (!this.followMode) {
-      this.map.setView(this.locationMarker.getLatLng(), INITIAL_ZOOM_MINIMUM);
+      this.map.setView(this.locationMarker.getLatLng());
     }
 
     this.initPolygons();
