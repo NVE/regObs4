@@ -140,7 +140,6 @@ export class SqliteService {
     let isConnection: capSQLiteResult = null;
     let checkConnectionsConsistency: capSQLiteResult = null;
     let isDbOpen: capSQLiteResult = null;
-    let isTransactionActive: capSQLiteResult = null;
 
     try {
       isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
@@ -150,11 +149,6 @@ export class SqliteService {
         checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
         isDbOpen = await this.conn.isDBOpen();
         ready = !!isDbOpen?.result;
-      }
-
-      if (ready) {
-        isTransactionActive = await this.conn.isTransactionActive();
-        ready = !isTransactionActive?.result;
       }
     } catch (error) {
       err = error;
@@ -167,7 +161,6 @@ export class SqliteService {
       isConnection,
       checkConnectionsConsistency,
       isDbOpen,
-      isTransactionActive,
     });
     return ready;
   }
@@ -236,12 +229,12 @@ export class SqliteService {
       .pipe(
         debounceTime(2000),
         takeUntil(this.hasCrashed$),
-        exhaustMap(() => this.reset())
+        exhaustMap(() => this.resetConnection())
       )
       .subscribe();
   }
 
-  private async reset() {
+  private async resetConnection() {
     try {
       this.logger.log('Reset', null, LogLevel.Info, DEBUG_TAG);
       await this.closeConn();
@@ -311,15 +304,13 @@ export class SqliteService {
       await this.sqlite.closeConnection(DATABASE_NAME, false);
       this.logger.log('Connection closed', null, LogLevel.Info, DEBUG_TAG);
     } catch (error) {
-      const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
       const connectionMaybeAlreadyClosed = (error as Error)?.message?.includes(
         'No available connection for database regobs-v2'
       );
-      const logLevel = connectionMaybeAlreadyClosed ? LogLevel.Warning : LogLevel.Error;
-      this.logger.log('Failed to close connection', error, logLevel, DEBUG_TAG, {
-        checkConnectionsConsistency,
-        connectionMaybeAlreadyClosed,
-      });
+
+      if (!connectionMaybeAlreadyClosed) {
+        this.logger.error(error, DEBUG_TAG, 'Failed to close connection');
+      }
     }
   }
 
@@ -341,13 +332,6 @@ export class SqliteService {
     await this.conn.execute('DELETE FROM registration_sync_time;');
   }
 
-  private async printInitInfo() {
-    await this.isReady();
-    const url = await this.conn.getUrl();
-    const tables = await this.conn.getTableList();
-    this.logger.debug('DB Info', DEBUG_TAG, { url, tables: tables.values });
-  }
-
   async init() {
     try {
       await this.platform.ready();
@@ -356,12 +340,12 @@ export class SqliteService {
       await this.runUpgradeStatements();
       await this.openConn();
     } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Failed during init');
       this._hasCrashed.next(true);
       throw error;
     }
 
     this.ready.next(true);
-    this.printInitInfo();
   }
 
   async updateRegistrationsSyncTime(updateTimeMs: number, appMode: AppMode, lang: LangKey) {
