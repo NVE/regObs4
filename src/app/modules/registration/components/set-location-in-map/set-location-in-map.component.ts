@@ -32,6 +32,7 @@ import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
+import { settings } from 'src/settings';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -125,6 +126,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
   private mapView$: Observable<IMapView>;
+  initialZoom$: Observable<number>;
 
   isDesktop: boolean;
   spatialAccuracyOptions: SelectOption[] = [];
@@ -162,6 +164,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    this.initialZoom$ = this.mapService.mapView$.pipe(
+      take(1),
+      map((mapView) => (mapView?.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM))
+    );
+
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
       this.isDesktop = isDesktop;
     });
@@ -181,22 +188,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.followMode = !this.locationMarker && !this.fromMarker;
     this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
+      let latLng: L.LatLngExpression = settings.map.unknownMapCenter;
       if (this.fromMarker) {
-        this.locationMarker = L.marker(this.fromMarker.getLatLng(), {
-          icon: locationMarkerIcon,
-        });
+        latLng = this.fromMarker.getLatLng();
       } else {
         const initialMapView = await firstValueFrom(this.mapService.mapView$);
         if (initialMapView) {
-          this.locationMarker = L.marker(initialMapView.center, {
-            icon: locationMarkerIcon,
-          });
-        } else {
-          this.locationMarker = L.marker(L.latLng(59.1, 10.3), {
-            icon: locationMarkerIcon,
-          });
+          latLng = initialMapView.center;
         }
       }
+      this.locationMarker = L.marker(latLng, { icon: locationMarkerIcon });
     }
     this.translateService.onLangChange.subscribe((params: LangChangeEvent) => {
       this.locale = params.lang;
@@ -206,12 +207,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-  }
-
-  get initialZoom$(): Observable<number> {
-    return this.mapService.mapView$.pipe(
-      map((mapView) => (mapView?.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM))
-    );
   }
 
   private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
@@ -316,7 +311,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       .subscribe((pos) => this.positionChange(pos));
 
     if (!this.followMode) {
-      this.map.setView(this.locationMarker.getLatLng(), INITIAL_ZOOM_MINIMUM);
+      this.map.setView(this.locationMarker.getLatLng());
     }
 
     this.initPolygons();

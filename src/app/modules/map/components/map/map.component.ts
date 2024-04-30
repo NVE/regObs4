@@ -92,7 +92,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showObserverTrips = false;
 
   /**
-   * Update MapService.mapView$ when extent changes
+   * Update MapService.mapView$ when extent changes.
+   *
+   * NB: Changes to this input after map init are not reflected.
    */
   @Input() updateMapViewOnExtentChange = false;
 
@@ -297,7 +299,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Det virker som kartet noen ganger kan zoome til hele verden om vi kaller
-    // fitBounds uten noe tiemout først. Med en timeout fungerer det fint.
+    // fitBounds uten noe timeout først. Med en timeout fungerer det fint.
     timer(50)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(() => {
@@ -406,19 +408,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.zone.runOutsideAngular(() => {
       this.startInvalidateSizeMapTimer();
 
-      fromEventPattern(
-        (handler) => this.map.on('resize moveend', handler),
-        (handler) => this.map.off('resize moveend', handler)
-      )
-        .pipe(
-          takeUntil(this.ngDestroy$),
-          filter(() => this.isActive.value),
-          debounceTime(200),
-          skip(1)
+      // this.updateMapViewOnExtentChange er en input, og kan i prinsippet endre seg.
+      // Tror ikke vi bruker dette i dag, men hvis vi starter med det, så bør denne if-sjekken fjernes..
+      if (this.updateMapViewOnExtentChange) {
+        fromEventPattern(
+          (handler) => this.map.on('resize moveend zoomend', handler),
+          (handler) => this.map.off('resize moveend zoomend', handler)
         )
-        .subscribe(() => {
-          this.updateMapView();
-        });
+          .pipe(takeUntil(this.ngDestroy$))
+          .subscribe(() => {
+            this.updateMapView();
+          });
+      }
     });
 
     if (isAndroidOrIos(this.platform)) {

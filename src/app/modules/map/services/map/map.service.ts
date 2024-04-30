@@ -13,6 +13,7 @@ import {
   take,
   filter,
   startWith,
+  debounceTime,
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -222,6 +223,7 @@ export class MapService {
 
   private getMapViewThatHasRelevantChange(metersBuffer = 10) {
     return this.mapView$.pipe(
+      debounceTime(500), // Det må være rolig 500ms før den emiter nyeste verdi
       bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
       switchMap((buffer) =>
         buffer.length > 0 && !!buffer[buffer.length - 1] ? of(buffer[buffer.length - 1]) : this.mapView$.pipe(take(1))
