@@ -131,14 +131,16 @@ export const settings: ISettings = {
 
       topoMapLayers: {
         statensKartverk: {
-          url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+          // Alternativ url (sånn bruker norgeskart.no dette):
+          // url: 'https://cache.kartverket.no/topo/v1/wmts/1.0.0/?layer=topo&style=default&tilematrixset=googlemaps&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}',
+          url: 'https://cache.kartverket.no/topo/v1/wmts/1.0.0/default/googlemaps/{z}/{y}/{x}.png',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             bounds: [
               [57.9, 4.626617431640625],
               [71.15939141681443, 31.3],
             ],
-            maxNativeZoom: 20,
+            maxNativeZoom: 19,
           },
           supportsOffline: true,
         },
