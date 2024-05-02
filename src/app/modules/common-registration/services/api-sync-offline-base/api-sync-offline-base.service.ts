@@ -106,6 +106,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
         } catch (error) {
           // This handles errors thrown before the observable from getOfflineDataAndReturnIfDataIsUpToDate
           // has been created properly
+          this.logger.error(error, this.getDebugTag(), 'Error in getDataObservable init');
           return this.getFallbackDataWithLogging(appMode, langKey);
         }
       })
