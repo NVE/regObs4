@@ -12,7 +12,23 @@
               src="/assets/icon/time.svg"
               [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
             ></svg-icon>
-            {{ dtObsDate | formatDate | async }}
+            Observert: {{ obsTime | formatDate | async }}
+          </div>
+          <div *ngIf="regTime" class="card-icon-item">
+            <svg-icon
+              class="card-icon-item-icon"
+              src="/assets/icon/time.svg"
+              [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+            ></svg-icon>
+            Registrert: {{ regTime | formatDate | async }}
+          </div>
+          <div *ngIf="changedTime" class="card-icon-item">
+            <svg-icon
+              class="card-icon-item-icon"
+              src="/assets/icon/time.svg"
+              [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+            ></svg-icon>
+            Oppdatert: {{ changedTime | formatDate | async }}
           </div>
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{ 'width.px': 16, 'height.px': 16 }">

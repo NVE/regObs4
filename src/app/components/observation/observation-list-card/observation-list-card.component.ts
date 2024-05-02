@@ -24,7 +24,7 @@ import { getStarCount } from '../../../core/helpers/competence-helper';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
-import { firstValueFrom, Observable, of, TimeoutError } from 'rxjs';
+import { firstValueFrom, Observable, of, Subject, TimeoutError } from 'rxjs';
 import { RegistrationService } from 'src/app/modules/common-regobs-api';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
@@ -56,7 +56,9 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;
 
-  dtObsDate: string;
+  obsTime: string;
+  regTime: string = null;
+  changedTime: string = null;
   icon: string;
   settings = settings;
   header: string;
@@ -89,13 +91,23 @@ export class ObservationListCardComponent implements OnChanges {
     private toastController: ToastController,
     private translateService: TranslateService,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) { }
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
     this.header = this.obs.ObsLocation.Title;
     this.location = this.getLocation(this.obs);
-    this.dtObsDate = this.obs.DtObsTime;
+    this.obsTime = this.obs.DtObsTime;
+    if (!Capacitor.isNativePlatform()) {
+      // Vis registrert- og evt. endret-tidspunkt på web
+      this.regTime = this.obs.DtRegTime;
+      if (this.obs.DtChangeTime && this.obs.DtChangeTime !== this.obs.DtRegTime) {
+        // Vis endret-tidspunkt kun hvis observasjonen er endret
+        this.changedTime = this.obs.DtChangeTime;
+      }
+      // TODO: Ikke vis tidssone selv om tidspunktet kommer med +02:00 e.l. fra API
+      // TODO: Hjelpe bruker å forstå hvilket tidspunkt som er hva (husk oversettelse!)
+    }
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
     this.competenceLevelName = this.obs.Observer.CompetenceLevelName;
@@ -151,9 +163,9 @@ export class ObservationListCardComponent implements OnChanges {
   private extent2Polygon(extent: number[][], color: string) {
     return extent
       ? new L.Polygon(
-          extent.map(([lng, lat]) => [lat, lng]),
-          { color }
-        )
+        extent.map(([lng, lat]) => [lat, lng]),
+        { color }
+      )
       : null;
   }
 
