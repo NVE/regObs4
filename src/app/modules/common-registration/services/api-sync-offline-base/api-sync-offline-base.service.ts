@@ -88,16 +88,28 @@ export abstract class ApiSyncOfflineBaseService<T> {
    */
   private getDataObservable(): Observable<T> {
     return combineLatest([this.userSettingService.language$, this.userSettingService.appMode$]).pipe(
-      switchMap(([langKey, appMode]) =>
-        this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey).pipe(
-          take(1),
-          switchMap((updatedData) =>
-            updatedData != null
-              ? of(updatedData)
-              : this.getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode, langKey)
-          )
-        )
-      )
+      switchMap(([langKey, appMode]) => {
+        try {
+          return this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey).pipe(
+            take(1),
+            switchMap((updatedData) =>
+              updatedData != null
+                ? of(updatedData)
+                : this.getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode, langKey)
+            ),
+            // This handles errors inside the observable stream
+            catchError((err) => {
+              this.logger.error(err, this.getDebugTag(), 'Error in getDataObservable');
+              return this.getFallbackDataWithLogging(appMode, langKey);
+            })
+          );
+        } catch (error) {
+          // This handles errors thrown before the observable from getOfflineDataAndReturnIfDataIsUpToDate
+          // has been created properly
+          this.logger.error(error, this.getDebugTag(), 'Error in getDataObservable init');
+          return this.getFallbackDataWithLogging(appMode, langKey);
+        }
+      })
     );
   }
 
@@ -202,6 +214,16 @@ export abstract class ApiSyncOfflineBaseService<T> {
   }
 
   /**
+   * Just a wrapper around this.getFallbackData with logging.
+   *
+   * this.getFallbackData is abstract and must be implemented by the child class.
+   */
+  private getFallbackDataWithLogging(appMode: AppMode, langKey: LangKey) {
+    this.logger.debug('Get fallback data', this.getDebugTag());
+    return this.getFallbackData(appMode, langKey);
+  }
+
+  /**
    * Get offline data or fallback to something if no offline data
    * @param appMode App mode
    * @param langKey Language
@@ -216,7 +238,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
             LogLevel.Warning,
             this.getDebugTag()
           );
-          return this.getFallbackData(appMode, langKey);
+          return this.getFallbackDataWithLogging(appMode, langKey);
         }
         return of(val.data);
       })
