@@ -3,88 +3,105 @@
 <ion-content [fullscreen]="true">
   <div class="form">
     <ng-container *ngIf="isLoggedIn$ | async; else needToLogIn">
-      <h1>Generer rapport</h1>
-      <p>Velg tidsrom</p>
-      <ion-list>
-        <ion-item fill="solid">
-          <ion-label position="stacked">Startdato</ion-label>
-          <ion-input
-            autofocus
-            placeholder="Velg dato"
-            type="date"
-            [value]="startDate"
-            (ionChange)="setStartDate($event)"
-            [max]="endDate"
-          ></ion-input>
-        </ion-item>
-        <ion-item fill="solid">
-          <ion-label position="stacked">Sluttdato</ion-label>
-          <ion-input
-            [min]="startDate"
-            placeholder="Velg dato"
-            type="date"
-            [value]="endDate"
-            (ionChange)="setEndDate($event)"
-          ></ion-input>
-          <ion-note slot="helper">Til og med sluttdatoen</ion-note>
-        </ion-item>
-      </ion-list>
+      <ng-container *ngIf="hasAccess$ | async as hasAccess; else noAccess">
+        <!-- Felles input -->
+        <h1>Generer rapport</h1>
+        <p>Det kan hende du må tillatte popup-vinduer for å få lastet ned rapportene.</p>
+        <p>Velg tidsrom</p>
+        <ion-list>
+          <ion-item fill="solid">
+            <ion-label position="stacked">Startdato</ion-label>
+            <ion-input
+              autofocus
+              placeholder="Velg dato"
+              type="date"
+              [value]="startDate"
+              (ionChange)="setStartDate($event)"
+              [max]="endDate"
+            ></ion-input>
+          </ion-item>
+          <ion-item fill="solid">
+            <ion-label position="stacked">Sluttdato</ion-label>
+            <ion-input
+              [min]="startDate"
+              placeholder="Velg dato"
+              type="date"
+              [value]="endDate"
+              (ionChange)="setEndDate($event)"
+            ></ion-input>
+            <ion-note slot="helper">Til og med sluttdatoen</ion-note>
+          </ion-item>
+        </ion-list>
 
-      <h2>Grupperapport</h2>
-      <ion-list>
-        <ion-item fill="solid">
-          <ion-label position="stacked">GruppeID</ion-label>
-          <ion-input
-            min="1"
-            max="1000"
-            inputmode="numeric"
-            placeholder="Velg gruppeID (heltall)"
-            type="number"
-            [value]="groupId"
-            (ionChange)="setGroupId($event)"
-          ></ion-input>
-        </ion-item>
-        <ion-button
-          class="margin-top"
-          (click)="generateGroupReport()"
-          [disabled]="!(startDate && endDate && groupId) || (isWaitingForGroupReport$ | async)"
-        >
-          Lag grupperapport
-          <ion-spinner class="margin-left" *ngIf="isWaitingForGroupReport$ | async"></ion-spinner>
-        </ion-button>
+        <!-- Grupperapport -->
+        <ng-container *ngIf="hasAccessToGroupReports$ | async">
+          <h2>Grupperapport</h2>
+          <ion-list>
+            <ion-item fill="solid">
+              <ion-label position="stacked">GruppeID</ion-label>
+              <ion-input
+                min="1"
+                max="1000"
+                inputmode="numeric"
+                placeholder="Velg gruppeID (heltall)"
+                type="number"
+                [value]="groupId"
+                (ionChange)="setGroupId($event)"
+              ></ion-input>
+            </ion-item>
+            <ion-button
+              class="margin-top"
+              (click)="generateGroupReport()"
+              [disabled]="!(startDate && endDate && groupId) || (isWaitingForGroupReport$ | async)"
+            >
+              Lag grupperapport
+              <ion-spinner class="margin-left" *ngIf="isWaitingForGroupReport$ | async"></ion-spinner>
+            </ion-button>
 
-        <div>
-          <ion-note color="danger" *ngIf="groupErr$ | async as err">{{ err }}</ion-note>
-        </div>
-      </ion-list>
+            <div>
+              <ion-note color="danger" *ngIf="groupErr$ | async as err">{{ err }}</ion-note>
+            </div>
+          </ion-list>
+        </ng-container>
 
-      <h2>Observatørrapport</h2>
-      <ion-item fill="solid">
-        <ion-label position="stacked">ObservatørID</ion-label>
-        <ion-input
-          min="1"
-          max="1000000"
-          step="1"
-          inputmode="numeric"
-          placeholder="Velg observatørID (heltall)"
-          type="number"
-          [value]="observerId"
-          (ionChange)="setObserverId($event)"
-        ></ion-input>
-        <ion-note slot="helper">Innlogget brukers id er forhåndsvalgt</ion-note>
-      </ion-item>
-      <ion-button
-        class="margin-top"
-        (click)="generateObserverReport()"
-        [disabled]="!(startDate && endDate && observerId) || (isWaitingForObserverReport$ | async)"
-      >
-        Lag observatørrapport
-        <ion-spinner class="margin-left" *ngIf="isWaitingForObserverReport$ | async"></ion-spinner>
-      </ion-button>
+        <!-- Observatørrapporter -->
+        <ng-container *ngIf="hasAccessToObserverReports$ | async">
+          <h2>Observatørrapport</h2>
+          <!--
+            Kun de med full tilgang / gruppetilgang har tilgang til å lage observatørrapporter
+            for andre brukere. Skjul derfor denne inputen for alle andre, for å ikke forvirre.
+            Innlogget brukers id er uansett forhåndsvalgt.
+          -->
+          <ng-container *ngIf="hasAccessToGroupReports$ | async">
+            <ion-item fill="solid">
+              <ion-label position="stacked">ObservatørID</ion-label>
+              <ion-input
+                min="1"
+                max="1000000"
+                step="1"
+                inputmode="numeric"
+                placeholder="Velg observatørID (heltall)"
+                type="number"
+                [value]="observerId"
+                (ionChange)="setObserverId($event)"
+              ></ion-input>
+              <ion-note slot="helper">Innlogget brukers id er forhåndsvalgt</ion-note>
+            </ion-item>
+          </ng-container>
+          <ion-button
+            class="margin-top"
+            (click)="generateObserverReport()"
+            [disabled]="!(startDate && endDate && observerId) || (isWaitingForObserverReport$ | async)"
+          >
+            Lag observatørrapport
+            <ion-spinner class="margin-left" *ngIf="isWaitingForObserverReport$ | async"></ion-spinner>
+          </ion-button>
 
-      <div>
-        <ion-note color="danger" *ngIf="observerErr$ | async as err">{{ err }}</ion-note>
-      </div>
+          <div>
+            <ion-note color="danger" *ngIf="observerErr$ | async as err">{{ err }}</ion-note>
+          </div>
+        </ng-container>
+      </ng-container>
     </ng-container>
   </div>
 </ion-content>
@@ -92,4 +109,8 @@
 <ng-template #needToLogIn>
   <h1>Du må logge inn for å lage rapporter</h1>
   <p>Du kan logge inn fra menyen oppe til høyre</p>
+</ng-template>
+
+<ng-template #noAccess>
+  <h1>Du har ikke tilgang til å lage rapporter</h1>
 </ng-template>

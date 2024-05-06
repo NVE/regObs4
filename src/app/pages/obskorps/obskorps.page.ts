@@ -1,13 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { Observable, Subject, map, switchMap, tap, withLatestFrom, finalize, take } from 'rxjs';
-import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 import { settings } from 'src/settings';
 import moment from 'moment';
-import { InputCustomEvent } from '@ionic/angular';
+import { AlertController, InputCustomEvent } from '@ionic/angular';
 
 const toDateInputValue = (date: Date) => {
   const isoString = date.toISOString();
@@ -24,12 +23,19 @@ export class ObskorpsPage implements OnInit {
   private http = inject(HttpClient);
   private authService = inject(RegobsAuthService);
   private userSettings = inject(UserSettingService);
+  private alertController = inject(AlertController);
 
   groupId = 51;
   observerId: number;
   startDate: string;
   endDate: string;
+
+  // Auth stuff
   isLoggedIn$: Observable<boolean>;
+  hasAccess$: Observable<boolean>;
+  hasAccessToGroupReports$: Observable<boolean>;
+  hasAccessToObserverReports$: Observable<boolean>;
+
   isWaitingForGroupReport$ = new Subject<boolean>();
   isWaitingForObserverReport$ = new Subject<boolean>();
   groupErr$ = new Subject<string>();
@@ -68,6 +74,26 @@ export class ObskorpsPage implements OnInit {
   ngOnInit(): void {
     this.isLoggedIn$ = this.authService.loggedInUser$.pipe(map((user) => user.isLoggedIn));
 
+    // group har tilgang til grupperapporter og observatørrapporter
+    // observer har kun tilgang til observatørrapporter
+    const accessType: Observable<'group' | 'observer'> = this.authService.myPageData$.pipe(
+      map((data) => {
+        if (data?.Roles == null) return;
+
+        if (data.Roles.includes('regobs_ObservatorRapporter')) {
+          return 'group';
+        }
+
+        if (data.Roles.includes('regobs_ObsKorps')) {
+          return 'observer';
+        }
+      })
+    );
+
+    this.hasAccessToGroupReports$ = accessType.pipe(map((type) => type === 'group'));
+    this.hasAccessToObserverReports$ = accessType.pipe(map((type) => type === 'observer' || type === 'group'));
+    this.hasAccess$ = accessType.pipe(map((type) => type != null));
+
     this.authService.myPageData$.subscribe((user) => {
       this.observerId = user.ObserverId;
     });
@@ -91,7 +117,7 @@ export class ObskorpsPage implements OnInit {
         finalize(() => this.isWaitingForObserverReport$.next(false))
       )
       .subscribe({
-        next: (blob) => this.downloadFile(blob),
+        next: (res) => this.handleResponse(res),
         error: (err) => this.observerErr$.next(err.message),
       });
   }
@@ -114,7 +140,7 @@ export class ObskorpsPage implements OnInit {
         finalize(() => this.isWaitingForGroupReport$.next(false))
       )
       .subscribe({
-        next: (blob) => this.downloadFile(blob),
+        next: (res) => this.handleResponse(res),
         error: (err) => this.groupErr$.next(err.message),
       });
   }
@@ -123,11 +149,23 @@ export class ObskorpsPage implements OnInit {
     return this.http.get(url, {
       responseType: 'blob',
       headers: { authorization: `Bearer ${user.token}` },
+      observe: 'response',
     });
   }
 
-  private downloadFile(data: Blob) {
-    const url = window.URL.createObjectURL(data);
+  private handleResponse(res: HttpResponse<Blob>) {
+    if (res.status === HttpStatusCode.NoContent) {
+      this.alertController
+        .create({
+          header: 'Ingen data',
+          message: 'Ingen data tilgjengelig for valgt periode',
+          buttons: ['OK'],
+        })
+        .then((alert) => alert.present());
+      return;
+    }
+
+    const url = window.URL.createObjectURL(res.body);
     window.open(url);
   }
 }
