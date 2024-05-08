@@ -166,15 +166,26 @@ export class OfflineMapService implements OnReset {
     packageMetadataCombined: CompoundPackage,
     checkAvailableDiskSpace = false
   ): Promise<void> {
+    const packageInfo = {
+      name: packageMetadataCombined.getName(),
+      xyz: packageMetadataCombined.getXYZ(),
+      size: packageMetadataCombined.getSizeInMiB(),
+      parts: packageMetadataCombined.getParts(),
+    };
+
+    this.loggingService.debug('downloadPackage', DEBUG_TAG, { packageInfo, checkAvailableDiskSpace });
+
     if (checkAvailableDiskSpace) {
       //TODO: Ask user to prefer saving to external SD card if available?
       const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined);
       if (!availableSpace) {
+        this.loggingService.debug('Not enough disk space to save and extract package', DEBUG_TAG, { packageInfo });
         return;
       }
     }
 
     if (await this.isPermissionToSaveFilesDenied()) {
+      this.loggingService.debug('Permission to save files denied', DEBUG_TAG, { packageInfo });
       return;
     }
 
@@ -595,6 +606,7 @@ export class OfflineMapService implements OnReset {
   }
 
   async removeMapPackageByName(packageNameToRemove: string) {
+    this.loggingService.debug('Removing map package:', DEBUG_TAG, { packageNameToRemove });
     // Delete files
     const root = await this.getRootFileUrl();
     await this.deleteDirectory(root, packageNameToRemove);
