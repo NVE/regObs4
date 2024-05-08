@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { PackageIndexService } from 'src/app/core/services/offline-map/package-index.service';
 import { isPackageOutdated } from 'src/app/core/services/offline-map/utils';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const filledTileOpacity = 0.8;
 const notFilledTileOpacity = 0.1;
@@ -34,6 +35,8 @@ interface PackageTotals {
   numPackages: number;
   spaceUsed: string;
 }
+
+const DEBUG_TAG = 'OfflineMapPage';
 
 @Component({
   selector: 'app-offline-map',
@@ -65,7 +68,8 @@ export class OfflineMapPage extends NgDestoryBase {
     private alertController: AlertController,
     private translateService: TranslateService,
     private packageIndex: PackageIndexService,
-    private zone: NgZone
+    private zone: NgZone,
+    private logger: LoggingService
   ) {
     super();
 
@@ -304,13 +308,15 @@ export class OfflineMapPage extends NgDestoryBase {
 
   async update(map: OfflineMapPackage, event: Event) {
     event.stopPropagation();
+    this.logger.debug('Update package', DEBUG_TAG, { name: map.name });
     await this.delete(map);
     const packageOnServer = this.packagesOnServer.get(map.name);
     this.offlineMapService.downloadPackage(packageOnServer, false);
   }
 
   private async delete(map: OfflineMapPackage) {
-    this.offlineMapService.removeMapPackageByName(map.name);
+    this.logger.debug('Delete package', DEBUG_TAG, { name: map.name });
+    await this.offlineMapService.removeMapPackageByName(map.name);
   }
 
   isDownloaded(map: OfflineMapPackage): boolean {
