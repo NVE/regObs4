@@ -26,7 +26,7 @@ const DATABASE_NAME = 'regobs-cordova-v1';
 // IMPORTANT! Remember that you have to let sqlite know which version it should start with after you update the db.
 // Check the createConnection() methods
 const INIT_STATEMENTS = [
-  'PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL',
+  // 'PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL',
   `CREATE TABLE IF NOT EXISTS registration (
     reg_id INTEGER PRIMARY KEY NOT NULL,
     geo_hazard INTEGER NOT NULL,
