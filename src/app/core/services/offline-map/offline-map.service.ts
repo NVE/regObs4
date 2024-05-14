@@ -134,9 +134,11 @@ export class OfflineMapService implements OnReset {
     this.loggingService.debug('packageNames', DEBUG_TAG, { packageNames });
 
     // Read all package metadata
-    const packages = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
+    const packages = await Promise.allSettled(packageNames.map((name) => this.getMetadata(name)));
+    const fulfilledPackages = packages.filter((result) => result.status === 'fulfilled')
+      .map((result) => (result as PromiseFulfilledResult<OfflineMapPackage>).value);
 
-    return packages;
+    return fulfilledPackages;
   }
 
   private registerOfflineMapPackages(mapPackages: OfflineMapPackage[]) {
@@ -279,8 +281,7 @@ export class OfflineMapService implements OnReset {
       });
       const numParts = parts.length;
       this.loggingService.debug(
-        `Started native download of ${mapPackage.name}, part ${partNumber + 1}/${numParts}: ${part.name}, fileRef = ${
-          result.fileReference
+        `Started native download of ${mapPackage.name}, part ${partNumber + 1}/${numParts}: ${part.name}, fileRef = ${result.fileReference
         }`,
         DEBUG_TAG
       );
@@ -675,23 +676,27 @@ export class OfflineMapService implements OnReset {
     const maps = await this.getMapsInPackageFolder(packageName);
     for (const map of maps) {
       const metadataPath = `${path}/${map}/${METADATA_FILE}`;
-      this.loggingService.debug('Metadata path:', DEBUG_TAG, { metadataPath });
-      const readFileResult = await Filesystem.readFile({
-        path: metadataPath,
-        encoding: Encoding.UTF8,
-      });
-      const content = readFileResult.data as string;
-      const metadata = JSON.parse(content) as OfflineTilesMetadata;
-      this.loggingService.debug('Metadata:', DEBUG_TAG, metadata);
-
-      offlineMapPackage.maps[map] = {
-        ...metadata,
-        url: this.webView.convertFileSrc(`${path}/${map}`),
-      };
+      this.loggingService.debug('Trying to read metadata file:', DEBUG_TAG, { metadataPath });
+      try {
+        const readFileResult = await Filesystem.readFile({
+          path: metadataPath,
+          encoding: Encoding.UTF8,
+        });
+        const content = readFileResult.data as string;
+        const metadata = JSON.parse(content) as OfflineTilesMetadata;
+        this.loggingService.debug('Metadata:', DEBUG_TAG, metadata);
+        offlineMapPackage.maps[map] = {
+          ...metadata,
+          url: this.webView.convertFileSrc(`${path}/${map}`),
+        };
+      } catch (error) {
+        // Vi fanger denne kun for å logge hvilken metadata-fil vi ikke kunne lese da native-koden ikke logger dette
+        this.loggingService.error(error, DEBUG_TAG, `Failed to get metadata file: ${metadataPath}`);
+        throw error;
+      }
     }
 
     this.loggingService.debug('Offline map package metadata: ', DEBUG_TAG, offlineMapPackage);
-
     return offlineMapPackage;
   }
 
