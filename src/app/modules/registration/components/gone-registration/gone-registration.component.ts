@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
-import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
+import { SqliteService } from 'src/app/core/services/sqlite/cordova-sqlite.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 

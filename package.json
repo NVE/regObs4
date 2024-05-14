@@ -141,7 +141,7 @@
     "@types/mapbox__sphericalmercator": "^1.2.0",
     "@types/node": "^16.7.10",
     "@types/plist": "^3.0.2",
-    "@types/websql": "0.0.27",
+    "@types/websql": "^0.0.30",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
     "cordova-plugin-device-orientation": "^2.0.1",

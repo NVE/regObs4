@@ -42,7 +42,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
-import { SqliteService } from '../sqlite/sqlite.service';
+import { SqliteService } from '../sqlite/cordova-sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { Platform } from '@ionic/angular';
 
