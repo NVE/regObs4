@@ -7,28 +7,28 @@
       <ion-row class="row-padding-start">
         <ion-col size="12">
           <div class="card-icon-item">
-            <svg-icon
+            <ion-icon
               class="card-icon-item-icon"
-              src="/assets/icon/time.svg"
-              [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-            ></svg-icon>
-            Observert: {{ obsTime | formatDate | async }}
+              name="eye"
+              [title]="'REGISTRATION.CARD.TIME.OBSERVED' | translate"
+            ></ion-icon>
+            {{ obsTime | formatDate | async }}
           </div>
           <div *ngIf="regTime" class="card-icon-item">
-            <svg-icon
+            <ion-icon
               class="card-icon-item-icon"
-              src="/assets/icon/time.svg"
-              [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-            ></svg-icon>
-            Registrert: {{ regTime | formatDate | async }}
+              name="save"
+              [title]="'REGISTRATION.CARD.TIME.REGISTERED' | translate"
+            ></ion-icon>
+            {{ regTime | formatDate | async }}
           </div>
           <div *ngIf="changedTime" class="card-icon-item">
-            <svg-icon
+            <ion-icon
               class="card-icon-item-icon"
-              src="/assets/icon/time.svg"
-              [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-            ></svg-icon>
-            Oppdatert: {{ changedTime | formatDate | async }}
+              name="pencil"
+              [title]="'REGISTRATION.CARD.TIME.UPDATED' | translate"
+            ></ion-icon>
+            {{ changedTime | formatDate | async }}
           </div>
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{ 'width.px': 16, 'height.px': 16 }">

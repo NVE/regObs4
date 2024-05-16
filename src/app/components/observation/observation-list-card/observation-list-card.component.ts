@@ -78,7 +78,6 @@ export class ObservationListCardComponent implements OnChanges {
 
   constructor(
     private modalController: ModalController,
-    private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
     private cdr: ChangeDetectorRef,
     private analyticService: AnalyticService,
@@ -105,8 +104,6 @@ export class ObservationListCardComponent implements OnChanges {
         // Vis endret-tidspunkt kun hvis observasjonen er endret
         this.changedTime = this.obs.DtChangeTime;
       }
-      // TODO: Ikke vis tidssone selv om tidspunktet kommer med +02:00 e.l. fra API
-      // TODO: Hjelpe bruker å forstå hvilket tidspunkt som er hva (husk oversettelse!)
     }
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
