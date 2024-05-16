@@ -6,28 +6,16 @@
     <ion-grid class="ion-no-padding">
       <ion-row class="row-padding-start">
         <ion-col size="12">
-          <div class="card-icon-item">
-            <ion-icon
-              class="card-icon-item-icon"
-              name="eye"
-              [title]="'REGISTRATION.CARD.TIME.OBSERVED' | translate"
-            ></ion-icon>
+          <div class="card-icon-item" [title]="'REGISTRATION.CARD.TIME.OBSERVED' | translate">
+            <ion-icon class="card-icon-item-icon" name="eye"></ion-icon>
             {{ obsTime | formatDate | async }}
           </div>
-          <div *ngIf="regTime" class="card-icon-item">
-            <ion-icon
-              class="card-icon-item-icon"
-              name="save"
-              [title]="'REGISTRATION.CARD.TIME.REGISTERED' | translate"
-            ></ion-icon>
+          <div *ngIf="regTime" class="card-icon-item" [title]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
+            <ion-icon class="card-icon-item-icon" name="save"></ion-icon>
             {{ regTime | formatDate | async }}
           </div>
-          <div *ngIf="changedTime" class="card-icon-item">
-            <ion-icon
-              class="card-icon-item-icon"
-              name="pencil"
-              [title]="'REGISTRATION.CARD.TIME.UPDATED' | translate"
-            ></ion-icon>
+          <div *ngIf="changedTime" class="card-icon-item" [title]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
+            <ion-icon class="card-icon-item-icon" name="pencil"></ion-icon>
             {{ changedTime | formatDate | async }}
           </div>
           <div class="card-icon-item">
