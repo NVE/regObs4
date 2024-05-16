@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
@@ -37,6 +37,7 @@ import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../core/services/confirmation-modal/confirmation-modal.service';
+import { isoDateTimeToLocalDateTimeInIsoFormat } from 'src/app/modules/common-core/helpers/date-converters';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -98,10 +99,10 @@ export class ObservationListCardComponent implements OnChanges {
     this.obsTime = this.obs.DtObsTime;
     if (!Capacitor.isNativePlatform()) {
       // Vis registrert- og evt. endret-tidspunkt på web
-      this.regTime = this.obs.DtRegTime;
+      this.regTime = isoDateTimeToLocalDateTimeInIsoFormat(this.obs.DtRegTime);
       if (this.obs.DtChangeTime && this.obs.DtChangeTime !== this.obs.DtRegTime) {
         // Vis endret-tidspunkt kun hvis observasjonen er endret
-        this.changedTime = this.obs.DtChangeTime;
+        this.changedTime = isoDateTimeToLocalDateTimeInIsoFormat(this.obs.DtChangeTime);
       }
     }
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
