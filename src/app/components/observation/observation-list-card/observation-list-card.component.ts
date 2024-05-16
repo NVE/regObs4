@@ -12,7 +12,6 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
-import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as L from 'leaflet';
 import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/modal-map-image.page';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -24,7 +23,7 @@ import { getStarCount } from '../../../core/helpers/competence-helper';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
-import { firstValueFrom, Observable, of, Subject, TimeoutError } from 'rxjs';
+import { firstValueFrom, Observable, of, TimeoutError } from 'rxjs';
 import { RegistrationService } from 'src/app/modules/common-regobs-api';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
