@@ -15,7 +15,7 @@ import { AuthService } from 'ionic-appauth';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
 import { Keyboard } from '@capacitor/keyboard';
-// import { SqliteService } from './core/services/sqlite/sqlite.service';
+import { SqliteService } from './core/services/sqlite/sqlite.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -92,12 +92,12 @@ export class AppComponent {
     }
   }
 
-  // private initSqliteIfNative() {
-  //   if (isPlatform('hybrid')) {
-  //     const sqliteService = this.injector.get<SqliteService>(SqliteService);
-  //     return sqliteService.init();
-  //   }
-  // }
+  private initSqliteIfNative() {
+    if (isPlatform('hybrid')) {
+      const sqliteService = this.injector.get<SqliteService>(SqliteService);
+      return sqliteService.init();
+    }
+  }
 
   private initServices(userSettings: UserSetting): Promise<unknown>[] {
     return [
@@ -107,7 +107,7 @@ export class AppComponent {
       this.auth.init(),
       this.dataMarshallService.init(),
       this.draftToRegService.createSubscriptions(),
-      // this.initSqliteIfNative(),
+      this.initSqliteIfNative(),
     ];
   }
 }
