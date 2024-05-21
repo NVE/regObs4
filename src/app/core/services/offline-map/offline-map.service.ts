@@ -18,7 +18,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import { exhaustMap, finalize, map, mergeMap, switchMap, take, takeUntil } from 'rxjs/operators';
+import { exhaustMap, finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
 import { DownloadAndUnzip } from 'src/download-and-unzip-plugin';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
@@ -221,7 +221,7 @@ export class OfflineMapService implements OnReset {
   }
 
   private startDownloadNextItemInQueue() {
-    const nextInQueue = this.downloadAndUnzipProgress.value.filter((p) => p.progress.step === ProgressStep.pending)[0];
+    const nextInQueue = this.downloadAndUnzipProgress.value.filter((p) => p.progress?.step === ProgressStep.pending)[0];
     if (nextInQueue != null) {
       this.onProgress(nextInQueue, {
         step: ProgressStep.download,
