@@ -9,7 +9,6 @@ import { takeUntil, tap } from 'rxjs/operators';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { getDownloadCompleteDate, isPackageOutdated } from 'src/app/core/services/offline-map/utils';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { filter } from 'rxjs/operators';
 
 const DEBUG_TAG = 'OfflinePackageModalComponent';
 
@@ -49,14 +48,16 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   ngOnInit(): void {
     this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
-      filter((packageStatus) => packageStatus !== undefined), // Denne blir undefined etter vi har slettet pakken
       tap((packageStatus) => {
-        this.isPackageOutdated = isPackageOutdated(packageStatus, this.packageOnServer);
-        this.logger.debug('isPackageOutdated', DEBUG_TAG, {
-          isPackageOutdated: this.isPackageOutdated,
-          packageStatus,
-          packageOnServer: this.packageOnServer,
-        });
+        if (packageStatus) {
+          //hvis pakken blir slettet, er packageStatus undefined
+          this.isPackageOutdated = isPackageOutdated(packageStatus, this.packageOnServer);
+          this.logger.debug('isPackageOutdated', DEBUG_TAG, {
+            isPackageOutdated: this.isPackageOutdated,
+            packageStatus,
+            packageOnServer: this.packageOnServer,
+          });
+        }
       }),
       tap(() => this.cdr.detectChanges())
     );
