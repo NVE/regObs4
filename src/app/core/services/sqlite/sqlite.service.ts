@@ -5,6 +5,7 @@ import {
   CapacitorSQLite,
   capSQLiteChanges,
   capSQLiteResult,
+  capSQLiteVersionUpgrade,
   SQLiteConnection,
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
@@ -47,7 +48,7 @@ const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';
 const DATABASE_NAME = 'regobs-v2';
 // IMPORTANT! Remember that you have to let sqlite know which version it should start with after you update the db.
 // Check the createConnection() methods
-const UPGRADE_STATEMENTS = [
+const UPGRADE_STATEMENTS: capSQLiteVersionUpgrade[] = [
   {
     toVersion: 1,
     statements: [
@@ -316,10 +317,7 @@ export class SqliteService {
 
   private async runUpgradeStatements() {
     this.logger.debug('Running upgrade statements');
-    for (const stmt of UPGRADE_STATEMENTS) {
-      this.logger.debug('Upgrade statement', DEBUG_TAG, { stmt });
-      await this.sqlite.addUpgradeStatement(DATABASE_NAME, stmt.toVersion, stmt.statements);
-    }
+    await this.sqlite.addUpgradeStatement(DATABASE_NAME, UPGRADE_STATEMENTS);
   }
 
   private async truncateRegistrations() {

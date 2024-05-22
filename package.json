@@ -56,7 +56,7 @@
     "@awesome-cordova-plugins/ionic-webview": "^6.3.0",
     "@awesome-cordova-plugins/safari-view-controller": "^6.3.0",
     "@awesome-cordova-plugins/sqlite": "^6.3.0",
-    "@capacitor-community/sqlite": "^5.2.5",
+    "@capacitor-community/sqlite": "^6.0.0-alpha.1",
     "@capacitor/android": "^6.0.0",
     "@capacitor/app": "^6.0.0",
     "@capacitor/browser": "^6.0.0",
