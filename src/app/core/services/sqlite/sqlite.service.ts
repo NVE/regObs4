@@ -41,7 +41,12 @@ const dateToMs = (value: string): number => {
 const toJson = (o: any) => {
   // TODO: Typescript compiler cant find replaceAll on string, how to fix?
   // Single quotes must be escaped: ' => ''
-  return (<any>JSON.stringify(o)).replaceAll("'", "''");
+
+  // JSON.stringify escaper " i tekst-verdier med \. SQLite fjerner \ ved lagring , slik at når vi parser JSON-stringen etterpå,
+  // får vi denne feilmeldinga: "SyntaxError: Expected ',' or '}' after property value in JSON at position x"
+  // Eksempel på verdi som vil feile: "Description": "Bruk av \"hermetegn\"". => "Description": "Bruk av "hermetegn""
+  // Derfor erstatter vi \" med _.
+  return (<any>JSON.stringify(o)).replaceAll("'", "''").replaceAll("\\\"", "_");
 };
 
 const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';
