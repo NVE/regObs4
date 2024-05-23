@@ -38,7 +38,7 @@ const ERRORS_TO_IGNORE = [
   'User cancelled camera app',
 ];
 
-interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachmentState {}
+interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachmentState { }
 
 @Component({
   selector: 'app-edit-images',
@@ -87,7 +87,7 @@ export class EditImagesComponent implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private dropZoneService: DropZoneService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.isHybrid = this.platform.is('hybrid');
@@ -215,9 +215,7 @@ export class EditImagesComponent implements OnInit {
       }
       for (const imageUrl of imageUrls) {
         this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
-        //TODO: Hvorfor leser vi bildet inn i et arraybuffer for seinere å lagre det på disken igjen?
-        const arrayBuffer = await this.getArrayBuffer(imageUrl);
-        await this.attachImageToDraft(new Blob([arrayBuffer]), MIME_TYPE);
+        await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
       }
     } catch (err) {
       // we ignore errors we get if user cancels taking photo or gallery selection
@@ -227,18 +225,6 @@ export class EditImagesComponent implements OnInit {
       }
     }
     return true;
-  }
-
-  private async getArrayBuffer(fileUrl: string): Promise<ArrayBuffer> {
-    const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
-    if (!entry.isFile) {
-      throw Error(`${fileUrl} is not a file!`);
-    }
-    const pathSplitted = entry.nativeURL.split('/');
-    const filename = pathSplitted.pop();
-    const directory = pathSplitted.join('/');
-    const arrayBuffer = await this.file.readAsArrayBuffer(directory, filename);
-    return arrayBuffer;
   }
 
   private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
@@ -260,6 +246,18 @@ export class EditImagesComponent implements OnInit {
       });
       toast.present();
     });
+  }
+
+  async attachImageFileToDraft(fileUrl: string, mimeType: string) {
+    await this.newAttachmentService.addAttachmentAsUrl(
+      this.draftUuid,
+      fileUrl,
+      mimeType,
+      this.geoHazard,
+      this.registrationTid,
+      this.attachmentType,
+      this.ref
+    );
   }
 
   async attachImageToDraft(data: Blob, mimeType: string) {

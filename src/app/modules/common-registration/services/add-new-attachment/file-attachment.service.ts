@@ -7,6 +7,7 @@ import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable } from '@angular/core';
+import { Filesystem } from '@capacitor/filesystem';
 
 const ROOT_DIR = 'attachments';
 
@@ -22,6 +23,43 @@ export default class FileAttachmentService extends NewAttachmentService {
   constructor(private file: File, protected logger: LoggingService) {
     super();
     this.attachmentsChanged.pipe(tap(() => this.logger.debug('Attachments changed', this.DEBUG_TAG)));
+  }
+
+  async addAttachmentAsUrl(
+    registrationId: string,
+    fileNameWithFullPath: string,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void> {
+    const rootDir = await this.getRootPath();
+    await this.file.createDir(rootDir, registrationId, true);
+    const attachmentId = uuidv4();
+
+    const attachmentFileName = `${attachmentId}.${this.getFileExtension(mimeType)}`;
+    const destinationPath = `${rootDir}/${registrationId}`
+    const result = await Filesystem.copy({ from: `${fileNameWithFullPath}`, to: `${destinationPath}/${attachmentFileName}` });
+    const statResult = await Filesystem.stat({ path: `${result.uri}` });
+    const metadata: AttachmentUploadEditModel = {
+      GeoHazardTID: geoHazard,
+      RegistrationTID: registrationTid,
+      AttachmentMimeType: mimeType,
+      id: attachmentId,
+      type,
+      fileSize: statResult.size,
+      fileName: attachmentFileName,
+      fileAddedTime: Date.now(),
+      ref,
+    };
+
+    this.logger.debug(
+      `Attachment copied from ${fileNameWithFullPath} to ${result.uri}`,
+      this.DEBUG_TAG,
+      metadata
+    );
+    await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
   }
 
   async addAttachment(

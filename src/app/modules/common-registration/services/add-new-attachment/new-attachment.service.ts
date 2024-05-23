@@ -40,6 +40,26 @@ export abstract class NewAttachmentService {
 
   addNewAttachmentState = new BehaviorSubject<AddAttachmentState[]>([]);
 
+  /**
+   * Legg et bilde til angitt registrering.
+   * @param registrationId
+   * @param fileUrl eksempel: file:///data/user/0/no.nve.regobs4/cache/image%3A7018.1716471473588.jpeg
+   * @param mimeType
+   * @param geoHazard
+   * @param registrationTid
+   * @param type
+   * @param ref
+   */
+  abstract addAttachmentAsUrl(
+    registrationId: string,
+    fileUrl: string,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void>;
+
   abstract addAttachment(
     registrationId: string,
     data: Blob,
@@ -49,6 +69,7 @@ export abstract class NewAttachmentService {
     type?: AttachmentType,
     ref?: string
   ): Promise<void>;
+
   abstract saveAttachmentMeta$(registrationId: string, meta: AttachmentUploadEditModel): Observable<unknown>;
 
   /**
