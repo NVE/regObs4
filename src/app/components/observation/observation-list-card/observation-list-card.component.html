@@ -8,15 +8,15 @@
         <ion-col size="12">
           <div class="card-icon-item" [title]="'REGISTRATION.CARD.TIME.OBSERVED' | translate">
             <ion-icon class="card-icon-item-icon" name="eye"></ion-icon>
-            {{ obsTime | formatDate | async }}
+            {{ obsTime | date: DATE_FORMAT }}
           </div>
           <div *ngIf="regTime" class="card-icon-item" [title]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
             <ion-icon class="card-icon-item-icon" name="save"></ion-icon>
-            {{ regTime | formatDate | async }}
+            {{ regTime | date: DATE_FORMAT }}
           </div>
           <div *ngIf="changedTime" class="card-icon-item" [title]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
             <ion-icon class="card-icon-item-icon" name="pencil"></ion-icon>
-            {{ changedTime | formatDate | async }}
+            {{ changedTime | date: DATE_FORMAT }}
           </div>
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{ 'width.px': 16, 'height.px': 16 }">

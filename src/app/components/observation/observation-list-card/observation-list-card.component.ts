@@ -56,6 +56,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;
 
+  DATE_FORMAT = 'dd.MM.yyyy HH:mm';
   obsTime: string;
   regTime: string = null;
   changedTime: string = null;
@@ -99,10 +100,10 @@ export class ObservationListCardComponent implements OnChanges {
     this.obsTime = this.obs.DtObsTime;
     if (!Capacitor.isNativePlatform()) {
       // Vis registrert- og evt. endret-tidspunkt på web
-      this.regTime = isoDateTimeToLocalDateTimeInIsoFormat(this.obs.DtRegTime);
+      this.regTime = this.obs.DtRegTime;
       if (this.obs.DtChangeTime && this.obs.DtChangeTime !== this.obs.DtRegTime) {
         // Vis endret-tidspunkt kun hvis observasjonen er endret
-        this.changedTime = isoDateTimeToLocalDateTimeInIsoFormat(this.obs.DtChangeTime);
+        this.changedTime = this.obs.DtChangeTime;
       }
     }
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
