@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
@@ -37,7 +37,6 @@ import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../core/services/confirmation-modal/confirmation-modal.service';
-import { isoDateTimeToLocalDateTimeInIsoFormat } from 'src/app/modules/common-core/helpers/date-converters';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
