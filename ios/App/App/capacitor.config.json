@@ -37,6 +37,8 @@
 		}
 	},
 	"packageClassList": [
+		"CapacitorSQLitePlugin",
+		"CapacitorSQLitePlugin",
 		"AppPlugin",
 		"CAPBrowserPlugin",
 		"CAPCameraPlugin",
