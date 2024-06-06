@@ -42,6 +42,7 @@ export abstract class NewAttachmentService {
 
   /**
    * Legg et bilde til angitt registrering.
+   * Bruk gjerne denne i stedet for addAttachment() hvis bildet allerede er lagret lokalt.
    * @param registrationId
    * @param fileUrl eksempel: file:///data/user/0/no.nve.regobs4/cache/image%3A7018.1716471473588.jpeg
    * @param mimeType
