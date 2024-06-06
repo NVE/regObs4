@@ -12,7 +12,6 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
-import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as L from 'leaflet';
 import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/modal-map-image.page';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -56,7 +55,10 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;
 
-  dtObsDate: string;
+  DATE_FORMAT = 'dd.MM.yyyy HH:mm';
+  obsTime: string;
+  regTime: string = null;
+  changedTime: string = null;
   icon: string;
   settings = settings;
   header: string;
@@ -76,7 +78,6 @@ export class ObservationListCardComponent implements OnChanges {
 
   constructor(
     private modalController: ModalController,
-    private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
     private cdr: ChangeDetectorRef,
     private analyticService: AnalyticService,
@@ -89,13 +90,21 @@ export class ObservationListCardComponent implements OnChanges {
     private toastController: ToastController,
     private translateService: TranslateService,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) { }
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
     this.header = this.obs.ObsLocation.Title;
     this.location = this.getLocation(this.obs);
-    this.dtObsDate = this.obs.DtObsTime;
+    this.obsTime = this.obs.DtObsTime;
+    if (!Capacitor.isNativePlatform()) {
+      // Vis registrert- og evt. endret-tidspunkt på web
+      this.regTime = this.obs.DtRegTime;
+      if (this.obs.DtChangeTime && this.obs.DtChangeTime !== this.obs.DtRegTime) {
+        // Vis endret-tidspunkt kun hvis observasjonen er endret
+        this.changedTime = this.obs.DtChangeTime;
+      }
+    }
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
     this.competenceLevelName = this.obs.Observer.CompetenceLevelName;
@@ -151,9 +160,9 @@ export class ObservationListCardComponent implements OnChanges {
   private extent2Polygon(extent: number[][], color: string) {
     return extent
       ? new L.Polygon(
-          extent.map(([lng, lat]) => [lat, lng]),
-          { color }
-        )
+        extent.map(([lng, lat]) => [lat, lng]),
+        { color }
+      )
       : null;
   }
 

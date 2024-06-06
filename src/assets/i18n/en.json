@@ -346,6 +346,13 @@
       "TITLE": "Anonymize"
     },
     "BACK_TO_OBSERVATION": "Back to observation",
+    "CARD": {
+      "TIME": {
+        "OBSERVED": "Observed",
+        "REGISTERED": "Registered",
+        "UPDATED": "Changed"
+      }
+    },
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
     "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",

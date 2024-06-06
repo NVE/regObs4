@@ -346,6 +346,13 @@
       "TITLE": "Anonymisering"
     },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
+    "CARD": {
+      "TIME": {
+        "OBSERVED": "Observert",
+        "REGISTERED": "Registrert",
+        "UPDATED": "Endret"
+      }
+    },
     "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
     "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
