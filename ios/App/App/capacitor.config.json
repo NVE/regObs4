@@ -35,5 +35,22 @@
 			"ResolveServiceWorkerRequests": "true",
 			"AndroidXEnabled": "true"
 		}
-	}
+	},
+	"packageClassList": [
+		"CapacitorSQLitePlugin",
+		"CapacitorSQLitePlugin",
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"CAPCameraPlugin",
+		"ClipboardPlugin",
+		"DevicePlugin",
+		"FilesystemPlugin",
+		"GeolocationPlugin",
+		"KeyboardPlugin",
+		"CAPNetworkPlugin",
+		"SharePlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin",
+		"CDVPlugin"
+	]
 }

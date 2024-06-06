@@ -18,6 +18,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 
 @Injectable()
 export class OfflineDbNewAttachmentService extends NewAttachmentService {
+
   protected DEBUG_TAG = 'OfflineDbNewAttachmentService';
 
   constructor(
@@ -26,6 +27,11 @@ export class OfflineDbNewAttachmentService extends NewAttachmentService {
     private userSettingService: UserSettingService
   ) {
     super();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  addAttachmentAsUrl(registrationId: string, fileUrl: string, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 
   async addAttachment(
