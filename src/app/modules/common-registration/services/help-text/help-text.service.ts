@@ -5,11 +5,11 @@ import { AppMode, LangKey, GeoHazard } from 'src/app/modules/common-core/models'
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { OfflineDbService } from '../offline-db/offline-db.service';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { DatabaseService } from 'src/app/core/services/database/database.service';
 
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
@@ -18,21 +18,21 @@ const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 })
 export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
   constructor(
-    protected offlineDbService: OfflineDbService,
+    protected databaseService: DatabaseService,
     protected logger: LoggingService,
     private helpTextApiService: HelpTextApiService,
     private httpClient: HttpClient,
     protected userSettingService: UserSettingService
   ) {
-    super(offlineDbService, logger, userSettingService);
+    super(databaseService, logger, userSettingService);
   }
 
   protected getDebugTag(): string {
     return 'HelpTextService';
   }
 
-  protected getTableName(appMode: AppMode): string {
-    return `${appMode.toLocaleLowerCase()}/helptexts`;
+  protected getOfflineDatabaseKey(appMode: AppMode, langKey: LangKey): string {
+    return `helptexts.${appMode.toLocaleUpperCase()}.${langKey.toLocaleString()}`;
   }
 
   protected getUpdatedData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {

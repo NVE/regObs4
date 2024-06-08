@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { of, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { KdvElementsResponseDto, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { KdvElementsService } from 'src/app/modules/common-regobs-api/services';
-import { OfflineDbService } from '../offline-db/offline-db.service';
 import { HttpClient } from '@angular/common/http';
 import { KdvKey } from '../../models/kdv-key.type';
 import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
@@ -13,6 +12,7 @@ import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-off
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { DatabaseService } from 'src/app/core/services/database/database.service';
 
 const KDV_ASSETS_FOLDER = '/assets/json';
 
@@ -21,13 +21,13 @@ const KDV_ASSETS_FOLDER = '/assets/json';
 })
 export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto> {
   constructor(
-    protected offlineDbService: OfflineDbService,
+    protected databaseService: DatabaseService,
     protected logger: LoggingService,
     private kdvElementsService: KdvElementsService,
     private httpClient: HttpClient,
     protected userSettingService: UserSettingService
   ) {
-    super(offlineDbService, logger, userSettingService);
+    super(databaseService, logger, userSettingService);
   }
 
   protected getDebugTag(): string {
@@ -59,8 +59,8 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     return this.kdvElementsService.KdvElementsGetKdvs({ langkey: langKey });
   }
 
-  protected getTableName(appMode: AppMode): string {
-    return `${appMode.toLocaleLowerCase()}/kdvelements`;
+  protected getOfflineDatabaseKey(appMode: AppMode, langKey: LangKey): string {
+    return `kdvelements.${appMode.toLocaleUpperCase()}.${langKey.toLocaleString()}`;
   }
 
   protected getFallbackData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
