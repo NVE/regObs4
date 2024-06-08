@@ -9,6 +9,3 @@ export { KdvViewRepositoryKey } from './models/view-repository-key.type';
 export { IRegistrationType } from './models/registration-type.interface';
 export * from './models/attachment-upload-edit.interface';
 export { WaterLevelMeasurementUploadModel } from './models/water-level-measurement-upload-model';
-export { ISyncProgressRecord } from './models/sync-progress-record.interface';
-export { ISyncProgress } from './models/sync-progress.interface';
-export { IUplaodProgress } from './models/upload-progress.interface';

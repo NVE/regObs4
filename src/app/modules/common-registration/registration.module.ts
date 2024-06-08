@@ -1,7 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CoreModule } from 'src/app/modules/common-core/core.module';
 import { KdvElementsService, HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
-import { OfflineDbServiceOptions } from './services/offline-db/offline-db-service.options';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { NewAttachmentService } from './services/add-new-attachment/new-attachment.service';
@@ -14,18 +13,6 @@ import { isPlatform } from '@ionic/angular';
 import { RegobsApiModuleWithConfig } from '../common-regobs-api';
 import { LocalStorageAttachmentService } from './services/add-new-attachment/local-storage.attachment.service';
 import { WebAttachmentService } from './services/add-new-attachment/web-attachment.service';
-
-export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
-  const offlineDbServiceOptions = new OfflineDbServiceOptions();
-  // If the optional options were provided via the .forRoot() static method, then apply
-  // them to the MyServiceOptions Type provider.
-  if (options) {
-    if (options.adapter) {
-      offlineDbServiceOptions.adapter = options.adapter;
-    }
-  }
-  return offlineDbServiceOptions;
-}
 
 export function getFakeKdvElementsService(): unknown {
   const fakeService = { KdvElementsGetKdvs: () => throwError(() => new Error('Fake service')) };
@@ -64,11 +51,6 @@ export class RegistrationModule {
           useValue: options,
         },
         {
-          provide: OfflineDbServiceOptions,
-          useFactory: offlineDbServiceOptionsFactory,
-          deps: [FOR_ROOT_OPTIONS_TOKEN],
-        },
-        {
           provide: NewAttachmentService,
           useClass: isPlatform('hybrid') ? FileAttachmentService : WebAttachmentService,
         },
@@ -87,10 +69,6 @@ export class RegistrationModule {
       providers: [
         {
           provide: FOR_ROOT_OPTIONS_TOKEN,
-          useValue: { adapter: 'memory' },
-        },
-        {
-          provide: OfflineDbServiceOptions,
           useValue: { adapter: 'memory' },
         },
         {
