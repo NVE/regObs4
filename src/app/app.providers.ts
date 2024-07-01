@@ -15,7 +15,6 @@ import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AuthService } from 'ionic-appauth';
-import { addRxPlugin } from 'rxdb';
 import { environment } from '../environments/environment';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
@@ -36,7 +35,6 @@ import {
   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
   IRegistrationModuleOptions,
 } from './modules/common-registration/module.options';
-import { OfflineDbService } from './modules/common-registration/registration.services';
 import { SearchService } from './modules/common-regobs-api';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
@@ -72,12 +70,6 @@ export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
     attachmentsSupported: false,
   };
   return options;
-}
-
-export function initDb(dbService: OfflineDbService) {
-  return (): Promise<void> => {
-    return import('pouchdb-adapter-idb').then(addRxPlugin).then(() => dbService.initDatabase('idb'));
-  };
 }
 
 // export function initAppMode(userSettings: UserSettingService, appModeService: AppModeService){
@@ -138,12 +130,6 @@ export const APP_PROVIDERS: Provider[] = [
     provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
     useFactory: initCommonRegistrationOptions,
     deps: [],
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: initDb,
-    multi: true,
-    deps: [OfflineDbService],
   },
   // {
   //   provide: APP_INITIALIZER,
