@@ -86,7 +86,7 @@
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Kan ikke vise posisjonen din pga. ufullstendige posisjonsdata",
-      "PermissionDenied": "Vi trenger tilgang til nøyaktig posisjon for å vise hvor du er",
+      "PermissionDenied": "Vi trenger tilgang til nøyaktig posisjon for å vise hvor du er. Du må gå til innstillinger på telefonen/nettbrettet for å gi appen tilgang.",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din",
       "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"

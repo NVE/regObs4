@@ -86,7 +86,7 @@
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Invalid position data",
-      "PermissionDenied": "To fetch your position you need to alter your location settings",
+      "PermissionDenied": "To fetch your position you need to alter your location settings on the phone/device",
       "PositionUnavailable": "Not able fetch your position",
       "Timeout": "It took to long time to fetch your position",
       "UNSUPPORTED": "Positioning is not supported on this unit"
