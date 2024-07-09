@@ -191,7 +191,7 @@ export class OfflineMapService implements OnReset {
       return;
     }
 
-    const mapPackage = this.createOfflineMapPackage(packageMetadataCombined);
+    const mapPackage = await this.createOfflineMapPackage(packageMetadataCombined);
 
     // Add new map package to progress subject
     this.downloadAndUnzipProgress.next([...this.downloadAndUnzipProgress.value, mapPackage]);
@@ -700,7 +700,7 @@ export class OfflineMapService implements OnReset {
     return offlineMapPackage;
   }
 
-  private createOfflineMapPackage(compoundPackageMetadata: CompoundPackage): OfflineMapPackage {
+  private async createOfflineMapPackage(compoundPackageMetadata: CompoundPackage): Promise<OfflineMapPackage> {
     const mapPackage: OfflineMapPackage = {
       name: compoundPackageMetadata.getName(),
       size: compoundPackageMetadata.getSizeInMiB() * 1024 * 1024,
@@ -708,7 +708,7 @@ export class OfflineMapService implements OnReset {
       progress: {
         percentage: 0,
         step: ProgressStep.pending,
-        description: 'In queue...',
+        description: await firstValueFrom(this.translateService.get('OFFLINE_MAP.STATUS.QUEUED')),
       },
       downloadComplete: null,
       maps: {},
