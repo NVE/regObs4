@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.core.content.ContextCompat;
+
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -27,8 +29,8 @@ import java.util.Set;
 public class DownloadAndUnzipPlugin extends Plugin {
 
     private final Unzipper unzipper = new Unzipper();
-    private Map<Long, ProgressMonitor> unzipProgressPerFileRef = new HashMap();
-    private Set<Long> finishedJobs = new HashSet<>();
+    private final Map<Long, ProgressMonitor> unzipProgressPerFileRef = new HashMap<>();
+    private final Set<Long> finishedJobs = new HashSet<>();
 
     @PluginMethod()
     public void downloadAndUnzip(PluginCall call) {
@@ -57,7 +59,8 @@ public class DownloadAndUnzipPlugin extends Plugin {
                     }
                 }
             };
-            context.registerReceiver(receiver, filter);
+            // Bruker ContextCompat for å støtte eldre OS enn Android 8
+            ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_EXPORTED);
 
             JSObject ret = new JSObject();
             ret.put("fileReference", downloadedFileId);
@@ -68,6 +71,9 @@ public class DownloadAndUnzipPlugin extends Plugin {
     }
 
     private String getFilename(String url) {
+        if (url == null) {
+          return "unknown filename";
+        }
         return url.substring(url.lastIndexOf('/')+1);
     }
 
@@ -119,11 +125,11 @@ public class DownloadAndUnzipPlugin extends Plugin {
                 final Context context = getContext();
                 DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                 downloadManager.remove(fileRef.longValue());
-            }
-            ProgressMonitor progressMonitor = unzipProgressPerFileRef.get(fileRef.longValue());
-            if (progressMonitor != null) {
-                progressMonitor.setCancelAllTasks(true);
-                unzipProgressPerFileRef.remove(fileRef.longValue());
+                ProgressMonitor progressMonitor = unzipProgressPerFileRef.get(fileRef.longValue());
+                if (progressMonitor != null) {
+                  progressMonitor.setCancelAllTasks(true);
+                  unzipProgressPerFileRef.remove(fileRef.longValue());
+                }
             }
             call.resolve();
         } catch (RuntimeException exception) {
@@ -165,7 +171,7 @@ public class DownloadAndUnzipPlugin extends Plugin {
                 status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
                 reason = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON));
                 if (totalBytes != 0) {
-                  progress = downloadedBytes / totalBytes;
+                  progress = (double) downloadedBytes / totalBytes;
                 }
             }
         } finally {
