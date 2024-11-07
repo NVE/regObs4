@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IonSlides, ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ type HrefType = { title: string; url: string };
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullscreenImageModalPage implements OnInit {
-  @ViewChild(IonSlides) slider: IonSlides;
+  // @ViewChild(IonSlides) slider: IonSlides;
 
   @Input() imgIndex: number;
   @Input() allImages: AttachmentViewModel[];
@@ -52,20 +52,23 @@ export class FullscreenImageModalPage implements OnInit {
   }
 
   async onSlideTransitionEnd() {
-    this.activeImageIndex = await this.slider.getActiveIndex();
-    this.isFirstSlide = this.activeImageIndex === 0;
-    this.isLastSlide = this.allImages.length === this.activeImageIndex + 1;
-    this.updateUi();
+    // this.activeImageIndex = await this.slider.getActiveIndex();
+    // this.isFirstSlide = this.activeImageIndex === 0;
+    // this.isLastSlide = this.allImages.length === this.activeImageIndex + 1;
+    // this.updateUi();
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   next() {
-    this.slider.slideNext();
-    this.updateUi();
+    // this.slider.slideNext();
+    // this.updateUi();
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   prev() {
-    this.slider.slidePrev();
-    this.updateUi();
+    // this.slider.slidePrev();
+    // this.updateUi();
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   checkIfLastOrFirstSlide() {

@@ -12,7 +12,7 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ion-virtual-scroll
+  <!-- <ion-virtual-scroll
     *ngIf="!showEmptyState else empty"
     [ngClass]="{'loaded': loaded}"
     [items]="warningGroups"
@@ -33,7 +33,7 @@
       <app-warning-list-item [warningGroup]="virtualItem.item"></app-warning-list-item>
     </div>
     <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer"> </ion-item-divider>
-  </ion-virtual-scroll>
+  </ion-virtual-scroll> -->
   <div
     id="abonner-banner"
     *ngIf="(selectedTab$ | async) === 'inMapView'"
