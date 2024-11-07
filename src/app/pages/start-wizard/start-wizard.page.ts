@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonSlides, NavController, Platform } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval, Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
   animations: animations,
 })
 export class StartWizardPage implements OnInit, OnDestroy {
-  @ViewChild(IonSlides) slides: IonSlides;
+  // @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
   state: string;
@@ -101,40 +101,44 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   slideNext() {
-    this.reachedStart = false;
-    if (!isAndroidOrIos(this.platform)) {
-      this.slides.slideNext();
-    } else {
-      timer(700)
-        .pipe(takeUntil(this.ngDestroy$))
-        .subscribe(() => {
-          if (this.slides) {
-            this.slides.slideNext();
-          }
-        });
-    }
+    // this.reachedStart = false;
+    // if (!isAndroidOrIos(this.platform)) {
+    //   this.slides.slideNext();
+    // } else {
+    //   timer(700)
+    //     .pipe(takeUntil(this.ngDestroy$))
+    //     .subscribe(() => {
+    //       if (this.slides) {
+    //         this.slides.slideNext();
+    //       }
+    //     });
+    // }
+    throw new Error('Not implemented after ionic v7 upgrade');
   }
 
   slidePrev() {
-    this.slides.slidePrev();
+    // this.slides.slidePrev();
+    throw new Error('Not implemented after ionic v7 upgrade');
   }
 
   async start() {
-    if (this.reachedEnd) {
-      const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-      this.userSettingService.saveUserSettings({
-        ...userSettings,
-        completedStartWizard: true,
-      });
-      this.navController.navigateRoot('/');
-    } else {
-      this.slides.slideTo(5, 200);
-    }
+    // if (this.reachedEnd) {
+    //   const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    //   this.userSettingService.saveUserSettings({
+    //     ...userSettings,
+    //     completedStartWizard: true,
+    //   });
+    //   this.navController.navigateRoot('/');
+    // } else {
+    //   this.slides.slideTo(5, 200);
+    // }
+    throw new Error('Not implemented after ionic v7 upgrade');
   }
 
   async ionSlideTransitionStart() {
-    const index = await this.slides.getActiveIndex();
-    this.setPageIndex(index);
+    // const index = await this.slides.getActiveIndex();
+    // this.setPageIndex(index);
+    throw new Error('Not implemented after ionic v7 upgrade');
   }
 
   ionSlideReachEnd() {
