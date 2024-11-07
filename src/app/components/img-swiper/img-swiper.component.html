@@ -1,5 +1,5 @@
 <div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{ 'animated-background': isSwiper, loaded: isSwiperLoaded }">
-  <ion-slides
+  <!-- <ion-slides
     #slider
     *ngIf="isSwiper"
     [options]="slideOptions"
@@ -34,7 +34,7 @@
         </p>
       </div>
     </ion-slide>
-  </ion-slides>
+  </ion-slides> -->
 
   <ng-container *ngIf="isDesktop && moreThanFourPics">
     <div *ngIf="isPreviousImgAvailable()" class="swiper-button-prev" (click)="prev(); $event.stopPropagation()"></div>

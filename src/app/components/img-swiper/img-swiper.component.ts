@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+// import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject } from 'rxjs';
 import { ImageLocation } from './image-location.model';
@@ -65,7 +65,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   private ngDestroy$ = new Subject<void>();
   private touchStart$ = new Subject<void>();
 
-  @ViewChild(IonSlides) slider: IonSlides;
+  // @ViewChild(IonSlides) slider: IonSlides;
 
   get isEmpty() {
     return this.state === 'empty';
@@ -234,24 +234,28 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   async getSwiperIndex() {
-    const index = await (this.slider ? this.slider.getActiveIndex() : 0);
-    const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
-    return isEnd ? (this.slides ? this.slides.length - 1 : 0) : index;
+    // const index = await (this.slider ? this.slider.getActiveIndex() : 0);
+    // const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
+    // return isEnd ? (this.slides ? this.slides.length - 1 : 0) : index;
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   async onSlideTransitionEnd() {
-    this.activeIndex = await this.getSwiperIndex();
-    this.updateUi();
+    // this.activeIndex = await this.getSwiperIndex();
+    // this.updateUi();
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   next() {
-    this.slider.slideNext();
-    this.updateUi();
+    // this.slider.slideNext();
+    // this.updateUi();
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   prev() {
-    this.slider.slidePrev();
-    this.updateUi();
+    // this.slider.slidePrev();
+    // this.updateUi();
+    throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
   isPreviousImgAvailable(): boolean {

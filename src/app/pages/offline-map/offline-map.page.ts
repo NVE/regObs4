@@ -243,7 +243,6 @@ export class OfflineMapPage extends NgDestoryBase {
         packageOnServer: compoundPackage,
         offlinePackageStatus$: this.allPackages$.pipe(map((packages) => packages.find((p) => p.name === name))),
       },
-      swipeToClose: true,
       mode: 'ios',
       cssClass: 'offline-map-modal',
     });
