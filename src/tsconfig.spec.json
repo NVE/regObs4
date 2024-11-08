@@ -2,9 +2,20 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["jasmine", "node"]
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "types": [
+      "jasmine",
+      "node"
+    ]
   },
-  "files": ["test.ts"],
-  "include": ["zone-flags.ts", "polyfills.ts", "**/*.spec.ts", "**/*.d.ts"]
+  "files": [
+    "test.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
 }
