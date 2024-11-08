@@ -70,7 +70,7 @@ export abstract class BasePage extends NgDestoryBase {
    */
   isValid?(): boolean | Promise<boolean>;
 
-  // NOTE: Remember to add canDeactivate: [CanDeactivateRouteGuard] in page module
+  // NOTE: Remember to add canDeactivate: [canDeactivateBasePageComponent] in page module
   async canLeave(): Promise<boolean> {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
