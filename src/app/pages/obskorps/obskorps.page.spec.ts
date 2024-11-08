@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ObskorpsPage } from './obskorps.page';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Observable, of } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
@@ -8,6 +8,7 @@ import { MyPageData } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { Component, Input } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({ selector: 'app-header', template: '' })
 class AppHeaderStubComponent {
@@ -26,13 +27,15 @@ describe('ObskorpsPage', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ObskorpsPage, AppHeaderStubComponent],
-      imports: [HttpClientTestingModule, IonicModule],
+      imports: [IonicModule],
       providers: [
         {
           provide: RegobsAuthService,
           useClass: AuthServiceStub,
         },
         { provide: UserSettingService, useValue: {} },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     fixture = TestBed.createComponent(ObskorpsPage);

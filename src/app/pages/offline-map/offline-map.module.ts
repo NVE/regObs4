@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { OfflineMapPage } from './offline-map.page';
 import { MapModule } from 'src/app/modules/map/map.module';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 
@@ -19,15 +19,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes),
-    MapModule,
-    HttpClientModule,
-    SharedModule,
-  ],
   declarations: [OfflineMapPage, OfflinePackageModalComponent],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), MapModule, SharedModule],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class OfflineMapPageModule {}
