@@ -44,10 +44,10 @@ steps:
       provProfileSecureFile: 'appledistribution20241127.mobileprovision'
 
   - task: NodeTool@0
-    displayName: 'Use Node 18.10.x'
+    displayName: 'Use Node 18.20.x'
     inputs:
       versionSource: 'spec'
-      versionSpec: 18.10.x
+      versionSpec: 18.20.x
       checkLatest: false
 
   # Needed to sign Android apk/aab
