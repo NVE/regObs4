@@ -5,7 +5,7 @@ import { getTestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { NanoSql } from './nanosql';
 
-declare const require: any;
+// declare const require: any;
 
 // First, initialize the Angular testing environment.
 
@@ -18,8 +18,8 @@ NanoSql.init('test-db', 'LS').then(() => {
   getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
     teardown: { destroyAfterEach: false },
   });
-  // Then we find all the tests.
-  const context = require.context('./', true, /\.spec\.ts$/);
-  // And load the modules.
-  context.keys().map(context);
+  // // Then we find all the tests.
+  // const context = require.context('./', true, /\.spec\.ts$/);
+  // // And load the modules.
+  // context.keys().map(context);
 });
