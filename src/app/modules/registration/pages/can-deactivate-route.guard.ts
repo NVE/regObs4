@@ -1,10 +1,6 @@
-import { Injectable } from '@angular/core';
-import { CanDeactivate } from '@angular/router';
 import { BasePage } from './base.page';
+import { CanDeactivateFn } from '@angular/router';
 
-@Injectable()
-export class CanDeactivateRouteGuard implements CanDeactivate<BasePage> {
-  async canDeactivate(component: BasePage): Promise<boolean> {
-    return await component.canLeave();
-  }
-}
+export const canDeactivateBasePageComponent: CanDeactivateFn<BasePage> = (component) => {
+  return component.canLeave();
+};

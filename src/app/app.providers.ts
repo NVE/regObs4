@@ -18,8 +18,6 @@ import { AuthService } from 'ionic-appauth';
 import { environment } from '../environments/environment';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
-import { AuthGuard } from './core/guards/auth.guard';
-import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
@@ -79,8 +77,6 @@ export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
 // }
 
 export const APP_PROVIDERS: Provider[] = [
-  StartWizardGuard,
-  AuthGuard,
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   {
     provide: LOCALE_ID,
