@@ -1,17 +1,13 @@
 import { NgModule, InjectionToken, ModuleWithProviders } from '@angular/core';
 import { RegobsApiConfigurationInterface, RegobsApiConfiguration } from './regobs-api-configuration';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegObsApiConfigurationProvider } from './regobs-api-configuration-provider';
 
 export const FOR_ROOT_OPTIONS_TOKEN = new InjectionToken<RegobsApiConfigurationInterface>('forRoot() Module configuration');
 
 
-@NgModule({
-  providers: [],
-  imports: [HttpClientModule],
-  exports: [HttpClientModule]
-})
+@NgModule({imports: [], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class RegobsApiModuleWithConfig {
   static forRoot(options?: RegobsApiConfigurationInterface): ModuleWithProviders<RegobsApiModuleWithConfig> {
     return {
