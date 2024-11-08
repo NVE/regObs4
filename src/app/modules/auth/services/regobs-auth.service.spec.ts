@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
@@ -18,14 +18,11 @@ describe('RegobsAuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientModule,
+    imports: [SharedModule,
         TranslateModule.forRoot(),
-        RouterModule.forRoot([], {}),
-      ],
-      providers: [{ provide: LoggingService, useClass: TestLoggingService }, SafariViewController, InAppBrowser],
-    });
+        RouterModule.forRoot([], {})],
+    providers: [{ provide: LoggingService, useClass: TestLoggingService }, SafariViewController, InAppBrowser, provideHttpClient(withInterceptorsFromDi())]
+});
     TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;
     TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
     service = TestBed.inject(RegobsAuthService);

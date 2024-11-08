@@ -5,7 +5,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_PROVIDERS } from './app.providers';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
@@ -27,10 +27,10 @@ import { RegobsApiModuleWithConfig } from './modules/common-regobs-api';
 
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     FormsModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot({
@@ -52,7 +52,6 @@ import { RegobsApiModuleWithConfig } from './modules/common-regobs-api';
     RegobsApiModuleWithConfig.forRoot(),
     CommonRegistrationModule.forRoot(),
   ],
-  providers: APP_PROVIDERS,
-  bootstrap: [AppComponent],
+  providers: [provideHttpClient(withInterceptorsFromDi()), ...APP_PROVIDERS],
 })
 export class AppModule {}
