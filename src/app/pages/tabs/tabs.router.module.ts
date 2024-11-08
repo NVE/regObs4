@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
-import { StartWizardGuard } from '../../core/guards/start-wizard.guard';
+import { canActivateStartWizard } from '../../core/guards/start-wizard.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: TabsPage,
-    canActivate: [StartWizardGuard],
+    canActivate: [canActivateStartWizard],
     children: [
       {
         path: '',

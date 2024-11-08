@@ -1,22 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateFn } from '@angular/router';
 import { UserSettingService } from '../services/user-setting/user-setting.service';
-import { take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
+import { timer, of } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class StartWizardGuard implements CanActivate {
-  constructor(private router: Router, private userSettingService: UserSettingService) {}
-
-  async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    if (!userSetting.completedStartWizard) {
-      setTimeout(() => {
-        this.router.navigate(['start-wizard']);
-      }, 200); // Added 200ms timeout because of white screen on startup, this seems to help.
-    }
-
-    return userSetting.completedStartWizard;
-  }
-}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const canActivateStartWizard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  return inject(UserSettingService).userSetting$.pipe(
+    take(1),
+    map((userSetting) => !userSetting.completedStartWizard),
+    switchMap((notCompletedStartWizard) => {
+      if (notCompletedStartWizard) {
+        // Redirect router navigation to start wizard
+        // Added 200ms timeout because of white screen on startup, this seems to help.
+        return timer(200).pipe(map(() => inject(Router).parseUrl('/start-wizard')));
+      }
+      // Proceed with router navigation
+      return of(true);
+    })
+  );
+};
