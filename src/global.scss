@@ -11,6 +11,10 @@
 @import '~@ionic/angular/css/flex-utils.css';
 @import '~@ionic/angular/css/display.css';
 
+// @import '@ionic/angular/css/palettes/dark.system.css';
+// https://ionicframework.com/docs/theming/dark-mode
+// Mørk modus fungerer dårlig med våre egne komponenter, farger osv..
+
 @import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
 
 /* Font for arrows */
