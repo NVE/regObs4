@@ -160,18 +160,18 @@
 </div>
 
 <ng-template #polygonsToggle>
-  <div *ngIf="locationPolygons" class="">
+  <div *ngIf="locationPolygons">
     <ion-item *ngFor="let polygon of locationPolygons; index as i" class="flex-space right-padding">
-      <ion-label>
-        <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
-        <span>{{ locationPolygons[i].title }}</span>
-      </ion-label>
       <ion-toggle
+        labelPlacement="start"
+        justify="space-between"
         [checked]="polygon.active"
         (ionChange)="togglePolygon(i)"
-        slot="end"
         [style.background.color]="polygon.polygon.options.color"
-      ></ion-toggle>
+      >
+        <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
+        {{ locationPolygons[i].title }}
+      </ion-toggle>
     </ion-item>
   </div>
 </ng-template>

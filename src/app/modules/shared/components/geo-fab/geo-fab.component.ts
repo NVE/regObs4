@@ -50,7 +50,6 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   currentGeoHazard$: Observable<GeoHazard[]>;
   selectableGeoHazards$: Observable<GeoHazard[][]>;
 
-  @Input() color = 'light';
   @Input() isOpen = false;
   @Input() showLabels = true;
   @Output() isOpenChange = new EventEmitter();

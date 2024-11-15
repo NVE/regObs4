@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
-import { firstValueFrom, Subscription } from 'rxjs';
+import { combineLatest, distinctUntilChanged, firstValueFrom, map, Observable, Subscription } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,7 +34,13 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     ...lang,
     langKey: LangKey[lang.lang],
   }));
-  popupType: SelectInterface;
+
+  /**
+   * If EN is selected, label is only 'Language'. If eg. NB is selected, emits 'Språk / Language'.
+   */
+  selectLanguageLabel$: Observable<string>;
+
+  popupType: SelectInterface = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
   observerTrips: ObserverTripsService;
 
   private userSettingSubscription: Subscription;
@@ -52,13 +58,26 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.popupType = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
       });
     });
     this.offlineMapsAvailable = Capacitor.isNativePlatform();
+    this.selectLanguageLabel$ = this.getSelectLanguageLabel$();
+  }
+
+  private getSelectLanguageLabel$() {
+    const enLanguageSelected$ = this.userSettingService.userSetting$.pipe(
+      map((settings) => settings.language === LangKey.en),
+      distinctUntilChanged()
+    );
+
+    const languageText$ = this.translateService.stream('SETTINGS.LANGUAGE');
+
+    return combineLatest([enLanguageSelected$, languageText$]).pipe(
+      map(([enSelected, translatedLabel]) => (enSelected ? translatedLabel : `${translatedLabel} / Language`))
+    );
   }
 
   saveUserSettings() {

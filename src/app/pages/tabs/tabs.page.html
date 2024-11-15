@@ -1,5 +1,5 @@
-<ion-tabs [ngClass]="{'ios': isIos, 'md': isAndroid}">
-  <ion-tab-bar [hidden]="fullscreen$ | async" slot="bottom">
+<ion-tabs>
+  <ion-tab-bar [hidden]="fullscreen$ | async" slot="bottom" color="primary">
     <ng-container *ngIf="(selectedTab$ | async) as selectedTab">
       <!-- home will navigate to route '' / start page / map page, but it is not allowed to set '' as a tab value. Router config redirects to ''. -->
       <ion-tab-button tab="home" [selected]="selectedTab === 'home'">
