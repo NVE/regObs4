@@ -25,8 +25,6 @@ export class TabsPage implements OnInit, OnDestroy {
     maxWarning: number;
     hasEmergencyWarning: boolean;
   };
-  isIos: boolean;
-  isAndroid: boolean;
   fullscreen$: Observable<boolean>;
   showTrips = false;
 
@@ -51,8 +49,6 @@ export class TabsPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private tabsService: TabsService
   ) {
-    this.isIos = this.platform.is('ios');
-    this.isAndroid = this.platform.is('android');
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>

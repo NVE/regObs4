@@ -1,23 +1,30 @@
-<ion-header mode="ios" *ngIf="!fullscreenSupport || !(isFullscreen$ | async)">
-  <ion-toolbar class="app-header-color" [ngClass]="headerColor" mode="ios">
+<ion-header *ngIf="!fullscreenSupport || !(isFullscreen$ | async)">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start" *ngIf="!showMenuButton">
       <ion-back-button text="" [defaultHref]="defaultHref"></ion-back-button>
     </ion-buttons>
+
     <ion-buttons slot="end" *ngIf="showMenuButton">
-      <ion-menu-button color="light" mode="ios"></ion-menu-button>
-    </ion-buttons>
-    <ion-buttons slot="start" *ngIf="showMenuButton && showFilterButton">
-      <ion-menu-button menu="filter" color="light" mode="ios">
-        <ion-icon src="./assets/icon/filter-menu.svg"></ion-icon>
+      <ion-menu-button color="light">
+        <ion-icon name="menu-outline"></ion-icon>
       </ion-menu-button>
     </ion-buttons>
-    <ion-title *ngIf="!tripRunning">
-      {{ title | translate }}
-    </ion-title>
+    <ion-buttons slot="start" *ngIf="showMenuButton && showFilterButton">
+      <ion-menu-button menu="filter" color="light">
+        <ion-icon name="options-outline"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
+
+    @if (tripRunning) {
     <ion-title *ngIf="tripRunning">
       <ion-button class="stop-trip" size="small" color="success" (click)="endTrip()">
         {{ "TRIP.STOP_TRIP" | translate }}
       </ion-button>
     </ion-title>
+    } @else {
+    <ion-title>
+      {{ title | translate }}
+    </ion-title>
+    }
   </ion-toolbar>
 </ion-header>

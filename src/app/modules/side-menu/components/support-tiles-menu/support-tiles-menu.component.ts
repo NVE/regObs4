@@ -5,6 +5,7 @@ import { setObservableTimeout, NgDestoryBase } from '../../../../core/helpers/ob
 import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
 import { takeUntil } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
 
 interface PopupSubscription {
   subscription: Subscription;
@@ -19,6 +20,8 @@ interface PopupSubscription {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
+  isWeb = Capacitor.getPlatform() === 'web';
+
   private checkOfflineSupportMaps: { [mapName: string]: PopupSubscription } = {};
   private subTileInstantiation: Subscription;
 
