@@ -1,13 +1,8 @@
+:host {
+  // For å få knappene til å følge flexbox reglene i map-controls.component
+  display: contents;
+}
+
 ion-fab {
-  position: relative !important;
-}
-
-ion-fab-button {
-  height: var(--map-control-fab-size);
-  width: var(--map-control-fab-size);
-  margin-bottom: 5px;
-}
-
-ion-icon {
-  font-size: var(--map-control-fab-icon-size);
+  position: initial !important;
 }

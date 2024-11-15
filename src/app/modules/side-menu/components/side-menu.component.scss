@@ -6,38 +6,6 @@ ion-list {
   max-height: 100vh;
 
   ion-list-header {
-    font-size: var(--h3-font-size);
-    font-weight: unset;
-
-    .list-header-label {
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
+    text-transform: uppercase;
   }
-
-  ion-item {
-    --ion-item-background: var(--background-color-menu);
-    ion-toggle {
-      --ion-item-background: #fff;
-    }
-
-    ion-icon {
-      font-size: 1.4em;
-    }
-  }
-
-  .inner-list-panel {
-    ion-item {
-      --border-width: 0 0 0 0;
-    }
-  }
-}
-
-.menu-label {
-  font-size: var(--h3-font-size);
-}
-
-.stacked-label {
-  font-size: 14px;
-  margin-bottom: 0px;
 }

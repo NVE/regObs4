@@ -1,5 +1,4 @@
-<ion-fab
-  mode="ios"
+<!-- <ion-fab
   *ngIf="currentGeoHazard$ | async as currentGeoHazard"
   vertical="top"
   horizontal="start"
@@ -7,8 +6,9 @@
   [ngClass]="{ fullscreen: fullscreen$ | async }"
   [@enterAnimationFab]="animateOnEnterState"
 >
+
   <ion-item (click)="toggle()">
-    <ion-fab-button class="ion-margin-end" slot="start" [color]="color">
+    <ion-fab-button slot="start" color="tertiary">
       <app-geo-icon [geoHazards]="currentGeoHazard"></app-geo-icon>
     </ion-fab-button>
     <ion-label *ngIf="isOpen && showLabels" @enterAnimation>
@@ -22,7 +22,7 @@
         *ngFor="let geoHazards of selectableGeoHazards"
         (click)="setCurrentGeoHazard(geoHazards)"
       >
-        <ion-fab-button class="ion-margin-end" slot="start" [color]="color">
+        <ion-fab-button slot="start" color="tertiary">
           <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
         </ion-fab-button>
         <ion-label *ngIf="showLabels">
@@ -32,4 +32,25 @@
     </ion-list>
   </ng-container>
 </ion-fab>
-<div *ngIf="isOpen" class="wrapper" (click)="toggle()"></div>
+<div *ngIf="isOpen" class="wrapper" (click)="toggle()"></div> -->
+<ion-button id="geo-fab-btn" shape="round" color="tertiary">
+  <ion-icon src="/assets/icon/snow.svg" slot="start"></ion-icon>
+  Snø
+</ion-button>
+<ion-popover
+  trigger="geo-fab-btn"
+  size="auto"
+  [dismissOnSelect]="true"
+  reference="trigger"
+  side="bottom"
+  alignment="end"
+>
+  <ng-template>
+    <ion-content>
+      <ion-list>
+        <ion-item button [detail]="false">Is</ion-item>
+        <ion-item button [detail]="false">Vann og jord</ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-popover>

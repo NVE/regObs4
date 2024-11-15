@@ -1,26 +1,29 @@
 <ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
   <ng-container *ngFor="let supportTile of supportTiles; trackBy: trackByMethod">
-    <ion-item>
-      <svg-icon slot="start" src="/assets/icon/map.svg"></svg-icon>
-      <ion-label class="menu-label ion-text-wrap">
+    <ion-item button>
+      <ion-icon slot="start" name="map-outline" color="primary"></ion-icon>
+      <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)" justify="space-between">
         {{ "SUPPORT_MAP." + supportTile.description | translate }}
-      </ion-label>
-      <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)"> </ion-toggle>
+      </ion-toggle>
     </ion-item>
     <div class="inner-list-panel" *ngIf="isTileActive(supportTile)">
-      <ion-item *ngIf="supportTile.subTile">
-        <ion-label class="menu-label ion-text-wrap">
+      <ion-item *ngIf="supportTile.subTile" button>
+        <ion-toggle
+          [(ngModel)]="supportTile.subTile.checked"
+          (ionChange)="onSubTileChanged(supportTile)"
+          justify="space-between"
+        >
           {{ "SUPPORT_MAP." + supportTile.subTile.description | translate }}
-        </ion-label>
-        <ion-toggle [(ngModel)]="supportTile.subTile.checked" (ionChange)="onSubTileChanged(supportTile)"></ion-toggle>
+        </ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="dark" class="stacked-label">{{ "MENU.OPACITY" | translate }}</ion-label>
         <ion-select
-          interface="action-sheet"
+          [interface]="isWeb ? 'popover' : 'action-sheet'"
           cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
           [(ngModel)]="supportTile.opacity"
           (ionChange)="onTileChanged(supportTile)"
+          label="{{ 'MENU.OPACITY' | translate }}"
+          labelPlacement="stacked"
         >
           <ion-select-option *ngFor="let option of opacityValues" [value]="option.value"
             >{{ option.name | translate }}

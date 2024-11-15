@@ -1,9 +1,9 @@
 <ion-list class="ion-no-margin main-list filtermenu-scrollfix">
-  <ion-list-header color="varsom-blue" class="ion-no-margin">
+  <ion-list-header color="primary" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
   <ion-item>
-    <ion-icon name="eye" color="varsom-blue"></ion-icon>
+    <ion-icon name="eye" color="primary"></ion-icon>
     <ion-label class="menu-label">
       {{ "MENU.SHOW_OBSERVATIONS" | translate }}
     </ion-label>
@@ -22,7 +22,7 @@
     </ion-item>
 
     <ng-container *ngIf="isSupported('observationType')">
-      <ion-list-header color="varsom-blue" class="ion-no-margin">
+      <ion-list-header color="primary" class="ion-no-margin">
         <app-selected-items-counter-label
           [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)"
         >
@@ -53,7 +53,7 @@
     <!-- Avalanche Regions -->
     <ng-container *ngIf="isSupported('region')">
       <ng-container *ngIf="regions$ | async as regions">
-        <ion-list-header color="varsom-blue" class="ion-no-margin">
+        <ion-list-header color="primary" class="ion-no-margin">
           <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
             {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
           </app-selected-items-counter-label>
@@ -99,7 +99,7 @@
     </ng-container>
 
     <ng-container *ngIf="isSupported('competence')">
-      <ion-list-header color="varsom-blue" class="ion-no-margin">
+      <ion-list-header color="primary" class="ion-no-margin">
         <ion-label>
           {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
         </ion-label>
