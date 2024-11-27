@@ -131,18 +131,44 @@ git commit -m "Update version to 4.0.1"
 git push
 ```
 
-## Renew certificates and provisioning profiles
+## Fornye sertifikater og provisioning profiles
 
-You need certificates to build and publish apps. The Apple certificates last only a year. More info:
+Du trenger sertifikater for å bygge og publisere apper.
 
-[Official doc](https://learn.microsoft.com/en-us/azure/devops/pipelines/apps/mobile/app-signing?view=azure-devops&tabs=apple-install-during-build)
+### Fornye sertifikater og provisioning profiles for Apple / App Store
 
-[Detail info about creating Apple certificates](https://medium.com/mobile-devops-ci-cd-ct/steps-to-create-ios-developer-and-distribution-certificates-with-and-without-a-mac-8449b973ef9d)
+Apple-sertifikatene varer bare ett år av gangen.
 
-[Tips on how to create a .p12 file](https://github.com/phonegap/phonegap-docs/blob/master/docs/4-phonegap-build/3-signing/2-ios.html.md)
+[Offisiell dok](https://learn.microsoft.com/en-us/azure/devops/pipelines/apps/mobile/app-signing?view=azure-devops&tabs=apple-install-during-build)
 
-When you renew an Apple distribution certificate; you need to create a new provisioning profile containing the
-distribution certificate. You also need to make these changes in build/project files:
+[Mer info om å lage Apple-sertifikater](https://medium.com/mobile-devops-ci-cd-ct/steps-to-create-ios-developer-and-distribution-certificates-with-and-without-a-mac-8449b973ef9d)
+
+[Tips om å lage .p12 file](https://github.com/phonegap/phonegap-docs/blob/master/docs/4-phonegap-build/3-signing/2-ios.html.md)
+
+Det er enklere å gjøre dette med en Mac, men det er også mulig å gjøre i Windows vha. openssl. Mer om dette under.
+
+#### Generere sertifikater og provisioning profiles for Apple / App Store på en Windows-maskin
+
+Vi har brukt openssl som følger med Git.
+Det funket bra å kjøre openssl-kommandoene i bash-konsollet, som følger med Git. Bash ligger gjerne i mappa bin der du har installert Git. F.eks. `C:\Program Files\Git\bin`.
+
+1. Gå til en en mappe du vil ha setifikatene i og start bash fra kommandolinja: `C:\Program Files\Git\bin\bash`. Kjør resten av openssl-kommandoene i bash-konsollet.
+1. Generer privat nøkkel: `openssl genrsa -out apple-distribution-2024-11-27.key 2048`
+1. Generer sertifikatforespørsel: `openssl req -new -key apple-distribution-2024-11-27.key -out apple-distribution-2024-11-27.csr`
+1. Logg deg inn på https://developer.apple.com/account, gå til sertifikater og last opp sertifikatforespørsel. Last deretter ned sertifikatet. Jeg gjorde om navnet på sertifikatet til `apple-distribution-2024-11-27.cer` etter at jeg lastet det ned.
+1. Mens du er inne på utvikler-sidene til Apple, lag også en distribusjonsprofil basert på sertifikatet og last den ned.
+1. Lag en pem-fil av sertifikatet: `openssl x509 -in apple-distribution-2024-11-27.cer -inform DER -out apple-distribution-2024-11-27.pem -outform PEM`
+1. Konverter pem-fil til p12.fil: `openssl pkcs12 -legacy -export -inkey apple-distribution-2024-11-27.key -in apple-distribution-2024-11-27.pem -out apple-distribution-2024-11-27.p12`
+   (legg inn et passord når du blir spurt)
+
+#### Last opp sertifikater til Azure Devops
+
+1. Last opp p12-fila og distribusjonsprofilen til Azure Devops, under Library / Secure Files.
+1. Lag en variabel som inneholder passordet til p12-fila under Library / Variable Groups
+
+Navnet på de to filene og navnet på variabelen legger du inn i azure-pipelines-release.yml (se nedenfor).
+
+Du må også endre disse filene i prosjektet:
 
 | File                        | Setting                        |
 | --------------------------- | ------------------------------ |
