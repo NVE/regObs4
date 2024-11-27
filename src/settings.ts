@@ -133,7 +133,8 @@ export const settings: ISettings = {
         statensKartverk: {
           // Alternativ url (sånn bruker norgeskart.no dette):
           // url: 'https://cache.kartverket.no/topo/v1/wmts/1.0.0/?layer=topo&style=default&tilematrixset=googlemaps&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}',
-          url: 'https://cache.kartverket.no/topo/v1/wmts/1.0.0/default/googlemaps/{z}/{y}/{x}.png',
+          // Se https://cache.kartverket.no/ for dokumentasjon
+          url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             bounds: [
