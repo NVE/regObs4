@@ -39,8 +39,11 @@ export default class FileAttachmentService extends NewAttachmentService {
     const attachmentId = uuidv4();
 
     const attachmentFileName = `${attachmentId}.${this.getFileExtension(mimeType)}`;
-    const destinationPath = `${rootDir}/${registrationId}`
-    const result = await Filesystem.copy({ from: `${fileNameWithFullPath}`, to: `${destinationPath}/${attachmentFileName}` });
+    const destinationPath = `${rootDir}/${registrationId}`;
+    const result = await Filesystem.copy({
+      from: `${fileNameWithFullPath}`,
+      to: `${destinationPath}/${attachmentFileName}`,
+    });
     const statResult = await Filesystem.stat({ path: `${result.uri}` });
     const metadata: AttachmentUploadEditModel = {
       GeoHazardTID: geoHazard,
@@ -54,11 +57,7 @@ export default class FileAttachmentService extends NewAttachmentService {
       ref,
     };
 
-    this.logger.debug(
-      `Attachment copied from ${fileNameWithFullPath} to ${result.uri}`,
-      this.DEBUG_TAG,
-      metadata
-    );
+    this.logger.debug(`Attachment copied from ${fileNameWithFullPath} to ${result.uri}`, this.DEBUG_TAG, metadata);
     await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
   }
 

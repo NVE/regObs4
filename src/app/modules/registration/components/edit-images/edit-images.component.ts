@@ -38,7 +38,7 @@ const ERRORS_TO_IGNORE = [
   'User cancelled camera app',
 ];
 
-interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachmentState { }
+interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachmentState {}
 
 @Component({
   selector: 'app-edit-images',
@@ -87,7 +87,7 @@ export class EditImagesComponent implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private dropZoneService: DropZoneService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.isHybrid = this.platform.is('hybrid');

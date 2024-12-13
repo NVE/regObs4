@@ -6,8 +6,8 @@ import { ObskorpsPage } from './obskorps.page';
 const routes: Routes = [
   {
     path: '',
-    component: ObskorpsPage
-  }
+    component: ObskorpsPage,
+  },
 ];
 
 @NgModule({

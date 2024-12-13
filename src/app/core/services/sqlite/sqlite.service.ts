@@ -46,7 +46,7 @@ const toJson = (o: any) => {
   // får vi denne feilmeldinga: "SyntaxError: Expected ',' or '}' after property value in JSON at position x"
   // Eksempel på verdi som vil feile: "Description": "Bruk av \"hermetegn\"". => "Description": "Bruk av "hermetegn""
   // Derfor erstatter vi \" med _.
-  return (<any>JSON.stringify(o)).replaceAll("'", "''").replaceAll("\\\"", "_");
+  return (<any>JSON.stringify(o)).replaceAll("'", "''").replaceAll('\\"', '_');
 };
 
 const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';

@@ -6,8 +6,8 @@ import { SetFloodAreaPage } from './set-flood-area.page';
 const routes: Routes = [
   {
     path: '',
-    component: SetFloodAreaPage
-  }
+    component: SetFloodAreaPage,
+  },
 ];
 
 @NgModule({
