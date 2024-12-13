@@ -2,7 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
@@ -10,6 +10,11 @@ import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-p
 import { Subscription } from 'rxjs';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Start page / CRUD page for avalanche problems.
@@ -20,7 +25,15 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',
   styleUrls: ['./avalanche-problem.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    NgFor,
+    EditImagesComponent,
+    TranslateModule,
+  ],
 })
 export class AvalancheProblemPage extends BasePage {
   private avalancheCause: KdvElement[];

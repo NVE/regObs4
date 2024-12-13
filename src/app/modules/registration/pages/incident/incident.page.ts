@@ -6,12 +6,33 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
+import { IonicModule } from '@ionic/angular';
+import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
+import { NgIf } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
+import { NumericInputComponent } from '../../components/numeric-input/numeric-input.component';
+import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
+import { AddWebUrlItemComponent } from '../../components/add-web-url-item/add-web-url-item.component';
+import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-incident',
   templateUrl: './incident.page.html',
   styleUrls: ['./incident.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    KdvSelectComponent,
+    NumericInputComponent,
+    TextCommentComponent,
+    AddWebUrlItemComponent,
+    EditImagesComponent,
+    TranslateModule,
+  ],
 })
 export class IncidentPage extends BasePage {
   isCasualtiesValid = true;

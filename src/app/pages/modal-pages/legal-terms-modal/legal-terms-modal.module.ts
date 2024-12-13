@@ -4,8 +4,7 @@ import { SharedModule } from '../../../modules/shared/shared.module';
 import { LegalTermsComponent } from '../../../components/legal-terms/legal-terms.component';
 
 @NgModule({
-  imports: [SharedModule],
-  declarations: [LegalTermsModalPage, LegalTermsComponent],
+  imports: [SharedModule, LegalTermsModalPage, LegalTermsComponent],
   exports: [LegalTermsModalPage],
 })
 export class LegalTermsModalPageModule {}

@@ -8,7 +8,15 @@ import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model'
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
-import { SegmentCustomEvent } from '@ionic/angular';
+import { SegmentCustomEvent, IonicModule } from '@ionic/angular';
+import { HeaderComponent } from '../../modules/shared/components/header/header.component';
+import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
+import { NgIf, NgClass, NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { AbonnerBannerComponent } from './abonner-banner/abonner-banner.component';
+import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
+import { GeoSelectComponent } from '../../modules/shared/components/geo-select/geo-select.component';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -16,7 +24,20 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   selector: 'app-warning-list',
   templateUrl: './warning-list.page.html',
   styleUrls: ['./warning-list.page.scss'],
-  standalone: false,
+  imports: [
+    HeaderComponent,
+    IonicModule,
+    RefreshWithCancelComponent,
+    NgIf,
+    NgClass,
+    AbonnerBannerComponent,
+    AddMenuComponent,
+    GeoSelectComponent,
+    NgTemplateOutlet,
+    SvgIconComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class WarningListPage {
   private selectedTab = new BehaviorSubject<SelectedTab>('inMapView');

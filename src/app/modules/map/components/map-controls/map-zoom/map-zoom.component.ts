@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { MapZoomService } from '../../../services/map/map-zoom.service';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-map-zoom',
   templateUrl: './map-zoom.component.html',
   styleUrls: ['./map-zoom.component.scss'],
-  standalone: false,
+  imports: [IonicModule],
 })
 export class MapZoomComponent {
   constructor(private mapZoomService: MapZoomService) {}

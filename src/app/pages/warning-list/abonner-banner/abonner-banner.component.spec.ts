@@ -10,8 +10,7 @@ describe('AbonnerBannerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AbonnerBannerComponent],
-      imports: [TestModule],
+      imports: [TestModule, AbonnerBannerComponent],
       providers: [InAppBrowser, SafariViewController],
     }).compileComponents();
   }));

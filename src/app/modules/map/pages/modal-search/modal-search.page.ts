@@ -1,18 +1,30 @@
 import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
-import { IonInput, ModalController, ViewDidEnter } from '@ionic/angular';
+import { IonInput, ModalController, ViewDidEnter, IonicModule } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    TranslateModule,
+    StartsWithHighlightPipe,
+  ],
 })
 export class ModalSearchPage implements OnInit, ViewDidEnter {
   searchText: string;

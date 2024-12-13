@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-map-search',
   templateUrl: './map-search.component.html',
   styleUrls: ['./map-search.component.scss'],
-  standalone: false,
+  imports: [IonicModule],
 })
 export class MapSearchComponent {
   constructor(private modalController: ModalController) {}

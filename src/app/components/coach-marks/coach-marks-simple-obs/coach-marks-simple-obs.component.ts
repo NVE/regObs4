@@ -3,6 +3,10 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { distinctUntilChanged, map, merge, Observable, Subject, take } from 'rxjs';
 import { CustomAnimation, EASE_IN_OUT, EASE_IN_OUT_BACK } from 'src/app/core/animations/custom.animation';
 import { trigger } from '@angular/animations';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { KdvIconSelectComponent } from '../../../modules/registration/components/kdv-icon-select/kdv-icon-select.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-coach-marks-simple-obs',
@@ -12,7 +16,7 @@ import { trigger } from '@angular/animations';
     trigger('coachmark-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT, 0.9)),
     trigger('element-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT_BACK)),
   ],
-  standalone: false,
+  imports: [NgIf, IonicModule, KdvIconSelectComponent, AsyncPipe, TranslateModule],
 })
 export class CoachMarksSimpleObsComponent implements OnInit {
   isVisible$: Observable<boolean>;

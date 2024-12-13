@@ -36,8 +36,6 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     MapImageModule,
     StaticMapImageModule,
     SharedModule,
-  ],
-  declarations: [
     MapComponent,
     MapControlsComponent,
     MapSearchComponent,

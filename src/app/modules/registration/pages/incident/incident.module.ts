@@ -15,7 +15,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes), RegistrationModule],
-  declarations: [IncidentPage],
+  imports: [
+    SharedComponentsModule,
+    AddWebUrlModalPageModule,
+    RouterModule.forChild(routes),
+    RegistrationModule,
+    IncidentPage,
+  ],
 })
 export class IncidentPageModule {}

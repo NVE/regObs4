@@ -1,12 +1,16 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
+import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
 @Component({
   selector: 'app-compression-test-list',
   templateUrl: './compression-test-list.component.html',
   styleUrls: ['./compression-test-list.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgFor, NgIf, AsyncPipe, TranslateModule, KdvDescriptionPipe, MetersToCmPipe],
 })
 export class CompressionTestListComponent {
   @Input() tests: Array<CompressionTestEditModel>;

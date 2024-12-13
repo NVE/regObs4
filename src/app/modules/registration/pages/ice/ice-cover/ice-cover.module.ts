@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes)],
-  declarations: [IceCoverPage],
+  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes), IceCoverPage],
 })
 export class IceCoverPageModule {}

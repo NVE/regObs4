@@ -10,8 +10,7 @@ describe('EditModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EditPictureInfoModalComponent],
-      imports: [IonicModule.forRoot(), TestModule],
+      imports: [IonicModule.forRoot(), TestModule, EditPictureInfoModalComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditPictureInfoModalComponent);

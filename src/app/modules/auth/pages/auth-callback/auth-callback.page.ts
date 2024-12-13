@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegobsAuthService } from '../../services/regobs-auth.service';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth-callback',
   templateUrl: './auth-callback.page.html',
   styleUrls: ['./auth-callback.page.scss'],
-  standalone: false,
+  imports: [IonicModule],
 })
 export class AuthCallbackPage implements OnInit {
   constructor(private regobsAuthService: RegobsAuthService, private router: Router) {}

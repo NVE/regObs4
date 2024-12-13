@@ -14,12 +14,11 @@ describe('AuthCallbackPage', () => {
     regobsAuthService = jasmine.createSpyObj(['authorizationCallback']);
 
     TestBed.configureTestingModule({
-      declarations: [AuthCallbackPage],
       providers: [
         { provide: RegobsAuthService, useValue: regobsAuthService },
         { provide: Router, useValue: { url: '/testurl?abc=123' } },
       ],
-      imports: [IonicModule],
+      imports: [IonicModule, AuthCallbackPage],
     }).compileComponents();
   }));
 

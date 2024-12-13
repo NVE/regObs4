@@ -19,8 +19,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [OfflineMapPage, OfflinePackageModalComponent],
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), MapModule, SharedModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    MapModule,
+    SharedModule,
+    OfflineMapPage,
+    OfflinePackageModalComponent,
+  ],
   providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class OfflineMapPageModule {}

@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'VersionConflictComponent';
 
@@ -15,7 +16,7 @@ const DEBUG_TAG = 'VersionConflictComponent';
   selector: 'app-version-conflict',
   templateUrl: './version-conflict.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, TranslateModule],
 })
 export class VersionConflictComponent {
   @Input() draft: RegistrationDraft;

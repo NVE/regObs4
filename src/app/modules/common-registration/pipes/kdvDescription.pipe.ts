@@ -3,10 +3,7 @@ import { take } from 'rxjs/operators';
 import { KdvService } from '../services/kdv/kdv.service';
 import { KdvKey } from '../models/kdv-key.type';
 
-@Pipe({
-  name: 'kdvDescription',
-  standalone: false,
-})
+@Pipe({ name: 'kdvDescription' })
 export class KdvDescriptionPipe implements PipeTransform {
   constructor(private kdvService: KdvService) {}
 

@@ -10,7 +10,6 @@ import { ObskorpsPage } from './obskorps.page';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ObskorpsPageRoutingModule, SharedModule],
-  declarations: [ObskorpsPage],
+  imports: [CommonModule, FormsModule, IonicModule, ObskorpsPageRoutingModule, SharedModule, ObskorpsPage],
 })
 export class ObskorpsPageModule {}

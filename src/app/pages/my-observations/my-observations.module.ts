@@ -18,7 +18,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedModule, SharedComponentsModule, FullscreenImageModalPageModule, RouterModule.forChild(routes)],
-  declarations: [MyObservationsPage, SyncItemComponent, DraftListComponent, SentListComponent],
+  imports: [
+    SharedModule,
+    SharedComponentsModule,
+    FullscreenImageModalPageModule,
+    RouterModule.forChild(routes),
+    MyObservationsPage,
+    SyncItemComponent,
+    DraftListComponent,
+    SentListComponent,
+  ],
 })
 export class MyObservationsPageModule {}

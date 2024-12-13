@@ -4,7 +4,6 @@ import { SharedComponentsModule } from '../../../../../shared-components.module'
 import { SnowTempLayerModalPageModule } from '../snow-temp-layer-modal/snow-temp-layer-modal.module';
 
 @NgModule({
-  imports: [SharedComponentsModule, SnowTempLayerModalPageModule],
-  declarations: [SnowTempModalPage],
+  imports: [SharedComponentsModule, SnowTempLayerModalPageModule, SnowTempModalPage],
 })
 export class SnowTempModalPageModule {}

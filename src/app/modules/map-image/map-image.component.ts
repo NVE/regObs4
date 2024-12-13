@@ -20,6 +20,7 @@ import { settings } from '../../../settings';
 import { ImageLocation, ImageLocationStartStop } from '../../components/img-swiper/image-location.model';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 export const START_ICON = '/assets/icon/map/GPS_start.svg';
 export const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -30,7 +31,7 @@ export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
   templateUrl: './map-image.component.html',
   styleUrls: ['./map-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [LeafletModule],
 })
 export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() location: ImageLocation;

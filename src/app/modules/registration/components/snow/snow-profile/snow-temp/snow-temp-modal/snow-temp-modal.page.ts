@@ -1,18 +1,23 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import cloneDeep from 'clone-deep';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
+import { FormsModule } from '@angular/forms';
+import { NgFor, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 
 @Component({
   selector: 'app-snow-temp-modal',
   templateUrl: './snow-temp-modal.page.html',
   styleUrls: ['./snow-temp-modal.page.scss'],
-  standalone: false,
+  imports: [IonicModule, HeaderColorDirective, FormsModule, NgFor, NgIf, TranslateModule, MetersToCmPipe],
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

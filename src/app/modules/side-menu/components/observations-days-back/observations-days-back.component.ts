@@ -7,13 +7,26 @@ import { settings } from '../../../../../settings';
 import { SelectInterface } from '@ionic/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { Capacitor } from '@capacitor/core';
-import { SelectCustomEvent } from '@ionic/angular';
+import { SelectCustomEvent, IonicModule } from '@ionic/angular';
+import { NgIf, NgTemplateOutlet, NgFor, AsyncPipe } from '@angular/common';
+import { ɵEmptyOutletComponent } from '@angular/router';
+import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-observations-days-back',
   templateUrl: './observations-days-back.component.html',
   styleUrls: ['./observations-days-back.component.scss'],
-  standalone: false,
+  imports: [
+    NgIf,
+    IonicModule,
+    NgTemplateOutlet,
+    ɵEmptyOutletComponent,
+    NgFor,
+    CheckDaysOrWeeksBackComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
   daysBackOptions: { val: number }[];

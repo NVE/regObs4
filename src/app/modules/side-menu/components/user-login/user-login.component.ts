@@ -3,13 +3,16 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, RouterLink, TranslateModule],
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   loggedInUser: LoggedInUser = { isLoggedIn: false };

@@ -6,12 +6,13 @@ import { TripLogItem } from '../../core/services/trip-logger/trip-log-item.model
 import { TripLogActivity } from '../../core/services/trip-logger/trip-log-activity.model';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
 import { Subscription } from 'rxjs';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-trip-log-summary',
   templateUrl: './trip-log-summary.component.html',
   styleUrls: ['./trip-log-summary.component.scss'],
-  standalone: false,
+  imports: [IonicModule],
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {
   private tripLogSubscription: Subscription;

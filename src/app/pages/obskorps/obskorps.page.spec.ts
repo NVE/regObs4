@@ -13,7 +13,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 @Component({
   selector: 'app-header',
   template: '',
-  standalone: false,
+  imports: [IonicModule],
 })
 class AppHeaderStubComponent {
   @Input() showFilterButton = true;
@@ -30,8 +30,7 @@ describe('ObskorpsPage', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ObskorpsPage, AppHeaderStubComponent],
-      imports: [IonicModule],
+      imports: [IonicModule, ObskorpsPage, AppHeaderStubComponent],
       providers: [
         {
           provide: RegobsAuthService,

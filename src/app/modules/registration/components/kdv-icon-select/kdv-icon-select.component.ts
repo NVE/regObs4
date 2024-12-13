@@ -7,6 +7,10 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvElement } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'KdvIconSelectComponent';
 
@@ -20,7 +24,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   templateUrl: './kdv-icon-select.component.html',
   styleUrls: ['./kdv-icon-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, IonicModule, NgFor, NgClass, SvgIconComponent, AsyncPipe, TranslateModule],
 })
 export class KdvIconSelectComponent {
   @Input() label: string;

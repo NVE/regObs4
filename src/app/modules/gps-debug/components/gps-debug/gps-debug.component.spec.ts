@@ -8,8 +8,7 @@ xdescribe('GpsDebugComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [GpsDebugComponent],
-      imports: [TestModule],
+      imports: [TestModule, GpsDebugComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GpsDebugComponent);

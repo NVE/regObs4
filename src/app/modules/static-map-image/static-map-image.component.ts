@@ -56,6 +56,7 @@ import { Feature, Polygon } from '@turf/turf';
 import { END_ICON, START_ICON } from '../map-image/map-image.component';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { LatLng } from 'leaflet';
+import { NgFor, NgStyle } from '@angular/common';
 
 interface TileProps {
   src: SafeUrl;
@@ -133,7 +134,7 @@ const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): 
       useClass: isPlatform('hybrid') ? OfflineCapableMapLayersService : MapLayersService,
     },
   ],
-  standalone: false,
+  imports: [NgFor, NgStyle],
 })
 export class StaticMapImageComponent extends NgDestoryBase implements AfterViewInit {
   @Input() location: ImageLocation;

@@ -11,7 +11,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [AvalancheEvaluationPage],
+  imports: [SharedComponentsModule, RouterModule.forChild(routes), AvalancheEvaluationPage],
 })
 export class AvalancheEvaluationPageModule {}

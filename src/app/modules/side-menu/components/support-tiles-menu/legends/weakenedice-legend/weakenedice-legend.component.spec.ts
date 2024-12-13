@@ -8,8 +8,7 @@ describe('WeakenediceLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [WeakenediceLegendComponent],
+      imports: [TestModule, WeakenediceLegendComponent],
     }).compileComponents();
   }));
 

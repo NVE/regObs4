@@ -17,7 +17,8 @@ import { MapModule } from '../../modules/map/map.module';
     SharedModule,
     DataLoadModule,
     MapModule,
+    HomePage,
+    MapItemBarComponent,
   ],
-  declarations: [HomePage, MapItemBarComponent],
 })
 export class HomePageModule {}

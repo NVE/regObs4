@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { IonInfiniteScroll } from '@ionic/angular';
+import { IonInfiniteScroll, IonicModule } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
@@ -22,6 +22,11 @@ import { getUniqueRegistrations } from 'src/app/modules/common-registration/regi
 import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { ObservationListCardComponent } from '../../../../components/observation/observation-list-card/observation-list-card.component';
+import { ObservationSkeletonComponent } from '../../../../components/observation/observation-skeleton/observation-skeleton.component';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'SentListComponent';
 
@@ -33,7 +38,16 @@ const DEBUG_TAG = 'SentListComponent';
   templateUrl: './sent-list.component.html',
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    NgIf,
+    IonicModule,
+    NgFor,
+    ObservationListCardComponent,
+    ObservationSkeletonComponent,
+    SvgIconComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class SentListComponent implements OnInit, OnDestroy {
   @Output() isEmpty = new EventEmitter<boolean>();

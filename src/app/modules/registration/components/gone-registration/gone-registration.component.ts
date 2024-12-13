@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -7,6 +7,7 @@ import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to
 import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'VersionConflictComponent';
 
@@ -18,7 +19,7 @@ const DEBUG_TAG = 'VersionConflictComponent';
   selector: 'app-gone-registration',
   templateUrl: './gone-registration.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, TranslateModule],
 })
 export class GoneRegistrationComponent {
   @Input() draft: RegistrationDraft;

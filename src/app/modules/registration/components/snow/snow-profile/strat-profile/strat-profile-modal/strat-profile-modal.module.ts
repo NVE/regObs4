@@ -5,7 +5,11 @@ import { StratProfileLayerModalPageModule } from '../strat-profile-layer-modal/s
 import { StratProfileLayerHistoryModalPageModule } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.module';
 
 @NgModule({
-  imports: [SharedComponentsModule, StratProfileLayerModalPageModule, StratProfileLayerHistoryModalPageModule],
-  declarations: [StratProfileModalPage],
+  imports: [
+    SharedComponentsModule,
+    StratProfileLayerModalPageModule,
+    StratProfileLayerHistoryModalPageModule,
+    StratProfileModalPage,
+  ],
 })
 export class StratProfileModalPageModule {}

@@ -25,8 +25,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [
+  imports: [
+    SharedComponentsModule,
+    RouterModule.forChild(routes),
     OverviewPage,
     SendButtonComponent,
     SummaryItemComponent,

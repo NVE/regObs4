@@ -8,7 +8,7 @@ describe('SupportTileLegendLoaderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SupportTileLegendLoaderComponent],
+      imports: [SupportTileLegendLoaderComponent],
     }).compileComponents();
   }));
 

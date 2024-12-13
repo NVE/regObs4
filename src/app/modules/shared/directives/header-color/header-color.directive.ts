@@ -3,10 +3,7 @@ import { Subscription } from 'rxjs';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 
-@Directive({
-  selector: '[appHeaderColor]',
-  standalone: false,
-})
+@Directive({ selector: '[appHeaderColor]' })
 export class HeaderColorDirective implements OnInit, OnDestroy {
   private appMode: AppMode;
   private subscription: Subscription;

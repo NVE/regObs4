@@ -31,8 +31,6 @@ const routes: Routes = [
     CompressionTestListModalPageModule,
     FullscreenImageModalPageModule,
     RouterModule.forChild(routes),
-  ],
-  declarations: [
     SnowProfilePage,
     CompressionTestComponent,
     SnowDensityComponent,

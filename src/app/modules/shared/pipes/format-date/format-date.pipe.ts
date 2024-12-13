@@ -1,10 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 
-@Pipe({
-  name: 'formatDate',
-  standalone: false,
-})
+@Pipe({ name: 'formatDate' })
 export class FormatDatePipe implements PipeTransform {
   constructor(private dateHelperService: DateHelperService) {}
 

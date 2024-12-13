@@ -1,13 +1,30 @@
 import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { IonContent, IonInfiniteScroll } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, IonicModule } from '@ionic/angular';
 import { SentListComponent } from './components/sent-list/sent-list.component';
+import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
+import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
+import { DraftListComponent } from './components/draft-list/draft-list.component';
+import { NgIf } from '@angular/common';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-my-observations',
   templateUrl: './my-observations.page.html',
   styleUrls: ['./my-observations.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    RefreshWithCancelComponent,
+    DraftListComponent,
+    SentListComponent,
+    NgIf,
+    SvgIconComponent,
+    AddMenuComponent,
+    TranslateModule,
+  ],
 })
 export class MyObservationsPage {
   @ViewChild(IonContent, { static: true }) content: IonContent;

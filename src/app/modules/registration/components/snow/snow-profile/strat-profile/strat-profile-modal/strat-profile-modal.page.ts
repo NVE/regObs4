@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { StratProfileEditModel, StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -11,6 +11,12 @@ import cloneDeep from 'clone-deep';
 import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { KdvDescriptionPipe } from '../../../../../pipes/kdv-description.pipe';
+import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 
 /**
  * Add layers, drag to change layer ordering, fetch layers from other profiles.
@@ -19,7 +25,18 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-strat-profile-modal',
   templateUrl: './strat-profile-modal.page.html',
   styleUrls: ['./strat-profile-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    FormsModule,
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    DecimalPipe,
+    TranslateModule,
+    KdvDescriptionPipe,
+    MetersToCmPipe,
+  ],
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

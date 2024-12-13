@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonFab, NavController, Platform } from '@ionic/angular';
+import { IonFab, NavController, Platform, IonicModule } from '@ionic/angular';
 import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
@@ -14,6 +14,9 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
+import { GeoIconComponent } from '../geo-icon/geo-icon.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -21,7 +24,7 @@ const DEBUG_TAG = 'AddMenuComponent';
   selector: 'app-add-menu',
   templateUrl: './add-menu.component.html',
   styleUrls: ['./add-menu.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, NgFor, GeoIconComponent, AsyncPipe, UpperCasePipe, TranslateModule],
 })
 export class AddMenuComponent implements OnInit {
   @ViewChild('menuFab') menuFab: IonFab;

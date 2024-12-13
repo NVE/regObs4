@@ -8,6 +8,11 @@ import { Observable, Subject, merge, of } from 'rxjs';
 import { EditMode } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { SearchService } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { IonicModule } from '@ionic/angular';
+import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface RegistrationResult {
   reg?: RegistrationViewModel;
@@ -19,7 +24,7 @@ interface RegistrationResult {
   templateUrl: './view-observation.page.html',
   styleUrls: ['./view-observation.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, HeaderColorDirective, NgIf, ObservationListCardComponent, AsyncPipe, TranslateModule],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
   editMode$: Observable<EditMode>;

@@ -1,13 +1,15 @@
 import { Component, OnInit, NgZone, ViewChild, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { IonRefresher, Platform } from '@ionic/angular';
+import { IonRefresher, Platform, IonicModule } from '@ionic/angular';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-refresh-with-cancel',
   templateUrl: './refresh-with-cancel.component.html',
   styleUrls: ['./refresh-with-cancel.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, TranslateModule],
 })
 export class RefreshWithCancelComponent implements OnInit {
   showCancel = false;

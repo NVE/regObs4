@@ -4,12 +4,16 @@ import { Observable } from 'rxjs';
 import { enterZone } from '../../../../core/helpers/observable-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
+import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',
   styleUrls: ['./kdv-radiobutton-list.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, FormsModule, NgFor, NgClass, AsyncPipe, TranslateModule],
 })
 export class KdvRadiobuttonListComponent implements OnInit {
   @Input() title: string;

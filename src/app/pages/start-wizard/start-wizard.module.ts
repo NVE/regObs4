@@ -11,7 +11,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), SharedModule],
-  declarations: [StartWizardPage],
+  imports: [RouterModule.forChild(routes), SharedModule, StartWizardPage],
 })
 export class StartWizardPageModule {}

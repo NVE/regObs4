@@ -19,8 +19,9 @@ import { SelectedItemsCounterLabelComponent } from './components/selected-items-
 import { SlushFlowFilterComponent } from './components/slush-flow-filter/slush-flow-filter.component';
 
 @NgModule({
-  imports: [SharedModule, SharedComponentsModule],
-  declarations: [
+  imports: [
+    SharedModule,
+    SharedComponentsModule,
     SideMenuComponent,
     FilterMenuComponent,
     SupportTilesMenuComponent,

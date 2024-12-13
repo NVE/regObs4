@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { ActionSheetController, Platform, ToastController, IonicModule } from '@ionic/angular';
 import {
   Camera,
   CameraResultType,
@@ -24,8 +24,12 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { combineLatest, firstValueFrom, map, Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { ALLOWED_ATTACHMENT_FILE_TYPES, DropZoneService } from './drop-zone.service';
-import { NgxFileDropEntry } from 'ngx-file-drop';
+import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { AddAttachmentState } from 'src/app/modules/common-registration/services/add-new-attachment/new-attachment.service';
+import { NgFor, NgIf, NgClass, AsyncPipe } from '@angular/common';
+import { RemoteImageComponent } from '../../../shared/components/remote-image/remote-image.component';
+import { TextCommentComponent } from '../text-comment/text-comment.component';
+import { BlobImageComponent } from '../blob-image/blob-image.component';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -45,7 +49,18 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
   templateUrl: './edit-images.component.html',
   styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    NgFor,
+    RemoteImageComponent,
+    IonicModule,
+    TextCommentComponent,
+    BlobImageComponent,
+    NgIf,
+    NgxFileDropModule,
+    NgClass,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class EditImagesComponent implements OnInit {
   @Input() draftUuid: string;

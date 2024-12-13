@@ -3,7 +3,6 @@ import { SharedComponentsModule } from '../../../../shared-components.module';
 import { CompressionTestModalPage } from './compression-test-modal.page';
 
 @NgModule({
-  imports: [SharedComponentsModule],
-  declarations: [CompressionTestModalPage],
+  imports: [SharedComponentsModule, CompressionTestModalPage],
 })
 export class CompressionTestModalPageModule {}

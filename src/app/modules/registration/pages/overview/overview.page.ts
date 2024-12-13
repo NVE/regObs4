@@ -15,13 +15,22 @@ import { getRegistrationName } from 'src/app/modules/common-registration/registr
 import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TranslateService } from '@ngx-translate/core';
-import { AlertController, IonToggle } from '@ionic/angular';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { AlertController, IonToggle, IonicModule } from '@ionic/angular';
 import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { Capacitor } from '@capacitor/core';
+import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
+import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
+import { SimpleWaterObsComponent } from '../../components/water/simple-water-obs/simple-water-obs.component';
+import { SummaryItemComponent } from '../../components/summary-item/summary-item.component';
+import { SendButtonComponent } from '../../components/send-button/send-button.component';
+import { CoachMarksSimpleObsComponent } from '../../../../components/coach-marks/coach-marks-simple-obs/coach-marks-simple-obs.component';
 
 const DEBUG_TAG = 'OverviewPage';
 
@@ -38,7 +47,22 @@ const DEBUG_TAG = 'OverviewPage';
   templateUrl: './overview.page.html',
   styleUrls: ['./overview.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    FormsModule,
+    FailedRegistrationComponent,
+    SimpleSnowObsComponent,
+    SimpleWaterObsComponent,
+    NgFor,
+    SummaryItemComponent,
+    SendButtonComponent,
+    CoachMarksSimpleObsComponent,
+    AsyncPipe,
+    UpperCasePipe,
+    TranslateModule,
+  ],
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
   summaryItems$: Observable<Array<ISummaryItem>>;

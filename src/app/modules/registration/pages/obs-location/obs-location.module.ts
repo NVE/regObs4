@@ -13,7 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [ObsLocationPage],
+  imports: [SharedComponentsModule, RouterModule.forChild(routes), ObsLocationPage],
 })
 export class ObsLocationPageModule {}

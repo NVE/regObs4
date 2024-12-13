@@ -1,14 +1,38 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import moment from 'moment';
+import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgClass, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DatetimePickerComponent } from '../../../../../../components/datetime-picker/datetime-picker.component';
+import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
+import { ExposedHeightComponent } from '../../../../components/snow/exposed-height/exposed-height.component';
+import { ValidExpositionComponent } from '../../../../components/snow/valid-exposition/valid-exposition.component';
+import { TextCommentComponent } from '../../../../components/text-comment/text-comment.component';
+import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
   templateUrl: './avalanche-activity-modal.page.html',
   styleUrls: ['./avalanche-activity-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    FormsModule,
+    NgClass,
+    DatetimePickerComponent,
+    NgFor,
+    KdvSelectComponent,
+    ExposedHeightComponent,
+    ValidExpositionComponent,
+    TextCommentComponent,
+    ModalSaveOrDeleteButtonsComponent,
+    TranslateModule,
+  ],
 })
 export class AvalancheActivityModalPage implements OnInit {
   @Input() avalancheActivity: AvalancheActivityObs2EditModel;

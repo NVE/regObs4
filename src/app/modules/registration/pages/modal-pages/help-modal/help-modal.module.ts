@@ -4,7 +4,6 @@ import { MarkdownModule } from 'ngx-markdown';
 import { SharedModule } from '../../../../shared/shared.module';
 
 @NgModule({
-  imports: [SharedModule, MarkdownModule.forChild()],
-  declarations: [HelpModalPage],
+  imports: [SharedModule, MarkdownModule.forChild(), HelpModalPage],
 })
 export class HelpModalPageModule {}

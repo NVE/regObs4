@@ -1,11 +1,15 @@
 import { Component, OnInit, Input, Output, NgZone, EventEmitter } from '@angular/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
+import { IonicModule } from '@ionic/angular';
+import { NgClass, NgIf } from '@angular/common';
+import { SelectComponent } from '../../../../shared/components/input/select/select.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
   styleUrls: ['./exposed-height.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgClass, NgIf, SelectComponent, TranslateModule],
 })
 export class ExposedHeightComponent implements OnInit {
   @Input() exposedHeightComboTID: number;
