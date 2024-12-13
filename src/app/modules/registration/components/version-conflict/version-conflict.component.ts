@@ -15,6 +15,7 @@ const DEBUG_TAG = 'VersionConflictComponent';
   selector: 'app-version-conflict',
   templateUrl: './version-conflict.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class VersionConflictComponent {
   @Input() draft: RegistrationDraft;

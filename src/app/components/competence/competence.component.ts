@@ -4,6 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'app-competence',
   templateUrl: './competence.component.html',
   styleUrls: ['./competence.component.scss'],
+  standalone: false,
 })
 export class CompetenceComponent {
   readonly maxCompetenceLevel = 5;

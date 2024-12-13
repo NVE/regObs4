@@ -19,6 +19,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-strat-profile-modal',
   templateUrl: './strat-profile-modal.page.html',
   styleUrls: ['./strat-profile-modal.page.scss'],
+  standalone: false,
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

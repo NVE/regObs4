@@ -65,6 +65,7 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  standalone: false,
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;

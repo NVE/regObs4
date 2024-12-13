@@ -4,6 +4,7 @@ import { Component, Input, EventEmitter, Output } from '@angular/core';
   selector: 'app-text-comment',
   templateUrl: './text-comment.component.html',
   styleUrls: ['./text-comment.component.scss'],
+  standalone: false,
 })
 export class TextCommentComponent {
   @Input() label: string;

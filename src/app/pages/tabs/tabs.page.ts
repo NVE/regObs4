@@ -13,6 +13,7 @@ import { TABS, TabsService } from './tabs.service';
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
+  standalone: false,
 })
 export class TabsPage implements OnInit, OnDestroy {
   private warningGroupInMapViewSubscription: Subscription;

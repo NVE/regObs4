@@ -7,6 +7,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
   templateUrl: './save-and-go-back-button.component.html',
   styleUrls: ['./save-and-go-back-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SaveAndGoBackButtonComponent {
   @Input() draft: RegistrationDraft;

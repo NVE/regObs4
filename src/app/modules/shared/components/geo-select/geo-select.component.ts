@@ -9,6 +9,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-geo-select',
   templateUrl: './geo-select.component.html',
   styleUrls: ['./geo-select.component.scss'],
+  standalone: false,
 })
 export class GeoSelectComponent implements OnInit {
   geoHazardTypes: Array<GeoHazard[]>;

@@ -18,6 +18,7 @@ const DEBUG_TAG = 'VersionConflictComponent';
   selector: 'app-gone-registration',
   templateUrl: './gone-registration.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class GoneRegistrationComponent {
   @Input() draft: RegistrationDraft;

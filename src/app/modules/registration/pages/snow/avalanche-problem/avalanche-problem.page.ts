@@ -20,6 +20,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',
   styleUrls: ['./avalanche-problem.page.scss'],
+  standalone: false,
 })
 export class AvalancheProblemPage extends BasePage {
   private avalancheCause: KdvElement[];

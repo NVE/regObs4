@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',
   styleUrls: ['./trip-log.page.scss'],
+  standalone: false,
 })
 export class TripLogPage implements OnInit, OnDestroy {
   state: TripLogState = TripLogState.NotStarted;

@@ -14,6 +14,7 @@ import { firstValueFrom, Observable } from 'rxjs';
   templateUrl: './help-text.component.html',
   styleUrls: ['./help-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class HelpTextComponent implements OnInit {
   @Input() registrationTid: number;

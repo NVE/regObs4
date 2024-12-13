@@ -21,6 +21,7 @@ import { BreakpointService } from '../../core/services/breakpoint.service';
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ImgSwiperComponent implements OnChanges, OnDestroy {
   @Input() attachments: AttachmentViewModel[] = [];

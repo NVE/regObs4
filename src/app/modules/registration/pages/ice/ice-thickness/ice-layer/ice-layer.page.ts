@@ -6,6 +6,7 @@ import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/mo
   selector: 'app-ice-layer',
   templateUrl: './ice-layer.page.html',
   styleUrls: ['./ice-layer.page.scss'],
+  standalone: false,
 })
 export class IceLayerPage implements OnInit {
   @Input() iceThicknessLayer: IceThicknessLayerEditModel;

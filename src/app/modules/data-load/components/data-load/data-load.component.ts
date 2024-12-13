@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
   selector: 'app-data-load',
   templateUrl: './data-load.component.html',
   styleUrls: ['./data-load.component.scss'],
+  standalone: false,
 })
 export class DataLoadComponent {
   @Input()

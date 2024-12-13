@@ -20,6 +20,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
   styleUrls: ['./danger-obs.page.scss'],
+  standalone: false,
 })
 export class DangerObsPage extends BasePage {
   private dangerSignKdv: KdvElement[];

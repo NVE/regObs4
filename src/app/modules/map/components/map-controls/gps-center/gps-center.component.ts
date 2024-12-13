@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './gps-center.component.html',
   styleUrls: ['./gps-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class GpsCenterComponent implements OnDestroy, AfterContentInit {
   followMode: boolean;

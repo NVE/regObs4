@@ -5,6 +5,7 @@ import { KdvService } from '../../common-registration/registration.services';
 
 @Pipe({
   name: 'kdvDescription',
+  standalone: false,
 })
 export class KdvDescriptionPipe implements PipeTransform {
   constructor(private kdvService: KdvService) {}

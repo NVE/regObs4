@@ -10,6 +10,7 @@ import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum
   selector: 'app-datetime-picker',
   templateUrl: './datetime-picker.component.html',
   styleUrls: ['./datetime-picker.component.scss'],
+  standalone: false,
 })
 /**
  * Component for displaying a date and time picker.

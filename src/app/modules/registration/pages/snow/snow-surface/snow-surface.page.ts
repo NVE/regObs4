@@ -8,6 +8,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
   selector: 'app-snow-surface',
   templateUrl: './snow-surface.page.html',
   styleUrls: ['./snow-surface.page.scss'],
+  standalone: false,
 })
 export class SnowSurfacePage extends BasePage {
   constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {

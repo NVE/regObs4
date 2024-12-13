@@ -21,6 +21,7 @@ const DEBUG_TAG = 'AddMenuComponent';
   selector: 'app-add-menu',
   templateUrl: './add-menu.component.html',
   styleUrls: ['./add-menu.component.scss'],
+  standalone: false,
 })
 export class AddMenuComponent implements OnInit {
   @ViewChild('menuFab') menuFab: IonFab;

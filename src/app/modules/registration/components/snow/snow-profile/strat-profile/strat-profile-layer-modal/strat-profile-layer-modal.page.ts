@@ -16,6 +16,7 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
   selector: 'app-strat-profile-layer-modal',
   templateUrl: './strat-profile-layer-modal.page.html',
   styleUrls: ['./strat-profile-layer-modal.page.scss'],
+  standalone: false,
 })
 export class StratProfileLayerModalPage implements OnInit {
   @Input() layer: StratProfileLayerEditModel;

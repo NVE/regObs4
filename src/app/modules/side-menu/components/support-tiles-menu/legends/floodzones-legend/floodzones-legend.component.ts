@@ -5,5 +5,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './floodzones-legend.component.html',
   styleUrls: ['./floodzones-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FloodzonesLegendComponent {}

@@ -1,5 +1,13 @@
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgZone, Provider } from '@angular/core';
+import {
+  EnvironmentProviders,
+  ErrorHandler,
+  LOCALE_ID,
+  NgZone,
+  Provider,
+  inject,
+  provideAppInitializer,
+} from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
@@ -76,7 +84,7 @@ export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
 //   }
 // }
 
-export const APP_PROVIDERS: Provider[] = [
+export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   {
     provide: LOCALE_ID,
@@ -108,18 +116,20 @@ export const APP_PROVIDERS: Provider[] = [
   },
 
   // APP initializers
-  {
-    provide: APP_INITIALIZER,
-    useFactory: initTranslateService,
-    deps: [TranslateService, UserSettingService],
-    multi: true,
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: initDeepLinks,
-    deps: [Platform, NgZone, AuthService, NavController, Router],
-    multi: true,
-  },
+  provideAppInitializer(() => {
+    const initializerFn = initTranslateService(inject(TranslateService), inject(UserSettingService));
+    return initializerFn();
+  }),
+  provideAppInitializer(() => {
+    const initializerFn = initDeepLinks(
+      inject(Platform),
+      inject(NgZone),
+      inject(AuthService),
+      inject(NavController),
+      inject(Router)
+    );
+    return initializerFn();
+  }),
 
   // @varsom-regobs-common providers
   {

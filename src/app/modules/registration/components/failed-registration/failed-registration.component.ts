@@ -14,6 +14,7 @@ import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
   selector: 'app-failed-registration',
   templateUrl: './failed-registration.component.html',
   styleUrls: ['./failed-registration.component.scss'],
+  standalone: false,
 })
 export class FailedRegistrationComponent {
   @Input() draft: RegistrationDraft;

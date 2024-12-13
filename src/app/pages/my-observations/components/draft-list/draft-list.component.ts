@@ -9,6 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   templateUrl: './draft-list.component.html',
   styleUrls: ['./draft-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DraftListComponent implements OnInit {
   @Output() isEmpty = new EventEmitter<boolean>();

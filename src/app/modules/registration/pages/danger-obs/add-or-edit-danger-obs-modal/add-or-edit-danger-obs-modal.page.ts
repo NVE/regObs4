@@ -10,6 +10,7 @@ const COMMENT_SEPARATOR = ': ';
   selector: 'app-add-or-edit-danger-obs-modal',
   templateUrl: './add-or-edit-danger-obs-modal.page.html',
   styleUrls: ['./add-or-edit-danger-obs-modal.page.scss'],
+  standalone: false,
 })
 export class AddOrEditDangerObsModalPage implements OnInit {
   @Input() dangerObs: DangerObsEditModel;

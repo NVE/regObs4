@@ -18,6 +18,7 @@ const toDateInputValue = (date: Date) => {
   selector: 'app-obskorps',
   templateUrl: './obskorps.page.html',
   styleUrls: ['./obskorps.page.scss'],
+  standalone: false,
 })
 export class ObskorpsPage implements OnInit {
   private http = inject(HttpClient);

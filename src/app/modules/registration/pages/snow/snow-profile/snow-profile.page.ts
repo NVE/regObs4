@@ -33,6 +33,7 @@ const DEBUG_TAG = 'SnowProfilePage';
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.page.html',
   styleUrls: ['./snow-profile.page.scss'],
+  standalone: false,
 })
 export class SnowProfilePage extends BasePage {
   expositionOptions: SelectOption[] = [

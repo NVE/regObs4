@@ -10,7 +10,11 @@ import { Component, Input } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@Component({ selector: 'app-header', template: '' })
+@Component({
+  selector: 'app-header',
+  template: '',
+  standalone: false,
+})
 class AppHeaderStubComponent {
   @Input() showFilterButton = true;
 }

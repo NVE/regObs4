@@ -9,6 +9,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
   selector: 'app-warning-group-favourite-toggle',
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss'],
+  standalone: false,
 })
 export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChanges {
   @Input() key: WarningGroupKey;

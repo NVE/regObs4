@@ -25,6 +25,7 @@ const DELETE_OBS_TIMEOUT_MS = 5000;
   templateUrl: './send-button.component.html',
   styleUrls: ['./send-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChanges {
   @Input() draft: RegistrationDraft;

@@ -15,6 +15,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-snow-density-modal',
   templateUrl: './snow-density-modal.page.html',
   styleUrls: ['./snow-density-modal.page.scss'],
+  standalone: false,
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

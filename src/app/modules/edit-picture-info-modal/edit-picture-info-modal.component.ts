@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-edit-picture-info-modal',
   templateUrl: './edit-picture-info-modal.component.html',
   styleUrls: ['./edit-picture-info-modal.component.scss'],
+  standalone: false,
 })
 export class EditPictureInfoModalComponent {
   copyright: string;

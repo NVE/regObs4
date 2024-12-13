@@ -12,6 +12,7 @@ import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
   templateUrl: './sync-item.component.html',
   styleUrls: ['./sync-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SyncItemComponent {
   @Input() draft: RegistrationDraft;

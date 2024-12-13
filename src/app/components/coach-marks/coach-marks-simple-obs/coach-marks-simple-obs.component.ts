@@ -12,6 +12,7 @@ import { trigger } from '@angular/animations';
     trigger('coachmark-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT, 0.9)),
     trigger('element-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT_BACK)),
   ],
+  standalone: false,
 })
 export class CoachMarksSimpleObsComponent implements OnInit {
   isVisible$: Observable<boolean>;

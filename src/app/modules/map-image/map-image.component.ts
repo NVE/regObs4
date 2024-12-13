@@ -30,6 +30,7 @@ export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
   templateUrl: './map-image.component.html',
   styleUrls: ['./map-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() location: ImageLocation;

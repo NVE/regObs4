@@ -6,6 +6,7 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
   selector: 'app-numeric-input-modal',
   templateUrl: './numeric-input-modal.page.html',
   styleUrls: ['./numeric-input-modal.page.scss'],
+  standalone: false,
 })
 export class NumericInputModalPage implements OnInit {
   @Input() value: number;

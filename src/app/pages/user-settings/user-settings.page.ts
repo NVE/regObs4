@@ -25,6 +25,7 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
   selector: 'app-user-settings',
   templateUrl: './user-settings.page.html',
   styleUrls: ['./user-settings.page.scss'],
+  standalone: false,
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;

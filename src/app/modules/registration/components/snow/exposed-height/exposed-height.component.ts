@@ -5,6 +5,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
   styleUrls: ['./exposed-height.component.scss'],
+  standalone: false,
 })
 export class ExposedHeightComponent implements OnInit {
   @Input() exposedHeightComboTID: number;

@@ -8,6 +8,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
   selector: 'app-avalanche-evaluation',
   templateUrl: './avalanche-evaluation.page.html',
   styleUrls: ['./avalanche-evaluation.page.scss'],
+  standalone: false,
 })
 export class AvalancheEvaluationPage extends BasePage {
   constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {

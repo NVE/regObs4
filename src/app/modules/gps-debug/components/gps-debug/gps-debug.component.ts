@@ -13,6 +13,7 @@ import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo
   selector: 'app-gps-debug',
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
+  standalone: false,
 })
 export class GpsDebugComponent implements OnInit, OnDestroy {
   showLog$: Observable<boolean>;

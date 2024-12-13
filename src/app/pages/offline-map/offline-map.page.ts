@@ -42,6 +42,7 @@ const DEBUG_TAG = 'OfflineMapPage';
   selector: 'app-offline-map',
   templateUrl: './offline-map.page.html',
   styleUrls: ['./offline-map.page.scss'],
+  standalone: false,
 })
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
