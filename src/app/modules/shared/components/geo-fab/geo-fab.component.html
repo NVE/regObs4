@@ -48,8 +48,18 @@
   <ng-template>
     <ion-content>
       <ion-list>
-        <ion-item button [detail]="false">Is</ion-item>
-        <ion-item button [detail]="false">Vann og jord</ion-item>
+        <ion-item button [detail]="false" disabled>
+          <ion-icon aria-hidden="true" src="/assets/icon/snow.svg" slot="start"></ion-icon>
+          <ion-label>Snø</ion-label>
+        </ion-item>
+        <ion-item button [detail]="false">
+          <ion-icon aria-hidden="true" src="/assets/icon/ice.svg" slot="start"></ion-icon>
+          <ion-label>Is</ion-label>
+        </ion-item>
+        <ion-item button [detail]="false">
+          <ion-icon aria-hidden="true" src="/assets/icon/water_dirt.svg" slot="start"></ion-icon>
+          <ion-label>Vann og jord</ion-label>
+        </ion-item>
       </ion-list>
     </ion-content>
   </ng-template>
