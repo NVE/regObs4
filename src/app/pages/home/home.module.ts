@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { HomePage } from './home.page';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { SharedModule } from '../../modules/shared/shared.module';
-import { DataLoadModule } from '../../modules/data-load/data-load.module';
 import { MapModule } from '../../modules/map/map.module';
 
 @NgModule({
@@ -15,7 +14,6 @@ import { MapModule } from '../../modules/map/map.module';
       },
     ]),
     SharedModule,
-    DataLoadModule,
     MapModule,
     HomePage,
     MapItemBarComponent,
