@@ -12,6 +12,7 @@ import { Capacitor } from '@capacitor/core';
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
+  standalone: false,
 })
 export class DateRangeComponent extends NgDestoryBase {
   minDate = new Date('2010-01-01T00:00:00').toISOString();

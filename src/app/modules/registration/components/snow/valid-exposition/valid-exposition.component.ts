@@ -7,6 +7,7 @@ const ALL_EXPOSITION = '11111111';
   selector: 'app-valid-exposition',
   templateUrl: './valid-exposition.component.html',
   styleUrls: ['./valid-exposition.component.scss'],
+  standalone: false,
 })
 export class ValidExpositionComponent implements OnInit {
   @Input() validExposition: string;

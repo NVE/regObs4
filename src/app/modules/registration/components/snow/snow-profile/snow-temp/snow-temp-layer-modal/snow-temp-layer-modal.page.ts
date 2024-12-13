@@ -10,6 +10,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-snow-temp-layer-modal',
   templateUrl: './snow-temp-layer-modal.page.html',
   styleUrls: ['./snow-temp-layer-modal.page.scss'],
+  standalone: false,
 })
 export class SnowTempLayerModalPage implements OnInit {
   @Input() layer: SnowTempObsModel;

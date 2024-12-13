@@ -14,6 +14,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-set-flood-area',
   templateUrl: './set-flood-area.page.html',
+  standalone: false,
 })
 export class SetFloodAreaPage implements OnInit {
   locationMarker: L.Marker;

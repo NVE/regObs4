@@ -9,6 +9,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
   selector: 'app-show-filter-criteria',
   templateUrl: './show-filter-criteria.component.html',
   styleUrls: ['./show-filter-criteria.component.scss'],
+  standalone: false,
 })
 export class ShowFilterCriteriaComponent implements OnInit {
   daysBack$: Observable<{ value: number }>;

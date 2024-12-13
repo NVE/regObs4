@@ -13,6 +13,7 @@ import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common
   templateUrl: './simple-snow-obs.component.html',
   styleUrls: ['./simple-snow-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SimpleSnowObsComponent {
   @Input() draft: RegistrationDraft;

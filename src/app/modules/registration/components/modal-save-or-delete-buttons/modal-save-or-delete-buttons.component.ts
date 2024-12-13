@@ -10,6 +10,7 @@ import {
   selector: 'app-modal-save-or-delete-buttons',
   templateUrl: './modal-save-or-delete-buttons.component.html',
   styleUrls: ['./modal-save-or-delete-buttons.component.scss'],
+  standalone: false,
 })
 export class ModalSaveOrDeleteButtonsComponent {
   @Input() saveText = 'DIALOGS.OK';

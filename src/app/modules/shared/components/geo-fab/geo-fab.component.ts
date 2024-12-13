@@ -44,6 +44,7 @@ const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, Ge
       ]),
     ]),
   ],
+  standalone: false,
 })
 export class GeoFabComponent implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;

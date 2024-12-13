@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-observation-skeleton',
   templateUrl: './observation-skeleton.component.html',
   styleUrls: ['./observation-skeleton.component.scss'],
+  standalone: false,
 })
 export class ObservationSkeletonComponent {}

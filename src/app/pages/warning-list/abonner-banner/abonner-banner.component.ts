@@ -5,6 +5,7 @@ import { ExternalLinkService } from '../../../core/services/external-link/extern
   selector: 'app-abonner-banner',
   templateUrl: './abonner-banner.component.html',
   styleUrls: ['./abonner-banner.component.scss'],
+  standalone: false,
 })
 export class AbonnerBannerComponent {
   constructor(private externalLinkService: ExternalLinkService) {}

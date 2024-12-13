@@ -20,6 +20,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   templateUrl: './kdv-icon-select.component.html',
   styleUrls: ['./kdv-icon-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class KdvIconSelectComponent {
   @Input() label: string;

@@ -5,6 +5,7 @@ import { MapZoomService } from '../../../services/map/map-zoom.service';
   selector: 'app-map-zoom',
   templateUrl: './map-zoom.component.html',
   styleUrls: ['./map-zoom.component.scss'],
+  standalone: false,
 })
 export class MapZoomComponent {
   constructor(private mapZoomService: MapZoomService) {}

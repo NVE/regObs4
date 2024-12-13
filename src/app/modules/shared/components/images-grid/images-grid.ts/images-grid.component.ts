@@ -10,6 +10,7 @@ import { HasRegId } from 'src/app/modules/common-registration/registration.helpe
   selector: 'app-images-grid',
   templateUrl: './images-grid.component.html',
   styleUrls: ['./images-grid.component.scss'],
+  standalone: false,
 })
 export class ImagesGridComponent {
   @Input() attachments: SearchRegistrationsWithAttachments[];

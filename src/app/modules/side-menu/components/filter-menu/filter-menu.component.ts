@@ -61,6 +61,7 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   popupType: SelectInterface;

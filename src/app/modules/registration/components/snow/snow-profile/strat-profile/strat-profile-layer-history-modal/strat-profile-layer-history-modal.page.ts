@@ -18,6 +18,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-strat-profile-layer-history-modal',
   templateUrl: './strat-profile-layer-history-modal.page.html',
   styleUrls: ['./strat-profile-layer-history-modal.page.scss'],
+  standalone: false,
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {
   @Input() draft: RegistrationDraft;

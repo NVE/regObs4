@@ -9,6 +9,7 @@ import { setObservableTimeout } from '../../../../../../core/helpers/observable-
   templateUrl: './steepness-legend.component.html',
   styleUrls: ['./steepness-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SteepnessLegendComponent {
   readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;

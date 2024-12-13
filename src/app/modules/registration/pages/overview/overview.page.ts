@@ -38,6 +38,7 @@ const DEBUG_TAG = 'OverviewPage';
   templateUrl: './overview.page.html',
   styleUrls: ['./overview.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
   summaryItems$: Observable<Array<ISummaryItem>>;

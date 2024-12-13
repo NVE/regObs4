@@ -12,6 +12,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
   templateUrl: './slush-flow-filter.component.html',
   styleUrls: ['./slush-flow-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SlushFlowFilterComponent extends NgDestoryBase implements OnInit {
   visible$: Observable<boolean>;

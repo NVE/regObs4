@@ -33,6 +33,7 @@ const DEBUG_TAG = 'SentListComponent';
   templateUrl: './sent-list.component.html',
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SentListComponent implements OnInit, OnDestroy {
   @Output() isEmpty = new EventEmitter<boolean>();

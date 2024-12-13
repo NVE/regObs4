@@ -89,6 +89,7 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
   selector: 'app-set-location-in-map',
   templateUrl: './set-location-in-map.component.html',
   styleUrls: ['./set-location-in-map.component.scss'],
+  standalone: false,
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() geoHazard: GeoHazard;

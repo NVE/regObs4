@@ -9,6 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-compression-test',
   templateUrl: './compression-test.component.html',
   styleUrls: ['./compression-test.component.scss'],
+  standalone: false,
 })
 export class CompressionTestComponent {
   @Input() draft: RegistrationDraft;

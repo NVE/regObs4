@@ -51,6 +51,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   templateUrl: './observation-list-card.component.html',
   styleUrls: ['./observation-list-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;

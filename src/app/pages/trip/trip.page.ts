@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-trip',
   templateUrl: './trip.page.html',
   styleUrls: ['./trip.page.scss'],
+  standalone: false,
 })
 export class TripPage {}

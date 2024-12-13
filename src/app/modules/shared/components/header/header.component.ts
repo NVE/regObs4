@@ -11,6 +11,7 @@ import { BreakpointService } from '../../../../core/services/breakpoint.service'
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  standalone: false,
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showMenuButton = true;

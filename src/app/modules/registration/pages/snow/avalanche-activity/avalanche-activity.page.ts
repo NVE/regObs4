@@ -13,6 +13,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',
   styleUrls: ['./avalanche-activity.page.scss'],
+  standalone: false,
 })
 export class AvalancheActivityPage extends BasePage {
   private avalancheCause: KdvElement[];

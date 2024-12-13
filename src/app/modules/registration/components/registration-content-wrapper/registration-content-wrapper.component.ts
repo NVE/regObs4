@@ -9,6 +9,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
   selector: 'app-registration-content-wrapper',
   templateUrl: './registration-content-wrapper.component.html',
   styleUrls: ['./registration-content-wrapper.component.scss'],
+  standalone: false,
 })
 export class RegistrationContentWrapperComponent {
   @Input() draft: RegistrationDraft;

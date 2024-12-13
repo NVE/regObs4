@@ -8,6 +8,7 @@ import moment from 'moment';
   selector: 'app-avalanche-activity-modal',
   templateUrl: './avalanche-activity-modal.page.html',
   styleUrls: ['./avalanche-activity-modal.page.scss'],
+  standalone: false,
 })
 export class AvalancheActivityModalPage implements OnInit {
   @Input() avalancheActivity: AvalancheActivityObs2EditModel;

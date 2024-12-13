@@ -6,6 +6,7 @@ import { legendsConfig } from '../legends.config';
   templateUrl: './support-tile-legend-loader.component.html',
   styleUrls: ['./support-tile-legend-loader.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SupportTileLegendLoaderComponent implements OnInit {
   @Input() name: string;

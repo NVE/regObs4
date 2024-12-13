@@ -22,6 +22,7 @@ const DEBUG_TAG = 'AppComponent';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
+  standalone: false,
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;

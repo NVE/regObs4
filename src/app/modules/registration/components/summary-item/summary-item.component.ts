@@ -16,6 +16,7 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
   @Input() item: ISummaryItem;

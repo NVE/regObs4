@@ -8,6 +8,7 @@ import { UpdateObservationsService } from './update-observations.service';
   templateUrl: './update-observations.component.html',
   styleUrls: ['./update-observations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class UpdateObservationsComponent {
   settings = settings;

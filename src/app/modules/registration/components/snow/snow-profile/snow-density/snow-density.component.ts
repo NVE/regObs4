@@ -10,6 +10,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-snow-density',
   templateUrl: './snow-density.component.html',
   styleUrls: ['./snow-density.component.scss'],
+  standalone: false,
 })
 export class SnowDensityComponent {
   @Input() draft: RegistrationDraft;

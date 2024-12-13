@@ -11,6 +11,7 @@ import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
   selector: 'app-incident',
   templateUrl: './incident.page.html',
   styleUrls: ['./incident.page.scss'],
+  standalone: false,
 })
 export class IncidentPage extends BasePage {
   isCasualtiesValid = true;

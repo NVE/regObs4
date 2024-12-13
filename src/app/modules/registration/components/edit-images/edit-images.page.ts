@@ -12,6 +12,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
   templateUrl: './edit-images.page.html',
   styleUrls: ['./edit-images.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class EditImagesPage {
   @Input() draftUuid: string;

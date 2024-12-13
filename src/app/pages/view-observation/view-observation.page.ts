@@ -19,6 +19,7 @@ interface RegistrationResult {
   templateUrl: './view-observation.page.html',
   styleUrls: ['./view-observation.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
   editMode$: Observable<EditMode>;

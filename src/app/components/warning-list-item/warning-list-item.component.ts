@@ -18,6 +18,7 @@ import { NgDestoryBase } from '../../core/helpers/observable-helper';
   selector: 'app-warning-list-item',
   templateUrl: './warning-list-item.component.html',
   styleUrls: ['./warning-list-item.component.scss'],
+  standalone: false,
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   @Input() warningGroup: WarningGroup;

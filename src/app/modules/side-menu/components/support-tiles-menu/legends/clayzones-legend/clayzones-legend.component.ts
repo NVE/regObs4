@@ -5,5 +5,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './clayzones-legend.component.html',
   styleUrls: ['./clayzones-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ClayzonesLegendComponent {}

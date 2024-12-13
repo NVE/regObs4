@@ -22,6 +22,7 @@ const DEBUG_TAG = 'LegacyTripPage';
   selector: 'app-legacy-trip',
   templateUrl: './legacy-trip.page.html',
   styleUrls: ['./legacy-trip.page.scss'],
+  standalone: false,
 })
 export class LegacyTripPage implements OnInit, OnDestroy {
   private tripLoggerSubscription: Subscription;

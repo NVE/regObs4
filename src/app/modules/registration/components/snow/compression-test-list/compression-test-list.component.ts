@@ -6,6 +6,7 @@ import { CompressionTestModalPage } from './compression-test-modal/compression-t
   selector: 'app-compression-test-list',
   templateUrl: './compression-test-list.component.html',
   styleUrls: ['./compression-test-list.component.scss'],
+  standalone: false,
 })
 export class CompressionTestListComponent {
   @Input() tests: Array<CompressionTestEditModel>;

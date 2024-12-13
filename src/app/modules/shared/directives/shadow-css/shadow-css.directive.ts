@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
 @Directive({
   selector: '[appShadowCss]',
+  standalone: false,
 })
 export class ShadowCssDirective implements OnChanges {
   @Input() shadowCustomCss: string;

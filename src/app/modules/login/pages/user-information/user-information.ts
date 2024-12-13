@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
   selector: 'app-user-information',
   templateUrl: './user-information.html',
   styleUrls: ['./user-information.scss'],
+  standalone: false,
 })
 export class UserInformation implements OnInit {
   loggedInUser$: Observable<LoggedInUser>;

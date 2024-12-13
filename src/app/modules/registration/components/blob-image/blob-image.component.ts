@@ -6,6 +6,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   templateUrl: './blob-image.component.html',
   styleUrls: ['./blob-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class BlobImageComponent implements OnInit, OnDestroy {
   @Input() imgBlob: Blob;

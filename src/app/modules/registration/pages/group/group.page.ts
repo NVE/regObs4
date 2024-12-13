@@ -10,6 +10,7 @@ import { IonCheckbox } from '@ionic/angular';
   selector: 'app-group',
   templateUrl: './group.page.html',
   styleUrls: ['./group.page.scss'],
+  standalone: false,
 })
 export class GroupPage extends BasePage {
   groups: ObserverGroupDto[] = [];

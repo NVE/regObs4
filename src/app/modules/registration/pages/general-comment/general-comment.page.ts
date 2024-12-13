@@ -9,6 +9,7 @@ import { hasAnyDataBesidesPropertyToExclude } from 'src/app/modules/common-regis
   selector: 'app-general-comment',
   templateUrl: './general-comment.page.html',
   styleUrls: ['./general-comment.page.scss'],
+  standalone: false,
 })
 export class GeneralCommentPage extends BasePage {
   constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {

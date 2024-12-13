@@ -22,6 +22,7 @@ interface AvalancheProblemKeys {
   selector: 'app-avalanche-problem-modal',
   templateUrl: './avalanche-problem-modal.page.html',
   styleUrls: ['./avalanche-problem-modal.page.scss'],
+  standalone: false,
 })
 export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   @Input() avalancheEvalProblem: AvalancheEvalProblem2EditModel;

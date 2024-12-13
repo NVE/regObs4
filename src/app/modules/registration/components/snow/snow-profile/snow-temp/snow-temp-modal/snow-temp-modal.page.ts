@@ -12,6 +12,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-snow-temp-modal',
   templateUrl: './snow-temp-modal.page.html',
   styleUrls: ['./snow-temp-modal.page.scss'],
+  standalone: false,
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

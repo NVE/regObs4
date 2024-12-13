@@ -44,6 +44,7 @@ const URL_VIEW_TYPE_PARAM = 'view';
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {
   listSearch: PagedSearchResult<RegistrationViewModel>;

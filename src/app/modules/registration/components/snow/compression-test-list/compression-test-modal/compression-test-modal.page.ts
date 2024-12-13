@@ -8,6 +8,7 @@ import { SelectOption } from '../../../../../shared/components/input/select/sele
   selector: 'app-compression-test-modal',
   templateUrl: './compression-test-modal.page.html',
   styleUrls: ['./compression-test-modal.page.scss'],
+  standalone: false,
 })
 export class CompressionTestModalPage implements OnInit {
   @Input() compressionTest: CompressionTestEditModel;
