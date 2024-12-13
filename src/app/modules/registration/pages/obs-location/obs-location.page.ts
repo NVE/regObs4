@@ -20,6 +20,7 @@ import { LocationService } from 'src/app/modules/common-regobs-api';
   selector: 'app-obs-location',
   templateUrl: './obs-location.page.html',
   styleUrls: ['./obs-location.page.scss'],
+  standalone: false,
 })
 export class ObsLocationPage implements OnInit, OnDestroy {
   locationMarker: L.Marker;

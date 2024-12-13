@@ -5,6 +5,7 @@ import { KdvKey } from '../models/kdv-key.type';
 
 @Pipe({
   name: 'kdvDescription',
+  standalone: false,
 })
 export class KdvDescriptionPipe implements PipeTransform {
   constructor(private kdvService: KdvService) {}

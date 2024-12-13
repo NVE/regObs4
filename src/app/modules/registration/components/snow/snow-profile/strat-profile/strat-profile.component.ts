@@ -16,6 +16,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-strat-profile',
   templateUrl: './strat-profile.component.html',
   styleUrls: ['./strat-profile.component.scss'],
+  standalone: false,
 })
 export class StratProfileComponent {
   @Input() draft: RegistrationDraft;

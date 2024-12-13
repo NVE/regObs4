@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-map-search',
   templateUrl: './map-search.component.html',
   styleUrls: ['./map-search.component.scss'],
+  standalone: false,
 })
 export class MapSearchComponent {
   constructor(private modalController: ModalController) {}

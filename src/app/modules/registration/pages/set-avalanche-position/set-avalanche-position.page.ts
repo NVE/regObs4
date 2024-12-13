@@ -19,6 +19,7 @@ import { constructPolygon, makePolygons } from 'src/app/modules/common-registrat
   selector: 'app-set-avalanche-position',
   templateUrl: './set-avalanche-position.page.html',
   styleUrls: ['./set-avalanche-position.page.scss'],
+  standalone: false,
 })
 export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;

@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-trip-log-summary',
   templateUrl: './trip-log-summary.component.html',
   styleUrls: ['./trip-log-summary.component.scss'],
+  standalone: false,
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {
   private tripLogSubscription: Subscription;

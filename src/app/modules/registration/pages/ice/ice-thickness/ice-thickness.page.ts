@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-ice-thickness',
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
+  standalone: false,
 })
 export class IceThicknessPage extends BasePage {
   isWaterBefore: boolean = undefined;

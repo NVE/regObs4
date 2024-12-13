@@ -15,6 +15,7 @@ import moment from 'moment';
   selector: 'app-landslide-obs',
   templateUrl: './landslide-obs.page.html',
   styleUrls: ['./landslide-obs.page.scss'],
+  standalone: false,
 })
 export class LandslideObsPage extends BasePage {
   maxDateStart: string;

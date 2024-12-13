@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-help-modal',
   templateUrl: './help-modal.page.html',
   styleUrls: ['./help-modal.page.scss'],
+  standalone: false,
 })
 export class HelpModalPage {
   @Input() helpText: string;

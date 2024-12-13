@@ -133,6 +133,7 @@ const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): 
       useClass: isPlatform('hybrid') ? OfflineCapableMapLayersService : MapLayersService,
     },
   ],
+  standalone: false,
 })
 export class StaticMapImageComponent extends NgDestoryBase implements AfterViewInit {
   @Input() location: ImageLocation;

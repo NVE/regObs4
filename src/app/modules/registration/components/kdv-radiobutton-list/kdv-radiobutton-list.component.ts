@@ -9,6 +9,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',
   styleUrls: ['./kdv-radiobutton-list.component.scss'],
+  standalone: false,
 })
 export class KdvRadiobuttonListComponent implements OnInit {
   @Input() title: string;

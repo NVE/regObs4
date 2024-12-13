@@ -12,6 +12,7 @@ import { NumberHelper } from '../../../../core/helpers/number-helper';
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
+  standalone: false,
 })
 export class ModalSearchPage implements OnInit, ViewDidEnter {
   searchText: string;

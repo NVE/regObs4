@@ -13,6 +13,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
   selector: 'app-map-item-bar',
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss'],
+  standalone: false,
 })
 /**
  * Show key info from selected registration on top of the map.

@@ -13,6 +13,7 @@ import { SelectCustomEvent } from '@ionic/angular';
   selector: 'app-observations-days-back',
   templateUrl: './observations-days-back.component.html',
   styleUrls: ['./observations-days-back.component.scss'],
+  standalone: false,
 })
 export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
   daysBackOptions: { val: number }[];

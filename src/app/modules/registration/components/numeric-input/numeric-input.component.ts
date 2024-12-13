@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss'],
+  standalone: false,
 })
 export class NumericInputComponent {
   @Input() decimalPlaces = 0;

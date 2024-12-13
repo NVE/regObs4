@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-support-map-info',
   templateUrl: './support-map-info.page.html',
   styleUrls: ['./support-map-info.page.scss'],
+  standalone: false,
 })
 export class SupportMapInfoPage {
   constructor(private modalController: ModalController) {}

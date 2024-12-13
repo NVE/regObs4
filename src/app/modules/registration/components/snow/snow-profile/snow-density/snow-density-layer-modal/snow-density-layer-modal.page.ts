@@ -10,6 +10,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-snow-density-layer-modal',
   templateUrl: './snow-density-layer-modal.page.html',
   styleUrls: ['./snow-density-layer-modal.page.scss'],
+  standalone: false,
 })
 export class SnowDensityLayerModalPage implements OnInit {
   @Input() draft: RegistrationDraft;

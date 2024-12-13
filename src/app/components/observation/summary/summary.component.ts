@@ -6,6 +6,7 @@ import { SummaryType } from '../../../core/models/summmary-type.enum';
   selector: 'app-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
+  standalone: false,
 })
 export class SummaryComponent {
   @Input() summaries: Summary[];

@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders, APP_INITIALIZER, Injector } from '@angular/core';
+import { NgModule, ModuleWithProviders, Injector, inject, provideAppInitializer } from '@angular/core';
 import { AnalyticService } from './services/analytic.service';
 
 @NgModule({
@@ -7,12 +7,10 @@ import { AnalyticService } from './services/analytic.service';
   exports: [],
   providers: [
     AnalyticService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeAnalyticService,
-      multi: true,
-      deps: [AnalyticService],
-    },
+    provideAppInitializer(() => {
+      const initializerFn = initializeAnalyticService(inject(AnalyticService));
+      return initializerFn();
+    }),
   ],
 })
 export class AnalyticsModule {

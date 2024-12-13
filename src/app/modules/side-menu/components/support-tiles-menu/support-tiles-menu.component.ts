@@ -18,6 +18,7 @@ interface PopupSubscription {
   templateUrl: './support-tiles-menu.component.html',
   styleUrls: ['./support-tiles-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
   isWeb = Capacitor.getPlatform() === 'web';

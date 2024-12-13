@@ -9,6 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   selector: 'app-snow-temp',
   templateUrl: './snow-temp.component.html',
   styleUrls: ['./snow-temp.component.scss'],
+  standalone: false,
 })
 export class SnowTempComponent {
   @Input() draft: RegistrationDraft;

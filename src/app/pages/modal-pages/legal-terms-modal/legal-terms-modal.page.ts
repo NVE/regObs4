@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-legal-terms-modal',
   templateUrl: './legal-terms-modal.page.html',
   styleUrls: ['./legal-terms-modal.page.scss'],
+  standalone: false,
 })
 export class LegalTermsModalPage {
   constructor(private modalController: ModalController) {}

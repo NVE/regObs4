@@ -29,6 +29,7 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   templateUrl: './map-center-info.component.html',
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private userPos: Position; // Caches the gps position for distance and height diff computation

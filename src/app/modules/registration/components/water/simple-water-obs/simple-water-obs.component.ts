@@ -15,6 +15,7 @@ import { GeneralObservationEditModel, UrlEditModel, Waterlevel2EditModel } from 
   templateUrl: './simple-water-obs.component.html',
   styleUrls: ['./simple-water-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SimpleWaterObsComponent {
   @Input() draft: RegistrationDraft;

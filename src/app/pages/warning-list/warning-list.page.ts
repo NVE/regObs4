@@ -16,6 +16,7 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   selector: 'app-warning-list',
   templateUrl: './warning-list.page.html',
   styleUrls: ['./warning-list.page.scss'],
+  standalone: false,
 })
 export class WarningListPage {
   private selectedTab = new BehaviorSubject<SelectedTab>('inMapView');

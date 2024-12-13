@@ -9,6 +9,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
   selector: 'app-weather',
   templateUrl: './weather.page.html',
   styleUrls: ['./weather.page.scss'],
+  standalone: false,
 })
 export class WeatherPage extends BasePage {
   windDirectionOptions: SelectOption[] = [

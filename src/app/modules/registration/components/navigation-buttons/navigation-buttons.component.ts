@@ -11,6 +11,7 @@ import { ISummaryItem } from '../summary-item/summary-item.model';
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',
   styleUrls: ['./navigation-buttons.component.scss'],
+  standalone: false,
 })
 export class NavigationButtonsComponent implements OnInit {
   @Input() draft: RegistrationDraft;

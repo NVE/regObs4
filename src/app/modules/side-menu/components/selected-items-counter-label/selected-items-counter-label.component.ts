@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   templateUrl: './selected-items-counter-label.component.html',
   styleUrls: ['./selected-items-counter-label.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SelectedItemsCounterLabelComponent {
   @Input() selectedItemsCount: number;

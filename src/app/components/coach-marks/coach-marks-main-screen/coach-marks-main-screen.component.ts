@@ -16,6 +16,7 @@ import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../core/an
     trigger('warning-icon-animation', CustomAnimation.createEnterScaleInAnimation(5000, 500, EASE_IN_OUT_BACK)),
     trigger('warning-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(6000, 500, EASE_IN_OUT, 0.9)),
   ],
+  standalone: false,
 })
 export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   showCoachMarks$: Observable<boolean>;

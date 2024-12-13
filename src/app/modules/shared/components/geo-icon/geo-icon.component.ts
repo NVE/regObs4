@@ -5,6 +5,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
   selector: 'app-geo-icon',
   templateUrl: './geo-icon.component.html',
   styleUrls: ['./geo-icon.component.scss'],
+  standalone: false,
 })
 export class GeoIconComponent {
   @Input() geoHazards: GeoHazard[];

@@ -5,6 +5,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 
 @Directive({
   selector: '[appHeaderColor]',
+  standalone: false,
 })
 export class HeaderColorDirective implements OnInit, OnDestroy {
   private appMode: AppMode;

@@ -1,4 +1,4 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, inject, provideAppInitializer } from '@angular/core';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { SharedModule } from '../shared/shared.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -30,12 +30,10 @@ function createTranslateLoader(http: HttpClient) {
       useFactory: createTranslateLoader,
       deps: [HttpClient],
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initTranslateService,
-      deps: [TranslateService, UserSettingService],
-      multi: true,
-    },
+    provideAppInitializer(() => {
+      const initializerFn = initTranslateService(inject(TranslateService), inject(UserSettingService));
+      return initializerFn();
+    }),
     { provide: LoggingService, useClass: TestLoggingService },
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),

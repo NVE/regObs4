@@ -23,6 +23,7 @@ import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avala
   selector: 'app-avalanche-obs',
   templateUrl: './avalanche-obs.page.html',
   styleUrls: ['./avalanche-obs.page.scss'],
+  standalone: false,
 })
 export class AvalancheObsPage extends BasePage {
   expoArray: SelectOption[] = [

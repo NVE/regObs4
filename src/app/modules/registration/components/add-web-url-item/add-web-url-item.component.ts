@@ -7,6 +7,7 @@ import { UrlViewModel } from 'src/app/modules/common-regobs-api/models';
   selector: 'app-add-web-url-item',
   templateUrl: './add-web-url-item.component.html',
   styleUrls: ['./add-web-url-item.component.scss'],
+  standalone: false,
 })
 export class AddWebUrlItemComponent {
   @Input() title = 'REGISTRATION.ADD_WEB_URL.TITLE';

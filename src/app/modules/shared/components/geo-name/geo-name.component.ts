@@ -8,6 +8,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
   selector: 'app-geo-name',
   template: '{{ name$ | async }}',
   styleUrls: ['./geo-name.component.scss'],
+  standalone: false,
 })
 export class GeoNameComponent implements OnChanges {
   @Input() geoHazards: GeoHazard[];

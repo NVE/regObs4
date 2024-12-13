@@ -6,6 +6,7 @@ import { RegobsAuthService } from '../../services/regobs-auth.service';
   selector: 'app-auth-callback',
   templateUrl: './auth-callback.page.html',
   styleUrls: ['./auth-callback.page.scss'],
+  standalone: false,
 })
 export class AuthCallbackPage implements OnInit {
   constructor(private regobsAuthService: RegobsAuthService, private router: Router) {}

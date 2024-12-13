@@ -42,6 +42,7 @@ function existingAttachmentsHasNotChanged(
   templateUrl: './edit-images-bar.component.html',
   styleUrls: ['./edit-images-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class EditImagesBarComponent {
   @Input() draft: RegistrationDraft;

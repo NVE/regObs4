@@ -19,6 +19,7 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
   templateUrl: './offline-package-modal.component.html',
   styleUrls: ['./offline-package-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
   @Input() feature: CompoundPackageFeature;

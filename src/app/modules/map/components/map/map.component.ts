@@ -76,6 +76,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
+  standalone: false,
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showMapSearch = true;

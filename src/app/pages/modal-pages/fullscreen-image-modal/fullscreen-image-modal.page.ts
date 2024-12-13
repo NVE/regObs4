@@ -11,6 +11,7 @@ type HrefType = { title: string; url: string };
   templateUrl: './fullscreen-image-modal.page.html',
   styleUrls: ['./fullscreen-image-modal.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FullscreenImageModalPage implements OnInit {
   // @ViewChild(IonSlides) slider: IonSlides;

@@ -19,6 +19,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class KdvSelectComponent implements OnInit, OnChanges {
   @Input() label: string;

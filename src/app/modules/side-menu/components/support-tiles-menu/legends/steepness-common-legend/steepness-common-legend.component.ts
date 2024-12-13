@@ -7,6 +7,7 @@ import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/su
   templateUrl: './steepness-common-legend.component.html',
   styleUrls: ['./steepness-common-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SteepnessCommonLegendComponent {
   @Input() show27to30 = true;

@@ -6,6 +6,7 @@ import { UrlEditModel } from 'src/app/modules/common-regobs-api/models';
   selector: 'app-add-web-url-modal',
   templateUrl: './add-web-url-modal.page.html',
   styleUrls: ['./add-web-url-modal.page.scss'],
+  standalone: false,
 })
 export class AddWebUrlModalPage implements OnInit {
   @Input() weburl: UrlEditModel;

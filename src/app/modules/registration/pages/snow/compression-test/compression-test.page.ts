@@ -8,6 +8,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
   selector: 'app-compression-test',
   templateUrl: './compression-test.page.html',
   styleUrls: ['./compression-test.page.scss'],
+  standalone: false,
 })
 export class CompressionTestPage extends BasePage {
   constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {

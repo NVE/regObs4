@@ -14,6 +14,7 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
   animations: animations,
+  standalone: false,
 })
 export class StartWizardPage implements OnInit, OnDestroy {
   // @ViewChild(IonSlides) slides: IonSlides;

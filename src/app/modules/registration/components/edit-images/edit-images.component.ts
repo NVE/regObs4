@@ -45,6 +45,7 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
   templateUrl: './edit-images.component.html',
   styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class EditImagesComponent implements OnInit {
   @Input() draftUuid: string;

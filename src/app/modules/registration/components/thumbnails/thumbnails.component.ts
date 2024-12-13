@@ -17,6 +17,7 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
   templateUrl: './thumbnails.component.html',
   styleUrls: ['./thumbnails.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ThumbnailsComponent implements OnChanges, OnInit {
   @Input() attachments: ExistingOrNewAttachment[]; //attachments for given draft registration

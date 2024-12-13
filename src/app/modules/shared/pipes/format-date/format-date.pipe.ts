@@ -3,6 +3,7 @@ import { DateHelperService } from '../../services/date-helper/date-helper.servic
 
 @Pipe({
   name: 'formatDate',
+  standalone: false,
 })
 export class FormatDatePipe implements PipeTransform {
   constructor(private dateHelperService: DateHelperService) {}

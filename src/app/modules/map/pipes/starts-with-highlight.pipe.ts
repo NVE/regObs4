@@ -3,6 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Pipe({
   name: 'startsWithHighlight',
+  standalone: false,
 })
 export class StartsWithHighlightPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
