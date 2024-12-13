@@ -21,7 +21,6 @@ const PREVIEW_JPG_QUALITY = 0.5;
 
 @Injectable()
 export class WebAttachmentService extends NewAttachmentService {
-
   protected DEBUG_TAG = 'WebAttachmentService';
   private hasChange = new Subject<void>();
   private blobCache = new Map<AttachmentUploadEditModel['id'], Blob>();
@@ -35,7 +34,15 @@ export class WebAttachmentService extends NewAttachmentService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addAttachmentAsUrl(registrationId: string, fileUrl: string, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): Promise<void> {
+  addAttachmentAsUrl(
+    registrationId: string,
+    fileUrl: string,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void> {
     throw new Error('Method not implemented.');
   }
 

@@ -21,7 +21,7 @@ describe('isPackageOutdated', () => {
         urls: [],
         sizeInMib: 0,
       },
-    ]
+    ],
   });
 
   it('burde returnere true hvis pakka på server er nyere enn nedlasta pakke', () => {
@@ -42,7 +42,7 @@ describe('isPackageOutdated', () => {
           template: '1-2-3',
           lastModified: '2021-01-02T00:00:01Z',
         },
-      }
+      },
     };
     expect(isPackageOutdated(outdatedDownloadedPackage, packageOnServer)).toBe(true);
   });
@@ -60,15 +60,15 @@ describe('isPackageOutdated', () => {
       rootTile: { z: 1, x: 2, y: 3 },
       zMax: 4,
       template: '1-2-3',
-      lastModified: ''
+      lastModified: '',
     };
 
     const oldDownloadedPackage: OfflineMapPackage = {
       name: 'nedlastet-pakke-uten-produksjonsdato',
       maps: {
         '1': mapWithoutLastModified,
-        '2': mapWithEmptyLastModified
-      }
+        '2': mapWithEmptyLastModified,
+      },
     };
 
     expect(isPackageOutdated(oldDownloadedPackage, packageOnServer)).toBe(true);
@@ -96,10 +96,10 @@ describe('isPackageOutdated', () => {
           rootTile: { z: 1, x: 2, y: 3 },
           zMax: 4,
           template: '1-2-3',
-          lastModified: '2021-01-03T00:00:01Z'
+          lastModified: '2021-01-03T00:00:01Z',
         },
       },
-    }
+    };
     expect(isPackageOutdated(freshDownloadedPackage, packageOnServer)).toBe(false);
   });
 });

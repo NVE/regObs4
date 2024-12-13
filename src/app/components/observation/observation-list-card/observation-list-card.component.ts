@@ -90,7 +90,7 @@ export class ObservationListCardComponent implements OnChanges {
     private toastController: ToastController,
     private translateService: TranslateService,
     private confirmationModalService: ConfirmationModalService
-  ) { }
+  ) {}
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
@@ -160,9 +160,9 @@ export class ObservationListCardComponent implements OnChanges {
   private extent2Polygon(extent: number[][], color: string) {
     return extent
       ? new L.Polygon(
-        extent.map(([lng, lat]) => [lat, lng]),
-        { color }
-      )
+          extent.map(([lng, lat]) => [lat, lng]),
+          { color }
+        )
       : null;
   }
 

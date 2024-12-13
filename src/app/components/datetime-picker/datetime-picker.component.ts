@@ -64,7 +64,7 @@ export class DatetimePickerComponent implements OnInit {
     this.datePickerOpen = false;
     this.datePickerOpenChange.emit(this.datePickerOpen);
 
-    if (event.detail.data && event.detail.role === 'confirm' || this.resetable) {
+    if ((event.detail.data && event.detail.role === 'confirm') || this.resetable) {
       this.dateTimeChange.emit(event.detail.data);
     }
   }

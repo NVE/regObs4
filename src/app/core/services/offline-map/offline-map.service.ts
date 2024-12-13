@@ -135,7 +135,8 @@ export class OfflineMapService implements OnReset {
 
     // Read all package metadata
     const packages = await Promise.allSettled(packageNames.map((name) => this.getMetadata(name)));
-    const fulfilledPackages = packages.filter((result) => result.status === 'fulfilled')
+    const fulfilledPackages = packages
+      .filter((result) => result.status === 'fulfilled')
       .map((result) => (result as PromiseFulfilledResult<OfflineMapPackage>).value);
 
     return fulfilledPackages;
@@ -281,7 +282,8 @@ export class OfflineMapService implements OnReset {
       });
       const numParts = parts.length;
       this.loggingService.debug(
-        `Started native download of ${mapPackage.name}, part ${partNumber + 1}/${numParts}: ${part.name}, fileRef = ${result.fileReference
+        `Started native download of ${mapPackage.name}, part ${partNumber + 1}/${numParts}: ${part.name}, fileRef = ${
+          result.fileReference
         }`,
         DEBUG_TAG
       );
