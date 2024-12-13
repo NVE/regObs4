@@ -1,6 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, HostBinding } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import { NgIf } from '@angular/common';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Component for showing online images.
@@ -14,7 +17,7 @@ import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/dr
   templateUrl: './remote-image.component.html',
   styleUrls: ['./remote-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, SvgIconComponent, TranslateModule],
 })
 export class RemoteImageComponent implements OnInit {
   @Input() attachment: RemoteOrLocalAttachmentEditModel;

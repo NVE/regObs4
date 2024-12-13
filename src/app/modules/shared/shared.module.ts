@@ -45,8 +45,6 @@ import { ObservationListViewComponent } from './components/list-view/observation
     MapImageModule,
     AuthModule,
     StaticMapImageModule,
-  ],
-  declarations: [
     ShadowCssDirective,
     AddMenuComponent,
     ExternalLinkComponent,

@@ -3,7 +3,6 @@ import { AvalancheActivityModalPage } from './avalanche-activity-modal.page';
 import { SharedComponentsModule } from '../../../../shared-components.module';
 
 @NgModule({
-  imports: [SharedComponentsModule],
-  declarations: [AvalancheActivityModalPage],
+  imports: [SharedComponentsModule, AvalancheActivityModalPage],
 })
 export class AvalancheActivityModalPageModule {}

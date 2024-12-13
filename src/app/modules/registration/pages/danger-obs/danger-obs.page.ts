@@ -1,7 +1,7 @@
 import { Component, NgZone } from '@angular/core';
 import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../base-page-service';
@@ -9,6 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgFor } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Used to add or edit danger observations.
@@ -20,7 +25,15 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
   styleUrls: ['./danger-obs.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    NgFor,
+    EditImagesComponent,
+    TranslateModule,
+  ],
 })
 export class DangerObsPage extends BasePage {
   private dangerSignKdv: KdvElement[];

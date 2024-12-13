@@ -1,14 +1,34 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
+import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
+import { FormsModule } from '@angular/forms';
+import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
+import { NgIf } from '@angular/common';
+import { SelectComponent } from '../../../../../shared/components/input/select/select.component';
+import { NumericInputComponent } from '../../../numeric-input/numeric-input.component';
+import { TextCommentComponent } from '../../../text-comment/text-comment.component';
+import { ModalSaveOrDeleteButtonsComponent } from '../../../modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-compression-test-modal',
   templateUrl: './compression-test-modal.page.html',
   styleUrls: ['./compression-test-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    FormsModule,
+    KdvSelectComponent,
+    NgIf,
+    SelectComponent,
+    NumericInputComponent,
+    TextCommentComponent,
+    ModalSaveOrDeleteButtonsComponent,
+    TranslateModule,
+  ],
 })
 export class CompressionTestModalPage implements OnInit {
   @Input() compressionTest: CompressionTestEditModel;

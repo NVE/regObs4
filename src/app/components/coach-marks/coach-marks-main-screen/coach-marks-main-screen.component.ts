@@ -4,6 +4,10 @@ import { Observable, Subject, merge } from 'rxjs';
 import { map, distinctUntilChanged, take, takeUntil, filter, delay } from 'rxjs/operators';
 import { trigger } from '@angular/animations';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../core/animations/custom.animation';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { GeoFabComponent } from '../../../modules/shared/components/geo-fab/geo-fab.component';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-coach-marks-main-screen',
@@ -16,7 +20,7 @@ import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../core/an
     trigger('warning-icon-animation', CustomAnimation.createEnterScaleInAnimation(5000, 500, EASE_IN_OUT_BACK)),
     trigger('warning-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(6000, 500, EASE_IN_OUT, 0.9)),
   ],
-  standalone: false,
+  imports: [NgIf, GeoFabComponent, IonicModule, AsyncPipe, TranslateModule],
 })
 export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   showCoachMarks$: Observable<boolean>;

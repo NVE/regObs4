@@ -8,8 +8,7 @@ describe('FloodzonesLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [FloodzonesLegendComponent],
+      imports: [TestModule, FloodzonesLegendComponent],
     }).compileComponents();
   }));
 

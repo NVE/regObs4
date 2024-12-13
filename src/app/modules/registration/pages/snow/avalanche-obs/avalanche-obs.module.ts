@@ -20,7 +20,7 @@ const routes: Routes = [
     AddWebUrlModalPageModule,
     SetAvalanchePositionPageModule,
     RouterModule.forChild(routes),
+    AvalancheObsPage,
   ],
-  declarations: [AvalancheObsPage],
 })
 export class AvalancheObsPageModule {}

@@ -6,13 +6,15 @@ import { SearchCriteriaService, SLUSH_FLOW_ID } from 'src/app/core/services/sear
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-slush-flow-filter',
   templateUrl: './slush-flow-filter.component.html',
   styleUrls: ['./slush-flow-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, IonicModule, AsyncPipe],
 })
 export class SlushFlowFilterComponent extends NgDestoryBase implements OnInit {
   visible$: Observable<boolean>;

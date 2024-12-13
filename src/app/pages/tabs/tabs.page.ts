@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, IonicModule } from '@ionic/angular';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
@@ -8,12 +8,15 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { CoachMarksMainScreenComponent } from '../../components/coach-marks/coach-marks-main-screen/coach-marks-main-screen.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, CoachMarksMainScreenComponent, AsyncPipe, TranslateModule],
 })
 export class TabsPage implements OnInit, OnDestroy {
   private warningGroupInMapViewSubscription: Subscription;

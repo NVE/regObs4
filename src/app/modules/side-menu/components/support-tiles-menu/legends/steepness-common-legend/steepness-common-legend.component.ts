@@ -1,13 +1,15 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/support-map-info.page';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-steepness-common-legend',
   templateUrl: './steepness-common-legend.component.html',
   styleUrls: ['./steepness-common-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, NgIf, TranslateModule],
 })
 export class SteepnessCommonLegendComponent {
   @Input() show27to30 = true;

@@ -1,9 +1,9 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NavController, LoadingController, Platform } from '@ionic/angular';
+import { NavController, LoadingController, Platform, IonicModule } from '@ionic/angular';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import * as version from '../../../environments/version.json';
 import { AppVersion } from '../../core/models/app-version.model';
 import { Observable, Subscription, firstValueFrom } from 'rxjs';
@@ -17,6 +17,11 @@ import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../core/services/confirmation-modal/confirmation-modal.service';
+import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
+import { FormsModule } from '@angular/forms';
+import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -25,7 +30,16 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
   selector: 'app-user-settings',
   templateUrl: './user-settings.page.html',
   styleUrls: ['./user-settings.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    SelectComponent,
+    FormsModule,
+    AsyncPipe,
+    TranslateModule,
+    FormatDatePipe,
+  ],
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;

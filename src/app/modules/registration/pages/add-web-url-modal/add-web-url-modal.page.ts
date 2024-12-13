@@ -1,12 +1,24 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { UrlEditModel } from 'src/app/modules/common-regobs-api/models';
+import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
+import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
+import { FormsModule } from '@angular/forms';
+import { ModalSaveOrDeleteButtonsComponent } from '../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-web-url-modal',
   templateUrl: './add-web-url-modal.page.html',
   styleUrls: ['./add-web-url-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    TextCommentComponent,
+    FormsModule,
+    ModalSaveOrDeleteButtonsComponent,
+    TranslateModule,
+  ],
 })
 export class AddWebUrlModalPage implements OnInit {
   @Input() weburl: UrlEditModel;

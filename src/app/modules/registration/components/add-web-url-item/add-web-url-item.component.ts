@@ -1,13 +1,15 @@
 import { Component, Input, NgZone, Output, EventEmitter } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
 import { UrlViewModel } from 'src/app/modules/common-regobs-api/models';
+import { NgFor } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-web-url-item',
   templateUrl: './add-web-url-item.component.html',
   styleUrls: ['./add-web-url-item.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgFor, TranslateModule],
 })
 export class AddWebUrlItemComponent {
   @Input() title = 'REGISTRATION.ADD_WEB_URL.TITLE';

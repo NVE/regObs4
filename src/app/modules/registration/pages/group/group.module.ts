@@ -11,7 +11,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [GroupPage],
+  imports: [SharedComponentsModule, RouterModule.forChild(routes), GroupPage],
 })
 export class GroupPageModule {}

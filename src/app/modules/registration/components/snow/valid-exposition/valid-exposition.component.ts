@@ -1,4 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { NgIf, NgClass } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 const EMPTY_EXPOSITION = '00000000';
 const ALL_EXPOSITION = '11111111';
@@ -7,7 +10,7 @@ const ALL_EXPOSITION = '11111111';
   selector: 'app-valid-exposition',
   templateUrl: './valid-exposition.component.html',
   styleUrls: ['./valid-exposition.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, NgClass, TranslateModule],
 })
 export class ValidExpositionComponent implements OnInit {
   @Input() validExposition: string;

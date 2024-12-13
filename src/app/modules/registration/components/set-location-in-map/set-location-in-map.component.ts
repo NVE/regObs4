@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
-import { IonInput } from '@ionic/angular';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { IonInput, IonicModule } from '@ionic/angular';
+import { LangChangeEvent, TranslateService, TranslateModule } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
@@ -33,6 +33,13 @@ import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { settings } from 'src/settings';
+import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { MapComponent } from '../../../map/components/map/map.component';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
+import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
+import { SelectComponent } from '../../../shared/components/input/select/select.component';
+import { FormsModule } from '@angular/forms';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -89,7 +96,21 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
   selector: 'app-set-location-in-map',
   templateUrl: './set-location-in-map.component.html',
   styleUrls: ['./set-location-in-map.component.scss'],
-  standalone: false,
+  imports: [
+    NgIf,
+    MapComponent,
+    NgClass,
+    SvgIconComponent,
+    IonicModule,
+    DatetimePickerComponent,
+    KdvSelectComponent,
+    SelectComponent,
+    NgFor,
+    FormsModule,
+    AsyncPipe,
+    DecimalPipe,
+    TranslateModule,
+  ],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() geoHazard: GeoHazard;

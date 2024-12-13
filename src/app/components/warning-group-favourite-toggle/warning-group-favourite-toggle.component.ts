@@ -3,13 +3,14 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastController, DomController, IonIcon } from '@ionic/angular';
+import { ToastController, DomController, IonIcon, IonicModule } from '@ionic/angular';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-warning-group-favourite-toggle',
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgClass],
 })
 export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChanges {
   @Input() key: WarningGroupKey;

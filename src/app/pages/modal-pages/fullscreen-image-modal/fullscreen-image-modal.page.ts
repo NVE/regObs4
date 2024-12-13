@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform, IonicModule } from '@ionic/angular';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 type HrefType = { title: string; url: string };
 
@@ -11,7 +13,7 @@ type HrefType = { title: string; url: string };
   templateUrl: './fullscreen-image-modal.page.html',
   styleUrls: ['./fullscreen-image-modal.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, IonicModule, TranslateModule],
 })
 export class FullscreenImageModalPage implements OnInit {
   // @ViewChild(IonSlides) slider: IonSlides;

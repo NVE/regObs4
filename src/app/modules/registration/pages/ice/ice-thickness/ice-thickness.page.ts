@@ -1,17 +1,41 @@
 import { Component, NgZone } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessEditModel, IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
+import { YesNoSelectComponent } from '../../../components/yes-no-select/yes-no-select.component';
+import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
+import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
 
 @Component({
   selector: 'app-ice-thickness',
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    NumericInputComponent,
+    NgFor,
+    YesNoSelectComponent,
+    TextCommentComponent,
+    EditImagesComponent,
+    AsyncPipe,
+    TranslateModule,
+    KdvDescriptionPipe,
+    MetersToCmPipe,
+  ],
 })
 export class IceThicknessPage extends BasePage {
   isWaterBefore: boolean = undefined;

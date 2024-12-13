@@ -3,6 +3,9 @@ import { SummaryItemService } from '../../services/summary-item.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
 import { ISummaryItem } from '../summary-item/summary-item.model';
+import { IonicModule } from '@ionic/angular';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Used to navigate from one registration form to previous or next form
@@ -11,7 +14,7 @@ import { ISummaryItem } from '../summary-item/summary-item.model';
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',
   styleUrls: ['./navigation-buttons.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, TranslateModule],
 })
 export class NavigationButtonsComponent implements OnInit {
   @Input() draft: RegistrationDraft;

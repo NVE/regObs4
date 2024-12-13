@@ -1,12 +1,19 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { StratProfileLayerEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
+import { FormsModule } from '@angular/forms';
+import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
+import { KdvSelectComponent } from '../../../../../../../components/kdv-select/kdv-select.component';
+import { SelectComponent } from '../../../../../../shared/components/input/select/select.component';
+import { NgIf, LowerCasePipe } from '@angular/common';
+import { TextCommentComponent } from '../../../../text-comment/text-comment.component';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
@@ -16,7 +23,18 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
   selector: 'app-strat-profile-layer-modal',
   templateUrl: './strat-profile-layer-modal.page.html',
   styleUrls: ['./strat-profile-layer-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    FormsModule,
+    NumericInputComponent,
+    KdvSelectComponent,
+    SelectComponent,
+    NgIf,
+    TextCommentComponent,
+    LowerCasePipe,
+    TranslateModule,
+  ],
 })
 export class StratProfileLayerModalPage implements OnInit {
   @Input() layer: StratProfileLayerEditModel;

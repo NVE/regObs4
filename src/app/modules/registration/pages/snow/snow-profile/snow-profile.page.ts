@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
-import { ModalController, LoadingController, ToastController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController, IonicModule } from '@ionic/angular';
 import { FullscreenImageModalPage } from '../../../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../../settings';
 import { firstValueFrom, from, of } from 'rxjs';
@@ -17,6 +17,18 @@ import { LoggingService } from '../../../../shared/services/logging/logging.serv
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { YesNoSelectComponent } from '../../../components/yes-no-select/yes-no-select.component';
+import { SelectComponent } from '../../../../shared/components/input/select/select.component';
+import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
+import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
+import { StratProfileComponent } from '../../../components/snow/snow-profile/strat-profile/strat-profile.component';
+import { SnowTempComponent } from '../../../components/snow/snow-profile/snow-temp/snow-temp.component';
+import { SnowDensityComponent } from '../../../components/snow/snow-profile/snow-density/snow-density.component';
+import { CompressionTestComponent } from '../../../components/snow/snow-profile/compression-test/compression-test.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -33,7 +45,22 @@ const DEBUG_TAG = 'SnowProfilePage';
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.page.html',
   styleUrls: ['./snow-profile.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    YesNoSelectComponent,
+    SelectComponent,
+    NumericInputComponent,
+    TextCommentComponent,
+    StratProfileComponent,
+    SnowTempComponent,
+    SnowDensityComponent,
+    CompressionTestComponent,
+    EditImagesComponent,
+    TranslateModule,
+  ],
 })
 export class SnowProfilePage extends BasePage {
   expositionOptions: SelectOption[] = [

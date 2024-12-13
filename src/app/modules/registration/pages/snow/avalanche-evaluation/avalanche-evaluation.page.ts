@@ -3,12 +3,29 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { IonicModule } from '@ionic/angular';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
+import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-evaluation',
   templateUrl: './avalanche-evaluation.page.html',
   styleUrls: ['./avalanche-evaluation.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    TextCommentComponent,
+    KdvSelectComponent,
+    EditImagesComponent,
+    TranslateModule,
+  ],
 })
 export class AvalancheEvaluationPage extends BasePage {
   constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {

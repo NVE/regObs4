@@ -6,7 +6,6 @@ import { FullscreenImageModalPage } from './fullscreen-image-modal.page';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [CommonModule, IonicModule, FormsModule, TranslateModule],
-  declarations: [FullscreenImageModalPage],
+  imports: [CommonModule, IonicModule, FormsModule, TranslateModule, FullscreenImageModalPage],
 })
 export class FullscreenImageModalPageModule {}

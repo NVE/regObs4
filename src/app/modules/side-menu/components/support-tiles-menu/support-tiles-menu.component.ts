@@ -6,6 +6,11 @@ import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
 import { takeUntil } from 'rxjs/operators';
 import { Capacitor } from '@capacitor/core';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { SupportTileLegendLoaderComponent } from './legends/support-tile-legend-loader/support-tile-legend-loader.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface PopupSubscription {
   subscription: Subscription;
@@ -18,7 +23,7 @@ interface PopupSubscription {
   templateUrl: './support-tiles-menu.component.html',
   styleUrls: ['./support-tiles-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, NgFor, IonicModule, FormsModule, SupportTileLegendLoaderComponent, AsyncPipe, TranslateModule],
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
   isWeb = Capacitor.getPlatform() === 'web';

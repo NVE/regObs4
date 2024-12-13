@@ -12,8 +12,7 @@ describe('GeoNameComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [GeoNameComponent],
+      imports: [TestModule, GeoNameComponent],
       providers: [GeoHelperService, provideMock(GeoHelperService)],
     });
     geoHelperService = TestBed.inject(GeoHelperService) as unknown as Spied<GeoHelperService>;

@@ -4,15 +4,28 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { map, Observable, combineLatest, Subject } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
-import { IonAccordionGroup } from '@ionic/angular';
+import { IonAccordionGroup, IonicModule } from '@ionic/angular';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
 import { Capacitor } from '@capacitor/core';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
+import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
+import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
-  standalone: false,
+  imports: [
+    NgIf,
+    IonicModule,
+    CheckDaysOrWeeksBackComponent,
+    ObservationsDaysBackComponent,
+    DatetimePickerComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class DateRangeComponent extends NgDestoryBase {
   minDate = new Date('2010-01-01T00:00:00').toISOString();

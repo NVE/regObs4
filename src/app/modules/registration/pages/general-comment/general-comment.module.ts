@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes)],
-  declarations: [GeneralCommentPage],
+  imports: [SharedComponentsModule, AddWebUrlModalPageModule, RouterModule.forChild(routes), GeneralCommentPage],
 })
 export class GeneralCommentPageModule {}

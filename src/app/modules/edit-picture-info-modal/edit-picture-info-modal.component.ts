@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-picture-info-modal',
   templateUrl: './edit-picture-info-modal.component.html',
   styleUrls: ['./edit-picture-info-modal.component.scss'],
-  standalone: false,
+  imports: [IonicModule, FormsModule, TranslateModule],
 })
 export class EditPictureInfoModalComponent {
   copyright: string;

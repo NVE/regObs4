@@ -8,6 +8,9 @@ import {
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { BlobImageComponent } from '../blob-image/blob-image.component';
+import { RemoteImageComponent } from '../../../shared/components/remote-image/remote-image.component';
 
 /**
  * Show thumbnails of all images for given registration.
@@ -17,7 +20,7 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
   templateUrl: './thumbnails.component.html',
   styleUrls: ['./thumbnails.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgFor, BlobImageComponent, RemoteImageComponent, NgIf, AsyncPipe],
 })
 export class ThumbnailsComponent implements OnChanges, OnInit {
   @Input() attachments: ExistingOrNewAttachment[]; //attachments for given draft registration

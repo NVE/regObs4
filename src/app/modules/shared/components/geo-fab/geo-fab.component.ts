@@ -6,6 +6,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
 import { map, take } from 'rxjs/operators';
+import { IonicModule } from '@ionic/angular';
 
 const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
 @Component({
@@ -44,7 +45,7 @@ const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, Ge
       ]),
     ]),
   ],
-  standalone: false,
+  imports: [IonicModule],
 })
 export class GeoFabComponent implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;

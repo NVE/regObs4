@@ -4,8 +4,7 @@ import { KdvDescriptionPipe } from './pipes/kdvDescription.pipe';
 const PIPES = [KdvDescriptionPipe];
 
 @NgModule({
-  declarations: PIPES,
-  imports: [],
+  imports: [...PIPES],
   exports: PIPES,
 })
 export class RegobsRegistrationPipesModule {}

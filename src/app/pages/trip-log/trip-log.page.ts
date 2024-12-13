@@ -3,12 +3,16 @@ import { BackgroundGeolocationService } from '../../core/services/background-geo
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
 import { Subscription } from 'rxjs';
+import { IonicModule } from '@ionic/angular';
+import { NgIf } from '@angular/common';
+import { TripLogSummaryComponent } from '../../components/trip-log-summary/trip-log-summary.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',
   styleUrls: ['./trip-log.page.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, TripLogSummaryComponent, TranslateModule],
 })
 export class TripLogPage implements OnInit, OnDestroy {
   state: TripLogState = TripLogState.NotStarted;

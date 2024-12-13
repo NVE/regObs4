@@ -20,8 +20,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), TranslateModule, SharedModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    TranslateModule,
+    SharedModule,
     WarningListPage,
     WarningListHeaderComponent,
     WarningListItemComponent,

@@ -40,6 +40,9 @@ import {
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapService } from '../../services/map/map.service';
+import { NgIf } from '@angular/common';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { MapControlsComponent } from '../map-controls/map-controls.component';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -76,7 +79,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  standalone: false,
+  imports: [NgIf, LeafletModule, MapControlsComponent],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showMapSearch = true;

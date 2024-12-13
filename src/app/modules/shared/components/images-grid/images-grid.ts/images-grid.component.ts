@@ -5,12 +5,13 @@ import { ModalController } from '@ionic/angular';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { FullscreenImageModalPage } from 'src/app/pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { HasRegId } from 'src/app/modules/common-registration/registration.helpers';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-images-grid',
   templateUrl: './images-grid.component.html',
   styleUrls: ['./images-grid.component.scss'],
-  standalone: false,
+  imports: [NgFor],
 })
 export class ImagesGridComponent {
   @Input() attachments: SearchRegistrationsWithAttachments[];

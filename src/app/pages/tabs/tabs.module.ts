@@ -16,7 +16,8 @@ import { CoachMarksMainScreenComponent } from 'src/app/components/coach-marks/co
     WarningListPageModule,
     ObservationListPageModule,
     SharedModule,
+    TabsPage,
+    CoachMarksMainScreenComponent,
   ],
-  declarations: [TabsPage, CoachMarksMainScreenComponent],
 })
 export class TabsPageModule {}

@@ -1,16 +1,21 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
 import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
+import { FormsModule } from '@angular/forms';
+import { NgIf, DecimalPipe } from '@angular/common';
+import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-snow-density-layer-modal',
   templateUrl: './snow-density-layer-modal.page.html',
   styleUrls: ['./snow-density-layer-modal.page.scss'],
-  standalone: false,
+  imports: [IonicModule, HeaderColorDirective, FormsModule, NgIf, NumericInputComponent, DecimalPipe, TranslateModule],
 })
 export class SnowDensityLayerModalPage implements OnInit {
   @Input() draft: RegistrationDraft;

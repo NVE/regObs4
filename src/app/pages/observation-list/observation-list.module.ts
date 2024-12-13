@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [FullscreenImageModalPageModule, SharedModule, RouterModule.forChild(routes)],
-  declarations: [ObservationListPage],
+  imports: [FullscreenImageModalPageModule, SharedModule, RouterModule.forChild(routes), ObservationListPage],
 })
 export class ObservationListPageModule {}

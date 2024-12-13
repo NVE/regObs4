@@ -8,12 +8,27 @@ import { AtAGlanceViewModel, AttachmentViewModel, KdvElement } from 'src/app/mod
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { StarRatingHelper } from '../competence/star-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { NgIf, NgClass, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { CompetenceComponent } from '../competence/competence.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
 
 @Component({
   selector: 'app-map-item-bar',
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss'],
-  standalone: false,
+  imports: [
+    NgIf,
+    IonicModule,
+    NgClass,
+    SvgIconComponent,
+    CompetenceComponent,
+    AsyncPipe,
+    TranslateModule,
+    FormatDatePipe,
+  ],
 })
 /**
  * Show key info from selected registration on top of the map.

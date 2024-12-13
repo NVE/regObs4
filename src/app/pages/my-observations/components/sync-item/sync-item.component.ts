@@ -6,13 +6,19 @@ import {
   RegistrationDraftErrorCode,
 } from 'src/app/core/services/draft/draft-model';
 import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
+import { IonicModule } from '@ionic/angular';
+import { RouterLink } from '@angular/router';
+import { GeoIconComponent } from '../../../../modules/shared/components/geo-icon/geo-icon.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormatDatePipe } from '../../../../modules/shared/pipes/format-date/format-date.pipe';
 
 @Component({
   selector: 'app-sync-item',
   templateUrl: './sync-item.component.html',
   styleUrls: ['./sync-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, RouterLink, GeoIconComponent, NgIf, AsyncPipe, TranslateModule, FormatDatePipe],
 })
 export class SyncItemComponent {
   @Input() draft: RegistrationDraft;

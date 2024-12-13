@@ -2,17 +2,20 @@ import { Component, NgZone } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 import { CompoundPackage, CompoundPackageFeature } from './metadata.model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { PackageIndexService } from 'src/app/core/services/offline-map/package-index.service';
 import { isPackageOutdated } from 'src/app/core/services/offline-map/utils';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
+import { MapComponent } from '../../modules/map/components/map/map.component';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 const filledTileOpacity = 0.8;
 const notFilledTileOpacity = 0.1;
@@ -42,7 +45,7 @@ const DEBUG_TAG = 'OfflineMapPage';
   selector: 'app-offline-map',
   templateUrl: './offline-map.page.html',
   styleUrls: ['./offline-map.page.scss'],
-  standalone: false,
+  imports: [IonicModule, HeaderColorDirective, MapComponent, NgIf, NgFor, AsyncPipe, TranslateModule],
 })
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;

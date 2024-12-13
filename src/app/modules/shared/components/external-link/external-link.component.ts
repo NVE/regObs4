@@ -5,7 +5,6 @@ import { ExternalLinkService } from '../../../../core/services/external-link/ext
   selector: 'app-external-link',
   templateUrl: './external-link.component.html',
   styleUrls: ['./external-link.component.scss'],
-  standalone: false,
 })
 export class ExternalLinkComponent {
   @Input() src: string;

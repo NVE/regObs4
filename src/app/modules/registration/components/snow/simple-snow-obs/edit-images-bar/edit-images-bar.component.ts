@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import deepEqual from 'fast-deep-equal';
 import { map, Observable, distinctUntilChanged, combineLatest } from 'rxjs';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
@@ -14,6 +14,10 @@ import {
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { EditImagesPage } from '../../../edit-images/edit-images.page';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { EditImagesComponent } from '../../../edit-images/edit-images.component';
+import { ThumbnailsComponent } from '../../../thumbnails/thumbnails.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'EditImagesBarComponent';
 
@@ -42,7 +46,7 @@ function existingAttachmentsHasNotChanged(
   templateUrl: './edit-images-bar.component.html',
   styleUrls: ['./edit-images-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, EditImagesComponent, IonicModule, ThumbnailsComponent, AsyncPipe, TranslateModule],
 })
 export class EditImagesBarComponent {
   @Input() draft: RegistrationDraft;

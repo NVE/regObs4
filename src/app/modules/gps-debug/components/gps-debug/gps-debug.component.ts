@@ -4,16 +4,18 @@ import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switc
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
-import { IonContent } from '@ionic/angular';
+import { IonContent, IonicModule } from '@ionic/angular';
 import moment from 'moment';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
+import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-gps-debug',
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, NgClass, NgFor, AsyncPipe, DecimalPipe, TranslateModule],
 })
 export class GpsDebugComponent implements OnInit, OnDestroy {
   showLog$: Observable<boolean>;

@@ -1,16 +1,33 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
+import { SelectComponent } from '../../../../shared/components/input/select/select.component';
+import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
+import { ModalSaveOrDeleteButtonsComponent } from '../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 
 const COMMENT_SEPARATOR = ': ';
 @Component({
   selector: 'app-add-or-edit-danger-obs-modal',
   templateUrl: './add-or-edit-danger-obs-modal.page.html',
   styleUrls: ['./add-or-edit-danger-obs-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    FormsModule,
+    KdvSelectComponent,
+    SelectComponent,
+    TextCommentComponent,
+    ModalSaveOrDeleteButtonsComponent,
+    TranslateModule,
+  ],
 })
 export class AddOrEditDangerObsModalPage implements OnInit {
   @Input() dangerObs: DangerObsEditModel;

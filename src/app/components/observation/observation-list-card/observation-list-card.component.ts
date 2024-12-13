@@ -8,7 +8,7 @@ import {
   RegistrationViewModel,
   Summary,
 } from 'src/app/modules/common-regobs-api/models';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController, IonicModule } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
@@ -30,13 +30,19 @@ import { Router } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../core/services/confirmation-modal/confirmation-modal.service';
+import { NgIf, DatePipe } from '@angular/common';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { GeoNameComponent } from '../../../modules/shared/components/geo-name/geo-name.component';
+import { CompetenceComponent } from '../../competence/competence.component';
+import { ImgSwiperComponent } from '../../img-swiper/img-swiper.component';
+import { SummaryComponent } from '../summary/summary.component';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -51,7 +57,17 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   templateUrl: './observation-list-card.component.html',
   styleUrls: ['./observation-list-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    NgIf,
+    IonicModule,
+    SvgIconComponent,
+    GeoNameComponent,
+    CompetenceComponent,
+    ImgSwiperComponent,
+    SummaryComponent,
+    DatePipe,
+    TranslateModule,
+  ],
 })
 export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;
