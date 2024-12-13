@@ -6,19 +6,15 @@ import { MapSearchComponent } from './components/map-controls/map-search/map-sea
 import { FullscreenToggleComponent } from './components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from './components/map-controls/gps-center/gps-center.component';
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
-import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
-import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
-import { MapImageModule } from '../map-image/map-image.module';
 import { SharedModule } from '../shared/shared.module';
 import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.component';
-import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
 
 @NgModule({
   imports: [
@@ -30,11 +26,7 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     TranslateModule,
     RouterModule,
     LeafletModule,
-    ModalSearchPageModule,
-    ModalMapImagePageModule,
     SupportMapInfoPageModule,
-    MapImageModule,
-    StaticMapImageModule,
     SharedModule,
     MapComponent,
     MapControlsComponent,
@@ -52,8 +44,6 @@ import { StaticMapImageModule } from '../static-map-image/static-map-image.modul
     GpsCenterComponent,
     MapCenterInfoComponent,
     MapZoomComponent,
-    ModalSearchPageModule,
-    ModalMapImagePageModule,
     SupportMapInfoPageModule,
   ],
 })
