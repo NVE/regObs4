@@ -24,12 +24,10 @@ import { ExternalLinkComponent } from './components/external-link/external-link.
 import { RefreshWithCancelComponent } from './components/refresh-with-cancel/refresh-with-cancel.component';
 import { HeaderComponent } from './components/header/header.component';
 import { CompetenceComponent } from '../../components/competence/competence.component';
-import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
 import { AbsPipe } from './pipes/abs.pipe';
 import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
-import { StaticMapImageModule } from '../static-map-image/static-map-image.module';
 import { ImagesGridComponent } from './components/images-grid/images-grid.ts/images-grid.component';
 import { ObservationListViewComponent } from './components/list-view/observation-list-view.component';
 
@@ -42,9 +40,7 @@ import { ObservationListViewComponent } from './components/list-view/observation
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,
-    MapImageModule,
     AuthModule,
-    StaticMapImageModule,
     ShadowCssDirective,
     AddMenuComponent,
     ExternalLinkComponent,
@@ -80,7 +76,6 @@ import { ObservationListViewComponent } from './components/list-view/observation
     ObservationListViewComponent,
     ShadowCssDirective,
     AngularSvgIconModule,
-    MapImageModule,
     AddMenuComponent,
     ExternalLinkComponent,
     GeoIconComponent,
