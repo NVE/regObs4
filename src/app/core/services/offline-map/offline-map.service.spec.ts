@@ -17,10 +17,23 @@ describe('OfflineMapService', () => {
       is: (platformName: Platforms) => false,
     });
     const packages = new ReplaySubject<Map<string, CompoundPackage>>();
-    packageIndexServiceMock = jasmine.createSpyObj('PackageIndexService', {}, {
-      packages$: packages.asObservable(),
-    });
-    offlineMapService = new OfflineMapService(new TestLoggingService(), null, null, platformMock, null, null, null, packageIndexServiceMock);
+    packageIndexServiceMock = jasmine.createSpyObj(
+      'PackageIndexService',
+      {},
+      {
+        packages$: packages.asObservable(),
+      }
+    );
+    offlineMapService = new OfflineMapService(
+      new TestLoggingService(),
+      null,
+      null,
+      platformMock,
+      null,
+      null,
+      null,
+      packageIndexServiceMock
+    );
   });
 
   it('progress value for 10% for download step of part 1 of 2 should be 0.10 / 4 =  0.025', () => {

@@ -24,7 +24,15 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addAttachmentAsUrl(registrationId: string, fileUrl: string, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): Promise<void> {
+  addAttachmentAsUrl(
+    registrationId: string,
+    fileUrl: string,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
