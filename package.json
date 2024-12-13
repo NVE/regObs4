@@ -29,7 +29,6 @@
     "sentry:create-release": "cross-env-shell sentry-cli releases new $npm_package_version",
     "sentry:finalize-release": "cross-env-shell sentry-cli releases finalize $npm_package_version",
     "sentry:create-release-and-upload-sourcemaps": "npm run sentry:create-release && npm run sentry:upload-sourcemaps && npm run sentry:finalize-release",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
     "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts",
     "translations:pr": "ts-node --project tsconfig.npm-script.json translations/triggerPRs.ts",
     "translations:update-fallback": "ts-node --project tsconfig.npm-script.json translations/updateDbFallback.ts",
