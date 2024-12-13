@@ -1,5 +1,5 @@
 import { Component, HostListener, Injector } from '@angular/core';
-import { isPlatform, Platform } from '@ionic/angular';
+import { isPlatform, Platform, IonicModule } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -16,13 +16,17 @@ import { DraftToRegistrationService } from './core/services/draft/draft-to-regis
 import { BreakpointService } from './core/services/breakpoint.service';
 import { Keyboard } from '@capacitor/keyboard';
 import { SqliteService } from './core/services/sqlite/sqlite.service';
+import { SideMenuComponent } from './modules/side-menu/components/side-menu.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { FilterMenuComponent } from './modules/side-menu/components/filter-menu/filter-menu.component';
+import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
 
 const DEBUG_TAG = 'AppComponent';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  standalone: false,
+  imports: [IonicModule, SideMenuComponent, NgIf, FilterMenuComponent, GpsDebugComponent, AsyncPipe],
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;

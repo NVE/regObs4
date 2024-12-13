@@ -1,11 +1,34 @@
 /* eslint-disable no-console */
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { NanoSql } from './nanosql';
 import '@angular/compiler';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { APP_PROVIDERS } from './app/app.providers';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import { Drivers } from '@ionic/storage';
+import { settings } from 'src/settings';
+import { AppRoutingModule } from './app/app-routing.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { MarkdownModule } from 'ngx-markdown';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { SharedModule } from './app/modules/shared/shared.module';
+import { MapModule } from './app/modules/map/map.module';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { RegistrationModule } from './app/modules/registration/registration.module';
+import { LegalTermsModalPageModule } from './app/pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
+import { SideMenuModule } from './app/modules/side-menu/side-menu.module';
+import { GpsDebugModule } from './app/modules/gps-debug/gps-debug.module';
+import { AnalyticsModule } from './app/modules/analytics/analytics.module';
+import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
+import { RegistrationModule as CommonRegistrationModule } from './app/modules/common-registration/registration.module';
+import { AppComponent } from './app/app.component';
+import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
 if (environment.production) {
   enableProdMode();
@@ -13,9 +36,36 @@ if (environment.production) {
 
 function startApp() {
   console.log('starting app');
-  platformBrowserDynamic()
-    .bootstrapModule(AppModule)
-    .catch((err) => console.log(err));
+  bootstrapApplication(AppComponent, {
+    providers: [
+      importProvidersFrom(
+        BrowserModule,
+        FormsModule,
+        IonicModule.forRoot(),
+        IonicStorageModule.forRoot({
+          driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB],
+          storeName: settings.db.nanoSql.dbName,
+        }),
+        AppRoutingModule,
+        TranslateModule.forRoot(),
+        MarkdownModule.forRoot(),
+        AngularSvgIconModule.forRoot(),
+        SharedModule,
+        MapModule,
+        LeafletModule,
+        RegistrationModule,
+        LegalTermsModalPageModule,
+        SideMenuModule,
+        GpsDebugModule,
+        AnalyticsModule.forRoot(),
+        RegobsApiModuleWithConfig.forRoot(),
+        CommonRegistrationModule.forRoot()
+      ),
+      provideHttpClient(withInterceptorsFromDi()),
+      ...APP_PROVIDERS,
+      provideAnimations(),
+    ],
+  }).catch((err) => console.log(err));
 }
 
 document.addEventListener(typeof cordova !== 'undefined' ? 'deviceready' : 'DOMContentLoaded', async () => {
