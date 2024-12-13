@@ -3,12 +3,13 @@ import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { Observable, switchMap } from 'rxjs';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-geo-name',
   template: '{{ name$ | async }}',
   styleUrls: ['./geo-name.component.scss'],
-  standalone: false,
+  imports: [AsyncPipe],
 })
 export class GeoNameComponent implements OnChanges {
   @Input() geoHazards: GeoHazard[];

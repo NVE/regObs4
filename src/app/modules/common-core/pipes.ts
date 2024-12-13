@@ -4,8 +4,7 @@ import { MetersToCmPipe } from './pipes/metersToCm.pipe';
 const PIPES = [MetersToCmPipe];
 
 @NgModule({
-  declarations: PIPES,
-  imports: [],
+  imports: [...PIPES],
   exports: PIPES,
 })
 export class RegobsCorePipesModule {}

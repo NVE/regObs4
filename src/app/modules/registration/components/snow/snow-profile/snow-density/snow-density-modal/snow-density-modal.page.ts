@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -10,12 +10,28 @@ import { Subject } from 'rxjs';
 import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 
 @Component({
   selector: 'app-snow-density-modal',
   templateUrl: './snow-density-modal.page.html',
   styleUrls: ['./snow-density-modal.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    FormsModule,
+    NgIf,
+    NumericInputComponent,
+    NgFor,
+    DecimalPipe,
+    TranslateModule,
+    MetersToCmPipe,
+  ],
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

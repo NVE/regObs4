@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'abs',
-  standalone: false,
-})
+@Pipe({ name: 'abs' })
 export class AbsPipe implements PipeTransform {
   transform(value: unknown): number | null {
     try {

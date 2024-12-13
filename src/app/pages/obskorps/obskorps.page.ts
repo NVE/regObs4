@@ -6,7 +6,9 @@ import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.ser
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 import { settings } from 'src/settings';
 import moment from 'moment';
-import { AlertController, InputCustomEvent } from '@ionic/angular';
+import { AlertController, InputCustomEvent, IonicModule } from '@ionic/angular';
+import { HeaderComponent } from '../../modules/shared/components/header/header.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 const toDateInputValue = (date: Date) => {
   const isoString = date.toISOString();
@@ -18,7 +20,7 @@ const toDateInputValue = (date: Date) => {
   selector: 'app-obskorps',
   templateUrl: './obskorps.page.html',
   styleUrls: ['./obskorps.page.scss'],
-  standalone: false,
+  imports: [HeaderComponent, IonicModule, NgIf, AsyncPipe],
 })
 export class ObskorpsPage implements OnInit {
   private http = inject(HttpClient);

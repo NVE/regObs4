@@ -3,8 +3,8 @@ import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.s
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
-import { NavController, ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { NavController, ModalController, IonicModule } from '@ionic/angular';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
@@ -15,6 +15,12 @@ import { SelectOption } from '../../modules/shared/components/input/select/selec
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 import { Position } from '@capacitor/geolocation';
+import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
+import { NgIf } from '@angular/common';
+import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.component';
+import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
+import { TextCommentComponent } from '../../modules/registration/components/text-comment/text-comment.component';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -22,7 +28,16 @@ const DEBUG_TAG = 'LegacyTripPage';
   selector: 'app-legacy-trip',
   templateUrl: './legacy-trip.page.html',
   styleUrls: ['./legacy-trip.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    KdvSelectComponent,
+    SelectComponent,
+    TextCommentComponent,
+    SvgIconComponent,
+    TranslateModule,
+  ],
 })
 export class LegacyTripPage implements OnInit, OnDestroy {
   private tripLoggerSubscription: Subscription;

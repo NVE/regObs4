@@ -1,10 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeneralObservationEditModel, UrlEditModel, Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
+import { EditImagesBarComponent } from '../../snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
+import { TextCommentComponent } from '../../text-comment/text-comment.component';
+import { AddWebUrlItemComponent } from '../../add-web-url-item/add-web-url-item.component';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Simplified water registration schema.'
@@ -15,7 +20,7 @@ import { GeneralObservationEditModel, UrlEditModel, Waterlevel2EditModel } from 
   templateUrl: './simple-water-obs.component.html',
   styleUrls: ['./simple-water-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, EditImagesBarComponent, TextCommentComponent, AddWebUrlItemComponent, NgIf, TranslateModule],
 })
 export class SimpleWaterObsComponent {
   @Input() draft: RegistrationDraft;

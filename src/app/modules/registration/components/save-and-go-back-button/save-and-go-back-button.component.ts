@@ -1,13 +1,15 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-save-and-go-back-button',
   templateUrl: './save-and-go-back-button.component.html',
   styleUrls: ['./save-and-go-back-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, SvgIconComponent, TranslateModule],
 })
 export class SaveAndGoBackButtonComponent {
   @Input() draft: RegistrationDraft;

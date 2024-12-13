@@ -1,12 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { NgIf } from '@angular/common';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
   selector: 'ro-blob-image',
   templateUrl: './blob-image.component.html',
   styleUrls: ['./blob-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, SvgIconComponent],
 })
 export class BlobImageComponent implements OnInit, OnDestroy {
   @Input() imgBlob: Blob;

@@ -8,8 +8,7 @@ describe('ClayzonesLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [ClayzonesLegendComponent],
+      imports: [TestModule, ClayzonesLegendComponent],
     }).compileComponents();
   }));
 

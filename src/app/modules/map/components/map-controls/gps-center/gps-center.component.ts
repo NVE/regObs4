@@ -1,13 +1,15 @@
 import { Component, OnDestroy, AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MapService } from '../../../services/map/map.service';
 import { Subscription } from 'rxjs';
+import { IonicModule } from '@ionic/angular';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-gps-center',
   templateUrl: './gps-center.component.html',
   styleUrls: ['./gps-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, NgClass],
 })
 export class GpsCenterComponent implements OnDestroy, AfterContentInit {
   followMode: boolean;

@@ -1,6 +1,6 @@
 import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
 import {
   AttachmentUploadEditModel,
@@ -10,13 +10,16 @@ import {
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
+import { NgIf, NgClass } from '@angular/common';
+import { ThumbnailsComponent } from '../thumbnails/thumbnails.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-summary-item',
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, IonicModule, NgClass, ThumbnailsComponent, TranslateModule],
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
   @Input() item: ISummaryItem;

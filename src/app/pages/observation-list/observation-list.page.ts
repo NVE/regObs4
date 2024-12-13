@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { IonContent, IonInfiniteScroll, SegmentCustomEvent } from '@ionic/angular';
+import { IonContent, IonInfiniteScroll, SegmentCustomEvent, IonicModule } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import {
@@ -28,6 +28,16 @@ import { UrlParams } from 'src/app/core/services/search-criteria/url-params';
 import { HasRegId } from 'src/app/modules/common-registration/registration.helpers';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { HeaderComponent } from '../../modules/shared/components/header/header.component';
+import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
+import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
+import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
+import { ObservationListViewComponent } from '../../modules/shared/components/list-view/observation-list-view.component';
+import { ImagesGridComponent } from '../../modules/shared/components/images-grid/images-grid.ts/images-grid.component';
+import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -44,7 +54,22 @@ const URL_VIEW_TYPE_PARAM = 'view';
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    HeaderComponent,
+    IonicModule,
+    GeoFabComponent,
+    RefreshWithCancelComponent,
+    NgIf,
+    NgClass,
+    ObservationListViewComponent,
+    ImagesGridComponent,
+    ObservationSkeletonComponent,
+    NgFor,
+    SvgIconComponent,
+    AddMenuComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {
   listSearch: PagedSearchResult<RegistrationViewModel>;

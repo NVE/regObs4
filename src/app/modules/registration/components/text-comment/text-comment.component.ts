@@ -1,10 +1,13 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-text-comment',
   templateUrl: './text-comment.component.html',
   styleUrls: ['./text-comment.component.scss'],
-  standalone: false,
+  imports: [IonicModule, FormsModule, TranslateModule],
 })
 export class TextCommentComponent {
   @Input() label: string;

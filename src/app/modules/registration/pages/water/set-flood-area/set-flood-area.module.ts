@@ -24,7 +24,7 @@ const routes: Routes = [
     SharedComponentsModule,
     IonicModule,
     RouterModule.forChild(routes),
+    SetFloodAreaPage,
   ],
-  declarations: [SetFloodAreaPage],
 })
 export class SetFloodAreaPageModule {}

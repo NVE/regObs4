@@ -3,9 +3,9 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
 import { combineLatest, distinctUntilChanged, firstValueFrom, map, Observable, Subscription } from 'rxjs';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import version from '../../../../environments/version.json';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
@@ -13,12 +13,30 @@ import { ObserverTripsService } from 'src/app/core/services/observer-trips/obser
 import { SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
+import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
+import { UserLoginComponent } from './user-login/user-login.component';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { SupportTilesMenuComponent } from './support-tiles-menu/support-tiles-menu.component';
+import { ExternalLinkComponent } from '../../shared/components/external-link/external-link.component';
 
 @Component({
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
-  standalone: false,
+  imports: [
+    NgIf,
+    IonicModule,
+    UserLoginComponent,
+    RouterLink,
+    FormsModule,
+    NgFor,
+    SupportTilesMenuComponent,
+    ExternalLinkComponent,
+    AsyncPipe,
+    UpperCasePipe,
+    TranslateModule,
+  ],
 })
 export class SideMenuComponent implements OnInit, OnDestroy {
   userSettings: UserSetting;

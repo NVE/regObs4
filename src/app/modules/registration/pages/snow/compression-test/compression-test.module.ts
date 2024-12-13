@@ -13,7 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, CompressionTestModalPageModule, RouterModule.forChild(routes)],
-  declarations: [CompressionTestPage],
+  imports: [SharedComponentsModule, CompressionTestModalPageModule, RouterModule.forChild(routes), CompressionTestPage],
 })
 export class CompressionTestPageModule {}

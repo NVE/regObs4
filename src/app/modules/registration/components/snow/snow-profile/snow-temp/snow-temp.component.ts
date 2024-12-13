@@ -1,15 +1,17 @@
 import { Component, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-snow-temp',
   templateUrl: './snow-temp.component.html',
   styleUrls: ['./snow-temp.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, TranslateModule],
 })
 export class SnowTempComponent {
   @Input() draft: RegistrationDraft;

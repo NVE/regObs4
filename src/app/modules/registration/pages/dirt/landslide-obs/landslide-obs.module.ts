@@ -20,7 +20,7 @@ const routes: Routes = [
     AddWebUrlModalPageModule,
     SetAvalanchePositionPageModule,
     RouterModule.forChild(routes),
+    LandslideObsPage,
   ],
-  declarations: [LandslideObsPage],
 })
 export class LandslideObsPageModule {}

@@ -14,7 +14,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedModule, SharedComponentsModule, RouterModule.forChild(routes)],
-  declarations: [LegacyTripPage],
+  imports: [SharedModule, SharedComponentsModule, RouterModule.forChild(routes), LegacyTripPage],
 })
 export class LegacyTripPageModule {}

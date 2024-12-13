@@ -1,4 +1,4 @@
-import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, ToggleCustomEvent } from '@ionic/angular';
+import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, ToggleCustomEvent, IonicModule } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
@@ -16,6 +16,13 @@ import { SearchCriteriaModelService } from 'src/app/core/services/search-criteri
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
 import { ObservationTypeOptions, ObservationTypeView } from './observationTypeOptions';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
+import { DateRangeComponent } from '../date-range/date-range.component';
+import { UpdateObservationsComponent } from '../update-observations/update-observations.component';
+import { SelectedItemsCounterLabelComponent } from '../selected-items-counter-label/selected-items-counter-label.component';
+import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -61,7 +68,18 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    IonicModule,
+    NgIf,
+    ObservationsDaysBackComponent,
+    DateRangeComponent,
+    UpdateObservationsComponent,
+    SelectedItemsCounterLabelComponent,
+    NgFor,
+    SlushFlowFilterComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   popupType: SelectInterface;

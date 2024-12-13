@@ -1,12 +1,24 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
+import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
+import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
+import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
+import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ice-layer',
   templateUrl: './ice-layer.page.html',
   styleUrls: ['./ice-layer.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    KdvSelectComponent,
+    NumericInputComponent,
+    ModalSaveOrDeleteButtonsComponent,
+    TranslateModule,
+  ],
 })
 export class IceLayerPage implements OnInit {
   @Input() iceThicknessLayer: IceThicknessLayerEditModel;

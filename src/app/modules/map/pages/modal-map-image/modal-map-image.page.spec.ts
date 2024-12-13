@@ -14,8 +14,7 @@ describe('ModalMapImagePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, IonicModule, TranslateModule, LeafletModule],
-      declarations: [ModalMapImagePage],
+      imports: [CommonModule, FormsModule, IonicModule, TranslateModule, LeafletModule, ModalMapImagePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));

@@ -12,7 +12,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, AddOrEditDangerObsModalPageModule, RouterModule.forChild(routes)],
-  declarations: [DangerObsPage],
+  imports: [SharedComponentsModule, AddOrEditDangerObsModalPageModule, RouterModule.forChild(routes), DangerObsPage],
 })
 export class DangerObsPageModule {}

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
-import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { ModalController, IonicModule } from '@ionic/angular';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -14,12 +14,14 @@ import {
 } from '../../components/set-location-in-map/set-location-in-map.component';
 import { IPolygon, PolygonArea } from '../../models/polygon';
 import { constructPolygon, makePolygons } from 'src/app/modules/common-registration/helpers/polygon.helper';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 
 @Component({
   selector: 'app-set-avalanche-position',
   templateUrl: './set-avalanche-position.page.html',
   styleUrls: ['./set-avalanche-position.page.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, HeaderColorDirective, SetLocationInMapComponent, AsyncPipe, TranslateModule],
 })
 export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;

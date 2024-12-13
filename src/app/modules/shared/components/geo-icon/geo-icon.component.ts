@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { IonicModule } from '@ionic/angular';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-geo-icon',
   templateUrl: './geo-icon.component.html',
   styleUrls: ['./geo-icon.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgClass],
 })
 export class GeoIconComponent {
   @Input() geoHazards: GeoHazard[];

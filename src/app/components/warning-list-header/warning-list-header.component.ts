@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import moment from 'moment';
-import { Platform } from '@ionic/angular';
+import { Platform, IonicModule } from '@ionic/angular';
+import { NgIf, NgClass, NgTemplateOutlet } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-warning-list-header',
   templateUrl: './warning-list-header.component.html',
   styleUrls: ['./warning-list-header.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, NgClass, NgTemplateOutlet, TranslateModule],
 })
 export class WarningListHeaderComponent {
   @Input() title: string;

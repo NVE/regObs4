@@ -1,16 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
+import { IonModal, IonicModule } from '@ionic/angular';
 import { OverlayEventDetail, DatetimePresentation } from '@ionic/core/components';
 import { DatetimeChangeEventDetail } from '@ionic/core/dist/types/components/datetime/datetime-interface';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { firstValueFrom } from 'rxjs';
 import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
+import { NgClass, DatePipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-datetime-picker',
   templateUrl: './datetime-picker.component.html',
   styleUrls: ['./datetime-picker.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgClass, DatePipe, TranslateModule],
 })
 /**
  * Component for displaying a date and time picker.

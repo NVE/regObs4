@@ -6,12 +6,15 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { AppMode } from 'src/app/modules/common-core/models';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
 import { BreakpointService } from '../../../../core/services/breakpoint.service';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, AsyncPipe, TranslateModule],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showMenuButton = true;

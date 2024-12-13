@@ -14,7 +14,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [SharedComponentsModule, IceLayerPageModule, RouterModule.forChild(routes)],
-  declarations: [IceThicknessPage],
+  imports: [SharedComponentsModule, IceLayerPageModule, RouterModule.forChild(routes), IceThicknessPage],
 })
 export class IceThicknessPageModule {}

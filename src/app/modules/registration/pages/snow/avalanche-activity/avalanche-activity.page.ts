@@ -3,17 +3,31 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
 import { AvalancheActivityObs2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription, combineLatest } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgFor, LowerCasePipe } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',
   styleUrls: ['./avalanche-activity.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    NgFor,
+    EditImagesComponent,
+    LowerCasePipe,
+    TranslateModule,
+  ],
 })
 export class AvalancheActivityPage extends BasePage {
   private avalancheCause: KdvElement[];

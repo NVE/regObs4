@@ -10,8 +10,7 @@ describe('GeoIconComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule],
-      declarations: [GeoIconComponent],
+      imports: [IonicModule, GeoIconComponent],
     }).compileComponents();
   }));
 

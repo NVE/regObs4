@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, IonicModule } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -20,6 +20,8 @@ import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
 import { StrictHttpResponse } from 'src/app/modules/common-regobs-api/strict-http-response';
 import * as turf from '@turf/turf';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
+import { NgIf, NgStyle, DecimalPipe } from '@angular/common';
+import { AbsPipe } from '../../../shared/pipes/abs.pipe';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -29,7 +31,7 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   templateUrl: './map-center-info.component.html',
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, NgIf, NgStyle, DecimalPipe, TranslateModule, AbsPipe],
 })
 export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private userPos: Position; // Caches the gps position for distance and height diff computation

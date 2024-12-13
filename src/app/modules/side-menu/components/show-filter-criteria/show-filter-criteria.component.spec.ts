@@ -10,8 +10,7 @@ describe('ShowFilterCriteriaComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ShowFilterCriteriaComponent],
-      imports: [IonicModule.forRoot(), TestModule],
+      imports: [IonicModule.forRoot(), TestModule, ShowFilterCriteriaComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ShowFilterCriteriaComponent);

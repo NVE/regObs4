@@ -3,7 +3,6 @@ import { StratProfileLayerHistoryModalPage } from './strat-profile-layer-history
 import { SharedComponentsModule } from '../../../../../shared-components.module';
 
 @NgModule({
-  imports: [SharedComponentsModule],
-  declarations: [StratProfileLayerHistoryModalPage],
+  imports: [SharedComponentsModule, StratProfileLayerHistoryModalPage],
 })
 export class StratProfileLayerHistoryModalPageModule {}

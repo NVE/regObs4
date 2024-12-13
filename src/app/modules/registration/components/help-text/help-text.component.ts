@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
 import { HelpTextService } from 'src/app/modules/common-registration/registration.services';
 import { firstValueFrom, Observable } from 'rxjs';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * If help text exists for given registrationTid and heoHazard, show a "HELP"-button.
@@ -14,7 +16,7 @@ import { firstValueFrom, Observable } from 'rxjs';
   templateUrl: './help-text.component.html',
   styleUrls: ['./help-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgIf, IonicModule, AsyncPipe, TranslateModule],
 })
 export class HelpTextComponent implements OnInit {
   @Input() registrationTid: number;

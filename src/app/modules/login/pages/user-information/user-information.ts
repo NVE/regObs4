@@ -10,15 +10,18 @@ import { LangKey } from 'src/app/modules/common-core/models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { StarRatingHelper } from '../../../../components/competence/star-helper';
 import { AccountService, MyPageData, ObserverGroupDto } from 'src/app/modules/common-regobs-api';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/edit-picture-info-modal.component';
 import { Router } from '@angular/router';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-information',
   templateUrl: './user-information.html',
   styleUrls: ['./user-information.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, HeaderColorDirective, NgFor, AsyncPipe, TranslateModule],
 })
 export class UserInformation implements OnInit {
   loggedInUser$: Observable<LoggedInUser>;

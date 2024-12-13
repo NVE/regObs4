@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import * as L from 'leaflet';
 import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
@@ -9,6 +9,9 @@ import { takeUntil, tap } from 'rxjs/operators';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { getDownloadCompleteDate, isPackageOutdated } from 'src/app/core/services/offline-map/utils';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { NgIf, NgStyle, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { MapComponent } from '../../../modules/map/components/map/map.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'OfflinePackageModalComponent';
 
@@ -19,7 +22,7 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
   templateUrl: './offline-package-modal.component.html',
   styleUrls: ['./offline-package-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [IonicModule, NgIf, MapComponent, NgStyle, AsyncPipe, DecimalPipe, DatePipe, TranslateModule],
 })
 export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
   @Input() feature: CompoundPackageFeature;

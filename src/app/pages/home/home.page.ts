@@ -1,8 +1,8 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
@@ -48,6 +48,12 @@ import { TabsService, TABS } from '../tabs/tabs.service';
 import { RegObsGeoJson } from './geojson';
 import { RegObsMarkerClusterLayer } from './markerCluster.layer';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
+import { HeaderComponent } from '../../modules/shared/components/header/header.component';
+import { MapCenterInfoComponent as MapCenterInfoComponent_1 } from '../../modules/map/components/map-center-info/map-center-info.component';
+import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
+import { ShowFilterCriteriaComponent } from '../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
+import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
+import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -65,7 +71,19 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  standalone: false,
+  imports: [
+    HeaderComponent,
+    IonicModule,
+    MapComponent,
+    NgIf,
+    MapCenterInfoComponent_1,
+    MapItemBarComponent,
+    GeoFabComponent,
+    ShowFilterCriteriaComponent,
+    AddMenuComponent,
+    DataLoadComponent,
+    AsyncPipe,
+  ],
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;

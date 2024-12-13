@@ -1,11 +1,13 @@
 import { Component, Input, EventEmitter, Output, OnInit, HostBinding } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, IonicModule } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import { isAndroidOrIos } from '../../../../../core/helpers/ionic/platform-helper';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -14,7 +16,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
-  standalone: false,
+  imports: [NgIf, IonicModule, FormsModule, NgFor, TranslateModule],
 })
 export class SelectComponent implements OnInit {
   @Input() label: string;

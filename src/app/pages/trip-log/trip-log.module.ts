@@ -17,7 +17,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), TranslateModule],
-  declarations: [TripLogPage, TripLogSummaryComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    TranslateModule,
+    TripLogPage,
+    TripLogSummaryComponent,
+  ],
 })
 export class TripLogPageModule {}

@@ -1,12 +1,21 @@
 import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as L from 'leaflet';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import moment from 'moment';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgClass, DecimalPipe } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { DatetimePickerComponent } from '../../../../../components/datetime-picker/datetime-picker.component';
+import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
+import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add-web-url-item.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Form to register landslide observations
@@ -15,7 +24,20 @@ import moment from 'moment';
   selector: 'app-landslide-obs',
   templateUrl: './landslide-obs.page.html',
   styleUrls: ['./landslide-obs.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    NgClass,
+    DatetimePickerComponent,
+    KdvSelectComponent,
+    TextCommentComponent,
+    EditImagesComponent,
+    AddWebUrlItemComponent,
+    DecimalPipe,
+    TranslateModule,
+  ],
 })
 export class LandslideObsPage extends BasePage {
   maxDateStart: string;

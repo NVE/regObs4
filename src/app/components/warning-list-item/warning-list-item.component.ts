@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, Renderer2 } from '@angular/core';
-import { IonItemSliding, DomController } from '@ionic/angular';
+import { IonItemSliding, DomController, IonicModule } from '@ionic/angular';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -13,12 +13,14 @@ import { AppEventAction } from '../../modules/analytics/enums/app-event-action.e
 import { from, of, Subject, timer } from 'rxjs';
 import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
+import { NgIf, NgFor } from '@angular/common';
+import { GeoIconComponent } from '../../modules/shared/components/geo-icon/geo-icon.component';
 
 @Component({
   selector: 'app-warning-list-item',
   templateUrl: './warning-list-item.component.html',
   styleUrls: ['./warning-list-item.component.scss'],
-  standalone: false,
+  imports: [IonicModule, NgIf, GeoIconComponent, NgFor, WarningGroupFavouriteToggleComponent],
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   @Input() warningGroup: WarningGroup;

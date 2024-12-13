@@ -10,8 +10,7 @@ describe('SteepnessLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [SteepnessCommonLegendComponent, SteepnessLegendComponent],
+      imports: [TestModule, SteepnessCommonLegendComponent, SteepnessLegendComponent],
     }).compileComponents();
   }));
 

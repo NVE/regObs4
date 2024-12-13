@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import * as L from 'leaflet';
 import moment from 'moment';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
@@ -14,6 +14,18 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
+import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgClass, DecimalPipe } from '@angular/common';
+import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
+import { DatetimePickerComponent } from '../../../../../components/datetime-picker/datetime-picker.component';
+import { SelectComponent } from '../../../../shared/components/input/select/select.component';
+import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
+import { FormsModule } from '@angular/forms';
+import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
+import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
+import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add-web-url-item.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Used to register both avalanche observations and incidents, so this page contains two forms.
@@ -23,7 +35,23 @@ import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avala
   selector: 'app-avalanche-obs',
   templateUrl: './avalanche-obs.page.html',
   styleUrls: ['./avalanche-obs.page.scss'],
-  standalone: false,
+  imports: [
+    IonicModule,
+    HeaderColorDirective,
+    NgIf,
+    RegistrationContentWrapperComponent,
+    NgClass,
+    DatetimePickerComponent,
+    SelectComponent,
+    KdvSelectComponent,
+    FormsModule,
+    NumericInputComponent,
+    TextCommentComponent,
+    EditImagesComponent,
+    AddWebUrlItemComponent,
+    DecimalPipe,
+    TranslateModule,
+  ],
 })
 export class AvalancheObsPage extends BasePage {
   expoArray: SelectOption[] = [

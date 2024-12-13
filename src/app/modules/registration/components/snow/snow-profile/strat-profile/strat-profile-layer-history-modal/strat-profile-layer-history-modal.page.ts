@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   RegistrationViewModel,
@@ -13,12 +13,16 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/format-date.pipe';
 
 @Component({
   selector: 'app-strat-profile-layer-history-modal',
   templateUrl: './strat-profile-layer-history-modal.page.html',
   styleUrls: ['./strat-profile-layer-history-modal.page.scss'],
-  standalone: false,
+  imports: [IonicModule, HeaderColorDirective, NgIf, NgFor, AsyncPipe, TranslateModule, FormatDatePipe],
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {
   @Input() draft: RegistrationDraft;
