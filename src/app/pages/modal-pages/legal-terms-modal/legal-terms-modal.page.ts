@@ -1,5 +1,16 @@
 import { Component } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../modules/shared/directives/header-color/header-color.directive';
 import { LegalTermsComponent } from '../../../components/legal-terms/legal-terms.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,7 +19,20 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-legal-terms-modal',
   templateUrl: './legal-terms-modal.page.html',
   styleUrls: ['./legal-terms-modal.page.scss'],
-  imports: [IonicModule, HeaderColorDirective, LegalTermsComponent, TranslateModule],
+  imports: [
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonRow,
+    IonTitle,
+    IonToolbar,
+    LegalTermsComponent,
+    TranslateModule,
+  ],
 })
 export class LegalTermsModalPage {
   constructor(private modalController: ModalController) {}

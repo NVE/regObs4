@@ -1,3 +1,17 @@
+import {
+  IonToolbar,
+  IonContent,
+  IonCardHeader,
+  IonBackButton,
+  IonCardContent,
+  IonIcon,
+  IonCardTitle,
+  IonTitle,
+  IonCard,
+  IonHeader,
+  IonButton,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
@@ -8,11 +22,12 @@ import { Observable, Subject, merge, of } from 'rxjs';
 import { EditMode } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { SearchService } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { IonicModule } from '@ionic/angular';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { personCircle } from 'ionicons/icons';
 
 interface RegistrationResult {
   reg?: RegistrationViewModel;
@@ -24,7 +39,25 @@ interface RegistrationResult {
   templateUrl: './view-observation.page.html',
   styleUrls: ['./view-observation.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, HeaderColorDirective, NgIf, ObservationListCardComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    ObservationListCardComponent,
+    TranslateModule,
+  ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
   editMode$: Observable<EditMode>;
@@ -42,6 +75,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     private router: Router
   ) {
     super();
+    addIcons({ personCircle });
   }
 
   goToMyPage() {

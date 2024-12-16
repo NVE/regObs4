@@ -1,11 +1,13 @@
+import { IonGrid, IonRow, IonCol, IonIcon, IonText, IonButton } from '@ionic/angular/standalone';
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
 import { ISummaryItem } from '../summary-item/summary-item.model';
-import { IonicModule } from '@ionic/angular';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { arrowBack, arrowForward } from 'ionicons/icons';
 
 /**
  * Used to navigate from one registration form to previous or next form
@@ -14,14 +16,16 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',
   styleUrls: ['./navigation-buttons.component.scss'],
-  imports: [IonicModule, NgIf, TranslateModule],
+  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, IonText, NgIf, TranslateModule],
 })
 export class NavigationButtonsComponent implements OnInit {
   @Input() draft: RegistrationDraft;
   next: ISummaryItem;
   previous: ISummaryItem;
 
-  constructor(private summaryItemService: SummaryItemService, private router: Router, private ngZone: NgZone) {}
+  constructor(private summaryItemService: SummaryItemService, private router: Router, private ngZone: NgZone) {
+    addIcons({ arrowBack, arrowForward });
+  }
 
   async ngOnInit() {
     const currentUrl = this.router.url;

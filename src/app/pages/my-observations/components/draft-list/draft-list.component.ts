@@ -1,10 +1,10 @@
+import { IonGrid, IonItemDivider, IonRow, IonList, IonLabel } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { SyncItemComponent } from '../sync-item/sync-item.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,7 +13,18 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './draft-list.component.html',
   styleUrls: ['./draft-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, NgFor, SyncItemComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    IonGrid,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonRow,
+    NgFor,
+    NgIf,
+    SyncItemComponent,
+    TranslateModule,
+  ],
 })
 export class DraftListComponent implements OnInit {
   @Output() isEmpty = new EventEmitter<boolean>();

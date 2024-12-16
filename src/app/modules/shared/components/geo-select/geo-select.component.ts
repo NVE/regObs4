@@ -1,3 +1,4 @@
+import { IonItem, IonFab, IonFabButton, IonList, IonLabel } from '@ionic/angular/standalone';
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../../core/models/user-settings.model';
@@ -5,7 +6,6 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { GeoIconComponent } from '../geo-icon/geo-icon.component';
 import { GeoNameComponent } from '../geo-name/geo-name.component';
 
@@ -13,7 +13,18 @@ import { GeoNameComponent } from '../geo-name/geo-name.component';
   selector: 'app-geo-select',
   templateUrl: './geo-select.component.html',
   styleUrls: ['./geo-select.component.scss'],
-  imports: [NgIf, IonicModule, GeoIconComponent, GeoNameComponent, NgFor, AsyncPipe],
+  imports: [
+    AsyncPipe,
+    GeoIconComponent,
+    GeoNameComponent,
+    IonFab,
+    IonFabButton,
+    IonItem,
+    IonLabel,
+    IonList,
+    NgFor,
+    NgIf,
+  ],
 })
 export class GeoSelectComponent implements OnInit {
   geoHazardTypes: Array<GeoHazard[]>;

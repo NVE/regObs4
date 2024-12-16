@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
 import { TestModule } from '../../../test/test.module';
 
 import { ShowFilterCriteriaComponent } from './show-filter-criteria.component';
@@ -10,7 +9,7 @@ describe('ShowFilterCriteriaComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot(), TestModule, ShowFilterCriteriaComponent],
+      imports: [TestModule, ShowFilterCriteriaComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ShowFilterCriteriaComponent);

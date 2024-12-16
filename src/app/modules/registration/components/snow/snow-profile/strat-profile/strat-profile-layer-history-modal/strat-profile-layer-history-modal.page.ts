@@ -1,5 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonSkeletonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   RegistrationViewModel,
@@ -22,7 +35,25 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/forma
   selector: 'app-strat-profile-layer-history-modal',
   templateUrl: './strat-profile-layer-history-modal.page.html',
   styleUrls: ['./strat-profile-layer-history-modal.page.scss'],
-  imports: [IonicModule, HeaderColorDirective, NgIf, NgFor, AsyncPipe, TranslateModule, FormatDatePipe],
+  imports: [
+    AsyncPipe,
+    FormatDatePipe,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonSkeletonText,
+    IonTitle,
+    IonToolbar,
+    NgFor,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {
   @Input() draft: RegistrationDraft;

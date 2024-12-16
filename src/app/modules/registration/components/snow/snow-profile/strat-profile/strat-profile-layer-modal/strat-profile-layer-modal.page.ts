@@ -1,5 +1,22 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { StratProfileLayerEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
@@ -14,6 +31,8 @@ import { KdvSelectComponent } from '../../../../../../../components/kdv-select/k
 import { SelectComponent } from '../../../../../../shared/components/input/select/select.component';
 import { NgIf, LowerCasePipe } from '@angular/common';
 import { TextCommentComponent } from '../../../../text-comment/text-comment.component';
+import { addIcons } from 'ionicons';
+import { chevronUp, chevronDown, arrowBack, arrowForward, trash } from 'ionicons/icons';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
@@ -24,15 +43,29 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
   templateUrl: './strat-profile-layer-modal.page.html',
   styleUrls: ['./strat-profile-layer-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
     FormsModule,
-    NumericInputComponent,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonRow,
+    IonText,
+    IonTitle,
+    IonToolbar,
     KdvSelectComponent,
-    SelectComponent,
-    NgIf,
-    TextCommentComponent,
     LowerCasePipe,
+    NgIf,
+    NumericInputComponent,
+    SelectComponent,
+    TextCommentComponent,
     TranslateModule,
   ],
 })
@@ -92,7 +125,9 @@ export class StratProfileLayerModalPage implements OnInit {
     private modalController: ModalController,
     private translateService: TranslateService,
     private draftRepository: DraftRepositoryService
-  ) {}
+  ) {
+    addIcons({ chevronUp, chevronDown, arrowBack, arrowForward, trash });
+  }
 
   ngOnInit() {
     this.initialRegistationState = cloneDeep(this.draft);

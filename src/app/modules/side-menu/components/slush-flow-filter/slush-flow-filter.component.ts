@@ -1,3 +1,4 @@
+import { IonItem, IonCheckbox, IonLabel } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { map, Observable, takeUntil } from 'rxjs';
@@ -7,14 +8,13 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-slush-flow-filter',
   templateUrl: './slush-flow-filter.component.html',
   styleUrls: ['./slush-flow-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, AsyncPipe],
+  imports: [AsyncPipe, IonCheckbox, IonItem, IonLabel, NgIf],
 })
 export class SlushFlowFilterComponent extends NgDestoryBase implements OnInit {
   visible$: Observable<boolean>;

@@ -2,7 +2,7 @@ import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, ToastController, IonicModule } from '@ionic/angular';
+import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import * as L from 'leaflet';
@@ -72,17 +72,17 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    HeaderComponent,
-    IonicModule,
-    MapComponent,
-    NgIf,
-    MapCenterInfoComponent_1,
-    MapItemBarComponent,
-    GeoFabComponent,
-    ShowFilterCriteriaComponent,
     AddMenuComponent,
-    DataLoadComponent,
     AsyncPipe,
+    DataLoadComponent,
+    GeoFabComponent,
+    HeaderComponent,
+    IonContent,
+    MapCenterInfoComponent_1,
+    MapComponent,
+    MapItemBarComponent,
+    NgIf,
+    ShowFilterCriteriaComponent,
   ],
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {

@@ -3,7 +3,25 @@ import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.s
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
-import { NavController, ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonItem,
+  IonItemDivider,
+  IonLabel,
+  IonList,
+  IonRow,
+  IonSpinner,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+  NavController,
+} from '@ionic/angular/standalone';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
@@ -29,13 +47,27 @@ const DEBUG_TAG = 'LegacyTripPage';
   templateUrl: './legacy-trip.page.html',
   styleUrls: ['./legacy-trip.page.scss'],
   imports: [
-    IonicModule,
     HeaderColorDirective,
-    NgIf,
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonItem,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonRow,
+    IonSpinner,
+    IonTitle,
+    IonToolbar,
     KdvSelectComponent,
+    NgIf,
     SelectComponent,
-    TextCommentComponent,
     SvgIconComponent,
+    TextCommentComponent,
     TranslateModule,
   ],
 })

@@ -1,5 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToggle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
@@ -18,15 +30,24 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './compression-test-modal.page.html',
   styleUrls: ['./compression-test-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
     FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToggle,
+    IonToolbar,
     KdvSelectComponent,
-    NgIf,
-    SelectComponent,
-    NumericInputComponent,
-    TextCommentComponent,
     ModalSaveOrDeleteButtonsComponent,
+    NgIf,
+    NumericInputComponent,
+    SelectComponent,
+    TextCommentComponent,
     TranslateModule,
   ],
 })

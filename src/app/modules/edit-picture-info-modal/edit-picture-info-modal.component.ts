@@ -1,19 +1,23 @@
 import { Component } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { close } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-picture-info-modal',
   templateUrl: './edit-picture-info-modal.component.html',
   styleUrls: ['./edit-picture-info-modal.component.scss'],
-  imports: [IonicModule, FormsModule, TranslateModule],
+  imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslateModule],
 })
 export class EditPictureInfoModalComponent {
   copyright: string;
   photographer: string;
 
-  constructor(public modalController: ModalController) {}
+  constructor(public modalController: ModalController) {
+    addIcons({ close });
+  }
 
   save() {
     this.copyright = this.copyright.trim();

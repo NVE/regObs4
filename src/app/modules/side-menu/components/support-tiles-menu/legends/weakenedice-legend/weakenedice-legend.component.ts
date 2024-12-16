@@ -1,5 +1,5 @@
+import { IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -7,6 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './weakenedice-legend.component.html',
   styleUrls: ['./weakenedice-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, TranslateModule],
+  imports: [IonCol, IonGrid, IonRow, TranslateModule],
 })
 export class WeakenediceLegendComponent {}

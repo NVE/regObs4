@@ -1,3 +1,4 @@
+import { IonListHeader, IonItem, IonRadioGroup, IonRadio, IonLabel } from '@ionic/angular/standalone';
 import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Observable } from 'rxjs';
@@ -5,7 +6,6 @@ import { enterZone } from '../../../../core/helpers/observable-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,7 +13,19 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',
   styleUrls: ['./kdv-radiobutton-list.component.scss'],
-  imports: [NgIf, IonicModule, FormsModule, NgFor, NgClass, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    FormsModule,
+    IonItem,
+    IonLabel,
+    IonListHeader,
+    IonRadio,
+    IonRadioGroup,
+    NgClass,
+    NgFor,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class KdvRadiobuttonListComponent implements OnInit {
   @Input() title: string;

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { LoggingService } from '../../../services/logging/logging.service';
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { FullscreenImageModalPage } from 'src/app/pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { HasRegId } from 'src/app/modules/common-registration/registration.helpers';

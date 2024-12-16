@@ -7,17 +7,29 @@ import stringify from 'json-stringify-safe';
 import { RegistrationDraft, RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { firstValueFrom } from 'rxjs';
-import { Platform, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { NgIf } from '@angular/common';
 import { VersionConflictComponent } from '../version-conflict/version-conflict.component';
 import { GoneRegistrationComponent } from '../gone-registration/gone-registration.component';
+import { addIcons } from 'ionicons';
+import { mail, create } from 'ionicons/icons';
 
 @Component({
   selector: 'app-failed-registration',
   templateUrl: './failed-registration.component.html',
   styleUrls: ['./failed-registration.component.scss'],
-  imports: [IonicModule, NgIf, VersionConflictComponent, GoneRegistrationComponent, TranslateModule],
+  imports: [
+    GoneRegistrationComponent,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    NgIf,
+    TranslateModule,
+    VersionConflictComponent,
+  ],
 })
 export class FailedRegistrationComponent {
   @Input() draft: RegistrationDraft;
@@ -27,7 +39,9 @@ export class FailedRegistrationComponent {
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
     private platform: Platform
-  ) {}
+  ) {
+    addIcons({ mail, create });
+  }
 
   get networkError() {
     return this.draft.error.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut;

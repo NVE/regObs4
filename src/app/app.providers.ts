@@ -19,7 +19,7 @@ import { SafariViewController } from '@awesome-cordova-plugins/safari-view-contr
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 // import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 // import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
-import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
+import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular/standalone';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AuthService } from 'ionic-appauth';

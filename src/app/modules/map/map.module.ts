@@ -8,7 +8,6 @@ import { GpsCenterComponent } from './components/map-controls/gps-center/gps-cen
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -21,7 +20,6 @@ import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.co
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule,
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,

@@ -1,7 +1,17 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
-import { IonInput, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonCol,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonRow,
+  IonSpinner,
+  IonToggle,
+} from '@ionic/angular/standalone';
 import { LangChangeEvent, TranslateService, TranslateModule } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
@@ -40,6 +50,8 @@ import { DatetimePickerComponent } from '../../../../components/datetime-picker/
 import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
 import { SelectComponent } from '../../../shared/components/input/select/select.component';
 import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { calendar, radioButtonOn } from 'ionicons/icons';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -97,18 +109,26 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
   templateUrl: './set-location-in-map.component.html',
   styleUrls: ['./set-location-in-map.component.scss'],
   imports: [
-    NgIf,
+    AsyncPipe,
+    DatetimePickerComponent,
+    DecimalPipe,
+    FormsModule,
+    IonButton,
+    IonCol,
+    IonIcon,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonRow,
+    IonSpinner,
+    IonToggle,
+    KdvSelectComponent,
     MapComponent,
     NgClass,
-    SvgIconComponent,
-    IonicModule,
-    DatetimePickerComponent,
-    KdvSelectComponent,
-    SelectComponent,
     NgFor,
-    FormsModule,
-    AsyncPipe,
-    DecimalPipe,
+    NgIf,
+    SelectComponent,
+    SvgIconComponent,
     TranslateModule,
   ],
 })
@@ -183,6 +203,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.setToNow();
     this.setTranslatedAccuracies();
     this.locale = translateService.currentLang;
+    addIcons({ calendar, radioButtonOn });
   }
 
   async ngOnInit(): Promise<void> {

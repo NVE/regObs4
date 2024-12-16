@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { NavController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonList, IonText, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
@@ -10,6 +10,8 @@ import { TextCommentComponent } from '../../text-comment/text-comment.component'
 import { AddWebUrlItemComponent } from '../../add-web-url-item/add-web-url-item.component';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { checkmarkCircle, chevronForward } from 'ionicons/icons';
 
 /**
  * Simplified water registration schema.'
@@ -20,11 +22,24 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './simple-water-obs.component.html',
   styleUrls: ['./simple-water-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, EditImagesBarComponent, TextCommentComponent, AddWebUrlItemComponent, NgIf, TranslateModule],
+  imports: [
+    AddWebUrlItemComponent,
+    EditImagesBarComponent,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonText,
+    NgIf,
+    TextCommentComponent,
+    TranslateModule,
+  ],
 })
 export class SimpleWaterObsComponent {
   @Input() draft: RegistrationDraft;
-  constructor(private draftRepository: DraftRepositoryService, private navController: NavController) {}
+  constructor(private draftRepository: DraftRepositoryService, private navController: NavController) {
+    addIcons({ checkmarkCircle, chevronForward });
+  }
 
   get waterLevel2(): Waterlevel2EditModel {
     return this.draft.registration.WaterLevel2;

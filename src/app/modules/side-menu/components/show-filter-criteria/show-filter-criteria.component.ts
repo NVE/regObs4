@@ -1,3 +1,4 @@
+import { IonMenuButton } from '@ionic/angular/standalone';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,7 +8,6 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { NgIf, AsyncPipe, LowerCasePipe } from '@angular/common';
 import { GeoNameComponent } from '../../../shared/components/geo-name/geo-name.component';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -15,12 +15,12 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './show-filter-criteria.component.html',
   styleUrls: ['./show-filter-criteria.component.scss'],
   imports: [
-    NgIf,
-    GeoNameComponent,
-    CheckDaysOrWeeksBackComponent,
-    IonicModule,
     AsyncPipe,
+    CheckDaysOrWeeksBackComponent,
+    GeoNameComponent,
+    IonMenuButton,
     LowerCasePipe,
+    NgIf,
     TranslateModule,
   ],
 })

@@ -31,7 +31,7 @@
 import { formatDate } from '@angular/common';
 import { Entry, File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import * as _ from 'lodash';
 import { ILogProviderConfig } from './file-logging.config';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';

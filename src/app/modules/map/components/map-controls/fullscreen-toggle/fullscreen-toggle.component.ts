@@ -1,14 +1,14 @@
+import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FullscreenService } from '../../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
-import { IonicModule } from '@ionic/angular';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-fullscreen-toggle',
   templateUrl: './fullscreen-toggle.component.html',
   styleUrls: ['./fullscreen-toggle.component.scss'],
-  imports: [IonicModule, AsyncPipe],
+  imports: [AsyncPipe, IonFab, IonFabButton, IonIcon],
 })
 export class FullscreenToggleComponent {
   isFullscreen$: Observable<boolean>;

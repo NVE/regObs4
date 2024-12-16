@@ -9,7 +9,7 @@ import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import { TripService } from 'src/app/modules/common-regobs-api/services';
 import { switchMap, take, map, concatMap, tap, catchError, timeout } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';

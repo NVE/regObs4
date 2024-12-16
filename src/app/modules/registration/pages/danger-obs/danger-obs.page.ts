@@ -1,7 +1,20 @@
 import { Component, NgZone } from '@angular/core';
 import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../base-page-service';
@@ -14,6 +27,8 @@ import { NgIf, NgFor } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { addCircleOutline } from 'ionicons/icons';
 
 /**
  * Used to add or edit danger observations.
@@ -26,12 +41,22 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './danger-obs.page.html',
   styleUrls: ['./danger-obs.page.scss'],
   imports: [
-    IonicModule,
+    EditImagesComponent,
     HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
+    NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
-    NgFor,
-    EditImagesComponent,
     TranslateModule,
   ],
 })
@@ -47,6 +72,7 @@ export class DangerObsPage extends BasePage {
     private kdvService: KdvService
   ) {
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
+    addIcons({ addCircleOutline });
   }
 
   onBeforeLeave() {

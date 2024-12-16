@@ -2,7 +2,22 @@ import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonReorder,
+  IonReorderGroup,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
@@ -15,6 +30,8 @@ import { NgIf, NgFor } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { addCircleOutline } from 'ionicons/icons';
 
 /**
  * Start page / CRUD page for avalanche problems.
@@ -26,12 +43,24 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './avalanche-problem.page.html',
   styleUrls: ['./avalanche-problem.page.scss'],
   imports: [
-    IonicModule,
+    EditImagesComponent,
     HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonReorder,
+    IonReorderGroup,
+    IonTitle,
+    IonToolbar,
+    NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
-    NgFor,
-    EditImagesComponent,
     TranslateModule,
   ],
 })
@@ -48,6 +77,7 @@ export class AvalancheProblemPage extends BasePage {
   ) {
     super(RegistrationTid.AvalancheEvalProblem2, basePageService, activatedRoute);
     this.avalancheCause = [];
+    addIcons({ addCircleOutline });
   }
 
   onInit() {

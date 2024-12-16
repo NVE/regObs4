@@ -2,15 +2,13 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GeoIconComponent } from './geo-icon.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { IonicModule } from '@ionic/angular';
-
 describe('GeoIconComponent', () => {
   let component: GeoIconComponent;
   let fixture: ComponentFixture<GeoIconComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule, GeoIconComponent],
+      imports: [GeoIconComponent],
     }).compileComponents();
   }));
 

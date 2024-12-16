@@ -16,7 +16,7 @@ import {
   RegistrationEditModel,
   UrlEditModel,
 } from 'src/app/modules/common-regobs-api/models';
-import { NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
 import { RouterDirection } from '@ionic/core';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';

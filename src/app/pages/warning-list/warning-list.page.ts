@@ -8,7 +8,16 @@ import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model'
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
-import { SegmentCustomEvent, IonicModule } from '@ionic/angular';
+import {
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonLabel,
+  IonRow,
+  IonSegment,
+  IonSegmentButton,
+  SegmentCustomEvent,
+} from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
 import { NgIf, NgClass, NgTemplateOutlet, AsyncPipe } from '@angular/common';
@@ -25,17 +34,23 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   templateUrl: './warning-list.page.html',
   styleUrls: ['./warning-list.page.scss'],
   imports: [
-    HeaderComponent,
-    IonicModule,
-    RefreshWithCancelComponent,
-    NgIf,
-    NgClass,
     AbonnerBannerComponent,
     AddMenuComponent,
-    GeoSelectComponent,
-    NgTemplateOutlet,
-    SvgIconComponent,
     AsyncPipe,
+    GeoSelectComponent,
+    HeaderComponent,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonLabel,
+    IonRow,
+    IonSegment,
+    IonSegmentButton,
+    NgClass,
+    NgIf,
+    NgTemplateOutlet,
+    RefreshWithCancelComponent,
+    SvgIconComponent,
     TranslateModule,
   ],
 })

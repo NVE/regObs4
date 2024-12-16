@@ -1,6 +1,20 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCheckbox,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
@@ -19,19 +33,30 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './avalanche-activity-modal.page.html',
   styleUrls: ['./avalanche-activity-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    NgIf,
-    FormsModule,
-    NgClass,
     DatetimePickerComponent,
-    NgFor,
-    KdvSelectComponent,
     ExposedHeightComponent,
-    ValidExpositionComponent,
-    TextCommentComponent,
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCheckbox,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonSelect,
+    IonSelectOption,
+    IonTitle,
+    IonToolbar,
+    KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
+    NgClass,
+    NgFor,
+    NgIf,
+    TextCommentComponent,
     TranslateModule,
+    ValidExpositionComponent,
   ],
 })
 export class AvalancheActivityModalPage implements OnInit {
