@@ -2,7 +2,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.component';
@@ -36,7 +35,6 @@ import { ObservationListViewComponent } from './components/list-view/observation
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule,
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,
@@ -70,7 +68,6 @@ import { ObservationListViewComponent } from './components/list-view/observation
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule,
     TranslateModule,
     RouterModule,
     ObservationListViewComponent,

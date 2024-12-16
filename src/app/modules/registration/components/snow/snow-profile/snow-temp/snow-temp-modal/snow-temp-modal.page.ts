@@ -1,6 +1,22 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import cloneDeep from 'clone-deep';
 import { Subject } from 'rxjs';
@@ -12,12 +28,35 @@ import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
+import { addIcons } from 'ionicons';
+import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-temp-modal',
   templateUrl: './snow-temp-modal.page.html',
   styleUrls: ['./snow-temp-modal.page.scss'],
-  imports: [IonicModule, HeaderColorDirective, FormsModule, NgFor, NgIf, TranslateModule, MetersToCmPipe],
+  imports: [
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonRow,
+    IonTitle,
+    IonToolbar,
+    MetersToCmPipe,
+    NgFor,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;
@@ -42,7 +81,9 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private draftRepository: DraftRepositoryService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    addIcons({ addCircleOutline });
+  }
 
   ngOnInit() {
     this.draftRepository

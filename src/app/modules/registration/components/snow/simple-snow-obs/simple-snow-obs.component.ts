@@ -1,9 +1,9 @@
+import { IonList } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
-import { IonicModule } from '@ionic/angular';
 import { KdvIconSelectComponent } from '../../kdv-icon-select/kdv-icon-select.component';
 import { EditImagesBarComponent } from './edit-images-bar/edit-images-bar.component';
 import { NumericInputComponent } from '../../numeric-input/numeric-input.component';
@@ -17,7 +17,7 @@ import { NumericInputComponent } from '../../numeric-input/numeric-input.compone
   templateUrl: './simple-snow-obs.component.html',
   styleUrls: ['./simple-snow-obs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, KdvIconSelectComponent, EditImagesBarComponent, NumericInputComponent],
+  imports: [EditImagesBarComponent, IonList, KdvIconSelectComponent, NumericInputComponent],
 })
 export class SimpleSnowObsComponent {
   @Input() draft: RegistrationDraft;

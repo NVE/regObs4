@@ -1,6 +1,22 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
@@ -10,12 +26,34 @@ import { FormsModule } from '@angular/forms';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { arrowBack, arrowForward, trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-temp-layer-modal',
   templateUrl: './snow-temp-layer-modal.page.html',
   styleUrls: ['./snow-temp-layer-modal.page.scss'],
-  imports: [IonicModule, HeaderColorDirective, FormsModule, NumericInputComponent, NgIf, TranslateModule],
+  imports: [
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonRow,
+    IonText,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    NumericInputComponent,
+    TranslateModule,
+  ],
 })
 export class SnowTempLayerModalPage implements OnInit {
   @Input() layer: SnowTempObsModel;
@@ -25,7 +63,9 @@ export class SnowTempLayerModalPage implements OnInit {
 
   private initialRegistrationState: RegistrationDraft;
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {}
+  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {
+    addIcons({ arrowBack, arrowForward, trash });
+  }
 
   ngOnInit() {
     this.initialRegistrationState = cloneDeep(this.draft);

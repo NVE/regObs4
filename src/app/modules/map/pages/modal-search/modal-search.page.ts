@@ -1,5 +1,18 @@
 import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
-import { IonInput, ModalController, ViewDidEnter, IonicModule } from '@ionic/angular';
+import {
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonText,
+  IonToolbar,
+  ModalController,
+  ViewDidEnter,
+} from '@ionic/angular/standalone';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
@@ -10,20 +23,31 @@ import { NumberHelper } from '../../../../core/helpers/number-helper';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
+import { addIcons } from 'ionicons';
+import { search, close, time } from 'ionicons/icons';
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
   imports: [
-    IonicModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgIf,
-    NgFor,
     AsyncPipe,
-    TranslateModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonText,
+    IonToolbar,
+    NgFor,
+    NgIf,
+    ReactiveFormsModule,
     StartsWithHighlightPipe,
+    TranslateModule,
   ],
 })
 export class ModalSearchPage implements OnInit, ViewDidEnter {
@@ -40,7 +64,9 @@ export class ModalSearchPage implements OnInit, ViewDidEnter {
     private modalController: ModalController,
     private mapSearchService: MapSearchService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    addIcons({ search, close, time });
+  }
 
   ionViewDidEnter(): void {
     this.searchInput.setFocus();

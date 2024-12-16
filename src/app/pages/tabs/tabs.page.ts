@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { Platform, IonicModule } from '@ionic/angular';
+import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, Platform } from '@ionic/angular/standalone';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
@@ -11,12 +11,25 @@ import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { CoachMarksMainScreenComponent } from '../../components/coach-marks/coach-marks-main-screen/coach-marks-main-screen.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { map as mapIcon, list, warning } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [IonicModule, NgIf, CoachMarksMainScreenComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    CoachMarksMainScreenComponent,
+    IonBadge,
+    IonIcon,
+    IonLabel,
+    IonTabBar,
+    IonTabButton,
+    IonTabs,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class TabsPage implements OnInit, OnDestroy {
   private warningGroupInMapViewSubscription: Subscription;
@@ -58,6 +71,7 @@ export class TabsPage implements OnInit, OnDestroy {
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
       this.applyCurrentQueryParams(tab)
     );
+    addIcons({ mapIcon, list, warning });
   }
 
   private applyCurrentQueryParams(path: TABS | null) {

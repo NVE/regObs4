@@ -1,6 +1,19 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCheckbox,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
@@ -18,14 +31,24 @@ const COMMENT_SEPARATOR = ': ';
   templateUrl: './add-or-edit-danger-obs-modal.page.html',
   styleUrls: ['./add-or-edit-danger-obs-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    NgIf,
     FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCheckbox,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
     KdvSelectComponent,
+    ModalSaveOrDeleteButtonsComponent,
+    NgIf,
     SelectComponent,
     TextCommentComponent,
-    ModalSaveOrDeleteButtonsComponent,
     TranslateModule,
   ],
 })

@@ -1,3 +1,13 @@
+import {
+  IonToolbar,
+  IonBackButton,
+  IonMenuButton,
+  IonIcon,
+  IonTitle,
+  IonHeader,
+  IonButton,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
@@ -7,14 +17,27 @@ import { AppMode } from 'src/app/modules/common-core/models';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
 import { BreakpointService } from '../../../../core/services/breakpoint.service';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { menuOutline, optionsOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  imports: [NgIf, IonicModule, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonHeader,
+    IonIcon,
+    IonMenuButton,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showMenuButton = true;
@@ -50,7 +73,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
     private breakpointService: BreakpointService
-  ) {}
+  ) {
+    addIcons({ menuOutline, optionsOutline });
+  }
 
   ngOnInit() {
     this.isFullscreen$ = this.fullscreenService.isFullscreen$;

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CheckDaysOrWeeksBackComponent } from './check-days-or-weeks-back.component';
@@ -10,7 +9,7 @@ describe('CheckDaysOrWeeksBackComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), CheckDaysOrWeeksBackComponent],
+      imports: [TranslateModule.forRoot(), CheckDaysOrWeeksBackComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CheckDaysOrWeeksBackComponent);

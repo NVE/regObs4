@@ -30,7 +30,7 @@ import {
   timer,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
 const dateToMs = (value: string): number => {

@@ -13,7 +13,7 @@ import {
 import { filter, map, distinctUntilChanged, startWith, skipWhile, take } from 'rxjs/operators';
 import { CallbackID, ClearWatchOptions, Geolocation, Position, WatchPositionCallback } from '@capacitor/geolocation';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { ToastController, Platform } from '@ionic/angular';
+import { ToastController, Platform } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';

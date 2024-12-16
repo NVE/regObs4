@@ -1,7 +1,22 @@
 import { Component, NgZone } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonReorder,
+  IonReorderGroup,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessEditModel, IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
@@ -16,25 +31,39 @@ import { EditImagesComponent } from '../../../components/edit-images/edit-images
 import { TranslateModule } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
+import { addIcons } from 'ionicons';
+import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-ice-thickness',
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    NgIf,
-    RegistrationContentWrapperComponent,
-    NumericInputComponent,
-    NgFor,
-    YesNoSelectComponent,
-    TextCommentComponent,
-    EditImagesComponent,
     AsyncPipe,
-    TranslateModule,
+    EditImagesComponent,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonReorder,
+    IonReorderGroup,
+    IonTitle,
+    IonToolbar,
     KdvDescriptionPipe,
     MetersToCmPipe,
+    NgFor,
+    NgIf,
+    NumericInputComponent,
+    RegistrationContentWrapperComponent,
+    TextCommentComponent,
+    TranslateModule,
+    YesNoSelectComponent,
   ],
 })
 export class IceThicknessPage extends BasePage {
@@ -51,6 +80,7 @@ export class IceThicknessPage extends BasePage {
     private ngZone: NgZone
   ) {
     super(RegistrationTid.IceThickness, basePageService, activatedRoute);
+    addIcons({ addCircleOutline });
   }
 
   get iceThickness(): IceThicknessEditModel {

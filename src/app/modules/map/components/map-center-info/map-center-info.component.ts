@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { ToastController, IonicModule } from '@ionic/angular';
+import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/angular/standalone';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
@@ -22,6 +22,8 @@ import * as turf from '@turf/turf';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { NgIf, NgStyle, DecimalPipe } from '@angular/common';
 import { AbsPipe } from '../../../shared/pipes/abs.pipe';
+import { addIcons } from 'ionicons';
+import { arrowUp, arrowDown } from 'ionicons/icons';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -31,7 +33,7 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   templateUrl: './map-center-info.component.html',
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgIf, NgStyle, DecimalPipe, TranslateModule, AbsPipe],
+  imports: [AbsPipe, DecimalPipe, IonGrid, IonIcon, IonRow, IonSpinner, NgIf, NgStyle, TranslateModule],
 })
 export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private userPos: Position; // Caches the gps position for distance and height diff computation
@@ -88,6 +90,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     // We call detectChanges after every new mapView or gps pos has been processed, so
     // no need for this component to be in the regular change detection loop.
     this.cdr.detach();
+    addIcons({ arrowUp, arrowDown });
   }
 
   ngOnInit(): void {

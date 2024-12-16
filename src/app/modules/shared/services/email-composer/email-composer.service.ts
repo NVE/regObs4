@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
-import { ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 

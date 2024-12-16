@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
-import { IonicModule } from '@ionic/angular';
-
 import { OfflineMapPage } from './offline-map.page';
 import { MapModule } from 'src/app/modules/map/map.module';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -22,7 +19,6 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
     RouterModule.forChild(routes),
     MapModule,
     SharedModule,

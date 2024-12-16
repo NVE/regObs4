@@ -1,6 +1,19 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCheckbox,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { Subscription, combineLatest } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
@@ -32,17 +45,27 @@ interface AvalancheProblemKeys {
   templateUrl: './avalanche-problem-modal.page.html',
   styleUrls: ['./avalanche-problem-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    NgIf,
-    FormsModule,
-    KdvSelectComponent,
-    NgFor,
     ExposedHeightComponent,
-    ValidExpositionComponent,
-    TextCommentComponent,
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCheckbox,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
+    KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
+    NgFor,
+    NgIf,
+    TextCommentComponent,
     TranslateModule,
+    ValidExpositionComponent,
   ],
 })
 export class AvalancheProblemModalPage implements OnInit, OnDestroy {

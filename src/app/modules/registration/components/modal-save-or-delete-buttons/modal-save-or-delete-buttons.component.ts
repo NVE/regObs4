@@ -1,17 +1,19 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { AlertController, IonicModule } from '@ionic/angular';
+import { AlertController, IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular/standalone';
 import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { NgIf } from '@angular/common';
+import { addIcons } from 'ionicons';
+import { trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-modal-save-or-delete-buttons',
   templateUrl: './modal-save-or-delete-buttons.component.html',
   styleUrls: ['./modal-save-or-delete-buttons.component.scss'],
-  imports: [IonicModule, NgIf, TranslateModule],
+  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, NgIf, TranslateModule],
 })
 export class ModalSaveOrDeleteButtonsComponent {
   @Input() saveText = 'DIALOGS.OK';
@@ -26,7 +28,9 @@ export class ModalSaveOrDeleteButtonsComponent {
     private translateService: TranslateService,
     private alertController: AlertController,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+    addIcons({ trash });
+  }
 
   ok() {
     this.saveClicked.emit();

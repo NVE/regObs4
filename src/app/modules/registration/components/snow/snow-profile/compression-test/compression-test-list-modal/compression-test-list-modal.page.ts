@@ -1,6 +1,17 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
@@ -16,7 +27,22 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-compression-test-list-modal',
   templateUrl: './compression-test-list-modal.page.html',
   styleUrls: ['./compression-test-list-modal.page.scss'],
-  imports: [IonicModule, HeaderColorDirective, FormsModule, NgIf, CompressionTestListComponent, TranslateModule],
+  imports: [
+    CompressionTestListComponent,
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonRow,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class CompressionTestListModalPage implements OnInit, OnDestroy {
   @Input() uuid: string;

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
 import { RegobsAuthService } from '../../services/regobs-auth.service';
 
 import { AuthCallbackPage } from './auth-callback.page';
@@ -18,7 +17,7 @@ describe('AuthCallbackPage', () => {
         { provide: RegobsAuthService, useValue: regobsAuthService },
         { provide: Router, useValue: { url: '/testurl?abc=123' } },
       ],
-      imports: [IonicModule, AuthCallbackPage],
+      imports: [AuthCallbackPage],
     }).compileComponents();
   }));
 

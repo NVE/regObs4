@@ -1,5 +1,17 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';
 import { NgIf, NgFor } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,7 +20,21 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-numeric-input-modal',
   templateUrl: './numeric-input-modal.page.html',
   styleUrls: ['./numeric-input-modal.page.scss'],
-  imports: [IonicModule, NgIf, NgFor, TranslateModule],
+  imports: [
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonRow,
+    IonText,
+    IonTitle,
+    IonToolbar,
+    NgFor,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class NumericInputModalPage implements OnInit {
   @Input() value: number;

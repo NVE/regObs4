@@ -1,5 +1,17 @@
 import { Component, OnInit, Input, ViewChild, Renderer2 } from '@angular/core';
-import { IonItemSliding, DomController, IonicModule } from '@ionic/angular';
+import {
+  DomController,
+  IonBadge,
+  IonCol,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  IonLabel,
+  IonRow,
+} from '@ionic/angular/standalone';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -15,12 +27,29 @@ import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { NgIf, NgFor } from '@angular/common';
 import { GeoIconComponent } from '../../modules/shared/components/geo-icon/geo-icon.component';
+import { addIcons } from 'ionicons';
+import { alert } from 'ionicons/icons';
 
 @Component({
   selector: 'app-warning-list-item',
   templateUrl: './warning-list-item.component.html',
   styleUrls: ['./warning-list-item.component.scss'],
-  imports: [IonicModule, NgIf, GeoIconComponent, NgFor, WarningGroupFavouriteToggleComponent],
+  imports: [
+    GeoIconComponent,
+    IonBadge,
+    IonCol,
+    IonGrid,
+    IonIcon,
+    IonItem,
+    IonItemOption,
+    IonItemOptions,
+    IonItemSliding,
+    IonLabel,
+    IonRow,
+    NgFor,
+    NgIf,
+    WarningGroupFavouriteToggleComponent,
+  ],
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   @Input() warningGroup: WarningGroup;
@@ -39,6 +68,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     private renderer: Renderer2
   ) {
     super();
+    addIcons({ alert });
   }
 
   ngOnInit() {

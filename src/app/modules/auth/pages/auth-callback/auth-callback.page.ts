@@ -1,13 +1,13 @@
+import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegobsAuthService } from '../../services/regobs-auth.service';
-import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth-callback',
   templateUrl: './auth-callback.page.html',
   styleUrls: ['./auth-callback.page.scss'],
-  imports: [IonicModule],
+  imports: [IonContent, IonSpinner],
 })
 export class AuthCallbackPage implements OnInit {
   constructor(private regobsAuthService: RegobsAuthService, private router: Router) {}

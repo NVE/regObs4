@@ -9,7 +9,7 @@ import { APP_PROVIDERS } from './app/app.providers';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { provideIonicAngular } from '@ionic/angular/standalone';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import { settings } from 'src/settings';
@@ -38,10 +38,10 @@ function startApp() {
   console.log('starting app');
   bootstrapApplication(AppComponent, {
     providers: [
+      provideIonicAngular({}),
       importProvidersFrom(
         BrowserModule,
         FormsModule,
-        IonicModule.forRoot(),
         IonicStorageModule.forRoot({
           driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB],
           storeName: settings.db.nanoSql.dbName,

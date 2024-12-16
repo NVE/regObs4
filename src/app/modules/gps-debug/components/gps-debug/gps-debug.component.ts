@@ -4,18 +4,20 @@ import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switc
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
-import { IonContent, IonicModule } from '@ionic/angular';
+import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import moment from 'moment';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
 import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-gps-debug',
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
-  imports: [NgIf, IonicModule, NgClass, NgFor, AsyncPipe, DecimalPipe, TranslateModule],
+  imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, NgFor, NgIf, TranslateModule],
 })
 export class GpsDebugComponent implements OnInit, OnDestroy {
   showLog$: Observable<boolean>;
@@ -30,7 +32,9 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private geoPositionService: GeoPositionService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    addIcons({ arrowDownCircle, arrowUpCircle });
+  }
 
   ngOnInit() {
     this.isOpen = false;

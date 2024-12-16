@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
 import { HelpTextService } from 'src/app/modules/common-registration/registration.services';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './help-text.component.html',
   styleUrls: ['./help-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, AsyncPipe, TranslateModule],
+  imports: [AsyncPipe, IonButton, IonCol, IonGrid, IonRow, NgIf, TranslateModule],
 })
 export class HelpTextComponent implements OnInit {
   @Input() registrationTid: number;

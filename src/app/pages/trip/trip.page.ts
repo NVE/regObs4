@@ -1,11 +1,42 @@
+import {
+  IonToolbar,
+  IonListHeader,
+  IonItem,
+  IonLabel,
+  IonContent,
+  IonMenuButton,
+  IonIcon,
+  IonTitle,
+  IonList,
+  IonHeader,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { map, chevronForward, walk } from 'ionicons/icons';
 
 @Component({
   selector: 'app-trip',
   templateUrl: './trip.page.html',
   styleUrls: ['./trip.page.scss'],
-  imports: [IonicModule, TranslateModule],
+  imports: [
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonMenuButton,
+    IonTitle,
+    IonToolbar,
+    TranslateModule,
+  ],
 })
-export class TripPage {}
+export class TripPage {
+  constructor() {
+    addIcons({ map, chevronForward, walk });
+  }
+}

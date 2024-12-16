@@ -1,4 +1,18 @@
-import { CheckboxCustomEvent, Platform, SearchbarCustomEvent, ToggleCustomEvent, IonicModule } from '@ionic/angular';
+import {
+  CheckboxCustomEvent,
+  IonButton,
+  IonCheckbox,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonSearchbar,
+  IonToggle,
+  Platform,
+  SearchbarCustomEvent,
+  ToggleCustomEvent,
+} from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
@@ -23,6 +37,8 @@ import { UpdateObservationsComponent } from '../update-observations/update-obser
 import { SelectedItemsCounterLabelComponent } from '../selected-items-counter-label/selected-items-counter-label.component';
 import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { eye } from 'ionicons/icons';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -69,16 +85,24 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    IonicModule,
+    AsyncPipe,
+    DateRangeComponent,
+    IonButton,
+    IonCheckbox,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonSearchbar,
+    IonToggle,
+    NgFor,
     NgIf,
     ObservationsDaysBackComponent,
-    DateRangeComponent,
-    UpdateObservationsComponent,
     SelectedItemsCounterLabelComponent,
-    NgFor,
     SlushFlowFilterComponent,
-    AsyncPipe,
     TranslateModule,
+    UpdateObservationsComponent,
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
@@ -153,6 +177,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         return 0;
       })
     );
+    addIcons({ eye });
   }
 
   async ngOnInit() {

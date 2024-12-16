@@ -3,7 +3,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { StatusBar } from '@capacitor/status-bar';
 import { NgDestoryBase } from '../../helpers/observable-helper';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 

@@ -7,13 +7,12 @@ import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model'
 import { MyPageData } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { Component, Input } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   selector: 'app-header',
   template: '',
-  imports: [IonicModule],
+  imports: [],
 })
 class AppHeaderStubComponent {
   @Input() showFilterButton = true;
@@ -30,7 +29,7 @@ describe('ObskorpsPage', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule, ObskorpsPage, AppHeaderStubComponent],
+      imports: [ObskorpsPage, AppHeaderStubComponent],
       providers: [
         {
           provide: RegobsAuthService,

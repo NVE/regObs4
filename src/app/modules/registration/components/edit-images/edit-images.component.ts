@@ -1,6 +1,16 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { ActionSheetController, Platform, ToastController, IonicModule } from '@ionic/angular';
+import {
+  ActionSheetController,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonProgressBar,
+  Platform,
+  ToastController,
+} from '@ionic/angular/standalone';
 import {
   Camera,
   CameraResultType,
@@ -30,6 +40,8 @@ import { NgFor, NgIf, NgClass, AsyncPipe } from '@angular/common';
 import { RemoteImageComponent } from '../../../shared/components/remote-image/remote-image.component';
 import { TextCommentComponent } from '../text-comment/text-comment.component';
 import { BlobImageComponent } from '../blob-image/blob-image.component';
+import { addIcons } from 'ionicons';
+import { close } from 'ionicons/icons';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -50,15 +62,20 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
   styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgFor,
-    RemoteImageComponent,
-    IonicModule,
-    TextCommentComponent,
+    AsyncPipe,
     BlobImageComponent,
+    IonFab,
+    IonFabButton,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonProgressBar,
+    NgClass,
+    NgFor,
     NgIf,
     NgxFileDropModule,
-    NgClass,
-    AsyncPipe,
+    RemoteImageComponent,
+    TextCommentComponent,
     TranslateModule,
   ],
 })
@@ -103,7 +120,9 @@ export class EditImagesComponent implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private dropZoneService: DropZoneService
-  ) {}
+  ) {
+    addIcons({ close });
+  }
 
   ngOnInit() {
     this.isHybrid = this.platform.is('hybrid');

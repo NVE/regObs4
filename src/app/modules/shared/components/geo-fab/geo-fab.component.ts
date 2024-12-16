@@ -1,3 +1,4 @@
+import { IonItem, IonContent, IonPopover, IonIcon, IonList, IonButton, IonLabel } from '@ionic/angular/standalone';
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
 import { state, trigger, style, transition, animate, stagger, query } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
@@ -6,8 +7,6 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
 import { map, take } from 'rxjs/operators';
-import { IonicModule } from '@ionic/angular';
-
 const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
 @Component({
   selector: 'app-geo-fab',
@@ -45,7 +44,7 @@ const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, Ge
       ]),
     ]),
   ],
-  imports: [IonicModule],
+  imports: [IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPopover],
 })
 export class GeoFabComponent implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;

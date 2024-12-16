@@ -1,22 +1,26 @@
+import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
 import { Component, OnDestroy, AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MapService } from '../../../services/map/map.service';
 import { Subscription } from 'rxjs';
-import { IonicModule } from '@ionic/angular';
 import { NgClass } from '@angular/common';
+import { addIcons } from 'ionicons';
+import { locate } from 'ionicons/icons';
 
 @Component({
   selector: 'app-gps-center',
   templateUrl: './gps-center.component.html',
   styleUrls: ['./gps-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgClass],
+  imports: [IonFab, IonFabButton, IonIcon, NgClass],
 })
 export class GpsCenterComponent implements OnDestroy, AfterContentInit {
   followMode: boolean;
 
   private subscription: Subscription;
 
-  constructor(private mapService: MapService, private cdRef: ChangeDetectorRef) {}
+  constructor(private mapService: MapService, private cdRef: ChangeDetectorRef) {
+    addIcons({ locate });
+  }
 
   ngAfterContentInit(): void {
     this.subscription = this.mapService.followMode$.subscribe((val) => {

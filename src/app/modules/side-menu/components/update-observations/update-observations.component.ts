@@ -1,8 +1,8 @@
+import { IonItem, IonSpinner, IonText, IonButton, IonLabel } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';
-import { IonicModule } from '@ionic/angular';
 import { NgIf, AsyncPipe, DatePipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +12,18 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './update-observations.component.html',
   styleUrls: ['./update-observations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgIf, SvgIconComponent, AsyncPipe, DatePipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    IonButton,
+    IonItem,
+    IonLabel,
+    IonSpinner,
+    IonText,
+    NgIf,
+    SvgIconComponent,
+    TranslateModule,
+  ],
 })
 export class UpdateObservationsComponent {
   settings = settings;

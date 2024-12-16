@@ -1,18 +1,20 @@
 import { Component, Input } from '@angular/core';
 import { SnowDensityModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { checkmarkCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density',
   templateUrl: './snow-density.component.html',
   styleUrls: ['./snow-density.component.scss'],
-  imports: [IonicModule, NgIf, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslateModule],
 })
 export class SnowDensityComponent {
   @Input() draft: RegistrationDraft;
@@ -29,7 +31,9 @@ export class SnowDensityComponent {
     return isEmpty(this.profiles);
   }
 
-  constructor(private modalContoller: ModalController, private draftRepository: DraftRepositoryService) {}
+  constructor(private modalContoller: ModalController, private draftRepository: DraftRepositoryService) {
+    addIcons({ checkmarkCircle });
+  }
 
   async openModal(): Promise<void> {
     if (!this.densityModal) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertButton, AlertController } from '@ionic/angular';
+import { AlertButton, AlertController } from '@ionic/angular/standalone';
 import { AlertOptions } from '@ionic/core/dist/types/components/alert/alert-interface';
 import { IonicSafeString } from '@ionic/core/dist/types/utils/sanitization';
 import { firstValueFrom } from 'rxjs';

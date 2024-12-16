@@ -1,5 +1,15 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges } from '@angular/core';
-import { AlertController, NavController, IonicModule } from '@ionic/angular';
+import {
+  AlertController,
+  IonButton,
+  IonCol,
+  IonFooter,
+  IonGrid,
+  IonIcon,
+  IonRow,
+  IonToolbar,
+  NavController,
+} from '@ionic/angular/standalone';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
@@ -18,6 +28,8 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
+import { addIcons } from 'ionicons';
+import { send } from 'ionicons/icons';
 
 const DEBUG_TAG = 'SendButtonComponent';
 const DELETE_OBS_TIMEOUT_MS = 5000;
@@ -27,7 +39,19 @@ const DELETE_OBS_TIMEOUT_MS = 5000;
   templateUrl: './send-button.component.html',
   styleUrls: ['./send-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, SvgIconComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    IonButton,
+    IonCol,
+    IonFooter,
+    IonGrid,
+    IonIcon,
+    IonRow,
+    IonToolbar,
+    NgIf,
+    SvgIconComponent,
+    TranslateModule,
+  ],
 })
 export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChanges {
   @Input() draft: RegistrationDraft;
@@ -67,6 +91,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
       }),
       switchMap((key) => this.translateService.get(`REGISTRATION.${key}`))
     );
+    addIcons({ send });
   }
 
   ngOnInit(): void {

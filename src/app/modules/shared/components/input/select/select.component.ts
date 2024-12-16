@@ -1,13 +1,22 @@
 import { Component, Input, EventEmitter, Output, OnInit, HostBinding } from '@angular/core';
-import { ActionSheetController, IonicModule } from '@ionic/angular';
+import {
+  ActionSheetController,
+  IonButton,
+  IonIcon,
+  IonSelect,
+  IonSelectOption,
+  IonText,
+} from '@ionic/angular/standalone';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { isAndroidOrIos } from '../../../../../core/helpers/ionic/platform-helper';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { caretDownSharp } from 'ionicons/icons';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -16,7 +25,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
-  imports: [NgIf, IonicModule, FormsModule, NgFor, TranslateModule],
+  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslateModule],
 })
 export class SelectComponent implements OnInit {
   @Input() label: string;
@@ -50,7 +59,9 @@ export class SelectComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private translateService: TranslateService,
     public platform: Platform
-  ) {}
+  ) {
+    addIcons({ caretDownSharp });
+  }
 
   ngOnInit() {
     this.isApp = isAndroidOrIos(this.platform);

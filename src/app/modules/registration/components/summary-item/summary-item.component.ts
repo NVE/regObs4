@@ -1,6 +1,6 @@
 import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
-import { NavController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, NavController } from '@ionic/angular/standalone';
 import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
 import {
   AttachmentUploadEditModel,
@@ -13,13 +13,15 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
 import { NgIf, NgClass } from '@angular/common';
 import { ThumbnailsComponent } from '../thumbnails/thumbnails.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { checkmarkCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-summary-item',
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, NgClass, ThumbnailsComponent, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, NgClass, NgIf, ThumbnailsComponent, TranslateModule],
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
   @Input() item: ISummaryItem;
@@ -31,7 +33,9 @@ export class SummaryItemComponent implements OnChanges, OnInit {
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
   existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
-  constructor(private navController: NavController, private newAttachmentService: NewAttachmentService) {}
+  constructor(private navController: NavController, private newAttachmentService: NewAttachmentService) {
+    addIcons({ checkmarkCircle });
+  }
 
   ngOnInit(): void {
     this.newAttachments$ = this.attachments.pipe(

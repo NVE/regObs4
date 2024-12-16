@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
 import { StratProfileEditModel } from 'src/app/modules/common-regobs-api/models';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { checkmarkCircle } from 'ionicons/icons';
 
 /**
  * The small summary component on the main snow profile page,
@@ -18,7 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-strat-profile',
   templateUrl: './strat-profile.component.html',
   styleUrls: ['./strat-profile.component.scss'],
-  imports: [IonicModule, NgIf, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslateModule],
 })
 export class StratProfileComponent {
   @Input() draft: RegistrationDraft;
@@ -33,7 +35,9 @@ export class StratProfileComponent {
     return IsEmptyHelper.isEmpty(this.profile);
   }
 
-  constructor(private modalContoller: ModalController, private draftrepository: DraftRepositoryService) {}
+  constructor(private modalContoller: ModalController, private draftrepository: DraftRepositoryService) {
+    addIcons({ checkmarkCircle });
+  }
 
   async openModal() {
     if (!this.modal) {

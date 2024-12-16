@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-
-import { IonicModule } from '@ionic/angular';
-
 import { TripPage } from './trip.page';
 
 const routes: Routes = [
@@ -16,6 +13,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes), TranslateModule, TripPage],
+  imports: [CommonModule, FormsModule, RouterModule.forChild(routes), TranslateModule, TripPage],
 })
 export class TripPageModule {}

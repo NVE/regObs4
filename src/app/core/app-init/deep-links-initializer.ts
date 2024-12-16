@@ -1,6 +1,6 @@
 import { NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular/standalone';
 import { AuthService } from 'ionic-appauth';
 import { App } from '@capacitor/app';
 

@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
 import { BehaviorSubject, combineLatest, fromEventPattern, race, Subject, timer } from 'rxjs';

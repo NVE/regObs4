@@ -1,3 +1,4 @@
+import { IonSelect, IonItem, IonSelectOption, IonIcon, IonToggle, IonLabel } from '@ionic/angular/standalone';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -7,10 +8,11 @@ import { PopupInfoService } from '../../../../core/services/popup-info/popup-inf
 import { takeUntil } from 'rxjs/operators';
 import { Capacitor } from '@capacitor/core';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { SupportTileLegendLoaderComponent } from './legends/support-tile-legend-loader/support-tile-legend-loader.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { mapOutline } from 'ionicons/icons';
 
 interface PopupSubscription {
   subscription: Subscription;
@@ -23,7 +25,20 @@ interface PopupSubscription {
   templateUrl: './support-tiles-menu.component.html',
   styleUrls: ['./support-tiles-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, NgFor, IonicModule, FormsModule, SupportTileLegendLoaderComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    FormsModule,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonToggle,
+    NgFor,
+    NgIf,
+    SupportTileLegendLoaderComponent,
+    TranslateModule,
+  ],
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
   isWeb = Capacitor.getPlatform() === 'web';
@@ -48,6 +63,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       supportTiles.forEach((supportTile) => this.onTileChanged(supportTile));
       this.subTileInstantiation.unsubscribe();
     });
+    addIcons({ mapOutline });
   }
 
   ngOnDestroy() {

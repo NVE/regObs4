@@ -1,5 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonFab, NavController, Platform, IonicModule } from '@ionic/angular';
+import {
+  IonFab,
+  IonFabButton,
+  IonFabList,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  NavController,
+  Platform,
+} from '@ionic/angular/standalone';
 import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
@@ -17,6 +27,8 @@ import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GeoIconComponent } from '../geo-icon/geo-icon.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { add, create } from 'ionicons/icons';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -24,7 +36,21 @@ const DEBUG_TAG = 'AddMenuComponent';
   selector: 'app-add-menu',
   templateUrl: './add-menu.component.html',
   styleUrls: ['./add-menu.component.scss'],
-  imports: [NgIf, IonicModule, NgFor, GeoIconComponent, AsyncPipe, UpperCasePipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    GeoIconComponent,
+    IonFab,
+    IonFabButton,
+    IonFabList,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    NgFor,
+    NgIf,
+    TranslateModule,
+    UpperCasePipe,
+  ],
 })
 export class AddMenuComponent implements OnInit {
   @ViewChild('menuFab') menuFab: IonFab;
@@ -46,7 +72,9 @@ export class AddMenuComponent implements OnInit {
     private userSettingService: UserSettingService,
     private loggingService: LoggingService,
     private platform: Platform
-  ) {}
+  ) {
+    addIcons({ add, create });
+  }
 
   ngOnInit(): void {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);

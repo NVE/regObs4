@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { map, take, filter, switchMap, delay } from 'rxjs/operators';
 import moment from 'moment';
-import { AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, from } from 'rxjs';
 import { settings } from '../../../../settings';

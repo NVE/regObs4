@@ -1,3 +1,4 @@
+import { IonTabBar, IonLabel, IonTabButton, IonIcon, IonFabButton, IonText, IonFab } from '@ionic/angular/standalone';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, merge } from 'rxjs';
@@ -6,8 +7,9 @@ import { trigger } from '@angular/animations';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../core/animations/custom.animation';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { GeoFabComponent } from '../../../modules/shared/components/geo-fab/geo-fab.component';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { add, map as mapIcon, list, warning } from 'ionicons/icons';
 
 @Component({
   selector: 'app-coach-marks-main-screen',
@@ -20,7 +22,19 @@ import { TranslateModule } from '@ngx-translate/core';
     trigger('warning-icon-animation', CustomAnimation.createEnterScaleInAnimation(5000, 500, EASE_IN_OUT_BACK)),
     trigger('warning-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(6000, 500, EASE_IN_OUT, 0.9)),
   ],
-  imports: [NgIf, GeoFabComponent, IonicModule, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    GeoFabComponent,
+    IonFab,
+    IonFabButton,
+    IonIcon,
+    IonLabel,
+    IonTabBar,
+    IonTabButton,
+    IonText,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   showCoachMarks$: Observable<boolean>;
@@ -28,7 +42,9 @@ export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   ngDestroy$ = new Subject<void>();
   hideSubject = new Subject<boolean>();
 
-  constructor(private userSettingService: UserSettingService) {}
+  constructor(private userSettingService: UserSettingService) {
+    addIcons({ add, map: mapIcon, list, warning });
+  }
 
   ngOnInit() {
     this.showCoachMarks$ = merge(this.getShowGeoSelectObservable(), this.hideSubject);

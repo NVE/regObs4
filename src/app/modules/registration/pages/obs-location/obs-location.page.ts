@@ -1,6 +1,14 @@
 import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
-import { NavController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  NavController,
+} from '@ionic/angular/standalone';
 import { ObsLocationsResponseDtoV2, ObsLocationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -23,7 +31,19 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-obs-location',
   templateUrl: './obs-location.page.html',
   styleUrls: ['./obs-location.page.scss'],
-  imports: [NgIf, IonicModule, HeaderColorDirective, SetLocationInMapComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    SetLocationInMapComponent,
+    TranslateModule,
+  ],
 })
 export class ObsLocationPage implements OnInit, OnDestroy {
   locationMarker: L.Marker;

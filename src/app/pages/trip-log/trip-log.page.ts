@@ -1,9 +1,21 @@
+import {
+  IonToolbar,
+  IonGrid,
+  IonContent,
+  IonBackButton,
+  IonRow,
+  IonFab,
+  IonCol,
+  IonTitle,
+  IonFabButton,
+  IonHeader,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
 import { Subscription } from 'rxjs';
-import { IonicModule } from '@ionic/angular';
 import { NgIf } from '@angular/common';
 import { TripLogSummaryComponent } from '../../components/trip-log-summary/trip-log-summary.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +24,22 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',
   styleUrls: ['./trip-log.page.scss'],
-  imports: [IonicModule, NgIf, TripLogSummaryComponent, TranslateModule],
+  imports: [
+    IonBackButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonFab,
+    IonFabButton,
+    IonGrid,
+    IonHeader,
+    IonRow,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    TranslateModule,
+    TripLogSummaryComponent,
+  ],
 })
 export class TripLogPage implements OnInit, OnDestroy {
   state: TripLogState = TripLogState.NotStarted;

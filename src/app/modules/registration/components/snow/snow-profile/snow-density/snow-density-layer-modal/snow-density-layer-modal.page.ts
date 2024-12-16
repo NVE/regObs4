@@ -1,5 +1,22 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
 import cloneDeep from 'clone-deep';
@@ -10,12 +27,36 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, DecimalPipe } from '@angular/common';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { arrowBack, arrowForward, trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density-layer-modal',
   templateUrl: './snow-density-layer-modal.page.html',
   styleUrls: ['./snow-density-layer-modal.page.scss'],
-  imports: [IonicModule, HeaderColorDirective, FormsModule, NgIf, NumericInputComponent, DecimalPipe, TranslateModule],
+  imports: [
+    DecimalPipe,
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonRow,
+    IonText,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    NumericInputComponent,
+    TranslateModule,
+  ],
 })
 export class SnowDensityLayerModalPage implements OnInit {
   @Input() draft: RegistrationDraft;
@@ -27,7 +68,9 @@ export class SnowDensityLayerModalPage implements OnInit {
   addNew: boolean;
   private initialDraftState: RegistrationDraft;
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {}
+  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {
+    addIcons({ arrowBack, arrowForward, trash });
+  }
 
   ngOnInit() {
     this.initialDraftState = cloneDeep(this.draft);

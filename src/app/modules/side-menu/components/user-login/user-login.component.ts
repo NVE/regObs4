@@ -1,3 +1,4 @@
+import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
 import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -5,21 +6,24 @@ import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { Router, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { personCircleOutline, eyeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss'],
-  imports: [NgIf, IonicModule, RouterLink, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonSpinner, IonText, NgIf, RouterLink, TranslateModule, IonRouterLink],
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   loggedInUser: LoggedInUser = { isLoggedIn: false };
   private ngDestroy$ = new Subject<void>();
   isLoggingIn = false;
 
-  constructor(private regobsauthService: RegobsAuthService, private router: Router, private ngZone: NgZone) {}
+  constructor(private regobsauthService: RegobsAuthService, private router: Router, private ngZone: NgZone) {
+    addIcons({ personCircleOutline, eyeOutline });
+  }
 
   ngOnInit(): void {
     this.regobsauthService.loggedInUser$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
