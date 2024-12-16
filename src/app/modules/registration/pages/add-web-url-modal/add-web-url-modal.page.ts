@@ -1,5 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { UrlEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
@@ -12,11 +25,21 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './add-web-url-modal.page.html',
   styleUrls: ['./add-web-url-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    TextCommentComponent,
     FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
     ModalSaveOrDeleteButtonsComponent,
+    TextCommentComponent,
     TranslateModule,
   ],
 })

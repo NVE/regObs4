@@ -1,10 +1,12 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ModalController, Platform, IonicModule } from '@ionic/angular';
+import { IonFabButton, IonIcon, IonItem, ModalController, Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { close } from 'ionicons/icons';
 
 type HrefType = { title: string; url: string };
 
@@ -13,7 +15,7 @@ type HrefType = { title: string; url: string };
   templateUrl: './fullscreen-image-modal.page.html',
   styleUrls: ['./fullscreen-image-modal.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, TranslateModule],
+  imports: [IonFabButton, IonIcon, IonItem, NgIf, TranslateModule],
 })
 export class FullscreenImageModalPage implements OnInit {
   // @ViewChild(IonSlides) slider: IonSlides;
@@ -32,7 +34,9 @@ export class FullscreenImageModalPage implements OnInit {
     private cdr: ChangeDetectorRef,
     private platform: Platform,
     private router: Router
-  ) {}
+  ) {
+    addIcons({ close });
+  }
 
   ngOnInit(): void {
     this.isHybrid = isAndroidOrIos(this.platform);

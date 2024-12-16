@@ -1,16 +1,31 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, ModalController } from '@ionic/angular/standalone';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
 import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
+import { addIcons } from 'ionicons';
+import { link, addCircleOutline } from 'ionicons/icons';
+
 @Component({
   selector: 'app-compression-test-list',
   templateUrl: './compression-test-list.component.html',
   styleUrls: ['./compression-test-list.component.scss'],
-  imports: [IonicModule, NgFor, NgIf, AsyncPipe, TranslateModule, KdvDescriptionPipe, MetersToCmPipe],
+  imports: [
+    AsyncPipe,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    KdvDescriptionPipe,
+    MetersToCmPipe,
+    NgFor,
+    NgIf,
+    TranslateModule,
+  ],
 })
 export class CompressionTestListComponent {
   @Input() tests: Array<CompressionTestEditModel>;
@@ -18,7 +33,9 @@ export class CompressionTestListComponent {
   @Output() testsChange = new EventEmitter();
   private isOpen = false;
 
-  constructor(private modalController: ModalController) {}
+  constructor(private modalController: ModalController) {
+    addIcons({ link, addCircleOutline });
+  }
 
   async addOrEditCompressionTest(index?: number) {
     if (!this.isOpen) {

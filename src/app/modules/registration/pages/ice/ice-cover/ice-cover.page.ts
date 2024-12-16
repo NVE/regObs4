@@ -1,9 +1,19 @@
+import {
+  IonToolbar,
+  IonListHeader,
+  IonLabel,
+  IonContent,
+  IonBackButton,
+  IonTitle,
+  IonList,
+  IonHeader,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Component } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { NgIf } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
@@ -18,14 +28,22 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './ice-cover.page.html',
   styleUrls: ['./ice-cover.page.scss'],
   imports: [
-    IonicModule,
+    AddWebUrlItemComponent,
+    EditImagesComponent,
     HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
+    KdvSelectComponent,
     NgIf,
     RegistrationContentWrapperComponent,
-    KdvSelectComponent,
     TextCommentComponent,
-    EditImagesComponent,
-    AddWebUrlItemComponent,
     TranslateModule,
   ],
 })

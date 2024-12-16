@@ -3,7 +3,20 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
 import { AvalancheActivityObs2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription, combineLatest } from 'rxjs';
@@ -13,19 +26,31 @@ import { NgIf, NgFor, LowerCasePipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',
   styleUrls: ['./avalanche-activity.page.scss'],
   imports: [
-    IonicModule,
+    EditImagesComponent,
     HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
+    LowerCasePipe,
+    NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
-    NgFor,
-    EditImagesComponent,
-    LowerCasePipe,
     TranslateModule,
   ],
 })
@@ -44,6 +69,7 @@ export class AvalancheActivityPage extends BasePage {
     super(RegistrationTid.AvalancheActivityObs2, basePageService, activatedRoute);
     this.avalancheCause = [];
     this.estimatedNumber = [];
+    addIcons({ addCircleOutline });
   }
 
   get avalancheActivities(): AvalancheActivityObs2EditModel[] {

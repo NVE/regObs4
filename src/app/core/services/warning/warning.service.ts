@@ -16,7 +16,7 @@ import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
 import { IIceWarningApiResult } from './ice-warning-api-result.interface';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';

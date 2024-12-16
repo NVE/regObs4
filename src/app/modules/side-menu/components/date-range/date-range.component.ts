@@ -4,7 +4,16 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { map, Observable, combineLatest, Subject } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
-import { IonAccordionGroup, IonicModule } from '@ionic/angular';
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRadio,
+  IonRadioGroup,
+  IonText,
+} from '@ionic/angular/standalone';
 import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
 import { Capacitor } from '@capacitor/core';
 import { NgIf, AsyncPipe } from '@angular/common';
@@ -18,12 +27,19 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
   imports: [
-    NgIf,
-    IonicModule,
-    CheckDaysOrWeeksBackComponent,
-    ObservationsDaysBackComponent,
-    DatetimePickerComponent,
     AsyncPipe,
+    CheckDaysOrWeeksBackComponent,
+    DatetimePickerComponent,
+    IonAccordion,
+    IonAccordionGroup,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonRadio,
+    IonRadioGroup,
+    IonText,
+    NgIf,
+    ObservationsDaysBackComponent,
     TranslateModule,
   ],
 })

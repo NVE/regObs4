@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { Device } from '@capacitor/device';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import JSZip from 'jszip';
 import moment from 'moment';

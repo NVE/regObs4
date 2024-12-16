@@ -3,7 +3,20 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
 import { combineLatest, distinctUntilChanged, firstValueFrom, map, Observable, Subscription } from 'rxjs';
-import { NavController, IonicModule } from '@ionic/angular';
+import {
+  IonIcon,
+  IonItem,
+  IonItemDivider,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenuToggle,
+  IonSelect,
+  IonSelectOption,
+  IonToggle,
+  NavController,
+  IonRouterLink,
+} from '@ionic/angular/standalone';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import version from '../../../../environments/version.json';
@@ -19,23 +32,43 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SupportTilesMenuComponent } from './support-tiles-menu/support-tiles-menu.component';
 import { ExternalLinkComponent } from '../../shared/components/external-link/external-link.component';
+import { addIcons } from 'ionicons';
+import {
+  settingsOutline,
+  globeOutline,
+  downloadOutline,
+  informationCircleOutline,
+  trailSignOutline,
+  bugOutline,
+  mailOutline,
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
   imports: [
-    NgIf,
-    IonicModule,
-    UserLoginComponent,
-    RouterLink,
-    FormsModule,
-    NgFor,
-    SupportTilesMenuComponent,
-    ExternalLinkComponent,
     AsyncPipe,
-    UpperCasePipe,
+    ExternalLinkComponent,
+    FormsModule,
+    IonIcon,
+    IonItem,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonMenuToggle,
+    IonSelect,
+    IonSelectOption,
+    IonToggle,
+    NgFor,
+    NgIf,
+    RouterLink,
+    SupportTilesMenuComponent,
     TranslateModule,
+    UpperCasePipe,
+    UserLoginComponent,
+    IonRouterLink,
   ],
 })
 export class SideMenuComponent implements OnInit, OnDestroy {
@@ -74,6 +107,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private fileLoggingService: FileLoggingService
   ) {
     this.observerTrips = observerTrips;
+    addIcons({
+      settingsOutline,
+      globeOutline,
+      downloadOutline,
+      informationCircleOutline,
+      trailSignOutline,
+      bugOutline,
+      mailOutline,
+    });
   }
 
   async ngOnInit() {

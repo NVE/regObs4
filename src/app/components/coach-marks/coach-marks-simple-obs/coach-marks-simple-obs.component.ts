@@ -1,10 +1,10 @@
+import { IonToggle, IonText, IonLabel } from '@ionic/angular/standalone';
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { distinctUntilChanged, map, merge, Observable, Subject, take } from 'rxjs';
 import { CustomAnimation, EASE_IN_OUT, EASE_IN_OUT_BACK } from 'src/app/core/animations/custom.animation';
 import { trigger } from '@angular/animations';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { KdvIconSelectComponent } from '../../../modules/registration/components/kdv-icon-select/kdv-icon-select.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
     trigger('coachmark-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT, 0.9)),
     trigger('element-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT_BACK)),
   ],
-  imports: [NgIf, IonicModule, KdvIconSelectComponent, AsyncPipe, TranslateModule],
+  imports: [AsyncPipe, IonLabel, IonText, IonToggle, KdvIconSelectComponent, NgIf, TranslateModule],
 })
 export class CoachMarksSimpleObsComponent implements OnInit {
   isVisible$: Observable<boolean>;

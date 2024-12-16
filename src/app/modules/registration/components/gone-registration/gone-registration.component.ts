@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { NavController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -8,6 +8,8 @@ import { SqliteService } from 'src/app/core/services/sqlite/sqlite.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { refresh, warning } from 'ionicons/icons';
 
 const DEBUG_TAG = 'VersionConflictComponent';
 
@@ -19,7 +21,7 @@ const DEBUG_TAG = 'VersionConflictComponent';
   selector: 'app-gone-registration',
   templateUrl: './gone-registration.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonList, TranslateModule],
 })
 export class GoneRegistrationComponent {
   @Input() draft: RegistrationDraft;
@@ -31,7 +33,9 @@ export class GoneRegistrationComponent {
     private navController: NavController,
     private userSettingService: UserSettingService,
     private sqliteService: SqliteService
-  ) {}
+  ) {
+    addIcons({ refresh, warning });
+  }
 
   async submitAsNew(): Promise<void> {
     const uuid = await this.draftRepository.copyDraftAndSave(this.draft);

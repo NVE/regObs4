@@ -8,7 +8,7 @@ import { RegobsRegistrationPipesModule } from './registration.pipes';
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
-import { isPlatform } from '@ionic/angular';
+import { isPlatform } from '@ionic/angular/standalone';
 import { RegobsApiModuleWithConfig } from '../common-regobs-api';
 import { LocalStorageAttachmentService } from './services/add-new-attachment/local-storage.attachment.service';
 import { WebAttachmentService } from './services/add-new-attachment/web-attachment.service';

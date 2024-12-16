@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { NavController, IonicModule } from '@ionic/angular';
+import { IonButton, IonCol, IonGrid, IonRouterLink, IonRow, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './save-and-go-back-button.component.html',
   styleUrls: ['./save-and-go-back-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, SvgIconComponent, TranslateModule],
+  imports: [IonButton, IonCol, IonGrid, IonRow, SvgIconComponent, TranslateModule, IonRouterLink],
 })
 export class SaveAndGoBackButtonComponent {
   @Input() draft: RegistrationDraft;

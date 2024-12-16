@@ -1,5 +1,25 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonReorder,
+  IonReorderGroup,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToggle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -16,21 +36,40 @@ import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
+import { addIcons } from 'ionicons';
+import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density-modal',
   templateUrl: './snow-density-modal.page.html',
   styleUrls: ['./snow-density-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
+    DecimalPipe,
     FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonReorder,
+    IonReorderGroup,
+    IonRow,
+    IonText,
+    IonTitle,
+    IonToggle,
+    IonToolbar,
+    MetersToCmPipe,
+    NgFor,
     NgIf,
     NumericInputComponent,
-    NgFor,
-    DecimalPipe,
     TranslateModule,
-    MetersToCmPipe,
   ],
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
@@ -56,7 +95,9 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private draftRepository: DraftRepositoryService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    addIcons({ addCircleOutline });
+  }
 
   async ngOnInit() {
     this.draftRepository

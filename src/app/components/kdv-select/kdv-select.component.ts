@@ -1,3 +1,4 @@
+import { IonItem, IonLabel } from '@ionic/angular/standalone';
 import {
   Component,
   OnInit,
@@ -13,7 +14,6 @@ import { Observable, Subject, combineLatest, debounceTime, map, startWith } from
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
-import { IonicModule } from '@ionic/angular';
 import { NgClass, NgIf, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgClass, NgIf, SelectComponent, AsyncPipe, TranslateModule],
+  imports: [AsyncPipe, IonItem, IonLabel, NgClass, NgIf, SelectComponent, TranslateModule],
 })
 export class KdvSelectComponent implements OnInit, OnChanges {
   @Input() label: string;

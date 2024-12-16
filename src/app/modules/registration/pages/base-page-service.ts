@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getRegistrationName } from 'src/app/modules/common-registration/registration.helpers';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';

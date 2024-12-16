@@ -1,3 +1,4 @@
+import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Subscription, firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -9,7 +10,6 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { StarRatingHelper } from '../competence/star-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { NgIf, NgClass, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,14 +20,17 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss'],
   imports: [
-    NgIf,
-    IonicModule,
-    NgClass,
-    SvgIconComponent,
-    CompetenceComponent,
     AsyncPipe,
-    TranslateModule,
+    CompetenceComponent,
     FormatDatePipe,
+    IonCol,
+    IonGrid,
+    IonLabel,
+    IonRow,
+    NgClass,
+    NgIf,
+    SvgIconComponent,
+    TranslateModule,
   ],
 })
 /**

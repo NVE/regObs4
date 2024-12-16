@@ -44,7 +44,7 @@ import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registr
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 
 type SyncRequest = Subject<void>;
 type CurrentSyncInfo = { appMode: AppMode; langKey: LangKey };

@@ -1,7 +1,22 @@
 import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as L from 'leaflet';
 import { BasePageService } from '../../base-page-service';
@@ -16,6 +31,8 @@ import { TextCommentComponent } from '../../../components/text-comment/text-comm
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add-web-url-item.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { location, chevronForward, time } from 'ionicons/icons';
 
 /**
  * Form to register landslide observations
@@ -25,17 +42,29 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './landslide-obs.page.html',
   styleUrls: ['./landslide-obs.page.scss'],
   imports: [
-    IonicModule,
+    AddWebUrlItemComponent,
+    DatetimePickerComponent,
+    DecimalPipe,
+    EditImagesComponent,
     HeaderColorDirective,
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonText,
+    IonTitle,
+    IonToolbar,
+    KdvSelectComponent,
+    NgClass,
     NgIf,
     RegistrationContentWrapperComponent,
-    NgClass,
-    DatetimePickerComponent,
-    KdvSelectComponent,
     TextCommentComponent,
-    EditImagesComponent,
-    AddWebUrlItemComponent,
-    DecimalPipe,
     TranslateModule,
   ],
 })
@@ -50,6 +79,7 @@ export class LandslideObsPage extends BasePage {
     private modalController: ModalController
   ) {
     super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
+    addIcons({ location, chevronForward, time });
   }
 
   get dateIsDifferentThanObsTime() {

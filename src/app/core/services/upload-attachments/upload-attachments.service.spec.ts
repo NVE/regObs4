@@ -1,4 +1,4 @@
-import { AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';

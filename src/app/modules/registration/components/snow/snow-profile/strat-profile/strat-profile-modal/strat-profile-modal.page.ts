@@ -1,5 +1,25 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonItemDivider,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonReorder,
+  IonReorderGroup,
+  IonRow,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { StratProfileEditModel, StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
@@ -17,6 +37,8 @@ import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
+import { addIcons } from 'ionicons';
+import { cloudDownload, addCircleOutline } from 'ionicons/icons';
 
 /**
  * Add layers, drag to change layer ordering, fetch layers from other profiles.
@@ -26,16 +48,33 @@ import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
   templateUrl: './strat-profile-modal.page.html',
   styleUrls: ['./strat-profile-modal.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    FormsModule,
-    NgIf,
-    NgFor,
     AsyncPipe,
     DecimalPipe,
-    TranslateModule,
+    FormsModule,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonReorder,
+    IonReorderGroup,
+    IonRow,
+    IonText,
+    IonTitle,
+    IonToolbar,
     KdvDescriptionPipe,
     MetersToCmPipe,
+    NgFor,
+    NgIf,
+    TranslateModule,
   ],
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
@@ -59,7 +98,9 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     private regobsAuthService: RegobsAuthService,
     private ngZone: NgZone,
     private draftRepository: DraftRepositoryService
-  ) {}
+  ) {
+    addIcons({ cloudDownload, addCircleOutline });
+  }
 
   ngOnInit(): void {
     this.draftRepository

@@ -1,10 +1,22 @@
+import {
+  IonToolbar,
+  IonListHeader,
+  IonItem,
+  IonLabel,
+  IonItemDivider,
+  IonContent,
+  IonBackButton,
+  IonTitle,
+  IonList,
+  IonHeader,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Component } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
-import { IonicModule } from '@ionic/angular';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { NgIf } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
@@ -20,15 +32,25 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './weather.page.html',
   styleUrls: ['./weather.page.scss'],
   imports: [
-    IonicModule,
+    EditImagesComponent,
     HeaderColorDirective,
-    NgIf,
-    RegistrationContentWrapperComponent,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
     KdvSelectComponent,
+    NgIf,
     NumericInputComponent,
+    RegistrationContentWrapperComponent,
     SelectComponent,
     TextCommentComponent,
-    EditImagesComponent,
     TranslateModule,
   ],
 })

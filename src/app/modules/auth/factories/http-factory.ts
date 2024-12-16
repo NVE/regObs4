@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 // import { CordovaRequestor } from 'ionic-appauth/lib/cordova';
 import { NgHttpService } from '../ng-http.service';
 

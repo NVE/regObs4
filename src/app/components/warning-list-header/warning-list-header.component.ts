@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import moment from 'moment';
-import { Platform, IonicModule } from '@ionic/angular';
+import { IonCol, IonGrid, IonLabel, IonRow, Platform } from '@ionic/angular/standalone';
 import { NgIf, NgClass, NgTemplateOutlet } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-warning-list-header',
   templateUrl: './warning-list-header.component.html',
   styleUrls: ['./warning-list-header.component.scss'],
-  imports: [NgIf, IonicModule, NgClass, NgTemplateOutlet, TranslateModule],
+  imports: [IonCol, IonGrid, IonLabel, IonRow, NgClass, NgIf, NgTemplateOutlet, TranslateModule],
 })
 export class WarningListHeaderComponent {
   @Input() title: string;

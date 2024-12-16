@@ -1,4 +1,4 @@
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/standalone';
 // import { CordovaSecureStorage } from 'ionic-appauth/lib/cordova';
 // import { CapacitorStorage } from 'ionic-appauth/lib/capacitor';
 import { LocalStorageBackend } from '@openid/appauth';

@@ -1,3 +1,4 @@
+import { IonItem, IonButton, IonLabel } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { enterZone } from 'src/app/core/helpers/observable-helper';
@@ -8,7 +9,6 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 import { KdvElement } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -24,7 +24,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   templateUrl: './kdv-icon-select.component.html',
   styleUrls: ['./kdv-icon-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, IonicModule, NgFor, NgClass, SvgIconComponent, AsyncPipe, TranslateModule],
+  imports: [AsyncPipe, IonButton, IonItem, IonLabel, NgClass, NgFor, NgIf, SvgIconComponent, TranslateModule],
 })
 export class KdvIconSelectComponent {
   @Input() label: string;

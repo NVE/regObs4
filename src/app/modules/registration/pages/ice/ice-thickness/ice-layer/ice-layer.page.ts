@@ -1,5 +1,16 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
@@ -12,11 +23,19 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './ice-layer.page.html',
   styleUrls: ['./ice-layer.page.scss'],
   imports: [
-    IonicModule,
     HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
     KdvSelectComponent,
-    NumericInputComponent,
     ModalSaveOrDeleteButtonsComponent,
+    NumericInputComponent,
     TranslateModule,
   ],
 })

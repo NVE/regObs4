@@ -1,5 +1,13 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { DamageObsEditModel, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
@@ -14,6 +22,7 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
 
 @Component({
   selector: 'app-set-damage-location',
+  imports: [IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar],
   templateUrl: './set-damage-location.page.html',
   styleUrls: ['./set-damage-location.page.scss'],
 })

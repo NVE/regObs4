@@ -8,7 +8,16 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { IonInfiniteScroll, IonicModule } from '@ionic/angular';
+import {
+  IonCol,
+  IonGrid,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonItemDivider,
+  IonLabel,
+  IonList,
+  IonRow,
+} from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
 import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
@@ -39,13 +48,20 @@ const DEBUG_TAG = 'SentListComponent';
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgIf,
-    IonicModule,
+    AsyncPipe,
+    IonCol,
+    IonGrid,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonRow,
     NgFor,
+    NgIf,
     ObservationListCardComponent,
     ObservationSkeletonComponent,
     SvgIconComponent,
-    AsyncPipe,
     TranslateModule,
   ],
 })

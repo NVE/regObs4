@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { NavController, Platform, IonicModule } from '@ionic/angular';
+import { IonButton, IonContent, IonFooter, IonToolbar, NavController, Platform } from '@ionic/angular/standalone';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval, Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
   animations: animations,
-  imports: [IonicModule, NgIf, TranslateModule],
+  imports: [IonButton, IonContent, IonFooter, IonToolbar, NgIf, TranslateModule],
 })
 export class StartWizardPage implements OnInit, OnDestroy {
   // @ViewChild(IonSlides) slides: IonSlides;

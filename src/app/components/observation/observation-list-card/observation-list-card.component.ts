@@ -8,7 +8,21 @@ import {
   RegistrationViewModel,
   Summary,
 } from 'src/app/modules/common-regobs-api/models';
-import { AlertController, ModalController, ToastController, IonicModule } from '@ionic/angular';
+import {
+  AlertController,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCol,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonRow,
+  IonSpinner,
+  ModalController,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { Clipboard } from '@capacitor/clipboard';
@@ -43,6 +57,8 @@ import { GeoNameComponent } from '../../../modules/shared/components/geo-name/ge
 import { CompetenceComponent } from '../../competence/competence.component';
 import { ImgSwiperComponent } from '../../img-swiper/img-swiper.component';
 import { SummaryComponent } from '../summary/summary.component';
+import { addIcons } from 'ionicons';
+import { eye, save, pencil, shareSocial } from 'ionicons/icons';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -58,14 +74,23 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   styleUrls: ['./observation-list-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgIf,
-    IonicModule,
-    SvgIconComponent,
-    GeoNameComponent,
     CompetenceComponent,
-    ImgSwiperComponent,
-    SummaryComponent,
     DatePipe,
+    GeoNameComponent,
+    ImgSwiperComponent,
+    IonButton,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCol,
+    IonGrid,
+    IonIcon,
+    IonItem,
+    IonRow,
+    IonSpinner,
+    NgIf,
+    SummaryComponent,
+    SvgIconComponent,
     TranslateModule,
   ],
 })
@@ -107,7 +132,9 @@ export class ObservationListCardComponent implements OnChanges {
     private toastController: ToastController,
     private translateService: TranslateService,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+    addIcons({ eye, save, pencil, shareSocial });
+  }
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;

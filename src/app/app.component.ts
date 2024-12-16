@@ -1,5 +1,5 @@
 import { Component, HostListener, Injector } from '@angular/core';
-import { isPlatform, Platform, IonicModule } from '@ionic/angular';
+import { IonApp, IonMenu, IonRouterOutlet, Platform, isPlatform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -26,7 +26,16 @@ const DEBUG_TAG = 'AppComponent';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonicModule, SideMenuComponent, NgIf, FilterMenuComponent, GpsDebugComponent, AsyncPipe],
+  imports: [
+    AsyncPipe,
+    FilterMenuComponent,
+    GpsDebugComponent,
+    IonApp,
+    IonMenu,
+    IonRouterOutlet,
+    NgIf,
+    SideMenuComponent,
+  ],
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;

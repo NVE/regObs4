@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { IonButton, IonButtons, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular/standalone';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
@@ -16,7 +16,17 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './edit-images.page.html',
   styleUrls: ['./edit-images.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, HeaderColorDirective, EditImagesComponent, LowerCasePipe, TranslateModule],
+  imports: [
+    EditImagesComponent,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    LowerCasePipe,
+    TranslateModule,
+  ],
 })
 export class EditImagesPage {
   @Input() draftUuid: string;

@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { IonCheckbox, IonIcon, IonItem, IonLabel, IonList, IonText, ModalController } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
 import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { addIcons } from 'ionicons';
+import { location } from 'ionicons/icons';
 
 /**
  * Form to register an observation of a specific damage caused by water.
@@ -14,6 +16,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
  */
 @Component({
   selector: 'app-damage-obs',
+  imports: [IonCheckbox, IonIcon, IonItem, IonLabel, IonList, IonText],
   templateUrl: './damage-obs.component.html',
   styleUrls: ['./damage-obs.component.scss'],
 })
@@ -32,7 +35,9 @@ export class DamageObsComponent implements OnInit {
     return undefined;
   }
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {}
+  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {
+    addIcons({ location });
+  }
 
   ngOnInit() {
     if (this.damageObs) {

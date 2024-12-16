@@ -1,7 +1,24 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NavController, LoadingController, Platform, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonText,
+  IonTitle,
+  IonToggle,
+  IonToolbar,
+  LoadingController,
+  NavController,
+  Platform,
+} from '@ionic/angular/standalone';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import * as version from '../../../environments/version.json';
@@ -22,6 +39,8 @@ import { NgIf, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { FormsModule } from '@angular/forms';
 import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
+import { addIcons } from 'ionicons';
+import { refresh, mailOutline, medkit } from 'ionicons/icons';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -31,14 +50,26 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
   templateUrl: './user-settings.page.html',
   styleUrls: ['./user-settings.page.scss'],
   imports: [
-    IonicModule,
+    AsyncPipe,
+    FormatDatePipe,
+    FormsModule,
     HeaderColorDirective,
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonText,
+    IonTitle,
+    IonToggle,
+    IonToolbar,
     NgIf,
     SelectComponent,
-    FormsModule,
-    AsyncPipe,
     TranslateModule,
-    FormatDatePipe,
   ],
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
@@ -76,7 +107,9 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private breakpointService: BreakpointService,
     private platform: Platform,
     private confirmationModalService: ConfirmationModalService
-  ) {}
+  ) {
+    addIcons({ refresh, mailOutline, medkit });
+  }
 
   async ngOnInit() {
     if (this.platform.is('desktop')) {

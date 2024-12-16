@@ -4,7 +4,7 @@ import { Requestor, StorageBackend } from '@openid/appauth';
 import { AuthRoutingModule } from './auth-routing.module';
 import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { authFactory } from './factories/auth-factory';
-import { Platform, isPlatform } from '@ionic/angular';
+import { Platform, isPlatform } from '@ionic/angular/standalone';
 import { httpFactory } from './factories/http-factory';
 import { HttpClient } from '@angular/common/http';
 import { storageFactory } from './factories/storage-factory';

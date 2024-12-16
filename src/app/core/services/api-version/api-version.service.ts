@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom, Subject, take, withLatestFrom } from 'rxjs';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';

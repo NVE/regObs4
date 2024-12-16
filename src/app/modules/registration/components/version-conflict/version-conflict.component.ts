@@ -1,10 +1,12 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { NavController, IonicModule } from '@ionic/angular';
+import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { refresh, warning } from 'ionicons/icons';
 
 const DEBUG_TAG = 'VersionConflictComponent';
 
@@ -16,7 +18,7 @@ const DEBUG_TAG = 'VersionConflictComponent';
   selector: 'app-version-conflict',
   templateUrl: './version-conflict.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonList, TranslateModule],
 })
 export class VersionConflictComponent {
   @Input() draft: RegistrationDraft;
@@ -26,7 +28,9 @@ export class VersionConflictComponent {
     private draftRepository: DraftRepositoryService,
     private logger: LoggingService,
     private navController: NavController
-  ) {}
+  ) {
+    addIcons({ refresh, warning });
+  }
 
   overwrite(): void {
     this.logger.debug(`Trying to overwrite remote version of draft ${this.draft.uuid}`, DEBUG_TAG);

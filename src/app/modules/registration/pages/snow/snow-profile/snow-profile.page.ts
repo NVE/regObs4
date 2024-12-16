@@ -4,7 +4,22 @@ import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
-import { ModalController, LoadingController, ToastController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonTitle,
+  IonToolbar,
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { FullscreenImageModalPage } from '../../../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -29,6 +44,8 @@ import { SnowTempComponent } from '../../../components/snow/snow-profile/snow-te
 import { SnowDensityComponent } from '../../../components/snow/snow-profile/snow-density/snow-density.component';
 import { CompressionTestComponent } from '../../../components/snow/snow-profile/compression-test/compression-test.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
+import { addIcons } from 'ionicons';
+import { eye } from 'ionicons/icons';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -46,20 +63,30 @@ const DEBUG_TAG = 'SnowProfilePage';
   templateUrl: './snow-profile.page.html',
   styleUrls: ['./snow-profile.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    NgIf,
-    RegistrationContentWrapperComponent,
-    YesNoSelectComponent,
-    SelectComponent,
-    NumericInputComponent,
-    TextCommentComponent,
-    StratProfileComponent,
-    SnowTempComponent,
-    SnowDensityComponent,
     CompressionTestComponent,
     EditImagesComponent,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    NumericInputComponent,
+    RegistrationContentWrapperComponent,
+    SelectComponent,
+    SnowDensityComponent,
+    SnowTempComponent,
+    StratProfileComponent,
+    TextCommentComponent,
     TranslateModule,
+    YesNoSelectComponent,
   ],
 })
 export class SnowProfilePage extends BasePage {
@@ -86,6 +113,7 @@ export class SnowProfilePage extends BasePage {
     private loggingService: LoggingService
   ) {
     super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
+    addIcons({ eye });
   }
 
   get snowProfile(): SnowProfileEditModel {

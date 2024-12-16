@@ -1,5 +1,17 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
@@ -12,6 +24,16 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { NgIf, NgStyle, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { MapComponent } from '../../../modules/map/components/map/map.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import {
+  checkmark,
+  stopwatchOutline,
+  cloudDownloadOutline,
+  folderOpenOutline,
+  warningOutline,
+  refresh,
+  trash,
+} from 'ionicons/icons';
 
 const DEBUG_TAG = 'OfflinePackageModalComponent';
 
@@ -22,7 +44,25 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
   templateUrl: './offline-package-modal.component.html',
   styleUrls: ['./offline-package-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgIf, MapComponent, NgStyle, AsyncPipe, DecimalPipe, DatePipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    DecimalPipe,
+    IonButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonIcon,
+    IonRow,
+    IonTitle,
+    IonToolbar,
+    MapComponent,
+    NgIf,
+    NgStyle,
+    TranslateModule,
+  ],
 })
 export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
   @Input() feature: CompoundPackageFeature;
@@ -43,6 +83,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     private logger: LoggingService
   ) {
     super();
+    addIcons({ checkmark, stopwatchOutline, cloudDownloadOutline, folderOpenOutline, warningOutline, refresh, trash });
   }
 
   getDownloadCompleteDate(downloadedPackage: OfflineMapPackage): Date {

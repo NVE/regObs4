@@ -1,5 +1,16 @@
 import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { IonContent, IonInfiniteScroll, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonInfiniteScroll,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SentListComponent } from './components/sent-list/sent-list.component';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
@@ -15,14 +26,22 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./my-observations.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    RefreshWithCancelComponent,
-    DraftListComponent,
-    SentListComponent,
-    NgIf,
-    SvgIconComponent,
     AddMenuComponent,
+    DraftListComponent,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonCol,
+    IonContent,
+    IonGrid,
+    IonHeader,
+    IonRow,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    RefreshWithCancelComponent,
+    SentListComponent,
+    SvgIconComponent,
     TranslateModule,
   ],
 })

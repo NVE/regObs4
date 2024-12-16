@@ -1,6 +1,23 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonItemDivider,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonText,
+  IonTitle,
+  IonToggle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 import moment from 'moment';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
@@ -26,6 +43,8 @@ import { TextCommentComponent } from '../../../components/text-comment/text-comm
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add-web-url-item.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { time, location, chevronForward } from 'ionicons/icons';
 
 /**
  * Used to register both avalanche observations and incidents, so this page contains two forms.
@@ -36,20 +55,34 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './avalanche-obs.page.html',
   styleUrls: ['./avalanche-obs.page.scss'],
   imports: [
-    IonicModule,
-    HeaderColorDirective,
-    NgIf,
-    RegistrationContentWrapperComponent,
-    NgClass,
-    DatetimePickerComponent,
-    SelectComponent,
-    KdvSelectComponent,
-    FormsModule,
-    NumericInputComponent,
-    TextCommentComponent,
-    EditImagesComponent,
     AddWebUrlItemComponent,
+    DatetimePickerComponent,
     DecimalPipe,
+    EditImagesComponent,
+    FormsModule,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonItemDivider,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonText,
+    IonTitle,
+    IonToggle,
+    IonToolbar,
+    KdvSelectComponent,
+    NgClass,
+    NgIf,
+    NumericInputComponent,
+    RegistrationContentWrapperComponent,
+    SelectComponent,
+    TextCommentComponent,
     TranslateModule,
   ],
 })
@@ -128,6 +161,7 @@ export class AvalancheObsPage extends BasePage {
     private modalController: ModalController
   ) {
     super(RegistrationTid.AvalancheObs, basePageService, activatedRoute);
+    addIcons({ time, location, chevronForward });
   }
 
   onInit() {

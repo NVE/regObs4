@@ -1,5 +1,5 @@
+import { IonItem, IonTextarea, IonLabel } from '@ionic/angular/standalone';
 import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-text-comment',
   templateUrl: './text-comment.component.html',
   styleUrls: ['./text-comment.component.scss'],
-  imports: [IonicModule, FormsModule, TranslateModule],
+  imports: [FormsModule, IonItem, IonLabel, IonTextarea, TranslateModule],
 })
 export class TextCommentComponent {
   @Input() label: string;

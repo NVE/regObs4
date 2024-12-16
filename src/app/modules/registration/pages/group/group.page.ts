@@ -4,7 +4,21 @@ import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { IonCheckbox, IonicModule } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButtons,
+  IonCheckbox,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonRadio,
+  IonRadioGroup,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { NgIf, NgFor } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
@@ -16,12 +30,24 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './group.page.html',
   styleUrls: ['./group.page.scss'],
   imports: [
-    IonicModule,
+    FormsModule,
     HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonCheckbox,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonRadio,
+    IonRadioGroup,
+    IonTitle,
+    IonToolbar,
+    NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
-    FormsModule,
-    NgFor,
     TranslateModule,
   ],
 })

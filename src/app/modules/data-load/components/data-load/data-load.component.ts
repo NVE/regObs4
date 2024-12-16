@@ -1,12 +1,12 @@
+import { IonSpinner } from '@ionic/angular/standalone';
 import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-data-load',
   templateUrl: './data-load.component.html',
   styleUrls: ['./data-load.component.scss'],
-  imports: [NgClass, IonicModule, TranslateModule],
+  imports: [IonSpinner, NgClass, TranslateModule],
 })
 export class DataLoadComponent {
   @Input()

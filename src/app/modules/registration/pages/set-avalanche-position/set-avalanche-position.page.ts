@@ -1,6 +1,14 @@
 import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
-import { ModalController, IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
@@ -21,7 +29,19 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
   selector: 'app-set-avalanche-position',
   templateUrl: './set-avalanche-position.page.html',
   styleUrls: ['./set-avalanche-position.page.scss'],
-  imports: [NgIf, IonicModule, HeaderColorDirective, SetLocationInMapComponent, AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    HeaderColorDirective,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    NgIf,
+    SetLocationInMapComponent,
+    TranslateModule,
+  ],
 })
 export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;
