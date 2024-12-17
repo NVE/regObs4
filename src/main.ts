@@ -1,26 +1,21 @@
 /* eslint-disable no-console */
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode, importProvidersFrom, NgZone } from '@angular/core';
 import { environment } from './environments/environment';
 import { NanoSql } from './nanosql';
 import '@angular/compiler';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_PROVIDERS } from './app/app.providers';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { provideIonicAngular, IonicRouteStrategy } from '@ionic/angular/standalone';
+import { provideIonicAngular, IonicRouteStrategy, Platform, isPlatform } from '@ionic/angular/standalone';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import { settings } from 'src/settings';
 import { TranslateModule } from '@ngx-translate/core';
 import { MarkdownModule } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SharedModule } from './app/modules/shared/shared.module';
-import { MapModule } from './app/modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { LegalTermsModalPageModule } from './app/pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
-import { SideMenuModule } from './app/modules/side-menu/side-menu.module';
-import { GpsDebugModule } from './app/modules/gps-debug/gps-debug.module';
 import { AnalyticsModule } from './app/modules/analytics/analytics.module';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
 import { RegistrationModule as CommonRegistrationModule } from './app/modules/common-registration/registration.module';
@@ -28,6 +23,13 @@ import { AppComponent } from './app/app.component';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { provideRouter, RouteReuseStrategy } from '@angular/router';
 import { routes } from './app/app.routes';
+import { Requestor, StorageBackend } from '@openid/appauth';
+import { storageFactory } from './app/modules/auth/factories/storage-factory';
+import { httpFactory } from './app/modules/auth/factories/http-factory';
+import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
+import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
+import { authFactory } from './app/modules/auth/factories/auth-factory';
+import { UserSettingService } from './app/core/services/user-setting/user-setting.service';
 
 if (environment.production) {
   enableProdMode();
@@ -39,6 +41,28 @@ function startApp() {
     providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       provideIonicAngular({}),
+
+      // Auth related - kan evt flyttes til egen fil eller i APP_PROVIDERS
+      {
+        provide: StorageBackend,
+        useFactory: storageFactory,
+        deps: [Platform],
+      },
+      {
+        provide: Requestor,
+        useFactory: httpFactory,
+        deps: [Platform, HttpClient],
+      },
+      {
+        provide: Browser,
+        useClass: isPlatform('hybrid') ? CapacitorBrowser : DefaultBrowser,
+      },
+      {
+        provide: AuthService,
+        useFactory: authFactory,
+        deps: [Platform, NgZone, Requestor, Browser, StorageBackend, UserSettingService],
+      },
+
       importProvidersFrom(
         BrowserModule,
         FormsModule,
@@ -49,12 +73,7 @@ function startApp() {
         TranslateModule.forRoot(),
         MarkdownModule.forRoot(),
         AngularSvgIconModule.forRoot(),
-        SharedModule,
-        MapModule,
         LeafletModule,
-        LegalTermsModalPageModule,
-        SideMenuModule,
-        GpsDebugModule,
         AnalyticsModule.forRoot(),
         RegobsApiModuleWithConfig.forRoot(),
         CommonRegistrationModule.forRoot()
