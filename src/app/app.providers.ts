@@ -37,15 +37,19 @@ import { OfflineMapService } from './core/services/offline-map/offline-map.servi
 import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { initTranslateService } from './custom-translate.loader';
-import {
-  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
-  IRegistrationModuleOptions,
-} from './modules/common-registration/module.options';
+// import {
+//   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+//   IRegistrationModuleOptions,
+// } from './modules/common-registration/module.options';
 import { SearchService } from './modules/common-regobs-api';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
 import { OfflineMapTestService } from './core/services/offline-map/offline-map-test.service';
+import { AnalyticService } from './modules/analytics/services/analytic.service';
+import { NewAttachmentService } from './modules/common-registration/registration.services';
+import FileAttachmentService from './modules/common-registration/services/add-new-attachment/file-attachment.service';
+import { WebAttachmentService } from './modules/common-registration/services/add-new-attachment/web-attachment.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -69,14 +73,14 @@ export function initAppModeService(userSettingService: UserSettingService): any 
 // ): RegobsApiConfigurationInterface {
 //   return { rootUrl: appConfig.api.baseUrl };
 // }
-export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
-  const options = {
-    autoSync: false,
-    adapter: 'idb',
-    attachmentsSupported: false,
-  };
-  return options;
-}
+// export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
+//   const options = {
+//     autoSync: false,
+//     adapter: 'idb',
+//     attachmentsSupported: false,
+//   };
+//   return options;
+// }
 
 // export function initAppMode(userSettings: UserSettingService, appModeService: AppModeService){
 //   return () => {
@@ -131,12 +135,18 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
     return initializerFn();
   }),
 
+  provideAppInitializer(() => {
+    const analyticsService = inject(AnalyticService);
+    analyticsService.init();
+  }),
+
   // @varsom-regobs-common providers
-  {
-    provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
-    useFactory: initCommonRegistrationOptions,
-    deps: [],
-  },
+  // {
+  //   provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+  //   useFactory: initCommonRegistrationOptions,
+  //   deps: [],
+  // },
+
   // {
   //   provide: APP_INITIALIZER,
   //   useFactory: initAppMode,
@@ -165,5 +175,9 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   {
     provide: OfflineMapService,
     useClass: isPlatform('hybrid') ? OfflineMapService : OfflineMapTestService,
+  },
+  {
+    provide: NewAttachmentService,
+    useClass: isPlatform('hybrid') ? FileAttachmentService : WebAttachmentService,
   },
 ];
