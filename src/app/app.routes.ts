@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { isUserLoggedIn } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -61,10 +62,16 @@ export const routes: Routes = [
   },
   {
     path: 'legacy-trip',
-    loadChildren: () => import('./pages/legacy-trip/legacy-trip.module').then((m) => m.LegacyTripPageModule),
+    loadComponent: () => import('./pages/legacy-trip/legacy-trip.page').then((m) => m.LegacyTripPage),
+    canActivate: [isUserLoggedIn],
   },
   {
     path: 'obskorps',
-    loadChildren: () => import('./pages/obskorps/obskorps.module').then((m) => m.ObskorpsPageModule),
+    loadComponent: () => import('./pages/obskorps/obskorps.page').then((m) => m.ObskorpsPage),
+  },
+  {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./modules/auth/pages/auth-callback/auth-callback.page').then((m) => m.AuthCallbackPage),
   },
 ];
