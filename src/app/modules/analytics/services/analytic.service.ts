@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
@@ -26,11 +26,8 @@ const DEBUG_TAG = 'AnalyticService';
   providedIn: 'root',
 })
 export class AnalyticService {
-  get router() {
-    return this.injector.get(Router);
-  }
-
-  constructor(private injector: Injector, private loggingService: LoggingService) {}
+  private router = inject(Router);
+  private loggingService = inject(LoggingService);
 
   private isTrackingOn(): boolean {
     return window.plausible && environment.production;

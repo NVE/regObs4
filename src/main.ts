@@ -16,9 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MarkdownModule } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { AnalyticsModule } from './app/modules/analytics/analytics.module';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
-import { RegistrationModule as CommonRegistrationModule } from './app/modules/common-registration/registration.module';
 import { AppComponent } from './app/app.component';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { provideRouter, RouteReuseStrategy } from '@angular/router';
@@ -74,9 +72,9 @@ function startApp() {
         MarkdownModule.forRoot(),
         AngularSvgIconModule.forRoot(),
         LeafletModule,
-        AnalyticsModule.forRoot(),
-        RegobsApiModuleWithConfig.forRoot(),
-        CommonRegistrationModule.forRoot()
+
+        // This module is auto generated using ng-swagger-gen
+        RegobsApiModuleWithConfig.forRoot()
       ),
 
       // Prøvde å legge til withPreloading(PreloadAllModules) men da kræsjet applikasjonen
