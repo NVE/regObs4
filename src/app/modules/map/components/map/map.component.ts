@@ -1,16 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Injector,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Injector, Input, NgZone, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
@@ -82,6 +70,17 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   imports: [NgIf, LeafletModule, MapControlsComponent],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
+  private userSettingService = inject(UserSettingService);
+  private mapService = inject(MapService);
+  private mapSearchService = inject(MapSearchService);
+  private zone = inject(NgZone);
+  private fullscreenService = inject(FullscreenService);
+  private loggingService = inject(LoggingService);
+  private geoPositionService = inject(GeoPositionService);
+  private platform = inject(Platform);
+  private mapZoomService = inject(MapZoomService);
+  private observerTripsService = inject(ObserverTripsService);
+
   @Input() showMapSearch = true;
   @Input() showFullscreenToggle = true;
   @Input() showGpsCenter = true;
@@ -134,19 +133,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private offlineMapService: OfflineMapService;
   private bounds: L.LatLngBounds;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private mapService: MapService,
-    private mapSearchService: MapSearchService,
-    private zone: NgZone,
-    private fullscreenService: FullscreenService,
-    private loggingService: LoggingService,
-    private geoPositionService: GeoPositionService,
-    private platform: Platform,
-    private mapZoomService: MapZoomService,
-    private observerTripsService: ObserverTripsService,
-    injector: Injector
-  ) {
+  constructor() {
+    const injector = inject(Injector);
+
     if (isAndroidOrIos(this.platform)) {
       this.offlineMapService = injector.get(OfflineMapService);
     }

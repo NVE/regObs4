@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -18,7 +18,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [HeaderColorDirective, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, TranslatePipe],
 })
 export class SupportMapInfoPage {
-  constructor(private modalController: ModalController) {}
+  private modalController = inject(ModalController);
+
 
   close() {
     this.modalController.dismiss();

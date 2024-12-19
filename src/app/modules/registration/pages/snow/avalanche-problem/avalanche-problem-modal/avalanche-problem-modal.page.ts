@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, inject } from '@angular/core';
 import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -69,6 +69,9 @@ interface AvalancheProblemKeys {
   ],
 })
 export class AvalancheProblemModalPage implements OnInit, OnDestroy {
+  private modalController = inject(ModalController);
+  private kdvService = inject(KdvService);
+
   @Input() avalancheEvalProblem: AvalancheEvalProblem2EditModel;
   avalancheEvalProblemCopy: AvalancheEvalProblem2EditModel;
   isNew = false;
@@ -94,8 +97,6 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   exposition: number[];
 
   private viewSubscription: Subscription;
-
-  constructor(private modalController: ModalController, private kdvService: KdvService) {}
 
   ngOnInit() {
     if (this.avalancheEvalProblem) {

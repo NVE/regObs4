@@ -12,7 +12,7 @@ import {
   IonButton,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
@@ -60,6 +60,12 @@ interface RegistrationResult {
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
+  private activatedRoute = inject(ActivatedRoute);
+  private popupInfoService = inject(PopupInfoService);
+  private searchService = inject(SearchService);
+  private authService = inject(RegobsAuthService);
+  private router = inject(Router);
+
   editMode$: Observable<EditMode>;
   registrationViewModel$: Observable<RegistrationResult>;
 
@@ -67,13 +73,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   isLoggingIn$: Observable<boolean>;
   private _isLoggingIn = new Subject<boolean>();
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private popupInfoService: PopupInfoService,
-    private searchService: SearchService,
-    private authService: RegobsAuthService,
-    private router: Router
-  ) {
+  constructor() {
     super();
     addIcons({ personCircle });
   }

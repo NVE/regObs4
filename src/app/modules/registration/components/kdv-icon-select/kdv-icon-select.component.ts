@@ -1,5 +1,5 @@
 import { IonItem, IonButton, IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, Output, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { enterZone } from 'src/app/core/helpers/observable-helper';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -27,6 +27,11 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   imports: [AsyncPipe, IonButton, IonItem, IonLabel, NgClass, NgFor, NgIf, SvgIconComponent, TranslatePipe],
 })
 export class KdvIconSelectComponent {
+  private userSettings = inject(UserSettingService);
+  private kdvService = inject(KdvService);
+  private ngZone = inject(NgZone);
+  private logger = inject(LoggingService);
+
   @Input() label: string;
   @Input() kdvKey: KdvKey;
 
@@ -47,13 +52,6 @@ export class KdvIconSelectComponent {
 
   kdvElements$: Observable<KdvElement[]>;
   lang$: Observable<string>;
-
-  constructor(
-    private userSettings: UserSettingService,
-    private kdvService: KdvService,
-    private ngZone: NgZone,
-    private logger: LoggingService
-  ) {}
 
   ngOnInit() {
     this.lang$ = this.userSettings.language$.pipe(map((langKey) => LangKey[langKey]));

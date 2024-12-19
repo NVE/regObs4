@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, ModalController } from '@ionic/angular/standalone';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
@@ -28,12 +28,14 @@ import { link, addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class CompressionTestListComponent {
+  private modalController = inject(ModalController);
+
   @Input() tests: Array<CompressionTestEditModel>;
   @Input() includeInSnowProfileAsDefault = false;
   @Output() testsChange = new EventEmitter();
   private isOpen = false;
 
-  constructor(private modalController: ModalController) {
+  constructor() {
     addIcons({ link, addCircleOutline });
   }
 

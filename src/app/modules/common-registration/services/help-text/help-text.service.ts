@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
 import { HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { AppMode, LangKey, GeoHazard } from 'src/app/modules/common-core/models';
@@ -17,14 +17,22 @@ const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
   providedIn: 'root',
 })
 export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
-  constructor(
-    protected databaseService: DatabaseService,
-    protected logger: LoggingService,
-    private helpTextApiService: HelpTextApiService,
-    private httpClient: HttpClient,
-    protected userSettingService: UserSettingService
-  ) {
+  protected databaseService: DatabaseService;
+  protected logger: LoggingService;
+  private helpTextApiService = inject(HelpTextApiService);
+  private httpClient = inject(HttpClient);
+  protected userSettingService: UserSettingService;
+
+  constructor() {
+    const databaseService = inject(DatabaseService);
+    const logger = inject(LoggingService);
+    const userSettingService = inject(UserSettingService);
+
     super(databaseService, logger, userSettingService);
+  
+    this.databaseService = databaseService;
+    this.logger = logger;
+    this.userSettingService = userSettingService;
   }
 
   protected getDebugTag(): string {

@@ -1,5 +1,5 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { BackgroundDownloadService } from './background-download.service';
@@ -7,7 +7,8 @@ import { DownloadProgress } from './download-progress';
 
 @Injectable()
 export class HttpClientDownloadService implements BackgroundDownloadService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
 
   download(url: string): Observable<DownloadProgress> {
     return this.http

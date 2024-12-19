@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, inject } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -21,14 +21,14 @@ const DEBUG_TAG = 'VersionConflictComponent';
   imports: [IonIcon, IonItem, IonLabel, IonList, TranslatePipe],
 })
 export class VersionConflictComponent {
+  private draftToRegistrationService = inject(DraftToRegistrationService);
+  private draftRepository = inject(DraftRepositoryService);
+  private logger = inject(LoggingService);
+  private navController = inject(NavController);
+
   @Input() draft: RegistrationDraft;
 
-  constructor(
-    private draftToRegistrationService: DraftToRegistrationService,
-    private draftRepository: DraftRepositoryService,
-    private logger: LoggingService,
-    private navController: NavController
-  ) {
+  constructor() {
     addIcons({ refresh, warning });
   }
 

@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular/standalone';
 import { Subject, Subscription } from 'rxjs';
@@ -20,6 +20,16 @@ const DEBUG_TAG = 'DataMarshallService';
   providedIn: 'root',
 })
 export class DataMarshallService implements OnReset {
+  private ngZone = inject(NgZone);
+  private warningService = inject(WarningService);
+  private userSettingService = inject(UserSettingService);
+  private regobsAuthService = inject(RegobsAuthService);
+  private platform = inject(Platform);
+  private tripLoggerService = inject(TripLoggerService);
+  private loggingService = inject(LoggingService);
+  private analyticService = inject(AnalyticService);
+  private router = inject(Router);
+
   foregroundUpdateInterval: NodeJS.Timeout;
   private cancelUpdateObservationsSubject: Subject<boolean>;
   private subscriptions: Subscription[] = [];
@@ -32,17 +42,7 @@ export class DataMarshallService implements OnReset {
     return this.cancelUpdateObservationsSubject.asObservable().pipe(take(1)).toPromise();
   }
 
-  constructor(
-    private ngZone: NgZone,
-    private warningService: WarningService,
-    private userSettingService: UserSettingService,
-    private regobsAuthService: RegobsAuthService,
-    private platform: Platform,
-    private tripLoggerService: TripLoggerService,
-    private loggingService: LoggingService,
-    private analyticService: AnalyticService,
-    private router: Router
-  ) {
+  constructor() {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
 

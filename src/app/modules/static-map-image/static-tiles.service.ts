@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { bbox, bboxPolygon, booleanWithin, lineString } from '@turf/turf';
 import { Feature } from '@turf/turf';
 import { LatLngTuple } from 'leaflet';
@@ -64,7 +64,7 @@ function formatTileUrl(urlTemplate: string, tileX: number, tileY: number, tileZo
  */
 @Injectable()
 export class MapLayersService {
-  constructor(private userSettings: UserSettingService) {}
+  private userSettings = inject(UserSettingService);
 
   private async getUserSelectedMapConfig() {
     const { topoMap: userSelectedMap } = await firstValueFrom(this.userSettings.userSetting$);
@@ -85,8 +85,10 @@ export class MapLayersService {
 
 @Injectable()
 export class OfflineCapableMapLayersService extends MapLayersService {
-  constructor(userSettings: UserSettingService, private offlineMapService: OfflineMapService) {
-    super(userSettings);
+  private offlineMapService = inject(OfflineMapService);
+
+  constructor() {
+    super();
   }
 
   getUrlForTile(mapId: string, options: ITopoMapLayerOptions, tileX: number, tileY: number, tileZoom: number): string {

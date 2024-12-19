@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
@@ -23,6 +23,9 @@ import { checkmarkCircle } from 'ionicons/icons';
   imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
 })
 export class StratProfileComponent {
+  private modalContoller = inject(ModalController);
+  private draftrepository = inject(DraftRepositoryService);
+
   @Input() draft: RegistrationDraft;
 
   private modal: HTMLIonModalElement;
@@ -35,7 +38,7 @@ export class StratProfileComponent {
     return IsEmptyHelper.isEmpty(this.profile);
   }
 
-  constructor(private modalContoller: ModalController, private draftrepository: DraftRepositoryService) {
+  constructor() {
     addIcons({ checkmarkCircle });
   }
 

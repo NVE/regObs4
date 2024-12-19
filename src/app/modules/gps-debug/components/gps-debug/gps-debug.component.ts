@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, OnDestroy, inject } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
@@ -20,6 +20,10 @@ import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
   imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, NgFor, NgIf, TranslatePipe],
 })
 export class GpsDebugComponent implements OnInit, OnDestroy {
+  private userSettingService = inject(UserSettingService);
+  private geoPositionService = inject(GeoPositionService);
+  private ngZone = inject(NgZone);
+
   showLog$: Observable<boolean>;
   geoPositionLog: GeoPositionLog[];
   isOpen: boolean;
@@ -28,11 +32,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
 
   @ViewChild('GpsLogPanel') panel: IonContent;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private geoPositionService: GeoPositionService,
-    private ngZone: NgZone
-  ) {
+  constructor() {
     addIcons({ arrowDownCircle, arrowUpCircle });
   }
 

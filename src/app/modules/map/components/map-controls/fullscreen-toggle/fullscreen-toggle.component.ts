@@ -1,5 +1,5 @@
 import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FullscreenService } from '../../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -11,9 +11,11 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe, IonFab, IonFabButton, IonIcon],
 })
 export class FullscreenToggleComponent {
+  private fullscreenService = inject(FullscreenService);
+
   isFullscreen$: Observable<boolean>;
 
-  constructor(private fullscreenService: FullscreenService) {
+  constructor() {
     this.isFullscreen$ = this.fullscreenService.isFullscreen$;
   }
 

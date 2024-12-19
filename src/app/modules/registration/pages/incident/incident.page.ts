@@ -9,7 +9,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -64,7 +64,10 @@ export class IncidentPage extends BasePage {
     return this.draft.registration.Incident;
   }
 
-  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.Incident, basePageService, activatedRoute);
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, Output, EventEmitter } from '@angular/core';
+import { Component, Input, NgZone, Output, EventEmitter, inject } from '@angular/core';
 import { IonIcon, IonItem, ModalController } from '@ionic/angular/standalone';
 import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
 import { UrlViewModel } from 'src/app/modules/common-regobs-api/models';
@@ -12,13 +12,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonIcon, IonItem, NgFor, TranslatePipe],
 })
 export class AddWebUrlItemComponent {
+  private modalController = inject(ModalController);
+  private zone = inject(NgZone);
+
   @Input() title = 'REGISTRATION.ADD_WEB_URL.TITLE';
   @Input() weburls: UrlViewModel[];
   @Output() weburlsChange = new EventEmitter();
   @Input() icon = 'add-circle-outline';
   @Input() iconColor = 'dark';
-
-  constructor(private modalController: ModalController, private zone: NgZone) {}
 
   async addOrEdit(index?: number) {
     const weburl = index !== undefined ? this.weburls[index] : undefined;

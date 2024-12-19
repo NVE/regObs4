@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, NavController, Platform } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,6 +25,20 @@ export const TOKEN_RESPONSE_FULL_KEY = 'token_response_full';
   providedIn: 'root',
 })
 export class RegobsAuthService {
+  private authService = inject(AuthService);
+  private userSettingService = inject(UserSettingService);
+  private logger = inject(LoggingService);
+  private translateService = inject(TranslateService);
+  private alertController = inject(AlertController);
+  private router = inject(Router);
+  private navCtrl = inject(NavController);
+  private location = inject(Location);
+  private accountService = inject(AccountService);
+  private storage = inject(StorageBackend);
+  private platform = inject(Platform);
+  private accountApi = inject(AccountService);
+  private networkStatusService = inject(NetworkStatusService);
+
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
   private myPageDataSubject = new ReplaySubject<MyPageData>();
 
@@ -36,21 +50,7 @@ export class RegobsAuthService {
     return this._isLoggingInSubject.asObservable();
   }
 
-  constructor(
-    private authService: AuthService,
-    private userSettingService: UserSettingService,
-    private logger: LoggingService,
-    private translateService: TranslateService,
-    private alertController: AlertController,
-    private router: Router,
-    private navCtrl: NavController,
-    private location: Location,
-    private accountService: AccountService,
-    private storage: StorageBackend,
-    private platform: Platform,
-    private accountApi: AccountService,
-    private networkStatusService: NetworkStatusService
-  ) {
+  constructor() {
     this.initComplete$ = this.authService.initComplete$.pipe(
       filter((isComplete) => isComplete),
       shareReplay(1)

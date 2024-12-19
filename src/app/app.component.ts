@@ -1,4 +1,4 @@
-import { Component, HostListener, Injector } from '@angular/core';
+import { Component, HostListener, Injector, inject } from '@angular/core';
 import { IonApp, IonMenu, IonRouterOutlet, Platform, isPlatform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
@@ -38,27 +38,27 @@ const DEBUG_TAG = 'AppComponent';
   ],
 })
 export class AppComponent {
+  private platform = inject(Platform);
+  private userSettings = inject(UserSettingService);
+  private dataMarshallService = inject(DataMarshallService);
+  private offlineImageService = inject(OfflineImageService);
+  private swipeBackService = inject(SwipeBackService);
+  private loggingService = inject(LoggingService);
+  private dbHelperService = inject(DbHelperService);
+  private shortcutService = inject(ShortcutService);
+  private fileLoggingService = inject(FileLoggingService);
+  private auth = inject(AuthService);
+  private draftToRegService = inject(DraftToRegistrationService);
+  private breakpointService = inject(BreakpointService);
+  private injector = inject(Injector);
+
   swipeBackEnabled$: Observable<boolean>;
   isDesktop: boolean;
 
   private filterMenuOpened = new Subject<boolean>();
   filterMenuOpened$ = this.filterMenuOpened.asObservable();
 
-  constructor(
-    private platform: Platform,
-    private userSettings: UserSettingService,
-    private dataMarshallService: DataMarshallService,
-    private offlineImageService: OfflineImageService,
-    private swipeBackService: SwipeBackService,
-    private loggingService: LoggingService,
-    private dbHelperService: DbHelperService,
-    private shortcutService: ShortcutService,
-    private fileLoggingService: FileLoggingService,
-    private auth: AuthService,
-    private draftToRegService: DraftToRegistrationService,
-    private breakpointService: BreakpointService,
-    private injector: Injector
-  ) {
+  constructor() {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {

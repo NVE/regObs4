@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { StatusBar } from '@capacitor/status-bar';
@@ -13,13 +13,16 @@ const DEBUG_TAG = 'FullscreenService';
   providedIn: 'root',
 })
 export class FullscreenService extends NgDestoryBase {
+  private platform = inject(Platform);
+  private logger = inject(LoggingService);
+
   private readonly _subject: BehaviorSubject<boolean>;
 
   get isFullscreen$() {
     return this._subject.asObservable();
   }
 
-  constructor(private platform: Platform, private logger: LoggingService) {
+  constructor() {
     super();
     this._subject = new BehaviorSubject(false);
 

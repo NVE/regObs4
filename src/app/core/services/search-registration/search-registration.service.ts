@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -202,7 +202,9 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   providedIn: 'root',
 })
 export class SearchRegistrationService {
-  constructor(private searchService: SearchService, private logger: LoggingService) {}
+  private searchService = inject(SearchService);
+  private logger = inject(LoggingService);
+
 
   /**
    * Normal search.

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import {
@@ -133,6 +133,15 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
   ],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
+  private mapService = inject(MapService);
+  private helperService = inject(HelperService);
+  private ngZone = inject(NgZone);
+  private mapSearchService = inject(MapSearchService);
+  private geoPositionService = inject(GeoPositionService);
+  private locationService = inject(LocationService);
+  private breakpointService = inject(BreakpointService);
+  private translateService = inject(TranslateService);
+
   @Input() geoHazard: GeoHazard;
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
@@ -190,16 +199,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return this.allowEditLocationName;
   }
 
-  constructor(
-    private mapService: MapService,
-    private helperService: HelperService,
-    private ngZone: NgZone,
-    private mapSearchService: MapSearchService,
-    private geoPositionService: GeoPositionService,
-    private locationService: LocationService,
-    private breakpointService: BreakpointService,
-    private translateService: TranslateService
-  ) {
+  constructor() {
+    const translateService = this.translateService;
+
     this.setToNow();
     this.setTranslatedAccuracies();
     this.locale = translateService.currentLang;

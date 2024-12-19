@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import {
   CapacitorSQLite,
@@ -124,6 +124,9 @@ const CONNECTION_LOCK = 'sqlite-connection';
   providedIn: 'root',
 })
 export class SqliteService {
+  private logger = inject(LoggingService);
+  private platform = inject(Platform);
+
   private hasChanges = new Subject<AppMode>();
   hasChanges$ = this.hasChanges.asObservable();
 
@@ -213,7 +216,7 @@ export class SqliteService {
 
   private pauseResumeEvent = new Subject<'pause' | 'resume'>();
 
-  constructor(private logger: LoggingService, private platform: Platform) {
+  constructor() {
     this.logger.debug('Creating', DEBUG_TAG);
 
     // Close / open connection when app goes to/from background

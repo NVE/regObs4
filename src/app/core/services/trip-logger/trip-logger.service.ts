@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TripLogItem } from './trip-log-item.model';
 import moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
@@ -40,20 +40,20 @@ const DEBUG_TAG = 'TripLoggerService';
   providedIn: 'root',
 })
 export class TripLoggerService {
+  private tripService = inject(TripService);
+  private userSettingService = inject(UserSettingService);
+  private translateService = inject(TranslateService);
+  private alertController = inject(AlertController);
+  private loggingService = inject(LoggingService);
+  private toastController = inject(ToastController);
+
   get isTripRunning$(): Observable<boolean> {
     return this.tripStartedSubject.asObservable();
   }
 
   private tripStartedSubject = new BehaviorSubject(false);
 
-  constructor(
-    private tripService: TripService,
-    private userSettingService: UserSettingService,
-    private translateService: TranslateService,
-    private alertController: AlertController,
-    private loggingService: LoggingService,
-    private toastController: ToastController
-  ) {
+  constructor() {
     this.userSettingService.appMode$
       .pipe(switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode))))
       .subscribe((legacyTrip) => {

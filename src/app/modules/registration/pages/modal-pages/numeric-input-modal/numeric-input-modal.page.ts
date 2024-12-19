@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostListener, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -37,6 +37,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class NumericInputModalPage implements OnInit {
+  private modalController = inject(ModalController);
+
   @Input() value: number;
   @Input() suffix: string;
   @Input() min = -100000;
@@ -64,8 +66,6 @@ export class NumericInputModalPage implements OnInit {
     }
     return parseFloat(this.textVal) * (this.isNegative ? -1 : 1);
   }
-
-  constructor(private modalController: ModalController) {}
 
   @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key.match('[0-9]')) {

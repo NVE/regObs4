@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import {
@@ -73,6 +73,19 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
   ],
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
+  private userSettingService = inject(UserSettingService);
+  private kdvService = inject(KdvService);
+  private ngZone = inject(NgZone);
+  private loggingService = inject(LoggingService);
+  private translateService = inject(TranslateService);
+  private loadingController = inject(LoadingController);
+  private appResetService = inject(AppResetService);
+  private navController = inject(NavController);
+  private fileLoggingService = inject(FileLoggingService);
+  private breakpointService = inject(BreakpointService);
+  private platform = inject(Platform);
+  private confirmationModalService = inject(ConfirmationModalService);
+
   userSettings: UserSetting;
   isUpdating = false;
   private subscriptions: Subscription[] = [];
@@ -94,20 +107,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     return options;
   }
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private kdvService: KdvService,
-    private ngZone: NgZone,
-    private loggingService: LoggingService,
-    private translateService: TranslateService,
-    private loadingController: LoadingController,
-    private appResetService: AppResetService,
-    private navController: NavController,
-    private fileLoggingService: FileLoggingService,
-    private breakpointService: BreakpointService,
-    private platform: Platform,
-    private confirmationModalService: ConfirmationModalService
-  ) {
+  constructor() {
     addIcons({ refresh, mailOutline, medkit });
   }
 

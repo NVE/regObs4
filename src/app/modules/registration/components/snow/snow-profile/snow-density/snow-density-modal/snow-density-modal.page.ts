@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -73,6 +73,10 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+  private ngZone = inject(NgZone);
+
   @Input() uuid: string;
   useCylinder: boolean;
   private layerModal: HTMLIonModalElement;
@@ -91,11 +95,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     return this.profile?.Layers?.length > 0;
   }
 
-  constructor(
-    private modalController: ModalController,
-    private draftRepository: DraftRepositoryService,
-    private ngZone: NgZone
-  ) {
+  constructor() {
     addIcons({ addCircleOutline });
   }
 

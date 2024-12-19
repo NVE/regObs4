@@ -27,8 +27,11 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSaveMode": "file"
   },
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "@ionic/angular/common",
-    "@ionic/angular"
-  ]
+  // Ionic foreslo å legge til disse, men da finner ikke VSCode en eneste
+  // ionic import av seg selv. Kommenterer ut dette, men pass på å alltid
+  // importere fra @Ionic/*/standalone nå som vi har gått over til standalone.
+  // "typescript.preferences.autoImportFileExcludePatterns": [
+  //   "@ionic/angular/common",
+  //   "@ionic/angular"
+  // ]
 }

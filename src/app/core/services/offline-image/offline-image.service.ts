@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import moment from 'moment';
 import { IOfflineAsset } from './offline-asset.interface';
@@ -14,7 +14,8 @@ const DEBUG_TAG = 'OfflineImageService';
   providedIn: 'root',
 })
 export class OfflineImageService {
-  constructor(private loggingService: LoggingService) {}
+  private loggingService = inject(LoggingService);
+
 
   async getOfflineImage(url: string) {
     const offlineAsset = await this.getOfflineAssetFromDb(url);

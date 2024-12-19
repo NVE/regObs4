@@ -5,7 +5,7 @@ import { ModalMapImagePage } from './modal-map-image.page';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { provideTranslateService } from '@ngx-translate/core';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 
 describe('ModalMapImagePage', () => {

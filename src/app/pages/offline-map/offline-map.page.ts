@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -82,6 +82,15 @@ const DEBUG_TAG = 'OfflineMapPage';
   ],
 })
 export class OfflineMapPage extends NgDestoryBase {
+  private helperService = inject(HelperService);
+  private modalController = inject(ModalController);
+  private offlineMapService = inject(OfflineMapService);
+  private alertController = inject(AlertController);
+  private translateService = inject(TranslateService);
+  private packageIndex = inject(PackageIndexService);
+  private zone = inject(NgZone);
+  private logger = inject(LoggingService);
+
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
   private failedPackageIds: string[] = []; //remember failed packages until features are ready for styling
@@ -99,16 +108,7 @@ export class OfflineMapPage extends NgDestoryBase {
 
   nPackagesToUpdate$ = new Subject<number>();
 
-  constructor(
-    private helperService: HelperService,
-    private modalController: ModalController,
-    private offlineMapService: OfflineMapService,
-    private alertController: AlertController,
-    private translateService: TranslateService,
-    private packageIndex: PackageIndexService,
-    private zone: NgZone,
-    private logger: LoggingService
-  ) {
+  constructor() {
     super();
 
     this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$.pipe(

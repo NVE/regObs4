@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
 import {
   ExistingAttachmentType,
@@ -93,14 +93,13 @@ function groupsHasNotChanged(previous: ObserverGroupDto[], current: ObserverGrou
   providedIn: 'root',
 })
 export class SummaryItemService {
-  constructor(
-    private draftService: DraftRepositoryService,
-    private newAttachmentService: NewAttachmentService,
-    private dateHelperService: DateHelperService,
-    private userGroupService: UserGroupService,
-    private navController: NavController,
-    private kdv: KdvService
-  ) {}
+  private draftService = inject(DraftRepositoryService);
+  private newAttachmentService = inject(NewAttachmentService);
+  private dateHelperService = inject(DateHelperService);
+  private userGroupService = inject(UserGroupService);
+  private navController = inject(NavController);
+  private kdv = inject(KdvService);
+
 
   getSummaryItems$(uuid: string): Observable<ISummaryItem[]> {
     // Observables that only emits when the properties we need has changed

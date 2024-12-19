@@ -1,5 +1,5 @@
 import { IonButton } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -10,7 +10,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonButton, TranslatePipe],
 })
 export class AbonnerBannerComponent {
-  constructor(private externalLinkService: ExternalLinkService) {}
+  private externalLinkService = inject(ExternalLinkService);
+
 
   buttonClicked(): void {
     this.externalLinkService.openExternalLink('https://abonner.varsom.no');

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject } from '@angular/core';
 import { firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
@@ -92,26 +92,22 @@ const DEBUG_TAG = 'OverviewPage';
   ],
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
+  private draftService = inject(DraftRepositoryService);
+  private activatedRoute = inject(ActivatedRoute);
+  private summaryItemService = inject(SummaryItemService);
+  private userGroupService = inject(UserGroupService);
+  private userSettingService = inject(UserSettingService);
+  private ngZone = inject(NgZone);
+  private logger = inject(LoggingService);
+  private draftRepository = inject(DraftRepositoryService);
+  private confirmationModalService = inject(ConfirmationModalService);
+
   summaryItems$: Observable<Array<ISummaryItem>>;
   draft$: Observable<RegistrationDraft>;
   userSetting: UserSetting;
   showSnowObsModeSelector$: Observable<boolean>;
   geoHazardName$: Observable<string>;
   isDesktop: boolean;
-
-  constructor(
-    private draftService: DraftRepositoryService,
-    private activatedRoute: ActivatedRoute,
-    private summaryItemService: SummaryItemService,
-    private userGroupService: UserGroupService,
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone,
-    private logger: LoggingService,
-    private draftRepository: DraftRepositoryService,
-    private confirmationModalService: ConfirmationModalService
-  ) {
-    super();
-  }
 
   ngOnInit() {
     const uuid = this.activatedRoute.snapshot.params['id'];

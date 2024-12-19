@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, Observable, shareReplay } from 'rxjs';
 import { Location } from '@angular/common';
@@ -18,7 +18,10 @@ export enum TABS {
 export class TabsService {
   readonly selectedTab$: Observable<TABS | null>;
 
-  constructor(location: Location, router: Router) {
+  constructor() {
+    const location = inject(Location);
+    const router = inject(Router);
+
     this.selectedTab$ = router.events.pipe(
       filter((e) => e instanceof NavigationEnd),
       map(() => location.path()),

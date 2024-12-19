@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -40,6 +40,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class IceLayerPage implements OnInit {
+  private modalController = inject(ModalController);
+  private ngZone = inject(NgZone);
+
   @Input() iceThicknessLayer: IceThicknessLayerEditModel;
 
   isNew = false;
@@ -47,9 +50,7 @@ export class IceLayerPage implements OnInit {
     return this.layerCopy.IceLayerThickness !== undefined;
   }
 
-  layerCopy: IceThicknessLayerEditModel; // Using object copy so cancel does not change input object
-
-  constructor(private modalController: ModalController, private ngZone: NgZone) {}
+  layerCopy: IceThicknessLayerEditModel;
 
   ngOnInit() {
     if (!this.iceThicknessLayer) {

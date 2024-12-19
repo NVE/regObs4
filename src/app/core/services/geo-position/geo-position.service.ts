@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import {
   BehaviorSubject,
   ReplaySubject,
@@ -45,6 +45,13 @@ const POSITION_OPTIONS_ANDROID: PositionOptions = {
   providedIn: 'root',
 })
 export class GeoPositionService implements OnDestroy {
+  private deviceOrientation = inject(DeviceOrientation);
+  private platform = inject(Platform);
+  private loggingService = inject(LoggingService);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
+  private userSettings = inject(UserSettingService);
+
   private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private currentPosition: BehaviorSubject<Position> = new BehaviorSubject(null);
@@ -75,14 +82,7 @@ export class GeoPositionService implements OnDestroy {
     return locationSupport;
   }
 
-  constructor(
-    private deviceOrientation: DeviceOrientation,
-    private platform: Platform,
-    private loggingService: LoggingService,
-    private toastController: ToastController,
-    private translateService: TranslateService,
-    private userSettings: UserSettingService
-  ) {
+  constructor() {
     this.startGeolocationTrackingSubscription();
   }
 

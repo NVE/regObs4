@@ -6,7 +6,7 @@ import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachme
 import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Filesystem } from '@capacitor/filesystem';
 
 const ROOT_DIR = 'attachments';
@@ -16,11 +16,14 @@ const ROOT_DIR = 'attachments';
  */
 @Injectable()
 export default class FileAttachmentService extends NewAttachmentService {
+  private file = inject(File);
+  protected logger = inject(LoggingService);
+
   protected DEBUG_TAG = 'FileAttachmentService';
   private hasCreatedRootFolder = false;
   private attachmentsChanged = new BehaviorSubject<void>(undefined); //get a tick each time an attachment changes
 
-  constructor(private file: File, protected logger: LoggingService) {
+  constructor() {
     super();
     this.attachmentsChanged.pipe(tap(() => this.logger.debug('Attachments changed', this.DEBUG_TAG)));
   }

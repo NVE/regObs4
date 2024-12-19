@@ -1,39 +1,44 @@
 import { Platform } from '@ionic/angular/standalone';
 import { Platforms } from '@ionic/core';
 import { ReplaySubject, of } from 'rxjs';
-import { TestLoggingService } from '../../../modules/shared/services/logging/test-logging.service';
+import { provideTestLogger } from '../../../modules/shared/services/logging/test-logging.service';
 import { CompoundPackage } from '../../../pages/offline-map/metadata.model';
 import { OfflineMapService } from './offline-map.service';
 import { ProgressStep } from './progress-step.model';
 import { PackageIndexService } from './package-index.service';
+import { TestBed } from '@angular/core/testing';
+import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
+import { BackgroundDownloadService } from '../background-download/background-download.service';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('OfflineMapService', () => {
   let offlineMapService: OfflineMapService;
-  let platformMock: Platform;
-  let packageIndexServiceMock: PackageIndexService;
+  let platformSpy: Platform;
+  let packageIndexServiceSpy: PackageIndexService;
 
   beforeEach(() => {
-    platformMock = jasmine.createSpyObj('Platform', {
+    platformSpy = jasmine.createSpyObj('Platform', {
       is: (platformName: Platforms) => false,
     });
     const packages = new ReplaySubject<Map<string, CompoundPackage>>();
-    packageIndexServiceMock = jasmine.createSpyObj(
+    packageIndexServiceSpy = jasmine.createSpyObj(
       'PackageIndexService',
       {},
       {
         packages$: packages.asObservable(),
       }
     );
-    offlineMapService = new OfflineMapService(
-      new TestLoggingService(),
-      null,
-      null,
-      platformMock,
-      null,
-      null,
-      null,
-      packageIndexServiceMock
-    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideTestLogger(),
+        provideTranslateService(),
+        { provide: PackageIndexService, useValue: packageIndexServiceSpy },
+        { provide: WebView, useValue: null },
+        { provide: BackgroundDownloadService, useValue: null },
+      ],
+    });
+    offlineMapService = TestBed.inject(OfflineMapService);
   });
 
   it('progress value for 10% for download step of part 1 of 2 should be 0.10 / 4 =  0.025', () => {

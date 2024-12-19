@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, inject } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
@@ -95,6 +95,20 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   ],
 })
 export class ObservationListCardComponent implements OnChanges {
+  private modalController = inject(ModalController);
+  private userSettingService = inject(UserSettingService);
+  private cdr = inject(ChangeDetectorRef);
+  private analyticService = inject(AnalyticService);
+  private regobsAuthService = inject(RegobsAuthService);
+  private registrationService = inject(RegistrationService);
+  private draftRepository = inject(DraftRepositoryService);
+  private router = inject(Router);
+  private logger = inject(LoggingService);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
+  private confirmationModalService = inject(ConfirmationModalService);
+
   @Input() obs: RegistrationViewModel;
 
   DATE_FORMAT = 'dd.MM.yyyy HH:mm';
@@ -118,21 +132,7 @@ export class ObservationListCardComponent implements OnChanges {
   location: ImageLocation;
   competenceLevelName: string;
 
-  constructor(
-    private modalController: ModalController,
-    private userSettingService: UserSettingService,
-    private cdr: ChangeDetectorRef,
-    private analyticService: AnalyticService,
-    private regobsAuthService: RegobsAuthService,
-    private registrationService: RegistrationService,
-    private draftRepository: DraftRepositoryService,
-    private router: Router,
-    private logger: LoggingService,
-    private alertController: AlertController,
-    private toastController: ToastController,
-    private translateService: TranslateService,
-    private confirmationModalService: ConfirmationModalService
-  ) {
+  constructor() {
     addIcons({ eye, save, pencil, shareSocial });
   }
 

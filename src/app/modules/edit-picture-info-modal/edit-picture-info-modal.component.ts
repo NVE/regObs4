@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -12,10 +12,12 @@ import { close } from 'ionicons/icons';
   imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslatePipe],
 })
 export class EditPictureInfoModalComponent {
+  modalController = inject(ModalController);
+
   copyright: string;
   photographer: string;
 
-  constructor(public modalController: ModalController) {
+  constructor() {
     addIcons({ close });
   }
 

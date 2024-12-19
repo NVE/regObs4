@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewChildren, QueryList } from '@angular/core';
+import { Component, NgZone, ViewChildren, QueryList, inject } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
@@ -55,6 +55,11 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   ],
 })
 export class WarningListPage {
+  private warningService = inject(WarningService);
+  private userSettingService = inject(UserSettingService);
+  mapService = inject(MapService);
+  private ngZone = inject(NgZone);
+
   private selectedTab = new BehaviorSubject<SelectedTab>('inMapView');
   selectedTab$ = this.selectedTab.asObservable();
 
@@ -82,13 +87,6 @@ export class WarningListPage {
   get showEmptyState() {
     return this.showNoFavourites || this.showNoRelevantEmptyState;
   }
-
-  constructor(
-    private warningService: WarningService,
-    private userSettingService: UserSettingService,
-    public mapService: MapService,
-    private ngZone: NgZone
-  ) {}
 
   closeAllOpen() {
     if (this.warningListItems) {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit, inject } from '@angular/core';
 import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/angular/standalone';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -36,6 +36,17 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   imports: [AbsPipe, DecimalPipe, IonGrid, IonIcon, IonRow, IonSpinner, NgIf, NgStyle, TranslatePipe],
 })
 export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
+  private mapService = inject(MapService);
+  private mapSearchService = inject(MapSearchService);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
+  private geoPositionService = inject(GeoPositionService);
+  private helperService = inject(HelperService);
+  private cdr = inject(ChangeDetectorRef);
+  private loggingService = inject(LoggingService);
+  private externalLinkService = inject(ExternalLinkService);
+  private http = inject(HttpClient);
+
   private userPos: Position; // Caches the gps position for distance and height diff computation
   private lastUserPos: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
   private _userAltitude: number = null; // Cached user altitude from server fetched when we can't trust the GPS altitude
@@ -73,18 +84,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  constructor(
-    private mapService: MapService,
-    private mapSearchService: MapSearchService,
-    private toastController: ToastController,
-    private translateService: TranslateService,
-    private geoPositionService: GeoPositionService,
-    private helperService: HelperService,
-    private cdr: ChangeDetectorRef,
-    private loggingService: LoggingService,
-    private externalLinkService: ExternalLinkService,
-    private http: HttpClient
-  ) {
+  constructor() {
     super();
 
     // We call detectChanges after every new mapView or gps pos has been processed, so

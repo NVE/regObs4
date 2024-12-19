@@ -1,5 +1,5 @@
 import { IonItem, IonSpinner, IonText, IonButton, IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';
@@ -26,10 +26,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class UpdateObservationsComponent {
+  private updateObservationsService = inject(UpdateObservationsService);
+
   settings = settings;
   lastFetched$: Observable<Date>;
 
-  constructor(private updateObservationsService: UpdateObservationsService) {
+  constructor() {
+    const updateObservationsService = this.updateObservationsService;
+
     this.lastFetched$ = updateObservationsService.lastFetched$;
   }
 

@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import {
@@ -67,18 +67,19 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class IceThicknessPage extends BasePage {
+  private modalController = inject(ModalController);
+  private ngZone = inject(NgZone);
+
   isWaterBefore: boolean = undefined;
   isWaterAfter: boolean = undefined;
   waterHeightBefore: number = undefined;
   waterHeightAfter: number = undefined;
   waterDepthAfter: number = undefined;
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private modalController: ModalController,
-    private ngZone: NgZone
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.IceThickness, basePageService, activatedRoute);
     addIcons({ addCircleOutline });
   }

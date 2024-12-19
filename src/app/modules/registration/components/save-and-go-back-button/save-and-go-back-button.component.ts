@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
 import { IonButton, IonCol, IonGrid, IonRouterLink, IonRow, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -12,10 +12,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonButton, IonCol, IonGrid, IonRow, SvgIconComponent, TranslatePipe, IonRouterLink],
 })
 export class SaveAndGoBackButtonComponent {
+  private navContoller = inject(NavController);
+
   @Input() draft: RegistrationDraft;
   @Output() reset = new EventEmitter();
-
-  constructor(private navContoller: NavController) {}
 
   async goBack() {
     this.navContoller.navigateBack('registration/edit/' + this.draft.uuid);

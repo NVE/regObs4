@@ -1,6 +1,10 @@
 import { LangKey } from 'src/app/modules/common-core/models';
 import { MapSearchService } from './map-search.service';
 import { Navn } from './norwegian-search-result.model';
+import { TestBed } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { GeoCodeService } from 'src/app/modules/common-regobs-api';
 
 const DRAMMEN_CITY: Navn = {
   skrivemåte: 'Drammen',
@@ -107,7 +111,14 @@ describe('Service: LocationSearchService', () => {
   let locationSearchService: MapSearchService;
 
   beforeEach(() => {
-    locationSearchService = new MapSearchService(null, null, null);
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: HttpClient, useValue: null },
+        { provide: UserSettingService, useValue: null },
+        { provide: GeoCodeService, useValue: null },
+      ],
+    });
+    locationSearchService = TestBed.inject(MapSearchService);
   });
 
   it('#formatLocationDescription should format description for Drammen nicely in nynorsk', () => {

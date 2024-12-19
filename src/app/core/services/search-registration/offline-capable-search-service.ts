@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import moment from 'moment';
 import {
@@ -62,6 +62,12 @@ const SYNC_TIMEOUT = 8_000; // 10 seconds
  */
 @Injectable()
 export class OfflineCapableSearchService extends SearchService {
+  private logger = inject(LoggingService);
+  private sqlite = inject(SqliteService);
+  private network = inject(NetworkStatusService);
+  private userSettings = inject(UserSettingService);
+  private updateObsService = inject(UpdateObservationsService);
+
   /**
    * En liste med sync-forespørsler.
    * En forespørsel / SyncRequest er i seg selv en subject for å kunne gi beskjed tilbake til den som har bedt om
@@ -81,18 +87,15 @@ export class OfflineCapableSearchService extends SearchService {
   // See waitForImpartantSyncToFinishOrTimeout()
   private importantSync$: Observable<void> = of(null);
 
-  constructor(
-    config: RegobsApiConfiguration,
-    http: HttpClient,
-    private logger: LoggingService,
-    private sqlite: SqliteService,
-    private network: NetworkStatusService,
-    private userSettings: UserSettingService,
-    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private updateObsService: UpdateObservationsService,
-    platform: Platform
-  ) {
+  constructor() {
+    const config = inject(RegobsApiConfiguration);
+    const http = inject(HttpClient);
+    const addUpdateDeleteRegistrationService = inject(AddUpdateDeleteRegistrationService);
+    const platform = inject(Platform);
+
     super(config, http);
+    const network = this.network;
+
 
     this.updateObsService.offlineMode = true;
     this.sqlite.hasCrashed$.pipe(take(1)).subscribe(() => {

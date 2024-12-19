@@ -1,5 +1,5 @@
 import { IonSelect, IonItem, IonSelectOption, IonIcon, IonToggle, IonLabel } from '@ionic/angular/standalone';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { setObservableTimeout, NgDestoryBase } from '../../../../core/helpers/observable-helper';
@@ -41,6 +41,9 @@ interface PopupSubscription {
   ],
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
+  private userSettingService = inject(UserSettingService);
+  private popupInfoService = inject(PopupInfoService);
+
   isWeb = Capacitor.getPlatform() === 'web';
 
   private checkOfflineSupportMaps: { [mapName: string]: PopupSubscription } = {};
@@ -55,7 +58,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
 
   readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
-  constructor(private userSettingService: UserSettingService, private popupInfoService: PopupInfoService) {
+  constructor() {
     super();
     this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(setObservableTimeout());
 

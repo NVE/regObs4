@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -40,6 +40,8 @@ import { TranslatePipe } from '@ngx-translate/core';
  * The date and time picker is displayed in a modal, and the selected date and time is returned to the parent component.
  */
 export class DatetimePickerComponent implements OnInit {
+  private userSettings = inject(UserSettingService);
+
   @Input() dateTime: string; // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
   @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
   @Input() minDate: string; // Sets the min date selectable from the date picker
@@ -57,8 +59,6 @@ export class DatetimePickerComponent implements OnInit {
   private tempDate: string;
 
   @ViewChild(IonModal) modal: IonModal;
-
-  constructor(private userSettings: UserSettingService) {}
 
   async ngOnInit(): Promise<void> {
     if (!this.language) {

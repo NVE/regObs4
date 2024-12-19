@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -29,9 +29,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class HelpModalPage {
-  @Input() helpText: string;
+  private modalController = inject(ModalController);
 
-  constructor(private modalController: ModalController) {}
+  @Input() helpText: string;
 
   close() {
     this.modalController.dismiss();

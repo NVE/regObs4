@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import {
   IonCol,
@@ -101,6 +101,13 @@ const URL_VIEW_TYPE_PARAM = 'view';
   ],
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {
+  private searchCriteriaService = inject(SearchCriteriaService);
+  private searchRegistrationService = inject(SearchRegistrationService);
+  private updateObservationsService = inject(UpdateObservationsService);
+  private tabsService = inject(TabsService);
+  private logger = inject(LoggingService);
+  private userSettingService = inject(UserSettingService);
+
   listSearch: PagedSearchResult<RegistrationViewModel>;
   imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
 
@@ -122,16 +129,12 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   refreshFunc = this.refresh.bind(this);
   searchCriteriaWhenThisPageIsActiveAndViewTypeList$: Observable<SearchCriteriaRequestDto>;
   searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$: Observable<SearchCriteriaRequestDto>;
-  constructor(
-    private searchCriteriaService: SearchCriteriaService,
-    private searchRegistrationService: SearchRegistrationService,
-    private updateObservationsService: UpdateObservationsService,
-    private tabsService: TabsService,
-    private logger: LoggingService,
-    private userSettingService: UserSettingService,
-    mapService: MapService
-  ) {
+  constructor() {
+    const mapService = inject(MapService);
+
     super();
+    const updateObservationsService = this.updateObservationsService;
+
     const url = new URL(document.location.href);
     const viewTypeInParams = url.searchParams.get(URL_VIEW_TYPE_PARAM) as ViewType;
     if (viewTypeInParams === 'grid' || viewTypeInParams === 'list') this.viewType$.next(viewTypeInParams);

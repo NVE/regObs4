@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -59,6 +59,9 @@ import { arrowBack, arrowForward, trash } from 'ionicons/icons';
   ],
 })
 export class SnowDensityLayerModalPage implements OnInit {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() draft: RegistrationDraft;
   @Input() layer: SnowDensityLayerModel;
   @Input() useCylinder = true;
@@ -68,7 +71,7 @@ export class SnowDensityLayerModalPage implements OnInit {
   addNew: boolean;
   private initialDraftState: RegistrationDraft;
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {
+  constructor() {
     addIcons({ arrowBack, arrowForward, trash });
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import L from 'leaflet';
 import moment from 'moment';
 import {
@@ -166,6 +166,10 @@ function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
   providedIn: 'root',
 })
 export class SearchCriteriaService {
+  private userSettingService = inject(UserSettingService);
+  private mapService = inject(MapService);
+  private logger = inject(LoggingService);
+
   // Jeg tror searchCriteria må være en ReplaySubject for at vi skal være sikre på at scan fungerer som tenkt,
   // i tillfelle noen subscriber sent på searchCriteria$, og vi i mellomtiden har oppdatert søkrekriterier via
   // this.searchCriteria.next(...).
@@ -199,11 +203,7 @@ export class SearchCriteriaService {
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private mapService: MapService,
-    private logger: LoggingService
-  ) {
+  constructor() {
     const criteria = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, { criteria });
 

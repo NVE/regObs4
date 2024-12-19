@@ -1,9 +1,8 @@
-import { fakeAsync, resetFakeAsyncZone, tick } from '@angular/core/testing';
+import { fakeAsync, resetFakeAsyncZone, TestBed, tick } from '@angular/core/testing';
 import { firstValueFrom, of, ReplaySubject, timeout } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 import {
   ObserverTripsService,
@@ -12,10 +11,10 @@ import {
   toggledOnKey,
   isAuthorizedKey,
 } from './observer-trips.service';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('ObserverTripsService', () => {
   let tripService: jasmine.SpyObj<TripService>;
-  let loggerService: jasmine.SpyObj<LoggingService>;
   let database: any;
   let dbService: DatabaseService;
   let dbServiceGetSpy: jasmine.Spy;
@@ -27,7 +26,6 @@ describe('ObserverTripsService', () => {
   beforeEach(() => {
     resetFakeAsyncZone();
     tripService = jasmine.createSpyObj('TripService', ['TripGet']);
-    loggerService = jasmine.createSpyObj('LoggerService', ['debug', 'error']);
     database = {};
     dbService = {
       get: async (key) => database[key],
@@ -37,7 +35,16 @@ describe('ObserverTripsService', () => {
     dbServiceSetSpy = spyOn(dbService, 'set').and.callThrough();
     loggedInUser = new ReplaySubject<LoggedInUser>();
     authService = jasmine.createSpyObj('RegobsAuthService', {}, { loggedInUser$: loggedInUser.asObservable() });
-    service = new ObserverTripsService(tripService, loggerService, dbService, authService);
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideTestLogger(),
+        { provide: TripService, useValue: tripService },
+        { provide: RegobsAuthService, useValue: authService },
+        { provide: DatabaseService, useValue: dbService },
+      ],
+    });
+    service = TestBed.inject(ObserverTripsService);
   });
 
   it('should emit null if obsturer is toggled off and save toggle state to db', fakeAsync(async () => {

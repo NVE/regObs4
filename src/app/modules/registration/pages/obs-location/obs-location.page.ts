@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
 import * as L from 'leaflet';
 import {
   IonBackButton,
@@ -46,6 +46,15 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class ObsLocationPage implements OnInit, OnDestroy {
+  private draftService = inject(DraftRepositoryService);
+  private activatedRoute = inject(ActivatedRoute);
+  private ngZone = inject(NgZone);
+  private locationService = inject(LocationService);
+  private navController = inject(NavController);
+  private fullscreenService = inject(FullscreenService);
+  private swipeBackService = inject(SwipeBackService);
+  private userSettingService = inject(UserSettingService);
+
   locationMarker: L.Marker;
   isLoaded = false;
   allowEditLocationName = true;
@@ -58,16 +67,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  constructor(
-    private draftService: DraftRepositoryService,
-    private activatedRoute: ActivatedRoute,
-    private ngZone: NgZone,
-    private locationService: LocationService,
-    private navController: NavController,
-    private fullscreenService: FullscreenService,
-    private swipeBackService: SwipeBackService,
-    private userSettingService: UserSettingService
-  ) {
+  constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 

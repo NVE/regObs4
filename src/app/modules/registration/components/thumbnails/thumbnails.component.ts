@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { map, distinctUntilChanged, Observable, ReplaySubject, combineLatest } from 'rxjs';
 import {
   AttachmentUploadEditModel,
@@ -23,6 +23,8 @@ import { RemoteImageComponent } from '../../../shared/components/remote-image/re
   imports: [NgFor, BlobImageComponent, RemoteImageComponent, NgIf, AsyncPipe],
 })
 export class ThumbnailsComponent implements OnChanges, OnInit {
+  private newAttachmentService = inject(NewAttachmentService);
+
   @Input() attachments: ExistingOrNewAttachment[]; //attachments for given draft registration
   @Input() draftUuid: string;
 
@@ -32,8 +34,6 @@ export class ThumbnailsComponent implements OnChanges, OnInit {
   existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
   totalImagesCount: Observable<number>;
-
-  constructor(private newAttachmentService: NewAttachmentService) {}
 
   ngOnInit(): void {
     this.newAttachments$ = this.attachmentsSubject.pipe(

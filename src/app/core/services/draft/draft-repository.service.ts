@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import {
   BehaviorSubject,
@@ -42,6 +42,11 @@ const DEBUG_TAG = 'DraftRepositoryService';
   providedIn: 'root',
 })
 export class DraftRepositoryService {
+  private logger = inject(LoggingService);
+  private newAttachmentSerivice = inject(NewAttachmentService);
+  private databaseService = inject(DatabaseService);
+  private userSettingService = inject(UserSettingService);
+
   //used to spread the word about changes in drafts
   private shouldLoad: BehaviorSubject<void> = new BehaviorSubject(null);
 
@@ -50,12 +55,7 @@ export class DraftRepositoryService {
    */
   readonly drafts$: Observable<RegistrationDraft[]>;
 
-  constructor(
-    private logger: LoggingService,
-    private newAttachmentSerivice: NewAttachmentService,
-    private databaseService: DatabaseService,
-    private userSettingService: UserSettingService
-  ) {
+  constructor() {
     this.drafts$ = combineLatest([this.userSettingService.appMode$, this.databaseService.ready$, this.shouldLoad]).pipe(
       switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
       shareReplay(1),

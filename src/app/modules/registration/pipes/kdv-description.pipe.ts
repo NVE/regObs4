@@ -1,11 +1,12 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { KdvKey } from '../../common-registration/registration.models';
 import { KdvService } from '../../common-registration/registration.services';
 
 @Pipe({ name: 'kdvDescription' })
 export class KdvDescriptionPipe implements PipeTransform {
-  constructor(private kdvService: KdvService) {}
+  private kdvService = inject(KdvService);
+
 
   async transform(value: number, kdvKey: KdvKey, returnDescription = false): Promise<string> {
     const kdvelements = await firstValueFrom(this.kdvService.getKdvRepositoryByKeyObservable(kdvKey));

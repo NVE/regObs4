@@ -1,21 +1,17 @@
 import { AlertController } from '@ionic/angular/standalone';
-import { TranslateService } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { DateHelperService } from 'src/app/modules/shared/services/date-helper/date-helper.service';
 import { RegistrationDraft } from '../draft/draft-model';
-import { UserSettingService } from '../user-setting/user-setting.service';
 import { UploadAttachmentsService } from './upload-attachments.service';
 import { UploadSingleAttachmentService } from './upload-single-attachment.service';
+import { TestBed } from '@angular/core/testing';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 describe('UploadAttachmentsService', () => {
-  let service: UploadAttachmentsService;
-  beforeEach(() => {
-    service = new UploadAttachmentsService(null, null, null, null, null, null, null);
-  });
-
   it('should not upload attachments with AttachmentUploadId (already uploaded)', async () => {
     // List of fake attachments that fake newAttachmentsService will return
     const fakeAttachments: AttachmentUploadEditModel[] = [
@@ -31,17 +27,15 @@ describe('UploadAttachmentsService', () => {
       },
     };
 
-    service = new UploadAttachmentsService(
-      newAttachmentService as unknown as NewAttachmentService,
-      {} as UploadSingleAttachmentService,
-      {} as TranslateService,
-      {} as DateHelperService,
-      jasmine.createSpyObj('LoggingService', ['debug', 'error']),
-      {
-        userSetting$: of({}),
-      } as UserSettingService,
-      {} as AlertController
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        { provide: NewAttachmentService, useValue: newAttachmentService },
+        { provide: UploadSingleAttachmentService, useValue: null },
+      ],
+    });
+    const service = TestBed.inject(UploadAttachmentsService);
 
     const draft: RegistrationDraft = {
       uuid: '12345-abc',
@@ -76,24 +70,6 @@ describe('UploadAttachmentsService', () => {
     const saveAttachmentMeta$ = jasmine.createSpy();
     saveAttachmentMeta$.and.returnValue(of(true));
 
-    const alertController = {
-      create: async (): Promise<HTMLIonAlertElement> => {
-        return { present: () => null } as HTMLIonAlertElement;
-      },
-    };
-
-    const translateService = {
-      get: (): Observable<any> => {
-        return of('Tranlsation');
-      },
-    };
-
-    const dateHelperService = {
-      formatDateString: (): Observable<string> => {
-        return of('today');
-      },
-    };
-
     const uploadSingleAttachmentService = {
       upload: async () => {
         return { id: '5678', type: 'Attachment', AttachmentUploadId: '12345-test-id' };
@@ -109,17 +85,15 @@ describe('UploadAttachmentsService', () => {
       },
       saveAttachmentMeta$: saveAttachmentMeta$,
     };
-    service = new UploadAttachmentsService(
-      newAttachmentService as unknown as NewAttachmentService,
-      uploadSingleAttachmentService as unknown as UploadSingleAttachmentService,
-      translateService as unknown as TranslateService,
-      dateHelperService as unknown as DateHelperService,
-      jasmine.createSpyObj('LoggingService', ['debug', 'error']),
-      {
-        userSetting$: of({}),
-      } as UserSettingService,
-      alertController as unknown as AlertController
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        { provide: NewAttachmentService, useValue: newAttachmentService },
+        { provide: UploadSingleAttachmentService, useValue: uploadSingleAttachmentService },
+      ],
+    });
+    const service = TestBed.inject(UploadAttachmentsService);
 
     const draft: RegistrationDraft = {
       uuid: '12345-abc',
@@ -149,12 +123,6 @@ describe('UploadAttachmentsService', () => {
     const saveAttachmentMeta$ = jasmine.createSpy();
     saveAttachmentMeta$.and.returnValue(of(true));
 
-    const translateService = {
-      get: (): Observable<string> => {
-        return of('Error');
-      },
-    };
-
     const newAttachmentService = {
       getAttachments: (): Observable<AttachmentUploadEditModel[]> => {
         return of(fakeAttachments);
@@ -165,31 +133,18 @@ describe('UploadAttachmentsService', () => {
       saveAttachmentMeta$: saveAttachmentMeta$,
     };
 
-    const alertController = {
-      create: async (): Promise<HTMLIonAlertElement> => {
-        return { present: () => null } as HTMLIonAlertElement;
-      },
-    };
-
-    const dateHelperService = {
-      formatDateString: (): Observable<string> => {
-        return of('today');
-      },
-    };
-
-    const loggingService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
-
-    service = new UploadAttachmentsService(
-      newAttachmentService as unknown as NewAttachmentService,
-      {} as UploadSingleAttachmentService,
-      translateService as unknown as TranslateService,
-      dateHelperService as unknown as DateHelperService,
-      loggingService,
-      {
-        userSetting$: of({}),
-      } as UserSettingService,
-      alertController as unknown as AlertController
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        { provide: NewAttachmentService, useValue: newAttachmentService },
+        { provide: UploadSingleAttachmentService, useValue: null },
+        { provide: AlertController, useValue: null },
+      ],
+    });
+    const service = TestBed.inject(UploadAttachmentsService);
+    const logger = TestBed.inject(LoggingService);
+    spyOn(logger, 'error').and.callThrough();
 
     const regUuid = '12345-abc';
     const draft: RegistrationDraft = {
@@ -210,6 +165,6 @@ describe('UploadAttachmentsService', () => {
     // Test that uploadAllAttachments returns one fulfilled promise without value
     await expectAsync(service.uploadAllAttachments(draft)).toBeResolvedTo(expected);
 
-    expect(loggingService.error).toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalled();
   });
 });

@@ -1,5 +1,5 @@
 import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, inject } from '@angular/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';
@@ -33,6 +33,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class SetFloodAreaPage implements OnInit {
+  private fullscreenService = inject(FullscreenService);
+  private cdr = inject(ChangeDetectorRef);
+  private activatedRoute = inject(ActivatedRoute);
+  private draftService = inject(DraftRepositoryService);
+  private location = inject(Location);
+  private ngZone = inject(NgZone);
+  private draftRepository = inject(DraftRepositoryService);
+
   locationMarker: L.Marker;
   private map: L.Map;
   fullscreen$: Observable<boolean>;
@@ -51,15 +59,7 @@ export class SetFloodAreaPage implements OnInit {
     shadowUrl: 'leaflet/marker-shadow.png',
     shadowSize: [41, 41],
   });
-  constructor(
-    private fullscreenService: FullscreenService,
-    private cdr: ChangeDetectorRef,
-    private activatedRoute: ActivatedRoute,
-    private draftService: DraftRepositoryService,
-    private location: Location,
-    private ngZone: NgZone,
-    private draftRepository: DraftRepositoryService
-  ) {
+  constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 

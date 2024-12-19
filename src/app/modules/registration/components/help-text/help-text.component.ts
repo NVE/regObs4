@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
@@ -19,12 +19,13 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [AsyncPipe, IonButton, IonCol, IonGrid, IonRow, NgIf, TranslatePipe],
 })
 export class HelpTextComponent implements OnInit {
+  private helpTextService = inject(HelpTextService);
+  private modalController = inject(ModalController);
+
   @Input() registrationTid: number;
   @Input() geoHazard: GeoHazard;
 
   hasHelpText$: Observable<boolean>;
-
-  constructor(private helpTextService: HelpTextService, private modalController: ModalController) {}
 
   async ngOnInit() {
     this.hasHelpText$ = this.helpTextService.hasHelpTextObservable(this.geoHazard, this.registrationTid);

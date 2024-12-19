@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { NanoSql } from '../../../../nanosql';
 import { AppMode } from 'src/app/modules/common-core/models';
@@ -15,12 +15,11 @@ import { nSQL } from '@nano-sql/core';
   providedIn: 'root',
 })
 export class UserGroupService {
-  constructor(
-    private regobsAuthService: RegobsAuthService,
-    private userSettingService: UserSettingService,
-    private accountApiService: RegobsApiAccountService,
-    private dataLoadService: DataLoadService
-  ) {}
+  private regobsAuthService = inject(RegobsAuthService);
+  private userSettingService = inject(UserSettingService);
+  private accountApiService = inject(RegobsApiAccountService);
+  private dataLoadService = inject(DataLoadService);
+
 
   async updateUserGroups() {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
