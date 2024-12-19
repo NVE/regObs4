@@ -13,8 +13,7 @@ const isInWhitelist = (url: string) => {
   return whiteList.some((w) => url.indexOf(w) >= 0);
 };
 
-const askToSaveOrNot = () => {
-  const modalService = inject(ConfirmationModalService);
+const askToSaveOrNot = (modalService: ConfirmationModalService) => {
   return modalService.askForConfirmation({
     message: 'REGISTRATION.SAVE_ALERT.MESSAGE',
     header: 'REGISTRATION.SAVE_ALERT.HEADER',
@@ -31,7 +30,9 @@ const askToSaveOrNot = () => {
   });
 };
 
-export const saveAsDraftGuard: CanDeactivateFn<OverviewPage> = async (
+const saveAsDraftGuardAsync = async (
+  draftService: DraftRepositoryService,
+  modalService: ConfirmationModalService,
   component,
   currentRoute,
   currentState,
@@ -39,14 +40,20 @@ export const saveAsDraftGuard: CanDeactivateFn<OverviewPage> = async (
 ) => {
   const uuid = currentRoute.params['id'];
   if (nextState && !isInWhitelist(nextState.url) && uuid != null) {
-    const draftService = inject(DraftRepositoryService);
     const draft = await draftService.load(uuid);
     if (draft && draft.syncStatus === SyncStatus.Draft) {
-      const save = await askToSaveOrNot();
+      const save = await askToSaveOrNot(modalService);
       if (!save) {
         await draftService.delete(draft.uuid);
       }
     }
   }
   return true;
+};
+
+export const saveAsDraftGuard: CanDeactivateFn<OverviewPage> = (component, currentRoute, currentState, nextState) => {
+  // Inject kan ikke brukes i async funksjoner, derfor er dette satt opp med en async hjelpefunksjon
+  const draftService = inject(DraftRepositoryService);
+  const modalService = inject(ConfirmationModalService);
+  return saveAsDraftGuardAsync(draftService, modalService, component, currentRoute, currentState, nextState);
 };
