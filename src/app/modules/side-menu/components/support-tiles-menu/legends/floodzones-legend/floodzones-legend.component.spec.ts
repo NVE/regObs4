@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FloodzonesLegendComponent } from './floodzones-legend.component';
-import { TestModule } from '../../../../../test/test.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('FloodzonesLegendComponent', () => {
   let component: FloodzonesLegendComponent;
@@ -8,7 +8,7 @@ describe('FloodzonesLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule, FloodzonesLegendComponent],
+      imports: [FloodzonesLegendComponent, TranslateModule.forRoot()],
     }).compileComponents();
   }));
 

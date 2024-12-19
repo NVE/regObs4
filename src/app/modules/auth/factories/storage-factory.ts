@@ -1,9 +1,6 @@
-import { Platform } from '@ionic/angular/standalone';
-// import { CordovaSecureStorage } from 'ionic-appauth/lib/cordova';
-// import { CapacitorStorage } from 'ionic-appauth/lib/capacitor';
 import { LocalStorageBackend } from '@openid/appauth';
 
-export const storageFactory = (platform: Platform) => {
+export const storageFactory = () => {
   return new LocalStorageBackend();
   // return platform.is('cordova') ? new CordovaSecureStorage() : new CapacitorStorage();
 };

@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SteepnessLegendComponent } from './steepness-legend.component';
 import { SteepnessCommonLegendComponent } from '../steepness-common-legend/steepness-common-legend.component';
-
-import { TestModule } from '../../../../../test/test.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('SteepnessLegendComponent', () => {
   let component: SteepnessLegendComponent;
@@ -10,7 +11,8 @@ describe('SteepnessLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule, SteepnessCommonLegendComponent, SteepnessLegendComponent],
+      imports: [TranslateModule.forRoot(), SteepnessCommonLegendComponent, SteepnessLegendComponent],
+      providers: [{ provide: LoggingService, useClass: TestLoggingService }],
     }).compileComponents();
   }));
 

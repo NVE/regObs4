@@ -1,15 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TestModule } from '../test/test.module';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditPictureInfoModalComponent } from './edit-picture-info-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideIonicAngular } from '@ionic/angular/standalone';
 
-describe('EditModalComponent', () => {
+describe('EditPictureInfoModalComponent', () => {
   let component: EditPictureInfoModalComponent;
   let fixture: ComponentFixture<EditPictureInfoModalComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule, EditPictureInfoModalComponent],
+      providers: [provideIonicAngular()],
+      imports: [EditPictureInfoModalComponent, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditPictureInfoModalComponent);

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ClayzonesLegendComponent } from './clayzones-legend.component';
-import { TestModule } from '../../../../../test/test.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ClayzonesLegendComponent', () => {
   let component: ClayzonesLegendComponent;
@@ -8,7 +8,7 @@ describe('ClayzonesLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule, ClayzonesLegendComponent],
+      imports: [ClayzonesLegendComponent, TranslateModule.forRoot()],
     }).compileComponents();
   }));
 

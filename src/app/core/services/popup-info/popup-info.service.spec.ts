@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 
 import { PopupInfoService } from './popup-info.service';
-import { TestModule } from '../../../modules/test/test.module';
 import moment from 'moment';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('PopupInfoService', () => {
   let service: PopupInfoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
+      providers: [{ provide: LoggingService, useClass: TestLoggingService }],
+      imports: [TranslateModule.forRoot()],
     });
     service = TestBed.inject(PopupInfoService);
   });

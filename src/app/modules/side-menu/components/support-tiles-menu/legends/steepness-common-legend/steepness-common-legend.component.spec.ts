@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SteepnessCommonLegendComponent } from './steepness-common-legend.component';
-import { TestModule } from '../../../../../test/test.module';
+import { provideIonicAngular } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SteepnessCommonLegendComponent', () => {
   let component: SteepnessCommonLegendComponent;
@@ -8,7 +9,8 @@ describe('SteepnessCommonLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule, SteepnessCommonLegendComponent],
+      providers: [provideIonicAngular()],
+      imports: [SteepnessCommonLegendComponent, TranslateModule.forRoot()],
     }).compileComponents();
   }));
 
