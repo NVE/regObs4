@@ -3,12 +3,13 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateFn } from '@ang
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const isUserLoggedIn: CanActivateFn = async (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+export const isUserLoggedIn: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const authService = inject(RegobsAuthService);
-  const loggedInUser = await authService.getLoggedInUserAsPromise();
-  if (!loggedInUser.isLoggedIn) {
-    authService.signIn();
-  }
+  return authService.getLoggedInUserAsPromise().then((loggedInUser) => {
+    if (!loggedInUser.isLoggedIn) {
+      authService.signIn();
+    }
 
-  return loggedInUser.isLoggedIn;
+    return loggedInUser.isLoggedIn;
+  });
 };
