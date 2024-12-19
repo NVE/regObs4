@@ -3,7 +3,11 @@ import { GeoNameComponent } from './geo-name.component';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
 import { of } from 'rxjs';
-import { TestModule } from '../../../test/test.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { LoggingService } from '../../services/logging/logging.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { LangKey } from 'src/app/modules/common-core/models';
+import { TestLoggingService } from '../../services/logging/test-logging.service';
 
 describe('GeoNameComponent', () => {
   let component: GeoNameComponent;
@@ -12,8 +16,12 @@ describe('GeoNameComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule, GeoNameComponent],
-      providers: [GeoHelperService, provideMock(GeoHelperService)],
+      imports: [GeoNameComponent, TranslateModule.forRoot()],
+      providers: [
+        provideMock(GeoHelperService),
+        { provide: LoggingService, useClass: TestLoggingService },
+        { provide: UserSettingService, useValue: { language$: of(LangKey.en) } },
+      ],
     });
     geoHelperService = TestBed.inject(GeoHelperService) as unknown as Spied<GeoHelperService>;
     TestBed.compileComponents();

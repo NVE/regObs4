@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { provideIonicAngular } from '@ionic/angular/standalone';
 
 describe('ModalMapImagePage', () => {
   let component: ModalMapImagePage;
@@ -13,6 +14,7 @@ describe('ModalMapImagePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
+      providers: [provideIonicAngular()],
       imports: [CommonModule, FormsModule, TranslateModule, LeafletModule, ModalMapImagePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();

@@ -1,7 +1,7 @@
 import { Platform } from '@ionic/angular/standalone';
 import { StorageBackend, Requestor } from '@openid/appauth';
 import { AuthService, Browser } from 'ionic-appauth';
-import { NgZone } from '@angular/core';
+import { inject } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../settings';
 import { AppMode } from 'src/app/modules/common-core/models';
@@ -9,14 +9,13 @@ import { RegobsAuthServiceOverride } from '../services/regobs-auth-service-overr
 
 export const AUTH_CALLBACK_PATH = 'auth/callback';
 
-export const authFactory = (
-  platform: Platform,
-  ngZone: NgZone,
-  requestor: Requestor,
-  browser: Browser,
-  storage: StorageBackend,
-  userSettingService: UserSettingService
-): AuthService => {
+export const authFactory = (): AuthService => {
+  const platform = inject(Platform);
+  const requestor = inject(Requestor);
+  const browser = inject(Browser);
+  const storage = inject(StorageBackend);
+  const userSettingService = inject(UserSettingService);
+
   const authService = new RegobsAuthServiceOverride(browser, storage, requestor);
   userSettingService.appMode$.subscribe((appMode: AppMode) => {
     authService.authConfig = settings.authConfig[appMode];

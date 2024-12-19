@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-import { enableProdMode, importProvidersFrom, NgZone } from '@angular/core';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
 import { NanoSql } from './nanosql';
 import '@angular/compiler';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_PROVIDERS } from './app/app.providers';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { provideIonicAngular, IonicRouteStrategy, Platform, isPlatform } from '@ionic/angular/standalone';
+import { provideIonicAngular, IonicRouteStrategy, isPlatform } from '@ionic/angular/standalone';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import { settings } from 'src/settings';
@@ -27,7 +27,6 @@ import { httpFactory } from './app/modules/auth/factories/http-factory';
 import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 import { authFactory } from './app/modules/auth/factories/auth-factory';
-import { UserSettingService } from './app/core/services/user-setting/user-setting.service';
 
 if (environment.production) {
   enableProdMode();
@@ -44,12 +43,10 @@ function startApp() {
       {
         provide: StorageBackend,
         useFactory: storageFactory,
-        deps: [Platform],
       },
       {
         provide: Requestor,
         useFactory: httpFactory,
-        deps: [Platform, HttpClient],
       },
       {
         provide: Browser,
@@ -58,7 +55,6 @@ function startApp() {
       {
         provide: AuthService,
         useFactory: authFactory,
-        deps: [Platform, NgZone, Requestor, Browser, StorageBackend, UserSettingService],
       },
 
       importProvidersFrom(

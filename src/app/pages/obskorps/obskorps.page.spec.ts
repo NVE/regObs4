@@ -6,8 +6,12 @@ import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.ser
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 import { MyPageData } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { Component, Input } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppMode } from 'src/app/modules/common-core/models';
+import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 @Component({
   selector: 'app-header',
@@ -29,16 +33,18 @@ describe('ObskorpsPage', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ObskorpsPage, AppHeaderStubComponent],
+      imports: [ObskorpsPage, AppHeaderStubComponent, TranslateModule.forRoot()],
       providers: [
         {
           provide: RegobsAuthService,
           useClass: AuthServiceStub,
         },
-        { provide: UserSettingService, useValue: {} },
+        { provide: UserSettingService, useValue: { appMode$: of(AppMode.Test) } },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        { provide: LoggingService, useClass: TestLoggingService },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(ObskorpsPage);
     component = fixture.componentInstance;

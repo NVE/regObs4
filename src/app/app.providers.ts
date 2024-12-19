@@ -88,6 +88,9 @@ export function initAppModeService(userSettingService: UserSettingService): any 
 //   }
 // }
 
+// TODO: Divide into environment providers and other providers
+// See: https://angular.dev/api/core/makeEnvironmentProviders
+
 export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   {

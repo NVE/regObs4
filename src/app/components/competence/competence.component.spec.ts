@@ -2,8 +2,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CompetenceComponent } from './competence.component';
 import { TranslateService } from '@ngx-translate/core';
 
-import { TestModule } from '../../modules/test/test.module';
-
 xdescribe('CompetenceComponent', () => {
   let component: CompetenceComponent;
   let fixture: ComponentFixture<CompetenceComponent>;
@@ -20,7 +18,7 @@ xdescribe('CompetenceComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TestModule],
+      imports: [],
     }).compileComponents();
     translate = TestBed.inject(TranslateService);
     // translate.addLangs(['nb', 'en']);
