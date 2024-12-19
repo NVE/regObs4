@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { map, take, filter, switchMap, delay } from 'rxjs/operators';
 import moment from 'moment';
@@ -11,11 +11,10 @@ import { settings } from '../../../../settings';
   providedIn: 'root',
 })
 export class PopupInfoService {
-  constructor(
-    private userSettingService: UserSettingService,
-    private alertController: AlertController,
-    private translateService: TranslateService
-  ) {}
+  private userSettingService = inject(UserSettingService);
+  private alertController = inject(AlertController);
+  private translateService = inject(TranslateService);
+
 
   checkObservationInfoPopup(_: string = null, delayMs = 2000) {
     return this.checkInfoPopup(

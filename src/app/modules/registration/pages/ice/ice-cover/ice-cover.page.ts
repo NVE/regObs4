@@ -9,7 +9,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
@@ -48,7 +48,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class IceCoverPage extends BasePage {
-  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.IceCoverObs, basePageService, activatedRoute);
   }
 }

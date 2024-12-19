@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, HostBinding } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, HostBinding, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { NgIf } from '@angular/common';
@@ -20,6 +20,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [NgIf, SvgIconComponent, TranslatePipe],
 })
 export class RemoteImageComponent implements OnInit {
+  private sanitizer = inject(DomSanitizer);
+
   @Input() attachment: RemoteOrLocalAttachmentEditModel;
   @Input() preferSize: keyof RemoteOrLocalAttachmentEditModel['UrlFormats'] = 'Thumbnail';
   @Input() largeFallback = false;
@@ -31,8 +33,6 @@ export class RemoteImageComponent implements OnInit {
 
   @HostBinding('style.pointer-events')
   pointerEvents = 'auto';
-
-  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     let imageUrl: string;

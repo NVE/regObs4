@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ConnectionStatus, Network } from '@capacitor/network';
 import { concat, distinctUntilChanged, fromEventPattern, map, Observable, shareReplay, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -11,7 +11,9 @@ const DEBUG_TAG = 'NetworkStatus';
 export class NetworkStatusService {
   public connected$: Observable<boolean>;
 
-  constructor(loggerService: LoggingService) {
+  constructor() {
+    const loggerService = inject(LoggingService);
+
     const currentStatus = Network.getStatus();
 
     // networkStatusChange will not emit before a change occurs thats why we need to use

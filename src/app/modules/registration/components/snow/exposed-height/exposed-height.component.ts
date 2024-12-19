@@ -1,5 +1,5 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, NgZone, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, NgZone, EventEmitter, inject } from '@angular/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { NgClass, NgIf } from '@angular/common';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
@@ -12,6 +12,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, NgIf, SelectComponent, TranslatePipe],
 })
 export class ExposedHeightComponent implements OnInit {
+  private ngZone = inject(NgZone);
+
   @Input() exposedHeightComboTID: number;
   @Output() exposedHeightComboTIDChange = new EventEmitter();
   @Input() exposedHight1: number;
@@ -34,8 +36,6 @@ export class ExposedHeightComponent implements OnInit {
   get lowerHeightArray() {
     return this.heightArray.filter((x) => this.exposedHight1 === undefined || x.id < this.exposedHight1);
   }
-
-  constructor(private ngZone: NgZone) {}
 
   ngOnInit() {
     this.setExposedHeights(this.exposedHeightComboTID);

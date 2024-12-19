@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   IonBackButton,
@@ -87,6 +87,8 @@ import { time, location, chevronForward } from 'ionicons/icons';
   ],
 })
 export class AvalancheObsPage extends BasePage {
+  private modalController = inject(ModalController);
+
   expoArray: SelectOption[] = [
     {
       text: 'DIRECTION.N',
@@ -155,11 +157,10 @@ export class AvalancheObsPage extends BasePage {
     );
   }
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private modalController: ModalController
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.AvalancheObs, basePageService, activatedRoute);
     addIcons({ time, location, chevronForward });
   }

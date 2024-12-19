@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -27,6 +27,10 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
   styleUrls: ['./set-damage-location.page.scss'],
 })
 export class SetDamageLocationPage implements OnInit {
+  private modalController = inject(ModalController);
+  private swipeBackService = inject(SwipeBackService);
+  private fullscreenService = inject(FullscreenService);
+
   @Input() damageObs: DamageObsEditModel;
   @Input() geoHazard: GeoHazard;
   @Input() fromLatLng: L.LatLng;
@@ -38,11 +42,7 @@ export class SetDamageLocationPage implements OnInit {
   @ViewChild(SetLocationInMapComponent)
   setLocationInMapComponent: SetLocationInMapComponent;
 
-  constructor(
-    private modalController: ModalController,
-    private swipeBackService: SwipeBackService,
-    private fullscreenService: FullscreenService
-  ) {
+  constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 

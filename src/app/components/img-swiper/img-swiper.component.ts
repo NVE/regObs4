@@ -1,15 +1,5 @@
 import { IonLabel } from '@ionic/angular/standalone';
-import {
-  Component,
-  Input,
-  EventEmitter,
-  Output,
-  ViewChild,
-  OnChanges,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, EventEmitter, Output, ViewChild, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
 // import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject } from 'rxjs';
@@ -29,6 +19,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonLabel, NgClass, NgIf, RemoteImageComponent, StaticMapImageComponent, TranslatePipe],
 })
 export class ImgSwiperComponent implements OnChanges, OnDestroy {
+  private cdr = inject(ChangeDetectorRef);
+  private breakpointService = inject(BreakpointService);
+
   @Input() attachments: AttachmentViewModel[] = [];
   @Input() showLabels = true;
   @Input() location: ImageLocation;
@@ -126,8 +119,6 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     }
     return false;
   }
-
-  constructor(private cdr: ChangeDetectorRef, private breakpointService: BreakpointService) {}
 
   ngOnDestroy(): void {
     this.cdr.detach();

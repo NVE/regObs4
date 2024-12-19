@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import moment, { lang } from 'moment';
@@ -35,6 +35,15 @@ const DEBUG_TAG = 'WarningService';
   providedIn: 'root',
 })
 export class WarningService {
+  private httpClient = inject(HttpClient);
+  private userSettingService = inject(UserSettingService);
+  private mapService = inject(MapService);
+  private dataLoadService = inject(DataLoadService);
+  private platform = inject(Platform);
+  private nativeHttp = inject(HTTP);
+  private loggingService = inject(LoggingService);
+  private dbHelperService = inject(DbHelperService);
+
   private _warningsObservable: Observable<WarningGroup[]>;
   private _warningsForCurrentGeoHazardObservable: Observable<WarningGroup[]>;
   private _warningGroupInMapViewObservable: Observable<IWarningGroupInMapView>;
@@ -52,16 +61,7 @@ export class WarningService {
     return this._warningGroupInMapViewObservable;
   }
 
-  constructor(
-    private httpClient: HttpClient,
-    private userSettingService: UserSettingService,
-    private mapService: MapService,
-    private dataLoadService: DataLoadService,
-    private platform: Platform,
-    private nativeHttp: HTTP,
-    private loggingService: LoggingService,
-    private dbHelperService: DbHelperService
-  ) {
+  constructor() {
     this.latestWarnings = new BehaviorSubject({});
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();

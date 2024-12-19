@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -56,17 +56,15 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/forma
   ],
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+  private searchService = inject(SearchService);
+
   @Input() draft: RegistrationDraft;
 
   isLoading = true;
 
   $previousUsedLayers: Observable<{ id: number; date: string; layers: StratProfileLayerViewModel[] }[]>;
-
-  constructor(
-    private modalController: ModalController,
-    private draftRepository: DraftRepositoryService,
-    private searchService: SearchService
-  ) {}
 
   ngOnInit() {
     if (this.draft?.registration?.ObsLocation) {

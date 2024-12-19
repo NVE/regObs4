@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
@@ -90,6 +90,14 @@ const DEBUG_TAG = 'SnowProfilePage';
   ],
 })
 export class SnowProfilePage extends BasePage {
+  private httpClient = inject(HttpClient);
+  private modalController = inject(ModalController);
+  private loadingController = inject(LoadingController);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
+  private userSettingService = inject(UserSettingService);
+  private loggingService = inject(LoggingService);
+
   expositionOptions: SelectOption[] = [
     { id: 0, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH' },
     { id: 1, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_EAST' },
@@ -101,17 +109,10 @@ export class SnowProfilePage extends BasePage {
     { id: 7, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_WEST' },
   ];
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private httpClient: HttpClient,
-    private modalController: ModalController,
-    private loadingController: LoadingController,
-    private toastController: ToastController,
-    private translateService: TranslateService,
-    private userSettingService: UserSettingService,
-    private loggingService: LoggingService
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
     addIcons({ eye });
   }

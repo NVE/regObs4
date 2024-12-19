@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SupportTile } from 'src/app/core/models/support-tile.model';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -15,9 +15,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [NgIf, SteepnessCommonLegendComponent, AsyncPipe, TranslatePipe],
 })
 export class SteepnessLegendComponent {
+  private userSettingService = inject(UserSettingService);
+
   readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
-  constructor(private userSettingService: UserSettingService) {
+  constructor() {
     this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(setObservableTimeout());
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Device } from '@capacitor/device';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
@@ -48,6 +48,15 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
   providedIn: 'root',
 })
 export class OfflineMapService implements OnReset {
+  private loggingService = inject(LoggingService);
+  private webView = inject(WebView);
+  private backgroundDownloadService = inject(BackgroundDownloadService);
+  private platform = inject(Platform);
+  private helperService = inject(HelperService);
+  private translateService = inject(TranslateService);
+  private alertController = inject(AlertController);
+  private packageIndex = inject(PackageIndexService);
+
   private packages: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
 
@@ -70,16 +79,7 @@ export class OfflineMapService implements OnReset {
 
   hasOutdatedPackages$ = new ReplaySubject<boolean>();
 
-  constructor(
-    private loggingService: LoggingService,
-    private webView: WebView,
-    private backgroundDownloadService: BackgroundDownloadService,
-    private platform: Platform,
-    private helperService: HelperService,
-    private translateService: TranslateService,
-    private alertController: AlertController,
-    private packageIndex: PackageIndexService
-  ) {
+  constructor() {
     // Start with map packages already downloaded
     this.getMapPackages()
       .then((packages) => {

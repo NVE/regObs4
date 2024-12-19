@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
@@ -16,11 +16,10 @@ export type HttpEventClb = (ev: HttpEvent<any>) => void;
   providedIn: 'root',
 })
 export class UploadSingleAttachmentService {
-  constructor(
-    private httpClient: HttpClient,
-    private apiAttachmentService: ApiAttachmentService,
-    private loggingService: LoggingService
-  ) {}
+  private httpClient = inject(HttpClient);
+  private apiAttachmentService = inject(ApiAttachmentService);
+  private loggingService = inject(LoggingService);
+
 
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel, clb: HttpEventClb) {
     this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);

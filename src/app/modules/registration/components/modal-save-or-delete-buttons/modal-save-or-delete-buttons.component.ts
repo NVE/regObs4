@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AlertController, IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular/standalone';
 import {
@@ -16,6 +16,10 @@ import { trash } from 'ionicons/icons';
   imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, NgIf, TranslatePipe],
 })
 export class ModalSaveOrDeleteButtonsComponent {
+  private translateService = inject(TranslateService);
+  private alertController = inject(AlertController);
+  private confirmationModalService = inject(ConfirmationModalService);
+
   @Input() saveText = 'DIALOGS.OK';
   @Input() saveDisabled = false;
   @Output() saveClicked = new EventEmitter();
@@ -24,11 +28,7 @@ export class ModalSaveOrDeleteButtonsComponent {
   @Input() alertTitle = 'DIALOGS.ARE_YOU_SURE';
   @Input() alertMessage = '';
 
-  constructor(
-    private translateService: TranslateService,
-    private alertController: AlertController,
-    private confirmationModalService: ConfirmationModalService
-  ) {
+  constructor() {
     addIcons({ trash });
   }
 

@@ -1,5 +1,5 @@
 import { IonItem, IonCheckbox, IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { map, Observable, takeUntil } from 'rxjs';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
@@ -17,17 +17,13 @@ import { NgIf, AsyncPipe } from '@angular/common';
   imports: [AsyncPipe, IonCheckbox, IonItem, IonLabel, NgIf],
 })
 export class SlushFlowFilterComponent extends NgDestoryBase implements OnInit {
+  private searchCriteriaService = inject(SearchCriteriaService);
+  private userSettingService = inject(UserSettingService);
+  private kdvService = inject(KdvService);
+
   visible$: Observable<boolean>;
   value$: Observable<boolean>;
   caption$: Observable<string>;
-
-  constructor(
-    private searchCriteriaService: SearchCriteriaService,
-    private userSettingService: UserSettingService,
-    private kdvService: KdvService
-  ) {
-    super();
-  }
 
   ngOnInit(): void {
     this.visible$ = this.userSettingService.currentGeoHazard$.pipe(

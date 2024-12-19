@@ -8,7 +8,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { EMPTY, from, Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { settings } from '../../../settings';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegobsAuthService, TOKEN_RESPONSE_FULL_KEY } from 'src/app/modules/auth/services/regobs-auth.service';
@@ -23,12 +23,11 @@ import { Capacitor } from '@capacitor/core';
  */
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
-  constructor(
-    private regobsAuthService: RegobsAuthService,
-    private loggerService: LoggingService,
-    private storage: StorageBackend,
-    private apiVersionService: ApiVersionService
-  ) {}
+  private regobsAuthService = inject(RegobsAuthService);
+  private loggerService = inject(LoggingService);
+  private storage = inject(StorageBackend);
+  private apiVersionService = inject(ApiVersionService);
+
 
   //return true if given url belongs to any of the protected Regobs API urls in any environment
   private isRegObsApiThatRequireLogin(url: string): boolean {

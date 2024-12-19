@@ -30,7 +30,7 @@
 
 import { formatDate } from '@angular/common';
 import { Entry, File } from '@awesome-cordova-plugins/file/ngx';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular/standalone';
 import * as _ from 'lodash';
 import { ILogProviderConfig } from './file-logging.config';
@@ -46,6 +46,11 @@ import { getCircularReplacer } from 'src/app/core/helpers/circular-replacer';
   providedIn: 'root',
 })
 export class FileLoggingService {
+  private file = inject(File);
+  private platform = inject(Platform);
+  private emailComposer = inject(EmailComposer);
+  private emailComposerService = inject(EmailComposerService);
+
   private fileLoggerReady = false;
   private initFailed = false;
   private currentFile: Entry;
@@ -57,12 +62,9 @@ export class FileLoggingService {
 
   private config: LogProviderConfig;
 
-  constructor(
-    private file: File,
-    private platform: Platform,
-    private emailComposer: EmailComposer,
-    private emailComposerService: EmailComposerService
-  ) {
+  constructor() {
+    const file = this.file;
+
     this.defaultConfig = new LogProviderConfig({
       enableMetaLogging: false,
       logToConsole: false,

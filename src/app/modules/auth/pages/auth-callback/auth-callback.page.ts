@@ -1,5 +1,5 @@
 import { IonContent, IonSpinner } from '@ionic/angular/standalone';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegobsAuthService } from '../../services/regobs-auth.service';
 
@@ -10,7 +10,9 @@ import { RegobsAuthService } from '../../services/regobs-auth.service';
   imports: [IonContent, IonSpinner],
 })
 export class AuthCallbackPage implements OnInit {
-  constructor(private regobsAuthService: RegobsAuthService, private router: Router) {}
+  private regobsAuthService = inject(RegobsAuthService);
+  private router = inject(Router);
+
 
   ngOnInit() {
     this.regobsAuthService.authorizationCallback(window.location.origin + this.router.url);

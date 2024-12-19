@@ -1,5 +1,5 @@
 import { IonItem, IonFab, IonFabButton, IonList, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -27,11 +27,11 @@ import { GeoNameComponent } from '../geo-name/geo-name.component';
   ],
 })
 export class GeoSelectComponent implements OnInit {
+  private userSettingService = inject(UserSettingService);
+
   geoHazardTypes: Array<GeoHazard[]>;
   isOpen = false;
   userSettings$: Observable<UserSetting>;
-
-  constructor(private userSettingService: UserSettingService) {}
 
   ngOnInit(): void {
     this.geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];

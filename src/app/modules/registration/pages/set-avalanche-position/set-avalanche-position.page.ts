@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild, inject } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,
@@ -44,6 +44,13 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
   ],
 })
 export class SetAvalanchePositionPage implements OnInit {
+  private cdr = inject(ChangeDetectorRef);
+  private translateService = inject(TranslateService);
+  private ngZone = inject(NgZone);
+  private fullscreenService = inject(FullscreenService);
+  private swipeBackService = inject(SwipeBackService);
+  private modalController = inject(ModalController);
+
   @Input() startLatLng?: L.LatLng;
   @Input() endLatLng?: L.LatLng;
   @Input() extent?: [number, number][];
@@ -103,14 +110,7 @@ export class SetAvalanchePositionPage implements OnInit {
   @ViewChild(SetLocationInMapComponent)
   setLocationInMapComponent: SetLocationInMapComponent;
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private translateService: TranslateService,
-    private ngZone: NgZone,
-    private fullscreenService: FullscreenService,
-    private swipeBackService: SwipeBackService,
-    private modalController: ModalController
-  ) {
+  constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Requestor } from '@openid/appauth';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { XhrSettings } from 'ionic-appauth/lib/cordova';
@@ -7,7 +7,7 @@ import { XhrSettings } from 'ionic-appauth/lib/cordova';
   providedIn: 'root',
 })
 export class NgHttpService implements Requestor {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   public async xhr<T>(settings: XhrSettings): Promise<T> {
     if (!settings.method) {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { of, Observable } from 'rxjs';
@@ -20,14 +20,22 @@ const KDV_ASSETS_FOLDER = '/assets/json';
   providedIn: 'root',
 })
 export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto> {
-  constructor(
-    protected databaseService: DatabaseService,
-    protected logger: LoggingService,
-    private kdvElementsService: KdvElementsService,
-    private httpClient: HttpClient,
-    protected userSettingService: UserSettingService
-  ) {
+  protected databaseService: DatabaseService;
+  protected logger: LoggingService;
+  private kdvElementsService = inject(KdvElementsService);
+  private httpClient = inject(HttpClient);
+  protected userSettingService: UserSettingService;
+
+  constructor() {
+    const databaseService = inject(DatabaseService);
+    const logger = inject(LoggingService);
+    const userSettingService = inject(UserSettingService);
+
     super(databaseService, logger, userSettingService);
+  
+    this.databaseService = databaseService;
+    this.logger = logger;
+    this.userSettingService = userSettingService;
   }
 
   protected getDebugTag(): string {

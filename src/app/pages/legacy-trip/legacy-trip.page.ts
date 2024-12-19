@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
@@ -72,6 +72,15 @@ const DEBUG_TAG = 'LegacyTripPage';
   ],
 })
 export class LegacyTripPage implements OnInit, OnDestroy {
+  private tripLoggerService = inject(TripLoggerService);
+  private ngZone = inject(NgZone);
+  private regobsAuthService = inject(RegobsAuthService);
+  private translateService = inject(TranslateService);
+  private geoPositionService = inject(GeoPositionService);
+  private navController = inject(NavController);
+  private modalController = inject(ModalController);
+  private loggingService = inject(LoggingService);
+
   private tripLoggerSubscription: Subscription;
 
   isRunning = false;
@@ -96,16 +105,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     return IsEmptyHelper.isEmpty(this.tripDto);
   }
 
-  constructor(
-    private tripLoggerService: TripLoggerService,
-    private ngZone: NgZone,
-    private regobsAuthService: RegobsAuthService,
-    private translateService: TranslateService,
-    private geoPositionService: GeoPositionService,
-    private navController: NavController,
-    private modalController: ModalController,
-    private loggingService: LoggingService
-  ) {
+  constructor() {
     this.tripDto = {};
   }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { map, Observable, combineLatest, Subject } from 'rxjs';
@@ -44,6 +44,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class DateRangeComponent extends NgDestoryBase {
+  private searchCriteriaService = inject(SearchCriteriaService);
+  userSettingService = inject(UserSettingService);
+
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
   isOpen = false;
@@ -56,7 +59,7 @@ export class DateRangeComponent extends NgDestoryBase {
   readableDays$: Observable<string>;
   dateRangeText$: Observable<string>;
 
-  constructor(private searchCriteriaService: SearchCriteriaService, public userSettingService: UserSettingService) {
+  constructor() {
     super();
     this.mode$ = this.searchCriteriaService.useDaysBack$.pipe(
       map((useDaysBack) => (useDaysBack ? 'predefined' : 'custom'))

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonContent, IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 import { MapImageComponent } from '../../../map-image/map-image.component';
@@ -12,9 +12,11 @@ import { close } from 'ionicons/icons';
   imports: [IonContent, IonFabButton, IonIcon, MapImageComponent],
 })
 export class ModalMapImagePage {
+  private modalController = inject(ModalController);
+
   @Input() location: { latLng: L.LatLng; geoHazard: GeoHazard };
 
-  constructor(private modalController: ModalController) {
+  constructor() {
     addIcons({ close });
   }
 

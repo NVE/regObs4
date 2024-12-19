@@ -1,5 +1,5 @@
 import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MapZoomService } from '../../../services/map/map-zoom.service';
 import { addIcons } from 'ionicons';
 import { add, remove } from 'ionicons/icons';
@@ -11,7 +11,9 @@ import { add, remove } from 'ionicons/icons';
   imports: [IonFab, IonFabButton, IonIcon],
 })
 export class MapZoomComponent {
-  constructor(private mapZoomService: MapZoomService) {
+  private mapZoomService = inject(MapZoomService);
+
+  constructor() {
     addIcons({ add, remove });
   }
 

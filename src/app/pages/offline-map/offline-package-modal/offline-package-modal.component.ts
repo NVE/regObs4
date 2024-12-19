@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -65,6 +65,11 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
   ],
 })
 export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
+  private modalController = inject(ModalController);
+  private offlineMapService = inject(OfflineMapService);
+  private cdr = inject(ChangeDetectorRef);
+  private logger = inject(LoggingService);
+
   @Input() feature: CompoundPackageFeature;
   @Input() packageOnServer: CompoundPackage;
   @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
@@ -76,12 +81,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   isPackageOutdated: boolean;
   offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
 
-  constructor(
-    private modalController: ModalController,
-    private offlineMapService: OfflineMapService,
-    private cdr: ChangeDetectorRef,
-    private logger: LoggingService
-  ) {
+  constructor() {
     super();
     addIcons({ checkmark, stopwatchOutline, cloudDownloadOutline, folderOpenOutline, warningOutline, refresh, trash });
   }

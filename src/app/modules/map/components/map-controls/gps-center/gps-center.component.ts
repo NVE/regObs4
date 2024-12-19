@@ -1,5 +1,5 @@
 import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
-import { Component, OnDestroy, AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { MapService } from '../../../services/map/map.service';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
@@ -14,11 +14,14 @@ import { locate } from 'ionicons/icons';
   imports: [IonFab, IonFabButton, IonIcon, NgClass],
 })
 export class GpsCenterComponent implements OnDestroy, AfterContentInit {
+  private mapService = inject(MapService);
+  private cdRef = inject(ChangeDetectorRef);
+
   followMode: boolean;
 
   private subscription: Subscription;
 
-  constructor(private mapService: MapService, private cdRef: ChangeDetectorRef) {
+  constructor() {
     addIcons({ locate });
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -32,14 +32,14 @@ import { mail, create } from 'ionicons/icons';
   ],
 })
 export class FailedRegistrationComponent {
+  private draftService = inject(DraftRepositoryService);
+  private emailComposer = inject(EmailComposer);
+  private translateService = inject(TranslateService);
+  private platform = inject(Platform);
+
   @Input() draft: RegistrationDraft;
 
-  constructor(
-    private draftService: DraftRepositoryService,
-    private emailComposer: EmailComposer,
-    private translateService: TranslateService,
-    private platform: Platform
-  ) {
+  constructor() {
     addIcons({ mail, create });
   }
 

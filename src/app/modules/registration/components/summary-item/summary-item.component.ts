@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
 import { IonIcon, IonItem, IonLabel, NavController } from '@ionic/angular/standalone';
 import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
@@ -24,6 +24,9 @@ import { checkmarkCircle } from 'ionicons/icons';
   imports: [IonIcon, IonItem, IonLabel, NgClass, NgIf, ThumbnailsComponent, TranslatePipe],
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
+  private navController = inject(NavController);
+  private newAttachmentService = inject(NewAttachmentService);
+
   @Input() item: ISummaryItem;
   @Input() readonly = false;
   @Input() simpleObsMode = false;
@@ -33,7 +36,7 @@ export class SummaryItemComponent implements OnChanges, OnInit {
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
   existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
-  constructor(private navController: NavController, private newAttachmentService: NewAttachmentService) {
+  constructor() {
     addIcons({ checkmarkCircle });
   }
 

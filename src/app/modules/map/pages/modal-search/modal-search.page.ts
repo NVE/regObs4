@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, inject } from '@angular/core';
 import {
   IonContent,
   IonHeader,
@@ -51,6 +51,10 @@ import { search, close, time } from 'ionicons/icons';
   ],
 })
 export class ModalSearchPage implements OnInit, ViewDidEnter {
+  private modalController = inject(ModalController);
+  private mapSearchService = inject(MapSearchService);
+  private ngZone = inject(NgZone);
+
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
   searchField: UntypedFormControl;
@@ -60,11 +64,7 @@ export class ModalSearchPage implements OnInit, ViewDidEnter {
 
   @ViewChild(IonInput) searchInput: IonInput;
 
-  constructor(
-    private modalController: ModalController,
-    private mapSearchService: MapSearchService,
-    private ngZone: NgZone
-  ) {
+  constructor() {
     addIcons({ search, close, time });
   }
 

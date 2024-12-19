@@ -6,13 +6,14 @@ import {
   SyncStatus,
 } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
-import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { firstValueFrom, Observable, of, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { provideTranslateService } from '@ngx-translate/core';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -53,23 +54,27 @@ describe('DraftRepositoryService', () => {
   let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
   let userSettingService: UserSettingService;
 
-  beforeEach(async () => {
-    TestBed.configureTestingModule({});
-
+  beforeEach(() => {
     database = new TestDatabaseService();
-    newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['removeAttachments', 'getAttachments']);
-    userSettingService = new UserSettingService(null, null);
-    service = new DraftRepositoryService(
-      new TestLoggingService(),
-      newAttachmentService,
-      database as unknown as DatabaseService,
-      userSettingService
-    );
 
-    userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
-      appMode: AppMode.Test,
+    TestBed.configureTestingModule({
+      providers: [
+        provideTestLogger(),
+        provideTranslateService(),
+        {
+          provide: NewAttachmentService,
+          useValue: jasmine.createSpyObj('NewAttachmentService', ['removeAttachments', 'getAttachments']),
+        },
+        {
+          provide: DatabaseService,
+          useValue: database,
+        },
+      ],
     });
+    service = TestBed.inject(DraftRepositoryService);
+    newAttachmentService = TestBed.inject(NewAttachmentService) as jasmine.SpyObj<NewAttachmentService>;
+    userSettingService = TestBed.inject(UserSettingService);
+    userSettingService.updateUserSettings({ appMode: AppMode.Test });
   });
 
   it('create() should return an empty draft', async () => {

@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { Subscription, firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
@@ -39,6 +39,12 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
  * Also include an image slider if registration contain images.
  */
 export class MapItemBarComponent implements OnInit, OnDestroy {
+  private kdvService = inject(KdvService);
+  private router = inject(Router);
+  private zone = inject(NgZone);
+  private userSettingService = inject(UserSettingService);
+  private sanitizer = inject(DomSanitizer);
+
   visible: boolean;
   topHeader: string;
   title: string;
@@ -59,13 +65,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
   // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
 
-  constructor(
-    private kdvService: KdvService,
-    private router: Router,
-    private zone: NgZone,
-    private userSettingService: UserSettingService,
-    private sanitizer: DomSanitizer
-  ) {
+  constructor() {
     this.visible = false;
   }
 

@@ -1,5 +1,5 @@
 import { IonTabBar, IonLabel, IonTabButton, IonIcon, IonFabButton, IonText, IonFab } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, merge } from 'rxjs';
 import { map, distinctUntilChanged, take, takeUntil, filter, delay } from 'rxjs/operators';
@@ -37,12 +37,14 @@ import { add, map as mapIcon, list, warning } from 'ionicons/icons';
   ],
 })
 export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
+  private userSettingService = inject(UserSettingService);
+
   showCoachMarks$: Observable<boolean>;
   isOpen = false;
   ngDestroy$ = new Subject<void>();
   hideSubject = new Subject<boolean>();
 
-  constructor(private userSettingService: UserSettingService) {
+  constructor() {
     addIcons({ add, map: mapIcon, list, warning });
   }
 

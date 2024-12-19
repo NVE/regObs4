@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SQLite, SQLiteObject, SQLiteDatabaseConfig } from '@awesome-cordova-plugins/sqlite/ngx';
 import { Platform } from '@ionic/angular/standalone';
 import { settings } from '../../../../settings';
@@ -16,9 +16,11 @@ const DEBUG_CONTEXT = 'DbHelperService';
   providedIn: 'root',
 })
 export class DbHelperService {
-  sqliteobj: SQLiteObject;
+  private sqlite = inject(SQLite);
+  private platform = inject(Platform);
+  private loggingService = inject(LoggingService);
 
-  constructor(private sqlite: SQLite, private platform: Platform, private loggingService: LoggingService) {}
+  sqliteobj: SQLiteObject;
 
   async init() {
     if (isAndroidOrIos(this.platform)) {

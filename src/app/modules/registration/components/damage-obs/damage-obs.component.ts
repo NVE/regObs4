@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { IonCheckbox, IonIcon, IonItem, IonLabel, IonList, IonText, ModalController } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
@@ -21,6 +21,9 @@ import { location } from 'ionicons/icons';
   styleUrls: ['./damage-obs.component.scss'],
 })
 export class DamageObsComponent implements OnInit {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() damageTypeId: number;
   @Input() damageTypeName: string;
   @Input() draft: RegistrationDraft;
@@ -35,7 +38,7 @@ export class DamageObsComponent implements OnInit {
     return undefined;
   }
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {
+  constructor() {
     addIcons({ location });
   }
 

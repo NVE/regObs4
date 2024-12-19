@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { NgIf } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -11,13 +11,13 @@ import { SvgIconComponent } from 'angular-svg-icon';
   imports: [NgIf, SvgIconComponent],
 })
 export class BlobImageComponent implements OnInit, OnDestroy {
+  private sanitizer = inject(DomSanitizer);
+
   @Input() imgBlob: Blob;
   @Input() isThumbnail = false;
 
   imgSrc: SafeUrl;
   private blobUrl: string;
-
-  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.blobUrl = URL.createObjectURL(this.imgBlob);

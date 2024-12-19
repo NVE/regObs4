@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, BehaviorSubject, Subject, of, concat } from 'rxjs';
 import {
@@ -60,6 +60,9 @@ export const parseCoordinatesFromUrl = (url: URL): IMapView => {
   providedIn: 'root',
 })
 export class MapService {
+  private userSettingService = inject(UserSettingService);
+  private loggingService = inject(LoggingService);
+
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _followModeSubject: BehaviorSubject<boolean>;
   private _followModeObservable: Observable<boolean>;
@@ -140,7 +143,7 @@ export class MapService {
     this._showUserLocationSubject.next(value);
   }
 
-  constructor(private userSettingService: UserSettingService, private loggingService: LoggingService) {
+  constructor() {
     this._showUserLocationSubject = new BehaviorSubject<boolean>(true);
     this._showUserLocationObservable = this._showUserLocationSubject.asObservable();
     this._followModeSubject = new BehaviorSubject<boolean>(false);

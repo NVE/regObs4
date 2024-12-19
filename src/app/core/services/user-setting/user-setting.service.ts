@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserSetting } from '../../models/user-settings.model';
 import { TranslateService } from '@ngx-translate/core';
 import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -61,6 +61,9 @@ function convertToInt(value: string): number {
   providedIn: 'root',
 })
 export class UserSettingService extends NgDestoryBase implements OnReset {
+  private translate = inject(TranslateService);
+  private loggingService = inject(LoggingService);
+
   // Setting this observable to be a shared instance since
   // UserSettingService is a singleton service.
   // The observable will be shared with many services
@@ -110,7 +113,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     }
   }
 
-  constructor(private translate: TranslateService, private loggingService: LoggingService) {
+  constructor() {
     super();
     this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
       concatMap((val) => (val ? of(val) : this.getUserSettingsFromQueryParametersOrDbOrDefaultSettings())),
@@ -271,6 +274,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
   saveUserSettings(userSetting: UserSetting) {
     this.userSettingInMemory.next(userSetting);
+  }
+
+  updateUserSettings(userSetting: Partial<UserSetting>) {
+    this.userSettingInMemory.next({
+      ...this.userSettingInMemory.value,
+      ...userSetting,
+    });
   }
 
   getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -56,6 +56,9 @@ import { arrowBack, arrowForward, trash } from 'ionicons/icons';
   ],
 })
 export class SnowTempLayerModalPage implements OnInit {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() layer: SnowTempObsModel;
   @Input() index: number;
   @Input() draft: RegistrationDraft;
@@ -63,7 +66,7 @@ export class SnowTempLayerModalPage implements OnInit {
 
   private initialRegistrationState: RegistrationDraft;
 
-  constructor(private modalController: ModalController, private draftRepository: DraftRepositoryService) {
+  constructor() {
     addIcons({ arrowBack, arrowForward, trash });
   }
 

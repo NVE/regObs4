@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
@@ -22,6 +22,10 @@ import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSql
   providedIn: 'root',
 })
 export class MapSearchService {
+  private httpClient = inject(HttpClient);
+  private userSettingService = inject(UserSettingService);
+  private geoCodeService = inject(GeoCodeService);
+
   private _mapSearchItemClickSubject: Subject<MapSearchResponse | L.LatLng>;
   private _mapSearchItemClickObservable: Observable<MapSearchResponse | L.LatLng>;
 
@@ -33,11 +37,7 @@ export class MapSearchService {
     this._mapSearchItemClickSubject.next(item);
   }
 
-  constructor(
-    private httpClient: HttpClient,
-    private userSettingService: UserSettingService,
-    private geoCodeService: GeoCodeService
-  ) {
+  constructor() {
     this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
     this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable();
     this._mapSearchItemClickObservable.subscribe((item) => {

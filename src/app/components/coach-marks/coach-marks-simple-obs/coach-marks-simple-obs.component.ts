@@ -1,5 +1,5 @@
 import { IonToggle, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { distinctUntilChanged, map, merge, Observable, Subject, take } from 'rxjs';
 import { CustomAnimation, EASE_IN_OUT, EASE_IN_OUT_BACK } from 'src/app/core/animations/custom.animation';
@@ -19,10 +19,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [AsyncPipe, IonLabel, IonText, IonToggle, KdvIconSelectComponent, NgIf, TranslatePipe],
 })
 export class CoachMarksSimpleObsComponent implements OnInit {
+  private userSettingService = inject(UserSettingService);
+
   isVisible$: Observable<boolean>;
   click = 0;
   hideSubject = new Subject<boolean>();
-  constructor(private userSettingService: UserSettingService) {}
 
   ngOnInit(): void {
     this.isVisible$ = merge(this.getShowSimpleObsObservable(), this.hideSubject);

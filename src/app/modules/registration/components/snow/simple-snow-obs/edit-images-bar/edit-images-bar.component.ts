@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular/standalone';
 import deepEqual from 'fast-deep-equal';
 import { map, Observable, distinctUntilChanged, combineLatest } from 'rxjs';
@@ -51,6 +51,11 @@ function existingAttachmentsHasNotChanged(
   imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, NgIf, ThumbnailsComponent, TranslatePipe],
 })
 export class EditImagesBarComponent {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+  private logger = inject(LoggingService);
+  private newAttachmentService = inject(NewAttachmentService);
+
   @Input() draft: RegistrationDraft;
   @Input() registrationTid: number;
   @Input() modalTitlePostfix: string; //used to build the title in the modal
@@ -58,12 +63,7 @@ export class EditImagesBarComponent {
 
   attachments$: Observable<ExistingOrNewAttachment[]>;
 
-  constructor(
-    private modalController: ModalController,
-    private draftRepository: DraftRepositoryService,
-    private logger: LoggingService,
-    private newAttachmentService: NewAttachmentService
-  ) {
+  constructor() {
     addIcons({ camera });
   }
 

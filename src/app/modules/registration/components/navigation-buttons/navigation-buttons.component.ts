@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonIcon, IonText, IonButton } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, inject } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
@@ -19,11 +19,15 @@ import { arrowBack, arrowForward } from 'ionicons/icons';
   imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, IonText, NgIf, TranslatePipe],
 })
 export class NavigationButtonsComponent implements OnInit {
+  private summaryItemService = inject(SummaryItemService);
+  private router = inject(Router);
+  private ngZone = inject(NgZone);
+
   @Input() draft: RegistrationDraft;
   next: ISummaryItem;
   previous: ISummaryItem;
 
-  constructor(private summaryItemService: SummaryItemService, private router: Router, private ngZone: NgZone) {
+  constructor() {
     addIcons({ arrowBack, arrowForward });
   }
 

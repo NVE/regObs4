@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
@@ -58,6 +58,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class UserInformation implements OnInit {
+  private regobsAuthService = inject(RegobsAuthService);
+  private userSettingService = inject(UserSettingService);
+  private externalLinkService = inject(ExternalLinkService);
+  private userGroupService = inject(UserGroupService);
+  private accountApiService = inject(AccountService);
+  modalController = inject(ModalController);
+  private router = inject(Router);
+
   loggedInUser$: Observable<LoggedInUser>;
   userGroups$: Observable<ObserverGroupDto[]>;
   myPage$: Observable<MyPageData>;
@@ -99,16 +107,6 @@ export class UserInformation implements OnInit {
   ];
   copyright$: Observable<string>;
   photographer$: Observable<string>;
-
-  constructor(
-    private regobsAuthService: RegobsAuthService,
-    private userSettingService: UserSettingService,
-    private externalLinkService: ExternalLinkService,
-    private userGroupService: UserGroupService,
-    private accountApiService: AccountService,
-    public modalController: ModalController,
-    private router: Router
-  ) {}
 
   ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;

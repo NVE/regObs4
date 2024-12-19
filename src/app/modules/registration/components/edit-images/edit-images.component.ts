@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter, inject } from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import {
   ActionSheetController,
@@ -80,6 +80,15 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
   ],
 })
 export class EditImagesComponent implements OnInit {
+  newAttachmentService = inject(NewAttachmentService);
+  private translateService = inject(TranslateService);
+  private platform = inject(Platform);
+  private file = inject(File);
+  private logger = inject(LoggingService);
+  private toastController = inject(ToastController);
+  private actionSheetController = inject(ActionSheetController);
+  private dropZoneService = inject(DropZoneService);
+
   @Input() draftUuid: string;
   @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
   @Output() existingAttachmentsChange = new EventEmitter();
@@ -111,16 +120,7 @@ export class EditImagesComponent implements OnInit {
     );
   }
 
-  constructor(
-    public newAttachmentService: NewAttachmentService,
-    private translateService: TranslateService,
-    private platform: Platform,
-    private file: File,
-    private logger: LoggingService,
-    private toastController: ToastController,
-    private actionSheetController: ActionSheetController,
-    private dropZoneService: DropZoneService
-  ) {
+  constructor() {
     addIcons({ close, camera });
   }
 

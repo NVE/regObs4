@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';
@@ -52,6 +52,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class GroupPage extends BasePage {
+  private userGroupService = inject(UserGroupService);
+  private ngZone = inject(NgZone);
+
   groups: ObserverGroupDto[] = [];
 
   get firstGroup(): ObserverGroupDto {
@@ -62,12 +65,10 @@ export class GroupPage extends BasePage {
     return this.groups.length > 0 && this.groups[0].Id === this.draft.registration.ObserverGroupID;
   }
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private userGroupService: UserGroupService,
-    private ngZone: NgZone
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(null, basePageService, activatedRoute);
   }
 

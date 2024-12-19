@@ -8,7 +8,7 @@ import {
   IonButton,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
@@ -40,6 +40,12 @@ import { menuOutline, optionsOutline } from 'ionicons/icons';
   ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  private fullscreenService = inject(FullscreenService);
+  private tripLoggerService = inject(TripLoggerService);
+  private userSettingService = inject(UserSettingService);
+  private ngZone = inject(NgZone);
+  private breakpointService = inject(BreakpointService);
+
   @Input() showMenuButton = true;
   @Input() showFilterButton = true;
   @Input() fullscreenSupport = false;
@@ -67,13 +73,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(
-    private fullscreenService: FullscreenService,
-    private tripLoggerService: TripLoggerService,
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone,
-    private breakpointService: BreakpointService
-  ) {
+  constructor() {
     addIcons({ menuOutline, optionsOutline });
   }
 

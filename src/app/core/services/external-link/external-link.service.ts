@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { Platform } from '@ionic/angular/standalone';
@@ -16,12 +16,11 @@ export const SAFARI_CONTROL_TINT_COLOR = '#ffffff';
   providedIn: 'root',
 })
 export class ExternalLinkService {
-  constructor(
-    private inAppBrowser: InAppBrowser,
-    private safariViewController: SafariViewController,
-    private loggingService: LoggingService,
-    private platform: Platform
-  ) {}
+  private inAppBrowser = inject(InAppBrowser);
+  private safariViewController = inject(SafariViewController);
+  private loggingService = inject(LoggingService);
+  private platform = inject(Platform);
+
 
   async openExternalLink(url: string) {
     const validatedUrl = this.ensureCorrectUrl(url);
