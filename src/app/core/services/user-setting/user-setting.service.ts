@@ -304,10 +304,23 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     return supportTilesForCurrentGeoHazard;
   }
 
+  private getBrowserLang(): LangKey | null {
+    const browserLang = this.translate.getBrowserLang();
+    if (!browserLang) return null;
+
+    // As LangKey use lower case letters
+    const lowerCaseLang = browserLang.toLowerCase();
+    if (lowerCaseLang in LangKey) {
+      return LangKey[browserLang];
+    }
+
+    return null;
+  }
+
   private getUserSettingsFromQueryParametersOrDbOrDefaultSettings(): Observable<UserSetting> {
     const urlSettings = this.parseUrlParameters();
     return this.getUserSettingsFromDb().pipe(
-      map((result) => (result ? result : DEFAULT_USER_SETTINGS(null))),
+      map((result) => (result ? result : DEFAULT_USER_SETTINGS(this.getBrowserLang()))),
 
       // Apply any overrides due to new default settings (see json/settings-override.json)
       map((result) => {
