@@ -41,7 +41,7 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapService } from '../../services/map/map.service';
 import { NgIf } from '@angular/common';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { MapControlsComponent } from '../map-controls/map-controls.component';
 
 const DEBUG_TAG = 'MapComponent';
