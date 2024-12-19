@@ -1,33 +1,48 @@
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { TranslateModule } from '@ngx-translate/core';
-import { StorageBackend } from '@openid/appauth';
-import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
+import { LocalStorageBackend, Requestor, StorageBackend } from '@openid/appauth';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { TestLoggingService } from '../../shared/services/logging/test-logging.service';
-import { SharedModule } from '../../shared/shared.module';
 
 import { RegobsAuthService } from './regobs-auth.service';
+import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
+import { authFactory } from '../factories/auth-factory';
+import { httpFactory } from '../factories/http-factory';
 
 describe('RegobsAuthService', () => {
   let service: RegobsAuthService;
-  const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, TranslateModule.forRoot(), RouterModule.forRoot([], {})],
+      imports: [TranslateModule.forRoot()],
       providers: [
+        provideRouter([]),
         { provide: LoggingService, useClass: TestLoggingService },
         SafariViewController,
         InAppBrowser,
         provideHttpClient(withInterceptorsFromDi()),
+        {
+          provide: StorageBackend,
+          useFactory: () => new LocalStorageBackend(),
+        },
+        {
+          provide: Browser,
+          useClass: DefaultBrowser,
+        },
+        {
+          provide: Requestor,
+          useFactory: httpFactory,
+        },
+        {
+          provide: AuthService,
+          useFactory: authFactory,
+        },
       ],
     });
-    TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;
-    TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
     service = TestBed.inject(RegobsAuthService);
   });
 

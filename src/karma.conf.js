@@ -56,8 +56,14 @@ module.exports = function (config) {
         require('@angular-devkit/build-angular/plugins/karma'),
       ],
       client: {
-        clearContext: false,
+        clearContext: false, // leave Jasmine Spec Runner output visible in browser
       },
+      jasmineHtmlReporter: {
+        suppressAll: true, // removes the duplicated traces
+      },
+      reporters: ['progress', 'kjhtml'],
+      colors: true,
+      logLevel: config.LOG_INFO,
     });
   }
 };
