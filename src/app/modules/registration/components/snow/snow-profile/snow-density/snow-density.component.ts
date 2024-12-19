@@ -6,7 +6,7 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
 
@@ -14,7 +14,7 @@ import { checkmarkCircle } from 'ionicons/icons';
   selector: 'app-snow-density',
   templateUrl: './snow-density.component.html',
   styleUrls: ['./snow-density.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
 })
 export class SnowDensityComponent {
   @Input() draft: RegistrationDraft;

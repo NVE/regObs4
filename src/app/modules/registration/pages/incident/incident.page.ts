@@ -25,7 +25,7 @@ import { NumericInputComponent } from '../../components/numeric-input/numeric-in
 import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
 import { AddWebUrlItemComponent } from '../../components/add-web-url-item/add-web-url-item.component';
 import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-incident',
@@ -49,7 +49,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class IncidentPage extends BasePage {

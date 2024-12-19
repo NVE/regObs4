@@ -2,13 +2,13 @@ import { Component, Input } from '@angular/core';
 import moment from 'moment';
 import { IonCol, IonGrid, IonLabel, IonRow, Platform } from '@ionic/angular/standalone';
 import { NgIf, NgClass, NgTemplateOutlet } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-warning-list-header',
   templateUrl: './warning-list-header.component.html',
   styleUrls: ['./warning-list-header.component.scss'],
-  imports: [IonCol, IonGrid, IonLabel, IonRow, NgClass, NgIf, NgTemplateOutlet, TranslateModule],
+  imports: [IonCol, IonGrid, IonLabel, IonRow, NgClass, NgIf, NgTemplateOutlet, TranslatePipe],
 })
 export class WarningListHeaderComponent {
   @Input() title: string;

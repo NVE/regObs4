@@ -25,7 +25,7 @@ import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.ser
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 
@@ -56,7 +56,7 @@ interface RegistrationResult {
     IonToolbar,
     NgIf,
     ObservationListCardComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {

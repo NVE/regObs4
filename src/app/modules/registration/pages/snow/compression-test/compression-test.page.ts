@@ -19,7 +19,7 @@ import { NgIf } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { CompressionTestListComponent } from '../../../components/snow/compression-test-list/compression-test-list.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-compression-test',
@@ -40,7 +40,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonToolbar,
     NgIf,
     RegistrationContentWrapperComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class CompressionTestPage extends BasePage {

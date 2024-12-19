@@ -16,14 +16,14 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 import { NgClass, NgIf, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-kdv-select',
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonItem, IonLabel, NgClass, NgIf, SelectComponent, TranslateModule],
+  imports: [AsyncPipe, IonItem, IonLabel, NgClass, NgIf, SelectComponent, TranslatePipe],
 })
 export class KdvSelectComponent implements OnInit, OnChanges {
   @Input() label: string;

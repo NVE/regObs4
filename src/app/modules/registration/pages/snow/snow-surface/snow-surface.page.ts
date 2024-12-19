@@ -22,7 +22,7 @@ import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-sel
 import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-snow-surface',
@@ -46,7 +46,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SnowSurfacePage extends BasePage {

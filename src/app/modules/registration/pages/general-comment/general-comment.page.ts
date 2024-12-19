@@ -22,7 +22,7 @@ import { RegistrationContentWrapperComponent } from '../../components/registrati
 import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
 import { AddWebUrlItemComponent } from '../../components/add-web-url-item/add-web-url-item.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-general-comment',
@@ -45,7 +45,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgIf,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class GeneralCommentPage extends BasePage {

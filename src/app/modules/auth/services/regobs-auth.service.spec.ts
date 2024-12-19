@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { LocalStorageBackend, Requestor, StorageBackend } from '@openid/appauth';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { TestLoggingService } from '../../shared/services/logging/test-logging.service';
@@ -18,9 +18,9 @@ describe('RegobsAuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
+        provideTranslateService(),
         { provide: LoggingService, useClass: TestLoggingService },
         SafariViewController,
         InAppBrowser,

@@ -6,7 +6,7 @@ import { CustomAnimation, EASE_IN_OUT, EASE_IN_OUT_BACK } from 'src/app/core/ani
 import { trigger } from '@angular/animations';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { KdvIconSelectComponent } from '../../../modules/registration/components/kdv-icon-select/kdv-icon-select.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-coach-marks-simple-obs',
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
     trigger('coachmark-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT, 0.9)),
     trigger('element-animation', CustomAnimation.createEnterScaleInAnimation(200, 400, EASE_IN_OUT_BACK)),
   ],
-  imports: [AsyncPipe, IonLabel, IonText, IonToggle, KdvIconSelectComponent, NgIf, TranslateModule],
+  imports: [AsyncPipe, IonLabel, IonText, IonToggle, KdvIconSelectComponent, NgIf, TranslatePipe],
 })
 export class CoachMarksSimpleObsComponent implements OnInit {
   isVisible$: Observable<boolean>;

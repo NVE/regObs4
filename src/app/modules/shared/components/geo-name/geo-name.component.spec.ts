@@ -3,7 +3,7 @@ import { GeoNameComponent } from './geo-name.component';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
 import { of } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LangKey } from 'src/app/modules/common-core/models';
@@ -16,8 +16,9 @@ describe('GeoNameComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [GeoNameComponent, TranslateModule.forRoot()],
+      imports: [GeoNameComponent],
       providers: [
+        provideTranslateService(),
         provideMock(GeoHelperService),
         { provide: LoggingService, useClass: TestLoggingService },
         { provide: UserSettingService, useValue: { language$: of(LangKey.en) } },

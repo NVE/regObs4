@@ -44,7 +44,7 @@ import { Router } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -91,7 +91,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     NgIf,
     SummaryComponent,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ObservationListCardComponent implements OnChanges {

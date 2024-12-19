@@ -3,7 +3,7 @@ import { AbonnerBannerComponent } from './abonner-banner.component';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('AbonnerBannerComponent', () => {
@@ -12,8 +12,13 @@ describe('AbonnerBannerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [AbonnerBannerComponent, TranslateModule.forRoot()],
-      providers: [InAppBrowser, SafariViewController, { provide: LoggingService, useClass: TestLoggingService }],
+      imports: [AbonnerBannerComponent],
+      providers: [
+        InAppBrowser,
+        SafariViewController,
+        { provide: LoggingService, useClass: TestLoggingService },
+        provideTranslateService(),
+      ],
     }).compileComponents();
   }));
 

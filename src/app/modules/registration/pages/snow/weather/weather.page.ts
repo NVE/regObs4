@@ -25,7 +25,7 @@ import { NumericInputComponent } from '../../../components/numeric-input/numeric
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-weather',
@@ -51,7 +51,7 @@ import { TranslateModule } from '@ngx-translate/core';
     RegistrationContentWrapperComponent,
     SelectComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class WeatherPage extends BasePage {

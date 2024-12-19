@@ -6,7 +6,7 @@ import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { Router, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircleOutline, eyeOutline } from 'ionicons/icons';
 
@@ -14,7 +14,7 @@ import { personCircleOutline, eyeOutline } from 'ionicons/icons';
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonSpinner, IonText, NgIf, RouterLink, TranslateModule, IonRouterLink],
+  imports: [IonIcon, IonItem, IonLabel, IonSpinner, IonText, NgIf, RouterLink, TranslatePipe, IonRouterLink],
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   loggedInUser: LoggedInUser = { isLoggedIn: false };

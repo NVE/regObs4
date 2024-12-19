@@ -26,7 +26,7 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GeoIconComponent } from '../geo-icon/geo-icon.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { add, create } from 'ionicons/icons';
 
@@ -48,7 +48,7 @@ const DEBUG_TAG = 'AddMenuComponent';
     IonList,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     UpperCasePipe,
   ],
 })

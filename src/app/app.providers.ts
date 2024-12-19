@@ -36,7 +36,6 @@ import { DataMarshallService } from './core/services/data-marshall/data-marshall
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { initTranslateService } from './custom-translate.loader';
 // import {
 //   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
 //   IRegistrationModuleOptions,
@@ -50,6 +49,7 @@ import { AnalyticService } from './modules/analytics/services/analytic.service';
 import { NewAttachmentService } from './modules/common-registration/registration.services';
 import FileAttachmentService from './modules/common-registration/services/add-new-attachment/file-attachment.service';
 import { WebAttachmentService } from './modules/common-registration/services/add-new-attachment/web-attachment.service';
+import { settings } from 'src/settings';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -58,10 +58,6 @@ export class DynamicLocaleId extends String {
   toString(): string {
     return this.service.currentLang;
   }
-}
-
-function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
 
 export function initAppModeService(userSettingService: UserSettingService): any {
@@ -118,15 +114,24 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   },
   {
     provide: TranslateLoader,
-    useFactory: createTranslateLoader,
-    deps: [HttpClient],
+    useFactory: () => {
+      const http = inject(HttpClient);
+      return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
+    },
   },
 
-  // APP initializers
+  // Initialiser ngx-translate og usersettings etter hverandre
   provideAppInitializer(() => {
-    const initializerFn = initTranslateService(inject(TranslateService), inject(UserSettingService));
-    return initializerFn();
+    const translations = inject(TranslateService);
+    const userSettings = inject(UserSettingService);
+
+    translations.addLangs(settings.language.supportedLanguages.map((l) => l.lang));
+    translations.setDefaultLang(settings.language.fallbackLang);
+
+    // Initialiser usersettings etterpå, bruker translations
+    userSettings.init();
   }),
+
   provideAppInitializer(() => {
     const initializerFn = initDeepLinks(
       inject(Platform),

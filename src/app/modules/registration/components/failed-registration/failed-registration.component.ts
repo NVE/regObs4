@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
 import stringify from 'json-stringify-safe';
 import { RegistrationDraft, RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
@@ -27,7 +27,7 @@ import { mail, create } from 'ionicons/icons';
     IonList,
     IonListHeader,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     VersionConflictComponent,
   ],
 })

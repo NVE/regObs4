@@ -17,7 +17,7 @@ import { EditImagesPage } from '../../../edit-images/edit-images.page';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { EditImagesComponent } from '../../../edit-images/edit-images.component';
 import { ThumbnailsComponent } from '../../../thumbnails/thumbnails.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 
@@ -48,7 +48,7 @@ function existingAttachmentsHasNotChanged(
   templateUrl: './edit-images-bar.component.html',
   styleUrls: ['./edit-images-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, NgIf, ThumbnailsComponent, TranslateModule],
+  imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, NgIf, ThumbnailsComponent, TranslatePipe],
 })
 export class EditImagesBarComponent {
   @Input() draft: RegistrationDraft;

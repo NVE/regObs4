@@ -10,7 +10,7 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { CoachMarksMainScreenComponent } from '../../components/coach-marks/coach-marks-main-screen/coach-marks-main-screen.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map as mapIcon, list, warning } from 'ionicons/icons';
 
@@ -28,7 +28,7 @@ import { map as mapIcon, list, warning } from 'ionicons/icons';
     IonTabButton,
     IonTabs,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class TabsPage implements OnInit, OnDestroy {

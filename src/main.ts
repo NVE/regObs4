@@ -12,7 +12,7 @@ import { provideIonicAngular, IonicRouteStrategy, isPlatform } from '@ionic/angu
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import { settings } from 'src/settings';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { MarkdownModule } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
@@ -57,6 +57,9 @@ function startApp() {
         useFactory: authFactory,
       },
 
+      // TranslateService har noe initialisering i app.providers.ts
+      provideTranslateService(),
+
       importProvidersFrom(
         BrowserModule,
         FormsModule,
@@ -64,7 +67,6 @@ function startApp() {
           driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB],
           storeName: settings.db.nanoSql.dbName,
         }),
-        TranslateModule.forRoot(),
         MarkdownModule.forRoot(),
         AngularSvgIconModule.forRoot(),
         LeafletModule,

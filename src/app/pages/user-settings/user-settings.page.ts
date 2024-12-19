@@ -20,7 +20,7 @@ import {
   Platform,
 } from '@ionic/angular/standalone';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import * as version from '../../../environments/version.json';
 import { AppVersion } from '../../core/models/app-version.model';
 import { Observable, Subscription, firstValueFrom } from 'rxjs';
@@ -69,7 +69,7 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
     IonToolbar,
     NgIf,
     SelectComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class UserSettingsPage implements OnInit, OnDestroy {

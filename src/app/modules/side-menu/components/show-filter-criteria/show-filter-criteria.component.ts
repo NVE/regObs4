@@ -8,7 +8,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { NgIf, AsyncPipe, LowerCasePipe } from '@angular/common';
 import { GeoNameComponent } from '../../../shared/components/geo-name/geo-name.component';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-filter-criteria',
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonMenuButton,
     LowerCasePipe,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ShowFilterCriteriaComponent implements OnInit {

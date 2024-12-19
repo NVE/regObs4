@@ -4,7 +4,7 @@ import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons';
 
@@ -15,7 +15,7 @@ type HrefType = { title: string; url: string };
   templateUrl: './fullscreen-image-modal.page.html',
   styleUrls: ['./fullscreen-image-modal.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonFabButton, IonIcon, IonItem, NgIf, TranslateModule],
+  imports: [IonFabButton, IonIcon, IonItem, NgIf, TranslatePipe],
 })
 export class FullscreenImageModalPage implements OnInit {
   // @ViewChild(IonSlides) slider: IonSlides;

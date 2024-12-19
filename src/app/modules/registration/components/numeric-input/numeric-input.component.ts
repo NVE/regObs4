@@ -2,13 +2,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
 import { IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { NgIf, NgClass } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss'],
-  imports: [IonItem, IonLabel, IonText, NgClass, NgIf, TranslateModule],
+  imports: [IonItem, IonLabel, IonText, NgClass, NgIf, TranslatePipe],
 })
 export class NumericInputComponent {
   @Input() decimalPlaces = 0;

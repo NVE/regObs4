@@ -1,13 +1,13 @@
 import { IonButton } from '@ionic/angular/standalone';
 import { Component } from '@angular/core';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-abonner-banner',
   templateUrl: './abonner-banner.component.html',
   styleUrls: ['./abonner-banner.component.scss'],
-  imports: [IonButton, TranslateModule],
+  imports: [IonButton, TranslatePipe],
 })
 export class AbonnerBannerComponent {
   constructor(private externalLinkService: ExternalLinkService) {}

@@ -11,7 +11,7 @@ import { IonItem, IonLabel, IonSelect, IonSelectOption, SelectCustomEvent } from
 import { NgIf, NgTemplateOutlet, NgFor, AsyncPipe } from '@angular/common';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -27,7 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgFor,
     NgIf,
     NgTemplateOutlet,
-    TranslateModule,
+    TranslatePipe,
     ɵEmptyOutletComponent,
   ],
 })

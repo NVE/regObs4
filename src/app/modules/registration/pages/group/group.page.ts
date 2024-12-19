@@ -23,7 +23,7 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
 import { NgIf, NgFor } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-group',
@@ -48,7 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class GroupPage extends BasePage {

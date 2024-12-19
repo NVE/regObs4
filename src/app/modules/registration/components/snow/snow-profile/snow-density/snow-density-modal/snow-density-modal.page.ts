@@ -34,7 +34,7 @@ import { HeaderColorDirective } from '../../../../../../shared/directives/header
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
@@ -69,7 +69,7 @@ import { addCircleOutline } from 'ionicons/icons';
     NgFor,
     NgIf,
     NumericInputComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {

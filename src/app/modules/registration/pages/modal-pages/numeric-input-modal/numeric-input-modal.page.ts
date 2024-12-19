@@ -14,7 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';
 import { NgIf, NgFor } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-numeric-input-modal',
@@ -33,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonToolbar,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class NumericInputModalPage implements OnInit {

@@ -5,7 +5,7 @@ import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';
 import { NgIf, AsyncPipe, DatePipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-update-observations',
@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonText,
     NgIf,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class UpdateObservationsComponent {

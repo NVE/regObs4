@@ -22,7 +22,7 @@ import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } 
 import * as L from 'leaflet';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 import { CompoundPackage, CompoundPackageFeature } from './metadata.model';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { PackageIndexService } from 'src/app/core/services/offline-map/package-index.service';
 import { isPackageOutdated } from 'src/app/core/services/offline-map/utils';
@@ -78,7 +78,7 @@ const DEBUG_TAG = 'OfflineMapPage';
     MapComponent,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class OfflineMapPage extends NgDestoryBase {

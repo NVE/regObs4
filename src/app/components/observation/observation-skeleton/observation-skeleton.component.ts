@@ -12,7 +12,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Component } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { shareSocial } from 'ionicons/icons';
 
@@ -32,7 +32,7 @@ import { shareSocial } from 'ionicons/icons';
     IonRow,
     IonSkeletonText,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ObservationSkeletonComponent {
