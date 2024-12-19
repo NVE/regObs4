@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
@@ -16,6 +16,9 @@ import { checkmarkCircle } from 'ionicons/icons';
   imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
 })
 export class SnowTempComponent {
+  private modalContoller = inject(ModalController);
+  private draftService = inject(DraftRepositoryService);
+
   @Input() draft: RegistrationDraft;
   private snowTempModal: HTMLIonModalElement;
 
@@ -27,7 +30,7 @@ export class SnowTempComponent {
     return isEmpty(this.tempProfile);
   }
 
-  constructor(private modalContoller: ModalController, private draftService: DraftRepositoryService) {
+  constructor() {
     addIcons({ checkmarkCircle });
   }
 

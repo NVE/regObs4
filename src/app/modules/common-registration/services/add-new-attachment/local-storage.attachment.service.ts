@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, filter, from, map, Observable, of, ReplaySubject, Subject, switchMap } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -12,10 +12,12 @@ const IMAGE_PREFIX = 'REGOBS_IMAGE_';
 
 @Injectable()
 export class LocalStorageAttachmentService extends NewAttachmentService {
+  protected logger = inject(LoggingService);
+
   meta = new BehaviorSubject<{ [registrationId: string]: AttachmentUploadEditModel[] }>({});
   protected DEBUG_TAG = 'LocalStorageAttachmentService';
 
-  constructor(protected logger: LoggingService) {
+  constructor() {
     super();
 
     const dbRow = localStorage.getItem(METADATA_KEY) || '{}';

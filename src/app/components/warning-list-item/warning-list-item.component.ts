@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Renderer2, inject } from '@angular/core';
 import {
   DomController,
   IonBadge,
@@ -52,6 +52,12 @@ import { alert } from 'ionicons/icons';
   ],
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
+  private externalLinkService = inject(ExternalLinkService);
+  private userSettingService = inject(UserSettingService);
+  private domCtrl = inject(DomController);
+  private analyticService = inject(AnalyticService);
+  private renderer = inject(Renderer2);
+
   @Input() warningGroup: WarningGroup;
   GeoHazard = GeoHazard;
 
@@ -60,13 +66,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   favouriteToggle: WarningGroupFavouriteToggleComponent;
   private dragSubject = new Subject<void>();
 
-  constructor(
-    private externalLinkService: ExternalLinkService,
-    private userSettingService: UserSettingService,
-    private domCtrl: DomController,
-    private analyticService: AnalyticService,
-    private renderer: Renderer2
-  ) {
+  constructor() {
     super();
     addIcons({ alert });
   }

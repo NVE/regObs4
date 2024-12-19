@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
@@ -16,6 +16,9 @@ import { checkmarkCircle } from 'ionicons/icons';
   imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
 })
 export class CompressionTestComponent {
+  private modalContoller = inject(ModalController);
+  private draftService = inject(DraftRepositoryService);
+
   @Input() draft: RegistrationDraft;
   private compressionTestListModal: HTMLIonModalElement;
 
@@ -31,7 +34,7 @@ export class CompressionTestComponent {
     return this.connectedTests.length === 0;
   }
 
-  constructor(private modalContoller: ModalController, private draftService: DraftRepositoryService) {
+  constructor() {
     addIcons({ checkmarkCircle });
   }
 

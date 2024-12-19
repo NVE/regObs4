@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { CancelPromise } from './cancel-promise.model';
 import { BackgroundDownloadService } from './background-download.service';
@@ -7,9 +7,11 @@ import { DownloadProgress } from './download-progress';
 
 @Injectable()
 export class BackgroundDownloadNativeService implements BackgroundDownloadService {
+  private file = inject(File);
+
   currentDownloads: Map<string, CancelPromise>;
 
-  constructor(private file: File) {
+  constructor() {
     this.currentDownloads = new Map();
   }
   download(url: string): Observable<DownloadProgress> {

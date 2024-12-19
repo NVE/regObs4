@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FeatureCollection } from '@turf/turf';
 import {
   defer,
@@ -53,6 +53,10 @@ enum AuthorizedState {
   providedIn: 'root',
 })
 export class ObserverTripsService {
+  private tripService = inject(TripService);
+  private logger = inject(LoggingService);
+  private dbService = inject(DatabaseService);
+
   geojson$: Observable<FeatureCollection | null>;
 
   toggledOn = new ReplaySubject<boolean>(1);
@@ -63,12 +67,9 @@ export class ObserverTripsService {
     tap((isAuthorized) => this.logger.debug('Authorized', DEBUG_TAG, { isAuthorized }))
   );
 
-  constructor(
-    private tripService: TripService,
-    private logger: LoggingService,
-    private dbService: DatabaseService,
-    authService: RegobsAuthService
-  ) {
+  constructor() {
+    const authService = inject(RegobsAuthService);
+
     let hasInitializedStateFromDb = false;
 
     const getGeojsonWhenToggledOnAndAuthorized$ = this.toggledOn.pipe(

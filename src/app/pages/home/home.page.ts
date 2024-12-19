@@ -1,5 +1,5 @@
 import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, Inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
@@ -86,6 +86,21 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
   ],
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
+  private searchService = inject(SearchService);
+  private updateObservationsService = inject(UpdateObservationsService);
+  private tabsService = inject(TabsService);
+  private fullscreenService = inject(FullscreenService);
+  userSettingService = inject(UserSettingService);
+  private ngZone = inject(NgZone);
+  private searchCriteriaService = inject(SearchCriteriaService);
+  private loggingService = inject(LoggingService);
+  private mapService = inject(MapService);
+  private toastService = inject(ToastController);
+  private alertService = inject(AlertController);
+  private translateService = inject(TranslateService);
+  private offlineMapService = inject(OfflineMapService);
+  private document = inject<Document>(DOCUMENT);
+
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -111,24 +126,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
 
-  constructor(
-    router: Router,
-    route: ActivatedRoute,
-    private searchService: SearchService,
-    private updateObservationsService: UpdateObservationsService,
-    private tabsService: TabsService,
-    private fullscreenService: FullscreenService,
-    public userSettingService: UserSettingService,
-    private ngZone: NgZone,
-    private searchCriteriaService: SearchCriteriaService,
-    private loggingService: LoggingService,
-    private mapService: MapService,
-    private toastService: ToastController,
-    private alertService: AlertController,
-    private translateService: TranslateService,
-    private offlineMapService: OfflineMapService,
-    @Inject(DOCUMENT) private document: Document
-  ) {
+  constructor() {
+    const router = inject(Router);
+    const route = inject(ActivatedRoute);
+
     super(router, route);
 
     // Update global css property containing info box height when height changes.

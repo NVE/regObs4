@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import {
@@ -61,16 +61,17 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class DangerObsPage extends BasePage {
+  private modalController = inject(ModalController);
+  private zone = inject(NgZone);
+  private kdvService = inject(KdvService);
+
   private dangerSignKdv: KdvElement[];
   private dangerSignKdvSubscription: Subscription;
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private modalController: ModalController,
-    private zone: NgZone,
-    private kdvService: KdvService
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
     addIcons({ addCircleOutline });
   }

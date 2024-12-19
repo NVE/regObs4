@@ -5,16 +5,16 @@ import {
 } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { BasePageService } from './base-page-service';
-import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTestLogger } from '../../shared/services/logging/test-logging.service';
 
 describe('BasePageService', () => {
   let service: BasePageService;
   let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
-  let loggerService: jasmine.SpyObj<LoggingService>;
 
   let draftRepository: {
     save: jasmine.Spy<DraftRepositoryService['save']>;
@@ -71,17 +71,17 @@ describe('BasePageService', () => {
       save: jasmine.createSpy('DraftService.save'),
     };
 
-    loggerService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
     newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['getAttachments', 'removeAttachment']);
 
-    service = new BasePageService(
-      draftRepository as unknown as DraftRepositoryService,
-      newAttachmentService,
-      null,
-      null,
-      loggerService,
-      null
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        { provide: DraftRepositoryService, useValue: draftRepository },
+        { provide: NewAttachmentService, useValue: newAttachmentService },
+      ],
+    });
+    service = TestBed.inject(BasePageService);
   });
 
   it('delete should delete the avalanche and incident registration', async () => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -60,6 +60,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class AvalancheActivityModalPage implements OnInit {
+  private modalController = inject(ModalController);
+
   @Input() avalancheActivity: AvalancheActivityObs2EditModel;
   @Input() dtObsTime: string;
 
@@ -118,8 +120,6 @@ export class AvalancheActivityModalPage implements OnInit {
 
   selectedTimeFrame = 1;
   startDate: string;
-
-  constructor(private modalController: ModalController) {}
 
   async ngOnInit() {
     this.maxDate = this.getMaxDateForNow();

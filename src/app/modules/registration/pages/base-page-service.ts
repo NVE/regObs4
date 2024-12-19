@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getRegistrationName } from 'src/app/modules/common-registration/registration.helpers';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
@@ -16,18 +16,16 @@ const DEBUG_TAG = 'BasePageService';
   providedIn: 'root',
 })
 export class BasePageService {
+  private draftRepositoryService = inject(DraftRepositoryService);
+  private newAttachmentService = inject(NewAttachmentService);
+  private alertController = inject(AlertController);
+  private translateService = inject(TranslateService);
+  private loggingService = inject(LoggingService);
+  private confirmationModal = inject(ConfirmationModalService);
+
   get draftRepository(): DraftRepositoryService {
     return this.draftRepositoryService;
   }
-
-  constructor(
-    private draftRepositoryService: DraftRepositoryService,
-    private newAttachmentService: NewAttachmentService,
-    private alertController: AlertController,
-    private translateService: TranslateService,
-    private loggingService: LoggingService,
-    private confirmationModal: ConfirmationModalService
-  ) {}
 
   /**
    * @returns true if operator confirms to leave an invalid registration form (and lose the data)

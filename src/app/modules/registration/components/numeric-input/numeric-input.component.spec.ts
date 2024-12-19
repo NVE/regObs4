@@ -1,10 +1,16 @@
+import { TestBed } from '@angular/core/testing';
 import { NumericInputComponent } from './numeric-input.component';
+import { provideIonicAngular } from '@ionic/angular/standalone';
 
 describe('NumericInputComponent', () => {
   let component: NumericInputComponent;
 
   beforeEach(() => {
-    component = new NumericInputComponent(null);
+    TestBed.configureTestingModule({
+      providers: [provideIonicAngular()],
+    });
+    const fixture = TestBed.createComponent(NumericInputComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create', () => {

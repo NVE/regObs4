@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnDestroy, OnInit, NgZone } from '@angular/core';
+import { Component, ViewChild, OnDestroy, OnInit, NgZone, inject } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonButton, IonContent, IonFooter, IonToolbar, NavController, Platform } from '@ionic/angular/standalone';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
@@ -19,6 +19,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonButton, IonContent, IonFooter, IonToolbar, NgIf, TranslatePipe],
 })
 export class StartWizardPage implements OnInit, OnDestroy {
+  private userSettingService = inject(UserSettingService);
+  private navController = inject(NavController);
+  private ngZone = inject(NgZone);
+  private platform = inject(Platform);
+
   // @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
@@ -45,13 +50,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
   private activeIndex = new Subject<number>();
   private isIncreasing = true;
   private userSettingSubscription: Subscription;
-
-  constructor(
-    private userSettingService: UserSettingService,
-    private navController: NavController,
-    private ngZone: NgZone,
-    private platform: Platform
-  ) {}
 
   async ngOnInit() {
     this.isIosOrAndroid = isAndroidOrIos(this.platform);

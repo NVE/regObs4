@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { firstValueFrom, Observable, Subject, tap, timeout } from 'rxjs';
 import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
@@ -24,13 +24,12 @@ const DEBUG_TAG = 'AddUpdateDeleteRegistrationService';
   providedIn: 'root',
 })
 export class AddUpdateDeleteRegistrationService {
-  constructor(
-    private uploadAttachmentsService: UploadAttachmentsService,
-    private regobsApiRegistrationService: RegistrationService,
-    private userSettings: UserSettingService,
-    private analytics: AnalyticService,
-    private logger: LoggingService
-  ) {}
+  private uploadAttachmentsService = inject(UploadAttachmentsService);
+  private regobsApiRegistrationService = inject(RegistrationService);
+  private userSettings = inject(UserSettingService);
+  private analytics = inject(AnalyticService);
+  private logger = inject(LoggingService);
+
 
   private changedRegistrations = new Subject<{ reg: RegistrationViewModel; langKey: LangKey }>();
   private deletedRegistrationIds = new Subject<number>();

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, inject } from '@angular/core';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { Observable, switchMap } from 'rxjs';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
@@ -12,12 +12,13 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe],
 })
 export class GeoNameComponent implements OnChanges {
+  private geoHelperService = inject(GeoHelperService);
+  private userSettingsService = inject(UserSettingService);
+
   @Input() geoHazards: GeoHazard[];
 
   name$: Observable<string>;
   language$: Observable<LangKey>;
-
-  constructor(private geoHelperService: GeoHelperService, private userSettingsService: UserSettingService) {}
 
   ngOnChanges(): void {
     this.name$ = this.userSettingsService.language$.pipe(

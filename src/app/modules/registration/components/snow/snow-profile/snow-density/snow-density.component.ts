@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { SnowDensityModel } from 'src/app/modules/common-regobs-api/models';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
@@ -17,6 +17,9 @@ import { checkmarkCircle } from 'ionicons/icons';
   imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
 })
 export class SnowDensityComponent {
+  private modalContoller = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() draft: RegistrationDraft;
   private densityModal: HTMLIonModalElement;
 
@@ -31,7 +34,7 @@ export class SnowDensityComponent {
     return isEmpty(this.profiles);
   }
 
-  constructor(private modalContoller: ModalController, private draftRepository: DraftRepositoryService) {
+  constructor() {
     addIcons({ checkmarkCircle });
   }
 

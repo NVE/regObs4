@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LocationService as RegobsApiLocationService } from 'src/app/modules/common-regobs-api/services';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -11,11 +11,10 @@ const DEBUG_TAG = 'LocationService';
   providedIn: 'root',
 })
 export class LocationService {
-  constructor(
-    private regobsAuthService: RegobsAuthService,
-    private apiLocationService: RegobsApiLocationService,
-    private loggingService: LoggingService
-  ) {}
+  private regobsAuthService = inject(RegobsAuthService);
+  private apiLocationService = inject(RegobsApiLocationService);
+  private loggingService = inject(LoggingService);
+
 
   getLocationWithinRadiusObservable(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     return this.regobsAuthService.loggedInUser$.pipe(

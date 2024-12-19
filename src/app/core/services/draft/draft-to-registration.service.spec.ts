@@ -1,7 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
-import { Platform } from '@ionic/angular/standalone';
-import { Observable, of, ReplaySubject } from 'rxjs';
+import { discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { Observable, ReplaySubject } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -10,6 +9,7 @@ import { NetworkStatusService } from '../network-status/network-status.service';
 import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
 import { DraftRepositoryService } from './draft-repository.service';
 import { DraftToRegistrationService } from './draft-to-registration.service';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('DraftToRegistrationService', () => {
   let service: DraftToRegistrationService;
@@ -34,7 +34,7 @@ describe('DraftToRegistrationService', () => {
     save: jasmine.Spy<DraftRepositoryService['save']>;
   };
 
-  let loggerService: jasmine.SpyObj<LoggingService>;
+  let loggerService: LoggingService;
 
   beforeEach(() => {
     drafts = new ReplaySubject<RegistrationDraft[]>();
@@ -51,15 +51,16 @@ describe('DraftToRegistrationService', () => {
       connected$: connected.asObservable(),
     };
 
-    loggerService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
-
-    service = new DraftToRegistrationService(
-      { resume: of(true) } as unknown as Platform,
-      draftService as unknown as DraftRepositoryService,
-      addUpdateDeleteRegService,
-      loggerService,
-      networkService
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        provideTestLogger(),
+        { provide: DraftRepositoryService, useValue: draftService },
+        { provide: AddUpdateDeleteRegistrationService, useValue: addUpdateDeleteRegService },
+        { provide: NetworkStatusService, useValue: networkService },
+      ],
+    });
+    service = TestBed.inject(DraftToRegistrationService);
+    loggerService = TestBed.inject(LoggingService);
   });
 
   it('Adds a network error to the draft if we try to upload without a connection', fakeAsync(() => {
@@ -112,6 +113,8 @@ describe('DraftToRegistrationService', () => {
   }));
 
   it('Handles errors while uploading registrations', fakeAsync(() => {
+    spyOn(loggerService, 'error').and.callThrough();
+
     const error = new HttpErrorResponse({ status: HttpStatusCode.InternalServerError });
     addUpdateDeleteRegService.add.and.rejectWith(error);
 

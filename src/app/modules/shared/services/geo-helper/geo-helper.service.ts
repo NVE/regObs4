@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -8,7 +8,8 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class GeoHelperService {
-  constructor(private translateService: TranslateService) {}
+  private translateService = inject(TranslateService);
+
 
   getTranslationKey(geoHazard: GeoHazard) {
     const geoHazardKey = geoHazard !== GeoHazard.Soil ? GeoHazard[geoHazard] : 'Dirt';

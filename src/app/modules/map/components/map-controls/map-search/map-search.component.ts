@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
 import { IonFab, IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -11,7 +11,9 @@ import { search } from 'ionicons/icons';
   imports: [IonFab, IonFabButton, IonIcon],
 })
 export class MapSearchComponent {
-  constructor(private modalController: ModalController) {
+  private modalController = inject(ModalController);
+
+  constructor() {
     addIcons({ search });
   }
 

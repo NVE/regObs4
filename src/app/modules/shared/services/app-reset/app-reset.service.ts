@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { OnReset } from '../../interfaces/on-reset.interface';
 import { DbHelperService } from '../../../../core/services/db-helper/db-helper.service';
 import { LoggingService } from '../logging/logging.service';
@@ -10,11 +10,10 @@ const DEBUG_TAG = 'AppResetService';
   providedIn: 'root',
 })
 export class AppResetService {
-  constructor(
-    @Inject('OnReset') private services: OnReset[],
-    private dbHelperService: DbHelperService,
-    private loggingService: LoggingService
-  ) {}
+  private services = inject<OnReset[]>('OnReset' as any);
+  private dbHelperService = inject(DbHelperService);
+  private loggingService = inject(LoggingService);
+
 
   async resetApp(): Promise<void> {
     await Promise.all(this.services.map((s) => Promise.resolve(s.appOnReset ? s.appOnReset() : true)));

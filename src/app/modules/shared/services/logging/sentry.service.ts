@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import * as Sentry from '@sentry/browser';
 import version from '../../../../../environments/version.json';
@@ -18,7 +18,8 @@ import type { CaptureContext } from '@sentry/types';
   providedIn: 'root',
 })
 export class SentryService implements LoggingService {
-  constructor(private fileLoggingService: FileLoggingService) {}
+  private fileLoggingService = inject(FileLoggingService);
+
 
   error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
     this.log(message, error, LogLevel.Error, tag, optionalParams);

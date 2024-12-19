@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, Input, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import {
@@ -20,6 +20,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, NgIf, TranslatePipe],
 })
 export class RefreshWithCancelComponent implements OnInit {
+  private ngZone = inject(NgZone);
+  private platform = inject(Platform);
+
   showCancel = false;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
@@ -29,8 +32,6 @@ export class RefreshWithCancelComponent implements OnInit {
   @Input() disabled = false;
 
   spinner: string;
-
-  constructor(private ngZone: NgZone, private platform: Platform) {}
 
   ngOnInit(): void {
     this.spinner = this.platform.is('android') ? 'crescent' : 'lines';

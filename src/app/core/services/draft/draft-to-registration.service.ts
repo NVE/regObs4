@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular/standalone';
 import {
   combineLatest,
@@ -33,6 +33,12 @@ const DEBUG_TAG = 'DraftToRegistrationService';
   providedIn: 'root',
 })
 export class DraftToRegistrationService {
+  private platform = inject(Platform);
+  private draftService = inject(DraftRepositoryService);
+  private addUpdateDeleteRegistrationService = inject(AddUpdateDeleteRegistrationService);
+  private loggerService = inject(LoggingService);
+  private networkStatus = inject(NetworkStatusService);
+
   private initialized = false;
 
   /**
@@ -40,14 +46,6 @@ export class DraftToRegistrationService {
    * as DraftService.drafts$ can emit the same draft multiple times
    */
   private registrationsUploading: string[] = [];
-
-  constructor(
-    private platform: Platform,
-    private draftService: DraftRepositoryService,
-    private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private loggerService: LoggingService,
-    private networkStatus: NetworkStatusService
-  ) {}
 
   public createSubscriptions() {
     if (this.initialized) {

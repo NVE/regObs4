@@ -1,26 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BackgroundGeolocationService } from './background-geolocation.service';
 // import { BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@awesome-cordova-plugins/background-geolocation';
 import { Platform } from '@ionic/angular/standalone';
-import { TripLoggerService } from '../trip-logger/trip-logger.service';
+// import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Geolocation } from '@capacitor/geolocation';
-import { TripLogState } from '../trip-logger/trip-log-state.enum';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+// import { Geolocation } from '@capacitor/geolocation';
+// import { TripLogState } from '../trip-logger/trip-log-state.enum';
+// import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'BackgroundGeolocationNativeService';
 
 @Injectable()
 export class BackgroundGeolocationNativeService implements BackgroundGeolocationService {
+  private platform = inject(Platform);
+  // private tripLogger = inject(TripLoggerService);
+  private translateService = inject(TranslateService);
+  // private geolocation = inject(Geolocation);
+  // private loggingService = inject(LoggingService);
+
   backgroundGeolocation: any;
 
-  constructor(
-    private platform: Platform,
-    private tripLogger: TripLoggerService,
-    private translateService: TranslateService,
-    private geolocation: Geolocation,
-    private loggingService: LoggingService
-  ) {
+  constructor() {
     this.platform.ready().then(() => {
       this.backgroundGeolocation = (<any>window).BackgroundGeolocation;
     });

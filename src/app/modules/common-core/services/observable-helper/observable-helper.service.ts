@@ -1,4 +1,4 @@
-import { ApplicationRef, NgZone } from '@angular/core';
+import { ApplicationRef, NgZone, inject } from '@angular/core';
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -9,7 +9,9 @@ import { enterZoneAndTickApplicationRef } from '../../helpers/enter-zone-and-tic
   providedIn: 'root',
 })
 export class ObservableHelperService {
-  constructor(private ngZone: NgZone, private applicationRef: ApplicationRef) {}
+  private ngZone = inject(NgZone);
+  private applicationRef = inject(ApplicationRef);
+
 
   enterZone<T>(): (source: Observable<T>) => Observable<T> {
     return enterZone(this.ngZone);

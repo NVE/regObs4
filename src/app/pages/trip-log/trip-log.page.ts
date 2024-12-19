@@ -11,7 +11,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
@@ -42,13 +42,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class TripLogPage implements OnInit, OnDestroy {
+  private backgroundGeolocationService = inject(BackgroundGeolocationService);
+  private tripLoggerService = inject(TripLoggerService);
+
   state: TripLogState = TripLogState.NotStarted;
   private subscription: Subscription;
-
-  constructor(
-    private backgroundGeolocationService: BackgroundGeolocationService,
-    private tripLoggerService: TripLoggerService
-  ) {}
 
   async ngOnInit() {
     this.subscription = this.tripLoggerService.getTripLogStateAsObservable().subscribe((activity) => {

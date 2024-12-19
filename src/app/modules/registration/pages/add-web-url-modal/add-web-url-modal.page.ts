@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -44,10 +44,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class AddWebUrlModalPage implements OnInit {
+  private modalController = inject(ModalController);
+
   @Input() weburl: UrlEditModel;
   urlToSave: UrlEditModel;
   isNew = true;
-  constructor(private modalController: ModalController) {}
 
   ngOnInit() {
     if (this.weburl) {

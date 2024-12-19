@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
 import { IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { NgIf, NgClass } from '@angular/common';
@@ -11,6 +11,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonItem, IonLabel, IonText, NgClass, NgIf, TranslatePipe],
 })
 export class NumericInputComponent {
+  private modalController = inject(ModalController);
+
   @Input() decimalPlaces = 0;
   @Input() min = -100000;
   @Input() max = 100000;
@@ -36,8 +38,6 @@ export class NumericInputComponent {
     }
     return undefined;
   }
-
-  constructor(private modalController: ModalController) {}
 
   async openPicker() {
     if (!this.isOpen && !this.readonly) {

@@ -1,5 +1,5 @@
 import { IonList } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -20,6 +20,8 @@ import { NumericInputComponent } from '../../numeric-input/numeric-input.compone
   imports: [EditImagesBarComponent, IonList, KdvIconSelectComponent, NumericInputComponent],
 })
 export class SimpleSnowObsComponent {
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() draft: RegistrationDraft;
 
   /**
@@ -54,8 +56,6 @@ export class SimpleSnowObsComponent {
     }
     return this.draft.registration.SnowSurfaceObservation;
   }
-
-  constructor(private draftRepository: DraftRepositoryService) {}
 
   async save(): Promise<void> {
     this.draftRepository.save(this.draft);

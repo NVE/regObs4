@@ -1,13 +1,30 @@
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { BasePageService } from '../../base-page-service';
 import { AvalancheObsPage } from './avalanche-obs.page';
 import 'leaflet.markercluster';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideTranslateService } from '@ngx-translate/core';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('AvalancheObsPage', () => {
   let component: AvalancheObsPage;
   beforeEach(() => {
-    const basePageService = new BasePageService(null, null, null, null, null, null);
-    component = new AvalancheObsPage(basePageService, null, null);
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideIonicAngular(),
+        provideTestLogger(),
+        provideTranslateService(),
+        { provide: DraftRepositoryService, useValue: null },
+        { provide: NewAttachmentService, useValue: null },
+      ],
+    });
+    const fixture = TestBed.createComponent(AvalancheObsPage);
+    component = fixture.componentInstance;
+
     component.draft = {
       registration: {
         DtObsTime: new Date(2020, 0, 1).toISOString(),

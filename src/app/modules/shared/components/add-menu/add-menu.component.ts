@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import {
   IonFab,
   IonFabButton,
@@ -53,6 +53,14 @@ const DEBUG_TAG = 'AddMenuComponent';
   ],
 })
 export class AddMenuComponent implements OnInit {
+  private draftService = inject(DraftRepositoryService);
+  private navController = inject(NavController);
+  private dateHelperService = inject(DateHelperService);
+  private tripLoggerService = inject(TripLoggerService);
+  private userSettingService = inject(UserSettingService);
+  private loggingService = inject(LoggingService);
+  private platform = inject(Platform);
+
   @ViewChild('menuFab') menuFab: IonFab;
 
   drafts$: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
@@ -64,15 +72,7 @@ export class AddMenuComponent implements OnInit {
   showSpace$: Observable<boolean>;
   isIosOrAndroid: boolean;
 
-  constructor(
-    private draftService: DraftRepositoryService,
-    private navController: NavController,
-    private dateHelperService: DateHelperService,
-    private tripLoggerService: TripLoggerService,
-    private userSettingService: UserSettingService,
-    private loggingService: LoggingService,
-    private platform: Platform
-  ) {
+  constructor() {
     addIcons({ add, create });
   }
 

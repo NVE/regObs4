@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, inject } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -53,6 +53,10 @@ const COMMENT_SEPARATOR = ': ';
   ],
 })
 export class AddOrEditDangerObsModalPage implements OnInit {
+  private modalController = inject(ModalController);
+  private translateService = inject(TranslateService);
+  private ngZone = inject(NgZone);
+
   @Input() dangerObs: DangerObsEditModel;
   @Input() geoHazard: GeoHazard;
   noDangerObs = false;
@@ -75,12 +79,6 @@ export class AddOrEditDangerObsModalPage implements OnInit {
       return false;
     }
   }
-
-  constructor(
-    private modalController: ModalController,
-    private translateService: TranslateService,
-    private ngZone: NgZone
-  ) {}
 
   async ngOnInit() {
     this.showDangerSignCheckbox = this.geoHazard != GeoHazard.Ice;

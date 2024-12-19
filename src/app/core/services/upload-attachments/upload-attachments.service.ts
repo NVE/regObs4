@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
@@ -37,15 +37,14 @@ export class UploadAttachmentError extends Error {
   providedIn: 'root',
 })
 export class UploadAttachmentsService {
-  constructor(
-    private newAttachmentService: NewAttachmentService,
-    private uploadSingleAttachmentService: UploadSingleAttachmentService,
-    private translateService: TranslateService,
-    private dateHelperService: DateHelperService,
-    private loggingService: LoggingService,
-    private userSettings: UserSettingService,
-    private alertController: AlertController
-  ) {}
+  private newAttachmentService = inject(NewAttachmentService);
+  private uploadSingleAttachmentService = inject(UploadSingleAttachmentService);
+  private translateService = inject(TranslateService);
+  private dateHelperService = inject(DateHelperService);
+  private loggingService = inject(LoggingService);
+  private userSettings = inject(UserSettingService);
+  private alertController = inject(AlertController);
+
 
   /**
    * Upload attachments

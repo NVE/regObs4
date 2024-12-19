@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 
 @Component({
@@ -7,9 +7,9 @@ import { ExternalLinkService } from '../../../../core/services/external-link/ext
   styleUrls: ['./external-link.component.scss'],
 })
 export class ExternalLinkComponent {
-  @Input() src: string;
+  private externalLinkService = inject(ExternalLinkService);
 
-  constructor(private externalLinkService: ExternalLinkService) {}
+  @Input() src: string;
 
   openLink(event: Event) {
     event.preventDefault();

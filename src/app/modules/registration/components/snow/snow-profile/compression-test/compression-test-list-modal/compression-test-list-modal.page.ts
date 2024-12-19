@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, inject } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -45,6 +45,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class CompressionTestListModalPage implements OnInit, OnDestroy {
+  private modalController = inject(ModalController);
+  private draftService = inject(DraftRepositoryService);
+  private ngZone = inject(NgZone);
+
   @Input() uuid: string;
 
   private ngDestroy$ = new Subject<void>();
@@ -54,12 +58,6 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   set tests(tests: CompressionTestEditModel[]) {
     this.draft.registration.CompressionTest = tests;
   }
-
-  constructor(
-    private modalController: ModalController,
-    private draftService: DraftRepositoryService,
-    private ngZone: NgZone
-  ) {}
 
   ngOnInit() {
     this.draftService

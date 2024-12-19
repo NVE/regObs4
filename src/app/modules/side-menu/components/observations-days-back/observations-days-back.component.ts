@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -32,16 +32,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
+  userSettingService = inject(UserSettingService);
+
   daysBackOptions: { val: number }[];
   subscription: Subscription;
   popupType: SelectInterface;
   isNativePlatform: boolean;
 
   @Output() changeDaysBack = new EventEmitter<number>();
-
-  constructor(public userSettingService: UserSettingService) {
-    super();
-  }
 
   ngOnInit(): void {
     this.isNativePlatform = Capacitor.isNativePlatform();

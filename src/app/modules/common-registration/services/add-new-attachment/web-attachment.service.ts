@@ -1,5 +1,5 @@
 import { HttpEventType } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { from, Observable, of, startWith, Subject, switchMap, tap } from 'rxjs';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
 import {
@@ -21,17 +21,13 @@ const PREVIEW_JPG_QUALITY = 0.5;
 
 @Injectable()
 export class WebAttachmentService extends NewAttachmentService {
+  protected logger = inject(LoggingService);
+  private uploadSingleAttachmentService = inject(UploadSingleAttachmentService);
+  private database = inject(DatabaseService);
+
   protected DEBUG_TAG = 'WebAttachmentService';
   private hasChange = new Subject<void>();
   private blobCache = new Map<AttachmentUploadEditModel['id'], Blob>();
-
-  constructor(
-    protected logger: LoggingService,
-    private uploadSingleAttachmentService: UploadSingleAttachmentService,
-    private database: DatabaseService
-  ) {
-    super();
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addAttachmentAsUrl(

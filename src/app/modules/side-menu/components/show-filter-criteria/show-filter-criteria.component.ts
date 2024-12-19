@@ -1,5 +1,5 @@
 import { IonMenuButton } from '@ionic/angular/standalone';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
@@ -25,13 +25,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class ShowFilterCriteriaComponent implements OnInit {
+  userSettingService = inject(UserSettingService);
+  private breakpointService = inject(BreakpointService);
+
   daysBack$: Observable<{ value: number }>;
   isDesktop: boolean;
   showObservations$: Observable<boolean>;
   currentGeoHazard$: Observable<GeoHazard[]>;
   language$: Observable<LangKey>;
-
-  constructor(public userSettingService: UserSettingService, private breakpointService: BreakpointService) {}
 
   ngOnInit() {
     this.daysBack$ = this.userSettingService.daysBackForCurrentGeoHazard$.pipe(

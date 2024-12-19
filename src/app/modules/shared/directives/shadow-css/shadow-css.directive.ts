@@ -1,6 +1,8 @@
-import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, inject } from '@angular/core';
 @Directive({ selector: '[appShadowCss]' })
 export class ShadowCssDirective implements OnChanges {
+  private el = inject(ElementRef);
+
   @Input() shadowCustomCss: string;
 
   ngOnChanges(): void {
@@ -13,5 +15,4 @@ export class ShadowCssDirective implements OnChanges {
       shadow.innerHTML += innerHTML;
     }
   }
-  constructor(private el: ElementRef) {}
 }

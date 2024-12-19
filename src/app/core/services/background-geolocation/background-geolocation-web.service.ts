@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BackgroundGeolocationService } from './background-geolocation.service';
 import { Subscription } from 'rxjs';
 // import {
@@ -6,20 +6,18 @@ import { Subscription } from 'rxjs';
 //   Geolocation,
 //   PositionError
 // } from '@awesome-cordova-plugins/geolocation/ngx';
-import { TripLoggerService } from '../trip-logger/trip-logger.service';
-import { TripLogState } from '../trip-logger/trip-log-state.enum';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+// import { TripLoggerService } from '../trip-logger/trip-logger.service';
+// import { TripLogState } from '../trip-logger/trip-log-state.enum';
+// import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
 //TODO: Har kommentert ut denne servicen når vi fjernet @awesome-cordova-plugins/geolocation/ngx, siden det later til at den ikke er i bruk. Vurder om vi skal slette servicen!
 @Injectable()
 export class BackgroundGeolocationWebService implements BackgroundGeolocationService {
-  watchSubscription?: Subscription;
+  // private geolocation = inject(Geolocation);
+  // private tripLogger = inject(TripLoggerService);
+  // private loggingService = inject(LoggingService);
 
-  constructor(
-    private geolocation: Geolocation,
-    private tripLogger: TripLoggerService,
-    private loggingService: LoggingService
-  ) {}
+  watchSubscription?: Subscription;
 
   async start() {
     // await this.tripLogger.updateState(TripLogState.Running);

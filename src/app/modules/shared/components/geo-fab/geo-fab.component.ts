@@ -1,5 +1,5 @@
 import { IonItem, IonContent, IonPopover, IonIcon, IonList, IonButton, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, NgZone, inject } from '@angular/core';
 import { state, trigger, style, transition, animate, stagger, query } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable, Subject } from 'rxjs';
@@ -47,6 +47,10 @@ const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, Ge
   imports: [IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPopover],
 })
 export class GeoFabComponent implements OnInit, OnDestroy {
+  private fullscreenService = inject(FullscreenService);
+  private userSettingService = inject(UserSettingService);
+  private ngZone = inject(NgZone);
+
   fullscreen$: Observable<boolean>;
   currentGeoHazard$: Observable<GeoHazard[]>;
   selectableGeoHazards$: Observable<GeoHazard[][]>;
@@ -60,16 +64,6 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   private animationTimout: NodeJS.Timeout;
 
   animateOnEnterState = 'x';
-
-  // get selectableGeoHazards() {
-  //   return this.geoHazardTypes.filter((x) => !(this.currentGeoHazard && this.currentGeoHazard.some((c) => x.some((z) => z === c))));
-  // }
-
-  constructor(
-    private fullscreenService: FullscreenService,
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone
-  ) {}
 
   ngOnInit() {
     this.currentGeoHazard$ = this.userSettingService.currentGeoHazard$;

@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, HostBinding } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, HostBinding, inject } from '@angular/core';
 import {
   ActionSheetController,
   IonButton,
@@ -28,6 +28,10 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe],
 })
 export class SelectComponent implements OnInit {
+  private actionSheetController = inject(ActionSheetController);
+  private translateService = inject(TranslateService);
+  platform = inject(Platform);
+
   @Input() label: string;
   @Input() subTitle: string;
   @Input() selectedValue: number | string;
@@ -55,11 +59,7 @@ export class SelectComponent implements OnInit {
     return undefined;
   }
 
-  constructor(
-    private actionSheetController: ActionSheetController,
-    private translateService: TranslateService,
-    public platform: Platform
-  ) {
+  constructor() {
     addIcons({ caretDownSharp });
   }
 

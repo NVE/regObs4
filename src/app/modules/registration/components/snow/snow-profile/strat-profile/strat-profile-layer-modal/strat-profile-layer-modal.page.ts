@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -70,6 +70,10 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
   ],
 })
 export class StratProfileLayerModalPage implements OnInit {
+  private modalController = inject(ModalController);
+  private translateService = inject(TranslateService);
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() layer: StratProfileLayerEditModel;
   @Input() draft: RegistrationDraft;
   @Input() index: number;
@@ -121,11 +125,7 @@ export class StratProfileLayerModalPage implements OnInit {
 
   getIconFunc = (kdvElement: KdvElement) => `md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}`;
 
-  constructor(
-    private modalController: ModalController,
-    private translateService: TranslateService,
-    private draftRepository: DraftRepositoryService
-  ) {
+  constructor() {
     addIcons({ chevronUp, chevronDown, arrowBack, arrowForward, trash });
   }
 

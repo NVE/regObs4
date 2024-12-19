@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject } from '@angular/core';
 import { booleanWithin, point } from '@turf/turf';
 import * as L from 'leaflet';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
@@ -34,14 +25,14 @@ export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
   imports: [LeafletModule],
 })
 export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
+  private cdr = inject(ChangeDetectorRef);
+
   @Input() location: ImageLocation;
   @Input() allowZoom: boolean;
 
   private map: L.Map;
   private mapCenterSubject: BehaviorSubject<ImageLocation>;
   private ngDestroy$: Subject<void>;
-
-  constructor(private cdr: ChangeDetectorRef) {}
 
   options: L.MapOptions = {
     zoom: settings.map.tiles.zoomLevelObservationList,

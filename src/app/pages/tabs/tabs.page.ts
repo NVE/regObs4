@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, Platform } from '@ionic/angular/standalone';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -32,6 +32,14 @@ import { map as mapIcon, list, warning } from 'ionicons/icons';
   ],
 })
 export class TabsPage implements OnInit, OnDestroy {
+  private fullscreenService = inject(FullscreenService);
+  private searchCriteriaService = inject(SearchCriteriaService);
+  private platform = inject(Platform);
+  private warningService = inject(WarningService);
+  private userSettingService = inject(UserSettingService);
+  private ngZone = inject(NgZone);
+  private tabsService = inject(TabsService);
+
   private warningGroupInMapViewSubscription: Subscription;
   private currentGeoHazardSubscription: Subscription;
   readonly selectedTab$: Observable<string>;
@@ -57,15 +65,7 @@ export class TabsPage implements OnInit, OnDestroy {
     return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
   }
 
-  constructor(
-    private fullscreenService: FullscreenService,
-    private searchCriteriaService: SearchCriteriaService,
-    private platform: Platform,
-    private warningService: WarningService,
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone,
-    private tabsService: TabsService
-  ) {
+  constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>

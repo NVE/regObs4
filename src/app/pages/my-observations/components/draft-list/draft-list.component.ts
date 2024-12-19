@@ -1,5 +1,5 @@
 import { IonGrid, IonItemDivider, IonRow, IonList, IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
@@ -32,7 +32,9 @@ export class DraftListComponent implements OnInit {
 
   public drafts$: Observable<RegistrationDraft[]>;
 
-  constructor(draftService: DraftRepositoryService) {
+  constructor() {
+    const draftService = inject(DraftRepositoryService);
+
     this.drafts$ = draftService.drafts$;
   }
 

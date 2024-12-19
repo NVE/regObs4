@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -52,6 +52,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class CompressionTestModalPage implements OnInit {
+  private modalController = inject(ModalController);
+
   @Input() compressionTest: CompressionTestEditModel;
   @Input() includeInSnowProfileAsDefault = false;
 
@@ -64,8 +66,6 @@ export class CompressionTestModalPage implements OnInit {
     clone.IncludeInSnowProfile = undefined;
     return !IsEmptyHelper.isEmpty(clone);
   }
-
-  constructor(private modalController: ModalController) {}
 
   ngOnInit() {
     this.tapsArray = this.getTaps(1, 31);

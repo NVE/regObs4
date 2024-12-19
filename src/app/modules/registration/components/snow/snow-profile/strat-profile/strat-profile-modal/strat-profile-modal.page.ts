@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone, inject } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -78,6 +78,11 @@ import { cloudDownload, addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
+  private modalController = inject(ModalController);
+  private regobsAuthService = inject(RegobsAuthService);
+  private ngZone = inject(NgZone);
+  private draftRepository = inject(DraftRepositoryService);
+
   @Input() uuid: string;
   private draft: RegistrationDraft;
   private draftInitClone: RegistrationDraft;
@@ -93,12 +98,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     return this.draft?.registration?.SnowProfile2?.StratProfile || {};
   }
 
-  constructor(
-    private modalController: ModalController,
-    private regobsAuthService: RegobsAuthService,
-    private ngZone: NgZone,
-    private draftRepository: DraftRepositoryService
-  ) {
+  constructor() {
     addIcons({ cloudDownload, addCircleOutline });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, inject } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -72,6 +72,13 @@ import {
   ],
 })
 export class SideMenuComponent implements OnInit, OnDestroy {
+  private userSettingService = inject(UserSettingService);
+  private translateService = inject(TranslateService);
+  private navController = inject(NavController);
+  private ngZone = inject(NgZone);
+  private externalLinkService = inject(ExternalLinkService);
+  private fileLoggingService = inject(FileLoggingService);
+
   userSettings: UserSetting;
   settings = settings;
   TopoMap = TopoMap;
@@ -97,15 +104,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   private userSettingSubscription: Subscription;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private translateService: TranslateService,
-    private navController: NavController,
-    private ngZone: NgZone,
-    private externalLinkService: ExternalLinkService,
-    observerTrips: ObserverTripsService,
-    private fileLoggingService: FileLoggingService
-  ) {
+  constructor() {
+    const observerTrips = inject(ObserverTripsService);
+
     this.observerTrips = observerTrips;
     addIcons({
       settingsOutline,

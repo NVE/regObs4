@@ -1,22 +1,23 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import moment from 'moment-timezone';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { createMapView, MapService } from 'src/app/modules/map/services/map/map.service';
-import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { SearchCriteria } from '../../models/search-criteria';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService } from './search-criteria.service';
 import { separatedStringToNumberArray, UrlParams } from './url-params';
+import { provideTranslateService } from '@ngx-translate/core';
 
 export class TestMapService {
-  mapView$: Observable<IMapView>;
+  mapView$: BehaviorSubject<IMapView>;
 }
 
 export function createTestMapService(): TestMapService {
   const service = new TestMapService();
-  service.mapView$ = of({ bounds: undefined, center: undefined, zoom: undefined });
+  service.mapView$ = new BehaviorSubject({ bounds: undefined, center: undefined, zoom: undefined });
   return service;
 }
 
@@ -31,16 +32,18 @@ describe('SearchCriteriaService', () => {
   ];
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({});
-
     mapService = createTestMapService();
-    userSettingService = new UserSettingService(null, null);
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        UserSettingService,
+        { provide: MapService, useValue: mapService },
+      ],
+    });
 
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
+    userSettingService = TestBed.inject(UserSettingService);
+    service = TestBed.inject(SearchCriteriaService);
 
     jasmine.clock().install();
     moment.tz.setDefault('Europe/Oslo');
@@ -203,8 +206,8 @@ describe('SearchCriteriaService', () => {
     //create mapview with coordinates
     const ms = new TestMapService();
     const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
-    ms.mapView$ = of(mv);
-    service = new SearchCriteriaService(userSettingService, ms as unknown as MapService, new TestLoggingService());
+    mapService.mapView$.next(mv);
+
     const extent = {
       BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
       TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
@@ -306,18 +309,21 @@ describe('SearchCriteriaService', () => {
 
 //a separate suite because we want to add url parameters before we create the service
 describe('SearchCriteriaService url parsing', () => {
-  let service: SearchCriteriaService;
-  let userSettingService: UserSettingService;
-  let mapService: TestMapService;
-
   const wrongObservationTypeUrl = ['42,66', '23456', 'testMe'];
 
-  beforeEach(async () => {
-    TestBed.configureTestingModule({});
+  const getService = () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        UserSettingService,
+        { provide: MapService, useValue: createTestMapService() },
+      ],
+    });
+    return TestBed.inject(SearchCriteriaService);
+  };
 
-    mapService = createTestMapService();
-    userSettingService = new UserSettingService(null, null);
-
+  beforeEach(() => {
     jasmine.clock().install();
     moment.tz.setDefault('Europe/Oslo');
   });
@@ -339,53 +345,36 @@ describe('SearchCriteriaService url parsing', () => {
     expect(separatedStringToNumberArray('~70~20~')).toEqual([70, 20]);
   });
 
-  it('competence url filter works properly', fakeAsync(async () => {
+  it('competence url filter works properly', fakeAsync(() => {
     new UrlParams().set('competence', '150~105').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
   }));
 
-  it('type wrong hazard should search for 10 as default', fakeAsync(async () => {
+  it('type wrong hazard should search for 10 as default', fakeAsync(() => {
     new UrlParams().set('hazard', '140').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     expect(criteria.SelectedGeoHazards).toEqual([10]);
   }));
 
-  it('competence url filter with wrong params', fakeAsync(async () => {
+  it('competence url filter with wrong params', fakeAsync(() => {
     new UrlParams().set('competence', '150~string').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     expect(criteria.ObserverCompetence).toEqual(undefined);
   }));
 
-  it('nick name url filter should work', fakeAsync(async () => {
+  it('nick name url filter should work', fakeAsync(() => {
     new UrlParams().set('nick', 'Oluf').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -393,14 +382,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.ObserverNickName).toEqual('Oluf');
   }));
 
-  it('type url should work', fakeAsync(async () => {
+  it('type url should work', fakeAsync(() => {
     new UrlParams().set('type', '81.13~81.26~10').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -411,13 +395,9 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   wrongObservationTypeUrl.forEach((test) => {
-    it('type url wrong format, set undefined in criteria', fakeAsync(async () => {
+    it('type url wrong format, set undefined in criteria', fakeAsync(() => {
       new UrlParams().set('type', test).apply();
-      service = new SearchCriteriaService(
-        userSettingService,
-        mapService as unknown as MapService,
-        new TestLoggingService()
-      );
+      const service = getService();
       let criteria;
       service.searchCriteria$.subscribe((c) => (criteria = c));
       tick(100);
@@ -425,14 +405,9 @@ describe('SearchCriteriaService url parsing', () => {
     }));
   });
 
-  it('orderBy url filter should work', fakeAsync(async () => {
+  it('orderBy url filter should work', fakeAsync(() => {
     new UrlParams().set('orderBy', 'changeTime').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -441,14 +416,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.OrderBy).toEqual('DtChangeTime');
   }));
 
-  it('orderBy url filter should work', fakeAsync(async () => {
+  it('orderBy url filter should work', fakeAsync(() => {
     new UrlParams().set('orderBy', 'obsTime').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -456,14 +426,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.OrderBy).toEqual('DtObsTime');
   }));
 
-  it('geo hazard url filter should work', fakeAsync(async () => {
+  it('geo hazard url filter should work', fakeAsync(() => {
     new UrlParams().set('hazard', '70').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -471,14 +436,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.SelectedGeoHazards).toEqual([70]);
   }));
 
-  it('illegal geo hazard in url should reuturn 10', fakeAsync(async () => {
+  it('illegal geo hazard in url should reuturn 10', fakeAsync(() => {
     new UrlParams().set('hazard', 'illegal').apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -487,16 +447,10 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.SelectedGeoHazards).toEqual([10]);
   }));
 
-  it('days back url filter should work', fakeAsync(async () => {
+  it('days back url filter should work', fakeAsync(() => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     new UrlParams().set('daysBack', 1).apply();
-
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -506,18 +460,12 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
   }));
 
-  it('toDate and fromDate filter should work', fakeAsync(async () => {
+  it('toDate and fromDate filter should work', fakeAsync(() => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
 
     new UrlParams().set('fromDate', '2020-12-24').apply();
     new UrlParams().set('toDate', '2022-12-24').apply();
-
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -526,14 +474,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
   }));
 
-  it('slush flow filter should be activated by url', fakeAsync(async () => {
+  it('slush flow filter should be activated by url', fakeAsync(() => {
     new UrlParams().set('slushFlow', true).apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria: SearchCriteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -545,14 +488,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(filter.Operator).toEqual(0);
   }));
 
-  it('slush flow filter should be deactivated by url', fakeAsync(async () => {
+  it('slush flow filter should be deactivated by url', fakeAsync(() => {
     new UrlParams().set('slushFlow', false).apply();
-    service = new SearchCriteriaService(
-      userSettingService,
-      mapService as unknown as MapService,
-      new TestLoggingService()
-    );
-
+    const service = getService();
     let criteria: SearchCriteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);

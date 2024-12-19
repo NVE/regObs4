@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import moment from 'moment';
 import { IonCol, IonGrid, IonLabel, IonRow, Platform } from '@ionic/angular/standalone';
 import { NgIf, NgClass, NgTemplateOutlet } from '@angular/common';
@@ -11,6 +11,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonCol, IonGrid, IonLabel, IonRow, NgClass, NgIf, NgTemplateOutlet, TranslatePipe],
 })
 export class WarningListHeaderComponent {
+  private platform = inject(Platform);
+
   @Input() title: string;
   @Input() subTitle: string;
   @Input() showDayNames: boolean;
@@ -18,8 +20,6 @@ export class WarningListHeaderComponent {
   get ios() {
     return this.platform.is('ios');
   }
-
-  constructor(private platform: Platform) {}
 
   getDayName(daysToAdd: number) {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;

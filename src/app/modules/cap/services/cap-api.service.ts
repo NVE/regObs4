@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CapFeed } from '../models/cap-feed.model';
 import { Observable, bindNodeCallback, bindCallback } from 'rxjs';
@@ -12,7 +12,8 @@ const knownArrayFields = ['items'];
   providedIn: 'root',
 })
 export class CapApiService {
-  constructor(private httpClient: HttpClient) {}
+  private httpClient = inject(HttpClient);
+
 
   getFeed(url: string) {
     return this.getApiCall<CapFeed>(url);

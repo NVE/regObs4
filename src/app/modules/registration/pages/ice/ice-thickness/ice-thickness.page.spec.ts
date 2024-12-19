@@ -1,13 +1,30 @@
-import { BasePageService } from '../../base-page-service';
+import { TestBed } from '@angular/core/testing';
 import { IceThicknessPage } from './ice-thickness.page';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideRouter } from '@angular/router';
 
 describe('IceThicknessPage', () => {
   let component: IceThicknessPage;
 
   beforeEach(() => {
-    const basePageService = new BasePageService(null, null, null, null, null, null);
-    component = new IceThicknessPage(basePageService, null, null, null);
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideIonicAngular(),
+        provideTestLogger(),
+        provideTranslateService(),
+        { provide: DraftRepositoryService, useValue: null },
+        { provide: NewAttachmentService, useValue: null },
+      ],
+    });
+    const fixture = TestBed.createComponent(IceThicknessPage);
+    component = fixture.componentInstance;
+
     component.draft = {
       registration: {
         DtObsTime: new Date(2020, 0, 1).toISOString(),

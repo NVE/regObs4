@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular/standalone';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,12 +13,11 @@ const FLAG_ACTIVITY_CLEAR_TOP = 67108864;
   providedIn: 'root',
 })
 export class ShortcutService {
-  constructor(
-    private platform: Platform,
-    private loggingService: LoggingService,
-    private translateService: TranslateService,
-    private geoHelperService: GeoHelperService
-  ) {}
+  private platform = inject(Platform);
+  private loggingService = inject(LoggingService);
+  private translateService = inject(TranslateService);
+  private geoHelperService = inject(GeoHelperService);
+
 
   init() {
     const w = <any>window;

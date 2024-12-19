@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import {
   IonCol,
   IonGrid,
@@ -66,6 +57,11 @@ const DEBUG_TAG = 'SentListComponent';
   ],
 })
 export class SentListComponent implements OnInit, OnDestroy {
+  private searchRegistrationService = inject(SearchRegistrationService);
+  private userSettingService = inject(UserSettingService);
+  private logger = inject(LoggingService);
+  private cdr = inject(ChangeDetectorRef);
+
   @Output() isEmpty = new EventEmitter<boolean>();
 
   myRegistrations: RegistrationViewModel[];
@@ -84,14 +80,10 @@ export class SentListComponent implements OnInit, OnDestroy {
     return PagedSearchResult.MAX_ITEMS;
   }
 
-  constructor(
-    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private searchRegistrationService: SearchRegistrationService,
-    private userSettingService: UserSettingService,
-    private logger: LoggingService,
-    networkStatusService: NetworkStatusService,
-    private cdr: ChangeDetectorRef
-  ) {
+  constructor() {
+    const addUpdateDeleteRegistrationService = inject(AddUpdateDeleteRegistrationService);
+    const networkStatusService = inject(NetworkStatusService);
+
     this.isOffline$ = networkStatusService.connected$.pipe(
       takeUntil(this.ngDestroy$),
       map((connected) => !connected)

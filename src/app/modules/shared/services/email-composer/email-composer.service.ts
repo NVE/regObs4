@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { ToastController } from '@ionic/angular/standalone';
@@ -9,11 +9,10 @@ import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
   providedIn: 'root',
 })
 export class EmailComposerService {
-  constructor(
-    private emailComposer: EmailComposer,
-    private toastController: ToastController,
-    private translateService: TranslateService
-  ) {}
+  private emailComposer = inject(EmailComposer);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
+
 
   async canSendEmail(): Promise<boolean> {
     const platform = Capacitor.getPlatform();

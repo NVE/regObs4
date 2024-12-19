@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, inject } from '@angular/core';
 import {
   AlertController,
   IonButton,
@@ -54,6 +54,17 @@ const DELETE_OBS_TIMEOUT_MS = 5000;
   ],
 })
 export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChanges {
+  private draftService = inject(DraftRepositoryService);
+  private alertController = inject(AlertController);
+  private translateService = inject(TranslateService);
+  private navController = inject(NavController);
+  private regobsAuthService = inject(RegobsAuthService);
+  private draftToRegistrationService = inject(DraftToRegistrationService);
+  private addUpdateDeleteRegistrationService = inject(AddUpdateDeleteRegistrationService);
+  private logger = inject(LoggingService);
+  private newAttachmentService = inject(NewAttachmentService);
+  private confirmationModalService = inject(ConfirmationModalService);
+
   @Input() draft: RegistrationDraft;
 
   isDisabled$: Observable<boolean>;
@@ -61,19 +72,10 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   private isSending = new Subject<boolean>();
   private hasChanges = new Subject<void>();
 
-  constructor(
-    private draftService: DraftRepositoryService,
-    private alertController: AlertController,
-    private translateService: TranslateService,
-    private navController: NavController,
-    private regobsAuthService: RegobsAuthService,
-    private draftToRegistrationService: DraftToRegistrationService,
-    private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private logger: LoggingService,
-    private newAttachmentService: NewAttachmentService,
-    private confirmationModalService: ConfirmationModalService
-  ) {
+  constructor() {
     super();
+    const regobsAuthService = this.regobsAuthService;
+
     this.caption$ = regobsAuthService.loggedInUser$.pipe(
       takeUntil(this.ngDestroy$),
       map((user) => {

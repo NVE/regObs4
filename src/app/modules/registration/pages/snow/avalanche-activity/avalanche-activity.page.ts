@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
@@ -55,17 +55,18 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class AvalancheActivityPage extends BasePage {
+  private modalController = inject(ModalController);
+  private ngZone = inject(NgZone);
+  private kdvService = inject(KdvService);
+
   private avalancheCause: KdvElement[];
   private estimatedNumber: KdvElement[];
   private kdvSubscription: Subscription;
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private modalController: ModalController,
-    private ngZone: NgZone,
-    private kdvService: KdvService
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.AvalancheActivityObs2, basePageService, activatedRoute);
     this.avalancheCause = [];
     this.estimatedNumber = [];

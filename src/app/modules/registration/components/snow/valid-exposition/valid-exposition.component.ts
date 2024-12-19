@@ -1,5 +1,5 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, NgZone, inject } from '@angular/core';
 import { NgIf, NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,12 +13,12 @@ const ALL_EXPOSITION = '11111111';
   imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, NgIf, TranslatePipe],
 })
 export class ValidExpositionComponent implements OnInit {
+  private ngZone = inject(NgZone);
+
   @Input() validExposition: string;
   @Output() validExpositionChange = new EventEmitter();
 
   validExpositionCopy: string;
-
-  constructor(private ngZone: NgZone) {}
 
   ngOnInit() {
     if (!this.validExposition) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone, inject } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -59,6 +59,10 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
+  private modalController = inject(ModalController);
+  private draftRepository = inject(DraftRepositoryService);
+  private ngZone = inject(NgZone);
+
   @Input() uuid: string;
   private layerModal: HTMLIonModalElement;
   private initialRegistrationClone: RegistrationDraft;
@@ -77,11 +81,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
     return this.tempProfile?.Layers?.length > 0;
   }
 
-  constructor(
-    private modalController: ModalController,
-    private draftRepository: DraftRepositoryService,
-    private ngZone: NgZone
-  ) {
+  constructor() {
     addIcons({ addCircleOutline });
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnDestroy, Renderer2, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, Renderer2, ViewChild, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
@@ -15,6 +15,13 @@ import { star } from 'ionicons/icons';
   imports: [IonIcon, NgClass],
 })
 export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChanges {
+  private warningService = inject(WarningService);
+  private translateService = inject(TranslateService);
+  private ngZone = inject(NgZone);
+  private domCtrl = inject(DomController);
+  private renderer = inject(Renderer2);
+  private toastController = inject(ToastController);
+
   @Input() key: WarningGroupKey;
   @ViewChild(IonIcon) ionIcon: IonIcon;
 
@@ -22,14 +29,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
   isFavourite: boolean;
   private _lastKey: WarningGroupKey;
 
-  constructor(
-    private warningService: WarningService,
-    private translateService: TranslateService,
-    private ngZone: NgZone,
-    private domCtrl: DomController,
-    private renderer: Renderer2,
-    private toastController: ToastController
-  ) {
+  constructor() {
     addIcons({ star });
   }
 

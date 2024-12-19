@@ -1,5 +1,5 @@
 import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
-import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
@@ -17,11 +17,15 @@ import { personCircleOutline, eyeOutline } from 'ionicons/icons';
   imports: [IonIcon, IonItem, IonLabel, IonSpinner, IonText, NgIf, RouterLink, TranslatePipe, IonRouterLink],
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
+  private regobsauthService = inject(RegobsAuthService);
+  private router = inject(Router);
+  private ngZone = inject(NgZone);
+
   loggedInUser: LoggedInUser = { isLoggedIn: false };
   private ngDestroy$ = new Subject<void>();
   isLoggingIn = false;
 
-  constructor(private regobsauthService: RegobsAuthService, private router: Router, private ngZone: NgZone) {
+  constructor() {
     addIcons({ personCircleOutline, eyeOutline });
   }
 

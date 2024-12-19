@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom, Subject, take, withLatestFrom } from 'rxjs';
@@ -15,14 +15,15 @@ const DEBUG_TAG = 'ApiVersionService';
   providedIn: 'root',
 })
 export class ApiVersionService {
+  private logger = inject(LoggingService);
+  private translateService = inject(TranslateService);
+  private toastService = inject(ToastController);
+
   private sunsetDate = new Subject<string>();
 
-  constructor(
-    private logger: LoggingService,
-    private translateService: TranslateService,
-    private toastService: ToastController,
-    userSettingsService: UserSettingService
-  ) {
+  constructor() {
+    const userSettingsService = inject(UserSettingService);
+
     this.sunsetDate
       .pipe(
         filter((sunsetDate) => sunsetDate !== null),

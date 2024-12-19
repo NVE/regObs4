@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { IonFabButton, IonIcon, IonItem, ModalController, Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
@@ -18,6 +18,11 @@ type HrefType = { title: string; url: string };
   imports: [IonFabButton, IonIcon, IonItem, NgIf, TranslatePipe],
 })
 export class FullscreenImageModalPage implements OnInit {
+  private modalController = inject(ModalController);
+  private cdr = inject(ChangeDetectorRef);
+  private platform = inject(Platform);
+  private router = inject(Router);
+
   // @ViewChild(IonSlides) slider: IonSlides;
 
   @Input() imgIndex: number;
@@ -29,12 +34,7 @@ export class FullscreenImageModalPage implements OnInit {
   slideOptions;
   isHybrid: boolean;
 
-  constructor(
-    private modalController: ModalController,
-    private cdr: ChangeDetectorRef,
-    private platform: Platform,
-    private router: Router
-  ) {
+  constructor() {
     addIcons({ close });
   }
 

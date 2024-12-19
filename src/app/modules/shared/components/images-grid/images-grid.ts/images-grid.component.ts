@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { LoggingService } from '../../../services/logging/logging.service';
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { ModalController } from '@ionic/angular/standalone';
@@ -14,9 +14,10 @@ import { NgFor } from '@angular/common';
   imports: [NgFor],
 })
 export class ImagesGridComponent {
-  @Input() attachments: SearchRegistrationsWithAttachments[];
+  private logger = inject(LoggingService);
+  private modalController = inject(ModalController);
 
-  constructor(private logger: LoggingService, private modalController: ModalController) {}
+  @Input() attachments: SearchRegistrationsWithAttachments[];
 
   trackById(_, obs: HasRegId) {
     return obs ? obs.RegId : undefined;

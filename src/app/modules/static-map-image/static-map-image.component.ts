@@ -20,17 +20,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  ViewChild,
-  AfterViewInit,
-  ElementRef,
-  TrackByFunction,
-  HostListener,
-} from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, AfterViewInit, ElementRef, TrackByFunction, HostListener, inject } from '@angular/core';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -137,6 +127,11 @@ const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): 
   imports: [NgFor, NgStyle],
 })
 export class StaticMapImageComponent extends NgDestoryBase implements AfterViewInit {
+  private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
+  private mapLayerService = inject(MapLayersService);
+  private logger = inject(LoggingService);
+
   @Input() location: ImageLocation;
   @Input() allowZoom: boolean;
 
@@ -177,12 +172,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
 
   private mercator = new SphericalMercator({ size: TILE_SIZE });
 
-  constructor(
-    private sanitizer: DomSanitizer,
-    private cdr: ChangeDetectorRef,
-    private mapLayerService: MapLayersService,
-    private logger: LoggingService
-  ) {
+  constructor() {
     super();
 
     this.componentCreatedOrResized

@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import moment from 'moment';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -15,6 +15,9 @@ import { Subscription } from 'rxjs';
   imports: [IonCol, IonGrid, IonLabel, IonRow, IonText],
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {
+  private tripLoggerService = inject(TripLoggerService);
+  private helperService = inject(HelperService);
+
   private tripLogSubscription: Subscription;
   private tripLogActivitySubscription: Subscription;
 
@@ -22,8 +25,6 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
   interval: NodeJS.Timer;
   tripLog: TripLogItem[];
   tripLogActivity: TripLogActivity[];
-
-  constructor(private tripLoggerService: TripLoggerService, private helperService: HelperService) {}
 
   ngOnInit() {
     this.tripLogSubscription = this.tripLoggerService.getTripLogAsObservable().subscribe((tripLog) => {

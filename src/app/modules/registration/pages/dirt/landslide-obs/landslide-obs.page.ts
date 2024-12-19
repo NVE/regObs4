@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import {
@@ -69,15 +69,16 @@ import { location, chevronForward, time } from 'ionicons/icons';
   ],
 })
 export class LandslideObsPage extends BasePage {
+  private modalController = inject(ModalController);
+
   maxDateStart: string;
   maxDateEnd: string;
   minDateEnd: string;
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
-    private modalController: ModalController
-  ) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
     addIcons({ location, chevronForward, time });
   }

@@ -13,7 +13,7 @@ import {
   SearchbarCustomEvent,
   ToggleCustomEvent,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
@@ -106,6 +106,14 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
+  private platform = inject(Platform);
+  private userSettingService = inject(UserSettingService);
+  private searchCriteriaService = inject(SearchCriteriaService);
+  private kdv = inject(KdvService);
+  private http = inject(HttpClient);
+  private logger = inject(LoggingService);
+  private searchCriteriaModelService = inject(SearchCriteriaModelService);
+
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
   isMobileWeb: boolean;
@@ -152,15 +160,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   slushFlowFilterIsActive = false;
 
-  constructor(
-    private platform: Platform,
-    private userSettingService: UserSettingService,
-    private searchCriteriaService: SearchCriteriaService,
-    private kdv: KdvService,
-    private http: HttpClient,
-    private logger: LoggingService,
-    private searchCriteriaModelService: SearchCriteriaModelService
-  ) {
+  constructor() {
     super();
 
     this.isMobileWeb = this.platform.is('mobileweb');

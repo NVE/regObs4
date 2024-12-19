@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonList, IonText, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -36,8 +36,11 @@ import { checkmarkCircle, chevronForward } from 'ionicons/icons';
   ],
 })
 export class SimpleWaterObsComponent {
+  private draftRepository = inject(DraftRepositoryService);
+  private navController = inject(NavController);
+
   @Input() draft: RegistrationDraft;
-  constructor(private draftRepository: DraftRepositoryService, private navController: NavController) {
+  constructor() {
     addIcons({ checkmarkCircle, chevronForward });
   }
 

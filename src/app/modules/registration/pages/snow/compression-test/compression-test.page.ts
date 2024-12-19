@@ -9,7 +9,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -44,7 +44,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class CompressionTestPage extends BasePage {
-  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  constructor() {
+    const basePageService = inject(BasePageService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(RegistrationTid.CompressionTest, basePageService, activatedRoute);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
@@ -12,6 +12,9 @@ import { Platform } from '@ionic/angular/standalone';
   providedIn: 'root',
 })
 export class DatabaseService {
+  private storage = inject(Storage);
+  private platform = inject(Platform);
+
   private database: Storage = null;
   private ready = new ReplaySubject<void>();
 
@@ -20,7 +23,7 @@ export class DatabaseService {
    */
   readonly ready$: Observable<void>;
 
-  constructor(private storage: Storage, private platform: Platform) {
+  constructor() {
     this.init();
     this.ready$ = this.ready.asObservable();
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, combineLatest, map, switchMap, timeout } from 'rxjs';
 import {
   ObserverCompetenceLevelDto,
@@ -33,12 +33,11 @@ const DEBUG_TAG = 'SearchCriteriaModelService';
   providedIn: 'root',
 })
 export class SearchCriteriaModelService {
-  constructor(
-    private searchService: SearchService,
-    private userSettings: UserSettingService,
-    private http: HttpClient,
-    private logger: LoggingService
-  ) {}
+  private searchService = inject(SearchService);
+  private userSettings = inject(UserSettingService);
+  private http = inject(HttpClient);
+  private logger = inject(LoggingService);
+
 
   /**
    * The API request needs langKey and geoHazards as parameters
