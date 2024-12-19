@@ -21,7 +21,7 @@ import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operato
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
 import { addIcons } from 'ionicons';
 import { search, close, time } from 'ionicons/icons';
@@ -47,7 +47,7 @@ import { search, close, time } from 'ionicons/icons';
     NgIf,
     ReactiveFormsModule,
     StartsWithHighlightPipe,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ModalSearchPage implements OnInit, ViewDidEnter {

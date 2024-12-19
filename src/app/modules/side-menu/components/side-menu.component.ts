@@ -18,7 +18,7 @@ import {
   IonRouterLink,
 } from '@ionic/angular/standalone';
 import { TopoMap } from '../../../core/models/topo-map.enum';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import version from '../../../../environments/version.json';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
@@ -65,7 +65,7 @@ import {
     NgIf,
     RouterLink,
     SupportTilesMenuComponent,
-    TranslateModule,
+    TranslatePipe,
     UpperCasePipe,
     UserLoginComponent,
     IonRouterLink,

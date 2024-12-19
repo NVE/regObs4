@@ -17,7 +17,7 @@ import { AppMode } from 'src/app/modules/common-core/models';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
 import { BreakpointService } from '../../../../core/services/breakpoint.service';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { menuOutline, optionsOutline } from 'ionicons/icons';
 
@@ -36,7 +36,7 @@ import { menuOutline, optionsOutline } from 'ionicons/icons';
     IonTitle,
     IonToolbar,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {

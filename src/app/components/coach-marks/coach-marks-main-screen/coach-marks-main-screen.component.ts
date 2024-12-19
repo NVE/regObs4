@@ -7,7 +7,7 @@ import { trigger } from '@angular/animations';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../core/animations/custom.animation';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { GeoFabComponent } from '../../../modules/shared/components/geo-fab/geo-fab.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { add, map as mapIcon, list, warning } from 'ionicons/icons';
 
@@ -33,7 +33,7 @@ import { add, map as mapIcon, list, warning } from 'ionicons/icons';
     IonTabButton,
     IonText,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {

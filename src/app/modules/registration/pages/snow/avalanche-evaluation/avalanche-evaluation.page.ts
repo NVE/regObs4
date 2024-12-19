@@ -20,7 +20,7 @@ import { RegistrationContentWrapperComponent } from '../../../components/registr
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-evaluation',
@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgIf,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class AvalancheEvaluationPage extends BasePage {

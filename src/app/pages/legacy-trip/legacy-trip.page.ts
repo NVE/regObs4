@@ -22,7 +22,7 @@ import {
   ModalController,
   NavController,
 } from '@ionic/angular/standalone';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
@@ -68,7 +68,7 @@ const DEBUG_TAG = 'LegacyTripPage';
     SelectComponent,
     SvgIconComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class LegacyTripPage implements OnInit, OnDestroy {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 
 import { CheckDaysOrWeeksBackComponent } from './check-days-or-weeks-back.component';
 
@@ -9,7 +9,8 @@ describe('CheckDaysOrWeeksBackComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), CheckDaysOrWeeksBackComponent],
+      providers: [provideTranslateService()],
+      imports: [CheckDaysOrWeeksBackComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CheckDaysOrWeeksBackComponent);

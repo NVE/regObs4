@@ -28,7 +28,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/format-date.pipe';
 
 @Component({
@@ -52,7 +52,7 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/forma
     IonToolbar,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {

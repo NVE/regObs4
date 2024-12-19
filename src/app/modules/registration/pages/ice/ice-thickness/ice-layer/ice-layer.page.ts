@@ -16,7 +16,7 @@ import { HeaderColorDirective } from '../../../../../shared/directives/header-co
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ice-layer',
@@ -36,7 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
     NumericInputComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class IceLayerPage implements OnInit {

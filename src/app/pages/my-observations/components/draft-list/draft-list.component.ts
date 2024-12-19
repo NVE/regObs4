@@ -6,7 +6,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { SyncItemComponent } from '../sync-item/sync-item.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-draft-list',
@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgFor,
     NgIf,
     SyncItemComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class DraftListComponent implements OnInit {

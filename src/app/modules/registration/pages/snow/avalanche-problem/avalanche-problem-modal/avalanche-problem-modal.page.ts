@@ -25,7 +25,7 @@ import { ExposedHeightComponent } from '../../../../components/snow/exposed-heig
 import { ValidExpositionComponent } from '../../../../components/snow/valid-exposition/valid-exposition.component';
 import { TextCommentComponent } from '../../../../components/text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 const NO_WEAK_LAYER_KDV_VALUE = 24;
 
@@ -64,7 +64,7 @@ interface AvalancheProblemKeys {
     NgFor,
     NgIf,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
     ValidExpositionComponent,
   ],
 })

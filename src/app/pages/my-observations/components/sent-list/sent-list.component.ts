@@ -35,7 +35,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { ObservationListCardComponent } from '../../../../components/observation/observation-list-card/observation-list-card.component';
 import { ObservationSkeletonComponent } from '../../../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'SentListComponent';
 
@@ -62,7 +62,7 @@ const DEBUG_TAG = 'SentListComponent';
     ObservationListCardComponent,
     ObservationSkeletonComponent,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SentListComponent implements OnInit, OnDestroy {

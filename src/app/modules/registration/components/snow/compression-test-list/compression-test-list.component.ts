@@ -3,7 +3,7 @@ import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/mode
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, ModalController } from '@ionic/angular/standalone';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
 import { NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
@@ -24,7 +24,7 @@ import { link, addCircleOutline } from 'ionicons/icons';
     MetersToCmPipe,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class CompressionTestListComponent {

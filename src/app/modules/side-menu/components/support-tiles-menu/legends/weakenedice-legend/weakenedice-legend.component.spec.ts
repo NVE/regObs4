@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WeakenediceLegendComponent } from './weakenedice-legend.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('WeakenediceLegendComponent', () => {
   let component: WeakenediceLegendComponent;
@@ -8,7 +8,8 @@ describe('WeakenediceLegendComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [WeakenediceLegendComponent, TranslateModule.forRoot()],
+      providers: [provideTranslateService()],
+      imports: [WeakenediceLegendComponent],
     }).compileComponents();
   }));
 

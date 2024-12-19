@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import {
   ActionSheetController,
   IonFab,
@@ -76,7 +76,7 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
     NgxFileDropModule,
     RemoteImageComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class EditImagesComponent implements OnInit {

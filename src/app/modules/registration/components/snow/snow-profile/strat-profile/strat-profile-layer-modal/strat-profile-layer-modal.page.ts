@@ -18,7 +18,7 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { StratProfileLayerEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import cloneDeep from 'clone-deep';
@@ -66,7 +66,7 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
     NumericInputComponent,
     SelectComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class StratProfileLayerModalPage implements OnInit {

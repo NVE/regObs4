@@ -10,7 +10,7 @@ import { Capacitor } from '@capacitor/core';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupportTileLegendLoaderComponent } from './legends/support-tile-legend-loader/support-tile-legend-loader.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { mapOutline } from 'ionicons/icons';
 
@@ -37,7 +37,7 @@ interface PopupSubscription {
     NgFor,
     NgIf,
     SupportTileLegendLoaderComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {

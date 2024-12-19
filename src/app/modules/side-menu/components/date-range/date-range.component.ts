@@ -20,7 +20,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-date-range',
@@ -40,7 +40,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonText,
     NgIf,
     ObservationsDaysBackComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class DateRangeComponent extends NgDestoryBase {

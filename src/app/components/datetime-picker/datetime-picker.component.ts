@@ -15,7 +15,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { firstValueFrom } from 'rxjs';
 import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
 import { NgClass, DatePipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-datetime-picker',
@@ -32,7 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     NgClass,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 /**

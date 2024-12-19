@@ -30,7 +30,7 @@ import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-sel
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add-web-url-item.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { location, chevronForward, time } from 'ionicons/icons';
 
@@ -65,7 +65,7 @@ import { location, chevronForward, time } from 'ionicons/icons';
     NgIf,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class LandslideObsPage extends BasePage {

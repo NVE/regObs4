@@ -10,7 +10,7 @@ import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
 import { RouterLink } from '@angular/router';
 import { GeoIconComponent } from '../../../../modules/shared/components/geo-icon/geo-icon.component';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../../../modules/shared/pipes/format-date/format-date.pipe';
 import { addIcons } from 'ionicons';
 import { calendar } from 'ionicons/icons';
@@ -30,7 +30,7 @@ import { calendar } from 'ionicons/icons';
     IonSpinner,
     NgIf,
     RouterLink,
-    TranslateModule,
+    TranslatePipe,
     IonRouterLink,
   ],
 })

@@ -36,7 +36,7 @@ import { DateRangeComponent } from '../date-range/date-range.component';
 import { UpdateObservationsComponent } from '../update-observations/update-observations.component';
 import { SelectedItemsCounterLabelComponent } from '../selected-items-counter-label/selected-items-counter-label.component';
 import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { eye } from 'ionicons/icons';
 
@@ -101,7 +101,7 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
     ObservationsDaysBackComponent,
     SelectedItemsCounterLabelComponent,
     SlushFlowFilterComponent,
-    TranslateModule,
+    TranslatePipe,
     UpdateObservationsComponent,
   ],
 })

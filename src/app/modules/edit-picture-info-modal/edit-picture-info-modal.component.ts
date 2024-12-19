@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons';
 
@@ -9,7 +9,7 @@ import { close } from 'ionicons/icons';
   selector: 'app-edit-picture-info-modal',
   templateUrl: './edit-picture-info-modal.component.html',
   styleUrls: ['./edit-picture-info-modal.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslateModule],
+  imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslatePipe],
 })
 export class EditPictureInfoModalComponent {
   copyright: string;

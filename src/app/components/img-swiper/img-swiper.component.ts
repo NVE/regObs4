@@ -19,14 +19,14 @@ import { BreakpointService } from '../../core/services/breakpoint.service';
 import { NgIf, NgClass } from '@angular/common';
 import { RemoteImageComponent } from '../../modules/shared/components/remote-image/remote-image.component';
 import { StaticMapImageComponent } from '../../modules/static-map-image/static-map-image.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-img-swiper',
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonLabel, NgClass, NgIf, RemoteImageComponent, StaticMapImageComponent, TranslateModule],
+  imports: [IonLabel, NgClass, NgIf, RemoteImageComponent, StaticMapImageComponent, TranslatePipe],
 })
 export class ImgSwiperComponent implements OnChanges, OnDestroy {
   @Input() attachments: AttachmentViewModel[] = [];

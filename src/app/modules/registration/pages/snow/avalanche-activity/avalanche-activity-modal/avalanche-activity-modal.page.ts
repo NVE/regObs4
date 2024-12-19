@@ -26,7 +26,7 @@ import { ExposedHeightComponent } from '../../../../components/snow/exposed-heig
 import { ValidExpositionComponent } from '../../../../components/snow/valid-exposition/valid-exposition.component';
 import { TextCommentComponent } from '../../../../components/text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
@@ -55,7 +55,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgFor,
     NgIf,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
     ValidExpositionComponent,
   ],
 })

@@ -28,7 +28,7 @@ import { NumericInputComponent } from '../../../components/numeric-input/numeric
 import { YesNoSelectComponent } from '../../../components/yes-no-select/yes-no-select.component';
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
@@ -62,7 +62,7 @@ import { addCircleOutline } from 'ionicons/icons';
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
     YesNoSelectComponent,
   ],
 })

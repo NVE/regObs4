@@ -5,7 +5,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
 import { ISummaryItem } from '../summary-item/summary-item.model';
 import { NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward } from 'ionicons/icons';
 
@@ -16,7 +16,7 @@ import { arrowBack, arrowForward } from 'ionicons/icons';
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',
   styleUrls: ['./navigation-buttons.component.scss'],
-  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, IonText, NgIf, TranslateModule],
+  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, IonText, NgIf, TranslatePipe],
 })
 export class NavigationButtonsComponent implements OnInit {
   @Input() draft: RegistrationDraft;

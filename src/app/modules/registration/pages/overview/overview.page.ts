@@ -15,7 +15,7 @@ import { getRegistrationName } from 'src/app/modules/common-registration/registr
 import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import {
   AlertController,
   IonBackButton,
@@ -87,7 +87,7 @@ const DEBUG_TAG = 'OverviewPage';
     SimpleSnowObsComponent,
     SimpleWaterObsComponent,
     SummaryItemComponent,
-    TranslateModule,
+    TranslatePipe,
     UpperCasePipe,
   ],
 })

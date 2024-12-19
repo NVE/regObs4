@@ -6,7 +6,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { EditImagesComponent } from './edit-images.component';
 import { LowerCasePipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * A modal popup/page containing the EditImagesComponent.
@@ -25,7 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     LowerCasePipe,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class EditImagesPage {

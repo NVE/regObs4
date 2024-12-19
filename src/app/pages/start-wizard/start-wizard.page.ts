@@ -9,14 +9,14 @@ import { settings } from '../../../settings';
 import { UserSetting } from 'src/app/core/models/user-settings.model';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-start-wizard',
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
   animations: animations,
-  imports: [IonButton, IonContent, IonFooter, IonToolbar, NgIf, TranslateModule],
+  imports: [IonButton, IonContent, IonFooter, IonToolbar, NgIf, TranslatePipe],
 })
 export class StartWizardPage implements OnInit, OnDestroy {
   // @ViewChild(IonSlides) slides: IonSlides;

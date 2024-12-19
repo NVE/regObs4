@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { PopupInfoService } from './popup-info.service';
 import moment from 'moment';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 
@@ -11,8 +11,7 @@ describe('PopupInfoService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: LoggingService, useClass: TestLoggingService }],
-      imports: [TranslateModule.forRoot()],
+      providers: [{ provide: LoggingService, useClass: TestLoggingService }, provideTranslateService()],
     });
     service = TestBed.inject(PopupInfoService);
   });

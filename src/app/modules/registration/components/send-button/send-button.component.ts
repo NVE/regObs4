@@ -10,7 +10,7 @@ import {
   IonToolbar,
   NavController,
 } from '@ionic/angular/standalone';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { combineLatest, firstValueFrom, Observable, Subject } from 'rxjs';
@@ -50,7 +50,7 @@ const DELETE_OBS_TIMEOUT_MS = 5000;
     IonToolbar,
     NgIf,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChanges {
