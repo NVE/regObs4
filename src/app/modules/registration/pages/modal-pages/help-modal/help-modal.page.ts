@@ -10,7 +10,7 @@ import {
 } from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { MarkdownComponent } from 'ngx-markdown';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-help-modal',
@@ -25,7 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     MarkdownComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class HelpModalPage {

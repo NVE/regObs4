@@ -34,7 +34,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
@@ -74,7 +74,7 @@ import { cloudDownload, addCircleOutline } from 'ionicons/icons';
     MetersToCmPipe,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {

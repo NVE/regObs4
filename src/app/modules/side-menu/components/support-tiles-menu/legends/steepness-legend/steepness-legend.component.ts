@@ -5,14 +5,14 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { setObservableTimeout } from '../../../../../../core/helpers/observable-helper';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { SteepnessCommonLegendComponent } from '../steepness-common-legend/steepness-common-legend.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-steepness-legend',
   templateUrl: './steepness-legend.component.html',
   styleUrls: ['./steepness-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, SteepnessCommonLegendComponent, AsyncPipe, TranslateModule],
+  imports: [NgIf, SteepnessCommonLegendComponent, AsyncPipe, TranslatePipe],
 })
 export class SteepnessLegendComponent {
   readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;

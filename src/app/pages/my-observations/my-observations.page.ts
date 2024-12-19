@@ -18,7 +18,7 @@ import { DraftListComponent } from './components/draft-list/draft-list.component
 import { NgIf } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-my-observations',
@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     RefreshWithCancelComponent,
     SentListComponent,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class MyObservationsPage {

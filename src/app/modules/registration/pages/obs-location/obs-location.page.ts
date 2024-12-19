@@ -25,7 +25,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { LocationService } from 'src/app/modules/common-regobs-api';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-obs-location',
@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonToolbar,
     NgIf,
     SetLocationInMapComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ObsLocationPage implements OnInit, OnDestroy {

@@ -25,7 +25,7 @@ import { AbonnerBannerComponent } from './abonner-banner/abonner-banner.componen
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { GeoSelectComponent } from '../../modules/shared/components/geo-select/geo-select.component';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -51,7 +51,7 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
     NgTemplateOutlet,
     RefreshWithCancelComponent,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class WarningListPage {

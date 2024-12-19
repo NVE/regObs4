@@ -12,7 +12,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 import { NgIf, NgClass, AsyncPipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
 
 @Component({
@@ -30,7 +30,7 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
     NgClass,
     NgIf,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 /**

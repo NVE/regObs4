@@ -13,7 +13,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { Location, NgIf, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { SetLocationInMapComponent } from '../../../components/set-location-in-map/set-location-in-map.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-set-flood-area',
@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonToolbar,
     NgIf,
     SetLocationInMapComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SetFloodAreaPage implements OnInit {

@@ -7,7 +7,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-kdv-radiobutton-list',
@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgClass,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class KdvRadiobuttonListComponent implements OnInit {

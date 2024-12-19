@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/angular/standalone';
 import { Clipboard } from '@capacitor/clipboard';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -33,7 +33,7 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   templateUrl: './map-center-info.component.html',
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AbsPipe, DecimalPipe, IonGrid, IonIcon, IonRow, IonSpinner, NgIf, NgStyle, TranslateModule],
+  imports: [AbsPipe, DecimalPipe, IonGrid, IonIcon, IonRow, IonSpinner, NgIf, NgStyle, TranslatePipe],
 })
 export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private userPos: Position; // Caches the gps position for distance and height diff computation

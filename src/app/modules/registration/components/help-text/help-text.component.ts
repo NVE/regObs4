@@ -5,7 +5,7 @@ import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.pag
 import { HelpTextService } from 'src/app/modules/common-registration/registration.services';
 import { firstValueFrom, Observable } from 'rxjs';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * If help text exists for given registrationTid and heoHazard, show a "HELP"-button.
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './help-text.component.html',
   styleUrls: ['./help-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonButton, IonCol, IonGrid, IonRow, NgIf, TranslateModule],
+  imports: [AsyncPipe, IonButton, IonCol, IonGrid, IonRow, NgIf, TranslatePipe],
 })
 export class HelpTextComponent implements OnInit {
   @Input() registrationTid: number;

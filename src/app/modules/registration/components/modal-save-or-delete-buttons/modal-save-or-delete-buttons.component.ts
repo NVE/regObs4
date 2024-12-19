@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AlertController, IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular/standalone';
 import {
   ConfirmationModalService,
@@ -13,7 +13,7 @@ import { trash } from 'ionicons/icons';
   selector: 'app-modal-save-or-delete-buttons',
   templateUrl: './modal-save-or-delete-buttons.component.html',
   styleUrls: ['./modal-save-or-delete-buttons.component.scss'],
-  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, NgIf, TranslateModule],
+  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, NgIf, TranslatePipe],
 })
 export class ModalSaveOrDeleteButtonsComponent {
   @Input() saveText = 'DIALOGS.OK';

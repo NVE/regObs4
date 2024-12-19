@@ -30,7 +30,7 @@ import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/
 import { Router } from '@angular/router';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-information',
@@ -54,7 +54,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonToolbar,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class UserInformation implements OnInit {

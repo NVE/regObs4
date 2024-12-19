@@ -23,7 +23,7 @@ import { getDownloadCompleteDate, isPackageOutdated } from 'src/app/core/service
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { NgIf, NgStyle, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { MapComponent } from '../../../modules/map/components/map/map.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import {
   checkmark,
@@ -61,7 +61,7 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
     MapComponent,
     NgIf,
     NgStyle,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {

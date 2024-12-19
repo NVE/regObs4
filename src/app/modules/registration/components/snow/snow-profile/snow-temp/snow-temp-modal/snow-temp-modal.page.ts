@@ -26,7 +26,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
@@ -55,7 +55,7 @@ import { addCircleOutline } from 'ionicons/icons';
     MetersToCmPipe,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {

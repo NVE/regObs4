@@ -12,7 +12,7 @@ import {
   IonButtons,
 } from '@ionic/angular/standalone';
 import { Component } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map, chevronForward, walk } from 'ionicons/icons';
 
@@ -32,7 +32,7 @@ import { map, chevronForward, walk } from 'ionicons/icons';
     IonMenuButton,
     IonTitle,
     IonToolbar,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class TripPage {

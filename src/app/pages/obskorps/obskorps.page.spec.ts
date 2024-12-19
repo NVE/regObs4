@@ -9,7 +9,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 
@@ -33,7 +33,7 @@ describe('ObskorpsPage', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ObskorpsPage, AppHeaderStubComponent, TranslateModule.forRoot()],
+      imports: [ObskorpsPage, AppHeaderStubComponent],
       providers: [
         {
           provide: RegobsAuthService,
@@ -43,6 +43,7 @@ describe('ObskorpsPage', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         { provide: LoggingService, useClass: TestLoggingService },
+        provideTranslateService(),
       ],
       schemas: [NO_ERRORS_SCHEMA],
     });

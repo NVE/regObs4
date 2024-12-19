@@ -9,7 +9,7 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -40,7 +40,7 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
     IonToolbar,
     NgIf,
     SetLocationInMapComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SetAvalanchePositionPage implements OnInit {

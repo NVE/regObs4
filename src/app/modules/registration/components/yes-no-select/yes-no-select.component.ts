@@ -2,13 +2,13 @@ import { IonItem, IonLabel } from '@ionic/angular/standalone';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';
 import { SelectComponent } from '../../../shared/components/input/select/select.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-yes-no-select',
   templateUrl: './yes-no-select.component.html',
   styleUrls: ['./yes-no-select.component.scss'],
-  imports: [IonItem, IonLabel, SelectComponent, TranslateModule],
+  imports: [IonItem, IonLabel, SelectComponent, TranslatePipe],
 })
 export class YesNoSelectComponent {
   @Input() value: boolean;

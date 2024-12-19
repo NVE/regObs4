@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditPictureInfoModalComponent } from './edit-picture-info-modal.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 
 describe('EditPictureInfoModalComponent', () => {
@@ -9,8 +9,8 @@ describe('EditPictureInfoModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideIonicAngular()],
-      imports: [EditPictureInfoModalComponent, TranslateModule.forRoot()],
+      providers: [provideIonicAngular(), provideTranslateService()],
+      imports: [EditPictureInfoModalComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditPictureInfoModalComponent);

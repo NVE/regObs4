@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { isAndroidOrIos } from '../../../../../core/helpers/ionic/platform-helper';
@@ -25,7 +25,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslateModule],
+  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe],
 })
 export class SelectComponent implements OnInit {
   @Input() label: string;

@@ -18,7 +18,7 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
 import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
 import { FormsModule } from '@angular/forms';
 import { ModalSaveOrDeleteButtonsComponent } from '../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-web-url-modal',
@@ -40,7 +40,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonToolbar,
     ModalSaveOrDeleteButtonsComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class AddWebUrlModalPage implements OnInit {

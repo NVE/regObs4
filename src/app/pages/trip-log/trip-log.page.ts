@@ -18,7 +18,7 @@ import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enu
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { TripLogSummaryComponent } from '../../components/trip-log-summary/trip-log-summary.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trip-log',
@@ -37,7 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     TripLogSummaryComponent,
   ],
 })

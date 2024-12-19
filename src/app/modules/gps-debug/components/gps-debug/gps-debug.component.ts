@@ -9,7 +9,7 @@ import moment from 'moment';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
 import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
 
@@ -17,7 +17,7 @@ import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
   selector: 'app-gps-debug',
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
-  imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, NgFor, NgIf, TranslateModule],
+  imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, NgFor, NgIf, TranslatePipe],
 })
 export class GpsDebugComponent implements OnInit, OnDestroy {
   showLog$: Observable<boolean>;

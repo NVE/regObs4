@@ -29,7 +29,7 @@ import { HeaderColorDirective } from '../../../../shared/directives/header-color
 import { NgIf, NgFor } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
 
@@ -61,7 +61,7 @@ import { addCircleOutline } from 'ionicons/icons';
     NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class AvalancheProblemPage extends BasePage {

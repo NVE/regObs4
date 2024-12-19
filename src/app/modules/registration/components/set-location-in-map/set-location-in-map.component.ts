@@ -12,7 +12,7 @@ import {
   IonSpinner,
   IonToggle,
 } from '@ionic/angular/standalone';
-import { LangChangeEvent, TranslateService, TranslateModule } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService, TranslatePipe } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
@@ -129,7 +129,7 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
     NgIf,
     SelectComponent,
     SvgIconComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {

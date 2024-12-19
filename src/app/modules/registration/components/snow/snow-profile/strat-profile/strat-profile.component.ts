@@ -6,7 +6,7 @@ import { StratProfileEditModel } from 'src/app/modules/common-regobs-api/models'
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
 
@@ -20,7 +20,7 @@ import { checkmarkCircle } from 'ionicons/icons';
   selector: 'app-strat-profile',
   templateUrl: './strat-profile.component.html',
   styleUrls: ['./strat-profile.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslateModule],
+  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
 })
 export class StratProfileComponent {
   @Input() draft: RegistrationDraft;

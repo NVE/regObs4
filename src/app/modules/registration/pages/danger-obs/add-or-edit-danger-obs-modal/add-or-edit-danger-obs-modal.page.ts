@@ -15,7 +15,7 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { NgIf } from '@angular/common';
@@ -49,7 +49,7 @@ const COMMENT_SEPARATOR = ': ';
     NgIf,
     SelectComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class AddOrEditDangerObsModalPage implements OnInit {

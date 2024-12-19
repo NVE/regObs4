@@ -9,13 +9,13 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-support-map-info',
   templateUrl: './support-map-info.page.html',
   styleUrls: ['./support-map-info.page.scss'],
-  imports: [HeaderColorDirective, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, TranslateModule],
+  imports: [HeaderColorDirective, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, TranslatePipe],
 })
 export class SupportMapInfoPage {
   constructor(private modalController: ModalController) {}

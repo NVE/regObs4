@@ -26,7 +26,7 @@ import { HeaderColorDirective } from '../../../../../../shared/directives/header
 import { FormsModule } from '@angular/forms';
 import { NgIf, DecimalPipe } from '@angular/common';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward, trash } from 'ionicons/icons';
 
@@ -55,7 +55,7 @@ import { arrowBack, arrowForward, trash } from 'ionicons/icons';
     IonToolbar,
     NgIf,
     NumericInputComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class SnowDensityLayerModalPage implements OnInit {

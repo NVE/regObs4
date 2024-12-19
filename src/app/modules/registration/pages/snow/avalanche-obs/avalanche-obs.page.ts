@@ -42,7 +42,7 @@ import { NumericInputComponent } from '../../../components/numeric-input/numeric
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add-web-url-item.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { time, location, chevronForward } from 'ionicons/icons';
 
@@ -83,7 +83,7 @@ import { time, location, chevronForward } from 'ionicons/icons';
     RegistrationContentWrapperComponent,
     SelectComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class AvalancheObsPage extends BasePage {

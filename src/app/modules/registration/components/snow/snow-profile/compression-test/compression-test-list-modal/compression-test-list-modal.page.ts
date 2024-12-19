@@ -21,7 +21,7 @@ import { HeaderColorDirective } from '../../../../../../shared/directives/header
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { CompressionTestListComponent } from '../../../compression-test-list/compression-test-list.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-compression-test-list-modal',
@@ -41,7 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class CompressionTestListModalPage implements OnInit, OnDestroy {

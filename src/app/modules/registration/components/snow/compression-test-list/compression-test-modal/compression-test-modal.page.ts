@@ -23,7 +23,7 @@ import { SelectComponent } from '../../../../../shared/components/input/select/s
 import { NumericInputComponent } from '../../../numeric-input/numeric-input.component';
 import { TextCommentComponent } from '../../../text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-compression-test-modal',
@@ -48,7 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NumericInputComponent,
     SelectComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class CompressionTestModalPage implements OnInit {

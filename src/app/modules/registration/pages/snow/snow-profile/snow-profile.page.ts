@@ -22,7 +22,7 @@ import {
 } from '@ionic/angular/standalone';
 import { FullscreenImageModalPage } from '../../../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../../settings';
 import { firstValueFrom, from, of } from 'rxjs';
@@ -85,7 +85,7 @@ const DEBUG_TAG = 'SnowProfilePage';
     SnowTempComponent,
     StratProfileComponent,
     TextCommentComponent,
-    TranslateModule,
+    TranslatePipe,
     YesNoSelectComponent,
   ],
 })
