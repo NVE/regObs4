@@ -20,7 +20,7 @@ import { settings } from '../../../settings';
 import { ImageLocation, ImageLocationStartStop } from '../../components/img-swiper/image-location.model';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 
 export const START_ICON = '/assets/icon/map/GPS_start.svg';
 export const END_ICON = '/assets/icon/map/GPS_stop.svg';
