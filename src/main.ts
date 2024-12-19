@@ -13,7 +13,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import { settings } from 'src/settings';
 import { provideTranslateService } from '@ngx-translate/core';
-import { MarkdownModule } from 'ngx-markdown';
+import { provideMarkdown } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
@@ -67,13 +67,14 @@ function startApp() {
           driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB],
           storeName: settings.db.nanoSql.dbName,
         }),
-        MarkdownModule.forRoot(),
         AngularSvgIconModule.forRoot(),
         LeafletModule,
 
         // This module is auto generated using ng-swagger-gen
         RegobsApiModuleWithConfig.forRoot()
       ),
+
+      provideMarkdown(),
 
       // Prøvde å legge til withPreloading(PreloadAllModules) men da kræsjet applikasjonen
       // TODO: Prøv igjen etter vi har rydda opp, fjerna alle moduler.
