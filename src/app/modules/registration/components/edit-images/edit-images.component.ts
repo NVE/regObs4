@@ -41,7 +41,7 @@ import { RemoteImageComponent } from '../../../shared/components/remote-image/re
 import { TextCommentComponent } from '../text-comment/text-comment.component';
 import { BlobImageComponent } from '../blob-image/blob-image.component';
 import { addIcons } from 'ionicons';
-import { close } from 'ionicons/icons';
+import { camera, close } from 'ionicons/icons';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -121,7 +121,7 @@ export class EditImagesComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private dropZoneService: DropZoneService
   ) {
-    addIcons({ close });
+    addIcons({ close, camera });
   }
 
   ngOnInit() {
