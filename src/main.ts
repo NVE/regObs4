@@ -15,7 +15,7 @@ import { settings } from 'src/settings';
 import { provideTranslateService } from '@ngx-translate/core';
 import { MarkdownModule } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
 import { AppComponent } from './app/app.component';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
