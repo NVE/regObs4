@@ -38,7 +38,7 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: '/' # App source code path
           # api_location: "api" # Api source code path - optional
-          output_location: 'www' # Built app content directory - optional
+          output_location: 'www/browser' # Built app content directory - optional
           app_build_command: 'npm run create-version-file && npm run build'
           ###### End of Repository/Build Configurations ######
 
@@ -74,7 +74,7 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: '/' # App source code path
           # api_location: "api" # Api source code path - optional
-          output_location: 'www' # Built app content directory - optional
+          output_location: 'www/browser' # Built app content directory - optional
           # app_build_command: For Node.js applications, you can define a custom command to build the static content application.
           app_build_command: 'npm run translations:add-nn-app-fallback && npm run create-version-file && npm run build:prod'
           ###### End of Repository/Build Configurations ######
@@ -88,7 +88,7 @@ jobs:
       - run: |
           curl -sL https://sentry.io/get-cli/ | bash
           sentry-cli releases new ${{fromJson(steps.set_version.outputs.packageJson).version}}
-          sentry-cli releases files ${{fromJson(steps.set_version.outputs.packageJson).version}} upload-sourcemaps www -x .js -x .map --dist ${{fromJson(steps.set_version.outputs.packageJson).revision}} --log-level=debug --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+          sentry-cli releases files ${{fromJson(steps.set_version.outputs.packageJson).version}} upload-sourcemaps www/browser -x .js -x .map --dist ${{fromJson(steps.set_version.outputs.packageJson).revision}} --log-level=debug --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
           sentry-cli releases finalize ${{fromJson(steps.set_version.outputs.packageJson).version}}
 
   close_pull_request_job:
