@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { bbox, bboxPolygon, booleanWithin, lineString } from '@turf/turf';
-import { Feature } from '@turf/turf';
+import type { Feature } from 'geojson';
 import { LatLngTuple } from 'leaflet';
 import { firstValueFrom } from 'rxjs';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';

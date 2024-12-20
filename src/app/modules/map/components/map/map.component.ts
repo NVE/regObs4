@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Injector, Input, Ng
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
-import { FeatureCollection } from '@turf/turf';
 import * as L from 'leaflet';
 import { BehaviorSubject, combineLatest, fromEventPattern, race, Subject, timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, skip, take, takeUntil, withLatestFrom } from 'rxjs/operators';
@@ -31,6 +30,7 @@ import { MapService } from '../../services/map/map.service';
 import { NgIf } from '@angular/common';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { MapControlsComponent } from '../map-controls/map-controls.component';
+import type { FeatureCollection } from 'geojson';
 
 const DEBUG_TAG = 'MapComponent';
 

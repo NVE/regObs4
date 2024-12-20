@@ -42,11 +42,11 @@ import { isPlatform } from '@ionic/angular/standalone';
 import SphericalMercator from '@mapbox/sphericalmercator';
 import { MapLayersService, OfflineCapableMapLayersService } from './static-tiles.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { Feature, Polygon } from '@turf/turf';
 import { END_ICON, START_ICON } from '../map-image/map-image.component';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { LatLng } from 'leaflet';
 import { NgFor, NgStyle } from '@angular/common';
+import type { Feature, Polygon } from 'geojson';
 
 interface TileProps {
   src: SafeUrl;

@@ -1,6 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { FeatureCollection } from '@turf/turf';
 import {
   defer,
   distinctUntilChanged,
@@ -23,6 +22,7 @@ import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.ser
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
+import type { FeatureCollection } from 'geojson';
 
 const msOneWeek = 604800000;
 export const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
