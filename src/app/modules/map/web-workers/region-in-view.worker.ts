@@ -1,33 +1,22 @@
 import 'src/global-polyfill';
 import { Observable } from 'rxjs';
 import { DoWork, runWorker } from 'observable-webworker';
-import {
-  Feature,
-  Polygon,
-  bboxPolygon,
-  intersect,
-  booleanContains,
-  FeatureCollection,
-  Geometry,
-  GeometryCollection,
-  inside,
-  point,
-  MultiPolygon,
-  buffer,
-  BBox,
-  Coord,
-} from '@turf/turf';
+import { bboxPolygon, booleanContains, booleanWithin, point, buffer, booleanIntersects } from '@turf/turf';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import avalancheRegions from './../../../../assets/json/varslingsomraader.json';
 import regions from './../../../../assets/json/regions-simple-polygons.json';
 import { IRegionInViewOutput, IRegionInViewInput } from './region-in-view-models';
+import type { BBox, Feature, FeatureCollection, Geometry, GeometryCollection, MultiPolygon, Polygon } from 'geojson';
 
 export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
-  private isInsideOrIntersects(firstGeometry: Polygon, secondGeometry: Polygon): boolean {
+  private isInsideOrIntersects(
+    firstGeometry: Geometry | Feature<any>,
+    secondGeometry: Geometry | Feature<any>
+  ): boolean {
     return (
-      !!intersect(firstGeometry, secondGeometry) ||
+      booleanIntersects(firstGeometry, secondGeometry) ||
       booleanContains(firstGeometry, secondGeometry) ||
       booleanContains(secondGeometry, firstGeometry)
     );
@@ -44,7 +33,7 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
   }
 
   private getFeatureInPoint(
-    coordinates: Coord,
+    coordinates: Geometry | Feature<any>,
     featuresInViewBounds: Feature<
       Geometry | GeometryCollection,
       {
@@ -54,7 +43,7 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
   ): Feature<Geometry | GeometryCollection, { [name: string]: any }> {
     // Region that center view point is inside
     const firstAndBest = (featuresInViewBounds || []).find((f) =>
-      inside(coordinates, <Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon>f.geometry)
+      booleanWithin(coordinates, <Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon>f.geometry)
     );
     return firstAndBest;
   }
