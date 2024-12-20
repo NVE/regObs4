@@ -3,9 +3,6 @@
   "integrations": {
     "cordova": {}
   },
-  "type": "angular",
-  "id": "0f9898b8",
-  "hooks": {
-    "build:after": "./attach-source-maps.js"
-  }
+  "type": "angular-standalone",
+  "id": "0f9898b8"
 }

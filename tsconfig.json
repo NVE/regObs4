@@ -12,7 +12,6 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "target": "ES2022",
     "typeRoots": [
