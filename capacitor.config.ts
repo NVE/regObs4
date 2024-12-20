@@ -4,7 +4,7 @@ import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 const config: CapacitorConfig = {
   appId: 'no.nve.regobs4',
   appName: 'Varsom',
-  webDir: 'www',
+  webDir: 'www/browser',
   server: {
     iosScheme: 'ionic',
   },

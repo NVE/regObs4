@@ -137,7 +137,7 @@ steps:
 
   - script: |
       sentry-cli releases new $(json.version)
-      sentry-cli releases files $(json.version) upload-sourcemaps www -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+      sentry-cli releases files $(json.version) upload-sourcemaps www/browser -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
       sentry-cli releases finalize $(json.version)
     displayName: 'Create Sentry release and upload sourcemaps to Sentry'
 
