@@ -27,7 +27,7 @@
     kdvKey="Snow_DangerSignKDV"
     [(value)]="dangerSignTIDs"
     (valueChange)="save()"
-    multiSelect="true"
+    [multiSelect]="true"
     [filter]="filterDangerSignTIDs"
   >
   </app-kdv-icon-select>
@@ -48,7 +48,7 @@
       [convertRatio]="100"
       placeholder="&nbsp;"
       suffix="cm"
-      simpleObsMode="true"
+      [simpleObsMode]="true"
       (valueChange)="save()"
     ></app-numeric-input>
 
@@ -61,7 +61,7 @@
       [convertRatio]="100"
       placeholder="&nbsp;"
       suffix="cm"
-      simpleObsMode="true"
+      [simpleObsMode]="true"
       (valueChange)="save()"
     ></app-numeric-input>
   </div>

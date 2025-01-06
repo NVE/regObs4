@@ -34,7 +34,7 @@ export class SelectComponent implements OnInit {
 
   @Input() label: string;
   @Input() subTitle: string;
-  @Input() selectedValue: number | string;
+  @Input() selectedValue: SelectOption['id'];
   @Output() selectedValueChange = new EventEmitter();
   @Input() options: Array<SelectOption> = [];
   @Input() showReset = true;
@@ -127,7 +127,7 @@ export class SelectComponent implements OnInit {
     }
   }
 
-  private setSelectedValue(id: number | string) {
+  private setSelectedValue(id: SelectOption['id']) {
     this.selectedValue = id;
     this.selectedValueChange.emit(id);
   }

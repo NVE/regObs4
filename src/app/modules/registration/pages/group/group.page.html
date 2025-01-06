@@ -9,7 +9,7 @@
 
 <ion-content>
   <app-registration-content-wrapper
-    [isEmpty]="isEmpty()"
+    [isEmpty]="isEmpty() | async"
     *ngIf="draft"
     [draft]="draft"
     [registrationTid]="registrationTid"

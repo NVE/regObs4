@@ -12,12 +12,20 @@ import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 // Search criteria model from API uses other geohazard names than the app.
-// This map maps from the apps geohazard names to API geohazard names.
+// This object maps from the apps geohazard names to API geohazard names.
 const GEOHAZARDMAP: { [property in GeoHazard]: keyof SearchSideBarDto['ObserverCompetenceLevels'] } = {
+  [GeoHazard.NotSpecified]: 'NotSpecified',
   [GeoHazard.Snow]: 'Avalanche',
   [GeoHazard.Ice]: 'Ice',
   [GeoHazard.Soil]: 'EarthFlow',
+  [GeoHazard.WetSoil]: 'LandSlide',
+  [GeoHazard.Rock]: 'RockFall',
   [GeoHazard.Water]: 'Flooding',
+  [GeoHazard.IceFall]: 'IceFall',
+  [GeoHazard.EventOnGlacier]: 'EventOnGlacier',
+  [GeoHazard.Jøkulhlaup]: 'Jøkulhaup',
+  [GeoHazard.Drought]: 'Drought',
+  [GeoHazard.Unknown]: 'Unknown',
 };
 
 const DEBUG_TAG = 'SearchCriteriaModelService';
@@ -37,7 +45,6 @@ export class SearchCriteriaModelService {
   private userSettings = inject(UserSettingService);
   private http = inject(HttpClient);
   private logger = inject(LoggingService);
-
 
   /**
    * The API request needs langKey and geoHazards as parameters

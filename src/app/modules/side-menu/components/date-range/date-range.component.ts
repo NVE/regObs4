@@ -21,6 +21,7 @@ import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AccordionGroupChangeEventDetail, IonAccordionGroupCustomEvent } from '@ionic/core';
 
 @Component({
   selector: 'app-date-range',
@@ -85,7 +86,8 @@ export class DateRangeComponent extends NgDestoryBase {
    * We only care about 3 and 4, so we ignore the rest
    * @param e - The event from the ionChange event
    */
-  toggleAccordion(e: CustomEvent<IonAccordionGroup>): void {
+  toggleAccordion(e: IonAccordionGroupCustomEvent<AccordionGroupChangeEventDetail<string>>): void {
+    // IonAccordionGroupCustomEvent<AccordionGroupChangeEventDetail<any>>
     switch (e.detail.value) {
       case 'first':
         this.isOpen = true;

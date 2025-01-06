@@ -26,7 +26,7 @@
       (valueChange)="dropdownChanged($event)"
       label="REGISTRATION.DANGER_OBS.DROPDOWN_TITLE"
       *ngIf="showDangerSignSelect"
-      kdvKey="{{ geoHazardName }}_DangerSignKDV"
+      [kdvKey]="kdvKey"
       [(value)]="dangerSignTid"
     >
     </app-kdv-select>
@@ -39,7 +39,7 @@
     <app-text-comment
       [(value)]="comment"
       label="REGISTRATION.DANGER_OBS.COMMENT"
-      rows="2"
+      [rows]="2"
       placeholder="REGISTRATION.DANGER_OBS.COMMENT_PLACEHOLDER"
     ></app-text-comment>
   </ion-list>
@@ -47,7 +47,7 @@
     [saveDisabled]="!isValid"
     (saveClicked)="ok()"
     (deleteClicked)="delete()"
-    [showDelete]="dangerObs"
+    [showDelete]="!!dangerObs"
   >
   </app-modal-save-or-delete-buttons>
 </ion-content>

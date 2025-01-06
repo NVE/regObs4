@@ -24,6 +24,11 @@ import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-sel
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
+import { KdvKey } from 'src/app/modules/common-registration/registration.models';
+
+interface AreaSelectOption extends SelectOption {
+  id: string;
+}
 
 const COMMENT_SEPARATOR = ': ';
 @Component({
@@ -60,7 +65,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   @Input() dangerObs: DangerObsEditModel;
   @Input() geoHazard: GeoHazard;
   noDangerObs = false;
-  areaArr: SelectOption[];
+  areaArr: AreaSelectOption[];
   tmpArea = '';
   dangerSignTid: number;
   comment: string;
@@ -69,6 +74,22 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   showDangerSignSelect = true;
   showDangerSignCheckbox = false;
   geoHazardName: string;
+
+  get kdvKey(): KdvKey {
+    if (this.geoHazard == GeoHazard.Snow) {
+      return 'Snow_DangerSignKDV';
+    }
+    if (this.geoHazard == GeoHazard.Ice) {
+      return 'Ice_DangerSignKDV';
+    }
+    if (this.geoHazard == GeoHazard.Water) {
+      return 'Water_DangerSignKDV';
+    }
+    if (this.geoHazard == GeoHazard.Soil) {
+      return 'Dirt_DangerSignKDV';
+    }
+    throw new Error(`Unsupported geohazard: ${this.geoHazard}`);
+  }
 
   interfaceOptions = {};
 

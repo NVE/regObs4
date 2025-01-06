@@ -20,7 +20,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -49,6 +49,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
+    AsyncPipe,
   ],
 })
 export class GroupPage extends BasePage {

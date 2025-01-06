@@ -4,8 +4,8 @@
     <app-remote-image
       [attachment]="attachment"
       preferSize="Large"
-      withFallbackText="true"
-      largeFallback="true"
+      [withFallbackText]="true"
+      [largeFallback]="true"
     ></app-remote-image>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
       <!-- TODO: Remove map-control-fab from this component, has nothing to do here... -->
@@ -16,7 +16,7 @@
     <app-text-comment
       [(value)]="attachment.Comment"
       label="{{ pictureCommentText | translate }}"
-      rows="2"
+      [rows]="2"
       placeholder="{{ pictureCommentPlaceholder | translate }}"
     ></app-text-comment>
   </div>
@@ -48,7 +48,7 @@
       [value]="attachment.Comment"
       (valueChange)="setNewAttachmentComment(attachment, $event)"
       label="{{ pictureCommentText | translate }}"
-      rows="2"
+      [rows]="2"
       placeholder="{{ pictureCommentPlaceholder | translate }}"
     ></app-text-comment>
   </div>
