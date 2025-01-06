@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
-import { IonButton, IonCol, IonGrid, IonRouterLink, IonRow, NavController } from '@ionic/angular/standalone';
+import { IonButton, IonCol, IonGrid, IonRow, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './save-and-go-back-button.component.html',
   styleUrls: ['./save-and-go-back-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonButton, IonCol, IonGrid, IonRow, SvgIconComponent, TranslatePipe, IonRouterLink],
+  imports: [IonButton, IonCol, IonGrid, IonRow, SvgIconComponent, TranslatePipe],
 })
 export class SaveAndGoBackButtonComponent {
   private navContoller = inject(NavController);
