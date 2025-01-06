@@ -1,5 +1,5 @@
 export interface SelectOption {
-  id: any;
+  id: number | string | boolean;
   text?: string;
   icon?: string;
   disabled?: boolean;

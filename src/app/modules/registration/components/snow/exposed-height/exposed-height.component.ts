@@ -5,6 +5,10 @@ import { NgClass, NgIf } from '@angular/common';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
+interface HeightSelectOption extends SelectOption {
+  id: number;
+}
+
 @Component({
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
@@ -25,8 +29,8 @@ export class ExposedHeightComponent implements OnInit {
   exposedHeightMiddle: boolean;
   exposedHeightBottom: boolean;
 
-  get heightArray(): SelectOption[] {
-    const options: SelectOption[] = [];
+  get heightArray(): HeightSelectOption[] {
+    const options: HeightSelectOption[] = [];
     for (let id = 0; id <= 8000; id += 100) {
       options.push({ id, text: `${id} m` });
     }

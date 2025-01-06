@@ -10,7 +10,7 @@
       <ion-col>
         <ion-segment
           [value]="useMapExtentFilter$ | async"
-          (click)="toggleFilterByMapView($event)"
+          (ionChange)="toggleFilterByMapView($event)"
           class="map-extent-filter-toggle segment-button-class"
           mode="ios"
           [disabled]="disableMapExtentToggle$ | async"
@@ -29,18 +29,10 @@
       <ion-col>
         <div *ngIf="!isNative" class="button-container">
           <span>{{'OBSERVATION_LIST.VIEW_TYPE' | translate}}:</span>
-          <button
-            id="list"
-            [ngClass]="viewType$.getValue() == 'list' && 'active'"
-            (click)="changeViewType($event.currentTarget.id)"
-          >
+          <button id="list" [ngClass]="viewType$.getValue() == 'list' && 'active'" (click)="changeViewType('list')">
             <img alt="list view" src="../../../assets/icon/reorder.svg" />
           </button>
-          <button
-            id="grid"
-            [ngClass]="viewType$.getValue() == 'grid' && 'active'"
-            (click)="changeViewType($event.currentTarget.id)"
-          >
+          <button id="grid" [ngClass]="viewType$.getValue() == 'grid' && 'active'" (click)="changeViewType('grid')">
             <img alt="images view" src="../../../assets/icon/grid_view.svg" />
           </button>
         </div>
@@ -72,7 +64,8 @@
               *ngIf="viewType==='list'"
               [registrations]="registrations"
             ></app-observation-list-view>
-            <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid>
+            <!-- TODO: Fix image search as another route / component ? -->
+            <!-- <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid> -->
             <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
               <ion-infinite-scroll-content> </ion-infinite-scroll-content>
             </ion-infinite-scroll>

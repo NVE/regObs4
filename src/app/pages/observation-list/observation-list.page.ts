@@ -19,16 +19,7 @@ import {
 } from '@ionic/angular/standalone';
 import { SelectInterface } from '@ionic/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
@@ -112,7 +103,9 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
 
   showObservations$: Observable<boolean>;
-  registrations$: Observable<RegistrationViewModel[] | SearchRegistrationsWithAttachments[]>;
+  registrations$: Observable<RegistrationViewModel[]>;
+  attachments$: Observable<SearchRegistrationsWithAttachments[]>;
+
   orderBy$: Observable<string>;
   error$: Observable<boolean>;
   popupType: SelectInterface;
@@ -241,14 +234,11 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
       this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
     );
 
+    this.registrations$ = this.listSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
+    this.attachments$ = this.imageSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
+
     const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));
 
-    this.registrations$ = search$.pipe(
-      switchMap((result) => result.registrations$),
-      tap(() => {
-        this.scroll && this.scroll.complete();
-      })
-    );
     this.isFetchingObservations$ = search$.pipe(switchMap((result) => result.isFetching$));
     this.error$ = search$.pipe(
       switchMap((result) => result.error$),

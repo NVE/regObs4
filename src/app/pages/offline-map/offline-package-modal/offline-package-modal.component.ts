@@ -75,7 +75,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
 
   zoom: number;
-  center: number[];
+  center: L.LatLng;
   tileLayer: L.GeoJSON;
   isCheckingAvailableDiskspace: boolean;
   isPackageOutdated: boolean;
@@ -110,7 +110,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
 
     // Set center from package bounds
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
-    this.center = [lat, lng];
+    this.center = new L.LatLng(lat, lng);
 
     // Use offline map package root tile as zoom level
     const [, , z] = this.packageOnServer.getXYZ();
