@@ -165,7 +165,7 @@
     "manifest-android": "^0.1.1",
     "ng-swagger-gen": "^2.3.1",
     "plist": "^3.0.5",
-    "prettier": "2.7.1",
+    "prettier": "^3.4.2",
     "protractor": "~7.0.0",
     "ts-node": "^10.9.1",
     "typescript": "5.5.4"
