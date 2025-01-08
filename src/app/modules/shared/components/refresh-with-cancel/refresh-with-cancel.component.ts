@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewChild, Input, inject } from '@angular/core';
+import { Component, NgZone, Input, inject, viewChild } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import {
   IonButton,
@@ -27,7 +27,7 @@ export class RefreshWithCancelComponent {
   showCancel = false;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
-  @ViewChild(IonRefresher) refresher?: IonRefresher;
+  readonly refresher = viewChild.required(IonRefresher);
   @Input() refreshFunc: RefreshFunc = () => Promise.resolve();
   @Input() cancelSubject = new Subject<boolean>();
   @Input() disabled = false;
@@ -60,7 +60,7 @@ export class RefreshWithCancelComponent {
 
   private complete() {
     this.ngZone.run(() => {
-      this.refresher?.complete();
+      this.refresher().complete();
     });
     this.ngZone.run(() => {
       this.showCancel = false;

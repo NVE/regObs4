@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ElementRef,
+  OnInit,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/angular/standalone';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -52,10 +60,10 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private _userAltitude: number = null; // Cached user altitude from server fetched when we can't trust the GPS altitude
 
   // For accessing the info box element from parent views
-  @ViewChild('infoBoxElement') private infoBoxElement: ElementRef;
+  readonly infoBoxElement = viewChild.required<ElementRef<HTMLDivElement>>('infoBoxElement');
 
-  get nativeElement(): HTMLElement | null {
-    return this.infoBoxElement?.nativeElement;
+  get nativeElement() {
+    return this.infoBoxElement().nativeElement;
   }
 
   // Public props we can see in the map center info box

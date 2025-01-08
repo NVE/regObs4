@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject, viewChild } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
@@ -30,7 +30,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   isTracking: boolean;
   private ngDestroy$ = new Subject<void>();
 
-  @ViewChild('GpsLogPanel') panel: IonContent;
+  readonly panel = viewChild<IonContent>('GpsLogPanel');
 
   constructor() {
     addIcons({ arrowDownCircle, arrowUpCircle });
@@ -91,8 +91,9 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   scrollToBottom() {
-    if (this.panel) {
-      this.panel.scrollToBottom();
+    const panel = this.panel();
+    if (panel) {
+      panel.scrollToBottom();
     }
   }
 

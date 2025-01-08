@@ -1,4 +1,17 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Injector, Input, NgZone, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Injector,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
@@ -112,7 +125,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   @Input() activateFollowModeOnStartup = false;
 
-  @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
+  readonly observerTripsContainer = viewChild<ElementRef<HTMLDivElement>>('observerTripsContainer');
   observationTripName = '';
   observationTripDescription: string = null;
   private observationTripLayers: L.GeoJSON[];
@@ -210,7 +223,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   removeObserverTripDescription() {
-    this.observerTripsContainer.nativeElement.style.display = 'none';
+    const element = this.observerTripsContainer();
+    if (element) {
+      element.nativeElement.style.display = 'none';
+    }
   }
 
   private removeObserverTripMapLayers(map: L.Map) {
@@ -249,10 +265,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.observationTripLayers.forEach((l) => l.addTo(map));
     }
 
-    const clickHandler = (e) => {
+    const clickHandler = (e: any) => {
       this.observationTripName = e.layer?.feature?.properties?.navn;
       this.observationTripDescription = e.layer?.feature?.properties?.beskrivelse || noObserverTripDescription;
-      this.observerTripsContainer.nativeElement.style.display = 'block';
+      const container = this.observerTripsContainer();
+      if (container) {
+        container.nativeElement.style.display = 'block';
+      }
     };
 
     const addOrRemoveLayers = () => {

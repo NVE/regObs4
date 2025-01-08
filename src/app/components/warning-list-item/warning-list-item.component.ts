@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Renderer2, inject } from '@angular/core';
+import { Component, OnInit, Input, Renderer2, inject, viewChild } from '@angular/core';
 import {
   DomController,
   IonBadge,
@@ -61,9 +61,8 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   @Input() warningGroup: WarningGroup;
   GeoHazard = GeoHazard;
 
-  @ViewChild(IonItemSliding, { static: true }) itemSlide: IonItemSliding;
-  @ViewChild(WarningGroupFavouriteToggleComponent, { static: true })
-  favouriteToggle: WarningGroupFavouriteToggleComponent;
+  readonly itemSlide = viewChild.required(IonItemSliding);
+  readonly favouriteToggle = viewChild(WarningGroupFavouriteToggleComponent);
   private dragSubject = new Subject<void>();
 
   constructor() {
@@ -80,9 +79,9 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
       .subscribe((openAmount) => {
         const opacity = openAmount > 1 ? 1 : openAmount > 0 ? openAmount : 0;
         const color = `rgba(186,196,204,${opacity})`;
-        this.favouriteToggle.setOpen(opacity);
+        this.favouriteToggle()?.setOpen(opacity);
         this.domCtrl.write(() => {
-          this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+          this.renderer.setStyle((<any>this.itemSlide()).el, 'background-color', color);
         });
       });
     this.ngDestroy$.subscribe(() => {
@@ -91,9 +90,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   close() {
-    if (this.itemSlide) {
-      this.itemSlide.close();
-    }
+    this.itemSlide().close();
   }
 
   onDrag() {
@@ -101,20 +98,18 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   private getOpenAmount() {
-    return from(this.itemSlide.getOpenAmount()).pipe(
+    return from(this.itemSlide().getOpenAmount()).pipe(
       catchError(() => of(0)),
       map((val) => (val > 0 ? val / 100.0 : 0))
     );
   }
 
   toggleFavourite() {
-    this.favouriteToggle.toggle();
+    this.favouriteToggle()?.toggle();
     timer(2000)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(() => {
-        if (this.itemSlide) {
-          this.itemSlide.close();
-        }
+        this.close();
       });
   }
 

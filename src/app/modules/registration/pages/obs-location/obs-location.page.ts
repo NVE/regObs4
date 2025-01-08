@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import * as L from 'leaflet';
 import {
   IonBackButton,
@@ -62,8 +62,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   draft: RegistrationDraft;
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
-  @ViewChild(SetLocationInMapComponent)
-  setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
 

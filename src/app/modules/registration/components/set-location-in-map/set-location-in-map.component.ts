@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, inject, viewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import {
@@ -193,7 +193,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   locale: string;
 
-  @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
+  readonly editLocationNameInput = viewChild<IonInput>('editLocationNameInput');
 
   get canEditLocationName() {
     return this.allowEditLocationName;
@@ -512,8 +512,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const from = this.fromMarker
       ? this.fromMarker.getLatLng()
       : this.userposition
-      ? L.latLng(this.userposition.coords.latitude, this.userposition.coords.longitude)
-      : this.locationMarker.getLatLng();
+        ? L.latLng(this.userposition.coords.latitude, this.userposition.coords.longitude)
+        : this.locationMarker.getLatLng();
 
     const locationMarkerLatLng = this.locationMarker.getLatLng();
 
@@ -598,15 +598,20 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (this.canEditLocationName) {
       this.editLocationName = true;
       setTimeout(() => {
-        if (this.editLocationNameInput) {
-          this.editLocationNameInput.setFocus();
+        const editLocationNameInput = this.editLocationNameInput();
+        if (editLocationNameInput) {
+          editLocationNameInput.setFocus();
         }
       }, 50);
     }
   }
 
   onLocationEditComplete(): void {
-    if (this.editLocationNameInput.value?.toString().length === 0) {
+    const locNameInput = this.editLocationNameInput();
+    if (!locNameInput) {
+      return;
+    }
+    if (locNameInput.value?.toString().length === 0) {
       // User has deleted all text
       this.editLocationName = false;
       this.updateMapViewInfo();

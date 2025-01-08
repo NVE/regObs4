@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnInit, inject, viewChild } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,
@@ -107,8 +107,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   fullscreen$: Observable<boolean>;
 
-  @ViewChild(SetLocationInMapComponent)
-  setLocationInMapComponent: SetLocationInMapComponent;
+  readonly setLocationInMapComponent = viewChild(SetLocationInMapComponent);
 
   constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
@@ -319,6 +318,6 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   ok() {
-    this.setLocationInMapComponent.confirm();
+    this.setLocationInMapComponent()?.confirm();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, ViewContainerRef, inject } from '@angular/core';
 import { legendsConfig } from '../legends.config';
 
 @Component({
@@ -8,9 +8,9 @@ import { legendsConfig } from '../legends.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupportTileLegendLoaderComponent implements OnInit {
+  viewContainer = inject(ViewContainerRef);
+
   @Input() name: string;
-  @ViewChild('legend', { static: true, read: ViewContainerRef })
-  viewContainerRef: ViewContainerRef;
 
   ngOnInit(): void {
     this.loadComponent();
@@ -19,7 +19,7 @@ export class SupportTileLegendLoaderComponent implements OnInit {
   loadComponent(): void {
     if (this.name && legendsConfig[this.name]) {
       const component = legendsConfig[this.name];
-      this.viewContainerRef.createComponent(component);
+      this.viewContainer.createComponent(component);
     }
   }
 }

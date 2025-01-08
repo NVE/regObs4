@@ -20,7 +20,18 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, AfterViewInit, ElementRef, TrackByFunction, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  AfterViewInit,
+  ElementRef,
+  TrackByFunction,
+  HostListener,
+  inject,
+  viewChild,
+} from '@angular/core';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -135,8 +146,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   @Input() location: ImageLocation;
   @Input() allowZoom: boolean;
 
-  @ViewChild('container', { static: true })
-  container: ElementRef<HTMLDivElement>;
+  readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -521,10 +531,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private updateContainerSize() {
-    if (this.container?.nativeElement) {
-      const { width: w, height: h } = this.container.nativeElement.getBoundingClientRect();
-      this.size.next({ w, h });
-    }
+    const { width: w, height: h } = this.container().nativeElement.getBoundingClientRect();
+    this.size.next({ w, h });
   }
 
   private startSizeFinder() {

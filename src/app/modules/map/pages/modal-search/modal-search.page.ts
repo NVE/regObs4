@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, NgZone, inject, viewChild } from '@angular/core';
 import {
   IonContent,
   IonHeader,
@@ -62,14 +62,14 @@ export class ModalSearchPage implements OnInit, ViewDidEnter {
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
 
-  @ViewChild(IonInput) searchInput: IonInput;
+  readonly searchInput = viewChild.required(IonInput);
 
   constructor() {
     addIcons({ search, close, time });
   }
 
   ionViewDidEnter(): void {
-    this.searchInput.setFocus();
+    this.searchInput().setFocus();
   }
 
   ngOnInit() {

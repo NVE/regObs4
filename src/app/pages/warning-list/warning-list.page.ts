@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewChildren, QueryList, inject, TrackByFunction } from '@angular/core';
+import { Component, NgZone, inject, TrackByFunction, viewChildren } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
@@ -73,8 +73,7 @@ export class WarningListPage {
   loaded = false;
   myFooterFn = this.footerFn.bind(this);
 
-  @ViewChildren(WarningListItemComponent)
-  warningListItems?: QueryList<WarningListItemComponent>;
+  readonly warningListItems = viewChildren(WarningListItemComponent);
 
   get showNoFavourites() {
     return this.selectedTab.value === 'favourites' && this.noFavourites;
@@ -89,10 +88,8 @@ export class WarningListPage {
   }
 
   closeAllOpen() {
-    if (this.warningListItems) {
-      for (const item of this.warningListItems.toArray()) {
-        item.close();
-      }
+    for (const item of this.warningListItems()) {
+      item.close();
     }
   }
 

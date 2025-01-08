@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, viewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import {
   IonCol,
@@ -122,8 +122,8 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   isFetchingObservations$?: Observable<boolean>;
   shouldDisableScroller$?: Observable<boolean>;
 
-  @ViewChild(IonInfiniteScroll, { static: false }) scroll?: IonInfiniteScroll;
-  @ViewChild(IonContent, { static: true }) content?: IonContent;
+  readonly content = viewChild.required(IonContent);
+  readonly scroll = viewChild(IonInfiniteScroll);
 
   refreshFunc: RefreshFunc = this.refresh.bind(this);
   searchCriteriaWhenThisPageIsActiveAndViewTypeList$: Observable<SearchCriteriaRequestDto>;
@@ -243,7 +243,11 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     //   this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
     // );
 
-    this.registrations$ = this.listSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
+    this.registrations$ = this.listSearch.registrations$.pipe(
+      tap(() => {
+        this.scroll()?.complete();
+      })
+    );
     // this.attachments$ = this.imageSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
 
     // const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));
@@ -298,7 +302,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
 
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', DEBUG_TAG);
-    this.content?.scrollToTop();
+    this.content().scrollToTop();
     this.searchCriteriaService.setExtentFilterActive(true);
   }
 

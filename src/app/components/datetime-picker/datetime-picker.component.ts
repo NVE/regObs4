@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, viewChild } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -58,7 +58,7 @@ export class DatetimePickerComponent implements OnInit {
 
   private tempDate: string;
 
-  @ViewChild(IonModal) modal: IonModal;
+  readonly modal = viewChild(IonModal);
 
   async ngOnInit(): Promise<void> {
     if (!this.language) {
@@ -73,11 +73,11 @@ export class DatetimePickerComponent implements OnInit {
   }
 
   cancel() {
-    this.modal.dismiss(null, 'cancel');
+    this.modal()?.dismiss(null, 'cancel');
   }
 
   confirm() {
-    this.modal.dismiss(this.tempDate, 'confirm');
+    this.modal()?.dismiss(this.tempDate, 'confirm');
   }
 
   /**

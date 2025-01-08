@@ -1,5 +1,5 @@
 import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
@@ -101,8 +101,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private offlineMapService = inject(OfflineMapService);
   private document = inject<Document>(DOCUMENT);
 
-  @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
-  @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
+  readonly mapItemBar = viewChild.required(MapItemBarComponent);
+  readonly mapComponent = viewChild.required(MapComponent);
   private map: L.Map;
   private markerLayer: RegObsMarkerClusterLayer;
   private geoCoachMarksClosedSubject = new Subject<void>();
@@ -121,7 +121,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private showErrorToast = new Subject<boolean>();
   private errorToast: HTMLIonToastElement; // Shows error message if observation search fail
 
-  @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
+  readonly mapCenter = viewChild(MapCenterInfoComponent);
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
@@ -316,7 +316,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         if (!showGeoSelectInfo) {
           this.geoCoachMarksClosedSubject.next();
           this.geoCoachMarksClosedSubject.complete();
-          this.mapComponent.componentIsActive(true);
+          this.mapComponent().componentIsActive(true);
         }
       });
   }
@@ -325,7 +325,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.map = leafletMap;
 
     this.map.on('click', () => {
-      this.mapItemBar.hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
+      this.mapItemBar().hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
     });
   }
 
@@ -396,13 +396,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   async onEnter() {
     this.checkIfShouldSearchCriteriaUpdateOnEnter();
     this.loggingService.debug('Home page onEnter, so activate map updates and GeoLocation', DEBUG_TAG);
-    this.mapComponent.componentIsActive(true);
+    this.mapComponent().componentIsActive(true);
     this.updateInfoBoxHeight();
   }
 
   onLeave() {
     this.loggingService.debug('Home page onLeave. Disable map updates and GeoLocation', DEBUG_TAG);
-    this.mapComponent.componentIsActive(false);
+    this.mapComponent().componentIsActive(false);
 
     // As we leave the page, map center info is not visible any more, reset height
     this.mapCenterInfoHeight.next(0);
@@ -447,7 +447,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.markerLayer.on('click', (e: L.LeafletMouseEvent) => {
       const layer: L.MarkerCluster = e.propagatedFrom;
       const registration: AtAGlanceViewModel = layer.feature.properties;
-      this.mapItemBar.show(registration);
+      this.mapItemBar().show(registration);
     });
     this.map.addLayer(this.markerLayer);
   }
@@ -466,7 +466,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   private updateInfoBoxHeight() {
-    const mapCenterElement = this.mapCenter?.nativeElement;
+    const mapCenterElement = this.mapCenter()?.nativeElement;
     if (mapCenterElement) {
       const height = mapCenterElement.offsetHeight;
       this.mapCenterInfoHeight.next(height);

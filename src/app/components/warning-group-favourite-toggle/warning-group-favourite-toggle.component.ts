@@ -1,4 +1,14 @@
-import { Component, Input, NgZone, OnDestroy, Renderer2, ViewChild, OnChanges, SimpleChanges, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  NgZone,
+  OnDestroy,
+  Renderer2,
+  OnChanges,
+  SimpleChanges,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
@@ -23,7 +33,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
   private toastController = inject(ToastController);
 
   @Input() key: WarningGroupKey;
-  @ViewChild(IonIcon) ionIcon: IonIcon;
+  readonly ionIcon = viewChild.required(IonIcon);
 
   private warningIsFavouriteSubscription: Subscription;
   isFavourite: boolean;
@@ -55,7 +65,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
     const scaleAmount = 1 + openAmount / 2.0;
     const scale = `scale3d(${scaleAmount},${scaleAmount},1)`;
     this.domCtrl.write(() => {
-      this.renderer.setStyle((<any>this.ionIcon).el, 'transform', scale);
+      this.renderer.setStyle((<any>this.ionIcon()).el, 'transform', scale);
     });
   }
 
