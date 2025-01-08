@@ -6,12 +6,15 @@
   "trailingComma": "es5",
   "overrides": [
     {
-      "files": [
-        "**/*.html",
-        "**/*.json"
-      ],
+      "files": ["**/*.html", "**/*.json"],
       "options": {
         "singleQuote": false
+      }
+    },
+    {
+      "files": ["*.page.html"],
+      "options": {
+        "parser": "angular"
       }
     }
   ]
