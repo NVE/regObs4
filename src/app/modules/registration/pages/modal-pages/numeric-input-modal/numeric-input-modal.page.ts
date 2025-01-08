@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, input, linkedSignal, computed } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -36,36 +36,41 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
-export class NumericInputModalPage implements OnInit {
+export class NumericInputModalPage {
   private modalController = inject(ModalController);
 
-  @Input() value: number;
-  @Input() suffix: string;
-  @Input() min = -100000;
-  @Input() max = 100000;
-  @Input() decimalPlaces = 0;
-  @Input() decimalSeparator;
-  @Input() title: string;
+  readonly value = input<number>();
+  readonly suffix = input<string>();
+  readonly min = input(-100000);
+  readonly max = input(100000);
+  readonly decimalPlaces = input(0);
+  readonly decimalSeparator = input(',');
+  readonly title = input<string>();
 
-  decimalSep = '.';
-  isNegative = false;
-  private numbers: Array<string> = [];
-
-  get textVal() {
-    return this.numbers.join('');
-  }
-
-  get localeString() {
-    return this.textVal.replace('.', this.decimalSep);
-  }
-
-  get numberVal() {
-    const num = parseFloat(this.textVal);
-    if (isNaN(num)) {
-      return undefined;
+  isNegative = linkedSignal(() => {
+    const value = this.value();
+    if (value == null) {
+      return this.max() <= 0;
     }
-    return parseFloat(this.textVal) * (this.isNegative ? -1 : 1);
-  }
+    return value < 0;
+  });
+
+  numbers = linkedSignal(() => {
+    const value = this.value();
+    if (value == null) {
+      return [] as string[];
+    }
+    return NumberHelper.setDecimalPlaces(Math.abs(value), this.decimalPlaces()).toString(10).split('');
+  });
+
+  localeString = computed(() => {
+    const value = toTextValue(this.numbers()).replace('.', this.decimalSeparator());
+    const suffix = this.suffix();
+    if (value && suffix) {
+      return `${value} ${suffix}`;
+    }
+    return value;
+  });
 
   @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key.match('[0-9]')) {
@@ -84,23 +89,6 @@ export class NumericInputModalPage implements OnInit {
     }
   }
 
-  ngOnInit() {
-    if (this.value !== undefined) {
-      this.isNegative = this.value < 0;
-      const positiveValue = this.value * (this.isNegative ? -1 : 1);
-      this.numbers = NumberHelper.setDecimalPlaces(positiveValue, this.decimalPlaces).toString(10).split('');
-    }
-    if (this.max !== undefined && this.max <= 0) {
-      this.isNegative = true;
-    }
-    this.decimalSep =
-      this.decimalSeparator !== undefined ? this.decimalSeparator : this.getDecimalSeparatorForBrowser();
-  }
-
-  private getDecimalSeparatorForBrowser() {
-    return (1.1).toLocaleString().substring(1, 2);
-  }
-
   cancel() {
     this.modalController.dismiss();
   }
@@ -108,21 +96,22 @@ export class NumericInputModalPage implements OnInit {
   done() {
     this.modalController.dismiss({
       ok: true,
-      value: this.numberVal,
+      value: asNumber(toTextValue(this.numbers()), this.isNegative()),
     });
   }
 
   toggleNegative() {
-    if (this.max !== undefined && this.max <= 0) {
+    const max = this.max();
+    if (max !== undefined && max <= 0) {
       return;
     }
-    this.isNegative = !this.isNegative;
+    this.isNegative.update((v) => !v);
   }
 
   private getNumberOfDecimals() {
     let isDecimal = false;
     let result = 0;
-    for (const i of this.numbers) {
+    for (const i of this.numbers()) {
       if (isDecimal) {
         result++;
       } else {
@@ -135,26 +124,48 @@ export class NumericInputModalPage implements OnInit {
   }
 
   pushNumber(val: string) {
-    if (this.decimalPlaces > 0 && this.getNumberOfDecimals() >= this.decimalPlaces) {
+    const decimalPlaces = this.decimalPlaces();
+    if (decimalPlaces > 0 && this.getNumberOfDecimals() >= decimalPlaces) {
       return;
     }
 
-    this.numbers.push(val);
-    if (
-      (this.max !== undefined && this.numberVal > this.max) ||
-      (this.min !== undefined && this.numberVal < this.min)
-    ) {
-      this.numbers.pop();
-    }
+    this.numbers.update((values) => {
+      const updated = [...values, val];
+      const numberValue = asNumber(toTextValue(updated), this.isNegative());
+
+      // If invalid number after update, do not update
+      if (numberValue == null) {
+        return values;
+      }
+
+      // Do not update if above / below max / min
+      if (numberValue > this.max() || numberValue < this.min()) {
+        return values;
+      }
+
+      return updated;
+    });
   }
 
   pushDecimalSeparator() {
-    if (this.numbers.indexOf('.') < 0) {
-      this.numbers.push('.');
+    if (this.numbers().indexOf('.') < 0) {
+      this.numbers.update((values) => [...values, '.']);
     }
   }
 
   clear() {
-    this.numbers.pop();
+    this.numbers.update((values) => values.slice(0, -1));
   }
+}
+
+function asNumber(value: string, isNegative: boolean) {
+  const num = parseFloat(value);
+  if (isNaN(num)) {
+    return undefined;
+  }
+  return num * (isNegative ? -1 : 1);
+}
+
+function toTextValue(numbers: string[]) {
+  return numbers.join('');
 }

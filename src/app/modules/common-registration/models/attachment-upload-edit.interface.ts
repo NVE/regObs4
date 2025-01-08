@@ -12,7 +12,7 @@ export interface AttachmentUploadEditModel extends AttachmentEditModel {
 }
 
 export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditModel {
-  blob: Blob;
+  blob?: Blob;
 }
 
 export type ExistingOrNewAttachmentModel = AttachmentUploadEditModel | RemoteOrLocalAttachmentEditModel;

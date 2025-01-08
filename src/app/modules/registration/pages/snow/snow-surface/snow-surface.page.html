@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.SNOW_SURFACE.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +16,7 @@
   >
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_SURFACE.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <app-kdv-select
         label="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT"
@@ -83,7 +83,7 @@
       ></app-kdv-select>
 
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_HEADER' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_HEADER" | translate }} </ion-label>
       </ion-list-header>
       <app-text-comment
         label="REGISTRATION.DANGER_OBS.COMMENT"
@@ -91,11 +91,11 @@
       ></app-text-comment>
       <ion-item-divider>
         <ion-label class="ion-text-wrap">
-          {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER' | translate }}
+          {{ "REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER" | translate }}
         </ion-label>
       </ion-item-divider>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

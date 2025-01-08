@@ -29,7 +29,7 @@
               src="/assets/icon/moh.svg"
               [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
             ></svg-icon>
-            {{ obs.ObsLocation.Height }}
+            {{ obs().ObsLocation.Height }}
             {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
           </div>
           <div class="card-icon-item">
@@ -38,16 +38,16 @@
               src="/assets/icon/user.svg"
               [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
             ></svg-icon>
-            {{ obs.Observer.NickName }}
+            {{ obs().Observer.NickName }}
             <app-competence [starCount]="starCount" [competenceLevelName]="competenceLevelName"></app-competence>
           </div>
-          <div class="card-icon-item" *ngIf="obs.ObserverGroupName">
+          <div class="card-icon-item" *ngIf="obs().ObserverGroupName">
             <svg-icon
               class="card-icon-item-icon"
               src="/assets/icon/usergroup.svg"
               [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
             ></svg-icon>
-            {{ obs.ObserverGroupName }}
+            {{ obs().ObserverGroupName }}
           </div>
         </ion-col>
       </ion-row>
@@ -85,7 +85,6 @@
   <ion-item color="light">
     <ion-button
       *ngIf="userCanEdit"
-      mode="ios"
       fill="clear"
       class="link-title"
       slot="start"
@@ -96,8 +95,8 @@
       {{ "REGISTRATION.EDIT" | translate }}
     </ion-button>
     <ion-spinner slot="start" name="dots" *ngIf="isLoadingObsForEdit"></ion-spinner>
-    <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
-      ID: {{ obs.RegId }}
+    <ion-button fill="clear" class="reg-id" slot="end" (click)="share()">
+      ID: {{ obs().RegId }}
       <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
     </ion-button>
   </ion-item>

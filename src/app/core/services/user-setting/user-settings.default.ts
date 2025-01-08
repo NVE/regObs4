@@ -5,7 +5,7 @@ import { Capacitor } from '@capacitor/core';
 
 const isNative = Capacitor.isNativePlatform();
 
-export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey: LangKey) => ({
+export const DEFAULT_USER_SETTINGS: (langKey?: LangKey) => UserSetting = (langKey?: LangKey) => ({
   appMode: AppMode.Prod,
   language: langKey || LangKey.nb,
   currentGeoHazard: [GeoHazard.Snow],
@@ -27,5 +27,5 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
   preferCompleteSnowObservations: false,
-  lastOverridden: null,
+  lastOverridden: undefined,
 });

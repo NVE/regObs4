@@ -11,9 +11,11 @@ import { HttpClient } from '@angular/common/http';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
+type CompetenceLevelKey = keyof NonNullable<SearchSideBarDto['ObserverCompetenceLevels']>;
+
 // Search criteria model from API uses other geohazard names than the app.
 // This object maps from the apps geohazard names to API geohazard names.
-const GEOHAZARDMAP: { [property in GeoHazard]: keyof SearchSideBarDto['ObserverCompetenceLevels'] } = {
+const GEOHAZARDMAP: { [property in GeoHazard]: CompetenceLevelKey } = {
   [GeoHazard.NotSpecified]: 'NotSpecified',
   [GeoHazard.Snow]: 'Avalanche',
   [GeoHazard.Ice]: 'Ice',
@@ -80,10 +82,13 @@ export class SearchCriteriaModelService {
     return this.getParams$().pipe(
       switchMap((params) =>
         this.getModel$(params).pipe(
-          map((result) => result.ObserverCompetenceLevels),
+          map((result) => result.ObserverCompetenceLevels || {}),
           map((result) => {
             const apiGeoHazardNames = params.geoHazards.map((g) => GEOHAZARDMAP[g]);
-            return apiGeoHazardNames.map((g) => result[g]).flat();
+            return apiGeoHazardNames
+              .map((g) => result[g])
+              .filter((comp) => comp != null)
+              .flat();
           })
         )
       )
@@ -97,10 +102,13 @@ export class SearchCriteriaModelService {
     return this.getParams$().pipe(
       switchMap((params) =>
         this.getModel$(params).pipe(
-          map((result) => result.RegistrationTypes),
+          map((result) => result.RegistrationTypes || {}),
           map((result) => {
             const apiGeoHazardNames = params.geoHazards.map((g) => GEOHAZARDMAP[g]);
-            return apiGeoHazardNames.map((g) => result[g]).flat();
+            return apiGeoHazardNames
+              .map((g) => result[g])
+              .filter((names) => names != null)
+              .flat();
           })
         )
       )

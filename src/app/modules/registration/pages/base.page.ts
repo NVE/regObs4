@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
@@ -13,16 +13,14 @@ import { createEmptyRegistration } from '../../common-registration/registration.
  */
 @Directive()
 export abstract class BasePage extends NgDestoryBase {
-  draft: RegistrationDraft;
-  basePageService: BasePageService;
-  registrationTid: RegistrationTid;
-  activatedRoute: ActivatedRoute;
+  basePageService = inject(BasePageService);
+  activatedRoute = inject(ActivatedRoute);
+  draft!: RegistrationDraft;
 
-  constructor(registrationTid: RegistrationTid, basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  abstract registrationTid?: RegistrationTid;
+
+  constructor() {
     super();
-    this.basePageService = basePageService;
-    this.activatedRoute = activatedRoute;
-    this.registrationTid = registrationTid;
   }
 
   ionViewDidEnter() {
@@ -118,10 +116,16 @@ export abstract class BasePage extends NgDestoryBase {
   }
 
   async isEmpty(registrationType = this.registrationTid): Promise<boolean> {
+    if (registrationType == null) {
+      throw new Error('isEmpty not implemented for registrationType value null');
+    }
     return await this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
   protected async hasAttachments(registrationType = this.registrationTid): Promise<boolean> {
+    if (registrationType == null) {
+      throw new Error('hasAttachments not implemented for registrationType value null');
+    }
     return await this.basePageService.draftRepository.hasAttachments(this.draft, registrationType);
   }
 
@@ -130,6 +134,9 @@ export abstract class BasePage extends NgDestoryBase {
    * @returns {boolean} true if the user wants to reset
    */
   async reset(): Promise<boolean> {
+    if (this.registrationTid == null) {
+      throw new Error('hasAttachments not implemented for registrationTid value null');
+    }
     const pleaseReset = await this.basePageService.confirmDelete();
     if (pleaseReset) {
       await this.delete();
@@ -146,6 +153,9 @@ export abstract class BasePage extends NgDestoryBase {
    * You may override this if your form contains other data.
    */
   protected async delete() {
+    if (this.registrationTid == null) {
+      throw new Error('delete not implemented for registrationTid value null');
+    }
     this.draft = await this.basePageService.delete(this.draft, [this.registrationTid]);
   }
 }

@@ -1,20 +1,26 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate}}</ion-title>
+    <ion-title>{{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="avalancheActivityCopy">
+<ion-content>
   <ion-list lines="full">
     <ion-item>
-      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY' | translate}}</ion-label>
-      <ion-checkbox mode="md" slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
+      <ion-checkbox
+        slot="start"
+        [checked]="noAvalancheActivity()"
+        (ionChange)="toggleNoAvalancheActivity()"
+        labelPlacement="end"
+      >
+        {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY" | translate }}
+      </ion-checkbox>
     </ion-item>
-    <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
-      <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ 'DATE' | translate }}</ion-label>
+    <ion-item [class.hasWarning]="dateIsDifferentThanObsTime()">
+      <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ "DATE" | translate }}</ion-label>
       <app-datetime-picker
         [(dateTime)]="startDate"
         [maxDate]="maxDate"
@@ -22,61 +28,60 @@
         presentation="date"
       ></app-datetime-picker>
     </ion-item>
-    <ion-item *ngIf="dateIsDifferentThanObsTime">
+    <ion-item *ngIf="dateIsDifferentThanObsTime()">
       <ion-label color="danger" class="ion-text-wrap">
-        {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
+        {{ "ALERT.WARNING" | translate }}! {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING" | translate }}
       </ion-label>
     </ion-item>
     <ion-item>
-      <ion-label color="medium" position="stacked" class="ion-text-uppercase"
-        >{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME' | translate}}</ion-label
-      >
+      <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+        {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME" | translate }}
+      </ion-label>
       <ion-select
-        cancelText="{{'DIALOGS.CANCEL' | translate}}"
+        cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
         [(ngModel)]="selectedTimeFrame"
         interface="action-sheet"
       >
         <ion-select-option [value]="timeFrame.id" *ngFor="let timeFrame of timeFrames">
-          {{ timeFrame.text | translate }}</ion-select-option
-        >
+          {{ timeFrame.text | translate }}
+        </ion-select-option>
       </ion-select>
     </ion-item>
-    <ng-container *ngIf="!noAvalancheActivity">
+    <ng-container *ngIf="!noAvalancheActivity()">
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES"
         kdvKey="Snow_EstimatedNumKDV"
-        [(value)]="avalancheActivityCopy.EstimatedNumTID"
+        [(value)]="estimatedNumTid"
       ></app-kdv-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
         kdvKey="Snow_AvalancheExtKDV"
-        [(value)]="avalancheActivityCopy.AvalancheExtTID"
+        [(value)]="avalancheExtTid"
       ></app-kdv-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER"
         kdvKey="Snow_AvalTriggerSimpleKDV"
-        [(value)]="avalancheActivityCopy.AvalTriggerSimpleTID"
+        [(value)]="avalTriggerSimpleTid"
       ></app-kdv-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE"
         kdvKey="Snow_DestructiveSizeKDV"
-        [(value)]="avalancheActivityCopy.DestructiveSizeTID"
+        [(value)]="destructiveSizeTid"
       ></app-kdv-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
         kdvKey="Snow_AvalPropagationKDV"
-        [(value)]="avalancheActivityCopy.AvalPropagationTID"
+        [(value)]="avalPropagationTid"
       ></app-kdv-select>
       <app-exposed-height
-        [(exposedHeightComboTID)]="avalancheActivityCopy.ExposedHeightComboTID"
-        [(exposedHight1)]="avalancheActivityCopy.ExposedHeight1"
-        [(exposedHight2)]="avalancheActivityCopy.ExposedHeight2"
+        [(exposedHeightComboTID)]="exposedHeightComboTid"
+        [(exposedHeight1)]="exposedHeight1"
+        [(exposedHeight2)]="exposedHeight2"
       ></app-exposed-height>
-      <app-valid-exposition [(validExposition)]="avalancheActivityCopy.ValidExposition"></app-valid-exposition>
+      <app-valid-exposition [(validExposition)]="validExposition"></app-valid-exposition>
     </ng-container>
-    <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment">
-    </app-text-comment>
+    <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="comment"> </app-text-comment>
   </ion-list>
-  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew()">
   </app-modal-save-or-delete-buttons>
 </ion-content>

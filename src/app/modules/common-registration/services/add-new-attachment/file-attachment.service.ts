@@ -1,7 +1,6 @@
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } from 'rxjs';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
@@ -17,9 +16,8 @@ const ROOT_DIR = 'attachments';
 @Injectable()
 export default class FileAttachmentService extends NewAttachmentService {
   private file = inject(File);
-  protected logger = inject(LoggingService);
 
-  protected DEBUG_TAG = 'FileAttachmentService';
+  protected override DEBUG_TAG = 'FileAttachmentService';
   private hasCreatedRootFolder = false;
   private attachmentsChanged = new BehaviorSubject<void>(undefined); //get a tick each time an attachment changes
 
@@ -34,7 +32,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     mimeType: string,
     geoHazard: GeoHazard,
     registrationTid: RegistrationTid,
-    type?: AttachmentType,
+    type: AttachmentType = 'Attachment',
     ref?: string
   ): Promise<void> {
     const rootDir = await this.getRootPath();
@@ -70,7 +68,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     mimeType: string,
     geoHazard: GeoHazard,
     registrationTid: RegistrationTid,
-    type?: AttachmentType,
+    type: AttachmentType = 'Attachment',
     ref?: string
   ): Promise<void> {
     const rootDir = await this.getRootPath();
@@ -143,11 +141,7 @@ export default class FileAttachmentService extends NewAttachmentService {
    * @returns file url as string, with trailing /
    */
   private getDataDirectoryFileUrl(): string {
-    if (this.file && this.file.dataDirectory) {
-      const fileUrl = this.file.dataDirectory;
-      return fileUrl;
-    }
-    return undefined;
+    return this.file.dataDirectory;
   }
 
   /**
@@ -188,6 +182,9 @@ export default class FileAttachmentService extends NewAttachmentService {
   private async getBlobInternal(registrationId: string, attachmentId: string): Promise<Blob> {
     const rootDir = await this.getRootPath();
     const metadata = await this.readMetadataFile(registrationId, `${attachmentId}.json`);
+    if (!metadata.fileName) {
+      throw new Error('No filename in metadata');
+    }
     const buffer = await this.file.readAsArrayBuffer(`${rootDir}/${registrationId}`, metadata.fileName);
     return new Blob([buffer], { type: metadata.AttachmentMimeType });
   }
@@ -197,7 +194,9 @@ export default class FileAttachmentService extends NewAttachmentService {
     const path = `${rootPath}/${registrationId}/`;
     const metadataFileName = this.getMetadataFileName(attachmentId);
     const metadata = await this.readMetadataFile(registrationId, metadataFileName);
-    await this.file.removeFile(path, metadata.fileName);
+    if (metadata.fileName) {
+      await this.file.removeFile(path, metadata.fileName);
+    }
     await this.file.removeFile(path, metadataFileName);
 
     const remainingEntries = await this.file.listDir(rootPath, registrationId);

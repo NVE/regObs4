@@ -20,7 +20,7 @@ export class DbHelperService {
   private platform = inject(Platform);
   private loggingService = inject(LoggingService);
 
-  sqliteobj: SQLiteObject;
+  sqliteobj?: SQLiteObject;
 
   async init() {
     if (isAndroidOrIos(this.platform)) {
@@ -55,7 +55,7 @@ export class DbHelperService {
     }
   }
 
-  async resetDb(onError?: (tableName: string, ex: Error) => void) {
+  async resetDb(onError?: (tableName: string, ex: unknown) => void) {
     if (this.sqliteobj) {
       try {
         await this.sqliteobj.executeSql('CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)');
@@ -69,7 +69,10 @@ export class DbHelperService {
     // await this.init();
   }
 
-  private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T> {
+  private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T | undefined> {
+    if (!this.sqliteobj) {
+      throw new Error('sqliteobj not defined, has service been initiated?');
+    }
     const select = `SELECT data FROM '${table}' where id = ?1`;
     const sqlResult = await this.sqliteobj.executeSql(select, [id]);
     if (sqlResult.rows && sqlResult.rows.length > 0) {
@@ -79,6 +82,7 @@ export class DbHelperService {
         return result;
       }
     }
+    return;
   }
 
   private async fallbackGetItemById<T>(table: string, id: string | number, idColumn = 'id'): Promise<T> {
@@ -88,7 +92,12 @@ export class DbHelperService {
     return <T>nanoSqlResult[0];
   }
 
-  async fastInsert<T>(table: string, data: T[], idSelector?: (data: T) => any, rebuildIndexes = false) {
+  async fastInsert<T extends { [key: string]: any }>(
+    table: string,
+    data: T[],
+    idSelector?: (data: T) => any,
+    rebuildIndexes = false
+  ) {
     if (this.sqliteobj) {
       await this.fastInsertSqlLite(table, data, idSelector);
     } else {
@@ -101,6 +110,9 @@ export class DbHelperService {
   }
 
   private fastInsertSqlLite<T>(table: string, data: T[], idSelector?: (data: T) => any) {
+    if (!this.sqliteobj) {
+      throw new Error('sqliteobj not defined, has service been initiated?');
+    }
     const _idSelector = idSelector ? idSelector : (_data: T) => (<any>_data).id;
     const statements = data.map((val) => [
       `INSERT OR REPLACE INTO ${table} VALUES (?1, ?2)`,
@@ -109,7 +121,7 @@ export class DbHelperService {
     return this.sqliteobj.sqlBatch(statements);
   }
 
-  private fastInsertNanoSql<T>(table: string, data: T[], idSelector?: (data: T) => any) {
+  private fastInsertNanoSql<T extends { [key: string]: any }>(table: string, data: T[], idSelector?: (data: T) => any) {
     return nSQL().rawImport({ [table]: data }, false);
   }
 }

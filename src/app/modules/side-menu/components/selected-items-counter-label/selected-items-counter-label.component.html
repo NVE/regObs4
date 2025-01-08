@@ -1,10 +1,12 @@
 <ion-label>
   <ng-content></ng-content>
-  <span
-    >({{
-      selectedItemsCount == 0
-        ? ("OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate)
-        : ("OBSERVATION_FILTER.MULTISELECT_SHOW_COUNT" | translate: { selectedItemsCount: selectedItemsCount })
-    }})</span
-  >
+  @if (selectedItemsCount() == 0) {
+    <span>
+      {{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }}
+    </span>
+  } @else {
+    <span>
+      {{ "OBSERVATION_FILTER.MULTISELECT_SHOW_COUNT" | translate: { selectedItemsCount: selectedItemsCount() } }}
+    </span>
+  }
 </ion-label>

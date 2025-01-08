@@ -1,9 +1,9 @@
 <app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
   <app-geo-fab slot="fixed"></app-geo-fab>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <!-- <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel> -->
   <ion-item-divider>
-    <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
+    <h3 class="ion-text-uppercase header">{{ "OBSERVATION_LIST.TITLE" | translate }}</h3>
   </ion-item-divider>
   <ion-grid class="filter-panel">
     <ion-row>
@@ -12,14 +12,13 @@
           [value]="useMapExtentFilter$ | async"
           (ionChange)="toggleFilterByMapView($event)"
           class="map-extent-filter-toggle segment-button-class"
-          mode="ios"
           [disabled]="disableMapExtentToggle$ | async"
         >
           <ion-segment-button value="mapBorders">
-            <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
+            <ion-label>{{ "OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW" | translate }}</ion-label>
           </ion-segment-button>
           <ion-segment-button value="all">
-            <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
+            <ion-label>{{ "OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL" | translate }}</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-col>
@@ -28,11 +27,19 @@
       </ion-col>
       <ion-col>
         <div *ngIf="!isNative" class="button-container">
-          <span>{{'OBSERVATION_LIST.VIEW_TYPE' | translate}}:</span>
-          <button id="list" [ngClass]="viewType$.getValue() == 'list' && 'active'" (click)="changeViewType('list')">
+          <span>{{ "OBSERVATION_LIST.VIEW_TYPE" | translate }}:</span>
+          <button
+            id="list"
+            [ngClass]="viewType$.getValue() == 'list' ? 'active' : null"
+            (click)="changeViewType('list')"
+          >
             <img alt="list view" src="../../../assets/icon/reorder.svg" />
           </button>
-          <button id="grid" [ngClass]="viewType$.getValue() == 'grid' && 'active'" (click)="changeViewType('grid')">
+          <button
+            id="grid"
+            [ngClass]="viewType$.getValue() == 'grid' ? 'active' : null"
+            (click)="changeViewType('grid')"
+          >
             <img alt="images view" src="../../../assets/icon/grid_view.svg" />
           </button>
         </div>
@@ -40,14 +47,14 @@
       <ion-col class="order-by-select">
         <ng-container *ngIf="orderBy$ | async as orderBy">
           <div class="select-wrapper">
-            <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}:</span>
+            <span>{{ "OBSERVATION_LIST.SORT_BY_TEXT" | translate }}:</span>
             <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
               <ion-select-option value="DtObsTime">
-                {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
+                {{ "OBSERVATION_LIST.SORT_BY_OBS_TIME" | translate }}</ion-select-option
               >
-              <ion-select-option value="DtChangeTime"
-                >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
-              >
+              <ion-select-option value="DtChangeTime">{{
+                "OBSERVATION_LIST.SORT_BY_CHANGE_TIME" | translate
+              }}</ion-select-option>
             </ion-select>
           </div>
         </ng-container>
@@ -55,42 +62,48 @@
     </ion-row>
   </ion-grid>
 
-  <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
+  <ng-container *ngIf="!(isFetchingObservations$ | async)">
+    <!-- ; else skeleton -->
     <ng-container *ngIf="viewType$ | async as viewType">
-      <ng-container *ngIf="(showObservations$ | async); else disabled">
+      <ng-container *ngIf="showObservations$ | async; else disabled">
         <ng-container *ngIf="registrations$ | async as registrations">
-          <ion-list class="loaded" *ngIf="registrations?.length > 0; else empty">
-            <app-observation-list-view
-              *ngIf="viewType==='list'"
+          @for (reg of registrations; track reg.RegId) {
+            <app-observation class="obs" [registration]="reg"></app-observation>
+          } @empty {
+            <!-- TODO: Bruk empty template -->
+            <p>Ingen observasjoner</p>
+          }
+          <!-- <app-observation-list-view
+              *ngIf="viewType === 'list'"
               [registrations]="registrations"
-            ></app-observation-list-view>
-            <!-- TODO: Fix image search as another route / component ? -->
-            <!-- <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid> -->
-            <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-              <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-          </ion-list> </ng-container
-      ></ng-container>
+            ></app-observation-list-view> -->
+          <!-- TODO: Fix image search as another route / component ? -->
+          <!-- <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid> -->
+          <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+            <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ng-container>
+      </ng-container>
     </ng-container>
   </ng-container>
 
-  <ng-template #skeleton>
+  <!-- <ng-template #skeleton>
     <ng-container *ngIf="viewType$ | async as viewType">
-      <ng-container *ngIf="viewType==='list'">
+      <ng-container *ngIf="viewType === 'list'">
         <app-observation-skeleton></app-observation-skeleton>
         <app-observation-skeleton></app-observation-skeleton>
         <app-observation-skeleton></app-observation-skeleton>
       </ng-container>
-      <ion-list *ngIf="viewType==='grid'" class="skeleton-list">
+      <ion-list *ngIf="viewType === 'grid'" class="skeleton-list">
         <ion-skeleton-text animated *ngFor="let _ of fakeArray" class="img-skeleton"></ion-skeleton-text>
       </ion-list>
     </ng-container>
-  </ng-template>
+  </ng-template> -->
 
   <ng-template #disabled>
     <div class="disabled-info">
-      <strong>{{ 'MENU.DEACTIVATE_OBSERVATIONS' | translate }}</strong>
-      <div>{{ 'OBSERVATION_LIST.EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED' | translate }}</div>
+      <strong>{{ "MENU.DEACTIVATE_OBSERVATIONS" | translate }}</strong>
+      <div>{{ "OBSERVATION_LIST.EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED" | translate }}</div>
     </div>
   </ng-template>
 

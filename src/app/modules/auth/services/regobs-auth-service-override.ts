@@ -11,18 +11,18 @@ import { TokenResponseFull } from './token-response-full';
  */
 export class RegobsAuthServiceOverride extends AuthService {
   constructor(
-    protected browser: Browser = new DefaultBrowser(),
-    protected storage: StorageBackend = new LocalStorageBackend(),
-    protected requestor: Requestor = new JQueryRequestor()
+    browser: Browser = new DefaultBrowser(),
+    storage: StorageBackend = new LocalStorageBackend(),
+    requestor: Requestor = new JQueryRequestor()
   ) {
     super(browser, storage, requestor);
   }
 
-  protected async requestAccessToken(code: string, codeVerifier?: string): Promise<void> {
+  protected override async requestAccessToken(code: string, codeVerifier?: string): Promise<void> {
     try {
       await super.requestAccessToken(code, codeVerifier);
     } catch (err) {
-      if (err.error?.error_description?.indexOf('AADB2C90090') >= 0) {
+      if (err instanceof HttpErrorResponse && err.error?.error_description?.indexOf('AADB2C90090') >= 0) {
         this.notifyActionListers(AuthActionBuilder.RefreshFailed(new Error('AADB2C90090')));
         // Error in action listeners is only a string (toString)
         // and error_description is not included, so we have to pass this in as a custom Error.
@@ -38,11 +38,11 @@ export class RegobsAuthServiceOverride extends AuthService {
    *
    * @throws {Error} if no token is defined
    */
-  public async refreshToken() {
+  public override async refreshToken() {
     try {
       await super.requestTokenRefresh();
     } catch (error) {
-      if (error?.message?.toLowerCase().indexOf('no token defined') > -1) {
+      if (error instanceof Error && error.message.toLowerCase().indexOf('no token defined') > -1) {
         throw error;
       }
       const shouldClearTokens = await this.shouldTokensBeCleared(error);
@@ -52,7 +52,10 @@ export class RegobsAuthServiceOverride extends AuthService {
       // Error message: 'Unable to obtain server configuration' means we didn't reach B2C,
       // but since we refresh pretty often and we might be offline, we just ignore it.
       // If we trigger a RefreshFailed action the token will be cleared by the auth library
-      if (error?.message?.toLowerCase().indexOf('unable to obtain server configuration') === -1) {
+      if (
+        error instanceof Error &&
+        error.message.toLowerCase().indexOf('unable to obtain server configuration') === -1
+      ) {
         this.notifyActionListers(AuthActionBuilder.RefreshFailed(error));
       }
     }

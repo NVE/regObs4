@@ -1,28 +1,23 @@
-import { Component, Input, OnChanges, inject } from '@angular/core';
-import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
-import { Observable, switchMap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { AsyncPipe } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-geo-name',
-  template: '{{ name$ | async }}',
+  template: '{{ name() }}',
   styleUrls: ['./geo-name.component.scss'],
-  imports: [AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GeoNameComponent implements OnChanges {
+export class GeoNameComponent {
   private geoHelperService = inject(GeoHelperService);
-  private userSettingsService = inject(UserSettingService);
 
-  @Input() geoHazards: GeoHazard[];
+  readonly geoHazards = input.required<GeoHazard[]>();
 
-  name$: Observable<string>;
-  language$: Observable<LangKey>;
+  private nameResource = rxResource({
+    request: () => this.geoHazards(),
+    loader: ({ request: geohazards }) => this.geoHelperService.getName(geohazards),
+  });
 
-  ngOnChanges(): void {
-    this.name$ = this.userSettingsService.language$.pipe(
-      switchMap(() => this.geoHelperService.getName(this.geoHazards))
-    );
-  }
+  name = this.nameResource.value.asReadonly();
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular/standalone';
 import deepEqual from 'fast-deep-equal';
 import { map, Observable, distinctUntilChanged, combineLatest } from 'rxjs';
@@ -20,24 +20,10 @@ import { ThumbnailsComponent } from '../../../thumbnails/thumbnails.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
+import { injectUuidFromRouteParameters } from 'src/app/core/services/draft/get-uuid';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'EditImagesBarComponent';
-
-/**
- * Compares two versions of a draft and returns true if existing (remote) attachments has changed
- */
-function existingAttachmentsHasNotChanged(
-  previous: RegistrationDraft,
-  current: RegistrationDraft,
-  registrationTid: number
-) {
-  const preExistingAttachments = getAllAttachmentsFromEditModel(previous.registration, registrationTid);
-  const curExistingAttachments = getAllAttachmentsFromEditModel(current.registration, registrationTid);
-
-  // Check if existing attachments has changed
-  const changed = attachmentsComparator(preExistingAttachments, curExistingAttachments, 'AttachmentId');
-  return changed;
-}
 
 /**
  * Show thumbnails of all images for given registration.
@@ -50,49 +36,56 @@ function existingAttachmentsHasNotChanged(
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, NgIf, ThumbnailsComponent, TranslatePipe],
 })
-export class EditImagesBarComponent {
+export class EditImagesBarComponent implements OnInit {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
   private logger = inject(LoggingService);
   private newAttachmentService = inject(NewAttachmentService);
 
-  @Input() draft: RegistrationDraft;
-  @Input() registrationTid: number;
-  @Input() modalTitlePostfix: string; //used to build the title in the modal
-  @Input() readonly = false;
+  uuid = injectUuidFromRouteParameters();
+  draft = this.draftRepository.getDraftSignal(this.uuid);
+  geoHazardTid = computed(() => this.draft()?.registration.GeoHazardTID || 0);
+  readonly registrationTid = input.required<number>();
+  readonly modalTitlePostfix = input<string>(); //used to build the title in the modal
+  readonly readonly = input(false);
 
-  attachments$: Observable<ExistingOrNewAttachment[]>;
+  attachments$?: Observable<ExistingOrNewAttachment[]>;
 
   constructor() {
     addIcons({ camera });
   }
 
-  ngOnInit() {
-    this.attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.draft.uuid);
+  ngOnInit(): void {
+    this.attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.uuid);
   }
 
   async showEditImagesPage(): Promise<void> {
+    const draft = this.draft();
+    if (!draft) {
+      throw new Error('No draft found');
+    }
     const modal = await this.modalController.create({
       component: EditImagesPage,
       componentProps: {
-        registrationTid: this.registrationTid,
-        geoHazard: this.draft.registration.GeoHazardTID,
-        draftUuid: this.draft.uuid,
-        modalTitlePostfix: this.modalTitlePostfix,
-        existingAttachments: this.draft.registration.Attachments,
+        registrationTid: this.registrationTid(),
+        geoHazard: draft.registration.GeoHazardTID,
+        draftUuid: draft.uuid,
+        modalTitlePostfix: this.modalTitlePostfix(),
+        existingAttachments: draft.registration.Attachments,
       },
       cssClass: 'edit-images-page-modal',
     });
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    if (data != null && !deepEqual(data.existingAttachments, this.draft.registration.Attachments)) {
+
+    if (data != null && !deepEqual(data.existingAttachments, draft.registration.Attachments)) {
       this.logger.debug('Existing (remote) attachments changed, saving draft...', DEBUG_TAG, {
         changed: data.existingAttachments,
-        original: this.draft.registration.Attachments,
+        original: draft.registration.Attachments,
       });
-      this.draft.registration.Attachments = data.existingAttachments;
-      this.draftRepository.save(this.draft);
+      draft.registration.Attachments = data.existingAttachments;
+      this.draftRepository.save(draft);
     } else {
       this.logger.debug('Existing (remote) attachments not changed', DEBUG_TAG);
     }
@@ -104,13 +97,15 @@ export class EditImagesBarComponent {
   private getNewAndExistingAttachmentsForDraft$(uuid: string): Observable<ExistingOrNewAttachment[]> {
     const draft$ = this.draftRepository
       .getDraft$(uuid)
-      .pipe(distinctUntilChanged((prev, curr) => existingAttachmentsHasNotChanged(prev, curr, this.registrationTid)));
+      .pipe(distinctUntilChanged((prev, curr) => existingAttachmentsHasNotChanged(prev, curr, this.registrationTid())));
     const newAttachments$ = this.newAttachmentService
-      .getAttachments(uuid, { registrationTid: this.registrationTid })
+      .getAttachments(uuid, { registrationTid: this.registrationTid() })
       .pipe(distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')));
     return combineLatest([draft$, newAttachments$]).pipe(
       map(([draft, newAttachments]) => {
-        const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, this.registrationTid);
+        const existingAttachments = draft
+          ? getAllAttachmentsFromEditModel(draft.registration, this.registrationTid())
+          : [];
         return [
           ...existingAttachments.map((attachment) => ({ type: 'existing' as ExistingAttachmentType, attachment })),
           ...newAttachments.map((attachment) => ({ type: 'new' as NewAttachmentType, attachment })),
@@ -118,4 +113,24 @@ export class EditImagesBarComponent {
       })
     );
   }
+}
+
+/**
+ * Compares two versions of a draft and returns true if existing (remote) attachments has changed
+ */
+function existingAttachmentsHasNotChanged(
+  previous: RegistrationDraft | undefined,
+  current: RegistrationDraft | undefined,
+  registrationTid: number
+) {
+  if (previous && current) {
+    const preExistingAttachments = getAllAttachmentsFromEditModel(previous.registration, registrationTid);
+    const curExistingAttachments = getAllAttachmentsFromEditModel(current.registration, registrationTid);
+
+    // Check if existing attachments has changed
+    const changed = attachmentsComparator(preExistingAttachments, curExistingAttachments, 'AttachmentId');
+    return changed;
+  }
+
+  return false;
 }

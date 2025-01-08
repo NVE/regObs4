@@ -1,5 +1,5 @@
 import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
@@ -58,13 +58,16 @@ import { DataLoadComponent } from '../../modules/data-load/components/data-load/
 const DEBUG_TAG = 'HomePage';
 
 function withinExtentCriteriaToBounds(extent: WithinExtentCriteriaDto): L.LatLngBounds {
+  if (extent.TopLeft == null || extent.BottomRight == null) {
+    throw new Error('Invalid extent, TopLeft and BottomRight must be specified');
+  }
   const topLeft = positionDtoToLatLng(extent.TopLeft);
   const bottomRight = positionDtoToLatLng(extent.BottomRight);
   return new L.LatLngBounds(topLeft, bottomRight);
 }
 
 function positionDtoToLatLng(position: PositionDto): L.LatLng {
-  return new L.LatLng(position.Latitude, position.Longitude);
+  return new L.LatLng(position.Latitude || 0, position.Longitude || 0);
 }
 
 @Component({
@@ -101,27 +104,27 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private offlineMapService = inject(OfflineMapService);
   private document = inject<Document>(DOCUMENT);
 
-  @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
-  @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
-  private map: L.Map;
-  private markerLayer: RegObsMarkerClusterLayer;
+  readonly mapItemBar = viewChild.required(MapItemBarComponent);
+  readonly mapComponent = viewChild.required(MapComponent);
+  private map?: L.Map;
+  private markerLayer?: RegObsMarkerClusterLayer;
   private geoCoachMarksClosedSubject = new Subject<void>();
 
   spinnerLabel = 'DATA_LOAD.SPINNER_FETCH_OBSERVATIONS';
-  fullscreen$: Observable<boolean>;
+  fullscreen$?: Observable<boolean>;
   showGeoSelectInfo = false;
   showObservations$: Observable<boolean>; // Show observations when this is true
-  private lastFetched: Date = null;
-  private lastSearchBounds: L.LatLngBounds = null;
-  private shouldSearchResultUpdateOnEnter: boolean;
+  private lastFetched: Date | null = null;
+  private lastSearchBounds: L.LatLngBounds | null = null;
+  private shouldSearchResultUpdateOnEnter?: boolean;
 
   private isFetchingObservations = new BehaviorSubject(false);
   isFetchingObservations$: Observable<boolean>;
 
   private showErrorToast = new Subject<boolean>();
-  private errorToast: HTMLIonToastElement; // Shows error message if observation search fail
+  private errorToast: HTMLIonToastElement | null = null; // Shows error message if observation search fail
 
-  @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
+  readonly mapCenter = viewChild(MapCenterInfoComponent);
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
@@ -202,7 +205,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   private createRegistrations$(searchCriteria$: Observable<SearchCriteria>): Observable<AtAGlanceViewModel[]> {
     return combineLatest([searchCriteria$, this.refreshRequested$.pipe(startWith(true))]).pipe(
-      map(([searchCriteria]) => searchCriteria),
+      map(([searchCriteria]) => searchCriteria as SearchCriteriaRequestDto),
       // We are fetching new data, so set isFetching to true
       tap(() => this.isFetchingObservations.next(true)),
 
@@ -316,7 +319,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
         if (!showGeoSelectInfo) {
           this.geoCoachMarksClosedSubject.next();
           this.geoCoachMarksClosedSubject.complete();
-          this.mapComponent.componentIsActive(true);
+          this.mapComponent().componentIsActive(true);
         }
       });
   }
@@ -325,7 +328,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     this.map = leafletMap;
 
     this.map.on('click', () => {
-      this.mapItemBar.hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
+      this.mapItemBar().hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
     });
   }
 
@@ -336,9 +339,16 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       `Waited ${performance.now() - startTime} ms for initial map extent to search for observations`,
       DEBUG_TAG
     );
+    type PrevAndCurrCritera = [Immutable<SearchCriteriaRequestDto>, Immutable<SearchCriteriaRequestDto>];
+    const scanSeed: PrevAndCurrCritera = [{}, {}];
     const searchCriteriaWithLargerExtent = this.searchCriteriaService.searchCriteria$.pipe(
       //get current search criteria together with previous criteria, so we can check what's changed
-      scan((previousCriterias, current) => [...previousCriterias.splice(-1), current], [null, null]),
+      // TODO: Denne er grusom å forstå og å type riktig, bør vel få skrevet om dette til noe annet etter hvert..
+      scan(
+        (previousCriterias: PrevAndCurrCritera, current: Immutable<SearchCriteriaRequestDto>) =>
+          [previousCriterias[1], current] as PrevAndCurrCritera,
+        scanSeed
+      ),
       filter(([prev, current]: [Immutable<SearchCriteriaRequestDto>, Immutable<SearchCriteriaRequestDto>]) => {
         // Two geographical properties on search criteria can be used to specify search extent:
         // SelectedRegions and Extent. We need to check if both of them has changed to see if we should send a new
@@ -388,7 +398,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     return searchCriteriaWithLargerExtent;
   }
 
-  private rememberExtent(bounds: L.LatLngBounds): boolean {
+  private rememberExtent(bounds: L.LatLngBounds | null): boolean {
     this.lastSearchBounds = bounds;
     return true;
   }
@@ -396,13 +406,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   async onEnter() {
     this.checkIfShouldSearchCriteriaUpdateOnEnter();
     this.loggingService.debug('Home page onEnter, so activate map updates and GeoLocation', DEBUG_TAG);
-    this.mapComponent.componentIsActive(true);
+    this.mapComponent().componentIsActive(true);
     this.updateInfoBoxHeight();
   }
 
   onLeave() {
     this.loggingService.debug('Home page onLeave. Disable map updates and GeoLocation', DEBUG_TAG);
-    this.mapComponent.componentIsActive(false);
+    this.mapComponent().componentIsActive(false);
 
     // As we leave the page, map center info is not visible any more, reset height
     this.mapCenterInfoHeight.next(0);
@@ -422,13 +432,13 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     const startTime = performance.now();
 
     if (!this.markerLayer) {
-      this.createMarkerLayer();
+      this.markerLayer = this.createMarkerLayer();
     }
     const newMarkers = registrations
       .filter((reg) => !!reg.Longitude)
       .map((reg) => {
         const pointObject = this.createPointObject(reg);
-        const latLng = L.latLng(reg.Latitude, reg.Longitude);
+        const latLng = L.latLng(reg.Latitude || 0, reg.Longitude || 0);
         const geoJson = L.geoJSON(pointObject, {
           pointToLayer: () => RegObsGeoJson.pointToLayer(pointObject, latLng),
         });
@@ -442,14 +452,19 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     );
   }
 
-  private createMarkerLayer(): void {
-    this.markerLayer = new RegObsMarkerClusterLayer(this.map);
-    this.markerLayer.on('click', (e: L.LeafletMouseEvent) => {
+  private createMarkerLayer(): RegObsMarkerClusterLayer {
+    if (this.map == null) {
+      throw new Error('Map must be initialized first');
+    }
+
+    const markerLayer = new RegObsMarkerClusterLayer(this.map);
+    markerLayer.on('click', (e: L.LeafletMouseEvent) => {
       const layer: L.MarkerCluster = e.propagatedFrom;
-      const registration: AtAGlanceViewModel = layer.feature.properties;
-      this.mapItemBar.show(registration);
+      const registration: AtAGlanceViewModel = layer.feature?.properties;
+      this.mapItemBar().show(registration);
     });
-    this.map.addLayer(this.markerLayer);
+    this.map.addLayer(markerLayer);
+    return markerLayer;
   }
 
   private createPointObject(registration: AtAGlanceViewModel): Feature<Point, AtAGlanceViewModel> {
@@ -466,7 +481,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   private updateInfoBoxHeight() {
-    const mapCenterElement = this.mapCenter?.nativeElement;
+    const mapCenterElement = this.mapCenter()?.nativeElement;
     if (mapCenterElement) {
       const height = mapCenterElement.offsetHeight;
       this.mapCenterInfoHeight.next(height);

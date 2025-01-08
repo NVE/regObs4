@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -14,6 +14,10 @@ import { VersionConflictComponent } from '../version-conflict/version-conflict.c
 import { GoneRegistrationComponent } from '../gone-registration/gone-registration.component';
 import { addIcons } from 'ionicons';
 import { mail, create } from 'ionicons/icons';
+
+interface RegistrationDraftWithError extends RegistrationDraft {
+  error: NonNullable<RegistrationDraft['error']>;
+}
 
 @Component({
   selector: 'app-failed-registration',
@@ -37,46 +41,48 @@ export class FailedRegistrationComponent {
   private translateService = inject(TranslateService);
   private platform = inject(Platform);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required({ transform: (draft: RegistrationDraft) => draft as RegistrationDraftWithError });
 
   constructor() {
     addIcons({ mail, create });
   }
 
   get networkError() {
-    return this.draft.error.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut;
+    return this.draft().error.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut;
   }
 
   get conflictError() {
-    return this.draft.error.code === RegistrationDraftErrorCode.ConflictError;
+    return this.draft().error.code === RegistrationDraftErrorCode.ConflictError;
   }
 
   get goneError() {
-    return this.draft.error.code === RegistrationDraftErrorCode.GoneError;
+    return this.draft().error.code === RegistrationDraftErrorCode.GoneError;
   }
 
   get registrationError() {
-    return this.draft.error.code === RegistrationDraftErrorCode.RegistrationError;
+    return this.draft().error.code === RegistrationDraftErrorCode.RegistrationError;
   }
 
   get unknownError() {
+    const draft = this.draft();
     return (
-      this.draft.error.code === RegistrationDraftErrorCode.AttachmentError ||
-      this.draft.error.code === RegistrationDraftErrorCode.Unknown
+      draft.error.code === RegistrationDraftErrorCode.AttachmentError ||
+      draft.error.code === RegistrationDraftErrorCode.Unknown
     );
   }
 
   get serverError() {
-    return this.draft.error.code === RegistrationDraftErrorCode.ServerError;
+    return this.draft().error.code === RegistrationDraftErrorCode.ServerError;
   }
 
   get unauthorizedError() {
-    return this.draft.error.code === RegistrationDraftErrorCode.Unauthorized;
+    return this.draft().error.code === RegistrationDraftErrorCode.Unauthorized;
   }
 
   async openForEdit() {
+    // TODO: Should error be removed?
     await this.draftService.save({
-      ...this.draft,
+      ...this.draft(),
       syncStatus: SyncStatus.Draft,
     });
   }
@@ -92,7 +98,7 @@ export class FailedRegistrationComponent {
       //     (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
       //   )
       //   .map((p) => p.PictureImageBase64);
-      const base64string = btoa(stringify(this.draft));
+      const base64string = btoa(stringify(this.draft()));
       const attachments = ['base64:registration.json//' + base64string];
       // const attachments = ['base64:registration.json//' + base64string].concat(
       //   pictures

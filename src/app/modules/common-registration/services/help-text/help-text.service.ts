@@ -7,9 +7,6 @@ import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { DatabaseService } from 'src/app/core/services/database/database.service';
 
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
@@ -17,22 +14,11 @@ const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
   providedIn: 'root',
 })
 export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
-  protected databaseService: DatabaseService;
-  protected logger: LoggingService;
   private helpTextApiService = inject(HelpTextApiService);
   private httpClient = inject(HttpClient);
-  protected userSettingService: UserSettingService;
 
   constructor() {
-    const databaseService = inject(DatabaseService);
-    const logger = inject(LoggingService);
-    const userSettingService = inject(UserSettingService);
-
-    super(databaseService, logger, userSettingService);
-  
-    this.databaseService = databaseService;
-    this.logger = logger;
-    this.userSettingService = userSettingService;
+    super();
   }
 
   protected getDebugTag(): string {
@@ -57,7 +43,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     );
   }
 
-  public getHelpTextObservable(geoHazard: GeoHazard, registrationTid: number): Observable<string> {
+  public getHelpTextObservable(geoHazard: GeoHazard, registrationTid: number): Observable<string | undefined> {
     return this.data$.pipe(
       map((helptexts: HelptextDto[]) =>
         helptexts.find((data) => data.GeoHazardTID === geoHazard && data.RegistrationTID === registrationTid)

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Renderer2, inject } from '@angular/core';
+import { Component, OnInit, Renderer2, inject, viewChild, input, computed } from '@angular/core';
 import {
   DomController,
   IonBadge,
@@ -22,7 +22,7 @@ import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite
 import { AnalyticService } from '../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
-import { from, of, Subject, timer } from 'rxjs';
+import { firstValueFrom, from, of, Subject, timer } from 'rxjs';
 import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { NgIf, NgFor } from '@angular/common';
@@ -58,12 +58,11 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   private analyticService = inject(AnalyticService);
   private renderer = inject(Renderer2);
 
-  @Input() warningGroup: WarningGroup;
-  GeoHazard = GeoHazard;
+  readonly warningGroup = input.required<WarningGroup>();
+  readonly isIceGeoHazard = computed(() => this.warningGroup().key.geoHazard === GeoHazard.Ice);
 
-  @ViewChild(IonItemSliding, { static: true }) itemSlide: IonItemSliding;
-  @ViewChild(WarningGroupFavouriteToggleComponent, { static: true })
-  favouriteToggle: WarningGroupFavouriteToggleComponent;
+  readonly itemSlide = viewChild.required(IonItemSliding);
+  readonly favouriteToggle = viewChild(WarningGroupFavouriteToggleComponent);
   private dragSubject = new Subject<void>();
 
   constructor() {
@@ -80,9 +79,9 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
       .subscribe((openAmount) => {
         const opacity = openAmount > 1 ? 1 : openAmount > 0 ? openAmount : 0;
         const color = `rgba(186,196,204,${opacity})`;
-        this.favouriteToggle.setOpen(opacity);
+        this.favouriteToggle()?.setOpen(opacity);
         this.domCtrl.write(() => {
-          this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+          this.renderer.setStyle((<any>this.itemSlide()).el, 'background-color', color);
         });
       });
     this.ngDestroy$.subscribe(() => {
@@ -91,9 +90,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   close() {
-    if (this.itemSlide) {
-      this.itemSlide.close();
-    }
+    this.itemSlide().close();
   }
 
   onDrag() {
@@ -101,20 +98,18 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   private getOpenAmount() {
-    return from(this.itemSlide.getOpenAmount()).pipe(
+    return from(this.itemSlide().getOpenAmount()).pipe(
       catchError(() => of(0)),
       map((val) => (val > 0 ? val / 100.0 : 0))
     );
   }
 
   toggleFavourite() {
-    this.favouriteToggle.toggle();
+    this.favouriteToggle()?.toggle();
     timer(2000)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(() => {
-        if (this.itemSlide) {
-          this.itemSlide.close();
-        }
+        this.close();
       });
   }
 
@@ -122,11 +117,11 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     this.toggleFavourite();
   }
 
-  async getUrl(group: WarningGroup, day = ''): Promise<string> {
+  async getUrl(group: WarningGroup, day = ''): Promise<string | null> {
     if (group.url) {
       return group.url;
     } else {
-      const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
+      const currentLang = await firstValueFrom(this.userSettingService.language$);
       const supportedLang = this.getSupportedLangOrFallbackToEn(currentLang);
       const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[supportedLang]];
       if (url) {
@@ -142,7 +137,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  getSupportedLangOrFallbackToEn(lang: LangKey) {
+  getSupportedLangOrFallbackToEn(lang?: LangKey) {
     if (lang === LangKey.nb || lang === LangKey.nn) {
       return LangKey.nb;
     }

@@ -1,10 +1,7 @@
 import { IonItem, IonFab, IonFabButton, IonList, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { UserSetting } from '../../../../core/models/user-settings.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { GeoIconComponent } from '../geo-icon/geo-icon.component';
 import { GeoNameComponent } from '../geo-name/geo-name.component';
@@ -26,17 +23,12 @@ import { GeoNameComponent } from '../geo-name/geo-name.component';
     NgIf,
   ],
 })
-export class GeoSelectComponent implements OnInit {
+export class GeoSelectComponent {
   private userSettingService = inject(UserSettingService);
 
-  geoHazardTypes: Array<GeoHazard[]>;
+  geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
   isOpen = false;
-  userSettings$: Observable<UserSetting>;
-
-  ngOnInit(): void {
-    this.geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
-    this.userSettings$ = this.userSettingService.userSetting$;
-  }
+  userSettings$ = this.userSettingService.userSetting$;
 
   toggle(): void {
     this.isOpen = !this.isOpen;
@@ -44,10 +36,6 @@ export class GeoSelectComponent implements OnInit {
 
   async changeGeoHazard(geoHazards: GeoHazard[]): Promise<void> {
     this.isOpen = false;
-    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    this.userSettingService.saveUserSettings({
-      ...currentSettings,
-      currentGeoHazard: geoHazards,
-    });
+    this.userSettingService.updateUserSettings({ currentGeoHazard: geoHazards });
   }
 }

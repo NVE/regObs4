@@ -15,16 +15,16 @@
     </ion-fab>
     <app-text-comment
       [(value)]="attachment.Comment"
-      label="{{ pictureCommentText | translate }}"
+      label="{{ pictureCommentText() | translate }}"
       [rows]="2"
-      placeholder="{{ pictureCommentPlaceholder | translate }}"
+      placeholder="{{ pictureCommentPlaceholder() | translate }}"
     ></app-text-comment>
   </div>
 
   <!-- New attachments -->
   <div class="image-wrapper" *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew">
     <!-- <img [src]="convertFileSrc(image.PictureImageBase64)" /> -->
-    <ro-blob-image [imgBlob]="attachment.blob"></ro-blob-image>
+    <ro-blob-image [imgBlob]="attachment.blob!"></ro-blob-image>
     <div class="upload-progress" *ngIf="attachment.state === 'in-progress'">
       <ion-progress-bar
         [type]="attachment.progress === 0 ? 'indeterminate' : 'determinate'"
@@ -47,16 +47,16 @@
     <app-text-comment
       [value]="attachment.Comment"
       (valueChange)="setNewAttachmentComment(attachment, $event)"
-      label="{{ pictureCommentText | translate }}"
+      label="{{ pictureCommentText() | translate }}"
       [rows]="2"
-      placeholder="{{ pictureCommentPlaceholder | translate }}"
+      placeholder="{{ pictureCommentPlaceholder() | translate }}"
     ></app-text-comment>
   </div>
 </div>
 
 <ion-item *ngIf="isHybrid" (click)="addClick()">
-  <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
-  <ion-label>{{ title | translate }}</ion-label>
+  <ion-icon [color]="iconColor()" [name]="icon()" slot="start"></ion-icon>
+  <ion-label>{{ title() | translate }}</ion-label>
 </ion-item>
 
 <ion-item class="file-drop" *ngIf="!isHybrid">
@@ -70,8 +70,8 @@
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
       <button type="button" (click)="openFileSelector()">
         <ion-item [ngClass]="{ grey: aboutToDrop }" (dragenter)="aboutToDrop = true" (dragleave)="aboutToDrop = false">
-          <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
-          <ion-label>{{ title | translate }}</ion-label>
+          <ion-icon [color]="iconColor()" [name]="icon()" slot="start"></ion-icon>
+          <ion-label>{{ title() | translate }}</ion-label>
         </ion-item>
       </button>
     </ng-template>

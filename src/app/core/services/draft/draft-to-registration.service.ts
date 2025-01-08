@@ -189,7 +189,7 @@ export class DraftToRegistrationService {
   }
 
   private async retryDraftThatFailedWithNetworkError(draft: RegistrationDraft) {
-    if (!(draft.error.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut)) {
+    if (!(draft.error?.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut)) {
       throw new Error('Draft without network error received');
     }
 
@@ -199,7 +199,7 @@ export class DraftToRegistrationService {
   }
 }
 
-function handleError(error: Error): { code: RegistrationDraftErrorCode; message: string } {
+function handleError(error: unknown): { code: RegistrationDraftErrorCode; message: string } {
   let code: RegistrationDraftErrorCode;
   let message: string;
 
@@ -210,13 +210,14 @@ function handleError(error: Error): { code: RegistrationDraftErrorCode; message:
     message = error.message;
   } else if (error instanceof HttpErrorResponse) {
     ({ code, message } = getHttpErrorResponseMessageAndCode(error));
-  } else if (error.message == 'No Token Defined!') {
+  } else if (error instanceof Error && error.message == 'No Token Defined!') {
     code = RegistrationDraftErrorCode.Unauthorized;
     message = error.message;
   } else {
     // Handle unknown errors
     code = RegistrationDraftErrorCode.Unknown;
-    message = error.message || 'An unknown error occured while uploading the registration';
+    message =
+      error instanceof Error ? error.message : `An unknown error occured while uploading the registration: ${error}`;
   }
 
   return { code, message };

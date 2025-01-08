@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, inject } from '@angular/core';
-import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
+import { Component, computed, inject, input } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -18,18 +17,15 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
-import cloneDeep from 'clone-deep';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
+import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 @Component({
   selector: 'app-snow-temp-modal',
@@ -53,101 +49,52 @@ import { addCircleOutline } from 'ionicons/icons';
     IonTitle,
     IonToolbar,
     MetersToCmPipe,
-    NgFor,
     NgIf,
     TranslatePipe,
   ],
 })
-export class SnowTempModalPage implements OnInit, OnDestroy {
+export class SnowTempModalPage {
   private modalController = inject(ModalController);
-  private draftRepository = inject(DraftRepositoryService);
-  private ngZone = inject(NgZone);
+  private draftRepo = inject(DraftRepositoryService);
 
-  @Input() uuid: string;
-  private layerModal: HTMLIonModalElement;
-  private initialRegistrationClone: RegistrationDraft;
-  private draft: RegistrationDraft;
+  readonly uuid = input.required<string>();
+  private draft = this.draftRepo.getDraftSignal(this.uuid);
+  private backupHandler = injectBackupHandler({ uuid: this.uuid });
 
-  private ngDestroy$ = new Subject<void>();
-
-  get tempProfile() {
-    if (this.draft?.registration?.SnowProfile2?.SnowTemp) {
-      return this.draft.registration.SnowProfile2.SnowTemp;
-    }
-    return {};
-  }
-
-  get hasLayers() {
-    return this.tempProfile?.Layers?.length > 0;
-  }
+  layers = computed(() => this.draft()?.registration.SnowProfile2?.SnowTemp?.Layers || []);
+  layerModal?: HTMLIonModalElement | null;
 
   constructor() {
     addIcons({ addCircleOutline });
   }
 
-  ngOnInit() {
-    this.draftRepository
-      .getDraft$(this.uuid)
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((draft) => {
-        this.ngZone.run(() => {
-          if (!this.initialRegistrationClone) {
-            this.initialRegistrationClone = cloneDeep(draft);
-          }
-          this.draft = draft;
-          if (!this.draft.registration.SnowProfile2) {
-            this.draft.registration.SnowProfile2 = {};
-          }
-          if (!this.draft.registration.SnowProfile2.SnowTemp) {
-            this.draft.registration.SnowProfile2.SnowTemp = {};
-          }
-          if (!this.draft.registration.SnowProfile2.SnowTemp.Layers) {
-            this.draft.registration.SnowProfile2.SnowTemp.Layers = [];
-          }
-          this.sortLayers();
-        });
-      });
-    this.initialRegistrationClone = cloneDeep(this.draft);
-  }
-
-  ngOnDestroy(): void {
-    this.ngDestroy$.next();
-    this.ngDestroy$.complete();
-  }
-
   ok() {
-    this.modalController.dismiss(this.tempProfile);
-  }
-
-  async cancel() {
-    await this.draftRepository.save(this.initialRegistrationClone);
     this.modalController.dismiss();
   }
 
-  addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? this.tempProfile.Layers.length : 0, undefined);
+  async cancel() {
+    if (await this.backupHandler.confirmCancel()) {
+      await this.backupHandler.restoreBackup();
+      this.modalController.dismiss();
+    }
   }
 
-  async addOrEditLayer(index: number, layer: SnowTempObsModel) {
+  addLayerBottom() {
+    this.addOrEditLayer(this.layers().length);
+  }
+
+  async addOrEditLayer(index: number) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowTempLayerModalPage,
         componentProps: {
-          draft: this.draft,
-          layer,
+          uuid: this.uuid(),
           index,
         },
       });
       this.layerModal.present();
       await this.layerModal.onDidDismiss();
       this.layerModal = null;
-      this.sortLayers();
-    }
-  }
-
-  private sortLayers() {
-    if (this.tempProfile && this.tempProfile.Layers) {
-      this.tempProfile.Layers = this.tempProfile.Layers.sort((a, b) => a.Depth - b.Depth);
     }
   }
 }

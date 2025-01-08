@@ -15,7 +15,7 @@ import { addIcons } from 'ionicons';
 import { mapOutline } from 'ionicons/icons';
 
 interface PopupSubscription {
-  subscription: Subscription;
+  subscription?: Subscription;
   checker: (name: string) => Observable<void>;
   condition: (tile: SubTile) => boolean;
 }
@@ -69,7 +69,9 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     addIcons({ mapOutline });
   }
 
-  ngOnDestroy() {
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+
     for (const checkMap of Object.values(this.checkOfflineSupportMaps)) {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
@@ -94,7 +96,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   async onSubTileChanged(supportTile: SupportTile) {
-    if (supportTile.subTile?.enabled != supportTile.subTile?.checked) {
+    if (supportTile.subTile && supportTile.subTile.enabled != supportTile.subTile.checked) {
       supportTile.subTile.enabled = supportTile.subTile.checked;
       this.checkForInfoPopup(supportTile.subTile);
     }
@@ -121,10 +123,12 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     return supportTile.enabled || this.isChildActive(supportTile);
   }
 
-  checkForInfoPopup(tile: SubTile = null) {
+  checkForInfoPopup(tile: SubTile | null = null) {
+    if (!tile) {
+      return;
+    }
     if (!(tile.name in this.checkOfflineSupportMaps)) {
       this.checkOfflineSupportMaps[tile.name] = {
-        subscription: undefined,
         checker: this.popupInfoService.checkOfflineSupportMapInfoPopup,
         condition: (tile) => !tile.availableOffline,
       };
@@ -147,10 +151,10 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     currentSupportTileSettings: {
       name: string;
       enabled: boolean;
-      opacity: number;
+      opacity?: number;
     }[]
   ): SupportTileStore[] {
-    const storeTile = {
+    const storeTile: SupportTileStore = {
       opacity: supportTile.opacity,
       name: supportTile.name,
       enabled: supportTile.enabled,

@@ -41,17 +41,15 @@ export class SetFloodAreaPage implements OnInit {
   private ngZone = inject(NgZone);
   private draftRepository = inject(DraftRepositoryService);
 
-  locationMarker: L.Marker;
-  private map: L.Map;
   fullscreen$: Observable<boolean>;
-  fromMarker: L.Marker;
+  fromMarker?: L.Marker;
   isLoaded = false;
-  draft: RegistrationDraft;
-  relativeToLatLng: L.LatLng;
-  totalPolygon: IPolygon;
+  draft!: RegistrationDraft;
+  relativeToLatLng?: L.LatLng;
+  totalPolygon!: IPolygon;
   geoHazard = GeoHazard.Water;
   locationPolygon = new Subject<IPolygon>();
-  confirmLocationText: string;
+  confirmLocationText?: string;
   locationMarkerIcon = L.icon({
     iconUrl: '/assets/icon/map/obs-location.svg',
     iconSize: [25, 41],
@@ -76,7 +74,7 @@ export class SetFloodAreaPage implements OnInit {
       }
       this.relativeToLatLng = this.draft.registration.ObsLocation
         ? L.latLng(this.draft.registration.ObsLocation.Latitude, this.draft.registration.ObsLocation.Longitude)
-        : null;
+        : undefined;
       this.totalPolygon = constructPolygon(
         this.draft.registration.WaterLevel2.Extent as [number, number][],
         settings.map.extentColor,
@@ -93,8 +91,8 @@ export class SetFloodAreaPage implements OnInit {
     });
   }
 
-  private updateMarkers() {
-    this.map.off('drag');
+  private updateMarkers(map: L.Map) {
+    map.off('drag');
     const polygons = makePolygons('total', this.totalPolygon, this.relativeToLatLng);
     this.totalPolygon.polygon = polygons.polygon;
     this.totalPolygon.active = true;
@@ -103,9 +101,8 @@ export class SetFloodAreaPage implements OnInit {
   }
 
   async onMapReady(map: L.Map) {
-    this.map = map;
     setTimeout(() => {
-      this.updateMarkers();
+      this.updateMarkers(map);
     });
   }
 
@@ -118,9 +115,12 @@ export class SetFloodAreaPage implements OnInit {
 
   async onLocationSet() {
     this.navBack();
+    if (this.draft.registration.WaterLevel2 == null) {
+      this.draft.registration.WaterLevel2 = {};
+    }
     this.draft.registration.WaterLevel2.Extent = this.totalPolygon.active
       ? (this.totalPolygon.polygon?.toGeoJSON().geometry.coordinates[0] as [number, number][])
-      : null;
+      : undefined;
     this.save();
   }
 }

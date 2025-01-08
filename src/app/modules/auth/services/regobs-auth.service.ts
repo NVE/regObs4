@@ -44,7 +44,7 @@ export class RegobsAuthService {
 
   public readonly loggedInUser$: Observable<LoggedInUser>;
   private readonly initComplete$: Observable<boolean>;
-  readonly myPageData$: Observable<MyPageData>;
+  readonly myPageData$: Observable<MyPageData | undefined>;
 
   get isLoggingIn$(): Observable<boolean> {
     return this._isLoggingInSubject.asObservable();
@@ -62,7 +62,7 @@ export class RegobsAuthService {
 
     events$
       .pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
-      .subscribe((action) => this.showErrorMessage(500, action.error));
+      .subscribe((action) => this.showErrorMessage(500, action.error || 'Unknown sign in error'));
 
     events$
       .pipe(filter((action) => action.action === AuthActions.RefreshFailed && action.error === 'AADB2C90090'))
@@ -130,12 +130,14 @@ export class RegobsAuthService {
   private initRefreshTokenOnStartup() {
     this.initComplete$
       .pipe(
-        tap(this.logger.debug('Authorization initialized. Will try to refresh token when we come online', DEBUG_TAG)),
+        tap(() =>
+          this.logger.debug('Authorization initialized. Will try to refresh token when we come online', DEBUG_TAG)
+        ),
         switchMap(() => this.networkStatusService.connected$.pipe(filter((connected) => connected === true))),
         withLatestFrom(this.loggedInUser$)
       )
       .subscribe(([, user]) => {
-        if (user?.token && this.isTokenOlderThan(user?.tokenIssuedAt, 300)) {
+        if (user.token && user.tokenIssuedAt && this.isTokenOlderThan(user.tokenIssuedAt, 300)) {
           //token is older than 5 minutes and we have network, so refresh
           this.logger.debug('We are online. Refresh token...', DEBUG_TAG);
           this.refreshToken();
@@ -144,7 +146,7 @@ export class RegobsAuthService {
   }
 
   isTokenOlderThan(tokenIssuedAt: number, ageInSeconds: number): boolean {
-    return tokenIssuedAt && tokenIssuedAt < nowInSeconds() - ageInSeconds;
+    return tokenIssuedAt < nowInSeconds() - ageInSeconds;
   }
 
   public refreshToken(): Promise<void> {
@@ -181,17 +183,20 @@ export class RegobsAuthService {
     this.authService.endSessionCallback();
   }
 
-  private async checkAndSetNickIfNickIsNull(): Promise<ObserverResponseDto> {
+  private async checkAndSetNickIfNickIsNull(): Promise<ObserverResponseDto | undefined> {
     try {
       const user = await lastValueFrom(this.accountService.AccountGetObserver());
       if (user && user.Nick != null && user.Nick != '') {
-        return;
+        return user;
       }
       const nick = await this.showSetNickDialog();
       await lastValueFrom(this.accountService.AccountUpdateObserver({ Nick: nick }));
+      user.Nick = nick;
+      return user;
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not save nick');
     }
+    return undefined;
   }
 
   private async showSetNickDialog(): Promise<string> {

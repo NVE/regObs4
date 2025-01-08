@@ -2,6 +2,6 @@
 export interface ObserverCompetenceDto {
   CompetenceDescription?: string;
   CompetenceName?: string;
-  CompetenceTID?: number;
+  CompetenceTID: number;
   GeohazardTID?: number;
 }

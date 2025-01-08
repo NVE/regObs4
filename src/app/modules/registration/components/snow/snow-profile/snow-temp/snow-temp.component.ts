@@ -1,13 +1,12 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-snow-temp',
@@ -17,18 +16,13 @@ import { checkmarkCircle } from 'ionicons/icons';
 })
 export class SnowTempComponent {
   private modalContoller = inject(ModalController);
-  private draftService = inject(DraftRepositoryService);
 
-  @Input() draft: RegistrationDraft;
-  private snowTempModal: HTMLIonModalElement;
+  readonly draft = input.required<RegistrationDraft>();
+  layers = computed(() => this.draft().registration.SnowProfile2?.SnowTemp?.Layers || []);
+  nLayers = computed(() => this.layers().length || 0);
+  isEmpty = computed(() => isEmpty(this.layers()));
 
-  get tempProfile() {
-    return this.draft.registration.SnowProfile2.SnowTemp;
-  }
-
-  get isEmpty() {
-    return isEmpty(this.tempProfile);
-  }
+  private snowTempModal?: HTMLIonModalElement | null;
 
   constructor() {
     addIcons({ checkmarkCircle });
@@ -36,11 +30,10 @@ export class SnowTempComponent {
 
   async openModal() {
     if (!this.snowTempModal) {
-      await this.draftService.save(this.draft); // Save registration before open modal page
       this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {
-          uuid: this.draft.uuid,
+          uuid: this.draft().uuid,
         },
       });
       this.snowTempModal.present();

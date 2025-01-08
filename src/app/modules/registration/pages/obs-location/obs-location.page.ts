@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import * as L from 'leaflet';
 import {
   IonBackButton,
@@ -9,7 +9,12 @@ import {
   IonToolbar,
   NavController,
 } from '@ionic/angular/standalone';
-import { ObsLocationsResponseDtoV2, ObsLocationViewModel } from 'src/app/modules/common-regobs-api/models';
+import {
+  ObsLocationEditModel,
+  ObsLocationsResponseDtoV2,
+  ObsLocationViewModel,
+  RegistrationEditModel,
+} from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
@@ -26,6 +31,7 @@ import { LocationService } from 'src/app/modules/common-regobs-api';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TranslatePipe } from '@ngx-translate/core';
+import moment from 'moment';
 
 @Component({
   selector: 'app-obs-location',
@@ -55,20 +61,26 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   private swipeBackService = inject(SwipeBackService);
   private userSettingService = inject(UserSettingService);
 
-  locationMarker: L.Marker;
+  locationMarker!: L.Marker;
   isLoaded = false;
   allowEditLocationName = true;
-  selectedLocation: ObsLocationsResponseDtoV2;
-  draft: RegistrationDraft;
+  selectedLocation?: ObsLocationsResponseDtoV2;
+  draft?: RegistrationDraft;
   fullscreen$: Observable<boolean>;
-  geoHazard: GeoHazard;
-  @ViewChild(SetLocationInMapComponent)
-  setLocationInMapComponent: SetLocationInMapComponent;
+  geoHazard!: GeoHazard;
+  private _localDate = moment().toISOString(true);
 
-  private subscription: Subscription;
+  private subscription?: Subscription;
 
   constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
+  }
+
+  get localDate(): string {
+    if (this.draft?.registration?.DtObsTime) {
+      this._localDate = this.draft.registration.DtObsTime;
+    }
+    return this._localDate;
   }
 
   async ngOnInit() {
@@ -154,14 +166,8 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.swipeBackService.enableSwipeBack();
   }
 
-  private hasLocation(draft: RegistrationDraft) {
-    return (
-      draft &&
-      draft.registration &&
-      draft.registration.ObsLocation &&
-      draft.registration.ObsLocation.Latitude &&
-      draft.registration.ObsLocation.Longitude
-    );
+  private hasLocation(draft?: RegistrationDraft): draft is DraftWithLocation {
+    return draft?.registration.ObsLocation?.Latitude != null && draft?.registration.ObsLocation?.Longitude != null;
   }
 
   async onLocationTimeSet(event: LocationTime) {
@@ -203,4 +209,17 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     // Save updated draft with new obs location
     await this.draftService.save(this.draft);
   }
+}
+
+interface DraftWithLocation extends RegistrationDraft {
+  registration: RegistrationWithLocation;
+}
+
+interface RegistrationWithLocation extends RegistrationEditModel {
+  ObsLocation: ObsLocationWithLatLon;
+}
+
+interface ObsLocationWithLatLon extends ObsLocationEditModel {
+  Latitude: number;
+  Longitude: number;
 }

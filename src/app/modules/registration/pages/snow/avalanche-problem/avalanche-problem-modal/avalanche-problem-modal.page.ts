@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, OnDestroy, inject } from '@angular/core';
-import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
+import { Component, inject, input, computed, linkedSignal } from '@angular/core';
+import { AvalancheEvalProblem2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
   IonButtons,
@@ -14,11 +14,10 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
-import { Subscription, combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { ExposedHeightComponent } from '../../../../components/snow/exposed-height/exposed-height.component';
@@ -26,8 +25,17 @@ import { ValidExpositionComponent } from '../../../../components/snow/valid-expo
 import { TextCommentComponent } from '../../../../components/text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 const NO_WEAK_LAYER_KDV_VALUE = 24;
+
+enum Attribute {
+  Light = 1,
+  Thin = 2,
+  Soft = 4,
+  Crystal = 8,
+}
 
 interface AvalancheProblemKeys {
   AvalancheExtTID: number;
@@ -61,175 +69,122 @@ interface AvalancheProblemKeys {
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgFor,
     NgIf,
     TextCommentComponent,
     TranslatePipe,
     ValidExpositionComponent,
   ],
 })
-export class AvalancheProblemModalPage implements OnInit, OnDestroy {
+export class AvalancheProblemModalPage {
   private modalController = inject(ModalController);
   private kdvService = inject(KdvService);
 
-  @Input() avalancheEvalProblem: AvalancheEvalProblem2EditModel;
-  avalancheEvalProblemCopy: AvalancheEvalProblem2EditModel;
-  isNew = false;
-  avalancheExtKdvFilter: (id: number) => boolean;
+  readonly avalancheEvalProblem = input<AvalancheEvalProblem2EditModel>();
 
-  setAvalCauseTID(value: AvalancheEvalProblem2EditModel['AvalCauseTID']) {
-    this.avalancheEvalProblemCopy.AvalCauseTID = value;
-    // Filteret på AvalancheExt (skredtype) verdier baserer seg på hvilken AvalCause (skredproblem) som er valgt.
-    // Oppdater derfor filteret når AvalCause endrer seg.
-    this.updateAvalancheExtKdvFilter();
-  }
-
-  get noWeakLayers() {
-    return this.avalancheEvalProblemCopy.AvalCauseTID === NO_WEAK_LAYER_KDV_VALUE;
-  }
-
-  set noWeakLayers(val: boolean) {
-    this.setAvalCauseTID(val ? NO_WEAK_LAYER_KDV_VALUE : undefined);
-  }
-
-  avalancheProblemView: AvalancheProblemKeys[];
-  avalancheCauseAttributes: { kdvElement: KdvElement; selected: boolean }[];
-  exposition: number[];
-
-  private viewSubscription: Subscription;
-
-  ngOnInit() {
-    if (this.avalancheEvalProblem) {
-      this.avalancheEvalProblemCopy = { ...this.avalancheEvalProblem };
-    } else {
-      this.avalancheEvalProblemCopy = {};
-      this.isNew = true;
+  // Form inputs
+  avalCauseTid = linkedSignal(() => this.avalancheEvalProblem()?.AvalCauseTID);
+  avalTriggerSimpleTid = linkedSignal(() => this.avalancheEvalProblem()?.AvalTriggerSimpleTID);
+  destructiveSizeTid = linkedSignal(() => this.avalancheEvalProblem()?.DestructiveSizeTID);
+  avalPropagationTid = linkedSignal(() => this.avalancheEvalProblem()?.AvalPropagationTID);
+  exposedHeightComboTid = linkedSignal(() => this.avalancheEvalProblem()?.ExposedHeightComboTID);
+  exposedHeight1 = linkedSignal(() => this.avalancheEvalProblem()?.ExposedHeight1);
+  exposedHeight2 = linkedSignal(() => this.avalancheEvalProblem()?.ExposedHeight2);
+  validExposition = linkedSignal(() => this.avalancheEvalProblem()?.ValidExposition);
+  comment = linkedSignal(() => this.avalancheEvalProblem()?.Comment);
+  avalCauseDepthTid = linkedSignal(() => {
+    if (this.noWeakLayers()) {
+      return undefined;
+    }
+    return this.avalancheEvalProblem()?.AvalCauseDepthTID;
+  });
+  hasLargeCrystal = linkedSignal(() => {
+    if (this.noWeakLayers()) {
+      return false;
+    }
+    return this.avalancheEvalProblem()?.AvalCauseAttributeCrystalTID === Attribute.Crystal;
+  });
+  hasEasyCollapse = linkedSignal(() => {
+    if (this.noWeakLayers()) {
+      return false;
+    }
+    return this.avalancheEvalProblem()?.AvalCauseAttributeLightTID === Attribute.Light;
+  });
+  hasSoftLayerAbove = linkedSignal(() => {
+    if (this.noWeakLayers()) {
+      return false;
+    }
+    return this.avalancheEvalProblem()?.AvalCauseAttributeSoftTID === Attribute.Soft;
+  });
+  avalancheExt = linkedSignal(() => {
+    const value = this.avalancheEvalProblem()?.AvalancheExtTID;
+    if (value == null) {
+      return value;
     }
 
-    this.viewSubscription = combineLatest([
-      this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseAttributeFlags'),
-      this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V'),
-    ]).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView]) => {
-      this.avalancheProblemView = avalancheProblemView as AvalancheProblemKeys[];
-      this.avalancheCauseAttributes = this.getAvalancheCauseAttributes(snowCauseAttributesKdvElements);
-      this.updateAvalancheExtKdvFilter();
-    });
-  }
+    // Hvis filter endrer seg, reset avalancheExt om nødvendig
+    const filter = this.avalancheExtKdvFilter();
+    return filter(value) ? value : undefined;
+  });
 
-  ngOnDestroy(): void {
-    if (this.viewSubscription) {
-      this.viewSubscription.unsubscribe();
-    }
-  }
-
-  private updateAvalancheExtKdvFilter() {
-    const avalCauseTid = this.avalancheEvalProblemCopy.AvalCauseTID || 0;
-    const extTids = this.avalancheProblemView
+  easyCollapseLabel = computed(() => this.attributeFlags()?.find((kdv) => kdv.Id === Attribute.Light)?.Name);
+  softLayerLabel = computed(() => this.attributeFlags()?.find((kdv) => kdv.Id === Attribute.Soft)?.Name);
+  largeCrystalLabel = computed(() => this.attributeFlags()?.find((kdv) => kdv.Id === Attribute.Crystal)?.Name);
+  noWeakLayers = computed(() => this.avalCauseTid() === NO_WEAK_LAYER_KDV_VALUE);
+  isNew = computed(() => !isEmpty(this.avalancheEvalProblem()));
+  avalancheExtKdvFilter = computed(() => {
+    const avalCauseTid = this.avalCauseTid();
+    const extTids = (this.avalancheProblemView() || [])
       .filter((v) => v.AvalCauseTID === avalCauseTid)
       .map((v) => v.AvalancheExtTID);
 
-    this.avalancheExtKdvFilter = (tid: AvalancheEvalProblem2EditModel['AvalancheExtTID']) => extTids.indexOf(tid) >= 0;
+    return (tid: number) => extTids.indexOf(tid) >= 0;
+  });
 
-    // Sjekk om filteret fortsatt sier at den AvalancheExt vi har valgt er gyldig.
-    // Hvis den ikke er gyldig, nullstill AvalancheExt-verdien.
-    if (!this.avalancheExtKdvFilter(this.avalancheEvalProblemCopy.AvalancheExtTID)) {
-      this.avalancheEvalProblemCopy.AvalancheExtTID = null;
-    }
-  }
-
-  getAvalancheCauseAttributes(kdvElements: KdvElement[]): {
-    kdvElement: KdvElement;
-    selected: boolean;
-  }[] {
-    return kdvElements.map((val) => ({
-      kdvElement: val,
-      selected: this.isAvalancheCauseSelected(val),
-    }));
-  }
-
-  isAvalancheCauseSelected(kdvElement: KdvElement): boolean {
-    switch (kdvElement.Id) {
-      case 1:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID === kdvElement.Id;
-      case 2:
-        // NB: Valg "Laget der bruddet skjer er tynt < 3 cm" ble fjernet i januar 2024.
-        // Case 2 kan derfor fjernes når det har gått litt tid og vi er sånn passe sikre på at de
-        // fleste bruker oppdaterte språkfiler uten dette valget.
-        // Feks etter mai 2024.
-        // Se https://nveprojects.atlassian.net/browse/RO-2573.
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID === kdvElement.Id;
-      case 4:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID === kdvElement.Id;
-      case 8:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID === kdvElement.Id;
-    }
-    return false;
+  toggleNoWeakLayers() {
+    this.avalCauseTid.update((tid) => (tid === NO_WEAK_LAYER_KDV_VALUE ? undefined : NO_WEAK_LAYER_KDV_VALUE));
   }
 
   cancel() {
     this.modalController.dismiss();
   }
 
-  // getAvalacheCauseAttributeValue(
-  //   avalancheCauseAttributes: { kdvElement: KdvElement; selected: boolean }[]
-  // ) {
-  //   return avalancheCauseAttributes.reduce(function (prevVal, curVal) {
-  //     return prevVal + (curVal.selected ? curVal.kdvElement.Id : 0);
-  //   }, 0);
-  // }
-
-  resetAvalancheCauseFields() {
-    this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID = undefined;
-    // NB: Valg "Laget der bruddet skjer er tynt < 3 cm" ble fjernet i januar 2024.
-    // Linja nedenfor, som resetter AvalCauseAttributeThinTID kan derfor fjernes
-    // når det har gått litt tid og vi er sånn passe sikre på at de fleste bruker
-    // oppdaterte språkfiler uten dette valget. Feks etter mai 2024.
-    // Se https://nveprojects.atlassian.net/browse/RO-2573.
-    this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID = undefined;
-    this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID = undefined;
-    this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID = undefined;
-    this.avalancheEvalProblemCopy.AvalCauseDepthTID = undefined;
-  }
-
   ok() {
-    if (this.noWeakLayers) {
-      this.resetAvalancheCauseFields();
-    } else {
-      // const causeAttribute = this.getAvalacheCauseAttributeValue(
-      //   this.avalancheCauseAttributes
-      // );
-      // this.avalancheEvalProblemCopy.AvalCauseAttributes =
-      //   causeAttribute > 0 ? causeAttribute : undefined;
-      for (const val of this.avalancheCauseAttributes) {
-        switch (val.kdvElement.Id) {
-          case 1:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID = val.selected ? val.kdvElement.Id : undefined;
-            break;
-          case 2:
-            // NB: Valg "Laget der bruddet skjer er tynt < 3 cm" ble fjernet i januar 2024.
-            // Case 2 kan derfor fjernes når det har gått litt tid og vi er sånn passe sikre på at de
-            // fleste bruker oppdaterte språkfiler uten dette valget.
-            // Feks etter mai 2024.
-            // Se https://nveprojects.atlassian.net/browse/RO-2573.
-            this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID = val.selected ? val.kdvElement.Id : undefined;
-            break;
-          case 4:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID = val.selected ? val.kdvElement.Id : undefined;
-            break;
-          case 8:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID = val.selected ? val.kdvElement.Id : undefined;
-            break;
-        }
-      }
-    }
-    if (IsEmptyHelper.isEmpty(this.avalancheEvalProblemCopy)) {
+    const edit = this.getEdit();
+    if (isEmpty(edit)) {
       this.modalController.dismiss({ delete: true });
     } else {
-      this.modalController.dismiss(this.avalancheEvalProblemCopy);
+      this.modalController.dismiss(edit);
     }
   }
 
   delete() {
     this.modalController.dismiss({ delete: true });
   }
+
+  private getEdit(): AvalancheEvalProblem2EditModel {
+    return {
+      AvalCauseTID: this.avalCauseTid(),
+      AvalCauseDepthTID: this.avalCauseDepthTid(),
+      AvalancheExtTID: this.avalancheExt(),
+      AvalTriggerSimpleTID: this.avalTriggerSimpleTid(),
+      DestructiveSizeTID: this.destructiveSizeTid(),
+      AvalPropagationTID: this.avalPropagationTid(),
+      ExposedHeightComboTID: this.exposedHeightComboTid(),
+      ExposedHeight1: this.exposedHeight1(),
+      ExposedHeight2: this.exposedHeight2(),
+      ValidExposition: this.validExposition(),
+      Comment: this.comment(),
+
+      // Attributes / flags. For these to be set they need to contain the correct "bit", 1, 2, 4 or 8
+      AvalCauseAttributeLightTID: this.hasEasyCollapse() ? Attribute.Light : undefined,
+      AvalCauseAttributeSoftTID: this.hasSoftLayerAbove() ? Attribute.Soft : undefined,
+      AvalCauseAttributeCrystalTID: this.hasLargeCrystal() ? Attribute.Crystal : undefined,
+    };
+  }
+
+  private attributeFlags = toSignal(this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseAttributeFlags'));
+
+  private avalancheProblemView = toSignal(
+    this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V') as Observable<AvalancheProblemKeys[]>
+  );
 }

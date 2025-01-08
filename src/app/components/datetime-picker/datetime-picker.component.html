@@ -2,16 +2,16 @@
   fill="clear"
   expand="block"
   class="datetimepicker-button"
-  [ngClass]="'datetimepicker-button--' + textAlign"
+  [ngClass]="'datetimepicker-button--' + textAlign()"
   (click)="openModal()"
-  [size]="buttonSize"
+  [size]="buttonSize()"
 >
   <div class="datetimepicker-button-inner-wrapper">
-    {{ dateTime | date: dateTimeFormat }}
+    {{ dateTime() | date: dateTimeFormat() }}
   </div>
 </ion-button>
 
-<ion-modal id="datetime-picker-modal" #modal [isOpen]="datePickerOpen" (willDismiss)="onWillDismiss($event)">
+<ion-modal id="datetime-picker-modal" #modal [isOpen]="datePickerOpen()" (willDismiss)="onWillDismiss($event)">
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -26,14 +26,14 @@
     </ion-header>
     <ion-content>
       <ion-datetime
-        [value]="dateTime"
+        [value]="dateTime()"
         (ionChange)="updateTempDateTime($event)"
-        [max]="maxDate"
-        [min]="minDate"
+        [max]="maxDate()"
+        [min]="minDate()"
         id="datetime"
         [firstDayOfWeek]="1"
-        [locale]="language"
-        [presentation]="presentation"
+        [locale]="locale()"
+        [presentation]="presentation()"
       >
       </ion-datetime>
     </ion-content>

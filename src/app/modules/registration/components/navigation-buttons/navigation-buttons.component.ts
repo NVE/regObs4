@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonIcon, IonText, IonButton } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, NgZone, inject } from '@angular/core';
+import { Component, OnInit, NgZone, inject, input } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
@@ -23,9 +23,9 @@ export class NavigationButtonsComponent implements OnInit {
   private router = inject(Router);
   private ngZone = inject(NgZone);
 
-  @Input() draft: RegistrationDraft;
-  next: ISummaryItem;
-  previous: ISummaryItem;
+  draft = input.required<RegistrationDraft>();
+  next?: ISummaryItem;
+  previous?: ISummaryItem;
 
   constructor() {
     addIcons({ arrowBack, arrowForward });
@@ -33,7 +33,7 @@ export class NavigationButtonsComponent implements OnInit {
 
   async ngOnInit() {
     const currentUrl = this.router.url;
-    const prevAndNext = await this.summaryItemService.getPreviousAndNext(this.draft, currentUrl);
+    const prevAndNext = await this.summaryItemService.getPreviousAndNext(this.draft(), currentUrl);
     this.ngZone.run(() => {
       if (prevAndNext.next) {
         this.next = prevAndNext.next;
@@ -45,10 +45,14 @@ export class NavigationButtonsComponent implements OnInit {
   }
 
   goBack() {
-    this.summaryItemService.navigateTo(this.draft, this.previous, 'back');
+    if (this.previous) {
+      this.summaryItemService.navigateTo(this.draft(), this.previous, 'back');
+    }
   }
 
   goForward() {
-    this.summaryItemService.navigateTo(this.draft, this.next, 'forward');
+    if (this.next) {
+      this.summaryItemService.navigateTo(this.draft(), this.next, 'forward');
+    }
   }
 }

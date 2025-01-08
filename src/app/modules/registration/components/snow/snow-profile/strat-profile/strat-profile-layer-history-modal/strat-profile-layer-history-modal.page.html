@@ -1,15 +1,15 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate }} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-list lines="full" class="ion-no-margin">
-    <ng-container *ngIf="($previousUsedLayers | async) as previousUsedLayers else loading">
-      <ng-container *ngIf="previousUsedLayers.length > 0 else empty">
+    <ng-container *ngIf="$previousUsedLayers | async as previousUsedLayers; else loading">
+      <ng-container *ngIf="previousUsedLayers.length > 0; else empty">
         <ion-item
           [detail]="true"
           *ngFor="let item of previousUsedLayers"
@@ -19,7 +19,7 @@
         >
           <ion-label>
             {{ item.date | formatDate | async }} - ({{ item.layers.length }}
-            {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}})
+            {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER" | translate }})
           </ion-label>
         </ion-item>
       </ng-container>
@@ -48,6 +48,6 @@
 </ng-template>
 <ng-template #empty>
   <ion-list-header class="ion-text-uppercase">
-    <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.NO_PROFILES_FOUND' | translate }} </ion-label>
+    <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.NO_PROFILES_FOUND" | translate }} </ion-label>
   </ion-list-header>
 </ng-template>

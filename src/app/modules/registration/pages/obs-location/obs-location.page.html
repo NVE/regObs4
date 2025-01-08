@@ -1,9 +1,9 @@
 <ion-header *ngIf="!(fullscreen$ | async)">
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.OBS_LOCATION.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.OBS_LOCATION.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -15,7 +15,7 @@
     [selectedLocation]="selectedLocation"
     [allowEditLocationName]="allowEditLocationName"
     [setObsTime]="true"
-    [localDate]="draft?.registration?.DtObsTime"
+    [localDate]="localDate"
     [sourceTid]="draft?.registration?.SourceTID"
     [spatialAccuracy]="draft?.registration?.ObsLocation?.Uncertainty"
   >

@@ -10,7 +10,6 @@ import { map } from 'rxjs/operators';
 export class GeoHelperService {
   private translateService = inject(TranslateService);
 
-
   getTranslationKey(geoHazard: GeoHazard) {
     const geoHazardKey = geoHazard !== GeoHazard.Soil ? GeoHazard[geoHazard] : 'Dirt';
     return `GEO_HAZARDS.${geoHazardKey}`.toUpperCase();
@@ -29,8 +28,6 @@ export class GeoHelperService {
   }
 
   getAllGeoHazards(): GeoHazard[] {
-    return Object.keys(GeoHazard)
-      .filter((key) => typeof GeoHazard[key] === 'number')
-      .map((key) => GeoHazard[key]);
+    return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Soil, GeoHazard.Water];
   }
 }

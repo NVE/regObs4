@@ -1,5 +1,5 @@
-<div class="container" *ngIf="isHybrid; else slideWeb">
-  <!-- <ion-slides #slider [options]="slideOptions" (ionSlideTransitionEnd)="onSlideTransitionEnd()">
+<!-- <div class="container" *ngIf="isHybrid; else slideWeb">
+  <ion-slides #slider [options]="slideOptions" (ionSlideTransitionEnd)="onSlideTransitionEnd()">
     <ion-slide *ngFor="let slide of allImages; let i=index">
       <div class="img-container">
         <div class="swiper-zoom-container">
@@ -11,27 +11,35 @@
         </div>
       </div>
     </ion-slide>
-  </ion-slides> -->
+  </ion-slides>
 
   <ion-fab-button size="small" (click)="closeModal()" class="close-button">
     <ion-icon name="close"></ion-icon>
   </ion-fab-button>
-</div>
+</div> -->
 
-<ng-template #slideWeb>
-  <ion-fab-button size="small" (click)="closeModal()" class="close-button">
-    <ion-icon name="close"></ion-icon>
-  </ion-fab-button>
-  <div class="img-container">
-    <div class="img-frame">
-      <img [src]="allImages[activeImageIndex].Url || allImages[activeImageIndex]" (click)="closeModal()" />
-      <ion-item *ngIf="href as href" class="link-title">
-        <a [href]="href.url" target="_blank">
-          <span>{{ href.title | translate }}</span> <img src="../../../../assets/icon/newTab.svg" alt="new tab"
+<!-- <ng-template #slideWeb> -->
+<ion-fab-button size="small" (click)="closeModal()" class="close-button">
+  <ion-icon name="close"></ion-icon>
+</ion-fab-button>
+<div class="img-container">
+  <div class="img-frame">
+    <img [src]="activeImage().Url" (click)="closeModal()" />
+
+    @if (href(); as hrefValue) {
+      <ion-item class="link-title">
+        <a [href]="hrefValue.url" target="_blank">
+          <span>{{ hrefValue.title | translate }}</span> <img src="../../../../assets/icon/newTab.svg" alt="new tab"
         /></a>
       </ion-item>
-    </div>
-    <button *ngIf="!isFirstSlide" class="swiper-button-prev swiper-button-custom" (click)="prevSlide()"></button>
-    <button *ngIf="!isLastSlide" class="swiper-button-next swiper-button-custom" (click)="nextSlide()"></button>
+    }
   </div>
-</ng-template>
+
+  @if (!isFirstSlide()) {
+    <button class="swiper-button-prev swiper-button-custom" (click)="prevSlide()"></button>
+  }
+  @if (isLastSlide()) {
+    <button class="swiper-button-next swiper-button-custom" (click)="nextSlide()"></button>
+  }
+</div>
+<!-- </ng-template> -->

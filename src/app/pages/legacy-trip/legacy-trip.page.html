@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{"TRIP.TRIP" | translate}}</ion-title>
+    <ion-title>{{ "TRIP.TRIP" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -12,7 +12,7 @@
       <ion-col class="ion-no-padding">
         <ion-list lines="full">
           <app-kdv-select
-            [labelColor]="(hasClicked && tripDto.TripTypeID === undefined) ? 'danger' : 'medium'"
+            [color]="hasClicked && tripDto.TripTypeID === undefined ? 'danger' : 'medium'"
             [disabled]="isRunning || isLoading"
             label="TRIP.TRIP_TYPE"
             kdvKey="TripTypeKDV"
@@ -20,11 +20,11 @@
           ></app-kdv-select>
           <ion-item>
             <ion-label
-              [color]="(hasClicked && tripDto.ObservationExpectedMinutes === undefined) ? 'danger' : 'medium'"
+              [color]="hasClicked && tripDto.ObservationExpectedMinutes === undefined ? 'danger' : 'medium'"
               color="medium"
               position="stacked"
               class="ion-text-uppercase"
-              >{{'TRIP.TRIP_END_DESCRIPTION' | translate}}</ion-label
+              >{{ "TRIP.TRIP_END_DESCRIPTION" | translate }}</ion-label
             >
             <app-select
               [disabled]="isRunning || isLoading"
@@ -36,7 +36,7 @@
           <app-text-comment label="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
           </app-text-comment>
           <ion-item-divider>
-            <ion-label class="ion-text-wrap"> {{'TRIP.COMMENT_DESCRIPTION' | translate}} </ion-label>
+            <ion-label class="ion-text-wrap"> {{ "TRIP.COMMENT_DESCRIPTION" | translate }} </ion-label>
           </ion-item-divider>
         </ion-list>
       </ion-col>
@@ -53,7 +53,7 @@
             <ion-spinner name="dots"></ion-spinner>
           </div>
           <div>
-            <ion-button fill="clear" type="button" (click)="cancel()">{{'ALERT.CANCEL' | translate}}</ion-button>
+            <ion-button fill="clear" type="button" (click)="cancel()">{{ "ALERT.CANCEL" | translate }}</ion-button>
           </div>
         </ion-col>
       </ion-row>
@@ -63,7 +63,7 @@
         <ion-grid class="ion-no-padding">
           <ion-row>
             <ion-col class="ion-text-center">
-              <ion-button (click)="showHelp()" fill="clear">{{'HELP.TITLE' | translate}}</ion-button>
+              <ion-button (click)="showHelp()" fill="clear">{{ "HELP.TITLE" | translate }}</ion-button>
             </ion-col>
           </ion-row>
           <ion-row class="white-background">
@@ -76,7 +76,7 @@
                 expand="block"
                 color="varsom-orange"
               >
-                {{ 'TRIP.START_TRIP' | translate }}
+                {{ "TRIP.START_TRIP" | translate }}
               </ion-button>
               <ion-button
                 *ngIf="isRunning"
@@ -86,7 +86,7 @@
                 expand="block"
                 color="varsom-orange"
               >
-                {{ 'TRIP.STOP_TRIP' | translate }}
+                {{ "TRIP.STOP_TRIP" | translate }}
               </ion-button>
             </ion-col>
           </ion-row>
@@ -101,7 +101,7 @@
                 fill="clear"
               >
                 <svg-icon src="/assets/icon/reset.svg"></svg-icon>
-                {{"REGISTRATION.RESET" | translate}}
+                {{ "REGISTRATION.RESET" | translate }}
               </ion-button>
             </ion-col>
           </ion-row>

@@ -15,7 +15,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatest, EMPTY, firstValueFrom, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
@@ -114,19 +114,19 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private logger = inject(LoggingService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
 
-  popupType: SelectInterface;
-  isIosOrAndroid: boolean;
+  popupType?: SelectInterface;
+  isIosOrAndroid?: boolean;
   isMobileWeb: boolean;
   platformType: PlatformType;
-  nickName: string | null = null;
+  nickName?: string | null = null;
 
-  competenceItems$: Observable<CompetenceOption[]>;
+  competenceItems$?: Observable<CompetenceOption[]>;
 
-  currentGeoHazard: GeoHazard[];
-  showObservations$: Observable<boolean>;
-  observationTypes$: Observable<ObservationTypeView[]>;
-  nTypesSelected$: Observable<number>;
-  noCompetenceFilterActive$: Observable<boolean>;
+  currentGeoHazard?: GeoHazard[];
+  showObservations$?: Observable<boolean>;
+  observationTypes$?: Observable<ObservationTypeView[]>;
+  nTypesSelected$?: Observable<number>;
+  noCompetenceFilterActive$?: Observable<boolean>;
 
   filterSupportPerPlatform: FilterSupportPerPlatform = {
     app: {
@@ -166,7 +166,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
     this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
-      switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : of(null))),
+      switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : EMPTY)),
       shareReplay(1, 500)
     );
     this.nRegionsSelected$ = this.regions$.pipe(
@@ -219,12 +219,19 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
           v.isChecked = false;
         }
         obsTypes.forEach((type) => {
-          if (type.SubTypes.length > 0) {
-            type.SubTypes.forEach((subtype) => {
-              obsTypesOptions.optionsToReturnMap.get(+`${type.Id}.${subtype}`).isChecked = true;
+          const subTypes = type.SubTypes || [];
+          if (subTypes.length > 0) {
+            subTypes.forEach((subtype) => {
+              const obsTypeView = obsTypesOptions.optionsToReturnMap.get(+`${type.Id}.${subtype}`);
+              if (obsTypeView) {
+                obsTypeView.isChecked = true;
+              }
             });
           } else {
-            obsTypesOptions.optionsToReturnMap.get(type.Id).isChecked = true;
+            const obsTypeView = obsTypesOptions.optionsToReturnMap.get(type.Id);
+            if (obsTypeView) {
+              obsTypeView.isChecked = true;
+            }
           }
         });
         return obsTypesOptions.options;
@@ -266,7 +273,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
         // Set all active competences to checked
         for (const competence of competences) {
-          competenceOptions.idToItem.get(competence).checked = true;
+          const compItem = competenceOptions.idToItem.get(competence);
+          if (compItem) compItem.checked = true;
         }
 
         return competenceOptions.options;
@@ -309,17 +317,17 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.resetSearchCriteria();
   }
 
-  setNewType(event, parentId: number, typeId?: number) {
+  setNewType(event: any, parentId: number, typeId?: number) {
     //if parentid and subtypeid are the same it means there is no subtypes
     let obsType: RegistrationTypeCriteriaDto;
     if (parentId == typeId) obsType = { Id: parentId, SubTypes: [] };
-    else obsType = { Id: parentId, SubTypes: [typeId] };
+    else obsType = { Id: parentId, SubTypes: typeId ? [typeId] : [] };
     if (!event.currentTarget.checked) this.searchCriteriaService.setObservationType(obsType);
     else this.searchCriteriaService.removeObservationType(obsType);
   }
 
-  setNickName(newNick: SearchbarCustomEvent | null) {
-    let nickName = null;
+  setNickName(newNick: SearchbarCustomEvent) {
+    let nickName = undefined;
     newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
     this.searchCriteriaService.setObserverNickName(nickName);
   }
@@ -334,7 +342,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
           map((searchCriteria) => searchCriteria.SelectedRegions || []),
           distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr)),
           map((selectedRegions) => {
-            const markChecked = (r: AvalancheRegion) => ({
+            const markChecked = (r: AvalancheRegion): AvalancheRegion => ({
               ...r,
               checked: selectedRegions.includes(r.id),
             });

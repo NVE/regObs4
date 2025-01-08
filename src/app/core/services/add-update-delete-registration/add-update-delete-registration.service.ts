@@ -30,7 +30,6 @@ export class AddUpdateDeleteRegistrationService {
   private analytics = inject(AnalyticService);
   private logger = inject(LoggingService);
 
-
   private changedRegistrations = new Subject<{ reg: RegistrationViewModel; langKey: LangKey }>();
   private deletedRegistrationIds = new Subject<number>();
 
@@ -103,7 +102,7 @@ export class AddUpdateDeleteRegistrationService {
   async update(draft: RegistrationDraft, ignoreVersionCheck = false): Promise<RegistrationViewModel> {
     this.logger.debug('Update registration', DEBUG_TAG, { draft, ignoreVersionCheck });
 
-    if (!draft.regId) {
+    if (draft.regId == null) {
       throw new Error('Update operation needs regid');
     }
 
@@ -117,7 +116,7 @@ export class AddUpdateDeleteRegistrationService {
       registration: registrationWithMeta,
       langKey,
       externalReferenceId: draft.uuid,
-      id: draft.regId,
+      id: draft.regId as number, // Type check higher up
       ignoreVersionCheck: ignoreVersionCheck,
     };
 
@@ -142,7 +141,7 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {HttpErrorResponse} If the request is unsuccessful
    * @throws {TimeoutError} if the request timed out
    */
-  async delete(regId: number, timeoutInMillis = 10000): Promise<void> {
+  async delete(regId: number, timeoutInMillis = 10000): Promise<null> {
     this.logger.debug('Delete registration', DEBUG_TAG, { regId, timeoutInMillis });
 
     if (regId == null) {

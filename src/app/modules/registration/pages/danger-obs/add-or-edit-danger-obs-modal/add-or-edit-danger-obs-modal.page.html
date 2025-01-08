@@ -1,40 +1,36 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate }} </ion-title>
+    <ion-title> {{ "REGISTRATION.DANGER_OBS.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="loaded">
+<ion-content>
   <ion-list lines="full">
     <ion-list-header class="ion-text-uppercase">
-      <ion-label> {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}} </ion-label>
+      <ion-label> {{ "REGISTRATION.DANGER_OBS.TITLE" | translate }} </ion-label>
     </ion-list-header>
-    <ion-item *ngIf="showDangerSignCheckbox">
-      <ion-checkbox
-        (ionChange)="checkBoxChanged()"
-        color="varsom-dark-blue"
-        mode="md"
-        slot="start"
-        [(ngModel)]="noDangerObs"
-      ></ion-checkbox>
-      <ion-label>{{ 'REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN' | translate}}</ion-label>
+    <ion-item *ngIf="showNoDangerSignCheckbox()">
+      <ion-checkbox slot="start" [checked]="isNoDangerSign()" labelPlacement="end" (ionChange)="toggleNoDangerSign()">
+        {{ "REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN" | translate }}
+      </ion-checkbox>
     </ion-item>
     <app-kdv-select
-      (valueChange)="dropdownChanged($event)"
       label="REGISTRATION.DANGER_OBS.DROPDOWN_TITLE"
-      *ngIf="showDangerSignSelect"
-      [kdvKey]="kdvKey"
+      *ngIf="showDangerSignSelect()"
+      [kdvKey]="kdvKey()"
       [(value)]="dangerSignTid"
+      [showResetButton]="false"
     >
     </app-kdv-select>
     <ion-item>
-      <ion-label color="medium" position="stacked" class="ion-text-uppercase"
-        >{{'REGISTRATION.DANGER_OBS.AREA' | translate}}
-      </ion-label>
-      <app-select label="REGISTRATION.DANGER_OBS.AREA" [(selectedValue)]="tmpArea" [options]="areaArr"></app-select>
+      <app-select
+        label="{{ 'REGISTRATION.DANGER_OBS.AREA' | translate }}"
+        [(selectedValue)]="area"
+        [options]="areaOptions()"
+      ></app-select>
     </ion-item>
     <app-text-comment
       [(value)]="comment"
@@ -44,10 +40,10 @@
     ></app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons
-    [saveDisabled]="!isValid"
+    [saveDisabled]="dangerSignTid() == null"
     (saveClicked)="ok()"
     (deleteClicked)="delete()"
-    [showDelete]="!!dangerObs"
+    [showDelete]="!!dangerObs()"
   >
   </app-modal-save-or-delete-buttons>
 </ion-content>

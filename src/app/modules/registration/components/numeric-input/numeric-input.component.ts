@@ -1,74 +1,79 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, inject, input, model, computed } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
-import { IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
-import { NgIf, NgClass } from '@angular/common';
+import { IonInput, IonItem, IonLabel, IonText, ModalController, Platform } from '@ionic/angular/standalone';
+import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+
+const convert = (direction: 'from' | 'to', convertRatio?: number, val?: number) => {
+  if (val == null || val === 0 || convertRatio == null) {
+    return val;
+  }
+  return direction === 'from' ? val * convertRatio : val / convertRatio;
+};
 
 @Component({
   selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss'],
-  imports: [IonItem, IonLabel, IonText, NgClass, NgIf, TranslatePipe],
+  imports: [IonItem, IonLabel, IonText, NgClass, TranslatePipe, IonInput],
 })
 export class NumericInputComponent {
   private modalController = inject(ModalController);
 
-  @Input() decimalPlaces = 0;
-  @Input() min = -100000;
-  @Input() max = 100000;
-  @Input() suffix: string;
-  @Input() decimalSeparator;
-  @Input() value: number;
-  @Input() isValid = true;
-  @Input() errorMessage?: string;
-  @Output() valueChange = new EventEmitter();
-  @Input() label: string;
-  @Input() placeholder: string;
-  @Input() convertRatio: number;
-  @Input() readonly = false;
-  @Input() color = 'medium';
-  @Input() simpleObsMode = false;
+  readonly decimalPlaces = input(0);
+  readonly min = input(-100000);
+  readonly max = input(100000);
+  readonly suffix = input<string>();
+  readonly decimalSeparator = input((1.1).toLocaleString().substring(1, 2));
+  readonly value = model<number>();
+  readonly isValid = input(true);
+  readonly errorMessage = input('');
+  readonly label = input('');
+  readonly placeholder = input<string>('');
+  readonly convertRatio = input<number>();
+  readonly readonly = input(false);
+  readonly color = input('medium');
+  readonly simpleObsMode = input(false);
+
+  colorWithValidation = computed(() => (this.isValid() ? this.color() : 'danger'));
 
   private isOpen = false;
 
-  get displayValue(): string {
-    const converted = this.convert(this.value, 'from');
+  valueOrPlaceholder = computed(() => this.displayValue() || this.placeholder());
+  displayValue = computed(() => {
+    const converted = convert('from', this.convertRatio(), this.value());
     if (converted != null) {
+      const suffix = this.suffix();
+      if (suffix) {
+        return converted.toLocaleString() + ` ${suffix}`;
+      }
       return converted.toLocaleString();
     }
     return undefined;
-  }
+  });
 
   async openPicker() {
-    if (!this.isOpen && !this.readonly) {
+    if (!this.isOpen && !this.readonly()) {
       this.isOpen = true;
       const modal = await this.modalController.create({
         component: NumericInputModalPage,
         cssClass: 'numeric-input-modal',
         componentProps: {
-          value: this.convert(this.value, 'from'),
-          decimalPlaces: this.decimalPlaces,
-          min: this.min,
-          max: this.max,
-          suffix: this.suffix,
-          decimalSeparator: this.decimalSeparator,
-          title: this.label,
+          value: convert('from', this.convertRatio(), this.value()),
+          decimalPlaces: this.decimalPlaces(),
+          min: this.min(),
+          max: this.max(),
+          suffix: this.suffix(),
+          decimalSeparator: this.decimalSeparator(),
+          title: this.label(),
         },
       });
       modal.present();
       const result = await modal.onDidDismiss();
       if (result.data && result.data.ok) {
-        this.value = this.convert(result.data.value, 'to');
-        this.valueChange.emit(this.value);
+        this.value.set(convert('to', this.convertRatio(), result.data.value));
       }
       this.isOpen = false;
     }
-  }
-
-  private convert(val: number, direction: 'from' | 'to'): number {
-    if (val == null || val === 0 || this.convertRatio === undefined) {
-      return val;
-    }
-    return direction === 'from' ? val * this.convertRatio : val / this.convertRatio;
   }
 }

@@ -1,14 +1,13 @@
-import { Component, Input, inject } from '@angular/core';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { Component, computed, inject, input } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
-import { StratProfileEditModel } from 'src/app/modules/common-regobs-api/models';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 /**
  * The small summary component on the main snow profile page,
@@ -26,17 +25,12 @@ export class StratProfileComponent {
   private modalContoller = inject(ModalController);
   private draftrepository = inject(DraftRepositoryService);
 
-  @Input() draft: RegistrationDraft;
+  draft = input.required<RegistrationDraft>();
 
-  private modal: HTMLIonModalElement;
+  layers = computed(() => this.draft().registration.SnowProfile2?.StratProfile?.Layers || []);
+  isEmpty = computed(() => isEmpty(this.draft().registration.SnowProfile2?.StratProfile));
 
-  get profile(): StratProfileEditModel {
-    return this.draft?.registration?.SnowProfile2?.StratProfile || {};
-  }
-
-  get isEmpty() {
-    return IsEmptyHelper.isEmpty(this.profile);
-  }
+  private modal?: HTMLIonModalElement | null;
 
   constructor() {
     addIcons({ checkmarkCircle });
@@ -44,11 +38,11 @@ export class StratProfileComponent {
 
   async openModal() {
     if (!this.modal) {
-      await this.draftrepository.save(this.draft); // Save registration before open modal page
+      await this.draftrepository.save(this.draft()); // Save registration before open modal page
       this.modal = await this.modalContoller.create({
         component: StratProfileModalPage,
         componentProps: {
-          uuid: this.draft.uuid,
+          uuid: this.draft().uuid,
         },
       });
       this.modal.present();

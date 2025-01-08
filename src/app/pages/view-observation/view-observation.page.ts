@@ -12,7 +12,7 @@ import {
   IonButton,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttribute, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
@@ -28,6 +28,7 @@ import { ObservationListCardComponent } from '../../components/observation/obser
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 interface RegistrationResult {
   reg?: RegistrationViewModel;
@@ -66,12 +67,25 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private authService = inject(RegobsAuthService);
   private router = inject(Router);
 
-  editMode$: Observable<EditMode>;
-  registrationViewModel$: Observable<RegistrationResult>;
+  readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
-  loggedInUser$: Observable<string>;
-  isLoggingIn$: Observable<boolean>;
+  registration = rxResource({
+    request: () => ({ regId: this.regId() }),
+    loader: ({ request }) => this.getRegistration$(request.regId),
+  });
+  errorMessage = computed(() => {
+    const err = this.registration.error();
+    if (err instanceof Error) {
+      return err.message;
+    }
+    return null;
+  });
+
   private _isLoggingIn = new Subject<boolean>();
+  loggedInUserEmail = toSignal(
+    this.authService.loggedInUser$.pipe(map((user) => (user.isLoggedIn ? user.email : null)))
+  );
+  isLoggingIn$ = merge(this._isLoggingIn, this.authService.isLoggingIn$);
 
   constructor() {
     super();
@@ -93,26 +107,17 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     await this.authService.signIn();
   }
 
+  private getRegistration$(regId: number) {
+    return this.searchService
+      .SearchSearch({
+        RegId: regId,
+      })
+      .pipe(map((result) => result[0]));
+  }
+
   ngOnInit() {
     this.isLoggingIn$ = merge(this._isLoggingIn, this.authService.isLoggingIn$);
 
-    this.loggedInUser$ = this.authService.loggedInUser$.pipe(map((user) => (user.isLoggedIn ? user.email : null)));
-
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
-    const id = this.activatedRoute.snapshot.params['id'];
-    const regId = parseInt(id, 10);
-
-    if (isNaN(regId)) {
-      this.registrationViewModel$ = of({ err: new Error(`Invalid registration id: "${id}"`) });
-    } else {
-      this.registrationViewModel$ = this.searchService
-        .SearchSearch({
-          RegId: regId,
-        })
-        .pipe(
-          map((result) => ({ reg: result[0] })),
-          catchError((err) => of({ err }))
-        );
-    }
   }
 }

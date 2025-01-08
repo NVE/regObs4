@@ -1,18 +1,18 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate }} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE" | translate }} </ion-label>
       </ion-list-header>
-      <ng-container *ngIf="useCylinder else noCylinder">
+      <ng-container *ngIf="useCylinder; else noCylinder">
         <app-numeric-input
           [(value)]="layer.Thickness"
           label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
@@ -37,19 +37,19 @@
         </app-numeric-input>
         <ion-item>
           <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-            {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate}}
+            {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE" | translate }}
           </ion-label>
           <ion-text class="ion-align-self-start">
-            <ng-container *ngIf="layer.Density">{{ layer.Density | number:'1.0-2' }} kg/m³</ng-container>
+            <ng-container *ngIf="layer.Density">{{ layer.Density | number: "1.0-2" }} kg/m³</ng-container>
           </ion-text>
         </ion-item>
         <ion-item>
           <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-            {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WATER_EQUIVALENT' | translate}}
+            {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WATER_EQUIVALENT" | translate }}
           </ion-label>
           <ion-text class="ion-align-self-start">
             <ng-container *ngIf="layer.Density && layer.Thickness">
-              {{ getWaterEquivalent(layer.Density, layer.Thickness) | number:'1.0-2' }} mm</ng-container
+              {{ getWaterEquivalent(layer.Density, layer.Thickness) | number: "1.0-2" }} mm</ng-container
             >
           </ion-text>
         </ion-item>
@@ -60,20 +60,20 @@
         <ion-col size="6">
           <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
             <ion-icon slot="start" name="arrow-back"></ion-icon>
-            <ion-text>{{ 'DIALOGS.PREVIOUS' | translate }}</ion-text>
+            <ion-text>{{ "DIALOGS.PREVIOUS" | translate }}</ion-text>
           </ion-button>
         </ion-col>
         <ion-col size="6">
           <ion-button [disabled]="!canGoNext" expand="block" fill="outline" color="primary" (click)="ok(1)">
             <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            <ion-text>{{ 'DIALOGS.NEXT' | translate }}</ion-text>
+            <ion-text>{{ "DIALOGS.NEXT" | translate }}</ion-text>
           </ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12">
           <ion-button type="submit" expand="block" fill="solid" color="primary">
-            {{ 'DIALOGS.OK_BACK' | translate }}
+            {{ "DIALOGS.OK_BACK" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>
@@ -81,7 +81,7 @@
         <ion-col size="6" offset="3">
           <ion-button (click)="delete()" size="small" fill="clear" expand="block">
             <ion-icon slot="start" name="trash"></ion-icon>
-            {{ 'DIALOGS.DELETE' | translate }}
+            {{ "DIALOGS.DELETE" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>

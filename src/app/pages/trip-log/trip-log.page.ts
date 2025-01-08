@@ -46,7 +46,7 @@ export class TripLogPage implements OnInit, OnDestroy {
   private tripLoggerService = inject(TripLoggerService);
 
   state: TripLogState = TripLogState.NotStarted;
-  private subscription: Subscription;
+  private subscription?: Subscription;
 
   async ngOnInit() {
     this.subscription = this.tripLoggerService.getTripLogStateAsObservable().subscribe((activity) => {
@@ -68,6 +68,8 @@ export class TripLogPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

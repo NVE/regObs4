@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model } from '@angular/core';
 import { IonButton, IonButtons, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular/standalone';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -31,13 +31,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class EditImagesPage {
   private modalController = inject(ModalController);
 
-  @Input() draftUuid: string;
-  @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
-  @Input() registrationTid: RegistrationTid;
-  @Input() geoHazard: GeoHazard;
-  @Input() modalTitlePostfix: string;
+  readonly draftUuid = input.required<string>();
+  readonly existingAttachments = model.required<RemoteOrLocalAttachmentEditModel[]>();
+  readonly registrationTid = input.required<RegistrationTid>();
+  readonly geoHazard = input.required<GeoHazard>();
+  readonly modalTitlePostfix = input.required<string>();
 
   close() {
-    this.modalController.dismiss({ existingAttachments: this.existingAttachments });
+    this.modalController.dismiss({ existingAttachments: this.existingAttachments() });
   }
 }

@@ -1,6 +1,6 @@
 /* tslint:disable */
 export interface KdvElement {
   Description?: string;
-  Id?: number;
+  Id: number;
   Name?: string;
 }

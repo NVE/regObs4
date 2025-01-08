@@ -1,10 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
-import { map, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
@@ -66,9 +66,9 @@ export class UserInformation implements OnInit {
   modalController = inject(ModalController);
   private router = inject(Router);
 
-  loggedInUser$: Observable<LoggedInUser>;
-  userGroups$: Observable<ObserverGroupDto[]>;
-  myPage$: Observable<MyPageData>;
+  loggedInUser$!: Observable<LoggedInUser>;
+  userGroups$!: Observable<ObserverGroupDto[]>;
+  myPage$!: Observable<MyPageData>;
 
   myPageSampleData: MyPageData = {
     Competence: [
@@ -105,8 +105,8 @@ export class UserInformation implements OnInit {
       GeoHazardName: 'GEO_HAZARDS.ICE',
     },
   ];
-  copyright$: Observable<string>;
-  photographer$: Observable<string>;
+  copyright$!: Observable<string>;
+  photographer$!: Observable<string>;
 
   ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
@@ -119,14 +119,14 @@ export class UserInformation implements OnInit {
       switchMap((userSetting) =>
         userSetting.copyright
           ? of(userSetting.copyright)
-          : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))
+          : this.regobsAuthService.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email as string))
       )
     );
     this.photographer$ = this.userSettingService.userSetting$.pipe(
       switchMap((userSetting) =>
         userSetting.photographer
           ? of(userSetting.photographer)
-          : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))
+          : this.regobsAuthService.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email as string))
       )
     );
   }
@@ -145,13 +145,10 @@ export class UserInformation implements OnInit {
   }
 
   async openMyPage(tag = ''): Promise<void> {
-    const myPageUrl = await this.userSettingService.appMode$
-      .pipe(
-        map((appMode) => settings.authConfig[appMode].myPageUrl),
-        take(1)
-      )
-      .toPromise();
-    const currentLangKey = await this.userSettingService.language$.pipe(take(1)).toPromise();
+    const myPageUrl = await firstValueFrom(
+      this.userSettingService.appMode$.pipe(map((appMode) => settings.authConfig[appMode].myPageUrl))
+    );
+    const currentLangKey = await firstValueFrom(this.userSettingService.language$);
     const locale = this.getSupportedMyPageLocales(currentLangKey);
     this.externalLinkService.openExternalLink(`${myPageUrl}/SubPage?Culture=${locale}&tag=${tag}`);
   }
@@ -164,24 +161,24 @@ export class UserInformation implements OnInit {
   }
 
   getCompetenceFromGeoHazard(geohazardTID: number): number {
-    const competence = this.myPageSampleData.Competence.find((x) => x.GeohazardTID == geohazardTID);
+    const competence = this.myPageSampleData?.Competence?.find((x) => x.GeohazardTID == geohazardTID);
     if (competence != null) {
-      return StarRatingHelper.getStarRating(competence.CompetenceTID);
+      return StarRatingHelper.getStarRating(competence.CompetenceTID) || 0;
     } else {
       return 0;
     }
   }
 
   async saveCopyrightAndPhotographer(copyright: string, photographer: string) {
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
     userSettings.copyright = copyright;
     userSettings.photographer = photographer;
     this.userSettingService.saveUserSettings(userSettings);
   }
 
   async presentModal() {
-    const copyright = await this.copyright$.pipe(take(1)).toPromise();
-    const photographer = await this.photographer$.pipe(take(1)).toPromise();
+    const copyright = await firstValueFrom(this.copyright$);
+    const photographer = await firstValueFrom(this.photographer$);
     const modal = await this.modalController.create({
       component: EditPictureInfoModalComponent,
       componentProps: {

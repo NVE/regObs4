@@ -46,7 +46,7 @@ import SETTINGS_OVERRIDE from 'src/assets/json/settings-override.json';
 
 const DEBUG_TAG = 'UserSettingService';
 
-function convertToInt(value: string): number {
+function convertToInt(value: string): number | null {
   if (typeof value !== 'string') {
     return null;
   }
@@ -81,7 +81,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   /** Hvis true er det på lov å mase om utdaterte kartpakker */
   public readonly offlineMapUpdateNotificationNotSuppressed$: Observable<boolean>;
 
-  private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
+  private userSettingInMemory = new BehaviorSubject<UserSetting | null>(null);
   // private userSettingsReady = new BehaviorSubject(false);
 
   // get userSettingsReady$() {
@@ -174,7 +174,11 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       map(([daysBack, currentGeoHazard]) => {
         const geoHazard = currentGeoHazard[0];
         const daysBackForCurrentGeoHazard = daysBack.find((x) => x.geoHazard === geoHazard);
-        return daysBackForCurrentGeoHazard?.daysBack;
+        if (daysBackForCurrentGeoHazard == null) {
+          this.loggingService?.debug('No days back found for geoHazard, using 2', DEBUG_TAG, { geoHazard });
+          return 2;
+        }
+        return daysBackForCurrentGeoHazard.daysBack;
       }),
       distinctUntilChanged(),
       tap((val) => this.loggingService?.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, { val })),
@@ -193,17 +197,17 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     const url = new URL(document.location.href);
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
-    const daysBackNumeric = convertToInt(daysBack);
+    const daysBackNumeric = daysBack ? convertToInt(daysBack) : null;
     return {
       geoHazards,
       daysBack: daysBackNumeric,
     };
   }
 
-  private readGeoHazardsFromUrl(searchParams: URLSearchParams): GeoHazard[] {
+  private readGeoHazardsFromUrl(searchParams: URLSearchParams): GeoHazard[] | null {
     // read param on new format
     const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
-    if (geoHazardsParamValue?.length > 0) {
+    if (geoHazardsParamValue) {
       const geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
       if (isGeoHazardValid(geoHazards)) {
         return geoHazards;
@@ -217,6 +221,8 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       // new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
       return geoHazards;
     }
+
+    return null;
   }
 
   public init() {
@@ -277,54 +283,124 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   updateUserSettings(userSetting: Partial<UserSetting>) {
-    this.userSettingInMemory.next({
+    const updated = this.validateUserSettingsUpdate({
       ...this.userSettingInMemory.value,
       ...userSetting,
     });
+    this.userSettingInMemory.next(updated);
+  }
+
+  private validateUserSettingsUpdate(value: Partial<UserSetting>): UserSetting {
+    // Check if required properties are present
+    if (value.appMode == null) {
+      throw new Error('Missing required property appMode');
+    }
+    if (value.language == null) {
+      throw new Error('Missing required property language');
+    }
+    if (value.currentGeoHazard == null) {
+      throw new Error('Missing required property currentGeoHazard');
+    }
+    if (value.observationDaysBack == null) {
+      throw new Error('Missing required property observationDaysBack');
+    }
+    if (value.completedStartWizard == null) {
+      throw new Error('Missing required property completedStartWizard');
+    }
+    if (value.supportTiles == null) {
+      throw new Error('Missing required property supportTiles');
+    }
+    if (value.showMapCenter == null) {
+      throw new Error('Missing required property showMapCenter');
+    }
+    if (value.showObservations == null) {
+      throw new Error('Missing required property showObservations');
+    }
+    if (value.topoMap == null) {
+      throw new Error('Missing required property topoMap');
+    }
+    if (value.showGeoSelectInfo == null) {
+      throw new Error('Missing required property showGeoSelectInfo');
+    }
+    if (value.completedSimpleObsOnboarding == null) {
+      throw new Error('Missing required property completedSimpleObsOnboarding');
+    }
+    if (value.useRetinaMap == null) {
+      throw new Error('Missing required property useRetinaMap');
+    }
+    if (value.featureToggleDeveloperMode == null) {
+      throw new Error('Missing required property featureToggleDeveloperMode');
+    }
+    if (value.featureToggeGpsDebug == null) {
+      throw new Error('Missing required property featureToggeGpsDebug');
+    }
+    if (value.preferCompleteSnowObservations == null) {
+      throw new Error('Missing required property preferCompleteSnowObservations');
+    }
+    // Return a UserSetting object with all required properties
+    return {
+      ...value,
+      appMode: value.appMode,
+      language: value.language,
+      currentGeoHazard: value.currentGeoHazard,
+      observationDaysBack: value.observationDaysBack,
+      completedStartWizard: value.completedStartWizard,
+      supportTiles: value.supportTiles,
+      showMapCenter: value.showMapCenter,
+      showObservations: value.showObservations,
+      topoMap: value.topoMap,
+      showGeoSelectInfo: value.showGeoSelectInfo,
+      completedSimpleObsOnboarding: value.completedSimpleObsOnboarding,
+      useRetinaMap: value.useRetinaMap,
+      featureToggleDeveloperMode: value.featureToggleDeveloperMode,
+      featureToggeGpsDebug: value.featureToggeGpsDebug,
+      preferCompleteSnowObservations: value.preferCompleteSnowObservations,
+    };
   }
 
   getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {
-    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles
-      .filter((setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0)
-      .map((tile) => {
-        const usSupportTile = us.supportTiles.find((usTiles) => usTiles.name === tile.name);
-        let subTile = tile.subTile;
-        if (subTile && usSupportTile && usSupportTile.subTile) {
-          subTile = { ...tile.subTile, ...usSupportTile.subTile };
-        }
-        return {
-          ...(usSupportTile ? { ...tile, ...usSupportTile } : tile),
-          subTile: subTile,
-        };
-      });
+    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles;
+    // TODO!
+    //   .filter((setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0)
+    //   .map((tile) => {
+    //     const usSupportTile = us.supportTiles.find((usTiles) => usTiles.name === tile.name);
+    //     let subTile = tile.subTile;
+    //     if (subTile && usSupportTile && usSupportTile.subTile) {
+    //       subTile = { ...tile.subTile, ...usSupportTile.subTile };
+    //     }
+    //     return {
+    //       ...(usSupportTile ? { ...tile, ...usSupportTile } : tile),
+    //       subTile: subTile,
+    //     };
+    //   });
 
-    if (flat) {
-      supportTilesForCurrentGeoHazard
-        .filter((tile) => tile.subTile)
-        .forEach((tile) => {
-          supportTilesForCurrentGeoHazard.push({
-            ...tile.subTile,
-            opacity: tile.opacity,
-            geoHazardId: tile.geoHazardId,
-          });
-          delete tile.subTile;
-        });
-    }
+    // if (flat) {
+    //   supportTilesForCurrentGeoHazard
+    //     .filter((tile) => tile.subTile)
+    //     .forEach((tile) => {
+    //       supportTilesForCurrentGeoHazard.push({
+    //         ...tile.subTile,
+    //         opacity: tile.opacity,
+    //         geoHazardId: tile.geoHazardId,
+    //       });
+    //       delete tile.subTile;
+    //     });
+    // }
 
     return supportTilesForCurrentGeoHazard;
   }
 
-  private getBrowserLang(): LangKey | null {
+  private getBrowserLang(): LangKey | undefined {
     const browserLang = this.translate.getBrowserLang();
-    if (!browserLang) return null;
+    if (!browserLang) return;
 
     // As LangKey use lower case letters
     const lowerCaseLang = browserLang.toLowerCase();
     if (lowerCaseLang in LangKey) {
-      return LangKey[browserLang];
+      return LangKey[lowerCaseLang as keyof typeof LangKey];
     }
 
-    return null;
+    return;
   }
 
   private getUserSettingsFromQueryParametersOrDbOrDefaultSettings(): Observable<UserSetting> {
@@ -334,17 +410,23 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
       // Apply any overrides due to new default settings (see json/settings-override.json)
       map((result) => {
-        const overrides: [Date, string, unknown][] = SETTINGS_OVERRIDE.map(
-          ([dateStr, key, val]) => [new Date(dateStr as string), key, val] as [Date, string, unknown]
+        const overrides = SETTINGS_OVERRIDE.map(
+          ([dateStr, key, val]) => [new Date(dateStr as string), key, val] as [Date, keyof UserSetting, any]
         ).filter(([date, ..._]) => !result.lastOverridden || date > result.lastOverridden);
-        if (overrides.length) {
-          overrides.forEach(([_, key, val]) => {
-            result[key as string] = val;
+        const overrideSettings = Object.fromEntries(overrides.map(([, key, value]) => [key, value]));
+        const updatedSettings = {
+          ...result,
+          ...overrideSettings,
+        };
+        try {
+          return this.validateUserSettingsUpdate(updatedSettings);
+        } catch (error) {
+          this.loggingService.error(error, DEBUG_TAG, 'Could not apply user settings override', {
+            overrides,
+            settings: result,
           });
-          result.lastOverridden = new Date(Math.max(...overrides.map(([date, ..._]) => date.getTime())));
-          this.saveUserSettingsToDb(result);
+          return updatedSettings; // TODO: Safer to return resutl?
         }
-        return result;
       }),
 
       // Set geoHazard from url
@@ -357,13 +439,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
       // Set daysback from url
       map((userSettings) => {
-        if (urlSettings.daysBack) {
+        if (urlSettings.daysBack != null) {
           const daysBackForOtherGeoHazards = userSettings.observationDaysBack.filter(
             (v) => userSettings.currentGeoHazard.indexOf(v.geoHazard) === -1
           );
           const daysBackForCurrentGeoHazards = userSettings.currentGeoHazard.map((geoHazard) => ({
             geoHazard,
-            daysBack: urlSettings.daysBack,
+            daysBack: urlSettings.daysBack as number,
           }));
           return {
             ...userSettings,
@@ -376,20 +458,20 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   private getUserSettingsFromDb(): Observable<UserSetting> {
-    return from(nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').exec() as Promise<UserSetting[]>).pipe(
+    return from(nSQL(NanoSql.TABLES['USER_SETTINGS'].name).query('select').exec() as Promise<UserSetting[]>).pipe(
       map((result) => result[0])
     );
   }
 
   private saveUserSettingsToDb(userSetting: UserSetting): Observable<UserSetting[]> {
     return from(
-      nSQL(NanoSql.TABLES.USER_SETTINGS.name)
+      nSQL(NanoSql.TABLES['USER_SETTINGS'].name)
         .query('upsert', { id: 'usersettings', ...userSetting })
         .exec() as Promise<UserSetting[]>
     ).pipe(
       catchError((err) => {
         this.loggingService?.log('Could not save user settings to offline db', err, LogLevel.Warning, DEBUG_TAG);
-        return of(null);
+        return of([userSetting]);
       })
     );
   }
@@ -438,11 +520,11 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
    */
   async resetDaysBackForCurrentGeoHazard(): Promise<void> {
     const currentGeoHazards = await firstValueFrom(this.currentGeoHazard$);
-    const defaultDaysBackForCurrentGeoHazard = DEFAULT_USER_SETTINGS(null).observationDaysBack.find(
+    const defaultDaysBackForCurrentGeoHazard = DEFAULT_USER_SETTINGS(undefined).observationDaysBack.find(
       (x) => x.geoHazard === currentGeoHazards[0]
     );
     const userSettings = await firstValueFrom(this.userSetting$);
-    if (this.setDaysBackForCurrentGeoHazard(defaultDaysBackForCurrentGeoHazard.daysBack, userSettings)) {
+    if (this.setDaysBackForCurrentGeoHazard(defaultDaysBackForCurrentGeoHazard?.daysBack || 2, userSettings)) {
       this.saveUserSettings(userSettings);
     }
   }
@@ -451,7 +533,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     let changed = false;
     for (const geoHazard of userSettings.currentGeoHazard) {
       const existingValue = userSettings.observationDaysBack.find((x) => x.geoHazard === geoHazard);
-      if (existingValue.daysBack !== daysBack) {
+      if (existingValue && existingValue.daysBack !== daysBack) {
         existingValue.daysBack = daysBack;
         changed = true;
       }

@@ -1,9 +1,9 @@
 <ion-header *ngIf="!(fullscreen$ | async)">
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="navBack()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="navBack()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_TITLE' | translate }} </ion-title>
+    <ion-title> {{ "REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -12,7 +12,6 @@
     [geoHazard]="geoHazard"
     (mapReady)="onMapReady($event)"
     [fromMarker]="fromMarker"
-    [locationMarker]="locationMarker"
     (locationTimeSet)="onLocationSet()"
     [locationPolygon]="locationPolygon"
     confirmLocationText="REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_CONFIRM"

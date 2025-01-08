@@ -1,28 +1,34 @@
 import { IonIcon } from '@ionic/angular/standalone';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { NgClass } from '@angular/common';
+import { getGeohazardsId, getIconForGeohazards } from './get-geo-icon';
 
 @Component({
   selector: 'app-geo-icon',
   templateUrl: './geo-icon.component.html',
   styleUrls: ['./geo-icon.component.scss'],
-  imports: [IonIcon, NgClass],
+  imports: [IonIcon],
 })
 export class GeoIconComponent {
-  @Input() geoHazards: GeoHazard[];
-  @Input() useGeoColors = true;
+  readonly geoHazards = input.required<GeoHazard[]>();
+  readonly useGeoColors = input(true);
 
-  get geoClass() {
-    if (this.geoHazards && this.geoHazards.length > 0) {
-      return this.geoHazards
-        .map((geoHazard) => (geoHazard !== GeoHazard.Soil ? (<string>GeoHazard[geoHazard]).toLowerCase() : 'dirt'))
-        .join('-');
+  geoClass = computed(() => {
+    const geoHazards = this.geoHazards();
+    return getGeohazardsId(geoHazards);
+  });
+
+  classes = computed(() => {
+    const classes = [];
+    if (this.useGeoColors()) {
+      classes.push('geo-color');
     }
-    return '';
-  }
+    const geoClass = this.geoClass();
+    if (geoClass) {
+      classes.push(geoClass);
+    }
+    return classes;
+  });
 
-  get iconSrc() {
-    return `/assets/icon/${this.geoClass.replace(/-/, '_')}.svg`;
-  }
+  iconSrc = computed(() => getIconForGeohazards(this.geoHazards()));
 }

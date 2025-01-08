@@ -1,15 +1,15 @@
-import { Component, ViewChild, OnDestroy, OnInit, NgZone, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone, inject } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonButton, IonContent, IonFooter, IonToolbar, NavController, Platform } from '@ionic/angular/standalone';
-import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
+import { IonButton, IonContent, IonFooter, IonToolbar, Platform } from '@ionic/angular/standalone';
+import { LangKey, GeoHazard } from '../../modules/common-core/models';
 import { animations } from './start-wizard.animations';
-import { Subject, timer, interval, Subscription } from 'rxjs';
+import { Subject, interval, Subscription, firstValueFrom } from 'rxjs';
 import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';
 import { settings } from '../../../settings';
-import { UserSetting } from 'src/app/core/models/user-settings.model';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { UserSetting } from '../../core/models/user-settings.model';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-start-wizard',
@@ -20,41 +20,38 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class StartWizardPage implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
-  private navController = inject(NavController);
+  // private navController = inject(NavController);
   private ngZone = inject(NgZone);
   private platform = inject(Platform);
 
   // @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
-  state: string;
+  state?: string;
   reachedEnd = false;
   reachedStart = true;
   showLegalIcon = false;
   visibleStarNumber = -1;
-  language: LangKey;
-  legalUrl: string;
-  userSettings: UserSetting;
+  language?: LangKey;
+  legalUrl?: string;
+  userSettings?: UserSetting;
   supportedLanguages: {
     lang: string;
     name: string;
     langKey: LangKey;
-  }[] = settings.language.supportedLanguages.map((lang) => ({
-    ...lang,
-    langKey: LangKey[lang.lang],
+  }[] = settings.language.supportedLanguages.map((language) => ({
+    ...language,
+    langKey: LangKey[language.lang],
   }));
-  isIosOrAndroid: boolean;
-  isDesktop: boolean;
+  isIosOrAndroid = Capacitor.isNativePlatform();
+  isDesktop = this.platform.is('desktop');
 
   private ngDestroy$ = new Subject<void>();
   private activeIndex = new Subject<number>();
   private isIncreasing = true;
-  private userSettingSubscription: Subscription;
+  private userSettingSubscription?: Subscription;
 
   async ngOnInit() {
-    this.isIosOrAndroid = isAndroidOrIos(this.platform);
-    this.isDesktop = this.platform.is('desktop');
-
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
@@ -73,11 +70,9 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   async saveLanguage() {
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    this.userSettingService.saveUserSettings({
-      ...userSettings,
-      language: this.language,
-    });
+    if (this.language) {
+      this.userSettingService.updateUserSettings({ language: this.language });
+    }
   }
 
   private setPageIndex(index: number) {

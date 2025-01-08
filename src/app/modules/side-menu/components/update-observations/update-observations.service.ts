@@ -9,8 +9,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 })
 export class UpdateObservationsService {
   offlineMode = false;
-  private lastFetched = new ReplaySubject<Date>();
-  private lastFetchedOffline = new ReplaySubject<Date>();
+  private lastFetched = new ReplaySubject<Date | null>();
+  private lastFetchedOffline = new ReplaySubject<Date | null>();
   private refreshRequested = new Subject<void>();
   readonly refreshRequested$ = this.refreshRequested.asObservable();
 
@@ -21,7 +21,7 @@ export class UpdateObservationsService {
     return this.lastFetched.asObservable();
   }
 
-  setLastFetched(date: Date) {
+  setLastFetched(date: Date | null) {
     this.lastFetched.next(date);
   }
 
@@ -29,7 +29,7 @@ export class UpdateObservationsService {
     this.refreshRequested.next();
   }
 
-  setOfflineObservationsLastFetched(date: Date) {
+  setOfflineObservationsLastFetched(date: Date | null) {
     this.lastFetchedOffline.next(date);
   }
 }

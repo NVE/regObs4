@@ -14,7 +14,7 @@
     (ionChange)="save($event)"
     [value]="userSettingService.daysBackForCurrentGeoHazard$ | async"
   >
-    <ion-select-option *ngFor="let item of daysBackOptions" [value]="item.val">
+    <ion-select-option *ngFor="let item of daysBackOptions()" [value]="item.val">
       <app-check-days-or-weeks-back [daysBack]="item.val"></app-check-days-or-weeks-back>
     </ion-select-option>
   </ion-select>

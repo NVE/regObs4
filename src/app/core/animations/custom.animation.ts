@@ -46,12 +46,12 @@ export class CustomAnimation {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
-    backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+    backdropAnimation.addElement(baseEl.querySelectorAll('ion-backdrop'));
 
     backdropAnimation.fromTo('opacity', 0.01, 0.4);
 
     const wrapperAnimation = createAnimation();
-    wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+    wrapperAnimation.addElement(baseEl.querySelectorAll('.modal-wrapper'));
 
     wrapperAnimation
       .beforeStyles({ transform: 'scale3d(0.7,0.7,0.7)', opacity: 0.01 })
@@ -73,12 +73,12 @@ export class CustomAnimation {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
-    backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+    backdropAnimation.addElement(baseEl.querySelectorAll('ion-backdrop'));
 
     backdropAnimation.fromTo('opacity', 0, 0.4);
 
     const wrapperAnimation = createAnimation();
-    wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+    wrapperAnimation.addElement(baseEl.querySelectorAll('.modal-wrapper'));
 
     wrapperAnimation
       .beforeStyles({ transform: 'scale3d(0.7,1,0.7)', opacity: 0 })
@@ -99,15 +99,15 @@ export class CustomAnimation {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
-    backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+    backdropAnimation.addElement(baseEl.querySelectorAll('ion-backdrop'));
 
     backdropAnimation.fromTo('opacity', 0.4, 0.0);
 
     const wrapperAnimation = createAnimation();
-    wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+    wrapperAnimation.addElement(baseEl.querySelectorAll('.modal-wrapper'));
 
     wrapperAnimation
-      .addElement(baseEl.querySelector('.modal-wrapper'))
+      .addElement(baseEl.querySelectorAll('.modal-wrapper'))
       .beforeStyles({ transform: 'scale3d(1,1,1)', opacity: 1 })
       .fromTo('transform', 'scale3d(1,1,1)', 'scale3d(0.6,0.6,0.6)')
       .fromTo('opacity', 1, 0);
@@ -126,15 +126,15 @@ export class CustomAnimation {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
-    backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+    backdropAnimation.addElement(baseEl.querySelectorAll('ion-backdrop'));
 
     backdropAnimation.fromTo('opacity', 0.4, 0.0);
 
     const wrapperAnimation = createAnimation();
-    wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+    wrapperAnimation.addElement(baseEl.querySelectorAll('.modal-wrapper'));
 
     wrapperAnimation
-      .addElement(baseEl.querySelector('.modal-wrapper'))
+      .addElement(baseEl.querySelectorAll('.modal-wrapper'))
       .beforeStyles({ transform: 'scale3d(1,1,1)', opacity: 1 })
       .fromTo('transform', 'scale3d(1,1,1)', 'scale3d(0.6,1,0.6)')
       .fromTo('opacity', 1, 0);
@@ -152,12 +152,12 @@ export class CustomAnimation {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
-    backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+    backdropAnimation.addElement(baseEl.querySelectorAll('ion-backdrop'));
 
     backdropAnimation.fromTo('opacity', 0.01, 0.4);
 
     const wrapperAnimation = createAnimation();
-    wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+    wrapperAnimation.addElement(baseEl.querySelectorAll('.modal-wrapper'));
 
     wrapperAnimation
       .beforeStyles({ transform: 'translateX(100%)', opacity: 0.01 })
@@ -177,10 +177,10 @@ export class CustomAnimation {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
-    backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+    backdropAnimation.addElement(baseEl.querySelectorAll('ion-backdrop'));
 
     backdropAnimation.fromTo('opacity', 0.4, 0.0);
-    const modalWrapperElement = baseEl.querySelector('.modal-wrapper');
+    const modalWrapperElement = baseEl.querySelectorAll('.modal-wrapper');
 
     const wrapperAnimation = createAnimation();
     wrapperAnimation.addElement(modalWrapperElement);

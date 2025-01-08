@@ -1,6 +1,6 @@
 export interface SelectOption {
   id: number | string | boolean;
-  text?: string;
+  text: string;
   icon?: string;
   disabled?: boolean;
 }

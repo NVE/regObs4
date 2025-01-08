@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { map, switchMap, shareReplay, catchError, concatMap, take, timeout } from 'rxjs/operators';
@@ -18,6 +18,10 @@ export interface ApiSyncOfflineBaseServiceOptions {
 
 @Injectable()
 export abstract class ApiSyncOfflineBaseService<T> {
+  protected databaseService = inject(DatabaseService);
+  protected logger = inject(LoggingService);
+  protected userSettingService = inject(UserSettingService);
+
   public readonly data$: Observable<T>;
   private isUpdatingSubject = new BehaviorSubject<boolean>(false);
 
@@ -34,11 +38,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   // a long time
   protected FETCH_NEW_DATA_TIMEOUT = 2000;
 
-  constructor(
-    protected databaseService: DatabaseService,
-    protected logger: LoggingService,
-    protected userSettingService: UserSettingService
-  ) {
+  constructor() {
     this.data$ = this.getDataObservable().pipe(shareReplay(1));
   }
 
@@ -116,7 +116,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
    * @param appMode App mode
    * @param langKey Language
    */
-  private async getOfflineDataAndReturnIfDataIsUpToDate(appMode: AppMode, langKey: LangKey): Promise<T> {
+  private async getOfflineDataAndReturnIfDataIsUpToDate(appMode: AppMode, langKey: LangKey): Promise<T | null> {
     const offlineDataWithMetadata = await this.getOfflineData(appMode, langKey);
     // Check if offline data is newer than 24 hours
     if (this.isValid(offlineDataWithMetadata)) {

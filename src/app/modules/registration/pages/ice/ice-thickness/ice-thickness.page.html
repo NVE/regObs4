@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.ICE.ICE_THICKNESS.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.ICE.ICE_THICKNESS.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -35,23 +35,20 @@
         suffix="cm"
       ></app-numeric-input>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER' | translate }} </ion-label>
+        <ion-label> {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER" | translate }} </ion-label>
       </ion-list-header>
       <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
-        <ion-item
-          (click)="addOrEditThicknessLayer(i)"
-          *ngFor="let layer of iceThickness.IceThicknessLayers; let i = index"
-        >
+        <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of layers; let i = index">
           <ion-label>
-            {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} - {{ layer.IceLayerThickness | metersToCm
-            }} cm</ion-label
+            {{ layer.IceLayerTID | kdvDescription: "Ice_IceLayerKDV" | async }} -
+            {{ layer.IceLayerThickness | metersToCm }} cm</ion-label
           >
           <ion-reorder slot="end"></ion-reorder>
         </ion-item>
       </ion-reorder-group>
       <ion-item (click)="addOrEditThicknessLayer()">
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-        <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>
+        <ion-label>{{ "REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER" | translate }}</ion-label>
       </ion-item>
       <app-numeric-input
         [readonly]="true"
@@ -107,14 +104,14 @@
       >
       </app-numeric-input>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" | translate }} </ion-label>
       </ion-list-header>
       <app-text-comment
         [(value)]="iceThickness.Comment"
-        placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
+        placeholder="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
       ></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

@@ -1,16 +1,19 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject, signal } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import {
-  BehaviorSubject,
   combineLatest,
+  filter,
   firstValueFrom,
   from,
   map,
   Observable,
+  of,
   shareReplay,
   skipUntil,
+  startWith,
   Subject,
   switchMap,
+  take,
   takeWhile,
   tap,
 } from 'rxjs';
@@ -29,6 +32,8 @@ import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft } from './draft-model';
 import { viewModelToEditModel } from './reg-to-draft';
+import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { injectUuidFromRouteParameters } from './get-uuid';
 
 const DEBUG_TAG = 'DraftRepositoryService';
 
@@ -48,7 +53,7 @@ export class DraftRepositoryService {
   private userSettingService = inject(UserSettingService);
 
   //used to spread the word about changes in drafts
-  private shouldLoad: BehaviorSubject<void> = new BehaviorSubject(null);
+  private shouldLoad: Subject<void> = new Subject();
 
   /**
    * A list of drafts that are saved locally. Drafts under sumbission are also included.
@@ -56,7 +61,11 @@ export class DraftRepositoryService {
   readonly drafts$: Observable<RegistrationDraft[]>;
 
   constructor() {
-    this.drafts$ = combineLatest([this.userSettingService.appMode$, this.databaseService.ready$, this.shouldLoad]).pipe(
+    this.drafts$ = combineLatest([
+      this.userSettingService.appMode$,
+      this.databaseService.ready$,
+      this.shouldLoad.pipe(startWith(true)),
+    ]).pipe(
       switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
       shareReplay(1),
       // As we use shareReplay(1) to avoid reading from the database more than needed,
@@ -70,7 +79,7 @@ export class DraftRepositoryService {
    * Does not emit until the specified draft is available in the database.
    * If the draft is deleted after a subscription has been made, the observable completes.
    */
-  getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
+  getDraft$(uuid: string): Observable<RegistrationDraft> {
     const gotDraft = new Subject<boolean>();
     return this.drafts$.pipe(
       map((drafts) => drafts.find((draft) => draft.uuid === uuid)),
@@ -85,10 +94,44 @@ export class DraftRepositoryService {
   }
 
   /**
+   * Tries to read uuid from route parameters and returns a signal with draft changes for that draft.
+   * Signal will be undefined until the specified draft is available.
+   */
+  getDraftSignal(): Signal<RegistrationDraft | undefined>;
+  /**
+   * Returns a signal with draft changes for the specified draft.
+   * Signal will be undefined until the specified draft is available.
+   */
+  getDraftSignal(uuid: string): Signal<RegistrationDraft | undefined>;
+  /**
+   * When uuid signal has a value, it reads and returns draft changes.
+   * Signal will be undefined until the specified draft is available.
+   */
+  getDraftSignal(uuid: Signal<string | undefined | null>): Signal<RegistrationDraft | undefined>;
+  getDraftSignal(uuid?: string | Signal<string | undefined | null>): Signal<RegistrationDraft | undefined> {
+    let uuid$: Observable<string>;
+    if (uuid == null) {
+      // Try to read from route parameters
+      uuid$ = of(injectUuidFromRouteParameters());
+    } else if (typeof uuid == 'string') {
+      uuid$ = of(uuid);
+    } else {
+      uuid$ = toObservable(uuid).pipe(filter((uuid) => uuid != null));
+    }
+
+    return toSignal(
+      uuid$.pipe(
+        switchMap((uuid) => this.getDraft$(uuid)),
+        tap((draft) => this.logger.debug('getDraftSignal update', DEBUG_TAG, { uuid: draft.uuid }))
+      )
+    );
+  }
+
+  /**
    * @returns true if draft does not contain any data
    */
   async isDraftEmpty(draft: RegistrationDraft) {
-    if (draft.registration.Attachments?.length > 0) {
+    if (draft.registration.Attachments && draft.registration.Attachments.length > 0) {
       return false; //we have image metadata for an already uploaded image
     }
     if (hasAnyObservations(draft)) {
@@ -148,7 +191,7 @@ export class DraftRepositoryService {
       simpleMode,
       registration: {
         GeoHazardTID: geoHazard,
-        DtObsTime: null,
+        DtObsTime: '', // TODO: Test om dette er ok, hva skjer når vi setter tid første gang?
         ObsLocation: { Latitude: 0, Longitude: 0 },
         Attachments: [],
       },
@@ -172,9 +215,9 @@ export class DraftRepositoryService {
    * @param viewModel the registration you like to edit
    */
   async saveAsDraft(viewModel: RegistrationViewModel) {
-    this.throwIfMissingRegId(viewModel.RegId);
-    this.throwIfMissingUuid(viewModel.ExternalReferenceId);
-    await this.cloneAndSave(viewModel, viewModel.ExternalReferenceId, viewModel.RegId);
+    const regId = this.throwIfMissingRegId(viewModel.RegId);
+    const uuid = this.throwIfMissingUuid(viewModel.ExternalReferenceId);
+    await this.cloneAndSave(viewModel, uuid, regId);
   }
 
   /**
@@ -185,11 +228,11 @@ export class DraftRepositoryService {
   async copyDraftAndSave(draft: RegistrationDraft) {
     this.throwIfMissingRegId(draft.regId);
     const uuid = uuidv4();
-    await this.cloneAndSave(draft.registration, uuid, null);
+    await this.cloneAndSave(draft.registration as RegistrationViewModel, uuid);
     return uuid;
   }
 
-  private async cloneAndSave(viewModel: RegistrationViewModel, uuid: string, regId: number) {
+  private async cloneAndSave(viewModel: RegistrationViewModel, uuid: string, regId?: number) {
     const registration = cloneDeep(viewModelToEditModel(viewModel));
 
     const draft: RegistrationDraft = {
@@ -202,16 +245,18 @@ export class DraftRepositoryService {
     await this.save(draft);
   }
 
-  private throwIfMissingUuid(uuid: string) {
+  private throwIfMissingUuid(uuid?: string): string {
     if (!uuid) {
       throw new Error('Missing uuid / ExternalReferenceId.');
     }
+    return uuid;
   }
 
-  private throwIfMissingRegId(regId: number) {
+  private throwIfMissingRegId(regId?: number): number {
     if (!regId) {
       throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
     }
+    return regId;
   }
 
   /**
@@ -242,13 +287,52 @@ export class DraftRepositoryService {
   }
 
   /**
+   * Load the current draft from device. Needs uuid specified in url.
+   * @returns registration current draft or undefined if not found
+   */
+  async load(): Promise<RegistrationDraft>;
+  /**
    * Load a registration from device
    * @param uuid registration uuid
    * @returns registration with given uuid or undefined if not found
    */
-  async load(uuid: string): Promise<RegistrationDraft | undefined> {
+  async load(uuid: string): Promise<RegistrationDraft>;
+  /**
+   * Load a registration from device
+   * @param uuid signal of registration uuid
+   * @returns registration when signal has uuid
+   */
+  async load(uuid: Signal<string | undefined | null>): Promise<RegistrationDraft>;
+  /**
+   * Load a registration from device
+   * @param uuid May be undefined, uuid string or uuid signal
+   * @returns registration when signal has uuid
+   */
+  async load(uuid?: Signal<string | undefined | null> | string): Promise<RegistrationDraft>;
+  async load(uuid?: Signal<string | undefined | null> | string | undefined): Promise<RegistrationDraft> {
     if (!uuid) {
-      return undefined;
+      const urlParamUuid = injectUuidFromRouteParameters();
+      return this.loadByString(urlParamUuid);
+    } else if (typeof uuid === 'string') {
+      return this.loadByString(uuid);
+    } else {
+      return this.loadBySignal(uuid);
+    }
+  }
+
+  private async loadBySignal(uuid: Signal<string | undefined | null>): Promise<RegistrationDraft> {
+    return firstValueFrom(
+      toObservable(uuid).pipe(
+        filter((uuid) => uuid != null),
+        switchMap((uuid) => this.getDraft$(uuid)),
+        tap((draft) => this.logger.debug('Draft loaded by signal', DEBUG_TAG, { uuid: draft.uuid }))
+      )
+    );
+  }
+
+  private async loadByString(uuid: string): Promise<RegistrationDraft> {
+    if (!uuid) {
+      throw new Error('uuid required');
     }
 
     const start = Date.now();

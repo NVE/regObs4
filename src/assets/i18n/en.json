@@ -677,6 +677,7 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "CONFIRM_CANCEL": "This will delete any changes.",
         "EAST": "E",
         "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",

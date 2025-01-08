@@ -1,13 +1,13 @@
-import { Component, NgZone, ViewChildren, QueryList, inject } from '@angular/core';
+import { Component, NgZone, inject, TrackByFunction, viewChildren } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
-import { GeoHazard } from 'src/app/modules/common-core/models';
+import { GeoHazard } from '../../modules/common-core/models';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
-import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { MapService } from '../../modules/map/services/map/map.service';
 import {
   IonCol,
   IonContent,
@@ -64,17 +64,16 @@ export class WarningListPage {
   selectedTab$ = this.selectedTab.asObservable();
 
   warningGroups: IVirtualScrollItem<WarningGroup>[] = [];
-  private ngDestroySubject: Subject<void>;
+  private ngDestroySubject: Subject<void> = new Subject();
   refreshFunc = this.refresh.bind(this);
   title = 'WARNING_LIST.TITLE';
   noFavourites = false;
   noRelevant = false;
-  trackByFunc = this.trackByInternal.bind(this);
+  trackByFunc: TrackByFunction<IVirtualScrollItem<WarningGroup>> = this.trackByInternal.bind(this);
   loaded = false;
   myFooterFn = this.footerFn.bind(this);
 
-  @ViewChildren(WarningListItemComponent)
-  warningListItems: QueryList<WarningListItemComponent>;
+  readonly warningListItems = viewChildren(WarningListItemComponent);
 
   get showNoFavourites() {
     return this.selectedTab.value === 'favourites' && this.noFavourites;
@@ -89,10 +88,8 @@ export class WarningListPage {
   }
 
   closeAllOpen() {
-    if (this.warningListItems) {
-      for (const item of this.warningListItems.toArray()) {
-        item.close();
-      }
+    for (const item of this.warningListItems()) {
+      item.close();
     }
   }
 
@@ -127,7 +124,7 @@ export class WarningListPage {
     if (!this.loaded && this.warningGroups && this.warningGroups.length > 0) {
       const currentItems = [...this.warningGroups];
       setTimeout(() => {
-        this.warningGroups = null;
+        this.warningGroups = [];
         setTimeout(() => {
           // Hack to virtual scroll items not showing at first load
           this.warningGroups = currentItems;
@@ -275,9 +272,10 @@ export class WarningListPage {
     if (this.selectedTab.value !== 'inMapView' && index === items.length - 1) {
       return 'footer';
     }
+    return undefined;
   }
 
-  trackByInternal(_, item: IVirtualScrollItem<WarningGroup>) {
+  trackByInternal(_: number, item: IVirtualScrollItem<WarningGroup>) {
     return item && item.item ? item.item.getKeyAsString() : undefined;
   }
 

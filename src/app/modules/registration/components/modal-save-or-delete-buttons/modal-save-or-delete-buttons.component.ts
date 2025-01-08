@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { AlertController, IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular/standalone';
+import { Component, EventEmitter, Output, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular/standalone';
 import {
   ConfirmationModalService,
   PopupResponse,
@@ -16,17 +16,15 @@ import { trash } from 'ionicons/icons';
   imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, NgIf, TranslatePipe],
 })
 export class ModalSaveOrDeleteButtonsComponent {
-  private translateService = inject(TranslateService);
-  private alertController = inject(AlertController);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  @Input() saveText = 'DIALOGS.OK';
-  @Input() saveDisabled = false;
+  readonly saveText = input('DIALOGS.OK');
+  readonly saveDisabled = input(false);
   @Output() saveClicked = new EventEmitter();
   @Output() deleteClicked = new EventEmitter();
-  @Input() showDelete = false;
-  @Input() alertTitle = 'DIALOGS.ARE_YOU_SURE';
-  @Input() alertMessage = '';
+  readonly showDelete = input(false);
+  readonly alertTitle = input('DIALOGS.ARE_YOU_SURE');
+  readonly alertMessage = input('');
 
   constructor() {
     addIcons({ trash });
@@ -37,9 +35,10 @@ export class ModalSaveOrDeleteButtonsComponent {
   }
 
   async delete() {
+    const alertMessage = this.alertMessage();
     await this.confirmationModalService.askForConfirmation({
-      header: this.alertTitle,
-      message: this.alertMessage ? this.alertMessage : undefined,
+      header: this.alertTitle(),
+      message: alertMessage,
       buttons: [
         {
           text: 'DIALOGS.CANCEL',

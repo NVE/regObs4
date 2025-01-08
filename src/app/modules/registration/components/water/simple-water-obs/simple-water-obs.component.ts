@@ -1,10 +1,21 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  Signal,
+  untracked,
+  ValueEqualityFn,
+} from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonList, IonText, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { GeneralObservationEditModel, UrlEditModel, Waterlevel2EditModel } from 'src/app/modules/common-regobs-api';
+import { UrlEditModel } from 'src/app/modules/common-regobs-api';
 import { EditImagesBarComponent } from '../../snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
 import { TextCommentComponent } from '../../text-comment/text-comment.component';
 import { AddWebUrlItemComponent } from '../../add-web-url-item/add-web-url-item.component';
@@ -39,50 +50,67 @@ export class SimpleWaterObsComponent {
   private draftRepository = inject(DraftRepositoryService);
   private navController = inject(NavController);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required<RegistrationDraft>();
+  comment = linkedSignal(() => this.draft().registration.GeneralObservation?.ObsComment);
+  urls = linkedSignal(() => this.draft().registration.GeneralObservation?.Urls, { equal: urlsEqual });
+  waterExtent = computed(() => this.draft().registration.WaterLevel2?.Extent);
+
+  private draftUpdate: Signal<RegistrationDraft> = computed(() => {
+    const d = this.draft();
+    return {
+      ...d,
+      registration: {
+        ...d.registration,
+        GeneralObservation: {
+          ...d.registration.GeneralObservation,
+          ObsComment: this.comment(),
+          Urls: this.urls(),
+        },
+      },
+    };
+  });
+
   constructor() {
     addIcons({ checkmarkCircle, chevronForward });
+
+    // Save draft on updates
+    let first = true; // Effect runs at least once, so we track if it is the first run..
+    effect(() => {
+      const update = this.draftUpdate();
+      untracked(() => {
+        if (!first) {
+          this.save(update);
+        }
+        first = false;
+      });
+    }, {});
   }
 
-  get waterLevel2(): Waterlevel2EditModel {
-    return this.draft.registration.WaterLevel2;
-  }
-
-  get generalObservation(): GeneralObservationEditModel {
-    if (!this.draft.registration.GeneralObservation) {
-      return {};
-    }
-    return this.draft.registration.GeneralObservation;
-  }
-
-  async saveComment(value: string) {
-    if (!this.draft.registration.GeneralObservation) {
-      this.draft.registration.GeneralObservation = {};
-    }
-    this.draft.registration.GeneralObservation.ObsComment = value;
-    await this.save();
-  }
-
-  async saveUrl(value: UrlEditModel[]) {
-    if (!this.draft.registration.GeneralObservation) {
-      this.draft.registration.GeneralObservation = {};
-    }
-    this.draft.registration.GeneralObservation.Urls = value;
-    await this.save();
-  }
-
-  async save(): Promise<void> {
-    const isEmpty = isObservationModelEmptyForRegistrationTid(
-      this.draft.registration,
-      RegistrationTid.GeneralObservation
-    );
+  async save(draft: RegistrationDraft): Promise<void> {
+    const isEmpty = isObservationModelEmptyForRegistrationTid(draft.registration, RegistrationTid.GeneralObservation);
     if (isEmpty) {
-      this.draft.registration.GeneralObservation = null;
+      draft.registration.GeneralObservation = undefined;
     }
-    await this.draftRepository.save(this.draft);
+    await this.draftRepository.save(draft);
   }
 
   nav() {
-    this.navController.navigateForward(`registration/water/set-flood-area/${this.draft.uuid}`);
+    this.navController.navigateForward(`registration/water/set-flood-area/${this.draft().uuid}`);
   }
 }
+
+const urlsEqual: ValueEqualityFn<UrlEditModel[] | undefined> = (a, b) => {
+  if (!(Array.isArray(a) && Array.isArray(b))) {
+    return false;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  return a.every((v, i) => urlEqual(v, b[i]));
+};
+
+const urlEqual: ValueEqualityFn<UrlEditModel> = (a, b) => {
+  return a.UrlDescription === b.UrlDescription && a.UrlLine === b.UrlLine;
+};

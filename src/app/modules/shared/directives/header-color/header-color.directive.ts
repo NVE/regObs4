@@ -1,32 +1,25 @@
-import { Directive, OnInit, OnDestroy, HostBinding, NgZone, inject } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Directive, inject, computed } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-@Directive({ selector: '[appHeaderColor]' })
-export class HeaderColorDirective implements OnInit, OnDestroy {
+@Directive({
+  selector: '[appHeaderColor]',
+  host: {
+    '[color]': 'color()',
+  },
+})
+export class HeaderColorDirective {
   private userSettingService = inject(UserSettingService);
-  private ngZone = inject(NgZone);
 
-  private appMode: AppMode;
-  private subscription: Subscription;
-
-  @HostBinding('class')
-  get elementClass(): string {
-    return `hydrated app-header-color ${this.appMode ? this.appMode.toLowerCase() : ''}`;
-  }
-
-  ngOnInit(): void {
-    this.subscription = this.userSettingService.appMode$.subscribe((appMode) => {
-      this.ngZone.run(() => {
-        this.appMode = appMode;
-      });
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  private appMode = toSignal(this.userSettingService.appMode$);
+  color = computed(() => {
+    switch (this.appMode()) {
+      case AppMode.Demo:
+        return 'danger';
+      case AppMode.Test:
+        return 'success';
     }
-  }
+    return 'primary';
+  });
 }
