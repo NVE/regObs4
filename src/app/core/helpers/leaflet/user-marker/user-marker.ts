@@ -5,11 +5,11 @@ import { Position } from '@capacitor/geolocation';
 export class UserMarker {
   userMarker: L.Marker;
   userMarkerIcon: L.DivIcon;
-  headingSubscription: Subscription;
-  accuracyMarker: L.Circle;
+  headingSubscription?: Subscription;
+  accuracyMarker?: L.Circle;
   map: L.Map;
   position: Position;
-  watchId: number;
+  watchId?: number;
 
   accuracyCircleStyle = {
     stroke: true,
@@ -60,7 +60,7 @@ export class UserMarker {
     const element: HTMLElement = this.userMarker?.getElement()?.childNodes[0] as HTMLElement;
     if (element) {
       const rotateZ = degrees - 90;
-      element.style['-webkit-transform'] = 'rotate(' + rotateZ + 'deg) translateX(15px)';
+      element.style.setProperty('-webkit-transform', 'rotate(' + rotateZ + 'deg) translateX(15px)');
       element.style.display = 'block';
     }
   }

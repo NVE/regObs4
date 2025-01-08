@@ -4,8 +4,8 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { GeoHazard } from '../../modules/common-core/models';
+import { SearchCriteriaService } from '../../core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
@@ -13,6 +13,7 @@ import { CoachMarksMainScreenComponent } from '../../components/coach-marks/coac
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map as mapIcon, list, warning } from 'ionicons/icons';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-tabs',
@@ -20,7 +21,7 @@ import { map as mapIcon, list, warning } from 'ionicons/icons';
   styleUrls: ['tabs.page.scss'],
   imports: [
     AsyncPipe,
-    CoachMarksMainScreenComponent,
+    // CoachMarksMainScreenComponent,
     IonBadge,
     IonIcon,
     IonLabel,
@@ -34,44 +35,52 @@ import { map as mapIcon, list, warning } from 'ionicons/icons';
 export class TabsPage implements OnInit, OnDestroy {
   private fullscreenService = inject(FullscreenService);
   private searchCriteriaService = inject(SearchCriteriaService);
-  private platform = inject(Platform);
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
   private ngZone = inject(NgZone);
   private tabsService = inject(TabsService);
 
-  private warningGroupInMapViewSubscription: Subscription;
-  private currentGeoHazardSubscription: Subscription;
-  readonly selectedTab$: Observable<string>;
+  private warningGroupInMapViewSubscription?: Subscription;
+  private currentGeoHazardSubscription?: Subscription;
+  readonly selectedTab$: Observable<TABS | null>;
 
-  warningsInView: {
+  isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
+
+  warningsInView?: {
     count: number;
     text: string;
     maxWarning: number;
     hasEmergencyWarning: boolean;
   };
-  fullscreen$: Observable<boolean>;
   showTrips = false;
 
   get showBadge(): boolean {
-    return this.warningsInView && this.warningsInView.maxWarning > 0;
+    if (this.warningsInView) {
+      return this.warningsInView.maxWarning > 0;
+    }
+    return false;
   }
 
   get badgeColor(): string {
-    return 'warninglevel-' + this.warningsInView.maxWarning;
+    if (this.warningsInView) {
+      return 'warninglevel-' + this.warningsInView.maxWarning;
+    }
+    return 'warninglevel-0';
   }
 
   get badgeText(): string {
-    return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
+    if (this.warningsInView) {
+      return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
+    }
+    return '0'; // Ikke vurdert
   }
 
   constructor() {
-    this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
       this.applyCurrentQueryParams(tab)
     );
-    addIcons({ mapIcon, list, warning });
+    addIcons({ map: mapIcon, list, warning });
   }
 
   private applyCurrentQueryParams(path: TABS | null) {
@@ -110,7 +119,11 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.warningGroupInMapViewSubscription.unsubscribe();
-    this.currentGeoHazardSubscription.unsubscribe();
+    if (this.warningGroupInMapViewSubscription) {
+      this.warningGroupInMapViewSubscription.unsubscribe();
+    }
+    if (this.currentGeoHazardSubscription) {
+      this.currentGeoHazardSubscription.unsubscribe();
+    }
   }
 }

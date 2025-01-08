@@ -11,14 +11,11 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, inject } from '@angular/core';
-import { BasePageService } from '../../base-page-service';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
@@ -26,6 +23,8 @@ import { SelectComponent } from '../../../../shared/components/input/select/sele
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { WeatherEditModel } from 'src/app/modules/common-regobs-api';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-weather',
@@ -46,15 +45,17 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     SelectComponent,
     TextCommentComponent,
     TranslatePipe,
+    NgIf,
   ],
 })
 export class WeatherPage extends BasePage {
+  override registrationTid = RegistrationTid.WeatherObservation;
+
   windDirectionOptions: SelectOption[] = [
     { id: 0, text: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH' },
     { id: 45, text: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH_EAST' },
@@ -67,9 +68,13 @@ export class WeatherPage extends BasePage {
   ];
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
+    super();
+  }
 
-    super(RegistrationTid.WeatherObservation, basePageService, activatedRoute);
+  get weather(): WeatherEditModel {
+    if (this.draft.registration.WeatherObservation == null) {
+      this.draft.registration.WeatherObservation = {};
+    }
+    return this.draft.registration.WeatherObservation;
   }
 }

@@ -8,7 +8,6 @@ import {
 } from 'src/app/core/services/upload-attachments/upload-single-attachment.service';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { AddAttachmentState, NewAttachmentService } from './new-attachment.service';
@@ -21,11 +20,10 @@ const PREVIEW_JPG_QUALITY = 0.5;
 
 @Injectable()
 export class WebAttachmentService extends NewAttachmentService {
-  protected logger = inject(LoggingService);
   private uploadSingleAttachmentService = inject(UploadSingleAttachmentService);
   private database = inject(DatabaseService);
 
-  protected DEBUG_TAG = 'WebAttachmentService';
+  protected override DEBUG_TAG = 'WebAttachmentService';
   private hasChange = new Subject<void>();
   private blobCache = new Map<AttachmentUploadEditModel['id'], Blob>();
 
@@ -48,7 +46,7 @@ export class WebAttachmentService extends NewAttachmentService {
     mimeType: string,
     geoHazard: GeoHazard,
     registrationTid: RegistrationTid,
-    type?: AttachmentType,
+    type: AttachmentType = 'Attachment',
     ref?: string
   ): Promise<void> {
     const attachmentId = uuidv4();
@@ -71,7 +69,7 @@ export class WebAttachmentService extends NewAttachmentService {
     const logInfo = { registrationId, attachmentId };
     const uploadCallback: HttpEventClb = (event) => {
       if (event.type === HttpEventType.UploadProgress) {
-        const progress = event.loaded / event.total;
+        const progress = event.loaded / (event.total || Infinity);
         if (progress < 1) {
           this.handleUploadProgress(progress, attachment);
         }
@@ -84,6 +82,9 @@ export class WebAttachmentService extends NewAttachmentService {
 
     // Save preview blob and metadata
     const previewBlob = await createPreviewPromise;
+    if (!previewBlob) {
+      throw new Error('Could not create image blob');
+    }
     await this.saveImageToDB(previewBlob, attachmentId);
     await this.saveAttachmentMeta(registrationId, attachment);
     this.logger.debug('Metadata and preview image saved', this.DEBUG_TAG, logInfo);
@@ -166,11 +167,11 @@ export class WebAttachmentService extends NewAttachmentService {
    * This code is based on a codepen by Mirco Bellagamba.
    * See https://codepen.io/mirco-bellagamba/pen/vYGpBGO
    */
-  private createPreviewBlob(data: Blob): Promise<Blob> {
+  private createPreviewBlob(data: Blob): Promise<Blob | null> {
     this.logger.debug('Creating preview blob', this.DEBUG_TAG, { size: data.size });
     const blobUrl = window.URL.createObjectURL(data);
     const image = new Image();
-    return new Promise<Blob>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       image.src = blobUrl;
 
       image.onerror = (err) => {
@@ -186,12 +187,15 @@ export class WebAttachmentService extends NewAttachmentService {
         canvas.width = newWidth;
         canvas.height = newHeight;
         const context = canvas.getContext('2d');
+        if (!context) {
+          throw new Error('Could not get canvas 2d context to draw preview image');
+        }
         context.drawImage(image, 0, 0, newWidth, newHeight);
         canvas.toBlob(
           (previewBlob) => {
             this.logger.debug('Image preview created', this.DEBUG_TAG, {
               originalSize: data.size,
-              previewSize: previewBlob.size,
+              previewSize: previewBlob?.size,
               previewWidth: newWidth,
               previewHeight: newHeight,
             });
@@ -238,7 +242,7 @@ export class WebAttachmentService extends NewAttachmentService {
 
   getBlob(registrationId: string, attachmentId: string): Observable<Blob> {
     if (this.blobCache.has(attachmentId)) {
-      return of(this.blobCache.get(attachmentId));
+      return of(this.blobCache.get(attachmentId) as Blob);
     }
 
     return from(

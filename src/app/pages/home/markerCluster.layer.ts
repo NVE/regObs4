@@ -4,8 +4,8 @@ import { Feature, Point } from 'geojson';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
 export class RegObsMarkerClusterLayer extends L.MarkerClusterGroup {
-  openedFeature: Feature<Point, RegistrationViewModel> = null;
-  openedPopup: L.Popup = null;
+  openedFeature: Feature<Point, RegistrationViewModel> | null = null;
+  openedPopup: L.Popup | null = null;
 
   constructor(private map: L.Map) {
     super();
@@ -70,8 +70,8 @@ export class RegObsMarkerClusterLayer extends L.MarkerClusterGroup {
     return `<?xml version="1.0" encoding="UTF-8"?>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 ${diameter} ${diameter}" width="${diameter}" height="${diameter}" aria-label="${count}">
         <circle fill="#9BB9C2" stroke="white" stroke-width="2" cx="${diameter / 2}" cy="${diameter / 2}" r="${
-      diameter / 2 - 1
-    }" />
+          diameter / 2 - 1
+        }" />
         <text font-family="Source Sans Pro" font-weight="normal" fill="#000000" text-anchor="middle" x="50%" y="50%" dy=".3em" font-size="14">
             ${count}
         </text>

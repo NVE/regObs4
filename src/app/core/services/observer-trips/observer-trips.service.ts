@@ -188,7 +188,8 @@ export class ObserverTripsService {
 
     let data: FeatureCollection;
     try {
-      data = await firstValueFrom(this.tripService.TripGet());
+      // Appearantly TripGet is missing typing
+      data = (await firstValueFrom(this.tripService.TripGet())) as unknown as FeatureCollection;
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
         if (error.status === HttpStatusCode.Unauthorized) {

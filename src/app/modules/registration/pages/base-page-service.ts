@@ -2,8 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getRegistrationName } from 'src/app/modules/common-registration/registration.helpers';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AlertController } from '@ionic/angular/standalone';
-import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
@@ -18,8 +16,6 @@ const DEBUG_TAG = 'BasePageService';
 export class BasePageService {
   private draftRepositoryService = inject(DraftRepositoryService);
   private newAttachmentService = inject(NewAttachmentService);
-  private alertController = inject(AlertController);
-  private translateService = inject(TranslateService);
   private loggingService = inject(LoggingService);
   private confirmationModal = inject(ConfirmationModalService);
 
@@ -57,9 +53,7 @@ export class BasePageService {
           ...draft.registration,
         },
       };
-
       const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
-
       for (const registrationTid of registrationTids) {
         const registrationName = getRegistrationName(registrationTid);
         delete draftCopy.registration[registrationName];
@@ -77,7 +71,6 @@ export class BasePageService {
           }
         }
       }
-
       //await this.draftRepository.save(draftCopy);
       return draftCopy;
     }

@@ -37,7 +37,6 @@ export class ConfirmationModalService {
   private alertController = inject(AlertController);
   private translateService = inject(TranslateService);
 
-
   /**
    * Creates a confirmation dialog with a message and two buttons.
    * If no buttons are provided, default 'Confirm' and 'Cancel'-buttons will be added.
@@ -53,7 +52,7 @@ export class ConfirmationModalService {
     const _buttons = [...(buttons || (await this.getDefaultButtons()))];
 
     const translations = await firstValueFrom(
-      this.translateService.get([message, header, ..._buttons.map((button) => button.text)])
+      this.translateService.get([message, ...(header ? [header] : []), ..._buttons.map((button) => button.text)])
     );
 
     _buttons.map((button) => {
@@ -66,7 +65,7 @@ export class ConfirmationModalService {
     const alert = await this.alertController.create({
       ...opts,
       message: translations[message],
-      header: translations[header],
+      header: header && translations[header],
       buttons: _buttons,
       backdropDismiss: false,
     });

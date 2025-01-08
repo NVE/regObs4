@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { StatusBar } from '@capacitor/status-bar';
 import { NgDestoryBase } from '../../helpers/observable-helper';
@@ -39,7 +39,10 @@ export class FullscreenService extends NgDestoryBase {
                 return of(this.turnFullscreenOff());
               }
             }),
-            catchError((err) => this.logger.error(err, DEBUG_TAG, 'Fullscreen toggle error'))
+            catchError((err) => {
+              this.logger.error(err, DEBUG_TAG, 'Fullscreen toggle error');
+              return EMPTY;
+            })
           )
           .subscribe();
       });

@@ -1,19 +1,19 @@
 <ion-header *ngIf="loggedInUser$ | async as loggedInUser">
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <a role="button" (click)="navigateBack()"> <ion-back-button text="" defaultHref="/"></ion-back-button></a>
     </ion-buttons>
     <ion-title>
-      {{ loggedInUser.isLoggedIn ? ('MY_PROFILE.TITLE' | translate) : ('LOGIN.TITLE' | translate) }}
+      {{ loggedInUser.isLoggedIn ? ("MY_PROFILE.TITLE" | translate) : ("LOGIN.TITLE" | translate) }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding" *ngIf="loggedInUser$ | async as loggedInUser">
-  <ion-grid class="grid-container" *ngIf="loggedInUser.isLoggedIn else login">
+  <ion-grid class="grid-container" *ngIf="loggedInUser.isLoggedIn; else login">
     <ion-row>
       <ion-col>
-        <h2 class="profile-title">{{'MY_PROFILE.TITLE' | translate}}</h2>
+        <h2 class="profile-title">{{ "MY_PROFILE.TITLE" | translate }}</h2>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -37,7 +37,7 @@
           (click)="openMyPage()"
         >
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
-          {{'MY_PROFILE.MY_NVE_ACCOUNT' | translate }}
+          {{ "MY_PROFILE.MY_NVE_ACCOUNT" | translate }}
         </ion-button>
       </div>
       <div>
@@ -49,12 +49,12 @@
           (click)="openMyPage('user-data')"
         >
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
-          {{'LOGIN.DELETE_PROFILE' | translate }}
+          {{ "LOGIN.DELETE_PROFILE" | translate }}
         </ion-button>
       </div>
       <div>
         <ion-button class="button ion-text-uppercase logout" type="submit" fill="outline" (click)="logout()">
-          {{ 'LOGIN.LOGOUT' | translate }}</ion-button
+          {{ "LOGIN.LOGOUT" | translate }}</ion-button
         >
       </div>
     </ion-row>
@@ -83,7 +83,7 @@
     <ion-row>
       <ion-col>
         <div class="flexContainer myPictureContainer">
-          <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
+          <h2>{{ "MY_PROFILE.MY_PICTURES" | translate }}</h2>
           <ion-button
             (click)="presentModal()"
             class="button ion-padding-start ion-text-uppercase edit-button"
@@ -98,12 +98,12 @@
       <ion-col>
         <div class="flexContainer max-div-height margin-mobile">
           <p class="ion-align-self-center no-margin">
-            <strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong> {{copyright$ | async}}
+            <strong>{{ "MY_PROFILE.COPYRIGHT" | translate }}:</strong> {{ copyright$ | async }}
           </p>
         </div>
         <div class="flexContainer max-div-height">
           <p class="ion-align-self-center no-margin">
-            <strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong> {{photographer$ | async}}
+            <strong>{{ "MY_PROFILE.PHOTOGRAPHER" | translate }}:</strong> {{ photographer$ | async }}
           </p>
         </div>
       </ion-col>
@@ -139,15 +139,15 @@
 
     <ion-row>
       <ion-col>
-        <h2>{{'MY_PROFILE.MY_GROUPS' | translate}}</h2>
+        <h2>{{ "MY_PROFILE.MY_GROUPS" | translate }}</h2>
       </ion-col>
     </ion-row>
     <ion-row class="ion-padding-top" *ngIf="userGroups$ | async as userGroups">
-      <ng-container *ngIf="userGroups.length > 0 else noGroups">
+      <ng-container *ngIf="userGroups.length > 0; else noGroups">
         <ion-col size="12" size-sm="5" size-md="4" size-lg="3" *ngFor="let group of userGroups">
           <div class="flexContainer margin-mobile">
             <ion-icon class="ion-align-self-center" src="./assets/icon/group.svg"></ion-icon>
-            <p class="padding-medium no-margin">{{group.Name}}</p>
+            <p class="padding-medium no-margin">{{ group.Name }}</p>
           </div>
         </ion-col>
       </ng-container>
@@ -161,11 +161,11 @@
 </ion-content>
 <ng-template #login>
   <ion-button class="login-button" expand="block" type="submit" color="varsom-orange" (click)="signIn()">
-    {{ 'LOGIN.LOGIN' | translate }}
+    {{ "LOGIN.LOGIN" | translate }}
   </ion-button>
 </ng-template>
 <ng-template #noGroups>
   <ion-col>
-    <p class="info-text">{{'MY_PROFILE.NO_GROUPS' | translate}}</p>
+    <p class="info-text">{{ "MY_PROFILE.NO_GROUPS" | translate }}</p>
   </ion-col>
 </ng-template>

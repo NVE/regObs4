@@ -18,13 +18,13 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
   private tripLoggerService = inject(TripLoggerService);
   private helperService = inject(HelperService);
 
-  private tripLogSubscription: Subscription;
-  private tripLogActivitySubscription: Subscription;
+  private tripLogSubscription!: Subscription;
+  private tripLogActivitySubscription!: Subscription;
 
-  lengthString: string;
-  interval: NodeJS.Timer;
-  tripLog: TripLogItem[];
-  tripLogActivity: TripLogActivity[];
+  lengthString?: string;
+  interval?: NodeJS.Timer;
+  tripLog?: TripLogItem[];
+  tripLogActivity?: TripLogActivity[];
 
   ngOnInit() {
     this.tripLogSubscription = this.tripLoggerService.getTripLogAsObservable().subscribe((tripLog) => {
@@ -37,22 +37,24 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
       });
 
     this.interval = setInterval(async () => {
-      const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
-      this.lengthString = this.helperService.formatMsToTime(lengthMs);
+      if (this.tripLogActivity) {
+        const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
+        this.lengthString = this.helperService.formatMsToTime(lengthMs);
+      }
     }, 1000);
   }
 
   calculateTimeFromTripLogActivity(tripLogActivity: TripLogActivity[]): number {
     let lengthMs = 0;
     if (tripLogActivity.length > 0) {
-      let lastItem: TripLogActivity = null;
+      let lastItem: TripLogActivity | undefined = undefined;
       for (const item of tripLogActivity) {
-        if (item.state === TripLogState.Paused) {
+        if (item.state === TripLogState.Paused && lastItem) {
           lengthMs += moment.unix(item.timestamp).diff(moment.unix(lastItem.timestamp));
         }
         lastItem = item;
       }
-      if (lastItem.state === TripLogState.Running) {
+      if (lastItem?.state === TripLogState.Running) {
         lengthMs += moment().diff(moment.unix(lastItem.timestamp));
       }
     }

@@ -15,7 +15,7 @@ export class DatabaseService {
   private storage = inject(Storage);
   private platform = inject(Platform);
 
-  private database: Storage = null;
+  private database!: Storage;
   private ready = new ReplaySubject<void>();
 
   /**

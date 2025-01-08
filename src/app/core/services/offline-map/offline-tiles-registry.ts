@@ -25,8 +25,8 @@ type RegisterForMapType = Map<string, RegisteredPackageInfo>;
  */
 export class OfflineTilesRegistry {
   private registry: Map<string, RegisterForMapType> = new Map();
-  private lowestRootTileZ: number;
-  private highestRootTileZ: number;
+  private lowestRootTileZ = 99;
+  private highestRootTileZ = 0;
   private highestZmax = 0;
 
   clear(): void {
@@ -39,13 +39,15 @@ export class OfflineTilesRegistry {
       if (!this.registry.has(mapType)) {
         this.registry.set(mapType, new Map());
       }
-      const registryForMapType = this.registry.get(mapType);
+
+      // Ok to cast to RegisterForMapType here as the value is created above..
+      const registryForMapType = this.registry.get(mapType) as RegisterForMapType;
       const registryKey = this.getKey(map.rootTile.x, map.rootTile.y, map.rootTile.z);
       registryForMapType.set(registryKey, { url: map.url, zMin: map.rootTile.z, zMax: map.zMax });
-      if (!this.lowestRootTileZ || map.rootTile.z < this.lowestRootTileZ) {
+      if (map.rootTile.z < this.lowestRootTileZ) {
         this.lowestRootTileZ = map.rootTile.z;
       }
-      if (!this.highestRootTileZ || map.rootTile.z > this.highestRootTileZ) {
+      if (map.rootTile.z > this.highestRootTileZ) {
         this.highestRootTileZ = map.rootTile.z;
       }
       if (map.zMax > this.highestZmax) {
@@ -93,7 +95,7 @@ export class OfflineTilesRegistry {
     }
     while (_z >= this.lowestRootTileZ) {
       const registryKey = this.getKey(_x, _y, _z);
-      const rootTileInfo = this.registry.get(mapType).get(registryKey);
+      const rootTileInfo = this.registry.get(mapType)?.get(registryKey);
       if (rootTileInfo) {
         return rootTileInfo;
       }

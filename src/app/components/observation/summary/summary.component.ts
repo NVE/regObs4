@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Summary } from 'src/app/modules/common-regobs-api/models';
 import { SummaryType } from '../../../core/models/summmary-type.enum';
 import { NgFor, NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase } from '@angular/common';
@@ -11,16 +11,16 @@ import { ExternalLinkComponent } from '../../../modules/shared/components/extern
   imports: [NgFor, NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, ExternalLinkComponent],
 })
 export class SummaryComponent {
-  @Input() summaries: Summary[];
-  @Input() showHeaders = true;
+  readonly summaries = input.required<Summary[]>();
+  readonly showHeaders = input(true);
 
   SummaryType = SummaryType;
 
   isNameSameAsPreviousName(i: number): boolean {
-    if (i < 1 || this.summaries?.length < 2) {
+    if (i < 1 || this.summaries()?.length < 2) {
       return false;
     }
-    return this.summaries[i].RegistrationName === this.summaries[i - 1].RegistrationName;
+    return this.summaries()[i].RegistrationName === this.summaries()[i - 1].RegistrationName;
   }
 
   startOnNewLineIfContainLineBreaks(text: string): string {

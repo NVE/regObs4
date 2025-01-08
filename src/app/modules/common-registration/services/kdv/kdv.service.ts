@@ -9,10 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { KdvKey } from '../../models/kdv-key.type';
 import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
-import { DatabaseService } from 'src/app/core/services/database/database.service';
 
 const KDV_ASSETS_FOLDER = '/assets/json';
 
@@ -20,22 +17,11 @@ const KDV_ASSETS_FOLDER = '/assets/json';
   providedIn: 'root',
 })
 export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto> {
-  protected databaseService: DatabaseService;
-  protected logger: LoggingService;
   private kdvElementsService = inject(KdvElementsService);
   private httpClient = inject(HttpClient);
-  protected userSettingService: UserSettingService;
 
   constructor() {
-    const databaseService = inject(DatabaseService);
-    const logger = inject(LoggingService);
-    const userSettingService = inject(UserSettingService);
-
-    super(databaseService, logger, userSettingService);
-  
-    this.databaseService = databaseService;
-    this.logger = logger;
-    this.userSettingService = userSettingService;
+    super();
   }
 
   protected getDebugTag(): string {
@@ -49,7 +35,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
         if (key.includes('Soil')) {
           key = key.replace('Soil', 'Dirt') as KdvKey;
         }
-        const kdvsForGivenKey = kdvElementsresponse.KdvRepositories[key];
+        const kdvsForGivenKey = kdvElementsresponse?.KdvRepositories?.[key];
         if (!kdvsForGivenKey) {
           this.logger.log(`No KDVs for '${key}', returning empty array`, null, LogLevel.Warning, this.getDebugTag());
           return [];
@@ -60,7 +46,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
   }
 
   public getViewRepositoryByKeyObservable(key: KdvViewRepositoryKey): Observable<unknown> {
-    return this.data$.pipe(map((val) => val.ViewRepositories[key]));
+    return this.data$.pipe(map((val) => val.ViewRepositories?.[key]));
   }
 
   protected getUpdatedData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {

@@ -1,4 +1,4 @@
-import { CanDeactivateFn } from '@angular/router';
+import { ActivatedRouteSnapshot, CanDeactivateFn, RouterStateSnapshot } from '@angular/router';
 import { inject } from '@angular/core';
 import { OverviewPage } from './overview/overview.page';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
@@ -33,10 +33,10 @@ const askToSaveOrNot = (modalService: ConfirmationModalService) => {
 const saveAsDraftGuardAsync = async (
   draftService: DraftRepositoryService,
   modalService: ConfirmationModalService,
-  component,
-  currentRoute,
-  currentState,
-  nextState
+  component: any,
+  currentRoute: ActivatedRouteSnapshot,
+  currentState: RouterStateSnapshot,
+  nextState: RouterStateSnapshot
 ) => {
   const uuid = currentRoute.params['id'];
   if (nextState && !isInWhitelist(nextState.url) && uuid != null) {

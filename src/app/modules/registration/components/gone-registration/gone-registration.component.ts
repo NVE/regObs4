@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
@@ -31,36 +31,46 @@ export class GoneRegistrationComponent {
   private userSettingService = inject(UserSettingService);
   private sqliteService = inject(SqliteService);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required<RegistrationDraft>();
 
   constructor() {
     addIcons({ refresh, warning });
   }
 
   async submitAsNew(): Promise<void> {
-    const uuid = await this.draftRepository.copyDraftAndSave(this.draft);
+    const draft = this.draft();
+    const uuid = await this.draftRepository.copyDraftAndSave(draft);
     const newDraft = await this.draftRepository.load(uuid);
+    if (!newDraft) {
+      // TODO: Check if this needs better error handling - how can newDraft be undefined and what happens then?
+      throw new Error('Failed to create new draft');
+    }
     this.logger.debug(
-      `Submitting new draft with uuid ${newDraft.uuid} based on deleted registration with regId ${this.draft.regId}`,
+      `Submitting new draft with uuid ${newDraft.uuid} based on deleted registration with regId ${draft.regId}`,
       DEBUG_TAG
     );
     await this.draftToRegistrationService.markDraftAsReadyToSubmit(newDraft, false);
-    await this.delete();
+    await this.delete(draft);
     this.navigateToMyObservations(); //so we can see that the draft happily submits
   }
 
   async abandon() {
-    this.logger.debug(`Draft ${this.draft.uuid} abandoned`, DEBUG_TAG);
-    await this.delete();
+    const draft = this.draft();
+    this.logger.debug(`Draft ${draft.uuid} abandoned`, DEBUG_TAG);
+    await this.delete(draft);
     this.navigateToMyObservations(); //so we can see that the observation is gone
   }
 
-  private async delete() {
-    this.draftRepository.delete(this.draft.uuid); //delete draft that was deleted in Regobst
+  private async delete(draft: RegistrationDraft) {
+    this.draftRepository.delete(draft.uuid); //delete draft that was deleted in Regobst
 
     //delete observation from map and list view
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
-    this.sqliteService.deleteRegistrations([this.draft.regId], appMode);
+
+    // TODO: Det er vel ikke helt heldig at sqlite service lastes på web? Hvordan komme rundt dette?
+    if (draft.regId) {
+      this.sqliteService.deleteRegistrations([draft.regId], appMode);
+    }
   }
 
   navigateToMyObservations(): void {

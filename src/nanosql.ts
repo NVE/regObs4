@@ -1,5 +1,7 @@
+/* eslint-disable */
+
 import { settings } from './settings';
-import { AppMode } from 'src/app/modules/common-core/models';
+import { AppMode } from './app/modules/common-core/models/app-mode.enum';
 import { nSQL } from '@nano-sql/core';
 import { getMode } from '@nano-sql/adapter-sqlite-cordova';
 import {
@@ -11,8 +13,15 @@ import {
   InanoSQLInstance,
 } from '@nano-sql/core/lib/interfaces';
 
+interface Table {
+  name: string;
+  instancePerAppMode?: boolean;
+  model: InanoSQLDataModel;
+  indexes?: InanoSQLTableIndexConfig;
+}
+
 export class NanoSql {
-  public static readonly TABLES = {
+  public static readonly TABLES: { [key: string]: Table } = {
     OBSERVATION: {
       name: 'observationV2',
       instancePerAppMode: true,
@@ -178,12 +187,7 @@ export class NanoSql {
   };
 
   static getTables() {
-    const result: {
-      name: string;
-      instancePerAppMode: boolean;
-      model: InanoSQLDataModel;
-      indexes: InanoSQLTableIndexConfig;
-    }[] = [];
+    const result: Table[] = [];
     // tslint:disable-next-line:forin
     for (const tableDef in NanoSql.TABLES) {
       result.push(NanoSql.TABLES[tableDef]);
@@ -282,6 +286,19 @@ export class NanoSql {
     }
   }
 
+  private static handleError(
+    tableConfig: InanoSQLTableConfig,
+    ex: unknown,
+    onError?: (tableName: string, ex: Error) => void
+  ) {
+    if (!onError) return;
+    if (ex instanceof Error) {
+      onError(tableConfig.name, ex);
+    } else if (typeof ex === 'string') {
+      onError(tableConfig.name, new Error(ex));
+    }
+  }
+
   private static async deleteAllRowsInTable(
     tableConfig: InanoSQLTableConfig,
     onError?: (tableName: string, ex: Error) => void
@@ -289,9 +306,7 @@ export class NanoSql {
     try {
       await nSQL(tableConfig.name).query('delete').exec();
     } catch (ex) {
-      if (onError) {
-        onError(tableConfig.name, ex);
-      }
+      this.handleError(tableConfig, ex, onError);
     }
   }
 
@@ -302,16 +317,12 @@ export class NanoSql {
     try {
       await nSQL(tableConfig.name).query('drop').exec();
     } catch (ex) {
-      if (onError) {
-        onError(tableConfig.name, ex);
-      }
+      this.handleError(tableConfig, ex, onError);
     }
     try {
       await nSQL().query('create table', tableConfig).exec();
     } catch (ex) {
-      if (onError) {
-        onError(tableConfig.name, ex);
-      }
+      this.handleError(tableConfig, ex, onError);
     }
   }
 }

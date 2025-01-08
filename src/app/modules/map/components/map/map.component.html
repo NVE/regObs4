@@ -1,17 +1,20 @@
-<div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)"></div>
-<app-map-controls [showFullscreenToggle]="showFullscreenToggle" [showGpsCenter]="showGpsCenter"></app-map-controls>
+@if (loaded && options) {
+  <div leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)"></div>
+}
+<app-map-controls [showFullscreenToggle]="showFullscreenToggle()" [showGpsCenter]="showGpsCenter()"></app-map-controls>
 
-<div
-  #observerTripsContainer
-  class="observer-trip-backdrop"
-  style="display: none"
-  (click)="removeObserverTripDescription()"
-  *ngIf="showObserverTrips"
->
-  <div class="observer-trip-desc">
-    <div>
-      <strong>Obsturbeskrivelse{{ observationTripName ? " " + observationTripName : "" }}:</strong>
+@if (showObserverTrips()) {
+  <div
+    #observerTripsContainer
+    class="observer-trip-backdrop"
+    style="display: none"
+    (click)="removeObserverTripDescription()"
+  >
+    <div class="observer-trip-desc">
+      <div>
+        <strong>Obsturbeskrivelse{{ observationTripName ? " " + observationTripName : "" }}:</strong>
+      </div>
+      <div>{{ observationTripDescription }}</div>
     </div>
-    <div>{{ observationTripDescription }}</div>
   </div>
-</div>
+}

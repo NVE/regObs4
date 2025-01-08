@@ -1,11 +1,11 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ng-container *ngIf="geoHazardName$ | async as geoHazardName">
       <ion-title class="header-title">
-        {{isDesktop ? 'Varsom' : 'ADD_MENU.NEW_' + geoHazardName + '_OBSERVATION' | uppercase | translate}}
+        {{ isDesktop ? "Varsom" : ("ADD_MENU.NEW_" + geoHazardName + "_OBSERVATION" | uppercase | translate) }}
       </ion-title>
     </ng-container>
   </ion-toolbar>
@@ -14,21 +14,23 @@
   <ion-content>
     <!-- Simple snow obs header-->
     <div class="content-wrapper">
-      <ng-container *ngIf="isDesktop && geoHazardName$ | async as geoHazardName">
-        <h2>{{'ADD_MENU.NEW_' + geoHazardName + '_OBSERVATION' | uppercase | translate}}</h2>
+      <ng-container *ngIf="isDesktop">
+        <h2 *ngIf="geoHazardName$ | async as geoHazardName">
+          {{ "ADD_MENU.NEW_" + geoHazardName + "_OBSERVATION" | uppercase | translate }}
+        </h2>
       </ng-container>
       <ng-container *ngIf="showSnowObsModeSelector$ | async">
         <ion-grid class="header">
           <ion-row>
             <ion-col *ngIf="draft.simpleMode" class="question">
               <ion-item>
-                <ion-label> {{"REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate}} </ion-label>
+                <ion-label> {{ "REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate }} </ion-label>
               </ion-item>
             </ion-col>
             <ion-col class="simple-obs-toggle">
               <ion-item>
-                <ion-label>{{'REGISTRATION.OVERVIEW.SIMPLE.TOGGLE' | translate}}</ion-label>
-                <ion-toggle [ngModel]="draft.simpleMode" (ionChange)="changeMode($event)"></ion-toggle>
+                <ion-label>{{ "REGISTRATION.OVERVIEW.SIMPLE.TOGGLE" | translate }}</ion-label>
+                <ion-toggle [ngModel]="draft.simpleMode" (ionChange)="changeMode($event)" slot="end"></ion-toggle>
               </ion-item>
             </ion-col>
           </ion-row>

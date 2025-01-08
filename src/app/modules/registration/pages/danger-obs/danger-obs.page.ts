@@ -17,8 +17,6 @@ import {
 } from '@ionic/angular/standalone';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { BasePageService } from '../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -61,28 +59,33 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class DangerObsPage extends BasePage {
+  override registrationTid = RegistrationTid.DangerObs;
   private modalController = inject(ModalController);
   private zone = inject(NgZone);
   private kdvService = inject(KdvService);
 
-  private dangerSignKdv: KdvElement[];
-  private dangerSignKdvSubscription: Subscription;
+  private dangerSignKdv?: KdvElement[];
+  private dangerSignKdvSubscription?: Subscription;
+
+  get dangerObs(): DangerObsEditModel[] {
+    if (!Array.isArray(this.draft.registration.DangerObs)) {
+      this.draft.registration.DangerObs = [] as DangerObsEditModel[];
+    }
+    return this.draft.registration.DangerObs;
+  }
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.DangerObs, basePageService, activatedRoute);
+    super();
     addIcons({ addCircleOutline });
   }
 
-  onBeforeLeave() {
+  override onBeforeLeave() {
     if (this.dangerSignKdvSubscription) {
       this.dangerSignKdvSubscription.unsubscribe();
     }
   }
 
-  onInit() {
+  override onInit() {
     const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
       this.zone.run(() => {
@@ -92,7 +95,7 @@ export class DangerObsPage extends BasePage {
   }
 
   async addOrEdit(index?: number) {
-    const dangerObs = index !== undefined ? this.draft.registration.DangerObs[index] : undefined;
+    const dangerObs = index !== undefined ? this.dangerObs[index] : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
       componentProps: { dangerObs, geoHazard: this.draft.registration.GeoHazardTID },
@@ -100,7 +103,7 @@ export class DangerObsPage extends BasePage {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      if (result.data.delete) {
+      if (result.data.delete && index != null) {
         this.removeAtIndex(index);
       } else {
         if (index !== undefined) {
@@ -114,29 +117,20 @@ export class DangerObsPage extends BasePage {
 
   setDangerObs(index: number, dangerObs: DangerObsEditModel) {
     this.zone.run(() => {
-      if (!this.draft.registration.DangerObs) {
-        this.draft.registration.DangerObs = [];
-      }
-      this.draft.registration.DangerObs[index] = dangerObs;
+      this.dangerObs[index] = dangerObs;
     });
   }
 
   addDangerObs(dangerObs: DangerObsEditModel) {
     this.zone.run(() => {
-      if (!this.draft.registration.DangerObs) {
-        this.draft.registration.DangerObs = [];
-      }
-      this.draft.registration.DangerObs.push(dangerObs);
+      this.dangerObs.push(dangerObs);
     });
   }
 
   removeAtIndex(index: number) {
     this.zone.run(() => {
-      if (!this.draft.registration.DangerObs) {
-        this.draft.registration.DangerObs = [];
-      }
-      if (this.draft.registration.DangerObs.length > 0) {
-        this.draft.registration.DangerObs.splice(index, 1);
+      if (this.dangerObs.length > 0) {
+        this.dangerObs.splice(index, 1);
       }
     });
   }
@@ -145,7 +139,7 @@ export class DangerObsPage extends BasePage {
     const text = [];
     if (dangerObs.DangerSignTID % 100 !== 0 && this.dangerSignKdv) {
       const kdvElement = this.dangerSignKdv.find((x) => x.Id === dangerObs.DangerSignTID);
-      if (kdvElement) {
+      if (kdvElement?.Name) {
         text.push(kdvElement.Name.trim());
       }
     }

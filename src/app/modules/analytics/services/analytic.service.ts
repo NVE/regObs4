@@ -30,7 +30,7 @@ export class AnalyticService {
   private loggingService = inject(LoggingService);
 
   private isTrackingOn(): boolean {
-    return window.plausible && environment.production;
+    return !!window.plausible && environment.production;
   }
 
   trackView(url: string) {
@@ -53,8 +53,14 @@ export class AnalyticService {
         ` eventLabel:${eventLabel || ''}, eventValue: ${eventValue || ''}`,
       DEBUG_TAG
     );
-
-    window.plausible('Track event', { props: { eventCategory, eventAction, eventLabel, eventValue } });
+    const props: { [key: string]: string | number } = { eventCategory, eventAction };
+    if (eventLabel) {
+      props[eventLabel] = eventLabel;
+    }
+    if (eventValue != null) {
+      props[eventValue] = eventValue;
+    }
+    window.plausible('Track event', { props });
   }
 
   init() {

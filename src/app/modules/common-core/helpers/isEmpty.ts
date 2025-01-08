@@ -13,7 +13,7 @@
  * isEmpty({test: 1}), // false
  * isEmpty({length: 3, custom_property: [1,2,3]}) // false
  */
-export function isEmpty(obj: Object | Array<Object>): boolean {
+export function isEmpty<T>(obj?: T | null): obj is null | undefined {
   if (obj === null || obj === undefined) {
     return true;
   }
@@ -23,13 +23,12 @@ export function isEmpty(obj: Object | Array<Object>): boolean {
   if (typeof obj === 'number' || typeof obj === 'boolean') {
     return false;
   }
-  if (obj instanceof Array) {
-    const arr = <Array<Object | Array<Object>>>obj;
-    return arr.length === 0 || !arr.some((x) => !isEmpty(x));
+  if (Array.isArray(obj)) {
+    return obj.length === 0 || !obj.some((x) => !isEmpty(x));
   }
   const props = Object.getOwnPropertyNames(obj);
   if (props.length === 0) {
     return true;
   }
-  return !props.some((prop) => !isEmpty(obj[prop]));
+  return !props.some((prop) => !isEmpty(obj[prop as keyof T]));
 }

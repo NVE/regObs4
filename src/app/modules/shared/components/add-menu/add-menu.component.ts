@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, inject, viewChild } from '@angular/core';
 import {
   IonFab,
   IonFabButton,
@@ -61,16 +61,16 @@ export class AddMenuComponent implements OnInit {
   private loggingService = inject(LoggingService);
   private platform = inject(Platform);
 
-  @ViewChild('menuFab') menuFab: IonFab;
+  readonly menuFab = viewChild<IonFab>('menuFab');
 
-  drafts$: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
-  geoHazardInfo$: Observable<{
+  drafts$?: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
+  geoHazardInfo$?: Observable<{
     geoHazards: GeoHazard[];
     showTrip: boolean;
   }>;
-  tripStarted$: Observable<boolean>;
-  showSpace$: Observable<boolean>;
-  isIosOrAndroid: boolean;
+  tripStarted$?: Observable<boolean>;
+  showSpace$?: Observable<boolean>;
+  isIosOrAndroid?: boolean;
 
   constructor() {
     addIcons({ add, create });
@@ -101,6 +101,9 @@ export class AddMenuComponent implements OnInit {
   private convertDraftToDate(
     draft: RegistrationDraft
   ): Observable<{ id: string; geoHazard: RegistrationEditModel['GeoHazardTID']; date: string }> {
+    if (!draft.lastSavedTime) {
+      return of({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date: '' });
+    }
     return from(this.getDate(draft.lastSavedTime)).pipe(
       map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
     );
@@ -116,9 +119,7 @@ export class AddMenuComponent implements OnInit {
 
   closeAndNavigate(url: string): void {
     setTimeout(() => {
-      if (this.menuFab) {
-        this.menuFab.close();
-      }
+      this.closeMenu();
     }, 0);
     this.navController.navigateForward(url);
   }
@@ -132,7 +133,7 @@ export class AddMenuComponent implements OnInit {
   }
 
   closeMenu(): void {
-    this.menuFab.close();
+    this.menuFab()?.close();
   }
 
   startOrStopTrip(tripStarted: boolean): void {

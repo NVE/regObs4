@@ -9,6 +9,8 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { addIcons } from 'ionicons';
 import { location } from 'ionicons/icons';
 
+// TODO: Kan slettes nå som Vann-obs ikke bruker den lenger?
+
 /**
  * Form to register an observation of a specific damage caused by water.
  * There are one instance of this form for each damage type.

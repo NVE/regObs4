@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -14,17 +14,15 @@ import { close } from 'ionicons/icons';
 export class EditPictureInfoModalComponent {
   modalController = inject(ModalController);
 
-  copyright: string;
-  photographer: string;
+  copyright = model<string>();
+  photographer = model<string>();
 
   constructor() {
     addIcons({ close });
   }
 
   save() {
-    this.copyright = this.copyright.trim();
-    this.photographer = this.photographer.trim();
-    this.modalController.dismiss({ copyright: this.copyright, photographer: this.photographer });
+    this.modalController.dismiss({ copyright: this.copyright()?.trim(), photographer: this.photographer()?.trim() });
   }
 
   close() {

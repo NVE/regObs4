@@ -6,7 +6,7 @@ import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.ser
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 import { MyPageData } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, input } from '@angular/core';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { provideTranslateService } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ import { TestLoggingService } from 'src/app/modules/shared/services/logging/test
   imports: [],
 })
 class AppHeaderStubComponent {
-  @Input() showFilterButton = true;
+  readonly showFilterButton = input(true);
 }
 
 class AuthServiceStub implements Pick<RegobsAuthService, 'loggedInUser$' | 'myPageData$'> {

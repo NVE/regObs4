@@ -6,7 +6,7 @@
 import { Injectable, Optional } from '@angular/core';
 import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
-import { AppMode } from 'src/app/modules/common-core/models';
+import { AppMode } from '../../../common-core/models';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class ConsoleLoggingService implements LoggingService {
   }
 
   debug(message: string, tag?: string, optionalParams?: { [key: string]: any }) {
-    this.log(message, null, LogLevel.Debug, tag, optionalParams);
+    this.log(message, undefined, LogLevel.Debug, tag, optionalParams);
   }
 
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }) {

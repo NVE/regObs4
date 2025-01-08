@@ -9,10 +9,8 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { BasePageService } from '../../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { NgIf } from '@angular/common';
@@ -44,10 +42,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class CompressionTestPage extends BasePage {
-  constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
+  override registrationTid = RegistrationTid.CompressionTest;
 
-    super(RegistrationTid.CompressionTest, basePageService, activatedRoute);
+  constructor() {
+    super();
   }
 }

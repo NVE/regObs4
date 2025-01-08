@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { IDataLoad } from '../models/data-load.interface';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import moment from 'moment';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
@@ -19,12 +19,12 @@ export class DataLoadService {
     const existingItem = await this.getState(id);
     existingItem.startedDate = moment().toISOString();
     existingItem.isLoading = true;
-    existingItem.completedDate = null;
+    existingItem.completedDate = undefined;
     existingItem.progress = 0;
     existingItem.itemsComplete = 0;
     existingItem.totalItems = totalItems;
-    existingItem.error = null;
-    existingItem.errorMessage = null;
+    existingItem.error = undefined;
+    existingItem.errorMessage = undefined;
     existingItem.status = '';
     return this.saveDataLoadItem(existingItem);
   }
@@ -63,30 +63,27 @@ export class DataLoadService {
   }
 
   private async saveDataLoadItem(item: IDataLoad) {
-    return nSQL(NanoSql.TABLES.DATA_LOAD.name).query('upsert', item).exec();
+    return nSQL(NanoSql.TABLES['DATA_LOAD'].name).query('upsert', item).exec();
   }
 
   getState(id: string): Promise<IDataLoad> {
-    return this.getStateAsObservable(id).pipe(take(1)).toPromise();
+    return firstValueFrom(this.getStateAsObservable(id));
   }
 
   getStateAsObservable(id: string): Observable<IDataLoad> {
     return new NSqlFullUpdateObservable<IDataLoad[]>(
-      nSQL(NanoSql.TABLES.DATA_LOAD.name)
+      nSQL(NanoSql.TABLES['DATA_LOAD'].name)
         .query('select')
-        .where((x) => x.id === id)
+        .where((x) => x['id'] === id)
         .listen()
     ).pipe(
       map((val: IDataLoad[]) =>
         val.length > 0
           ? val[0]
-          : {
+          : ({
               id,
-              completed: null,
-              lastUpdated: null,
               isLoading: false,
-              started: null,
-            }
+            } as IDataLoad)
       )
     );
   }

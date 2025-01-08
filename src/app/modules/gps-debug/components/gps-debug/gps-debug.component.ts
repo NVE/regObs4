@@ -1,11 +1,10 @@
-import { Component, OnInit, NgZone, ViewChild, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject, viewChild } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
-import moment from 'moment';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
 import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
@@ -24,13 +23,13 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   private geoPositionService = inject(GeoPositionService);
   private ngZone = inject(NgZone);
 
-  showLog$: Observable<boolean>;
-  geoPositionLog: GeoPositionLog[];
-  isOpen: boolean;
-  isTracking: boolean;
+  showLog$!: Observable<boolean>;
+  geoPositionLog!: GeoPositionLog[];
+  isOpen!: boolean;
+  isTracking!: boolean;
   private ngDestroy$ = new Subject<void>();
 
-  @ViewChild('GpsLogPanel') panel: IonContent;
+  readonly panel = viewChild<IonContent>('GpsLogPanel');
 
   constructor() {
     addIcons({ arrowDownCircle, arrowUpCircle });
@@ -91,8 +90,9 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   scrollToBottom() {
-    if (this.panel) {
-      this.panel.scrollToBottom();
+    const panel = this.panel();
+    if (panel) {
+      panel.scrollToBottom();
     }
   }
 

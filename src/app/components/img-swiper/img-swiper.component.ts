@@ -1,5 +1,15 @@
 import { IonLabel } from '@ionic/angular/standalone';
-import { Component, Input, EventEmitter, Output, ViewChild, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  OnChanges,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  OnDestroy,
+  inject,
+  input,
+} from '@angular/core';
 // import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject } from 'rxjs';
@@ -22,18 +32,18 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private breakpointService = inject(BreakpointService);
 
-  @Input() attachments: AttachmentViewModel[] = [];
-  @Input() showLabels = true;
-  @Input() location: ImageLocation;
-  @Input() withFallbackText = true;
-  @Input() small = false;
+  readonly attachments = input<AttachmentViewModel[]>([]);
+  readonly showLabels = input(true);
+  readonly location = input<ImageLocation>();
+  readonly withFallbackText = input(true);
+  readonly small = input(false);
   @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
   @Output() imgClick: EventEmitter<{
     index: number;
     imgUrl: string;
   }> = new EventEmitter();
-  isDesktop: boolean;
-  slideOptions;
+  isDesktop?: boolean;
+  slideOptions?: any;
 
   ngOnInit() {
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
@@ -58,7 +68,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   moreThanFourPics = false;
 
   state: 'loading' | 'empty' | 'singleimage' | 'singlemap' | 'loading-swiper' | 'swiper-ready' = 'loading';
-  slides: ImgSwiperSlide[];
+  slides: ImgSwiperSlide[] = [];
   activeIndex = 0;
 
   private ngDestroy$ = new Subject<void>();
@@ -99,11 +109,13 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   get shouldMoveMap() {
-    return this.location && this.attachments && this.attachments.length > 0 && !this.isDesktop;
+    const attachments = this.attachments();
+    return this.location() && attachments && attachments.length > 0 && !this.isDesktop;
   }
 
   get imageLength() {
-    return this.attachments ? this.attachments.length : 0;
+    const attachments = this.attachments();
+    return attachments ? attachments.length : 0;
   }
 
   get imageIndex() {
@@ -114,8 +126,9 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   get showIndex() {
-    if (this.attachments && this.attachments.length > 1) {
-      return this.location ? this.activeIndex > 0 : true;
+    const attachments = this.attachments();
+    if (attachments && attachments.length > 1) {
+      return this.location() ? this.activeIndex > 0 : true;
     }
     return false;
   }
@@ -125,18 +138,19 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   checkAmountOfPictures(): number {
-    if (this.attachments.length === 3 && !this.location) {
+    const attachments = this.attachments();
+    if (attachments.length === 3 && !this.location()) {
       this.moreThanFourPics = false;
       return 3;
     }
-    if (this.attachments.length >= 3) {
+    if (attachments.length >= 3) {
       this.moreThanFourPics = true;
       return 3;
     }
-    if (this.attachments.length === 2) {
+    if (attachments.length === 2) {
       return 3;
     }
-    if (this.attachments.length === 1) {
+    if (attachments.length === 1) {
       return 2;
     }
     return 1;
@@ -155,10 +169,11 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
 
   private init() {
     this.slides = [];
-    if (this.location) {
+    const location = this.location();
+    if (location) {
       this.slides.push({
         type: 'location',
-        img: this.location,
+        img: location,
         header: 'REGISTRATION.OBS_LOCATION.TITLE',
       });
     }
@@ -169,17 +184,20 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   private updateUi() {
-    if (!this.cdr['destroyed']) {
-      this.cdr.detectChanges();
-    }
+    // if (!this.cdr['destroyed']) {
+    this.cdr.detectChanges();
+    // }
   }
 
   private calculateNewState() {
-    if (this.location && (!this.attachments || this.attachments.length === 0)) {
+    const location = this.location();
+    const attachments = this.attachments();
+    const attachmentsValue = this.attachments();
+    if (location && (!attachments || attachmentsValue.length === 0)) {
       return 'singlemap';
-    } else if (!this.location && this.attachments && this.attachments.length === 1) {
+    } else if (!location && attachmentsValue && attachmentsValue.length === 1) {
       return 'singleimage';
-    } else if (!this.location && (!this.attachments || this.attachments.length === 0)) {
+    } else if (!location && (!attachmentsValue || attachmentsValue.length === 0)) {
       return 'empty';
     } else {
       return 'loading-swiper';
@@ -187,11 +205,12 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   private getLocationSlides(): ImgSwiperSlide[] {
-    return this.location
+    const location = this.location();
+    return location
       ? [
           {
             type: 'location',
-            img: this.location,
+            img: location,
             header: 'REGISTRATION.OBS_LOCATION.TITLE',
           },
         ]
@@ -199,17 +218,18 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   private getImageSlides(): ImgSwiperSlide[] {
-    return (this.attachments || []).map((img, index) => ({
+    return (this.attachments() || []).map((img, index) => ({
       type: 'image',
       img,
-      header: this.attachments[index].RegistrationName,
-      description: this.attachments[index].Comment,
+      header: this.attachments()[index].RegistrationName,
+      description: this.attachments()[index].Comment,
     }));
   }
 
   getImageIndex(img: AttachmentViewModel) {
-    if (this.attachments) {
-      return this.attachments.indexOf(img);
+    const attachments = this.attachments();
+    if (attachments) {
+      return attachments.indexOf(img);
     } else {
       return -1;
     }
@@ -217,13 +237,13 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
 
   onImageClick(img: AttachmentViewModel) {
     const index = this.getImageIndex(img);
-    if (index >= 0) {
+    if (index >= 0 && img.Url) {
       this.imgClick.emit({ index, imgUrl: img.Url });
     }
   }
 
   onLocationClick() {
-    this.locationClick.emit(this.location);
+    this.locationClick.emit(this.location());
   }
 
   onSlideTouchStart() {
@@ -256,16 +276,16 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   isPreviousImgAvailable(): boolean {
-    if (this.location) {
+    if (this.location()) {
       return this.activeIndex >= 1;
     }
     return this.activeIndex >= 1;
   }
 
   isNextImgAvailable() {
-    if (this.location) {
-      return this.activeIndex + 1 < this.attachments.length;
+    if (this.location()) {
+      return this.activeIndex + 1 < this.attachments().length;
     }
-    return this.activeIndex + 2 < this.attachments.length;
+    return this.activeIndex + 2 < this.attachments().length;
   }
 }

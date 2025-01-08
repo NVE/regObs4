@@ -4,8 +4,8 @@
       {{ "REGISTRATION.FAILED.TITLE" | translate }}
     </ion-label>
   </ion-list-header>
-  <app-version-conflict *ngIf="conflictError" [draft]="draft"></app-version-conflict>
-  <app-gone-registration *ngIf="goneError" [draft]="draft"></app-gone-registration>
+  <app-version-conflict *ngIf="conflictError" [draft]="draft()"></app-version-conflict>
+  <app-gone-registration *ngIf="goneError" [draft]="draft()"></app-gone-registration>
   <ng-container *ngIf="!(conflictError || goneError)">
     <ion-item>
       <ion-label class="ion-text-wrap" *ngIf="networkError">
@@ -20,12 +20,12 @@
       </ion-label>
       <ion-label class="ion-text-wrap" *ngIf="registrationError">
         {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
-        <ng-container *ngIf="draft.error.message">
+        @if (draft().error.message) {
           :
           <div class="error-message">
-            {{ draft.error.message }}
+            {{ draft().error.message }}
           </div>
-        </ng-container>
+        }
       </ion-label>
       <ion-label class="ion-text-wrap" *ngIf="serverError">
         {{ "REGISTRATION.FAILED.PROBLEM" | translate }}. {{ "REGISTRATION.FAILED.LOGGED" | translate }}
@@ -37,7 +37,7 @@
     </ion-item>
     <ion-item *ngIf="registrationError || serverError || unknownError">
       <ion-label class="ion-text-wrap">
-        {{ "REGISTRATION.FAILED.REFERENCE" | translate }} ID: {{ draft.uuid }}
+        {{ "REGISTRATION.FAILED.REFERENCE" | translate }} ID: {{ draft().uuid }}
       </ion-label>
     </ion-item>
     <ion-item (click)="sendEmail()">

@@ -1,6 +1,6 @@
 <ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
   <ng-container *ngFor="let supportTile of supportTiles; trackBy: trackByMethod">
-    <ion-item button>
+    <ion-item button color="light">
       <ion-icon slot="start" name="map-outline" color="primary"></ion-icon>
       <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)" justify="space-between">
         {{ "SUPPORT_MAP." + supportTile.description | translate }}

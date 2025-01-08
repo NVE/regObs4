@@ -14,11 +14,8 @@ export function isSameObserver(reg: RegistrationViewModel, observer: MyPageData)
 
 export function isInGroup(reg: RegistrationViewModel, observer: MyPageData): boolean {
   if (
-    observer &&
-    reg.ObserverGroupID > 0 &&
-    observer.MemberOfGroups &&
-    observer.MemberOfGroups.length > 0 &&
-    observer.MemberOfGroups.map((g) => g.Id).indexOf(reg.ObserverGroupID) >= 0
+    reg.ObserverGroupID != null &&
+    (observer.MemberOfGroups || []).map((g) => g.Id).indexOf(reg.ObserverGroupID) >= 0
   ) {
     return true;
   }
@@ -27,12 +24,18 @@ export function isInGroup(reg: RegistrationViewModel, observer: MyPageData): boo
 
 function isModerator(reg: RegistrationViewModel, observer: MyPageData): boolean {
   if (observer && reg.GeoHazardTID) {
-    return observer.Roles?.includes(`ModeratorForGeoHazard${reg.GeoHazardTID}`);
+    if (observer.Roles == null) {
+      return false;
+    }
+    return observer.Roles.includes(`ModeratorForGeoHazard${reg.GeoHazardTID}`);
   }
   return false;
 }
 
-export function getObserverEditCheckObservable(reg: RegistrationViewModel, observer: MyPageData): Observable<EditMode> {
+export function getObserverEditCheckObservable(
+  reg: RegistrationViewModel,
+  observer: MyPageData
+): Observable<EditMode | undefined> {
   if (isModerator(reg, observer)) {
     return of('EDIT_AS_MODERATOR');
   }

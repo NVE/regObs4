@@ -46,22 +46,22 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
 
   visible: boolean;
-  topHeader: string;
-  title: string;
-  distanceAndType: string;
-  firstAttachmentUrl: SafeUrl;
-  additionaAttachmentCount: number;
-  name: string;
-  id: number;
-  geoHazard: GeoHazard;
+  topHeader?: string;
+  title?: string;
+  distanceAndType?: string;
+  firstAttachmentUrl?: SafeUrl;
+  additionaAttachmentCount?: number;
+  name?: string;
+  id?: number;
+  geoHazard?: GeoHazard;
   attachments: AttachmentViewModel[] = [];
-  masl: number;
-  starCount: number;
-  showAdditionalAttachmentCount: boolean;
+  masl?: number;
+  starCount?: number;
+  showAdditionalAttachmentCount?: boolean;
 
-  private subscription: Subscription;
-  private appMode: AppMode;
-  competenceLevelName: string;
+  private subscription?: Subscription;
+  private appMode?: AppMode;
+  competenceLevelName?: string;
 
   // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
 
@@ -83,11 +83,14 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   getTitle(item: AtAGlanceViewModel) {
-    return item.FormNames.join(', ');
+    return item.FormNames?.join(', ');
   }
 
-  getAdditionalAttachmentsCount(count: number): number {
-    return count > 1 ? count - 1 : null;
+  getAdditionalAttachmentsCount(count?: number): number {
+    if (!count) {
+      return 0;
+    }
+    return count > 1 ? count - 1 : 0;
   }
 
   handleMissingImage() {
@@ -96,18 +99,16 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   private sanitize(url: string): SafeUrl {
-    if (url) {
-      return this.sanitizer.bypassSecurityTrustUrl(url);
-    } else {
-      return null;
-    }
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   private getCompetenceKdvById(id: number): Promise<KdvElement> {
+    const ifNotFound: KdvElement = { Id: 0, Name: 'Unknown', Description: 'Unknown competence' };
     return firstValueFrom(
-      this.kdvService
-        .getKdvRepositoryByKeyObservable('CompetenceLevelKDV')
-        .pipe(map((kdvs) => kdvs.find((kdv) => kdv.Id === id)))
+      this.kdvService.getKdvRepositoryByKeyObservable('CompetenceLevelKDV').pipe(
+        map((kdvs) => kdvs.find((kdv) => kdv.Id === id)),
+        map((kdv) => (kdv == null ? ifNotFound : kdv))
+      )
     );
   }
 
@@ -118,13 +119,15 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.NickName;
-      this.starCount = StarRatingHelper.getStarRating(item.CompetenceLevelTID);
-      this.competenceLevelName = (await this.getCompetenceKdvById(item.CompetenceLevelTID))?.Name;
+      this.starCount = item.CompetenceLevelTID && StarRatingHelper.getStarRating(item.CompetenceLevelTID);
+      this.competenceLevelName = item.CompetenceLevelTID
+        ? (await this.getCompetenceKdvById(item.CompetenceLevelTID))?.Name
+        : undefined;
       this.geoHazard = item.GeoHazardTID;
       // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       // this.setDistanceAndType(item);
       this.attachments = [];
-      this.firstAttachmentUrl = this.sanitize(item.FirstAttachmentUrl);
+      this.firstAttachmentUrl = item.FirstAttachmentUrl ? this.sanitize(item.FirstAttachmentUrl) : undefined;
       this.additionaAttachmentCount = this.getAdditionalAttachmentsCount(item.AttachmentsCount);
       this.visible = true;
     });

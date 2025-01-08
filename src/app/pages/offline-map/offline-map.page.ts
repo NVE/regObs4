@@ -23,15 +23,16 @@ import * as L from 'leaflet';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 import { CompoundPackage, CompoundPackageFeature } from './metadata.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { PackageIndexService } from 'src/app/core/services/offline-map/package-index.service';
-import { isPackageOutdated } from 'src/app/core/services/offline-map/utils';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { NgDestoryBase } from '../../core/helpers/observable-helper';
+import { PackageIndexService } from '../../core/services/offline-map/package-index.service';
+import { isPackageOutdated } from '../../core/services/offline-map/utils';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { chevronDownCircle, chevronUpCircle, refresh, warningOutline, trashOutline } from 'ionicons/icons';
+import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 
 const filledTileOpacity = 0.8;
 const notFilledTileOpacity = 0.1;
@@ -99,7 +100,7 @@ export class OfflineMapPage extends NgDestoryBase {
   readonly allPackages$: Observable<OfflineMapPackage[]>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
   showTileCard = true;
-  tilesLayer: L.GeoJSON;
+  tilesLayer?: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<CompoundPackageFeature>();
   isZooming = new BehaviorSubject<boolean>(false);
@@ -112,7 +113,7 @@ export class OfflineMapPage extends NgDestoryBase {
     super();
 
     this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$.pipe(
-      map((items) => items.sort((a, b) => b.downloadStart - a.downloadStart))
+      map((items) => items.sort((a, b) => (b.downloadStart || 0) - (a.downloadStart || 0)))
     );
     this.installedPackages$ = this.offlineMapService.packages$.pipe(
       map((downloaded) => new Map(downloaded.map((item) => [this.getFeatureIdForPackage(item), item])))
@@ -128,7 +129,7 @@ export class OfflineMapPage extends NgDestoryBase {
         let space = 0;
         for (const mapPackage of packages) {
           count += 1;
-          space += mapPackage.size;
+          space += mapPackage.size || 0;
         }
         let spaceWithUnit = '0 MB';
         if (space > 0) {
@@ -156,7 +157,7 @@ export class OfflineMapPage extends NgDestoryBase {
 
     map.setZoom(7);
 
-    this.tilesLayer = new L.GeoJSON(null, {
+    this.tilesLayer = new L.GeoJSON(undefined, {
       onEachFeature: (feature: CompoundPackageFeature, layer) => {
         this.featureMap.set(feature.id as string, { feature, layer });
         layer.on('click', () => {
@@ -171,7 +172,7 @@ export class OfflineMapPage extends NgDestoryBase {
 
     this.packageIndex.packages$.subscribe((packages) => {
       packages.forEach((mapPackage) => {
-        this.tilesLayer.addData(mapPackage.getFeature());
+        this.tilesLayer?.addData(mapPackage.getFeature());
       });
     });
 
@@ -274,6 +275,11 @@ export class OfflineMapPage extends NgDestoryBase {
 
   async showPackageModal(feature: CompoundPackageFeature) {
     const compoundPackage = this.packagesOnServer.get(feature.id as string);
+    if (!compoundPackage) {
+      this.logger.log('Could not find package', undefined, LogLevel.Error, DEBUG_TAG, { id: feature.id });
+      return;
+    }
+
     const name = compoundPackage.getName();
     const modal = await this.modalController.create({
       component: OfflinePackageModalComponent,
@@ -336,9 +342,19 @@ export class OfflineMapPage extends NgDestoryBase {
     }
   }
 
+  private getPackageOnServer(name: string) {
+    const packageOnServer = this.packagesOnServer.get(name);
+    if (!packageOnServer) {
+      // TODO: Finner ikke korresponerende pakke på nett for den vi har lokalt.
+      // Foreslå for bruker å slette pakken? kun logge?
+      throw new Error('Could not find package with name: ' + name);
+    }
+    return packageOnServer;
+  }
+
   isPackageOutdated(offlinePackage: OfflineMapPackage): boolean {
     if (offlinePackage.downloadComplete) {
-      const packageOnServer = this.packagesOnServer.get(offlinePackage.name);
+      const packageOnServer = this.getPackageOnServer(offlinePackage.name); // TODO: Handle possible error?
       return isPackageOutdated(offlinePackage, packageOnServer);
     }
     return false;
@@ -348,7 +364,7 @@ export class OfflineMapPage extends NgDestoryBase {
     event.stopPropagation();
     this.logger.debug('Update package', DEBUG_TAG, { name: map.name });
     await this.delete(map);
-    const packageOnServer = this.packagesOnServer.get(map.name);
+    const packageOnServer = this.getPackageOnServer(map.name); // TODO: Handle possible error?
     this.offlineMapService.downloadPackage(packageOnServer, false);
   }
 
@@ -362,6 +378,6 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   getSpaceAvailable(): string {
-    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available, 0);
+    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available || 0, 0);
   }
 }

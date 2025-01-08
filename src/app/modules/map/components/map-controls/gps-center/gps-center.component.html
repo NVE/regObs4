@@ -1,5 +1,5 @@
 <ion-fab>
-  <ion-fab-button [ngClass]="{ active: followMode }" (click)="centerMapToUser()" size="small">
+  <ion-fab-button [class.active]="followMode()" (click)="centerMapToUser()" size="small">
     <ion-icon name="locate"></ion-icon>
   </ion-fab-button>
 </ion-fab>

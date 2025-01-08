@@ -21,7 +21,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class CoachMarksSimpleObsComponent implements OnInit {
   private userSettingService = inject(UserSettingService);
 
-  isVisible$: Observable<boolean>;
+  isVisible$?: Observable<boolean>;
   click = 0;
   hideSubject = new Subject<boolean>();
 
@@ -46,10 +46,6 @@ export class CoachMarksSimpleObsComponent implements OnInit {
 
   async hide() {
     this.hideSubject.next(false);
-    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    this.userSettingService.saveUserSettings({
-      ...currentSettings,
-      completedSimpleObsOnboarding: true,
-    });
+    this.userSettingService.updateUserSettings({ completedSimpleObsOnboarding: true });
   }
 }

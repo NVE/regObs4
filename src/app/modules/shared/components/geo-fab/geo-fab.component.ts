@@ -1,13 +1,19 @@
-import { IonItem, IonContent, IonPopover, IonIcon, IonList, IonButton, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, NgZone, inject } from '@angular/core';
+import { IonItem, IonIcon, IonList, IonLabel, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { Component, inject, input, model, computed } from '@angular/core';
 import { state, trigger, style, transition, animate, stagger, query } from '@angular/animations';
-import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
-import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
-import { map, take } from 'rxjs/operators';
-const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Soil]];
+import { toSignal } from '@angular/core/rxjs-interop';
+import { GeoNameComponent } from '../geo-name/geo-name.component';
+import { isArraysEqual } from 'src/app/modules/common-core/helpers/arrays';
+
+const GEOHAZARD_CONFIG = [
+  { id: 1, geohazards: [GeoHazard.Snow], icon: '/assets/icon/snow.svg' },
+  { id: 2, geohazards: [GeoHazard.Ice], icon: '/assets/icon/ice.svg' },
+  { id: 3, geohazards: [GeoHazard.Water, GeoHazard.Soil], icon: '/assets/icon/water_dirt.svg' },
+];
+
 @Component({
   selector: 'app-geo-fab',
   templateUrl: './geo-fab.component.html',
@@ -44,76 +50,43 @@ const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, Ge
       ]),
     ]),
   ],
-  imports: [IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPopover],
+  imports: [IonIcon, IonItem, IonLabel, IonList, GeoNameComponent, IonFab, IonFabButton],
 })
-export class GeoFabComponent implements OnInit, OnDestroy {
-  private fullscreenService = inject(FullscreenService);
+export class GeoFabComponent {
   private userSettingService = inject(UserSettingService);
-  private ngZone = inject(NgZone);
 
-  fullscreen$: Observable<boolean>;
-  currentGeoHazard$: Observable<GeoHazard[]>;
-  selectableGeoHazards$: Observable<GeoHazard[][]>;
-
-  @Input() isOpen = false;
-  @Input() showLabels = true;
-  @Output() isOpenChange = new EventEmitter();
-  @Input() animateOnEnter = false;
-
-  private ngDestroy$ = new Subject<void>();
-  private animationTimout: NodeJS.Timeout;
+  readonly isOpen = model(false);
+  readonly showLabels = input(true);
+  readonly animateOnEnter = input(false);
 
   animateOnEnterState = 'x';
+  private currentGeohazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
+  geohazard = computed(() => {
+    const geohazard = this.currentGeohazard();
+    const option = GEOHAZARD_CONFIG.find((x) => x.geohazards.includes(geohazard[0]));
+    if (!option) {
+      throw new Error('Unsupported geohazard');
+    }
+    return option;
+  });
 
-  ngOnInit() {
-    this.currentGeoHazard$ = this.userSettingService.currentGeoHazard$;
-    this.selectableGeoHazards$ = this.currentGeoHazard$.pipe(
-      map((currentGeoHazard) => GEOHAZARD_TYPES.filter((t) => !currentGeoHazard.some((c) => t.some((z) => z === c))))
+  geohazardOptions = computed(() => {
+    const current = this.currentGeohazard();
+    return GEOHAZARD_CONFIG.filter(({ geohazards }) => !isArraysEqual(geohazards, current)).map(
+      ({ id, geohazards, icon }) => ({
+        geohazards,
+        id,
+        icon,
+      })
     );
-    this.fullscreen$ = this.fullscreenService.isFullscreen$;
-    if (this.animateOnEnter) {
-      this.animationTimout = setTimeout(() => {
-        this.animateOnEnterState = 'startAnimated';
-      }, 500);
-    } else {
-      this.animateOnEnterState = 'visible';
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.animationTimout) {
-      clearTimeout(this.animationTimout);
-    }
-    this.ngDestroy$.next();
-    this.ngDestroy$.complete();
-  }
+  });
 
   toggle() {
-    this.triggerOpenClose(!this.isOpen);
+    this.isOpen.update((value) => !value);
   }
 
-  open() {
-    this.triggerOpenClose(true);
-  }
-
-  close() {
-    this.triggerOpenClose(false);
-  }
-
-  triggerOpenClose(open: boolean) {
-    const changed = this.isOpen !== open;
-    if (changed) {
-      this.isOpen = open;
-      this.isOpenChange.emit(this.isOpen);
-    }
-  }
-
-  async setCurrentGeoHazard(geoHazards: GeoHazard[]) {
-    this.close();
-    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    this.userSettingService.saveUserSettings({
-      ...currentSettings,
-      currentGeoHazard: geoHazards,
-    });
+  setCurrentGeoHazard(geoHazards: GeoHazard[]) {
+    this.userSettingService.updateUserSettings({ currentGeoHazard: geoHazards });
+    this.isOpen.set(false);
   }
 }

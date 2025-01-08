@@ -6,6 +6,7 @@ import {
   HttpEvent,
   HttpEventType,
   HttpResponse,
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { EMPTY, from, Observable } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
@@ -27,7 +28,6 @@ export class ApiInterceptor implements HttpInterceptor {
   private loggerService = inject(LoggingService);
   private storage = inject(StorageBackend);
   private apiVersionService = inject(ApiVersionService);
-
 
   //return true if given url belongs to any of the protected Regobs API urls in any environment
   private isRegObsApiThatRequireLogin(url: string): boolean {
@@ -76,7 +76,7 @@ export class ApiInterceptor implements HttpInterceptor {
         if (Capacitor.isNativePlatform() && httpEvent instanceof HttpResponse) {
           if (httpEvent.headers.has('sunset')) {
             const sunsetDate = httpEvent.headers.get('sunset');
-            this.apiVersionService.setSunsetDate(sunsetDate);
+            this.apiVersionService.setSunsetDate(sunsetDate as string);
           }
         }
       })
@@ -101,8 +101,12 @@ export class ApiInterceptor implements HttpInterceptor {
     );
   }
 
-  private handleResponseError(error, request, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (error.status === 401) {
+  private handleResponseError(
+    error: unknown,
+    request: HttpRequest<unknown>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
+    if (error instanceof HttpErrorResponse && error.status === 401) {
       // Vi er ikke autorisert, trolig fordi tokenet ikke er gyldig
       this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...');
       return from(this.regobsAuthService.refreshToken()).pipe(

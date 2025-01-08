@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { Subscription } from 'rxjs';
-import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
+import { CreateTripDto } from '../../modules/common-regobs-api';
 import moment from 'moment';
 import {
   IonBackButton,
@@ -23,12 +23,11 @@ import {
   NavController,
 } from '@ionic/angular/standalone';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { GeoHazard } from 'src/app/modules/common-core/models';
+import { GeoHazard } from '../../modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
-import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
@@ -39,6 +38,7 @@ import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.compo
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { TextCommentComponent } from '../../modules/registration/components/text-comment/text-comment.component';
 import { SvgIconComponent } from 'angular-svg-icon';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -81,17 +81,17 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   private modalController = inject(ModalController);
   private loggingService = inject(LoggingService);
 
-  private tripLoggerSubscription: Subscription;
+  private tripLoggerSubscription!: Subscription;
 
   isRunning = false;
   tripDto: CreateTripDto;
-  minutes: SelectOption[];
+  minutes: SelectOption[] = this.getHoursToMidnight();
   isLoading = false;
   hasClicked = false;
   isLoadingCurrentPosition = false;
-  currentPosition: Position;
+  currentPosition?: Position | null;
 
-  private startTripSubscription: Subscription;
+  private startTripSubscription?: Subscription;
 
   get isValid(): boolean {
     return (
@@ -102,7 +102,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   get isEmpty(): boolean {
-    return IsEmptyHelper.isEmpty(this.tripDto);
+    return isEmpty(this.tripDto);
   }
 
   constructor() {
@@ -111,7 +111,6 @@ export class LegacyTripPage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoading = false;
-    this.setHoursToMidnight();
     this.tripLoggerSubscription = this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
       this.ngZone.run(() => {
         if (val) {
@@ -133,7 +132,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.tripLoggerService.showTripNoPositionErrorMessage();
       }
     } catch (error) {
-      this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
+      const err = error instanceof Error ? error : typeof error === 'string' ? new Error(error) : undefined;
+      this.loggingService.log('Could not get geolocation', err, LogLevel.Warning, DEBUG_TAG);
       this.tripLoggerService.showTripNoPositionErrorMessage();
     } finally {
       this.ngZone.run(() => {
@@ -142,11 +142,12 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     }
   }
 
-  private setHoursToMidnight() {
-    this.minutes = [];
+  private getHoursToMidnight() {
+    const minutes = [];
     for (let i = moment().get('hours'); i <= 24; i++) {
-      this.minutes.push({ text: `${i}:00`, id: i * 60 });
+      minutes.push({ text: `${i}:00`, id: i * 60 });
     }
+    return minutes;
   }
 
   ngOnDestroy(): void {
@@ -189,7 +190,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
           }
         } catch (error) {
           this.isLoading = false;
-          this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
+          const err = error instanceof Error ? error : typeof error === 'string' ? new Error(error) : undefined;
+          this.loggingService.log('Could not get geolocation', err, LogLevel.Warning, DEBUG_TAG);
           this.tripLoggerService.showTripNoPositionErrorMessage();
         }
       }

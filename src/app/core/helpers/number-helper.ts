@@ -3,7 +3,7 @@ export class NumberHelper {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  static setDecimalPlaces(n: number, decimalPlaces?: number) {
+  static setDecimalPlaces(n: number, decimalPlaces = 0) {
     if (this.isNumeric(n)) {
       // return parseFloat(n.toFixed(decimalPlaces));
       const sign = n >= 0 ? 1 : -1;

@@ -1,7 +1,14 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+  input,
+  linkedSignal,
+  computed,
+} from '@angular/core';
 import { IonFabButton, IonIcon, IonItem, ModalController, Platform } from '@ionic/angular/standalone';
-import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
-import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentViewModel } from '../../../modules/common-regobs-api';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -17,7 +24,7 @@ type HrefType = { title: string; url: string };
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IonFabButton, IonIcon, IonItem, NgIf, TranslatePipe],
 })
-export class FullscreenImageModalPage implements OnInit {
+export class FullscreenImageModalPage {
   private modalController = inject(ModalController);
   private cdr = inject(ChangeDetectorRef);
   private platform = inject(Platform);
@@ -25,37 +32,18 @@ export class FullscreenImageModalPage implements OnInit {
 
   // @ViewChild(IonSlides) slider: IonSlides;
 
-  @Input() imgIndex: number;
-  @Input() allImages: AttachmentViewModel[];
-  @Input() href?: HrefType;
-  isLastSlide = true;
-  isFirstSlide = true;
-  activeImageIndex: number;
-  slideOptions;
-  isHybrid: boolean;
+  imgIndex = input.required<number>();
+  allImages = input.required<AttachmentViewModel[]>();
+  href = input<HrefType>();
+
+  activeImage = linkedSignal<AttachmentViewModel>(() => this.allImages()[this.imgIndex()]);
+  isFirstSlide = computed(() => this.allImages()[0] === this.activeImage());
+  isLastSlide = computed(() => this.allImages().at(-1) === this.activeImage());
+
+  slideOptions = computed(() => ({ initialSlide: this.imgIndex() }));
 
   constructor() {
     addIcons({ close });
-  }
-
-  ngOnInit(): void {
-    this.isHybrid = isAndroidOrIos(this.platform);
-
-    if (this.allImages && this.imgIndex >= 0) {
-      this.activeImageIndex = this.imgIndex;
-      this.checkIfLastOrFirstSlide();
-      if (this.isHybrid) {
-        this.slideOptions = {
-          initialSlide: this.imgIndex,
-        };
-      }
-    }
-  }
-
-  private updateUi() {
-    if (!this.cdr['destroyed']) {
-      this.cdr.detectChanges();
-    }
   }
 
   async onSlideTransitionEnd() {
@@ -78,21 +66,18 @@ export class FullscreenImageModalPage implements OnInit {
     throw new Error('Not implemented after Ionic v7 upgrade');
   }
 
-  checkIfLastOrFirstSlide() {
-    this.isLastSlide = this.allImages.length === this.activeImageIndex + 1;
-    this.isFirstSlide = this.activeImageIndex === 0;
-  }
-
   nextSlide() {
-    !this.isLastSlide && ++this.activeImageIndex;
-    this.checkIfLastOrFirstSlide();
-    this.updateUi();
+    const images = this.allImages();
+    const index = images.indexOf(this.activeImage());
+    const newIndex = Math.min(images.length - 1, index + 1);
+    this.activeImage.set(images[newIndex]);
   }
 
   prevSlide() {
-    !this.isFirstSlide && --this.activeImageIndex;
-    this.checkIfLastOrFirstSlide();
-    this.updateUi();
+    const images = this.allImages();
+    const index = images.indexOf(this.activeImage());
+    const newIndex = Math.max(0, index - 1);
+    this.activeImage.set(images[newIndex]);
   }
 
   closeModal(): void {

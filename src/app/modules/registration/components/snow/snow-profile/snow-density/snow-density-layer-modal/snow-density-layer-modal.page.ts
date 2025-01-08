@@ -62,14 +62,14 @@ export class SnowDensityLayerModalPage implements OnInit {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
 
-  @Input() draft: RegistrationDraft;
-  @Input() layer: SnowDensityLayerModel;
+  @Input() draft!: RegistrationDraft;
+  @Input() layer!: SnowDensityLayerModel;
   @Input() useCylinder = true;
-  @Input() cylinderDiameterInM: number;
-  @Input() tareWeight: number;
-  @Input() index: number;
-  addNew: boolean;
-  private initialDraftState: RegistrationDraft;
+  @Input() cylinderDiameterInM?: number;
+  @Input() tareWeight?: number;
+  @Input() index!: number;
+  addNew?: boolean;
+  private initialDraftState?: RegistrationDraft;
 
   constructor() {
     addIcons({ arrowBack, arrowForward, trash });
@@ -90,13 +90,15 @@ export class SnowDensityLayerModalPage implements OnInit {
 
   get hasLayers() {
     return (
-      this.draft?.registration?.SnowProfile2?.SnowDensity &&
-      this.draft.registration.SnowProfile2.SnowDensity[0]?.Layers?.length > 0
+      Array.isArray(this.draft.registration.SnowProfile2?.SnowDensity?.[0]?.Layers) &&
+      this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length > 0
     );
   }
 
   get layerLenght() {
-    return this.hasLayers ? this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length : 0;
+    return Array.isArray(this.draft.registration.SnowProfile2?.SnowDensity?.[0]?.Layers)
+      ? this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length
+      : 0;
   }
 
   get canGoNext() {
@@ -137,12 +139,14 @@ export class SnowDensityLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.draftRepository.save(this.initialDraftState);
+    if (this.initialDraftState) {
+      await this.draftRepository.save(this.initialDraftState);
+    }
     this.modalController.dismiss();
   }
 
   async delete() {
-    if (this.hasLayers) {
+    if (Array.isArray(this.draft?.registration.SnowProfile2?.SnowDensity?.[0].Layers)) {
       this.draft.registration.SnowProfile2.SnowDensity[0].Layers =
         this.draft.registration.SnowProfile2.SnowDensity[0].Layers.filter((l) => l !== this.layer);
       await this.draftRepository.save(this.draft);

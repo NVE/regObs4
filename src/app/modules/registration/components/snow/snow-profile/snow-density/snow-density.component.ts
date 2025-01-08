@@ -1,5 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
-import { SnowDensityModel } from 'src/app/modules/common-regobs-api/models';
+import { Component, computed, inject, input } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
@@ -20,19 +19,26 @@ export class SnowDensityComponent {
   private modalContoller = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
 
-  @Input() draft: RegistrationDraft;
-  private densityModal: HTMLIonModalElement;
+  readonly draft = input.required<RegistrationDraft>();
 
-  get profiles(): SnowDensityModel[] {
-    if (this.draft?.registration?.SnowProfile2?.SnowDensity?.length > 0) {
-      return this.draft.registration.SnowProfile2.SnowDensity;
+  profiles = computed(() => {
+    const draft = this.draft();
+    if (draft.registration.SnowProfile2?.SnowDensity && draft.registration.SnowProfile2.SnowDensity.length > 0) {
+      return draft.registration.SnowProfile2.SnowDensity;
     }
     return [];
-  }
+  });
+  nLayers = computed(() => {
+    // from template: profiles[0].Layers ? profiles[0].Layers.length : 0
+    const { Layers } = this.profiles()[0];
+    if (Layers != null) {
+      return Layers.length;
+    }
+    return 0;
+  });
+  isEmpty = computed(() => isEmpty(this.profiles()));
 
-  get isEmpty(): boolean {
-    return isEmpty(this.profiles);
-  }
+  private densityModal?: HTMLIonModalElement | null;
 
   constructor() {
     addIcons({ checkmarkCircle });
@@ -40,11 +46,11 @@ export class SnowDensityComponent {
 
   async openModal(): Promise<void> {
     if (!this.densityModal) {
-      await this.draftRepository.save(this.draft); // Save registration before open modal page
+      await this.draftRepository.save(this.draft()); // Save registration before open modal page
       this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {
-          uuid: this.draft.uuid,
+          uuid: this.draft().uuid,
         },
       });
       this.densityModal.present();

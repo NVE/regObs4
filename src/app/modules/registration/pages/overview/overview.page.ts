@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject, input } from '@angular/core';
 import { firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
@@ -15,9 +15,8 @@ import { getRegistrationName } from 'src/app/modules/common-registration/registr
 import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
-  AlertController,
   IonBackButton,
   IonButtons,
   IonCol,
@@ -102,38 +101,32 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   private draftRepository = inject(DraftRepositoryService);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  summaryItems$: Observable<Array<ISummaryItem>>;
-  draft$: Observable<RegistrationDraft>;
-  userSetting: UserSetting;
-  showSnowObsModeSelector$: Observable<boolean>;
-  geoHazardName$: Observable<string>;
-  isDesktop: boolean;
+  private uuid = this.activatedRoute.snapshot.params['id'];
+
+  draft$ = this.draftService.getDraft$(this.uuid);
+  summaryItems$: Observable<Array<ISummaryItem>> = this.draft$.pipe(
+    switchMap((draft) => {
+      if (this.showSimpleSnowMode(draft) || this.showSimpleWaterMode(draft)) {
+        return from(this.getLocationAndTimeSummaryItem(draft));
+      } else {
+        return this.summaryItemService.getSummaryItems$(this.uuid);
+      }
+    })
+  );
+  userSetting?: UserSetting;
+  showSnowObsModeSelector$: Observable<boolean> = this.draft$.pipe(
+    map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow && !this.syncFailed(draft))
+  );
+  geoHazardName$ = this.draft$.pipe(map((draft) => GeoHazard[draft.registration.GeoHazardTID]));
+  isDesktop = !Capacitor.isNativePlatform();
 
   ngOnInit() {
-    const uuid = this.activatedRoute.snapshot.params['id'];
-    this.isDesktop = !Capacitor.isNativePlatform();
-    this.draft$ = this.draftService.getDraft$(uuid);
     this.userGroupService.updateUserGroups();
-    this.geoHazardName$ = this.draft$.pipe(map((draft) => GeoHazard[draft.registration.GeoHazardTID]));
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((setting) => {
       this.ngZone.run(() => {
         this.userSetting = setting;
       });
     });
-
-    this.showSnowObsModeSelector$ = this.draft$.pipe(
-      map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow && !this.syncFailed(draft))
-    );
-
-    this.summaryItems$ = this.draft$.pipe(
-      switchMap((draft) => {
-        if (this.showSimpleSnowMode(draft) || this.showSimpleWaterMode(draft)) {
-          return from(this.getLocationAndTimeSummaryItem(draft));
-        } else {
-          return this.summaryItemService.getSummaryItems$(uuid);
-        }
-      })
-    );
   }
 
   getName(geoHazard: GeoHazard): string {
@@ -141,7 +134,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   private syncFailed(draft: RegistrationDraft): boolean {
-    return draft.error && this.draftHasStatusSync(draft);
+    return this.draftHasStatusSync(draft) ? !!draft.error : false;
   }
 
   private async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem[]> {
@@ -196,6 +189,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   private async saveDraftAndSimpleModeSetting(draft: RegistrationDraft, simpleMode: boolean): Promise<void> {
+    if (!this.userSetting) {
+      throw new Error('Usersetting not initalized');
+    }
+
     const draftToSave: RegistrationDraft = {
       ...draft,
       simpleMode,
@@ -307,9 +304,12 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
   //If conflict or registration is gone, re-sumbit or cancelling is handled by the failed-registration-component
   hideSendButton(draft: RegistrationDraft): boolean {
+    if (draft.error?.code == null) {
+      return false;
+    }
     return (
       this.draftHasStatusSync(draft) &&
-      [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft?.error?.code)
+      [RegistrationDraftErrorCode.ConflictError, RegistrationDraftErrorCode.GoneError].includes(draft.error.code)
     );
   }
 

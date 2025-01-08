@@ -1,7 +1,5 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, inject, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { BasePageService } from '../../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import {
   IonBackButton,
   IonButtons,
@@ -26,12 +24,12 @@ import { Subscription } from 'rxjs';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
+import { NgIf } from '@angular/common';
 
 /**
  * Start page / CRUD page for avalanche problems.
@@ -58,36 +56,33 @@ import { addCircleOutline } from 'ionicons/icons';
     IonReorderGroup,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
+    NgIf,
   ],
 })
 export class AvalancheProblemPage extends BasePage {
+  override registrationTid = RegistrationTid.AvalancheEvalProblem2;
+
   private modalController = inject(ModalController);
   private ngZone = inject(NgZone);
   private kdvService = inject(KdvService);
 
-  private avalancheCause: KdvElement[];
-  private kdvSubscription: Subscription;
+  private avalancheCause: KdvElement[] = [];
+  private kdvSubscription?: Subscription;
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.AvalancheEvalProblem2, basePageService, activatedRoute);
-    this.avalancheCause = [];
+    super();
     addIcons({ addCircleOutline });
   }
 
-  onInit() {
+  override onInit() {
     this.kdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseKDV').subscribe((val) => {
       this.avalancheCause = val;
     });
   }
 
-  onBeforeLeave() {
+  override onBeforeLeave() {
     if (this.kdvSubscription) {
       this.kdvSubscription.unsubscribe();
     }
@@ -98,7 +93,7 @@ export class AvalancheProblemPage extends BasePage {
       const modal = await this.modalController.create({
         component: AvalancheProblemModalPage,
         componentProps: {
-          avalancheEvalProblem: this.draft.registration.AvalancheEvalProblem2[index],
+          avalancheEvalProblem: index != null ? this.draft.registration.AvalancheEvalProblem2[index] : undefined,
         },
       });
       modal.present();
@@ -106,7 +101,7 @@ export class AvalancheProblemPage extends BasePage {
       this.ngZone.run(() => {
         if (this.draft?.registration?.AvalancheEvalProblem2) {
           if (result.data) {
-            if (result.data.delete) {
+            if (result.data.delete && index != null) {
               this.draft.registration.AvalancheEvalProblem2.splice(index, 1);
             } else {
               const avalancheEvalProblem: AvalancheEvalProblem2EditModel = result.data;
@@ -124,14 +119,13 @@ export class AvalancheProblemPage extends BasePage {
 
   getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel): string {
     const cause = this.avalancheCause.find((c) => c.Id === avalancheEvalProblem.AvalCauseTID);
-    if (cause) {
-      return cause.Name;
-    } else {
-      return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
-    }
+    return cause?.Name || 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
   }
 
   onProblemReorder(event: CustomEvent<ItemReorderEventDetail>): void {
+    if (this.draft.registration.AvalancheEvalProblem2 == null) {
+      throw new Error('AvalancheEvalProblem2 not initialized');
+    }
     this.draft.registration.AvalancheEvalProblem2 = ArrayHelper.reorderList(
       this.draft.registration.AvalancheEvalProblem2,
       event.detail.from,

@@ -50,10 +50,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class SnowSurfacePage extends BasePage {
-  constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
+  override registrationTid = RegistrationTid.SnowSurfaceObservation;
 
-    super(RegistrationTid.SnowSurfaceObservation, basePageService, activatedRoute);
+  constructor() {
+    super();
   }
 }

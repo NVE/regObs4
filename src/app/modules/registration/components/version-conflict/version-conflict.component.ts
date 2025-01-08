@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -26,21 +26,23 @@ export class VersionConflictComponent {
   private logger = inject(LoggingService);
   private navController = inject(NavController);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required<RegistrationDraft>();
 
   constructor() {
     addIcons({ refresh, warning });
   }
 
   overwrite(): void {
-    this.logger.debug(`Trying to overwrite remote version of draft ${this.draft.uuid}`, DEBUG_TAG);
-    this.draftToRegistrationService.markDraftAsReadyToSubmit(this.draft, true);
+    const draft = this.draft();
+    this.logger.debug(`Trying to overwrite remote version of draft ${draft.uuid}`, DEBUG_TAG);
+    this.draftToRegistrationService.markDraftAsReadyToSubmit(draft, true);
     this.navigateToMyObservations(); //so we can see that the draft happily submits
   }
 
   abandon(): void {
-    this.logger.debug(`Draft ${this.draft.uuid} abandoned`, DEBUG_TAG);
-    this.draftRepository.delete(this.draft.uuid);
+    const draft = this.draft();
+    this.logger.debug(`Draft ${draft.uuid} abandoned`, DEBUG_TAG);
+    this.draftRepository.delete(draft.uuid);
     this.navigateToMyObservations(); //so we can find the new version
   }
 

@@ -82,11 +82,11 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   isFetching$ = this.isFetching.asObservable();
   private forceUpdate = new Subject<void>();
 
-  private countError = new ReplaySubject<Error>(1);
-  private searchError = new ReplaySubject<Error>(1);
+  private countError = new ReplaySubject<Error | undefined>(1);
+  private searchError = new ReplaySubject<Error | undefined>(1);
   error$: Observable<{ hasError: boolean; searchError?: Error; countError?: Error }> = combineLatest([
-    this.countError.pipe(startWith(null)),
-    this.searchError.pipe(startWith(null)),
+    this.countError.pipe(startWith(undefined)),
+    this.searchError.pipe(startWith(undefined)),
   ]).pipe(
     map(([countError, searchError]) => {
       if (searchError || countError) {
@@ -107,7 +107,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     // Not sure what is best here, provide SearchService to this class, or provide the flexibility to create these
     // functions outside
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number>
+    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number | undefined>
   ) {
     this.registrations$ = combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(null))]).pipe(
       // For every new search criteria, create a paged search and check what the total count is
@@ -116,7 +116,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
         combineLatest([
           this.createPagedSearch(searchCriteria, fetchFunc),
           countFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
-            tap(() => this.countError.next(null)),
+            tap(() => this.countError.next(undefined)),
             catchError((err) => {
               this.countError.next(err);
               return of(0);
@@ -126,7 +126,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       ),
       // Save search state
       tap(([registrations, totalCount]) => {
-        this.allFetchedForCriteria.next(registrations.length >= totalCount);
+        this.allFetchedForCriteria.next(registrations.length >= (totalCount || 0));
         this.maxItemsFetched.next(registrations.length >= PagedSearchResult.MAX_ITEMS);
       }),
       // Map to registrations
@@ -174,7 +174,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       concatMap((searchCriteria) =>
         fetchFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
           tap(() => this.lastFetched.next(new Date())),
-          tap(() => this.searchError.next(null)),
+          tap(() => this.searchError.next(undefined)),
           catchError((err) => {
             this.searchError.next(err);
             return of([]);
@@ -186,7 +186,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       // Accumulate results if offset > 0
       scan(
         (accumulated, { searchCriteria, result }) => (searchCriteria.Offset > 0 ? [...accumulated, ...result] : result),
-        [] // Start with an empty array
+        [] as TViewModel[] // Start with an empty array
       ),
       // Return unique registrations. If a new page result comes in after a registration has been submitted,
       // we would get duplicates
@@ -204,7 +204,6 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
 export class SearchRegistrationService {
   private searchService = inject(SearchService);
   private logger = inject(LoggingService);
-
 
   /**
    * Normal search.

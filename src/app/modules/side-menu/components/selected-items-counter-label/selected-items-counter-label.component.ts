@@ -1,6 +1,8 @@
 import { IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+
+const toNumber = (v?: number | null): number => (v == null ? 0 : v);
 
 @Component({
   selector: 'app-selected-items-counter-label',
@@ -10,5 +12,5 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonLabel, TranslatePipe],
 })
 export class SelectedItemsCounterLabelComponent {
-  @Input() selectedItemsCount: number;
+  readonly selectedItemsCount = input(0, { transform: toNumber });
 }

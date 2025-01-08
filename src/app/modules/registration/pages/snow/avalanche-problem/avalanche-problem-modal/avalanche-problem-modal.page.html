@@ -1,73 +1,83 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}}</ion-title>
+    <ion-title>{{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="avalancheEvalProblemCopy">
+<ion-content>
   <ion-list lines="full">
     <ion-list-header class="ion-text-uppercase">
-      <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}} </ion-label>
+      <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER" | translate }} </ion-label>
     </ion-list-header>
     <ion-item>
-      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS' | translate}}</ion-label>
-      <ion-checkbox mode="md" slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
+      <ion-checkbox [checked]="noWeakLayers()" (ionChange)="toggleNoWeakLayers()" labelPlacement="end" justify="start">
+        {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS" | translate }}
+      </ion-checkbox>
     </ion-item>
-    <ng-container *ngIf="!noWeakLayers">
+    <ng-container *ngIf="!noWeakLayers()">
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
         kdvKey="Snow_AvalCauseKDV"
-        [value]="avalancheEvalProblemCopy.AvalCauseTID"
-        (valueChange)="setAvalCauseTID($event)"
+        [(value)]="avalCauseTid"
       ></app-kdv-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH"
         kdvKey="Snow_AvalCauseDepthKDV"
-        [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"
+        [(value)]="avalCauseDepthTid"
       ></app-kdv-select>
-      <ion-item *ngFor="let avalancheCauseAttribute of avalancheCauseAttributes">
-        <ion-label class="ion-text-wrap"> {{ avalancheCauseAttribute.kdvElement.Name }}</ion-label>
-        <ion-checkbox mode="md" slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
+      <ion-item>
+        <ion-checkbox [(ngModel)]="hasEasyCollapse" labelPlacement="end" justify="start">
+          {{ easyCollapseLabel() }}
+        </ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox [(ngModel)]="hasSoftLayerAbove" labelPlacement="end" justify="start">
+          {{ softLayerLabel() }}
+        </ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox [(ngModel)]="hasLargeCrystal" labelPlacement="end" justify="start">
+          {{ largeCrystalLabel() }}
+        </ion-checkbox>
       </ion-item>
     </ng-container>
     <ion-list-header class="ion-text-uppercase">
-      <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}} </ion-label>
+      <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY" | translate }} </ion-label>
     </ion-list-header>
     <app-kdv-select
       label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE"
       kdvKey="Snow_AvalancheExtKDV"
-      [(value)]="avalancheEvalProblemCopy.AvalancheExtTID"
-      [filter]="avalancheExtKdvFilter"
+      [(value)]="avalancheExt"
+      [filter]="avalancheExtKdvFilter()"
     ></app-kdv-select>
     <app-kdv-select
       label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY"
       kdvKey="Snow_AvalTriggerSimpleKDV"
-      [(value)]="avalancheEvalProblemCopy.AvalTriggerSimpleTID"
+      [(value)]="avalTriggerSimpleTid"
     ></app-kdv-select>
     <app-kdv-select
       label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_DESTRUCTIVE_SIZE"
       kdvKey="Snow_DestructiveSizeKDV"
-      [(value)]="avalancheEvalProblemCopy.DestructiveSizeTID"
+      [(value)]="destructiveSizeTid"
     ></app-kdv-select>
     <ion-list-header class="ion-text-uppercase">
-      <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate}} </ion-label>
+      <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" | translate }} </ion-label>
     </ion-list-header>
     <app-kdv-select
       label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION"
       kdvKey="Snow_AvalPropagationKDV"
-      [(value)]="avalancheEvalProblemCopy.AvalPropagationTID"
+      [(value)]="avalPropagationTid"
     ></app-kdv-select>
     <app-exposed-height
-      [(exposedHeightComboTID)]="avalancheEvalProblemCopy.ExposedHeightComboTID"
-      [(exposedHight1)]="avalancheEvalProblemCopy.ExposedHeight1"
-      [(exposedHight2)]="avalancheEvalProblemCopy.ExposedHeight2"
+      [(exposedHeightComboTID)]="exposedHeightComboTid"
+      [(exposedHeight1)]="exposedHeight1"
+      [(exposedHeight2)]="exposedHeight2"
     ></app-exposed-height>
-    <app-valid-exposition [(validExposition)]="avalancheEvalProblemCopy.ValidExposition"></app-valid-exposition>
-    <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheEvalProblemCopy.Comment">
-    </app-text-comment>
+    <app-valid-exposition [(validExposition)]="validExposition"></app-valid-exposition>
+    <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="comment"> </app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
   </app-modal-save-or-delete-buttons>

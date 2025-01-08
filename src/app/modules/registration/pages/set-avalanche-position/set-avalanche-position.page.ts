@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, inject, viewChild, input } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,
@@ -9,7 +9,7 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe, TranslationObject } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -51,27 +51,27 @@ export class SetAvalanchePositionPage implements OnInit {
   private swipeBackService = inject(SwipeBackService);
   private modalController = inject(ModalController);
 
-  @Input() startLatLng?: L.LatLng;
-  @Input() endLatLng?: L.LatLng;
-  @Input() extent?: [number, number][];
-  @Input() startExtent?: [number, number][];
-  @Input() endExtent?: [number, number][];
-  @Input() relativeToLatLng?: L.LatLng;
-  @Input() geoHazard: GeoHazard;
-  @Input() showPolyline = true;
+  readonly startLatLng = input<L.LatLng>();
+  readonly endLatLng = input<L.LatLng>();
+  readonly extent = input<[number, number][]>();
+  readonly startExtent = input<[number, number][]>();
+  readonly endExtent = input<[number, number][]>();
+  readonly relativeToLatLng = input<L.LatLng>();
+  readonly geoHazard = input.required<GeoHazard>();
+  readonly showPolyline = input(true);
 
   GeoHazard = GeoHazard;
 
-  start: L.LatLng;
-  end: L.LatLng;
-  totalPolygon: IPolygon;
-  startPolygon: IPolygon;
-  endPolygon: IPolygon;
-  private map: L.Map;
-  private pathLine: L.Polyline;
+  start!: L.LatLng;
+  end!: L.LatLng;
+  totalPolygon!: IPolygon;
+  startPolygon!: IPolygon;
+  endPolygon!: IPolygon;
+  private map!: L.Map;
+  private pathLine!: L.Polyline;
 
-  fromMarker: L.Marker;
-  locationMarker: L.Marker;
+  fromMarker!: L.Marker;
+  locationMarker!: L.Marker;
   locationPolygon = new Subject<IPolygon>();
   confirmLocationText = '';
   locationText = '';
@@ -98,17 +98,16 @@ export class SetAvalanchePositionPage implements OnInit {
     shadowUrl: 'leaflet/marker-shadow.png',
     shadowSize: [41, 41],
   });
-  private startMarker: L.Marker;
-  private endMarker: L.Marker;
-  private translations;
+  private startMarker!: L.Marker;
+  private endMarker!: L.Marker;
+  private translations!: TranslationObject;
   private startIsActive = true;
   private endIsActive = false;
   locationMarkerIconUrl = this.startImageUrl;
 
   fullscreen$: Observable<boolean>;
 
-  @ViewChild(SetLocationInMapComponent)
-  setLocationInMapComponent: SetLocationInMapComponent;
+  readonly setLocationInMapComponent = viewChild(SetLocationInMapComponent);
 
   constructor() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
@@ -132,13 +131,15 @@ export class SetAvalanchePositionPage implements OnInit {
       ])
       .toPromise();
     const fallbackLatlng = L.latLng(59.1, 10.3);
-    if (this.startLatLng) {
-      this.start = L.latLng(this.startLatLng.lat, this.startLatLng.lng);
+    const startLatLng = this.startLatLng();
+    if (startLatLng) {
+      this.start = L.latLng(startLatLng.lat, startLatLng.lng);
     }
-    if (this.endLatLng) {
-      this.end = L.latLng(this.endLatLng.lat, this.endLatLng.lng);
+    const endLatLng = this.endLatLng();
+    if (endLatLng) {
+      this.end = L.latLng(endLatLng.lat, endLatLng.lng);
     }
-    this.locationMarker = L.marker(this.relativeToLatLng || fallbackLatlng, {
+    this.locationMarker = L.marker(this.relativeToLatLng() || fallbackLatlng, {
       icon: this.startIcon,
     });
     this.startMarker = L.marker(this.locationMarker.getLatLng(), {
@@ -159,26 +160,27 @@ export class SetAvalanchePositionPage implements OnInit {
       this.startIsActive = false;
       this.updateMarkers();
     });
-    if (this.relativeToLatLng) {
-      this.fromMarker = L.marker(this.relativeToLatLng, {
+    const relativeToLatLng = this.relativeToLatLng();
+    if (relativeToLatLng) {
+      this.fromMarker = L.marker(relativeToLatLng, {
         icon: this.locationMarkerIcon,
       });
     }
     let areaTotalText = '';
-    if (this.geoHazard == GeoHazard.Snow) {
+    if (this.geoHazard() == GeoHazard.Snow) {
       areaTotalText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_TOTAL'];
     } else {
       areaTotalText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.AREA_TOTAL'];
     }
-    this.totalPolygon = constructPolygon(this.extent, settings.map.extentColor, PolygonArea, areaTotalText);
+    this.totalPolygon = constructPolygon(this.extent(), settings.map.extentColor, PolygonArea, areaTotalText);
     this.startPolygon = constructPolygon(
-      this.startExtent,
+      this.startExtent(),
       settings.map.startExtentColor,
       PolygonArea,
       this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START']
     );
     this.endPolygon = constructPolygon(
-      this.endExtent,
+      this.endExtent(),
       settings.map.endExtentColor,
       PolygonArea,
       this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AREA_END']
@@ -218,10 +220,11 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   private setPolygonLocationText() {
-    if (this.geoHazard == GeoHazard.Snow) {
+    const geoHazard = this.geoHazard();
+    if (geoHazard == GeoHazard.Snow) {
       this.confirmLocationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.CONFIRM_AVALANCHE_AREA'];
       this.locationText = this.translations['REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA'];
-    } else if (this.geoHazard == GeoHazard.Soil) {
+    } else if (geoHazard == GeoHazard.Soil) {
       this.confirmLocationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_LANDSLIDE_AREA'];
       this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_AREA'];
     }
@@ -259,7 +262,8 @@ export class SetAvalanchePositionPage implements OnInit {
         this.map.off('drag');
         this.setPolygonLocationText();
         const startStopEqual = this.start.lat == this.end.lat && this.start.lng == this.end.lng;
-        if ((this.geoHazard == GeoHazard.Snow || this.geoHazard == GeoHazard.Soil) && !startStopEqual) {
+        const geoHazard = this.geoHazard();
+        if ((geoHazard == GeoHazard.Snow || geoHazard == GeoHazard.Soil) && !startStopEqual) {
           this.totalPolygon = makePolygons('total', this.totalPolygon, undefined, this.start, this.end);
           this.startPolygon = makePolygons('start', this.startPolygon, undefined, this.start, this.end);
           this.endPolygon = makePolygons('end', this.endPolygon, undefined, this.start, this.end);
@@ -319,6 +323,6 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   ok() {
-    this.setLocationInMapComponent.confirm();
+    this.setLocationInMapComponent()?.confirm();
   }
 }

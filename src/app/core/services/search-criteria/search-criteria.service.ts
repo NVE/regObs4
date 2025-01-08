@@ -77,32 +77,39 @@ const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
   Longitude: latLng.lng,
 });
 
-function competenceFromUrlToDto(competence: string): number[] {
-  if (competence && !isCompetenceUrlValid(competence)) return;
-  return competence ? competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c)) : null;
+function competenceFromUrlToDto(competence: string | null): number[] {
+  if (competence == null) {
+    return [];
+  }
+  if (!isCompetenceUrlValid(competence)) {
+    return [];
+  }
+  return competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c));
 }
 
-function competenceFromDtoToUrl(competence: number[]): string {
-  return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : null;
+function competenceFromDtoToUrl(competence?: number[]): string | undefined {
+  return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : undefined;
 }
 
 //DtObsTime => obsTime
-function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string {
+function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string | undefined {
   if (value) {
-    const keyValue = [...UrlDtoOrderByMap].find(([, val]) => val == value)[0];
-    return keyValue;
+    const orderBy = [...UrlDtoOrderByMap].find(([, val]) => val == value);
+    if (orderBy?.[0] != null) {
+      return orderBy[0];
+    }
   }
-  return null;
+  return;
 }
 
-function numberArrayToSeparatedString(numbers: number[]): string {
+function numberArrayToSeparatedString(numbers: number[] | undefined): string | undefined {
   if (numbers?.length) {
     return numbers.join(URL_PARAM_ARRAY_DELIMITER);
   }
-  return '';
+  return;
 }
 
-function isCompetenceUrlValid(competence: string): RegExpMatchArray {
+function isCompetenceUrlValid(competence: string): RegExpMatchArray | null {
   //check if its a sequence of numbers to max 3 digits with optional tilde as param
   const regex = /^(\b\d{0,3}\b~?)*$/g;
   const isValid = competence.match(regex);
@@ -118,7 +125,7 @@ function isRegTypeValid(type: string) {
 
 //81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
 function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
-  if (!isRegTypeValid(type)) return;
+  if (!isRegTypeValid(type)) return [];
   //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
   const splitUrlToArray = type.split('~').map((i) => i.split('.'));
   //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
@@ -126,20 +133,23 @@ function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[]
     .map((i) => {
       return { Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])] : [] };
     })
-    .reduce((obj, item) => {
-      obj[item.Id] ? obj[item.Id].SubTypes.push(...item.SubTypes) : (obj[item.Id] = { ...item });
-      return obj;
-    }, {});
+    .reduce(
+      (obj, item) => {
+        obj[item.Id] ? (obj[item.Id].SubTypes || []).push(...item.SubTypes) : (obj[item.Id] = { ...item });
+        return obj;
+      },
+      {} as { [key: number]: RegistrationTypeCriteriaDto }
+    );
   return Object.values(regTypeCriteriaDto);
 }
 
 //[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
-function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
+function convertRegTypeDtoToUrl(types?: RegistrationTypeCriteriaDto[]) {
   if (types != null) {
     const url = [] as string[];
     types.forEach((type) => {
       const parentId = type.Id;
-      if (type.SubTypes.length > 0) {
+      if (type.SubTypes && type.SubTypes.length > 0) {
         type.SubTypes.forEach((subtype) => url.push(`${parentId}.${subtype}`));
       } else {
         url.push(parentId.toString());
@@ -147,7 +157,7 @@ function convertRegTypeDtoToUrl(types: RegistrationTypeCriteriaDto[]) {
     });
     return url.join('~');
   }
-  return '';
+  return;
 }
 
 /**
@@ -209,7 +219,12 @@ export class SearchCriteriaService {
 
     // Log last 10 changes made (nb, does not include langKey, extent etc, and only logs the change, not entire critera)
     this.searchCriteriaChanges
-      .pipe(scan((history, currentCriteriaChange) => [...history, currentCriteriaChange].slice(-10), []))
+      .pipe(
+        scan(
+          (history, currentCriteriaChange) => [...history, currentCriteriaChange].slice(-10),
+          [] as SearchCriteriaRequestDto[]
+        )
+      )
       .subscribe((history) => this.logger.debug('Change history (last 10)', DEBUG_TAG, history));
 
     // When days-back changes, set dates in search criteria
@@ -217,7 +232,7 @@ export class SearchCriteriaService {
       this.userSettingService.daysBackForCurrentGeoHazard$,
       this.useDaysBack$.pipe(filter((useDaysBack) => useDaysBack)),
     ]).subscribe(([daysBack]) => {
-      this.searchCriteriaChanges.next({ FromDtObsTime: this.daysBackToIsoDateTime(daysBack), ToDtObsTime: null });
+      this.searchCriteriaChanges.next({ FromDtObsTime: this.daysBackToIsoDateTime(daysBack), ToDtObsTime: undefined });
     });
 
     // Reset search criteria when geohazard changes
@@ -265,7 +280,7 @@ export class SearchCriteriaService {
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
         // Remove extent if one or more regions are selected
-        Extent: useMapExtent && (criteria.SelectedRegions || []).length === 0 ? extent : null,
+        Extent: useMapExtent && (criteria.SelectedRegions || []).length === 0 ? extent : undefined,
       })),
       map((criteria) => removeEmpty(criteria)),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
@@ -275,11 +290,11 @@ export class SearchCriteriaService {
 
   async resetSearchCriteria() {
     const criteria: SearchCriteriaRequestDto = {
-      ObserverCompetence: null,
-      SelectedRegistrationTypes: null,
-      SelectedRegions: null,
-      ObserverNickName: null,
-      PropertyFilters: null,
+      ObserverCompetence: undefined,
+      SelectedRegistrationTypes: undefined,
+      SelectedRegions: undefined,
+      ObserverNickName: undefined,
+      PropertyFilters: undefined,
       // FromDtObsTime: null, Do not remove FromDtObsTime filter, if so we would fetch all obs from dawn of time
       // ToDtObsTime: null,
     };
@@ -296,8 +311,8 @@ export class SearchCriteriaService {
     const slushFlow = url.searchParams.get(URL_PARAM_SLUSH_FLOW);
     const orderBy = this.readOrderBy(url.searchParams.get(URL_PARAM_ORDER_BY));
 
-    let fromObsTime: string;
-    let toObsTime: string;
+    let fromObsTime: string | undefined;
+    let toObsTime: string | undefined;
 
     if (url.searchParams.get(URL_PARAM_FROMDATE)) {
       fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
@@ -312,7 +327,7 @@ export class SearchCriteriaService {
     const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
     const regTypesRaw = url.searchParams.get(URL_PARAM_REGISTRATION_TYPE);
-    const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : null;
+    const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : [];
     const selectedRegions = this.readRegionsFromUrl(url.searchParams);
 
     const criteria: SearchCriteriaRequestDto = {};
@@ -325,11 +340,11 @@ export class SearchCriteriaService {
       criteria.ObserverNickName = nickName;
     }
 
-    if (observerCompetence) {
+    if (observerCompetence.length > 0) {
       criteria.ObserverCompetence = observerCompetence;
     }
 
-    if (regTypes) {
+    if (regTypes.length > 0) {
       criteria.SelectedRegistrationTypes = regTypes;
     }
 
@@ -345,23 +360,26 @@ export class SearchCriteriaService {
       criteria.OrderBy = orderBy;
     }
 
-    if (selectedRegions?.length) {
+    if (selectedRegions.length > 0) {
       criteria.SelectedRegions = selectedRegions;
     }
 
     return criteria;
   }
 
-  private readOrderBy(orderBy: string): string {
+  private readOrderBy(orderBy: string | null): string | undefined {
+    if (!orderBy) {
+      return;
+    }
     return UrlDtoOrderByMap.get(orderBy);
   }
 
   private readRegionsFromUrl(searchParams: URLSearchParams): number[] {
     const regionsRaw = searchParams.get(URL_PARAM_REGION);
-    if (regionsRaw?.length > 0) {
+    if (regionsRaw && regionsRaw.length > 0) {
       return separatedStringToNumberArray(regionsRaw);
     }
-    return null;
+    return [];
   }
 
   async applyQueryParams() {
@@ -396,7 +414,7 @@ export class SearchCriteriaService {
       params.delete(URL_PARAM_SLUSH_FLOW);
     }
 
-    if (criteria.Extent != null) {
+    if (isValidExtent(criteria.Extent)) {
       params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
       params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
       params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
@@ -429,7 +447,7 @@ export class SearchCriteriaService {
     });
   }
 
-  setObserverNickName(nickName: string) {
+  setObserverNickName(nickName?: string) {
     this.searchCriteriaChanges.next({ ObserverNickName: nickName });
   }
 
@@ -460,7 +478,7 @@ export class SearchCriteriaService {
         FromDtObsTime: moment(fromDate).startOf('day').toISOString(true),
       };
       if (removeToDate) {
-        dateCriteria.ToDtObsTime = null;
+        dateCriteria.ToDtObsTime = undefined;
       }
       this.searchCriteriaChanges.next(dateCriteria);
       this.setUseDaysBack(false);
@@ -483,8 +501,8 @@ export class SearchCriteriaService {
 
       if (criteriaToUpdateIndex != -1) {
         copyCriteria[criteriaToUpdateIndex].SubTypes = [
-          ...copyCriteria[criteriaToUpdateIndex].SubTypes,
-          ...newType.SubTypes,
+          ...(copyCriteria[criteriaToUpdateIndex].SubTypes || []),
+          ...(newType.SubTypes || []),
         ];
         this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
       } else
@@ -498,25 +516,16 @@ export class SearchCriteriaService {
     this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
-      const copyCriteria: RegistrationTypeCriteriaDto[] = JSON.parse(JSON.stringify(currentTypesCriteria));
-
-      const criteriaToUpdateWithIndex = copyCriteria.findIndex((criteria) => criteria.Id == typeToRemove.Id);
-
-      if (!(criteriaToUpdateWithIndex >= 0)) return;
-      //compare chosen object with existing one and if they are the same (no SubTypes differences) remove it from criteria
-      if (JSON.stringify(copyCriteria[criteriaToUpdateWithIndex]) == JSON.stringify(typeToRemove)) {
-        copyCriteria.splice(criteriaToUpdateWithIndex, 1);
-        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
-      }
-      //if not then it means there are subtypes differences so remove the subtypes from the current criterias
-      else {
-        //{Id:81, SubTypes: [33,23]} => {Id:81, SubTypes: [33]} remove typeToRemove subtypes from current criteria
-        const [subTypeValueToRemove] = typeToRemove.SubTypes;
-        const subTypesToRemoveWithIndex =
-          copyCriteria[criteriaToUpdateWithIndex].SubTypes.indexOf(subTypeValueToRemove);
-        copyCriteria[criteriaToUpdateWithIndex].SubTypes.splice(subTypesToRemoveWithIndex, 1);
-        this.searchCriteriaChanges.next({ SelectedRegistrationTypes: copyCriteria });
-      }
+      this.searchCriteriaChanges.next({
+        SelectedRegistrationTypes: currentTypesCriteria
+          .filter((regType) => regType.Id !== typeToRemove.Id)
+          .map((regType) => {
+            return {
+              ...regType,
+              SubTypes: regType.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)),
+            };
+          }),
+      });
     }
   }
 
@@ -540,7 +549,7 @@ export class SearchCriteriaService {
       // turn on avalancheObs automatically since slush flow is a type of avalancheObs
       this.setObservationType(avalacheObsType);
     } else {
-      this.searchCriteriaChanges.next({ PropertyFilters: null });
+      this.searchCriteriaChanges.next({ PropertyFilters: undefined });
 
       // turn off avalancheObs automatically since slush flow is a type of avalancheObs
       this.removeObservationType(avalacheObsType);
@@ -557,9 +566,9 @@ export class SearchCriteriaService {
   private removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove: RegistrationTypeCriteriaDto) {
     if (
       typeToRemove.Id === REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN &&
-      typeToRemove.SubTypes.includes(RegistrationTid.AvalancheObs)
+      typeToRemove.SubTypes?.includes(RegistrationTid.AvalancheObs)
     ) {
-      this.searchCriteriaChanges.next({ PropertyFilters: null });
+      this.searchCriteriaChanges.next({ PropertyFilters: undefined });
     }
   }
 
@@ -567,7 +576,7 @@ export class SearchCriteriaService {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString(true);
   }
 
-  private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto {
+  private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto | undefined {
     if (mapView?.bounds) {
       const extent: WithinExtentCriteriaDto = {
         BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),
@@ -575,7 +584,7 @@ export class SearchCriteriaService {
       };
       return extent;
     }
-    return null;
+    return;
   }
 }
 
@@ -583,4 +592,35 @@ function removeEmpty(criteria: SearchCriteriaRequestDto) {
   const entries = Object.entries(criteria);
   const notEmpty = entries.filter(([, value]) => value != null);
   return Object.fromEntries(notEmpty);
+}
+
+interface ValidPos {
+  Latitude: number;
+  Longitude: number;
+}
+
+interface ValidExtent {
+  BottomRight: ValidPos;
+  TopLeft: ValidPos;
+}
+
+function isValidExtent(extent?: WithinExtentCriteriaDto): extent is ValidExtent {
+  if (extent == null) {
+    return false;
+  }
+  for (const cornerProp of ['TopLeft', 'BottomRight'] as const) {
+    if (extent[cornerProp] == null) {
+      return false;
+    }
+    for (const coordProp of ['Latitude', 'Longitude'] as const) {
+      if (extent[cornerProp][coordProp] == null) {
+        return false;
+      }
+    }
+  }
+  return true;
+  // params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
+  // params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
+  // params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
+  // params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(ULR_COORDS_PRECISION));
 }

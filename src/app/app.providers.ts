@@ -55,7 +55,7 @@ export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
     super('');
   }
-  toString(): string {
+  override toString(): string {
     return this.service.currentLang;
   }
 }

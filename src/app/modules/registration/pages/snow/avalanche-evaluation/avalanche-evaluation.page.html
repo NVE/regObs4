@@ -1,21 +1,21 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <app-registration-content-wrapper
-    *ngIf="draft?.registration.AvalancheEvaluation3"
+    *ngIf="draft && draft.registration.AvalancheEvaluation3"
     [draft]="draft"
     [registrationTid]="registrationTid"
     (reset)="reset()"
   >
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE' | translate }} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <app-text-comment
         label="REGISTRATION.SNOW.AVALANCHE_EVALUATION.EVALUATION"
@@ -43,7 +43,7 @@
         [(value)]="draft.registration.AvalancheEvaluation3.ForecastComment"
       ></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

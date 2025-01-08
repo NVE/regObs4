@@ -21,9 +21,9 @@ export const PolygonArea = L.Polygon.extend({
 }) as unknown as typeof L.Polygon;
 
 export interface IPolygon {
-  title: string;
+  title?: string;
   active: boolean;
-  polygon: L.Polygon & {
+  polygon?: L.Polygon & {
     editing?: L.Draw.Polygon;
     options?: Partial<L.EditToolbar.EditHandlerOptions>;
   };

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject, viewChild, input, linkedSignal, model } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -42,42 +42,43 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class DatetimePickerComponent implements OnInit {
   private userSettings = inject(UserSettingService);
 
-  @Input() dateTime: string; // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
-  @Input() language: string; // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
-  @Input() minDate: string; // Sets the min date selectable from the date picker
-  @Input() maxDate: string; // Sets the max date selectable from the date picker
-  @Input() dateTimeFormat = 'dd. MMM yyyy HH:mm'; // Formats how the dateTime is represented as a string to the user
-  @Input() textAlign: 'left' | 'center' | 'right' = 'left';
-  @Input() presentation: DatetimePresentation = 'date-time';
-  @Input() buttonSize: 'small' | 'default' | 'large' = 'default'; // Sets the main ion-button size (values are from Ionic)
-  @Input() datePickerOpen = false;
-  @Input() resetable = false;
-  @Output() datePickerOpenChange = new EventEmitter<boolean>();
+  readonly dateTime = input<string>(); // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
+  readonly language = input<string>(); // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
+  readonly minDate = input<string>(); // Sets the min date selectable from the date picker
+  readonly maxDate = input<string>(); // Sets the max date selectable from the date picker
+  readonly dateTimeFormat = input('dd. MMM yyyy HH:mm'); // Formats how the dateTime is represented as a string to the user
+  readonly textAlign = input<'left' | 'center' | 'right'>('left');
+  readonly presentation = input<DatetimePresentation>('date-time');
+  readonly buttonSize = input<'small' | 'default' | 'large'>('default'); // Sets the main ion-button size (values are from Ionic)
+  readonly resetable = input(false);
+
+  readonly datePickerOpen = model(false);
 
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
 
-  private tempDate: string;
+  locale = linkedSignal(() => this.language());
 
-  @ViewChild(IonModal) modal: IonModal;
+  private tempDate?: string;
+
+  readonly modal = viewChild(IonModal);
 
   async ngOnInit(): Promise<void> {
-    if (!this.language) {
+    if (!this.locale()) {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
-      this.language = getLangKeyString(userSetting.language);
+      this.locale.set(getLangKeyString(userSetting.language));
     }
   }
 
   openModal() {
-    this.datePickerOpen = true;
-    this.datePickerOpenChange.emit(this.datePickerOpen);
+    this.datePickerOpen.set(true);
   }
 
   cancel() {
-    this.modal.dismiss(null, 'cancel');
+    this.modal()?.dismiss(null, 'cancel');
   }
 
   confirm() {
-    this.modal.dismiss(this.tempDate, 'confirm');
+    this.modal()?.dismiss(this.tempDate, 'confirm');
   }
 
   /**
@@ -85,10 +86,9 @@ export class DatetimePickerComponent implements OnInit {
    * @param event - CustomEvent<OverlayEventDetail<string>>
    */
   onWillDismiss(event: CustomEvent<OverlayEventDetail<string>>) {
-    this.datePickerOpen = false;
-    this.datePickerOpenChange.emit(this.datePickerOpen);
+    this.datePickerOpen.set(false);
 
-    if ((event.detail.data && event.detail.role === 'confirm') || this.resetable) {
+    if ((event.detail.data && event.detail.role === 'confirm') || this.resetable()) {
       this.dateTimeChange.emit(event.detail.data);
     }
   }
@@ -99,7 +99,7 @@ export class DatetimePickerComponent implements OnInit {
    * @returns false if the event.detail.value is not defined or if it is an array.
    */
   updateTempDateTime(event: CustomEvent<DatetimeChangeEventDetail>) {
-    if (!event.detail.value || Array.isArray(event.detail.value)) return false;
+    if (!event.detail.value || Array.isArray(event.detail.value)) return;
     this.tempDate = event.detail.value;
   }
 }

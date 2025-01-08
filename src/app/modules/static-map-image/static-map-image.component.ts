@@ -20,7 +20,18 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, AfterViewInit, ElementRef, TrackByFunction, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  AfterViewInit,
+  ElementRef,
+  TrackByFunction,
+  HostListener,
+  inject,
+  viewChild,
+  input,
+} from '@angular/core';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -132,18 +143,17 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private mapLayerService = inject(MapLayersService);
   private logger = inject(LoggingService);
 
-  @Input() location: ImageLocation;
-  @Input() allowZoom: boolean;
+  readonly location = input.required<ImageLocation>();
+  readonly allowZoom = input<boolean>();
 
-  @ViewChild('container', { static: true })
-  container: ElementRef<HTMLDivElement>;
+  readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.componentCreatedOrResized.next();
   }
 
-  tiles: TileProps[] = null;
+  tiles?: TileProps[];
   graphics: Graphic[] = [];
 
   private componentCreatedOrResized = new Subject<void>();
@@ -223,17 +233,18 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private getPositionsToPlot(): PositionToPlot[] {
     // This controls the draw order / z-index for graphics
     const positions = [];
-    if (this.location.startStopLocation?.start) {
-      positions.push({ pos: this.location.startStopLocation.start, type: 'start' });
+    const location = this.location();
+    if (location.startStopLocation?.start) {
+      positions.push({ pos: location.startStopLocation.start, type: 'start' as const });
     }
-    if (this.location.startStopLocation?.stop) {
-      positions.push({ pos: this.location.startStopLocation.stop, type: 'stop' });
+    if (location.startStopLocation?.stop) {
+      positions.push({ pos: location.startStopLocation.stop, type: 'stop' as const });
     }
-    if (this.location.damageLocations) {
-      positions.push(...this.location.damageLocations.map((pos) => ({ pos, type: 'damage' })));
+    if (location.damageLocations) {
+      positions.push(...location.damageLocations.map((pos) => ({ pos, type: 'damage' as const })));
     }
-    if (this.location.latLng) {
-      positions.push({ pos: this.location.latLng, type: 'obs' });
+    if (location.latLng) {
+      positions.push({ pos: location.latLng, type: 'obs' as const });
     }
     return positions;
   }
@@ -241,9 +252,10 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private getStartZoom() {
     // If start / stop avalanche should be plotted, start more zoomed in. If we are zoomed out we cant see the
     // avalanche path.
+    const location = this.location();
     if (
-      (this.location?.startStopLocation?.start && this.location?.startStopLocation?.stop) ||
-      this.location?.startStopLocation?.totalPolygon
+      (location?.startStopLocation?.start && location?.startStopLocation?.stop) ||
+      location?.startStopLocation?.totalPolygon
     ) {
       return 14;
     }
@@ -256,13 +268,16 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   } {
     const positionsForBoundsCheck = [...positions];
     const pos = positionsForBoundsCheck.shift();
+    if (!pos) {
+      throw new Error('Needs at least one position');
+    }
     let minLat = pos.lat;
     let maxLat = pos.lat;
     let minLng = pos.lng;
     let maxLng = pos.lng;
 
     while (positionsForBoundsCheck.length) {
-      const pos = positionsForBoundsCheck.shift();
+      const pos = positionsForBoundsCheck.shift() as LatLng;
       minLat = pos.lat < minLat ? pos.lat : minLat;
       maxLat = pos.lat > maxLat ? pos.lat : maxLat;
       minLng = pos.lng < minLng ? pos.lng : minLng;
@@ -317,7 +332,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private getPolygons(): PolygonsToPlot {
     // getLatLngs on polygons may return nested arrays with depth of 3 therefore we use flat(3) to simplify the result
     const polygons = {} as PolygonsToPlot;
-    const startStoplocation = this.location?.startStopLocation;
+    const startStoplocation = this.location()?.startStopLocation;
     if (startStoplocation?.totalPolygon) {
       polygons.totalPolygon = startStoplocation.totalPolygon.getLatLngs().flat(3);
     }
@@ -454,7 +469,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private createCenterMarker(topPx: number, leftPx: number) {
-    const svg = this.sanitizer.bypassSecurityTrustHtml(RegobsGeoHazardMarker.getIconSvg(this.location.geoHazard));
+    const svg = this.sanitizer.bypassSecurityTrustHtml(RegobsGeoHazardMarker.getIconSvg(this.location().geoHazard));
     // TODO: Can we extract width and height from svg?
     const svgWidth = 26;
     const svgHeight = 37;
@@ -521,10 +536,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private updateContainerSize() {
-    if (this.container?.nativeElement) {
-      const { width: w, height: h } = this.container.nativeElement.getBoundingClientRect();
-      this.size.next({ w, h });
-    }
+    const { width: w, height: h } = this.container().nativeElement.getBoundingClientRect();
+    this.size.next({ w, h });
   }
 
   private startSizeFinder() {

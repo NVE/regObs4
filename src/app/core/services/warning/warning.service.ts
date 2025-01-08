@@ -11,7 +11,7 @@ import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
-import { combineLatest, Observable, BehaviorSubject, of } from 'rxjs';
+import { combineLatest, Observable, BehaviorSubject, of, firstValueFrom } from 'rxjs';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
@@ -69,7 +69,7 @@ export class WarningService {
   }
 
   private getDataLoadId(geoHazard: GeoHazard, language: LangKey) {
-    return `${NanoSql.TABLES.WARNING.name}_${this.getLatestWarningKey(geoHazard, language)}`;
+    return `${NanoSql.TABLES['WARNING'].name}_${this.getLatestWarningKey(geoHazard, language)}`;
   }
 
   private getLatestWarningKey(geoHazard: GeoHazard, langKey: LangKey) {
@@ -90,7 +90,7 @@ export class WarningService {
       });
     }
     this.loggingService.debug('Updating warnings by priority', DEBUG_TAG);
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
@@ -111,7 +111,7 @@ export class WarningService {
         cancelled = true;
       });
     }
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
@@ -121,7 +121,7 @@ export class WarningService {
   }
 
   private async getGeoHazardsToUpdate(userSetting: UserSetting) {
-    const favourites = await this.getFavouritesAsObservable().pipe(take(1)).toPromise();
+    const favourites = await firstValueFrom(this.getFavouritesAsObservable());
     const currentGeoHazards = userSetting.currentGeoHazard;
     const favouriteGeoHazards = favourites.reduce(
       (acc: GeoHazard[], current: { groupId: string; geoHazard: GeoHazard }) =>
@@ -151,31 +151,31 @@ export class WarningService {
 
   updateWarningsForGeoHazard(geoHazard: GeoHazard, langKey: LangKey, cancel?: Promise<void>) {
     if (geoHazard === GeoHazard.Snow) {
-      return this.updateAvalancheWarnings(langKey, null, null, cancel);
+      return this.updateAvalancheWarnings(langKey, undefined, undefined, cancel);
     } else if (geoHazard === GeoHazard.Ice) {
       return this.updateIceWarnings(langKey);
     } else {
-      return this.updateFloodAndLandslideWarnings(geoHazard, langKey, null, null, cancel);
+      return this.updateFloodAndLandslideWarnings(geoHazard, langKey, undefined, undefined, cancel);
     }
   }
 
   addToFavourite(groupId: string, geoHazard: GeoHazard) {
     const id = `${geoHazard}_${groupId}`;
-    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('upsert', { id, groupId, geoHazard }).exec();
+    return nSQL(NanoSql.TABLES['WARNING_FAVOURITE'].name).query('upsert', { id, groupId, geoHazard }).exec();
   }
 
   removeFromFavourite(groupId: string, geoHazard: GeoHazard) {
     const id = `${geoHazard}_${groupId}`;
-    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name)
+    return nSQL(NanoSql.TABLES['WARNING_FAVOURITE'].name)
       .query('delete')
-      .where((g) => g.id === id)
+      .where((g) => g['id'] === id)
       .exec();
   }
 
   getIsFavouriteObservable(groupId: string, geoHazard: GeoHazard): Observable<boolean> {
     const id = `${geoHazard}_${groupId}`;
     return new NSqlFullUpdateObservable<{ id: string; groupId: string; geoHazard: GeoHazard }[]>(
-      nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').where(['id', '=', id]).listen()
+      nSQL(NanoSql.TABLES['WARNING_FAVOURITE'].name).query('select').where(['id', '=', id]).listen()
     ).pipe(
       map((val) => (val.length > 0 ? true : false)),
       distinctUntilChanged()
@@ -184,7 +184,7 @@ export class WarningService {
 
   private getOfflineWarningsAsObservable(geoHazard: GeoHazard) {
     return new NSqlFullUpdateObservable<IWarningGroup[]>(
-      nSQL(NanoSql.TABLES.WARNING.name).query('select').listen({
+      nSQL(NanoSql.TABLES['WARNING'].name).query('select').listen({
         debounce: 200,
       })
     ).pipe(
@@ -203,7 +203,7 @@ export class WarningService {
           [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Soil].map((geoHazard) =>
             this.getLatestWarningsOrFallbackToOffline(latestWarnings, geoHazard, langKey)
           )
-        ).pipe(map((result) => [].concat(...result)))
+        ).pipe(map((result) => result.flat()))
       ),
       tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, { result }))
     );
@@ -240,8 +240,8 @@ export class WarningService {
       regionName: region.name,
       counties: region.counties,
       url: region.url,
-      validFrom: null,
-      validTo: null,
+      validFrom: undefined,
+      validTo: undefined,
       geoHazard,
       warnings: [],
       sortOrder: index,
@@ -252,7 +252,7 @@ export class WarningService {
   private getCountyWarningGroups(geoHazard: GeoHazard) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const regions = require('../../../../assets/json/regions.json');
-    const regionGroups: IWarningGroup[] = regions.map((region) => ({
+    const regionGroups: IWarningGroup[] = regions.map((region: any) => ({
       id: `${region.Id}_${geoHazard}`,
       regionId: region.Id,
       regionName: region.Name,
@@ -275,7 +275,7 @@ export class WarningService {
   private getDefaultAvalancheWarningGroups() {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const regions = require('../../../../assets/json/varslingsomraader.json');
-    const avalancheRegions: IWarningGroup[] = regions.features.map((region) => ({
+    const avalancheRegions: IWarningGroup[] = regions.features.map((region: any) => ({
       id: `${region.properties.omradeID}_${GeoHazard.Snow}`,
       regionId: `${region.properties.omradeID}`,
       regionName: region.properties.omradeNavn,
@@ -290,7 +290,7 @@ export class WarningService {
 
   private getFavouritesAsObservable() {
     return new NSqlFullUpdateObservable<{ groupId: string; geoHazard: GeoHazard }[]>(
-      nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').listen()
+      nSQL(NanoSql.TABLES['WARNING_FAVOURITE'].name).query('select').listen()
     );
   }
 
@@ -313,7 +313,7 @@ export class WarningService {
         if (a.sortOrder === b.sortOrder) {
           return a.key.geoHazard - b.key.geoHazard;
         } else {
-          return a.sortOrder - b.sortOrder;
+          return (a.sortOrder || Infinity) - (b.sortOrder || Infinity);
         }
       });
   }
@@ -415,7 +415,7 @@ export class WarningService {
       await this.dataLoadService.loadingCompleted(dataLoadId, regions.length, dateRange.from.toDate(), new Date());
       this.saveWarningResultsToDb(geoHazard, regions);
     } catch (err) {
-      await this.dataLoadService.loadingError(dataLoadId, err.message);
+      await this.dataLoadService.loadingError(dataLoadId, err instanceof Error ? err.message : `Unknown error: ${err}`);
     }
   }
 
@@ -479,7 +479,7 @@ export class WarningService {
     const warningsForSubRegions = this.getMostRelevantWarningForSubRegion(warningsresult);
     const warningsForSubRegionsArray = Array.from(warningsForSubRegions).map(([_, value]) => value);
     const max = Math.max(...warningsForSubRegionsArray.map((v) => v.warningLevel));
-    return warningsForSubRegionsArray.find((w) => w.warningLevel === max);
+    return warningsForSubRegionsArray.find((w) => w.warningLevel === max) as IWarning;
   }
 
   aggregateWarningRegions(
@@ -516,7 +516,7 @@ export class WarningService {
     try {
       this.loggingService.debug(`Saving new ${GeoHazard[geoHazard]} warnings`, DEBUG_TAG, regionResult);
       const now = new Date();
-      await this.dbHelperService.fastInsert(NanoSql.TABLES.WARNING.name, regionResult, (data) => data.id);
+      await this.dbHelperService.fastInsert(NanoSql.TABLES['WARNING'].name, regionResult, (data) => data.id);
       this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
       await this.deleteRegionsNoLongerInResult(geoHazard, regionResult); // NOTE: This also trigger change
     } catch (err) {
@@ -581,7 +581,7 @@ export class WarningService {
         await this.dataLoadService.loadingError(dataLoadId, 'Operation cancelled');
       }
     } catch (err) {
-      await this.dataLoadService.loadingError(dataLoadId, err.message);
+      await this.dataLoadService.loadingError(dataLoadId, err instanceof Error ? err.message : `Unknown error: ${err}`);
     }
   }
 
@@ -596,16 +596,16 @@ export class WarningService {
       emergencyWarning:
         simpleWarning.EmergencyWarning !== (language === LangKey.en ? 'Not given' : 'Ikke gitt')
           ? simpleWarning.EmergencyWarning
-          : null,
+          : undefined,
     };
   }
 
   private async deleteRegionsNoLongerInResult(geoHazard: GeoHazard, regions: IWarningGroup[]) {
     if (regions.length > 0) {
       const ids = regions.map((r) => r.id);
-      const deleteResult = await nSQL(NanoSql.TABLES.WARNING.name)
+      const deleteResult = await nSQL(NanoSql.TABLES['WARNING'].name)
         .query('delete')
-        .where((dbItem: IWarningGroup) => dbItem.geoHazard === geoHazard && ids.indexOf(dbItem.id) < 0)
+        .where((dbItem) => dbItem['geoHazard'] === geoHazard && ids.indexOf(dbItem['id']) < 0)
         .exec();
       this.loggingService.debug('Deleted regions no longer in result:', DEBUG_TAG, deleteResult);
     }
@@ -634,10 +634,10 @@ export class WarningService {
       this.loggingService.debug('New updates for ice warnings:', DEBUG_TAG, regionResult);
 
       this.updateLatestWarnings(geoHazard, language, regionResult);
-      await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length, null, null);
+      await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length, undefined, undefined);
       this.saveWarningResultsToDb(geoHazard, regionResult);
     } catch (err) {
-      await this.dataLoadService.loadingError(dataLoadId, err.message);
+      await this.dataLoadService.loadingError(dataLoadId, err instanceof Error ? err.message : `Unknown error: ${err}`);
     }
   }
 

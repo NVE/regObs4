@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject, input } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -77,22 +77,28 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   private draftRepository = inject(DraftRepositoryService);
   private ngZone = inject(NgZone);
 
-  @Input() uuid: string;
-  useCylinder: boolean;
-  private layerModal: HTMLIonModalElement;
+  uuid = input.required<string>();
+  useCylinder?: boolean;
+  private layerModal?: HTMLIonModalElement;
   private ngDestroy$ = new Subject<void>();
-  private draft: RegistrationDraft;
-  private initialDraftClone: RegistrationDraft;
+  private draft?: RegistrationDraft;
+  private initialDraftClone?: RegistrationDraft;
 
   get profile() {
-    if (this.draft?.registration?.SnowProfile2?.SnowDensity?.length > 0) {
+    if (
+      this.draft?.registration?.SnowProfile2?.SnowDensity &&
+      this.draft.registration.SnowProfile2.SnowDensity.length > 0
+    ) {
       return this.draft.registration.SnowProfile2.SnowDensity[0];
     }
     return {};
   }
 
   get hasLayers() {
-    return this.profile?.Layers?.length > 0;
+    if (this.profile?.Layers) {
+      return this.profile?.Layers?.length > 0;
+    }
+    return false;
   }
 
   constructor() {
@@ -101,7 +107,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.draftRepository
-      .getDraft$(this.uuid)
+      .getDraft$(this.uuid())
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(async () => {
@@ -143,19 +149,21 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.draftRepository.save(this.initialDraftClone);
+    if (this.initialDraftClone) {
+      await this.draftRepository.save(this.initialDraftClone);
+    }
     this.modalController.dismiss();
   }
 
   addLayerTop() {
-    this.addOrEditLayer(0, undefined);
+    this.addOrEditLayer(0);
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? this.profile.Layers.length : 0, undefined);
+    this.addOrEditLayer(this.profile.Layers ? this.profile.Layers.length : 0);
   }
 
-  async addOrEditLayer(index: number, layer: SnowDensityLayerModel) {
+  async addOrEditLayer(index: number, layer?: SnowDensityLayerModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowDensityLayerModalPage,
@@ -170,18 +178,20 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
       });
       this.layerModal.present();
       await this.layerModal.onDidDismiss();
-      this.layerModal = null;
+      this.layerModal = undefined;
       this.recalculateLayers();
     }
   }
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
-    this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
+    if (this.profile.Layers) {
+      this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
+    }
     event.detail.complete();
   }
 
   recalculateLayers() {
-    if (this.useCylinder && this.hasLayers) {
+    if (this.useCylinder && this.profile.Layers) {
       this.profile.Layers.forEach((layer: SnowDensityLayerModel) => {
         layer.Density = HydrologyHelper.calculateDensity(
           layer.Weight,
@@ -194,6 +204,9 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   async recalculateLayersAndSave() {
+    if (this.draft == null) {
+      throw new Error('Draft not initialized');
+    }
     this.recalculateLayers();
     await this.draftRepository.save(this.draft);
   }

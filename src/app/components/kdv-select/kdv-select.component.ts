@@ -1,68 +1,63 @@
-import { IonItem, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { IonItem } from '@ionic/angular/standalone';
+import { Component, ChangeDetectionStrategy, inject, input, model, computed, Signal } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { Observable, Subject, combineLatest, debounceTime, map, startWith } from 'rxjs';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
-import { NgClass, NgIf, AsyncPipe } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+
+type FilterFunc = (value: number) => boolean;
 
 @Component({
   selector: 'app-kdv-select',
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonItem, IonLabel, NgClass, NgIf, SelectComponent, TranslatePipe],
+  imports: [IonItem, NgIf, SelectComponent],
 })
-export class KdvSelectComponent implements OnInit, OnChanges {
+export class KdvSelectComponent {
   private kdvService = inject(KdvService);
 
-  @Input() label: string;
-  @Input() kdvKey: KdvKey;
-  @Input() value: number;
-  @Output() valueChange = new EventEmitter();
-  @Input() showZeroValues = false;
-  @Input() disabled = false;
-  @Input() labelColor = 'medium';
-  @Input() showResetButton = true;
-  @Input() useDescription: boolean;
-  @Input() filter: (number) => boolean;
-  @Input() getIconFunc: (kdvElement: KdvElement) => string;
-  @Input() obsLocMode = false;
+  readonly label = input.required<string>();
+  readonly kdvKey = input.required<KdvKey>();
+  readonly value = model<number>();
+  readonly showZeroValues = input(false);
+  readonly disabled = input(false);
+  readonly showResetButton = input(true);
+  readonly useDescription = input<boolean>();
+  readonly filter = input<FilterFunc>();
+  readonly getIconFunc = input<(kdvElement: KdvElement) => string>();
+  readonly color = input<string>();
 
-  selectOptions$: Observable<SelectOption[]>;
-  private hasChanges = new Subject<void>();
+  selectOptionsResource = rxResource({
+    request: () => this.kdvKey(),
+    loader: ({ request }) => this.kdvService.getKdvRepositoryByKeyObservable(request),
+  });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ngOnChanges(changes: SimpleChanges): void {
-    this.hasChanges.next();
+  selectOptions: Signal<SelectOption[]> = computed(() => {
+    const kdvs = this.selectOptionsResource.value() || [];
+    const getIconFunc = this.getIconFunc();
+    const useDesc = this.useDescription();
+    const filterFunc = this.filter();
+    const showZeros = this.showZeroValues();
+
+    return kdvs.map((kdv) => ({
+      id: kdv.Id,
+      text: (useDesc ? kdv.Description : kdv.Name) || kdv.Id.toString(),
+      disabled: !isVisible(kdv, filterFunc, showZeros),
+      icon: getIconFunc ? getIconFunc(kdv) : undefined,
+    }));
+  });
+}
+
+function isVisible(item: KdvElement, filter: FilterFunc | undefined, showZeroValues: boolean) {
+  if (filter != null && !filter(item.Id)) {
+    return false;
   }
-
-  ngOnInit() {
-    this.selectOptions$ = combineLatest([
-      this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey),
-      this.hasChanges.pipe(startWith(null), debounceTime(50)),
-    ]).pipe(
-      map(([kdvs]) =>
-        kdvs.map((kdv) => ({
-          id: kdv.Id,
-          text: this.useDescription ? kdv.Description : kdv.Name,
-          disabled: !this.isVisible(kdv),
-          icon: this.getIconFunc ? this.getIconFunc(kdv) : undefined,
-        }))
-      )
-    );
+  if (!showZeroValues) {
+    return item.Id % 100 !== 0;
   }
-
-  private isVisible(item: KdvElement) {
-    if (this.filter !== undefined && !this.filter(item.Id)) {
-      return false;
-    }
-    if (!this.showZeroValues) {
-      return item.Id % 100 !== 0;
-    }
-    return true;
-  }
+  return true;
 }

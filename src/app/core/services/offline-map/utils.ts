@@ -25,7 +25,7 @@ export function getProductionDate(downloadedPackage: OfflineMapPackage): Date {
 }
 
 /** Gir deg tidspunktet for når pakka ble lastet ned */
-export function getDownloadCompleteDate(downloadedPackage: OfflineMapPackage): Date {
-  const timeInMs = downloadedPackage.downloadComplete * 1000;
+export function getDownloadCompleteDate(downloadComplete: NonNullable<OfflineMapPackage['downloadComplete']>): Date {
+  const timeInMs = downloadComplete * 1000;
   return new Date(timeInMs);
 }

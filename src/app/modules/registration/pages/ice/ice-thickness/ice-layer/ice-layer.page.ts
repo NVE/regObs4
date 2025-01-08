@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, inject } from '@angular/core';
+import { Component, inject, input, linkedSignal, computed } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -39,37 +39,32 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
-export class IceLayerPage implements OnInit {
+export class IceLayerPage {
   private modalController = inject(ModalController);
-  private ngZone = inject(NgZone);
 
-  @Input() iceThicknessLayer: IceThicknessLayerEditModel;
-
-  isNew = false;
-  get isValid() {
-    return this.layerCopy.IceLayerThickness !== undefined;
-  }
-
-  layerCopy: IceThicknessLayerEditModel;
-
-  ngOnInit() {
-    if (!this.iceThicknessLayer) {
-      this.layerCopy = {};
-      this.isNew = true;
-    } else {
-      this.layerCopy = { ...this.iceThicknessLayer };
-    }
-  }
+  readonly iceThicknessLayer = input<IceThicknessLayerEditModel>();
+  layerTid = linkedSignal(() => this.iceThicknessLayer()?.IceLayerTID);
+  thickness = linkedSignal(() => this.iceThicknessLayer()?.IceLayerThickness);
+  isValid = computed(() => this.thickness() != null);
+  isNew = computed(() => this.iceThicknessLayer() != null);
 
   cancel() {
     this.modalController.dismiss();
   }
 
   ok() {
-    this.modalController.dismiss(this.layerCopy);
+    this.modalController.dismiss(this.getEditResult());
   }
 
   delete() {
     this.modalController.dismiss({ delete: true });
+  }
+
+  private getEditResult(): IceThicknessLayerEditModel {
+    return {
+      ...(this.iceThicknessLayer() || {}),
+      IceLayerThickness: this.thickness(),
+      IceLayerTID: this.layerTid(),
+    };
   }
 }

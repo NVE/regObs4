@@ -1,13 +1,13 @@
 <app-header [title]="title"></app-header>
-<ion-segment mode="md" slot="fixed" [value]="selectedTab$ | async" (ionChange)="onSegmentChange($event)">
-  <ion-segment-button mode="md" value="inMapView" [disabled]="mapService.noMapExtentAvailable$ | async">
-    <ion-label>{{'WARNING_LIST.RELEVANT'|translate}}</ion-label>
+<ion-segment slot="fixed" [value]="selectedTab$ | async" (ionChange)="onSegmentChange($event)">
+  <ion-segment-button value="inMapView" [disabled]="mapService.noMapExtentAvailable$ | async">
+    <ion-label>{{ "WARNING_LIST.RELEVANT" | translate }}</ion-label>
   </ion-segment-button>
-  <ion-segment-button mode="md" value="all">
-    <ion-label>{{'WARNING_LIST.ALL'|translate}}</ion-label>
+  <ion-segment-button value="all">
+    <ion-label>{{ "WARNING_LIST.ALL" | translate }}</ion-label>
   </ion-segment-button>
-  <ion-segment-button mode="md" value="favourites">
-    <ion-label>{{'WARNING_LIST.FAVOURITES'|translate}}</ion-label>
+  <ion-segment-button value="favourites">
+    <ion-label>{{ "WARNING_LIST.FAVOURITES" | translate }}</ion-label>
   </ion-segment-button>
 </ion-segment>
 <ion-content>
@@ -34,12 +34,7 @@
     </div>
     <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer"> </ion-item-divider>
   </ion-virtual-scroll> -->
-  <div
-    id="abonner-banner"
-    *ngIf="(selectedTab$ | async) === 'inMapView'"
-    class="ion-margin"
-    [ngClass]="{'loaded': loaded}"
-  >
+  <div id="abonner-banner" *ngIf="(selectedTab$ | async) === 'inMapView'" class="ion-margin" [class.loaded]="loaded">
     <app-abonner-banner></app-abonner-banner>
   </div>
 </ion-content>
@@ -57,8 +52,8 @@
     </ion-row>
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ 'WARNING_LIST.NO_FAVOURITES' | translate }}</h2>
-        <h3 class="ion-text-wrap">{{'WARNING_LIST.NO_FAVOURITES_TEXT'|translate}}</h3>
+        <h2>{{ "WARNING_LIST.NO_FAVOURITES" | translate }}</h2>
+        <h3 class="ion-text-wrap">{{ "WARNING_LIST.NO_FAVOURITES_TEXT" | translate }}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -72,8 +67,8 @@
     </ion-row>
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ 'WARNING_LIST.NO_WARNINGS' | translate }}</h2>
-        <h3 class="ion-text-wrap">{{'WARNING_LIST.NO_WARNINGS_TEXT'|translate}}</h3>
+        <h2>{{ "WARNING_LIST.NO_WARNINGS" | translate }}</h2>
+        <h3 class="ion-text-wrap">{{ "WARNING_LIST.NO_WARNINGS_TEXT" | translate }}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>

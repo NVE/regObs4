@@ -1,8 +1,6 @@
 import { Component, NgZone, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
-import { BasePageService } from '../../base-page-service';
 import {
   IonBackButton,
   IonButtons,
@@ -55,29 +53,31 @@ import { addCircleOutline } from 'ionicons/icons';
   ],
 })
 export class AvalancheActivityPage extends BasePage {
+  override registrationTid = RegistrationTid.AvalancheActivityObs2;
+
   private modalController = inject(ModalController);
   private ngZone = inject(NgZone);
   private kdvService = inject(KdvService);
 
   private avalancheCause: KdvElement[];
   private estimatedNumber: KdvElement[];
-  private kdvSubscription: Subscription;
+  private kdvSubscription?: Subscription;
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.AvalancheActivityObs2, basePageService, activatedRoute);
+    super();
     this.avalancheCause = [];
     this.estimatedNumber = [];
     addIcons({ addCircleOutline });
   }
 
   get avalancheActivities(): AvalancheActivityObs2EditModel[] {
+    if (this.draft.registration.AvalancheActivityObs2 == null) {
+      this.draft.registration.AvalancheActivityObs2 = [];
+    }
     return this.draft.registration.AvalancheActivityObs2;
   }
 
-  onInit() {
+  override onInit() {
     this.kdvSubscription = combineLatest([
       this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
       this.kdvService.getKdvRepositoryByKeyObservable('Snow_EstimatedNumKDV'),
@@ -87,7 +87,7 @@ export class AvalancheActivityPage extends BasePage {
     });
   }
 
-  onBeforeLeave() {
+  override onBeforeLeave() {
     if (this.kdvSubscription) {
       this.kdvSubscription.unsubscribe();
     }
@@ -97,7 +97,7 @@ export class AvalancheActivityPage extends BasePage {
     const modal = await this.modalController.create({
       component: AvalancheActivityModalPage,
       componentProps: {
-        avalancheActivity: this.avalancheActivities[index],
+        avalancheActivity: index != null ? this.avalancheActivities[index] : undefined,
         dtObsTime: this.draft.registration.DtObsTime,
       },
     });
@@ -105,7 +105,7 @@ export class AvalancheActivityPage extends BasePage {
     const result = await modal.onDidDismiss();
     this.ngZone.run(() => {
       if (result.data) {
-        if (result.data.delete) {
+        if (result.data.delete && index != null) {
           this.avalancheActivities.splice(index, 1);
         } else {
           const avalancheActivityObs: AvalancheActivityObs2EditModel = result.data;
@@ -121,19 +121,11 @@ export class AvalancheActivityPage extends BasePage {
 
   getCause(avalancheActivityObs: AvalancheActivityObs2EditModel) {
     const cause = this.avalancheCause.find((c) => c.Id === avalancheActivityObs.AvalancheExtTID);
-    if (cause) {
-      return cause.Name;
-    } else {
-      return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
-    }
+    return cause?.Name || 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
   }
 
   getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2EditModel) {
     const kdvalue = this.estimatedNumber.find((c) => c.Id === avalancheActivityObs.EstimatedNumTID);
-    if (kdvalue) {
-      return kdvalue.Name;
-    } else {
-      return 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_NUMBER';
-    }
+    return kdvalue?.Name || 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_NUMBER';
   }
 }

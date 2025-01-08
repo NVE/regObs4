@@ -1,66 +1,35 @@
-<!-- <ion-fab
-  *ngIf="currentGeoHazard$ | async as currentGeoHazard"
-  vertical="top"
-  horizontal="start"
-  slot="fixed"
-  [ngClass]="{ fullscreen: fullscreen$ | async }"
-  [@enterAnimationFab]="animateOnEnterState"
->
-
+<ion-fab vertical="top" horizontal="start" slot="fixed">
+  <!-- [@enterAnimationFab]="animateOnEnterState" -->
   <ion-item (click)="toggle()">
     <ion-fab-button slot="start" color="tertiary">
-      <app-geo-icon [geoHazards]="currentGeoHazard"></app-geo-icon>
+      <ion-icon [src]="geohazard().icon"></ion-icon>
     </ion-fab-button>
-    <ion-label *ngIf="isOpen && showLabels" @enterAnimation>
-      <app-geo-name [geoHazards]="currentGeoHazard"></app-geo-name>
-    </ion-label>
+    @if (isOpen() && showLabels()) {
+      <!-- @enterAnimation -->
+      <ion-label>
+        <app-geo-name [geoHazards]="geohazard().geohazards"></app-geo-name>
+      </ion-label>
+    }
   </ion-item>
-  <ng-container *ngIf="selectableGeoHazards$ | async as selectableGeoHazards">
-    <ion-list [@listAnimate]="selectableGeoHazards.length" *ngIf="isOpen" lines="none">
-      <ion-item
-        class="list-item"
-        *ngFor="let geoHazards of selectableGeoHazards"
-        (click)="setCurrentGeoHazard(geoHazards)"
-      >
-        <ion-fab-button slot="start" color="tertiary">
-          <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
-        </ion-fab-button>
-        <ion-label *ngIf="showLabels">
-          <app-geo-name [geoHazards]="geoHazards"></app-geo-name>
-        </ion-label>
-      </ion-item>
+  @if (isOpen()) {
+    <ion-list [@listAnimate]="geohazardOptions().length" lines="none">
+      @for (option of geohazardOptions(); track option.id) {
+        <ion-item class="list-item" (click)="setCurrentGeoHazard(option.geohazards)">
+          <ion-fab-button slot="start" color="tertiary">
+            <!-- <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon> -->
+            <ion-icon [src]="option.icon"></ion-icon>
+          </ion-fab-button>
+          @if (showLabels()) {
+            <ion-label>
+              <app-geo-name [geoHazards]="option.geohazards"></app-geo-name>
+            </ion-label>
+          }
+        </ion-item>
+      }
     </ion-list>
-  </ng-container>
+  }
 </ion-fab>
-<div *ngIf="isOpen" class="wrapper" (click)="toggle()"></div> -->
-<ion-button id="geo-fab-btn" shape="round" color="tertiary">
-  <ion-icon src="/assets/icon/snow.svg" slot="start"></ion-icon>
-  Snø
-</ion-button>
-<ion-popover
-  trigger="geo-fab-btn"
-  size="auto"
-  [dismissOnSelect]="true"
-  reference="trigger"
-  side="bottom"
-  alignment="end"
->
-  <ng-template>
-    <ion-content>
-      <ion-list>
-        <ion-item button [detail]="false" disabled>
-          <ion-icon aria-hidden="true" src="/assets/icon/snow.svg" slot="start"></ion-icon>
-          <ion-label>Snø</ion-label>
-        </ion-item>
-        <ion-item button [detail]="false">
-          <ion-icon aria-hidden="true" src="/assets/icon/ice.svg" slot="start"></ion-icon>
-          <ion-label>Is</ion-label>
-        </ion-item>
-        <ion-item button [detail]="false">
-          <ion-icon aria-hidden="true" src="/assets/icon/water_dirt.svg" slot="start"></ion-icon>
-          <ion-label>Vann og jord</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-content>
-  </ng-template>
-</ion-popover>
+
+@if (isOpen()) {
+  <div class="backdrop" (click)="isOpen.set(false)"></div>
+}

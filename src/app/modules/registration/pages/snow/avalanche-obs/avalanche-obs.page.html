@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.AVALANCHE_OBS.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,14 +16,14 @@
   >
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_OBS.TITLE" | translate }} </ion-label>
       </ion-list-header>
-      <ion-item [ngClass]="{'hasWarning': dayDtAvalancheTimeIsDifferentThanDayObsTime}">
+      <ion-item [ngClass]="{ hasWarning: dayDtAvalancheTimeIsDifferentThanDayObsTime }">
         <ion-label
-          [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
+          [color]="!avalancheObs.DtAvalancheTime && showWarning ? 'danger' : 'medium'"
           position="stacked"
           class="ion-text-uppercase"
-          >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.EARLIEST_TIME' | translate }}</ion-label
+          >{{ "REGISTRATION.SNOW.AVALANCHE_OBS.EARLIEST_TIME" | translate }}</ion-label
         >
         <app-datetime-picker
           [(dateTime)]="avalancheObs.DtEarliestAvalancheTime"
@@ -32,12 +32,12 @@
         >
         </app-datetime-picker>
       </ion-item>
-      <ion-item [ngClass]="{'hasWarning': dayDtAvalancheTimeIsDifferentThanDayObsTime}">
+      <ion-item [ngClass]="{ hasWarning: dayDtAvalancheTimeIsDifferentThanDayObsTime }">
         <ion-label
-          [color]="(!avalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
+          [color]="!avalancheObs.DtAvalancheTime && showWarning ? 'danger' : 'medium'"
           position="stacked"
           class="ion-text-uppercase"
-          >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label
+          >{{ "REGISTRATION.SNOW.AVALANCHE_OBS.TIME" | translate }}</ion-label
         >
         <app-datetime-picker [(dateTime)]="avalancheObs.DtAvalancheTime" [maxDate]="maxDate"> </app-datetime-picker>
         <ion-button
@@ -48,33 +48,30 @@
           (click)="setAvalancheTimeTimeToNow()"
         >
           <ion-icon slot="start" name="time"></ion-icon>
-          {{"REGISTRATION.SET_TIME.NOW" | translate}}
+          {{ "REGISTRATION.SET_TIME.NOW" | translate }}
         </ion-button>
       </ion-item>
       <ion-item *ngIf="dayDtAvalancheTimeIsDifferentThanDayObsTime">
         <ion-label color="danger" class="ion-text-wrap">
-          {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
+          {{ "ALERT.WARNING" | translate }}! {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING" | translate }}
         </ion-label>
       </ion-item>
       <ion-item (click)="setAvalanchePosition()">
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' | translate}}</ion-label
+          {{ "REGISTRATION.SNOW.AVALANCHE_OBS.POSITION" | translate }}</ion-label
         >
         <ion-text color="medium" class="ion-align-self-start ion-text-wrap">
           <ion-icon class="position-pin" color="medium" name="location"></ion-icon>
-          <ng-container *ngIf="avalancheObs.StartLat else noPosition">
-            {{ avalancheObs.StartLat | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, {{
-            avalancheObs.StartLong | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{
-            avalancheObs.StopLat | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, {{
-            avalancheObs.StopLong | number:'0.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+          <ng-container *ngIf="avalancheObs.StartLat; else noPosition">
+            {{ avalancheObs.StartLat | number: "0.3" }}&deg;{{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},
+            {{ avalancheObs.StartLong | number: "0.3" }}&deg;{{ "MAP_CENTER_INFO.EAST_SHORT" | translate }} -
+            {{ avalancheObs.StopLat | number: "0.3" }}&deg;{{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},
+            {{ avalancheObs.StopLong | number: "0.3" }}&deg;{{ "MAP_CENTER_INFO.EAST_SHORT" | translate }}
           </ng-container>
         </ion-text>
         <ion-icon slot="end" class="item-detail-icon" name="chevron-forward"> </ion-icon>
       </ion-item>
       <ion-item>
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase"
-          >{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION' | translate}}</ion-label
-        >
         <app-select
           label="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
           [(selectedValue)]="avalancheObs.ValidExposition"
@@ -97,10 +94,11 @@
         [(value)]="avalancheObs.AvalancheTriggerTID"
       ></app-kdv-select>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{'REGISTRATION.SNOW.AVALANCHE_OBS.REMOTELY_TRIGGERED' | translate}}
-        </ion-label>
-        <ion-toggle [(ngModel)]="avalancheObs.RemotelyTriggered"></ion-toggle>
+        <ion-toggle [(ngModel)]="avalancheObs.RemotelyTriggered" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">{{
+            "REGISTRATION.SNOW.AVALANCHE_OBS.REMOTELY_TRIGGERED" | translate
+          }}</ion-text>
+        </ion-toggle>
       </ion-item>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE"
@@ -138,7 +136,7 @@
       ></app-text-comment>
       <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheObs.Comment"> </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"
@@ -149,7 +147,7 @@
       >
       </app-edit-images>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION" | translate }} </ion-label>
       </ion-list-header>
       <app-kdv-select
         label="REGISTRATION.INCIDENT.ACTIVITY"
@@ -158,7 +156,6 @@
       ></app-kdv-select>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
-        [color]="!isInvolvedValid ? 'danger' : 'medium'"
         [min]="0"
         [(value)]="incident.InvolvedNum"
         (valueChange)="groupValidate()"
@@ -166,7 +163,6 @@
       </app-numeric-input>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
-        [color]="!isCasualtiesValid ? 'danger' : 'medium'"
         [isValid]="isCasualtiesValid"
         errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM_ERROR_MESSAGE"
         [min]="0"
@@ -176,9 +172,12 @@
       </app-numeric-input>
       <app-numeric-input
         label="REGISTRATION.INCIDENT.DEAD_NUM"
-        [color]="!isDeadValid ? 'danger' : 'medium'"
         [isValid]="isDeadValid"
-        [errorMessage]="!isErrorMessageHarmAndDead ? 'REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM_ERROR_MESSAGE' : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'"
+        [errorMessage]="
+          !isErrorMessageHarmAndDead
+            ? 'REGISTRATION.SNOW.AVALANCHE_OBS.DEAD_NUM_ERROR_MESSAGE'
+            : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'
+        "
         [min]="0"
         [(value)]="incident.DeadNum"
         (valueChange)="groupValidate()"
@@ -186,19 +185,23 @@
       </app-numeric-input>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM"
-        [errorMessage]="!isErrorMessageHarmAndDead ? 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM_ERROR_MESSAGE' : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'"
+        [errorMessage]="
+          !isErrorMessageHarmAndDead
+            ? 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_NUM_ERROR_MESSAGE'
+            : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'
+        "
         [isValid]="isHarmedValid"
-        [color]="!isHarmedValid ? 'danger' : 'medium'"
         [(value)]="incident.HarmedNum"
         (valueChange)="groupValidate()"
         [min]="0"
       >
       </app-numeric-input>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{'REGISTRATION.SNOW.AVALANCHE_OBS.TRAFFIC_OBSTRUCTED' | translate}}
-        </ion-label>
-        <ion-toggle [(ngModel)]="incident.TrafficObstructed"></ion-toggle>
+        <ion-toggle [(ngModel)]="incident.TrafficObstructed" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">{{
+            "REGISTRATION.SNOW.AVALANCHE_OBS.TRAFFIC_OBSTRUCTED" | translate
+          }}</ion-text>
+        </ion-toggle>
       </ion-item>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.EVACUATED_NUM"
@@ -206,10 +209,11 @@
         [min]="0"
       ></app-numeric-input>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{'REGISTRATION.SNOW.AVALANCHE_OBS.MATERIAL_DAMAGES' | translate}}
-        </ion-label>
-        <ion-toggle [(ngModel)]="incident.MaterialDamages"></ion-toggle>
+        <ion-toggle [(ngModel)]="incident.MaterialDamages" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">{{
+            "REGISTRATION.SNOW.AVALANCHE_OBS.MATERIAL_DAMAGES" | translate
+          }}</ion-text>
+        </ion-toggle>
       </ion-item>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID"
@@ -235,25 +239,26 @@
       ></app-kdv-select>
       <app-text-comment label="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment"> </app-text-comment>
       <ion-item-divider>
-        <ion-label class="ion-text-wrap"> {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }} </ion-label>
+        <ion-label class="ion-text-wrap"> {{ "REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER" | translate }} </ion-label>
       </ion-item-divider>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_WEB_URL.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <app-add-web-url-item [(weburls)]="incident.IncidentURLs"></app-add-web-url-item>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ANONYMIZE.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ANONYMIZE.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{'REGISTRATION.ANONYMIZE.CHECK_TO_ANONYMIZE' | translate}}
-        </ion-label>
-        <ion-toggle [(ngModel)]="this.draft.registration.Anonymous"></ion-toggle>
+        <ion-toggle [(ngModel)]="draft.registration.Anonymous" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">
+            {{ "REGISTRATION.ANONYMIZE.CHECK_TO_ANONYMIZE" | translate }}
+          </ion-text>
+        </ion-toggle>
       </ion-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
 <ng-template #noPosition>
-  {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' | translate }} {{
-  'REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP' | translate }}
+  {{ "REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION" | translate }}
+  {{ "REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP" | translate }}
 </ng-template>

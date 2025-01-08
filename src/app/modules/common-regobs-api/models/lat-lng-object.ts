@@ -1,5 +1,5 @@
 /* tslint:disable */
 export interface LatLngObject {
-  Latitude?: number;
-  Longitude?: number;
+  Latitude: number;
+  Longitude: number;
 }

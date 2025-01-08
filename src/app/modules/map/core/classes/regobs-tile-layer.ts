@@ -57,7 +57,7 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     return false;
   }
 
-  _isValidTile(coords: L.Coords) {
+  override _isValidTile(coords: L.Coords) {
     const valid = super._isValidTile(coords);
     if (valid && this.canUseOfflineTiles(coords)) {
       this.loggingService.debug(

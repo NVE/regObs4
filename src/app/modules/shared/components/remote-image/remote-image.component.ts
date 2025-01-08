@@ -1,7 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, HostBinding, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  HostBinding,
+  inject,
+  input,
+  computed,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
-import { NgIf } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -17,38 +25,44 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './remote-image.component.html',
   styleUrls: ['./remote-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, SvgIconComponent, TranslatePipe],
+  imports: [SvgIconComponent, TranslatePipe],
 })
-export class RemoteImageComponent implements OnInit {
+export class RemoteImageComponent {
   private sanitizer = inject(DomSanitizer);
 
-  @Input() attachment: RemoteOrLocalAttachmentEditModel;
-  @Input() preferSize: keyof RemoteOrLocalAttachmentEditModel['UrlFormats'] = 'Thumbnail';
-  @Input() largeFallback = false;
-  @Input() withFallbackText = false;
-  @Input() isThumbnail = false;
+  readonly attachment = input.required<RemoteOrLocalAttachmentEditModel>();
+  readonly preferSize = input<keyof NonNullable<RemoteOrLocalAttachmentEditModel['UrlFormats']>>('Thumbnail');
+  readonly largeFallback = input(false);
+  readonly withFallbackText = input(false);
+  readonly isThumbnail = input(false);
 
-  imgSrc: SafeUrl;
-  showImage = true;
+  private readonly imgUrl = linkedSignal(() => {
+    let imageUrl: string;
+    const attachment = this.attachment();
+    const preferSize = this.preferSize();
+    if (attachment.UrlFormats?.[preferSize]) {
+      imageUrl = attachment.UrlFormats[preferSize];
+    } else if (attachment.Url) {
+      imageUrl = attachment.Url;
+    } else {
+      throw new Error('Could not find url to use');
+    }
+    return imageUrl;
+  });
+
+  imgUrlSafe = computed<SafeUrl>(() => this.sanitizer.bypassSecurityTrustUrl(this.imgUrl()));
+
+  showImage = signal(true);
 
   @HostBinding('style.pointer-events')
   pointerEvents = 'auto';
 
-  ngOnInit(): void {
-    let imageUrl: string;
-    if (this.attachment.UrlFormats?.[this.preferSize]) {
-      imageUrl = this.attachment.UrlFormats[this.preferSize];
-    } else {
-      imageUrl = this.attachment.Url;
-    }
-    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
-  }
-
   onError() {
-    if (this.imgSrc !== this.attachment.Url) {
-      this.imgSrc = this.attachment.Url;
+    const attachment = this.attachment();
+    if (attachment.Url && this.imgUrl() !== attachment.Url) {
+      this.imgUrl.set(attachment.Url);
     } else {
-      this.showImage = false;
+      this.showImage.set(false);
       this.pointerEvents = 'none';
     }
   }

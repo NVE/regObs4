@@ -15,7 +15,7 @@ import { setCopyrightAndPhotographer } from './set-metadata';
 const DEBUG_TAG = 'UploadAttachmentsService';
 
 export interface FailedAttachment extends Pick<AttachmentUploadEditModel, 'id'> {
-  error: Error;
+  error: unknown;
 }
 
 export class UploadAttachmentError extends Error {
@@ -44,7 +44,6 @@ export class UploadAttachmentsService {
   private loggingService = inject(LoggingService);
   private userSettings = inject(UserSettingService);
   private alertController = inject(AlertController);
-
 
   /**
    * Upload attachments
@@ -78,11 +77,14 @@ export class UploadAttachmentsService {
     // Error handling
     // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
     const failedAttachments: FailedAttachment[] = [];
-    const uploadAttachmentAndHandleErrors = async (attachment: AttachmentUploadEditModel) => {
+    const uploadAttachmentAndHandleErrors = async (
+      attachment: AttachmentUploadEditModel
+    ): Promise<AttachmentUploadEditModel | undefined> => {
       try {
         return await this.uploadAttachment(attachment, draft);
       } catch (error) {
         this.uploadAttachmentHandleError(attachment, error, failedAttachments);
+        return undefined;
       }
     };
 
@@ -94,12 +96,12 @@ export class UploadAttachmentsService {
       this.showCouldnotUploadAllImagesAlert(failedAttachments.length, draft.registration.DtObsTime);
     }
 
-    return [...alreadyUploaded, ...uploadedAttachments];
+    return [...alreadyUploaded, ...uploadedAttachments.filter((a) => a != null)];
   }
 
   private uploadAttachmentHandleError(
     attachment: AttachmentUploadEditModel,
-    error: Error,
+    error: unknown,
     failedAttachments: FailedAttachment[]
   ) {
     if (error instanceof HttpErrorResponse && error.status === 0) {

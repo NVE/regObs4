@@ -33,7 +33,7 @@ import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { Platform } from '@ionic/angular/standalone';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
-const dateToMs = (value: string): number => {
+const dateToMs = (value?: string): number => {
   const date = moment(value);
   return date.valueOf();
 };
@@ -130,8 +130,8 @@ export class SqliteService {
   private hasChanges = new Subject<AppMode>();
   hasChanges$ = this.hasChanges.asObservable();
 
-  private sqlite: SQLiteConnection;
-  private conn: SQLiteDBConnection;
+  private sqlite?: SQLiteConnection;
+  private conn?: SQLiteDBConnection;
 
   private ready = new ReplaySubject<boolean>(1);
 
@@ -146,17 +146,17 @@ export class SqliteService {
     let ready = true;
     let err = null;
     let level = LogLevel.Info;
-    let isConnection: capSQLiteResult = null;
-    let checkConnectionsConsistency: capSQLiteResult = null;
-    let isDbOpen: capSQLiteResult = null;
+    let isConnection: capSQLiteResult | undefined;
+    let checkConnectionsConsistency: capSQLiteResult | undefined;
+    let isDbOpen: capSQLiteResult | undefined;
 
     try {
-      isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
+      isConnection = await this.sqlite?.isConnection(DATABASE_NAME, READONLY);
       ready = !!isConnection?.result;
 
       if (ready) {
-        checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
-        isDbOpen = await this.conn.isDBOpen();
+        checkConnectionsConsistency = await this.sqlite?.checkConnectionsConsistency();
+        isDbOpen = await this.conn?.isDBOpen();
         ready = !!isDbOpen?.result;
       }
     } catch (error) {
@@ -262,6 +262,10 @@ export class SqliteService {
     const version = 5;
 
     const openConn = async () => {
+      if (this.sqlite == null) {
+        throw new Error('sqlite object not created, have you called init?');
+      }
+
       const isConnection = await this.sqlite.isConnection(DATABASE_NAME, READONLY);
       try {
         const checkConnectionsConsistency = await this.sqlite.checkConnectionsConsistency();
@@ -310,7 +314,7 @@ export class SqliteService {
     this.ready.next(false);
 
     try {
-      await this.sqlite.closeConnection(DATABASE_NAME, false);
+      await this.sqlite?.closeConnection(DATABASE_NAME, false);
       this.logger.log('Connection closed', null, LogLevel.Info, DEBUG_TAG);
     } catch (error) {
       const connectionMaybeAlreadyClosed = (error as Error)?.message?.includes(
@@ -325,17 +329,17 @@ export class SqliteService {
 
   private async runUpgradeStatements() {
     this.logger.debug('Running upgrade statements');
-    await this.sqlite.addUpgradeStatement(DATABASE_NAME, UPGRADE_STATEMENTS);
+    await this.sqlite?.addUpgradeStatement(DATABASE_NAME, UPGRADE_STATEMENTS);
   }
 
   private async truncateRegistrations() {
     this.logger.debug('Truncate registrations', DEBUG_TAG);
-    await this.conn.execute('DELETE FROM registration;');
+    await this.conn?.execute('DELETE FROM registration;');
   }
 
   private async truncateSyncTime() {
     this.logger.debug('Truncate sync_time', DEBUG_TAG);
-    await this.conn.execute('DELETE FROM registration_sync_time;');
+    await this.conn?.execute('DELETE FROM registration_sync_time;');
   }
 
   async init() {
@@ -356,6 +360,9 @@ export class SqliteService {
 
   async updateRegistrationsSyncTime(updateTimeMs: number, appMode: AppMode, lang: LangKey) {
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     this.logger.debug(`Update sync time`, DEBUG_TAG, { updateTimeMs, appMode });
     const result = await this.conn.run(
       `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (?,?,?);`,
@@ -366,12 +373,15 @@ export class SqliteService {
 
   async readRegistrationsSyncTime(appMode: AppMode, lang: LangKey) {
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     this.logger.debug('Reading sync time', DEBUG_TAG, { appMode });
     const result = await this.conn.query(
       `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
     );
     this.logger.debug('Sync time', DEBUG_TAG, { result });
-    return result.values[0]?.sync_time_ms;
+    return result.values?.[0]?.sync_time_ms;
   }
 
   private searchCriteriaToWhere(searchCriteria: SearchCriteria): string {
@@ -427,6 +437,9 @@ export class SqliteService {
   }
 
   private async cleanupRegistrations() {
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
     const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo};`;
     this.logger.debug('Cleanup registrations', DEBUG_TAG, { statement });
@@ -445,6 +458,9 @@ export class SqliteService {
 
   async selectRegistrations(searchCriteria: SearchCriteria, appMode: AppMode): Promise<RegistrationViewModel[]> {
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     const where = this.searchCriteriaToWhere(searchCriteria);
     const orderBy = this.getOrderBy(searchCriteria);
     const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY ${orderBy} DESC ${this.parseLimit(
@@ -460,23 +476,29 @@ export class SqliteService {
 
   async getRegistrationCount(searchCriteria: SearchCriteria, appMode: AppMode): Promise<number> {
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     const where = this.searchCriteriaToWhere(searchCriteria);
     const statement = `SELECT COUNT(*) AS reg_count FROM registration WHERE ${where} AND app_mode='${appMode}'`;
     this.logger.debug('Count', DEBUG_TAG, { statement, searchCriteria });
     const result = await this.conn.query(statement);
     this.logger.debug('Count result', DEBUG_TAG, { result });
-    return result.values[0].reg_count;
+    return result.values?.[0].reg_count || 0;
   }
 
   /**
    * Load a single registration or null if not found
    */
-  async loadRegistration(regId: number, appMode: AppMode): Promise<RegistrationViewModel> {
+  async loadRegistration(regId: number, appMode: AppMode): Promise<RegistrationViewModel | null> {
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     const statement = `SELECT data FROM registration WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
     this.logger.debug('Query', DEBUG_TAG, { statement });
     const result = await this.conn.query(statement);
-    if (result?.values.length > 0) {
+    if (result?.values && result.values.length > 0) {
       // The data property contains the json as a string
       const registration = JSON.parse(result.values[0].data);
       this.logger.debug('Query result', DEBUG_TAG, { registration });
@@ -526,8 +548,11 @@ export class SqliteService {
     ];
 
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
 
-    let result: capSQLiteChanges;
+    let result: capSQLiteChanges | undefined;
     if (registrations.length) {
       this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: registrations.length });
       const cols = columns.join(',');
@@ -562,8 +587,11 @@ export class SqliteService {
    */
   async deleteRegistrations(regIds: number[], appMode: AppMode) {
     await this.isReady();
+    if (!this.conn) {
+      throw new Error('No connection created');
+    }
     const statement = `DELETE FROM registration WHERE reg_id IN (${regIds.join(', ')}) AND app_mode='${appMode}';`;
-    let result: capSQLiteChanges;
+    let result: capSQLiteChanges | undefined;
     try {
       result = await this.conn.execute(statement);
     } catch (error) {

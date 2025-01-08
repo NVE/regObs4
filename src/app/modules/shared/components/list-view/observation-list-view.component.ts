@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { NgFor } from '@angular/common';
 import { ObservationListCardComponent } from '../../../../components/observation/observation-list-card/observation-list-card.component';
@@ -13,9 +13,9 @@ import { ObservationListCardComponent } from '../../../../components/observation
   imports: [NgFor, ObservationListCardComponent],
 })
 export class ObservationListViewComponent {
-  @Input() registrations: RegistrationViewModel[];
+  readonly registrations = input<RegistrationViewModel[]>();
 
-  trackById(_, obs: RegistrationViewModel) {
+  trackById(i: number, obs: RegistrationViewModel) {
     return obs ? obs.RegId : undefined;
   }
 }

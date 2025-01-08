@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -15,10 +15,9 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgClass, NgFor } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatetimePickerComponent } from '../../../../../../components/datetime-picker/datetime-picker.component';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
@@ -27,6 +26,7 @@ import { ValidExpositionComponent } from '../../../../components/snow/valid-expo
 import { TextCommentComponent } from '../../../../components/text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
@@ -51,7 +51,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgClass,
     NgFor,
     NgIf,
     TextCommentComponent,
@@ -59,31 +58,90 @@ import { TranslatePipe } from '@ngx-translate/core';
     ValidExpositionComponent,
   ],
 })
-export class AvalancheActivityModalPage implements OnInit {
+export class AvalancheActivityModalPage {
   private modalController = inject(ModalController);
 
-  @Input() avalancheActivity: AvalancheActivityObs2EditModel;
-  @Input() dtObsTime: string;
+  readonly avalancheActivity = input<AvalancheActivityObs2EditModel>();
+  readonly dtObsTime = input.required<string>();
 
-  avalancheActivityCopy: AvalancheActivityObs2EditModel;
-  isNew = false;
-  maxDate: string;
-
-  get noAvalancheActivity() {
-    return this.avalancheActivityCopy.EstimatedNumTID === 1;
-  }
-
-  set noAvalancheActivity(val: boolean) {
-    if (val) {
-      this.avalancheActivityCopy.EstimatedNumTID = 1;
-    } else {
-      this.avalancheActivityCopy.EstimatedNumTID = undefined;
+  // Form
+  startDate = linkedSignal(() => {
+    let initDate = this.avalancheActivity()?.DtStart;
+    if (!initDate) {
+      initDate = this.dtObsTime();
     }
+    return moment(initDate).startOf('day').toISOString(true);
+  });
+  estimatedNumTid = linkedSignal(() => this.avalancheActivity()?.EstimatedNumTID);
+  selectedTimeFrame = linkedSignal(() => this.parseTimeFrame(this.avalancheActivity()));
+  avalancheExtTid = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.AvalancheExtTID;
+  });
+  avalTriggerSimpleTid = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.AvalTriggerSimpleTID;
+  });
+  destructiveSizeTid = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.DestructiveSizeTID;
+  });
+  avalPropagationTid = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.AvalPropagationTID;
+  });
+  exposedHeightComboTid = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.ExposedHeightComboTID;
+  });
+  exposedHeight1 = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.ExposedHeight1;
+  });
+  exposedHeight2 = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.ExposedHeight2;
+  });
+  validExposition = linkedSignal(() => {
+    if (this.noAvalancheActivity()) {
+      return undefined;
+    }
+    return this.avalancheActivity()?.ValidExposition;
+  });
+  comment = linkedSignal(() => this.avalancheActivity()?.Comment);
+
+  noAvalancheActivity = computed(() => this.estimatedNumTid() === 1);
+  dateIsDifferentThanObsTime = computed(() => {
+    if (!this.startDate()) {
+      return false; // Den er jo kanskje forskjellig da også, men tror det var sånn det funka før..
+    }
+
+    const startDay = moment(this.startDate()).startOf('day');
+    const obsDay = moment(this.dtObsTime()).startOf('day');
+    return !startDay.isSame(obsDay);
+  });
+
+  toggleNoAvalancheActivity() {
+    this.estimatedNumTid.update((tid) => (tid !== 1 ? 1 : undefined));
   }
 
-  get dateIsDifferentThanObsTime() {
-    return this.startDate && !moment(this.startDate).startOf('day').isSame(moment(this.dtObsTime).startOf('day'));
-  }
+  // avalancheActivityCopy: AvalancheActivityObs2EditModel;
+  isNew = computed(() => this.avalancheActivity() == null);
+  maxDate = this.getMaxDateForNow();
 
   timeFrames = [
     {
@@ -118,21 +176,10 @@ export class AvalancheActivityModalPage implements OnInit {
     },
   ];
 
-  selectedTimeFrame = 1;
-  startDate: string;
-
-  async ngOnInit() {
-    this.maxDate = this.getMaxDateForNow();
-    if (this.avalancheActivity) {
-      this.avalancheActivityCopy = { ...this.avalancheActivity };
-    } else {
-      this.avalancheActivityCopy = {};
-      this.isNew = true;
-    }
-    if (this.avalancheActivityCopy.DtStart && this.avalancheActivityCopy.DtEnd) {
-      const start = moment(this.avalancheActivityCopy.DtStart);
-      const end = moment(this.avalancheActivityCopy.DtEnd);
-      this.startDate = moment(this.avalancheActivityCopy.DtStart).startOf('day').toISOString(true);
+  parseTimeFrame(avalancheActivity?: AvalancheActivityObs2EditModel) {
+    const start = moment(avalancheActivity?.DtStart);
+    const end = moment(avalancheActivity?.DtEnd);
+    if (start.isValid() && end.isValid()) {
       const timeFrame = this.timeFrames.find(
         (tf) =>
           tf.start.h === start.hours() &&
@@ -141,11 +188,10 @@ export class AvalancheActivityModalPage implements OnInit {
           tf.end.m === end.minutes()
       );
       if (timeFrame) {
-        this.selectedTimeFrame = timeFrame.id;
+        return timeFrame.id;
       }
-    } else {
-      this.startDate = moment(this.dtObsTime).startOf('day').toISOString(true);
     }
+    return this.timeFrames[0].id;
   }
 
   getMaxDateForNow() {
@@ -158,40 +204,45 @@ export class AvalancheActivityModalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  private resetWhenNoActivityFields() {
-    this.avalancheActivityCopy.AvalancheExtTID = undefined;
-    this.avalancheActivityCopy.AvalTriggerSimpleTID = undefined;
-    this.avalancheActivityCopy.DestructiveSizeTID = undefined;
-    this.avalancheActivityCopy.AvalPropagationTID = undefined;
-    this.avalancheActivityCopy.ExposedHeightComboTID = undefined;
-    this.avalancheActivityCopy.ExposedHeight1 = undefined;
-    this.avalancheActivityCopy.ExposedHeight2 = undefined;
-    this.avalancheActivityCopy.ValidExposition = undefined;
-  }
-
   ok() {
-    if (this.avalancheActivityCopy.EstimatedNumTID === 1) {
-      this.resetWhenNoActivityFields();
-    }
-    const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
-    if (this.startDate && timeFrame) {
-      this.avalancheActivityCopy.DtStart = moment(this.startDate)
-        .hours(timeFrame.start.h)
-        .minutes(timeFrame.start.m)
-        .toISOString(true);
-      this.avalancheActivityCopy.DtEnd = moment(this.startDate)
-        .hours(timeFrame.end.h)
-        .minutes(timeFrame.end.m)
-        .toISOString(true);
-    }
-    if (this.isNew && IsEmptyHelper.isEmpty(this.avalancheActivityCopy)) {
+    const edit = this.getEdit();
+    if (this.isNew() && isEmpty(edit)) {
       this.modalController.dismiss(null);
     } else {
-      this.modalController.dismiss(this.avalancheActivityCopy);
+      this.modalController.dismiss(edit);
     }
   }
 
   delete() {
     this.modalController.dismiss({ delete: true });
+  }
+
+  private getEdit(): AvalancheActivityObs2EditModel {
+    return {
+      ...this.getDates(),
+      EstimatedNumTID: this.estimatedNumTid(),
+      AvalancheExtTID: this.avalancheExtTid(),
+      AvalTriggerSimpleTID: this.avalTriggerSimpleTid(),
+      DestructiveSizeTID: this.destructiveSizeTid(),
+      AvalPropagationTID: this.avalPropagationTid(),
+      ExposedHeightComboTID: this.exposedHeightComboTid(),
+      ExposedHeight1: this.exposedHeight1(),
+      ExposedHeight2: this.exposedHeight2(),
+      ValidExposition: this.validExposition(),
+      Comment: this.comment(),
+    };
+  }
+
+  private getDates(): Partial<AvalancheActivityObs2EditModel> {
+    const startDate = this.startDate();
+    const selectedTimeFrameId = this.selectedTimeFrame();
+    const timeFrame = this.timeFrames.find((tf) => tf.id === selectedTimeFrameId);
+    if (startDate && timeFrame) {
+      return {
+        DtStart: moment(startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true),
+        DtEnd: moment(startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true),
+      };
+    }
+    return {};
   }
 }

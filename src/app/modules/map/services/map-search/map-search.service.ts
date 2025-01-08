@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { map, switchMap, catchError, take } from 'rxjs/operators';
-import { Observable, forkJoin, of, Subject } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
+import { Observable, forkJoin, of, Subject, firstValueFrom } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
@@ -12,7 +12,6 @@ import { GeoCodeService } from 'src/app/modules/common-regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
-import { IMapView } from '../map/map-view.interface';
 import { Navn, ReturSkrivemate } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
 import { nSQL } from '@nano-sql/core';
@@ -59,12 +58,12 @@ export class MapSearchService {
 
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient
-      .get(
+      .get<ReturSkrivemate>(
         `${settings.map.search.no.url}?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}` +
           `&utkoordsys=${settings.map.search.no.coordinateSystem}&filtrer=${settings.map.search.no.resultFields}`
       )
       .pipe(
-        map((returSted: ReturSkrivemate) => {
+        map((returSted) => {
           const hits = returSted.metadata.totaltAntallTreff;
           const resultList =
             hits === 0 ? [] : hits === 1 ? [returSted.navn[0] as Navn] : (returSted.navn as Array<Navn>);
@@ -112,19 +111,19 @@ export class MapSearchService {
         acc.push(currentValue);
       }
       return acc;
-    }, []);
+    }, [] as Navn[]);
   }
 
   searchWorld(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient
-      .get(
+      .get<WorldSearchResultModel>(
         `${settings.map.search.geonames.url}/searchJSON?` +
           `name_startsWith=${text}&maxRows=${settings.map.search.geonames.maxResults}` +
           `&lang=${LangKey[lang]}` +
           `&username=${settings.map.search.geonames.username}`
       )
       .pipe(
-        map((data: WorldSearchResultModel) => {
+        map((data) => {
           const geoData = data.geonames || [];
           return geoData
             .filter((item) => item.countryCode !== 'NO')
@@ -153,21 +152,24 @@ export class MapSearchService {
         geoHazardId: geoHazard,
       })
       .pipe(
-        map((result) => ({
-          location: {
-            name: result.Name,
-            adminName: result.WarningRegionName || result.AdminAreaName,
-          },
-          elevation: result.Masl,
-          steepness: result.Steepness,
-          latLng: latLng,
-        })),
-        catchError(() => of(null))
+        map(
+          (result) =>
+            <ViewInfo>{
+              location: {
+                name: result.Name,
+                adminName: result.WarningRegionName || result.AdminAreaName,
+              },
+              elevation: result.Masl,
+              steepness: result.Steepness,
+              latLng: latLng,
+            }
+        ),
+        catchError(() => of({ latLng }))
       );
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
-    const existingHistory = (await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()).filter(
+    const existingHistory = (await firstValueFrom(this.getSearchHistoryAsObservable())).filter(
       (item) => !(item.latlng.lat === searchResult.latlng.lat && item.latlng.lng === searchResult.latlng.lng)
     );
     existingHistory.splice(0, 0, {
@@ -175,12 +177,12 @@ export class MapSearchService {
       ...searchResult,
     }); // Insert new search item at index 0
     const items = existingHistory.slice(0, settings.map.search.searchHistorySize); // Keep only last 5 items
-    await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('upsert', { id: 'searchresults', items }).exec();
+    await nSQL(NanoSql.TABLES['MAP_SEARCH_HISTORY'].name).query('upsert', { id: 'searchresults', items }).exec();
   }
 
   getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
     return new NSqlFullUpdateObservable<{ id: string; items: MapSearchHistory[] }[]>(
-      nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select').listen()
+      nSQL(NanoSql.TABLES['MAP_SEARCH_HISTORY'].name).query('select').listen()
     ).pipe(map((val) => (val.length > 0 ? val[0].items : [])));
   }
 }

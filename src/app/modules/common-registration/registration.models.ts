@@ -1,11 +1,11 @@
 export { SyncStatus } from './models/sync-status.enum';
-export { IRegistrationSettings } from './models/registration-settings.interface';
+export type { IRegistrationSettings } from './models/registration-settings.interface';
 export { RegistrationTid } from './models/registration-tid.enum';
-export { ValidRegistrationType } from './models/valid-registration.type';
+export type { ValidRegistrationType } from './models/valid-registration.type';
 export { SummaryKind } from './models/summary/summary-kind.enum';
-export { SummaryWithAttachments } from './models/summary/summary-with-attachments';
-export { KdvKey } from './models/kdv-key.type';
-export { KdvViewRepositoryKey } from './models/view-repository-key.type';
-export { IRegistrationType } from './models/registration-type.interface';
+export type { SummaryWithAttachments } from './models/summary/summary-with-attachments';
+export type { KdvKey } from './models/kdv-key.type';
+export type { KdvViewRepositoryKey } from './models/view-repository-key.type';
+export type { IRegistrationType } from './models/registration-type.interface';
 export * from './models/attachment-upload-edit.interface';
-export { WaterLevelMeasurementUploadModel } from './models/water-level-measurement-upload-model';
+export type { WaterLevelMeasurementUploadModel } from './models/water-level-measurement-upload-model';

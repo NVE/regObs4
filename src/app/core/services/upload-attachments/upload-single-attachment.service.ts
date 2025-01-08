@@ -1,4 +1,11 @@
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpEvent,
+  HttpEventType,
+  HttpHeaderResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
@@ -20,7 +27,6 @@ export class UploadSingleAttachmentService {
   private apiAttachmentService = inject(ApiAttachmentService);
   private loggingService = inject(LoggingService);
 
-
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel, clb: HttpEventClb) {
     this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);
     // Here we can keep track of upload progress if we want to
@@ -30,7 +36,9 @@ export class UploadSingleAttachmentService {
     clb(event);
   }
 
-  private onHttpResponseEvent(event: HttpResponse<string>) {
+  private onHttpResponseEvent(
+    event: HttpResponse<string> | (HttpResponse<string> & HttpErrorResponse) | (HttpHeaderResponse & HttpErrorResponse)
+  ) {
     if (event instanceof HttpErrorResponse) {
       // This is already an error and contains useful info, so we can just throw it
       throw event;
@@ -66,14 +74,14 @@ export class UploadSingleAttachmentService {
     const request = this.sendPostRequestWithImageBlob(blob).pipe(
       tap((event) => this.onHttpEvent(event, attachment, clb)),
       filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
-      map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
+      map((event) => this.onHttpResponseEvent(event)),
       tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`, DEBUG_TAG))
     );
 
-    const uploadedAttachment = {
+    const uploadedAttachment: AttachmentUploadEditModel = {
       ...attachment,
       // The response body contains only the AttachmentUploadId
-      AttachmentUploadId: await firstValueFrom(request),
+      AttachmentUploadId: (await firstValueFrom(request)) || undefined,
     };
 
     return uploadedAttachment;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, model } from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import {
   ActionSheetController,
@@ -89,35 +89,36 @@ export class EditImagesComponent implements OnInit {
   private actionSheetController = inject(ActionSheetController);
   private dropZoneService = inject(DropZoneService);
 
-  @Input() draftUuid: string;
-  @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
-  @Output() existingAttachmentsChange = new EventEmitter();
-  @Input() registrationTid: RegistrationTid;
-  @Input() geoHazard: GeoHazard;
-  @Input() title = 'REGISTRATION.ADD_IMAGES';
-  @Input() pictureCommentText = 'REGISTRATION.IMAGE_DESCRIPTION';
-  @Input() pictureCommentPlaceholder = 'REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER';
-  @Input() icon = 'camera';
-  @Input() showIcon = true;
-  @Input() iconColor = 'dark';
-  @Input() onBeforeAdd: () => Promise<void> | void;
-  @Input() attachmentType: AttachmentType = 'Attachment';
-  @Input() ref?: string;
+  readonly draftUuid = input.required<string>();
+  readonly existingAttachments = model<RemoteOrLocalAttachmentEditModel[]>();
+  readonly registrationTid = input.required<RegistrationTid>();
+  readonly geoHazard = input.required<GeoHazard>();
+  readonly title = input('REGISTRATION.ADD_IMAGES');
+  readonly pictureCommentText = input('REGISTRATION.IMAGE_DESCRIPTION');
+  readonly pictureCommentPlaceholder = input('REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER');
+  readonly icon = input('camera');
+  readonly showIcon = input(true);
+  readonly iconColor = input('dark');
+  readonly onBeforeAdd = input<() => Promise<void> | void>();
+  readonly attachmentType = input<AttachmentType>('Attachment');
+  readonly ref = input<string>();
 
-  isHybrid: boolean;
+  isHybrid?: boolean;
   accept = ALLOWED_ATTACHMENT_FILE_TYPES;
-  selectedFile: Blob = null;
+  selectedFile?: Blob;
   aboutToDrop = false;
 
-  newAttachments$: Observable<NewAttachment[]>;
+  newAttachments$?: Observable<NewAttachment[]>;
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
-    if (this.existingAttachments == null) {
+    const existingAttachments = this.existingAttachments();
+    if (existingAttachments == null) {
       return [];
     }
-    return this.existingAttachments.filter((a) =>
-      this.registrationTid ? a.RegistrationTID === this.registrationTid : true
-    );
+    return existingAttachments.filter((a) => {
+      const registrationTid = this.registrationTid();
+      return registrationTid ? a.RegistrationTID === registrationTid : true;
+    });
   }
 
   constructor() {
@@ -128,10 +129,10 @@ export class EditImagesComponent implements OnInit {
     this.isHybrid = this.platform.is('hybrid');
 
     this.newAttachments$ = combineLatest([
-      this.newAttachmentService.getAttachmentsWithBlob(this.draftUuid, {
-        ref: this.ref,
-        type: this.attachmentType,
-        registrationTid: this.registrationTid,
+      this.newAttachmentService.getAttachmentsWithBlob(this.draftUuid(), {
+        ref: this.ref(),
+        type: this.attachmentType(),
+        registrationTid: this.registrationTid(),
       }),
       this.newAttachmentService.addNewAttachmentState,
     ]).pipe(
@@ -150,12 +151,13 @@ export class EditImagesComponent implements OnInit {
 
   setNewAttachmentComment(attachment: AttachmentUploadEditModel, comment: AttachmentUploadEditModel['Comment']) {
     this.logger.debug('Updating new attachment comment', DEBUG_TAG, { comment });
-    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid, { ...attachment, Comment: comment });
+    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Comment: comment });
   }
 
   async addClick() {
-    if (this.onBeforeAdd !== undefined) {
-      await Promise.resolve(this.onBeforeAdd());
+    const onBeforeAdd = this.onBeforeAdd();
+    if (onBeforeAdd !== undefined) {
+      await Promise.resolve(onBeforeAdd());
     }
     const translations = await firstValueFrom(
       this.translateService.get([
@@ -199,19 +201,21 @@ export class EditImagesComponent implements OnInit {
 
   private async getAlbumImageUrls(options: GalleryImageOptions): Promise<string[]> {
     let imageUrls: string[] = [];
-    let photos: GalleryPhotos;
+    let galleryPhotos: GalleryPhotos;
     let permissionState = await Camera.checkPermissions();
     if (!['granted', 'limited'].includes(permissionState?.photos)) {
       permissionState = await Camera.requestPermissions({ permissions: ['photos'] });
     }
     if (['granted', 'limited'].includes(permissionState?.photos)) {
-      photos = await Camera.pickImages(options);
+      galleryPhotos = await Camera.pickImages(options);
     } else {
       this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
+      return [];
     }
-    if (photos?.photos?.length > 0) {
-      if (this.checkAndNotifyIfUnsupportedImageFormat(photos.photos.map((photo) => photo.format))) {
-        imageUrls = photos.photos.map((photo) => photo.path);
+    if (galleryPhotos.photos.length > 0) {
+      if (this.checkAndNotifyIfUnsupportedImageFormat(galleryPhotos.photos.map((photo) => photo.format))) {
+        // TODO: photo.path kan være undefined, bør vi håndtere dette bedre?
+        imageUrls = galleryPhotos.photos.map((photo) => photo.path).filter((path) => path != null);
       }
     }
     return imageUrls;
@@ -225,7 +229,7 @@ export class EditImagesComponent implements OnInit {
     if (permissionState?.camera === 'granted') {
       const photo = await Camera.getPhoto(options);
       if (photo) {
-        if (this.checkAndNotifyIfUnsupportedImageFormat([photo.format])) {
+        if (photo.path && this.checkAndNotifyIfUnsupportedImageFormat([photo.format])) {
           return [photo.path];
         }
       }
@@ -253,8 +257,9 @@ export class EditImagesComponent implements OnInit {
         await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
       }
     } catch (err) {
+      const hasMessage = err instanceof Error && err.message != null;
       // we ignore errors we get if user cancels taking photo or gallery selection
-      if (!ERRORS_TO_IGNORE.includes(err.message)) {
+      if (!hasMessage || !ERRORS_TO_IGNORE.includes(err.message)) {
         this.logger.log('Unknown error when adding image', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
         this.showErrorToast('REGISTRATION.IMAGE_ERROR.UNKNOWN');
       }
@@ -263,12 +268,10 @@ export class EditImagesComponent implements OnInit {
   }
 
   private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
-    formats.forEach((format) => {
-      if (!(format === 'jpeg')) {
-        this.showErrorToast('REGISTRATION.INVALID_IMAGE');
-        return false;
-      }
-    });
+    if (formats.some((f) => f !== 'jpeg')) {
+      this.showErrorToast('REGISTRATION.INVALID_IMAGE');
+      return false;
+    }
     return true;
   }
 
@@ -285,37 +288,36 @@ export class EditImagesComponent implements OnInit {
 
   async attachImageFileToDraft(fileUrl: string, mimeType: string) {
     await this.newAttachmentService.addAttachmentAsUrl(
-      this.draftUuid,
+      this.draftUuid(),
       fileUrl,
       mimeType,
-      this.geoHazard,
-      this.registrationTid,
-      this.attachmentType,
-      this.ref
+      this.geoHazard(),
+      this.registrationTid(),
+      this.attachmentType(),
+      this.ref()
     );
   }
 
   async attachImageToDraft(data: Blob, mimeType: string) {
     await this.newAttachmentService.addAttachment(
-      this.draftUuid,
+      this.draftUuid(),
       data,
       mimeType,
-      this.geoHazard,
-      this.registrationTid,
-      this.attachmentType,
-      this.ref
+      this.geoHazard(),
+      this.registrationTid(),
+      this.attachmentType(),
+      this.ref()
     );
   }
 
   removeNewImage(image: AttachmentUploadEditModel) {
-    this.newAttachmentService.removeAttachment(this.draftUuid, image.id);
+    this.newAttachmentService.removeAttachment(this.draftUuid(), image.id);
   }
 
   removeExistingImage(image: RemoteOrLocalAttachmentEditModel) {
-    const existingAttachments = this.existingAttachments.filter((a) => a.AttachmentId !== image.AttachmentId);
-    if (existingAttachments.length !== this.existingAttachments.length) {
-      this.existingAttachmentsChange.emit(existingAttachments);
-    }
+    this.existingAttachments.update((attachments) =>
+      (attachments || []).filter((a) => a.AttachmentId !== image.AttachmentId)
+    );
   }
 
   trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {

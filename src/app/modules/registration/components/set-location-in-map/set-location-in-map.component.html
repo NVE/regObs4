@@ -1,18 +1,20 @@
 <div>
   <app-map
-    [ngClass]="geoHazard === 60 ? 'water-simple-obs-bottom' : 'regular-bottom'"
-    *ngIf="locationMarker"
+    [ngClass]="geoHazard() === 60 ? 'water-simple-obs-bottom' : 'regular-bottom'"
+    *ngIf="locationMarker()"
     [showSupportMaps]="false"
     (mapReady)="onMapReady($event)"
-    [center]="locationMarker.getLatLng()"
+    [center]="locationMarker().getLatLng()"
     [geoTag]="'SetLocationInMapComponent'"
-    [zoom]="initialZoom$ | async"
+    [zoom]="initialZoom()"
+    [updateMapViewOnExtentChange]="true"
   ></app-map>
   <div class="bottom-background flex-row">
     <div class="bottom-info flex-col flex-grow">
-      <div *ngIf="setObsTime && isDesktop" class="flex-row">
+      <div *ngIf="setObsTime() && isDesktop && distanceToObservationText !== '0 m'" class="flex-row">
+        <!-- TODO: horisontal dist box bør ikke vises vi ikke har posisjon -->
         <div class="horizontal-dist-box flex-row flex-center flex-space">
-          <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
+          <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl()"></svg-icon>
           <svg class="dotted-line" width="27px" height="4px" viewBox="0 0 27 4">
             <line
               x1="2"
@@ -38,15 +40,15 @@
               stroke-dasharray="1,4"
             ></line>
           </svg>
-          <div class="leaflet-usermarker" *ngIf="!fromMarker">
-            <svg-icon *ngIf="fromMarker" [src]="fromMarkerIconUrl"></svg-icon>
+          <div class="leaflet-usermarker" *ngIf="!fromMarker()">
+            <svg-icon *ngIf="fromMarker()" [src]="fromMarkerIconUrl()"></svg-icon>
           </div>
         </div>
       </div>
-      <div *ngIf="setObsTime" class="details-row flex-row flex-grow">
+      <div *ngIf="setObsTime()" class="details-row flex-row flex-grow">
         <div *ngIf="!isDesktop" class="ion-no-padding flex-shrink ion-text-center">
           <div class="vertical-dist-box">
-            <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
+            <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl()"></svg-icon>
             <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
               <line
                 x1="1"
@@ -72,8 +74,8 @@
                 stroke-dasharray="1,4"
               ></line>
             </svg>
-            <div class="leaflet-usermarker" *ngIf="!fromMarker">
-              <svg-icon *ngIf="fromMarker" [src]="fromMarkerIconUrl"></svg-icon>
+            <div class="leaflet-usermarker" *ngIf="!fromMarker()">
+              <svg-icon *ngIf="fromMarker()" [src]="fromMarkerIconUrl()"></svg-icon>
             </div>
           </div>
         </div>
@@ -83,19 +85,19 @@
               <ion-row>
                 <ion-col class="ion-no-padding">
                   <ng-container *ngIf="!editLocationName; else editLocationTemplate">
-                    <ng-container *ngIf="selectedLocation; else viewInfoTemplate">
+                    <ng-container *ngIf="selectedLocation(); else viewInfoTemplate">
                       <ion-label class="detail-obs-info ion-no-margin ion-text-wrap">
-                        <span>{{ selectedLocation.Name }}</span>
+                        <span>{{ selectedLocation()?.Name }}</span>
                       </ion-label>
                     </ng-container>
                   </ng-container>
                 </ion-col>
               </ion-row>
               <ion-label class="small-text ion-no-margin">
-                <span *ngIf="!isLoading && locationMarker"
-                  >{{ locationMarker.getLatLng().lat | number: "0.3" }}&deg;{{
+                <span *ngIf="!isLoading && locationMarker()"
+                  >{{ locationMarker().getLatLng().lat | number: "0.3" }}&deg;{{
                     "MAP_CENTER_INFO.NORTH_SHORT" | translate
-                  }}, {{ locationMarker.getLatLng().lng | number: "0.3" }}&deg;{{
+                  }}, {{ locationMarker().getLatLng().lng | number: "0.3" }}&deg;{{
                     "MAP_CENTER_INFO.EAST_SHORT" | translate
                   }}</span
                 >
@@ -111,7 +113,7 @@
               class="box edit-button edit-name-button"
               (click)="editLocation()"
             >
-              <ion-icon class="edit-icon" name="edit"></ion-icon>&nbsp;{{
+              <ion-icon name="create-outline"></ion-icon>&nbsp;{{
                 "REGISTRATION.OBS_LOCATION.NAME_LOCATION" | translate
               }}
               <span class="tooltip">{{ "REGISTRATION.OBS_LOCATION.NAME_LOCATION_TOOLTIP" | translate }}</span>
@@ -119,11 +121,67 @@
           </div>
           <div class="flex-row">
             <div class="flex-grow box edit-button no-padding">
-              <ion-icon name="calendar"></ion-icon>&nbsp;
-              <app-datetime-picker [(dateTime)]="localDate" [maxDate]="maxDate"></app-datetime-picker>
+              <ion-item>
+                <!-- Kan vurdere en sånn her løsning også på mobil -->
+                <!-- <ion-datetime
+                  [showDefaultTimeLabel]="true"
+                  id="obs-datetime"
+                  [locale]="locale"
+                  [max]="maxDate"
+                  [firstDayOfWeek]="1"
+                  [preferWheel]="!isDesktop"
+                  size="cover"
+                  [formatOptions]="{
+                    date: {
+                      weekday: 'long',
+                      month: 'long',
+                      day: '2-digit',
+                    },
+                    time: {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    },
+                  }"
+                ></ion-datetime> -->
+
+                <!-- TODO: Må hookes opp til draft + oversettelser. Vurder kort dato på mobil. -->
+                <!-- <ion-icon name="calendar-outline"></ion-icon>&nbsp; -->
+                <ion-datetime-button datetime="obs-datetime" color="secondary"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime
+                      [(ngModel)]="localDate"
+                      id="obs-datetime"
+                      [locale]="locale"
+                      [max]="maxDate"
+                      [showDefaultButtons]="true"
+                      [firstDayOfWeek]="1"
+                      doneText="All set"
+                      cancelText="Never mind"
+                      [presentation]="isDesktop ? 'date' : 'date-time'"
+                      [formatOptions]="{
+                        date: {
+                          weekday: 'long',
+                          month: 'long',
+                          day: '2-digit',
+                        },
+                        time: {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        },
+                      }"
+                    ></ion-datetime>
+                  </ng-template>
+                </ion-modal>
+
+                @if (isDesktop) {
+                  <!-- For å slippe bruke "hjul" på desktop -->
+                  <ion-input type="time" label="Klokka" inputmode="numeric" required="true" slot="end"></ion-input>
+                }
+              </ion-item>
             </div>
             <div class="box edit-button" (click)="setToNow()">
-              <ion-icon slot="start" name="clock"></ion-icon>&nbsp;{{ "REGISTRATION.SET_TIME.NOW" | translate }}
+              <ion-icon slot="start" name="time-outline"></ion-icon>&nbsp;{{ "REGISTRATION.SET_TIME.NOW" | translate }}
             </div>
           </div>
           <div *ngIf="isDesktop" class="flex-row">
@@ -131,15 +189,14 @@
               class="flex-grow selectors"
               label="REGISTRATION.OBS_LOCATION.SOURCE"
               kdvKey="SourceKDV"
-              labelColor="rgb(68, 68, 68)"
-              [obsLocMode]="true"
               [(value)]="sourceTid"
             ></app-kdv-select>
             <ion-item class="flex-grow selectors">
-              <ion-label color="rgb(68, 68, 68)" position="stacked">
-                {{ "REGISTRATION.OBS_LOCATION.UNCERTAINTY" | translate }}</ion-label
-              >
+              <!-- <ion-label color="rgb(68, 68, 68)" position="stacked">
+                {{  | translate }}</ion-label
+              > -->
               <app-select
+                label="REGISTRATION.OBS_LOCATION.UNCERTAINTY"
                 [(selectedValue)]="spatialAccuracy"
                 [options]="spatialAccuracyOptions"
                 class="no-padding"
@@ -149,10 +206,10 @@
         </div>
       </div>
       <!-- We don't want to show the toggle section in the water observastion-->
-      <ng-container *ngIf="geoHazard == 60; else polygonsToggle"> </ng-container>
+      <ng-container *ngIf="geoHazard() == 60; else polygonsToggle"> </ng-container>
       <div class="confirm-button-col">
-        <ion-button expand="block" color="varsom-orange" (click)="confirm()">{{
-          confirmLocationText | translate
+        <ion-button expand="block" color="secondary" (click)="confirm()">{{
+          confirmLocationText() | translate
         }}</ion-button>
       </div>
     </div>
@@ -167,9 +224,9 @@
         justify="space-between"
         [checked]="polygon.active"
         (ionChange)="togglePolygon(i)"
-        [style.background.color]="polygon.polygon.options.color"
+        [style.background.color]="polygon.polygon?.options?.color"
       >
-        <ion-icon name="radio-button-on" [style.color]="polygon.polygon.options.color" class="bullet"></ion-icon>
+        <ion-icon name="radio-button-on" [style.color]="polygon.polygon?.options?.color" class="bullet"></ion-icon>
         {{ locationPolygons[i].title }}
       </ion-toggle>
     </ion-item>

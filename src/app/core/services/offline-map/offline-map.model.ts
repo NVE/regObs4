@@ -11,7 +11,7 @@ export interface OfflineTilesMetadata {
   };
   zMax: number;
   template: string;
-  url?: string;
+  url: string;
   lastModified?: string;
 }
 

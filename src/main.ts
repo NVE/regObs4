@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { provideIonicAngular, IonicRouteStrategy, isPlatform } from '@ionic/angular/standalone';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
-import { settings } from 'src/settings';
+import { settings } from './settings';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideMarkdown } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -19,7 +19,7 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
 import { AppComponent } from './app/app.component';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { provideRouter, RouteReuseStrategy } from '@angular/router';
+import { provideRouter, RouteReuseStrategy, withComponentInputBinding } from '@angular/router';
 import { routes } from './app/app.routes';
 import { Requestor, StorageBackend } from '@openid/appauth';
 import { storageFactory } from './app/modules/auth/factories/storage-factory';
@@ -27,17 +27,21 @@ import { httpFactory } from './app/modules/auth/factories/http-factory';
 import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 import { authFactory } from './app/modules/auth/factories/auth-factory';
+import { register } from 'swiper/element/bundle';
 
 if (environment.production) {
   enableProdMode();
 }
 
 function startApp() {
+  register();
+
   console.log('starting app');
   bootstrapApplication(AppComponent, {
     providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-      provideIonicAngular({}),
+      // TODO: Gjør det mulig å aktivere deaktivere ios mode via en knapp i headeren hvis på appMode er test
+      provideIonicAngular({ useSetInputAPI: true }), // mode: 'ios'
 
       // Auth related - kan evt flyttes til egen fil eller i APP_PROVIDERS
       {
@@ -78,7 +82,7 @@ function startApp() {
 
       // Prøvde å legge til withPreloading(PreloadAllModules) men da kræsjet applikasjonen
       // TODO: Prøv igjen etter vi har rydda opp, fjerna alle moduler.
-      provideRouter(routes),
+      provideRouter(routes, withComponentInputBinding()),
 
       provideHttpClient(withInterceptorsFromDi()),
       ...APP_PROVIDERS,

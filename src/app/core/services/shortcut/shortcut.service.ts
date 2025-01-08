@@ -18,7 +18,6 @@ export class ShortcutService {
   private translateService = inject(TranslateService);
   private geoHelperService = inject(GeoHelperService);
 
-
   init() {
     const w = <any>window;
     if (this.platform.is('hybrid') && this.platform.is('android') && w.plugins && w.plugins.Shortcuts) {
@@ -39,6 +38,7 @@ export class ShortcutService {
       case GeoHazard.Water:
         return 'ic_water';
     }
+    throw new Error(`Unsupported geoHazard: ${geoHazard}`);
   }
 
   private async getShortcuts() {
@@ -67,7 +67,7 @@ export class ShortcutService {
     this.loggingService.debug('Initializing dynamic shortcuts for Android', DEBUG_TAG);
     const w = <any>window;
     w.plugins.Shortcuts.supportsDynamic(
-      async (supported) => {
+      async (supported: any) => {
         if (!supported) {
           this.loggingService.debug('Dynamic shortcuts not supported', DEBUG_TAG);
           return;
@@ -87,12 +87,12 @@ export class ShortcutService {
           () => {
             this.loggingService.debug('Shortcuts were applied successfully', DEBUG_TAG);
           },
-          (error) => {
+          (error: unknown) => {
             this.loggingService.log('Error setting dynamic shortcuts!', error, LogLevel.Warning, DEBUG_TAG);
           }
         );
       },
-      (error) => {
+      (error: unknown) => {
         this.loggingService.log(
           'Error when checking support for dynamic shortcuts!',
           error,

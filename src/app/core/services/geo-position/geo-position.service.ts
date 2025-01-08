@@ -21,7 +21,7 @@ import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, PermissionState } from '@capacitor/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 
 const DEBUG_TAG = 'GeoPositionService';
@@ -54,16 +54,16 @@ export class GeoPositionService implements OnDestroy {
 
   private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
-  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject(null);
-  private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
+  private currentPosition = new BehaviorSubject<Position | null>(null);
+  private currentHeading = new BehaviorSubject<number | null>(null);
 
   private readonly trackingComponents = new BehaviorSubject<string[]>([]);
 
   // Subscriptions
-  private watchPositionCallbackId: CallbackID = null;
-  private watchPositionRequestTime: number = null;
+  private watchPositionCallbackId?: CallbackID;
+  private watchPositionRequestTime?: number;
   private watchPositionFirstCallbackReceived = false;
-  private headingSubscription: Subscription;
+  private headingSubscription?: Subscription;
 
   get currentPosition$(): Observable<Position> {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
@@ -94,9 +94,9 @@ export class GeoPositionService implements OnDestroy {
    * @returns last known position
    * @see https://github.com/ionic-team/capacitor/issues/1279
    */
-  getSingleCurrentPosition(): Promise<Position> {
+  getSingleCurrentPosition(): Promise<Position | null> {
     // this.currentPosition always returns a value.
-    return firstValueFrom<Position>(this.currentPosition);
+    return firstValueFrom(this.currentPosition);
   }
 
   private startGeolocationTrackingSubscription() {
@@ -288,12 +288,16 @@ export class GeoPositionService implements OnDestroy {
         permissionGranted = await this.askForPermission();
       }
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
+      this.loggingService.error(
+        err,
+        DEBUG_TAG,
+        `Error asking for location permissions: ${err instanceof Error ? err.message : err}`
+      );
     }
 
     if (!permissionGranted) {
       this.loggingService.debug('We cannot watch postion or heading due to lacking permissions', DEBUG_TAG);
-      return false;
+      return;
     }
     this.startWatchingPosition();
     this.startWatchingHeading();
@@ -305,7 +309,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private stopWatchingPosition() {
-    if (this.watchPositionCallbackId !== null) {
+    if (this.watchPositionCallbackId != null) {
       this.loggingService.debug(
         `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`,
         DEBUG_TAG
@@ -313,22 +317,24 @@ export class GeoPositionService implements OnDestroy {
       this.addStatusToGpsPositionLog('StopGpsTracking');
       const options: ClearWatchOptions = { id: this.watchPositionCallbackId };
       Geolocation.clearWatch(options);
-      this.watchPositionCallbackId = null;
-      this.watchPositionRequestTime = null;
+      this.watchPositionCallbackId = undefined;
+      this.watchPositionRequestTime = undefined;
       this.watchPositionFirstCallbackReceived = false;
     }
   }
 
   private async startWatchingPosition(): Promise<void> {
-    const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
+    const watchPositionCallback: WatchPositionCallback = (position: Position | null, err: any) => {
       if (err) {
         this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG);
         this.gpsPositionLog.next(this.createPositionError('Unknown error'));
       }
-      if (position !== null) {
+      if (position != null) {
         if (this.watchPositionFirstCallbackReceived === false) {
           this.watchPositionFirstCallbackReceived = true;
-          const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
+          const secondsSinceStartWatch = this.watchPositionRequestTime
+            ? (Date.now() - this.watchPositionRequestTime) / 1000
+            : 9999;
           this.loggingService.debug(
             'First callback received. ' +
               `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
@@ -380,23 +386,31 @@ export class GeoPositionService implements OnDestroy {
 
   // Checks permission state for "fine location" (GPS)
   // Return 'prompt' | 'prompt-with-rationale' | 'granted' | 'denied'
-  private async checkPermissions(): Promise<string> {
+  private async checkPermissions(): Promise<PermissionState | undefined> {
     try {
       const permissions = await Geolocation.checkPermissions();
       this.loggingService.debug('Geolocation permissions', DEBUG_TAG, permissions);
       return permissions?.location;
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, `Error when checking location permissions: ${err.message}`);
+      this.loggingService.error(
+        err,
+        DEBUG_TAG,
+        `Error when checking location permissions: ${err instanceof Error ? err.message : err}`
+      );
     }
-    return null;
+    return;
   }
 
   private async checkIfPermissionIsGranted(): Promise<boolean> {
     try {
       const permissions = await this.checkPermissions();
-      return permissions && permissions === 'granted';
+      return permissions != null && permissions === 'granted';
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, `Error asking for location permissions: ${err.message}`);
+      this.loggingService.error(
+        err,
+        DEBUG_TAG,
+        `Error asking for location permissions: ${err instanceof Error ? err.message : err}`
+      );
     }
     return false;
   }
@@ -410,7 +424,11 @@ export class GeoPositionService implements OnDestroy {
         return false;
       }
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, `Error when requesting location permissions: ${err.message}`);
+      this.loggingService.error(
+        err,
+        DEBUG_TAG,
+        `Error when requesting location permissions: ${err instanceof Error ? err.message : err}`
+      );
       this.showPermissionDeniedToast();
       return false;
     }
@@ -445,9 +463,12 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private getWebHeadingObservable() {
-    return merge(fromEvent(<any>window, 'deviceorientationabsolute'), fromEvent(<any>window, 'deviceorientation')).pipe(
+    return merge(
+      fromEvent<DeviceOrientationEvent>(window, 'deviceorientationabsolute'),
+      fromEvent<DeviceOrientationEvent>(window, 'deviceorientation')
+    ).pipe(
       map((event: DeviceOrientationEvent) => {
-        const appleHeading = (<any>event).webkitCompassHeading;
+        const appleHeading = (event as any).webkitCompassHeading;
         const heading: number = appleHeading || this.getAbsoluteHeading(event);
         return heading;
       })
@@ -455,7 +476,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private getAbsoluteHeading(event: DeviceOrientationEvent) {
-    return event.alpha !== undefined && event.absolute ? 360 - event.alpha : undefined;
+    return event.alpha != null && event.absolute ? 360 - event.alpha : undefined;
   }
 
   private validateAndSetHeading(heading: number) {

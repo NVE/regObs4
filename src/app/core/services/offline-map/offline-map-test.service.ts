@@ -18,6 +18,7 @@ const TEST_PACKAGES: OfflineMapPackage[] = [
 
     maps: {
       statensKartverk: {
+        url: 'test',
         mapId: 'statensKartverk',
         rootTile: { z: 8, x: 134, y: 72 },
         zMax: 14,
@@ -25,6 +26,7 @@ const TEST_PACKAGES: OfflineMapPackage[] = [
         // lastModified: '2021-11-02T04:36:13.500Z',
       },
       'steepness-outlet': {
+        url: 'test',
         mapId: 'steepness-outlet',
         rootTile: { z: 8, x: 134, y: 72 },
         zMax: 14,
@@ -40,6 +42,7 @@ const TEST_PACKAGES: OfflineMapPackage[] = [
 
     maps: {
       statensKartverk: {
+        url: 'test',
         mapId: 'statensKartverk',
         rootTile: { z: 8, x: 134, y: 73 },
         zMax: 14,
@@ -47,6 +50,7 @@ const TEST_PACKAGES: OfflineMapPackage[] = [
         lastModified: '2024-04-06T04:36:13.500Z',
       },
       'steepness-outlet': {
+        url: 'test',
         mapId: 'steepness-outlet',
         rootTile: { z: 8, x: 134, y: 73 },
         zMax: 14,
@@ -61,19 +65,19 @@ const TEST_PACKAGES: OfflineMapPackage[] = [
   providedIn: 'root',
 })
 export class OfflineMapTestService extends OfflineMapService {
-  packages$: Observable<OfflineMapPackage[]> = new BehaviorSubject([
+  override packages$: Observable<OfflineMapPackage[]> = new BehaviorSubject([
     ...TEST_PACKAGES,
     ...TEST_PACKAGES,
     ...TEST_PACKAGES,
     ...TEST_PACKAGES,
   ]);
 
-  availableDiskspace = {
+  override availableDiskspace = {
     available: 500_000_000, // 500 MB
-    used: TEST_PACKAGES.reduce((acc, p) => acc + p.size, 0),
+    used: TEST_PACKAGES.reduce((acc, p) => acc + (p.size || 0), 0),
   };
 
-  downloadAndUnzipProgress$: Observable<OfflineMapPackage[]> = new BehaviorSubject([
+  override downloadAndUnzipProgress$: Observable<OfflineMapPackage[]> = new BehaviorSubject([
     {
       name: '134-74-8',
       size: 203_456_000,
@@ -85,12 +89,14 @@ export class OfflineMapTestService extends OfflineMapService {
       downloadStart: Date.now() / 1000,
       maps: {
         statensKartverk: {
+          url: 'test',
           mapId: 'statensKartverk',
           rootTile: { z: 8, x: 134, y: 74 },
           zMax: 14,
           template: '',
         },
         'steepness-outlet': {
+          url: 'test',
           mapId: 'steepness-outlet',
           rootTile: { z: 8, x: 134, y: 74 },
           zMax: 14,
@@ -109,12 +115,14 @@ export class OfflineMapTestService extends OfflineMapService {
       downloadStart: Date.now() / 1000,
       maps: {
         statensKartverk: {
+          url: 'test',
           mapId: 'statensKartverk',
           rootTile: { z: 8, x: 134, y: 75 },
           zMax: 14,
           template: '',
         },
         'steepness-outlet': {
+          url: 'test',
           mapId: 'steepness-outlet',
           rootTile: { z: 8, x: 134, y: 75 },
           zMax: 14,
@@ -134,12 +142,14 @@ export class OfflineMapTestService extends OfflineMapService {
       downloadStart: Date.now() / 1000,
       maps: {
         statensKartverk: {
+          url: 'test',
           mapId: 'statensKartverk',
           rootTile: { z: 8, x: 134, y: 76 },
           zMax: 14,
           template: '',
         },
         'steepness-outlet': {
+          url: 'test',
           mapId: 'steepness-outlet',
           rootTile: { z: 8, x: 134, y: 76 },
           zMax: 14,

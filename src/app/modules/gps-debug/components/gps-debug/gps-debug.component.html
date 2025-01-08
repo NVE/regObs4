@@ -15,7 +15,7 @@
           {{ item.pos.coords.accuracy | number: "1.0-0" }}m
         </span>
       </span>
-      <span *ngIf="item.status === 'PositionError'"> &nbsp;{{ getErrorCodeOrMessage(item.err) }} </span>
+      <span *ngIf="item.status === 'PositionError'"> &nbsp;{{ item.err ? getErrorCodeOrMessage(item.err) : "" }} </span>
       <span *ngIf="item.highAccuracyEnabled">&nbsp;(H)</span>
     </div>
   </ion-content>

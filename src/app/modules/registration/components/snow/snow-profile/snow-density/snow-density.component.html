@@ -2,19 +2,21 @@
   <ion-label class="ion-padding-vertical ion-padding-end">
     <h2>{{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE" | translate }}</h2>
     <p>
-      <ion-text *ngIf="!isEmpty; else empty"
-        >{{ profiles[0].Layers ? profiles[0].Layers.length : 0 }}
-        <ng-container *ngIf="profiles[0].Layers.length === 1; else multiple">
-          {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.ONE_LAYER" | translate }}
-        </ng-container>
-      </ion-text>
+      @if (!isEmpty()) {
+        <ion-text>
+          {{ nLayers() }}
+          @if (nLayers() === 1) {
+            {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.ONE_LAYER" | translate }}
+          } @else {
+            {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.MULTIPLE_LAYERS" | translate }}
+          }
+        </ion-text>
+      } @else {
+        {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.EMPTY" | translate }}
+      }
     </p>
   </ion-label>
-  <ion-icon *ngIf="!isEmpty" slot="end" color="success" name="checkmark-circle"></ion-icon>
+  @if (!isEmpty()) {
+    <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
+  }
 </ion-item>
-<ng-template #empty>
-  {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.EMPTY" | translate }}
-</ng-template>
-<ng-template #multiple>
-  {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.MULTIPLE_LAYERS" | translate }}
-</ng-template>

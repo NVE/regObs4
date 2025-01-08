@@ -2,9 +2,9 @@
   <!-- Header -->
   <ion-item class="header">
     <div class="header-content">
-      <ion-label>{{ label | translate }}</ion-label>
+      <ion-label *ngIf="label() as labelKeyOrText">{{ labelKeyOrText | translate }}</ion-label>
 
-      <div *ngIf="multiSelect" class="n-selected">
+      <div *ngIf="multiSelect()" class="n-selected">
         {{ "REGISTRATION.SELECTION_COUNT" | translate: { count: count() } }}
       </div>
 

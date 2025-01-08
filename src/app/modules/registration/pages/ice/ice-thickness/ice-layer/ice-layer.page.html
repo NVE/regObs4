@@ -1,24 +1,24 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-title>
+    <ion-title>{{ "REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list lines="full">
     <ion-list-header>
-      <ion-label> {{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER_TITLE' | translate}} </ion-label>
+      <ion-label> {{ "REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER_TITLE" | translate }} </ion-label>
     </ion-list-header>
     <app-kdv-select
-      label="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}"
+      label="{{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate }}"
       kdvKey="Ice_IceLayerKDV"
-      [(value)]="layerCopy.IceLayerTID"
+      [(value)]="layerTid"
     ></app-kdv-select>
     <app-numeric-input
-      [(value)]="layerCopy.IceLayerThickness"
+      [(value)]="thickness"
       label="REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS"
       [min]="0"
       [max]="999"
@@ -30,10 +30,10 @@
     </app-numeric-input>
   </ion-list>
   <app-modal-save-or-delete-buttons
-    [saveDisabled]="!isValid"
+    [saveDisabled]="!isValid()"
     (saveClicked)="ok()"
     (deleteClicked)="delete()"
-    [showDelete]="!isNew"
+    [showDelete]="!isNew()"
   >
   </app-modal-save-or-delete-buttons>
 </ion-content>
