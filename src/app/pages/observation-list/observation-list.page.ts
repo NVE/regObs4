@@ -17,30 +17,36 @@ import {
   IonSkeletonText,
   SegmentCustomEvent,
 } from '@ionic/angular/standalone';
-import { SelectInterface } from '@ionic/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { IonSelectCustomEvent, SelectChangeEventDetail, SelectInterface } from '@ionic/core';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import {
+  SearchCriteriaOrderBy,
+  SearchCriteriaService,
+} from '../../core/services/search-criteria/search-criteria.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
-} from 'src/app/core/services/search-registration/search-registration.service';
-import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
-import { MapService } from 'src/app/modules/map/services/map/map.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+} from '../../core/services/search-registration/search-registration.service';
+import { RegistrationViewModel, SearchCriteriaRequestDto } from '../../modules/common-regobs-api';
+import { MapService } from '../../modules/map/services/map/map.service';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { UpdateObservationsService } from '../../modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
-import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
-import { UrlParams } from 'src/app/core/services/search-criteria/url-params';
-import { HasRegId } from 'src/app/modules/common-registration/registration.helpers';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+// import { SearchRegistrationsWithAttachments } from '../../modules/common-regobs-api/models/search-registrations-with-attachments';
+import { UrlParams } from '../../core/services/search-criteria/url-params';
+import { HasRegId } from '../../modules/common-registration/registration.helpers';
+import { NgDestoryBase } from '../../core/helpers/observable-helper';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
-import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
+import {
+  RefreshFunc,
+  RefreshWithCancelComponent,
+} from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
 import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
 import { ObservationListViewComponent } from '../../modules/shared/components/list-view/observation-list-view.component';
-import { ImagesGridComponent } from '../../modules/shared/components/images-grid/images-grid.ts/images-grid.component';
+// import { ImagesGridComponent } from '../../modules/shared/components/images-grid/images-grid.ts/images-grid.component';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
@@ -66,7 +72,7 @@ const URL_VIEW_TYPE_PARAM = 'view';
     AsyncPipe,
     GeoFabComponent,
     HeaderComponent,
-    ImagesGridComponent,
+    // ImagesGridComponent,
     IonCol,
     IonContent,
     IonGrid,
@@ -99,27 +105,27 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   private logger = inject(LoggingService);
   private userSettingService = inject(UserSettingService);
 
-  listSearch: PagedSearchResult<RegistrationViewModel>;
-  imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
+  listSearch?: PagedSearchResult<RegistrationViewModel>;
+  // imageSearch: PagedSearchResult<SearchRegistrationsWithAttachments>;
 
   showObservations$: Observable<boolean>;
-  registrations$: Observable<RegistrationViewModel[]>;
-  attachments$: Observable<SearchRegistrationsWithAttachments[]>;
+  registrations$?: Observable<RegistrationViewModel[]>;
+  // attachments$: Observable<SearchRegistrationsWithAttachments[]>;
 
-  orderBy$: Observable<string>;
-  error$: Observable<boolean>;
-  popupType: SelectInterface;
-  isNative: boolean;
+  orderBy$?: Observable<string>;
+  error$?: Observable<boolean>;
+  popupType?: SelectInterface;
+  isNative?: boolean;
   disableMapExtentToggle$: Observable<boolean>;
   useMapExtentFilter$: Observable<MapSectionFilter>;
   viewType$ = new BehaviorSubject<ViewType>('list');
-  isFetchingObservations$: Observable<boolean>;
-  shouldDisableScroller$: Observable<boolean>;
+  isFetchingObservations$?: Observable<boolean>;
+  shouldDisableScroller$?: Observable<boolean>;
 
-  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
-  @ViewChild(IonContent, { static: true }) content: IonContent;
+  @ViewChild(IonInfiniteScroll, { static: false }) scroll?: IonInfiniteScroll;
+  @ViewChild(IonContent, { static: true }) content?: IonContent;
 
-  refreshFunc = this.refresh.bind(this);
+  refreshFunc: RefreshFunc = this.refresh.bind(this);
   searchCriteriaWhenThisPageIsActiveAndViewTypeList$: Observable<SearchCriteriaRequestDto>;
   searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$: Observable<SearchCriteriaRequestDto>;
   constructor() {
@@ -171,9 +177,12 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   }
 
   get currentSearch(): PagedSearchResult<HasRegId> {
-    if (this.viewType$.getValue() === 'grid') {
-      return this.imageSearch;
+    if (this.listSearch == null) {
+      throw new Error('listSearch not initialized');
     }
+    // if (this.viewType$.getValue() === 'grid') {
+    //   return this.imageSearch;
+    // }
     return this.listSearch;
   }
 
@@ -230,14 +239,15 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
       this.searchCriteriaWhenThisPageIsActiveAndViewTypeList$
     );
 
-    this.imageSearch = this.searchRegistrationService.searchAttachments(
-      this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
-    );
+    // this.imageSearch = this.searchRegistrationService.searchAttachments(
+    //   this.searchCriteriaWhenThisPageIsActiveAndViewTypeGrid$
+    // );
 
     this.registrations$ = this.listSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
-    this.attachments$ = this.imageSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
+    // this.attachments$ = this.imageSearch.registrations$.pipe(tap(() => this.scroll && this.scroll.complete()));
 
-    const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));
+    // const search$ = this.viewType$.pipe(map((viewType) => (viewType === 'list' ? this.listSearch : this.imageSearch)));
+    const search$ = of(this.listSearch);
 
     this.isFetchingObservations$ = search$.pipe(switchMap((result) => result.isFetching$));
     this.error$ = search$.pipe(
@@ -254,7 +264,8 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     search$
       .pipe(
         takeUntil(this.ngDestroy$),
-        switchMap((result) => result.lastFetched$)
+        switchMap((result) => result.lastFetched$),
+        filter((v) => v != null)
       )
       .subscribe((lastFetched) => {
         this.updateObservationsService.setLastFetched(lastFetched);
@@ -263,7 +274,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this._searchInitiated = true;
   }
 
-  handleChangeSorting(event) {
+  handleChangeSorting(event: IonSelectCustomEvent<SelectChangeEventDetail<SearchCriteriaOrderBy>>) {
     this.searchCriteriaService.setOrderBy(event.detail.value);
   }
 
@@ -279,14 +290,15 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.viewType$.next(id);
   }
 
-  refresh(): void {
+  refresh() {
     this.logger.debug('Refresh', DEBUG_TAG);
     this.currentSearch.update();
+    return Promise.resolve();
   }
 
   ionViewWillEnter(): void {
     this.logger.debug('ionViewWillEnter', DEBUG_TAG);
-    this.content.scrollToTop();
+    this.content?.scrollToTop();
     this.searchCriteriaService.setExtentFilterActive(true);
   }
 
@@ -294,7 +306,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
     this.currentSearch.increasePage();
   }
 
-  trackById(_, obs: HasRegId) {
+  trackById(index: number, obs: HasRegId) {
     return obs ? obs.RegId : undefined;
   }
 }

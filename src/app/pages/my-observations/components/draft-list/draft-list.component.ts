@@ -2,8 +2,8 @@ import { IonGrid, IonItemDivider, IonRow, IonList, IonLabel } from '@ionic/angul
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { RegistrationDraft } from '../../../../core/services/draft/draft-model';
+import { DraftRepositoryService } from '../../../../core/services/draft/draft-repository.service';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { SyncItemComponent } from '../sync-item/sync-item.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +28,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class DraftListComponent implements OnInit {
   @Output() isEmpty = new EventEmitter<boolean>();
-  private ngDestroy$: Subject<void>;
+  private ngDestroy$ = new Subject<void>();
 
   public drafts$: Observable<RegistrationDraft[]>;
 
@@ -39,8 +39,6 @@ export class DraftListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.ngDestroy$ = new Subject();
-
     this.drafts$
       .pipe(
         takeUntil(this.ngDestroy$),

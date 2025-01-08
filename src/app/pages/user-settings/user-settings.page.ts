@@ -19,17 +19,17 @@ import {
   NavController,
   Platform,
 } from '@ionic/angular/standalone';
-import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { KdvService } from '../../modules/common-registration/registration.services';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import * as version from '../../../environments/version.json';
 import { AppVersion } from '../../core/models/app-version.model';
-import { Observable, Subscription, firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
-import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
-import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import { FileLoggingService } from '../../modules/shared/services/logging/file-logging.service';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 import {
   ConfirmationModalService,
   PopupResponse,
@@ -86,12 +86,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   private platform = inject(Platform);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  userSettings: UserSetting;
+  userSettings!: UserSetting;
   isUpdating = false;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
-  isDesktopView: boolean;
-  isDesktopPlatform: boolean;
+  isDesktopView?: boolean;
+  isDesktopPlatform?: boolean;
   version: AppVersion = version;
 
   get appModeOptions() {
@@ -101,7 +101,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       {
         id: 'TEST',
         text: 'Test Regobs',
-        disabled: !this.userSettings.featureToggleDeveloperMode,
+        disabled: this.userSettings ? !this.userSettings.featureToggleDeveloperMode : true,
       },
     ];
     return options;
@@ -204,7 +204,13 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     try {
       await this.doReset();
     } catch (err) {
-      this.loggingService.log('Could not reset db', err, LogLevel.Warning, DEBUG_TAG);
+      let e;
+      if (err instanceof Error) {
+        e = err;
+      } else if (typeof err == 'string') {
+        e = new Error(err);
+      }
+      this.loggingService.log('Could not reset db', e, LogLevel.Warning, DEBUG_TAG);
     }
     this.ngZone.run(() => {
       this.isUpdating = false;

@@ -1,5 +1,5 @@
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { AttachmentEditModel, AttachmentViewModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { SyncStatus } from '../../../modules/common-registration/registration.models';
+import { AttachmentEditModel, AttachmentViewModel, RegistrationEditModel } from '../../../modules/common-regobs-api';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 // If we want to make RegistrationEditModel immutable, use Immutable<RegistrationEditModel>
@@ -11,7 +11,7 @@ import { AttachmentEditModel, AttachmentViewModel, RegistrationEditModel } from 
 // type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
 // type ImmutableObject<T> = { readonly [K in keyof T]: Immutable<T[K]> };
 
-export declare const enum RegistrationDraftErrorCode {
+export enum RegistrationDraftErrorCode {
   NoNetworkOrTimedOut = 0,
   AttachmentError = 10,
   RegistrationError = 20,

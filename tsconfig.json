@@ -2,44 +2,52 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "inlineSources": true,
-    "sourceRoot": "/",
-    "declaration": false,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "baseUrl": "./",
-    "paths": {
-      "core-js/es7/reflect": [
-        "../node_modules/core-js/proposals/reflect-metadata"
-      ],
-      "core-js/es6/*": [
-        "../node_modules/core-js/es/*"
-      ]
-    },
-    "skipLibCheck": true,
-    "types": [
-      "node",
-      "cordova",
-      "jasmine"
-    ],
+    "module": "ES2022",
+    // "sourceMap": true,
+    // "inlineSources": true,
+    // "sourceRoot": "/",
+    // "declaration": false,
+    // "emitDecoratorMetadata": true,
+    // "resolveJsonModule": true,
+    // "typeRoots": [
+    //   "node_modules/@types"
+    // ],
+    // "lib": [
+    //   "es2018",
+    //   "dom"
+    // ],
+    "baseUrl": "./", // TODO: Remove, not recommended to use this by typescript if not using amd
+    // "paths": {
+    //   "core-js/es7/reflect": [
+    //     "../node_modules/core-js/proposals/reflect-metadata"
+    //   ],
+    //   "core-js/es6/*": [
+    //     "../node_modules/core-js/es/*"
+    //   ]
+    // },
+    // "types": [
+    //   "node",
+    //   "cordova",
+    //   "jasmine"
+    // ],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "strictStandalone": true
   }

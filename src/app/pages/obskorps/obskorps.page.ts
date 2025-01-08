@@ -1,13 +1,14 @@
 import { HttpClient, HttpResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { Observable, Subject, map, switchMap, tap, withLatestFrom, finalize, take } from 'rxjs';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
-import { settings } from 'src/settings';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
+import { LoggedInUser } from '../../modules/login/models/logged-in-user.model';
+import { settings } from '../../../settings';
 import moment from 'moment';
 import {
   AlertController,
+  InputChangeEventDetail,
   InputCustomEvent,
   IonButton,
   IonContent,
@@ -52,20 +53,20 @@ export class ObskorpsPage implements OnInit {
   private alertController = inject(AlertController);
 
   groupId = 51;
-  observerId: number;
+  observerId?: number;
   startDate: string;
   endDate: string;
 
   // Auth stuff
-  isLoggedIn$: Observable<boolean>;
-  hasAccess$: Observable<boolean>;
-  hasAccessToGroupReports$: Observable<boolean>;
-  hasAccessToObserverReports$: Observable<boolean>;
+  isLoggedIn$ = this.authService.loggedInUser$.pipe(map((user) => user.isLoggedIn));
+  hasAccess$?: Observable<boolean>;
+  hasAccessToGroupReports$?: Observable<boolean>;
+  hasAccessToObserverReports$?: Observable<boolean>;
 
   isWaitingForGroupReport$ = new Subject<boolean>();
   isWaitingForObserverReport$ = new Subject<boolean>();
-  groupErr$ = new Subject<string>();
-  observerErr$ = new Subject<string>();
+  groupErr$ = new Subject<string | null>();
+  observerErr$ = new Subject<string | null>();
 
   constructor() {
     const start = moment.utc().subtract({ month: 1 }).startOf('month');
@@ -81,30 +82,36 @@ export class ObskorpsPage implements OnInit {
     );
   }
 
-  setStartDate(event: InputCustomEvent) {
-    this.startDate = event.detail.value;
+  setStartDate(event: InputCustomEvent<InputChangeEventDetail>) {
+    if (event.detail.value != null) {
+      this.startDate = event.detail.value;
+    }
   }
 
-  setEndDate(event: InputCustomEvent) {
-    this.endDate = event.detail.value;
+  setEndDate(event: InputCustomEvent<InputChangeEventDetail>) {
+    if (event.detail.value != null) {
+      this.endDate = event.detail.value;
+    }
   }
 
-  setGroupId(event: InputCustomEvent) {
-    this.groupId = parseInt(event.detail.value);
+  setGroupId(event: InputCustomEvent<InputChangeEventDetail>) {
+    if (event.detail.value != null) {
+      this.groupId = parseInt(event.detail.value);
+    }
   }
 
-  setObserverId(event: InputCustomEvent) {
-    this.observerId = parseInt(event.detail.value);
+  setObserverId(event: InputCustomEvent<InputChangeEventDetail>) {
+    if (event.detail.value != null) {
+      this.observerId = parseInt(event.detail.value);
+    }
   }
 
   ngOnInit(): void {
-    this.isLoggedIn$ = this.authService.loggedInUser$.pipe(map((user) => user.isLoggedIn));
-
     // group har tilgang til grupperapporter og observatørrapporter
     // observer har kun tilgang til observatørrapporter
-    const accessType: Observable<'group' | 'observer'> = this.authService.myPageData$.pipe(
+    const accessType: Observable<'group' | 'observer' | null> = this.authService.myPageData$.pipe(
       map((data) => {
-        if (data?.Roles == null) return;
+        if (data?.Roles == null) return null;
 
         if (data.Roles.includes('regobs_ObservatorRapporter')) {
           return 'group';
@@ -113,6 +120,8 @@ export class ObskorpsPage implements OnInit {
         if (data.Roles.includes('regobs_ObsKorps')) {
           return 'observer';
         }
+
+        return null;
       })
     );
 
@@ -126,6 +135,8 @@ export class ObskorpsPage implements OnInit {
   }
 
   generateObserverReport() {
+    if (!this.observerId) return;
+
     this.isWaitingForObserverReport$.next(true);
 
     const params = new URLSearchParams({
@@ -180,7 +191,7 @@ export class ObskorpsPage implements OnInit {
   }
 
   private handleResponse(res: HttpResponse<Blob>) {
-    if (res.status === HttpStatusCode.NoContent) {
+    if (res.status === HttpStatusCode.NoContent || res.body == null) {
       this.alertController
         .create({
           header: 'Ingen data',

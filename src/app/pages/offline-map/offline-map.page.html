@@ -53,13 +53,13 @@
       </ion-item>
     </ng-container>
     <div class="footer">
-      <ng-container *ngIf="expanded && allPackages$ | async as items">
-        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items" lines="full">
+      <ng-container *ngIf="expanded">
+        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of allPackages$ | async" lines="full">
           <!-- Kolonne 1 -->
           <ion-label>{{ item.name }}</ion-label>
 
           <!-- Kolonne 2 -->
-          <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
+          <ion-label>{{ humanReadableByteSize(item.size || 0) }}</ion-label>
 
           <!-- Kolonne 3 -->
           <ion-label>{{ formatProgressIfDownloading(item) }}</ion-label>

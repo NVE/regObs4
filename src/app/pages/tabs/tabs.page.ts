@@ -4,8 +4,8 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { GeoHazard } from '../../modules/common-core/models';
+import { SearchCriteriaService } from '../../core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
@@ -40,11 +40,11 @@ export class TabsPage implements OnInit, OnDestroy {
   private ngZone = inject(NgZone);
   private tabsService = inject(TabsService);
 
-  private warningGroupInMapViewSubscription: Subscription;
-  private currentGeoHazardSubscription: Subscription;
-  readonly selectedTab$: Observable<string>;
+  private warningGroupInMapViewSubscription?: Subscription;
+  private currentGeoHazardSubscription?: Subscription;
+  readonly selectedTab$: Observable<TABS | null>;
 
-  warningsInView: {
+  warningsInView?: {
     count: number;
     text: string;
     maxWarning: number;
@@ -54,15 +54,24 @@ export class TabsPage implements OnInit, OnDestroy {
   showTrips = false;
 
   get showBadge(): boolean {
-    return this.warningsInView && this.warningsInView.maxWarning > 0;
+    if (this.warningsInView) {
+      return this.warningsInView.maxWarning > 0;
+    }
+    return false;
   }
 
   get badgeColor(): string {
-    return 'warninglevel-' + this.warningsInView.maxWarning;
+    if (this.warningsInView) {
+      return 'warninglevel-' + this.warningsInView.maxWarning;
+    }
+    return 'warninglevel-0';
   }
 
   get badgeText(): string {
-    return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
+    if (this.warningsInView) {
+      return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
+    }
+    return '0'; // Ikke vurdert
   }
 
   constructor() {
@@ -110,7 +119,11 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.warningGroupInMapViewSubscription.unsubscribe();
-    this.currentGeoHazardSubscription.unsubscribe();
+    if (this.warningGroupInMapViewSubscription) {
+      this.warningGroupInMapViewSubscription.unsubscribe();
+    }
+    if (this.currentGeoHazardSubscription) {
+      this.currentGeoHazardSubscription.unsubscribe();
+    }
   }
 }

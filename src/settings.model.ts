@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import { SupportTile } from './app/core/models/support-tile.model';
 import { TopoMapLayer } from './app/core/models/topo-map-layer.enum';
 import { TopoMap } from './app/core/models/topo-map.enum';
+import { LangKey } from './app/modules/common-core/models';
 
 export interface ITopoMapLayerOptions {
   url: string;
@@ -84,6 +85,11 @@ interface IMapSettings {
   endExtentColor: string;
 }
 
+interface Language {
+  lang: keyof typeof LangKey;
+  name: string;
+}
+
 export interface ISettings {
   authConfig: any;
   observations: any;
@@ -99,7 +105,10 @@ export interface ISettings {
   foregroundUpdateIntervalMs: number;
   backgroundFetchTimeout: number;
   popupDisclamerRefreshTimeMs: number;
-  language: any;
+  language: {
+    fallbackLang: string;
+    supportedLanguages: Language[];
+  };
   legalUrl: {
     nb: string;
     en: string;

@@ -1,6 +1,5 @@
-import { Component, OnInit, NgZone, ViewChild, Input, inject } from '@angular/core';
-import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Component, NgZone, ViewChild, Input, inject } from '@angular/core';
+import { firstValueFrom, Subject } from 'rxjs';
 import {
   IonButton,
   IonCol,
@@ -13,39 +12,34 @@ import {
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
+export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
+
 @Component({
   selector: 'app-refresh-with-cancel',
   templateUrl: './refresh-with-cancel.component.html',
   styleUrls: ['./refresh-with-cancel.component.scss'],
   imports: [IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, NgIf, TranslatePipe],
 })
-export class RefreshWithCancelComponent implements OnInit {
+export class RefreshWithCancelComponent {
   private ngZone = inject(NgZone);
   private platform = inject(Platform);
 
   showCancel = false;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
-  @ViewChild(IonRefresher) refresher: IonRefresher;
-  @Input() refreshFunc: (cancelPromise: Promise<boolean>) => Promise<any>;
-  @Input() cancelSubject: Subject<any>;
+  @ViewChild(IonRefresher) refresher?: IonRefresher;
+  @Input() refreshFunc: RefreshFunc = () => Promise.resolve();
+  @Input() cancelSubject = new Subject<boolean>();
   @Input() disabled = false;
 
-  spinner: string;
-
-  ngOnInit(): void {
-    this.spinner = this.platform.is('android') ? 'crescent' : 'lines';
-    if (!this.cancelSubject) {
-      this.cancelSubject = new Subject<boolean>();
-    }
-  }
+  spinner = this.platform.is('android') ? 'crescent' : 'lines';
 
   cancel(): void {
     this.cancelSubject.next(true);
   }
 
   private getCancelPromise() {
-    return this.cancelSubject.asObservable().pipe(take(1)).toPromise();
+    return firstValueFrom(this.cancelSubject.asObservable());
   }
 
   async doRefresh(): Promise<void> {
@@ -66,7 +60,7 @@ export class RefreshWithCancelComponent implements OnInit {
 
   private complete() {
     this.ngZone.run(() => {
-      this.refresher.complete();
+      this.refresher?.complete();
     });
     this.ngZone.run(() => {
       this.showCancel = false;

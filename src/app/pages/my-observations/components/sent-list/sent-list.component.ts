@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+  viewChild,
+} from '@angular/core';
 import {
   IonCol,
   IonGrid,
@@ -11,17 +21,17 @@ import {
 } from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
-import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
-import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
+import { AddUpdateDeleteRegistrationService } from '../../../../core/services/add-update-delete-registration/add-update-delete-registration.service';
+import { NetworkStatusService } from '../../../../core/services/network-status/network-status.service';
 import {
   PagedSearchResult,
   SearchRegistrationService,
-} from 'src/app/core/services/search-registration/search-registration.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { getUniqueRegistrations } from 'src/app/modules/common-registration/registration.helpers';
-import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api/models';
-import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+} from '../../../../core/services/search-registration/search-registration.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { getUniqueRegistrations } from '../../../../modules/common-registration/registration.helpers';
+import { RegistrationViewModel, SearchCriteriaRequestDto } from '../../../../modules/common-regobs-api';
+import { LogLevel } from '../../../../modules/shared/services/logging/log-level.model';
+import { LoggingService } from '../../../../modules/shared/services/logging/logging.service';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { ObservationListCardComponent } from '../../../../components/observation/observation-list-card/observation-list-card.component';
 import { ObservationSkeletonComponent } from '../../../../components/observation/observation-skeleton/observation-skeleton.component';
@@ -64,17 +74,17 @@ export class SentListComponent implements OnInit, OnDestroy {
 
   @Output() isEmpty = new EventEmitter<boolean>();
 
-  myRegistrations: RegistrationViewModel[];
-  searchResult: PagedSearchResult<RegistrationViewModel>;
+  myRegistrations!: RegistrationViewModel[];
+  searchResult!: PagedSearchResult<RegistrationViewModel>;
   isOffline$: Observable<boolean>;
   error$ = new BehaviorSubject(false);
-  shouldDisableScroller$: Observable<boolean>;
+  shouldDisableScroller$!: Observable<boolean>;
   private ngDestroy$ = new Subject<void>();
   private submittedRegistrations$: Observable<RegistrationViewModel[]>;
   private deletedRegIds$: Observable<number[]>;
-  private registrationsSubscription: Subscription;
+  private registrationsSubscription!: Subscription;
 
-  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
+  scroll = viewChild(IonInfiniteScroll);
 
   get maxCount() {
     return PagedSearchResult.MAX_ITEMS;
@@ -91,11 +101,11 @@ export class SentListComponent implements OnInit, OnDestroy {
 
     this.submittedRegistrations$ = addUpdateDeleteRegistrationService.changedRegistrations$.pipe(
       map((changedReg) => changedReg.reg),
-      scan((allChanged, changedReg) => [changedReg, ...allChanged], [])
+      scan((allChanged, changedReg) => [changedReg, ...allChanged], [] as RegistrationViewModel[])
     );
 
     this.deletedRegIds$ = addUpdateDeleteRegistrationService.deletedRegistrationIds$.pipe(
-      scan((acc, value) => [value, ...acc], [])
+      scan((acc, value) => [value, ...acc], [] as number[])
     );
   }
 
@@ -123,7 +133,7 @@ export class SentListComponent implements OnInit, OnDestroy {
         map(([myRegistrations, submittedRegistrations, deletedRegIds]) => {
           return this.mergeRegistrations(myRegistrations, submittedRegistrations, deletedRegIds);
         }),
-        tap(() => this.scroll && this.scroll.complete())
+        tap(() => this.scroll()?.complete())
       )
       .subscribe({
         next: (myRegistrations) => {
@@ -168,8 +178,8 @@ export class SentListComponent implements OnInit, OnDestroy {
     this.searchResult.increasePage();
   }
 
-  trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
-    return obs ? obs.RegId.toString() : undefined;
+  trackByIdFunc(index: number, obs: RegistrationViewModel): string {
+    return obs.RegId.toString();
   }
 
   private mergeRegistrations(

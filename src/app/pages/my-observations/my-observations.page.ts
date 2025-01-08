@@ -46,21 +46,21 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class MyObservationsPage {
-  @ViewChild(IonContent, { static: true }) content: IonContent;
-  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
+  @ViewChild(IonContent, { static: true }) content?: IonContent;
+  @ViewChild(IonInfiniteScroll, { static: false }) scroll?: IonInfiniteScroll;
   @ViewChild(SentListComponent, { static: false })
-  sentListComponent: SentListComponent;
+  sentListComponent?: SentListComponent;
 
   refreshFunc = this.refresh.bind(this);
   draftIsEmpty = false;
   sentRegistrationsIsEmpty = false;
 
   ionViewDidEnter() {
-    this.content.scrollToTop();
+    this.content?.scrollToTop();
   }
 
-  refresh(): void {
-    this.sentListComponent.refresh();
+  async refresh() {
+    this.sentListComponent?.refresh();
   }
 
   refreshDraftEmptyState(isEmpty: boolean): void {

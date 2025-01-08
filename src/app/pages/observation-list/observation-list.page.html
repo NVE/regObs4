@@ -29,10 +29,18 @@
       <ion-col>
         <div *ngIf="!isNative" class="button-container">
           <span>{{'OBSERVATION_LIST.VIEW_TYPE' | translate}}:</span>
-          <button id="list" [ngClass]="viewType$.getValue() == 'list' && 'active'" (click)="changeViewType('list')">
+          <button
+            id="list"
+            [ngClass]="viewType$.getValue() == 'list' ? 'active' : null"
+            (click)="changeViewType('list')"
+          >
             <img alt="list view" src="../../../assets/icon/reorder.svg" />
           </button>
-          <button id="grid" [ngClass]="viewType$.getValue() == 'grid' && 'active'" (click)="changeViewType('grid')">
+          <button
+            id="grid"
+            [ngClass]="viewType$.getValue() == 'grid' ? 'active' : null"
+            (click)="changeViewType('grid')"
+          >
             <img alt="images view" src="../../../assets/icon/grid_view.svg" />
           </button>
         </div>
@@ -59,7 +67,7 @@
     <ng-container *ngIf="viewType$ | async as viewType">
       <ng-container *ngIf="(showObservations$ | async); else disabled">
         <ng-container *ngIf="registrations$ | async as registrations">
-          <ion-list class="loaded" *ngIf="registrations?.length > 0; else empty">
+          <ion-list class="loaded" *ngIf="registrations.length > 0; else empty">
             <app-observation-list-view
               *ngIf="viewType==='list'"
               [registrations]="registrations"

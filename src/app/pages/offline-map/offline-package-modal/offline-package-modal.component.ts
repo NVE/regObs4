@@ -14,13 +14,13 @@ import {
 } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
-import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
+import { OfflineMapService } from '../../../core/services/offline-map/offline-map.service';
 import { Observable } from 'rxjs';
-import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map.model';
+import { OfflineMapPackage } from '../../../core/services/offline-map/offline-map.model';
 import { takeUntil, tap } from 'rxjs/operators';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { getDownloadCompleteDate, isPackageOutdated } from 'src/app/core/services/offline-map/utils';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { NgDestoryBase } from '../../../core/helpers/observable-helper';
+import { getDownloadCompleteDate, isPackageOutdated } from '../../../core/services/offline-map/utils';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { NgIf, NgStyle, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { MapComponent } from '../../../modules/map/components/map/map.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -34,6 +34,7 @@ import {
   refresh,
   trash,
 } from 'ionicons/icons';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'OfflinePackageModalComponent';
 
@@ -70,16 +71,16 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   private cdr = inject(ChangeDetectorRef);
   private logger = inject(LoggingService);
 
-  @Input() feature: CompoundPackageFeature;
-  @Input() packageOnServer: CompoundPackage;
-  @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
+  @Input() feature?: CompoundPackageFeature;
+  @Input() packageOnServer?: CompoundPackage;
+  @Input() offlinePackageStatus$?: Observable<OfflineMapPackage>;
 
-  zoom: number;
-  center: L.LatLng;
-  tileLayer: L.GeoJSON;
-  isCheckingAvailableDiskspace: boolean;
-  isPackageOutdated: boolean;
-  offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
+  zoom = 10; // Just as a fallback value
+  center?: L.LatLng;
+  tileLayer?: L.GeoJSON;
+  isCheckingAvailableDiskspace?: boolean;
+  isPackageOutdated?: boolean;
+  offlinePackageStatusThatTriggersChangeDetection$?: Observable<OfflineMapPackage>;
 
   constructor() {
     super();
@@ -91,6 +92,16 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   }
 
   ngOnInit(): void {
+    if (this.offlinePackageStatus$ == null) {
+      this.logger.log('Required input offlinePackageStatus$ not specified.', undefined, LogLevel.Error, DEBUG_TAG);
+      return;
+    }
+
+    if (!this.packageOnServer) {
+      this.logger.log('Required input packageOnServer not specified.', undefined, LogLevel.Error, DEBUG_TAG);
+      return;
+    }
+
     this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
       tap((packageStatus) => {
@@ -117,14 +128,16 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     this.zoom = z;
 
     this.offlineMapService.finishedPackageIds$.pipe(takeUntil(this.ngDestroy$)).subscribe((packageName) => {
-      if (this.packageOnServer.getName() === packageName) {
+      if (this.packageOnServer?.getName() === packageName) {
         this.dismiss(); //close when package is unzipped and ready to use
       }
     });
   }
 
   showTileOnMap(map: L.Map) {
-    this.tileLayer.addTo(map);
+    if (this.tileLayer) {
+      this.tileLayer.addTo(map);
+    }
   }
 
   async startDownload(): Promise<void> {
@@ -147,7 +160,11 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   }
 
   async delete() {
-    this.offlineMapService.removeMapPackageByName(this.packageOnServer.getName());
+    if (this.packageOnServer) {
+      this.offlineMapService.removeMapPackageByName(this.packageOnServer.getName());
+    } else {
+      this.logger.log('No package to delete', undefined, LogLevel.Warning, DEBUG_TAG);
+    }
   }
 
   async update() {

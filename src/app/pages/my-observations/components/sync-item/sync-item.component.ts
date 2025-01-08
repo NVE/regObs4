@@ -1,19 +1,19 @@
 import { IonIcon, IonSpinner, IonItem, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
+import { SyncStatus } from '../../../../modules/common-registration/registration.models';
 import {
   RegistrationDraft,
   RegistrationDraftError,
   RegistrationDraftErrorCode,
-} from 'src/app/core/services/draft/draft-model';
-import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
+} from '../../../../core/services/draft/draft-model';
+import { ObsLocationViewModel } from '../../../../modules/common-regobs-api';
 import { RouterLink } from '@angular/router';
 import { GeoIconComponent } from '../../../../modules/shared/components/geo-icon/geo-icon.component';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../../../modules/shared/pipes/format-date/format-date.pipe';
 import { addIcons } from 'ionicons';
-import { calendar } from 'ionicons/icons';
+import { calendar, warning, shuffleOutline, cloudOfflineOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-sync-item',
@@ -35,29 +35,26 @@ import { calendar } from 'ionicons/icons';
   ],
 })
 export class SyncItemComponent {
-  @Input() draft: RegistrationDraft;
+  draft = input.required<RegistrationDraft>();
 
-  get loading() {
+  isLoading = computed(() => {
+    const { syncStatus, error } = this.draft();
+    return (syncStatus === SyncStatus.Sync || syncStatus === SyncStatus.SyncAndIgnoreVersionCheck) && error == null;
+  });
+
+  isDraft = computed(() => this.draft().syncStatus === SyncStatus.Draft);
+
+  locationName = computed(() => {
+    const { ObsLocation } = this.draft().registration;
     return (
-      (this.draft.syncStatus === SyncStatus.Sync || this.draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck) &&
-      this.draft.error == null
-    );
-  }
-
-  get isDraft() {
-    return this.draft.syncStatus === SyncStatus.Draft;
-  }
-
-  get locationName(): string {
-    return (
-      this.draft.registration.ObsLocation?.LocationName ||
-      this.draft.registration.ObsLocation?.LocationDescription ||
-      (this.draft.registration.ObsLocation as ObsLocationViewModel)?.Title ||
+      ObsLocation?.LocationName ||
+      ObsLocation?.LocationDescription ||
+      (ObsLocation as ObsLocationViewModel)?.Title ||
       ''
     );
-  }
+  });
 
-  getErrorIconName(draftError: RegistrationDraftError): string {
+  getErrorIconName(draftError?: RegistrationDraftError): string {
     switch (draftError?.code) {
       case RegistrationDraftErrorCode.NoNetworkOrTimedOut:
         return 'cloud-offline-outline';
@@ -68,6 +65,6 @@ export class SyncItemComponent {
   }
 
   constructor() {
-    addIcons({ calendar });
+    addIcons({ calendar, warning, shuffleOutline, cloudOfflineOutline });
   }
 }

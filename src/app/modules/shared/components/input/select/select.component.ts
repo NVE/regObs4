@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, HostBinding, inject } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import {
   ActionSheetController,
   IonButton,
@@ -7,16 +7,16 @@ import {
   IonSelectOption,
   IonText,
 } from '@ionic/angular/standalone';
-import { ActionSheetButton } from '@ionic/core';
+import { ActionSheetButton, IonSelectCustomEvent, SelectChangeEventDetail } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
-import { isAndroidOrIos } from '../../../../../core/helpers/ionic/platform-helper';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { caretDownSharp } from 'ionicons/icons';
+import { Capacitor } from '@capacitor/core';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -32,15 +32,15 @@ export class SelectComponent implements OnInit {
   private translateService = inject(TranslateService);
   platform = inject(Platform);
 
-  @Input() label: string;
-  @Input() subTitle: string;
-  @Input() selectedValue: SelectOption['id'];
+  @Input() label?: string;
+  @Input() subTitle?: string;
+  @Input() selectedValue?: SelectOption['id'];
   @Output() selectedValueChange = new EventEmitter();
   @Input() options: Array<SelectOption> = [];
   @Input() showReset = true;
   @Input() disabled = false;
-  isApp: boolean;
 
+  isApp = Capacitor.isNativePlatform();
   filteredOptions: Array<SelectOption> = [];
 
   get valueText() {
@@ -64,7 +64,6 @@ export class SelectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isApp = isAndroidOrIos(this.platform);
     this.getFilteredOptions();
   }
 
@@ -100,11 +99,11 @@ export class SelectComponent implements OnInit {
   }
 
   async getTitleTranslations() {
-    let titleTextTranslated: string;
+    let titleTextTranslated: string | undefined;
     if (this.label) {
       titleTextTranslated = await firstValueFrom(this.translateService.get(this.label));
     }
-    let subTitleTextTranslated: string;
+    let subTitleTextTranslated: string | undefined;
     if (this.subTitle) {
       subTitleTextTranslated = await firstValueFrom(this.translateService.get(this.subTitle));
     }
@@ -127,12 +126,13 @@ export class SelectComponent implements OnInit {
     }
   }
 
-  private setSelectedValue(id: SelectOption['id']) {
+  private setSelectedValue(id?: SelectOption['id']) {
     this.selectedValue = id;
     this.selectedValueChange.emit(id);
   }
 
-  onChange(event): void {
+  // TODO: Check what any is
+  onChange(event: IonSelectCustomEvent<SelectChangeEventDetail<any>>): void {
     this.selectedValue = event.target.value;
     this.selectedValueChange.emit(this.selectedValue);
   }

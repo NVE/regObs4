@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { provideIonicAngular, IonicRouteStrategy, isPlatform } from '@ionic/angular/standalone';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
-import { settings } from 'src/settings';
+import { settings } from './settings';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideMarkdown } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';

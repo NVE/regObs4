@@ -81,7 +81,7 @@ export interface RegistrationViewModel {
   Observer?: ObserverViewModel;
   ObserverGroupID?: number;
   ObserverGroupName?: string;
-  RegId?: number;
+  RegId: number;
   SnowCoverObs?: SnowCoverObsViewModel;
   SnowProfile?: AttachmentViewModel;
   SnowProfile2?: SnowProfileViewModel;

@@ -18,16 +18,16 @@ interface HeightSelectOption extends SelectOption {
 export class ExposedHeightComponent implements OnInit {
   private ngZone = inject(NgZone);
 
-  @Input() exposedHeightComboTID: number;
+  @Input() exposedHeightComboTID?: number;
   @Output() exposedHeightComboTIDChange = new EventEmitter();
-  @Input() exposedHight1: number;
-  @Output() exposedHight1Change = new EventEmitter();
-  @Input() exposedHight2: number;
-  @Output() exposedHight2Change = new EventEmitter();
+  @Input() exposedHeight1?: number;
+  @Output() exposedHeight1Change = new EventEmitter();
+  @Input() exposedHeight2?: number;
+  @Output() exposedHeight2Change = new EventEmitter();
 
-  exposedHeightTop: boolean;
-  exposedHeightMiddle: boolean;
-  exposedHeightBottom: boolean;
+  exposedHeightTop = false;
+  exposedHeightMiddle = false;
+  exposedHeightBottom = false;
 
   get heightArray(): HeightSelectOption[] {
     const options: HeightSelectOption[] = [];
@@ -38,14 +38,14 @@ export class ExposedHeightComponent implements OnInit {
   }
 
   get lowerHeightArray() {
-    return this.heightArray.filter((x) => this.exposedHight1 === undefined || x.id < this.exposedHight1);
+    return this.heightArray.filter((x) => this.exposedHeight1 === undefined || x.id < this.exposedHeight1);
   }
 
   ngOnInit() {
     this.setExposedHeights(this.exposedHeightComboTID);
   }
 
-  setExposedHeights(exposedHeightComboTID: number) {
+  setExposedHeights(exposedHeightComboTID: number | undefined) {
     if (exposedHeightComboTID === 0) {
       this.exposedHeightTop = true;
       this.exposedHeightMiddle = true;
@@ -114,10 +114,10 @@ export class ExposedHeightComponent implements OnInit {
   applyChanges() {
     this.updateExposedHeightComboTID(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
     if (!this.sholdUseExposedHight2()) {
-      this.exposedHight2 = undefined;
+      this.exposedHeight2 = undefined;
     }
     this.exposedHeightComboTIDChange.emit(this.exposedHeightComboTID);
-    this.exposedHight1Change.emit(this.exposedHight1);
-    this.exposedHight2Change.emit(this.exposedHight2);
+    this.exposedHeight1Change.emit(this.exposedHeight1);
+    this.exposedHeight2Change.emit(this.exposedHeight2);
   }
 }

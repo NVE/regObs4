@@ -39,10 +39,9 @@
     "REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1" | translate
   }}</ion-label>
   <app-select
-    [(selectedValue)]="exposedHight1"
+    [(selectedValue)]="exposedHeight1"
     (selectedValueChange)="applyChanges()"
     [options]="heightArray"
-    title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1"
   ></app-select>
 </ion-item>
 <ion-item *ngIf="sholdUseExposedHight2()">
@@ -50,9 +49,8 @@
     "REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2" | translate
   }}</ion-label>
   <app-select
-    [(selectedValue)]="exposedHight2"
+    [(selectedValue)]="exposedHeight2"
     (selectedValueChange)="applyChanges()"
     [options]="lowerHeightArray"
-    title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2"
   ></app-select>
 </ion-item>
