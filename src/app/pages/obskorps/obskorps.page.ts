@@ -130,7 +130,7 @@ export class ObskorpsPage implements OnInit {
     this.hasAccess$ = accessType.pipe(map((type) => type != null));
 
     this.authService.myPageData$.subscribe((user) => {
-      this.observerId = user.ObserverId;
+      this.observerId = user?.ObserverId;
     });
   }
 

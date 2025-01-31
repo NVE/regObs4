@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map, Observable, combineLatest, Subject } from 'rxjs';
+import { map, Observable, combineLatest } from 'rxjs';
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import moment from 'moment';
 import {
@@ -22,6 +22,7 @@ import { ObservationsDaysBackComponent } from '../observations-days-back/observa
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AccordionGroupChangeEventDetail, IonAccordionGroupCustomEvent } from '@ionic/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-date-range',
@@ -44,38 +45,24 @@ import { AccordionGroupChangeEventDetail, IonAccordionGroupCustomEvent } from '@
     TranslatePipe,
   ],
 })
-export class DateRangeComponent extends NgDestoryBase {
+export class DateRangeComponent {
   private searchCriteriaService = inject(SearchCriteriaService);
   userSettingService = inject(UserSettingService);
 
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
   isOpen = false;
-  isNativePlatform: boolean;
-  mode$: Observable<'predefined' | 'custom'>;
-  modeText$: Observable<string>;
-  fromDate$: Observable<string>;
-  toDate$: Observable<string>;
-  useDaysBack$: Observable<boolean>;
-  readableDays$: Observable<string>;
-  dateRangeText$: Observable<string>;
+  isNativePlatform = Capacitor.isNativePlatform();
 
-  constructor() {
-    super();
-    this.mode$ = this.searchCriteriaService.useDaysBack$.pipe(
-      map((useDaysBack) => (useDaysBack ? 'predefined' : 'custom'))
-    );
-    this.isNativePlatform = Capacitor.isNativePlatform();
-    this.fromDate$ = this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.FromDtObsTime));
-
-    this.toDate$ = this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime));
-
-    this.useDaysBack$ = this.searchCriteriaService.useDaysBack$;
-
-    this.dateRangeText$ = combineLatest([this.fromDate$, this.toDate$]).pipe(
-      map(([fromDate, toDate]) => generateDateRange(fromDate, toDate))
-    );
-  }
+  mode = toSignal(
+    this.searchCriteriaService.useDaysBack$.pipe(
+      map((useDaysBack) => (useDaysBack ? ('predefined' as const) : ('custom' as const)))
+    )
+  );
+  fromDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.FromDtObsTime)));
+  toDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime)));
+  dateRangeText = computed(() => generateDateRange(this.fromDate(), this.toDate()));
+  useDaysBack = toSignal(this.searchCriteriaService.useDaysBack$);
 
   /**
    * e.detail.value will return one of the following:

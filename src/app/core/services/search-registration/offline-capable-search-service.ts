@@ -85,7 +85,7 @@ export class OfflineCapableSearchService extends SearchService {
   // just be done in the background. For periodic syncs, this property is not
   // replaced.
   // See waitForImpartantSyncToFinishOrTimeout()
-  private importantSync$: Observable<void> = of(null);
+  private importantSync$: Observable<void> = of();
 
   constructor() {
     const config = inject(RegobsApiConfiguration);
@@ -95,7 +95,6 @@ export class OfflineCapableSearchService extends SearchService {
 
     super(config, http);
     const network = this.network;
-
 
     this.updateObsService.offlineMode = true;
     this.sqlite.hasCrashed$.pipe(take(1)).subscribe(() => {
@@ -181,7 +180,7 @@ export class OfflineCapableSearchService extends SearchService {
       .subscribe();
   }
 
-  SearchCount(criteria: SearchCriteriaRequestDto): Observable<SearchCountResponseDto> {
+  override SearchCount(criteria: SearchCriteriaRequestDto): Observable<SearchCountResponseDto> {
     this.logger.debug('SearchCount triggered', DEBUG_TAG, { criteria });
     return from(this.initOfflineSearch()).pipe(
       switchMap((appMode) => this.sqlite.getRegistrationCount(criteria, appMode)),
@@ -194,7 +193,7 @@ export class OfflineCapableSearchService extends SearchService {
     );
   }
 
-  SearchAtAGlance(criteria: SearchCriteriaRequestDto): Observable<AtAGlanceViewModel[]> {
+  override SearchAtAGlance(criteria: SearchCriteriaRequestDto): Observable<AtAGlanceViewModel[]> {
     this.logger.debug('SearchAtAGlance triggered', DEBUG_TAG, { criteria });
     return from(this.initOfflineSearch()).pipe(
       switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
@@ -207,7 +206,7 @@ export class OfflineCapableSearchService extends SearchService {
     );
   }
 
-  SearchSearch(criteria: SearchCriteriaRequestDto): Observable<RegistrationViewModel[]> {
+  override SearchSearch(criteria: SearchCriteriaRequestDto): Observable<RegistrationViewModel[]> {
     this.logger.debug('SearchSearch triggered', DEBUG_TAG, { criteria });
     return from(this.initOfflineSearch()).pipe(
       switchMap((appMode) => this.selectRegistrationsFromDb(criteria, appMode)),
@@ -264,7 +263,7 @@ export class OfflineCapableSearchService extends SearchService {
   }
 
   private async readLastSyncTime(appMode: AppMode, langKey: LangKey) {
-    let lastSyncMs: number;
+    let lastSyncMs: number | undefined;
     try {
       lastSyncMs = await this.sqlite.readRegistrationsSyncTime(appMode, langKey);
     } catch (error) {
@@ -331,7 +330,7 @@ export class OfflineCapableSearchService extends SearchService {
     this.logger.debug(`Sync criteria`, DEBUG_TAG, { criteria });
     const { TotalMatches: count } = await firstValueFrom(super.SearchCount(criteria));
 
-    if (count > 0) {
+    if (count != null && count > 0) {
       for await (const registrations of this.pagedSearch(criteria, count)) {
         this.logger.debug(`Sync: Inserting ${registrations.length} registrations`, DEBUG_TAG);
         await this.sqlite.insertRegistrations(registrations, appMode, langKey);
@@ -352,6 +351,15 @@ export class OfflineCapableSearchService extends SearchService {
       firstValueFrom(super.SearchCount(criteria)),
       this.sqlite.getRegistrationCount(criteria, appMode),
     ]);
+
+    if (apiCount == null) {
+      this.logger.error('Could not get Count from api. Can not remove deleted registrations', DEBUG_TAG, undefined, {
+        criteria,
+        apiCount,
+        appCount,
+      });
+      return;
+    }
 
     if (appCount > apiCount) {
       const registrationsWithoutDeleted = await firstValueFrom(super.SearchGetRegIdsFromDeletedRegistrations(criteria));
@@ -431,7 +439,7 @@ export class OfflineCapableSearchService extends SearchService {
 }
 
 function registrationToFormNames(reg: RegistrationViewModel) {
-  const registrationNames = (reg.Summaries || []).map((s) => s.RegistrationName);
+  const registrationNames = (reg.Summaries || []).map((s) => s.RegistrationName).filter((name) => name != null);
   const uniqueRegistrationNames = new Set(registrationNames);
   return [...uniqueRegistrationNames];
 }
@@ -441,8 +449,8 @@ function toAtAGlanceViewModel(reg: RegistrationViewModel): AtAGlanceViewModel {
     CompetenceLevelTID: reg.Observer?.CompetenceLevelTID,
     DtObsTime: reg.DtObsTime,
     AttachmentsCount: reg.Attachments?.length || 0,
-    FirstAttachmentId: reg.Attachments?.length ? reg.Attachments[0].AttachmentId : null,
-    FirstAttachmentUrl: reg.Attachments?.length ? reg.Attachments[0].UrlFormats.Thumbnail : null,
+    FirstAttachmentId: reg.Attachments?.[0]?.AttachmentId,
+    FirstAttachmentUrl: reg.Attachments?.[0]?.UrlFormats?.Thumbnail,
     FormNames: registrationToFormNames(reg),
     GeoHazardTID: reg.GeoHazardTID,
     Latitude: reg.ObsLocation?.Latitude,

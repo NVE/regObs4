@@ -342,9 +342,19 @@ export class OfflineMapPage extends NgDestoryBase {
     }
   }
 
+  private getPackageOnServer(name: string) {
+    const packageOnServer = this.packagesOnServer.get(name);
+    if (!packageOnServer) {
+      // TODO: Finner ikke korresponerende pakke på nett for den vi har lokalt.
+      // Foreslå for bruker å slette pakken? kun logge?
+      throw new Error('Could not find package with name: ' + name);
+    }
+    return packageOnServer;
+  }
+
   isPackageOutdated(offlinePackage: OfflineMapPackage): boolean {
     if (offlinePackage.downloadComplete) {
-      const packageOnServer = this.packagesOnServer.get(offlinePackage.name);
+      const packageOnServer = this.getPackageOnServer(offlinePackage.name); // TODO: Handle possible error?
       return isPackageOutdated(offlinePackage, packageOnServer);
     }
     return false;
@@ -354,7 +364,7 @@ export class OfflineMapPage extends NgDestoryBase {
     event.stopPropagation();
     this.logger.debug('Update package', DEBUG_TAG, { name: map.name });
     await this.delete(map);
-    const packageOnServer = this.packagesOnServer.get(map.name);
+    const packageOnServer = this.getPackageOnServer(map.name); // TODO: Handle possible error?
     this.offlineMapService.downloadPackage(packageOnServer, false);
   }
 
@@ -368,6 +378,6 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   getSpaceAvailable(): string {
-    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available, 0);
+    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available || 0, 0);
   }
 }

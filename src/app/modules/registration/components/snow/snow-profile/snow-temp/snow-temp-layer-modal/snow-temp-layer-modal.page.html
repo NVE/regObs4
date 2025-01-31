@@ -1,19 +1,19 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate }} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT" | translate }} </ion-label>
       </ion-list-header>
       <app-numeric-input
-        [(value)]="layer.Depth"
+        [(value)]="depth"
         label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.DEPTH"
         [max]="999"
         [min]="0"
@@ -22,7 +22,7 @@
         [convertRatio]="100"
       ></app-numeric-input>
       <app-numeric-input
-        [(value)]="layer.SnowTemp"
+        [(value)]="temp"
         label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TEMPERATURE"
         [max]="0"
         [min]="-70"
@@ -33,30 +33,30 @@
     <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col size="6">
-          <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
+          <ion-button [disabled]="currentIndex() === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
             <ion-icon slot="start" name="arrow-back"></ion-icon>
-            <ion-text>{{ 'DIALOGS.PREVIOUS' | translate }}</ion-text>
+            <ion-text>{{ "DIALOGS.PREVIOUS" | translate }}</ion-text>
           </ion-button>
         </ion-col>
         <ion-col size="6">
-          <ion-button [disabled]="!canGoNext" expand="block" fill="outline" color="primary" (click)="ok(1)">
+          <ion-button [disabled]="!canGoNext()" expand="block" fill="outline" color="primary" (click)="ok(1)">
             <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            <ion-text>{{ 'DIALOGS.NEXT' | translate }}</ion-text>
+            <ion-text>{{ "DIALOGS.NEXT" | translate }}</ion-text>
           </ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12">
           <ion-button type="submit" expand="block" fill="solid" color="primary">
-            {{ 'DIALOGS.OK_BACK' | translate }}
+            {{ "DIALOGS.OK_BACK" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="!addNew">
+      <ion-row *ngIf="!isNew()">
         <ion-col size="6" offset="3">
           <ion-button (click)="delete()" size="small" fill="clear" expand="block">
             <ion-icon slot="start" name="trash"></ion-icon>
-            {{ 'DIALOGS.DELETE' | translate }}
+            {{ "DIALOGS.DELETE" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>

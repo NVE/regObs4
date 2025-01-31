@@ -1,5 +1,5 @@
-<div class="summaries" *ngFor="let summary of summaries; let i = index">
-  <ng-container *ngIf="summary.Summaries.length > 0">
+<div class="summaries" *ngFor="let summary of summaries(); let i = index">
+  <ng-container *ngIf="(summary.Summaries || []).length > 0">
     <h3 *ngIf="!isNameSameAsPreviousName(i)">{{ summary.RegistrationName }}</h3>
     <ng-container *ngFor="let genericValue of summary.Summaries; let i = index">
       <span *ngIf="i > 0" class="bullet">&nbsp;&bull;&nbsp;</span>
@@ -20,7 +20,7 @@
     </ng-container>
   </ng-container>
   <ng-template #TextSummary>
-    <h4 *ngIf="showHeaders">{{ header }}:&nbsp;</h4>
+    <h4 *ngIf="showHeaders()">{{ header }}:&nbsp;</h4>
     <span class="text">{{ startOnNewLineIfContainLineBreaks(value) }}</span>
   </ng-template>
   <ng-template #UrlSummary>

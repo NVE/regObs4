@@ -1,26 +1,23 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.TITLE' | translate }} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
-    <ng-container *ngIf="draft && draft.registration && draft.registration.CompressionTest">
-      <app-compression-test-list
-        [(tests)]="draft.registration.CompressionTest"
-        (testsChange)="save()"
-        [includeInSnowProfileAsDefault]="true"
-      >
-      </app-compression-test-list>
-    </ng-container>
+    <app-compression-test-list
+      *ngIf="draft"
+      [(tests)]="tests"
+      [includeInSnowProfileAsDefault]="true"
+    ></app-compression-test-list>
     <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col size="6" offset="3">
           <ion-button type="submit" expand="block" fill="solid" color="primary">
-            {{'DIALOGS.OK' | translate}}
+            {{ "DIALOGS.OK" | translate }}
           </ion-button>
         </ion-col>
       </ion-row>

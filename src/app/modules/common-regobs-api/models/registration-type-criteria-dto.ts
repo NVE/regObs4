@@ -4,6 +4,6 @@ export interface RegistrationTypeCriteriaDto {
   /**
    * TODO: See
    */
-  Id?: number;
+  Id: number;
   SubTypes?: Array<number>;
 }

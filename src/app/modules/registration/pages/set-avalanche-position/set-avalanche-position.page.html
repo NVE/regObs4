@@ -1,18 +1,22 @@
 <ion-header *ngIf="!(fullscreen$ | async)">
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
     <ion-title>
-      {{ (geoHazard === GeoHazard.Snow ? 'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' :
-      'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION') | translate }}
+      {{
+        (geoHazard() === GeoHazard.Snow
+          ? "REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION"
+          : "REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION"
+        ) | translate
+      }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <app-set-location-in-map
     *ngIf="fromMarker"
-    [geoHazard]="geoHazard"
+    [geoHazard]="geoHazard()"
     (mapReady)="onMapReady($event)"
     [fromMarker]="fromMarker"
     [locationMarker]="locationMarker"

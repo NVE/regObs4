@@ -1,5 +1,5 @@
 import { IonSpinner } from '@ionic/angular/standalone';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 @Component({
@@ -9,8 +9,6 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonSpinner, NgClass, TranslatePipe],
 })
 export class DataLoadComponent {
-  @Input()
-  show: boolean;
-  @Input()
-  label: string;
+  readonly show = input(false, { transform: (v?: boolean | null): boolean => v === true });
+  readonly label = input.required<string>();
 }

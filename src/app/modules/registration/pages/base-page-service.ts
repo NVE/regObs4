@@ -50,37 +50,35 @@ export class BasePageService {
    * @return the draft without the registrations
    */
   async delete(draft: RegistrationDraft, registrationTids: RegistrationTid[]): Promise<RegistrationDraft> {
-    if (registrationTids?.length > 0) {
-      const draftCopy: RegistrationDraft = {
-        ...draft,
-        registration: {
-          ...draft.registration,
-        },
-      };
-
-      const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
-
-      for (const registrationTid of registrationTids) {
-        const registrationName = getRegistrationName(registrationTid);
-        delete draftCopy.registration[registrationName];
-        for (const attachment of attachments) {
-          if (attachment.RegistrationTID === registrationTid) {
-            try {
-              this.newAttachmentService.removeAttachment(draft.uuid, attachment.id);
-            } catch (error) {
-              this.loggingService.error(
-                error,
-                DEBUG_TAG,
-                `Remove image failed, attachmentId = ${attachment.id}, registration ID = ${draft.uuid}`
-              );
-            }
-          }
-        }
-      }
-
-      //await this.draftRepository.save(draftCopy);
-      return draftCopy;
-    }
-    return draft;
+    // if (registrationTids?.length > 0) {
+    //   const draftCopy: RegistrationDraft = {
+    //     ...draft,
+    //     registration: {
+    //       ...draft.registration,
+    //     },
+    //   };
+    //   const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
+    //   for (const registrationTid of registrationTids) {
+    //     const registrationName = getRegistrationName(registrationTid);
+    //     delete draftCopy.registration[registrationName];
+    //     for (const attachment of attachments) {
+    //       if (attachment.RegistrationTID === registrationTid) {
+    //         try {
+    //           this.newAttachmentService.removeAttachment(draft.uuid, attachment.id);
+    //         } catch (error) {
+    //           this.loggingService.error(
+    //             error,
+    //             DEBUG_TAG,
+    //             `Remove image failed, attachmentId = ${attachment.id}, registration ID = ${draft.uuid}`
+    //           );
+    //         }
+    //       }
+    //     }
+    //   }
+    //   //await this.draftRepository.save(draftCopy);
+    //   return draftCopy;
+    // }
+    // return draft;
+    throw new Error('Not implemented');
   }
 }

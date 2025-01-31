@@ -4,7 +4,7 @@ import { timeout } from 'rxjs/operators';
 
 export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promise<void>, timeoutInMs?: number) {
   return new Promise<T>((resolve, reject) => {
-    let subscription: Subscription = undefined;
+    let subscription: Subscription | undefined = undefined;
     subscription = (timeoutInMs != null ? observable.pipe(timeout(timeoutInMs)) : observable).subscribe({
       next: (result) => {
         if (subscription) {

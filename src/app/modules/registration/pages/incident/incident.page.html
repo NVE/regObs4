@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.INCIDENT.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.INCIDENT.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -56,11 +56,11 @@
       ></app-kdv-select>
       <app-text-comment label="REGISTRATION.INCIDENT.COMMENT" [(value)]="incident.Comment"></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_WEB_URL.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <app-add-web-url-item [(weburls)]="incident.IncidentURLs"></app-add-web-url-item>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

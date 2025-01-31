@@ -28,7 +28,6 @@ import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
-import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
@@ -39,6 +38,7 @@ import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.compo
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { TextCommentComponent } from '../../modules/registration/components/text-comment/text-comment.component';
 import { SvgIconComponent } from 'angular-svg-icon';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -89,7 +89,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   isLoading = false;
   hasClicked = false;
   isLoadingCurrentPosition = false;
-  currentPosition?: Position;
+  currentPosition?: Position | null;
 
   private startTripSubscription?: Subscription;
 
@@ -102,7 +102,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   get isEmpty(): boolean {
-    return IsEmptyHelper.isEmpty(this.tripDto);
+    return isEmpty(this.tripDto);
   }
 
   constructor() {

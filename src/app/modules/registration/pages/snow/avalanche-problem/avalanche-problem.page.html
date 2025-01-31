@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -15,24 +15,22 @@
   >
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <ion-reorder-group disabled="false" (ionItemReorder)="onProblemReorder($event)">
-        <ion-item
-          detail="true"
-          (click)="addOrEditAvalancheProblem(i)"
-          *ngFor="let avalancheEvalProblem of draft.registration.AvalancheEvalProblem2; let i = index"
-        >
-          <ion-label>{{ getDescription(avalancheEvalProblem) | translate }}</ion-label>
-          <ion-reorder slot="end"></ion-reorder>
-        </ion-item>
+        @for (ap of draft.registration.AvalancheEvalProblem2; track $index) {
+          <ion-item detail="true" (click)="addOrEditAvalancheProblem($index)">
+            <ion-label>{{ getDescription(ap) | translate }}</ion-label>
+            <ion-reorder slot="end"></ion-reorder>
+          </ion-item>
+        }
       </ion-reorder-group>
       <ion-item (click)="addOrEditAvalancheProblem()">
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-        <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.ADD_NEW' | translate}}</ion-label>
+        <ion-label>{{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.ADD_NEW" | translate }}</ion-label>
       </ion-item>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.ADD_IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

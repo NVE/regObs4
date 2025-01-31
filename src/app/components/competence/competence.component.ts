@@ -1,5 +1,5 @@
 import { IonLabel } from '@ionic/angular/standalone';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -12,6 +12,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class CompetenceComponent {
   readonly maxCompetenceLevel = 5;
-  @Input() competenceLevelName: string = null;
-  @Input() starCount = 0;
+  readonly competenceLevelName = input<string>();
+  readonly starCount = input<number>();
 }

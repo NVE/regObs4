@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
 import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/support-map-info.page';
 import { NgIf } from '@angular/common';
@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class SteepnessCommonLegendComponent {
   private modalController = inject(ModalController);
 
-  @Input() show27to30 = true;
+  readonly show27to30 = input(true);
 
   async openAboutMapsModal() {
     const modalInfoPage = await this.modalController.create({

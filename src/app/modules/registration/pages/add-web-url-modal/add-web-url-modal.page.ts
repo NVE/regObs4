@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -43,28 +43,26 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
-export class AddWebUrlModalPage implements OnInit {
+export class AddWebUrlModalPage {
   private modalController = inject(ModalController);
 
-  @Input() weburl: UrlEditModel;
-  urlToSave: UrlEditModel;
-  isNew = true;
-
-  ngOnInit() {
-    if (this.weburl) {
-      this.urlToSave = { ...this.weburl };
-      this.isNew = false;
-    } else {
-      this.urlToSave = {};
-    }
-  }
+  readonly url = input<UrlEditModel>();
+  isNew = computed(() => this.url() != null);
+  urlLine = linkedSignal(() => this.url()?.UrlLine);
+  urlDesc = linkedSignal(() => this.url()?.UrlDescription);
 
   cancel() {
     this.modalController.dismiss();
   }
 
   ok() {
-    this.modalController.dismiss(this.urlToSave);
+    const UrlLine = this.urlLine();
+    const UrlDescription = this.urlDesc();
+    const edit: UrlEditModel = {
+      ...(UrlLine ? { UrlLine } : {}),
+      ...(UrlDescription ? { UrlDescription } : {}),
+    };
+    this.modalController.dismiss(edit);
   }
 
   delete() {

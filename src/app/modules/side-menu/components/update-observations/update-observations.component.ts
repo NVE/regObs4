@@ -29,13 +29,7 @@ export class UpdateObservationsComponent {
   private updateObservationsService = inject(UpdateObservationsService);
 
   settings = settings;
-  lastFetched$: Observable<Date>;
-
-  constructor() {
-    const updateObservationsService = this.updateObservationsService;
-
-    this.lastFetched$ = updateObservationsService.lastFetched$;
-  }
+  lastFetched$ = this.updateObservationsService.lastFetched$;
 
   refresh() {
     this.updateObservationsService.setLastFetched(null);

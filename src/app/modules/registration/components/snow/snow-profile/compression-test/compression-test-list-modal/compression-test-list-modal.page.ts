@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, inject } from '@angular/core';
-import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
+import { Component, effect, inject, input, linkedSignal, untracked } from '@angular/core';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,
   IonButtons,
@@ -12,8 +12,6 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -22,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { CompressionTestListComponent } from '../../../compression-test-list/compression-test-list.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-compression-test-list-modal',
@@ -44,45 +43,47 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
-export class CompressionTestListModalPage implements OnInit, OnDestroy {
+export class CompressionTestListModalPage {
   private modalController = inject(ModalController);
   private draftService = inject(DraftRepositoryService);
-  private ngZone = inject(NgZone);
 
-  @Input() uuid: string;
+  readonly uuid = input.required<string>();
+  draft = toSignal(this.draftService.getDraft$(this.uuid()));
 
-  private ngDestroy$ = new Subject<void>();
-  private initialRegistrationClone: RegistrationDraft;
-  draft: RegistrationDraft;
+  tests = linkedSignal(() => this.draft()?.registration.CompressionTest || []);
+  private initialRegistrationClone?: RegistrationDraft;
 
-  set tests(tests: CompressionTestEditModel[]) {
-    this.draft.registration.CompressionTest = tests;
-  }
+  constructor() {
+    effect(() => {
+      const draft = this.draft();
+      if (draft != null && this.initialRegistrationClone == null) {
+        this.initialRegistrationClone = cloneDeep(draft);
+      }
+    });
 
-  ngOnInit() {
-    this.draftService
-      .getDraft$(this.uuid)
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((reg) => {
-        this.ngZone.run(async () => {
-          if (!this.initialRegistrationClone) {
-            this.initialRegistrationClone = cloneDeep(reg);
-          }
-          this.draft = reg;
-          if (!this.draft.registration.CompressionTest) {
-            this.draft.registration.CompressionTest = [];
-          }
-        });
+    effect(() => {
+      const tests = this.tests();
+      untracked(() => {
+        this.save(tests);
       });
+    });
   }
 
-  ngOnDestroy(): void {
-    this.ngDestroy$.next();
-    this.ngDestroy$.complete();
-  }
+  async save(tests: CompressionTestEditModel[]) {
+    const draft = this.draft();
+    if (draft == null) {
+      throw new Error('Draft not loaded');
+    }
 
-  async save() {
-    await this.draftService.save(this.draft);
+    const updatedDraft: RegistrationDraft = {
+      ...draft,
+      registration: {
+        ...draft.registration,
+        CompressionTest: tests,
+      },
+    };
+
+    await this.draftService.save(updatedDraft);
   }
 
   ok() {
@@ -90,7 +91,9 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.draftService.save(this.initialRegistrationClone);
+    if (this.initialRegistrationClone) {
+      await this.draftService.save(this.initialRegistrationClone);
+    }
     this.modalController.dismiss();
   }
 }

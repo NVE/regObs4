@@ -2,5 +2,5 @@
 import { KdvElement } from './kdv-element';
 export interface KdvElementsResponseDto {
   KdvRepositories?: {[key: string]: Array<KdvElement>};
-  ViewRepositories?: {};
+  ViewRepositories?: {[key: string]: unknown};
 }

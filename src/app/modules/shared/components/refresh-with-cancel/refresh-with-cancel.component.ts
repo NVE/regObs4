@@ -1,4 +1,4 @@
-import { Component, NgZone, Input, inject, viewChild } from '@angular/core';
+import { Component, NgZone, inject, viewChild, input } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import {
   IonButton,
@@ -26,24 +26,24 @@ export class RefreshWithCancelComponent {
 
   showCancel = false;
 
-  // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
   readonly refresher = viewChild.required(IonRefresher);
-  @Input() refreshFunc: RefreshFunc = () => Promise.resolve();
-  @Input() cancelSubject = new Subject<boolean>();
-  @Input() disabled = false;
+  readonly refreshFunc = input<RefreshFunc>(() => Promise.resolve());
+  readonly cancelSubject = input(new Subject<boolean>());
+  readonly disabled = input(false);
 
   spinner = this.platform.is('android') ? 'crescent' : 'lines';
 
   cancel(): void {
-    this.cancelSubject.next(true);
+    this.cancelSubject().next(true);
   }
 
   private getCancelPromise() {
-    return firstValueFrom(this.cancelSubject.asObservable());
+    return firstValueFrom(this.cancelSubject().asObservable());
   }
 
   async doRefresh(): Promise<void> {
-    if (this.refreshFunc) {
+    const refreshFunc = this.refreshFunc();
+    if (refreshFunc) {
       const cancelPromise = this.getCancelPromise();
       cancelPromise.then(() => this.complete());
       // It takes to long to wait for function to complete (even when cancelled), so hide refresher on cancel.
@@ -51,7 +51,7 @@ export class RefreshWithCancelComponent {
         this.showCancel = true;
       });
       try {
-        await this.refreshFunc(cancelPromise);
+        await refreshFunc(cancelPromise);
       } finally {
         this.complete();
       }

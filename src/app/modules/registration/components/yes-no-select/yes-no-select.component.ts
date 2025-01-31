@@ -1,5 +1,5 @@
 import { IonItem, IonLabel } from '@ionic/angular/standalone';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';
 import { SelectComponent } from '../../../shared/components/input/select/select.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -11,10 +11,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [IonItem, IonLabel, SelectComponent, TranslatePipe],
 })
 export class YesNoSelectComponent {
-  @Input() value: boolean;
-  @Input() labelColor = 'medium';
-  @Input() title: string;
-  @Output() valueChange = new EventEmitter();
+  readonly value = model<boolean>();
+  readonly labelColor = input('medium');
+  readonly title = input.required<string>();
 
   options: SelectOption[] = [
     { id: true, text: 'DIALOGS.YES' },

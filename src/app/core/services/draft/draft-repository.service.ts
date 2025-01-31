@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import {
-  BehaviorSubject,
   combineLatest,
   firstValueFrom,
   from,
@@ -9,6 +8,7 @@ import {
   Observable,
   shareReplay,
   skipUntil,
+  startWith,
   Subject,
   switchMap,
   takeWhile,
@@ -48,7 +48,7 @@ export class DraftRepositoryService {
   private userSettingService = inject(UserSettingService);
 
   //used to spread the word about changes in drafts
-  private shouldLoad: BehaviorSubject<void> = new BehaviorSubject(null);
+  private shouldLoad: Subject<void> = new Subject();
 
   /**
    * A list of drafts that are saved locally. Drafts under sumbission are also included.
@@ -56,7 +56,11 @@ export class DraftRepositoryService {
   readonly drafts$: Observable<RegistrationDraft[]>;
 
   constructor() {
-    this.drafts$ = combineLatest([this.userSettingService.appMode$, this.databaseService.ready$, this.shouldLoad]).pipe(
+    this.drafts$ = combineLatest([
+      this.userSettingService.appMode$,
+      this.databaseService.ready$,
+      this.shouldLoad.pipe(startWith(true)),
+    ]).pipe(
       switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
       shareReplay(1),
       // As we use shareReplay(1) to avoid reading from the database more than needed,
@@ -70,7 +74,7 @@ export class DraftRepositoryService {
    * Does not emit until the specified draft is available in the database.
    * If the draft is deleted after a subscription has been made, the observable completes.
    */
-  getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
+  getDraft$(uuid: string): Observable<RegistrationDraft> {
     const gotDraft = new Subject<boolean>();
     return this.drafts$.pipe(
       map((drafts) => drafts.find((draft) => draft.uuid === uuid)),
@@ -88,7 +92,7 @@ export class DraftRepositoryService {
    * @returns true if draft does not contain any data
    */
   async isDraftEmpty(draft: RegistrationDraft) {
-    if (draft.registration.Attachments?.length > 0) {
+    if (draft.registration.Attachments && draft.registration.Attachments.length > 0) {
       return false; //we have image metadata for an already uploaded image
     }
     if (hasAnyObservations(draft)) {
@@ -148,7 +152,7 @@ export class DraftRepositoryService {
       simpleMode,
       registration: {
         GeoHazardTID: geoHazard,
-        DtObsTime: null,
+        DtObsTime: '', // TODO: Test om dette er ok, hva skjer når vi setter tid første gang?
         ObsLocation: { Latitude: 0, Longitude: 0 },
         Attachments: [],
       },
@@ -172,9 +176,9 @@ export class DraftRepositoryService {
    * @param viewModel the registration you like to edit
    */
   async saveAsDraft(viewModel: RegistrationViewModel) {
-    this.throwIfMissingRegId(viewModel.RegId);
-    this.throwIfMissingUuid(viewModel.ExternalReferenceId);
-    await this.cloneAndSave(viewModel, viewModel.ExternalReferenceId, viewModel.RegId);
+    const regId = this.throwIfMissingRegId(viewModel.RegId);
+    const uuid = this.throwIfMissingUuid(viewModel.ExternalReferenceId);
+    await this.cloneAndSave(viewModel, uuid, regId);
   }
 
   /**
@@ -185,11 +189,11 @@ export class DraftRepositoryService {
   async copyDraftAndSave(draft: RegistrationDraft) {
     this.throwIfMissingRegId(draft.regId);
     const uuid = uuidv4();
-    await this.cloneAndSave(draft.registration, uuid, null);
+    await this.cloneAndSave(draft.registration as RegistrationViewModel, uuid);
     return uuid;
   }
 
-  private async cloneAndSave(viewModel: RegistrationViewModel, uuid: string, regId: number) {
+  private async cloneAndSave(viewModel: RegistrationViewModel, uuid: string, regId?: number) {
     const registration = cloneDeep(viewModelToEditModel(viewModel));
 
     const draft: RegistrationDraft = {
@@ -202,16 +206,18 @@ export class DraftRepositoryService {
     await this.save(draft);
   }
 
-  private throwIfMissingUuid(uuid: string) {
+  private throwIfMissingUuid(uuid?: string): string {
     if (!uuid) {
       throw new Error('Missing uuid / ExternalReferenceId.');
     }
+    return uuid;
   }
 
-  private throwIfMissingRegId(regId: number) {
+  private throwIfMissingRegId(regId?: number): number {
     if (!regId) {
       throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
     }
+    return regId;
   }
 
   /**
@@ -246,9 +252,9 @@ export class DraftRepositoryService {
    * @param uuid registration uuid
    * @returns registration with given uuid or undefined if not found
    */
-  async load(uuid: string): Promise<RegistrationDraft | undefined> {
+  async load(uuid: string): Promise<RegistrationDraft> {
     if (!uuid) {
-      return undefined;
+      throw new Error('uuid required');
     }
 
     const start = Date.now();

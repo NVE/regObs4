@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.SNOW.SNOW_PROFILE.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +16,7 @@
   >
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SUPERIOR' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SUPERIOR" | translate }} </ion-label>
       </ion-list-header>
       <app-yes-no-select
         [(value)]="snowProfile.IsProfileToGround"
@@ -25,7 +25,7 @@
       </app-yes-no-select>
       <ion-item>
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION' | translate}}</ion-label
+          {{ "REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION" | translate }}</ion-label
         >
         <app-select
           [(selectedValue)]="snowProfile.Exposition"
@@ -44,21 +44,21 @@
       ></app-numeric-input>
       <app-text-comment label="DIALOGS.COMMENT" [(value)]="snowProfile.Comment"> </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{'REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS" | translate }} </ion-label>
       </ion-list-header>
       <app-strat-profile [draft]="draft"></app-strat-profile>
       <app-snow-temp [draft]="draft"></app-snow-temp>
       <app-snow-density [draft]="draft"></app-snow-density>
       <app-compression-test [draft]="draft"> </app-compression-test>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{'REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }} </ion-label>
       </ion-list-header>
       <ion-item [disabled]="noLayersInSnowProfile()" (click)="openPreview()">
         <ion-icon name="eye" color="dark" slot="start"></ion-icon>
-        <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM' | translate }}</ion-label>
+        <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM" | translate }}</ion-label>
       </ion-item>
       <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{'REGISTRATION.IMAGES' | translate}} </ion-label>
+        <ion-label> {{ "REGISTRATION.IMAGES" | translate }} </ion-label>
       </ion-list-header>
       <app-edit-images
         [registrationTid]="registrationTid"

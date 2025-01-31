@@ -1,19 +1,21 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title> {{"SETTINGS.TITLE" | translate}} </ion-title>
+    <ion-title> {{ "SETTINGS.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding" *ngIf="userSettings">
+<ion-content class="ion-padding" *ngIf="false && userSettings">
   <ion-list lines="full">
     <!-- App version -->
     <ion-item *ngIf="version" (click)="versionClick()">
       <ion-label position="stacked" color="medium" class="ion-text-uppercase"
-        >{{'SETTINGS.APP_VERSION' | translate}}
+        >{{ "SETTINGS.APP_VERSION" | translate }}
       </ion-label>
-      <ion-text class="ion-align-self-start build-version"> {{version.version }} ({{ version.buildNumber }}) </ion-text>
+      <ion-text class="ion-align-self-start build-version">
+        {{ version.version }} ({{ version.buildNumber }})
+      </ion-text>
       <ion-text class="build-rev ion-align-self-start" color="medium">
         {{ version.revision }} - {{ version.date | formatDate | async }}
       </ion-text>
@@ -34,7 +36,7 @@
 
     <!-- Use high detail maps -->
     <ion-item>
-      <ion-label> {{'SETTINGS.USE_RETINA_MAP' | translate}} </ion-label>
+      <ion-label> {{ "SETTINGS.USE_RETINA_MAP" | translate }} </ion-label>
       <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()"> </ion-toggle>
     </ion-item>
 

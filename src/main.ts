@@ -19,7 +19,7 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
 import { AppComponent } from './app/app.component';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { provideRouter, RouteReuseStrategy } from '@angular/router';
+import { provideRouter, RouteReuseStrategy, withComponentInputBinding } from '@angular/router';
 import { routes } from './app/app.routes';
 import { Requestor, StorageBackend } from '@openid/appauth';
 import { storageFactory } from './app/modules/auth/factories/storage-factory';
@@ -37,7 +37,8 @@ function startApp() {
   bootstrapApplication(AppComponent, {
     providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-      provideIonicAngular({}),
+      // TODO: Gjør det mulig å aktivere deaktivere ios mode via en knapp i headeren hvis på appMode er test
+      provideIonicAngular({}), // mode: 'ios'
 
       // Auth related - kan evt flyttes til egen fil eller i APP_PROVIDERS
       {
@@ -78,7 +79,7 @@ function startApp() {
 
       // Prøvde å legge til withPreloading(PreloadAllModules) men da kræsjet applikasjonen
       // TODO: Prøv igjen etter vi har rydda opp, fjerna alle moduler.
-      provideRouter(routes),
+      provideRouter(routes, withComponentInputBinding()),
 
       provideHttpClient(withInterceptorsFromDi()),
       ...APP_PROVIDERS,

@@ -9,6 +9,7 @@ import { NgIf, AsyncPipe, LowerCasePipe } from '@angular/common';
 import { GeoNameComponent } from '../../../shared/components/geo-name/geo-name.component';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-show-filter-criteria',
@@ -24,27 +25,13 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
-export class ShowFilterCriteriaComponent implements OnInit {
+export class ShowFilterCriteriaComponent {
   userSettingService = inject(UserSettingService);
   private breakpointService = inject(BreakpointService);
 
-  daysBack$: Observable<{ value: number }>;
-  isDesktop: boolean;
-  showObservations$: Observable<boolean>;
-  currentGeoHazard$: Observable<GeoHazard[]>;
-  language$: Observable<LangKey>;
-
-  ngOnInit() {
-    this.daysBack$ = this.userSettingService.daysBackForCurrentGeoHazard$.pipe(
-      map((value) => ({
-        value,
-      }))
-    );
-    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
-      this.isDesktop = isDesktop;
-    });
-    this.currentGeoHazard$ = this.userSettingService.currentGeoHazard$;
-    this.language$ = this.userSettingService.language$;
-    this.showObservations$ = this.userSettingService.showObservations$;
-  }
+  daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { initialValue: 1 });
+  isDesktop = toSignal(this.breakpointService.isDesktopView());
+  currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$);
+  language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
+  showObservations = toSignal(this.userSettingService.showObservations$, { initialValue: false });
 }

@@ -100,7 +100,6 @@ export class SummaryItemService {
   private navController = inject(NavController);
   private kdv = inject(KdvService);
 
-
   getSummaryItems$(uuid: string): Observable<ISummaryItem[]> {
     // Observables that only emits when the properties we need has changed
     const draft$ = this.draftService.getDraft$(uuid).pipe(distinctUntilChanged(draftHasNotChanged));
@@ -191,21 +190,22 @@ export class SummaryItemService {
   async getPreviousAndNext(
     draft: RegistrationDraft,
     url: string
-  ): Promise<{ previous: ISummaryItem; next: ISummaryItem }> {
+  ): Promise<{ previous?: ISummaryItem; next?: ISummaryItem }> {
     const summaryItems = await this.getSummaryItems(draft);
     const currentItem = summaryItems.find((x) => url.indexOf(x.href) >= 0);
-    const result = { previous: undefined, next: undefined };
+    let previous = undefined;
+    let next = undefined;
     if (currentItem) {
       const index = summaryItems.indexOf(currentItem);
       if (index > 0) {
-        result.previous = summaryItems[index - 1];
+        previous = summaryItems[index - 1];
       }
       const nextIndex = index + 1;
       if (nextIndex < summaryItems.length) {
-        result.next = summaryItems[nextIndex];
+        next = summaryItems[nextIndex];
       }
     }
-    return result;
+    return { previous, next };
   }
 
   navigateTo(draft: RegistrationDraft, summaryItem: ISummaryItem, direction: RouterDirection = 'forward') {
@@ -243,6 +243,7 @@ export class SummaryItemService {
       case GeoHazard.Snow:
         return this.getSnowItems(draft, attachments);
     }
+    return Promise.resolve([] as ISummaryItem[]);
   }
 
   private async getWaterItems(
@@ -303,7 +304,7 @@ export class SummaryItemService {
         draft,
         '/registration/dirt/landslide-obs',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
-        draft.registration.LandSlideObs ? draft.registration.LandSlideObs.Comment : '',
+        draft.registration.LandSlideObs?.Comment ? draft.registration.LandSlideObs.Comment : '',
         RegistrationTid.LandSlideObs,
         attachments
       ),
@@ -478,7 +479,7 @@ export class SummaryItemService {
 }
 
 // Helper function to get short text description for a url item
-const getUrlText = (url: UrlEditModel): string => {
+const getUrlText = (url: UrlEditModel): string | undefined => {
   if (url.UrlDescription) {
     return `${url.UrlDescription} (${url.UrlLine})`;
   }
@@ -486,7 +487,7 @@ const getUrlText = (url: UrlEditModel): string => {
 };
 
 // Helper function to get short text description for a general obs item
-const getGenerelObsText = (go: GeneralObservationEditModel): string => {
+const getGenerelObsText = (go?: GeneralObservationEditModel): string => {
   const texts = [];
   if (go?.ObsComment) {
     texts.push(go.ObsComment);

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
@@ -22,18 +22,18 @@ export class HelpTextComponent implements OnInit {
   private helpTextService = inject(HelpTextService);
   private modalController = inject(ModalController);
 
-  @Input() registrationTid: number;
-  @Input() geoHazard: GeoHazard;
+  readonly registrationTid = input.required<number>();
+  readonly geoHazard = input.required<GeoHazard>();
 
-  hasHelpText$: Observable<boolean>;
+  hasHelpText$?: Observable<boolean>;
 
   async ngOnInit() {
-    this.hasHelpText$ = this.helpTextService.hasHelpTextObservable(this.geoHazard, this.registrationTid);
+    this.hasHelpText$ = this.helpTextService.hasHelpTextObservable(this.geoHazard(), this.registrationTid());
   }
 
   async showHelp() {
     const helpText = await firstValueFrom(
-      this.helpTextService.getHelpTextObservable(this.geoHazard, this.registrationTid)
+      this.helpTextService.getHelpTextObservable(this.geoHazard(), this.registrationTid())
     );
     const modal = await this.modalController.create({
       component: HelpModalPage,

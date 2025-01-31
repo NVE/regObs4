@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnChanges, inject, input } from '@angular/core';
 import {
   AlertController,
   IonButton,
@@ -65,9 +65,9 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   private newAttachmentService = inject(NewAttachmentService);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required<RegistrationDraft>();
 
-  isDisabled$: Observable<boolean>;
+  isDisabled$?: Observable<boolean>;
   caption$: Observable<string>; // submit button caption
   private isSending = new Subject<boolean>();
   private hasChanges = new Subject<void>();
@@ -80,12 +80,12 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
       takeUntil(this.ngDestroy$),
       map((user) => {
         if (user.isLoggedIn) {
-          if (this.draft.error) {
+          if (this.draft().error) {
             return 'RESEND';
           } else {
             return 'SEND';
           }
-        } else if (this.draft.error) {
+        } else if (this.draft().error) {
           return 'LOG_IN_AND_RESEND';
         } else {
           return 'LOG_IN_AND_SEND';
@@ -98,10 +98,10 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
 
   ngOnInit(): void {
     const isEmpty$ = combineLatest([
-      this.newAttachmentService.getAttachments(this.draft.uuid).pipe(map((attachments) => attachments.length === 0)),
+      this.newAttachmentService.getAttachments(this.draft().uuid).pipe(map((attachments) => attachments.length === 0)),
       this.hasChanges.pipe(
         startWith(null),
-        switchMap(() => this.draftService.isDraftEmpty(this.draft))
+        switchMap(() => this.draftService.isDraftEmpty(this.draft()))
       ),
     ]).pipe(map(([noAttachments, registrationEmpty]) => noAttachments && registrationEmpty));
 
@@ -117,7 +117,8 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   }
 
   async send(): Promise<void> {
-    this.logger.debug('User requested send', DEBUG_TAG, { uuid: this.draft.uuid });
+    const draft = this.draft();
+    this.logger.debug('User requested send', DEBUG_TAG, { uuid: draft.uuid });
     this.isSending.next(true);
     try {
       // Redirect user to log in if not authenticated
@@ -126,7 +127,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
         return;
       }
 
-      this.draftToRegistrationService.markDraftAsReadyToSubmit(this.draft);
+      this.draftToRegistrationService.markDraftAsReadyToSubmit(draft);
       this.navigateToMyObservations();
     } finally {
       this.isSending.next(false);
@@ -135,7 +136,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
 
   async requestDeleteDraft(): Promise<boolean> {
     return await this.confirmationModalService.askForConfirmation({
-      message: this.draft.regId ? 'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT' : 'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW',
+      message: this.draft().regId ? 'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT' : 'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW',
       header: 'REGISTRATION.DELETE.DRAFT.HEADER',
       buttons: [
         {
@@ -174,26 +175,32 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   }
 
   private async deleteDraft(): Promise<void> {
-    await this.draftService.delete(this.draft.uuid);
+    await this.draftService.delete(this.draft().uuid);
     this.navigateToMyObservations();
   }
 
   private async deleteFromRegobs(): Promise<void> {
+    const draft = this.draft();
     this.logger.debug('User requested delete from regobs', DEBUG_TAG, {
-      regId: this.draft.regId,
-      uuid: this.draft.uuid,
+      regId: draft.regId,
+      uuid: draft.uuid,
     });
+
+    if (draft.regId == null) {
+      throw new Error('Cannot delete without regid');
+    }
+
     try {
-      await this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS);
+      await this.addUpdateDeleteRegistrationService.delete(draft.regId, DELETE_OBS_TIMEOUT_MS);
     } catch (err) {
       this.handleDeleteFromRegobsFailed(err);
       return;
     }
-    await this.draftService.delete(this.draft.uuid);
+    await this.draftService.delete(draft.uuid);
     this.navigateToMyObservations();
   }
 
-  private async handleDeleteFromRegobsFailed(err: Error) {
+  private async handleDeleteFromRegobsFailed(err: unknown) {
     this.deleteDraft();
     const translations = await firstValueFrom(
       this.translateService.get([
@@ -205,7 +212,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
       header: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.HEADER'],
       message: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.MESSAGE'],
     });
-    this.logger.log(`Delete of registration with regID ${this.draft.regId} failed`, err, LogLevel.Warning, DEBUG_TAG);
+    this.logger.log(`Delete of registration with regID ${this.draft().regId} failed`, err, LogLevel.Warning, DEBUG_TAG);
     await alert.present();
   }
 

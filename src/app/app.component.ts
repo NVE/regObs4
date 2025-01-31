@@ -3,7 +3,6 @@ import { IonApp, IonMenu, IonRouterOutlet, Platform, isPlatform } from '@ionic/a
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable, Subject, firstValueFrom } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
@@ -41,7 +40,7 @@ export class AppComponent {
   private platform = inject(Platform);
   private userSettings = inject(UserSettingService);
   private dataMarshallService = inject(DataMarshallService);
-  private offlineImageService = inject(OfflineImageService);
+  // private offlineImageService = inject(OfflineImageService);
   private swipeBackService = inject(SwipeBackService);
   private loggingService = inject(LoggingService);
   private dbHelperService = inject(DbHelperService);
@@ -53,7 +52,7 @@ export class AppComponent {
   private injector = inject(Injector);
 
   swipeBackEnabled$: Observable<boolean>;
-  isDesktop: boolean;
+  isDesktop?: boolean;
 
   private filterMenuOpened = new Subject<boolean>();
   filterMenuOpened$ = this.filterMenuOpened.asObservable();
@@ -94,7 +93,7 @@ export class AppComponent {
   }
 
   @HostListener('window:resize', ['$event'])
-  private onResize(event) {
+  private onResize(event: any) {
     this.breakpointService.onResize(event.target.innerWidth);
   }
 
@@ -111,17 +110,25 @@ export class AppComponent {
       const sqliteService = this.injector.get<SqliteService>(SqliteService);
       return sqliteService.init();
     }
+    return Promise.resolve();
   }
 
   private initServices(userSettings: UserSetting): Promise<unknown>[] {
-    return [
-      this.dbHelperService.init(),
-      this.loggingService.configureLogging(userSettings.appMode),
-      this.shortcutService.init(),
-      this.auth.init(),
-      this.dataMarshallService.init(),
-      this.draftToRegService.createSubscriptions(),
-      this.initSqliteIfNative(),
+    const nonPromiseServices = [
+      () => this.shortcutService.init(),
+      () => this.loggingService.configureLogging(userSettings.appMode),
+      () => this.dataMarshallService.init(),
+      () => this.draftToRegService.createSubscriptions(),
     ];
+
+    for (const initFunc of nonPromiseServices) {
+      try {
+        initFunc();
+      } catch (error) {
+        this.loggingService.error(error, DEBUG_TAG, 'Failed in app.component initServices');
+      }
+    }
+
+    return [this.dbHelperService.init(), this.auth.init(), this.initSqliteIfNative()];
   }
 }

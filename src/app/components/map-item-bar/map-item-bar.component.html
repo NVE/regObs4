@@ -12,7 +12,7 @@
       <ion-col size="auto" [ngClass]="firstAttachmentUrl ? 'image-show' : 'image-show-not'">
         <ion-row>
           <ion-col>
-            <div class="card-icon-item">
+            <div class="card-icon-item" *ngIf="topHeader">
               <svg-icon
                 class="card-icon-item-icon"
                 src="/assets/icon/time.svg"

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, ViewContainerRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewContainerRef, inject, input } from '@angular/core';
 import { legendsConfig } from '../legends.config';
 
 @Component({
@@ -10,15 +10,16 @@ import { legendsConfig } from '../legends.config';
 export class SupportTileLegendLoaderComponent implements OnInit {
   viewContainer = inject(ViewContainerRef);
 
-  @Input() name: string;
+  readonly name = input.required<string>();
 
   ngOnInit(): void {
     this.loadComponent();
   }
 
   loadComponent(): void {
-    if (this.name && legendsConfig[this.name]) {
-      const component = legendsConfig[this.name];
+    const name = this.name();
+    if (name && legendsConfig[name]) {
+      const component = legendsConfig[name];
       this.viewContainer.createComponent(component);
     }
   }

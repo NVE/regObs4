@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Renderer2, inject, viewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, inject, viewChild, input, computed } from '@angular/core';
 import {
   DomController,
   IonBadge,
@@ -22,7 +22,7 @@ import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite
 import { AnalyticService } from '../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
-import { from, of, Subject, timer } from 'rxjs';
+import { firstValueFrom, from, of, Subject, timer } from 'rxjs';
 import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { NgIf, NgFor } from '@angular/common';
@@ -58,8 +58,8 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   private analyticService = inject(AnalyticService);
   private renderer = inject(Renderer2);
 
-  @Input() warningGroup: WarningGroup;
-  GeoHazard = GeoHazard;
+  readonly warningGroup = input.required<WarningGroup>();
+  readonly isIceGeoHazard = computed(() => this.warningGroup().key.geoHazard === GeoHazard.Ice);
 
   readonly itemSlide = viewChild.required(IonItemSliding);
   readonly favouriteToggle = viewChild(WarningGroupFavouriteToggleComponent);
@@ -117,11 +117,11 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     this.toggleFavourite();
   }
 
-  async getUrl(group: WarningGroup, day = ''): Promise<string> {
+  async getUrl(group: WarningGroup, day = ''): Promise<string | null> {
     if (group.url) {
       return group.url;
     } else {
-      const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
+      const currentLang = await firstValueFrom(this.userSettingService.language$);
       const supportedLang = this.getSupportedLangOrFallbackToEn(currentLang);
       const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[supportedLang]];
       if (url) {
@@ -137,7 +137,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  getSupportedLangOrFallbackToEn(lang: LangKey) {
+  getSupportedLangOrFallbackToEn(lang?: LangKey) {
     if (lang === LangKey.nb || lang === LangKey.nn) {
       return LangKey.nb;
     }

@@ -1,17 +1,15 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, EventEmitter, Output, computed, inject } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
 import { SelectInterface } from '@ionic/core';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { Capacitor } from '@capacitor/core';
 import { IonItem, IonLabel, IonSelect, IonSelectOption, SelectCustomEvent } from '@ionic/angular/standalone';
 import { NgIf, NgTemplateOutlet, NgFor, AsyncPipe } from '@angular/common';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -31,25 +29,24 @@ import { TranslatePipe } from '@ngx-translate/core';
     ɵEmptyOutletComponent,
   ],
 })
-export class ObservationsDaysBackComponent extends NgDestoryBase implements OnInit {
+export class ObservationsDaysBackComponent {
   userSettingService = inject(UserSettingService);
 
-  daysBackOptions: { val: number }[];
-  subscription: Subscription;
-  popupType: SelectInterface;
-  isNativePlatform: boolean;
+  private geoHazard = toSignal(this.userSettingService.currentGeoHazard$);
+  daysBackOptions = computed(() => {
+    const geoHazard = this.geoHazard();
+    if (geoHazard) {
+      return this.getDaysBackArray(geoHazard[0]);
+    }
+    return [];
+  });
+
+  isNativePlatform = Capacitor.isNativePlatform();
+  popupType: SelectInterface = this.isNativePlatform ? 'action-sheet' : 'popover';
 
   @Output() changeDaysBack = new EventEmitter<number>();
 
-  ngOnInit(): void {
-    this.isNativePlatform = Capacitor.isNativePlatform();
-    this.popupType = this.isNativePlatform ? 'action-sheet' : 'popover';
-    this.userSettingService.currentGeoHazard$.pipe(takeUntil(this.ngDestroy$)).subscribe((currentGeoHazard) => {
-      this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
-    });
-  }
-
-  getDaysBackArray(geoHazard: GeoHazard) {
+  getDaysBackArray(geoHazard: GeoHazard): { val: number }[] {
     return settings.observations.daysBack[GeoHazard[geoHazard]].map((val: number) => ({
       val: val,
     }));

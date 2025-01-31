@@ -136,6 +136,7 @@
     "@types/leaflet": "^1.7.5",
     "@types/leaflet.markercluster": "^1.4.5",
     "@types/leaflet.utm": "0.0.1",
+    "@types/lodash": "^4.17.14",
     "@types/mapbox__sphericalmercator": "^1.2.0",
     "@types/node": "^16.7.10",
     "@types/plist": "^3.0.2",

@@ -5,7 +5,6 @@ import { GeoPositionService } from '../../../../core/services/geo-position/geo-p
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
-import moment from 'moment';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
 import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
@@ -24,10 +23,10 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   private geoPositionService = inject(GeoPositionService);
   private ngZone = inject(NgZone);
 
-  showLog$: Observable<boolean>;
-  geoPositionLog: GeoPositionLog[];
-  isOpen: boolean;
-  isTracking: boolean;
+  showLog$!: Observable<boolean>;
+  geoPositionLog!: GeoPositionLog[];
+  isOpen!: boolean;
+  isTracking!: boolean;
   private ngDestroy$ = new Subject<void>();
 
   readonly panel = viewChild<IonContent>('GpsLogPanel');

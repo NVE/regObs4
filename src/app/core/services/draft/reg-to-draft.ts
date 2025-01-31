@@ -110,7 +110,10 @@ export function viewModelToEditModel(
   }
 
   if (!isEmpty(DangerObs)) {
-    registration['DangerObs'] = DangerObs;
+    registration['DangerObs'] = DangerObs.map((d) => ({
+      ...d,
+      DangerSignTID: d.DangerSignTID ?? 0, // Assign a default value if undefined
+    }));
   }
 
   if (!isEmpty(GeneralObservation)) {

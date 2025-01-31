@@ -19,8 +19,6 @@ import {
 } from '@ionic/angular/standalone';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as L from 'leaflet';
-import { BasePageService } from '../../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { NgIf, NgClass, DecimalPipe } from '@angular/common';
@@ -33,6 +31,7 @@ import { AddWebUrlItemComponent } from '../../../components/add-web-url-item/add
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { location, chevronForward, time } from 'ionicons/icons';
+import { LandslideEditModel } from 'src/app/modules/common-regobs-api';
 
 /**
  * Form to register landslide observations
@@ -69,49 +68,52 @@ import { location, chevronForward, time } from 'ionicons/icons';
   ],
 })
 export class LandslideObsPage extends BasePage {
+  override registrationTid = RegistrationTid.LandSlideObs;
   private modalController = inject(ModalController);
 
-  maxDateStart: string;
-  maxDateEnd: string;
-  minDateEnd: string;
+  maxDateStart?: string;
+  maxDateEnd?: string;
+  minDateEnd?: string;
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
+    super();
     addIcons({ location, chevronForward, time });
+  }
+
+  get edit(): LandslideEditModel {
+    if (this.draft.registration.LandSlideObs == null) {
+      this.draft.registration.LandSlideObs = {} as LandslideEditModel;
+    }
+    return this.draft.registration.LandSlideObs;
   }
 
   get dateIsDifferentThanObsTime() {
     return (
-      this.draft.registration.LandSlideObs.DtLandSlideTime &&
-      !moment(this.draft.registration.LandSlideObs.DtLandSlideTime)
-        .startOf('day')
-        .isSame(moment(this.draft.registration.DtObsTime).startOf('day'))
+      this.edit.DtLandSlideTime &&
+      !moment(this.edit.DtLandSlideTime).startOf('day').isSame(moment(this.draft.registration.DtObsTime).startOf('day'))
     );
   }
 
   get dateEndIsDifferentThanObsTime() {
     return (
-      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
-      !moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd)
+      this.edit.DtLandSlideTimeEnd &&
+      !moment(this.edit.DtLandSlideTimeEnd)
         .startOf('day')
         .isSame(moment(this.draft.registration.DtObsTime).startOf('day'))
     );
   }
 
-  onInit() {
-    if (!this.draft.registration.LandSlideObs.Urls) {
-      this.draft.registration.LandSlideObs.Urls = [];
+  override onInit() {
+    if (!this.edit.Urls) {
+      this.edit.Urls = [];
     }
-    if (this.draft.registration.LandSlideObs.DtLandSlideTimeEnd) {
-      this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
+    if (this.edit.DtLandSlideTimeEnd) {
+      this.maxDateStart = moment(this.edit.DtLandSlideTimeEnd).toISOString(true);
     } else {
       this.maxDateStart = this.getMaxDateForNow();
     }
-    if (this.draft.registration.LandSlideObs.DtLandSlideTime) {
-      this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
+    if (this.edit.DtLandSlideTime) {
+      this.minDateEnd = moment(this.edit.DtLandSlideTime).toISOString(true);
     }
     this.maxDateEnd = this.getMaxDateForNow();
   }
@@ -123,66 +125,52 @@ export class LandslideObsPage extends BasePage {
   }
 
   dtTimeChanged() {
-    this.minDateEnd = moment(this.draft.registration.LandSlideObs.DtLandSlideTime).toISOString(true);
+    this.minDateEnd = moment(this.edit.DtLandSlideTime).toISOString(true);
     if (
-      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
-      moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).isBefore(
-        moment(this.draft.registration.LandSlideObs.DtLandSlideTime)
-      )
+      this.edit.DtLandSlideTimeEnd &&
+      moment(this.edit.DtLandSlideTimeEnd).isBefore(moment(this.edit.DtLandSlideTime))
     ) {
-      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = this.draft.registration.LandSlideObs.DtLandSlideTime;
+      this.edit.DtLandSlideTimeEnd = this.edit.DtLandSlideTime;
     }
   }
 
   dtEndTimeChanged() {
-    this.maxDateStart = moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
-    if (
-      this.draft.registration.LandSlideObs.DtLandSlideTime &&
-      moment(this.draft.registration.LandSlideObs.DtLandSlideTime).isAfter(
-        moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd)
-      )
-    ) {
-      this.draft.registration.LandSlideObs.DtLandSlideTime = this.draft.registration.LandSlideObs.DtLandSlideTimeEnd;
+    this.maxDateStart = moment(this.edit.DtLandSlideTimeEnd).toISOString(true);
+    if (this.edit.DtLandSlideTime && moment(this.edit.DtLandSlideTime).isAfter(moment(this.edit.DtLandSlideTimeEnd))) {
+      this.edit.DtLandSlideTime = this.edit.DtLandSlideTimeEnd as string;
     }
   }
 
-  isValid() {
+  override isValid() {
     return (
-      this.draft?.registration?.LandSlideObs &&
-      !!this.draft.registration.LandSlideObs.DtLandSlideTime &&
-      !!this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
+      this.draft?.registration?.LandSlideObs != null && !!this.edit.DtLandSlideTime && !!this.edit.DtLandSlideTimeEnd
     );
   }
 
   setDtLandSlideTimeToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().toISOString(true);
+    this.edit.DtLandSlideTime = moment().toISOString(true);
   }
 
   setDtLandSlideTimeEndToNow() {
-    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(true);
+    this.edit.DtLandSlideTimeEnd = moment().toISOString(true);
   }
 
   async setLandslidePosition() {
-    const reg = this.draft.registration;
-    const relativeToLatLng = reg.ObsLocation ? L.latLng(reg.ObsLocation.Latitude, reg.ObsLocation.Longitude) : null;
+    const obsLocation = this.draft.registration.ObsLocation;
+    const relativeToLatLng = obsLocation ? L.latLng(obsLocation.Latitude, obsLocation.Longitude) : null;
     const startLatLng =
-      reg.LandSlideObs.StartLat && reg.LandSlideObs.StartLong
-        ? L.latLng(reg.LandSlideObs.StartLat, reg.LandSlideObs.StartLong)
-        : null;
-    const endLatLng =
-      reg.LandSlideObs.StopLat && reg.LandSlideObs.StopLong
-        ? L.latLng(reg.LandSlideObs.StopLat, reg.LandSlideObs.StopLong)
-        : null;
+      this.edit.StartLat && this.edit.StartLong ? L.latLng(this.edit.StartLat, this.edit.StartLong) : null;
+    const endLatLng = this.edit.StopLat && this.edit.StopLong ? L.latLng(this.edit.StopLat, this.edit.StopLong) : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
       componentProps: {
         relativeToLatLng,
         startLatLng,
         endLatLng,
-        extent: reg.LandSlideObs.Extent,
-        startExtent: reg.LandSlideObs.StartExtent,
-        endExtent: reg.LandSlideObs.StopExtent,
-        geoHazard: reg.GeoHazardTID,
+        extent: this.edit.Extent,
+        startExtent: this.edit.StartExtent,
+        endExtent: this.edit.StopExtent,
+        geoHazard: this.draft.registration.GeoHazardTID,
       },
       cssClass: 'modal-fullscreen',
     });
@@ -191,14 +179,13 @@ export class LandslideObsPage extends BasePage {
     if (result.data) {
       const start: L.LatLng = result.data.start;
       const end: L.LatLng = result.data.end;
-      const reg = this.draft.registration;
-      reg.LandSlideObs.StartLat = start.lat;
-      reg.LandSlideObs.StartLong = start.lng;
-      reg.LandSlideObs.StopLat = end.lat;
-      reg.LandSlideObs.StopLong = end.lng;
-      reg.LandSlideObs.Extent = result.data.totalPolygon;
-      reg.LandSlideObs.StartExtent = result.data.startPolygon;
-      reg.LandSlideObs.StopExtent = result.data.endPolygon;
+      this.edit.StartLat = start.lat;
+      this.edit.StartLong = start.lng;
+      this.edit.StopLat = end.lat;
+      this.edit.StopLong = end.lng;
+      this.edit.Extent = result.data.totalPolygon;
+      this.edit.StartExtent = result.data.startPolygon;
+      this.edit.StopExtent = result.data.endPolygon;
     }
   }
 }

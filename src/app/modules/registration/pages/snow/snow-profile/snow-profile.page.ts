@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { BasePageService } from '../../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
@@ -25,15 +23,12 @@ import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../../settings';
-import { firstValueFrom, from, of } from 'rxjs';
+import { firstValueFrom, from, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
 import { LoggingService } from '../../../../shared/services/logging/logging.service';
-import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
-import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { YesNoSelectComponent } from '../../../components/yes-no-select/yes-no-select.component';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
@@ -46,6 +41,8 @@ import { CompressionTestComponent } from '../../../components/snow/snow-profile/
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { addIcons } from 'ionicons';
 import { eye } from 'ionicons/icons';
+import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -77,7 +74,6 @@ const DEBUG_TAG = 'SnowProfilePage';
     IonListHeader,
     IonTitle,
     IonToolbar,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     SelectComponent,
@@ -90,6 +86,8 @@ const DEBUG_TAG = 'SnowProfilePage';
   ],
 })
 export class SnowProfilePage extends BasePage {
+  override registrationTid = RegistrationTid.SnowProfile2;
+
   private httpClient = inject(HttpClient);
   private modalController = inject(ModalController);
   private loadingController = inject(LoadingController);
@@ -110,14 +108,14 @@ export class SnowProfilePage extends BasePage {
   ];
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
+    super();
     addIcons({ eye });
   }
 
   get snowProfile(): SnowProfileEditModel {
+    if (this.draft.registration.SnowProfile2 == null) {
+      this.draft.registration.SnowProfile2 = {};
+    }
     return this.draft.registration.SnowProfile2;
   }
 
@@ -129,7 +127,7 @@ export class SnowProfilePage extends BasePage {
     return !(this.draft.registration.CompressionTest || []).some((ct) => ct.IncludeInSnowProfile === true);
   }
 
-  isEmpty() {
+  override isEmpty() {
     const isEmptyResult = this.noLayersInSnowProfile() && this.noTestsIncludedInSnowProfile() && super.isEmpty();
     return Promise.resolve(isEmptyResult);
   }
@@ -162,18 +160,19 @@ export class SnowProfilePage extends BasePage {
 
   private getPlotFromApiWithFallback(userSetting: UserSetting, format: number, size: number) {
     return this.getPlotFromApi(userSetting, format, size).pipe(
-      catchError(() => {
+      catchError((err) => {
         this.loggingService.debug('Could not generate plot', DEBUG_TAG);
         if (format === 5) {
           this.loggingService.debug('Fallback to BareSimpleProfile', DEBUG_TAG);
           return this.getPlotFromApi(userSetting, 4, size); // fallback to BareSimpleProfile when mobile plot failed
         }
-        return of(null);
+        return throwError(() => err);
       }),
       switchMap((result) => from(DataUrlHelper.toDataUrl(result, 'image/png')))
     );
   }
 
+  // TODO: Rewrite using resource api
   private getPlotFromApi(userSetting: UserSetting, format: number, size: number) {
     const rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
     return this.httpClient.post(

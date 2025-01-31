@@ -91,7 +91,13 @@ export class OfflineCapableMapLayersService extends MapLayersService {
     super();
   }
 
-  getUrlForTile(mapId: string, options: ITopoMapLayerOptions, tileX: number, tileY: number, tileZoom: number): string {
+  override getUrlForTile(
+    mapId: string,
+    options: ITopoMapLayerOptions,
+    tileX: number,
+    tileY: number,
+    tileZoom: number
+  ): string {
     const mapPackage = this.offlineMapService.offlineTilesRegistry.findRegisteredPackage(mapId, tileX, tileY, tileZoom);
 
     if (mapPackage == null) {

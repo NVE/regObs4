@@ -1,7 +1,7 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular/standalone';
-import { Subject, Subscription } from 'rxjs';
+import { firstValueFrom, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
@@ -30,7 +30,7 @@ export class DataMarshallService implements OnReset {
   private analyticService = inject(AnalyticService);
   private router = inject(Router);
 
-  foregroundUpdateInterval: NodeJS.Timeout;
+  foregroundUpdateInterval?: NodeJS.Timeout;
   private cancelUpdateObservationsSubject: Subject<boolean>;
   private subscriptions: Subscription[] = [];
 
@@ -39,7 +39,7 @@ export class DataMarshallService implements OnReset {
   }
 
   get cancelObservationsPromise(): Promise<boolean> {
-    return this.cancelUpdateObservationsSubject.asObservable().pipe(take(1)).toPromise();
+    return firstValueFrom(this.cancelUpdateObservationsSubject.asObservable());
   }
 
   constructor() {
@@ -151,7 +151,7 @@ export class DataMarshallService implements OnReset {
     return this.ngZone.runOutsideAngular(async () => {
       const cancelTimer = useTimeout
         ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout)
-        : null;
+        : undefined;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
 
       await this.warningService.updateWarnings(cancelTimer);

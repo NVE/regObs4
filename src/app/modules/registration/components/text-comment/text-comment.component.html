@@ -1,17 +1,19 @@
 <ion-item detail="false">
-  <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-    {{ label | translate }}
-  </ion-label>
+  @if (label(); as labelValue) {
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+      {{ labelValue | translate }}
+    </ion-label>
+  }
 
   <ion-textarea
     autocapitalize="sentences"
-    [maxlength]="max"
-    [disabled]="disabled"
+    [maxlength]="max()"
+    [disabled]="disabled()"
     type="textarea"
     (ionBlur)="onBlur()"
-    [rows]="rows"
+    [rows]="rows()"
     [(ngModel)]="value"
     [autoGrow]="true"
-    placeholder="{{ placeholder | translate }}"
+    placeholder="{{ placeholder() | translate }}"
   ></ion-textarea>
 </ion-item>

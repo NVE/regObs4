@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild, computed, Signal } from '@angular/core';
 import {
   IonContent,
   IonHeader,
@@ -14,24 +14,23 @@ import {
   ViewDidEnter,
 } from '@ionic/angular/standalone';
 import { MapSearchService } from '../../services/map-search/map-search.service';
-import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
 import { addIcons } from 'ionicons';
 import { search, close, time } from 'ionicons/icons';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
   imports: [
-    AsyncPipe,
     FormsModule,
     IonContent,
     IonHeader,
@@ -50,18 +49,22 @@ import { search, close, time } from 'ionicons/icons';
     TranslatePipe,
   ],
 })
-export class ModalSearchPage implements OnInit, ViewDidEnter {
+export class ModalSearchPage implements ViewDidEnter {
   private modalController = inject(ModalController);
   private mapSearchService = inject(MapSearchService);
-  private ngZone = inject(NgZone);
 
-  searchText: string;
-  searchResult$: Observable<MapSearchResponse[]>;
-  searchField: UntypedFormControl;
-  loading: boolean;
-  hasResults: boolean;
-  searchHistory$: Observable<MapSearchResponse[]>;
-
+  searchField = new UntypedFormControl();
+  searchHistory = toSignal(this.mapSearchService.getSearchHistoryAsObservable(), { initialValue: [] });
+  private searchText$ = this.searchField.valueChanges.pipe(debounceTime(400), distinctUntilChanged());
+  searchText: Signal<string> = toSignal(this.searchText$, { initialValue: '' });
+  private mapSearch = rxResource({
+    request: () => this.searchText(),
+    loader: ({ request: searchText }) => this.mapSearchService.searchAll(searchText),
+  });
+  searchResults = computed(() => this.mapSearch.value() || []);
+  showHistory = computed(
+    () => this.searchResults().length == 0 && !this.mapSearch.isLoading() && this.searchHistory().length > 0
+  );
   readonly searchInput = viewChild.required(IonInput);
 
   constructor() {
@@ -72,31 +75,8 @@ export class ModalSearchPage implements OnInit, ViewDidEnter {
     this.searchInput().setFocus();
   }
 
-  ngOnInit() {
-    this.searchField = new UntypedFormControl();
-    this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable();
-    const searchTextObservable = this.searchField.valueChanges.pipe(debounceTime(400), distinctUntilChanged());
-
-    this.searchResult$ = searchTextObservable.pipe(
-      tap((val) => {
-        this.ngZone.run(() => {
-          this.loading = true;
-          this.hasResults = false;
-          this.searchText = val;
-        });
-      }),
-      switchMap((searchValue: string) => this.mapSearchService.searchAll(searchValue)),
-      tap((values) => {
-        this.ngZone.run(() => {
-          this.hasResults = values.length > 0;
-          this.loading = false;
-        });
-      })
-    );
-  }
-
   doSearch() {
-    const validLatLng = this.isValidLatLng(this.searchText);
+    const validLatLng = this.isValidLatLng(this.searchText());
     if (validLatLng) {
       this.mapSearchService.mapSearchItemSelected = validLatLng;
       this.closeModal();

@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, inject, input, model } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, ModalController } from '@ionic/angular/standalone';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { NgIf, AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
@@ -22,7 +22,6 @@ import { link, addCircleOutline } from 'ionicons/icons';
     IonListHeader,
     KdvDescriptionPipe,
     MetersToCmPipe,
-    NgFor,
     NgIf,
     TranslatePipe,
   ],
@@ -30,9 +29,8 @@ import { link, addCircleOutline } from 'ionicons/icons';
 export class CompressionTestListComponent {
   private modalController = inject(ModalController);
 
-  @Input() tests: Array<CompressionTestEditModel>;
-  @Input() includeInSnowProfileAsDefault = false;
-  @Output() testsChange = new EventEmitter();
+  readonly tests = model<CompressionTestEditModel[]>();
+  readonly includeInSnowProfileAsDefault = input(false);
   private isOpen = false;
 
   constructor() {
@@ -46,35 +44,37 @@ export class CompressionTestListComponent {
       const modal = await this.modalController.create({
         component: CompressionTestModalPage,
         componentProps: {
-          compressionTest: add ? undefined : (this.tests || [])[index],
-          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault,
+          compressionTest: add ? undefined : (this.tests() || [])[index],
+          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault(),
         },
       });
       modal.present();
       const result = await modal.onDidDismiss();
       this.isOpen = false;
       if (result.data) {
-        if (result.data.delete) {
+        if (result.data.delete && index != null) {
           this.removeTest(index);
         } else {
           const compressionTest: CompressionTestEditModel = result.data;
-          if (this.tests === undefined) {
-            this.tests = [];
-          }
           if (add) {
-            this.tests.push(compressionTest);
+            this.addTest(compressionTest);
           } else {
-            this.tests[index] = compressionTest;
+            this.replaceTest(index, compressionTest);
           }
         }
       }
-      this.testsChange.emit(this.tests);
     }
   }
 
-  private removeTest(index) {
-    if (this.tests !== undefined && this.tests.length > 0) {
-      this.tests.splice(index, 1);
-    }
+  private addTest(compressionTest: CompressionTestEditModel) {
+    this.tests.update((tests) => [...(tests || []), compressionTest]);
+  }
+
+  private replaceTest(index: number, compressionTest: CompressionTestEditModel) {
+    this.tests.update((tests) => (tests || []).map((t, i) => (i === index ? compressionTest : t)));
+  }
+
+  private removeTest(index: number) {
+    this.tests.update((tests) => (tests || []).filter((t, i) => i !== index));
   }
 }

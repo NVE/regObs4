@@ -9,15 +9,17 @@
     [updateMapViewOnExtentChange]="true"
   ></app-map>
 
-  <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>
+  @defer {
+    <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>
 
-  <app-map-item-bar></app-map-item-bar>
+    <app-map-item-bar></app-map-item-bar>
 
-  <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab>
+    <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab>
 
-  <app-show-filter-criteria></app-show-filter-criteria>
+    <app-show-filter-criteria></app-show-filter-criteria>
 
-  <app-add-menu></app-add-menu>
+    <app-add-menu></app-add-menu>
 
-  <app-data-load [show]="isFetchingObservations$ | async" [label]="spinnerLabel"></app-data-load>
+    <app-data-load [show]="isFetchingObservations$ | async" [label]="spinnerLabel"></app-data-load>
+  }
 </ion-content>

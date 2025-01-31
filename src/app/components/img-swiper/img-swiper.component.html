@@ -43,16 +43,17 @@
 
   <app-remote-image
     *ngIf="isSingleImage"
-    (click)="onImageClick(attachments[0])"
-    [attachment]="attachments[0]"
+    (click)="onImageClick(attachments()[0])"
+    [attachment]="attachments()[0]"
     preferSize="Large"
   ></app-remote-image>
-  <app-static-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
-  </app-static-map-image>
+  @if (isSingleMap && location(); as location) {
+    <app-static-map-image class="single" [location]="location" (click)="onLocationClick()"></app-static-map-image>
+  }
   <ion-label *ngIf="showLabel && !isDesktop" [ngClass]="{ loaded: isLoaded }">
     <span class="img-comment-header" *ngIf="showIndex">{{ imageIndex + 1 }}/{{ imageLength }}&nbsp;</span>
     <span [ngClass]="{ 'img-comment-header': slides[activeIndex].description }" *ngIf="slides[activeIndex].header"
-      >{{ slides[activeIndex].header | translate
+      >{{ slides[activeIndex].header! | translate
       }}<ng-container *ngIf="slides[activeIndex].description">:&nbsp; </ng-container></span
     >
     <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>

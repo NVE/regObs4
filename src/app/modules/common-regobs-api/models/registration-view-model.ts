@@ -60,7 +60,7 @@ export interface RegistrationViewModel {
   /**
    * Timestamp for registrert i systemet. (Read-Only)
    */
-  DtRegTime?: string;
+  DtRegTime: string;
 
   /**
    * Ekstern referanse ID. Må være unik for Applikasjon.
@@ -77,8 +77,8 @@ export interface RegistrationViewModel {
   IceThickness?: IceThicknessViewModel;
   Incident?: IncidentViewModel;
   LandSlideObs?: LandslideViewModel;
-  ObsLocation?: ObsLocationViewModel;
-  Observer?: ObserverViewModel;
+  ObsLocation: ObsLocationViewModel;
+  Observer: ObserverViewModel;
   ObserverGroupID?: number;
   ObserverGroupName?: string;
   RegId: number;

@@ -1,7 +1,12 @@
 import { RegistrationTid } from '../models/registration-tid.enum';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
-import { AdaptiveElement, AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import {
+  AdaptiveElement,
+  AttachmentViewModel,
+  DamageObsEditModel,
+  RegistrationViewModel,
+} from 'src/app/modules/common-regobs-api/models';
 import {
   RegistrationDraft,
   RegistrationEditModelWithRemoteOrLocalAttachments,
@@ -11,53 +16,60 @@ import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
 
+function getRegistrationTidFilter(tid?: RegistrationTid) {
+  if (tid) {
+    return (a: RemoteOrLocalAttachmentEditModel) => a.RegistrationTID === tid;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return (a: RemoteOrLocalAttachmentEditModel) => true;
+}
+
 export function getAttachmentsFromRegistrationViewModel(
   viewModel: RegistrationEditModelWithRemoteOrLocalAttachments | RegistrationViewModel,
   registrationTid?: RegistrationTid
 ): RemoteOrLocalAttachmentEditModel[] {
-  if (!viewModel || !viewModel.Attachments) {
+  if (viewModel.Attachments == null) {
     return [];
   }
-  return (viewModel.Attachments as RemoteOrLocalAttachmentEditModel[])
-    .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true))
-    .map((a) => ({ ...a, type: 'Attachment' }));
+  return viewModel.Attachments.filter(getRegistrationTidFilter(registrationTid)).map((a) => ({
+    ...a,
+    type: 'Attachment',
+  }));
 }
 
 export function getDamageObsAttachments(
   viewModel: RegistrationEditModelWithRemoteOrLocalAttachments,
   registrationTid?: RegistrationTid
 ): RemoteOrLocalAttachmentEditModel[] {
-  if (!viewModel || !viewModel.DamageObs) {
+  if (viewModel.DamageObs == null) {
     return [];
   }
-  return []
-    .concat(...viewModel.DamageObs.map((item) => item.Attachments || []))
-    .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
+  return viewModel.DamageObs.flatMap((v) => v.Attachments || []).filter(getRegistrationTidFilter(registrationTid));
 }
 
 export function getWaterLevelAttachments(
   viewModel: RegistrationEditModelWithRemoteOrLocalAttachments,
   registrationTid?: RegistrationTid
 ): RemoteOrLocalAttachmentEditModel[] {
-  if (!viewModel || !viewModel.WaterLevel2 || !viewModel.WaterLevel2.WaterLevelMeasurement) {
+  if (viewModel?.WaterLevel2?.WaterLevelMeasurement == null) {
     return [];
   }
-  return []
-    .concat(...viewModel.WaterLevel2.WaterLevelMeasurement.map((item) => item.Attachments || []))
-    .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
+  return viewModel.WaterLevel2.WaterLevelMeasurement.flatMap((v) => v.Attachments || []).filter(
+    getRegistrationTidFilter(registrationTid)
+  );
 }
 
 export function getSnowProfileAttachments(
   viewModel: RegistrationViewModel,
   registrationTid?: RegistrationTid
-): AttachmentViewModel & { Href: string } {
+): null | (AttachmentViewModel & { Href: string }) {
   if (registrationTid && registrationTid != RegistrationTid.SnowProfile2) {
     return null;
   }
   const snowProfileSummary = viewModel.Summaries?.find((s) => s.RegistrationTID === RegistrationTid.SnowProfile2);
-  const snowProfilePlot = snowProfileSummary?.AdaptiveElements.find(
+  const snowProfilePlot = snowProfileSummary?.AdaptiveElements?.find(
     (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
-  ) as SnowProfileData;
+  ) as SnowProfileData | undefined;
   if (snowProfilePlot) {
     return {
       GeoHazardTID: viewModel?.GeoHazardTID,
@@ -74,6 +86,7 @@ export function getSnowProfileAttachments(
       Href: snowProfilePlot?.interactiveUrl,
     };
   }
+  return null;
 }
 
 export function getAllAttachmentsFromViewModel(
@@ -81,7 +94,10 @@ export function getAllAttachmentsFromViewModel(
   registrationTid?: RegistrationTid
 ): AttachmentViewModel[] {
   const snowProfile = getSnowProfileAttachments(viewModel, registrationTid);
-  const attachments = getAllAttachmentsFromEditModel(viewModel, registrationTid);
+  const attachments = getAllAttachmentsFromEditModel(
+    viewModel as RegistrationEditModelWithRemoteOrLocalAttachments,
+    registrationTid
+  );
   if (snowProfile) {
     attachments.unshift(snowProfile);
   }
@@ -98,7 +114,19 @@ export function getAllAttachmentsFromEditModel(
   return [...attachments, ...damageObsAttachments, ...waterLevelAttachmetns];
 }
 
-type RegistrationName = keyof typeof RegistrationTid;
+type RegistrationName = keyof Omit<
+  typeof RegistrationTid,
+  | 'AvalancheEvaluation'
+  | 'AvalancheEvaluation2'
+  | 'Picture'
+  | 'SnowCoverObs'
+  | 'AvalancheDangerObs'
+  | 'AvalancheActivityObs'
+  | 'SnowTempObs'
+  | 'DensityProfile'
+  | 'StratProfile'
+  | 'WaterLevel'
+>;
 
 export function getRegistrationName(registrationTid: RegistrationTid): RegistrationName {
   return RegistrationTid[registrationTid] as RegistrationName;
@@ -107,16 +135,17 @@ export function getRegistrationName(registrationTid: RegistrationTid): Registrat
 export function getRegistationPropertyForModel(
   regModel: RegistrationEditModelWithRemoteOrLocalAttachments | RegistrationViewModel,
   registrationTid: RegistrationTid
-): ValidRegistrationType {
+): ValidRegistrationType | undefined {
   if (regModel && registrationTid) {
-    return regModel[getRegistrationName(registrationTid)];
+    const property = getRegistrationName(registrationTid);
+    return regModel[property];
   }
-  return null;
+  return;
 }
 
 export function getRegistrationTids(): RegistrationTid[] {
   return Object.keys(RegistrationTid)
-    .map((key) => RegistrationTid[key])
+    .map((key) => RegistrationTid[key as keyof typeof RegistrationTid])
     .filter((val: RegistrationTid) => typeof val !== 'string');
 }
 
@@ -134,15 +163,13 @@ export function isObservationModelEmptyForRegistrationTid(
   If in AvalancheObs data model we want to exclude DtAvalancheTime from 'isEmpty' validation we need to pass that property
   in the function. In that case we set hasAnyDataBesidesPropertyToExclude(AvalancheObs, ['DtAvalancheTime'])
 */
-export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: T, propertyToExclude: string[]) {
+export function hasAnyDataBesidesPropertyToExclude<T>(dataModel: NonNullable<T>, propertyToExclude: (keyof T)[]) {
   // have to remove the property to exclude from the object and then check values on the rest
   //
-  if (dataModel) {
-    const dataModelCopy = { ...dataModel };
-    propertyToExclude.forEach((p) => delete dataModelCopy[p]);
-    const isEmtpy = isEmpty(dataModelCopy);
-    return !isEmtpy;
-  }
+  const dataModelCopy = { ...dataModel };
+  propertyToExclude.forEach((p) => delete dataModelCopy[p]);
+  const isEmtpy = isEmpty(dataModelCopy);
+  return !isEmtpy;
 }
 
 export function getRegistrationsWithData(draft: RegistrationDraft): RegistrationTid[] {
@@ -184,7 +211,7 @@ export function createEmptyRegistration(draft: RegistrationDraft, registrationTi
       ...draft,
       registration: {
         ...draft.registration,
-        [propName]: getDefaultValue(registrationTid),
+        [propName]: getDefaultValueForRegistration(registrationTid),
       },
     };
   }
@@ -197,19 +224,26 @@ export function createEmptyRegistration(draft: RegistrationDraft, registrationTi
  * @returns same draft but without empty registrations
  */
 export function removeEmptyRegistrations(draft: RegistrationDraft): RegistrationDraft {
-  const registration = Object.keys(draft.registration).reduce((registration, key) => {
-    if (!isEmpty(draft.registration[key])) {
-      registration[key] = draft.registration[key];
-    }
-    return registration;
-  }, {} as RegistrationEditModelWithRemoteOrLocalAttachments);
+  const registration = (Object.keys(draft.registration) as RegistrationName[]).reduce(
+    (registration, key) => {
+      const { [key]: value } = draft.registration;
+      if (!isEmpty(value)) {
+        return {
+          ...registration,
+          [key]: value,
+        };
+      }
+      return registration;
+    },
+    {} as RegistrationDraft['registration']
+  );
   return {
     ...draft,
     registration,
   };
 }
 
-function getDefaultValue(registrationTid: RegistrationTid) {
+export function getDefaultValueForRegistration(registrationTid: RegistrationTid) {
   if (isArrayType(registrationTid)) {
     return [];
   } else {

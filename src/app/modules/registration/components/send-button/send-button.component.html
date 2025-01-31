@@ -1,4 +1,4 @@
-<ion-footer *ngIf="draft">
+<ion-footer>
   <ion-toolbar>
     <ion-grid class="ion-no-padding">
       <ion-row>
@@ -16,12 +16,14 @@
             {{ "REGISTRATION.DELETE.DRAFT.BUTTON" | translate }}
           </ion-button>
         </ion-col>
-        <ion-col *ngIf="draft.regId" class="delete-button-col ion-no-padding ion-text-center">
-          <ion-button (click)="requestDeleteFromRegobs()" color="dark" size="small" fill="clear">
-            <svg-icon slot="start" src="/assets/icon/delete.svg"></svg-icon>
-            {{ "REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON" | translate }}
-          </ion-button>
-        </ion-col>
+        @if (draft().regId) {
+          <ion-col class="delete-button-col ion-no-padding ion-text-center">
+            <ion-button (click)="requestDeleteFromRegobs()" color="dark" size="small" fill="clear">
+              <svg-icon slot="start" src="/assets/icon/delete.svg"></svg-icon>
+              {{ "REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON" | translate }}
+            </ion-button>
+          </ion-col>
+        }
       </ion-row>
     </ion-grid>
   </ion-toolbar>

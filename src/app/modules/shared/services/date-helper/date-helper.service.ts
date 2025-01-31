@@ -8,13 +8,12 @@ import moment from 'moment';
 export class DateHelperService {
   private translateService = inject(TranslateService);
 
-
   formatDateString(
     dateString: string,
     showMonthNames = true,
     showYear = true,
     showTime = true,
-    currentTimeZone: string = null
+    currentTimeZone?: string
   ) {
     return this.formatDate(moment.parseZone(dateString), showMonthNames, showYear, showTime, currentTimeZone);
   }
@@ -24,7 +23,7 @@ export class DateHelperService {
     showMonthNames = true,
     showYear = true,
     showTime = true,
-    currentTimeZone: string = null
+    currentTimeZone?: string
   ) {
     const timezone = currentTimeZone || moment().format('Z');
     if (!date.isValid()) {

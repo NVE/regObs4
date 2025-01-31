@@ -1,5 +1,5 @@
 import { IonItem, IonButton, IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, inject, input, model, effect } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { enterZone } from 'src/app/core/helpers/observable-helper';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -26,109 +26,111 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AsyncPipe, IonButton, IonItem, IonLabel, NgClass, NgFor, NgIf, SvgIconComponent, TranslatePipe],
 })
-export class KdvIconSelectComponent {
+export class KdvIconSelectComponent<T extends number | number[]> {
   private userSettings = inject(UserSettingService);
   private kdvService = inject(KdvService);
   private ngZone = inject(NgZone);
   private logger = inject(LoggingService);
 
-  @Input() label: string;
-  @Input() kdvKey: KdvKey;
+  readonly label = input<string>();
+  readonly kdvKey = input.required<KdvKey>();
+
+  readonly multiSelect = input(false);
 
   /**
    * Bind this to the field where you want to save the selection.
    * It is the ID of the KDV element that will be stored.
    * If multiselect is set, the value field will be treated as an array.
    */
-  @Input() value: number | number[];
-  @Input() multiSelect = false;
-  @Input() showZeroValues = false;
+  readonly value = model<T>();
+  readonly showZeroValues = input(false);
 
   /**
    * You may control which KDV element IDs to show with this function
    */
-  @Input() filter: (number) => boolean;
-  @Output() valueChange = new EventEmitter<number | number[]>();
+  readonly filter = input<(v: number) => boolean>();
 
-  kdvElements$: Observable<KdvElement[]>;
-  lang$: Observable<string>;
+  kdvElements$?: Observable<KdvElement[]>;
+  lang$?: Observable<string>;
+
+  constructor() {
+    effect(() => {
+      this.logger.debug(`Value change for kdv-icon-select`, DEBUG_TAG, { kdvKey: this.kdvKey(), value: this.value() });
+    });
+  }
 
   ngOnInit() {
     this.lang$ = this.userSettings.language$.pipe(map((langKey) => LangKey[langKey]));
-    this.kdvElements$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).pipe(
+    this.kdvElements$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey()).pipe(
       map((elements) => elements.filter((element) => this.isVisible(element))),
       enterZone(this.ngZone)
     );
   }
 
   private isVisible(item: KdvElement): boolean {
-    if (this.filter !== undefined && !this.filter(item.Id)) {
+    const filter = this.filter();
+    if (filter !== undefined && !filter(item.Id)) {
       return false;
     }
-    if (!this.showZeroValues) {
+    if (!this.showZeroValues()) {
       return item.Id % 100 !== 0;
     }
     return true;
   }
 
   getImageSrc(element: KdvElement): string {
-    return `/assets/icon/kdvElement/${this.kdvKey}/${element.Id}.svg`;
+    return `/assets/icon/kdvElement/${this.kdvKey()}/${element.Id}.svg`;
   }
 
   isSelected(element: KdvElement): boolean {
-    if (this.multiSelect) {
-      const values = this.value as number[];
-      return values.includes(element.Id);
-    } else {
-      return this.value == element.Id;
+    const value = this.value();
+    if (value == null) {
+      return false;
     }
+    if (Array.isArray(value)) {
+      return value.includes(element.Id);
+    }
+    return value === element.Id;
   }
 
   /**
    * Select or deselect given element
    */
   onClick(element: KdvElement): void {
-    if (this.multiSelect) {
-      let values = this.value as number[]; //redefine value as array
-      if (this.isSelected(element)) {
-        //remove this element
-        const index = values.indexOf(element.Id);
-        if (index > -1) {
-          values.splice(index, 1);
+    this.value.update((values) => {
+      const isSelected = this.isSelected(element);
+      const isMultiSelect = this.multiSelect();
+
+      if (isMultiSelect) {
+        const oldValues = Array.isArray(values) ? values : typeof values === 'number' ? [values] : [];
+        if (isSelected) {
+          return oldValues.filter((v) => v !== element.Id) as T; // remove this element
+        } else {
+          return [element.Id, ...oldValues] as T; // add element to selection
         }
       } else {
-        values = [element.Id, ...values]; //add element to selection
+        // Single select
+        if (isSelected) {
+          return undefined; // deselect if it was selected earlier
+        } else {
+          return element.Id as T;
+        }
       }
-      this.value = values;
-    } else {
-      //single select
-      if (this.isSelected(element)) {
-        this.value = undefined; //deselect if it was selected earlier
-      } else {
-        this.value = element.Id;
-      }
-    }
-    this.logger.debug(`Value change on ${this.kdvKey}: ${this.value}`, DEBUG_TAG);
-    this.valueChange.emit(this.value);
+    });
   }
 
   count(): number {
-    if (this.multiSelect) {
-      const values = this.value as number[];
-      return values.length;
+    const value = this.value();
+    if (Array.isArray(value)) {
+      return value.length;
     }
-    if (this.value == null) {
-      return 0;
+    if (typeof value === 'number') {
+      return 1;
     }
-    return 1;
+    return 0;
   }
 
   clear(): void {
-    if (this.multiSelect) {
-      this.value = [];
-    } else {
-      this.value = null;
-    }
-    this.valueChange.emit(this.value);
+    this.value.set((this.multiSelect() ? [] : undefined) as T | undefined);
   }
 }

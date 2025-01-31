@@ -57,7 +57,7 @@ export class OfflineMapService implements OnReset {
   private alertController = inject(AlertController);
   private packageIndex = inject(PackageIndexService);
 
-  private packages: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
+  private packages = new BehaviorSubject([] as OfflineMapPackage[]);
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
 
   private finishedPackageIds: Subject<string> = new Subject();
@@ -67,11 +67,11 @@ export class OfflineMapService implements OnReset {
    */
   finishedPackageIds$: Observable<string> = this.finishedPackageIds.asObservable();
 
-  private downloadAndUnzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
+  private downloadAndUnzipProgress = new BehaviorSubject([] as OfflineMapPackage[]);
   downloadAndUnzipProgress$ = this.downloadAndUnzipProgress.asObservable();
 
-  availableDiskspace: { available: number; used: number };
-  private downloadSubscription: Subscription;
+  availableDiskspace?: { available: number; used: number };
+  private downloadSubscription?: Subscription;
   private cancel = false;
 
   private rootFileUrl = '';
@@ -235,6 +235,10 @@ export class OfflineMapService implements OnReset {
   }
 
   private startDownloadPackage(offlineMapPackage: OfflineMapPackage) {
+    if (offlineMapPackage.compoundPackageMetadata == null) {
+      throw new Error('compoundPackageMetadata are required when downloading packages');
+    }
+
     // Find all zip-files (urls) to download and unzip
     const parts = offlineMapPackage.compoundPackageMetadata.getParts();
 
@@ -243,13 +247,13 @@ export class OfflineMapService implements OnReset {
   }
 
   public cancelDownloadPackage(offlineMapPackage: OfflineMapPackage) {
-    if (offlineMapPackage.progress.step === ProgressStep.pending) {
+    if (offlineMapPackage.progress?.step === ProgressStep.pending) {
       this.removePackageFromDownloadAndProgress(offlineMapPackage);
     } else if (offlineMapPackage.error) {
       this.onCancelled(offlineMapPackage);
     } else if (
-      offlineMapPackage.progress.step === ProgressStep.download ||
-      offlineMapPackage.progress.step === ProgressStep.extractZip
+      offlineMapPackage.progress?.step === ProgressStep.download ||
+      offlineMapPackage.progress?.step === ProgressStep.extractZip
     ) {
       this.cancel = true;
       this.downloadSubscription?.unsubscribe();
@@ -388,7 +392,11 @@ export class OfflineMapService implements OnReset {
                 );
                 break;
               case 'DONE':
-                await this.handleUnzip(mapPackage, downloadProgress.content, part, partNumber, parts);
+                if (downloadProgress.content) {
+                  await this.handleUnzip(mapPackage, downloadProgress.content, part, partNumber, parts);
+                } else {
+                  throw new Error('No blob content on downloadprogress DONE');
+                }
                 break;
               default:
                 break;
@@ -536,13 +544,13 @@ export class OfflineMapService implements OnReset {
     return neededSpaceForCurrentPackage + neededSpaceForItemsInQueue;
   }
 
-  private async getNeededSpaceForItemsInQueue(compressionFactor): Promise<number> {
+  private async getNeededSpaceForItemsInQueue(compressionFactor: number): Promise<number> {
     return firstValueFrom(
       this.downloadAndUnzipProgress$.pipe(
         map((items) =>
           items
             .filter((x) => x.downloadComplete == null && x.error == null)
-            .reduce((pv, cv) => (pv += cv.size * compressionFactor), 0)
+            .reduce((pv, cv) => (pv += (cv.size || 0) * compressionFactor), 0)
         )
       )
     );
@@ -567,7 +575,7 @@ export class OfflineMapService implements OnReset {
     let messageKey = null;
     if (isDownloading) {
       messageKey = 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE';
-    } else if (this.availableDiskspace?.available > 300000000) {
+    } else if (this.availableDiskspace?.available != null && this.availableDiskspace.available > 300000000) {
       //we have more than 300MB available
       messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_GENERIC';
     } else {
@@ -631,8 +639,10 @@ export class OfflineMapService implements OnReset {
       const fileStat = await Filesystem.stat({ path });
       return { size: +fileContent.data, downloadComplete: fileStat.mtime / 1000 };
     } catch (error) {
-      const niceError = new Error(`Couldn't read COMPLETE file: ${path}`);
-      niceError.stack = error.stack;
+      const niceError = new Error(`Couldn't read COMPLETE file: ${path}`, { cause: error });
+      if (error instanceof Error) {
+        niceError.stack = error.stack;
+      }
       throw niceError;
     }
   }
@@ -712,7 +722,7 @@ export class OfflineMapService implements OnReset {
         step: ProgressStep.pending,
         description: await firstValueFrom(this.translateService.get('OFFLINE_MAP.STATUS.QUEUED')),
       },
-      downloadComplete: null,
+      downloadComplete: undefined,
       maps: {},
       compoundPackageMetadata,
     };
@@ -725,7 +735,7 @@ export class OfflineMapService implements OnReset {
     folder: string,
     onComplete: () => void,
     onProgress: (progress: number) => void,
-    onError: (error: Error) => void
+    onError: (error: unknown) => void
   ): Promise<void> {
     try {
       const zip = new JSZip();
@@ -789,8 +799,10 @@ export class OfflineMapService implements OnReset {
           const message = `Write of ${path} failed. ${numAttemptsLeft} attempts left`;
           this.loggingService.error(error, DEBUG_TAG, message);
           if (numAttemptsLeft === 0) {
-            const noMoreAttemptsError = new Error(message);
-            noMoreAttemptsError.stack = error.stack;
+            const noMoreAttemptsError = new Error(message, { cause: error });
+            if (error instanceof Error) {
+              noMoreAttemptsError.stack = error.stack;
+            }
             throw noMoreAttemptsError;
           }
         }
@@ -806,7 +818,7 @@ export class OfflineMapService implements OnReset {
 
   private async onUnzipOrDownloadError(
     metadata: OfflineMapPackage,
-    error: Error,
+    error: unknown,
     isDownloading: boolean,
     description?: string
   ) {
@@ -815,9 +827,11 @@ export class OfflineMapService implements OnReset {
       message = `${message}: ${description}`;
     }
     this.loggingService.error(error, DEBUG_TAG, message, metadata);
-    metadata.error = error || new Error('Unknown error');
+    metadata.error = error instanceof Error ? error : new Error(`Unknown error: ${error}`);
     const errorMessageKey = isDownloading ? 'OFFLINE_MAP.STATUS.DOWNLOAD_ERROR' : 'OFFLINE_MAP.STATUS.UNZIP_ERROR';
-    metadata.progress.description = await firstValueFrom(this.translateService.get(errorMessageKey));
+    if (metadata.progress != null) {
+      metadata.progress.description = await firstValueFrom(this.translateService.get(errorMessageKey));
+    }
     const unzipProgress = this.downloadAndUnzipProgress.value.filter((p) => p.name !== metadata.name);
     this.downloadAndUnzipProgress.next([...unzipProgress, metadata]);
     this.resetCancelAndStartNextItemInQueue();
@@ -847,8 +861,8 @@ export class OfflineMapService implements OnReset {
     // Start any pending downloads
     this.resetCancelAndStartNextItemInQueue();
 
-    const secondsSpent = mapPackage.downloadComplete - mapPackage.downloadStart;
-    const rate = mapPackage.size / 1024 / secondsSpent;
+    const secondsSpent = mapPackage.downloadStart ? mapPackage.downloadComplete - mapPackage.downloadStart : NaN;
+    const rate = (mapPackage.size || 0) / 1024 / secondsSpent;
     this.loggingService.debug(
       `Unzip of ${mapPackage.name} finished in ${secondsSpent}s. Speed: ${rate}kb/s`,
       DEBUG_TAG
@@ -870,7 +884,7 @@ export class OfflineMapService implements OnReset {
 
   private resetCancelAndStartNextItemInQueue() {
     this.cancel = false;
-    this.downloadSubscription = null;
+    this.downloadSubscription = undefined;
     this.startDownloadNextItemInQueue();
   }
 

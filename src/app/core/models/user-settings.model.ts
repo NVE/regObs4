@@ -2,7 +2,13 @@ import { GeoHazard, AppMode, LangKey } from 'src/app/modules/common-core/models'
 import { TopoMap } from './topo-map.enum';
 import { SupportTileStore } from './support-tile.model';
 
-export interface UserSetting {
+export interface InfoPopupSettings {
+  infoAboutObservationsRecievedTimestamps?: { [name: string]: number };
+  infoAboutSupportMapsRecievedTimestamps?: { [name: string]: number };
+  infoAboutOfflineSupportMapsRecievedTimestamps?: { [name: string]: number };
+}
+
+export interface UserSetting extends InfoPopupSettings {
   appMode: AppMode;
   language: LangKey;
   currentGeoHazard: Array<GeoHazard>;
@@ -17,9 +23,6 @@ export interface UserSetting {
   useRetinaMap: boolean;
   featureToggleDeveloperMode: boolean;
   featureToggeGpsDebug: boolean;
-  infoAboutObservationsRecievedTimestamps?: { [name: string]: number };
-  infoAboutSupportMapsRecievedTimestamps?: { [name: string]: number };
-  infoAboutOfflineSupportMapsRecievedTimestamps?: { [name: string]: number };
   copyright?: string;
   photographer?: string;
   lastOverridden?: Date;

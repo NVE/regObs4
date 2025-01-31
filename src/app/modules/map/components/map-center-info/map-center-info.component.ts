@@ -55,9 +55,9 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private externalLinkService = inject(ExternalLinkService);
   private http = inject(HttpClient);
 
-  private userPos: Position; // Caches the gps position for distance and height diff computation
-  private lastUserPos: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
-  private _userAltitude: number = null; // Cached user altitude from server fetched when we can't trust the GPS altitude
+  private userPos?: Position; // Caches the gps position for distance and height diff computation
+  private lastUserPos?: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
+  private _userAltitude?: number; // Cached user altitude from server fetched when we can't trust the GPS altitude
 
   // For accessing the info box element from parent views
   readonly infoBoxElement = viewChild.required<ElementRef<HTMLDivElement>>('infoBoxElement');
@@ -67,10 +67,10 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   }
 
   // Public props we can see in the map center info box
-  mapCenter: L.LatLng;
-  elevation: number;
-  location: LocationName;
-  steepness: number;
+  mapCenter?: L.LatLng;
+  elevation?: number;
+  location?: LocationName;
+  steepness?: number;
   loading = false;
 
   get distance(): number {
@@ -80,16 +80,24 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
         lng: this.userPos.coords.longitude,
       });
     }
+    return 0;
   }
 
-  get userAltitude(): number {
-    return this._userAltitude || this.userPos?.coords?.altitude;
+  get userAltitude(): number | undefined {
+    if (this._userAltitude != null) {
+      return this._userAltitude;
+    }
+    if (this.userPos?.coords?.altitude != null) {
+      return this.userPos.coords.altitude;
+    }
+    return;
   }
 
-  get heightDifference(): number {
+  get heightDifference(): number | undefined {
     if (this.userAltitude != null && this.elevation != null) {
       return this.elevation - this.userAltitude;
     }
+    return;
   }
 
   constructor() {
@@ -107,7 +115,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     combineLatest([this.geoPositionService.currentPosition$, this.mapService.followMode$])
       .pipe(
         takeUntil(this.ngDestroy$),
-        tap(([newPos, followMode]) => (this.userPos = followMode ? null : newPos)),
+        tap(([newPos, followMode]) => (this.userPos = followMode ? undefined : newPos)),
         switchMap(() => this.fixGpsPosHeight())
       )
       .subscribe(() => {
@@ -122,9 +130,9 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
         tap((newMapView) => {
           this.loading = true;
           this.mapCenter = newMapView.center;
-          this.location = null;
-          this.elevation = null;
-          this.steepness = null;
+          this.location = undefined;
+          this.elevation = undefined;
+          this.steepness = undefined;
           this.cdr.detectChanges();
         }),
         debounceTime(1500),
@@ -162,7 +170,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
             DEBUG_TAG
           );
         } else {
-          this._userAltitude = null;
+          this._userAltitude = undefined;
           this.loggingService.debug(
             'Tried to adjust user position altitude, but got no response from server, ' +
               `keeping altitude from device: ${this.userPos.coords.altitude}, took ${Date.now() - start}ms`,
@@ -186,12 +194,12 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private getLocationInfo$(latLng: L.LatLng): Observable<ViewInfo> {
     return this.mapSearchService.getViewInfo(latLng).pipe(
       timeout(LOCATION_INFO_REQUEST_TIMEOUT),
-      catchError(() => of(null))
+      catchError(() => of({ latLng }))
     );
   }
 
   async copyToClipboard(): Promise<void> {
-    const textToCopy = `${this.mapCenter.lat}, ${this.mapCenter.lng}`;
+    const textToCopy = `${this.mapCenter?.lat}, ${this.mapCenter?.lng}`;
     await Clipboard.write({ string: textToCopy });
 
     const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD'));
@@ -203,7 +211,14 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     toast.present();
   }
 
-  async loadYr(lat, lon) {
+  loadYrClick(event: MouseEvent) {
+    event.stopPropagation();
+    if (this.mapCenter) {
+      this.loadYr(this.mapCenter.lat, this.mapCenter.lng);
+    }
+  }
+
+  async loadYr(lat: number, lon: number) {
     interface YrSearch {
       totalResults: number;
       _embedded: {

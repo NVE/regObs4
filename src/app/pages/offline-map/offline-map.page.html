@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'OFFLINE_MAP.OFFLINE_MAP_PAGE_TITLE' | translate }}</ion-title>
+    <ion-title>{{ "OFFLINE_MAP.OFFLINE_MAP_PAGE_TITLE" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -27,18 +27,18 @@
 <ion-footer *ngIf="packageTotals$ | async as packageTotals">
   <ion-list>
     <ion-item (click)="expanded = !expanded" lines="full">
-      <ion-label *ngIf="packageTotals.numPackages === 1" class="package-count"
-        >{{ 'OFFLINE_MAP.PACKAGE_COUNT_SINGLE' | translate:{packageCount: packageTotals.numPackages} }}</ion-label
-      >
-      <ion-label *ngIf="packageTotals.numPackages !== 1" class="package-count"
-        >{{ 'OFFLINE_MAP.PACKAGE_COUNT_MULTIPLE' | translate:{packageCount: packageTotals.numPackages} }}</ion-label
-      >
+      <ion-label *ngIf="packageTotals.numPackages === 1" class="package-count">
+        {{ "OFFLINE_MAP.PACKAGE_COUNT_SINGLE" | translate: { packageCount: packageTotals.numPackages } }}
+      </ion-label>
+      <ion-label *ngIf="packageTotals.numPackages !== 1" class="package-count">
+        {{ "OFFLINE_MAP.PACKAGE_COUNT_MULTIPLE" | translate: { packageCount: packageTotals.numPackages } }}
+      </ion-label>
 
       <ion-label class="packages-size">{{ packageTotals.spaceUsed }}</ion-label>
 
-      <ion-label class="space-available"
-        >({{ 'OFFLINE_MAP.SPACE_AVAILABLE' | translate:{spaceAvailable: getSpaceAvailable()} }})</ion-label
-      >
+      <ion-label class="space-available">
+        ({{ "OFFLINE_MAP.SPACE_AVAILABLE" | translate: { spaceAvailable: getSpaceAvailable() } }})
+      </ion-label>
 
       <ion-icon
         *ngIf="packageTotals.numPackages > 0"
@@ -49,7 +49,7 @@
     </ion-item>
     <ng-container *ngIf="nPackagesToUpdate$ | async as nPackagesToUpdate">
       <ion-item *ngIf="nPackagesToUpdate" lines="full" color="warning" (click)="expanded = !expanded">
-        <ion-label>{{ 'OFFLINE_MAP.N_PACKAGES_TO_UPDATE' | translate:{n:nPackagesToUpdate} }} </ion-label>
+        <ion-label>{{ "OFFLINE_MAP.N_PACKAGES_TO_UPDATE" | translate: { n: nPackagesToUpdate } }}</ion-label>
       </ion-item>
     </ng-container>
     <div class="footer">
@@ -68,15 +68,15 @@
           <div class="buttons" slot="end">
             <div class="button" *ngIf="isPackageOutdated(item)" (click)="update(item, $event)">
               <ion-icon name="refresh"></ion-icon>
-              <ion-label>{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON' | translate }}</ion-label>
+              <ion-label>{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON" | translate }}</ion-label>
             </div>
             <div class="button" *ngIf="item.error">
               <ion-icon name="warning-outline"></ion-icon>
-              <ion-label>{{ 'OFFLINE_MAP.ERROR_ICON_LABEL' | translate }}</ion-label>
+              <ion-label>{{ "OFFLINE_MAP.ERROR_ICON_LABEL" | translate }}</ion-label>
             </div>
-            <div class="button" *ngIf="!(item.error)" (click)="cancelOrDelete(item, $event)">
+            <div class="button" *ngIf="!item.error" (click)="cancelOrDelete(item, $event)">
               <ion-icon name="trash-outline"></ion-icon>
-              <ion-label>{{ 'OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON' | translate }}</ion-label>
+              <ion-label>{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate }}</ion-label>
             </div>
           </div>
         </ion-item>

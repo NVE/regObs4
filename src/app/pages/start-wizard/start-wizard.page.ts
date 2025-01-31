@@ -70,11 +70,9 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   async saveLanguage() {
-    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
-    this.userSettingService.saveUserSettings({
-      ...userSettings,
-      language: this.language,
-    });
+    if (this.language) {
+      this.userSettingService.updateUserSettings({ language: this.language });
+    }
   }
 
   private setPageIndex(index: number) {

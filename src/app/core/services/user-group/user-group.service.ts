@@ -7,7 +7,7 @@ import { ObserverGroupDto } from 'src/app/modules/common-regobs-api/models';
 import { AccountService as RegobsApiAccountService } from 'src/app/modules/common-regobs-api/services';
 import moment from 'moment';
 import { from, combineLatest, Observable, lastValueFrom, firstValueFrom } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 import { nSQL } from '@nano-sql/core';
 
@@ -20,12 +20,11 @@ export class UserGroupService {
   private accountApiService = inject(RegobsApiAccountService);
   private dataLoadService = inject(DataLoadService);
 
-
   async updateUserGroups() {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (loggedInUser.isLoggedIn) {
       const appMode = await firstValueFrom(this.userSettingService.appMode$);
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(appMode, loggedInUser.email);
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(appMode, loggedInUser.email as string);
     }
   }
 
@@ -55,7 +54,7 @@ export class UserGroupService {
         Name: val.Name,
       };
     });
-    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
+    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES['OBSERVER_GROUPS'].name, appMode);
     await nSQL(instanceName).loadJS(userGroups);
     await this.deleteUserGroupsNoLongerInResult(
       appMode,
@@ -64,34 +63,34 @@ export class UserGroupService {
   }
 
   private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+    await NanoSql.getInstance(NanoSql.TABLES['OBSERVER_GROUPS'].name, appMode)
       .query('delete')
-      .where((dbGroup: { key: string; userId: string; Id: number; Name: string }) => ids.indexOf(dbGroup.key) < 0)
+      .where((dbGroup: { [key: string]: any }) => ids.indexOf(dbGroup['key']) < 0)
       .exec();
   }
 
   private getDataLoadId(appMode: AppMode, email: string) {
-    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${email}`;
+    return `${NanoSql.TABLES['OBSERVER_GROUPS'].name}_${appMode}_${email}`;
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
     return combineLatest([this.regobsAuthService.loggedInUser$, this.userSettingService.appMode$]).pipe(
       switchMap(([loggedInUser, appMode]) =>
         loggedInUser.isLoggedIn
-          ? from(this.getUserGroupsFromDb(appMode, loggedInUser.email))
+          ? from(this.getUserGroupsFromDb(appMode, loggedInUser.email as string))
           : from(Promise.resolve([]))
       )
     );
   }
 
   getUserGroups(): Promise<ObserverGroupDto[]> {
-    return this.getUserGroupsAsObservable().pipe(take(1)).toPromise();
+    return firstValueFrom(this.getUserGroupsAsObservable());
   }
 
   private async getUserGroupsFromDb(appMode: AppMode, email: string): Promise<ObserverGroupDto[]> {
-    return NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+    return NanoSql.getInstance(NanoSql.TABLES['OBSERVER_GROUPS'].name, appMode)
       .query('select')
-      .where((x) => x.userId === email)
-      .exec();
+      .where((x) => x['userId'] === email)
+      .exec() as unknown as ObserverGroupDto[];
   }
 }

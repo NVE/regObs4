@@ -9,10 +9,8 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../base.page';
-import { BasePageService } from '../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
@@ -53,6 +51,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class IncidentPage extends BasePage {
+  override registrationTid = RegistrationTid.Incident;
+
   isCasualtiesValid = true;
   isDeadValid = true;
 
@@ -61,14 +61,14 @@ export class IncidentPage extends BasePage {
   }
 
   get incident(): IncidentEditModel {
+    if (this.draft.registration.Incident == null) {
+      this.draft.registration.Incident = {};
+    }
     return this.draft.registration.Incident;
   }
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.Incident, basePageService, activatedRoute);
+    super();
   }
 
   groupValidate() {
@@ -76,7 +76,7 @@ export class IncidentPage extends BasePage {
     this.isDeadValid = IncidentValidation.onDeadNumChange(this.incident);
   }
 
-  isValid() {
+  override isValid() {
     this.groupValidate();
     return this.isCasualtiesValid && this.isDeadValid;
   }

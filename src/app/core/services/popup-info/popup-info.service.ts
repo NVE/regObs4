@@ -4,8 +4,9 @@ import { map, take, filter, switchMap, delay } from 'rxjs/operators';
 import moment from 'moment';
 import { AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of, from } from 'rxjs';
+import { Observable, of, from, firstValueFrom } from 'rxjs';
 import { settings } from '../../../../settings';
+import { InfoPopupSettings } from '../../models/user-settings.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,7 @@ export class PopupInfoService {
   private alertController = inject(AlertController);
   private translateService = inject(TranslateService);
 
-
-  checkObservationInfoPopup(_: string = null, delayMs = 2000) {
+  checkObservationInfoPopup(delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
       'infoAboutObservationsRecievedTimestamps',
@@ -27,7 +27,7 @@ export class PopupInfoService {
     );
   }
 
-  checkSupportMapInfoPopup(_: string = null, delayMs = 2000) {
+  checkSupportMapInfoPopup(delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
       'infoAboutSupportMapsRecievedTimestamps',
@@ -80,8 +80,8 @@ export class PopupInfoService {
     );
   }
 
-  async saveInfoAboutRecievedTimestamp(timestampType: string, timestampName: string) {
-    let userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+  async saveInfoAboutRecievedTimestamp(timestampType: keyof InfoPopupSettings, timestampName: string) {
+    let userSettings = await firstValueFrom(this.userSettingService.userSetting$);
     userSettings = {
       ...userSettings,
       [timestampType]:
@@ -97,7 +97,7 @@ export class PopupInfoService {
 
   private checkInfoPopup(
     delayMs = 2000,
-    timestampType: string,
+    timestampType: keyof InfoPopupSettings,
     timestampName: string,
     header: string,
     msg: string,
@@ -107,9 +107,7 @@ export class PopupInfoService {
     return this.userSettingService.userSetting$.pipe(
       take(1),
       delay(delayMs),
-      filter((us) =>
-        this.checkLastTimestamp(refreshTimeMs, timestampType in us ? us[timestampType][timestampName] : null)
-      ),
+      filter((us) => this.checkLastTimestamp(refreshTimeMs, us[timestampType]?.[timestampName])),
       switchMap(() => this.geAlertTranslations(header, msg, ok_txt)),
       switchMap((translations) => from(this.showAlert(translations.header, translations.message, translations.okText))),
       switchMap(() => from(this.saveInfoAboutRecievedTimestamp(timestampType, timestampName)))

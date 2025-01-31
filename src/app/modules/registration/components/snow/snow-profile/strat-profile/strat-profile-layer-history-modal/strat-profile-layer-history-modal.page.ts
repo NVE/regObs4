@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -60,14 +60,14 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
   private draftRepository = inject(DraftRepositoryService);
   private searchService = inject(SearchService);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required<RegistrationDraft>();
 
   isLoading = true;
 
-  $previousUsedLayers: Observable<{ id: number; date: string; layers: StratProfileLayerViewModel[] }[]>;
+  $previousUsedLayers?: Observable<{ id: number; date: string; layers: StratProfileLayerViewModel[] }[]>;
 
   ngOnInit() {
-    if (this.draft?.registration?.ObsLocation) {
+    if (this.draft()?.registration?.ObsLocation) {
       this.$previousUsedLayers = this.searchService.SearchPostSearchMyRegistrations(this.criteria).pipe(
         map((result) => this.getLayersFromSearchResult(result)),
         tap(() => {
@@ -87,8 +87,8 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
       FromDtObsTime: moment().subtract(14, 'days').startOf('day').toISOString(),
       Radius: {
         Position: {
-          Latitude: this.draft.registration.ObsLocation.Latitude,
-          Longitude: this.draft.registration.ObsLocation.Longitude,
+          Latitude: this.draft().registration.ObsLocation?.Latitude,
+          Longitude: this.draft().registration.ObsLocation?.Longitude,
         },
         Radius: 100000,
       },
@@ -102,15 +102,16 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
   }
 
   async selectLayer(item: { id: number; date: string; layers: StratProfileLayerViewModel[] }) {
-    if (!this.draft.registration.SnowProfile2) {
-      this.draft.registration.SnowProfile2 = {};
+    const draft = this.draft();
+    if (!draft.registration.SnowProfile2) {
+      draft.registration.SnowProfile2 = {};
     }
 
-    if (!this.draft.registration.SnowProfile2.StratProfile) {
-      this.draft.registration.SnowProfile2.StratProfile = {};
+    if (!draft.registration.SnowProfile2.StratProfile) {
+      draft.registration.SnowProfile2.StratProfile = {};
     }
-    this.draft.registration.SnowProfile2.StratProfile.Layers = item.layers;
-    await this.draftRepository.save(this.draft);
+    draft.registration.SnowProfile2.StratProfile.Layers = item.layers;
+    await this.draftRepository.save(draft);
     this.modalController.dismiss();
   }
 
@@ -119,7 +120,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
   ): { id: number; date: string; layers: StratProfileLayerViewModel[] }[] {
     return result
       .map((reg) => {
-        if (reg.SnowProfile2?.StratProfile?.Layers?.length > 0) {
+        if (reg.SnowProfile2?.StratProfile?.Layers && reg.SnowProfile2.StratProfile.Layers.length > 0) {
           return {
             id: reg.RegId,
             date: reg.DtObsTime,

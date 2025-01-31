@@ -1,5 +1,5 @@
 import { IonList } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -22,14 +22,41 @@ import { NumericInputComponent } from '../../numeric-input/numeric-input.compone
 export class SimpleSnowObsComponent {
   private draftRepository = inject(DraftRepositoryService);
 
-  @Input() draft: RegistrationDraft;
+  readonly draft = input.required<RegistrationDraft>();
+
+  get registration() {
+    return this.draft().registration;
+  }
+
+  // skiConditions = computed(() => this.draft().registration.SnowSurfaceObservation?.SkiConditionsTID);
+  // snowSurface = computed(() => this.draft().registration.SnowSurfaceObservation?.SnowSurfaceTID);
+  // dangerSigns = computed(() => (this.draft().registration.DangerObs || []).map((ds) => ds.DangerSignTID));
+
+  // updateSkiConditions(tid: SnowSurfaceEditModel['SkiConditionsTID']) {
+  //   this.updateSnowSurface({ SkiConditionsTID: tid });
+  // }
+
+  // private updateSnowSurface(values: Partial<SnowSurfaceEditModel>) {
+  //   this.draft.update((draft) => {
+  //     return {
+  //       ...draft,
+  //       registration: {
+  //         ...draft.registration,
+  //         SnowSurfaceObservation: {
+  //           ...(draft.registration.SnowSurfaceObservation || {}),
+  //           ...values,
+  //         },
+  //       },
+  //     };
+  //   });
+  // }
 
   /**
    * Return TID's from snow danger sign obserations in the draft
    */
   get dangerSignTIDs(): number[] {
     const tids: number[] = [];
-    const dangerObservations = this.draft.registration.DangerObs;
+    const dangerObservations = this.registration.DangerObs;
     dangerObservations?.filter((obs) => obs.GeoHazardTID == GeoHazard.Snow).map((obs) => tids.push(obs.DangerSignTID));
     return tids;
   }
@@ -44,21 +71,24 @@ export class SimpleSnowObsComponent {
         dangerObservations.push({ DangerSignTID: tid, GeoHazardTID: GeoHazard.Snow });
       }
     }
-    this.draft.registration.DangerObs = dangerObservations;
+    this.registration.DangerObs = dangerObservations;
   }
 
   /**
    * Nullsafe getter. Will create an empty snow surface obs if needed
    */
   get snowSurfaceObservation(): SnowSurfaceEditModel {
-    if (this.draft.registration.SnowSurfaceObservation == null) {
-      this.draft.registration.SnowSurfaceObservation = {};
+    if (this.registration.SnowSurfaceObservation == null) {
+      this.registration.SnowSurfaceObservation = {};
     }
-    return this.draft.registration.SnowSurfaceObservation;
+    return this.registration.SnowSurfaceObservation;
   }
 
   async save(): Promise<void> {
-    this.draftRepository.save(this.draft);
+    this.draftRepository.save({
+      ...this.draft(),
+      registration: this.registration,
+    });
   }
 
   filterSnowSurfaceTIDs = (tid: number): boolean => {

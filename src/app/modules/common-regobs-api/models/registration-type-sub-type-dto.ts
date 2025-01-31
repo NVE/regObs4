@@ -1,6 +1,6 @@
 /* tslint:disable */
 export interface RegistrationTypeSubTypeDto {
-  Id?: number;
+  Id: number;
   Name?: string;
   SortOrder?: number;
 }

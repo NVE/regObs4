@@ -1,18 +1,18 @@
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <!-- Back button -->
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
 
-    <ion-title> {{'REGISTRATION.OVERVIEW.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.OVERVIEW.TITLE" | translate }} </ion-title>
 
     <ion-buttons slot="end" class="ion-hide-md-down">
       <!-- Nickname button - takes user to my page so they can log out etc -->
-      <ng-container *ngIf="loggedInUser$ | async as user; else loginTemplate">
+      <ng-container *ngIf="loggedInUserEmail() as email; else loginTemplate">
         <ion-button fill="outline" (click)="goToMyPage()">
           <ion-icon slot="start" name="person-circle"></ion-icon>
-          {{ user }}
+          {{ email }}
         </ion-button>
       </ng-container>
 
@@ -20,7 +20,7 @@
       <ng-template #loginTemplate>
         <ion-button fill="outline" (click)="signIn()" [disabled]="isLoggingIn$ | async">
           <ion-icon slot="start" name="person-circle"></ion-icon>
-          {{ 'LOGIN.LOGIN' | translate }}
+          {{ "LOGIN.LOGIN" | translate }}
         </ion-button>
       </ng-template>
 
@@ -29,21 +29,28 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="registrationViewModel$ | async as registration">
-  <app-observation-list-card *ngIf="registration.reg" [obs]="registration.reg"></app-observation-list-card>
+<ion-content>
+  @if (registration.value(); as obs) {
+    <app-observation-list-card [obs]="obs"></app-observation-list-card>
+  } @else if (registration.isLoading()) {
+    <!-- TODO! Vise spinner -->
+    <p>Laster observasjon</p>
+  } @else {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Fant ikke observasjonen.</ion-card-title>
+      </ion-card-header>
 
-  <ion-card *ngIf="!registration.reg">
-    <ion-card-header>
-      <ion-card-title>Fant ikke observasjonen.</ion-card-title>
-    </ion-card-header>
+      <ion-card-content>
+        <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
 
-    <ion-card-content>
-      <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
-
-      <div *ngIf="registration.err">
-        <p>Feilmelding:</p>
-        <pre>{{ registration.err.message }}</pre>
-      </div>
-    </ion-card-content>
-  </ion-card>
+        @if (errorMessage()) {
+          <div>
+            <p>Feilmelding:</p>
+            <pre>{{ errorMessage() }}</pre>
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+  }
 </ion-content>

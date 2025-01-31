@@ -13,6 +13,7 @@ import { CoachMarksMainScreenComponent } from '../../components/coach-marks/coac
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map as mapIcon, list, warning } from 'ionicons/icons';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-tabs',
@@ -20,7 +21,7 @@ import { map as mapIcon, list, warning } from 'ionicons/icons';
   styleUrls: ['tabs.page.scss'],
   imports: [
     AsyncPipe,
-    CoachMarksMainScreenComponent,
+    // CoachMarksMainScreenComponent,
     IonBadge,
     IonIcon,
     IonLabel,
@@ -34,7 +35,6 @@ import { map as mapIcon, list, warning } from 'ionicons/icons';
 export class TabsPage implements OnInit, OnDestroy {
   private fullscreenService = inject(FullscreenService);
   private searchCriteriaService = inject(SearchCriteriaService);
-  private platform = inject(Platform);
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
   private ngZone = inject(NgZone);
@@ -44,13 +44,14 @@ export class TabsPage implements OnInit, OnDestroy {
   private currentGeoHazardSubscription?: Subscription;
   readonly selectedTab$: Observable<TABS | null>;
 
+  isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
+
   warningsInView?: {
     count: number;
     text: string;
     maxWarning: number;
     hasEmergencyWarning: boolean;
   };
-  fullscreen$: Observable<boolean>;
   showTrips = false;
 
   get showBadge(): boolean {
@@ -75,12 +76,11 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   constructor() {
-    this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.selectedTab$ = this.tabsService.selectedTab$;
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
       this.applyCurrentQueryParams(tab)
     );
-    addIcons({ mapIcon, list, warning });
+    addIcons({ map: mapIcon, list, warning });
   }
 
   private applyCurrentQueryParams(path: TABS | null) {

@@ -32,7 +32,7 @@ import { formatDate } from '@angular/common';
 import { Entry, File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular/standalone';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { ILogProviderConfig } from './file-logging.config';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
 import { EmailComposerService } from '../email-composer/email-composer.service';
@@ -53,8 +53,8 @@ export class FileLoggingService {
 
   private fileLoggerReady = false;
   private initFailed = false;
-  private currentFile: Entry;
-  private lines: 0;
+  private currentFile?: Entry;
+  private lines = 0;
   private queue: string[] = [];
   private processing = false;
 
@@ -134,7 +134,7 @@ export class FileLoggingService {
       .finally(() => {
         this.log(
           `Version = ${version.version}, build = ${version.buildNumber}, ${deviceInfoFormatted}`,
-          null,
+          undefined,
           LogLevel.Info
         );
       });
@@ -175,7 +175,7 @@ export class FileLoggingService {
           return this.cleanupFiles(entries);
         } else {
           this.debug_metaLog('No existing log files found.');
-          return this.cleanupCompleted(null, 0, null);
+          return this.cleanupCompleted(null, 0);
         }
       })
       .catch((err) => {
@@ -193,9 +193,9 @@ export class FileLoggingService {
     entries = _.filter(
       entries,
       (entry: Entry) => entry.isFile && entry.name && entry.name.startsWith(this.config.logPrefix)
-    );
+    ) as Entry[];
     if (entries.length === 0) {
-      return this.cleanupCompleted(null, 0, null).catch((err) => {
+      return this.cleanupCompleted(null, 0).catch((err) => {
         // Now we're well and truly buggered
         this.initFailed = true;
         throw err;
@@ -224,7 +224,7 @@ export class FileLoggingService {
           this.debug_metaLog('Total log file size is ok: ' + sizeTotal);
           // Below max size, so we're ready to go
           const lastEntry = entries.length > 0 ? entries[entries.length - 1] : null;
-          return this.cleanupCompleted(lastEntry, size, null).catch((err) => {
+          return this.cleanupCompleted(lastEntry, size).catch((err) => {
             // Now we're well and truly buggered
             this.initFailed = true;
             throw err;
@@ -234,7 +234,7 @@ export class FileLoggingService {
     } catch (failure) {
       const lastEntry = entries.length > 0 ? entries[entries.length - 1] : null;
       // Not much we can do except try to continue
-      return this.cleanupCompleted(lastEntry, 0, failure).catch((err) => {
+      return this.cleanupCompleted(lastEntry, 0, (failure as Error)?.message).catch((err) => {
         // Now we're in real trouble
         this.initFailed = true;
         throw err;
@@ -248,7 +248,7 @@ export class FileLoggingService {
    * @returns a promise
    */
   private async getFileSize(entry: Entry): Promise<number> {
-    return new Promise((resolve: (number) => void, reject) => {
+    return new Promise((resolve: (number: number) => void, reject) => {
       entry.getMetadata(
         (metadata) => {
           resolve(metadata.size);
@@ -289,7 +289,7 @@ export class FileLoggingService {
    * @param lastEntrySize The size of the most recent existing log file
    * @param error Any error to be logged after initialization
    */
-  private cleanupCompleted(lastEntry: Entry, lastEntrySize: number, error: string): Promise<any> {
+  private cleanupCompleted(lastEntry: Entry | null, lastEntrySize: number, error?: string): Promise<any> {
     this.debug_metaLog('Log file cleanup done');
     if (lastEntry && lastEntrySize < this.config.fileMaxSize) {
       this.currentFile = lastEntry;
@@ -307,8 +307,8 @@ export class FileLoggingService {
         if (error) {
           this.log(error);
         }
-        this.debug_metaLog('File logger initialized at new file: ' + this.currentFile.fullPath);
-        this.log('File logger initialized at new file: ' + this.currentFile.name);
+        this.debug_metaLog('File logger initialized at new file: ' + this.currentFile?.fullPath);
+        this.log('File logger initialized at new file: ' + this.currentFile?.name);
         return Promise.resolve();
       });
     }
@@ -440,8 +440,14 @@ export class FileLoggingService {
    */
   private processQueue(): Promise<any> {
     this.debug_metaLog('Processing queue of length ' + this.queue.length);
+    if (!this.currentFile) {
+      throw new Error('currentFile not initialized');
+    }
     if (this.queue.length > 0) {
       const message = this.queue.shift();
+      if (!message) {
+        return Promise.resolve();
+      }
       return this.file
         .writeFile(this.config.baseDir + '/' + this.config.logDir, this.currentFile.name, message, {
           append: true,
@@ -537,38 +543,40 @@ export class FileLoggingService {
 
 class LogProviderConfig implements ILogProviderConfig {
   // If true, logs verbose details of file logging operations to console
-  enableMetaLogging: boolean;
+  enableMetaLogging!: boolean;
 
   // If true, all file log messages also appear in the console
-  logToConsole: boolean;
+  logToConsole!: boolean;
 
   // Date format used in log statements
-  logDateFormat: string;
+  logDateFormat!: string;
 
   // Date format used in log file names.
   // NOTE: be careful with special characters like ':' as this can cause file system issues
-  fileDateFormat: string;
+  fileDateFormat!: string;
 
   // Maximum number of log statements before file rollover
-  fileMaxLines: number;
+  fileMaxLines!: number;
 
   // If the last log file exceeds this size on initialization, a new log file will be created
-  fileMaxSize: number;
+  fileMaxSize!: number;
 
   // If the total size of all log files exceeds this size on initialisation, oldest files will be removed
-  totalLogSize: number;
+  totalLogSize!: number;
 
   // Name of directory to create for logs, within the baseDir
-  logDir: string;
+  logDir!: string;
 
   // Name of directory in which to create log directory
-  baseDir: string;
+  baseDir!: string;
 
   // Prefix for log files
-  logPrefix: string;
+  logPrefix!: string;
 
   // Developer-level logging will appear in log files if true
-  devMode: boolean;
+  devMode!: boolean;
+
+  [key: string]: any;
 
   constructor(fields: any) {
     // Quick and dirty extend/assign fields to this model

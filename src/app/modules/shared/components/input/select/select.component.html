@@ -11,23 +11,21 @@
   </ion-button>
   <ion-icon class="value-icon" *ngIf="valueIcon" [name]="valueIcon"></ion-icon>
   <ion-text>
-    {{ valueText | translate }}
+    {{ valueText() | translate }}
   </ion-text>
   <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
 </ng-container>
 
 <ng-template #popover>
   <ion-select
-    [placeholder]="valueText | translate"
-    *ngIf="options && options.length"
-    (click)="getFilteredOptions()"
-    (ionChange)="onChange($event)"
-    [disabled]="disabled"
+    [placeholder]="valueText() | translate"
+    [disabled]="disabled()"
     cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
     interface="popover"
     [(ngModel)]="selectedValue"
+    justify="end"
   >
-    <ion-select-option *ngFor="let option of filteredOptions" [value]="option.id">
+    <ion-select-option *ngFor="let option of filteredOptions()" [value]="option.id">
       {{ option.text | translate }}
     </ion-select-option>
   </ion-select>

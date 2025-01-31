@@ -1,16 +1,15 @@
-import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
-import { map, distinctUntilChanged, Observable, ReplaySubject, combineLatest } from 'rxjs';
+import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
+import { map, distinctUntilChanged } from 'rxjs';
 import {
   AttachmentUploadEditModel,
-  AttachmentUploadEditModelWithBlob,
   ExistingOrNewAttachment,
 } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { BlobImageComponent } from '../blob-image/blob-image.component';
 import { RemoteImageComponent } from '../../../shared/components/remote-image/remote-image.component';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 /**
  * Show thumbnails of all images for given registration.
@@ -20,51 +19,29 @@ import { RemoteImageComponent } from '../../../shared/components/remote-image/re
   templateUrl: './thumbnails.component.html',
   styleUrls: ['./thumbnails.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgFor, BlobImageComponent, RemoteImageComponent, NgIf, AsyncPipe],
+  imports: [BlobImageComponent, RemoteImageComponent],
 })
-export class ThumbnailsComponent implements OnChanges, OnInit {
+export class ThumbnailsComponent {
   private newAttachmentService = inject(NewAttachmentService);
 
-  @Input() attachments: ExistingOrNewAttachment[]; //attachments for given draft registration
-  @Input() draftUuid: string;
+  readonly attachments = input<ExistingOrNewAttachment[]>(); //attachments for given draft registration
+  readonly draftUuid = input.required<string>();
 
-  private attachmentsSubject = new ReplaySubject<ExistingOrNewAttachment[]>(1);
+  private attachments$ = toObservable(this.attachments).pipe(map((a) => a || []));
+  private newAttachments$ = this.attachments$.pipe(
+    map((attachments) => attachments.filter((a) => a.type === 'new')),
+    map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
+    distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
+    this.newAttachmentService.addBlobs(this.draftUuid())
+  );
+  private existingAttachments$ = this.attachments$.pipe(
+    map((attachments) => attachments.filter((a) => a.type === 'existing')),
+    map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
+    distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
+  );
 
-  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
-  existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
-
-  totalImagesCount: Observable<number>;
-
-  ngOnInit(): void {
-    this.newAttachments$ = this.attachmentsSubject.pipe(
-      map((attachments) => attachments.filter((a) => a.type === 'new')),
-      map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
-      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
-      this.newAttachmentService.addBlobs(this.draftUuid)
-    );
-
-    this.existingAttachments$ = this.attachmentsSubject.pipe(
-      map((attachments) => attachments.filter((a) => a.type === 'existing')),
-      map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
-      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
-    );
-
-    this.totalImagesCount = combineLatest([this.newAttachments$, this.existingAttachments$]).pipe(
-      map((attachments) => attachments[0].length + attachments[1].length)
-    );
-  }
-
-  trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
-    return attachment.AttachmentId;
-  }
-
-  trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
-    return attachment.id;
-  }
-
-  ngOnChanges() {
-    if (this.attachments != null) {
-      this.attachmentsSubject.next(this.attachments);
-    }
-  }
+  newAttachments = toSignal(this.newAttachments$, { initialValue: [] });
+  existingAttachments = toSignal(this.existingAttachments$, { initialValue: [] });
+  private totalImagesCount = computed(() => this.newAttachments().length + this.existingAttachments().length);
+  hiddenImagesCount = computed(() => this.totalImagesCount() - 3);
 }

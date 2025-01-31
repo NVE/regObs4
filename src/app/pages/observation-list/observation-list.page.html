@@ -3,7 +3,7 @@
   <app-geo-fab slot="fixed"></app-geo-fab>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-item-divider>
-    <h3 class="ion-text-uppercase header">{{'OBSERVATION_LIST.TITLE' | translate }}</h3>
+    <h3 class="ion-text-uppercase header">{{ "OBSERVATION_LIST.TITLE" | translate }}</h3>
   </ion-item-divider>
   <ion-grid class="filter-panel">
     <ion-row>
@@ -12,14 +12,13 @@
           [value]="useMapExtentFilter$ | async"
           (ionChange)="toggleFilterByMapView($event)"
           class="map-extent-filter-toggle segment-button-class"
-          mode="ios"
           [disabled]="disableMapExtentToggle$ | async"
         >
           <ion-segment-button value="mapBorders">
-            <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW' | translate}}</ion-label>
+            <ion-label>{{ "OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW" | translate }}</ion-label>
           </ion-segment-button>
           <ion-segment-button value="all">
-            <ion-label>{{'OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL' | translate}}</ion-label>
+            <ion-label>{{ "OBSERVATION_LIST.TOGGLE_BUTTON_OBSERVATIONS_ALL" | translate }}</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-col>
@@ -28,7 +27,7 @@
       </ion-col>
       <ion-col>
         <div *ngIf="!isNative" class="button-container">
-          <span>{{'OBSERVATION_LIST.VIEW_TYPE' | translate}}:</span>
+          <span>{{ "OBSERVATION_LIST.VIEW_TYPE" | translate }}:</span>
           <button
             id="list"
             [ngClass]="viewType$.getValue() == 'list' ? 'active' : null"
@@ -48,14 +47,14 @@
       <ion-col class="order-by-select">
         <ng-container *ngIf="orderBy$ | async as orderBy">
           <div class="select-wrapper">
-            <span>{{'OBSERVATION_LIST.SORT_BY_TEXT' | translate}}:</span>
+            <span>{{ "OBSERVATION_LIST.SORT_BY_TEXT" | translate }}:</span>
             <ion-select (ionChange)="handleChangeSorting($event)" [value]="orderBy" [interface]="popupType">
               <ion-select-option value="DtObsTime">
-                {{'OBSERVATION_LIST.SORT_BY_OBS_TIME' | translate}}</ion-select-option
+                {{ "OBSERVATION_LIST.SORT_BY_OBS_TIME" | translate }}</ion-select-option
               >
-              <ion-select-option value="DtChangeTime"
-                >{{'OBSERVATION_LIST.SORT_BY_CHANGE_TIME' | translate}}</ion-select-option
-              >
+              <ion-select-option value="DtChangeTime">{{
+                "OBSERVATION_LIST.SORT_BY_CHANGE_TIME" | translate
+              }}</ion-select-option>
             </ion-select>
           </div>
         </ng-container>
@@ -65,11 +64,11 @@
 
   <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
     <ng-container *ngIf="viewType$ | async as viewType">
-      <ng-container *ngIf="(showObservations$ | async); else disabled">
+      <ng-container *ngIf="showObservations$ | async; else disabled">
         <ng-container *ngIf="registrations$ | async as registrations">
           <ion-list class="loaded" *ngIf="registrations.length > 0; else empty">
             <app-observation-list-view
-              *ngIf="viewType==='list'"
+              *ngIf="viewType === 'list'"
               [registrations]="registrations"
             ></app-observation-list-view>
             <!-- TODO: Fix image search as another route / component ? -->
@@ -84,12 +83,12 @@
 
   <ng-template #skeleton>
     <ng-container *ngIf="viewType$ | async as viewType">
-      <ng-container *ngIf="viewType==='list'">
+      <ng-container *ngIf="viewType === 'list'">
         <app-observation-skeleton></app-observation-skeleton>
         <app-observation-skeleton></app-observation-skeleton>
         <app-observation-skeleton></app-observation-skeleton>
       </ng-container>
-      <ion-list *ngIf="viewType==='grid'" class="skeleton-list">
+      <ion-list *ngIf="viewType === 'grid'" class="skeleton-list">
         <ion-skeleton-text animated *ngFor="let _ of fakeArray" class="img-skeleton"></ion-skeleton-text>
       </ion-list>
     </ng-container>
@@ -97,8 +96,8 @@
 
   <ng-template #disabled>
     <div class="disabled-info">
-      <strong>{{ 'MENU.DEACTIVATE_OBSERVATIONS' | translate }}</strong>
-      <div>{{ 'OBSERVATION_LIST.EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED' | translate }}</div>
+      <strong>{{ "MENU.DEACTIVATE_OBSERVATIONS" | translate }}</strong>
+      <div>{{ "OBSERVATION_LIST.EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED" | translate }}</div>
     </div>
   </ng-template>
 

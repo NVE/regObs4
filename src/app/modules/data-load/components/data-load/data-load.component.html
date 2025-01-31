@@ -1,6 +1,6 @@
-<div class="spinner-container animated" [ngClass]="{ fadeIn: show, fadeOut: !show }">
+<div class="spinner-container animated" [ngClass]="{ fadeIn: show(), fadeOut: !show() }">
   <div class="data-load">
     <ion-spinner></ion-spinner>
   </div>
-  <span>{{ label | translate }}</span>
+  <span>{{ label() | translate }}</span>
 </div>

@@ -1,29 +1,22 @@
 import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FullscreenService } from '../../../../../core/services/fullscreen/fullscreen.service';
-import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-fullscreen-toggle',
   templateUrl: './fullscreen-toggle.component.html',
   styleUrls: ['./fullscreen-toggle.component.scss'],
-  imports: [AsyncPipe, IonFab, IonFabButton, IonIcon],
+  imports: [IonFab, IonFabButton, IonIcon],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullscreenToggleComponent {
   private fullscreenService = inject(FullscreenService);
 
-  isFullscreen$: Observable<boolean>;
-
-  constructor() {
-    this.isFullscreen$ = this.fullscreenService.isFullscreen$;
-  }
+  isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
+  iconSrc = computed(() => `/assets/icon/${this.isFullscreen() ? 'collapse' : 'expand'}.svg`);
 
   toggleFullscreen() {
     this.fullscreenService.toggleFullscreen();
-  }
-
-  getSrc(isFullscreen: boolean) {
-    return `/assets/icon/${isFullscreen ? 'collapse' : 'expand'}.svg`;
   }
 }

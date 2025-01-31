@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, OnChanges, ChangeDetectionStrategy, OnInit, inject, input } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
 import { IonIcon, IonItem, IonLabel, NavController } from '@ionic/angular/standalone';
 import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
@@ -25,35 +25,39 @@ import { checkmarkCircle } from 'ionicons/icons';
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
   private navController = inject(NavController);
-  private newAttachmentService = inject(NewAttachmentService);
+  // private newAttachmentService = inject(NewAttachmentService);
 
-  @Input() item: ISummaryItem;
-  @Input() readonly = false;
-  @Input() simpleObsMode = false;
+  readonly item = input.required<ISummaryItem>();
+  readonly readonly = input(false);
+  readonly simpleObsMode = input(false);
 
   private attachments = new ReplaySubject<ExistingOrNewAttachment[]>(1);
 
-  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
-  existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
+  // newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
+  // existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
   constructor() {
     addIcons({ checkmarkCircle });
   }
-
   ngOnInit(): void {
-    this.newAttachments$ = this.attachments.pipe(
-      map((attachments) => attachments.filter((a) => a.type === 'new')),
-      map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
-      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
-      this.newAttachmentService.addBlobs(this.item.uuid)
-    );
-
-    this.existingAttachments$ = this.attachments.pipe(
-      map((attachments) => attachments.filter((a) => a.type === 'existing')),
-      map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
-      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
-    );
+    throw new Error('Method not implemented.');
   }
+
+  // TODO: Images
+  // ngOnInit(): void {
+  //   this.newAttachments$ = this.attachments.pipe(
+  //     map((attachments) => attachments.filter((a) => a.type === 'new')),
+  //     map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
+  //     distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
+  //     this.newAttachmentService.addBlobs(this.item().uuid)
+  //   );
+
+  //   this.existingAttachments$ = this.attachments.pipe(
+  //     map((attachments) => attachments.filter((a) => a.type === 'existing')),
+  //     map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
+  //     distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
+  //   );
+  // }
 
   trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
     return attachment.AttachmentId;
@@ -64,8 +68,9 @@ export class SummaryItemComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges() {
-    if (this.item?.attachments != null) {
-      this.attachments.next(this.item.attachments);
+    const item = this.item();
+    if (item?.attachments != null) {
+      this.attachments.next(item.attachments);
     }
   }
 
@@ -79,9 +84,9 @@ export class SummaryItemComponent implements OnChanges, OnInit {
   // }
 
   navigate() {
-    if (!this.readonly) {
-      this.navController.navigateForward([this.item.href, this.item.uuid], {
-        queryParams: this.item.queryParams,
+    if (!this.readonly()) {
+      this.navController.navigateForward([this.item().href, this.item().uuid], {
+        queryParams: this.item().queryParams,
       });
     }
   }

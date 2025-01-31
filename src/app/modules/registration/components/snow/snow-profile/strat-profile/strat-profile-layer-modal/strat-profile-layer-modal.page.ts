@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Signal, computed, inject, input, linkedSignal } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -20,10 +20,6 @@ import {
 import { StratProfileLayerEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
-import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
-import cloneDeep from 'clone-deep';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
@@ -33,10 +29,15 @@ import { NgIf, LowerCasePipe } from '@angular/common';
 import { TextCommentComponent } from '../../../../text-comment/text-comment.component';
 import { addIcons } from 'ionicons';
 import { chevronUp, chevronDown, arrowBack, arrowForward, trash } from 'ionicons/icons';
+import { hasAnyAdvancedOptions } from '../strat-profile-helpers';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import cloneDeep from 'clone-deep';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
 const basicWetnessValues = [1, 3, 5, 7, 9];
+type FilterFunc = (id: number) => boolean;
 
 @Component({
   selector: 'app-strat-profile-layer-modal',
@@ -74,35 +75,49 @@ export class StratProfileLayerModalPage implements OnInit {
   private translateService = inject(TranslateService);
   private draftRepository = inject(DraftRepositoryService);
 
-  @Input() layer: StratProfileLayerEditModel;
-  @Input() draft: RegistrationDraft;
-  @Input() index: number;
+  readonly draft = input.required<RegistrationDraft>();
+  readonly index = input.required<number>();
+  private readonly initialRegistationState = cloneDeep(this.draft());
 
-  isThicknessValid = true;
-  addNew: boolean;
-  private initialRegistationState: RegistrationDraft;
+  currentIndex = linkedSignal(() => this.index());
+  layers = linkedSignal(() => this.draft().registration.SnowProfile2?.StratProfile?.Layers || []);
+  layer = computed(() => this.layers()[this.currentIndex()]);
+  isNewLayer = computed(() => this.layer() == null);
+
+  // Form values
+  thickness = linkedSignal(() => this.layer()?.Thickness);
+  isThicknessValid = computed(() => isThicknessValid(this.thickness()));
+  hardnessTid = linkedSignal(() => this.layer()?.HardnessTID);
+  hardnessBottomTid = linkedSignal(() => this.layer()?.HardnessBottomTID);
+  grainFormPrimaryTid = linkedSignal(() => this.layer()?.GrainFormPrimaryTID);
+  grainFormSecondaryTid = linkedSignal(() => this.layer()?.GrainFormSecondaryTID);
+  grainSizeAvg = linkedSignal(() => this.layer()?.GrainSizeAvg);
+  grainSizeAvgMax = linkedSignal(() => this.layer()?.GrainSizeAvgMax);
+  wetnessTid = linkedSignal(() => this.layer()?.WetnessTID);
+  criticalLayerTid = linkedSignal(() => this.layer()?.CriticalLayerTID);
+  comment = linkedSignal(() => this.layer()?.Comment);
+
+  isLayerValid = computed(() => this.isThicknessValid());
+  hasAnyAdvancedOptions = computed(() => hasAnyAdvancedOptions(this.layer()));
+  showMore = linkedSignal(() => this.hasAnyAdvancedOptions());
+
+  nLayers = computed(() => this.layers().length);
+  canGoNext = computed(() => this.currentIndex() < this.nLayers());
+  canGoBack = computed(() => this.currentIndex() > 0);
+
+  hardnessFilter: Signal<FilterFunc | undefined> = computed(() =>
+    this.showMore() ? undefined : (n) => basicHardnessValues.indexOf(n) >= 0
+  );
+
+  grainFormFilter: Signal<FilterFunc | undefined> = computed(() =>
+    this.showMore() ? undefined : (n) => basicGrainFormValues.indexOf(n) >= 0
+  );
+
+  wetnessFilter: Signal<FilterFunc | undefined> = computed(() =>
+    this.showMore() ? undefined : (n) => basicWetnessValues.indexOf(n) >= 0
+  );
 
   grainSizeInterfaceOptions: any;
-  showMore = false;
-  hardnessFilter: (id: number) => boolean;
-  grainFormFilter: (id: number) => boolean;
-  wetnessFilter: (id: number) => boolean;
-
-  get hasLayers() {
-    return this.draft?.registration?.SnowProfile2?.StratProfile?.Layers?.length > 0;
-  }
-
-  get layerLenght() {
-    return this.hasLayers ? this.draft.registration.SnowProfile2.StratProfile.Layers.length : 0;
-  }
-
-  get canGoNext() {
-    return (
-      (this.hasLayers && this.index < this.layerLenght) ||
-      (this.index === this.layerLenght && this.addNew && !IsEmptyHelper.isEmpty(this.layer))
-    );
-  }
-
   grainSizeOptions: SelectOption[] = [
     { id: 0.001, text: '.1' },
     { id: 0.003, text: '.3' },
@@ -130,8 +145,6 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   ngOnInit() {
-    this.initialRegistationState = cloneDeep(this.draft);
-    this.initLayer();
     this.translateService.get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE').subscribe((val) => {
       this.grainSizeInterfaceOptions = {
         header: val,
@@ -139,61 +152,58 @@ export class StratProfileLayerModalPage implements OnInit {
     });
   }
 
-  isValid() {
-    if (this.layer.Thickness && this.layer.Thickness > 0) {
-      this.isThicknessValid = true;
-      return true;
+  addOrUpdateLayer() {
+    const layer: StratProfileLayerEditModel = {
+      Comment: this.comment(),
+      CriticalLayerTID: this.criticalLayerTid(),
+      // DepthTop: this.depthTop(),
+      GrainFormPrimaryTID: this.grainFormPrimaryTid(),
+      GrainFormSecondaryTID: this.grainFormSecondaryTid(),
+      GrainSizeAvg: this.grainSizeAvg(),
+      GrainSizeAvgMax: this.grainSizeAvgMax(),
+      HardnessBottomTID: this.hardnessBottomTid(),
+      HardnessTID: this.hardnessTid(),
+      // SortOrder?: number;
+      Thickness: this.thickness(),
+      WetnessTID: this.wetnessTid(),
+    };
+
+    if (this.isNewLayer()) {
+      this.layers.update((layers) => [...layers, layer]);
     } else {
-      this.isThicknessValid = false;
-      return false;
+      const index = this.currentIndex();
+      this.layers.update((layers) => layers.map((l, i) => (i === index ? layer : l)));
     }
-  }
-
-  private initLayer() {
-    this.addNew = this.layer === undefined;
-    if (this.addNew) {
-      this.layer = {};
-    }
-    this.showMore = this.hasAnyAdvancedOptions();
-    this.updateFilters();
-  }
-
-  private hasAnyAdvancedOptions() {
-    return (
-      this.layer.HardnessBottomTID > 0 ||
-      this.layer.GrainSizeAvgMax > 0 ||
-      this.layer.GrainFormSecondaryTID > 0 ||
-      this.layer.CriticalLayerTID > 0 ||
-      !!this.layer.Comment
-    );
   }
 
   async save() {
-    await this.draftRepository.save(this.draft);
+    const initDraft = this.draft();
+    const draftUpdate: RegistrationDraft = {
+      ...initDraft,
+      registration: {
+        ...initDraft.registration,
+        SnowProfile2: {
+          ...(initDraft.registration.SnowProfile2 || {}),
+          StratProfile: {
+            Layers: this.layers(),
+          },
+        },
+      },
+    };
+
+    await this.draftRepository.save(draftUpdate);
   }
 
   async ok(gotoIndex?: number) {
-    if (!this.isValid()) {
+    if (!this.isLayerValid()) {
       return;
     }
-    if (!this.draft.registration.SnowProfile2) {
-      this.draft.registration.SnowProfile2 = {};
-    }
-    if (!this.draft.registration.SnowProfile2.StratProfile) {
-      this.draft.registration.SnowProfile2.StratProfile = {};
-    }
-    if (!this.draft.registration.SnowProfile2.StratProfile.Layers) {
-      this.draft.registration.SnowProfile2.StratProfile.Layers = [];
-    }
-    if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.draft.registration.SnowProfile2.StratProfile.Layers.splice(this.index, 0, this.layer);
-    }
+
+    this.addOrUpdateLayer();
     await this.save();
 
-    if (gotoIndex !== undefined) {
-      this.index = this.index + gotoIndex;
-      this.layer = this.draft.registration.SnowProfile2.StratProfile.Layers[this.index];
-      this.initLayer();
+    if (gotoIndex != null) {
+      this.currentIndex.update((i) => i + gotoIndex);
     } else {
       this.modalController.dismiss();
     }
@@ -205,34 +215,21 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async delete() {
-    if (this.hasLayers) {
-      this.draft.registration.SnowProfile2.StratProfile.Layers =
-        this.draft.registration.SnowProfile2.StratProfile.Layers.filter((l) => l !== this.layer);
-      await this.save();
-    }
+    const index = this.currentIndex();
+    this.layers.update((layers) => layers.filter((l, i) => i !== index));
+    await this.save();
     this.modalController.dismiss();
   }
 
   toggleShowMore() {
-    this.showMore = !this.showMore;
-    this.updateFilters();
+    this.showMore.update((showMore) => !showMore);
+  }
+}
+
+function isThicknessValid(value?: number) {
+  if (value == null) {
+    return false;
   }
 
-  private updateFilters() {
-    this.setHardnessFilter();
-    this.setGrainFormFilter();
-    this.setWetnessFilter();
-  }
-
-  private setHardnessFilter() {
-    this.hardnessFilter = this.showMore ? undefined : (n) => basicHardnessValues.indexOf(n) >= 0;
-  }
-
-  private setGrainFormFilter() {
-    this.grainFormFilter = this.showMore ? undefined : (n) => basicGrainFormValues.indexOf(n) >= 0;
-  }
-
-  private setWetnessFilter() {
-    this.wetnessFilter = this.showMore ? undefined : (n) => basicWetnessValues.indexOf(n) >= 0;
-  }
+  return value > 0;
 }

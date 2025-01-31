@@ -9,7 +9,6 @@ import { DownloadProgress } from './download-progress';
 export class HttpClientDownloadService implements BackgroundDownloadService {
   private http = inject(HttpClient);
 
-
   download(url: string): Observable<DownloadProgress> {
     return this.http
       .get(url, {
@@ -26,21 +25,21 @@ export class HttpClientDownloadService implements BackgroundDownloadService {
                 state: 'IN_PROGRESS',
                 loaded: event.loaded,
                 total: event.total,
-                content: null,
+                content: undefined,
               };
             }
             if (this.isHttpResponse(event)) {
               return {
                 progress: 100,
                 state: 'DONE',
-                total: event.body.size,
-                loaded: event.body.size,
-                content: event.body,
+                total: event.body?.size,
+                loaded: event.body?.size || 0,
+                content: event.body || undefined,
               };
             }
             return previous;
           },
-          { state: 'PENDING', progress: 0, loaded: 0, content: null }
+          { state: 'PENDING', progress: 0, loaded: 0, content: undefined } as DownloadProgress
         )
       );
   }

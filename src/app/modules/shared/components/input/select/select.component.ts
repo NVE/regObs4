@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, inject } from '@angular/core';
+import { Component, inject, input, model, computed } from '@angular/core';
 import {
   ActionSheetController,
   IonButton,
@@ -7,7 +7,7 @@ import {
   IonSelectOption,
   IonText,
 } from '@ionic/angular/standalone';
-import { ActionSheetButton, IonSelectCustomEvent, SelectChangeEventDetail } from '@ionic/core';
+import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';
@@ -27,66 +27,45 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   styleUrls: ['./select.component.scss'],
   imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe],
 })
-export class SelectComponent implements OnInit {
+export class SelectComponent {
   private actionSheetController = inject(ActionSheetController);
   private translateService = inject(TranslateService);
   platform = inject(Platform);
 
-  @Input() label?: string;
-  @Input() subTitle?: string;
-  @Input() selectedValue?: SelectOption['id'];
-  @Output() selectedValueChange = new EventEmitter();
-  @Input() options: Array<SelectOption> = [];
-  @Input() showReset = true;
-  @Input() disabled = false;
+  readonly label = input<string>();
+  readonly subTitle = input<string>();
+  readonly selectedValue = model<SelectOption['id']>();
+  readonly options = input<Array<SelectOption>>([]);
+  readonly showReset = input(true);
+  readonly disabled = input(false);
 
   isApp = Capacitor.isNativePlatform();
-  filteredOptions: Array<SelectOption> = [];
+  filteredOptions = computed(() => this.options().filter((x) => !x.disabled));
 
-  get valueText() {
-    const item = (this.options || []).find((x) => x.id === this.selectedValue);
-    if (item) {
-      return item.text;
-    }
-    return '';
-  }
-
-  get valueIcon() {
-    const item = (this.options || []).find((x) => x.id === this.selectedValue);
-    if (item) {
-      return item.icon;
-    }
-    return undefined;
-  }
+  private selectedOption = computed(() => (this.options() || []).find((x) => x.id === this.selectedValue()));
+  valueText = computed(() => this.selectedOption()?.text || '');
+  valueIcon = computed(() => this.selectedOption()?.icon);
 
   constructor() {
     addIcons({ caretDownSharp });
   }
 
-  ngOnInit() {
-    this.getFilteredOptions();
-  }
-
-  getFilteredOptions(): Array<SelectOption> {
-    return (this.filteredOptions = this.options.filter((x) => !x.disabled));
-  }
-
   private async getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
-    for (const option of (this.options || []).filter((x) => !x.disabled)) {
+    for (const option of (this.options() || []).filter((x) => !x.disabled)) {
       const translatedText = await firstValueFrom(this.translateService.get(option.text));
       buttons.push({
         text: translatedText,
         icon: option.icon,
-        role: option.id === this.selectedValue ? 'selected' : undefined,
-        handler: () => this.setSelectedValue(option.id),
+        role: option.id === this.selectedValue() ? 'selected' : undefined,
+        handler: () => this.selectedValue.set(option.id),
       });
     }
-    if (this.selectedValue !== undefined && this.showReset) {
+    if (this.selectedValue() !== undefined && this.showReset()) {
       const resetTextTranslated = await firstValueFrom(this.translateService.get(TRANSLATION_KEY_RESET));
       buttons.splice(0, 0, {
         text: resetTextTranslated,
-        handler: () => this.setSelectedValue(undefined),
+        handler: () => this.selectedValue.set(undefined),
         role: 'destructive',
       });
     }
@@ -100,12 +79,14 @@ export class SelectComponent implements OnInit {
 
   async getTitleTranslations() {
     let titleTextTranslated: string | undefined;
-    if (this.label) {
-      titleTextTranslated = await firstValueFrom(this.translateService.get(this.label));
+    const label = this.label();
+    if (label) {
+      titleTextTranslated = await firstValueFrom(this.translateService.get(label));
     }
     let subTitleTextTranslated: string | undefined;
-    if (this.subTitle) {
-      subTitleTextTranslated = await firstValueFrom(this.translateService.get(this.subTitle));
+    const subTitle = this.subTitle();
+    if (subTitle) {
+      subTitleTextTranslated = await firstValueFrom(this.translateService.get(subTitle));
     }
     return {
       titleTextTranslated,
@@ -114,7 +95,7 @@ export class SelectComponent implements OnInit {
   }
 
   async openSelect() {
-    if (!this.disabled) {
+    if (!this.disabled()) {
       const translations = await this.getTitleTranslations();
       const buttons = await this.getActionSheetButtons();
       const actionSheet = await this.actionSheetController.create({
@@ -124,16 +105,5 @@ export class SelectComponent implements OnInit {
       });
       await actionSheet.present();
     }
-  }
-
-  private setSelectedValue(id?: SelectOption['id']) {
-    this.selectedValue = id;
-    this.selectedValueChange.emit(id);
-  }
-
-  // TODO: Check what any is
-  onChange(event: IonSelectCustomEvent<SelectChangeEventDetail<any>>): void {
-    this.selectedValue = event.target.value;
-    this.selectedValueChange.emit(this.selectedValue);
   }
 }

@@ -39,7 +39,7 @@ import { add, map as mapIcon, list, warning } from 'ionicons/icons';
 export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
 
-  showCoachMarks$: Observable<boolean>;
+  showCoachMarks$?: Observable<boolean>;
   isOpen = false;
   ngDestroy$ = new Subject<void>();
   hideSubject = new Subject<boolean>();
@@ -70,11 +70,7 @@ export class CoachMarksMainScreenComponent implements OnInit, OnDestroy {
 
   async hide() {
     this.hideSubject.next(false);
-    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    this.userSettingService.saveUserSettings({
-      ...currentSettings,
-      showGeoSelectInfo: false,
-    });
+    this.userSettingService.updateUserSettings({ showGeoSelectInfo: false });
   }
 
   ngOnDestroy(): void {

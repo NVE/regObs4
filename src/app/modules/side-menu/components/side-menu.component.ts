@@ -79,7 +79,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   private externalLinkService = inject(ExternalLinkService);
   private fileLoggingService = inject(FileLoggingService);
 
-  userSettings: UserSetting;
+  userSettings?: UserSetting;
   settings = settings;
   TopoMap = TopoMap;
   LangKey = LangKey;
@@ -97,12 +97,12 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   /**
    * If EN is selected, label is only 'Language'. If eg. NB is selected, emits 'Språk / Language'.
    */
-  selectLanguageLabel$: Observable<string>;
+  selectLanguageLabel$?: Observable<string>;
 
   popupType: SelectInterface = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
   observerTrips: ObserverTripsService;
 
-  private userSettingSubscription: Subscription;
+  private userSettingSubscription?: Subscription;
 
   constructor() {
     const observerTrips = inject(ObserverTripsService);
@@ -143,7 +143,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   saveUserSettings() {
-    this.userSettingService.saveUserSettings(this.userSettings);
+    if (this.userSettings) {
+      this.userSettingService.saveUserSettings(this.userSettings);
+    }
   }
 
   ngOnDestroy(): void {
@@ -158,8 +160,10 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   openStartWizard() {
-    this.userSettings.showGeoSelectInfo = true;
-    this.saveUserSettings();
+    if (this.userSettings) {
+      this.userSettings.showGeoSelectInfo = true;
+      this.saveUserSettings();
+    }
     this.navController.navigateRoot('start-wizard');
   }
 
@@ -188,10 +192,5 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       }`;
     }
     this.contact('MENU.CONTACT_REGOBS_ERROR', 'MENU.ERROR_REPORT_DESCRIPTION', additionalSubjectText);
-  }
-
-  changeLanguage() {
-    //save language setting
-    this.userSettingService.saveUserSettings(this.userSettings);
   }
 }

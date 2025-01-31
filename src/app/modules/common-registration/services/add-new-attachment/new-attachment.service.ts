@@ -7,6 +7,7 @@ import {
   AttachmentUploadEditModelWithBlob,
   RegistrationTid,
 } from '../../registration.models';
+import { inject } from '@angular/core';
 
 export interface GetAttachmentFilterOptions {
   /**
@@ -35,7 +36,7 @@ export interface AddAttachmentState {
  * Handle storage of new registration attachments on client before they are sent to server
  */
 export abstract class NewAttachmentService {
-  protected logger: LoggingService;
+  protected logger = inject(LoggingService);
   protected DEBUG_TAG = 'NewAttachmentService';
 
   addNewAttachmentState = new BehaviorSubject<AddAttachmentState[]>([]);
@@ -95,7 +96,7 @@ export abstract class NewAttachmentService {
     }
 
     // We need to declare this as a tuple to allow usage spread operator by typescript
-    return filters as [AttachmentFilter?, AttachmentFilter?, AttachmentFilter?];
+    return filters as [AttachmentFilter, AttachmentFilter, AttachmentFilter];
   }
 
   protected compareByAddedTime = (a: AttachmentUploadEditModel, b: AttachmentUploadEditModel) => {

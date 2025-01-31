@@ -1,7 +1,7 @@
 import { RegistrationTypeDto, RegistrationTypeSubTypeDto } from 'src/app/modules/common-regobs-api';
 
 export interface ObservationTypeView {
-  name: string;
+  name?: string;
   id: number;
   isChecked: boolean;
   parentId: number;
@@ -26,7 +26,9 @@ function convertObservationTypesDtoToView(registrationTypesByGeoHazard: Registra
   let arrToReturn = new Map<number, ObservationTypeView>();
   registrationTypesByGeoHazard.map((type) => {
     const subtypestoReturn =
-      type.SubTypes.length > 0 ? mapRegistrationSubtypes(type.SubTypes, type.Id) : mapRegistrationType(type);
+      type.SubTypes && type.SubTypes.length > 0
+        ? mapRegistrationSubtypes(type.SubTypes, type.Id)
+        : mapRegistrationType(type);
     arrToReturn = new Map([...arrToReturn, ...subtypestoReturn]);
   });
 

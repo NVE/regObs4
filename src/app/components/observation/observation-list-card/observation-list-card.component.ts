@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, inject, input } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
   AttachmentViewModel,
   AvalancheObsViewModel,
   LandslideViewModel,
+  LatLng,
   RegistrationViewModel,
   Summary,
 } from 'src/app/modules/common-regobs-api/models';
@@ -109,50 +110,51 @@ export class ObservationListCardComponent implements OnChanges {
   private translateService = inject(TranslateService);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  @Input() obs: RegistrationViewModel;
+  readonly obs = input.required<RegistrationViewModel>();
 
   DATE_FORMAT = 'dd.MM.yyyy HH:mm';
-  obsTime: string;
-  regTime: string = null;
-  changedTime: string = null;
-  icon: string;
+  obsTime?: string;
+  regTime?: string;
+  changedTime?: string;
+  icon!: string;
   settings = settings;
-  header: string;
+  header?: string;
   summaries: Summary[] = [];
   allSelected = true;
   loaded = false;
   imageHeader = '';
   imageDecription = '';
-  starCount: number;
-  geoHazard: GeoHazard;
+  starCount!: number;
+  geoHazard!: GeoHazard;
   userCanEdit = false;
   isLoadingObsForEdit = false;
 
   attachments: AttachmentViewModel[] = [];
-  location: ImageLocation;
-  competenceLevelName: string;
+  location?: ImageLocation;
+  competenceLevelName?: string;
 
   constructor() {
     addIcons({ eye, save, pencil, shareSocial });
   }
 
   private async load() {
-    this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
-    this.header = this.obs.ObsLocation.Title;
-    this.location = this.getLocation(this.obs);
-    this.obsTime = this.obs.DtObsTime;
+    this.geoHazard = this.obs().GeoHazardTID;
+    this.header = this.obs().ObsLocation.Title;
+    this.location = this.getLocation(this.obs());
+    this.obsTime = this.obs().DtObsTime;
+    const obs = this.obs();
     if (!Capacitor.isNativePlatform()) {
       // Vis registrert- og evt. endret-tidspunkt på web
-      this.regTime = this.obs.DtRegTime;
-      if (this.obs.DtChangeTime && this.obs.DtChangeTime !== this.obs.DtRegTime) {
+      this.regTime = this.obs().DtRegTime;
+      if (obs.DtChangeTime && obs.DtChangeTime !== obs.DtRegTime) {
         // Vis endret-tidspunkt kun hvis observasjonen er endret
-        this.changedTime = this.obs.DtChangeTime;
+        this.changedTime = obs.DtChangeTime;
       }
     }
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
-    this.summaries = this.obs.Summaries;
-    this.competenceLevelName = this.obs.Observer.CompetenceLevelName;
-    this.starCount = getStarCount(this.obs.Observer.CompetenceLevelName);
+    this.summaries = obs.Summaries || [];
+    this.competenceLevelName = obs.Observer.CompetenceLevelName;
+    this.starCount = getStarCount(obs.Observer.CompetenceLevelName);
     this.updateImages();
     this.loaded = true;
     this.userCanEdit = await this.checkIfUserCanEdit();
@@ -161,14 +163,14 @@ export class ObservationListCardComponent implements OnChanges {
 
   private getLocation(obs: RegistrationViewModel): ImageLocation {
     return {
-      latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
-      geoHazard: this.geoHazard,
+      latLng: L.latLng(obs.ObsLocation.Latitude, obs.ObsLocation.Longitude),
+      geoHazard: obs.GeoHazardTID,
       startStopLocation: this.getStartStopLocation(obs),
       damageLocations: this.getDamagePositions(obs),
     };
   }
 
-  private getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop {
+  private getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop | undefined {
     if (obs.AvalancheObs) {
       return {
         ...this.obs2Latlng(obs.AvalancheObs),
@@ -201,20 +203,21 @@ export class ObservationListCardComponent implements OnChanges {
     };
   }
 
-  private extent2Polygon(extent: number[][], color: string) {
+  private extent2Polygon(extent: number[][] | undefined, color: string) {
     return extent
       ? new L.Polygon(
           extent.map(([lng, lat]) => [lat, lng]),
           { color }
         )
-      : null;
+      : undefined;
   }
 
   private getDamagePositions(obs: RegistrationViewModel) {
-    if (obs && obs.DamageObs && obs.DamageObs.some((d) => d.DamagePosition)) {
-      return obs.DamageObs.filter(
-        (d) => d.DamagePosition && d.DamagePosition.Latitude && d.DamagePosition.Longitude
-      ).map((d) => L.latLng(d.DamagePosition.Latitude, d.DamagePosition.Longitude));
+    if (obs.DamageObs?.some((d) => d.DamagePosition)) {
+      const positions = obs.DamageObs.map((d) => d.DamagePosition).filter(
+        (p) => p && p.Latitude && p.Longitude
+      ) as LatLng[];
+      return positions.map((p) => L.latLng(p.Latitude as number, p.Longitude as number));
     }
     return undefined;
   }
@@ -234,18 +237,20 @@ export class ObservationListCardComponent implements OnChanges {
       case GeoHazard.Water:
         return '/assets/icon/water_circle.svg';
     }
+
+    throw new Error(`Unsupported geoHazard: ${geoHazard}`);
   }
 
   updateImages(): void {
-    this.attachments = getAllAttachmentsFromViewModel(this.obs);
+    this.attachments = getAllAttachmentsFromViewModel(this.obs());
   }
 
   getRegistrationNames(): string {
-    return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
+    return (this.obs().Summaries || []).map((reg) => reg.RegistrationName).join(', ');
   }
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
-    const attachments = getAllAttachmentsFromViewModel(this.obs);
+    const attachments = getAllAttachmentsFromViewModel(this.obs());
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       cssClass: 'modal-fullscreen',
@@ -273,7 +278,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   private getRegistrationUrl(baseUrl: string, loginHint?: string) {
-    return `${baseUrl}/Registration/${this.obs.RegId}${loginHint ? `?login_hint=${loginHint}` : ''}`;
+    return `${baseUrl}/Registration/${this.obs().RegId}${loginHint ? `?login_hint=${loginHint}` : ''}`;
   }
 
   private async canShareNative(): Promise<boolean> {
@@ -287,7 +292,7 @@ export class ObservationListCardComponent implements OnChanges {
   async share(): Promise<void> {
     const baseUrl = await this.getBaseUrl();
     const url = this.getRegistrationUrl(baseUrl);
-    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Share, url, this.obs.RegId);
+    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Share, url, this.obs().RegId);
     if (await this.canShareNative()) {
       Share.share({
         url,
@@ -306,13 +311,16 @@ export class ObservationListCardComponent implements OnChanges {
 
   private async checkIfUserCanEdit(): Promise<boolean> {
     const observer = await firstValueFrom(this.regobsAuthService.myPageData$);
-    const editMode = await firstValueFrom(getObserverEditCheckObservable(this.obs, observer));
+    if (!observer) {
+      return false;
+    }
+    const editMode = await firstValueFrom(getObserverEditCheckObservable(this.obs(), observer));
     return editMode === 'EDIT_OWN_REGISTRATION' || editMode === 'EDIT_AS_MODERATOR';
   }
 
   private fetchRegistrationBeforeEdit(
     regId: RegistrationService.RegistrationGetParams['regId']
-  ): Observable<RegistrationViewModel> {
+  ): Observable<RegistrationViewModel | null> {
     return this.userSettingService.language$.pipe(
       switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey })),
       timeout(FETCH_OBS_TIMEOUT_MS),
@@ -333,7 +341,7 @@ export class ObservationListCardComponent implements OnChanges {
 
   async edit() {
     this.isLoadingObsForEdit = true;
-    const uuid = this.obs.ExternalReferenceId;
+    const uuid = this.obs().ExternalReferenceId;
 
     try {
       if (!uuid) {
@@ -343,11 +351,12 @@ export class ObservationListCardComponent implements OnChanges {
 
       const draft = await this.draftRepository.load(uuid);
       if (!draft) {
-        let registrationDataToEdit: RegistrationViewModel = this.obs;
+        let registrationDataToEdit: RegistrationViewModel = this.obs();
 
         //we don't have a local working copy of this registration yet, so fetch it and save as draft
-        this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
-        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
+        const obs = this.obs();
+        this.logger.debug(`Registration edit: Fetching from API. RegID = ${obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(obs.RegId));
         if (registrationFromServer === null) {
           const continueEditing = await this.confirmEditDespiteNoFreshRegistrationFromServer();
           if (!continueEditing) {
@@ -360,7 +369,10 @@ export class ObservationListCardComponent implements OnChanges {
 
         await this.draftRepository.saveAsDraft(registrationDataToEdit); //save cached copy from card as draft
       } else {
-        this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+        this.logger.debug(
+          `Registration edit: Using local draft. RegID = ${this.obs().RegId}, uuid = ${uuid}`,
+          DEBUG_TAG
+        );
       }
     } finally {
       this.isLoadingObsForEdit = false;

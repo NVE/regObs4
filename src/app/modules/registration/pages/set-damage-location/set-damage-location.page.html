@@ -1,9 +1,9 @@
 <ion-header *ngIf="!(fullscreen$ | async)">
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
-      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+      <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
     </ion-buttons>
-    <ion-title> {{'REGISTRATION.SET_DAMAGE_LOCATION.TITLE' | translate}} </ion-title>
+    <ion-title> {{ "REGISTRATION.SET_DAMAGE_LOCATION.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>

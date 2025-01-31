@@ -8,7 +8,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
  * Used to draw a marking pin for a registration on the map
  */
 export class RegObsGeoJson extends L.GeoJSON {
-  constructor(markers) {
+  constructor(markers: any) {
     super(markers, {
       pointToLayer: (p, loc) => RegObsGeoJson.pointToLayer(p, loc),
     });
@@ -16,6 +16,9 @@ export class RegObsGeoJson extends L.GeoJSON {
 
   static pointToLayer(point: Feature<Point, AtAGlanceViewModel>, location: L.LatLng): L.Marker {
     const geoHazardTID = point.properties.GeoHazardTID;
+    if (geoHazardTID == null) {
+      throw new Error('geoHazardTID not specified');
+    }
     const geoHazardName = GeoHazard[geoHazardTID];
     return L.marker(location, {
       icon: new RegobsGeoHazardMarker(geoHazardTID),

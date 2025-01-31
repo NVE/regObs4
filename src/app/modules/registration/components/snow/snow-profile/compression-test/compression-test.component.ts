@@ -1,38 +1,29 @@
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
-import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-compression-test',
   templateUrl: './compression-test.component.html',
   styleUrls: ['./compression-test.component.scss'],
   imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompressionTestComponent {
   private modalContoller = inject(ModalController);
-  private draftService = inject(DraftRepositoryService);
 
-  @Input() draft: RegistrationDraft;
-  private compressionTestListModal: HTMLIonModalElement;
+  readonly draft = input.required<RegistrationDraft>();
+  tests = computed(() => this.draft().registration.CompressionTest || []);
+  nTests = computed(() => this.tests().length);
+  connectedTests = computed(() => this.tests().filter((t) => t.IncludeInSnowProfile === true));
+  isEmpty = computed(() => this.connectedTests().length === 0);
 
-  get connectedTests(): CompressionTestEditModel[] {
-    return this.tests.filter((t) => t.IncludeInSnowProfile === true);
-  }
-
-  get tests(): CompressionTestEditModel[] {
-    return this.draft.registration.CompressionTest || [];
-  }
-
-  get isEmpty(): boolean {
-    return this.connectedTests.length === 0;
-  }
+  private compressionTestListModal?: HTMLIonModalElement | null;
 
   constructor() {
     addIcons({ checkmarkCircle });
@@ -40,12 +31,8 @@ export class CompressionTestComponent {
 
   async openModal(): Promise<void> {
     if (!this.compressionTestListModal) {
-      await this.draftService.save(this.draft); // Save registration before open modal page
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
-        componentProps: {
-          uuid: this.draft.uuid,
-        },
       });
       this.compressionTestListModal.present();
       await this.compressionTestListModal.onDidDismiss();

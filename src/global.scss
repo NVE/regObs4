@@ -32,10 +32,10 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+// @import "@ionic/angular/css/palettes/dark.always.css";
+// @import "@ionic/angular/css/palettes/dark.class.css";
 // @import '@ionic/angular/css/palettes/dark.system.css';
-@import '@ionic/angular/css/palettes/high-contrast.system.css';
+// @import '@ionic/angular/css/palettes/high-contrast.system.css';
 // @import '@ionic/angular/css/palettes/high-contrast-dark.system.css';
 
 /* Font for arrows */
@@ -43,7 +43,9 @@
   font-family: 'Custom Arrows';
   font-style: normal;
   font-weight: 400;
-  src: url('/assets/fonts/Calibri.woff') format('woff2'), url('/assets/fonts/Calibri.woff') format('woff'),
+  src:
+    url('/assets/fonts/Calibri.woff') format('woff2'),
+    url('/assets/fonts/Calibri.woff') format('woff'),
     url('/assets/fonts/Calibri.ttf') format('truetype');
   /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
@@ -91,6 +93,11 @@
   --ion-color-danger-contrast-rgb: 255, 255, 255;
   --ion-color-danger-shade: #b40000;
   --ion-color-danger-tint: #d11a1a;
+}
+
+html {
+  --ion-dynamic-font: var(--ion-default-dynamic-font);
+  --ion-font-family: 'Custom Arrows', 'Source Sans Pro';
 }
 
 // :root {

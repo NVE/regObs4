@@ -33,10 +33,17 @@
   </ng-container>
 </ion-fab>
 <div *ngIf="isOpen" class="wrapper" (click)="toggle()"></div> -->
-<ion-button id="geo-fab-btn" shape="round" color="tertiary">
-  <ion-icon src="/assets/icon/snow.svg" slot="start"></ion-icon>
-  Snø
-</ion-button>
+
+<!-- TODO: Bør ha aria navn her.. -->
+<!-- <ion-button id="geo-fab-btn" shape="round" color="tertiary">
+  <app-geo-icon [geoHazards]="currentGeohazard()"></app-geo-icon>
+</ion-button> -->
+<ion-fab slot="fixed" vertical="top" horizontal="start" id="geo-fab-btn">
+  <ion-fab-button>
+    <!-- <app-geo-icon [geoHazards]="currentGeohazard()"></app-geo-icon> -->
+    <ion-icon [src]="geohazard().icon"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 <ion-popover
   trigger="geo-fab-btn"
   size="auto"
@@ -48,18 +55,18 @@
   <ng-template>
     <ion-content>
       <ion-list>
-        <ion-item button [detail]="false" disabled>
-          <ion-icon aria-hidden="true" src="/assets/icon/snow.svg" slot="start"></ion-icon>
-          <ion-label>Snø</ion-label>
-        </ion-item>
-        <ion-item button [detail]="false">
-          <ion-icon aria-hidden="true" src="/assets/icon/ice.svg" slot="start"></ion-icon>
-          <ion-label>Is</ion-label>
-        </ion-item>
-        <ion-item button [detail]="false">
-          <ion-icon aria-hidden="true" src="/assets/icon/water_dirt.svg" slot="start"></ion-icon>
-          <ion-label>Vann og jord</ion-label>
-        </ion-item>
+        @for (option of geohazardOptions(); track option.id) {
+          <ion-item
+            button
+            [detail]="false"
+            [disabled]="option.isDisabled"
+            (click)="setCurrentGeoHazard(option.geohazards)"
+          >
+            <!-- <app-geo-icon [geoHazards]="option.geohazards"></app-geo-icon> -->
+            <ion-icon [src]="option.icon" slot="start"></ion-icon>
+            <app-geo-name [geoHazards]="option.geohazards"></app-geo-name>
+          </ion-item>
+        }
       </ion-list>
     </ion-content>
   </ng-template>

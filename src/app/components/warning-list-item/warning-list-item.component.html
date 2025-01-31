@@ -1,47 +1,38 @@
 <ion-item-sliding (ionDrag)="onDrag()">
-  <ion-item *ngIf="warningGroup.key.geoHazard !== GeoHazard.Ice" class="ion-no-padding" [detail]="false" lines="full">
-    <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup)">
-      <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]"></app-geo-icon>
+  <ion-item class="ion-no-padding" [detail]="isIceGeoHazard()" lines="full">
+    <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup())">
+      <app-geo-icon [geoHazards]="[warningGroup().key.geoHazard]"></app-geo-icon>
     </div>
-    <ion-label (click)="navigateToWeb($event, warningGroup)">
-      <h2>{{ warningGroup.key.groupName }}</h2>
+    <ion-label (click)="navigateToWeb($event, warningGroup())">
+      <h2>{{ warningGroup().key.groupName }}</h2>
     </ion-label>
-    <ion-grid>
-      <ion-row>
-        <ion-col *ngFor="let day of [0, 1, 2]">
-          <ion-badge
-            *ngIf="warningGroup.getDayWarning(day) as warning; else emptyWarning"
-            [color]="'warninglevel-' + warning.warningLevel"
-            (click)="navigateToWebByDay($event, warningGroup, day)"
-          >
-            {{ warning.warningLevel > 0 ? warning.warningLevel : "?" }}
-            <ion-icon *ngIf="warning.emergencyWarning" name="alert"></ion-icon>
-          </ion-badge>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-item>
-  <ion-item *ngIf="warningGroup.key.geoHazard === GeoHazard.Ice" class="ion-no-padding" [detail]="true" lines="full">
-    <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup)">
-      <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]"></app-geo-icon>
-    </div>
-    <ion-label (click)="navigateToWeb($event, warningGroup)">
-      <h2>{{ warningGroup.key.groupName }}</h2>
-      <!-- TODO: KOmmentert ut inntil vi finner ut hvorfor vi viser feil datoer her p>
-        <span *ngIf="warningGroup.validFrom"
-          >{{ "WARNING_LIST.VALID_FROM" | translate }}:
-          {{ warningGroup.validFrom | formatDate: true:false:false | async }}</span
-        >
-        <span *ngIf="warningGroup.validTo"> - {{ warningGroup.validTo | formatDate: true:false:false | async }}</span>
-      </p-->
-    </ion-label>
+    @if (!isIceGeoHazard()) {
+      <ion-grid>
+        <ion-row>
+          @for (day of [0, 1, 2]; track $index) {
+            <ion-col>
+              @if (warningGroup().getDayWarning(day); as warning) {
+                <ion-badge
+                  [color]="'warninglevel-' + warning.warningLevel"
+                  (click)="navigateToWebByDay($event, warningGroup(), day)"
+                >
+                  {{ warning.warningLevel > 0 ? warning.warningLevel : "?" }}
+                  @if (warning.emergencyWarning) {
+                    <ion-icon name="alert"></ion-icon>
+                  }
+                </ion-badge>
+              } @else {
+                <ion-badge color="warninglevel-0">?</ion-badge>
+              }
+            </ion-col>
+          }
+        </ion-row>
+      </ion-grid>
+    }
   </ion-item>
   <ion-item-options side="end" (ionSwipe)="itemSwiped()">
     <ion-item-option expandable="true" (click)="toggleFavourite()">
-      <app-warning-group-favourite-toggle [key]="warningGroup.key"> </app-warning-group-favourite-toggle>
+      <app-warning-group-favourite-toggle [key]="warningGroup().key"> </app-warning-group-favourite-toggle>
     </ion-item-option>
   </ion-item-options>
 </ion-item-sliding>
-<ng-template #emptyWarning>
-  <ion-badge color="warninglevel-0">?</ion-badge>
-</ng-template>

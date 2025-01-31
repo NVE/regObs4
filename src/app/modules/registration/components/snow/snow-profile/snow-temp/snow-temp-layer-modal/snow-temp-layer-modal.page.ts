@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
-import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
+import { Component, computed, effect, inject, input, linkedSignal, Signal } from '@angular/core';
+import { SnowTempObsModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,
   IonButtons,
@@ -17,7 +17,7 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -28,6 +28,8 @@ import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward, trash } from 'ionicons/icons';
+import { getDraftSignal } from 'src/app/core/services/draft/draft-signal';
+import { addOrUpdateValueByIndex, sortByNumberProp } from 'src/app/modules/common-core/helpers/arrays';
 
 @Component({
   selector: 'app-snow-temp-layer-modal',
@@ -55,83 +57,111 @@ import { arrowBack, arrowForward, trash } from 'ionicons/icons';
     TranslatePipe,
   ],
 })
-export class SnowTempLayerModalPage implements OnInit {
+export class SnowTempLayerModalPage {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
 
-  @Input() layer: SnowTempObsModel;
-  @Input() index: number;
-  @Input() draft: RegistrationDraft;
-  addNew: boolean;
+  readonly index = input.required<number>();
+  readonly uuid = input.required<string>();
 
-  private initialRegistrationState: RegistrationDraft;
+  draft = getDraftSignal(this.uuid);
+  layers = computed(() => this.draft()?.registration.SnowProfile2?.SnowTemp?.Layers || []);
+  currentIndex = linkedSignal(() => this.index());
+  isNew = computed(() => this.currentIndex() >= this.layers().length);
+  layer: Signal<SnowTempObsModel | undefined> = computed(() => this.layers()[this.currentIndex()]);
+
+  // Input values
+  temp = linkedSignal(() => this.layer()?.SnowTemp);
+  depth = linkedSignal(() => this.layer()?.Depth);
+  private result: Signal<SnowTempObsModel> = computed(() => ({ SnowTemp: this.temp(), Depth: this.depth() }));
+
+  canGoNext = computed(() => {
+    const length = this.layers().length;
+    const index = this.currentIndex();
+    if (length > 0) {
+      return index < length;
+    } else {
+      return index === length && !isEmpty(this.result());
+    }
+  });
+
+  backup?: RegistrationDraft;
 
   constructor() {
     addIcons({ arrowBack, arrowForward, trash });
-  }
-
-  ngOnInit() {
-    this.initialRegistrationState = cloneDeep(this.draft);
-    this.initLayer();
-  }
-
-  private initLayer() {
-    this.addNew = this.layer === undefined;
-    if (this.addNew) {
-      this.layer = {};
-    }
-  }
-
-  get hasLayers() {
-    return this.draft?.registration?.SnowProfile2?.SnowTemp?.Layers?.length > 0;
-  }
-
-  get layerLenght() {
-    return this.hasLayers ? this.draft.registration.SnowProfile2.SnowTemp.Layers.length : 0;
-  }
-
-  get canGoNext() {
-    return (
-      (this.hasLayers && this.index < this.layerLenght) ||
-      (this.index === this.layerLenght && this.addNew && !IsEmptyHelper.isEmpty(this.layer))
-    );
+    effect(() => {
+      if (this.backup == null) {
+        const draft = this.draft();
+        if (draft) {
+          this.backup = cloneDeep(draft);
+        }
+      }
+    });
   }
 
   async ok(gotoIndex?: number) {
-    if (!this.draft.registration.SnowProfile2) {
-      this.draft.registration.SnowProfile2 = {};
+    const updatedLayer = this.result();
+    const hasChanged = updatedLayer.Depth != this.layer()?.Depth || updatedLayer.SnowTemp != this.layer()?.SnowTemp;
+    if (hasChanged) {
+      const updatedLayers = this.getUpdatedLayers(updatedLayer);
+      await this.saveDraft(updatedLayers);
     }
-    if (!this.draft.registration.SnowProfile2.SnowTemp) {
-      this.draft.registration.SnowProfile2.SnowTemp = {};
-    }
-    if (!this.draft.registration.SnowProfile2.SnowTemp.Layers) {
-      this.draft.registration.SnowProfile2.SnowTemp.Layers = [];
-    }
-    if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.draft.registration.SnowProfile2.SnowTemp.Layers.splice(this.index, 0, this.layer);
-    }
-    await this.draftRepository.save(this.draft);
 
     if (gotoIndex !== undefined) {
-      this.index = this.index + gotoIndex;
-      this.layer = this.draft.registration.SnowProfile2.SnowTemp.Layers[this.index];
-      this.initLayer();
+      this.currentIndex.update((i) => i + gotoIndex);
     } else {
       this.modalController.dismiss();
     }
   }
 
+  private async saveDraft(updatedLayers: SnowTempObsModel[]) {
+    const draft = this.getDraft(updatedLayers);
+    await this.draftRepository.save(draft);
+  }
+
+  private getDraft(updatedLayers: SnowTempObsModel[]): RegistrationDraft {
+    const draft = this.draft();
+    if (!draft) {
+      throw new Error('Empty draft');
+    }
+    return {
+      ...draft,
+      registration: {
+        ...draft.registration,
+        SnowProfile2: {
+          ...draft.registration.SnowProfile2,
+          SnowTemp: {
+            ...draft.registration.SnowProfile2?.SnowTemp,
+            Layers: updatedLayers,
+          },
+        },
+      },
+    };
+  }
+
+  private getUpdatedLayers(newOrUpdated: SnowTempObsModel) {
+    const layers = this.layers();
+    const index = this.currentIndex();
+    const updated = addOrUpdateValueByIndex(index, newOrUpdated, layers);
+    const sorted = sortByNumberProp(updated, 'Depth');
+    return sorted;
+  }
+
+  private deleteLayer() {
+    const index = this.currentIndex();
+    return this.layers().filter((l, i) => i !== index);
+  }
+
   async cancel() {
-    await this.draftRepository.save(this.initialRegistrationState);
+    if (this.backup) {
+      await this.draftRepository.save(this.backup);
+    }
     this.modalController.dismiss();
   }
 
   async delete() {
-    if (this.hasLayers) {
-      this.draft.registration.SnowProfile2.SnowTemp.Layers =
-        this.draft.registration.SnowProfile2.SnowTemp.Layers.filter((l) => l !== this.layer);
-      await this.draftRepository.save(this.draft);
-    }
-    this.modalController.dismiss({ delete: true });
+    const updatedLayers = this.deleteLayer();
+    await this.saveDraft(updatedLayers);
+    this.modalController.dismiss();
   }
 }

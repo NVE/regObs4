@@ -5,11 +5,11 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 export abstract class LoggingService {
   abstract configureLogging(appMode: AppMode): void;
   abstract setUser(user: LoggedInUser): void;
-  abstract error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }): void;
+  abstract error(error: unknown, tag?: string, message?: string, optionalParams?: { [key: string]: any }): void;
   abstract debug(message: string, tag?: string, optionalParams?: { [key: string]: any }): void;
   abstract log(
     message?: string,
-    error?: Error,
+    error?: unknown,
     level?: LogLevel,
     tag?: string,
     optionalParams?: { [key: string]: any }

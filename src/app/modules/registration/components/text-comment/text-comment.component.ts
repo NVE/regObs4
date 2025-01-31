@@ -1,5 +1,5 @@
 import { IonItem, IonTextarea, IonLabel } from '@ionic/angular/standalone';
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -10,18 +10,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [FormsModule, IonItem, IonLabel, IonTextarea, TranslatePipe],
 })
 export class TextCommentComponent {
-  @Input() label: string;
-  @Input() placeholder: string;
-  @Input() value: string;
-  @Output() valueChange = new EventEmitter();
-  @Input() rows = 4;
-  @Input() disabled = false;
-  @Input() max = 1024;
+  readonly label = input<string>();
+  readonly placeholder = input<string>('');
+  readonly value = model<string>();
+  readonly rows = input(4);
+  readonly disabled = input(false);
+  readonly max = input(1024);
 
   onBlur() {
-    if (this.value) {
-      this.value = this.value.trim();
-    }
-    this.valueChange.emit(this.value);
+    this.value.update((v) => (v ? v.trim() : v));
   }
 }

@@ -1,5 +1,5 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, NgZone, EventEmitter, inject } from '@angular/core';
+import { Component, model, computed } from '@angular/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { NgClass, NgIf } from '@angular/common';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
@@ -9,40 +9,38 @@ interface HeightSelectOption extends SelectOption {
   id: number;
 }
 
+enum ExposedHeightCombo {
+  NotGiven = 0,
+  BottomWhite = 1,
+  BottomBlack = 2,
+  MiddleWhite = 3,
+  MiddleBlack = 4,
+}
+
 @Component({
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
   styleUrls: ['./exposed-height.component.scss'],
   imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, NgIf, SelectComponent, TranslatePipe],
 })
-export class ExposedHeightComponent implements OnInit {
-  private ngZone = inject(NgZone);
-
-  @Input() exposedHeightComboTID?: number;
-  @Output() exposedHeightComboTIDChange = new EventEmitter();
-  @Input() exposedHeight1?: number;
-  @Output() exposedHeight1Change = new EventEmitter();
-  @Input() exposedHeight2?: number;
-  @Output() exposedHeight2Change = new EventEmitter();
+export class ExposedHeightComponent {
+  readonly exposedHeightComboTID = model<number>();
+  readonly exposedHeight1 = model<number>();
+  readonly exposedHeight2 = model<number>();
 
   exposedHeightTop = false;
   exposedHeightMiddle = false;
   exposedHeightBottom = false;
 
-  get heightArray(): HeightSelectOption[] {
-    const options: HeightSelectOption[] = [];
-    for (let id = 0; id <= 8000; id += 100) {
-      options.push({ id, text: `${id} m` });
-    }
-    return options;
-  }
+  heightArray = createHeightArray();
 
-  get lowerHeightArray() {
-    return this.heightArray.filter((x) => this.exposedHeight1 === undefined || x.id < this.exposedHeight1);
-  }
+  lowerHeightArray = computed(() => {
+    const height1 = this.exposedHeight1();
+    return this.heightArray.filter((h) => height1 == null || h.id < height1);
+  });
 
   ngOnInit() {
-    this.setExposedHeights(this.exposedHeightComboTID);
+    this.setExposedHeights(this.exposedHeightComboTID());
   }
 
   setExposedHeights(exposedHeightComboTID: number | undefined) {
@@ -97,27 +95,32 @@ export class ExposedHeightComponent implements OnInit {
 
   private updateExposedHeightComboTID(top: boolean, middle: boolean, bottom: boolean) {
     if (top && middle && bottom) {
-      this.exposedHeightComboTID = 0;
+      this.exposedHeightComboTID.set(ExposedHeightCombo.NotGiven);
     } else if (!top && middle && !bottom) {
-      this.exposedHeightComboTID = 4;
+      this.exposedHeightComboTID.set(ExposedHeightCombo.MiddleBlack);
     } else if (top && !middle && bottom) {
-      this.exposedHeightComboTID = 3;
+      this.exposedHeightComboTID.set(ExposedHeightCombo.MiddleWhite);
     } else if (bottom) {
-      this.exposedHeightComboTID = 2;
+      this.exposedHeightComboTID.set(ExposedHeightCombo.BottomBlack);
     } else if (top) {
-      this.exposedHeightComboTID = 1;
+      this.exposedHeightComboTID.set(ExposedHeightCombo.BottomWhite);
     } else {
-      this.exposedHeightComboTID = undefined;
+      this.exposedHeightComboTID.set(undefined);
     }
   }
 
   applyChanges() {
     this.updateExposedHeightComboTID(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
     if (!this.sholdUseExposedHight2()) {
-      this.exposedHeight2 = undefined;
+      this.exposedHeight2.set(undefined);
     }
-    this.exposedHeightComboTIDChange.emit(this.exposedHeightComboTID);
-    this.exposedHeight1Change.emit(this.exposedHeight1);
-    this.exposedHeight2Change.emit(this.exposedHeight2);
   }
+}
+
+function createHeightArray() {
+  const options: HeightSelectOption[] = [];
+  for (let id = 0; id <= 8000; id += 100) {
+    options.push({ id, text: `${id} m` });
+  }
+  return options;
 }

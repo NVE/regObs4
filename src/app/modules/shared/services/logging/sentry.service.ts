@@ -20,7 +20,6 @@ import type { CaptureContext } from '@sentry/types';
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
 
-
   error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
     this.log(message, error, LogLevel.Error, tag, optionalParams);
   }
@@ -31,7 +30,7 @@ export class SentryService implements LoggingService {
 
   configureLogging(appMode: AppMode) {
     Sentry.init({
-      dsn: environment.production ? settings.sentryDsn : null,
+      dsn: environment.production ? settings.sentryDsn : undefined,
       transport: makeFetchTransport,
       environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
       enabled: environment.production,
@@ -42,14 +41,14 @@ export class SentryService implements LoggingService {
 
   enable() {
     Sentry.init({
-      dsn: environment.production ? settings.sentryDsn : null,
+      dsn: environment.production ? settings.sentryDsn : undefined,
       enabled: environment.production,
     });
   }
 
   disable() {
     Sentry.init({
-      dsn: null,
+      dsn: undefined,
       enabled: false,
     });
   }

@@ -4,7 +4,12 @@ import { IPolygon, Polygon, PolygonArea } from '../../registration/models/polygo
 
 type PolygonType = 'total' | 'start' | 'end';
 
-export function constructPolygon(extent: [number, number][], color: string, Type: typeof Polygon, title?: string) {
+export function constructPolygon(
+  extent: [number, number][] | null | undefined,
+  color: string,
+  Type: typeof Polygon,
+  title?: string
+): IPolygon {
   return {
     title,
     active: Boolean(extent),
@@ -13,7 +18,7 @@ export function constructPolygon(extent: [number, number][], color: string, Type
           extent.map(([lng, lat]) => [lat, lng]),
           { color }
         )
-      : null,
+      : undefined,
     color,
   };
 }
@@ -52,7 +57,7 @@ const createCircleWithStartAndEnd = (polygonType: PolygonType, start: L.LatLng, 
   }
 };
 
-const createCircleWithoutStartEnd = (relativeToLatLng: L.LatLng): L.Circle => {
+const createCircleWithoutStartEnd = (relativeToLatLng?: L.LatLng): L.Circle => {
   const fallbackLatlng = L.latLng(59.1, 10.3);
   return new L.Circle(relativeToLatLng || fallbackLatlng, {
     radius: 150,

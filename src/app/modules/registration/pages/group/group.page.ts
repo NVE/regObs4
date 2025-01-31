@@ -24,6 +24,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
 @Component({
   selector: 'app-group',
@@ -56,6 +57,8 @@ export class GroupPage extends BasePage {
   private userGroupService = inject(UserGroupService);
   private ngZone = inject(NgZone);
 
+  registrationTid = undefined;
+
   groups: ObserverGroupDto[] = [];
 
   get firstGroup(): ObserverGroupDto {
@@ -67,24 +70,21 @@ export class GroupPage extends BasePage {
   }
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(null, basePageService, activatedRoute);
+    super();
   }
 
-  async onInit(): Promise<void> {
+  override async onInit(): Promise<void> {
     const groups = await this.userGroupService.getUserGroups();
     this.ngZone.run(() => {
       this.groups = groups;
     });
   }
 
-  async reset() {
+  override async reset() {
     const pleaseReset = await super.reset();
 
     if (pleaseReset) {
-      this.groupChanged(null);
+      this.groupChanged(undefined);
     }
 
     return pleaseReset;
@@ -102,14 +102,14 @@ export class GroupPage extends BasePage {
 
   checkedChanged(event: CustomEvent): void {
     const checkBox = (<any>event.target) as IonCheckbox;
-    let ObserverGroupID: RegistrationEditModel['ObserverGroupID'] = null;
+    let ObserverGroupID: RegistrationEditModel['ObserverGroupID'] = undefined;
     if (checkBox.checked) {
       ObserverGroupID = this.firstGroup.Id;
     }
     this.groupChanged(ObserverGroupID);
   }
 
-  isEmpty(): Promise<boolean> {
+  override isEmpty(): Promise<boolean> {
     return Promise.resolve(
       this.draft &&
         (this.draft.registration.ObserverGroupID === undefined || this.draft.registration.ObserverGroupID === null)

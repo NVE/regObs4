@@ -1,54 +1,62 @@
-:host {
-  position: absolute;
-  top: 0;
-  z-index: 999;
+// :host {
+//   position: absolute;
+//   top: 0;
+//   z-index: 999;
 
-  ion-fab {
-    // top: -25px;
-    // left: 48px;
+//   ion-fab {
+//     // top: -25px;
+//     // left: 48px;
 
-    &.fullscreen {
-      // https://ionicframework.com/docs/api/fab#safe-area
-      margin-top: var(--ion-safe-area-top, 0);
-    }
+//     &.fullscreen {
+//       // https://ionicframework.com/docs/api/fab#safe-area
+//       margin-top: var(--ion-safe-area-top, 0);
+//     }
 
-    ion-item {
-      --inner-border-width: 0px 0px 0px 0px;
-      --ion-item-background: rgba(0, 0, 0, 0);
+//     ion-item {
+//       --inner-border-width: 0px 0px 0px 0px;
+//       --ion-item-background: rgba(0, 0, 0, 0);
 
-      --padding-start: 0px;
-      --padding-end: 0px;
-      --padding-top: 0px;
-      --padding-bottom: 4px;
+//       --padding-start: 0px;
+//       --padding-end: 0px;
+//       --padding-top: 0px;
+//       --padding-bottom: 4px;
 
-      ion-label {
-        background-color: rgba(255, 255, 255, 0.7);
-        padding: 4px;
-        white-space: nowrap;
-        flex: none;
-        font-size: 17px;
-      }
-    }
+//       ion-label {
+//         background-color: rgba(255, 255, 255, 0.7);
+//         padding: 4px;
+//         white-space: nowrap;
+//         flex: none;
+//         font-size: 17px;
+//       }
+//     }
 
-    ion-list {
-      margin-top: 0px;
-      --ion-background-color: rgba(0, 0, 0, 0);
+//     ion-list {
+//       margin-top: 0px;
+//       --ion-background-color: rgba(0, 0, 0, 0);
 
-      .list-item {
-        transform-origin: 'center top';
-        ion-fab-button,
-        ion-label {
-          transform-origin: 'center top';
-        }
-      }
-    }
-  }
+//       .list-item {
+//         transform-origin: 'center top';
+//         ion-fab-button,
+//         ion-label {
+//           transform-origin: 'center top';
+//         }
+//       }
+//     }
+//   }
 
-  .wrapper {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
+//   .wrapper {
+//     position: fixed;
+//     top: 0;
+//     bottom: 0;
+//     left: 0;
+//     right: 0;
+//   }
+// }
+
+ion-popover.md {
+  --offset-y: 10px;
+}
+
+ion-popover.ios {
+  --offset-x: 10px;
 }

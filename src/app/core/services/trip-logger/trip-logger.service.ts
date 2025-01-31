@@ -64,30 +64,30 @@ export class TripLoggerService {
   }
 
   saveTripLogItem(item: TripLogItem): Promise<unknown> {
-    return nSQL(NanoSql.TABLES.TRIP_LOG.name).query('upsert', item).exec();
+    return nSQL(NanoSql.TABLES['TRIP_LOG'].name).query('upsert', item).exec();
   }
 
   getTripLogAsObservable(): Observable<TripLogItem[]> {
-    return new NSqlFullUpdateObservable<TripLogItem[]>(nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select').listen());
+    return new NSqlFullUpdateObservable<TripLogItem[]>(nSQL(NanoSql.TABLES['TRIP_LOG'].name).query('select').listen());
   }
 
   updateState(state: TripLogState): Promise<unknown> {
-    return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('upsert', { state, timestamp: moment().unix() }).exec();
+    return nSQL(NanoSql.TABLES['TRIP_LOG_ACTIVITY'].name).query('upsert', { state, timestamp: moment().unix() }).exec();
   }
 
   getTripLogStateAsObservable(): Observable<TripLogActivity> {
     return new NSqlFullUpdateObservable<TripLogActivity[]>(
-      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').orderBy(['id: desc']).limit(1).listen({})
+      nSQL(NanoSql.TABLES['TRIP_LOG_ACTIVITY'].name).query('select').orderBy(['id: desc']).limit(1).listen({})
     ).pipe(map((ta) => ta[0]));
   }
 
   getTripLogActivityAsObservable(): Observable<TripLogActivity[]> {
     return new NSqlFullUpdateObservable<TripLogActivity[]>(
-      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').listen()
+      nSQL(NanoSql.TABLES['TRIP_LOG_ACTIVITY'].name).query('select').listen()
     );
   }
 
-  getLegacyTripAsObservable(): Observable<LegacyTrip> {
+  getLegacyTripAsObservable(): Observable<LegacyTrip | null> {
     return this.getLegacyTripDbResult$().pipe(map((trip) => (isTripFromToday(trip) ? trip : null)));
   }
 
@@ -98,7 +98,7 @@ export class TripLoggerService {
   }
 
   async getLegacyTripFromDbByAppMode(appMode: AppMode): Promise<LegacyTrip> {
-    const result = (await NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode)
+    const result = (await NanoSql.getInstance(NanoSql.TABLES['LEGACY_TRIP_LOG'].name, appMode)
       .query('select')
       .exec()) as LegacyTrip[];
 
@@ -122,7 +122,9 @@ export class TripLoggerService {
           .TripPost(tripDto)
           .pipe(
             switchMap(() =>
-              from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('upsert', legacyTrip).exec())
+              from(
+                NanoSql.getInstance(NanoSql.TABLES['LEGACY_TRIP_LOG'].name, appMode).query('upsert', legacyTrip).exec()
+              )
             )
           )
       ),
@@ -231,7 +233,7 @@ export class TripLoggerService {
     return this.userSettingService.appMode$.pipe(
       tap((appMode) => this.loggingService.debug('Will delete legacy trips', DEBUG_TAG, { appMode })),
       concatMap((appMode) =>
-        from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec())
+        from(NanoSql.getInstance(NanoSql.TABLES['LEGACY_TRIP_LOG'].name, appMode).query('delete').exec())
       )
     );
   }

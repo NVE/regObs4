@@ -8,25 +8,23 @@ import {
   IonButton,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, NgZone, OnDestroy, inject } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Component, inject, input, computed } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { AppMode } from 'src/app/modules/common-core/models';
-import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
-import { BreakpointService } from '../../../../core/services/breakpoint.service';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { menuOutline, optionsOutline } from 'ionicons/icons';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { HeaderColorDirective } from '../../directives/header-color/header-color.directive';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   imports: [
-    AsyncPipe,
     IonBackButton,
     IonButton,
     IonButtons,
@@ -37,71 +35,33 @@ import { menuOutline, optionsOutline } from 'ionicons/icons';
     IonToolbar,
     NgIf,
     TranslatePipe,
+    HeaderColorDirective,
   ],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent {
   private fullscreenService = inject(FullscreenService);
   private tripLoggerService = inject(TripLoggerService);
   private userSettingService = inject(UserSettingService);
-  private ngZone = inject(NgZone);
-  private breakpointService = inject(BreakpointService);
 
-  @Input() showMenuButton = true;
-  @Input() showFilterButton = true;
-  @Input() fullscreenSupport = false;
-  @Input() title: string;
-  @Input() defaultHref = '/';
+  readonly showMenuButton = input(true);
+  readonly showFilterButton = input(true);
+  readonly fullscreenSupport = input(false);
+  readonly title = input.required<string>();
+  readonly defaultHref = input('/');
 
-  tripRunning = false;
-  private appMode = AppMode.Prod;
-
-  isFullscreen$: Observable<boolean>;
-  private subscriptions: Subscription[] = [];
-
-  splitPaneClosed = true;
-  isDesktop: boolean;
+  tripRunning = toSignal(this.tripLoggerService.isTripRunning$, { initialValue: false });
+  private appMode = toSignal(this.userSettingService.appMode$, { initialValue: AppMode.Prod });
+  private isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
+  showHeader = computed(() => (this.fullscreenSupport() ? !this.isFullscreen() : true));
 
   get tripRunning$() {
     return this.tripLoggerService.getLegacyTripAsObservable();
   }
 
-  get headerColor() {
-    if (this.tripRunning) {
-      return 'trip-running';
-    } else {
-      return this.appMode.toLowerCase();
-    }
-  }
+  headerColor = computed(() => (this.tripRunning() ? 'trip-running' : this.appMode().toLowerCase()));
 
   constructor() {
     addIcons({ menuOutline, optionsOutline });
-  }
-
-  ngOnInit() {
-    this.isFullscreen$ = this.fullscreenService.isFullscreen$;
-    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
-      this.isDesktop = isDesktop;
-    });
-    this.subscriptions.push(
-      this.tripLoggerService.isTripRunning$.subscribe((val) => {
-        this.ngZone.run(() => {
-          this.tripRunning = val;
-        });
-      })
-    );
-    this.subscriptions.push(
-      this.userSettingService.appMode$.subscribe((appMode) => {
-        this.ngZone.run(() => {
-          this.appMode = appMode;
-        });
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
   }
 
   endTrip() {

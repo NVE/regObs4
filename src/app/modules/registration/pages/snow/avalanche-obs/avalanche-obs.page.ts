@@ -87,6 +87,8 @@ import { time, location, chevronForward } from 'ionicons/icons';
   ],
 })
 export class AvalancheObsPage extends BasePage {
+  override registrationTid = RegistrationTid.AvalancheObs;
+
   private modalController = inject(ModalController);
 
   expoArray: SelectOption[] = [
@@ -125,7 +127,7 @@ export class AvalancheObsPage extends BasePage {
   ];
 
   showWarning = false;
-  maxDate: string;
+  maxDate = this.getMaxDateForNow();
 
   isInvolvedValid = true;
   isCasualtiesValid = true;
@@ -134,10 +136,20 @@ export class AvalancheObsPage extends BasePage {
   isErrorMessageHarmAndDead = false;
 
   get avalancheObs(): AvalancheObsEditModel {
+    if (!this.draft.registration.AvalancheObs) {
+      this.draft.registration.AvalancheObs = {
+        DtAvalancheTime: this.draft.registration.DtObsTime,
+      };
+    } else if (!this.draft.registration.AvalancheObs.DtAvalancheTime) {
+      this.draft.registration.AvalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime;
+    }
     return this.draft.registration.AvalancheObs;
   }
 
   get incident(): IncidentEditModel {
+    if (!this.draft.registration.Incident) {
+      this.draft.registration.Incident = {};
+    }
     return this.draft.registration.Incident;
   }
 
@@ -158,21 +170,8 @@ export class AvalancheObsPage extends BasePage {
   }
 
   constructor() {
-    const basePageService = inject(BasePageService);
-    const activatedRoute = inject(ActivatedRoute);
-
-    super(RegistrationTid.AvalancheObs, basePageService, activatedRoute);
+    super();
     addIcons({ time, location, chevronForward });
-  }
-
-  onInit() {
-    if (!this.draft.registration.Incident) {
-      this.draft.registration.Incident = {};
-    }
-    this.maxDate = this.getMaxDateForNow();
-    if (!this.avalancheObs.DtAvalancheTime) {
-      this.avalancheObs.DtAvalancheTime = this.draft.registration.DtObsTime;
-    }
   }
 
   getMaxDateForNow() {
@@ -181,7 +180,7 @@ export class AvalancheObsPage extends BasePage {
     return moment().minutes(59).toISOString(true);
   }
 
-  async reset() {
+  override async reset() {
     const pleaseReset = await super.reset();
     if (pleaseReset) {
       // Also create new empty incident form
@@ -190,7 +189,7 @@ export class AvalancheObsPage extends BasePage {
     return pleaseReset;
   }
 
-  protected async delete() {
+  override async delete() {
     //delete both forms
     this.draft = await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
@@ -202,17 +201,20 @@ export class AvalancheObsPage extends BasePage {
   }
 
   onHarmedChange() {
+    const harmedNum = this.incident.HarmedNum || 0;
+    const involvedNum = this.incident.InvolvedNum || 0;
+    const deadNum = this.incident.DeadNum || 0;
+    const casualtiesNum = this.incident.CasualtiesNum || 0;
     if (
-      (isNaN(this.incident.CasualtiesNum) &&
-        isNaN(this.incident.DeadNum) &&
-        this.incident.HarmedNum > this.incident.InvolvedNum) ||
-      (isNaN(this.incident.DeadNum) && this.incident.HarmedNum > this.incident.InvolvedNum)
+      (isNaNOrNullish(this.incident.CasualtiesNum) &&
+        isNaNOrNullish(this.incident.DeadNum) &&
+        harmedNum > involvedNum) ||
+      (isNaNOrNullish(this.incident.DeadNum) && harmedNum > involvedNum)
     ) {
       this.isHarmedValid = false;
     } else if (
-      !isNaN(this.incident.DeadNum) &&
-      (this.incident.DeadNum + this.incident.HarmedNum > this.incident.CasualtiesNum ||
-        this.incident.DeadNum + this.incident.HarmedNum > this.incident.InvolvedNum)
+      !isNaNOrNullish(this.incident.DeadNum) &&
+      (deadNum + harmedNum > casualtiesNum || deadNum + harmedNum > involvedNum)
     ) {
       this.isHarmedValid = false;
       this.isDeadValid = false;
@@ -223,7 +225,7 @@ export class AvalancheObsPage extends BasePage {
     }
   }
 
-  isValid() {
+  override isValid() {
     this.showWarning = true;
 
     this.groupValidate();
@@ -237,8 +239,9 @@ export class AvalancheObsPage extends BasePage {
     );
   }
 
-  async isEmpty(): Promise<boolean> {
+  override async isEmpty(): Promise<boolean> {
     // we need to ignore the default value of DtAvalancheTime
+
     if (
       this.avalancheObs.DtAvalancheTime &&
       (hasAnyDataBesidesPropertyToExclude(this.avalancheObs, ['DtAvalancheTime']) ||
@@ -299,4 +302,11 @@ export class AvalancheObsPage extends BasePage {
       this.avalancheObs.StopExtent = result.data.endPolygon;
     }
   }
+}
+
+function isNaNOrNullish(value: number | null | undefined) {
+  if (value == null) {
+    return true;
+  }
+  return isNaN(value);
 }

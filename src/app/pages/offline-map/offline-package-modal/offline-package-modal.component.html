@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-title>{{
-      "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.HEADER" | translate: { name: packageOnServer?.getName() }
+      "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.HEADER" | translate: { name: packageOnServer()?.getName() }
     }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismiss()">{{ "CLOSE" | translate }}</ion-button>
@@ -26,14 +26,14 @@
   <ion-grid class="footer-container">
     <ion-row>
       <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_PRODUCED_DATE" | translate }}</ion-col>
-      <ion-col>{{ packageOnServer?.getLastModified() | date: "short" }}</ion-col>
+      <ion-col>{{ packageOnServer()?.getLastModified() | date: "short" }}</ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE" | translate }}</ion-col>
       <ion-col>{{
         "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE_VALUE_WITH_UNIT"
-          | translate: { size: packageOnServer?.getSizeInMiB() | number: "1.0-1" }
+          | translate: { size: packageOnServer()?.getSizeInMiB() | number: "1.0-1" }
       }}</ion-col>
     </ion-row>
 
@@ -42,10 +42,10 @@
         <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOAD_STATUS" | translate }}</ion-col>
         <ion-col>
           {{ packageStatus.progress?.description }}
-          <span *ngIf="!!packageStatus.downloadComplete"
+          <span *ngIf="!!packageStatus.downloadComplete && packageStatus.downloadComplete"
             >{{
               "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOADED_DATE"
-                | translate: { date: getDownloadCompleteDate(packageStatus) | date: "short" }
+                | translate: { date: getDownloadCompleteDate(packageStatus.downloadComplete) | date: "short" }
             }}
           </span>
           <span *ngIf="!packageStatus.downloadComplete">({{ getPercentage(packageStatus) + "%" }})</span>

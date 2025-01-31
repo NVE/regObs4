@@ -1,7 +1,16 @@
+import { SnowDensityLayerModel, SnowDensityModel } from 'src/app/modules/common-regobs-api';
 import { NumberHelper } from './number-helper';
 
 export class HydrologyHelper {
-  static calculateDensity(weightInKg: number, heightInM: number, tareWeightInKg: number, cylinderDiameterInM: number) {
+  static calculateDensity(
+    weightInKg: SnowDensityLayerModel['Weight'],
+    heightInM: SnowDensityLayerModel['Thickness'],
+    tareWeightInKg: SnowDensityModel['TareWeight'],
+    cylinderDiameterInM: SnowDensityModel['CylinderDiameter']
+  ) {
+    if (cylinderDiameterInM == null) {
+      return NaN;
+    }
     if (!NumberHelper.isNumeric(cylinderDiameterInM) || cylinderDiameterInM <= 0) {
       return 0;
     }

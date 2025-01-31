@@ -14,6 +14,7 @@ import {
   filter,
   startWith,
   debounceTime,
+  pairwise,
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -34,12 +35,11 @@ const DEBUG_TAG = 'MapService';
 
 export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon: number): IMapView => {
   const bounds = L.latLngBounds([nwLat, nwLon], [seLat, seLon]);
-
-  const mapView: IMapView = { bounds, center: bounds.getCenter(), zoom: null };
+  const mapView: IMapView = { bounds, center: bounds.getCenter() };
   return mapView;
 };
 
-export const parseCoordinatesFromUrl = (url: URL): IMapView => {
+export const parseCoordinatesFromUrl = (url: URL): IMapView | undefined => {
   const nwLat = url.searchParams.get(URL_PARAM_NW_LAT);
   const nwLon = url.searchParams.get(URL_PARAM_NW_LON);
   const seLat = url.searchParams.get(URL_PARAM_SE_LAT);
@@ -47,9 +47,8 @@ export const parseCoordinatesFromUrl = (url: URL): IMapView => {
   if (nwLat && nwLon && seLat && seLon) {
     const formatedMapView = createMapView(+nwLat, +nwLon, +seLat, +seLon);
     return formatedMapView;
-  } else {
-    return null;
   }
+  return;
 };
 
 /**
@@ -70,11 +69,11 @@ export class MapService {
   private _showUserLocationObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
-  private _mapViewSubject: BehaviorSubject<IMapView>;
+  private _mapViewSubject = new BehaviorSubject<IMapView | undefined>(
+    parseCoordinatesFromUrl(new URL(document.location.href))
+  );
   private _mapView$: Observable<IMapView>;
   private _noMapExtentAvailable$: Observable<boolean>;
-  private _mapMoveStartSubject: any;
-  private _mapMoveStart$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
 
   /**
@@ -103,10 +102,6 @@ export class MapService {
    */
   get relevantMapChange$(): Observable<IMapView> {
     return this._relevantMapChange$;
-  }
-
-  get mapMoveStart$(): Observable<IMapView> {
-    return this._mapMoveStart$;
   }
 
   /**
@@ -150,9 +145,8 @@ export class MapService {
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
     this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
-    const mapViewFromUrl = parseCoordinatesFromUrl(new URL(document.location.href));
-    this._mapViewSubject = new BehaviorSubject<IMapView>(mapViewFromUrl);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
+      filter((mapView): mapView is IMapView => mapView != null),
       distinctUntilChanged((prev, curr) => {
         if (prev == null) {
           return false;
@@ -179,8 +173,6 @@ export class MapService {
       distinctUntilChanged()
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
-    this._mapMoveStartSubject = new BehaviorSubject<void>(null);
-    this._mapMoveStart$ = this._mapMoveStartSubject.asObservable();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
@@ -196,14 +188,10 @@ export class MapService {
     }
   }
 
-  sendMapMoveStart(): void {
-    this._mapMoveStartSubject.next(null);
-  }
-
   private getMapMetersChanged() {
     return this.mapView$.pipe(
       // As pairWise(), but always emiting first value
-      scan(([, lastVal], newVal) => [lastVal, newVal], [null, this._mapViewSubject.value]),
+      pairwise(),
       map(([prev, next]) => {
         // If coming from list view, center may be null if
         // app started on list view with bounds

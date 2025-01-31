@@ -6,24 +6,27 @@
   (click)="openPicker()"
   (keyup.enter)="openPicker()"
 >
-  <ion-label
-    *ngIf="label"
-    [color]="color"
-    position="stacked"
-    class="no-white-space-wrap"
-    [ngClass]="{ 'ion-text-uppercase': !simpleObsMode, 'simple-mode-title ion-label-fat': simpleObsMode }"
-  >
-    {{ label | translate }} {{ isValid == false ? "(" + (errorMessage | translate) + ")" : null }}
-  </ion-label>
-  <ion-text
-    [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode }"
-    *ngIf="displayValue; else ph"
-  >
-    {{ displayValue }}</ion-text
-  >
+  @if (label(); as label) {
+    <ion-label
+      [color]="color()"
+      position="stacked"
+      class="no-white-space-wrap"
+      [ngClass]="{ 'ion-text-uppercase': !simpleObsMode(), 'simple-mode-title ion-label-fat': simpleObsMode() }"
+    >
+      {{ label | translate }} {{ isValid() == false ? "(" + (errorMessage() | translate) + ")" : null }}
+    </ion-label>
+  }
+
+  @let value = displayValue();
+  @let placeHolderKey = placeholder();
+
+  @if (value) {
+    <ion-text [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode() }">
+      {{ value }}
+    </ion-text>
+  } @else if (placeHolderKey) {
+    <ion-text [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode() }" [color]="color()">
+      {{ placeHolderKey | translate }}
+    </ion-text>
+  }
 </ion-item>
-<ng-template #ph>
-  <ion-text [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode }" [color]="color">{{
-    placeholder | translate
-  }}</ion-text>
-</ng-template>

@@ -1,4 +1,4 @@
-export function getStarCount(competenceLevel: string): number {
+export function getStarCount(competenceLevel?: string): number {
   if (!competenceLevel) {
     return 0;
   }

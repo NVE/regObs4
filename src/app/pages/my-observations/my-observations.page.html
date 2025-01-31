@@ -1,10 +1,10 @@
 <!-- shows lists of all registrations created: Drafts, registrations in sync and published registrations -->
 <ion-header>
-  <ion-toolbar appHeaderColor mode="ios">
+  <ion-toolbar appHeaderColor>
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'MY_OBSERVATIONS.TITLE' | translate }}</ion-title>
+    <ion-title>{{ "MY_OBSERVATIONS.TITLE" | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -19,8 +19,8 @@
     </ion-row>
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ 'MY_OBSERVATIONS.NO_OBSERVATIONS' | translate }}</h2>
-        <h3 class="ion-text-wrap">{{'MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT'|translate}}</h3>
+        <h2>{{ "MY_OBSERVATIONS.NO_OBSERVATIONS" | translate }}</h2>
+        <h3 class="ion-text-wrap">{{ "MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT" | translate }}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>

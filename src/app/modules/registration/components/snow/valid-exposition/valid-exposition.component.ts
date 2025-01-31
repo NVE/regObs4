@@ -1,5 +1,5 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, EventEmitter, Output, NgZone, inject } from '@angular/core';
+import { Component, model, computed } from '@angular/core';
 import { NgIf, NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -12,43 +12,42 @@ const ALL_EXPOSITION = '11111111';
   styleUrls: ['./valid-exposition.component.scss'],
   imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, NgIf, TranslatePipe],
 })
-export class ValidExpositionComponent implements OnInit {
-  private ngZone = inject(NgZone);
+export class ValidExpositionComponent {
+  readonly validExposition = model<string>();
 
-  @Input() validExposition: string;
-  @Output() validExpositionChange = new EventEmitter();
-
-  validExpositionCopy: string;
-
-  ngOnInit() {
-    if (!this.validExposition) {
-      this.validExpositionCopy = EMPTY_EXPOSITION;
-    } else {
-      this.validExpositionCopy = this.validExposition;
-    }
-  }
+  n = computed(() => isSelected(0, this.validExposition()));
+  ne = computed(() => isSelected(1, this.validExposition()));
+  e = computed(() => isSelected(2, this.validExposition()));
+  se = computed(() => isSelected(3, this.validExposition()));
+  s = computed(() => isSelected(4, this.validExposition()));
+  sw = computed(() => isSelected(5, this.validExposition()));
+  w = computed(() => isSelected(6, this.validExposition()));
+  nw = computed(() => isSelected(7, this.validExposition()));
+  all = computed(() => this.validExposition() === ALL_EXPOSITION);
 
   setExposition(index: number) {
-    const existingValue = this.validExpositionCopy.substr(index, 1);
-    const newValue = existingValue === '1' ? '0' : '1';
-    this.validExpositionCopy =
-      this.validExpositionCopy.substr(0, index) + newValue + this.validExpositionCopy.substr(index + 1);
-    this.applyChanges();
+    this.validExposition.update((value) => {
+      const newValue = [...(value ?? EMPTY_EXPOSITION)]
+        .map((v, i) => {
+          if (i !== index) {
+            return v;
+          }
+          return v === '1' ? '0' : '1';
+        })
+        .join('');
+      return newValue === EMPTY_EXPOSITION ? undefined : newValue;
+    });
   }
 
   toggleAllExpositions() {
-    this.validExpositionCopy = this.validExpositionCopy === ALL_EXPOSITION ? EMPTY_EXPOSITION : ALL_EXPOSITION;
-    this.applyChanges();
+    this.validExposition.update((value) => (value === ALL_EXPOSITION ? undefined : ALL_EXPOSITION));
+  }
+}
+
+function isSelected(index: number, exposition?: string) {
+  if (exposition == null) {
+    return false;
   }
 
-  applyChanges() {
-    this.ngZone.run(() => {
-      if (this.validExpositionCopy === EMPTY_EXPOSITION) {
-        this.validExposition = undefined;
-      } else {
-        this.validExposition = this.validExpositionCopy;
-      }
-      this.validExpositionChange.emit(this.validExposition);
-    });
-  }
+  return exposition[index] === '1';
 }

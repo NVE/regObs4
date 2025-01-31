@@ -225,7 +225,7 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria
    * @return OK
    */
-  SearchAttachmentsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchRegistrationsWithAttachments>> {
+  SearchAttachmentsResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchRegistrationsWithAttachments[]>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -243,7 +243,7 @@ class SearchService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<SearchRegistrationsWithAttachments>;
+        return _r as __StrictHttpResponse<SearchRegistrationsWithAttachments[]>;
       })
     );
   }
@@ -253,9 +253,9 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria
    * @return OK
    */
-  SearchAttachments(criteria: SearchCriteriaRequestDto): __Observable<SearchRegistrationsWithAttachments> {
+  SearchAttachments(criteria: SearchCriteriaRequestDto): __Observable<SearchRegistrationsWithAttachments[]> {
     return this.SearchAttachmentsResponse(criteria).pipe(
-      __map(_r => _r.body as SearchRegistrationsWithAttachments)
+      __map(_r => _r.body as SearchRegistrationsWithAttachments[])
     );
   }
 

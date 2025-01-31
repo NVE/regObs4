@@ -28,18 +28,23 @@ export function addAttachmentToRegistration(
   }
 
   const attachment: AttachmentEditModel = {
-    ...uploadedAttachment,
+    Aspect: uploadedAttachment.Aspect,
+    AttachmentId: uploadedAttachment.AttachmentId,
+    AttachmentMimeType: uploadedAttachment.AttachmentMimeType,
+    AttachmentUploadId: uploadedAttachment.AttachmentUploadId,
+    Comment: uploadedAttachment.Comment,
+    Copyright: uploadedAttachment.Copyright,
+    GeoHazardTID: uploadedAttachment.GeoHazardTID,
+    IsMainAttachment: uploadedAttachment.IsMainAttachment,
+    Photographer: uploadedAttachment.Photographer,
+    RegistrationTID: uploadedAttachment.RegistrationTID,
   };
-
-  delete attachment['id'];
-  delete attachment['ref'];
-  delete attachment['type'];
 
   const draftCopy: RegistrationEditModel = { ...draft };
 
-  if (uploadedAttachment.type === 'WaterLevelMeasurementAttachment') {
+  if (uploadedAttachment.type === 'WaterLevelMeasurementAttachment' && uploadedAttachment.ref) {
     addWaterLevelAttachment(attachment, draftCopy, uploadedAttachment.ref);
-  } else if (uploadedAttachment.type === 'DamageObsAttachment') {
+  } else if (uploadedAttachment.type === 'DamageObsAttachment' && uploadedAttachment.ref) {
     addDamageObsAttachment(attachment, draftCopy, uploadedAttachment.ref);
   } else {
     if (draftCopy.Attachments == null) {
@@ -59,7 +64,7 @@ function addDamageObsAttachment(attachment: AttachmentEditModel, draft: Registra
 function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: RegistrationEditModel, ref: string) {
   let found = false;
 
-  const modifiedMeasurements = draft.WaterLevel2.WaterLevelMeasurement.map(
+  const modifiedMeasurements = (draft.WaterLevel2?.WaterLevelMeasurement || []).map(
     (measurement: WaterLevelMeasurementUploadModel) => {
       // When we find a matching measurement, return a new object with updated attachment info
       if (measurement.ref === ref && ref != null) {
@@ -84,5 +89,7 @@ function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: Registr
     );
   }
 
-  draft.WaterLevel2.WaterLevelMeasurement = modifiedMeasurements;
+  if (draft.WaterLevel2 && modifiedMeasurements) {
+    draft.WaterLevel2.WaterLevelMeasurement = modifiedMeasurements;
+  }
 }
