@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject, input, linkedSignal, computed } from '@angular/core';
+import { Component, HostListener, inject, input, linkedSignal, computed } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -36,10 +36,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
-export class NumericInputModalPage implements OnInit {
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+export class NumericInputModalPage {
   private modalController = inject(ModalController);
 
   readonly value = input<number>();
@@ -47,7 +44,7 @@ export class NumericInputModalPage implements OnInit {
   readonly min = input(-100000);
   readonly max = input(100000);
   readonly decimalPlaces = input(0);
-  readonly decimalSeparator = input((1.1).toLocaleString().substring(1, 2));
+  readonly decimalSeparator = input(',');
   readonly title = input<string>();
 
   isNegative = linkedSignal(() => {

@@ -72,9 +72,6 @@
         <ion-icon slot="end" class="item-detail-icon" name="chevron-forward"> </ion-icon>
       </ion-item>
       <ion-item>
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{
-          "REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION" | translate
-        }}</ion-label>
         <app-select
           label="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
           [(selectedValue)]="avalancheObs.ValidExposition"
@@ -97,10 +94,11 @@
         [(value)]="avalancheObs.AvalancheTriggerTID"
       ></app-kdv-select>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.AVALANCHE_OBS.REMOTELY_TRIGGERED" | translate }}
-        </ion-label>
-        <ion-toggle [(ngModel)]="avalancheObs.RemotelyTriggered"></ion-toggle>
+        <ion-toggle [(ngModel)]="avalancheObs.RemotelyTriggered" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">{{
+            "REGISTRATION.SNOW.AVALANCHE_OBS.REMOTELY_TRIGGERED" | translate
+          }}</ion-text>
+        </ion-toggle>
       </ion-item>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE"
@@ -158,7 +156,6 @@
       ></app-kdv-select>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.INVOLVED_NUM"
-        [color]="!isInvolvedValid ? 'danger' : 'medium'"
         [min]="0"
         [(value)]="incident.InvolvedNum"
         (valueChange)="groupValidate()"
@@ -166,7 +163,6 @@
       </app-numeric-input>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM"
-        [color]="!isCasualtiesValid ? 'danger' : 'medium'"
         [isValid]="isCasualtiesValid"
         errorMessage="REGISTRATION.SNOW.AVALANCHE_OBS.CASUALTIES_NUM_ERROR_MESSAGE"
         [min]="0"
@@ -176,7 +172,6 @@
       </app-numeric-input>
       <app-numeric-input
         label="REGISTRATION.INCIDENT.DEAD_NUM"
-        [color]="!isDeadValid ? 'danger' : 'medium'"
         [isValid]="isDeadValid"
         [errorMessage]="
           !isErrorMessageHarmAndDead
@@ -196,17 +191,17 @@
             : 'REGISTRATION.SNOW.AVALANCHE_OBS.HARMED_DEAD_HIGHER_THAN_CASUALTIES_NUM_ERROR_MESSAGE'
         "
         [isValid]="isHarmedValid"
-        [color]="!isHarmedValid ? 'danger' : 'medium'"
         [(value)]="incident.HarmedNum"
         (valueChange)="groupValidate()"
         [min]="0"
       >
       </app-numeric-input>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.AVALANCHE_OBS.TRAFFIC_OBSTRUCTED" | translate }}
-        </ion-label>
-        <ion-toggle [(ngModel)]="incident.TrafficObstructed"></ion-toggle>
+        <ion-toggle [(ngModel)]="incident.TrafficObstructed" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">{{
+            "REGISTRATION.SNOW.AVALANCHE_OBS.TRAFFIC_OBSTRUCTED" | translate
+          }}</ion-text>
+        </ion-toggle>
       </ion-item>
       <app-numeric-input
         label="REGISTRATION.SNOW.AVALANCHE_OBS.EVACUATED_NUM"
@@ -214,10 +209,11 @@
         [min]="0"
       ></app-numeric-input>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.AVALANCHE_OBS.MATERIAL_DAMAGES" | translate }}
-        </ion-label>
-        <ion-toggle [(ngModel)]="incident.MaterialDamages"></ion-toggle>
+        <ion-toggle [(ngModel)]="incident.MaterialDamages" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">{{
+            "REGISTRATION.SNOW.AVALANCHE_OBS.MATERIAL_DAMAGES" | translate
+          }}</ion-text>
+        </ion-toggle>
       </ion-item>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.SLOPE_ACTIVITY_TID"
@@ -253,10 +249,11 @@
         <ion-label> {{ "REGISTRATION.ANONYMIZE.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
-          {{ "REGISTRATION.ANONYMIZE.CHECK_TO_ANONYMIZE" | translate }}
-        </ion-label>
-        <ion-toggle [(ngModel)]="this.draft.registration.Anonymous"></ion-toggle>
+        <ion-toggle [(ngModel)]="draft.registration.Anonymous" labelPlacement="stacked" alignment="start">
+          <ion-text color="medium" class="ion-text-uppercase">
+            {{ "REGISTRATION.ANONYMIZE.CHECK_TO_ANONYMIZE" | translate }}
+          </ion-text>
+        </ion-toggle>
       </ion-item>
     </ion-list>
   </app-registration-content-wrapper>

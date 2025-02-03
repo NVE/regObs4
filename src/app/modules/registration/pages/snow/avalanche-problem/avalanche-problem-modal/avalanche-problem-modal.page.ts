@@ -1,4 +1,4 @@
-import { Component, inject, input, computed, linkedSignal, Signal } from '@angular/core';
+import { Component, inject, input, computed, linkedSignal } from '@angular/core';
 import { AvalancheEvalProblem2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -17,7 +17,7 @@ import {
 import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { ExposedHeightComponent } from '../../../../components/snow/exposed-height/exposed-height.component';
@@ -165,6 +165,7 @@ export class AvalancheProblemModalPage {
     return {
       AvalCauseTID: this.avalCauseTid(),
       AvalCauseDepthTID: this.avalCauseDepthTid(),
+      AvalancheExtTID: this.avalancheExt(),
       AvalTriggerSimpleTID: this.avalTriggerSimpleTid(),
       DestructiveSizeTID: this.destructiveSizeTid(),
       AvalPropagationTID: this.avalPropagationTid(),

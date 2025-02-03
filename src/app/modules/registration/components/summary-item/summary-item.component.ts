@@ -25,7 +25,7 @@ import { checkmarkCircle } from 'ionicons/icons';
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
   private navController = inject(NavController);
-  // private newAttachmentService = inject(NewAttachmentService);
+  private newAttachmentService = inject(NewAttachmentService);
 
   readonly item = input.required<ISummaryItem>();
   readonly readonly = input(false);
@@ -33,31 +33,28 @@ export class SummaryItemComponent implements OnChanges, OnInit {
 
   private attachments = new ReplaySubject<ExistingOrNewAttachment[]>(1);
 
-  // newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
-  // existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
+  newAttachments$?: Observable<AttachmentUploadEditModelWithBlob[]>;
+  existingAttachments$?: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
   constructor() {
     addIcons({ checkmarkCircle });
   }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
 
   // TODO: Images
-  // ngOnInit(): void {
-  //   this.newAttachments$ = this.attachments.pipe(
-  //     map((attachments) => attachments.filter((a) => a.type === 'new')),
-  //     map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
-  //     distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
-  //     this.newAttachmentService.addBlobs(this.item().uuid)
-  //   );
+  ngOnInit(): void {
+    this.newAttachments$ = this.attachments.pipe(
+      map((attachments) => attachments.filter((a) => a.type === 'new')),
+      map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
+      this.newAttachmentService.addBlobs(this.item().uuid)
+    );
 
-  //   this.existingAttachments$ = this.attachments.pipe(
-  //     map((attachments) => attachments.filter((a) => a.type === 'existing')),
-  //     map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
-  //     distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
-  //   );
-  // }
+    this.existingAttachments$ = this.attachments.pipe(
+      map((attachments) => attachments.filter((a) => a.type === 'existing')),
+      map((attachments) => attachments.map((a) => a.attachment as RemoteOrLocalAttachmentEditModel)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
+    );
+  }
 
   trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
     return attachment.AttachmentId;

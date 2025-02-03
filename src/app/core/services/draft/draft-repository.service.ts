@@ -1,16 +1,19 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject, signal } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import {
   combineLatest,
+  filter,
   firstValueFrom,
   from,
   map,
   Observable,
+  of,
   shareReplay,
   skipUntil,
   startWith,
   Subject,
   switchMap,
+  take,
   takeWhile,
   tap,
 } from 'rxjs';
@@ -29,6 +32,8 @@ import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft } from './draft-model';
 import { viewModelToEditModel } from './reg-to-draft';
+import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { injectUuidFromRouteParameters } from './get-uuid';
 
 const DEBUG_TAG = 'DraftRepositoryService';
 
@@ -85,6 +90,40 @@ export class DraftRepositoryService {
       }),
       skipUntil(gotDraft),
       takeWhile((draft) => draft != null)
+    );
+  }
+
+  /**
+   * Tries to read uuid from route parameters and returns a signal with draft changes for that draft.
+   * Signal will be undefined until the specified draft is available.
+   */
+  getDraftSignal(): Signal<RegistrationDraft | undefined>;
+  /**
+   * Returns a signal with draft changes for the specified draft.
+   * Signal will be undefined until the specified draft is available.
+   */
+  getDraftSignal(uuid: string): Signal<RegistrationDraft | undefined>;
+  /**
+   * When uuid signal has a value, it reads and returns draft changes.
+   * Signal will be undefined until the specified draft is available.
+   */
+  getDraftSignal(uuid: Signal<string | undefined | null>): Signal<RegistrationDraft | undefined>;
+  getDraftSignal(uuid?: string | Signal<string | undefined | null>): Signal<RegistrationDraft | undefined> {
+    let uuid$: Observable<string>;
+    if (uuid == null) {
+      // Try to read from route parameters
+      uuid$ = of(injectUuidFromRouteParameters());
+    } else if (typeof uuid == 'string') {
+      uuid$ = of(uuid);
+    } else {
+      uuid$ = toObservable(uuid).pipe(filter((uuid) => uuid != null));
+    }
+
+    return toSignal(
+      uuid$.pipe(
+        switchMap((uuid) => this.getDraft$(uuid)),
+        tap((draft) => this.logger.debug('getDraftSignal update', DEBUG_TAG, { uuid: draft.uuid }))
+      )
     );
   }
 
@@ -248,11 +287,50 @@ export class DraftRepositoryService {
   }
 
   /**
+   * Load the current draft from device. Needs uuid specified in url.
+   * @returns registration current draft or undefined if not found
+   */
+  async load(): Promise<RegistrationDraft>;
+  /**
    * Load a registration from device
    * @param uuid registration uuid
    * @returns registration with given uuid or undefined if not found
    */
-  async load(uuid: string): Promise<RegistrationDraft> {
+  async load(uuid: string): Promise<RegistrationDraft>;
+  /**
+   * Load a registration from device
+   * @param uuid signal of registration uuid
+   * @returns registration when signal has uuid
+   */
+  async load(uuid: Signal<string | undefined | null>): Promise<RegistrationDraft>;
+  /**
+   * Load a registration from device
+   * @param uuid May be undefined, uuid string or uuid signal
+   * @returns registration when signal has uuid
+   */
+  async load(uuid?: Signal<string | undefined | null> | string): Promise<RegistrationDraft>;
+  async load(uuid?: Signal<string | undefined | null> | string | undefined): Promise<RegistrationDraft> {
+    if (!uuid) {
+      const urlParamUuid = injectUuidFromRouteParameters();
+      return this.loadByString(urlParamUuid);
+    } else if (typeof uuid === 'string') {
+      return this.loadByString(uuid);
+    } else {
+      return this.loadBySignal(uuid);
+    }
+  }
+
+  private async loadBySignal(uuid: Signal<string | undefined | null>): Promise<RegistrationDraft> {
+    return firstValueFrom(
+      toObservable(uuid).pipe(
+        filter((uuid) => uuid != null),
+        switchMap((uuid) => this.getDraft$(uuid)),
+        tap((draft) => this.logger.debug('Draft loaded by signal', DEBUG_TAG, { uuid: draft.uuid }))
+      )
+    );
+  }
+
+  private async loadByString(uuid: string): Promise<RegistrationDraft> {
     if (!uuid) {
       throw new Error('uuid required');
     }

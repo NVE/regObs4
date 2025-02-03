@@ -18,14 +18,18 @@
         [ngModel]="draft.registration.ObserverGroupID"
         (ngModelChange)="groupChanged($event)"
       >
-        <ion-item *ngFor="let group of groups">
-          <ion-radio mode="md" slot="start" [value]="group.Id"></ion-radio>
-          <ion-label>{{ group.Name }}</ion-label>
-        </ion-item>
+        @for (group of groups; track group.Id) {
+          <ion-item>
+            <ion-radio [value]="group.Id" labelPlacement="end" justify="start">
+              {{ group.Name }}
+            </ion-radio>
+          </ion-item>
+        }
       </ion-radio-group>
       <ion-item *ngIf="groups.length === 1">
-        <ion-checkbox mode="md" slot="start" [checked]="isSelected" (ionChange)="checkedChanged($event)"></ion-checkbox>
-        <ion-label>{{ firstGroup.Name }}</ion-label>
+        <ion-checkbox [checked]="isSelected" (ionChange)="checkedChanged($event)" labelPlacement="end" justify="start">
+          {{ firstGroup.Name }}
+        </ion-checkbox>
       </ion-item>
     </ion-list>
   </app-registration-content-wrapper>

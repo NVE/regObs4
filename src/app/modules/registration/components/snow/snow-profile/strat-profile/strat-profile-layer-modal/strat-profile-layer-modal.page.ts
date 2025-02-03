@@ -31,8 +31,9 @@ import { addIcons } from 'ionicons';
 import { chevronUp, chevronDown, arrowBack, arrowForward, trash } from 'ionicons/icons';
 import { hasAnyAdvancedOptions } from '../strat-profile-helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import cloneDeep from 'clone-deep';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
@@ -75,12 +76,14 @@ export class StratProfileLayerModalPage implements OnInit {
   private translateService = inject(TranslateService);
   private draftRepository = inject(DraftRepositoryService);
 
-  readonly draft = input.required<RegistrationDraft>();
   readonly index = input.required<number>();
-  private readonly initialRegistationState = cloneDeep(this.draft());
+  readonly uuid = input.required<string>();
+  draft = this.draftRepository.getDraftSignal(this.uuid);
+  private readonly backupHandler = injectBackupHandler({ uuid: this.uuid });
 
   currentIndex = linkedSignal(() => this.index());
-  layers = linkedSignal(() => this.draft().registration.SnowProfile2?.StratProfile?.Layers || []);
+  okPressed = linkedSignal(() => this.currentIndex() === Infinity); // Start alltid false
+  layers = linkedSignal(() => this.draft()?.registration.SnowProfile2?.StratProfile?.Layers || []);
   layer = computed(() => this.layers()[this.currentIndex()]);
   isNewLayer = computed(() => this.layer() == null);
 
@@ -102,7 +105,7 @@ export class StratProfileLayerModalPage implements OnInit {
   showMore = linkedSignal(() => this.hasAnyAdvancedOptions());
 
   nLayers = computed(() => this.layers().length);
-  canGoNext = computed(() => this.currentIndex() < this.nLayers());
+  canGoNext = computed(() => this.isLayerValid());
   canGoBack = computed(() => this.currentIndex() > 0);
 
   hardnessFilter: Signal<FilterFunc | undefined> = computed(() =>
@@ -152,8 +155,8 @@ export class StratProfileLayerModalPage implements OnInit {
     });
   }
 
-  addOrUpdateLayer() {
-    const layer: StratProfileLayerEditModel = {
+  private getEdit(): StratProfileLayerEditModel {
+    return {
       Comment: this.comment(),
       CriticalLayerTID: this.criticalLayerTid(),
       // DepthTop: this.depthTop(),
@@ -167,7 +170,10 @@ export class StratProfileLayerModalPage implements OnInit {
       Thickness: this.thickness(),
       WetnessTID: this.wetnessTid(),
     };
+  }
 
+  addOrUpdateLayer() {
+    const layer = this.getEdit();
     if (this.isNewLayer()) {
       this.layers.update((layers) => [...layers, layer]);
     } else {
@@ -178,12 +184,13 @@ export class StratProfileLayerModalPage implements OnInit {
 
   async save() {
     const initDraft = this.draft();
+    if (!initDraft) throw new Error('No existing draft, cant save');
     const draftUpdate: RegistrationDraft = {
       ...initDraft,
       registration: {
-        ...initDraft.registration,
+        ...(initDraft?.registration || {}),
         SnowProfile2: {
-          ...(initDraft.registration.SnowProfile2 || {}),
+          ...(initDraft?.registration.SnowProfile2 || {}),
           StratProfile: {
             Layers: this.layers(),
           },
@@ -195,11 +202,16 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async ok(gotoIndex?: number) {
-    if (!this.isLayerValid()) {
+    this.okPressed.set(true);
+
+    if (isEmpty(this.getEdit())) {
+      this.deleteLayer();
+    } else if (!this.isLayerValid()) {
       return;
+    } else {
+      this.addOrUpdateLayer();
     }
 
-    this.addOrUpdateLayer();
     await this.save();
 
     if (gotoIndex != null) {
@@ -210,8 +222,15 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.draftRepository.save(this.initialRegistationState);
-    this.modalController.dismiss();
+    if (await this.backupHandler.confirmCancel()) {
+      await this.backupHandler.restoreBackup();
+      this.modalController.dismiss();
+    }
+  }
+
+  private deleteLayer() {
+    const index = this.currentIndex();
+    this.layers.update((layers) => layers.filter((l, i) => i !== index));
   }
 
   async delete() {

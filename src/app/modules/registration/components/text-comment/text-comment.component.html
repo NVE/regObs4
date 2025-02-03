@@ -1,11 +1,7 @@
 <ion-item detail="false">
-  @if (label(); as labelValue) {
-    <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-      {{ labelValue | translate }}
-    </ion-label>
-  }
-
   <ion-textarea
+    [label]="label() | translate | uppercase"
+    labelPlacement="stacked"
     autocapitalize="sentences"
     [maxlength]="max()"
     [disabled]="disabled()"

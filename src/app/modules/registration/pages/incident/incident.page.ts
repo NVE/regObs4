@@ -72,8 +72,8 @@ export class IncidentPage extends BasePage {
   }
 
   groupValidate() {
-    this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
-    this.isDeadValid = IncidentValidation.onDeadNumChange(this.incident);
+    this.isCasualtiesValid = IncidentValidation.isCasualtiesValid(this.incident);
+    this.isDeadValid = IncidentValidation.isDeadValid(this.incident);
   }
 
   override isValid() {

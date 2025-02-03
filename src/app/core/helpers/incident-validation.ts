@@ -1,21 +1,25 @@
 import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
 
 export class IncidentValidation {
-  static onCasualtiesNumChange(incident: IncidentEditModel) {
-    if ((incident.CasualtiesNum || 0) > (incident.InvolvedNum || 0)) {
-      return false;
-    } else {
+  static isCasualtiesValid(incident: IncidentEditModel) {
+    const { CasualtiesNum, InvolvedNum } = incident;
+
+    if (CasualtiesNum == null) {
       return true;
     }
+
+    return InvolvedNum == null ? true : CasualtiesNum <= InvolvedNum;
   }
-  static onDeadNumChange(incident: IncidentEditModel) {
-    if (
-      (incident.DeadNum || 0) > (incident.CasualtiesNum || 0) ||
-      (incident.DeadNum || 0) > (incident.InvolvedNum || 0)
-    ) {
-      return false;
-    } else {
+
+  static isDeadValid(incident: IncidentEditModel) {
+    const { DeadNum, CasualtiesNum, InvolvedNum } = incident;
+
+    if (DeadNum == null) {
       return true;
     }
+
+    const lessDeadThanCasualties = CasualtiesNum == null ? true : DeadNum <= CasualtiesNum;
+    const lessDeadThanInvolved = InvolvedNum == null ? true : DeadNum <= InvolvedNum;
+    return lessDeadThanCasualties && lessDeadThanInvolved;
   }
 }

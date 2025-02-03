@@ -8,7 +8,7 @@
 >
   @if (label(); as label) {
     <ion-label
-      [color]="color()"
+      [color]="colorWithValidation()"
       position="stacked"
       class="no-white-space-wrap"
       [ngClass]="{ 'ion-text-uppercase': !simpleObsMode(), 'simple-mode-title ion-label-fat': simpleObsMode() }"
@@ -17,16 +17,11 @@
     </ion-label>
   }
 
-  @let value = displayValue();
-  @let placeHolderKey = placeholder();
-
-  @if (value) {
-    <ion-text [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode() }">
-      {{ value }}
-    </ion-text>
-  } @else if (placeHolderKey) {
-    <ion-text [ngClass]="{ 'ion-align-self-start': true, 'simple-mode-sub': simpleObsMode() }" [color]="color()">
-      {{ placeHolderKey | translate }}
-    </ion-text>
-  }
+  <ion-text
+    class="ion-align-self-start"
+    [class]="{ 'simple-mode-sub': simpleObsMode() }"
+    [color]="colorWithValidation()"
+  >
+    {{ valueOrPlaceholder() | translate }}
+  </ion-text>
 </ion-item>

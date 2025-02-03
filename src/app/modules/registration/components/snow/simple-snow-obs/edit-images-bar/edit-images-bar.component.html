@@ -1,18 +1,19 @@
 <!-- If there are no attachments we skip the modal and save the user an extra click. -->
 <ng-container *ngIf="attachments$ | async as attachments">
+  <!-- TODO! Fikse two way binding rett på draft her.. -->
   <app-edit-images
     *ngIf="attachments.length == 0"
     [registrationTid]="registrationTid()"
-    [geoHazard]="draft().registration.GeoHazardTID"
-    [draftUuid]="draft().uuid"
-    [(existingAttachments)]="draft().registration.Attachments"
+    [geoHazard]="geoHazardTid()"
+    [draftUuid]="uuid"
   ></app-edit-images>
+  <!--     [(existingAttachments)]="draft().registration.Attachments" -->
 
   <!-- Show thumbnails of attachments if there are any -->
 
   <ion-item *ngIf="(attachments?.length || 0) > 0" (click)="showEditImagesPage()">
     <ion-icon name="camera"></ion-icon>
     <ion-label>{{ "REGISTRATION.ADD_IMAGES" | translate }}</ion-label>
-    <app-thumbnails [attachments]="attachments" [draftUuid]="draft().uuid"></app-thumbnails>
+    <app-thumbnails [attachments]="attachments"></app-thumbnails>
   </ion-item>
 </ng-container>

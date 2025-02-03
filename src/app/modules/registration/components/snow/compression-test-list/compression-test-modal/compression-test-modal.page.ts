@@ -25,7 +25,6 @@ import { ModalSaveOrDeleteButtonsComponent } from '../../../modal-save-or-delete
 import { TranslatePipe } from '@ngx-translate/core';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 
-// TODO: Move to model file
 enum Propagation {
   NotGiven = 0,
   LBT = 5,
@@ -80,19 +79,19 @@ enum Propagation {
 export class CompressionTestModalPage {
   private modalController = inject(ModalController);
 
-  readonly compressionTest = input.required({ transform: toModel });
+  readonly compressionTest = input<CompressionTestEditModel>();
   readonly includeInSnowProfileAsDefault = input(false); // Modalen kan også brukes fra snøprofil, da er denne true
 
   // Form
-  propagationTid = linkedSignal(() => this.compressionTest().PropagationTID);
-  tapsFracture = linkedSignal(() => this.compressionTest().TapsFracture);
-  fractureDepth = linkedSignal(() => this.compressionTest().FractureDepth);
-  pstX = linkedSignal(() => this.compressionTest().PstX);
-  pstY = linkedSignal(() => this.compressionTest().PstY);
-  rbRelease = linkedSignal(() => this.compressionTest().RbRelease);
-  comprTestFractureTid = linkedSignal(() => this.compressionTest().ComprTestFractureTID);
-  stabilityEvalTid = linkedSignal(() => this.compressionTest().StabilityEvalTID);
-  comment = linkedSignal(() => this.compressionTest().Comment);
+  propagationTid = linkedSignal(() => this.compressionTest()?.PropagationTID);
+  tapsFracture = linkedSignal(() => this.compressionTest()?.TapsFracture);
+  fractureDepth = linkedSignal(() => this.compressionTest()?.FractureDepth);
+  pstX = linkedSignal(() => this.compressionTest()?.PstX);
+  pstY = linkedSignal(() => this.compressionTest()?.PstY);
+  rbRelease = linkedSignal(() => this.compressionTest()?.RbRelease);
+  comprTestFractureTid = linkedSignal(() => this.compressionTest()?.ComprTestFractureTID);
+  stabilityEvalTid = linkedSignal(() => this.compressionTest()?.StabilityEvalTID);
+  comment = linkedSignal(() => this.compressionTest()?.Comment);
 
   isCTNorECTX = computed(() => {
     return this.propagationTid() === Propagation.CTN || this.propagationTid() === Propagation.ECTX;
@@ -118,7 +117,7 @@ export class CompressionTestModalPage {
     if (this.isLBT()) {
       return false;
     }
-    const include = this.compressionTest().IncludeInSnowProfile;
+    const include = this.compressionTest()?.IncludeInSnowProfile;
     if (include != null) {
       return include;
     }
@@ -127,6 +126,10 @@ export class CompressionTestModalPage {
 
   tapsFractureVisible = computed(() => {
     return !(this.isCTNorECTX() || this.isCTVorECTV() || this.isLBT() || this.isPST() || this.propagationTid() == null);
+  });
+
+  testFractureVisible = computed(() => {
+    return !this.isCTNorECTXorRB7() && !this.isPST() && !this.isRB() && this.propagationTid() != null;
   });
 
   tapsArray = computed(() => {
@@ -147,18 +150,21 @@ export class CompressionTestModalPage {
 
   formValue = computed<CompressionTestEditModel>(() => {
     return {
-      IncludeInSnowProfile: this.includeInSnowProfile(),
+      Comment: this.comment(),
+      ComprTestFractureTID: this.comprTestFractureTid(),
+      // CompressionTestTID: this.compressionTest()?.CompressionTestTID,
       FractureDepth: this.fractureDepth(),
+      IncludeInSnowProfile: this.includeInSnowProfile(),
+      PropagationTID: this.propagationTid(),
       PstX: this.pstX(),
       PstY: this.pstY(),
       RbRelease: this.rbRelease(),
-      ComprTestFractureTID: this.comprTestFractureTid(),
       StabilityEvalTID: this.stabilityEvalTid(),
-      Comment: this.comment(),
+      TapsFracture: this.tapsFracture(),
     };
   });
 
-  showDelete = this.compressionTest() != null;
+  showDelete = computed(() => !isEmpty(this.compressionTest()));
 
   isValid = computed(() => {
     const clone = { ...this.formValue() };
@@ -166,13 +172,9 @@ export class CompressionTestModalPage {
     return !isEmpty(clone);
   });
 
-  testFractureVisible = computed(() => {
-    return !this.isCTNorECTXorRB7() && !this.isPST() && this.propagationTid != null && !this.isRB();
-  });
-
   rbReleaseVisible = computed(() => {
-    const compressionTest = this.compressionTest();
-    return this.isRB() && compressionTest.TapsFracture && compressionTest.TapsFracture < 7;
+    const taps = this.tapsFracture();
+    return this.isRB() && taps != null && taps < 7;
   });
 
   cancel() {
@@ -180,19 +182,12 @@ export class CompressionTestModalPage {
   }
 
   ok() {
-    this.modalController.dismiss(this.compressionTest());
+    this.modalController.dismiss(this.formValue());
   }
 
   delete() {
     this.modalController.dismiss({ delete: true });
   }
-}
-
-function toModel(test?: CompressionTestEditModel | null): CompressionTestEditModel {
-  if (test == null) {
-    return {} as CompressionTestEditModel;
-  }
-  return test;
 }
 
 function getTaps(from: number, to: number): SelectOption[] {

@@ -6,7 +6,7 @@
     <ion-title> {{ "SETTINGS.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding" *ngIf="false && userSettings">
+<ion-content class="ion-padding" *ngIf="userSettings">
   <ion-list lines="full">
     <!-- App version -->
     <ion-item *ngIf="version" (click)="versionClick()">

@@ -4,7 +4,7 @@
     <span class="url">{{ url.UrlDescription && url.UrlDescription + " -" }} {{ url.UrlLine }}</span>
   </div>
   <div class="add-button" (click)="addOrEdit()">
-    <ion-icon [color]="iconColor()" [name]="icon()" slot="start"></ion-icon>
+    <ion-icon [color]="iconColor()" name="add-circle-outline" slot="start"></ion-icon>
     <span>{{ title() | translate }}</span>
   </div>
 </ion-item>

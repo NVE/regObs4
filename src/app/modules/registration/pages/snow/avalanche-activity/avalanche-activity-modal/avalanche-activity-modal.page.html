@@ -10,8 +10,14 @@
 <ion-content>
   <ion-list lines="full">
     <ion-item>
-      <ion-label>{{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY" | translate }}</ion-label>
-      <ion-checkbox slot="start" [checked]="noAvalancheActivity" (click)="toggleNoAvalancheActivity()"></ion-checkbox>
+      <ion-checkbox
+        slot="start"
+        [checked]="noAvalancheActivity()"
+        (ionChange)="toggleNoAvalancheActivity()"
+        labelPlacement="end"
+      >
+        {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY" | translate }}
+      </ion-checkbox>
     </ion-item>
     <ion-item [class.hasWarning]="dateIsDifferentThanObsTime()">
       <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ "DATE" | translate }}</ion-label>

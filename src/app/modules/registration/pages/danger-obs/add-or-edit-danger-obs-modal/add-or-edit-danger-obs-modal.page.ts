@@ -1,15 +1,4 @@
-import {
-  Component,
-  OnInit,
-  NgZone,
-  inject,
-  input,
-  linkedSignal,
-  computed,
-  ResourceRef,
-  Signal,
-  untracked,
-} from '@angular/core';
+import { Component, inject, input, linkedSignal, computed } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -36,7 +25,6 @@ import { SelectComponent } from '../../../../shared/components/input/select/sele
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
-import { rxResource } from '@angular/core/rxjs-interop';
 
 interface AreaSelectOption extends SelectOption {
   id: string;

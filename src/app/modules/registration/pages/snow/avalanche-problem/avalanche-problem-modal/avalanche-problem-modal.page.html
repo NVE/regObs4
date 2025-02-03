@@ -13,8 +13,9 @@
       <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER" | translate }} </ion-label>
     </ion-list-header>
     <ion-item>
-      <ion-label>{{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS" | translate }}</ion-label>
-      <ion-checkbox mode="md" slot="start" [checked]="noWeakLayers()" (click)="toggleNoWeakLayers()"></ion-checkbox>
+      <ion-checkbox [checked]="noWeakLayers()" (ionChange)="toggleNoWeakLayers()" labelPlacement="end" justify="start">
+        {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS" | translate }}
+      </ion-checkbox>
     </ion-item>
     <ng-container *ngIf="!noWeakLayers()">
       <app-kdv-select
@@ -28,16 +29,19 @@
         [(value)]="avalCauseDepthTid"
       ></app-kdv-select>
       <ion-item>
-        <ion-label class="ion-text-wrap"> {{ easyCollapseLabel() }}</ion-label>
-        <ion-checkbox mode="md" slot="start" [(ngModel)]="hasEasyCollapse"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="hasEasyCollapse" labelPlacement="end" justify="start">
+          {{ easyCollapseLabel() }}
+        </ion-checkbox>
       </ion-item>
       <ion-item>
-        <ion-label class="ion-text-wrap"> {{ softLayerLabel() }}</ion-label>
-        <ion-checkbox mode="md" slot="start" [(ngModel)]="hasSoftLayerAbove"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="hasSoftLayerAbove" labelPlacement="end" justify="start">
+          {{ softLayerLabel() }}
+        </ion-checkbox>
       </ion-item>
       <ion-item>
-        <ion-label class="ion-text-wrap"> {{ largeCrystalLabel() }}</ion-label>
-        <ion-checkbox mode="md" slot="start" [(ngModel)]="hasLargeCrystal"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="hasLargeCrystal" labelPlacement="end" justify="start">
+          {{ largeCrystalLabel() }}
+        </ion-checkbox>
       </ion-item>
     </ng-container>
     <ion-list-header class="ion-text-uppercase">

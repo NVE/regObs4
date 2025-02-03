@@ -30,7 +30,7 @@
             <ion-col class="simple-obs-toggle">
               <ion-item>
                 <ion-label>{{ "REGISTRATION.OVERVIEW.SIMPLE.TOGGLE" | translate }}</ion-label>
-                <ion-toggle [ngModel]="draft.simpleMode" (ionChange)="changeMode($event)"></ion-toggle>
+                <ion-toggle [ngModel]="draft.simpleMode" (ionChange)="changeMode($event)" slot="end"></ion-toggle>
               </ion-item>
             </ion-col>
           </ion-row>

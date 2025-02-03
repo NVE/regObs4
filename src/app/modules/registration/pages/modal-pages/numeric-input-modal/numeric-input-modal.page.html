@@ -13,7 +13,7 @@
   <ion-grid class="number-pad">
     <ion-row class="ion-justify-content-center">
       <ion-col size="8" class="ion-align-self-center text-value ion-text-right">
-        <ion-text *ngIf="isNegative">&#8722;</ion-text>
+        <ion-text *ngIf="isNegative()">&#8722;</ion-text>
         <ion-text>{{ localeString() }}</ion-text>
       </ion-col>
       <ion-col size="4" class="ion-align-self-center ion-text-right">

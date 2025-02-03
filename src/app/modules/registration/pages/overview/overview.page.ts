@@ -101,15 +101,15 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   private draftRepository = inject(DraftRepositoryService);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  uuid = input.required<string>({ alias: 'id' });
+  private uuid = this.activatedRoute.snapshot.params['id'];
 
-  draft$ = this.draftService.getDraft$(this.uuid());
+  draft$ = this.draftService.getDraft$(this.uuid);
   summaryItems$: Observable<Array<ISummaryItem>> = this.draft$.pipe(
     switchMap((draft) => {
       if (this.showSimpleSnowMode(draft) || this.showSimpleWaterMode(draft)) {
         return from(this.getLocationAndTimeSummaryItem(draft));
       } else {
-        return this.summaryItemService.getSummaryItems$(this.uuid());
+        return this.summaryItemService.getSummaryItems$(this.uuid);
       }
     })
   );

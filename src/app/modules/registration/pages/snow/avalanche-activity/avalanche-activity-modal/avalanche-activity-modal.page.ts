@@ -61,68 +61,68 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
 export class AvalancheActivityModalPage {
   private modalController = inject(ModalController);
 
-  readonly inputData = input<AvalancheActivityObs2EditModel>();
+  readonly avalancheActivity = input<AvalancheActivityObs2EditModel>();
   readonly dtObsTime = input.required<string>();
 
   // Form
   startDate = linkedSignal(() => {
-    let initDate = this.inputData()?.DtStart;
+    let initDate = this.avalancheActivity()?.DtStart;
     if (!initDate) {
       initDate = this.dtObsTime();
     }
     return moment(initDate).startOf('day').toISOString(true);
   });
-  estimatedNumTid = linkedSignal(() => this.inputData()?.EstimatedNumTID);
-  selectedTimeFrame = linkedSignal(() => this.parseTimeFrame(this.inputData()));
+  estimatedNumTid = linkedSignal(() => this.avalancheActivity()?.EstimatedNumTID);
+  selectedTimeFrame = linkedSignal(() => this.parseTimeFrame(this.avalancheActivity()));
   avalancheExtTid = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.AvalancheExtTID;
+    return this.avalancheActivity()?.AvalancheExtTID;
   });
   avalTriggerSimpleTid = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.AvalTriggerSimpleTID;
+    return this.avalancheActivity()?.AvalTriggerSimpleTID;
   });
   destructiveSizeTid = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.DestructiveSizeTID;
+    return this.avalancheActivity()?.DestructiveSizeTID;
   });
   avalPropagationTid = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.AvalPropagationTID;
+    return this.avalancheActivity()?.AvalPropagationTID;
   });
   exposedHeightComboTid = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.ExposedHeightComboTID;
+    return this.avalancheActivity()?.ExposedHeightComboTID;
   });
   exposedHeight1 = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.ExposedHeight1;
+    return this.avalancheActivity()?.ExposedHeight1;
   });
   exposedHeight2 = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.ExposedHeight2;
+    return this.avalancheActivity()?.ExposedHeight2;
   });
   validExposition = linkedSignal(() => {
     if (this.noAvalancheActivity()) {
       return undefined;
     }
-    return this.inputData()?.ValidExposition;
+    return this.avalancheActivity()?.ValidExposition;
   });
-  comment = linkedSignal(() => this.inputData()?.Comment);
+  comment = linkedSignal(() => this.avalancheActivity()?.Comment);
 
   noAvalancheActivity = computed(() => this.estimatedNumTid() === 1);
   dateIsDifferentThanObsTime = computed(() => {
@@ -132,7 +132,7 @@ export class AvalancheActivityModalPage {
 
     const startDay = moment(this.startDate()).startOf('day');
     const obsDay = moment(this.dtObsTime()).startOf('day');
-    return startDay.isSame(obsDay);
+    return !startDay.isSame(obsDay);
   });
 
   toggleNoAvalancheActivity() {
@@ -140,7 +140,7 @@ export class AvalancheActivityModalPage {
   }
 
   // avalancheActivityCopy: AvalancheActivityObs2EditModel;
-  isNew = computed(() => this.inputData() == null);
+  isNew = computed(() => this.avalancheActivity() == null);
   maxDate = this.getMaxDateForNow();
 
   timeFrames = [

@@ -1,8 +1,6 @@
 import { Component, NgZone, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
-import { BasePageService } from '../../base-page-service';
 import {
   IonBackButton,
   IonButtons,

@@ -1,0 +1,143 @@
+<ion-card>
+  <swiper-container
+    slides-per-view="auto"
+    loop="false"
+    css-mode="false"
+    navigation="true"
+    pagination="true"
+    space-between="0"
+    centered-slides="false"
+    center-insufficient-slides="false"
+    zoom="true"
+    keyboard="false"
+  >
+    <!-- Map -->
+    <swiper-slide>
+      <app-static-map-image [location]="location()"></app-static-map-image>
+    </swiper-slide>
+
+    <!-- lazy-preload-prev-next="2" -->
+    @for (attachment of attachments(); track attachment.AttachmentId) {
+      <swiper-slide>
+        <!-- <div class="img-desc">
+          @if (attachment.Comment) {
+            <ion-icon name="chatbubble-ellipses" color="primary"></ion-icon>
+          }
+        </div> -->
+        <img [alt]="attachment.Comment" [src]="attachment.Url" />
+      </swiper-slide>
+    }
+  </swiper-container>
+
+  <ion-card-header>
+    <ion-card-title>{{ registration().ObsLocation.Title }}</ion-card-title>
+    <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
+  </ion-card-header>
+
+  <ion-card-content>
+    <div>
+      <ion-chip color="primary" (click)="dateClicked.set(true)" [disabled]="dateClicked()">
+        <ion-icon name="calendar-number-outline"></ion-icon>
+        <ion-label>
+          @if (dateClicked()) {
+            Observert: {{ registration().DtObsTime | date: "short" }}. Lagret: {{ savedTime() | date: "short" }}.
+          } @else {
+            {{ registration().DtObsTime | date: "short" }}
+          }
+        </ion-label>
+      </ion-chip>
+
+      <ion-chip color="primary" disabled>
+        <ion-icon [src]="geoIcon()"></ion-icon>
+        <ion-label>{{ geoName() }}</ion-label>
+      </ion-chip>
+
+      <ion-chip color="primary" disabled>
+        <ion-icon name="location-outline"></ion-icon>
+        <ion-label>
+          {{ registration().ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
+        </ion-label>
+      </ion-chip>
+
+      <ion-chip color="primary" disabled>
+        <ion-icon name="person-circle-outline"></ion-icon>
+        <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
+        <ion-label>
+          {{ registration().Observer.NickName }} ({{ registration().Observer.CompetenceLevelName }})
+        </ion-label>
+      </ion-chip>
+
+      @if (registration().ObserverGroupName; as group) {
+        <ion-chip color="primary" disabled>
+          <ion-icon name="people-circle-outline"></ion-icon>
+          <ion-label>{{ group }}</ion-label>
+        </ion-chip>
+      }
+    </div>
+
+    <!-- <ion-chip>Default</ion-chip>
+    <ion-chip color="primary">Primary</ion-chip>
+    <ion-chip color="secondary">Secondary</ion-chip>
+    <ion-chip color="tertiary">Tertiary</ion-chip>
+    <ion-chip color="success">Success</ion-chip>
+    <ion-chip color="warning">Warning</ion-chip>
+    <ion-chip color="danger">Danger</ion-chip>
+    <ion-chip color="light">Light</ion-chip>
+    <ion-chip color="medium">Medium</ion-chip>
+    <ion-chip color="dark">Dark</ion-chip>
+
+    <hr />
+
+    <ion-chip [disabled]="true">Default</ion-chip>
+    <ion-chip [disabled]="true" color="primary">Primary</ion-chip>
+    <ion-chip [disabled]="true" color="secondary">Secondary</ion-chip>
+    <ion-chip [disabled]="true" color="tertiary">Tertiary</ion-chip>
+    <ion-chip [disabled]="true" color="success">Success</ion-chip>
+    <ion-chip [disabled]="true" color="warning">Warning</ion-chip>
+    <ion-chip [disabled]="true" color="danger">Danger</ion-chip>
+    <ion-chip [disabled]="true" color="light">Light</ion-chip>
+    <ion-chip [disabled]="true" color="medium">Medium</ion-chip>
+    <ion-chip [disabled]="true" color="dark">Dark</ion-chip>
+
+    <hr />
+
+    <ion-chip [outline]="true">Default</ion-chip>
+    <ion-chip [outline]="true" color="primary">Primary</ion-chip>
+    <ion-chip [outline]="true" color="secondary">Secondary</ion-chip>
+    <ion-chip [outline]="true" color="tertiary">Tertiary</ion-chip>
+    <ion-chip [outline]="true" color="success">Success</ion-chip>
+    <ion-chip [outline]="true" color="warning">Warning</ion-chip>
+    <ion-chip [outline]="true" color="danger">Danger</ion-chip>
+    <ion-chip [outline]="true" color="light">Light</ion-chip>
+    <ion-chip [outline]="true" color="medium">Medium</ion-chip>
+    <ion-chip [outline]="true" color="dark">Dark</ion-chip>
+
+    <hr />
+
+    <ion-chip [outline]="true" [disabled]="true">Default</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="primary">Primary</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="secondary">Secondary</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="tertiary">Tertiary</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="success">Success</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="warning">Warning</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="danger">Danger</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="light">Light</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="medium">Medium</ion-chip>
+    <ion-chip [outline]="true" [disabled]="true" color="dark">Dark</ion-chip> -->
+
+    <ion-list>
+      @for (summaryGroup of registration().Summaries; track $index) {
+        <ion-item>
+          <ion-label>
+            <h2 class="summary-header">{{ summaryGroup.RegistrationName }}</h2>
+            <p class="summary">
+              @for (summary of summaryGroup.Summaries; track $index) {
+                <strong>{{ summary.Header }}:</strong> {{ summary.Value }}.
+              }
+            </p>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  </ion-card-content>
+</ion-card>

@@ -43,7 +43,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs/operators';
-import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';

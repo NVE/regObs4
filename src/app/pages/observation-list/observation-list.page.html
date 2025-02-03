@@ -1,7 +1,7 @@
 <app-header title="{{ 'OBSERVATION_LIST.TITLE' | translate }}"></app-header>
 <ion-content>
   <app-geo-fab slot="fixed"></app-geo-fab>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <!-- <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel> -->
   <ion-item-divider>
     <h3 class="ion-text-uppercase header">{{ "OBSERVATION_LIST.TITLE" | translate }}</h3>
   </ion-item-divider>
@@ -62,26 +62,32 @@
     </ion-row>
   </ion-grid>
 
-  <ng-container *ngIf="!(isFetchingObservations$ | async); else skeleton">
+  <ng-container *ngIf="!(isFetchingObservations$ | async)">
+    <!-- ; else skeleton -->
     <ng-container *ngIf="viewType$ | async as viewType">
       <ng-container *ngIf="showObservations$ | async; else disabled">
         <ng-container *ngIf="registrations$ | async as registrations">
-          <ion-list class="loaded" *ngIf="registrations.length > 0; else empty">
-            <app-observation-list-view
+          @for (reg of registrations; track reg.RegId) {
+            <app-observation class="obs" [registration]="reg"></app-observation>
+          } @empty {
+            <!-- TODO: Bruk empty template -->
+            <p>Ingen observasjoner</p>
+          }
+          <!-- <app-observation-list-view
               *ngIf="viewType === 'list'"
               [registrations]="registrations"
-            ></app-observation-list-view>
-            <!-- TODO: Fix image search as another route / component ? -->
-            <!-- <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid> -->
-            <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-              <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-          </ion-list> </ng-container
-      ></ng-container>
+            ></app-observation-list-view> -->
+          <!-- TODO: Fix image search as another route / component ? -->
+          <!-- <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid> -->
+          <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+            <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ng-container>
+      </ng-container>
     </ng-container>
   </ng-container>
 
-  <ng-template #skeleton>
+  <!-- <ng-template #skeleton>
     <ng-container *ngIf="viewType$ | async as viewType">
       <ng-container *ngIf="viewType === 'list'">
         <app-observation-skeleton></app-observation-skeleton>
@@ -92,7 +98,7 @@
         <ion-skeleton-text animated *ngFor="let _ of fakeArray" class="img-skeleton"></ion-skeleton-text>
       </ion-list>
     </ng-container>
-  </ng-template>
+  </ng-template> -->
 
   <ng-template #disabled>
     <div class="disabled-info">

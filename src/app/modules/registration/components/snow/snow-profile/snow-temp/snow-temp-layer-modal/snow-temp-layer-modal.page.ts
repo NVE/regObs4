@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, linkedSignal, Signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, Signal } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,
@@ -17,8 +17,6 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { isEmpty } from 'src/app/modules/common-core/helpers';
-import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
@@ -28,8 +26,8 @@ import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward, trash } from 'ionicons/icons';
-import { getDraftSignal } from 'src/app/core/services/draft/draft-signal';
 import { addOrUpdateValueByIndex, sortByNumberProp } from 'src/app/modules/common-core/helpers/arrays';
+import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 @Component({
   selector: 'app-snow-temp-layer-modal',
@@ -61,48 +59,47 @@ export class SnowTempLayerModalPage {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
 
-  readonly index = input.required<number>();
   readonly uuid = input.required<string>();
+  readonly index = input.required<number>();
+  draft = this.draftRepository.getDraftSignal(this.uuid);
+  private backupHandler = injectBackupHandler({ uuid: this.uuid });
 
-  draft = getDraftSignal(this.uuid);
+  nextDepth?: number = undefined;
   layers = computed(() => this.draft()?.registration.SnowProfile2?.SnowTemp?.Layers || []);
   currentIndex = linkedSignal(() => this.index());
   isNew = computed(() => this.currentIndex() >= this.layers().length);
   layer: Signal<SnowTempObsModel | undefined> = computed(() => this.layers()[this.currentIndex()]);
 
   // Input values
-  temp = linkedSignal(() => this.layer()?.SnowTemp);
-  depth = linkedSignal(() => this.layer()?.Depth);
-  private result: Signal<SnowTempObsModel> = computed(() => ({ SnowTemp: this.temp(), Depth: this.depth() }));
-
-  canGoNext = computed(() => {
-    const length = this.layers().length;
-    const index = this.currentIndex();
-    if (length > 0) {
-      return index < length;
-    } else {
-      return index === length && !isEmpty(this.result());
+  temp = linkedSignal(() => this.layers()[this.currentIndex()]?.SnowTemp);
+  depth = linkedSignal(() => this.layers()[this.currentIndex()]?.Depth);
+  proposedDepth = linkedSignal(() => {
+    if (!this.isNew()) {
+      return undefined;
     }
+    const lastLayer = this.layers()[this.currentIndex() - 1];
+    if (this.nextDepth != null && lastLayer?.Depth != null) {
+      return lastLayer.Depth + this.nextDepth;
+    }
+    return undefined;
   });
 
-  backup?: RegistrationDraft;
+  canGoNext = computed(() => {
+    return this.depth() != null || this.temp() != null;
+  });
 
   constructor() {
     addIcons({ arrowBack, arrowForward, trash });
-    effect(() => {
-      if (this.backup == null) {
-        const draft = this.draft();
-        if (draft) {
-          this.backup = cloneDeep(draft);
-        }
-      }
-    });
   }
 
   async ok(gotoIndex?: number) {
-    const updatedLayer = this.result();
+    const updatedLayer: SnowTempObsModel = {
+      SnowTemp: this.temp(),
+      Depth: this.depth() != null ? this.depth() : this.proposedDepth(),
+    };
+    const onlyHasProposedDepth = this.depth() == null && this.temp() == null;
     const hasChanged = updatedLayer.Depth != this.layer()?.Depth || updatedLayer.SnowTemp != this.layer()?.SnowTemp;
-    if (hasChanged) {
+    if (!onlyHasProposedDepth && hasChanged) {
       const updatedLayers = this.getUpdatedLayers(updatedLayer);
       await this.saveDraft(updatedLayers);
     }
@@ -153,10 +150,10 @@ export class SnowTempLayerModalPage {
   }
 
   async cancel() {
-    if (this.backup) {
-      await this.draftRepository.save(this.backup);
+    if (await this.backupHandler.confirmCancel()) {
+      await this.backupHandler.restoreBackup();
+      this.modalController.dismiss();
     }
-    this.modalController.dismiss();
   }
 
   async delete() {

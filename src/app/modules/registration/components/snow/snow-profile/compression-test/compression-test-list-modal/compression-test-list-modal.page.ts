@@ -21,6 +21,7 @@ import { NgIf } from '@angular/common';
 import { CompressionTestListComponent } from '../../../compression-test-list/compression-test-list.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 @Component({
   selector: 'app-compression-test-list-modal',
@@ -48,28 +49,12 @@ export class CompressionTestListModalPage {
   private draftService = inject(DraftRepositoryService);
 
   readonly uuid = input.required<string>();
-  draft = toSignal(this.draftService.getDraft$(this.uuid()));
+  draft = this.draftService.getDraftSignal(this.uuid);
+  private backupHandler = injectBackupHandler({ uuid: this.uuid });
 
   tests = linkedSignal(() => this.draft()?.registration.CompressionTest || []);
-  private initialRegistrationClone?: RegistrationDraft;
 
-  constructor() {
-    effect(() => {
-      const draft = this.draft();
-      if (draft != null && this.initialRegistrationClone == null) {
-        this.initialRegistrationClone = cloneDeep(draft);
-      }
-    });
-
-    effect(() => {
-      const tests = this.tests();
-      untracked(() => {
-        this.save(tests);
-      });
-    });
-  }
-
-  async save(tests: CompressionTestEditModel[]) {
+  async save(tests: CompressionTestEditModel[] | undefined) {
     const draft = this.draft();
     if (draft == null) {
       throw new Error('Draft not loaded');
@@ -86,14 +71,15 @@ export class CompressionTestListModalPage {
     await this.draftService.save(updatedDraft);
   }
 
-  ok() {
+  async ok() {
+    await this.save(this.tests());
     this.modalController.dismiss();
   }
 
   async cancel() {
-    if (this.initialRegistrationClone) {
-      await this.draftService.save(this.initialRegistrationClone);
+    if (await this.backupHandler.confirmCancel()) {
+      await this.backupHandler.restoreBackup();
+      this.modalController.dismiss();
     }
-    this.modalController.dismiss();
   }
 }

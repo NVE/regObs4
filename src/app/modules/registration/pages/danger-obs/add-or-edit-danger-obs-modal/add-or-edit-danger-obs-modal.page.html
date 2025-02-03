@@ -13,13 +13,7 @@
       <ion-label> {{ "REGISTRATION.DANGER_OBS.TITLE" | translate }} </ion-label>
     </ion-list-header>
     <ion-item *ngIf="showNoDangerSignCheckbox()">
-      <ion-checkbox
-        (click)="toggleNoDangerSign()"
-        color="varsom-dark-blue"
-        slot="start"
-        [checked]="isNoDangerSign()"
-        labelPlacement="end"
-      >
+      <ion-checkbox slot="start" [checked]="isNoDangerSign()" labelPlacement="end" (ionChange)="toggleNoDangerSign()">
         {{ "REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN" | translate }}
       </ion-checkbox>
     </ion-item>
@@ -28,12 +22,10 @@
       *ngIf="showDangerSignSelect()"
       [kdvKey]="kdvKey()"
       [(value)]="dangerSignTid"
+      [showResetButton]="false"
     >
     </app-kdv-select>
     <ion-item>
-      <ion-label color="medium" position="stacked" class="ion-text-uppercase"
-        >{{ "REGISTRATION.DANGER_OBS.AREA" | translate }}
-      </ion-label>
       <app-select
         label="{{ 'REGISTRATION.DANGER_OBS.AREA' | translate }}"
         [(selectedValue)]="area"
@@ -48,7 +40,7 @@
     ></app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons
-    [saveDisabled]="dangerSignTid() != null"
+    [saveDisabled]="dangerSignTid() == null"
     (saveClicked)="ok()"
     (deleteClicked)="delete()"
     [showDelete]="!!dangerObs()"

@@ -21,6 +21,7 @@ import { AddWebUrlItemComponent } from '../../components/add-web-url-item/add-we
 import { TranslatePipe } from '@ngx-translate/core';
 import { hasAnyDataBesidesPropertyToExclude } from 'src/app/modules/common-registration/registration.helpers';
 import { GeneralObservationEditModel, GeneralObservationViewModel } from 'src/app/modules/common-regobs-api';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-general-comment',
@@ -43,6 +44,7 @@ import { GeneralObservationEditModel, GeneralObservationViewModel } from 'src/ap
     RegistrationContentWrapperComponent,
     TextCommentComponent,
     TranslatePipe,
+    NgIf,
   ],
 })
 export class GeneralCommentPage extends BasePage {

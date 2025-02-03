@@ -51,6 +51,7 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
 import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -95,6 +96,7 @@ const URL_VIEW_TYPE_PARAM = 'view';
     RefreshWithCancelComponent,
     SvgIconComponent,
     TranslatePipe,
+    ObservationComponent,
   ],
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {

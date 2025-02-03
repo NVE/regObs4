@@ -10,7 +10,8 @@
   <form (ngSubmit)="ok()">
     <app-compression-test-list
       *ngIf="draft"
-      [(tests)]="tests"
+      [tests]="tests()"
+      (testsChange)="save($event)"
       [includeInSnowProfileAsDefault]="true"
     ></app-compression-test-list>
     <ion-grid class="ion-no-padding">

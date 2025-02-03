@@ -10,10 +10,8 @@
 <ion-content>
   <ion-list lines="full">
     <ion-item>
-      <ion-label>
+      <ion-toggle [disabled]="isLBT()" [(ngModel)]="includeInSnowProfile" name="IncludeInSnowProfile">
         {{ "REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.INCLUDE_IN_SNOW_PROFILE" | translate }}
-      </ion-label>
-      <ion-toggle [disabled]="isLBT()" slot="end" [(ngModel)]="includeInSnowProfile" name="IncludeInSnowProfile">
       </ion-toggle>
     </ion-item>
     <app-kdv-select
@@ -23,13 +21,10 @@
     >
     </app-kdv-select>
     <ion-item *ngIf="tapsFractureVisible()">
-      <ion-label *ngIf="!isRB()" color="medium" position="stacked" class="ion-text-uppercase">
-        {{ "REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE" | translate }}</ion-label
-      >
-      <ion-label *ngIf="isRB()" color="medium" position="stacked" class="ion-text-uppercase">
-        {{ "REGISTRATION.SNOW.COMPRESSION_TEST.RB_SCORE" | translate }}</ion-label
-      >
       <app-select
+        [label]="
+          isRB() ? 'REGISTRATION.SNOW.COMPRESSION_TEST.RB_SCORE' : 'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
+        "
         [(selectedValue)]="tapsFracture"
         [options]="tapsArray()"
         label="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"
@@ -93,7 +88,7 @@
     [saveDisabled]="!isValid()"
     (saveClicked)="ok()"
     (deleteClicked)="delete()"
-    [showDelete]="showDelete"
+    [showDelete]="showDelete()"
   >
   </app-modal-save-or-delete-buttons>
 </ion-content>

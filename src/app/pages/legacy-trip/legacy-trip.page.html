@@ -12,7 +12,7 @@
       <ion-col class="ion-no-padding">
         <ion-list lines="full">
           <app-kdv-select
-            [labelColor]="hasClicked && tripDto.TripTypeID === undefined ? 'danger' : 'medium'"
+            [color]="hasClicked && tripDto.TripTypeID === undefined ? 'danger' : 'medium'"
             [disabled]="isRunning || isLoading"
             label="TRIP.TRIP_TYPE"
             kdvKey="TripTypeKDV"

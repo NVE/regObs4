@@ -17,7 +17,7 @@
         label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
         suffix="cm"
         [color]="!isThicknessValid ? 'danger' : 'medium'"
-        [isValid]="isThicknessValid()"
+        [isValid]="okPressed() ? isThicknessValid() : true"
         errorMessage="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS_VALIDATION"
         [decimalPlaces]="2"
         [convertRatio]="100"
@@ -38,9 +38,6 @@
       >
       </app-kdv-select>
       <ion-item>
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE" | translate }}</ion-label
-        >
         <app-select
           [(selectedValue)]="grainSizeAvg"
           [options]="grainSizeOptions"
@@ -80,9 +77,6 @@
       >
       </app-kdv-select>
       <ion-item>
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE" | translate }}</ion-label
-        >
         <app-select
           [(selectedValue)]="grainSizeAvgMax"
           [options]="grainSizeOptions"

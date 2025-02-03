@@ -1,12 +1,11 @@
-import { IonItem, IonLabel } from '@ionic/angular/standalone';
+import { IonItem } from '@ionic/angular/standalone';
 import { Component, ChangeDetectionStrategy, inject, input, model, computed, Signal } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
-import { NgClass, NgIf, AsyncPipe } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
-import { TranslatePipe } from '@ngx-translate/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 type FilterFunc = (value: number) => boolean;
@@ -16,7 +15,7 @@ type FilterFunc = (value: number) => boolean;
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonItem, IonLabel, NgClass, NgIf, SelectComponent, TranslatePipe],
+  imports: [IonItem, NgIf, SelectComponent],
 })
 export class KdvSelectComponent {
   private kdvService = inject(KdvService);
@@ -26,12 +25,11 @@ export class KdvSelectComponent {
   readonly value = model<number>();
   readonly showZeroValues = input(false);
   readonly disabled = input(false);
-  readonly labelColor = input('medium');
   readonly showResetButton = input(true);
   readonly useDescription = input<boolean>();
   readonly filter = input<FilterFunc>();
   readonly getIconFunc = input<(kdvElement: KdvElement) => string>();
-  readonly obsLocMode = input(false);
+  readonly color = input<string>();
 
   selectOptionsResource = rxResource({
     request: () => this.kdvKey(),

@@ -29,6 +29,7 @@ import { EditImagesComponent } from '../../../components/edit-images/edit-images
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
+import { NgIf } from '@angular/common';
 
 /**
  * Start page / CRUD page for avalanche problems.
@@ -57,6 +58,7 @@ import { addCircleOutline } from 'ionicons/icons';
     IonToolbar,
     RegistrationContentWrapperComponent,
     TranslatePipe,
+    NgIf,
   ],
 })
 export class AvalancheProblemPage extends BasePage {

@@ -94,18 +94,15 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   isDesktopPlatform?: boolean;
   version: AppVersion = version;
 
-  get appModeOptions() {
-    const options: SelectOption[] = [
-      { id: 'PROD', text: 'Regobs' },
-      { id: 'DEMO', text: 'Demo Regobs' },
-      {
-        id: 'TEST',
-        text: 'Test Regobs',
-        disabled: this.userSettings ? !this.userSettings.featureToggleDeveloperMode : true,
-      },
-    ];
-    return options;
-  }
+  appModeOptions = [
+    { id: 'PROD', text: 'Regobs' },
+    { id: 'DEMO', text: 'Demo Regobs' },
+    {
+      id: 'TEST',
+      text: 'Test Regobs',
+      // disabled: this.userSettings ? !this.userSettings.featureToggleDeveloperMode : true,
+    },
+  ];
 
   constructor() {
     addIcons({ refresh, mailOutline, medkit });

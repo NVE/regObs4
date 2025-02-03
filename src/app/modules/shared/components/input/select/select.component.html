@@ -1,5 +1,9 @@
 <ng-container *ngIf="isApp; else popover">
+  <ion-label color="medium" position="stacked">
+    {{ label() | translate }}
+  </ion-label>
   <ion-button
+    class="open-actionsheet"
     role="combobox"
     aria-expanded="false"
     aria-haspopup="dialog"
@@ -18,15 +22,39 @@
 
 <ng-template #popover>
   <ion-select
+    [label]="label() | translate"
+    labelPlacement="stacked"
     [placeholder]="valueText() | translate"
     [disabled]="disabled()"
     cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
     interface="popover"
     [(ngModel)]="selectedValue"
-    justify="end"
+    justify="start"
   >
+    <!--
+  [interfaceOptions]="popoverOptions()"
+    Kan sette cssClass dynamisk basert på om reset vises eller ikke.
+    Hvis reset vises, style første element i lista med rød farge :)
+  -->
+    <!-- @if (resetEnabled()) {
+      <ion-select-option [value]="undefined">
+        <ion-text color="danger">{{ "DIALOGS.RESET" | translate }}</ion-text>
+      </ion-select-option>
+    } -->
     <ion-select-option *ngFor="let option of filteredOptions()" [value]="option.id">
       {{ option.text | translate }}
     </ion-select-option>
   </ion-select>
+  @if (resetEnabled()) {
+    <ion-button
+      class="reset"
+      fill="outline"
+      slot="end"
+      [attr.aria-label]="'DIALOGS.RESET' | translate"
+      (click)="reset()"
+    >
+      {{ "DIALOGS.RESET" | translate }}
+      <ion-icon slot="end" name="close-circle-outline" aria-hidden="true"></ion-icon>
+    </ion-button>
+  }
 </ng-template>

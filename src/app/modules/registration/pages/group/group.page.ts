@@ -2,8 +2,6 @@ import { Component, NgZone, inject } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';
-import { BasePageService } from '../base-page-service';
-import { ActivatedRoute } from '@angular/router';
 import {
   IonBackButton,
   IonButtons,
@@ -24,7 +22,6 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
 @Component({
   selector: 'app-group',

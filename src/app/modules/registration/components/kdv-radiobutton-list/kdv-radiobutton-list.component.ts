@@ -9,6 +9,8 @@ import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 
+// TODO: Kan slettes?
+
 @Component({
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',

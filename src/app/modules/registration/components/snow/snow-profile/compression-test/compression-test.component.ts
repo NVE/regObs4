@@ -33,6 +33,9 @@ export class CompressionTestComponent {
     if (!this.compressionTestListModal) {
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
+        componentProps: {
+          uuid: this.draft().uuid,
+        },
       });
       this.compressionTestListModal.present();
       await this.compressionTestListModal.onDidDismiss();

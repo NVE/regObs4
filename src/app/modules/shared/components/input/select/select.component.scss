@@ -1,4 +1,4 @@
-ion-button {
+ion-button.open-actionsheet {
   left: 0;
   top: 0;
   margin-left: 0;
@@ -24,6 +24,10 @@ ion-text {
 
 ion-select {
   max-width: 100%;
+
+  &::part(label) {
+    text-transform: uppercase;
+  }
 }
 
 .select-icon {
@@ -39,13 +43,13 @@ ion-select {
   width: 100%;
   align-self: stretch;
   max-width: 100%;
-  --padding-start: 0px;
-  --padding-end: 0px;
-  --padding-top: 8px;
-  --padding-bottom: 8px;
-  padding-left: var(--padding-start);
-  padding-right: var(--padding-end);
-  padding-top: var(--padding-top);
-  padding-bottom: var(--padding-bottom);
+  // --padding-start: 0px;
+  // --padding-end: 0px;
+  // --padding-top: 8px;
+  // --padding-bottom: 8px;
+  // padding-left: var(--padding-start);
+  // padding-right: var(--padding-end);
+  // padding-top: var(--padding-top);
+  // padding-bottom: var(--padding-bottom);
   display: flex;
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular/standalone';
 import deepEqual from 'fast-deep-equal';
 import { map, Observable, distinctUntilChanged, combineLatest } from 'rxjs';
@@ -20,6 +20,8 @@ import { ThumbnailsComponent } from '../../../thumbnails/thumbnails.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
+import { injectUuidFromRouteParameters } from 'src/app/core/services/draft/get-uuid';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'EditImagesBarComponent';
 
@@ -34,39 +36,49 @@ const DEBUG_TAG = 'EditImagesBarComponent';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, NgIf, ThumbnailsComponent, TranslatePipe],
 })
-export class EditImagesBarComponent {
+export class EditImagesBarComponent implements OnInit {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
   private logger = inject(LoggingService);
   private newAttachmentService = inject(NewAttachmentService);
 
-  readonly draft = input.required<RegistrationDraft>();
+  uuid = injectUuidFromRouteParameters();
+  draft = this.draftRepository.getDraftSignal(this.uuid);
+  geoHazardTid = computed(() => this.draft()?.registration.GeoHazardTID || 0);
   readonly registrationTid = input.required<number>();
   readonly modalTitlePostfix = input<string>(); //used to build the title in the modal
   readonly readonly = input(false);
 
-  attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.draft().uuid);
+  attachments$?: Observable<ExistingOrNewAttachment[]>;
 
   constructor() {
     addIcons({ camera });
   }
 
+  ngOnInit(): void {
+    this.attachments$ = this.getNewAndExistingAttachmentsForDraft$(this.uuid);
+  }
+
   async showEditImagesPage(): Promise<void> {
+    const draft = this.draft();
+    if (!draft) {
+      throw new Error('No draft found');
+    }
     const modal = await this.modalController.create({
       component: EditImagesPage,
       componentProps: {
         registrationTid: this.registrationTid(),
-        geoHazard: this.draft().registration.GeoHazardTID,
-        draftUuid: this.draft().uuid,
+        geoHazard: draft.registration.GeoHazardTID,
+        draftUuid: draft.uuid,
         modalTitlePostfix: this.modalTitlePostfix(),
-        existingAttachments: this.draft().registration.Attachments,
+        existingAttachments: draft.registration.Attachments,
       },
       cssClass: 'edit-images-page-modal',
     });
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    const draft = this.draft();
+
     if (data != null && !deepEqual(data.existingAttachments, draft.registration.Attachments)) {
       this.logger.debug('Existing (remote) attachments changed, saving draft...', DEBUG_TAG, {
         changed: data.existingAttachments,

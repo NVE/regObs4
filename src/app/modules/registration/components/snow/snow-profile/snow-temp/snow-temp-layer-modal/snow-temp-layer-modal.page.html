@@ -13,7 +13,8 @@
         <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT" | translate }} </ion-label>
       </ion-list-header>
       <app-numeric-input
-        [(value)]="depth"
+        [value]="depth() != null ? depth() : proposedDepth()"
+        (valueChange)="depth.set($event)"
         label="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.DEPTH"
         [max]="999"
         [min]="0"
@@ -28,6 +29,20 @@
         [min]="-70"
         suffix="°C"
         [decimalPlaces]="2"
+      ></app-numeric-input>
+    </ion-list>
+    <ion-list lines="full">
+      <ion-list-header class="ion-text-uppercase">
+        <ion-label> {{ "Sett neste dybde automatisk?" | translate }} </ion-label>
+      </ion-list-header>
+      <app-numeric-input
+        [(value)]="nextDepth"
+        label="Verdi i cm"
+        [max]="20"
+        [min]="0"
+        suffix="cm"
+        [decimalPlaces]="0"
+        [convertRatio]="100"
       ></app-numeric-input>
     </ion-list>
     <ion-grid class="ion-no-padding">

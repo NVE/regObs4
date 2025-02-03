@@ -27,18 +27,21 @@ import { httpFactory } from './app/modules/auth/factories/http-factory';
 import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 import { authFactory } from './app/modules/auth/factories/auth-factory';
+import { register } from 'swiper/element/bundle';
 
 if (environment.production) {
   enableProdMode();
 }
 
 function startApp() {
+  register();
+
   console.log('starting app');
   bootstrapApplication(AppComponent, {
     providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       // TODO: Gjør det mulig å aktivere deaktivere ios mode via en knapp i headeren hvis på appMode er test
-      provideIonicAngular({}), // mode: 'ios'
+      provideIonicAngular({ useSetInputAPI: true }), // mode: 'ios'
 
       // Auth related - kan evt flyttes til egen fil eller i APP_PROVIDERS
       {

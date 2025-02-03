@@ -195,34 +195,19 @@ export class AvalancheObsPage extends BasePage {
   }
 
   groupValidate() {
-    this.isCasualtiesValid = IncidentValidation.onCasualtiesNumChange(this.incident);
-    this.isDeadValid = IncidentValidation.onDeadNumChange(this.incident);
+    this.isCasualtiesValid = IncidentValidation.isCasualtiesValid(this.incident);
     this.onHarmedChange();
   }
 
   onHarmedChange() {
-    const harmedNum = this.incident.HarmedNum || 0;
-    const involvedNum = this.incident.InvolvedNum || 0;
-    const deadNum = this.incident.DeadNum || 0;
-    const casualtiesNum = this.incident.CasualtiesNum || 0;
-    if (
-      (isNaNOrNullish(this.incident.CasualtiesNum) &&
-        isNaNOrNullish(this.incident.DeadNum) &&
-        harmedNum > involvedNum) ||
-      (isNaNOrNullish(this.incident.DeadNum) && harmedNum > involvedNum)
-    ) {
-      this.isHarmedValid = false;
-    } else if (
-      !isNaNOrNullish(this.incident.DeadNum) &&
-      (deadNum + harmedNum > casualtiesNum || deadNum + harmedNum > involvedNum)
-    ) {
-      this.isHarmedValid = false;
-      this.isDeadValid = false;
-      this.isErrorMessageHarmAndDead = true;
-    } else {
-      this.isHarmedValid = true;
-      this.isErrorMessageHarmAndDead = false;
-    }
+    const deadHasValue = this.incident.DeadNum != null;
+    const harmedHasValue = this.incident.HarmedNum != null;
+    const maxDeadAndHarmed = this.incident.CasualtiesNum || this.incident.InvolvedNum;
+    const nDeadAndHarmed = (this.incident.HarmedNum || 0) + (this.incident.DeadNum || 0);
+    const isDeadAndHarmedTooMany = maxDeadAndHarmed != null ? nDeadAndHarmed > maxDeadAndHarmed : false;
+    this.isErrorMessageHarmAndDead = deadHasValue && harmedHasValue ? isDeadAndHarmedTooMany : false;
+    this.isDeadValid = deadHasValue ? !isDeadAndHarmedTooMany : true;
+    this.isHarmedValid = harmedHasValue ? !isDeadAndHarmedTooMany : true;
   }
 
   override isValid() {

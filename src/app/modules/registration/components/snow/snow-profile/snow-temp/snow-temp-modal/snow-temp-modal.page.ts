@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -17,8 +17,6 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
-import cloneDeep from 'clone-deep';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
@@ -27,7 +25,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
-import { getDraftSignal } from 'src/app/core/services/draft/draft-signal';
+import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 @Component({
   selector: 'app-snow-temp-modal',
@@ -60,21 +58,14 @@ export class SnowTempModalPage {
   private draftRepo = inject(DraftRepositoryService);
 
   readonly uuid = input.required<string>();
-  private draft = getDraftSignal(this.uuid);
+  private draft = this.draftRepo.getDraftSignal(this.uuid);
+  private backupHandler = injectBackupHandler({ uuid: this.uuid });
+
   layers = computed(() => this.draft()?.registration.SnowProfile2?.SnowTemp?.Layers || []);
   layerModal?: HTMLIonModalElement | null;
-  backup?: RegistrationDraft;
 
   constructor() {
     addIcons({ addCircleOutline });
-    effect(() => {
-      if (this.backup == null) {
-        const draft = this.draft();
-        if (draft) {
-          this.backup = cloneDeep(draft);
-        }
-      }
-    });
   }
 
   ok() {
@@ -82,10 +73,10 @@ export class SnowTempModalPage {
   }
 
   async cancel() {
-    if (this.backup) {
-      await this.draftRepo.save(this.backup);
+    if (await this.backupHandler.confirmCancel()) {
+      await this.backupHandler.restoreBackup();
+      this.modalController.dismiss();
     }
-    this.modalController.dismiss();
   }
 
   addLayerBottom() {

@@ -677,6 +677,7 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "CONFIRM_CANCEL": "Dette vil slette alle endringer.",
         "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",

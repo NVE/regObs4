@@ -11,7 +11,7 @@
   ></app-map>
   <div class="bottom-background flex-row">
     <div class="bottom-info flex-col flex-grow">
-      <div *ngIf="setObsTime() && isDesktop" class="flex-row">
+      <div *ngIf="setObsTime() && isDesktop && distanceToObservationText !== '0 m'" class="flex-row">
         <!-- TODO: horisontal dist box bør ikke vises vi ikke har posisjon -->
         <div class="horizontal-dist-box flex-row flex-center flex-space">
           <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl()"></svg-icon>
@@ -122,12 +122,35 @@
           <div class="flex-row">
             <div class="flex-grow box edit-button no-padding">
               <ion-item>
+                <!-- Kan vurdere en sånn her løsning også på mobil -->
+                <!-- <ion-datetime
+                  [showDefaultTimeLabel]="true"
+                  id="obs-datetime"
+                  [locale]="locale"
+                  [max]="maxDate"
+                  [firstDayOfWeek]="1"
+                  [preferWheel]="!isDesktop"
+                  size="cover"
+                  [formatOptions]="{
+                    date: {
+                      weekday: 'long',
+                      month: 'long',
+                      day: '2-digit',
+                    },
+                    time: {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    },
+                  }"
+                ></ion-datetime> -->
+
                 <!-- TODO: Må hookes opp til draft + oversettelser. Vurder kort dato på mobil. -->
-                <ion-icon name="calendar-outline"></ion-icon>&nbsp;
-                <ion-datetime-button datetime="obs-datetime"></ion-datetime-button>
+                <!-- <ion-icon name="calendar-outline"></ion-icon>&nbsp; -->
+                <ion-datetime-button datetime="obs-datetime" color="secondary"></ion-datetime-button>
                 <ion-modal [keepContentsMounted]="true">
                   <ng-template>
                     <ion-datetime
+                      [(ngModel)]="localDate"
                       id="obs-datetime"
                       [locale]="locale"
                       [max]="maxDate"
@@ -152,6 +175,7 @@
                 </ion-modal>
 
                 @if (isDesktop) {
+                  <!-- For å slippe bruke "hjul" på desktop -->
                   <ion-input type="time" label="Klokka" inputmode="numeric" required="true" slot="end"></ion-input>
                 }
               </ion-item>
@@ -165,15 +189,14 @@
               class="flex-grow selectors"
               label="REGISTRATION.OBS_LOCATION.SOURCE"
               kdvKey="SourceKDV"
-              labelColor="rgb(68, 68, 68)"
-              [obsLocMode]="true"
               [(value)]="sourceTid"
             ></app-kdv-select>
             <ion-item class="flex-grow selectors">
-              <ion-label color="rgb(68, 68, 68)" position="stacked">
-                {{ "REGISTRATION.OBS_LOCATION.UNCERTAINTY" | translate }}</ion-label
-              >
+              <!-- <ion-label color="rgb(68, 68, 68)" position="stacked">
+                {{  | translate }}</ion-label
+              > -->
               <app-select
+                label="REGISTRATION.OBS_LOCATION.UNCERTAINTY"
                 [(selectedValue)]="spatialAccuracy"
                 [options]="spatialAccuracyOptions"
                 class="no-padding"

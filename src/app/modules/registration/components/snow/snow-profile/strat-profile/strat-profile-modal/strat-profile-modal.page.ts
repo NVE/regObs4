@@ -36,9 +36,8 @@ import { cloudDownload, addCircleOutline } from 'ionicons/icons';
 import { calculateTotalThickness } from '../strat-profile-helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import cloneDeep from 'clone-deep';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
+import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 /**
  * Add layers, drag to change layer ordering, fetch layers from other profiles.
@@ -83,7 +82,8 @@ export class StratProfileModalPage {
   private draftRepository = inject(DraftRepositoryService);
 
   uuid = input.required<string>();
-  draft = toSignal(this.draftRepository.getDraft$(this.uuid()));
+  draft = this.draftRepository.getDraftSignal(this.uuid);
+  private backupHandler = injectBackupHandler({ uuid: this.uuid });
 
   layers = linkedSignal(() => this.draft()?.registration.SnowProfile2?.StratProfile?.Layers || []);
   hasLayers = computed(() => this.layers().length > 0);
@@ -91,16 +91,8 @@ export class StratProfileModalPage {
 
   private layerModal?: HTMLIonModalElement | null;
 
-  private draftInitClone?: RegistrationDraft;
-
   constructor() {
     addIcons({ cloudDownload, addCircleOutline });
-    effect(() => {
-      const draft = this.draft();
-      if (draft != null && this.draftInitClone == null) {
-        this.draftInitClone = cloneDeep(draft);
-      }
-    });
   }
 
   getDraftUpdate(): RegistrationDraft {
@@ -129,10 +121,10 @@ export class StratProfileModalPage {
   }
 
   async cancel(): Promise<void> {
-    if (this.draftInitClone) {
-      await this.draftRepository.save(this.draftInitClone); // Reset to inital state
+    if (await this.backupHandler.confirmCancel()) {
+      await this.backupHandler.restoreBackup();
+      this.modalController.dismiss();
     }
-    this.modalController.dismiss();
   }
 
   addLayerTop(): void {
@@ -155,9 +147,6 @@ export class StratProfileModalPage {
       if (!this.layerModal) {
         this.layerModal = await this.modalController.create({
           component: StratProfileLayerHistoryModalPage,
-          componentProps: {
-            draft: this.draft,
-          },
         });
         this.layerModal.present();
         await this.layerModal.onDidDismiss();
@@ -173,7 +162,7 @@ export class StratProfileModalPage {
       this.layerModal = await this.modalController.create({
         component: StratProfileLayerModalPage,
         componentProps: {
-          draft: this.getDraftUpdate(),
+          uuid: this.uuid(),
           index,
         },
       });

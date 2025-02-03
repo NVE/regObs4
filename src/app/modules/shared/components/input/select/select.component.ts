@@ -1,13 +1,14 @@
-import { Component, inject, input, model, computed } from '@angular/core';
+import { Component, inject, input, model, computed, Signal } from '@angular/core';
 import {
   ActionSheetController,
   IonButton,
   IonIcon,
+  IonLabel,
   IonSelect,
   IonSelectOption,
   IonText,
 } from '@ionic/angular/standalone';
-import { ActionSheetButton } from '@ionic/core';
+import { ActionSheetButton, IonSelectCustomEvent, SelectChangeEventDetail } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';
@@ -15,7 +16,7 @@ import { firstValueFrom } from 'rxjs';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { caretDownSharp } from 'ionicons/icons';
+import { caretDownSharp, closeCircleOutline } from 'ionicons/icons';
 import { Capacitor } from '@capacitor/core';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
@@ -25,14 +26,14 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe],
+  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe, IonLabel],
 })
 export class SelectComponent {
   private actionSheetController = inject(ActionSheetController);
   private translateService = inject(TranslateService);
   platform = inject(Platform);
 
-  readonly label = input<string>();
+  readonly label = input<string>('');
   readonly subTitle = input<string>();
   readonly selectedValue = model<SelectOption['id']>();
   readonly options = input<Array<SelectOption>>([]);
@@ -45,9 +46,16 @@ export class SelectComponent {
   private selectedOption = computed(() => (this.options() || []).find((x) => x.id === this.selectedValue()));
   valueText = computed(() => this.selectedOption()?.text || '');
   valueIcon = computed(() => this.selectedOption()?.icon);
+  resetEnabled = computed(() => this.showReset() && this.selectedValue() != null);
+  popoverOptions = computed(() => {
+    if (this.resetEnabled()) {
+      return { cssClass: 'select-options-with-reset' };
+    }
+    return {};
+  });
 
   constructor() {
-    addIcons({ caretDownSharp });
+    addIcons({ caretDownSharp, closeCircleOutline });
   }
 
   private async getActionSheetButtons() {
@@ -105,5 +113,9 @@ export class SelectComponent {
       });
       await actionSheet.present();
     }
+  }
+
+  reset() {
+    this.selectedValue.set(undefined);
   }
 }

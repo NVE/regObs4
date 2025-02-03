@@ -10,6 +10,7 @@ import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparato
 import { BlobImageComponent } from '../blob-image/blob-image.component';
 import { RemoteImageComponent } from '../../../shared/components/remote-image/remote-image.component';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { injectUuidFromRouteParameters } from 'src/app/core/services/draft/get-uuid';
 
 /**
  * Show thumbnails of all images for given registration.
@@ -25,14 +26,15 @@ export class ThumbnailsComponent {
   private newAttachmentService = inject(NewAttachmentService);
 
   readonly attachments = input<ExistingOrNewAttachment[]>(); //attachments for given draft registration
-  readonly draftUuid = input.required<string>();
+
+  uuid = injectUuidFromRouteParameters();
 
   private attachments$ = toObservable(this.attachments).pipe(map((a) => a || []));
   private newAttachments$ = this.attachments$.pipe(
     map((attachments) => attachments.filter((a) => a.type === 'new')),
     map((attachments) => attachments.map((a) => a.attachment as AttachmentUploadEditModel)),
     distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
-    this.newAttachmentService.addBlobs(this.draftUuid())
+    this.newAttachmentService.addBlobs(this.uuid)
   );
   private existingAttachments$ = this.attachments$.pipe(
     map((attachments) => attachments.filter((a) => a.type === 'existing')),

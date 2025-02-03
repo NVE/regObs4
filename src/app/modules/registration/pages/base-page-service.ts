@@ -2,8 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getRegistrationName } from 'src/app/modules/common-registration/registration.helpers';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AlertController } from '@ionic/angular/standalone';
-import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
@@ -18,8 +16,6 @@ const DEBUG_TAG = 'BasePageService';
 export class BasePageService {
   private draftRepositoryService = inject(DraftRepositoryService);
   private newAttachmentService = inject(NewAttachmentService);
-  private alertController = inject(AlertController);
-  private translateService = inject(TranslateService);
   private loggingService = inject(LoggingService);
   private confirmationModal = inject(ConfirmationModalService);
 
@@ -50,35 +46,34 @@ export class BasePageService {
    * @return the draft without the registrations
    */
   async delete(draft: RegistrationDraft, registrationTids: RegistrationTid[]): Promise<RegistrationDraft> {
-    // if (registrationTids?.length > 0) {
-    //   const draftCopy: RegistrationDraft = {
-    //     ...draft,
-    //     registration: {
-    //       ...draft.registration,
-    //     },
-    //   };
-    //   const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
-    //   for (const registrationTid of registrationTids) {
-    //     const registrationName = getRegistrationName(registrationTid);
-    //     delete draftCopy.registration[registrationName];
-    //     for (const attachment of attachments) {
-    //       if (attachment.RegistrationTID === registrationTid) {
-    //         try {
-    //           this.newAttachmentService.removeAttachment(draft.uuid, attachment.id);
-    //         } catch (error) {
-    //           this.loggingService.error(
-    //             error,
-    //             DEBUG_TAG,
-    //             `Remove image failed, attachmentId = ${attachment.id}, registration ID = ${draft.uuid}`
-    //           );
-    //         }
-    //       }
-    //     }
-    //   }
-    //   //await this.draftRepository.save(draftCopy);
-    //   return draftCopy;
-    // }
-    // return draft;
-    throw new Error('Not implemented');
+    if (registrationTids?.length > 0) {
+      const draftCopy: RegistrationDraft = {
+        ...draft,
+        registration: {
+          ...draft.registration,
+        },
+      };
+      const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
+      for (const registrationTid of registrationTids) {
+        const registrationName = getRegistrationName(registrationTid);
+        delete draftCopy.registration[registrationName];
+        for (const attachment of attachments) {
+          if (attachment.RegistrationTID === registrationTid) {
+            try {
+              this.newAttachmentService.removeAttachment(draft.uuid, attachment.id);
+            } catch (error) {
+              this.loggingService.error(
+                error,
+                DEBUG_TAG,
+                `Remove image failed, attachmentId = ${attachment.id}, registration ID = ${draft.uuid}`
+              );
+            }
+          }
+        }
+      }
+      //await this.draftRepository.save(draftCopy);
+      return draftCopy;
+    }
+    return draft;
   }
 }
