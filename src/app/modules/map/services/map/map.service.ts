@@ -199,6 +199,7 @@ export class MapService {
 
   private getMapMetersChanged() {
     return this.mapView$.pipe(
+      debounceTime(500), // Det må være rolig 500ms før den emiter nyeste verdi
       // As pairWise(), but always emiting first value
       scan(([, lastVal], newVal) => [lastVal, newVal], [null, this._mapViewSubject.value]),
       map(([prev, next]) => {
@@ -223,9 +224,10 @@ export class MapService {
 
   private getMapViewThatHasRelevantChange(metersBuffer = 10) {
     return this.mapView$.pipe(
-      debounceTime(500), // Det må være rolig 500ms før den emiter nyeste verdi
       bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
       switchMap((buffer) =>
+        // Hvis vi har buffra mapview pga liten endring - fortsett med siste element i lista.
+        // Hvs ikke, bruk ferskeste mapview..
         buffer.length > 0 && !!buffer[buffer.length - 1] ? of(buffer[buffer.length - 1]) : this.mapView$.pipe(take(1))
       ),
       tap((val) => this.loggingService.debug('MapView has relevant change!', DEBUG_TAG, val)),
