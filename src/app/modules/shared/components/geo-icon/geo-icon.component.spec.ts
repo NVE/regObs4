@@ -23,17 +23,20 @@ describe('GeoIconComponent', () => {
   });
 
   it('geoHazard snow should return class name snow', () => {
-    component.geoHazards = [GeoHazard.Snow];
+    fixture.componentRef.setInput('geoHazards', [GeoHazard.Snow]);
+    // component.geoHazards = [GeoHazard.Snow];
     expect(component.geoClass).toEqual('snow');
   });
 
   it('geoHazard water and dirt should return class name water-dirt', () => {
-    component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
+    fixture.componentRef.setInput('geoHazards', [GeoHazard.Water, GeoHazard.Soil]);
+    // component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
     expect(component.geoClass).toEqual('water-dirt');
   });
 
   it('geoHazard water and dirt should return svg src water_dirt.svg', () => {
-    component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
+    fixture.componentRef.setInput('geoHazards', [GeoHazard.Water, GeoHazard.Soil]);
+    // component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
     expect(component.iconSrc).toEqual('/assets/icon/water_dirt.svg');
   });
 });

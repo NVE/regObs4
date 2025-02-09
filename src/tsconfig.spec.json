@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "typeRoots": ["../node_modules/@types"],
-    "types": ["jasmine", "node"]
+    "types": ["jasmine", "node"],
+    "strict": false,
+    "noImplicitReturns": false
   },
   "files": ["test.ts", "polyfills.ts"],
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.d.ts"],
 }

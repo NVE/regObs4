@@ -34,6 +34,7 @@ describe('isPackageOutdated', () => {
           zMax: 4,
           template: '1-2-3',
           lastModified: '2021-01-01T00:00:01Z',
+          url: 'test',
         },
         '2': {
           mapId: '2',
@@ -41,6 +42,7 @@ describe('isPackageOutdated', () => {
           zMax: 4,
           template: '1-2-3',
           lastModified: '2021-01-02T00:00:01Z',
+          url: 'test',
         },
       },
     };
@@ -53,6 +55,7 @@ describe('isPackageOutdated', () => {
       rootTile: { z: 1, x: 2, y: 3 },
       zMax: 4,
       template: '1-2-3',
+      url: 'test',
     };
 
     const mapWithEmptyLastModified: OfflineTilesMetadata = {
@@ -61,6 +64,7 @@ describe('isPackageOutdated', () => {
       zMax: 4,
       template: '1-2-3',
       lastModified: '',
+      url: 'test',
     };
 
     const oldDownloadedPackage: OfflineMapPackage = {
@@ -90,6 +94,7 @@ describe('isPackageOutdated', () => {
           zMax: 4,
           template: '1-2-3',
           lastModified: '2021-01-01T00:00:01Z',
+          url: 'test',
         },
         '2': {
           mapId: '1',
@@ -97,6 +102,7 @@ describe('isPackageOutdated', () => {
           zMax: 4,
           template: '1-2-3',
           lastModified: '2021-01-03T00:00:01Z',
+          url: 'test',
         },
       },
     };

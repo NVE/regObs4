@@ -12,7 +12,11 @@ import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import {
+  GeneralObservationEditModel,
+  RegistrationEditModel,
+  RegistrationViewModel,
+} from 'src/app/modules/common-regobs-api';
 import { provideTranslateService } from '@ngx-translate/core';
 
 //key-value-store used to mock the database
@@ -84,7 +88,7 @@ describe('DraftRepositoryService', () => {
     expect(draft.simpleMode).toBe(false);
     expect(draft.registration.GeoHazardTID).toBe(GeoHazard.Ice);
     expect(draft.lastSavedTime).toBe(undefined); //not saved yet
-    expect(draft.registration.DtObsTime).toBe(null);
+    expect((draft.registration as Partial<RegistrationEditModel>).DtObsTime).toBe(null);
     expect(draft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
     expect(draft.registration.Attachments).toEqual([]);
   });
@@ -224,7 +228,7 @@ describe('DraftRepositoryService', () => {
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
     let i = 0;
-    const draftsResult = [];
+    const draftsResult: RegistrationDraft[][] = [];
     const streamFinished = new Promise<void>((resolve) => {
       service.drafts$.subscribe((drafts) => {
         draftsResult.push(drafts);
@@ -326,7 +330,7 @@ describe('DraftRepositoryService', () => {
   }));
 
   it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
-    let draft: RegistrationDraft = {
+    let draft: RegistrationDraft | null = {
       ...(await service.create(GeoHazard.Ice)),
       uuid: 'test',
     };
@@ -374,7 +378,7 @@ describe('DraftRepositoryService', () => {
   }));
 
   it('saveAsDraft works', async () => {
-    const viewModel: RegistrationViewModel = {
+    const viewModel = {
       RegId: 42,
       ExternalReferenceId: 'externalReferenceId',
       DtObsTime: 'obsTime',
@@ -383,7 +387,7 @@ describe('DraftRepositoryService', () => {
         Comment: 'comment',
         GeoHazardTID: GeoHazard.Ice,
       },
-    };
+    } as RegistrationViewModel;
     await service.saveAsDraft(viewModel);
 
     //the copy should be saved in the database
@@ -432,8 +436,8 @@ describe('DraftRepositoryService', () => {
     });
 
     // Check that this is a new object
-    newDraft.registration.GeneralObservation.Comment = 'Test';
-    expect(draft.registration.GeneralObservation.Comment).toBe('comment');
+    (newDraft.registration.GeneralObservation as GeneralObservationEditModel).Comment = 'Test';
+    expect((draft.registration.GeneralObservation as GeneralObservationEditModel).Comment).toBe('comment');
   });
 
   it('hasAttachments() should work', async () => {
