@@ -252,11 +252,11 @@ describe('DraftToRegistrationService', () => {
     'Uploads drafts once and deletes the draft after upload, ' + 'even if drafts$ changes while doing an upload',
     fakeAsync(() => {
       // Make addUpdateDeleteRegService.add return a registration after 500 ms
-      const registration: RegistrationViewModel = {
+      const registration = {
         RegId: 123456,
         GeoHazardTID: 10,
         DtObsTime: 'Test',
-      };
+      } as RegistrationViewModel;
       addUpdateDeleteRegService.add.and.callFake(() => {
         return new Promise((resolve) => {
           setTimeout(() => resolve(registration), 500);

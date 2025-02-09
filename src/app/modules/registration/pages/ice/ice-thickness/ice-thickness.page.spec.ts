@@ -7,6 +7,8 @@ import { NewAttachmentService } from 'src/app/modules/common-registration/regist
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { provideRouter } from '@angular/router';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { IceThicknessEditModel } from 'src/app/modules/common-regobs-api';
 
 describe('IceThicknessPage', () => {
   let component: IceThicknessPage;
@@ -31,8 +33,8 @@ describe('IceThicknessPage', () => {
         GeoHazardTID: GeoHazard.Ice,
         IceThickness: {},
       },
-      uuid: null,
-      syncStatus: null,
+      uuid: 'test',
+      syncStatus: SyncStatus.Draft,
       simpleMode: false,
     };
   });
@@ -66,7 +68,7 @@ describe('IceThicknessPage', () => {
   });
 
   it('fills out registration correctly', () => {
-    const iceThickness = component.draft.registration.IceThickness;
+    const iceThickness = component.draft.registration.IceThickness as IceThicknessEditModel;
     component.isWaterBefore = undefined;
     component.waterHeightBefore = 10;
     component.isWaterAfter = undefined;

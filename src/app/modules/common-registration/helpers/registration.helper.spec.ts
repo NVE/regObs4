@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 import { GeoHazard } from '../../common-core/models';
@@ -68,6 +69,13 @@ const viewModel: RegistrationViewModel = {
       ],
     },
   ],
+  DtRegTime: '',
+  ObsLocation: {
+    Latitude: 0,
+    Longitude: 0,
+  },
+  Observer: {},
+  RegId: 0,
 };
 
 describe('registration.helper', () => {
@@ -88,17 +96,17 @@ describe('registration.helper', () => {
   });
 
   it('hasAnyDataBesidesPropertyToExclude should return false if there is no other data except the excluded fields', () => {
-    expect(hasAnyDataBesidesPropertyToExclude(viewModel.AvalancheActivityObs[0], ['DtAvalancheTime'])).toBeFalse();
+    expect(hasAnyDataBesidesPropertyToExclude(viewModel.AvalancheActivityObs![0], ['DtAvalancheTime'])).toBeFalse();
   });
 
   it('hasAnyDataBesidesPropertyToExclude should return true if there is other data except the excluded fields', () => {
-    const copyObject = { ...viewModel.AvalancheActivityObs[0] };
+    const copyObject = { ...viewModel.AvalancheActivityObs?.[0] };
     copyObject.Comment = 'this test is good';
     expect(hasAnyDataBesidesPropertyToExclude(copyObject, ['DtAvalancheTime'])).toBeTrue();
   });
 
   it('Empty registrationTid should return all attachments', () => {
-    expect(getAllAttachmentsFromViewModel(viewModel).map((x) => x.UrlFormats['Medium'])).toEqual([
+    expect(getAllAttachmentsFromViewModel(viewModel).map((x) => x.UrlFormats!['Medium'])).toEqual([
       'snow',
       'common',
       'damage',
@@ -108,25 +116,25 @@ describe('registration.helper', () => {
 
   it('SnowProfile2 registrationTid should return profile', () => {
     expect(
-      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.SnowProfile2).map((x) => x.UrlFormats['Medium'])
+      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.SnowProfile2).map((x) => x.UrlFormats!['Medium'])
     ).toEqual(['snow']);
   });
 
   it('GeneralObservation registrationTid should return common attachment', () => {
     expect(
-      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.GeneralObservation).map((x) => x.UrlFormats['Medium'])
+      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.GeneralObservation).map((x) => x.UrlFormats!['Medium'])
     ).toEqual(['common']);
   });
 
   it('DamageObs registrationTid should return damage attachment', () => {
     expect(
-      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.DamageObs).map((x) => x.UrlFormats['Medium'])
+      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.DamageObs).map((x) => x.UrlFormats!['Medium'])
     ).toEqual(['damage']);
   });
 
   it('WaterLevel2 registrationTid should return water attachment', () => {
     expect(
-      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.WaterLevel2).map((x) => x.UrlFormats['Medium'])
+      getAllAttachmentsFromViewModel(viewModel, RegistrationTid.WaterLevel2).map((x) => x.UrlFormats!['Medium'])
     ).toEqual(['water']);
   });
 });

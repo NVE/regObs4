@@ -1,15 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NumericInputComponent } from './numeric-input.component';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 
 describe('NumericInputComponent', () => {
   let component: NumericInputComponent;
+  let fixture: ComponentFixture<NumericInputComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideIonicAngular()],
     });
-    const fixture = TestBed.createComponent(NumericInputComponent);
+    fixture = TestBed.createComponent(NumericInputComponent);
     component = fixture.componentInstance;
   });
 
@@ -18,19 +19,19 @@ describe('NumericInputComponent', () => {
   });
 
   it('displayValue should handle null values', () => {
-    component.value = undefined;
+    fixture.componentRef.setInput('value', undefined);
     expect(component.displayValue).toBeUndefined();
 
-    component.value = null;
+    fixture.componentRef.setInput('value', null);
     expect(component.displayValue).toBeUndefined();
 
-    component.value = 0;
+    fixture.componentRef.setInput('value', 0);
     expect(component.displayValue).toEqual('0');
 
-    component.convertRatio = 10;
-    component.value = 0;
+    fixture.componentRef.setInput('value', 0);
+    fixture.componentRef.setInput('convertRatio', 20);
     expect(component.displayValue).toEqual('0');
-    component.value = 1;
+    fixture.componentRef.setInput('value', 1);
     expect(component.displayValue).toEqual('10');
   });
 });

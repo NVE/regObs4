@@ -8,9 +8,17 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 
 describe('AvalancheObsPage', () => {
   let component: AvalancheObsPage;
+  const getIncident = () => {
+    if (component.draft?.registration.Incident != null) {
+      return component.draft.registration.Incident;
+    }
+    throw new Error('No incident available');
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -34,8 +42,8 @@ describe('AvalancheObsPage', () => {
           DtAvalancheTime: new Date(2020, 0, 1).toISOString(),
         },
       },
-      uuid: null,
-      syncStatus: null,
+      uuid: 'test',
+      syncStatus: SyncStatus.Draft,
       simpleMode: false,
     };
   });
@@ -44,74 +52,74 @@ describe('AvalancheObsPage', () => {
   });
 
   it('Number of casualties is given without number involved, is valid', () => {
-    component.draft.registration.Incident.CasualtiesNum = 7;
+    getIncident().CasualtiesNum = 7;
     expect(component.isValid()).toBeTrue();
   });
 
   it('Number of dead is given without number casualties or involved, is valid', () => {
-    component.draft.registration.Incident.DeadNum = 7;
+    getIncident().DeadNum = 7;
     expect(component.isValid()).toBeTrue();
   });
 
   it('Number of casualties higher than number involved, is not valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 5;
-    component.draft.registration.Incident.CasualtiesNum = 7;
+    getIncident().InvolvedNum = 5;
+    getIncident().CasualtiesNum = 7;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of dead higher than number of casualties, is not valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 6;
-    component.draft.registration.Incident.CasualtiesNum = 4;
-    component.draft.registration.Incident.DeadNum = 5;
+    getIncident().InvolvedNum = 6;
+    getIncident().CasualtiesNum = 4;
+    getIncident().DeadNum = 5;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of dead higher than number of involved without casualties, is not valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 6;
-    component.draft.registration.Incident.DeadNum = 7;
+    getIncident().InvolvedNum = 6;
+    getIncident().DeadNum = 7;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of harmed is higher than number of involved, is not valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 6;
-    component.draft.registration.Incident.CasualtiesNum = 3;
-    component.draft.registration.Incident.HarmedNum = 7;
+    getIncident().InvolvedNum = 6;
+    getIncident().CasualtiesNum = 3;
+    getIncident().HarmedNum = 7;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of harmed and dead is higher than number of casualties, is not valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 6;
-    component.draft.registration.Incident.CasualtiesNum = 4;
-    component.draft.registration.Incident.DeadNum = 3;
-    component.draft.registration.Incident.HarmedNum = 3;
+    getIncident().InvolvedNum = 6;
+    getIncident().CasualtiesNum = 4;
+    getIncident().DeadNum = 3;
+    getIncident().HarmedNum = 3;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of harmed and dead is higher than number of involved without casualties specified, is not valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 6;
-    component.draft.registration.Incident.DeadNum = 4;
-    component.draft.registration.Incident.HarmedNum = 3;
+    getIncident().InvolvedNum = 6;
+    getIncident().DeadNum = 4;
+    getIncident().HarmedNum = 3;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of harmed and dead is higher than number of casualties without involved specified, is not valid', () => {
-    component.draft.registration.Incident.CasualtiesNum = 4;
-    component.draft.registration.Incident.DeadNum = 3;
-    component.draft.registration.Incident.HarmedNum = 3;
+    getIncident().CasualtiesNum = 4;
+    getIncident().DeadNum = 3;
+    getIncident().HarmedNum = 3;
     expect(component.isValid()).toBeFalse();
   });
 
   it('Number of harmed and dead without casualties and involved, is valid', () => {
-    component.draft.registration.Incident.DeadNum = 3;
-    component.draft.registration.Incident.HarmedNum = 3;
+    getIncident().DeadNum = 3;
+    getIncident().HarmedNum = 3;
     expect(component.isValid()).toBeTrue();
   });
 
   it('Form is valid', () => {
-    component.draft.registration.Incident.InvolvedNum = 6;
-    component.draft.registration.Incident.CasualtiesNum = 5;
-    component.draft.registration.Incident.DeadNum = 3;
-    component.draft.registration.Incident.HarmedNum = 2;
+    getIncident().InvolvedNum = 6;
+    getIncident().CasualtiesNum = 5;
+    getIncident().DeadNum = 3;
+    getIncident().HarmedNum = 2;
     expect(component.isValid()).toBeTrue();
   });
 });

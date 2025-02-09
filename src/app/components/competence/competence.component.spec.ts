@@ -36,7 +36,7 @@ xdescribe('CompetenceComponent', () => {
   });
 
   it('when competence is undefined, return unknown competence', () => {
-    component.starCount = undefined;
+    fixture.componentRef.setInput('starCount', undefined);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     const text = compiled.querySelector(smallTextSelector);
@@ -47,7 +47,7 @@ xdescribe('CompetenceComponent', () => {
   });
 
   it('when competence is undefined, return unknown competence EN', async (done) => {
-    component.starCount = undefined;
+    fixture.componentRef.setInput('starCount', undefined);
     await translate.use('en').toPromise(); // Waits for translation file to load
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
@@ -60,7 +60,7 @@ xdescribe('CompetenceComponent', () => {
   });
 
   it('when competence is 0, return unknown competence', () => {
-    component.starCount = 0;
+    fixture.componentRef.setInput('starCount', 0);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     const text = compiled.querySelector(smallTextSelector);
@@ -71,7 +71,7 @@ xdescribe('CompetenceComponent', () => {
   });
 
   it('when competence is 1, return one filled stars and 4 empty stars', () => {
-    component.starCount = 1;
+    fixture.componentRef.setInput('starCount', 1);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement as HTMLElement;
     expect(getElementCount(compiled, emptyStarSelector)).toEqual(4);
@@ -79,7 +79,7 @@ xdescribe('CompetenceComponent', () => {
   });
 
   it('when competence is 5, return 5 filled stars and 0 empty stars', () => {
-    component.starCount = 5;
+    fixture.componentRef.setInput('starCount', 5);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement as HTMLElement;
     expect(getElementCount(compiled, emptyStarSelector)).toEqual(0);
@@ -87,7 +87,7 @@ xdescribe('CompetenceComponent', () => {
   });
 
   it('when competence is 6, return 5 filled stars and 0 empty stars', () => {
-    component.starCount = 6;
+    fixture.componentRef.setInput('starCount', 6);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement as HTMLElement;
     expect(getElementCount(compiled, emptyStarSelector)).toEqual(0);

@@ -1,6 +1,6 @@
 import { HttpClient, HttpResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable, Subject, map, switchMap, tap, withLatestFrom, finalize, take } from 'rxjs';
+import { Observable, Subject, map, switchMap, tap, withLatestFrom, finalize, take, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../modules/login/models/logged-in-user.model';
