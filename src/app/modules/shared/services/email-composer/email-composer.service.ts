@@ -13,7 +13,6 @@ export class EmailComposerService {
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
 
-
   async canSendEmail(): Promise<boolean> {
     const platform = Capacitor.getPlatform();
     let canSend;

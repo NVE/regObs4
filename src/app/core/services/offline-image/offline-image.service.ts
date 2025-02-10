@@ -16,7 +16,6 @@ const DEBUG_TAG = 'OfflineImageService';
 export class OfflineImageService {
   private loggingService = inject(LoggingService);
 
-
   async getOfflineImage(url: string) {
     const offlineAsset = await this.getOfflineAssetFromDb(url);
     if (offlineAsset) {

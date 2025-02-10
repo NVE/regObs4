@@ -21,7 +21,6 @@ export class ExternalLinkService {
   private loggingService = inject(LoggingService);
   private platform = inject(Platform);
 
-
   async openExternalLink(url: string) {
     const validatedUrl = this.ensureCorrectUrl(url);
     if (!this.platform.is('hybrid')) {

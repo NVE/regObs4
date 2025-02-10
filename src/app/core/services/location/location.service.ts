@@ -15,7 +15,6 @@ export class LocationService {
   private apiLocationService = inject(RegobsApiLocationService);
   private loggingService = inject(LoggingService);
 
-
   getLocationWithinRadiusObservable(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     return this.regobsAuthService.loggedInUser$.pipe(
       switchMap(() =>

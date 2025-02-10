@@ -4,7 +4,9 @@
   font-weight: 400;
   src: url('/assets/fonts/shadows-into-light-v8-latin-regular.eot');
   /* IE9 Compat Modes */
-  src: local('Shadows Into Light'), local('ShadowsIntoLight'),
+  src:
+    local('Shadows Into Light'),
+    local('ShadowsIntoLight'),
     url('/assets/fonts/shadows-into-light-v8-latin-regular.eot?#iefix') format('embedded-opentype'),
     /* IE6-IE8 */ url('/assets/fonts/shadows-into-light-v8-latin-regular.woff2') format('woff2'),
     /* Super Modern Browsers */ url('/assets/fonts/shadows-into-light-v8-latin-regular.woff') format('woff'),

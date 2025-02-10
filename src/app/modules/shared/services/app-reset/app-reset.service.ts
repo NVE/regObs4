@@ -14,7 +14,6 @@ export class AppResetService {
   private dbHelperService = inject(DbHelperService);
   private loggingService = inject(LoggingService);
 
-
   async resetApp(): Promise<void> {
     await Promise.all(this.services.map((s) => Promise.resolve(s.appOnReset ? s.appOnReset() : true)));
     await this.dbHelperService.resetDb((table) => {
