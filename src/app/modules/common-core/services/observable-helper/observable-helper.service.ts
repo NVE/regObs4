@@ -12,7 +12,6 @@ export class ObservableHelperService {
   private ngZone = inject(NgZone);
   private applicationRef = inject(ApplicationRef);
 
-
   enterZone<T>(): (source: Observable<T>) => Observable<T> {
     return enterZone(this.ngZone);
   }

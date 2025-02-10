@@ -13,7 +13,6 @@ export class AuthCallbackPage implements OnInit {
   private regobsAuthService = inject(RegobsAuthService);
   private router = inject(Router);
 
-
   ngOnInit() {
     this.regobsAuthService.authorizationCallback(window.location.origin + this.router.url);
   }

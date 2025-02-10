@@ -20,7 +20,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class SupportMapInfoPage {
   private modalController = inject(ModalController);
 
-
   close() {
     this.modalController.dismiss();
   }

@@ -12,7 +12,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class AbonnerBannerComponent {
   private externalLinkService = inject(ExternalLinkService);
 
-
   buttonClicked(): void {
     this.externalLinkService.openExternalLink('https://abonner.varsom.no');
   }

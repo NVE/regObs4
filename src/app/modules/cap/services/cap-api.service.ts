@@ -14,7 +14,6 @@ const knownArrayFields = ['items'];
 export class CapApiService {
   private httpClient = inject(HttpClient);
 
-
   getFeed(url: string) {
     return this.getApiCall<CapFeed>(url);
   }

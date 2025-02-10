@@ -7,7 +7,10 @@ export abstract class RouterPage implements OnDestroy {
   public ngUnsubscribe: Subject<void> = new Subject();
   private isActive = false;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     router.events
       .pipe(
         takeUntil(this.ngUnsubscribe),
