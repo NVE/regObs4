@@ -14,6 +14,7 @@ describe('CheckDaysOrWeeksBackComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(CheckDaysOrWeeksBackComponent);
+    fixture.componentRef.setInput('daysBack', 2);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
