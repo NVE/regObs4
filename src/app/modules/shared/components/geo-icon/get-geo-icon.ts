@@ -4,8 +4,7 @@ import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 export function getGeohazardsId(geohazards: GeoHazard[]) {
-  const sorted = [...geohazards].sort();
-  return sorted
+  return geohazards
     .map((geoHazard) => (geoHazard !== GeoHazard.Soil ? (<string>GeoHazard[geoHazard]).toLowerCase() : 'dirt'))
     .join('-');
 }

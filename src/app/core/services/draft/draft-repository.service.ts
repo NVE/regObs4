@@ -34,6 +34,7 @@ import { RegistrationDraft } from './draft-model';
 import { viewModelToEditModel } from './reg-to-draft';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { injectUuidFromRouteParameters } from './get-uuid';
+import { InitDraft } from './init-draft.model';
 
 const DEBUG_TAG = 'DraftRepositoryService';
 
@@ -183,17 +184,14 @@ export class DraftRepositoryService {
    * @param geoHazard the geo hazard you have observed
    * @returns the registration
    */
-  async create(geoHazard: GeoHazard): Promise<RegistrationDraft> {
+  async create(geoHazard: GeoHazard): Promise<InitDraft> {
     const simpleMode = await this.useSimpleMode(geoHazard);
-    const draft: RegistrationDraft = {
+    const draft: InitDraft = {
       uuid: uuidv4(),
       syncStatus: SyncStatus.Draft,
       simpleMode,
       registration: {
         GeoHazardTID: geoHazard,
-        DtObsTime: '', // TODO: Test om dette er ok, hva skjer når vi setter tid første gang?
-        ObsLocation: { Latitude: 0, Longitude: 0 },
-        Attachments: [],
       },
     };
     return draft;

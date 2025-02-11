@@ -283,80 +283,83 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   updateUserSettings(userSetting: Partial<UserSetting>) {
-    const updated = this.validateUserSettingsUpdate({
-      ...this.userSettingInMemory.value,
+    const current = this.userSettingInMemory.value;
+    const updated = {
+      ...current,
       ...userSetting,
-    });
+    } as UserSetting;
     this.userSettingInMemory.next(updated);
   }
 
-  private validateUserSettingsUpdate(value: Partial<UserSetting>): UserSetting {
-    // Check if required properties are present
-    if (value.appMode == null) {
-      throw new Error('Missing required property appMode');
-    }
-    if (value.language == null) {
-      throw new Error('Missing required property language');
-    }
-    if (value.currentGeoHazard == null) {
-      throw new Error('Missing required property currentGeoHazard');
-    }
-    if (value.observationDaysBack == null) {
-      throw new Error('Missing required property observationDaysBack');
-    }
-    if (value.completedStartWizard == null) {
-      throw new Error('Missing required property completedStartWizard');
-    }
-    if (value.supportTiles == null) {
-      throw new Error('Missing required property supportTiles');
-    }
-    if (value.showMapCenter == null) {
-      throw new Error('Missing required property showMapCenter');
-    }
-    if (value.showObservations == null) {
-      throw new Error('Missing required property showObservations');
-    }
-    if (value.topoMap == null) {
-      throw new Error('Missing required property topoMap');
-    }
-    if (value.showGeoSelectInfo == null) {
-      throw new Error('Missing required property showGeoSelectInfo');
-    }
-    if (value.completedSimpleObsOnboarding == null) {
-      throw new Error('Missing required property completedSimpleObsOnboarding');
-    }
-    if (value.useRetinaMap == null) {
-      throw new Error('Missing required property useRetinaMap');
-    }
-    if (value.featureToggleDeveloperMode == null) {
-      throw new Error('Missing required property featureToggleDeveloperMode');
-    }
-    if (value.featureToggeGpsDebug == null) {
-      throw new Error('Missing required property featureToggeGpsDebug');
-    }
-    if (value.preferCompleteSnowObservations == null) {
-      throw new Error('Missing required property preferCompleteSnowObservations');
-    }
-    // Return a UserSetting object with all required properties
-    return {
-      ...value,
-      appMode: value.appMode,
-      language: value.language,
-      currentGeoHazard: value.currentGeoHazard,
-      observationDaysBack: value.observationDaysBack,
-      completedStartWizard: value.completedStartWizard,
-      supportTiles: value.supportTiles,
-      showMapCenter: value.showMapCenter,
-      showObservations: value.showObservations,
-      topoMap: value.topoMap,
-      showGeoSelectInfo: value.showGeoSelectInfo,
-      completedSimpleObsOnboarding: value.completedSimpleObsOnboarding,
-      useRetinaMap: value.useRetinaMap,
-      featureToggleDeveloperMode: value.featureToggleDeveloperMode,
-      featureToggeGpsDebug: value.featureToggeGpsDebug,
-      preferCompleteSnowObservations: value.preferCompleteSnowObservations,
-    };
-  }
+  // Jeg (Jørgen) la til denne for å validere oppdateringer av userSettings, men tror kanskje ikke vi trenger den
+  // likevel. Lar den ligge litt til hvis behovet melder seg likevel. Kan slettes etter februar 2025.
+  // private validateUserSettingsUpdate(value: Partial<UserSetting>): UserSetting {
+  //   // Check if required properties are present
+  //   if (value.appMode == null) {
+  //     throw new Error('Missing required property appMode');
+  //   }
+  //   if (value.language == null) {
+  //     throw new Error('Missing required property language');
+  //   }
+  //   if (value.currentGeoHazard == null) {
+  //     throw new Error('Missing required property currentGeoHazard');
+  //   }
+  //   if (value.observationDaysBack == null) {
+  //     throw new Error('Missing required property observationDaysBack');
+  //   }
+  //   if (value.completedStartWizard == null) {
+  //     throw new Error('Missing required property completedStartWizard');
+  //   }
+  //   if (value.supportTiles == null) {
+  //     throw new Error('Missing required property supportTiles');
+  //   }
+  //   if (value.showMapCenter == null) {
+  //     throw new Error('Missing required property showMapCenter');
+  //   }
+  //   if (value.showObservations == null) {
+  //     throw new Error('Missing required property showObservations');
+  //   }
+  //   if (value.topoMap == null) {
+  //     throw new Error('Missing required property topoMap');
+  //   }
+  //   if (value.showGeoSelectInfo == null) {
+  //     throw new Error('Missing required property showGeoSelectInfo');
+  //   }
+  //   if (value.completedSimpleObsOnboarding == null) {
+  //     throw new Error('Missing required property completedSimpleObsOnboarding');
+  //   }
+  //   if (value.useRetinaMap == null) {
+  //     throw new Error('Missing required property useRetinaMap');
+  //   }
+  //   if (value.featureToggleDeveloperMode == null) {
+  //     throw new Error('Missing required property featureToggleDeveloperMode');
+  //   }
+  //   if (value.featureToggeGpsDebug == null) {
+  //     throw new Error('Missing required property featureToggeGpsDebug');
+  //   }
+  //   if (value.preferCompleteSnowObservations == null) {
+  //     throw new Error('Missing required property preferCompleteSnowObservations');
+  //   }
+  //   // Return a UserSetting object with all required properties
+  //   return {
+  //     ...value,
+  //     appMode: value.appMode,
+  //     language: value.language,
+  //     currentGeoHazard: value.currentGeoHazard,
+  //     observationDaysBack: value.observationDaysBack,
+  //     completedStartWizard: value.completedStartWizard,
+  //     supportTiles: value.supportTiles,
+  //     showMapCenter: value.showMapCenter,
+  //     showObservations: value.showObservations,
+  //     topoMap: value.topoMap,
+  //     showGeoSelectInfo: value.showGeoSelectInfo,
+  //     completedSimpleObsOnboarding: value.completedSimpleObsOnboarding,
+  //     useRetinaMap: value.useRetinaMap,
+  //     featureToggleDeveloperMode: value.featureToggleDeveloperMode,
+  //     featureToggeGpsDebug: value.featureToggeGpsDebug,
+  //     preferCompleteSnowObservations: value.preferCompleteSnowObservations,
+  //   };
+  // }
 
   getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {
     const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles;
@@ -418,15 +421,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
           ...result,
           ...overrideSettings,
         };
-        try {
-          return this.validateUserSettingsUpdate(updatedSettings);
-        } catch (error) {
-          this.loggingService.error(error, DEBUG_TAG, 'Could not apply user settings override', {
-            overrides,
-            settings: result,
-          });
-          return updatedSettings; // TODO: Safer to return resutl?
-        }
+        return updatedSettings as UserSetting;
       }),
 
       // Set geoHazard from url

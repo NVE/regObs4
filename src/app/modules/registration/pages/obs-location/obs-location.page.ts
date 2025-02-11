@@ -32,6 +32,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
+import { InitDraft } from 'src/app/core/services/draft/init-draft.model';
 
 @Component({
   selector: 'app-obs-location',
@@ -171,40 +172,33 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   async onLocationTimeSet(event: LocationTime) {
-    if (!this.draft) {
-      this.draft = await this.draftService.create(this.geoHazard);
-    }
-
-    await this.setLocationTimeAndSaveDraft(event);
-    this.navController.navigateRoot('registration/edit/' + this.draft.uuid);
+    const draft = this.draft != null ? this.draft : await this.draftService.create(this.geoHazard);
+    await this.setLocationTimeAndSaveDraft(event, draft);
+    this.navController.navigateRoot('registration/edit/' + draft.uuid);
   }
 
-  private async setLocationTimeAndSaveDraft({ location, datetime, source, spatialAccuracy }: LocationTime) {
-    if (this.draft === undefined) {
-      return;
+  private async setLocationTimeAndSaveDraft(
+    { location, datetime, source, spatialAccuracy }: LocationTime,
+    draft: InitDraft | RegistrationDraft
+  ) {
+    const DtObsTime = datetime || draft.registration.DtObsTime;
+    if (DtObsTime == null) {
+      throw new Error('DtObsTime are required');
     }
 
-    if (location !== undefined) {
-      location.Uncertainty = spatialAccuracy;
-      this.draft = {
-        ...this.draft,
-        registration: {
-          ...this.draft.registration,
-          ObsLocation: location,
-          SourceTID: source,
+    this.draft = {
+      ...draft,
+      registration: {
+        ...draft.registration,
+        DtObsTime,
+        SourceTID: source || draft.registration.SourceTID,
+        ObsLocation: {
+          ...draft.registration.ObsLocation,
+          ...location,
+          Uncertainty: spatialAccuracy,
         },
-      };
-    }
-
-    if (datetime !== undefined) {
-      this.draft = {
-        ...this.draft,
-        registration: {
-          ...this.draft.registration,
-          DtObsTime: datetime,
-        },
-      };
-    }
+      },
+    };
 
     // Save updated draft with new obs location
     await this.draftService.save(this.draft);

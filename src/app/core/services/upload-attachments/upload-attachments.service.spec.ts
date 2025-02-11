@@ -112,7 +112,7 @@ describe('UploadAttachmentsService', () => {
     expect(result).toEqual(addAttachmentsResult);
   });
 
-  it('should return failed attachment upload as undefined', async () => {
+  it('if upload fails, only already uploaded should be returner', async () => {
     const attachmentIdThatFails = '3-abc';
     const fakeAttachments: AttachmentUploadEditModel[] = [
       { id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
@@ -157,11 +157,7 @@ describe('UploadAttachmentsService', () => {
       },
     };
 
-    const expected: AttachmentUploadEditModel[] = [
-      { id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' },
-      undefined,
-      undefined,
-    ];
+    const expected: AttachmentUploadEditModel[] = [{ id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' }];
     // Test that uploadAllAttachments returns one fulfilled promise without value
     await expectAsync(service.uploadAllAttachments(draft)).toBeResolvedTo(expected);
 
