@@ -69,15 +69,14 @@ describe('SearchCriteriaService', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
     //check default criteria
-    expect(criteria.LangKey).toEqual(LangKey.nb);
+    expect(criteria.LangKey).toBeDefined(); // Default langkey hentes fra browserspråk, så ikke test mot én spesifikk
     expect(criteria.SelectedGeoHazards).toEqual([GeoHazard.Snow]);
     await service.applyQueryParams();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('hazard')).toEqual('10');
 
     //verify that criteria changes when we change language and geo hazard
-    userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
+    userSettingService.updateUserSettings({
       language: LangKey.en,
       currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water],
     });
@@ -299,8 +298,7 @@ describe('SearchCriteriaService', () => {
 
     service.setSlushFlow(); //turn filter by slush flow on
 
-    userSettingService.saveUserSettings({
-      ...(await firstValueFrom(userSettingService.userSetting$)),
+    userSettingService.updateUserSettings({
       language: LangKey.nn,
       currentGeoHazard: [GeoHazard.Ice],
     });

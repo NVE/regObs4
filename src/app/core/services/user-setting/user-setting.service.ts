@@ -7,7 +7,6 @@ import { NanoSql } from '../../../../nanosql';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, of } from 'rxjs';
 import {
   catchError,
-  concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -115,8 +114,11 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
   constructor() {
     super();
-    this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
-      concatMap((val) => (val ? of(val) : this.getUserSettingsFromQueryParametersOrDbOrDefaultSettings())),
+    this.userSetting$ = combineLatest([
+      this.getUserSettingsFromQueryParametersOrDbOrDefaultSettings(),
+      this.userSettingInMemory.asObservable(),
+    ]).pipe(
+      map(([fromDbAndUrl, fromMemory]) => ({ ...fromDbAndUrl, ...fromMemory })),
       tap((val) => {
         this.loggingService?.debug('User settings is: ', DEBUG_TAG, val);
       }),
