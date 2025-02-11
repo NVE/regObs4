@@ -88,9 +88,9 @@ describe('DraftRepositoryService', () => {
     expect(draft.simpleMode).toBe(false);
     expect(draft.registration.GeoHazardTID).toBe(GeoHazard.Ice);
     expect(draft.lastSavedTime).toBe(undefined); //not saved yet
-    expect((draft.registration as Partial<RegistrationEditModel>).DtObsTime).toBe(null);
-    expect(draft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
-    expect(draft.registration.Attachments).toEqual([]);
+    expect((draft.registration as Partial<RegistrationEditModel>).DtObsTime).toBe(undefined);
+    expect(draft.registration.ObsLocation).toEqual(undefined);
+    expect(draft.registration.Attachments).toEqual(undefined);
   });
 
   it('create() should choose simple mode for snow registrations if simple mode setting is set', async () => {
@@ -136,12 +136,15 @@ describe('DraftRepositoryService', () => {
 
   it('save() should store a draft', async () => {
     const draft = await service.create(GeoHazard.Snow);
-    draft.registration.DtObsTime = '2022-02-13 08:00';
-    draft.registration.SnowSurfaceObservation = {
-      Comment: 'comment',
-      SnowDepth: 3.5,
+    const registration: RegistrationEditModel = {
+      ...draft.registration,
+      DtObsTime: '2022-02-13 08:00',
+      SnowSurfaceObservation: {
+        Comment: 'comment',
+        SnowDepth: 3.5,
+      },
     };
-    await service.save(draft);
+    await service.save({ ...draft, registration });
 
     const savedDraft = await database.get(`drafts.TEST.${draft.uuid}`);
     expect(savedDraft.uuid).toEqual(draft.uuid);
@@ -149,8 +152,8 @@ describe('DraftRepositoryService', () => {
     expect(savedDraft.simpleMode).toBeTrue();
     expect(savedDraft.registration.GeoHazardTID).toBe(GeoHazard.Snow);
     expect(savedDraft.registration.DtObsTime).toBe('2022-02-13 08:00');
-    expect(savedDraft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
-    expect(savedDraft.registration.Attachments).toEqual([]);
+    expect(savedDraft.registration.ObsLocation).toEqual(undefined);
+    expect(savedDraft.registration.Attachments).toEqual(undefined);
     expect(savedDraft.registration.SnowSurfaceObservation).toEqual({
       Comment: 'comment',
       SnowDepth: 3.5,
@@ -160,9 +163,9 @@ describe('DraftRepositoryService', () => {
 
   it('newly saved drafts should be unique', async () => {
     const draft = await service.create(GeoHazard.Snow);
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
     const draft2 = await service.create(GeoHazard.Snow);
-    await service.save(draft2);
+    await service.save(draft2 as RegistrationDraft);
     expect(database.store.size).toEqual(2);
     expect(database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
     expect(database.store.has(`drafts.TEST.${draft2.uuid}`)).toBeTrue();
@@ -170,14 +173,14 @@ describe('DraftRepositoryService', () => {
 
   it('we can change a registration, save it and load the changed registration', async () => {
     const irrelevantDraft1 = await service.create(GeoHazard.Snow);
-    await service.save(irrelevantDraft1);
+    await service.save(irrelevantDraft1 as RegistrationDraft);
 
     const draft = await service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     const irrelevantDraft2 = await service.create(GeoHazard.Soil);
-    await service.save(irrelevantDraft2);
+    await service.save(irrelevantDraft2 as RegistrationDraft);
 
     //verify that the comment was saved and we can load it
     const savedDraft = await service.load(draft.uuid);
@@ -185,11 +188,11 @@ describe('DraftRepositoryService', () => {
 
     //irreleant registrations are not changed
     expect(await service.load(irrelevantDraft1.uuid)).toEqual({
-      ...irrelevantDraft1,
+      ...(irrelevantDraft1 as RegistrationDraft),
       lastSavedTime: jasmine.any(Number),
     });
     expect(await service.load(irrelevantDraft2.uuid)).toEqual({
-      ...irrelevantDraft2,
+      ...(irrelevantDraft2 as RegistrationDraft),
       lastSavedTime: jasmine.any(Number),
     });
   });
@@ -198,7 +201,7 @@ describe('DraftRepositoryService', () => {
     const draft = await service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     //check if we get notified after first save
     const updatedDrafts = await firstValueFrom(service.drafts$);
@@ -239,11 +242,11 @@ describe('DraftRepositoryService', () => {
       });
     });
 
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     //try to change the comment and check if we get notified about the changes
     draft.registration.GeneralObservation = { Comment: 'v.2' };
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     await streamFinished;
 
@@ -263,7 +266,7 @@ describe('DraftRepositoryService', () => {
 
   it('delete works', async () => {
     const draft = await service.create(GeoHazard.Ice);
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     expect(database.store.size).toBe(1);
 
@@ -282,10 +285,10 @@ describe('DraftRepositoryService', () => {
   it('we do not mix data from different environments', fakeAsync(async () => {
     //save 2 drafts in test environment
     const draft1inTest = await service.create(GeoHazard.Ice);
-    await service.save(draft1inTest);
+    await service.save(draft1inTest as RegistrationDraft);
 
     const draft2inTest = await service.create(GeoHazard.Ice);
-    await service.save(draft2inTest);
+    await service.save(draft2inTest as RegistrationDraft);
 
     userSettingService.saveUserSettings({
       ...(await firstValueFrom(userSettingService.userSetting$)),
@@ -297,7 +300,7 @@ describe('DraftRepositoryService', () => {
 
     //save a draft in demo environment
     const draft1inDemo = await service.create(GeoHazard.Ice);
-    await service.save(draft1inDemo);
+    await service.save(draft1inDemo as RegistrationDraft);
 
     //drafts in test database not available in demo environment
     expect(await service.load(draft1inTest.uuid)).toBe(undefined);
@@ -317,11 +320,11 @@ describe('DraftRepositoryService', () => {
     const draftChanges2 = await firstValueFrom(service.drafts$);
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
     expect(await service.load(draft1inTest.uuid)).toEqual({
-      ...draft1inTest,
+      ...(draft1inTest as RegistrationDraft),
       lastSavedTime: jasmine.any(Number),
     });
     expect(await service.load(draft2inTest.uuid)).toEqual({
-      ...draft2inTest,
+      ...(draft2inTest as RegistrationDraft),
       lastSavedTime: jasmine.any(Number),
     });
 
@@ -330,7 +333,7 @@ describe('DraftRepositoryService', () => {
   }));
 
   it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
-    let draft: RegistrationDraft | null = {
+    let draft = {
       ...(await service.create(GeoHazard.Ice)),
       uuid: 'test',
     };
@@ -339,7 +342,7 @@ describe('DraftRepositoryService', () => {
     let completed = false;
     const sub = service.getDraft$('test').subscribe({
       next: (d) => {
-        expect(d).toEqual({ ...draft, lastSavedTime: jasmine.any(Number) });
+        expect(d).toEqual({ ...(draft as RegistrationDraft), lastSavedTime: jasmine.any(Number) });
         i += 1;
       },
       complete: () => {
@@ -349,20 +352,20 @@ describe('DraftRepositoryService', () => {
 
     tick(1);
 
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     tick(1);
 
     // Update draft
     draft = { ...draft, regId: 123 };
-    await service.save(draft);
+    await service.save(draft as RegistrationDraft);
 
     tick(1);
 
     // The observable should have emitted two times, two versions of the draft
     expect(i).toBe(2);
 
-    draft = null;
+    // draft = null;
     await service.delete('test');
 
     flush();
@@ -427,7 +430,7 @@ describe('DraftRepositoryService', () => {
 
     const newDraft = await service.load(newUuid);
 
-    expect(newDraft.regId).toBeNull(); //this is a new observation, so the regId should be null
+    expect(newDraft.regId).toBeUndefined(); //this is a new observation, so the regId should be undefined
 
     //check that the draft contains a copy of the viewModel
     expect(newDraft.registration.GeneralObservation).toEqual({
@@ -450,11 +453,17 @@ describe('DraftRepositoryService', () => {
       },
     ];
 
-    const draft = await service.create(GeoHazard.Snow);
-    draft.registration.DtObsTime = '2022-02-13 08:00';
-    draft.registration.SnowSurfaceObservation = {
-      Comment: 'comment',
-      SnowDepth: 3.5,
+    const initDraft = await service.create(GeoHazard.Snow);
+    const draft: RegistrationDraft = {
+      ...initDraft,
+      registration: {
+        ...initDraft.registration,
+        DtObsTime: '2022-02-13 08:00',
+        SnowSurfaceObservation: {
+          Comment: 'comment',
+          SnowDepth: 3.5,
+        },
+      },
     };
 
     // no new attachments yet

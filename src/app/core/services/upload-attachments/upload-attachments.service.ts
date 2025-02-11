@@ -74,48 +74,19 @@ export class UploadAttachmentsService {
       nToUpload: attachmentsToUpload.length,
     });
 
-    // Error handling
-    // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
-    const failedAttachments: FailedAttachment[] = [];
-    const uploadAttachmentAndHandleErrors = async (
-      attachment: AttachmentUploadEditModel
-    ): Promise<AttachmentUploadEditModel | undefined> => {
-      try {
-        return await this.uploadAttachment(attachment, draft);
-      } catch (error) {
-        this.uploadAttachmentHandleError(attachment, error, failedAttachments);
-        return undefined;
+    const uploadResult = await Promise.allSettled(attachmentsToUpload.map((a) => this.uploadAttachment(a, draft)));
+    const failed = uploadResult.filter((r) => r.status === 'rejected');
+    const uploaded = uploadResult.filter((r) => r.status === 'fulfilled').map((r) => r.value);
+
+    if (failed.length) {
+      for (const rejectedPromise of failed) {
+        this.loggingService.error(rejectedPromise.reason, DEBUG_TAG, 'Failed to upload attachment');
       }
-    };
-
-    // Upload all attachments concurrently
-    const uploadedAttachments = await Promise.all(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
-
-    if (failedAttachments.length) {
       // If one of the attachment uploads fails we keep on sending the registration, tho we inform the user with a toast
-      this.showCouldnotUploadAllImagesAlert(failedAttachments.length, draft.registration.DtObsTime);
+      this.showCouldnotUploadAllImagesAlert(failed.length, draft.registration.DtObsTime);
     }
 
-    return [...alreadyUploaded, ...uploadedAttachments.filter((a) => a != null)];
-  }
-
-  private uploadAttachmentHandleError(
-    attachment: AttachmentUploadEditModel,
-    error: unknown,
-    failedAttachments: FailedAttachment[]
-  ) {
-    if (error instanceof HttpErrorResponse && error.status === 0) {
-      // Probably no network, stop trying to upload any attachments
-      throw error;
-    }
-
-    this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', {
-      attachmentId: attachment.AttachmentId,
-    });
-    failedAttachments.push({
-      id: attachment.id,
-      error,
-    });
+    return [...alreadyUploaded, ...uploaded];
   }
 
   private async showCouldnotUploadAllImagesAlert(failedAttachmentsCount: number, date: string) {

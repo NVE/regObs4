@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import moment from 'moment-timezone';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
@@ -12,12 +13,16 @@ import { separatedStringToNumberArray, UrlParams } from './url-params';
 import { provideTranslateService } from '@ngx-translate/core';
 
 export class TestMapService {
-  mapView$: BehaviorSubject<IMapView>;
+  mapView$!: BehaviorSubject<IMapView>;
 }
 
 export function createTestMapService(): TestMapService {
   const service = new TestMapService();
-  service.mapView$ = new BehaviorSubject({ bounds: undefined, center: undefined, zoom: undefined });
+  service.mapView$ = new BehaviorSubject({
+    bounds: undefined,
+    center: undefined,
+    zoom: undefined,
+  } as unknown as IMapView);
   return service;
 }
 
@@ -60,7 +65,7 @@ describe('SearchCriteriaService', () => {
   });
 
   it('filter should contain language and geo hazard', fakeAsync(async () => {
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
     //check default criteria
@@ -88,7 +93,7 @@ describe('SearchCriteriaService', () => {
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     await userSettingService.saveGeoHazardsAndDaysBack({ daysBack: 1 });
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
     //check that criteria contains correct from time. Should be 1 days earlier at midnight
@@ -106,7 +111,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('nick name filter should work', fakeAsync(async () => {
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setObserverNickName('Nick');
     tick(500);
@@ -120,7 +125,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('competence filter should set the right criteria and url', fakeAsync(async () => {
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.addCompetence([150, 105]);
     tick(500);
@@ -144,7 +149,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type should be ok', fakeAsync(async () => {
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
     const obsType2 = { Id: 81, SubTypes: [26] };
@@ -161,7 +166,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
     const obsType2 = { Id: 40, SubTypes: [26] };
@@ -177,7 +182,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType2 = { Id: 40, SubTypes: [26] };
     tick(500);
@@ -190,7 +195,7 @@ describe('SearchCriteriaService', () => {
 
   orderByTestCases.forEach((test) => {
     it('orderBy filter should work', fakeAsync(async () => {
-      let criteria;
+      let criteria: any;
       service.searchCriteria$.subscribe((c) => (criteria = c));
       service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
       tick(100);
@@ -212,7 +217,7 @@ describe('SearchCriteriaService', () => {
       BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
       TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
     };
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     expect(criteria.Extent).toEqual(extent);
@@ -226,7 +231,7 @@ describe('SearchCriteriaService', () => {
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
 
@@ -240,7 +245,7 @@ describe('SearchCriteriaService', () => {
 
   it('toDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    let criteria;
+    let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
 
@@ -266,11 +271,11 @@ describe('SearchCriteriaService', () => {
     service.setSlushFlow();
     tick(500);
     //check that current criteria contains filter by slush flow
-    expect(criteria.PropertyFilters.length).toEqual(1);
-    const filter = criteria.PropertyFilters[0];
-    expect(filter.Name).toEqual('AvalancheObs.AvalancheTID');
-    expect(filter.Value).toEqual('30');
-    expect(filter.Operator).toEqual(0);
+    expect(criteria!.PropertyFilters?.length).toEqual(1);
+    const filter = criteria!.PropertyFilters?.[0];
+    expect(filter?.Name).toEqual('AvalancheObs.AvalancheTID');
+    expect(filter?.Value).toEqual('30');
+    expect(filter?.Operator).toEqual(0);
 
     await service.applyQueryParams();
     const url = new URL(document.location.href);
@@ -283,7 +288,7 @@ describe('SearchCriteriaService', () => {
     service.setSlushFlow(false);
     tick(500);
     //check that current criteria does not contain filter by slush flow
-    expect(criteria.PropertyFilters).toBeUndefined();
+    expect(criteria!.PropertyFilters).toBeUndefined();
     const url = new URL(document.location.href);
     expect(url.searchParams.has('slushFlow')).toBeFalse();
   }));
@@ -301,7 +306,7 @@ describe('SearchCriteriaService', () => {
     });
     tick(500);
     //check that current criteria does not contain filter by slush flow
-    expect(criteria.PropertyFilters).toBeUndefined();
+    expect(criteria!.PropertyFilters).toBeUndefined();
     const url = new URL(document.location.href);
     expect(url.searchParams.get('slushFlow')).toBeNull();
   }));
@@ -351,7 +356,7 @@ describe('SearchCriteriaService url parsing', () => {
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
-    expect(criteria.ObserverCompetence).toEqual([150, 105]);
+    expect(criteria!.ObserverCompetence).toEqual([150, 105]);
   }));
 
   it('type wrong hazard should search for 10 as default', fakeAsync(() => {
@@ -360,7 +365,7 @@ describe('SearchCriteriaService url parsing', () => {
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
-    expect(criteria.SelectedGeoHazards).toEqual([10]);
+    expect(criteria!.SelectedGeoHazards).toEqual([10]);
   }));
 
   it('competence url filter with wrong params', fakeAsync(() => {
@@ -369,7 +374,7 @@ describe('SearchCriteriaService url parsing', () => {
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
-    expect(criteria.ObserverCompetence).toEqual(undefined);
+    expect(criteria!.ObserverCompetence).toEqual(undefined);
   }));
 
   it('nick name url filter should work', fakeAsync(() => {
@@ -379,7 +384,7 @@ describe('SearchCriteriaService url parsing', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     //check that current criteria contains expected nick name
-    expect(criteria.ObserverNickName).toEqual('Oluf');
+    expect(criteria!.ObserverNickName).toEqual('Oluf');
   }));
 
   it('type url should work', fakeAsync(() => {
@@ -388,7 +393,7 @@ describe('SearchCriteriaService url parsing', () => {
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
-    expect(criteria.SelectedRegistrationTypes).toEqual([
+    expect(criteria!.SelectedRegistrationTypes).toEqual([
       { Id: 10, SubTypes: [] },
       { Id: 81, SubTypes: [13, 26] },
     ]);
@@ -401,7 +406,7 @@ describe('SearchCriteriaService url parsing', () => {
       let criteria;
       service.searchCriteria$.subscribe((c) => (criteria = c));
       tick(100);
-      expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
+      expect(criteria!.SelectedRegistrationTypes).toEqual(undefined);
     }));
   });
 
@@ -413,7 +418,7 @@ describe('SearchCriteriaService url parsing', () => {
     tick(100);
     //check that current criteria contains expected orderBy
 
-    expect(criteria.OrderBy).toEqual('DtChangeTime');
+    expect(criteria!.OrderBy).toEqual('DtChangeTime');
   }));
 
   it('orderBy url filter should work', fakeAsync(() => {
@@ -423,7 +428,7 @@ describe('SearchCriteriaService url parsing', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     //check that current criteria contains expected orderBy
-    expect(criteria.OrderBy).toEqual('DtObsTime');
+    expect(criteria!.OrderBy).toEqual('DtObsTime');
   }));
 
   it('geo hazard url filter should work', fakeAsync(() => {
@@ -433,7 +438,7 @@ describe('SearchCriteriaService url parsing', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     //check that current criteria contains expected geo hazard
-    expect(criteria.SelectedGeoHazards).toEqual([70]);
+    expect(criteria!.SelectedGeoHazards).toEqual([70]);
   }));
 
   it('illegal geo hazard in url should reuturn 10', fakeAsync(() => {
@@ -444,7 +449,7 @@ describe('SearchCriteriaService url parsing', () => {
     tick(100);
     //check that current criteria contains expected geo hazard
 
-    expect(criteria.SelectedGeoHazards).toEqual([10]);
+    expect(criteria!.SelectedGeoHazards).toEqual([10]);
   }));
 
   it('days back url filter should work', fakeAsync(() => {
@@ -457,7 +462,7 @@ describe('SearchCriteriaService url parsing', () => {
 
     //check that criteria contains correct from time. Should be 1 day earlier at midnight
 
-    expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+    expect(criteria!.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
   }));
 
   it('toDate and fromDate filter should work', fakeAsync(() => {
@@ -470,8 +475,8 @@ describe('SearchCriteriaService url parsing', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
 
-    expect(criteria.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
-    expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+    expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
+    expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
   }));
 
   it('slush flow filter should be activated by url', fakeAsync(() => {
@@ -481,11 +486,11 @@ describe('SearchCriteriaService url parsing', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     //check that current criteria contains filter by slush flow
-    expect(criteria.PropertyFilters.length).toEqual(1);
-    const filter = criteria.PropertyFilters[0];
-    expect(filter.Name).toEqual('AvalancheObs.AvalancheTID');
-    expect(filter.Value).toEqual('30');
-    expect(filter.Operator).toEqual(0);
+    expect(criteria!.PropertyFilters?.length).toEqual(1);
+    const filter = criteria!.PropertyFilters?.[0];
+    expect(filter?.Name).toEqual('AvalancheObs.AvalancheTID');
+    expect(filter?.Value).toEqual('30');
+    expect(filter?.Operator).toEqual(0);
   }));
 
   it('slush flow filter should be deactivated by url', fakeAsync(() => {
@@ -495,6 +500,6 @@ describe('SearchCriteriaService url parsing', () => {
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
     //check that current criteria does not contain filter by slush flow
-    expect(criteria.PropertyFilters).toBeUndefined();
+    expect(criteria!.PropertyFilters).toBeUndefined();
   }));
 });

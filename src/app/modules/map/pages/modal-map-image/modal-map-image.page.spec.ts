@@ -7,6 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { provideTranslateService } from '@ngx-translate/core';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { provideIonicAngular } from '@ionic/angular/standalone';
+import { ImageLocation } from 'src/app/components/img-swiper/image-location.model';
+import L from 'leaflet';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 describe('ModalMapImagePage', () => {
   let component: ModalMapImagePage;
@@ -26,8 +29,13 @@ describe('ModalMapImagePage', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ModalMapImagePage);
+    const location: ImageLocation = {
+      latLng: L.latLng([0, 0]),
+      geoHazard: GeoHazard.Snow,
+    };
+    fixture.componentRef.setInput('location', location);
+    fixture.autoDetectChanges();
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

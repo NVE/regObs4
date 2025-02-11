@@ -7,6 +7,7 @@ import {
   WaterLevelMeasurementUploadModel,
 } from 'src/app/modules/common-registration/registration.models';
 import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { removeNullOrUndefined } from '../../helpers/remove-empty';
 
 /**
  * Add an attachment to a registration object / draft.
@@ -27,7 +28,7 @@ export function addAttachmentToRegistration(
     throw new Error('Cant add attachment without AttachmentUploadId');
   }
 
-  const attachment: AttachmentEditModel = {
+  const attachment: AttachmentEditModel = removeNullOrUndefined({
     Aspect: uploadedAttachment.Aspect,
     AttachmentId: uploadedAttachment.AttachmentId,
     AttachmentMimeType: uploadedAttachment.AttachmentMimeType,
@@ -38,7 +39,7 @@ export function addAttachmentToRegistration(
     IsMainAttachment: uploadedAttachment.IsMainAttachment,
     Photographer: uploadedAttachment.Photographer,
     RegistrationTID: uploadedAttachment.RegistrationTID,
-  };
+  });
 
   const draftCopy: RegistrationEditModel = { ...draft };
 

@@ -1,24 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, untracked } from '@angular/core';
 import { booleanWithin, point } from '@turf/turf';
 import * as L from 'leaflet';
-import { BehaviorSubject, Subject } from 'rxjs';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { SVALBARD_BOUNDS } from 'src/app/core/helpers/leaflet/svalbard-bounds';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../settings';
 import { ImageLocation, ImageLocationStartStop } from '../../components/img-swiper/image-location.model';
-import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 
@@ -33,15 +21,33 @@ export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LeafletModule],
 })
-export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
-  private cdr = inject(ChangeDetectorRef);
-
+export class MapImageComponent {
   readonly location = input.required<ImageLocation>();
   readonly allowZoom = input<boolean>(false);
 
   private map?: L.Map;
-  private mapCenterSubject?: BehaviorSubject<ImageLocation>;
-  private ngDestroy$?: Subject<void>;
+
+  constructor() {
+    effect(() => {
+      const val = this.location();
+      untracked(() => {
+        if (this.map) {
+          this.map.eachLayer((layer) => layer.remove());
+          this.addTileLayers(this.map);
+          if (val && val.latLng) {
+            this.map.setView(val.latLng, this.options.zoom);
+            this.setMarker(val.latLng, val.geoHazard, this.map);
+          }
+          if (val && val.startStopLocation) {
+            this.setStartStopLocation(val.startStopLocation, this.map);
+          }
+          if (val && val.damageLocations && val.damageLocations.length > 0) {
+            this.setDamageLocations(val.damageLocations, this.map);
+          }
+        }
+      });
+    });
+  }
 
   options: L.MapOptions = {
     zoom: settings.map.tiles.zoomLevelObservationList,
@@ -76,54 +82,20 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  ngOnInit() {
-    this.mapCenterSubject = new BehaviorSubject(this.location());
-    this.ngDestroy$ = new Subject();
-  }
-
-  ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
-    // if (!this.mapCenterSubject) {
-    //   this.mapCenterSubject = new BehaviorSubject(this.location());
-    // }
-    // this.mapCenterSubject.next(changes.location.currentValue);
-    throw new Error('Not fixed after upgrade');
-  }
-
-  ngOnDestroy(): void {
-    // this.ngDestroy$.next();
-    // this.ngDestroy$.complete();
-  }
   onLeafletMapReady(map: L.Map) {
-    // this.map = map;
-    // this.mapCenterSubject.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-    //   if (this.map) {
-    //     this.map.eachLayer((layer) => layer.remove());
-    //   }
-    //   this.addTileLayers();
-    //   if (val && val.latLng) {
-    //     this.map.setView(val.latLng, this.options.zoom);
-    //     this.setMarker(val.latLng, val.geoHazard);
-    //   }
-    //   if (val && val.startStopLocation) {
-    //     this.setStartStopLocation(val.startStopLocation);
-    //   }
-    //   if (val && val.damageLocations && val.damageLocations.length > 0) {
-    //     this.setDamageLocations(val.damageLocations);
-    //   }
-    // });
-    // if (!this.allowZoom()) {
-    //   if (this.map.tap) {
-    //     this.map.tap.disable();
-    //   }
-    //   this.map.doubleClickZoom.disable();
-    //   this.map.dragging.disable();
-    //   this.map.keyboard.disable();
-    //   this.map.touchZoom.disable();
-    //   this.map.scrollWheelZoom.disable();
-    //   this.map.boxZoom.disable();
-    // }
-    // this.redrawMap();
-    throw new Error('Not fixed after upgrade');
+    this.map = map;
+    if (!this.allowZoom()) {
+      if (this.map.tap) {
+        this.map.tap.disable();
+      }
+      this.map.doubleClickZoom.disable();
+      this.map.dragging.disable();
+      this.map.keyboard.disable();
+      this.map.touchZoom.disable();
+      this.map.scrollWheelZoom.disable();
+      this.map.boxZoom.disable();
+    }
+    this.redrawMap();
   }
 
   redrawMap() {
@@ -139,7 +111,9 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     //       this.map.invalidateSize();
     //     }
     //   });
-    throw new Error('Not fixed after upgrade');
+
+    // TODO: Er denne nødvendig?
+    this.map?.invalidateSize();
   }
 
   private getMatchingBaseLayer() {

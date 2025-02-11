@@ -52,6 +52,7 @@ import {
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 import { SearchCriteria } from '../../models/search-criteria';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { removeNullOrUndefined } from '../../helpers/remove-empty';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -282,7 +283,7 @@ export class SearchCriteriaService {
         // Remove extent if one or more regions are selected
         Extent: useMapExtent && (criteria.SelectedRegions || []).length === 0 ? extent : undefined,
       })),
-      map((criteria) => removeEmpty(criteria)),
+      map((criteria) => removeNullOrUndefined(criteria)),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
       shareReplay(1)
     );
@@ -516,16 +517,15 @@ export class SearchCriteriaService {
     this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
-      this.searchCriteriaChanges.next({
-        SelectedRegistrationTypes: currentTypesCriteria
-          .filter((regType) => regType.Id !== typeToRemove.Id)
-          .map((regType) => {
-            return {
-              ...regType,
-              SubTypes: regType.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)),
-            };
-          }),
-      });
+      const update = {
+        SelectedRegistrationTypes: currentTypesCriteria.map((regType) => {
+          return {
+            ...regType,
+            SubTypes: regType.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)),
+          };
+        }),
+      };
+      this.searchCriteriaChanges.next(update);
     }
   }
 
@@ -586,12 +586,6 @@ export class SearchCriteriaService {
     }
     return;
   }
-}
-
-function removeEmpty(criteria: SearchCriteriaRequestDto) {
-  const entries = Object.entries(criteria);
-  const notEmpty = entries.filter(([, value]) => value != null);
-  return Object.fromEntries(notEmpty);
 }
 
 interface ValidPos {

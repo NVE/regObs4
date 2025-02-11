@@ -19,7 +19,7 @@ describe('addAttachmentToRegistration', () => {
     const registrationCopy = cloneDeep(registration);
     const attachment: AttachmentUploadEditModel = { id: '12345-test-id', type: 'Attachment', AttachmentUploadId: '12' };
     const updatedRegistration = addAttachmentToRegistration(attachment, registration);
-    expect(updatedRegistration.Attachments.length).toBe(1);
+    expect(updatedRegistration.Attachments?.length).toBe(1);
     expect(registration).toEqual(registrationCopy);
     expect(registration.Attachments).toBeUndefined();
   });
@@ -40,7 +40,7 @@ describe('addAttachmentToRegistration', () => {
     };
 
     const updatedReg = addAttachmentToRegistration(attachment, registration);
-    expect(updatedReg.Attachments[0]).toEqual(addedAttachment);
+    expect(updatedReg.Attachments?.[0]).toEqual(addedAttachment);
   });
 
   it('should add the attachment as the last item in the list of already added attachments', () => {
@@ -61,9 +61,9 @@ describe('addAttachmentToRegistration', () => {
     };
 
     const updatedReg = addAttachmentToRegistration(attachmentToAdd, registration);
-    expect(updatedReg.Attachments[0]).toEqual(attachmentACopy);
-    expect(updatedReg.Attachments[1]).toEqual(attachmentBCopy);
-    expect(updatedReg.Attachments.length).toBe(3);
+    expect(updatedReg.Attachments?.[0]).toEqual(attachmentACopy);
+    expect(updatedReg.Attachments?.[1]).toEqual(attachmentBCopy);
+    expect(updatedReg.Attachments?.length).toBe(3);
   });
 
   it('should add water level attachments to respective water level measurements', () => {
@@ -108,10 +108,10 @@ describe('addAttachmentToRegistration', () => {
     };
 
     const updatedRegistration = addAttachmentToRegistration(attachmentToAdd, registration);
-    expect(updatedRegistration.WaterLevel2.WaterLevelMeasurement[0].Attachments[0]).toEqual(addedAttachment);
-    expect(updatedRegistration.WaterLevel2.WaterLevelMeasurement[0].Attachments.length).toBe(1);
-    expect(updatedRegistration.WaterLevel2.WaterLevelMeasurement[1].Attachments.length).toBe(1);
-    expect(updatedRegistration.WaterLevel2.WaterLevelMeasurement[2].Attachments).toBeUndefined();
+    expect(updatedRegistration.WaterLevel2?.WaterLevelMeasurement?.[0].Attachments?.[0]).toEqual(addedAttachment);
+    expect(updatedRegistration.WaterLevel2?.WaterLevelMeasurement?.[0].Attachments?.length).toBe(1);
+    expect(updatedRegistration.WaterLevel2?.WaterLevelMeasurement?.[1].Attachments?.length).toBe(1);
+    expect(updatedRegistration.WaterLevel2?.WaterLevelMeasurement?.[2].Attachments).toBeUndefined();
 
     const attachmentToAdd2: AttachmentUploadEditModel = {
       id: '56789-test-id',
@@ -125,10 +125,10 @@ describe('addAttachmentToRegistration', () => {
     };
 
     const updatedRegistration2 = addAttachmentToRegistration(attachmentToAdd2, updatedRegistration);
-    expect(updatedRegistration2.WaterLevel2.WaterLevelMeasurement[0].Attachments.length).toBe(1);
-    expect(updatedRegistration2.WaterLevel2.WaterLevelMeasurement[1].Attachments[1]).toEqual(addedAttachment2);
-    expect(updatedRegistration2.WaterLevel2.WaterLevelMeasurement[1].Attachments.length).toBe(2);
-    expect(updatedRegistration2.WaterLevel2.WaterLevelMeasurement[2].Attachments).toBeUndefined();
+    expect(updatedRegistration2.WaterLevel2?.WaterLevelMeasurement?.[0].Attachments?.length).toBe(1);
+    expect(updatedRegistration2.WaterLevel2?.WaterLevelMeasurement?.[1].Attachments?.[1]).toEqual(addedAttachment2);
+    expect(updatedRegistration2.WaterLevel2?.WaterLevelMeasurement?.[1].Attachments?.length).toBe(2);
+    expect(updatedRegistration2.WaterLevel2?.WaterLevelMeasurement?.[2].Attachments).toBeUndefined();
   });
 
   it('should throw if the attachment has no AttachmentUploadId', () => {

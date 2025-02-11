@@ -14,8 +14,9 @@ describe('GeoIconComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GeoIconComponent);
+    fixture.componentRef.setInput('geoHazards', [GeoHazard.Snow]);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    fixture.autoDetectChanges();
   });
 
   it('should create', () => {
@@ -25,18 +26,18 @@ describe('GeoIconComponent', () => {
   it('geoHazard snow should return class name snow', () => {
     fixture.componentRef.setInput('geoHazards', [GeoHazard.Snow]);
     // component.geoHazards = [GeoHazard.Snow];
-    expect(component.geoClass).toEqual('snow');
+    expect(component.geoClass()).toEqual('snow');
   });
 
   it('geoHazard water and dirt should return class name water-dirt', () => {
     fixture.componentRef.setInput('geoHazards', [GeoHazard.Water, GeoHazard.Soil]);
     // component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
-    expect(component.geoClass).toEqual('water-dirt');
+    expect(component.geoClass()).toEqual('water-dirt');
   });
 
   it('geoHazard water and dirt should return svg src water_dirt.svg', () => {
     fixture.componentRef.setInput('geoHazards', [GeoHazard.Water, GeoHazard.Soil]);
     // component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
-    expect(component.iconSrc).toEqual('/assets/icon/water_dirt.svg');
+    expect(component.iconSrc()).toEqual('/assets/icon/water_dirt.svg');
   });
 });

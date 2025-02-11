@@ -1,6 +1,6 @@
 import { Component, inject, input, model, computed } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
-import { IonInput, IonItem, IonLabel, IonText, ModalController, Platform } from '@ionic/angular/standalone';
+import { IonInput, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
