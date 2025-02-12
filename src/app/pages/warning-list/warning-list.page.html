@@ -12,28 +12,20 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <!-- <ion-virtual-scroll
-    *ngIf="!showEmptyState else empty"
-    [ngClass]="{'loaded': loaded}"
-    [items]="warningGroups"
-    [headerFn]="myHeaderFn"
-    [footerFn]="myFooterFn"
-    [approxItemHeight]="49"
-    [approxHeaderHeight]="38"
-    [trackBy]="trackByFunc"
-  >
-    <ion-item-divider *virtualHeader="let header">
-      <app-warning-list-header
-        [title]="header.header"
-        [subTitle]="header.infoText"
-        [showDayNames]="header.showDayNames"
-      ></app-warning-list-header>
-    </ion-item-divider>
-    <div *virtualItem="let virtualItem">
-      <app-warning-list-item [warningGroup]="virtualItem.item"></app-warning-list-item>
-    </div>
-    <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer"> </ion-item-divider>
-  </ion-virtual-scroll> -->
+  <ion-list>
+    @for (warningGroup of warningGroups; track warningGroup.item.getKeyAsString()) {
+      @if (warningGroup.header) {
+        <ion-item-divider>
+          <app-warning-list-header
+            [title]="warningGroup.header || ''"
+            [subTitle]="warningGroup.infoText || ''"
+            [showDayNames]="showDayNames(warningGroup)"
+          ></app-warning-list-header>
+        </ion-item-divider>
+      }
+      <app-warning-list-item [warningGroup]="warningGroup.item"></app-warning-list-item>
+    }
+  </ion-list>
   <div id="abonner-banner" *ngIf="(selectedTab$ | async) === 'inMapView'" class="ion-margin" [class.loaded]="loaded">
     <app-abonner-banner></app-abonner-banner>
   </div>
