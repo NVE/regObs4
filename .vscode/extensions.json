@@ -7,7 +7,9 @@
     "lokalise.i18n-ally",
     "esbenp.prettier-vscode",
     "editorconfig.editorconfig",
-    "ionic.ionic"
+    "ionic.ionic",
+    "angular.ng-template",
+    "yoavbls.pretty-ts-errors"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": []
