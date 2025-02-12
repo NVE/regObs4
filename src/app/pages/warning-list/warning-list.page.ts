@@ -12,7 +12,9 @@ import {
   IonCol,
   IonContent,
   IonGrid,
+  IonItemDivider,
   IonLabel,
+  IonList,
   IonRow,
   IonSegment,
   IonSegmentButton,
@@ -26,6 +28,7 @@ import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-m
 import { GeoSelectComponent } from '../../modules/shared/components/geo-select/geo-select.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
+import { WarningListHeaderComponent } from 'src/app/components/warning-list-header/warning-list-header.component';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -46,12 +49,15 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
     IonRow,
     IonSegment,
     IonSegmentButton,
-    NgClass,
     NgIf,
     NgTemplateOutlet,
     RefreshWithCancelComponent,
     SvgIconComponent,
     TranslatePipe,
+    IonList,
+    WarningListItemComponent,
+    WarningListHeaderComponent,
+    IonItemDivider,
   ],
 })
 export class WarningListPage {
@@ -266,6 +272,10 @@ export class WarningListPage {
           showDayNames: items.some((x) => x.item.key.geoHazard !== GeoHazard.Ice),
         }
       : null;
+  }
+
+  showDayNames(warningGroup: IVirtualScrollItem<WarningGroup>) {
+    return warningGroup.item.key.geoHazard !== GeoHazard.Ice;
   }
 
   private footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {

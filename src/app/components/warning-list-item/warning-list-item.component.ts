@@ -46,8 +46,6 @@ import { alert } from 'ionicons/icons';
     IonItemSliding,
     IonLabel,
     IonRow,
-    NgFor,
-    NgIf,
     WarningGroupFavouriteToggleComponent,
   ],
 })
