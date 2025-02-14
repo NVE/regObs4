@@ -161,6 +161,10 @@ function convertRegTypeDtoToUrl(types?: RegistrationTypeCriteriaDto[]) {
   return;
 }
 
+const DEFAULT_SEARCH_CRITERIA: SearchCriteriaRequestDto = {
+  OrderBy: 'DtChangeTime',
+};
+
 /**
  * Contains current filter for registrations.
  * Use this to change which registrations you want to find.
@@ -214,9 +218,17 @@ export class SearchCriteriaService {
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
 
+  getInitialCriteria() {
+    const criteriaFromUrl = this.readUrlParams();
+    this.logger.debug('Criteria from URL params: ', DEBUG_TAG, { criteria: criteriaFromUrl });
+    return {
+      ...DEFAULT_SEARCH_CRITERIA,
+      ...criteriaFromUrl,
+    };
+  }
+
   constructor() {
-    const criteria = this.readUrlParams();
-    this.logger.debug('Criteria from URL params: ', DEBUG_TAG, { criteria });
+    const criteria = this.getInitialCriteria();
 
     // Log last 10 changes made (nb, does not include langKey, extent etc, and only logs the change, not entire critera)
     this.searchCriteriaChanges

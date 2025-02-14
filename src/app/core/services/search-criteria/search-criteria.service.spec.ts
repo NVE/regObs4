@@ -64,6 +64,17 @@ describe('SearchCriteriaService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('initial criteria should use OrderBy: DtChangeTime', () => {
+    const criteria = service.getInitialCriteria();
+    expect(criteria.OrderBy).toBe('DtChangeTime');
+  });
+
+  it('initial criteria$ should use OrderBy: DtChangeTime', fakeAsync(() => {
+    const orderBy = firstValueFrom(service.searchCriteria$).then((c) => c.OrderBy);
+    tick();
+    expectAsync(orderBy).toBeResolvedTo('DtChangeTime');
+  }));
+
   it('filter should contain language and geo hazard', fakeAsync(async () => {
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
