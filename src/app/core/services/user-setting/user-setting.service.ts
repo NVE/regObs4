@@ -41,7 +41,7 @@ import {
   isGeoHazardValid,
   separatedStringToNumberArray,
 } from '../search-criteria/url-params';
-import SETTINGS_OVERRIDE from 'src/assets/json/settings-override.json';
+import { applyUserSettingOverrides, USER_SETTINGS_OVERRIDES } from './user-setting-overrides';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -413,17 +413,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       map((result) => (result ? result : DEFAULT_USER_SETTINGS(this.getBrowserLang()))),
 
       // Apply any overrides due to new default settings (see json/settings-override.json)
-      map((result) => {
-        const overrides = SETTINGS_OVERRIDE.map(
-          ([dateStr, key, val]) => [new Date(dateStr as string), key, val] as [Date, keyof UserSetting, any]
-        ).filter(([date, ..._]) => !result.lastOverridden || date > result.lastOverridden);
-        const overrideSettings = Object.fromEntries(overrides.map(([, key, value]) => [key, value]));
-        const updatedSettings = {
-          ...result,
-          ...overrideSettings,
-        };
-        return updatedSettings as UserSetting;
-      }),
+      map((result) => applyUserSettingOverrides(result, USER_SETTINGS_OVERRIDES)),
 
       // Set geoHazard from url
       map((userSettings) => {

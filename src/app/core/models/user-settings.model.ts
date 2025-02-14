@@ -25,7 +25,7 @@ export interface UserSetting extends InfoPopupSettings {
   featureToggeGpsDebug: boolean;
   copyright?: string;
   photographer?: string;
-  lastOverridden?: Date;
+  lastOverridden?: number;
 
   /**
    * true = use full/complete snow obs schemas
