@@ -32,7 +32,7 @@ import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
 import frData from '@angular/common/locales/fr';
 import daData from '@angular/common/locales/da';
-import { SupportTile } from '../../models/support-tile.model';
+import { SubTile, SupportTile } from '../../models/support-tile.model';
 import { isArraysEqual } from 'src/app/modules/common-core/helpers/arrays';
 import {
   URL_PARAM_DAYSBACK,
@@ -364,33 +364,32 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   // }
 
   getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {
-    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles;
-    // TODO!
-    //   .filter((setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0)
-    //   .map((tile) => {
-    //     const usSupportTile = us.supportTiles.find((usTiles) => usTiles.name === tile.name);
-    //     let subTile = tile.subTile;
-    //     if (subTile && usSupportTile && usSupportTile.subTile) {
-    //       subTile = { ...tile.subTile, ...usSupportTile.subTile };
-    //     }
-    //     return {
-    //       ...(usSupportTile ? { ...tile, ...usSupportTile } : tile),
-    //       subTile: subTile,
-    //     };
-    //   });
+    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles
+      .filter((setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0)
+      .map((tile) => {
+        const usSupportTile = us.supportTiles.find((usTiles) => usTiles.name === tile.name);
+        let subTile = tile.subTile;
+        if (subTile && usSupportTile && usSupportTile.subTile) {
+          subTile = { ...tile.subTile, ...usSupportTile.subTile } as SubTile;
+        }
+        return {
+          ...(usSupportTile ? { ...tile, ...usSupportTile } : tile),
+          subTile: subTile,
+        };
+      });
 
-    // if (flat) {
-    //   supportTilesForCurrentGeoHazard
-    //     .filter((tile) => tile.subTile)
-    //     .forEach((tile) => {
-    //       supportTilesForCurrentGeoHazard.push({
-    //         ...tile.subTile,
-    //         opacity: tile.opacity,
-    //         geoHazardId: tile.geoHazardId,
-    //       });
-    //       delete tile.subTile;
-    //     });
-    // }
+    if (flat) {
+      supportTilesForCurrentGeoHazard
+        .filter((tile) => tile.subTile)
+        .forEach((tile) => {
+          supportTilesForCurrentGeoHazard.push({
+            ...tile.subTile,
+            opacity: tile.opacity,
+            geoHazardId: tile.geoHazardId,
+          } as SupportTile);
+          delete tile.subTile;
+        });
+    }
 
     return supportTilesForCurrentGeoHazard;
   }
