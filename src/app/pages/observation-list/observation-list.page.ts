@@ -114,7 +114,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   registrations$?: Observable<RegistrationViewModel[]>;
   // attachments$: Observable<SearchRegistrationsWithAttachments[]>;
 
-  orderBy$?: Observable<string>;
+  orderBy$?: Observable<string | undefined>;
   error$?: Observable<boolean>;
   popupType?: SelectInterface;
   isNative?: boolean;
@@ -198,10 +198,7 @@ export class ObservationListPage extends NgDestoryBase implements OnInit {
   ngOnInit() {
     this.orderBy$ = this.searchCriteriaService.searchCriteria$.pipe(
       takeUntil(this.ngDestroy$),
-      map((searchCriteria) => {
-        if (!searchCriteria.OrderBy) return 'DtObsTime';
-        else return searchCriteria.OrderBy;
-      })
+      map((searchCriteria) => searchCriteria.OrderBy)
     );
     this.isNative = Capacitor.isNativePlatform();
     this.popupType = this.isNative ? 'action-sheet' : 'popover';
