@@ -1,3 +1,4 @@
+<!-- Et observasjonskort. Viser data fra en observasjon, et miniatyrkart over posisjonen og bilder i en karusell -->
 <ion-card>
   <swiper-container
     slides-per-view="auto"
@@ -30,7 +31,7 @@
   </swiper-container>
 
   <ion-card-header>
-    <ion-card-title>{{ registration().ObsLocation.Title }}</ion-card-title>
+    <ion-card-title> {{ registration().ObsLocation.Title }}</ion-card-title>
     <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
   </ion-card-header>
 
@@ -75,56 +76,6 @@
       }
     </div>
 
-    <!-- <ion-chip>Default</ion-chip>
-    <ion-chip color="primary">Primary</ion-chip>
-    <ion-chip color="secondary">Secondary</ion-chip>
-    <ion-chip color="tertiary">Tertiary</ion-chip>
-    <ion-chip color="success">Success</ion-chip>
-    <ion-chip color="warning">Warning</ion-chip>
-    <ion-chip color="danger">Danger</ion-chip>
-    <ion-chip color="light">Light</ion-chip>
-    <ion-chip color="medium">Medium</ion-chip>
-    <ion-chip color="dark">Dark</ion-chip>
-
-    <hr />
-
-    <ion-chip [disabled]="true">Default</ion-chip>
-    <ion-chip [disabled]="true" color="primary">Primary</ion-chip>
-    <ion-chip [disabled]="true" color="secondary">Secondary</ion-chip>
-    <ion-chip [disabled]="true" color="tertiary">Tertiary</ion-chip>
-    <ion-chip [disabled]="true" color="success">Success</ion-chip>
-    <ion-chip [disabled]="true" color="warning">Warning</ion-chip>
-    <ion-chip [disabled]="true" color="danger">Danger</ion-chip>
-    <ion-chip [disabled]="true" color="light">Light</ion-chip>
-    <ion-chip [disabled]="true" color="medium">Medium</ion-chip>
-    <ion-chip [disabled]="true" color="dark">Dark</ion-chip>
-
-    <hr />
-
-    <ion-chip [outline]="true">Default</ion-chip>
-    <ion-chip [outline]="true" color="primary">Primary</ion-chip>
-    <ion-chip [outline]="true" color="secondary">Secondary</ion-chip>
-    <ion-chip [outline]="true" color="tertiary">Tertiary</ion-chip>
-    <ion-chip [outline]="true" color="success">Success</ion-chip>
-    <ion-chip [outline]="true" color="warning">Warning</ion-chip>
-    <ion-chip [outline]="true" color="danger">Danger</ion-chip>
-    <ion-chip [outline]="true" color="light">Light</ion-chip>
-    <ion-chip [outline]="true" color="medium">Medium</ion-chip>
-    <ion-chip [outline]="true" color="dark">Dark</ion-chip>
-
-    <hr />
-
-    <ion-chip [outline]="true" [disabled]="true">Default</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="primary">Primary</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="secondary">Secondary</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="tertiary">Tertiary</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="success">Success</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="warning">Warning</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="danger">Danger</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="light">Light</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="medium">Medium</ion-chip>
-    <ion-chip [outline]="true" [disabled]="true" color="dark">Dark</ion-chip> -->
-
     <ion-list>
       @for (summaryGroup of registration().Summaries; track $index) {
         <ion-item>
@@ -140,4 +91,21 @@
       }
     </ion-list>
   </ion-card-content>
+
+  <!-- Knapperad med deleknapp og endre-knapp -->
+  @defer {
+    <ion-item color="light">
+      <ion-button fill="clear" class="edit-button" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit()">
+        <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
+        {{ "REGISTRATION.EDIT" | translate }}
+      </ion-button>
+      @if (isLoadingObsForEdit()) {
+        <ion-spinner slot="start" name="dots"></ion-spinner>
+      }
+      <ion-button fill="clear" class="reg-id" slot="end" (click)="share()">
+        ID: {{ registration().RegId }}
+        <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
+      </ion-button>
+    </ion-item>
+  }
 </ion-card>

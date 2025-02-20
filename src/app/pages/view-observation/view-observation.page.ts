@@ -13,13 +13,12 @@ import {
   IonButtons,
 } from '@ionic/angular/standalone';
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttribute, computed } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { takeUntil, map, catchError, filter } from 'rxjs/operators';
-import { Observable, Subject, merge, of } from 'rxjs';
-import { EditMode } from 'src/app/modules/registration/edit-registration-helper-functions';
+import { takeUntil, map } from 'rxjs/operators';
+import { Subject, merge } from 'rxjs';
 import { SearchService } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
@@ -29,6 +28,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
 
 interface RegistrationResult {
   reg?: RegistrationViewModel;
@@ -58,10 +58,10 @@ interface RegistrationResult {
     NgIf,
     ObservationListCardComponent,
     TranslatePipe,
+    ObservationComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
-  private activatedRoute = inject(ActivatedRoute);
   private popupInfoService = inject(PopupInfoService);
   private searchService = inject(SearchService);
   private authService = inject(RegobsAuthService);

@@ -9,6 +9,27 @@ ion-item {
   --inner-padding-start: 0;
   --padding-start: 0;
   font-size: 1.2em;
+
+  ion-button {
+    --ion-color-primary: var(--ion-text-color);
+
+    &.edit-button {
+      font-size: 14px;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--ion-color-varsom-blue);
+    }
+
+    &.reg-id {
+      margin-left: 0px;
+
+      ion-icon {
+        font-size: 1.4em;
+        margin-left: 16px;
+      }
+    }
+  }
 }
 
 /* ion-chip {
@@ -88,4 +109,16 @@ swiper-slide img {
 
 .summary strong {
   font-weight: 600;
+}
+
+.edit-icon {
+  margin-right: 5px;
+}
+
+@media only screen and (max-width: 415px) {
+  /* On small screens, constrain the edit button size so that the share button is not pushed outside of the obs card */
+  .edit-button {
+    max-width: 45%;
+    text-wrap: wrap;
+  }
 }
