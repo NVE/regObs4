@@ -1,13 +1,30 @@
-import { Component, OnDestroy, OnInit, NgZone, inject } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  NgZone,
+  inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonButton, IonContent, IonFooter, IonToolbar, Platform } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonFooter,
+  IonSelect,
+  IonToolbar,
+  Platform,
+  IonLabel,
+  IonSelectOption,
+  NavController,
+} from '@ionic/angular/standalone';
 import { LangKey, GeoHazard } from '../../modules/common-core/models';
-import { animations } from './start-wizard.animations';
-import { Subject, interval, Subscription, firstValueFrom } from 'rxjs';
-import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';
+import { Subject, Subscription, firstValueFrom } from 'rxjs';
+import { SvgIconComponent } from 'angular-svg-icon';
+import { take } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Capacitor } from '@capacitor/core';
 
@@ -15,23 +32,22 @@ import { Capacitor } from '@capacitor/core';
   selector: 'app-start-wizard',
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
-  animations: animations,
-  imports: [IonButton, IonContent, IonFooter, IonToolbar, NgIf, TranslatePipe],
+  imports: [IonButton, IonFooter, IonToolbar, TranslatePipe, SvgIconComponent, IonLabel, IonSelect, IonSelectOption],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StartWizardPage implements OnInit, OnDestroy {
+  @ViewChild('swiper')
+  swiperRef: ElementRef | undefined;
+
   private userSettingService = inject(UserSettingService);
-  // private navController = inject(NavController);
+  private navController = inject(NavController);
   private ngZone = inject(NgZone);
   private platform = inject(Platform);
 
-  // @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
-  state?: string;
-  reachedEnd = false;
-  reachedStart = true;
-  showLegalIcon = false;
-  visibleStarNumber = -1;
+  currentSlideIndex = 0;
+  state?: string; //TODO: aner ikke hva dette brukes til
   language?: LangKey;
   legalUrl?: string;
   userSettings?: UserSetting;
@@ -47,8 +63,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
   isDesktop = this.platform.is('desktop');
 
   private ngDestroy$ = new Subject<void>();
-  private activeIndex = new Subject<number>();
-  private isIncreasing = true;
   private userSettingSubscription?: Subscription;
 
   async ngOnInit() {
@@ -64,8 +78,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
     this.state = 'x';
     this.userSettingService.userSetting$.pipe(take(1)).subscribe((us) => {
       this.language = us.language;
-      this.initStarIndexCounter();
-      this.setPageIndex(0);
     });
   }
 
@@ -75,17 +87,21 @@ export class StartWizardPage implements OnInit, OnDestroy {
     }
   }
 
-  private setPageIndex(index: number) {
-    setTimeout(() => {
-      this.resetVisibleStars();
-      this.state = `page_${index}`;
-      this.activeIndex.next(index);
-    }, 0);
+  onSlideChange(event: any) {
+    this.currentSlideIndex = event.detail[0].activeIndex;
   }
 
-  private resetVisibleStars() {
-    this.visibleStarNumber = -1;
-    this.isIncreasing = true;
+  async finishOnboarding() {
+    if (this.currentSlideIndex === 5) {
+      const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
+      this.userSettingService.saveUserSettings({
+        ...userSettings,
+        completedStartWizard: true,
+      });
+      this.navController.navigateRoot('/');
+    } else {
+      this.swiperRef?.nativeElement.swiper.slideTo(5);
+    }
   }
 
   ngOnDestroy(): void {
@@ -94,85 +110,5 @@ export class StartWizardPage implements OnInit, OnDestroy {
     }
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-  }
-
-  slideNext() {
-    // this.reachedStart = false;
-    // if (!isAndroidOrIos(this.platform)) {
-    //   this.slides.slideNext();
-    // } else {
-    //   timer(700)
-    //     .pipe(takeUntil(this.ngDestroy$))
-    //     .subscribe(() => {
-    //       if (this.slides) {
-    //         this.slides.slideNext();
-    //       }
-    //     });
-    // }
-    throw new Error('Not implemented after ionic v7 upgrade');
-  }
-
-  slidePrev() {
-    // this.slides.slidePrev();
-    throw new Error('Not implemented after ionic v7 upgrade');
-  }
-
-  async start() {
-    // if (this.reachedEnd) {
-    //   const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    //   this.userSettingService.saveUserSettings({
-    //     ...userSettings,
-    //     completedStartWizard: true,
-    //   });
-    //   this.navController.navigateRoot('/');
-    // } else {
-    //   this.slides.slideTo(5, 200);
-    // }
-    throw new Error('Not implemented after ionic v7 upgrade');
-  }
-
-  async ionSlideTransitionStart() {
-    // const index = await this.slides.getActiveIndex();
-    // this.setPageIndex(index);
-    throw new Error('Not implemented after ionic v7 upgrade');
-  }
-
-  ionSlideReachEnd() {
-    this.reachedEnd = true;
-    setTimeout(() => {
-      this.showLegalIcon = true;
-      // Crazy ios bug to get animation on spinner.. :o
-    }, 0);
-  }
-
-  ionSlideReachStart() {
-    this.reachedStart = true;
-  }
-
-  ionSlidePrevStart() {
-    this.reachedEnd = false;
-  }
-
-  private initStarIndexCounter() {
-    this.activeIndex
-      .pipe(
-        switchMap((index) => interval(700).pipe(skipWhile(() => index !== 4))),
-        takeUntil(this.ngDestroy$)
-      )
-      .subscribe(() => {
-        if (this.isIncreasing && this.visibleStarNumber >= 6) {
-          // Count to 6 to add an extra pause on the end
-          this.isIncreasing = false;
-        }
-        if (!this.isIncreasing && this.visibleStarNumber < 0) {
-          // Count to -1 to add an extra pause on the start
-          this.isIncreasing = true;
-        }
-        if (this.isIncreasing) {
-          this.visibleStarNumber++;
-        } else {
-          this.visibleStarNumber--;
-        }
-      });
   }
 }
