@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonButton,
   IonButtons,
+  IonText,
 } from '@ionic/angular/standalone';
 import { Component, inject, input, computed } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
@@ -16,7 +17,7 @@ import { AppMode } from 'src/app/modules/common-core/models';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { menuOutline, optionsOutline } from 'ionicons/icons';
+import { optionsOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderColorDirective } from '../../directives/header-color/header-color.directive';
 
@@ -46,7 +47,7 @@ export class HeaderComponent {
   readonly showMenuButton = input(true);
   readonly showFilterButton = input(true);
   readonly fullscreenSupport = input(false);
-  readonly title = input.required<string>();
+  readonly title = input<string>();
   readonly defaultHref = input('/');
 
   tripRunning = toSignal(this.tripLoggerService.isTripRunning$, { initialValue: false });
@@ -61,7 +62,7 @@ export class HeaderComponent {
   headerColor = computed(() => (this.tripRunning() ? 'trip-running' : this.appMode().toLowerCase()));
 
   constructor() {
-    addIcons({ menuOutline, optionsOutline });
+    addIcons({ optionsOutline });
   }
 
   endTrip() {

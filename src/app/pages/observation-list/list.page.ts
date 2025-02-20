@@ -1,18 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, viewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import {
-  IonCol,
   IonContent,
-  IonGrid,
   IonInfiniteScroll,
-  IonInfiniteScrollContent,
-  IonItemDivider,
   IonLabel,
-  IonRow,
   IonSegment,
   IonSegmentButton,
-  IonSelect,
-  IonSelectOption,
   SegmentCustomEvent,
 } from '@ionic/angular/standalone';
 import { IonSelectCustomEvent, SelectChangeEventDetail, SelectInterface } from '@ionic/core';
@@ -36,13 +29,10 @@ import { HasRegId } from '../../modules/common-registration/registration.helpers
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
-import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
 import { RefreshFunc } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
-import { NgIf, NgClass, AsyncPipe } from '@angular/common';
-import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -55,36 +45,26 @@ const URL_VIEW_TYPE_PARAM = 'view';
  * Each view need separate search methods.
  */
 @Component({
-  selector: 'app-observation-list',
-  templateUrl: './observation-list.page.html',
-  styleUrls: ['./observation-list.page.scss'],
+  selector: 'app-list-page',
+  templateUrl: './list.page.html',
+  styleUrls: ['./list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    RouterLink,
     AddMenuComponent,
-    AsyncPipe,
-    GeoFabComponent,
     HeaderComponent,
-    // ImagesGridComponent,
-    IonCol,
-    IonContent,
-    IonGrid,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent,
-    IonItemDivider,
     IonLabel,
-    IonRow,
     IonSegment,
     IonSegmentButton,
-    IonSelect,
-    IonSelectOption,
-    NgClass,
-    NgIf,
-    SvgIconComponent,
     TranslatePipe,
-    ObservationComponent,
+    RouterOutlet,
   ],
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {
+  private routerSnapshot = inject(Router).routerState.snapshot;
+
+  initialListType = this.routerSnapshot.url.indexOf('/search/list') > -1 ? ('list' as const) : ('pictures' as const);
+
   private searchCriteriaService = inject(SearchCriteriaService);
   private searchRegistrationService = inject(SearchRegistrationService);
   private updateObservationsService = inject(UpdateObservationsService);

@@ -22,12 +22,39 @@ export const routes: Routes = [
         loadComponent: () => import('../trip/trip.page').then((m) => m.TripPage),
       },
       {
-        path: 'observation-list',
-        loadComponent: () => import('../observation-list/observation-list.page').then((m) => m.ObservationListPage),
+        path: 'search',
+        loadComponent: () => import('../observation-list/list.page').then((m) => m.ObservationListPage),
+        children: [
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('../observation-list/observation-list/observation-list.component').then(
+                (m) => m.ObservationListComponent
+              ),
+          },
+          {
+            path: 'pictures',
+            loadComponent: () =>
+              import('../observation-list/image-list/image-list.component').then((m) => m.ImageListComponent),
+          },
+          {
+            path: '',
+            redirectTo: 'list',
+            pathMatch: 'full',
+          },
+        ],
       },
       {
         path: 'warning-list',
         loadComponent: () => import('../warning-list/warning-list.page').then((m) => m.WarningListPage),
+      },
+      {
+        path: 'observation/search',
+        redirectTo: 'search',
+      },
+      {
+        path: 'observation-list',
+        redirectTo: 'search',
       },
     ],
   },

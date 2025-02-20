@@ -1,0 +1,21 @@
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @for (reg of registrations(); track reg.RegId) {
+    <app-observation class="obs" [registration]="reg"></app-observation>
+  } @empty {
+    @if (error().hasError) {
+      <app-error-state></app-error-state>
+    } @else if (isLoading()) {
+      <p>Laster observasjoner</p>
+    } @else {
+      <app-empty-state></app-empty-state>
+    }
+  }
+
+  <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
+    <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

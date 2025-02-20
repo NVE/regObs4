@@ -1,0 +1,63 @@
+:host {
+  display: block;
+}
+
+.error {
+  flex-direction: column;
+  width: 95%;
+}
+
+ion-row {
+  max-width: 960px;
+  margin: 10px auto;
+  gap: 10px;
+}
+
+ion-grid {
+  padding: 0;
+}
+
+.center {
+  width: 300px;
+  height: 300px;
+  margin: auto;
+  display: inline-block;
+  position: relative;
+
+  .rectangle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .pin1 {
+    position: absolute;
+    right: 30%;
+    bottom: 23%;
+  }
+
+  .pin2 {
+    position: absolute;
+    left: 25%;
+    top: 10%;
+  }
+
+  .pin3 {
+    position: absolute;
+    left: 11%;
+    top: 35%;
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  .center {
+    margin-top: 20vh;
+  }
+}
+
+@media only screen and (max-width: 699px) {
+  .center {
+    margin-top: 5vh;
+  }
+}

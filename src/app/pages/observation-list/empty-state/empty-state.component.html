@@ -1,0 +1,27 @@
+@if (isMobile) {
+  <ion-grid class="full-grid">
+    <ion-row class="full-grid-row">
+      <div class="center">
+        <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
+        <svg-icon class="pin1" src="/assets/images/empty-states/pin.svg"></svg-icon>
+        <svg-icon class="pin2" src="/assets/images/empty-states/pin.svg"></svg-icon>
+        <svg-icon class="pin3" src="/assets/images/empty-states/pin.svg"></svg-icon>
+      </div>
+    </ion-row>
+    <ion-row class="error ion-text-center ion-margin-horizontal">
+      <h2>{{ "OBSERVATION_LIST.NO_OBSERVATIONS" | translate }}</h2>
+    </ion-row>
+    <ion-row class="error ion-text-center ion-margin-horizontal">
+      <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_OBSERVATIONS_TEXT" | translate }}</h3></ion-row
+    >
+  </ion-grid>
+} @else {
+  <ion-grid class="full-grid">
+    <ion-row class="error ion-text-center ion-margin-horizontal">
+      <h2>{{ "OBSERVATION_LIST.NO_OBSERVATIONS" | translate }}</h2>
+    </ion-row>
+    <ion-row class="error ion-text-center ion-margin-horizontal">
+      <h3 class="ion-text-wrap">{{ "OBSERVATION_LIST.NO_OBSERVATIONS_TEXT_WEB" | translate }}</h3></ion-row
+    >
+  </ion-grid>
+}
