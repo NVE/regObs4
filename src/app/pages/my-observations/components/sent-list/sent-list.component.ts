@@ -33,7 +33,7 @@ import { RegistrationViewModel, SearchCriteriaRequestDto } from '../../../../mod
 import { LogLevel } from '../../../../modules/shared/services/logging/log-level.model';
 import { LoggingService } from '../../../../modules/shared/services/logging/logging.service';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { ObservationListCardComponent } from '../../../../components/observation/observation-list-card/observation-list-card.component';
+import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
 import { ObservationSkeletonComponent } from '../../../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -60,7 +60,7 @@ const DEBUG_TAG = 'SentListComponent';
     IonRow,
     NgFor,
     NgIf,
-    ObservationListCardComponent,
+    ObservationComponent,
     ObservationSkeletonComponent,
     SvgIconComponent,
     TranslatePipe,

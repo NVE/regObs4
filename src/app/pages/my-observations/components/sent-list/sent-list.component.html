@@ -19,10 +19,12 @@
     </ion-grid>
   </ion-item-divider>
   <ion-list *ngIf="myRegistrations.length > 0">
-    <app-observation-list-card
-      *ngFor="let reg of myRegistrations; trackBy: trackByIdFunc"
-      [obs]="reg"
-    ></app-observation-list-card>
+    @for (reg of myRegistrations; track reg.RegId) {
+      <app-observation [registration]="reg"></app-observation>
+    } @empty {
+      <!-- TODO: Bruk empty template -->
+      <p>Ingen observasjoner</p>
+    }
     <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
       <ion-infinite-scroll-content> </ion-infinite-scroll-content>
     </ion-infinite-scroll>

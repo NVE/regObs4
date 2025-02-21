@@ -1,3 +1,4 @@
+<!-- Viser alle data på en observasjon -->
 <ion-header>
   <ion-toolbar appHeaderColor>
     <!-- Back button -->
@@ -31,7 +32,7 @@
 
 <ion-content>
   @if (registration.value(); as obs) {
-    <app-observation-list-card [obs]="obs"></app-observation-list-card>
+    <app-observation [registration]="obs"></app-observation>
   } @else if (registration.isLoading()) {
     <!-- TODO! Vise spinner -->
     <p>Laster observasjon</p>

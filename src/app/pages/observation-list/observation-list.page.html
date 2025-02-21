@@ -73,10 +73,6 @@
             <!-- TODO: Bruk empty template -->
             <p>Ingen observasjoner</p>
           }
-          <!-- <app-observation-list-view
-              *ngIf="viewType === 'list'"
-              [registrations]="registrations"
-            ></app-observation-list-view> -->
           <!-- TODO: Fix image search as another route / component ? -->
           <!-- <app-images-grid *ngIf="viewType==='grid'" [attachments]="registrations"></app-images-grid> -->
           <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
