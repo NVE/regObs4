@@ -45,7 +45,6 @@ import {
   RefreshWithCancelComponent,
 } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
 import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
-import { ObservationListViewComponent } from '../../modules/shared/components/list-view/observation-list-view.component';
 // import { ImagesGridComponent } from '../../modules/shared/components/images-grid/images-grid.ts/images-grid.component';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -91,7 +90,6 @@ const URL_VIEW_TYPE_PARAM = 'view';
     NgClass,
     NgFor,
     NgIf,
-    ObservationListViewComponent,
     ObservationSkeletonComponent,
     RefreshWithCancelComponent,
     SvgIconComponent,

@@ -23,7 +23,6 @@ import { SearchService } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
@@ -56,7 +55,6 @@ interface RegistrationResult {
     IonTitle,
     IonToolbar,
     NgIf,
-    ObservationListCardComponent,
     TranslatePipe,
     ObservationComponent,
   ],
