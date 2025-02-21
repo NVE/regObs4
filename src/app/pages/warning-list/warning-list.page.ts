@@ -1,7 +1,5 @@
-import { Component, NgZone, inject, TrackByFunction, viewChildren } from '@angular/core';
+import { Component, inject, viewChildren, signal, computed } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
@@ -22,13 +20,14 @@ import {
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
-import { NgIf, NgClass, NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { AbonnerBannerComponent } from './abonner-banner/abonner-banner.component';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { GeoSelectComponent } from '../../modules/shared/components/geo-select/geo-select.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { WarningListHeaderComponent } from 'src/app/components/warning-list-header/warning-list-header.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -39,7 +38,6 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   imports: [
     AbonnerBannerComponent,
     AddMenuComponent,
-    AsyncPipe,
     GeoSelectComponent,
     HeaderComponent,
     IonCol,
@@ -49,7 +47,6 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
     IonRow,
     IonSegment,
     IonSegmentButton,
-    NgIf,
     NgTemplateOutlet,
     RefreshWithCancelComponent,
     SvgIconComponent,
@@ -64,204 +61,82 @@ export class WarningListPage {
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
   mapService = inject(MapService);
-  private ngZone = inject(NgZone);
-
-  private selectedTab = new BehaviorSubject<SelectedTab>('inMapView');
-  selectedTab$ = this.selectedTab.asObservable();
-
-  warningGroups: IVirtualScrollItem<WarningGroup>[] = [];
-  private ngDestroySubject: Subject<void> = new Subject();
+  currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
+  noMapExtentAvailable = toSignal(this.mapService.noMapExtentAvailable$);
+  warningGroupInMapView = toSignal(this.warningService.warningGroupInMapViewObservable$);
+  warningsForCurrentGeoHazard = toSignal(this.warningService.warningsForCurrentGeoHazardObservable$);
+  warningsFavourites = toSignal(this.warningService.getWarningGroupFavouritesObservable());
+  selectedTab = signal<SelectedTab>('inMapView');
+  warningGroups = signal<IVirtualScrollItem<WarningGroup>[]>([]);
+  noFavourites = signal(false);
+  noRelevant = signal(false);
   refreshFunc = this.refresh.bind(this);
-  title = 'WARNING_LIST.TITLE';
-  noFavourites = false;
-  noRelevant = false;
-  trackByFunc: TrackByFunction<IVirtualScrollItem<WarningGroup>> = this.trackByInternal.bind(this);
-  loaded = false;
   myFooterFn = this.footerFn.bind(this);
 
   readonly warningListItems = viewChildren(WarningListItemComponent);
 
-  get showNoFavourites() {
-    return this.selectedTab.value === 'favourites' && this.noFavourites;
-  }
+  showNoFavourites = computed(() => this.selectedTab() === 'favourites' && this.getWarnings().length === 0);
+  showNoRelevantEmptyState = computed(() => this.selectedTab() === 'inMapView' && this.noRelevant());
+  showEmptyState = computed(() => this.showNoFavourites() || this.showNoRelevantEmptyState());
 
-  get showNoRelevantEmptyState() {
-    return this.selectedTab.value === 'inMapView' && this.noRelevant;
-  }
-
-  get showEmptyState() {
-    return this.showNoFavourites || this.showNoRelevantEmptyState;
-  }
-
-  closeAllOpen() {
-    for (const item of this.warningListItems()) {
-      item.close();
-    }
-  }
-
-  ionViewDidEnter() {
-    this.ngDestroySubject = new Subject();
-    this.loaded = false;
-    combineLatest([this.selectedTab$, this.userSettingService.currentGeoHazard$])
-      .pipe(
-        switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
-        takeUntil(this.ngDestroySubject)
-      )
-      .subscribe((warningGroups) => {
-        this.ngZone.run(() => {
-          this.closeAllOpen();
-          this.warningGroups = warningGroups;
-          this.hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad();
-        });
-      });
-    combineLatest([this.selectedTab$, this.userSettingService.currentGeoHazard$])
-      .pipe(takeUntil(this.ngDestroySubject))
-      .subscribe(([selectedTab, currentGeoHazard]) => {
-        this.ngZone.run(() => {
-          this.setTitle(selectedTab, currentGeoHazard);
-        });
-      });
-    this.mapService.noMapExtentAvailable$.pipe(takeUntil(this.ngDestroySubject)).subscribe((noExtentAvailable) => {
-      this.selectedTab.next(noExtentAvailable ? 'all' : 'inMapView');
-    });
-  }
-
-  private hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad() {
-    if (!this.loaded && this.warningGroups && this.warningGroups.length > 0) {
-      const currentItems = [...this.warningGroups];
-      setTimeout(() => {
-        this.warningGroups = [];
-        setTimeout(() => {
-          // Hack to virtual scroll items not showing at first load
-          this.warningGroups = currentItems;
-          this.loaded = true;
-        }, 200);
-      }, 200);
-    }
-  }
-
-  private setTitle(selectedTab: SelectedTab, currentGeoHazard: GeoHazard[]) {
-    if (selectedTab !== 'favourites') {
-      this.title = `WARNING_LIST.TITLE_${GeoHazard[currentGeoHazard[0]].toUpperCase()}`;
+  title = computed(() => {
+    if (this.selectedTab() !== 'favourites') {
+      return `WARNING_LIST.TITLE_${GeoHazard[this.currentGeoHazard()[0]].toUpperCase()}`;
     } else {
-      this.title = 'WARNING_LIST.TITLE';
+      return 'WARNING_LIST.TITLE';
     }
-  }
+  });
 
-  refresh(cancelPromise: Promise<any>) {
-    return this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
-  }
-
-  private getWarningGroupObservable(
-    segment: SelectedTab,
-    currentGeoHazard: GeoHazard[]
-  ): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    switch (segment) {
+  getWarnings = computed(() => {
+    switch (this.selectedTab()) {
       case 'inMapView':
-        return this.getWarningsInMapView();
+        return this.warningsInMapViewComputed();
       case 'all':
-        return this.getAllWarnings(currentGeoHazard);
+        return this.getAllWarningsComputed();
       case 'favourites':
-        return this.getFavouritesObservable();
+        return this.favouriteWarningGroups();
+      default:
+        return [];
     }
-  }
+  });
 
-  private mapToVirtualScrollItem(
-    wg: WarningGroup[],
-    header?: string,
-    infoText?: string
-  ): IVirtualScrollItem<WarningGroup>[] {
-    return wg.map((item, index) => ({
-      header: index === 0 ? header : undefined,
-      infoText: index === 0 ? infoText : undefined,
-      item,
-    }));
-  }
-
-  private getWarningsInMapView() {
-    return combineLatest([
-      this.getWarningsInMapViewCenter(),
-      this.getWarningsInMapViewBounds(),
-      this.getWarningsInMapViewBuffer(),
-    ]).pipe(
-      map(([a, b, c]) => [...a, ...b, ...(b.length < 3 ? c : [])]),
-      tap((val) => {
-        this.ngZone.run(() => {
-          this.noRelevant = val.length === 0;
-        });
-      })
+  warningsInMapViewComputed = computed(() => {
+    const warnings = this.warningGroupInMapView();
+    if (!warnings) {
+      return [];
+    }
+    const center = this.mapToVirtualScrollItem(warnings.center, 'WARNING_LIST.IN_MAP_CENTER');
+    const bounds = this.mapToVirtualScrollItem(warnings.viewBounds, 'WARNING_LIST.IN_MAP_VIEW');
+    const buffer = this.mapToVirtualScrollItem(
+      warnings.buffer.filter((wg) => wg.hasAnyWarnings()),
+      'WARNING_LIST.OTHER_RELEVANT'
     );
-  }
+    return [...center, ...bounds, ...(bounds.length < 3 ? buffer : [])];
+  });
 
-  private getWarningsInMapViewCenter(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return this.warningService.warningGroupInMapViewObservable$.pipe(
-      map((val) => this.mapToVirtualScrollItem(val.center, 'WARNING_LIST.IN_MAP_CENTER'))
-    );
-  }
-
-  private getWarningsInMapViewBounds(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return this.warningService.warningGroupInMapViewObservable$.pipe(
-      map((val) => this.mapToVirtualScrollItem(val.viewBounds, 'WARNING_LIST.IN_MAP_VIEW'))
-    );
-  }
-
-  private getWarningsInMapViewBuffer(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return this.warningService.warningGroupInMapViewObservable$.pipe(
-      map((val) =>
-        this.mapToVirtualScrollItem(
-          val.buffer.filter((wg) => wg.hasAnyWarnings()),
-          'WARNING_LIST.OTHER_RELEVANT'
-        )
-      )
-    );
-  }
-
-  private getAllWarnings(currentGeoHazard: GeoHazard[]): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    if (currentGeoHazard[0] === GeoHazard.Snow) {
+  getAllWarningsComputed = computed(() => {
+    if (this.currentGeoHazard()[0] === GeoHazard.Snow) {
       return this.getSnowRegionWarnings();
     } else {
-      return this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
-        map((wg: WarningGroup[]) => this.mapToVirtualScrollItem(wg, 'WARNING_LIST.ALL_WARNINGS'))
-      );
+      const warnings = this.warningsForCurrentGeoHazard();
+      if (!warnings) {
+        return [];
+      }
+      return this.mapToVirtualScrollItem(warnings, 'WARNING_LIST.ALL_WARNINGS');
     }
-  }
+  });
 
-  private getSnowRegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return combineLatest([this.getARegionWarnings(), this.getBRegionWarnings()]).pipe(map(([a, b]) => [...a, ...b]));
-  }
+  favouriteWarningGroups = computed(() => {
+    const warnings = this.warningsFavourites();
+    if (!warnings) {
+      this.noFavourites.set(true);
+      return [];
+    }
+    return this.mapToVirtualScrollItem(warnings, 'WARNING_LIST.FAVOURITES');
+  });
 
-  private getARegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
-      map((wg: WarningGroup[]) =>
-        this.mapToVirtualScrollItem(
-          wg.filter((item) => item.groupType === 'A'),
-          'WARNING_LIST.A_REGIONS'
-        )
-      )
-    );
-  }
-
-  private getBRegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
-      map((wg: WarningGroup[]) =>
-        this.mapToVirtualScrollItem(
-          wg.filter((item) => item.groupType === 'B'),
-          'WARNING_LIST.B_REGIONS',
-          'WARNING_LIST.B_REGIONS_SUBTITLE'
-        )
-      )
-    );
-  }
-
-  private getFavouritesObservable() {
-    return this.warningService.getWarningGroupFavouritesObservable().pipe(
-      tap((val) => {
-        this.ngZone.run(() => {
-          this.noFavourites = val.length === 0;
-        });
-      }),
-      map((warningGroups) => this.mapToVirtualScrollItem(warningGroups, 'WARNING_LIST.FAVOURITES'))
-    );
+  async refresh(cancelPromise?: Promise<any>) {
+    await this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
   }
 
   myHeaderFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
@@ -278,24 +153,72 @@ export class WarningListPage {
     return warningGroup.item.key.geoHazard !== GeoHazard.Ice;
   }
 
+  onSegmentChange(event: SegmentCustomEvent) {
+    const selectedTab = event.detail.value as SelectedTab;
+    this.selectedTab.set(selectedTab);
+  }
+
+  closeAllOpen() {
+    for (const item of this.warningListItems()) {
+      item.close();
+    }
+  }
+
+  private mapToVirtualScrollItem(
+    wg: WarningGroup[],
+    header?: string,
+    infoText?: string
+  ): IVirtualScrollItem<WarningGroup>[] {
+    return wg.map((item, index) => ({
+      header: index === 0 ? header : undefined,
+      infoText: index === 0 ? infoText : undefined,
+      item,
+    }));
+  }
+
+  private getSnowRegionWarnings(): IVirtualScrollItem<WarningGroup>[] {
+    const regionsA = this.getARegionWarnings();
+    const regionsB = this.getBRegionWarnings();
+    return [...regionsA, ...regionsB];
+  }
+
+  private getARegionWarnings(): IVirtualScrollItem<WarningGroup>[] {
+    const warnings = this.warningsForCurrentGeoHazard();
+    if (!warnings) {
+      return [];
+    }
+
+    return this.mapToVirtualScrollItem(
+      warnings.filter((item) => item.groupType === 'A'),
+      'WARNING_LIST.A_REGIONS'
+    );
+  }
+
+  private getBRegionWarnings(): IVirtualScrollItem<WarningGroup>[] {
+    const warnings = this.warningsForCurrentGeoHazard();
+    if (!warnings) {
+      return [];
+    }
+
+    return this.mapToVirtualScrollItem(
+      warnings.filter((item) => item.groupType === 'B'),
+      'WARNING_LIST.B_REGIONS',
+      'WARNING_LIST.B_REGIONS_SUBTITLE'
+    );
+  }
+
   private footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
-    if (this.selectedTab.value !== 'inMapView' && index === items.length - 1) {
+    if (this.selectedTab() !== 'inMapView' && index === items.length - 1) {
       return 'footer';
     }
     return undefined;
   }
 
-  trackByInternal(_: number, item: IVirtualScrollItem<WarningGroup>) {
-    return item && item.item ? item.item.getKeyAsString() : undefined;
+  ionViewEnter() {
+    this.selectedTab.set(this.noMapExtentAvailable() ? 'all' : 'inMapView');
   }
 
   ionViewWillLeave() {
     this.closeAllOpen();
-    this.ngDestroySubject.next();
-    this.ngDestroySubject.complete();
-  }
-
-  onSegmentChange(event: SegmentCustomEvent) {
-    this.selectedTab.next(event.detail.value as SelectedTab);
   }
 }
