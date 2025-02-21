@@ -93,19 +93,17 @@
   </ion-card-content>
 
   <!-- Knapperad med deleknapp og endre-knapp -->
-  @defer {
-    <ion-item color="light">
-      <ion-button fill="clear" class="edit-button" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit()">
-        <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
-        {{ "REGISTRATION.EDIT" | translate }}
-      </ion-button>
-      @if (isLoadingObsForEdit()) {
-        <ion-spinner slot="start" name="dots"></ion-spinner>
-      }
-      <ion-button fill="clear" class="reg-id" slot="end" (click)="share()">
-        ID: {{ registration().RegId }}
-        <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
-      </ion-button>
-    </ion-item>
-  }
+  <ion-item color="light">
+    <ion-button fill="clear" class="edit-button" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit()">
+      <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
+      {{ "REGISTRATION.EDIT" | translate }}
+    </ion-button>
+    @if (isLoadingObsForEdit()) {
+      <ion-spinner slot="start" name="dots"></ion-spinner>
+    }
+    <ion-button fill="clear" class="reg-id" slot="end" (click)="share()">
+      ID: {{ registration().RegId }}
+      <ion-icon slot="end" name="share-social"></ion-icon>
+    </ion-button>
+  </ion-item>
 </ion-card>

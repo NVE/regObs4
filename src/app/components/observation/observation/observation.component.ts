@@ -29,6 +29,8 @@ import {
   locationOutline,
   peopleCircleOutline,
   personCircleOutline,
+  pencil,
+  shareSocial,
 } from 'ionicons/icons';
 import { Clipboard } from '@capacitor/clipboard';
 import { DatePipe } from '@angular/common';
@@ -156,6 +158,8 @@ export class ObservationComponent {
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
+      pencil,
+      shareSocial,
     });
   }
 
