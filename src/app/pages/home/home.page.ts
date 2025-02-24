@@ -5,7 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, firstValueFrom, Observable, race, Subject, scan, BehaviorSubject, of } from 'rxjs';
 import {

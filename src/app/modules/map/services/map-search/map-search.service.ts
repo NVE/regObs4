@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { Observable, forkJoin, of, Subject, firstValueFrom } from 'rxjs';
 import { ViewInfo } from './view-info.model';

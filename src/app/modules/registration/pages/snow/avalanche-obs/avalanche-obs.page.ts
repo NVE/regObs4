@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import {
   IonBackButton,
   IonButton,
@@ -18,7 +17,7 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import moment from 'moment';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 import {
@@ -28,7 +27,6 @@ import {
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
-import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';

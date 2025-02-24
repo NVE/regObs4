@@ -8,7 +8,7 @@ import { GeoHazard, LangKey } from '../src/app/modules/common-core/models';
 import { settings } from '../src/settings';
 import { get, RequestOptions } from 'https';
 import { IncomingMessage } from 'http';
-import * as path from 'path';
+import { resolve } from 'path';
 import { createWriteStream } from 'fs';
 
 const opts: RequestOptions = {
@@ -47,15 +47,15 @@ for (const { lang } of <{ lang: string }[]>settings.language.supportedLanguages)
   const langKey = LangKey[lang];
 
   const searchCriteriaUrl = `${settings.services.regObs.apiUrl.PROD}/Search/SearchCriteria/${allGeoHazards}/${langKey}`;
-  const searchCriteriaPath = path.resolve(__dirname, '..', `src/assets/json/searchcriteria.${lang.toLowerCase()}.json`);
+  const searchCriteriaPath = resolve(__dirname, '..', `src/assets/json/searchcriteria.${lang.toLowerCase()}.json`);
   requests.push(download(searchCriteriaUrl, searchCriteriaPath));
 
   const kdvUrl = `${settings.services.regObs.apiUrl.PROD}/KdvElements?langkey=${langKey}&isActive=true&sortOrder=true`;
-  const kdvPath = path.resolve(__dirname, '..', `src/assets/json/kdvelements.${lang.toLowerCase()}.json`);
+  const kdvPath = resolve(__dirname, '..', `src/assets/json/kdvelements.${lang.toLowerCase()}.json`);
   requests.push(download(kdvUrl, kdvPath));
 
   const helptextsUrl = `${settings.services.regObs.apiUrl.PROD}/HelpText?langKey=${langKey}`;
-  const helptextsPath = path.resolve(__dirname, '..', `src/assets/json/helptexts.${lang.toLowerCase()}.json`);
+  const helptextsPath = resolve(__dirname, '..', `src/assets/json/helptexts.${lang.toLowerCase()}.json`);
   requests.push(download(helptextsUrl, helptextsPath));
 }
 

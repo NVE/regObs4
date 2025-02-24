@@ -29,7 +29,7 @@ import {
   Platform,
 } from '@ionic/angular/standalone';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
 import { concat, firstValueFrom, fromEventPattern, Observable, Subject } from 'rxjs';
@@ -67,6 +67,7 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { calendarOutline, createOutline, radioButtonOn, timeOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -136,6 +137,7 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
     IonSpinner,
     IonToggle,
     KdvSelectComponent,
+    LeafletModule,
     MapComponent,
     NgClass,
     NgFor,

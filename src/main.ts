@@ -18,7 +18,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
 import { AppComponent } from './app/app.component';
-import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
+import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { provideRouter, RouteReuseStrategy, withComponentInputBinding } from '@angular/router';
 import { routes } from './app/app.routes';
 import { Requestor, StorageBackend } from '@openid/appauth';

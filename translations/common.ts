@@ -1,18 +1,18 @@
-import * as fs from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { EOL } from 'os';
 import { JSON_SPACES } from './settings';
 
 export type Translations = { [key: string]: string | Translations };
 
 export async function readTranslationFile(path: string): Promise<Translations> {
-  const content = await fs.readFile(path);
+  const content = await readFile(path);
   const translations = JSON.parse(content.toString());
   return translations;
 }
 
 export async function writeTranslationFile(path: string, translations: string) {
   const translationsWithEol = translations.endsWith(EOL) ? translations : translations + EOL;
-  await fs.writeFile(path, translationsWithEol);
+  await writeFile(path, translationsWithEol);
 }
 
 // Edited version of this SO answer: https://stackoverflow.com/a/53593328

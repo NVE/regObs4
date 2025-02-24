@@ -18,7 +18,7 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { NgIf, NgClass, DecimalPipe } from '@angular/common';

@@ -12,7 +12,7 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
 import { OfflineMapService } from '../../../core/services/offline-map/offline-map.service';
 import { Observable } from 'rxjs';

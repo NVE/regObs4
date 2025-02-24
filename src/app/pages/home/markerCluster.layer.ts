@@ -1,4 +1,4 @@
-import * as L from 'leaflet';
+import L from 'leaflet';
 import 'leaflet.markercluster';
 import { Feature, Point } from 'geojson';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';

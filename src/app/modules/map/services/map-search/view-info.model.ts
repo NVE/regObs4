@@ -1,5 +1,5 @@
 import { LocationName } from './location-name.model';
-import * as L from 'leaflet';
+import L from 'leaflet';
 
 export interface ViewInfo {
   location?: LocationName;
