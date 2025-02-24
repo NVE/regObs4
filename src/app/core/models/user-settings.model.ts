@@ -25,6 +25,12 @@ export interface UserSetting extends InfoPopupSettings {
   featureToggeGpsDebug: boolean;
   copyright?: string;
   photographer?: string;
+
+  /**
+   * Tidspunkt (ms) for siste overstyring.
+   * Alle overrides som er nyere enn dette vil kjøres, deretter oppdateres denne verdien.
+   * Se user-setting-overrides.ts}
+   */
   lastOverridden?: number;
 
   /**

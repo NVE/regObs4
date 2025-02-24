@@ -27,7 +27,4 @@ export const DEFAULT_USER_SETTINGS: (langKey?: LangKey) => UserSetting = (langKe
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
   preferCompleteSnowObservations: false,
-  // Bør ikke være nødvendig å override default settings?
-  // Oppdater denne når default settings endres
-  lastOverridden: 1739527848917,
 });

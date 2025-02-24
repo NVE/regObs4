@@ -412,7 +412,6 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     return this.getUserSettingsFromDb().pipe(
       map((result) => (result ? result : DEFAULT_USER_SETTINGS(this.getBrowserLang()))),
 
-      // Apply any overrides due to new default settings (see json/settings-override.json)
       map((result) => applyUserSettingOverrides(result, USER_SETTINGS_OVERRIDES)),
 
       // Set geoHazard from url
