@@ -1,4 +1,4 @@
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { Feature, Point } from 'geojson';
 import { AtAGlanceViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsGeoHazardMarker } from 'src/app/modules/map/core/classes/regobs-geohazard-marker';

@@ -1,5 +1,5 @@
 import { Polygon } from 'geojson';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { SupportTile } from './app/core/models/support-tile.model';
 import { TopoMapLayer } from './app/core/models/topo-map-layer.enum';
 import { TopoMap } from './app/core/models/topo-map.enum';

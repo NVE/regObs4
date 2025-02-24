@@ -1,4 +1,4 @@
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 
 export class RegobsGeoHazardMarker extends L.DivIcon {

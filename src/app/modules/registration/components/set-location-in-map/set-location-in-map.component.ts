@@ -29,7 +29,7 @@ import {
   Platform,
 } from '@ionic/angular/standalone';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
 import { concat, firstValueFrom, fromEventPattern, Observable, Subject } from 'rxjs';

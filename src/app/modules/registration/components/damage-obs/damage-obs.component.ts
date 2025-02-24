@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, inject } from '@angular/core';
 import { IonCheckbox, IonIcon, IonItem, IonLabel, IonList, IonText, ModalController } from '@ionic/angular/standalone';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
 import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';

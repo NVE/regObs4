@@ -17,7 +17,7 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
 import { NgIf, NgFor } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -61,6 +61,7 @@ export class ModalSearchPage implements ViewDidEnter {
     request: () => this.searchText(),
     loader: ({ request: searchText }) => this.mapSearchService.searchAll(searchText),
   });
+
   searchResults = computed(() => this.mapSearch.value() || []);
   showHistory = computed(
     () => this.searchResults().length == 0 && !this.mapSearch.isLoading() && this.searchHistory().length > 0

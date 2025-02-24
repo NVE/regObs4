@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, input, untracked } from '@angular/core';
 import { booleanWithin, point } from '@turf/turf';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { SVALBARD_BOUNDS } from 'src/app/core/helpers/leaflet/svalbard-bounds';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';

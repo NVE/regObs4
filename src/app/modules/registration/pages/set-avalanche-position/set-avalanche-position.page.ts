@@ -10,7 +10,7 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { TranslateService, TranslatePipe, TranslationObject } from '@ngx-translate/core';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from 'src/settings';

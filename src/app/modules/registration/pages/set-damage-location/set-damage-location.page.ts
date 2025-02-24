@@ -9,7 +9,7 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { DamageObsEditModel, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
 import {
   LocationTime,

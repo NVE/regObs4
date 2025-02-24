@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import {
   IonBackButton,
   IonButtons,

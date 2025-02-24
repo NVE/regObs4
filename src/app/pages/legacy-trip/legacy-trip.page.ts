@@ -27,7 +27,6 @@ import { GeoHazard } from '../../modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
-import * as utils from '@nano-sql/core/lib/utilities';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
@@ -38,7 +37,7 @@ import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.compo
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { TextCommentComponent } from '../../modules/registration/components/text-comment/text-comment.component';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { isEmpty, uuidv4 } from 'src/app/modules/common-core/helpers';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -167,7 +166,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.isLoading = true;
         // this.tripDto.ObserverGuid = loggedInUser.user.Guid; // TODO: Fix api to use access token for this call
         this.tripDto.GeoHazardID = GeoHazard.Snow;
-        this.tripDto.DeviceGuid = utils.uuid();
+        this.tripDto.DeviceGuid = uuidv4();
         try {
           if (this.currentPosition && this.currentPosition.coords) {
             this.tripDto.Lat = this.currentPosition.coords.latitude.toString();

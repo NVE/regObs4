@@ -19,14 +19,14 @@ import { HelperService } from 'src/app/core/services/helpers/helper.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { Position } from '@capacitor/geolocation';
 import { LocationName } from '../../services/map-search/location-name.model';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { Capacitor } from '@capacitor/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
 import { StrictHttpResponse } from 'src/app/modules/common-regobs-api/strict-http-response';
-import * as turf from '@turf/turf';
+import { booleanPointInPolygon } from '@turf/turf';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { NgIf, NgStyle, DecimalPipe } from '@angular/common';
 import { AbsPipe } from '../../../shared/pipes/abs.pipe';
@@ -138,7 +138,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
         debounceTime(1500),
         switchMap((newMapView) =>
           iif(
-            () => turf.booleanPointInPolygon([newMapView.center.lng, newMapView.center.lat], NORWAY_BOUNDS),
+            () => booleanPointInPolygon([newMapView.center.lng, newMapView.center.lat], NORWAY_BOUNDS),
             this.getLocationInfo$(newMapView.center),
             of(null)
           )

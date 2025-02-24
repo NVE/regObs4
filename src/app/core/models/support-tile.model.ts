@@ -1,5 +1,5 @@
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import * as L from 'leaflet';
+import L from 'leaflet';
 
 export interface SupportTile extends SubTile {
   opacity: L.TileLayerOptions['opacity'];

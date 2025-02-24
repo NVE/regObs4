@@ -19,7 +19,7 @@ import {
 } from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 import { CompoundPackage, CompoundPackageFeature } from './metadata.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';

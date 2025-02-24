@@ -1,4 +1,4 @@
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { OfflineTilesRegistry } from 'src/app/core/services/offline-map/offline-tiles-registry';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { Polygon } from 'geojson';

@@ -1,4 +1,4 @@
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { Subscription } from 'rxjs';
 import { Position } from '@capacitor/geolocation';
 
