@@ -67,7 +67,6 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { calendarOutline, createOutline, radioButtonOn, timeOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { LeafletModule } from '@bluehalo/ngx-leaflet';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -137,7 +136,6 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
     IonSpinner,
     IonToggle,
     KdvSelectComponent,
-    LeafletModule,
     MapComponent,
     NgClass,
     NgFor,
