@@ -32,7 +32,7 @@ swiper-container {
   background-color: #fff;
 }
 
-.slide__container {
+swiper-slide {
   display: flex;
   flex-direction: column;
   height: 90%;
@@ -44,7 +44,7 @@ swiper-container {
 }
 
 @media screen and (max-width: 768px) {
-  .slide__container {
+  swiper-slide {
     padding: 0px 50px;
   }
 }

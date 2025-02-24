@@ -1,8 +1,8 @@
 <swiper-container
-  #swiper
+  #swipers
   slides-per-view="auto"
   loop="false"
-  css-mode="false"
+  css-mode="true"
   navigation="true"
   pagination="true"
   space-between="0"
@@ -13,113 +13,99 @@
   (swiperslidechange)="onSlideChange($event)"
 >
   <swiper-slide>
-    <div class="slide__container">
-      <div class="svg__container">
-        <svg-icon src="/assets/images/onboarding/eclipse.svg"></svg-icon>
-      </div>
-      <div class="text__container" style="max-width: 230px">
-        <h2>
-          {{ "SETTINGS.LANGUAGE" | translate }}
-          @if (language !== LangKey.en) {
-            <span> / Language</span>
-          }
-        </h2>
-        <ion-list class="language-list">
-          <ion-item class="ion-no-padding">
-            <ion-label position="stacked" color="medium">
-              {{ "START_WIZARD.CHOOSE_LANGUAGE.HEADER" | translate }}
-              @if (language !== LangKey.en) {
-                <span> / Choose language</span>
-              }
-            </ion-label>
-            <ion-select
-              cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-              [(ngModel)]="language"
-              [interface]="!isDesktop ? 'action-sheet' : 'popover'"
-              (ngModelChange)="saveLanguage()"
-            >
-              @for (lang of supportedLanguages; track lang.langKey) {
-                <ion-select-option [value]="lang.langKey">
-                  {{ lang.name }}
-                </ion-select-option>
-              }
-            </ion-select>
-          </ion-item>
-        </ion-list>
-      </div>
+    <div class="svg__container">
+      <img src="/assets/images/onboarding/eclipse.svg" />
+    </div>
+    <div class="text__container" style="max-width: 230px">
+      <h2>
+        {{ "SETTINGS.LANGUAGE" | translate }}
+        @if (language() !== LangKey.en) {
+          <span> / Language</span>
+        }
+      </h2>
+      <ion-list class="language-list">
+        <ion-item class="ion-no-padding">
+          <ion-label position="stacked" color="medium">
+            {{ "START_WIZARD.CHOOSE_LANGUAGE.HEADER" | translate }}
+            @if (language() !== LangKey.en) {
+              <span> / Choose language</span>
+            }
+          </ion-label>
+          <ion-select
+            cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+            [interface]="!isDesktop ? 'action-sheet' : 'popover'"
+            (ionChange)="saveLanguage($event)"
+            [value]="language()"
+          >
+            @for (lang of supportedLanguages; track lang.langKey) {
+              <ion-select-option [value]="lang.langKey">
+                {{ lang.name }}
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-list>
     </div>
   </swiper-slide>
   <swiper-slide>
-    <div class="slide__container">
-      <div class="svg__container">
-        <svg-icon src="/assets/images/onboarding/line.svg"> </svg-icon>
-      </div>
-      <div class="text__container">
-        <h2>{{ "START_WIZARD.PAGE_1.HEADER" | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_1.LINE_1" | translate }}</h3>
-      </div>
+    <div class="svg__container"><img src="/assets/images/onboarding/line.svg" />/</div>
+    <div class="text__container">
+      <h2>{{ "START_WIZARD.PAGE_1.HEADER" | translate }}</h2>
+      <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_1.LINE_1" | translate }}</h3>
     </div>
   </swiper-slide>
   <swiper-slide>
-    <div class="slide__container">
-      <div class="svg__container">
-        <div style="position: relative; padding-bottom: 60px">
-          <svg-icon src="/assets/images/onboarding/danger-map.svg"></svg-icon>
-          <svg-icon
-            style="position: absolute; left: 0; z-index: -1"
-            src="/assets/images/onboarding/steepness-background.svg"
-          ></svg-icon>
-        </div>
+    <div class="svg__container">
+      <div style="position: relative; padding-bottom: 60px">
+        <img src="/assets/images/onboarding/danger-map.svg" />
+        <img
+          style="position: absolute; left: 0; z-index: -1"
+          src="/assets/images/onboarding/steepness-background.svg"
+        />
       </div>
-      <div class="text__container">
-        <h2>{{ "START_WIZARD.PAGE_2.HEADER" | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_2.LINE_1" | translate }}</h3>
-      </div>
+    </div>
+    <div class="text__container">
+      <h2>{{ "START_WIZARD.PAGE_2.HEADER" | translate }}</h2>
+      <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_2.LINE_1" | translate }}</h3>
     </div>
   </swiper-slide>
   <swiper-slide>
-    <div class="slide__container">
-      <div class="svg__container">
-        <svg-icon src="/assets/images/onboarding/add-observation.svg"></svg-icon>
-      </div>
-      <div class="text__container">
-        <h2>{{ "START_WIZARD.PAGE_3.HEADER" | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_3.LINE_1" | translate }}</h3>
-      </div>
+    <div class="svg__container">
+      <img src="/assets/images/onboarding/add-observation.svg" />
+    </div>
+    <div class="text__container">
+      <h2>{{ "START_WIZARD.PAGE_3.HEADER" | translate }}</h2>
+      <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_3.LINE_1" | translate }}</h3>
     </div>
   </swiper-slide>
   <swiper-slide>
-    <div class="slide__container">
-      <div class="svg__container">
-        <svg-icon src="/assets/images/onboarding/competence-finger.svg"></svg-icon>
-      </div>
-      <div class="text__container">
-        <h2>{{ "START_WIZARD.COMPETENCE_PAGE.HEADER" | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ "START_WIZARD.COMPETENCE_PAGE.LINE_1" | translate }}</h3>
-      </div>
+    <div class="svg__container">
+      <img src="/assets/images/onboarding/competence-finger.svg" />
+    </div>
+    <div class="text__container">
+      <h2>{{ "START_WIZARD.COMPETENCE_PAGE.HEADER" | translate }}</h2>
+      <h3 class="ion-text-wrap">{{ "START_WIZARD.COMPETENCE_PAGE.LINE_1" | translate }}</h3>
     </div>
   </swiper-slide>
   <swiper-slide>
-    <div class="slide__container">
-      <svg-icon class="legal__icon" src="/assets/images/onboarding/legal.svg"></svg-icon>
-      <h2>{{ "LEGAL_TERMS.HEADER" | translate }}</h2>
-      <h3 class="ion-no-padding ion-text-wrap">
-        <ul class="legal-text">
-          <li>{{ "LEGAL_TERMS.LINE_1" | translate }}</li>
-          <li>{{ "LEGAL_TERMS.LINE_2" | translate }}</li>
-          <li>{{ "LEGAL_TERMS.LINE_3" | translate }}</li>
-          <li>
-            <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
-          </li>
-          <li>
-            <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
-          </li>
-          <li>
-            <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate: { legalUrl: legalUrl }"></span>
-          </li>
-        </ul>
-      </h3>
-    </div>
+    <img class="legal__icon" src="/assets/images/onboarding/legal.svg" />
+    <h2>{{ "LEGAL_TERMS.HEADER" | translate }}</h2>
+    <h3 class="ion-no-padding ion-text-wrap">
+      <ul class="legal-text">
+        <li>{{ "LEGAL_TERMS.LINE_1" | translate }}</li>
+        <li>{{ "LEGAL_TERMS.LINE_2" | translate }}</li>
+        <li>{{ "LEGAL_TERMS.LINE_3" | translate }}</li>
+        <li>
+          <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
+        </li>
+        <li>
+          <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
+        </li>
+        <li>
+          <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate: { legalUrl: legalUrl }"></span>
+        </li>
+      </ul>
+    </h3>
   </swiper-slide>
 </swiper-container>
 <ion-footer>
