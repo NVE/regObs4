@@ -1,265 +1,106 @@
-<ion-content>
-  <ng-container *ngIf="!isIosOrAndroid">
-    <div *ngIf="!reachedStart" class="swiper-button-prev" (click)="slidePrev()"></div>
-    <div *ngIf="!reachedEnd" class="swiper-button-next" (click)="slideNext()"></div>
-  </ng-container>
-  <!-- <ion-slides
-    class="onboarding"
-    [options]="{autoplay:false}"
-    pager="true"
-    (ionSlideReachEnd)="ionSlideReachEnd()"
-    (ionSlidePrevStart)="ionSlidePrevStart()"
-    (ionSlideReachStart)="ionSlideReachStart()"
-    (ionSlideTransitionStart)="ionSlideTransitionStart()"
-  >
-    <ion-slide>
-      <ion-grid class="full-grid">
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element eclipse" src="/assets/images/onboarding/eclipse.svg"></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element bubble" [@pulse]="state" src="/assets/images/onboarding/bubble.svg">
-              </svg-icon>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <h2 [@headerAnimation]="state">
-              {{ "SETTINGS.LANGUAGE" | translate }}<span *ngIf="language !== LangKey.en"> / Language</span>
-            </h2>
-            <ion-list class="language-list">
-              <ion-item class="ion-no-padding">
-                <ion-label position="stacked" color="medium">
-                  {{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'| translate}}<span *ngIf="language !== LangKey.en">
-                    / Choose language</span
-                  >
-                </ion-label>
-                <ion-select
-                  cancelText="{{'DIALOGS.CANCEL' | translate}}"
-                  [(ngModel)]="language"
-                  [interface]="!isDesktop ? 'action-sheet' : 'popover'"
-                  (ngModelChange)="saveLanguage()"
-                >
-                  <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
-                    {{ lang.name }}
-                  </ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-list>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-    <ion-slide>
-      <ion-grid class="full-grid">
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element line" src="/assets/images/onboarding/line.svg"> </svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element warning"
-                [@scaleUpWarning]="state"
-                src="/assets/images/onboarding/warning.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-ice" [@scaleUpIce]="state" src="/assets/icon/map/pin-ice.svg">
-              </svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-dirt" [@scaleUpDirt]="state" src="/assets/icon/map/pin-dirt.svg">
-              </svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-snow" [@scaleUpSnow]="state" src="/assets/icon/map/pin-snow.svg">
-              </svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-water" [@scaleUpWater]="state" src="/assets/icon/map/pin-water.svg">
-              </svg-icon>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <h2 [@headerAnimation1]="state">{{'START_WIZARD.PAGE_1.HEADER'|translate}}</h2>
-            <h3 class="ion-text-wrap">{{'START_WIZARD.PAGE_1.LINE_1'|translate}}</h3>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-    <ion-slide>
-      <ion-grid class="full-grid">
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element steepness-background"
-                src="/assets/images/onboarding/steepness-background.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element danger-map" src="/assets/images/onboarding/danger-map.svg"></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element user-location"
-                [@slideInFromRight]="state"
-                src="/assets/images/onboarding/user-location.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element exclamation-mark"
-                [@nudgeExclamation]="state"
-                src="/assets/images/onboarding/exclamation-mark.svg"
-              >
-              </svg-icon>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <h2 [@headerAnimation2]="state">{{'START_WIZARD.PAGE_2.HEADER'|translate}}</h2>
-            <h3 class="ion-text-wrap">{{'START_WIZARD.PAGE_2.LINE_1'|translate}}</h3>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-    <ion-slide>
-      <ion-grid class="full-grid">
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element add-observation"
-                [@pulse]="state"
-                src="/assets/images/onboarding/add-observation.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element photos"
-                [@moveDownRight]="state"
-                src="/assets/images/onboarding/photos.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element pin"
-                [@moveDownRightLess]="state"
-                src="/assets/images/onboarding/pin.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element ruler"
-                [@moveDownRight]="state"
-                src="/assets/images/onboarding/ruler.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element document"
-                [@moveDownLeft]="state"
-                src="/assets/images/onboarding/document.svg"
-              ></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element path" [@moveDownLeft]="state" src="/assets/images/onboarding/path.svg">
-              </svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon
-                class="animated-element eye"
-                [@moveLeftAndABitDown]="state"
-                src="/assets/images/onboarding/eye.svg"
-              ></svg-icon>
-            </div>
-            <!- - <div class="animated-element-wrapper">
-              <h3 class="animated-element text" [@moveUp]="state">{{'START_WIZARD.PAGE_3.BUTTON_TEXT' | translate}}</h3>
-            </div> - ->
-          </ion-col>
-        </ion-row>
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <h2 [@headerAnimation3]="state">{{'START_WIZARD.PAGE_3.HEADER'|translate}}</h2>
-            <h3 class="ion-text-wrap">{{'START_WIZARD.PAGE_3.LINE_1'|translate}}</h3>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-    <ion-slide>
-      <ion-grid class="full-grid">
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <div class="animated-element-wrapper">
-              <ion-icon class="animated-element star star1" name="star" [ngClass]="{'dark': visibleStarNumber >= 1}">
-              </ion-icon>
-              <ion-icon class="animated-element star star2" name="star" [ngClass]="{'dark': visibleStarNumber >= 2}">
-              </ion-icon>
-              <ion-icon class="animated-element star star3" name="star" [ngClass]="{'dark': visibleStarNumber >= 3}">
-              </ion-icon>
-              <ion-icon class="animated-element star star4" name="star" [ngClass]="{'dark': visibleStarNumber >= 4}">
-              </ion-icon>
-              <ion-icon class="animated-element star star5" name="star" [ngClass]="{'dark': visibleStarNumber >= 5}">
-              </ion-icon>
-              <svg-icon
-                class="animated-element competence-finger float"
-                src="/assets/images/onboarding/competence-finger.svg"
-              ></svg-icon>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="full-grid-row">
-          <ion-col class="ion-align-self-center">
-            <h2 [@headerAnimation4]="state">{{'START_WIZARD.COMPETENCE_PAGE.HEADER'|translate}}</h2>
-            <h3 class="ion-text-wrap">{{'START_WIZARD.COMPETENCE_PAGE.LINE_1'|translate}}</h3>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-    <ion-slide>
-      <ion-grid class="full-grid legal-grid">
-        <ion-row class="legal-info-row">
-          <ion-col class="ion-padding ion-align-self-bottom">
-            <div class="legal-icon" [ngClass]="{'hide': !showLegalIcon }">&sect;</div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="legal-text-row">
-          <ion-col align-self-top>
-            <h2 [@headerAnimation5]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
-            <h3 class="ion-no-padding ion-text-wrap">
-              <ul>
-                <li [@legalText1]="state">{{'LEGAL_TERMS.LINE_1' | translate}}</li>
-                <li [@legalText2]="state">{{'LEGAL_TERMS.LINE_2' | translate}}</li>
-                <li [@legalText3]="state">{{'LEGAL_TERMS.LINE_3' | translate}}</li>
-                <li [@legalText4]="state">
-                  <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
-                </li>
-                <li [@legalText5]="state">
-                  <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
-                </li>
-                <li [@legalText6]="state">
-                  <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate:{legalUrl: legalUrl}"></span>
-                </li>
-              </ul>
-            </h3>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-  </ion-slides> -->
-</ion-content>
+<swiper-container
+  #swiper
+  slides-per-view="auto"
+  loop="false"
+  css-mode="true"
+  navigation="true"
+  pagination="true"
+  space-between="0"
+  centered-slides="false"
+  center-insufficient-slides="false"
+  zoom="true"
+  keyboard="false"
+  (swiperslidechange)="onSlideChange($event)"
+>
+  <swiper-slide>
+    <img alt="" src="/assets/images/onboarding/eclipse.svg" />
+    <h2>
+      {{ "SETTINGS.LANGUAGE" | translate }}
+      @if (language() !== LangKey.en) {
+        <span> / Language</span>
+      }
+    </h2>
+    <ion-list class="language-list">
+      <ion-item class="ion-no-padding">
+        <ion-label position="stacked" color="medium">
+          {{ "START_WIZARD.CHOOSE_LANGUAGE.HEADER" | translate }}
+          @if (language() !== LangKey.en) {
+            <span> / Choose language</span>
+          }
+        </ion-label>
+        <ion-select
+          cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+          [interface]="!isDesktop ? 'action-sheet' : 'popover'"
+          (ionChange)="saveLanguage($event)"
+          [value]="language()"
+        >
+          @for (lang of supportedLanguages; track lang.langKey) {
+            <ion-select-option [value]="lang.langKey">
+              {{ lang.name }}
+            </ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </swiper-slide>
+  <swiper-slide>
+    <img alt="" src="/assets/images/onboarding/line.svg" />
+    <h2>{{ "START_WIZARD.PAGE_1.HEADER" | translate }}</h2>
+    <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_1.LINE_1" | translate }}</h3>
+  </swiper-slide>
+  <swiper-slide>
+    <div style="position: relative; padding-bottom: 90px">
+      <img alt="" src="/assets/images/onboarding/danger-map.svg" />
+      <img
+        alt=""
+        style="position: absolute; left: 0; z-index: -1"
+        src="/assets/images/onboarding/steepness-background.svg"
+      />
+    </div>
+    <h2>{{ "START_WIZARD.PAGE_2.HEADER" | translate }}</h2>
+    <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_2.LINE_1" | translate }}</h3>
+  </swiper-slide>
+  <swiper-slide>
+    <img alt="" src="/assets/images/onboarding/add-observation.svg" />
+
+    <h2>{{ "START_WIZARD.PAGE_3.HEADER" | translate }}</h2>
+    <h3 class="ion-text-wrap">{{ "START_WIZARD.PAGE_3.LINE_1" | translate }}</h3>
+  </swiper-slide>
+  <swiper-slide>
+    <img src="/assets/images/onboarding/competence-finger.svg" />
+    <h2>{{ "START_WIZARD.COMPETENCE_PAGE.HEADER" | translate }}</h2>
+    <h3 class="ion-text-wrap">{{ "START_WIZARD.COMPETENCE_PAGE.LINE_1" | translate }}</h3>
+  </swiper-slide>
+  <swiper-slide>
+    <img alt="" class="legal__icon" src="/assets/images/onboarding/legal.svg" />
+    <h2>{{ "LEGAL_TERMS.HEADER" | translate }}</h2>
+    <h3 class="ion-no-padding ion-text-wrap">
+      <ul class="legal-text">
+        <li>{{ "LEGAL_TERMS.LINE_1" | translate }}</li>
+        <li>{{ "LEGAL_TERMS.LINE_2" | translate }}</li>
+        <li>{{ "LEGAL_TERMS.LINE_3" | translate }}</li>
+        <li>
+          <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
+        </li>
+        <li>
+          <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
+        </li>
+        <li>
+          <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate: { legalUrl: legalUrl }"></span>
+        </li>
+      </ul>
+    </h3>
+  </swiper-slide>
+</swiper-container>
 <ion-footer>
   <ion-toolbar color="primary">
-    <ion-button class="ion-no-margin ion-no-padding" expand="full" (click)="start()" fill="clear">
-      {{ (reachedEnd ? "START_WIZARD.I_UNDERSTAND" : "START_WIZARD.SKIP_START") | translate }}
+    <ion-button
+      class="ion-no-margin ion-no-padding finish-onboarding-button"
+      expand="full"
+      (click)="finishOnboarding()"
+      fill="clear"
+    >
+      {{ (currentSlideIndex === 5 ? "START_WIZARD.I_UNDERSTAND" : "START_WIZARD.SKIP_START") | translate }}
     </ion-button>
   </ion-toolbar>
 </ion-footer>
