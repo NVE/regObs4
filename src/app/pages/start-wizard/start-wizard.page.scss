@@ -41,32 +41,15 @@ swiper-slide {
   justify-content: center;
   gap: 10px;
   padding: 0px 120px;
+  img:last-of-type {
+    margin-bottom: 30px;
+  }
 }
 
 @media screen and (max-width: 768px) {
   swiper-slide {
     padding: 0px 50px;
   }
-}
-
-.svg__container {
-  flex: 0.7;
-  overflow: hidden;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 100%;
-    height: auto;
-  }
-}
-
-.text__container {
-  flex: 0.3;
-  overflow: hidden;
-  text-align: center;
 }
 
 .finish-onboarding-button {
