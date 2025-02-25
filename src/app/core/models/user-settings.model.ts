@@ -27,13 +27,6 @@ export interface UserSetting extends InfoPopupSettings {
   photographer?: string;
 
   /**
-   * Tidspunkt (ms) for siste overstyring.
-   * Alle overrides som er nyere enn dette vil kjøres, deretter oppdateres denne verdien.
-   * Se user-setting-overrides.ts}
-   */
-  lastOverridden?: number;
-
-  /**
    * true = use full/complete snow obs schemas
    * false/undefined = use simple snow obs schema
    */
