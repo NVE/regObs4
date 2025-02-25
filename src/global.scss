@@ -908,3 +908,12 @@ ion-popover.select-popover.ios {
 ion-popover.select-options-with-reset ion-item:first-child {
   color: tomato;
 }
+
+swiper-container::part(bullet-active) {
+  background-color: var(--ion-color-primary);
+}
+
+swiper-container::part(button-prev),
+swiper-container::part(button-next) {
+  color: var(--ion-color-primary);
+}

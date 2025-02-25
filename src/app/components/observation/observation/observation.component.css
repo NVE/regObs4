@@ -23,15 +23,6 @@ swiper-container {
   background-color: rgba(var(--ion-color-primary-rgb), 0.2);
 }
 
-swiper-container::part(bullet-active) {
-  background-color: var(--ion-color-primary);
-}
-
-swiper-container::part(button-prev),
-swiper-container::part(button-next) {
-  color: var(--ion-color-primary);
-}
-
 swiper-slide {
   position: relative;
   background-color: lightgray;
