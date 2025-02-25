@@ -13,6 +13,7 @@ import {
   map,
   shareReplay,
   switchMap,
+  take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
@@ -41,7 +42,6 @@ import {
   isGeoHazardValid,
   separatedStringToNumberArray,
 } from '../search-criteria/url-params';
-import { applyUserSettingOverrides, USER_SETTINGS_OVERRIDES } from './user-setting-overrides';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -141,7 +141,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     );
 
     this.showMapCenter$ = this.userSetting$.pipe(
-      map((val) => val.showMapCenter),
+      map((val) => val.showMapCenterV2),
       distinctUntilChanged(),
       shareReplay(1)
     );
@@ -195,7 +195,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     );
   }
 
-  private parseUrlParameters() {
+  protected parseUrlParameters() {
     const url = new URL(document.location.href);
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
     const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
@@ -271,10 +271,18 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       .pipe(
         filter((result) => !!result),
         debounceTime(200),
-        tap((result) =>
-          this.loggingService?.debug('InMemory user settings changed. Saving to db: ', DEBUG_TAG, result)
+        tap((settings) =>
+          this.loggingService?.debug('InMemory user settings changed. In memory settings: ', DEBUG_TAG, {
+            settings,
+          })
         ),
-        switchMap((result) => this.saveUserSettingsToDb(result)),
+        switchMap(() => this.userSetting$.pipe(take(1))),
+        tap((settings) =>
+          this.loggingService?.debug('InMemory user settings changed. Saving full settings: ', DEBUG_TAG, {
+            settings,
+          })
+        ),
+        switchMap((settings) => this.saveUserSettingsToDb(settings)),
         takeUntil(this.ngDestroy$)
       )
       .subscribe();
@@ -407,13 +415,21 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     return;
   }
 
+  protected getDefaultUserSettings(): UserSetting {
+    return DEFAULT_USER_SETTINGS(this.getBrowserLang());
+  }
+
   private getUserSettingsFromQueryParametersOrDbOrDefaultSettings(): Observable<UserSetting> {
     const urlSettings = this.parseUrlParameters();
+    const defaultSettings = this.getDefaultUserSettings();
+
     return this.getUserSettingsFromDb().pipe(
-      map((result) => (result ? result : DEFAULT_USER_SETTINGS(this.getBrowserLang()))),
-
-      map((result) => applyUserSettingOverrides(result, USER_SETTINGS_OVERRIDES)),
-
+      map((result) => {
+        return {
+          ...defaultSettings,
+          ...result,
+        };
+      }),
       // Set geoHazard from url
       map((userSettings) => {
         if (urlSettings.geoHazards?.length) {
@@ -442,13 +458,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     );
   }
 
-  private getUserSettingsFromDb(): Observable<UserSetting> {
+  protected getUserSettingsFromDb(): Observable<UserSetting> {
     return from(nSQL(NanoSql.TABLES['USER_SETTINGS'].name).query('select').exec() as Promise<UserSetting[]>).pipe(
       map((result) => result[0])
     );
   }
 
-  private saveUserSettingsToDb(userSetting: UserSetting): Observable<UserSetting[]> {
+  protected saveUserSettingsToDb(userSetting: UserSetting): Observable<UserSetting[]> {
     return from(
       nSQL(NanoSql.TABLES['USER_SETTINGS'].name)
         .query('upsert', { id: 'usersettings', ...userSetting })

@@ -11,7 +11,7 @@ const basicUserSettings: UserSetting = {
   observationDaysBack: [{ geoHazard: GeoHazard.Snow, daysBack: 2 }],
   completedStartWizard: true,
   supportTiles: [],
-  showMapCenter: true,
+  showMapCenterV2: true,
   showObservations: true,
   showGeoSelectInfo: true,
   useRetinaMap: false,

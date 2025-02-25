@@ -15,7 +15,7 @@ export interface UserSetting extends InfoPopupSettings {
   observationDaysBack: Array<{ geoHazard: GeoHazard; daysBack: number }>;
   completedStartWizard: boolean;
   supportTiles: Array<SupportTileStore>;
-  showMapCenter: boolean;
+  showMapCenterV2: boolean;
   showObservations: boolean;
   topoMap: TopoMap;
   showGeoSelectInfo: boolean;
