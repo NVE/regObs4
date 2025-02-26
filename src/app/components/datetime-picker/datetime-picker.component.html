@@ -1,41 +1,47 @@
-<ion-button
-  fill="clear"
-  expand="block"
-  class="datetimepicker-button"
-  [ngClass]="'datetimepicker-button--' + textAlign()"
-  (click)="openModal()"
-  [size]="buttonSize()"
->
-  <div class="datetimepicker-button-inner-wrapper">
-    {{ dateTime() | date: dateTimeFormat() }}
-  </div>
-</ion-button>
+<!-- Felt for å velge dato/og/eller tid.
+ På web viser vi kun et input-felt. I app bruker vi en knapp som drar opp en modal dato/tids-velger -->
+@if (isDesktop) {
+  <input [type]="inputType()" [value]="dateTimeLocal" (ngModelChange)="updateTempDateTimeFromInput($event)" />
+} @else {
+  <ion-button
+    fill="clear"
+    expand="block"
+    class="datetimepicker-button"
+    [ngClass]="'datetimepicker-button--' + textAlign()"
+    (click)="openModal()"
+    [size]="buttonSize()"
+  >
+    <div class="datetimepicker-button-inner-wrapper">
+      {{ dateTime() | date: dateTimeFormat() }}
+    </div>
+  </ion-button>
 
-<ion-modal id="datetime-picker-modal" #modal [isOpen]="datePickerOpen()" (willDismiss)="onWillDismiss($event)">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
-        </ion-buttons>
-        <ion-title></ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="confirm()" [strong]="true">{{ "DIALOGS.OK" | translate }}</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <ion-datetime
-        [value]="dateTime()"
-        (ionChange)="updateTempDateTime($event)"
-        [max]="maxDate()"
-        [min]="minDate()"
-        id="datetime"
-        [firstDayOfWeek]="1"
-        [locale]="locale()"
-        [presentation]="presentation()"
-      >
-      </ion-datetime>
-    </ion-content>
-  </ng-template>
-</ion-modal>
+  <ion-modal id="datetime-picker-modal" #modal [isOpen]="datePickerOpen()" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
+          </ion-buttons>
+          <ion-title></ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">{{ "DIALOGS.OK" | translate }}</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-datetime
+          [value]="dateTime()"
+          (ionChange)="updateTempDateTime($event)"
+          [max]="maxDate()"
+          [min]="minDate()"
+          id="datetime"
+          [firstDayOfWeek]="1"
+          [locale]="locale()"
+          [presentation]="presentation()"
+        >
+        </ion-datetime>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+}

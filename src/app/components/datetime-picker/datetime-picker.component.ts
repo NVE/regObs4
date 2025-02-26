@@ -1,4 +1,16 @@
-import { Component, EventEmitter, OnInit, Output, inject, viewChild, input, linkedSignal, model } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  inject,
+  viewChild,
+  input,
+  linkedSignal,
+  model,
+  computed,
+  signal,
+} from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -16,6 +28,7 @@ import { firstValueFrom } from 'rxjs';
 import { getLangKeyString } from '../../modules/common-core/models/lang-key.enum';
 import { NgClass, DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-datetime-picker',
@@ -52,6 +65,20 @@ export class DatetimePickerComponent implements OnInit {
   readonly buttonSize = input<'small' | 'default' | 'large'>('default'); // Sets the main ion-button size (values are from Ionic)
   readonly resetable = input(false);
 
+  // brukes på web til å sette type på input-feltet
+  inputType = computed(() => {
+    switch (this.presentation()) {
+      case 'date':
+        return 'date';
+      case 'time':
+        return 'time';
+    }
+    return 'datetime-local';
+  });
+  //  dateTimeLocal = computed(() => (this.dateTime() ? this.dateTime()?.slice(0, 16) : ''));
+  // dateTimeLocal = signal(this.dateTime());
+  dateTimeLocal = signal(new Date().toISOString());
+
   readonly datePickerOpen = model(false);
 
   @Output() dateTimeChange = new EventEmitter<string>(); // Can be used to manually trigger wanted functionality when the dateTime is changed.
@@ -61,11 +88,18 @@ export class DatetimePickerComponent implements OnInit {
   private tempDate?: string;
 
   readonly modal = viewChild(IonModal);
+  readonly isDesktop = !Capacitor.isNativePlatform();
 
   async ngOnInit(): Promise<void> {
     if (!this.locale()) {
       const userSetting = await firstValueFrom(this.userSettings.userSetting$);
       this.locale.set(getLangKeyString(userSetting.language));
+    }
+    if (this.isDesktop) {
+      // const input = document.querySelector('input');
+      // input?.addEventListener('change', this.updateTempDateTime as EventListener);
+      const input = document.querySelector('input');
+      input?.addEventListener('change', this.updateTempDateTimeFromInput.bind(this) as EventListener);
     }
   }
 
@@ -101,5 +135,17 @@ export class DatetimePickerComponent implements OnInit {
   updateTempDateTime(event: CustomEvent<DatetimeChangeEventDetail>) {
     if (!event.detail.value || Array.isArray(event.detail.value)) return;
     this.tempDate = event.detail.value;
+  }
+
+  /**
+   * Updates the tempDate when the user changes the time using the input element
+   * @param event - Event
+   */
+  updateTempDateTimeFromInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.value) {
+      const currentDate = new Date(input.value);
+      this.tempDate = currentDate.toISOString();
+    }
   }
 }
