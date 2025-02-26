@@ -17,7 +17,7 @@ export const DEFAULT_USER_SETTINGS: (langKey?: LangKey) => UserSetting = (langKe
   ],
   completedStartWizard: !isNative,
   supportTiles: [],
-  showMapCenter: true,
+  showMapCenterV2: isNative,
   showObservations: true,
   topoMap: TopoMap.default,
   // showGeoSelectInfo er om coach marks skal vises etter oppstart / start-wizard
@@ -27,5 +27,4 @@ export const DEFAULT_USER_SETTINGS: (langKey?: LangKey) => UserSetting = (langKe
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
   preferCompleteSnowObservations: false,
-  lastOverridden: undefined,
 });
