@@ -1,6 +1,6 @@
-<app-header [title]="title"></app-header>
-<ion-segment slot="fixed" [value]="selectedTab$ | async" (ionChange)="onSegmentChange($event)">
-  <ion-segment-button value="inMapView" [disabled]="mapService.noMapExtentAvailable$ | async">
+<app-header [title]="title()"></app-header>
+<ion-segment slot="fixed" [value]="selectedTab()" (ionChange)="onSegmentChange($event)">
+  <ion-segment-button value="inMapView" [disabled]="noMapExtentAvailable()">
     <ion-label>{{ "WARNING_LIST.RELEVANT" | translate }}</ion-label>
   </ion-segment-button>
   <ion-segment-button value="all">
@@ -12,8 +12,9 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+
   <ion-list>
-    @for (warningGroup of warningGroups; track warningGroup.item.getKeyAsString()) {
+    @for (warningGroup of getWarnings(); track warningGroup.item.getKeyAsString()) {
       @if (warningGroup.header) {
         <ion-item-divider>
           <app-warning-list-header
@@ -24,17 +25,24 @@
         </ion-item-divider>
       }
       <app-warning-list-item [warningGroup]="warningGroup.item"></app-warning-list-item>
+    } @empty {
+      <ng-container *ngTemplateOutlet="empty"></ng-container>
     }
   </ion-list>
-  <div id="abonner-banner" *ngIf="(selectedTab$ | async) === 'inMapView'" class="ion-margin" [class.loaded]="loaded">
-    <app-abonner-banner></app-abonner-banner>
-  </div>
+
+  @if (selectedTab() === "inMapView") {
+    <div id="abonner-banner" class="ion-margin">
+      <app-abonner-banner></app-abonner-banner>
+    </div>
+  }
 </ion-content>
 <app-add-menu></app-add-menu>
 <app-geo-select slot="fixed"></app-geo-select>
+
 <ng-template #empty>
-  <ng-container *ngTemplateOutlet="showNoFavourites ? emptyFavourites : emptyRelevant"></ng-container>
+  <ng-container *ngTemplateOutlet="showNoFavourites() ? emptyFavourites : emptyRelevant"></ng-container>
 </ng-template>
+
 <ng-template #emptyFavourites>
   <ion-grid class="full-grid">
     <ion-row class="full-grid-row">
@@ -50,6 +58,7 @@
     </ion-row>
   </ion-grid>
 </ng-template>
+
 <ng-template #emptyRelevant>
   <ion-grid class="full-grid">
     <ion-row class="full-grid-row">

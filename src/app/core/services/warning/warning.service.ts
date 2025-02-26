@@ -6,7 +6,7 @@ import 'moment-timezone';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, tap, switchMap, shareReplay, distinctUntilChanged, take } from 'rxjs/operators';
+import { map, tap, switchMap, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
@@ -43,7 +43,6 @@ export class WarningService {
   private nativeHttp = inject(HTTP);
   private loggingService = inject(LoggingService);
   private dbHelperService = inject(DbHelperService);
-
   private _warningsObservable: Observable<WarningGroup[]>;
   private _warningsForCurrentGeoHazardObservable: Observable<WarningGroup[]>;
   private _warningGroupInMapViewObservable: Observable<IWarningGroupInMapView>;
