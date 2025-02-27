@@ -14,14 +14,13 @@ import {
   IonCard,
   IonCardContent,
   IonCardHeader,
-  IonCardSubtitle,
   IonCardTitle,
   IonChip,
   IonIcon,
   IonLabel,
   ToastController,
 } from '@ionic/angular/standalone';
-import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
   calendarNumberOutline,
@@ -70,7 +69,6 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     IonCard,
     IonCardHeader,
     IonCardContent,
-    IonCardSubtitle,
     IonCardTitle,
     IonChip,
     IonIcon,
@@ -261,6 +259,15 @@ export class ObservationComponent {
     });
 
     return promise;
+  }
+
+  //TODO: Midlertidig løsning for å åpne detaljert snøprofil og se større bilder direkte fra karusellen.
+  //På sikt skal nok klikk på bildet i karusell ta deg via en modal før du går videre til detaljert profil
+  imageClicked(attachment: AttachmentViewModel) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const url = (attachment as any).Href || attachment.Url;
+    //kun snøprofil-bilder har href. Href er link til detaljert snøprofil. Andre biler åpnes i maks størrelse
+    window.open(url, '_blank');
   }
 }
 

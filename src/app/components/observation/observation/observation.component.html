@@ -19,7 +19,7 @@
 
     <!-- lazy-preload-prev-next="2" -->
     @for (attachment of attachments(); track attachment.AttachmentId) {
-      <swiper-slide>
+      <swiper-slide (click)="imageClicked(attachment)">
         <!-- <div class="img-desc">
           @if (attachment.Comment) {
             <ion-icon name="chatbubble-ellipses" color="primary"></ion-icon>
