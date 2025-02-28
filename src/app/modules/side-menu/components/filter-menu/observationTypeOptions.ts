@@ -23,16 +23,22 @@ export class ObservationTypeOptions {
 
 //combine subtypes and types into one array
 function convertObservationTypesDtoToView(registrationTypesByGeoHazard: RegistrationTypeDto[]) {
-  let arrToReturn = new Map<number, ObservationTypeView>();
-  registrationTypesByGeoHazard.map((type) => {
-    const subtypestoReturn =
-      type.SubTypes && type.SubTypes.length > 0
-        ? mapRegistrationSubtypes(type.SubTypes, type.Id)
-        : mapRegistrationType(type);
-    arrToReturn = new Map([...arrToReturn, ...subtypestoReturn]);
-  });
+  const uniqueSubTypeIds = new Set<number>();
 
-  return arrToReturn;
+  return registrationTypesByGeoHazard.reduce((acc, type) => {
+    if (type.SubTypes && type.SubTypes.length > 0) {
+      // Filterer vekk subtypes duplikater
+      const uniqueSubTypes = type.SubTypes.filter((subType) => {
+        if (uniqueSubTypeIds.has(subType.Id)) return false;
+        uniqueSubTypeIds.add(subType.Id);
+        return true;
+      });
+
+      return new Map([...acc, ...mapRegistrationSubtypes(uniqueSubTypes, type.Id)]);
+    }
+
+    return new Map([...acc, ...mapRegistrationType(type)]);
+  }, new Map<number, ObservationTypeView>());
 }
 
 function mapRegistrationSubtypes(
