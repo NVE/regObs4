@@ -6,14 +6,17 @@ import { timer, of } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const canActivateStartWizard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-  return inject(UserSettingService).userSetting$.pipe(
+  const userSettingService = inject(UserSettingService);
+  const router = inject(Router);
+
+  return userSettingService.userSetting$.pipe(
     take(1),
     map((userSetting) => !userSetting.completedStartWizard),
     switchMap((notCompletedStartWizard) => {
       if (notCompletedStartWizard) {
         // Redirect router navigation to start wizard
         // Added 200ms timeout because of white screen on startup, this seems to help.
-        return timer(200).pipe(map(() => inject(Router).parseUrl('/start-wizard')));
+        return timer(200).pipe(map(() => router.parseUrl('/start-wizard')));
       }
       // Proceed with router navigation
       return of(true);
