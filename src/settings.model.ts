@@ -113,4 +113,5 @@ export interface ISettings {
     nb: string;
     en: string;
   };
+  feedbackWebUrl: string;
 }

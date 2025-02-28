@@ -211,10 +211,13 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     toast.present();
   }
 
-  loadYrClick(event: MouseEvent) {
+  async loadYrClick(event: MouseEvent) {
+    // siden vi bruker nå aux for å støtte midtklikk på mus, må vi sikkre at auxclick ikke blir kalt for høyreklikk
+    if (event.button == 2) return;
     event.stopPropagation();
+    event.preventDefault();
     if (this.mapCenter) {
-      this.loadYr(this.mapCenter.lat, this.mapCenter.lng);
+      await this.loadYr(this.mapCenter.lat, this.mapCenter.lng);
     }
   }
 
@@ -228,21 +231,14 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
       };
     }
 
-    const apiReq = await new HttpRequest(
-      'GET',
-      `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`
-    );
+    const yrApiUrl = `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`;
 
     try {
-      const apiResponse = await firstValueFrom(
-        this.http.request(apiReq).pipe(
-          filter((_r) => _r instanceof HttpResponse),
-          map((_r) => (_r as StrictHttpResponse<YrSearch>).body)
-        )
-      );
+      const response = await firstValueFrom(this.http.get<YrSearch>(yrApiUrl, { observe: 'response' }));
+      const apiResponse = response.body;
 
-      if (!apiResponse.totalResults) {
-        throw new Error();
+      if (!apiResponse || !apiResponse.totalResults) {
+        throw new Error('loadYr: No results found');
       }
 
       const id = apiResponse._embedded.location[0].id;
@@ -251,6 +247,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
           nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
           nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
         }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
+
       this.externalLinkService.openExternalLink(url);
     } catch {
       await this.toastOnYrError();

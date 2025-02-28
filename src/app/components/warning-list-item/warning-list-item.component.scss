@@ -2,11 +2,20 @@
   --sliding-background: lightgrey;
 }
 
+.warning-group-link {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
 ion-item {
   --inner-padding-end: 0px;
 
   ion-grid {
     display: contents;
+  }
+  a {
+    text-decoration: none;
   }
 }
 

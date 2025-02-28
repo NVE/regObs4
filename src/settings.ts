@@ -432,4 +432,6 @@ export const settings: ISettings = {
     en: 'https://varsom.no/en/about/regobs/regobs-about-data-terms-of-service-and-privacy-policy/',
     nb: 'https://varsom.no/om-varsom/regobs/regobs-brukervilkar/',
   },
+  feedbackWebUrl:
+    'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu',
 };
