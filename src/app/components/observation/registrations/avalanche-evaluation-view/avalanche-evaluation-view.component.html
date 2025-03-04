@@ -1,0 +1,32 @@
+<app-registration-header>{{ "REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE" | translate }}</app-registration-header>
+
+@if (dangerIcon()) {
+  <div class="danger-level">
+    <img src="{{ dangerIcon() }}" alt="{{ dangerName() }}" />
+    <ion-text color="dark"
+      ><p>{{ dangerName() }}</p></ion-text
+    >
+  </div>
+}
+
+@if (evaluation()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE' | translate" [value]="evaluation()" />
+}
+
+@if (development()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_EVALUATION.AVALANCHE_DEVELOPMENT' | translate"
+    [value]="development()"
+  />
+}
+
+@if (forecastCorrect()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_EVALUATION.FORECAST_CORRECT' | translate"
+    [value]="forecastCorrect()"
+  />
+}
+
+@if (forecastComment()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_EVALUATION.COMMENT' | translate" [value]="forecastComment()" />
+}

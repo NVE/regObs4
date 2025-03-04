@@ -3,12 +3,23 @@ import { Summary } from 'src/app/modules/common-regobs-api/models';
 import { SummaryType } from '../../../core/models/summmary-type.enum';
 import { NgFor, NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase } from '@angular/common';
 import { ExternalLinkComponent } from '../../../modules/shared/components/external-link/external-link.component';
+import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
+import { KeyValueComponent } from '../key-value/key-value.component';
 
 @Component({
   selector: 'app-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
-  imports: [NgFor, NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, ExternalLinkComponent],
+  imports: [
+    NgFor,
+    NgIf,
+    NgTemplateOutlet,
+    NgSwitch,
+    NgSwitchCase,
+    ExternalLinkComponent,
+    RegistrationHeaderComponent,
+    KeyValueComponent,
+  ],
 })
 export class SummaryComponent {
   readonly summaries = input.required<Summary[]>();
