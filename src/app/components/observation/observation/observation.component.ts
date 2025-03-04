@@ -295,8 +295,9 @@ function getLocation(obs: RegistrationViewModel): ImageLocation {
 }
 
 function getRegistrationViews(obs: RegistrationViewModel) {
-  return getRegistrationTids()
-    .map((tid) => ({ config: REGISTRATION_VIEW_CONFIG[tid], tid }))
+  // Ikke ideelt hvordan konfigen itereres over, skal finne på noe bedre
+  return Object.keys(REGISTRATION_VIEW_CONFIG)
+    .map((tid) => ({ config: REGISTRATION_VIEW_CONFIG[tid as unknown as number], tid }))
     .filter(({ config }) => !config.isEmpty(obs))
     .map(({ config, tid }) => ({ component: config.component, inputs: config.getInputs(obs), tid }));
 }
