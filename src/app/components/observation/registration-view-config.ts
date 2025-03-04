@@ -14,7 +14,7 @@ import { AvalancheProblemViewComponent } from './registrations/avalanche-problem
  * Et alternativ hadde vært å feks falle tilbake på en Summary-baserte visning hvis
  * ikke det fantes en konfigurasjon for den registreringstypen.
  */
-export const REGISTRATION_VIEW_CONFIG: Record<RegistrationTid, RegistrationViewConfig> = {
+export const REGISTRATION_VIEW_CONFIG: Record<number, RegistrationViewConfig> = {
   [RegistrationTid.GeneralObservation]: {
     component: SummaryComponent,
     isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.GeneralObservation),
@@ -24,11 +24,6 @@ export const REGISTRATION_VIEW_CONFIG: Record<RegistrationTid, RegistrationViewC
     component: SummaryComponent,
     isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.Incident),
     getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.Incident),
-  },
-  [RegistrationTid.Picture]: {
-    component: SummaryComponent,
-    isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.Picture),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.Picture),
   },
   [RegistrationTid.DangerObs]: {
     component: SummaryComponent,
@@ -100,25 +95,10 @@ export const REGISTRATION_VIEW_CONFIG: Record<RegistrationTid, RegistrationViewC
     isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.AvalancheActivityObs2),
     getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.AvalancheActivityObs2),
   },
-  [RegistrationTid.SnowTempObs]: {
-    component: SummaryComponent,
-    isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.SnowTempObs),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.SnowTempObs),
-  },
-  [RegistrationTid.DensityProfile]: {
-    component: SummaryComponent,
-    isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.DensityProfile),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.DensityProfile),
-  },
   [RegistrationTid.SnowProfile2]: {
     component: SummaryComponent,
     isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.SnowProfile2),
     getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.SnowProfile2),
-  },
-  [RegistrationTid.StratProfile]: {
-    component: SummaryComponent,
-    isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.StratProfile),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.StratProfile),
   },
   [RegistrationTid.IceThickness]: {
     component: SummaryComponent,
