@@ -172,6 +172,12 @@
     "SEARCH_HISTORY_HEADER": "Siste søk",
     "SEARCH_TEXT": "Søk etter sted"
   },
+  "FILTER_DESCRIPTION": {
+    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}}observasjoner.",
+    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Sendt inn etter {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Sendt inn mellom {{from}} og {{to}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Sendt inn før {{datetime}}."
+  },
   "MENU": {
     "ABOUT_REGOBS": "Om data og tilgjengelighet",
     "AND": "og",
@@ -205,7 +211,6 @@
     "OPACITY": "Gjennomsiktighet",
     "OTHER": "Annet",
     "SHOW": "Vis",
-    "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
     "SHOW_TRIPS": "Vis turer",

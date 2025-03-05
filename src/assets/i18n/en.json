@@ -205,7 +205,6 @@
     "OPACITY": "Transparency",
     "OTHER": "Other",
     "SHOW": "Show",
-    "SHOWING_OBSERVATIONS": "observations",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
     "SHOW_TRIPS": "Show trips",
@@ -1045,5 +1044,12 @@
     "TITLE_SNOW": "Avalanche Forecasts",
     "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
+  },
+  "FILTER_DESCRIPTION": {
+    "FILTER": "Filter:",
+    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}} observations.",
+    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Submitted after {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Submitted between {{from}} and {{to}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Submitted before {{datetime}}."
   }
 }
