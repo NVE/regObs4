@@ -1,11 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, viewChild } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import {
+  IonButton,
+  IonCheckbox,
   IonContent,
   IonInfiniteScroll,
+  IonItem,
   IonLabel,
   IonSegment,
   IonSegmentButton,
+  IonSelect,
+  IonSelectOption,
+  IonText,
   SegmentCustomEvent,
 } from '@ionic/angular/standalone';
 import { IonSelectCustomEvent, SelectChangeEventDetail, SelectInterface } from '@ionic/core';
@@ -33,6 +39,7 @@ import { RefreshFunc } from '../../modules/shared/components/refresh-with-cancel
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 
 type MapSectionFilter = 'all' | 'mapBorders';
 type ViewType = 'grid' | 'list';
@@ -58,6 +65,13 @@ const URL_VIEW_TYPE_PARAM = 'view';
     IonSegmentButton,
     TranslatePipe,
     RouterOutlet,
+    IonButton,
+    IonSelect,
+    IonSelectOption,
+    IonItem,
+    IonCheckbox,
+    ShowFilterCriteriaComponent,
+    IonText,
   ],
 })
 export class ObservationListPage extends NgDestoryBase implements OnInit {

@@ -5,3 +5,69 @@ ion-router-outlet {
 ion-content {
   height: 100%;
 }
+
+.segment {
+  margin: 30px;
+  //
+  width: fit-content;
+  margin-bottom: 20px;
+  border: 2px solid var(--ion-color-tertiary);
+}
+
+ion-segment {
+  width: fit-content;
+  // --background: white;
+}
+
+.list-type {
+  margin: 30px;
+  display: flex;
+  width: fit-content;
+  border: 2px solid var(--ion-color-primary);
+  padding: -5px;
+  background-color: white;
+}
+
+ion-button {
+  --border-radius: 0;
+  --border-width: 0;
+  --box-shadow: none;
+  margin: 0;
+}
+
+ion-button::part(native) {
+  --border-radius: 0;
+}
+
+.options {
+  margin: 10px 0px 0px 0px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+
+  ion-select {
+    width: fit-content;
+  }
+}
+
+app-show-filter-criteria {
+  margin: 10px 0px;
+}
+
+.list-controls {
+  max-width: 900px;
+
+  p {
+    color: gray;
+    font-size: 0.9rem;
+  }
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

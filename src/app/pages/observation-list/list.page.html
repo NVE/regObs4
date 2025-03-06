@@ -1,5 +1,6 @@
-<app-header>
-  <ion-segment value="{{ initialListType }}">
+<app-header>Observasjoner</app-header>
+<!-- <div class="segment">
+  <ion-segment value="{{ initialListType }}" color="primary">
     <ion-segment-button value="list" routerLink="./list">
       <ion-label>{{ "Observasjoner" | translate }}</ion-label>
     </ion-segment-button>
@@ -7,6 +8,36 @@
       <ion-label>{{ "Bilder" | translate }}</ion-label>
     </ion-segment-button>
   </ion-segment>
-</app-header>
-<router-outlet></router-outlet>
+</div>
+
+<div class="list-type">
+  <ion-button expand="block">{{ "Observasjoner" | translate }}</ion-button>
+  <ion-button expand="block" fill="clear">{{ "Bilder" | translate }}</ion-button>
+</div> -->
+<div class="content">
+  <div class="list-controls">
+    <!-- <h1>Observasjoner</h1> -->
+
+    <p>245 observasjoner</p>
+
+    <!-- Kjøre sticky på denne så man alltid ser filter, inntil man trykker på kryss? -->
+    <app-show-filter-criteria></app-show-filter-criteria>
+
+    <div class="options">
+      <ion-checkbox>Filtrer på kartutsnitt</ion-checkbox>
+
+      <ion-select label="Vis som" fill="outline" value="observations" interface="popover" color="primary">
+        <ion-select-option value="observations">Observasjoner</ion-select-option>
+        <ion-select-option value="images">Bilder</ion-select-option>
+      </ion-select>
+
+      <ion-select label="Sorter på" fill="outline" value="changed" interface="popover" color="primary">
+        <ion-select-option value="changed">Oppdatert tid</ion-select-option>
+        <ion-select-option value="observed">Observert tid</ion-select-option>
+      </ion-select>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>
 <app-add-menu></app-add-menu>
