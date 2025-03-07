@@ -1,0 +1,29 @@
+<ion-checkbox [checked]="mapExtentFilterActive()" (ionChange)="toggleExtentFilter()">
+  Filtrer på kartutsnitt
+</ion-checkbox>
+
+<div class="selects">
+  <ion-select
+    label="Vis som"
+    fill="outline"
+    [value]="pageType()"
+    interface="popover"
+    color="primary"
+    (ionChange)="navigate($event.target.value)"
+  >
+    <ion-select-option value="observations">Observasjoner</ion-select-option>
+    <ion-select-option value="images">Bilder</ion-select-option>
+  </ion-select>
+
+  <ion-select
+    label="Sorter på"
+    fill="outline"
+    [value]="orderBy()"
+    interface="popover"
+    color="primary"
+    (ionChange)="setOrderBy($event.target.value)"
+  >
+    <ion-select-option value="DtChangeTime">Oppdatert tid</ion-select-option>
+    <ion-select-option value="DtObsTime">Observert tid</ion-select-option>
+  </ion-select>
+</div>

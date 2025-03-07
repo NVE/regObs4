@@ -2,5 +2,22 @@
   display: block;
   height: 100%;
   width: 100%;
-  max-width: 900px;
+
+  --max-width: var(--list-search-max-width, 960px);
+}
+
+.list-header {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.list {
+  height: 100%;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+ion-content::part(scroll) {
+  scrollbar-gutter: stable both-edges;
 }

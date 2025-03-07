@@ -62,7 +62,7 @@ swiper-slide .img-desc {
 
 swiper-slide:first-child {
   /* Map */
-  width: 40vw;
+  width: 40%;
 }
 
 swiper-container swiper-slide:first-child:nth-last-child(1) {
@@ -93,4 +93,10 @@ swiper-slide img {
 
 .registration {
   margin-top: 12px;
+}
+
+ion-card {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 16px;
 }

@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.selects {
+  display: flex;
+  gap: 16px;
+}
+
+ion-select {
+  width: fit-content;
+}

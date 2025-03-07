@@ -14,6 +14,8 @@ import { SearchRegistrationService } from 'src/app/core/services/search-registra
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import { ListControlsComponent } from '../list-controls/list-controls.component';
+import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 
 @Component({
   selector: 'app-observation-list',
@@ -26,6 +28,8 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
     IonRefresherContent,
     ErrorStateComponent,
     EmptyStateComponent,
+    ListControlsComponent,
+    ShowFilterCriteriaComponent,
   ],
   templateUrl: './observation-list.component.html',
   styleUrl: './observation-list.component.css',
@@ -47,6 +51,7 @@ export class ObservationListComponent {
     ),
     { initialValue: [] as RegistrationViewModel[] }
   );
+  count = this.searchHandler.count.asReadonly();
 
   disableInfiniteScroll = toSignal(
     combineLatest([this.searchHandler.allFetchedForCriteria$, this.searchHandler.maxItemsFetched$]).pipe(

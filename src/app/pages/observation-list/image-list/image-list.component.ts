@@ -13,7 +13,13 @@ import { SearchRegistrationService } from 'src/app/core/services/search-registra
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import { ShowFilterCriteriaComponent } from '../../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
+import { ListControlsComponent } from '../list-controls/list-controls.component';
+import { GridImageComponent } from './grid-image.component';
 
+/**
+ * Bildesøk
+ */
 @Component({
   selector: 'app-image-list',
   imports: [
@@ -24,6 +30,9 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
     EmptyStateComponent,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    ShowFilterCriteriaComponent,
+    ListControlsComponent,
+    GridImageComponent,
   ],
   templateUrl: './image-list.component.html',
   styleUrl: './image-list.component.css',
