@@ -30,12 +30,10 @@
     }
   </swiper-container>
 
-  <ion-card-header>
-    <ion-card-title> {{ registration().ObsLocation.Title }}</ion-card-title>
-    <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
-  </ion-card-header>
-
   <ion-card-content>
+    <h2>
+      {{ registration().ObsLocation.Title }}
+    </h2>
     <div>
       <ion-chip color="primary" (click)="dateClicked.set(true)" [disabled]="dateClicked()">
         <ion-icon name="calendar-number-outline"></ion-icon>
@@ -76,20 +74,11 @@
       }
     </div>
 
-    <ion-list>
-      @for (summaryGroup of registration().Summaries; track $index) {
-        <ion-item>
-          <ion-label>
-            <h2 class="summary-header">{{ summaryGroup.RegistrationName }}</h2>
-            <p class="summary">
-              @for (summary of summaryGroup.Summaries; track $index) {
-                <strong>{{ summary.Header }}:</strong> {{ summary.Value }}.
-              }
-            </p>
-          </ion-label>
-        </ion-item>
-      }
-    </ion-list>
+    @for (view of registrationViews(); track view.tid) {
+      <div class="registration">
+        <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
+      </div>
+    }
   </ion-card-content>
 
   <!-- Knapperad med deleknapp og endre-knapp -->

@@ -4,6 +4,11 @@
   --swiper-theme-color: var(--ion-color-secondary);
 }
 
+h2 {
+  font-size: 1.5rem;
+  color: var(--ion-text-color-heading);
+}
+
 ion-item {
   --inner-padding-start: 0;
   --padding-start: 0;
@@ -84,4 +89,8 @@ swiper-slide img {
     max-width: 45%;
     text-wrap: wrap;
   }
+}
+
+.registration {
+  margin-top: 12px;
 }

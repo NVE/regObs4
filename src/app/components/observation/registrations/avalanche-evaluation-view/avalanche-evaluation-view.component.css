@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.danger-level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+img {
+  width: 72px;
+}
+
+app-key-value {
+  display: block;
+}
+
+p {
+  font-size: var(--observation-font-size, 1rem);
+}

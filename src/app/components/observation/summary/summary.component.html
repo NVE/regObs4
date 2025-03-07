@@ -1,6 +1,8 @@
 <div class="summaries" *ngFor="let summary of summaries(); let i = index">
   <ng-container *ngIf="(summary.Summaries || []).length > 0">
-    <h3 *ngIf="!isNameSameAsPreviousName(i)">{{ summary.RegistrationName }}</h3>
+    <app-registration-header *ngIf="!isNameSameAsPreviousName(i)">
+      {{ summary.RegistrationName }}
+    </app-registration-header>
     <ng-container *ngFor="let genericValue of summary.Summaries; let i = index">
       <span *ngIf="i > 0" class="bullet">&nbsp;&bull;&nbsp;</span>
       <ng-container *ngTemplateOutlet="RegObsGenericValue; context: genericValue"> </ng-container>
@@ -20,8 +22,11 @@
     </ng-container>
   </ng-container>
   <ng-template #TextSummary>
-    <h4 *ngIf="showHeaders()">{{ header }}:&nbsp;</h4>
-    <span class="text">{{ startOnNewLineIfContainLineBreaks(value) }}</span>
+    @if (showHeaders()) {
+      <app-key-value [key]="header" [value]="startOnNewLineIfContainLineBreaks(value)" />
+    } @else {
+      <app-key-value [value]="startOnNewLineIfContainLineBreaks(value)" />
+    }
   </ng-template>
   <ng-template #UrlSummary>
     <app-external-link [src]="value">{{ header }}</app-external-link>

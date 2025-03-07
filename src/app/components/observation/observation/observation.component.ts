@@ -13,8 +13,6 @@ import {
   AlertController,
   IonCard,
   IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
   IonChip,
   IonIcon,
   IonLabel,
@@ -32,7 +30,7 @@ import {
   shareSocial,
 } from 'ionicons/icons';
 import { Clipboard } from '@capacitor/clipboard';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgComponentOutlet } from '@angular/common';
 import { getIconForGeohazards } from 'src/app/modules/shared/components/geo-icon/get-geo-icon';
 import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
@@ -40,7 +38,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
 import { ImageLocation } from '../../img-swiper/image-location.model';
 import L from 'leaflet';
-import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import {
+  getAllAttachmentsFromViewModel,
+  getRegistrationTids,
+} from 'src/app/modules/common-registration/registration.helpers';
 import { catchError, firstValueFrom, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
 import { Router } from '@angular/router';
 import {
@@ -59,6 +60,7 @@ import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
 import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
+import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -67,15 +69,14 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   selector: 'app-observation',
   imports: [
     IonCard,
-    IonCardHeader,
     IonCardContent,
-    IonCardTitle,
     IonChip,
     IonIcon,
     IonLabel,
     DatePipe,
     TranslatePipe,
     StaticMapImageComponent,
+    NgComponentOutlet,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -115,6 +116,8 @@ export class ObservationComponent {
   private userSettings = toSignal(this.userSettingService.userSetting$, { requireSync: true });
   private baseUrl = settings.services.regObs.webUrl[this.userSettings().appMode];
   private registrationUrl = computed(() => `${this.baseUrl}/Registration/${this.registration().RegId}`);
+
+  registrationViews = computed(() => getRegistrationViews(this.registration()));
 
   async share(): Promise<void> {
     const url = this.registrationUrl();
@@ -289,4 +292,12 @@ function getLocation(obs: RegistrationViewModel): ImageLocation {
     // startStopLocation: this.getStartStopLocation(obs),
     // damageLocations: this.getDamagePositions(obs),
   };
+}
+
+function getRegistrationViews(obs: RegistrationViewModel) {
+  // Ikke ideelt hvordan konfigen itereres over, skal finne på noe bedre
+  return Object.keys(REGISTRATION_VIEW_CONFIG)
+    .map((tid) => ({ config: REGISTRATION_VIEW_CONFIG[tid as unknown as number], tid }))
+    .filter(({ config }) => !config.isEmpty(obs))
+    .map(({ config, tid }) => ({ component: config.component, inputs: config.getInputs(obs), tid }));
 }
