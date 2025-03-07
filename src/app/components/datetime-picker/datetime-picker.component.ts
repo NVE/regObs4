@@ -59,12 +59,12 @@ export class DatetimePickerComponent {
         return;
       }
 
-      const dateValue = this.dateTime();
-      if (!dateValue) {
-        return;
-      }
-
       untracked(() => {
+        const dateValue = this.dateTime();
+        if (!dateValue) {
+          return;
+        }
+
         const max = moment(maxValue);
         const date = moment(dateValue);
         if (date.isValid() && max.isValid() && max.isBefore(date)) {
