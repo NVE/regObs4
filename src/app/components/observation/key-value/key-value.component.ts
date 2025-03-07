@@ -9,8 +9,8 @@ import { IonText } from '@ionic/angular/standalone';
   imports: [IonText],
   template: `
     <ion-text color="dark">
-      @if (key(); as keyText) {
-        <span class="key">{{ keyText }}:</span>&nbsp;
+      @if (key()) {
+        <span class="key">{{ key() }}:</span>&nbsp;
       }
       <span class="value">{{ value() }}</span>
     </ion-text>
