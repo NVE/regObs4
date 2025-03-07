@@ -1,11 +1,9 @@
-<div>
-  <ion-datetime-button [datetime]="id">
-    @if (!dateTime()) {
-      <span slot="date-target">-</span>
-      <span slot="time-target">-</span>
-    }
-  </ion-datetime-button>
-</div>
+<ion-datetime-button [datetime]="id">
+  @if (!dateTime()) {
+    <span slot="date-target">-</span>
+    <span slot="time-target">-</span>
+  }
+</ion-datetime-button>
 <ion-modal [keepContentsMounted]="true">
   <ng-template>
     <ion-datetime
