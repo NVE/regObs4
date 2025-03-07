@@ -581,7 +581,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   confirm(): void {
-    // HELLLLLLO
     const obsLocation = this.getLocation();
     const locationTime: LocationTime = {
       location: obsLocation,
