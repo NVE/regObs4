@@ -1,25 +1,37 @@
 <ion-item-sliding (ionDrag)="onDrag()">
   <ion-item class="ion-no-padding" [detail]="isIceGeoHazard()" lines="full">
-    <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup())">
-      <app-geo-icon [geoHazards]="[warningGroup().key.geoHazard]"></app-geo-icon>
-    </div>
-    <ion-label (click)="navigateToWeb($event, warningGroup())">
-      <h2>{{ warningGroup().key.groupName }}</h2>
-    </ion-label>
+    <a
+      [href]="warningGroup().url || getUrl(warningGroup())"
+      target="_blank"
+      rel="noopener noreferrer"
+      (click)="trackAnalytics(warningGroup())"
+      class="warning-group-link"
+    >
+      <div slot="start" class="geo-icon-circle">
+        <app-geo-icon [geoHazards]="[warningGroup().key.geoHazard]"></app-geo-icon>
+      </div>
+      <ion-label>
+        <h2>{{ warningGroup().key.groupName }}</h2>
+      </ion-label>
+    </a>
     @if (!isIceGeoHazard()) {
       <ion-grid>
         <ion-row>
           @for (day of [0, 1, 2]; track $index) {
             <ion-col>
               @if (warningGroup().getDayWarning(day); as warning) {
-                <ion-badge
-                  [color]="'warninglevel-' + warning.warningLevel"
-                  (click)="navigateToWebByDay($event, warningGroup(), day)"
-                >
-                  {{ warning.warningLevel > 0 ? warning.warningLevel : "?" }}
-                  @if (warning.emergencyWarning) {
-                    <ion-icon name="alert"></ion-icon>
-                  }
+                <ion-badge [color]="'warninglevel-' + warning.warningLevel">
+                  <a
+                    [href]="getUrl(warningGroup(), day)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    (click)="trackAnalytics(warningGroup())"
+                  >
+                    {{ warning.warningLevel > 0 ? warning.warningLevel : "?" }}
+                    @if (warning.emergencyWarning) {
+                      <ion-icon name="alert"></ion-icon>
+                    }
+                  </a>
                 </ion-badge>
               } @else {
                 <ion-badge color="warninglevel-0">?</ion-badge>

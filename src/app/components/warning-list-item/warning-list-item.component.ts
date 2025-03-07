@@ -22,13 +22,13 @@ import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite
 import { AnalyticService } from '../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
-import { firstValueFrom, from, of, Subject, timer } from 'rxjs';
-import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
+import { from, of, Subject, timer } from 'rxjs';
+import { map, catchError, takeUntil, switchMap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { NgIf, NgFor } from '@angular/common';
 import { GeoIconComponent } from '../../modules/shared/components/geo-icon/geo-icon.component';
 import { addIcons } from 'ionicons';
 import { alert } from 'ionicons/icons';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-warning-list-item',
@@ -62,6 +62,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   readonly itemSlide = viewChild.required(IonItemSliding);
   readonly favouriteToggle = viewChild(WarningGroupFavouriteToggleComponent);
   private dragSubject = new Subject<void>();
+  language = toSignal(this.userSettingService.language$);
 
   constructor() {
     super();
@@ -115,23 +116,22 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     this.toggleFavourite();
   }
 
-  async getUrl(group: WarningGroup, day = ''): Promise<string | null> {
-    if (group.url) {
-      return group.url;
+  getUrl(group: WarningGroup, day?: number): string | null {
+    let dateString = '';
+    if (day !== undefined) {
+      dateString = moment().startOf('day').add(day, 'days').format(settings.services.warning.dateFormat);
+    }
+    const supportedLang = this.getSupportedLangOrFallbackToEn(this.language());
+    const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[supportedLang]];
+    if (url) {
+      return encodeURI(
+        url
+          .replace('{regionName}', group.key.groupName)
+          .replace('{regionId}', group.key.groupId)
+          .replace('{day}', dateString)
+      );
     } else {
-      const currentLang = await firstValueFrom(this.userSettingService.language$);
-      const supportedLang = this.getSupportedLangOrFallbackToEn(currentLang);
-      const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[supportedLang]];
-      if (url) {
-        return encodeURI(
-          url
-            .replace('{regionName}', group.key.groupName)
-            .replace('{regionId}', group.key.groupId)
-            .replace('{day}', day)
-        );
-      } else {
-        return null;
-      }
+      return null;
     }
   }
 
@@ -142,22 +142,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     return LangKey.en;
   }
 
-  async navigateToWeb(event: Event, group: WarningGroup) {
-    event.preventDefault();
-    const url = await this.getUrl(group);
-    if (url) {
-      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
-      this.externalLinkService.openExternalLink(url);
-    }
-  }
-
-  async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
-    event.preventDefault();
-    const dateString = moment().startOf('day').add(day, 'days').format(settings.services.warning.dateFormat);
-    const url = await this.getUrl(group, dateString);
-    if (url) {
-      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
-      this.externalLinkService.openExternalLink(url);
-    }
+  trackAnalytics(group: WarningGroup) {
+    this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
   }
 }

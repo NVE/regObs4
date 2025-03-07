@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, inject, computed } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -98,8 +98,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
    * If EN is selected, label is only 'Language'. If eg. NB is selected, emits 'Språk / Language'.
    */
   selectLanguageLabel$?: Observable<string>;
-
-  popupType: SelectInterface = Capacitor.isNativePlatform() ? 'action-sheet' : 'popover';
+  isNativePlatform = computed(() => Capacitor.isNativePlatform());
+  popupType: SelectInterface = this.isNativePlatform() ? 'action-sheet' : 'popover';
   observerTrips: ObserverTripsService;
 
   private userSettingSubscription?: Subscription;
@@ -119,13 +119,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     });
   }
 
+  legalTermsUrl = computed(() => this.userSettingService.legalUrl);
+
   async ngOnInit() {
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
       });
     });
-    this.offlineMapsAvailable = Capacitor.isNativePlatform();
+    this.offlineMapsAvailable = this.isNativePlatform();
     this.selectLanguageLabel$ = this.getSelectLanguageLabel$();
   }
 
@@ -154,29 +156,19 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     }
   }
 
-  async showLegalTerms(): Promise<void> {
-    const url = this.userSettingService.legalUrl;
-    this.externalLinkService.openExternalLink(url);
-  }
-
   openStartWizard() {
     if (this.userSettings) {
       this.userSettings.showGeoSelectInfo = true;
       this.saveUserSettings();
     }
-    this.navController.navigateRoot('start-wizard');
   }
 
   async contact(subjectMessage: string, descriptionMessage: string, additionalSubjectText?: string) {
-    if (Capacitor.isNativePlatform()) {
+    if (this.isNativePlatform()) {
       const translations = await firstValueFrom(this.translateService.get([subjectMessage, descriptionMessage]));
       const subject = translations[subjectMessage] + (additionalSubjectText || '');
       const body = translations[descriptionMessage];
       this.fileLoggingService.sendLogsByEmail(subject, body);
-    } else {
-      window.open(
-        'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu'
-      );
     }
   }
 
@@ -186,7 +178,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   contactError() {
     let additionalSubjectText;
-    if (Capacitor.isNativePlatform()) {
+    if (this.isNativePlatform()) {
       additionalSubjectText = ` : ${Capacitor.getPlatform()} ${version.version} ${version.buildNumber} ${
         version.revision
       }`;
