@@ -86,9 +86,11 @@ export const REGISTRATION_VIEW_CONFIG: Record<number, RegistrationViewConfig> = 
     getInputs: (reg) => ({ data: reg.AvalancheEvaluation3 }),
   },
   [RegistrationTid.AvalancheEvalProblem2]: {
-    component: AvalancheProblemViewComponent,
-    isEmpty: () => false,
-    getInputs: () => undefined,
+    // TODO
+    // component: AvalancheProblemViewComponent,
+    component: SummaryComponent,
+    isEmpty: (reg) => isEmpty(reg.AvalancheEvalProblem2),
+    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.AvalancheEvalProblem2),
   },
   [RegistrationTid.AvalancheActivityObs2]: {
     component: SummaryComponent,
