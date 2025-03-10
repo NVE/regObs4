@@ -485,7 +485,7 @@ export class SearchCriteriaService {
     this.searchCriteriaChanges.next({ ObserverCompetence: newCompetence });
   }
 
-  setFromDate(fromDate: string, removeToDate = false) {
+  setFromDate(fromDate: string | undefined, removeToDate = false) {
     if (fromDate) {
       const dateCriteria: Pick<SearchCriteriaRequestDto, 'FromDtObsTime' | 'ToDtObsTime'> = {
         FromDtObsTime: moment(fromDate).startOf('day').toISOString(true),
@@ -498,7 +498,7 @@ export class SearchCriteriaService {
     }
   }
 
-  setToDate(toDate: string) {
+  setToDate(toDate: string | undefined) {
     if (toDate) {
       this.searchCriteriaChanges.next({ ToDtObsTime: moment(toDate).endOf('day').toISOString(true) });
       this.setUseDaysBack(false);

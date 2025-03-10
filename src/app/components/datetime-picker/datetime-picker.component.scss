@@ -1,3 +1,17 @@
 :host {
   width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+ion-datetime {
+  --wheel-highlight-background: var(--ion-color-primary-contrast, rgb(218, 216, 255));
+}
+
+ion-datetime-button {
+  justify-content: flex-start;
+}
+
+ion-datetime-button::part(native) {
+  background: none;
 }

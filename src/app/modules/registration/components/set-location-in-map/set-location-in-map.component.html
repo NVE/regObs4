@@ -122,62 +122,7 @@
           <div class="flex-row">
             <div class="flex-grow box edit-button no-padding">
               <ion-item>
-                <!-- Kan vurdere en sånn her løsning også på mobil -->
-                <!-- <ion-datetime
-                  [showDefaultTimeLabel]="true"
-                  id="obs-datetime"
-                  [locale]="locale"
-                  [max]="maxDate"
-                  [firstDayOfWeek]="1"
-                  [preferWheel]="!isDesktop"
-                  size="cover"
-                  [formatOptions]="{
-                    date: {
-                      weekday: 'long',
-                      month: 'long',
-                      day: '2-digit',
-                    },
-                    time: {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    },
-                  }"
-                ></ion-datetime> -->
-
-                <!-- TODO: Må hookes opp til draft + oversettelser. Vurder kort dato på mobil. -->
-                <!-- <ion-icon name="calendar-outline"></ion-icon>&nbsp; -->
-                <ion-datetime-button datetime="obs-datetime" color="secondary"></ion-datetime-button>
-                <ion-modal [keepContentsMounted]="true">
-                  <ng-template>
-                    <ion-datetime
-                      [(ngModel)]="localDate"
-                      id="obs-datetime"
-                      [locale]="locale"
-                      [max]="maxDate"
-                      [showDefaultButtons]="true"
-                      [firstDayOfWeek]="1"
-                      doneText="All set"
-                      cancelText="Never mind"
-                      [presentation]="isDesktop ? 'date' : 'date-time'"
-                      [formatOptions]="{
-                        date: {
-                          weekday: 'long',
-                          month: 'long',
-                          day: '2-digit',
-                        },
-                        time: {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        },
-                      }"
-                    ></ion-datetime>
-                  </ng-template>
-                </ion-modal>
-
-                @if (isDesktop) {
-                  <!-- For å slippe bruke "hjul" på desktop -->
-                  <ion-input type="time" label="Klokka" inputmode="numeric" required="true" slot="end"></ion-input>
-                }
+                <app-datetime-picker [(dateTime)]="localDate" [maxDate]="maxDate"></app-datetime-picker>
               </ion-item>
             </div>
             <div class="box edit-button" (click)="setToNow()">

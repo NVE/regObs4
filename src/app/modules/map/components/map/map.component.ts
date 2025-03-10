@@ -11,6 +11,8 @@ import {
   inject,
   viewChild,
   input,
+  effect,
+  untracked,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -148,6 +150,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   options?: L.MapOptions;
 
   constructor() {
+    // Update map view when map center input changes
+    effect(() => {
+      const center = this.center();
+      untracked(() => {
+        if (center && this.map) {
+          this.map.setView(center);
+        }
+      });
+    });
+
     const injector = inject(Injector);
 
     if (isAndroidOrIos(this.platform)) {

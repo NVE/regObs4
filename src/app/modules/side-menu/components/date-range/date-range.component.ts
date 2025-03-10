@@ -63,6 +63,11 @@ export class DateRangeComponent {
   toDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime)));
   dateRangeText = computed(() => generateDateRange(this.fromDate(), this.toDate()));
   useDaysBack = toSignal(this.searchCriteriaService.useDaysBack$);
+  dateFormat: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+  };
 
   /**
    * e.detail.value will return one of the following:
@@ -88,11 +93,11 @@ export class DateRangeComponent {
     }
   }
 
-  setFromDate(date: string): void {
+  setFromDate(date: string | undefined): void {
     this.searchCriteriaService.setFromDate(date);
   }
 
-  setToDate(date: string): void {
+  setToDate(date: string | undefined): void {
     this.searchCriteriaService.setToDate(date);
   }
 

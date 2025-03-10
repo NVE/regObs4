@@ -16,13 +16,10 @@ import { Position } from '@capacitor/geolocation';
 import {
   IonButton,
   IonCol,
-  IonDatetime,
-  IonDatetimeButton,
   IonIcon,
   IonInput,
   IonItem,
   IonLabel,
-  IonModal,
   IonRow,
   IonSpinner,
   IonToggle,
@@ -67,6 +64,7 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { calendarOutline, createOutline, radioButtonOn, timeOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -143,9 +141,7 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
     SelectComponent,
     SvgIconComponent,
     TranslatePipe,
-    IonDatetimeButton,
-    IonDatetime,
-    IonModal,
+    DatetimePickerComponent,
   ],
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
@@ -262,7 +258,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           latLng = initialMapView.center;
         }
       }
-      this.locationMarker().setLatLng(latLng);
+      this.setLocationMarkerLatLng(latLng);
     }
   }
 

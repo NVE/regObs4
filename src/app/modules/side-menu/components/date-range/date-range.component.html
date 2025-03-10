@@ -24,8 +24,9 @@
           </ion-item>
 
           <ion-item>
-            <ion-radio slot="start" value="custom"></ion-radio>
-            <ion-label>{{ "MENU.CUSTOM_TIMESPAN" | translate }}</ion-label>
+            <ion-radio slot="start" value="custom" labelPlacement="end">{{
+              "MENU.CUSTOM_TIMESPAN" | translate
+            }}</ion-radio>
           </ion-item>
 
           <ion-item class="white-background" *ngIf="modeValue === 'custom'">
@@ -36,9 +37,7 @@
               [minDate]="minDate"
               [maxDate]="toDate() || maxDate"
               (dateTimeChange)="setFromDate($event)"
-              dateTimeFormat="dd. MMM yyyy"
-              textAlign="right"
-              buttonSize="large"
+              [dateFormat]="dateFormat"
             ></app-datetime-picker>
           </ion-item>
 
@@ -50,9 +49,7 @@
               [minDate]="fromDate() || minDate"
               [maxDate]="maxDate"
               (dateTimeChange)="setToDate($event)"
-              dateTimeFormat="dd. MMM yyyy"
-              textAlign="right"
-              buttonSize="large"
+              [dateFormat]="dateFormat"
             ></app-datetime-picker>
           </ion-item>
         </ion-radio-group>
