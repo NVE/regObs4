@@ -74,4 +74,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./modules/auth/pages/auth-callback/auth-callback.page').then((m) => m.AuthCallbackPage),
   },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ];
