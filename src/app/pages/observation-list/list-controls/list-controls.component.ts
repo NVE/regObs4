@@ -7,6 +7,7 @@ import {
   SearchCriteriaOrderBy,
   SearchCriteriaService,
 } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 type Page = 'observations' | 'images';
 
@@ -15,7 +16,7 @@ type Page = 'observations' | 'images';
  */
 @Component({
   selector: 'app-list-controls',
-  imports: [IonCheckbox, IonSelect, IonSelectOption],
+  imports: [IonCheckbox, IonSelect, IonSelectOption, TranslatePipe],
   templateUrl: './list-controls.component.html',
   styleUrl: './list-controls.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

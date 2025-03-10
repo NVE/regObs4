@@ -1,29 +1,32 @@
+<!-- Gjør det mulig å bytte fra liste- til bildevisning + endre sortering -->
 <ion-checkbox [checked]="mapExtentFilterActive()" (ionChange)="toggleExtentFilter()">
-  Filtrer på kartutsnitt
+  {{ "OBSERVATION_LIST.FILTER_BY_MAP_VIEW" | translate }}
 </ion-checkbox>
 
 <div class="selects">
   <ion-select
-    label="Vis som"
+    [label]="'OBSERVATION_LIST.VIEW_TYPE' | translate"
     fill="outline"
     [value]="pageType()"
     interface="popover"
     color="primary"
     (ionChange)="navigate($event.target.value)"
   >
-    <ion-select-option value="observations">Observasjoner</ion-select-option>
-    <ion-select-option value="images">Bilder</ion-select-option>
+    <ion-select-option value="observations">{{
+      "OBSERVATION_LIST.VIEW_TYPE_OBSERVATIONS" | translate
+    }}</ion-select-option>
+    <ion-select-option value="images">{{ "OBSERVATION_LIST.VIEW_TYPE_IMAGES" | translate }}</ion-select-option>
   </ion-select>
 
   <ion-select
-    label="Sorter på"
+    [label]="'OBSERVATION_LIST.SORT_BY_TEXT' | translate"
     fill="outline"
     [value]="orderBy()"
     interface="popover"
     color="primary"
     (ionChange)="setOrderBy($event.target.value)"
   >
-    <ion-select-option value="DtChangeTime">Oppdatert tid</ion-select-option>
-    <ion-select-option value="DtObsTime">Observert tid</ion-select-option>
+    <ion-select-option value="DtChangeTime">{{ "OBSERVATION_LIST.SORT_BY_CHANGE_TIME" | translate }}</ion-select-option>
+    <ion-select-option value="DtObsTime">{{ "OBSERVATION_LIST.SORT_BY_OBS_TIME" | translate }}</ion-select-option>
   </ion-select>
 </div>

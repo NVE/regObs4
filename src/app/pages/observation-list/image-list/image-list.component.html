@@ -1,3 +1,4 @@
+<!-- En liste av bilder fra observasjoner, organisert i tabellform -->
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="refresh()">
     <ion-refresher-content></ion-refresher-content>
@@ -18,7 +19,7 @@
       @if (error().hasError) {
         <app-error-state></app-error-state>
       } @else if (isLoading()) {
-        <p>Laster observasjoner</p>
+        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
       } @else {
         <app-empty-state></app-empty-state>
       }

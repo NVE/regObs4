@@ -16,6 +16,7 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { ShowFilterCriteriaComponent } from '../../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
 import { GridImageComponent } from './grid-image.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Bildesøk
@@ -33,6 +34,7 @@ import { GridImageComponent } from './grid-image.component';
     ShowFilterCriteriaComponent,
     ListControlsComponent,
     GridImageComponent,
+    TranslatePipe,
   ],
   templateUrl: './image-list.component.html',
   styleUrl: './image-list.component.css',

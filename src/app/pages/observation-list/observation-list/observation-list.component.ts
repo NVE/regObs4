@@ -16,6 +16,7 @@ import { ErrorStateComponent } from '../error-state/error-state.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
 import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-observation-list',
@@ -30,6 +31,7 @@ import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/component
     EmptyStateComponent,
     ListControlsComponent,
     ShowFilterCriteriaComponent,
+    TranslatePipe,
   ],
   templateUrl: './observation-list.component.html',
   styleUrl: './observation-list.component.css',

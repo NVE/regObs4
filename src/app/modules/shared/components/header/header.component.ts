@@ -7,7 +7,6 @@ import {
   IonHeader,
   IonButton,
   IonButtons,
-  IonText,
 } from '@ionic/angular/standalone';
 import { Component, inject, input, computed } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
