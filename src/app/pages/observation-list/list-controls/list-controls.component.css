@@ -4,11 +4,14 @@
   gap: 16px;
   justify-content: space-between;
   margin-bottom: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
 }
 
 .selects {
   display: flex;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 ion-select {

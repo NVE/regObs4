@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { RouterOutlet } from '@angular/router';
@@ -13,6 +13,19 @@ import { RouterOutlet } from '@angular/router';
     <app-header>Observasjoner</app-header>
     <router-outlet></router-outlet>
     <app-add-menu></app-add-menu>
+  `,
+  encapsulation: ViewEncapsulation.None,
+  styles: `
+    ion-content {
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .list-header {
+        display: none;
+      }
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AddMenuComponent, HeaderComponent, RouterOutlet],
