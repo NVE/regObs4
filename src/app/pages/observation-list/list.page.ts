@@ -16,11 +16,6 @@ import { RouterOutlet } from '@angular/router';
   `,
   encapsulation: ViewEncapsulation.None,
   styles: `
-    ion-content {
-      --padding-start: 8px;
-      --padding-end: 8px;
-    }
-
     @media (max-width: 700px) {
       .list-header {
         display: none;

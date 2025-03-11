@@ -5,6 +5,11 @@
   --max-width: var(--list-search-max-width, 960px);
 }
 
+ion-content {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
 ion-content::part(scroll) {
   scrollbar-gutter: stable both-edges;
 }
