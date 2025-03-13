@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, NavController, Platform } from '@ionic/angular/standalone';
+import { AlertController, NavController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
-import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';
-import { filter, map, shareReplay, skip, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, lastValueFrom, merge, Observable, of, Subject } from 'rxjs';
+import { filter, map, shareReplay, skip, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
@@ -34,12 +34,11 @@ export class RegobsAuthService {
   private location = inject(Location);
   private accountService = inject(AccountService);
   private storage = inject(StorageBackend);
-  private platform = inject(Platform);
   private accountApi = inject(AccountService);
   private networkStatusService = inject(NetworkStatusService);
 
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
-  private myPageDataSubject = new ReplaySubject<MyPageData>();
+  public refreshMyPageData$ = new Subject<void>(); //Brukes for å trigge henting av myPageData på nytt
 
   public readonly loggedInUser$: Observable<LoggedInUser>;
   private readonly initComplete$: Observable<boolean>;
@@ -78,13 +77,14 @@ export class RegobsAuthService {
 
     // TODO: This could be saved in offline storage if we want to presist
     // myPage data and the user start app when offline and want to edit registration
-    this.myPageData$ = this.loggedInUser$.pipe(
-      switchMap((loggedInUser) => {
-        if (loggedInUser.isLoggedIn) {
-          return this.accountApi.AccountGetMyPageData();
-        } else {
-          return of(undefined);
-        }
+    this.myPageData$ = merge(this.loggedInUser$, this.refreshMyPageData$).pipe(
+      switchMap(() => {
+        return this.loggedInUser$.pipe(
+          take(1),
+          switchMap((loggedInUser) =>
+            loggedInUser.isLoggedIn ? this.accountApi.AccountGetMyPageData() : of(undefined)
+          )
+        );
       }),
       shareReplay(1)
     );
