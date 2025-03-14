@@ -61,13 +61,8 @@
 
     <ion-row>
       <ion-col>
-        <h2>{{ "MY_PROFILE.NICKNAME" | translate }}</h2>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="myPage$ | async as myPage">
-      <ion-col size="12" size-sm="6" size-lg="4">
-        <div class="flexContainer">
-          <p class="ion-align-self-center">{{ myPage.NickName }}</p>
+        <div class="flexContainer myPictureContainer">
+          <h2>{{ "MY_PROFILE.NICKNAME" | translate }}</h2>
           <ion-button
             class="button ion-padding-start ion-text-uppercase"
             fill="clear"
@@ -76,6 +71,13 @@
             >{{ "MY_PROFILE.EDIT" | translate }}
             <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon
           ></ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="myPage()?.NickName">
+      <ion-col size="12" size-sm="6" size-lg="4">
+        <div class="flexContainer">
+          <p class="ion-align-self-center">{{ myPage()?.NickName }}</p>
         </div>
       </ion-col>
     </ion-row>

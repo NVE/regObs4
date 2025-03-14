@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { firstValueFrom, lastValueFrom, Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
@@ -33,6 +33,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { EditUserNicknameModalComponent } from 'src/app/modules/edit-user-nickname-modal/edit-user-nickname-modal.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-information',
@@ -72,8 +73,7 @@ export class UserInformation implements OnInit {
 
   loggedInUser$!: Observable<LoggedInUser>;
   userGroups$!: Observable<ObserverGroupDto[]>;
-  myPage$!: Observable<MyPageData | undefined>;
-  userNick: string | undefined;
+  myPage = toSignal(this.regobsAuthService.myPageData$);
 
   myPageSampleData: MyPageData = {
     Competence: [
@@ -116,7 +116,6 @@ export class UserInformation implements OnInit {
   ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
     this.userGroups$ = this.userGroupService.getUserGroupsAsObservable();
-    this.myPage$ = this.regobsAuthService.myPageData$;
     this.userGroupService.updateUserGroups();
     this.copyright$ = this.userSettingService.userSetting$.pipe(
       switchMap((userSetting) =>
@@ -180,18 +179,17 @@ export class UserInformation implements OnInit {
   }
 
   async presentModalForNicknameUpdate() {
-    const myPageData = await firstValueFrom(this.myPage$);
     const modal = await this.modalController.create({
       component: EditUserNicknameModalComponent,
       componentProps: {
-        nickName: myPageData?.NickName,
+        nickName: this.myPage()?.NickName,
       },
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data && data.nick) {
       try {
-        await lastValueFrom(this.accountService.AccountUpdateObserver({ Nick: data.nick }));
+        await firstValueFrom(this.accountService.AccountUpdateObserver({ Nick: data.nick }));
         this.regobsAuthService.refreshMyPageData$.next();
       } catch (error) {
         this.showErrorToast('MY_PROFILE.NICKNAME_UPDATE_ERROR');
