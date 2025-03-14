@@ -2,7 +2,7 @@ import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
+import { AlertController, IonContent, Platform, ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import L from 'leaflet';
@@ -128,6 +128,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
+
+  isDesktop = inject(Platform).is('desktop');
 
   constructor() {
     const router = inject(Router);
