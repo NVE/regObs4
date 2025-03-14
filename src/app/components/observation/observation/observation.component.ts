@@ -9,15 +9,7 @@ import {
   signal,
   Signal,
 } from '@angular/core';
-import {
-  AlertController,
-  IonCard,
-  IonCardContent,
-  IonChip,
-  IonIcon,
-  IonLabel,
-  ToastController,
-} from '@ionic/angular/standalone';
+import { AlertController, IonChip, IonIcon, IonLabel, ToastController } from '@ionic/angular/standalone';
 import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
@@ -49,7 +41,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
+import { checkEditPriviliges } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { settings } from 'src/settings';
@@ -64,17 +56,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-observation',
-  imports: [
-    IonCard,
-    IonCardContent,
-    IonChip,
-    IonIcon,
-    IonLabel,
-    DatePipe,
-    TranslatePipe,
-    StaticMapImageComponent,
-    NgComponentOutlet,
-  ],
+  imports: [IonChip, IonIcon, IonLabel, DatePipe, TranslatePipe, StaticMapImageComponent, NgComponentOutlet],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -140,12 +122,14 @@ export class ObservationComponent {
     }
   }
 
-  userCanEdit = computed(async () => {
-    const observer = await firstValueFrom(this.regobsAuthService.myPageData$);
-    if (!observer) {
+  private observer = toSignal(this.regobsAuthService.myPageData$);
+
+  userCanEdit = computed(() => {
+    const user = this.observer();
+    if (!user) {
       return false;
     }
-    const editMode = await firstValueFrom(getObserverEditCheckObservable(this.registration(), observer));
+    const editMode = checkEditPriviliges(this.registration(), user);
     return editMode === 'EDIT_OWN_REGISTRATION' || editMode === 'EDIT_AS_MODERATOR';
   });
 

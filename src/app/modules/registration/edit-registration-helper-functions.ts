@@ -32,19 +32,14 @@ function isModerator(reg: RegistrationViewModel, observer: MyPageData): boolean 
   return false;
 }
 
-export function getObserverEditCheckObservable(
-  reg: RegistrationViewModel,
-  observer: MyPageData
-): Observable<EditMode | undefined> {
+export function checkEditPriviliges(reg: RegistrationViewModel, observer: MyPageData): EditMode | undefined {
   if (isModerator(reg, observer)) {
-    return of('EDIT_AS_MODERATOR');
+    return 'EDIT_AS_MODERATOR';
   }
   if (isSameObserver(reg, observer) || isInGroup(reg, observer)) {
-    return getWithin48HoursCheckUntilFalseObservable(reg).pipe(
-      map((within48hours) => (within48hours ? 'EDIT_OWN_REGISTRATION' : undefined))
-    );
+    return 'EDIT_OWN_REGISTRATION';
   }
-  return of(undefined);
+  return undefined;
 }
 
 export function getWithin48HoursCheckUntilFalseObservable(reg: RegistrationViewModel): Observable<boolean> {
