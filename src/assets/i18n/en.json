@@ -516,6 +516,7 @@
       }
     },
     "IMAGES": "Images",
+    "IMAGE_ASPECT": "Orientation",
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
     "IMAGE_ERROR": {

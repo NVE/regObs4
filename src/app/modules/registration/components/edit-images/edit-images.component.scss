@@ -36,3 +36,12 @@
     }
   }
 }
+
+.accordion-button::part(native) {
+  background: var(--ion-background-color);
+}
+
+.accordion-button ion-label {
+  --color: var(--ion-color-primary) !important;
+  width: fit-content;
+}

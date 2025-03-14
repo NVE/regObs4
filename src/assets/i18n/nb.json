@@ -516,6 +516,7 @@
       }
     },
     "IMAGES": "Bilder",
+    "IMAGE_ASPECT": "Himmelretning",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "IMAGE_ERROR": {
