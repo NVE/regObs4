@@ -197,14 +197,14 @@ export class WarningService {
       this.userSettingService.appModeLanguageAndCurrentGeoHazard$,
       this.latestWarnings.asObservable(),
     ]).pipe(
-      switchMap(([[_, langKey, __], latestWarnings]) =>
+      switchMap(([[, langKey], latestWarnings]) =>
         combineLatest(
           [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Soil].map((geoHazard) =>
             this.getLatestWarningsOrFallbackToOffline(latestWarnings, geoHazard, langKey)
           )
         ).pipe(map((result) => result.flat()))
       ),
-      tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, { result }))
+      tap(() => this.loggingService.debug('Warnings observable changed', DEBUG_TAG))
     );
   }
 
@@ -340,8 +340,8 @@ export class WarningService {
     return combineLatest([this.mapService.mapViewAndAreaObservable$, this.getWarningsAsObservable()]).pipe(
       switchMap(([mapViewArea, _]) => this.getWarningsForCurrentMapView(mapViewArea)),
       map((result) => result),
-      tap((val) => {
-        this.loggingService.debug('getWarningsForCurrentMapViewAsObservable changed', DEBUG_TAG, val);
+      tap(() => {
+        this.loggingService.debug('getWarningsForCurrentMapViewAsObservable changed', DEBUG_TAG);
       }),
       shareReplay(1)
     );
@@ -513,9 +513,14 @@ export class WarningService {
 
   private async saveWarningResultsToDb(geoHazard: GeoHazard, regionResult: IWarningGroup[]) {
     try {
-      this.loggingService.debug(`Saving new ${GeoHazard[geoHazard]} warnings`, DEBUG_TAG, regionResult);
+      const table = NanoSql.TABLES['WARNING'].name;
+      this.loggingService.debug(`Saving new warnings`, DEBUG_TAG, {
+        geoHazard,
+        regionResultLength: regionResult.length,
+        table,
+      });
       const now = new Date();
-      await this.dbHelperService.fastInsert(NanoSql.TABLES['WARNING'].name, regionResult, (data) => data.id);
+      await this.dbHelperService.fastInsert(table, regionResult, (data) => data.id);
       this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
       await this.deleteRegionsNoLongerInResult(geoHazard, regionResult); // NOTE: This also trigger change
     } catch (err) {
