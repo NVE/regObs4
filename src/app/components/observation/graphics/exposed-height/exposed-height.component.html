@@ -1,0 +1,146 @@
+@if (hasHeightValue()) {
+  <div [ngSwitch]="exposedHeightComboTid()" class="container">
+    <ng-container *ngSwitchCase="0">
+      <!-- <ng-container *ngTemplateOutlet="middle"></ng-container> -->
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <ng-container *ngTemplateOutlet="top"></ng-container>
+      <ng-container *ngTemplateOutlet="topHeight"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <ng-container *ngTemplateOutlet="bottom"></ng-container>
+      <ng-container *ngTemplateOutlet="bottomHeight"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="3">
+      <ng-container *ngTemplateOutlet="topBottom"></ng-container>
+      <ng-container *ngTemplateOutlet="topBottomHeight"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="4">
+      <ng-container *ngTemplateOutlet="middle"></ng-container>
+      <ng-container *ngTemplateOutlet="middleHeight"></ng-container>
+    </ng-container>
+  </div>
+}
+<ng-template #middle>
+  <svg xmlns="http://www.w3.org/2000/svg" width="65" height="64">
+    <path
+      fill="#E3E3E3"
+      d="M37 12.8c-4.5 2.1-5.4.5-8-.7-3-1.8-6.6-.7-7-.7l.2-.4L26 1.8c.5-1 1.2-1.8 2-1.8s1.5.5 2.3 1.2l6.5 11.6z"
+    />
+    <path
+      fill="#D21523"
+      d="M53.1 40c0 1.4-2 2.5-2 2.5-2.6 1.8-5.8 2.3-9.9-.5-3-2-4.6-3.8-8-4.8-3.2-1-4.6.8-9.2.7-3 0-3.6-1-5.4-2 0 0-2.5-2-5.5-2.8l-.9-.2 7.7-17s5.3-1.1 8.7.6c2.8 1.6 7.3 4.1 11.2.7L53 40z"
+    />
+    <path
+      fill="#E3E3E3"
+      d="M63.8 61.7c-.6.7-1.3 2.3-2.7 2.3H3C1.7 64 .8 62.4.3 61.7c-.5-.9-.3-2.5.4-3.6l8.1-17.7h.6c5.5 0 9.2 3 9.2 3a8.7 8.7 0 006.2 1.6c4.5-.4 6-1.8 9.3-.6 3.2 1.3 5.1 3.4 8.5 4.7 4 1.6 7.5 1.6 10.2-.2 0 0 2.8-2.3 3-4.1l7.8 12.8c.5 1 .7 3.4.2 4z"
+    />
+    <path
+      fill="#fff"
+      d="M40 17.6c-4 3.2-8.6.7-11.2-.7-3.4-1.8-8.8-.7-8.8-.7l2-4.6c.5-.2 4-1.1 7 .7 2.6 1.4 3.5 3 8 .7l3 4.6zM55.8 45c-.2 1.8-3 4-3 4-2.7 1.8-6.3 1.8-10.2.2-3.2-1.2-5.3-3.2-8.5-4.6-3.2-1.4-4.8.2-9.3.6-2.4.1-4-.2-6.2-1.6 0 0-3.7-3-9.2-3h-.6l3.4-7.4 1 .2a15 15 0 015.4 2.9c1.8 1 2.3 2 5.4 2 4.6.1 6-1.9 9.2-.8 3.4 1 5 2.9 8 4.8 4.3 2.9 7.3 2.1 10 .5 0 0 2-1 2-2.4l2.6 4.6z"
+    />
+  </svg>
+</ng-template>
+
+<ng-template #bottom>
+  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none">
+    <path fill="#fff" d="M0 0h64v64H0z" />
+    <path
+      fill="#E3E3E3"
+      d="M50.4 41.8c-2.7 1.8-4.8 1.8-9.2-1.1-2.8-2-4.3-3.7-8-5.2-3.2-1.4-4.6 1-9.2 1-3.2 0-3.5-.6-5.3-2.2 0 0-3-3-6.7-2.9L25.6 2C26.2.7 27 .2 27.7 0c1 0 1.8.5 2.5 1.6L51.8 38c.9 2-1.6 3.8-1.4 3.8z"
+    />
+    <path
+      fill="#D21523"
+      d="M63.7 61.5c-.6.9-1.3 2.5-2.7 2.5H3C1.6 64 .7 62.4.2 61.5c-.4-1.1-.2-2.8.3-3.8L9 39c5.5 0 9.4 2.4 9.6 2.4a8.6 8.6 0 006.2 1.6c4.5-.4 6-2 9.3-.6 3.2 1.5 5.1 3.8 8.5 5.1 4 1.6 7.5 1.6 10.2-.2 0 0 3.3-2.3 3-4.3L63.5 57c.5 1.1.7 3.5.2 4.4z"
+    />
+    <path
+      fill="#fff"
+      d="M56 43.2c.3 2-3 4.4-3 4.4-2.7 1.8-6.3 1.8-10.2.2-3.3-1.5-5.4-3.7-8.6-5.1-3.2-1.5-4.8.2-9.3.5-2.5.2-4.1-.2-6.3-1.6-.1 0-4-2.4-9.6-2.4l3.2-8.2c3.8-.2 6.8 3 6.8 3 1.8 1.6 2.1 2.1 5.4 2.1 4.6 0 6-2.2 9.2-.9 3.8 1.5 5.2 3.3 8 5.3 4.6 3 6.7 3 9.4 1-.2 0 2.3-1.6 1.6-3.7l3.4 5.4z"
+    />
+  </svg>
+</ng-template>
+
+<ng-template #top>
+  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+    <path
+      fill="#D21523"
+      d="M50.3 41.8c-2.7 1.8-4.8 1.8-9.2-1.1-2.8-2-4.2-3.7-8-5.2-3.1-1.4-4.5 1-9.1 1-3.2 0-3.5-.6-5.3-2.2 0 0-3-3-6.7-2.9L25.6 2c.5-1.1 1.2-2 2.3-2 .9 0 1.7.5 2.4 1.6L52 37.8c.7 2.4-1.8 4-1.6 4z"
+    />
+    <path
+      fill="#E3E3E3"
+      d="M63.7 61.5c-.6.9-1.3 2.5-2.7 2.5H3C1.6 64 .7 62.4.2 61.5c-.4-1.1-.2-2.7.3-3.8L9 39a20 20 0 019.6 2.5 8.6 8.6 0 006.2 1.6c4.5-.3 6-2 9.3-.5 3.2 1.4 5.1 3.6 8.5 5 4 1.7 7.5 1.7 10.2-.1 0 0 3.3-2.4 3-4.4L63.5 57c.5 1.2.7 3.6.2 4.5z"
+    />
+    <path
+      fill="#fff"
+      d="M56 43.3c.3 2-3 4.3-3 4.3-2.7 1.8-6.3 1.8-10.2.2-3.4-1.3-5.4-3.6-8.6-5-3.2-1.5-4.8.1-9.3.5-2.5.2-4.1-.2-6.3-1.6 0 0-4-2.6-9.6-2.6l3.2-8c3.8-.3 6.8 2.8 6.8 2.8 1.8 1.6 2.1 2.2 5.4 2.2 4.6 0 6-2.2 9.2-1 3.8 1.3 5.2 3.3 8 5.3 4.6 2.9 6.7 2.9 9.4 1-.2 0 2.3-1.5 1.6-3.7l3.4 5.6z"
+    />
+  </svg>
+</ng-template>
+
+<ng-template #topBottom>
+  <svg xmlns="http://www.w3.org/2000/svg" width="65" height="64">
+    <path
+      fill="#D21523"
+      d="M37 12.8c-4.5 2.1-5.4.5-8-.7-3-1.8-6.6-.7-7-.7l.2-.4L26 1.8c.5-1 1.2-1.8 2-1.8s1.5.5 2.3 1.2l6.5 11.6z"
+    />
+    <path
+      fill="#E3E3E3"
+      d="M53.1 40c0 1.4-2 2.5-2 2.5-2.6 1.8-5.8 2.3-9.9-.5-3-2-4.6-3.8-8-4.8-3.2-1-4.6.8-9.2.7-3 0-3.6-1-5.4-2 0 0-2.5-2-5.5-2.8l-.9-.2 7.7-17s5.3-1.1 8.7.6c2.8 1.6 7.3 4.1 11.2.7L53 40z"
+    />
+    <path
+      fill="#fff"
+      d="M40 17.6c-4 3.2-8.6.7-11.2-.7-3.4-1.8-8.8-.7-8.8-.7l2-4.6c.5-.2 4-1.1 7 .7 2.6 1.4 3.5 3 8 .7l3 4.6z"
+    />
+    <path
+      fill="#D21523"
+      d="M63.8 61.7c-.6.7-1.3 2.3-2.7 2.3H3C1.7 64 .8 62.4.3 61.7c-.5-.9-.3-2.5.4-3.6l8.1-17.7h.6c5.5 0 9.2 3 9.2 3a8.7 8.7 0 006.2 1.6c4.5-.4 6-1.8 9.3-.6 3.2 1.3 5.1 3.4 8.5 4.7 4 1.6 7.5 1.6 10.2-.2 0 0 2-1.8 2.8-3.4.2-.2.2-.3.2-.7l7.8 12.8c.5 1 .7 3.4.2 4z"
+    />
+    <path
+      fill="#fff"
+      d="M55.8 45l-.2.7c-.7 1.6-2.8 3.4-2.8 3.4-2.7 1.7-6.3 1.7-10.2.1-3.2-1.2-5.3-3.2-8.5-4.6-3.2-1.4-4.8.2-9.3.6-2.4.1-4-.2-6.2-1.6 0 0-3.7-3-9.2-3h-.6l3.4-7.4 1 .2a15 15 0 015.4 2.9c1.8 1 2.3 2 5.4 2 4.6.1 6-1.9 9.2-.8 3.4 1 5 2.9 8 4.8 4.3 2.9 7.3 2.1 10 .5 0 0 2-1 2-2.4l2.6 4.6z"
+    />
+  </svg>
+</ng-template>
+
+<ng-template #topHeight>
+  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="64">
+    <path fill="#fff" d="M0 0h45v64H0z" />
+    <text x=".1" y="49.4">
+      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+    </text>
+    <path fill="#D21523" d="M30 23h-5v10h-5V23h-5l7.5-10L30 23z" />
+  </svg>
+</ng-template>
+
+<ng-template #bottomHeight>
+  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="64">
+    <text x=".1" y="28.4">
+      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+    </text>
+    <path fill="#D21523" d="M15 42h5V32h5v10h5l-7.5 10L15 42z" />
+  </svg>
+</ng-template>
+
+<ng-template #middleHeight>
+  <svg xmlns="http://www.w3.org/2000/svg" width="72" height="64">
+    <text x="19" y="24.4">
+      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+    </text>
+    <text x="19" y="52.4">
+      {{ exposedHeight2() !== null ? exposedHeight2() + "m" : ("Unknown" | translate) }}
+    </text>
+    <path fill="#D21523" d="M0 18h5V8h5v10h5L7.5 28 0 18zM15 46h-5v10H5V46H0l7.5-10L15 46z" />
+  </svg>
+</ng-template>
+
+<ng-template #topBottomHeight>
+  <svg xmlns="http://www.w3.org/2000/svg" width="72" height="64">
+    <text x="19" y="24.4">
+      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+    </text>
+    <text x="19" y="52.4">
+      {{ exposedHeight2() !== null ? exposedHeight2() + "m" : ("Unknown" | translate) }}
+    </text>
+    <path fill="#D21523" d="M0 46h5V36h5v10h5L7.5 56 0 46zM15 18h-5v10H5V18H0L7.5 8 15 18z" />
+  </svg>
+</ng-template>

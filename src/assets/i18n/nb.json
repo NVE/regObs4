@@ -37,6 +37,24 @@
     "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå på for å sende inn observasjoner av situasjonen der du er – enkelt og raskt. Dette er supernyttige data for varslingen og andre brukere.\n \n Slå av for å få alle valgene for innsending av observasjoner – som før.",
     "VIEW_WARNINGS": "Se varsler fra varsom.no"
   },
+  "COMPASS_DIRECTION": {
+    "EAST": "Øst",
+    "EAST_SHORT": "Ø",
+    "NORTH": "Nord",
+    "NORTH_EAST": "Nord-Øst",
+    "NORTH_EAST_SHORT": "NØ",
+    "NORTH_SHORT": "N",
+    "NORTH_WEST": "Nord-Vest",
+    "NORTH_WEST_SHORT": "NV",
+    "SOUTH": "Sør",
+    "SOUTH_EAST": "Sør-Øst",
+    "SOUTH_EAST_SHORT": "SØ",
+    "SOUTH_SHORT": "S",
+    "SOUTH_WEST": "Sør-Vest",
+    "SOUTH_WEST_SHORT": "SV",
+    "WEST": "Vest",
+    "WEST_SHORT": "V"
+  },
   "COMPETENCE": {
     "UNKNOWN": "Ukjent kompetanse"
   },

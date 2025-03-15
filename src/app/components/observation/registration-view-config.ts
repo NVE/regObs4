@@ -4,8 +4,8 @@ import { SummaryComponent } from './summary/summary.component';
 import { getSummaryInputs } from './summary/get-summary-input';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { AvalancheEvaluationViewComponent } from './registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
+import { AbalancheProblemsViewComponent } from './registrations/avalanche-problem-view/avalanche-problems-view.component';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-import { AvalancheProblemViewComponent } from './registrations/avalanche-problem-view/avalanche-problem-view.component';
 
 /**
  * Konfig for hvilke komponenter som skal vises for skjemaer i en registrering.
@@ -86,11 +86,9 @@ export const REGISTRATION_VIEW_CONFIG: Record<number, RegistrationViewConfig> = 
     getInputs: (reg) => ({ data: reg.AvalancheEvaluation3 }),
   },
   [RegistrationTid.AvalancheEvalProblem2]: {
-    // TODO
-    // component: AvalancheProblemViewComponent,
-    component: SummaryComponent,
+    component: AbalancheProblemsViewComponent,
     isEmpty: (reg) => isEmpty(reg.AvalancheEvalProblem2),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.AvalancheEvalProblem2),
+    getInputs: (reg) => ({ data: reg.AvalancheEvalProblem2 }),
   },
   [RegistrationTid.AvalancheActivityObs2]: {
     component: SummaryComponent,

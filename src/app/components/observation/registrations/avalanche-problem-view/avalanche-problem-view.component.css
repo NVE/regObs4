@@ -1,3 +1,26 @@
 :host {
+  font-size: var(--observation-font-size, 1rem);
+  margin-top: 0.5rem;
   display: block;
+}
+
+h4 {
+  font-size: var(--registration-subheader-font-size, 1.1rem);
+  font-weight: var(--registration-subheader-font-weight, 600);
+  color: var(--ion-text-color-heading);
+}
+
+app-key-value {
+  display: block;
+}
+
+.soft-layer-attributes {
+  font-style: var(--key-value-font-style, italic);
+}
+
+.exposition-graphics {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 1rem;
 }

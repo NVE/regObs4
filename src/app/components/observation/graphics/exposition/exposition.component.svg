@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="90px" height="90px">
+    <title>{{ text() || '' }}</title>
+    <g>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(-22.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[0] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(22.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[1] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(67.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[2] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(112.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[3] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(157.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[4] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(202.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[5] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(247.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[6] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <path d="M 45 9 A 36 36 0 0 1 70.45584412271572 19.54415587728429 L 45 45 Z" transform="rotate(292.5 45 45)" stroke-width="1" stroke="#c6c6c5" [attr.fill]="value()[7] === '1' ? '#d21523' : '#e3e3e3'"></path>
+        <circle cx="45" cy="45" r="36" fill="none" stroke-width="1" class="circle-outline"></circle>
+    </g>
+    <g>
+        <circle cx="45" cy="9" r="7.2" stroke-width="1" stroke="#69797a" fill="#fff"></circle>
+        <text x="45" y="9" dy="3.1680000000000006" font-size="7.920000000000001" stroke-width="1" text-anchor="middle" fill="#6a7a7b">
+            {{ 'COMPASS_DIRECTION.NORTH_SHORT' | translate }}
+        </text>
+    </g>
+    <g>
+        <circle cx="81" cy="45" r="7.2" stroke-width="1" stroke="#69797a" fill="#fff"></circle>
+        <text x="81" y="45" dy="3.1680000000000006" font-size="7.920000000000001" stroke-width="1" text-anchor="middle" fill="#6a7a7b">
+            {{ 'COMPASS_DIRECTION.EAST_SHORT' | translate }}
+        </text>
+    </g>
+    <g>
+        <circle cx="45" cy="81" r="7.2" stroke-width="1" stroke="#69797a" fill="#fff"></circle>
+        <text x="45" y="81" dy="3.1680000000000006" font-size="7.920000000000001" stroke-width="1" text-anchor="middle" fill="#6a7a7b">
+            {{ 'COMPASS_DIRECTION.SOUTH_SHORT' | translate }}
+        </text>
+    </g>
+    <g>
+        <circle cx="9" cy="45" r="7.2" stroke-width="1" stroke="#69797a" fill="#fff"></circle>
+        <text x="9" y="45" dy="3.1680000000000006" font-size="7.920000000000001" stroke-width="1" text-anchor="middle" fill="#6a7a7b">
+            {{ 'COMPASS_DIRECTION.WEST_SHORT' | translate }}
+        </text>
+    </g>
+</svg>

@@ -37,6 +37,24 @@
     "TOGGLE_OBSERVATION_EXTRA_INFO": "Toggle on to send observations at your position - simple and fast. This is extremely useful for the warning services and for other users.\n \n Toggle off to submit a more advanced observation - just like before.",
     "VIEW_WARNINGS": "View warnings from varsom.no"
   },
+  "COMPASS_DIRECTION": {
+    "EAST": "East",
+    "EAST_SHORT": "E",
+    "NORTH": "North",
+    "NORTH_EAST": "North-East",
+    "NORTH_EAST_SHORT": "NE",
+    "NORTH_SHORT": "N",
+    "NORTH_WEST": "North-West",
+    "NORTH_WEST_SHORT": "NW",
+    "SOUTH": "South",
+    "SOUTH_EAST": "South-East",
+    "SOUTH_EAST_SHORT": "SE",
+    "SOUTH_SHORT": "S",
+    "SOUTH_WEST": "South-West",
+    "SOUTH_WEST_SHORT": "SW",
+    "WEST": "West",
+    "WEST_SHORT": "W"
+  },
   "COMPETENCE": {
     "UNKNOWN": "Competence unknown"
   },
