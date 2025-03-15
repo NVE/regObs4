@@ -3,10 +3,10 @@ import { RegistrationViewConfig } from './registration-view-config.model';
 import { SummaryComponent } from './summary/summary.component';
 import { getSummaryInputs } from './summary/get-summary-input';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { AvalancheActivitesViewComponent } from './registrations/avalanche-activity-view/avalanche-activities-view.component';
 import { AvalancheEvaluationViewComponent } from './registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
 import { AbalancheProblemsViewComponent } from './registrations/avalanche-problem-view/avalanche-problems-view.component';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-
 /**
  * Konfig for hvilke komponenter som skal vises for skjemaer i en registrering.
  *
@@ -91,9 +91,9 @@ export const REGISTRATION_VIEW_CONFIG: Record<number, RegistrationViewConfig> = 
     getInputs: (reg) => ({ data: reg.AvalancheEvalProblem2 }),
   },
   [RegistrationTid.AvalancheActivityObs2]: {
-    component: SummaryComponent,
-    isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.AvalancheActivityObs2),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.AvalancheActivityObs2),
+    component: AvalancheActivitesViewComponent,
+    isEmpty: (reg) => isEmpty(reg.AvalancheActivityObs2),
+    getInputs: (reg) => ({ data: reg.AvalancheActivityObs2 }),
   },
   [RegistrationTid.SnowProfile2]: {
     component: SummaryComponent,
