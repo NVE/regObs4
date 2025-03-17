@@ -29,14 +29,14 @@
             <app-select
               label="REGISTRATION.IMAGE_ASPECT"
               [(selectedValue)]="attachment.Aspect"
-              [options]="aspectOptions()"
+              [options]="aspectOptions"
             ></app-select>
           </ion-item>
           <ion-item>
             <ion-input
-              [value]="attachment.Photographer"
+              [value]="attachment.Photographer || userSettings()?.photographer"
               (ionChange)="updateExistingAttachmentPhotographer(attachment, $event)"
-              [label]="'MY_PROFILE.PHOTOGRAPHER' | translate"
+              [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
               labelPlacement="stacked"
               [placeholder]="'MY_PROFILE.PHOTOGRAPHER' | translate"
             >
@@ -46,7 +46,7 @@
             <ion-input
               [value]="attachment.Copyright || userSettings()?.copyright"
               (ionChange)="updateExistingAttachmentCopyright(attachment, $event)"
-              [label]="'MY_PROFILE.COPYRIGHT' | translate"
+              [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
               labelPlacement="stacked"
               [placeholder]="'MY_PROFILE.COPYRIGHT' | translate"
             >
@@ -97,27 +97,27 @@
             <app-select
               label="REGISTRATION.IMAGE_ASPECT"
               [(selectedValue)]="attachment.Aspect"
-              [options]="aspectOptions()"
+              [options]="aspectOptions"
               (ionChange)="addNewAttachmentAspect(attachment, $event)"
             ></app-select>
           </ion-item>
           <ion-item>
             <ion-input
-              [value]="attachment.Photographer"
+              [value]="attachment.Photographer || userSettings()?.photographer"
               (ionChange)="addNewAttachmentPhotographer(attachment, $event)"
-              label="PHOTOGRAPHER"
+              [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
               labelPlacement="stacked"
-              placeholder="Photographer"
+              [placeholder]="'MY_PROFILE.PHOTOGRAPHER' | translate"
             >
             </ion-input>
           </ion-item>
           <ion-item>
             <ion-input
-              [value]="attachment.Copyright || userSettings()?.copyright"
+              [value]="attachment.Copyright || userSettings()?.copyright || myPage()?.NickName"
               (ionChange)="addNewAttachmentCopyright(attachment, $event)"
-              label="COPYRIGHT"
+              [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
               labelPlacement="stacked"
-              placeholder="Copyright"
+              [placeholder]="'MY_PROFILE.COPYRIGHT' | translate"
             >
             </ion-input>
           </ion-item>

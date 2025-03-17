@@ -198,7 +198,7 @@ export class RegobsAuthService {
     return undefined;
   }
 
-  public async showSetNickDialog(): Promise<string> {
+  private async showSetNickDialog(): Promise<string> {
     const headerTextKey = 'SET_NICK_ALERT.INPUT_TEXT';
     const messageTextKey = 'SET_NICK_ALERT.HELP_TEXT';
     const okTextKey = 'DIALOGS.OK';

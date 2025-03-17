@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, input, model, computed } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input, model } from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import {
   ActionSheetController,
+  InputCustomEvent,
   IonAccordion,
   IonAccordionGroup,
   IonFab,
@@ -49,6 +50,7 @@ import { SelectComponent } from '../../../shared/components/input/select/select.
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -92,6 +94,7 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
 })
 export class EditImagesComponent implements OnInit {
   newAttachmentService = inject(NewAttachmentService);
+  private regobsAuthService = inject(RegobsAuthService);
   private translateService = inject(TranslateService);
   private platform = inject(Platform);
   private file = inject(File);
@@ -115,31 +118,19 @@ export class EditImagesComponent implements OnInit {
   readonly attachmentType = input<AttachmentType>('Attachment');
   readonly ref = input<string>();
   userSettings = toSignal(this.userSettingService.userSetting$);
+  myPage = toSignal(this.regobsAuthService.myPageData$);
   selectedAspect = model<number | undefined>(undefined);
 
-  aspectOptions = computed((): SelectOption[] => {
-    const translations = this.translateService.instant([
-      'DIRECTION.N',
-      'DIRECTION.NE',
-      'DIRECTION.E',
-      'DIRECTION.SE',
-      'DIRECTION.S',
-      'DIRECTION.SW',
-      'DIRECTION.W',
-      'DIRECTION.NW',
-    ]);
-
-    return [
-      { id: 0, text: translations['DIRECTION.N'] },
-      { id: 45, text: translations['DIRECTION.NE'] },
-      { id: 90, text: translations['DIRECTION.E'] },
-      { id: 135, text: translations['DIRECTION.SE'] },
-      { id: 180, text: translations['DIRECTION.S'] },
-      { id: 225, text: translations['DIRECTION.SW'] },
-      { id: 270, text: translations['DIRECTION.W'] },
-      { id: 315, text: translations['DIRECTION.NW'] },
-    ];
-  });
+  aspectOptions: SelectOption[] = [
+    { id: 0, text: this.translateService.instant('DIRECTION.N') },
+    { id: 45, text: this.translateService.instant('DIRECTION.NE') },
+    { id: 90, text: this.translateService.instant('DIRECTION.E') },
+    { id: 135, text: this.translateService.instant('DIRECTION.SE') },
+    { id: 180, text: this.translateService.instant('DIRECTION.S') },
+    { id: 225, text: this.translateService.instant('DIRECTION.SW') },
+    { id: 270, text: this.translateService.instant('DIRECTION.W') },
+    { id: 315, text: this.translateService.instant('DIRECTION.NW') },
+  ];
 
   isHybrid?: boolean;
   accept = ALLOWED_ATTACHMENT_FILE_TYPES;
@@ -194,16 +185,19 @@ export class EditImagesComponent implements OnInit {
 
   addNewAttachmentAspect(attachment: AttachmentUploadEditModel, event: Event) {
     const aspect = (event.target as HTMLSelectElement).value;
+    if (aspect == null || aspect == undefined) return;
     this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Aspect: +aspect });
   }
 
-  addNewAttachmentPhotographer(attachment: AttachmentUploadEditModel, event: Event) {
-    const photographer = (event.target as HTMLInputElement).value;
+  addNewAttachmentPhotographer(attachment: AttachmentUploadEditModel, event: InputCustomEvent) {
+    const photographer = event.detail.value;
+    if (photographer == null || photographer == undefined) return;
     this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Photographer: photographer });
   }
 
-  updateExistingAttachmentPhotographer(attachment: RemoteOrLocalAttachmentEditModel, event: Event) {
-    const photographer = (event.target as HTMLInputElement).value;
+  updateExistingAttachmentPhotographer(attachment: RemoteOrLocalAttachmentEditModel, event: InputCustomEvent) {
+    const photographer = event.detail.value;
+    if (photographer == null || photographer == undefined) return;
     this.existingAttachments.update((attachments) =>
       (attachments || []).map((a) =>
         a.AttachmentId === attachment.AttachmentId ? { ...a, Photographer: photographer } : a
@@ -211,15 +205,17 @@ export class EditImagesComponent implements OnInit {
     );
   }
 
-  addNewAttachmentCopyright(attachment: AttachmentUploadEditModel, event: Event) {
-    const copyRight = (event.target as HTMLInputElement).value;
+  addNewAttachmentCopyright(attachment: AttachmentUploadEditModel, event: InputCustomEvent) {
+    const copyRight = event.detail.value;
+    if (copyRight == null || copyRight == undefined) return;
     this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Copyright: copyRight });
   }
 
-  updateExistingAttachmentCopyright(attachment: RemoteOrLocalAttachmentEditModel, event: Event) {
-    const copyright = (event.target as HTMLInputElement).value;
+  updateExistingAttachmentCopyright(attachment: RemoteOrLocalAttachmentEditModel, event: InputCustomEvent) {
+    const copyRight = event.detail.value;
+    if (copyRight == null || copyRight == undefined) return;
     this.existingAttachments.update((attachments) =>
-      (attachments || []).map((a) => (a.AttachmentId === attachment.AttachmentId ? { ...a, Copyright: copyright } : a))
+      (attachments || []).map((a) => (a.AttachmentId === attachment.AttachmentId ? { ...a, Copyright: copyRight } : a))
     );
   }
 
