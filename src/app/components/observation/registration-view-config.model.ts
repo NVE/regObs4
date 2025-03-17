@@ -1,7 +1,13 @@
 import { Type } from '@angular/core';
+import { RegistrationTid } from 'src/app/modules/common-registration/models/registration-tid.enum';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
 export interface RegistrationViewConfig {
+  /**
+   * ID til skjemaet som skal vises
+   */
+  tid: RegistrationTid;
+
   /**
    * Hvilken komponent som skal vises
    */
