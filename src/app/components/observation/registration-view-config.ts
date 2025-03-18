@@ -7,6 +7,7 @@ import { AvalancheActivitesViewComponent } from './registrations/avalanche-activ
 import { AvalancheEvaluationViewComponent } from './registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
 import { AbalancheProblemsViewComponent } from './registrations/avalanche-problem-view/avalanche-problems-view.component';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { IceThicknessViewComponent } from './registrations/ice-thickness-view/ice-thickness-view.component';
 /**
  * Konfig for hvilke komponenter som skal vises for skjemaer i en registrering.
  *
@@ -119,9 +120,13 @@ export const REGISTRATION_VIEW_CONFIG: RegistrationViewConfig[] = [
   },
   {
     tid: RegistrationTid.IceThickness,
-    component: SummaryComponent,
+    component: IceThicknessViewComponent,
     isEmpty: (reg) => isObservationModelEmptyForRegistrationTid(reg, RegistrationTid.IceThickness),
-    getInputs: (reg) => getSummaryInputs(reg, RegistrationTid.IceThickness),
+    getInputs: (reg) => ({
+      regId: reg.RegId,
+      data: reg.IceThickness,
+      summaries: getSummaryInputs(reg, RegistrationTid.IceThickness),
+    }),
   },
   {
     tid: RegistrationTid.WaterLevel,

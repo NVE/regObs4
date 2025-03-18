@@ -434,4 +434,9 @@ export const settings: ISettings = {
   },
   feedbackWebUrl:
     'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu',
+  iceThicknessPlotUrl: {
+    TEST: 'https://test-plot.regobs.no/v1/IceThickness/',
+    DEMO: 'https://demo-plot.regobs.no/v1/IceThickness/',
+    PROD: 'https://plot.regobs.no/v1/IceThickness/',
+  },
 };
