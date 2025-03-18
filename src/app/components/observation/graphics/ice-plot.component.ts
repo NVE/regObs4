@@ -26,8 +26,6 @@ import { DomSanitizer } from '@angular/platform-browser';
         height: 280px;
         width: 140px;
         border: none;
-        margin-right: 32px;
-        margin-top: -10px;
       }
     `,
   ],
