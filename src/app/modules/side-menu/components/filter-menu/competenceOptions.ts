@@ -40,6 +40,12 @@ export class CompetenceOptions {
       competenceOption.descriptions = [...new Set([...competenceOption.descriptions, competence.Description])];
     }
 
+    // Sikre at 0 id (ukjent) legges til i id listen når man velger ukjent kompetanse. Grunnen er fordi de nye
+    // ukjente kompetanser på en obs lagres med id 0, ikke dedikerte ukjente per naturfare som 100, 200 700 og 600.
+    if (competenceOption.ids.find((id) => id === 100 || id === 200 || id === 700 || id === 600)) {
+      competenceOption.ids = [...new Set([...competenceOption.ids, 0])];
+    }
+
     this.idToItem.set(competence.Id, competenceOption);
     this.nameToItem.set(competence.Name, competenceOption);
   }
