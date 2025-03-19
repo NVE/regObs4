@@ -19,10 +19,8 @@ export class IceThicknessViewComponent {
   readonly regId = input.required<number>();
   readonly data = input.required<IceThicknessViewModel>();
   readonly summaries = input.required<any>();
-  private userSettingsService = inject(UserSettingService);
 
-  // fordi getSummaryInputs() returnerer { summaries: Summary[] }, må vi pakke det ut, vi trenger bare Summary[]
-  rawSummaries = computed(() => this.summaries().summaries);
+  private userSettingsService = inject(UserSettingService);
 
   private appMode = toSignal(this.userSettingsService.appMode$, { initialValue: AppMode.Prod });
   private plotBaseUrl = settings.iceThicknessPlotUrl[this.appMode()];

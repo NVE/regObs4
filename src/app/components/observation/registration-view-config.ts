@@ -1,7 +1,7 @@
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewConfig } from './registration-view-config.model';
 import { SummaryComponent } from './summary/summary.component';
-import { getSummaryInputs } from './summary/get-summary-input';
+import { getSummaries, getSummaryInputs } from './summary/get-summary-input';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { AvalancheActivitesViewComponent } from './registrations/avalanche-activity-view/avalanche-activities-view.component';
 import { AvalancheEvaluationViewComponent } from './registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
@@ -125,7 +125,7 @@ export const REGISTRATION_VIEW_CONFIG: RegistrationViewConfig[] = [
     getInputs: (reg) => ({
       regId: reg.RegId,
       data: reg.IceThickness,
-      summaries: getSummaryInputs(reg, RegistrationTid.IceThickness),
+      summaries: getSummaries(reg, RegistrationTid.IceThickness),
     }),
   },
   {
