@@ -27,7 +27,7 @@ h3 {
 }
 
 swiper-container {
-  height: 100%;
+  height: calc(100% - 53px);
   width: 100%;
   background-color: #fff;
 }
