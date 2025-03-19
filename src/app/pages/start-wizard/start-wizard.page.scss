@@ -1,5 +1,4 @@
 /* Dette burde være globalt men jeg vil ikke ødelegge eksisterende komponenter */
-ul,
 h2,
 h3 {
   margin: 0;
@@ -17,6 +16,7 @@ h2 {
 @media screen and (max-width: 768px) {
   h2 {
     font-size: 20px;
+    word-break: break-word;
   }
 }
 
@@ -26,29 +26,39 @@ h3 {
   margin: 0px;
 }
 
+ul {
+  padding: 0 15px;
+}
+
 swiper-container {
-  height: 100%;
+  height: calc(100% - 53px);
   width: 100%;
   background-color: #fff;
 }
 
 swiper-slide {
+  overflow: auto;
   display: flex;
   flex-direction: column;
-  height: 90%;
-  width: 100%;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  padding: 0px 120px;
-  img:last-of-type {
-    margin-bottom: 30px;
+  padding: 20px 0px;
+}
+
+@media screen and (max-width: 600px) {
+  swiper-slide:not(:last-of-type) {
+    justify-content: center;
+  }
+}
+@media screen and (min-width: 600px) {
+  swiper-slide {
+    justify-content: center;
   }
 }
 
 @media screen and (max-width: 768px) {
   swiper-slide {
-    padding: 0px 50px;
+    padding: 10px 50px;
   }
 }
 

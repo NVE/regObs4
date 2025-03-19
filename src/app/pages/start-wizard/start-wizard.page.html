@@ -74,22 +74,20 @@
   <swiper-slide>
     <img alt="" class="legal__icon" src="/assets/images/onboarding/legal.svg" />
     <h2>{{ "LEGAL_TERMS.HEADER" | translate }}</h2>
-    <h3 class="ion-no-padding ion-text-wrap">
-      <ul class="legal-text">
-        <li>{{ "LEGAL_TERMS.LINE_1" | translate }}</li>
-        <li>{{ "LEGAL_TERMS.LINE_2" | translate }}</li>
-        <li>{{ "LEGAL_TERMS.LINE_3" | translate }}</li>
-        <li>
-          <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
-        </li>
-        <li>
-          <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
-        </li>
-        <li>
-          <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate: { legalUrl: legalUrl }"></span>
-        </li>
-      </ul>
-    </h3>
+    <ul class="legal-text">
+      <li>{{ "LEGAL_TERMS.LINE_1" | translate }}</li>
+      <li>{{ "LEGAL_TERMS.LINE_2" | translate }}</li>
+      <li>{{ "LEGAL_TERMS.LINE_3" | translate }}</li>
+      <li>
+        <span [innerHtml]="'LEGAL_TERMS.LINE_4' | translate"></span>
+      </li>
+      <li>
+        <span [innerHtml]="'LEGAL_TERMS.LINE_5' | translate"></span>
+      </li>
+      <li>
+        <span [innerHtml]="'LEGAL_TERMS.LINE_6' | translate: { legalUrl: legalUrl }"></span>
+      </li>
+    </ul>
   </swiper-slide>
 </swiper-container>
 <ion-footer>
