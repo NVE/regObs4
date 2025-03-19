@@ -529,15 +529,17 @@ export class SearchCriteriaService {
     this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
-      const update = {
-        SelectedRegistrationTypes: currentTypesCriteria.map((regType) => {
-          return {
-            ...regType,
-            SubTypes: regType.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)),
-          };
-        }),
-      };
-      this.searchCriteriaChanges.next(update);
+      const newCriteria = currentTypesCriteria
+        .map((type) => {
+          if (type.Id === typeToRemove.Id) {
+            const subtypesLeft = type.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)) || [];
+            return subtypesLeft.length > 0 ? { Id: type.Id, SubTypes: subtypesLeft } : null;
+          }
+          return { Id: type.Id, SubTypes: type.SubTypes ? [...type.SubTypes] : [] };
+        })
+        .filter(Boolean) as RegistrationTypeCriteriaDto[];
+
+      this.searchCriteriaChanges.next({ SelectedRegistrationTypes: newCriteria });
     }
   }
 
