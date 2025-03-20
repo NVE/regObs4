@@ -8,7 +8,7 @@ import { settings } from 'src/settings';
 import { IcePlotComponent } from '../../graphics/ice-plot.component';
 
 @Component({
-  selector: 'app-avalanche-problem-view',
+  selector: 'app-ice-thickness-view',
   imports: [SummaryComponent, IcePlotComponent],
   templateUrl: './ice-thickness-view.component.html',
   styleUrls: ['./ice-thickness-view.component.css'],

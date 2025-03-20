@@ -11,11 +11,11 @@ import { DomSanitizer } from '@angular/platform-browser';
       <ion-spinner></ion-spinner>
     }
     <iframe
-      [hidden]="loading()"
+      loading="lazy"
       title="Ice Plot"
       [attr.src]="safeUrl()"
       (load)="onLoad()"
-      (error)="onLoad()"
+      (error)="onError()"
       importance="low"
       allowfullscreen="false"
     ></iframe>
@@ -34,14 +34,19 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class IcePlotComponent {
   readonly url = input.required<string>();
   private sanitizer = inject(DomSanitizer);
-  loading = signal(true);
+  failed = signal(false);
+  loadCalledCount = signal(0);
+  loading = computed(() => this.loadCalledCount() < 2 && !this.failed());
 
   safeUrl = computed(() => {
     const result = this.sanitizer.bypassSecurityTrustResourceUrl(this.url());
     return result as string;
   });
 
-  onLoad(): void {
-    this.loading.set(false);
+  onLoad() {
+    this.loadCalledCount.set(this.loadCalledCount() + 1);
+  }
+  onError() {
+    this.failed.set(true);
   }
 }
