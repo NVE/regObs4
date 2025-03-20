@@ -529,15 +529,23 @@ export class SearchCriteriaService {
     this.removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove);
     const { SelectedRegistrationTypes: currentTypesCriteria } = await firstValueFrom(this.searchCriteria$);
     if (currentTypesCriteria) {
-      const update = {
-        SelectedRegistrationTypes: currentTypesCriteria.map((regType) => {
-          return {
-            ...regType,
-            SubTypes: regType.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)),
-          };
-        }),
-      };
-      this.searchCriteriaChanges.next(update);
+      // vi har filter på type, som vi da må oppdatere
+      const newCriteria = currentTypesCriteria
+        .map((type) => {
+          if (type.Id === typeToRemove.Id) {
+            // det kan være typen har noen under-typer som fortsatt skal være med
+            const subtypesLeft = type.SubTypes?.filter((subType) => !typeToRemove.SubTypes?.includes(subType)) || [];
+            if (subtypesLeft.length > 0) {
+              return { Id: type.Id, SubTypes: subtypesLeft };
+            }
+            return null; // vi fjerner hele typen hvis det ikke er noen under-typer igjen
+          }
+          // denne typen skal ikke fjernes, så vi returnerer den uendret
+          return { Id: type.Id, SubTypes: type.SubTypes ? [...type.SubTypes] : [] };
+        })
+        .filter(Boolean) as RegistrationTypeCriteriaDto[];
+
+      this.searchCriteriaChanges.next({ SelectedRegistrationTypes: newCriteria });
     }
   }
 

@@ -175,6 +175,22 @@ describe('SearchCriteriaService', () => {
     expect(url.searchParams.get('type')).toEqual('81.13');
   }));
 
+  it('det skal gå an å fjerne samme observasjonstype som vi nettopp la til i filteret (ro-2734)', fakeAsync(async () => {
+    let criteria: any;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    const obsType = { Id: 80, SubTypes: [26] };
+    tick(500);
+    await service.setObservationType(obsType);
+    tick(500);
+    await service.removeObservationType(obsType);
+    tick(500);
+    //check that criteria contains only obsType2
+    expect(criteria.SelectedRegistrationTypes.length).toEqual(0);
+    await service.applyQueryParams();
+    const url = new URL(document.location.href);
+    expect(url.searchParams.has('type')).toBeFalse();
+  }));
+
   it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
