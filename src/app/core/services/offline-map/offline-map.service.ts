@@ -975,6 +975,7 @@ export class OfflineMapService implements OnReset {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appOnReset(): void | Promise<any> {
     this.hasOutdatedPackages$.next(false); // så vi slipper å få en ny advarsel hvis vi resetter appen
   }

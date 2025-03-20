@@ -65,6 +65,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
     const scaleAmount = 1 + openAmount / 2.0;
     const scale = `scale3d(${scaleAmount},${scaleAmount},1)`;
     this.domCtrl.write(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.renderer.setStyle((<any>this.ionIcon()).el, 'transform', scale);
     });
   }

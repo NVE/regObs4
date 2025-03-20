@@ -38,7 +38,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
 import { RefreshFunc } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
-import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgClass, AsyncPipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { TranslatePipe } from '@ngx-translate/core';

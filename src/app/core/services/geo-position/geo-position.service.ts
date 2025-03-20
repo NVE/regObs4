@@ -468,6 +468,7 @@ export class GeoPositionService implements OnDestroy {
       fromEvent<DeviceOrientationEvent>(window, 'deviceorientation')
     ).pipe(
       map((event: DeviceOrientationEvent) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const appleHeading = (event as any).webkitCompassHeading;
         const heading: number = appleHeading || this.getAbsoluteHeading(event);
         return heading;

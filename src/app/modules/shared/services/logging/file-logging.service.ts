@@ -84,6 +84,7 @@ export class FileLoggingService {
   /**
    * Initializes the file logger
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   init(configuration: ILogProviderConfig): Promise<any> {
     return this.platform.ready().then(() => {
       this.config = new LogProviderConfig(configuration);
@@ -147,6 +148,7 @@ export class FileLoggingService {
   /**
    * Attempts to create the logging directory
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private createLogDir(): Promise<any> {
     this.debug_metaLog('Attempting to create logging directory');
     return this.file
@@ -165,6 +167,7 @@ export class FileLoggingService {
    * Attempts to initialize the current log file
    * @returns a promise upon completion or failure
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private initLogFile(): Promise<any> {
     this.debug_metaLog('Attempting to initialize log file');
     return this.file
@@ -188,6 +191,7 @@ export class FileLoggingService {
    * Checks the total size of log files against the configured maximum size and deletes oldest if necessary
    * @param entries the files found in the logging directory
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async cleanupFiles(entries: Entry[]): Promise<any> {
     this.debug_metaLog('Starting cleanup of ' + entries.length + ' log files');
     entries = _.filter(
@@ -267,6 +271,7 @@ export class FileLoggingService {
    * @param resolve
    * @param reject
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private maxSizeExceeded(entries: Entry[], lastEntrySize: number): Promise<any> {
     return this.removeFile(entries[0])
       .then(() => {
@@ -289,6 +294,7 @@ export class FileLoggingService {
    * @param lastEntrySize The size of the most recent existing log file
    * @param error Any error to be logged after initialization
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private cleanupCompleted(lastEntry: Entry | null, lastEntrySize: number, error?: string): Promise<any> {
     this.debug_metaLog('Log file cleanup done');
     if (lastEntry && lastEntrySize < this.config.fileMaxSize) {
@@ -318,6 +324,7 @@ export class FileLoggingService {
    * Attempts to remove a file
    * @param entry
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private removeFile(entry: Entry): Promise<any> {
     this.debug_metaLog('Removing file: ' + entry.fullPath);
     const fullPath = entry.fullPath;
@@ -358,6 +365,7 @@ export class FileLoggingService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }): void {
     let msg = `[${level?.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
     if (optionalParams) {
@@ -385,6 +393,7 @@ export class FileLoggingService {
    * @param message
    * @param error
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   err(message: string, error?: any): void {
     this.logInternal(message, true);
 
@@ -402,6 +411,7 @@ export class FileLoggingService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private stringify(data: { [key: string]: any }): string {
     if (data) {
       return JSON.stringify(data, getCircularReplacer());
@@ -438,6 +448,7 @@ export class FileLoggingService {
   /**
    * Writes the oldest entry in the queue to file, then checks if file rollover is required
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private processQueue(): Promise<any> {
     this.debug_metaLog('Processing queue of length ' + this.queue.length);
     if (!this.currentFile) {
@@ -468,6 +479,7 @@ export class FileLoggingService {
   /**
    * Checks the file length and creates a new file if required
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private checkFileLength(): Promise<any> {
     if (this.lines >= this.config.fileMaxLines) {
       this.debug_metaLog('Creating new file as max number of log entries exceeded');
@@ -489,6 +501,7 @@ export class FileLoggingService {
   /**
    * Creates the next log file and updates the local reference
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private createNextFile(): Promise<any> {
     const fileName = this.createLogFileName();
     this.debug_metaLog('Attempting to create file at: ' + this.config.baseDir + this.config.logDir + '/' + fileName);
@@ -575,9 +588,9 @@ class LogProviderConfig implements ILogProviderConfig {
 
   // Developer-level logging will appear in log files if true
   devMode!: boolean;
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(fields: any) {
     // Quick and dirty extend/assign fields to this model
     for (const f in fields) {
@@ -589,6 +602,7 @@ class LogProviderConfig implements ILogProviderConfig {
    * Overrides this object's uninitialized fields with the passed parameter's fields
    * @param config
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   merge(config: any) {
     for (const k in config) {
       if (!(k in this)) {

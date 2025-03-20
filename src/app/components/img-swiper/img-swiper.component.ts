@@ -42,6 +42,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     imgUrl: string;
   }> = new EventEmitter();
   isDesktop?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   slideOptions?: any;
 
   ngOnInit() {

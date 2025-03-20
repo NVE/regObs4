@@ -20,6 +20,7 @@ export abstract class RouterPage implements OnDestroy {
       .subscribe();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private isComponentActive(path: ActivatedRouteSnapshot[], component: any): boolean {
     let isActive = false;
     path.forEach((ss: ActivatedRouteSnapshot) => {

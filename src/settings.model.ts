@@ -75,6 +75,7 @@ interface IMapTileSettings {
 
 interface IMapSettings {
   tiles: IMapTileSettings;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   search: any;
   mapSearchZoomToLevel: number;
   unknownMapCenter: L.LatLngTuple;
@@ -91,14 +92,22 @@ interface Language {
 }
 
 export interface ISettings {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   authConfig: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   observations: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   services: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   db: any;
   map: IMapSettings;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dateFormats: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   kdvElements: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   helpTexts: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   images: any;
   sentryDsn: string;
   errorEmailAddress: string;

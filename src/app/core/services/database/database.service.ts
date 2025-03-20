@@ -43,6 +43,7 @@ export class DatabaseService {
    * @param value the value for this key
    * @returns Returns a promise that resolves when the key and value are set
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async set(key: string, value: any): Promise<void> {
     await firstValueFrom(this.ready$);
     return this.database.set(key, value);

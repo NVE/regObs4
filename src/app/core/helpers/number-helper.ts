@@ -1,4 +1,5 @@
 export class NumberHelper {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static isNumeric(n: any) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
@@ -17,10 +18,12 @@ export class NumberHelper {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static isNullOrEmpty(n: any) {
     return n === undefined || n === null || n === '';
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static isValid(n: any, min?: number, max?: number, required = false, integer = false) {
     if (required && this.isNullOrEmpty(n)) {
       return false;

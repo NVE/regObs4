@@ -8,6 +8,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
  * Used to draw a marking pin for a registration on the map
  */
 export class RegObsGeoJson extends L.GeoJSON {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(markers: any) {
     super(markers, {
       pointToLayer: (p, loc) => RegObsGeoJson.pointToLayer(p, loc),

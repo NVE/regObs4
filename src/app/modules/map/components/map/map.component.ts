@@ -173,6 +173,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         return L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       _rawPanBy: function (offset: any) {
         if (this._mapPane) {
           L.DomUtil.setPosition(this._mapPane, this._getMapPanePos().subtract(offset));
@@ -278,6 +279,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.observationTripLayers.forEach((l) => l.addTo(map));
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const clickHandler = (e: any) => {
       this.observationTripName = e.layer?.feature?.properties?.navn;
       this.observationTripDescription = e.layer?.feature?.properties?.beskrivelse || noObserverTripDescription;

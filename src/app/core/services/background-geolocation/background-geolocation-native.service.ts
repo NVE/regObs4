@@ -15,11 +15,12 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
   private translateService = inject(TranslateService);
   // private geolocation = inject(Geolocation);
   // private loggingService = inject(LoggingService);
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   backgroundGeolocation: any;
 
   constructor() {
     this.platform.ready().then(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.backgroundGeolocation = (<any>window).BackgroundGeolocation;
     });
   }

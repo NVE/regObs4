@@ -38,6 +38,7 @@ const dateToMs = (value?: string): number => {
   return date.valueOf();
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const toJson = (o: any) => {
   // TODO: Typescript compiler cant find replaceAll on string, how to fix?
   // Single quotes must be escaped: ' => ''
@@ -46,6 +47,7 @@ const toJson = (o: any) => {
   // får vi denne feilmeldinga: "SyntaxError: Expected ',' or '}' after property value in JSON at position x"
   // Eksempel på verdi som vil feile: "Description": "Bruk av \"hermetegn\"". => "Description": "Bruk av "hermetegn""
   // Derfor erstatter vi \" med _.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (<any>JSON.stringify(o)).replaceAll("'", "''").replaceAll('\\"', '_');
 };
 

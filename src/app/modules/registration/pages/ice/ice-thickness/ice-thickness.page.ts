@@ -194,6 +194,7 @@ export class IceThicknessPage extends BasePage {
     event.detail.complete();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reorderList(array: Array<any>, fromIndex: number, toIndex: number) {
     array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
   }
@@ -227,6 +228,7 @@ export class IceThicknessPage extends BasePage {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isNumber(value?: any): value is number {
   if (typeof value !== 'number') {
     return false;

@@ -96,6 +96,7 @@ export class GroupPage extends BasePage {
   }
 
   checkedChanged(event: CustomEvent): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const checkBox = (<any>event.target) as IonCheckbox;
     let ObserverGroupID: RegistrationEditModel['ObserverGroupID'] = undefined;
     if (checkBox.checked) {

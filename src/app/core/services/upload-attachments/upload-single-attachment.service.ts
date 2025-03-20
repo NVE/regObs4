@@ -14,6 +14,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 
 const DEBUG_TAG = 'UploadSingleAttachmentService';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type HttpEventClb = (ev: HttpEvent<any>) => void;
 
 /**
@@ -27,6 +28,7 @@ export class UploadSingleAttachmentService {
   private apiAttachmentService = inject(ApiAttachmentService);
   private loggingService = inject(LoggingService);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel, clb: HttpEventClb) {
     this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);
     // Here we can keep track of upload progress if we want to

@@ -11,7 +11,6 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'no-warning-comments': ['warn', { terms: ['todo', 'fixme'], location: 'start' }], //trenger vi den?
     'no-console': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',

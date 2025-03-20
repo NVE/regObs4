@@ -33,6 +33,7 @@ const askToSaveOrNot = (modalService: ConfirmationModalService) => {
 const saveAsDraftGuardAsync = async (
   draftService: DraftRepositoryService,
   modalService: ConfirmationModalService,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: any,
   currentRoute: ActivatedRouteSnapshot,
   currentState: RouterStateSnapshot,

@@ -9,6 +9,7 @@ export class RegObsMarkerClusterLayer extends L.MarkerClusterGroup {
 
   constructor(private map: L.Map) {
     super();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const options = (this as any).options as L.MarkerClusterGroupOptions;
     options.zoomToBoundsOnClick = false;
     options.animate = true;
@@ -32,6 +33,7 @@ export class RegObsMarkerClusterLayer extends L.MarkerClusterGroup {
     const layer: L.MarkerCluster = e.propagatedFrom;
     const newZoom = this.map.getZoom() + 2;
     if (newZoom >= this.map.getMaxZoom()) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (layer as any).spiderfy();
     } else {
       const bounds = layer.getBounds();

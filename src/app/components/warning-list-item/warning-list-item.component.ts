@@ -80,6 +80,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
         const color = `rgba(186,196,204,${opacity})`;
         this.favouriteToggle()?.setOpen(opacity);
         this.domCtrl.write(() => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           this.renderer.setStyle((<any>this.itemSlide()).el, 'background-color', color);
         });
       });

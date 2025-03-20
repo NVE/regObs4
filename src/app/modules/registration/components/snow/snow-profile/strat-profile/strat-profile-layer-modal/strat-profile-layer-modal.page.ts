@@ -120,6 +120,7 @@ export class StratProfileLayerModalPage implements OnInit {
     this.showMore() ? undefined : (n) => basicWetnessValues.indexOf(n) >= 0
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   grainSizeInterfaceOptions: any;
   grainSizeOptions: SelectOption[] = [
     { id: 0.001, text: '.1' },

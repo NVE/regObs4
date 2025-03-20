@@ -10,6 +10,7 @@ const DEBUG_TAG = 'AppResetService';
   providedIn: 'root',
 })
 export class AppResetService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private services = inject<OnReset[]>('OnReset' as any);
   private dbHelperService = inject(DbHelperService);
   private loggingService = inject(LoggingService);

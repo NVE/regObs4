@@ -51,6 +51,7 @@ interface AvalancheRegion {
   id: number;
   name: string;
   type: 'A' | 'B';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   polygon: any; // TODO: Fix polygon;
   checked?: boolean;
 }
@@ -317,6 +318,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.resetSearchCriteria();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setNewType(event: any, parentId: number, typeId?: number) {
     //if parentid and subtypeid are the same it means there is no subtypes
     let obsType: RegistrationTypeCriteriaDto;
