@@ -1,4 +1,4 @@
-import { Component, inject, computed, input, effect, linkedSignal } from '@angular/core';
+import { Component, inject, computed, input, linkedSignal } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -20,7 +20,6 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';

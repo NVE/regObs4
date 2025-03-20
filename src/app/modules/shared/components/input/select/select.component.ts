@@ -1,4 +1,4 @@
-import { Component, inject, input, model, computed, Signal } from '@angular/core';
+import { Component, inject, input, model, computed } from '@angular/core';
 import {
   ActionSheetController,
   IonButton,
@@ -8,7 +8,7 @@ import {
   IonSelectOption,
   IonText,
 } from '@ionic/angular/standalone';
-import { ActionSheetButton, IonSelectCustomEvent, SelectChangeEventDetail } from '@ionic/core';
+import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';

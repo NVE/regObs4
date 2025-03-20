@@ -42,7 +42,7 @@ export class CustomAnimation {
     ];
   }
 
-  static scaleUpEnter(baseEl: HTMLElement, opts?: any) {
+  static scaleUpEnter(baseEl: HTMLElement) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -69,7 +69,7 @@ export class CustomAnimation {
     );
   }
 
-  static scaleUpEnterV2(baseEl: HTMLElement, opts?: any) {
+  static scaleUpEnterV2(baseEl: HTMLElement) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -95,7 +95,7 @@ export class CustomAnimation {
     );
   }
 
-  static scaleUpLeave(baseEl: HTMLElement, opts?: any) {
+  static scaleUpLeave(baseEl: HTMLElement) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -122,7 +122,7 @@ export class CustomAnimation {
     );
   }
 
-  static scaleUpLeaveV2(baseEl: HTMLElement, opts?: any) {
+  static scaleUpLeaveV2(baseEl: HTMLElement) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -148,7 +148,7 @@ export class CustomAnimation {
     );
   }
 
-  static slideInFromRight(baseEl: HTMLElement, opts?: any) {
+  static slideInFromRight(baseEl: HTMLElement) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -173,7 +173,7 @@ export class CustomAnimation {
       .addAnimation(wrapperAnimation);
   }
 
-  static slideOutToRight(baseEl: HTMLElement, opts?: any) {
+  static slideOutToRight(baseEl: HTMLElement) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();

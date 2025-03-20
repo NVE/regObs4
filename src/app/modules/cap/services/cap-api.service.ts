@@ -1,12 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CapFeed } from '../models/cap-feed.model';
-import { Observable, bindNodeCallback, bindCallback } from 'rxjs';
+import { Observable, bindNodeCallback } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { Parser } from 'xml2js';
 import { CapAlertWrapper } from '../models/cap-alert.model';
-
-const knownArrayFields = ['items'];
 
 @Injectable({
   providedIn: 'root',

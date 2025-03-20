@@ -394,7 +394,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
         this.createStopGraphic(topPx, leftPx);
         stop = { x, y };
       } else if (type === 'damage') {
-        this.createDamageGraphic(topPx, leftPx);
+        this.createDamageGraphic();
       } else {
         throw new Error('Type not implemented');
       }
@@ -531,7 +531,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     });
   }
 
-  private createDamageGraphic(topPx: number, leftPx: number) {
+  private createDamageGraphic() {
     this.logger.debug('WARNING! Damage graphics not implemented in obs card');
   }
 

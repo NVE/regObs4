@@ -235,7 +235,6 @@ describe('SearchCriteriaService', () => {
 
   it('set correct extent criteria based on mapview coordinates', fakeAsync(async () => {
     //create mapview with coordinates
-    const ms = new TestMapService();
     const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
     mapService.mapView$.next(mv);
 

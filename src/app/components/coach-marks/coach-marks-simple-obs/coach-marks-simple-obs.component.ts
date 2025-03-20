@@ -1,7 +1,7 @@
 import { IonToggle, IonText, IonLabel } from '@ionic/angular/standalone';
 import { Component, OnInit, inject } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { distinctUntilChanged, map, merge, Observable, Subject, take } from 'rxjs';
+import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import { CustomAnimation, EASE_IN_OUT, EASE_IN_OUT_BACK } from 'src/app/core/animations/custom.animation';
 import { trigger } from '@angular/animations';
 import { NgIf, AsyncPipe } from '@angular/common';

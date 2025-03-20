@@ -324,7 +324,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private async startWatchingPosition(): Promise<void> {
-    const watchPositionCallback: WatchPositionCallback = (position: Position | null, err: any) => {
+    const watchPositionCallback: WatchPositionCallback = (position: Position | null, err: Error) => {
       if (err) {
         this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG);
         this.gpsPositionLog.next(this.createPositionError('Unknown error'));

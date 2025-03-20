@@ -1,8 +1,6 @@
 import { IonMenuButton } from '@ionic/angular/standalone';
-import { Component, OnInit, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { Component, inject } from '@angular/core';
+import { LangKey } from 'src/app/modules/common-core/models';
 import { BreakpointService } from '../../../../core/services/breakpoint.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgIf, AsyncPipe, LowerCasePipe } from '@angular/common';

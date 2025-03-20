@@ -1,12 +1,7 @@
 import { RegistrationTid } from '../models/registration-tid.enum';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
-import {
-  AdaptiveElement,
-  AttachmentViewModel,
-  DamageObsEditModel,
-  RegistrationViewModel,
-} from 'src/app/modules/common-regobs-api/models';
+import { AdaptiveElement, AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import {
   RegistrationDraft,
   RegistrationEditModelWithRemoteOrLocalAttachments,

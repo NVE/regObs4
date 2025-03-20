@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject } from '@angular/core';
 import { firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';

@@ -1,8 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map, Observable, combineLatest } from 'rxjs';
-import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
+import { map } from 'rxjs';
 import moment from 'moment';
 import {
   IonAccordion,

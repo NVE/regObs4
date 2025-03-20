@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { LatLng } from 'leaflet';
 
 import { parseCoordinatesFromUrl } from './map.service';
 

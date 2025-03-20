@@ -10,7 +10,6 @@ import {
   inject,
   input,
 } from '@angular/core';
-// import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject } from 'rxjs';
 import { ImageLocation } from './image-location.model';

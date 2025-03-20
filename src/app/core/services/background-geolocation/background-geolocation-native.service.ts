@@ -8,8 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 // import { TripLogState } from '../trip-logger/trip-log-state.enum';
 // import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
-const DEBUG_TAG = 'BackgroundGeolocationNativeService';
-
 @Injectable()
 export class BackgroundGeolocationNativeService implements BackgroundGeolocationService {
   private platform = inject(Platform);
@@ -24,31 +22,6 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
     this.platform.ready().then(() => {
       this.backgroundGeolocation = (<any>window).BackgroundGeolocation;
     });
-  }
-
-  private async configureBackgroundGeoLocation() {
-    await this.platform.ready();
-    const translations = await this.translateService
-      .get(['GEOLOCATION_SERVICE.NOTIFICATION_TITLE', 'GEOLOCATION_SERVICE.NOTIFICATION_TEXT'])
-      .toPromise();
-    // const config: BackgroundGeolocationConfig = {
-    //     locationProvider: this.backgroundGeolocation.DISTANCE_FILTER_PROVIDER, // ANDROID_DISTANCE_FILTER_PROVIDER
-    //     desiredAccuracy: this.backgroundGeolocation.LOW_ACCURACY, // Low
-    //     stationaryRadius: 50,
-    //     distanceFilter: 50,
-    //     debug: false, //  enable this hear sounds for background-geolocation life-cycle.
-    //     stopOnTerminate: false, // enable this to clear background location settings when the app terminate
-    //     startForeground: true,
-    //     notificationTitle: translations['GEOLOCATION_SERVICE.NOTIFICATION_TITLE'],
-    //     notificationText: translations['GEOLOCATION_SERVICE.NOTIFICATION_TEXT'],
-    //     activityType: 'OtherNavigation',
-    //     maxLocations: 1, // Disable local storage of locations, because we handle this in nanoSQL instead
-    // };
-    // this.backgroundGeolocation.configure(config, () => {
-    //     this.loggingService.debug('BackgroundGeolocation set up success!', DEBUG_TAG);
-    // }, (error) => {
-    //     this.loggingService.error(error, DEBUG_TAG, 'Could not configure background geolocation!');
-    // });
   }
 
   // savePositionUpdate(location: BackgroundGeolocationResponse) {

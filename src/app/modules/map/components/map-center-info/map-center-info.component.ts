@@ -11,7 +11,7 @@ import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/an
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
-import { catchError, debounceTime, filter, map, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
+import { catchError, debounceTime, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
@@ -24,8 +24,7 @@ import { ViewInfo } from '../../services/map-search/view-info.model';
 import { Capacitor } from '@capacitor/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
-import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
-import { StrictHttpResponse } from 'src/app/modules/common-regobs-api/strict-http-response';
+import { HttpClient } from '@angular/common/http';
 import { booleanPointInPolygon } from '@turf/turf';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { NgIf, NgStyle, DecimalPipe } from '@angular/common';

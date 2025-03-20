@@ -593,7 +593,7 @@ export class OfflineMapService implements OnReset {
     alert.present();
   }
 
-  private getDeviceFreeDiskSpace(externalStorage = false): Promise<number> {
+  private getDeviceFreeDiskSpace(): Promise<number> {
     if (!isAndroidOrIos(this.platform)) {
       return Promise.resolve(0);
     }

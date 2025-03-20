@@ -69,7 +69,7 @@ export class DbHelperService {
     // await this.init();
   }
 
-  private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T | undefined> {
+  private async getItemByIdSqlLite<T>(table: string, id: string | number): Promise<T | undefined> {
     if (!this.sqliteobj) {
       throw new Error('sqliteobj not defined, has service been initiated?');
     }
@@ -121,7 +121,7 @@ export class DbHelperService {
     return this.sqliteobj.sqlBatch(statements);
   }
 
-  private fastInsertNanoSql<T extends { [key: string]: any }>(table: string, data: T[], idSelector?: (data: T) => any) {
+  private fastInsertNanoSql<T extends { [key: string]: any }>(table: string, data: T[]) {
     return nSQL().rawImport({ [table]: data }, false);
   }
 }

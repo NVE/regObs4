@@ -93,8 +93,9 @@ export class AppComponent {
   }
 
   @HostListener('window:resize', ['$event'])
-  private onResize(event: any) {
-    this.breakpointService.onResize(event.target.innerWidth);
+  private onResize(event: UIEvent) {
+    const target = event.target as Window;
+    this.breakpointService.onResize(target.innerWidth);
   }
 
   private async logIfError(results: PromiseSettledResult<unknown>[]) {

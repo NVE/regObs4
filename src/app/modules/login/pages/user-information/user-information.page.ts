@@ -4,7 +4,7 @@ import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';

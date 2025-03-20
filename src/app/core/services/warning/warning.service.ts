@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import moment, { lang } from 'moment';
+import moment from 'moment';
 import 'moment-timezone';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
@@ -338,7 +338,7 @@ export class WarningService {
 
   private getWarningsForCurrentMapViewAsObservable() {
     return combineLatest([this.mapService.mapViewAndAreaObservable$, this.getWarningsAsObservable()]).pipe(
-      switchMap(([mapViewArea, _]) => this.getWarningsForCurrentMapView(mapViewArea)),
+      switchMap(([mapViewArea]) => this.getWarningsForCurrentMapView(mapViewArea)),
       map((result) => result),
       tap(() => {
         this.loggingService.debug('getWarningsForCurrentMapViewAsObservable changed', DEBUG_TAG);
@@ -409,7 +409,7 @@ export class WarningService {
         cancelPromise,
         30000
       );
-      const regions = this.aggregateWarningRegions(warningsresult, geoHazard, language, moment());
+      const regions = this.aggregateWarningRegions(warningsresult, geoHazard, language);
       this.updateLatestWarnings(geoHazard, language, regions);
       await this.dataLoadService.loadingCompleted(dataLoadId, regions.length, dateRange.from.toDate(), new Date());
       this.saveWarningResultsToDb(geoHazard, regions);
@@ -481,12 +481,7 @@ export class WarningService {
     return warningsForSubRegionsArray.find((w) => w.warningLevel === max) as IWarning;
   }
 
-  aggregateWarningRegions(
-    warningsresult: IWarningApiResult[],
-    geoHazard: GeoHazard,
-    language: LangKey,
-    now: moment.Moment
-  ) {
+  aggregateWarningRegions(warningsresult: IWarningApiResult[], geoHazard: GeoHazard, language: LangKey) {
     const regionGroups = this.getWarningByRegions(warningsresult);
     return Array.from(regionGroups).map(([key, value]) => ({
       id: `${key}_${geoHazard}`,
@@ -545,7 +540,6 @@ export class WarningService {
         cancelled = true;
       });
     }
-    const supportedLang = lang;
     const dateRange = this.getDefaultDateRange(fromDate, toDate);
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow, language);
     await this.dataLoadService.startLoading(dataLoadId);
