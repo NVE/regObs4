@@ -36,6 +36,8 @@ export class IcePlotComponent {
   private sanitizer = inject(DomSanitizer);
   failed = signal(false);
   loadCalledCount = signal(0);
+
+  // iFrame sender load() før den er ferdig lastet, derfor sjekker vi om den er mindre enn 2
   loading = computed(() => this.loadCalledCount() < 2 && !this.failed());
 
   safeUrl = computed(() => {
