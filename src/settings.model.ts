@@ -114,4 +114,10 @@ export interface ISettings {
     en: string;
   };
   feedbackWebUrl: string;
+
+  /**
+   * URL til tjenesten som plotter istykkelse. Legg til reg-ID på slutten av URL.
+   * Eksempel: https://test-plot.regobs.no/v1/IceThickness/265830/
+   */
+  iceThicknessPlotUrl: any;
 }

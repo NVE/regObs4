@@ -14,7 +14,7 @@ app-key-value {
   display: block;
 }
 
-.soft-layer-attributes {
+.body-text {
   font-style: var(--key-value-font-style, italic);
 }
 

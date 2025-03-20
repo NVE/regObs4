@@ -18,11 +18,16 @@ export function injectKdv(key: KdvKey) {
 
     /**
      * Returnerer en computed som henter navnet / teksten til en type id (Tid).
+     * Verdier med TID = 0 eller x00 betyr vanligvis "ikke gitt" e.l., så de filtrerer vi vekk ved å returnere undefined
+     * @param showAlsoNotGiven Sett denne til true for å ta med verdier med TID = 0 eller x00 (100, 200 osv.)
      */
-    getName: (tid: Signal<number | undefined>) =>
+    getName: (tid: Signal<number | undefined>, showAlsoNotGiven = false) =>
       computed(() => {
         const table = kdv();
         const typeId = tid();
+        if (typeId === undefined || (!showAlsoNotGiven && (typeId === 0 || typeId % 100 === 0))) {
+          return undefined; // filtrer vekk verdier som ikke skal vises
+        }
         return table.find((v) => v.Id === typeId)?.Name ?? typeId?.toString();
       }),
   };

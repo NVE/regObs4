@@ -1,0 +1,44 @@
+<!-- Visning av en registrering av skredaktivitet -->
+
+@if (title()) {
+  <h4 class="title">{{ title() }}</h4>
+}
+@if (comment()) {
+  <ion-text color="dark" class="body-text">{{ comment() }}</ion-text>
+}
+@if (formatTime()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME' | translate"
+    [value]="formatTime().toLowerCase()"
+  />
+}
+@if (!noActivity && estimatedNum()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES' | translate"
+    [value]="estimatedNum()"
+  />
+}
+@if (size()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE' | translate" [value]="size()" />
+}
+@if (triggerProbability()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY' | translate"
+    [value]="triggerProbability()"
+  />
+}
+@if (propagation()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate" [value]="propagation()" />
+}
+<div class="exposition-graphics">
+  @if (exposition()) {
+    <app-exposition [value]="exposition()" text="test:)" />
+  }
+  @if (exposedHeightComboTid()) {
+    <app-exposed-height
+      [exposedHeightComboTid]="exposedHeightComboTid()"
+      [exposedHeight1]="exposedHeight1()"
+      [exposedHeight2]="exposedHeight2()"
+    />
+  }
+</div>

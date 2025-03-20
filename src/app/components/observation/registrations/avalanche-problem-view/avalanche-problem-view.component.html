@@ -1,1 +1,55 @@
-<p>Skredproblem - TODO</p>
+<!-- Visning av ett skredproblem -->
+
+@if (cause()) {
+  <h4 class="title">{{ cause() }}</h4>
+}
+@if (comment()) {
+  <ion-text color="dark" class="soft-layer-attributes">{{ comment() }}</ion-text>
+}
+@if (type()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE' | translate" [value]="type()" />
+}
+@if (causeDepth()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH' | translate" [value]="causeDepth()" />
+}
+<ion-text color="dark" class="soft-layer-attributes">
+  @if (easyCollapseLabel()) {
+    {{ easyCollapseLabel() }}
+  }
+  @if (softLayerLabel()) {
+    {{ softLayerLabel() }}
+  }
+  @if (largeCrystalLabel()) {
+    {{ largeCrystalLabel() }}
+  }
+</ion-text>
+@if (triggerProbability()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY' | translate"
+    [value]="triggerProbability()"
+  />
+}
+@if (size()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_DESTRUCTIVE_SIZE' | translate"
+    [value]="size()"
+  />
+}
+@if (probability()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVAL_PROBABILITY' | translate" [value]="probability()" />
+}
+@if (propagation()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate" [value]="propagation()" />
+}
+<div class="exposition-graphics">
+  @if (exposition()) {
+    <app-exposition [value]="exposition()" text="test:)" />
+  }
+  @if (exposedHeightComboTid()) {
+    <app-exposed-height
+      [exposedHeightComboTid]="exposedHeightComboTid()"
+      [exposedHeight1]="exposedHeight1()"
+      [exposedHeight2]="exposedHeight2()"
+    />
+  }
+</div>
