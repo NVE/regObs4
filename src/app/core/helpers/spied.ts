@@ -13,12 +13,12 @@ export function spyOnClass<T>(spiedClass: Type<T>) {
 
   const methods = Object.getOwnPropertyNames(prototype)
     // Object.getOwnPropertyDescriptor is required to filter functions
-    .map((name) => Object.getOwnPropertyDescriptor(prototype, name))
-    .filter((descriptor) => {
+    .map((name) => [name, Object.getOwnPropertyDescriptor(prototype, name)])
+    .filter(([_, descriptor]) => {
       // select only functions
       return (descriptor as PropertyDescriptor).value instanceof Function;
     })
-    .map((name) => name);
+    .map(([name]) => name);
   // return spy object
   return jasmine.createSpyObj('spy', [...methods]);
 }
