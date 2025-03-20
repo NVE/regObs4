@@ -1,6 +1,5 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
 import { Component, model, computed } from '@angular/core';
-import { NgIf, NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 const EMPTY_EXPOSITION = '00000000';
@@ -10,7 +9,7 @@ const ALL_EXPOSITION = '11111111';
   selector: 'app-valid-exposition',
   templateUrl: './valid-exposition.component.html',
   styleUrls: ['./valid-exposition.component.scss'],
-  imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, NgIf, TranslatePipe],
+  imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, TranslatePipe],
 })
 export class ValidExpositionComponent {
   readonly validExposition = model<string>();

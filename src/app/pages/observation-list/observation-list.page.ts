@@ -8,13 +8,11 @@ import {
   IonInfiniteScrollContent,
   IonItemDivider,
   IonLabel,
-  IonList,
   IonRow,
   IonSegment,
   IonSegmentButton,
   IonSelect,
   IonSelectOption,
-  IonSkeletonText,
   SegmentCustomEvent,
 } from '@ionic/angular/standalone';
 import { IonSelectCustomEvent, SelectChangeEventDetail, SelectInterface } from '@ionic/core';
@@ -33,20 +31,14 @@ import { MapService } from '../../modules/map/services/map/map.service';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { UpdateObservationsService } from '../../modules/side-menu/components/update-observations/update-observations.service';
 import { TabsService, TABS } from '../tabs/tabs.service';
-// import { SearchRegistrationsWithAttachments } from '../../modules/common-regobs-api/models/search-registrations-with-attachments';
 import { UrlParams } from '../../core/services/search-criteria/url-params';
 import { HasRegId } from '../../modules/common-registration/registration.helpers';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
-import {
-  RefreshFunc,
-  RefreshWithCancelComponent,
-} from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
+import { RefreshFunc } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
 import { NgIf, NgClass, NgFor, AsyncPipe } from '@angular/common';
-// import { ImagesGridComponent } from '../../modules/shared/components/images-grid/images-grid.ts/images-grid.component';
-import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -80,18 +72,13 @@ const URL_VIEW_TYPE_PARAM = 'view';
     IonInfiniteScrollContent,
     IonItemDivider,
     IonLabel,
-    IonList,
     IonRow,
     IonSegment,
     IonSegmentButton,
     IonSelect,
     IonSelectOption,
-    IonSkeletonText,
     NgClass,
-    NgFor,
     NgIf,
-    ObservationSkeletonComponent,
-    RefreshWithCancelComponent,
     SvgIconComponent,
     TranslatePipe,
     ObservationComponent,

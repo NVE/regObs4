@@ -4,7 +4,6 @@ import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.pa
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
@@ -13,7 +12,7 @@ import { checkmarkCircle } from 'ionicons/icons';
   selector: 'app-snow-density',
   templateUrl: './snow-density.component.html',
   styleUrls: ['./snow-density.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
+  imports: [IonIcon, IonItem, IonLabel, IonText, TranslatePipe],
 })
 export class SnowDensityComponent {
   private modalContoller = inject(ModalController);

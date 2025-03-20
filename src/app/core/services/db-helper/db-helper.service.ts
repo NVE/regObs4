@@ -49,7 +49,7 @@ export class DbHelperService {
    */
   async getItemById<T>(table: string, id: string | number, idColumn = 'id') {
     if (this.sqliteobj) {
-      return this.getItemByIdSqlLite<T>(table, id, idColumn);
+      return this.getItemByIdSqlLite<T>(table, id);
     } else {
       return this.fallbackGetItemById<T>(table, id, idColumn);
     }
@@ -101,7 +101,7 @@ export class DbHelperService {
     if (this.sqliteobj) {
       await this.fastInsertSqlLite(table, data, idSelector);
     } else {
-      await this.fastInsertNanoSql(table, data, idSelector);
+      await this.fastInsertNanoSql(table, data);
     }
     if (rebuildIndexes) {
       nSQL(table).query('rebuild indexes').exec();

@@ -42,7 +42,6 @@ import {
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapService } from '../../services/map/map.service';
-import { NgIf } from '@angular/common';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { MapControlsComponent } from '../map-controls/map-controls.component';
 import type { FeatureCollection } from 'geojson';
@@ -82,7 +81,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  imports: [NgIf, LeafletModule, MapControlsComponent],
+  imports: [LeafletModule, MapControlsComponent],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private userSettingService = inject(UserSettingService);

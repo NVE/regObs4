@@ -1,6 +1,6 @@
 import { Component, inject, input, model, computed } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
-import { IonInput, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -15,7 +15,7 @@ const convert = (direction: 'from' | 'to', convertRatio?: number, val?: number) 
   selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss'],
-  imports: [IonItem, IonLabel, IonText, NgClass, TranslatePipe, IonInput],
+  imports: [IonItem, IonLabel, IonText, NgClass, TranslatePipe],
 })
 export class NumericInputComponent {
   private modalController = inject(ModalController);

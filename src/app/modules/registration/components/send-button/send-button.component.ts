@@ -26,7 +26,7 @@ import {
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { addIcons } from 'ionicons';
 import { send } from 'ionicons/icons';
@@ -48,7 +48,6 @@ const DELETE_OBS_TIMEOUT_MS = 5000;
     IonIcon,
     IonRow,
     IonToolbar,
-    NgIf,
     SvgIconComponent,
     TranslatePipe,
   ],
