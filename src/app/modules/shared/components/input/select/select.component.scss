@@ -22,12 +22,9 @@ ion-text {
   overflow: hidden;
 }
 
-ion-select {
-  max-width: 100%;
-
-  &::part(label) {
-    text-transform: uppercase;
-  }
+ion-label {
+  text-transform: uppercase;
+  flex: 1;
 }
 
 .select-icon {
@@ -51,5 +48,22 @@ ion-select {
   // padding-right: var(--padding-end);
   // padding-top: var(--padding-top);
   // padding-bottom: var(--padding-bottom);
+  display: flex;
+}
+
+.select {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.select__inner {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.select__icon-text {
   display: flex;
 }
