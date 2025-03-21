@@ -79,6 +79,12 @@ export class NumericInputModalPage {
     if (event.key.match('[,.]')) {
       this.pushDecimalSeparator();
     }
+    if (event.key.match('[-]')) {
+      this.toggleNegative();
+    }
+    if (event.key.match('[+]')) {
+      this.isNegative.set(false);
+    }
     if (event.keyCode === 13) {
       // Enter click
       this.done();
