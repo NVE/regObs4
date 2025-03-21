@@ -1,5 +1,3 @@
-import { Observable, of } from 'rxjs';
-
 const BASE64_MARKER = ';base64,';
 
 export class DataUrlHelper {

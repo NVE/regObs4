@@ -1,12 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CapFeed } from '../models/cap-feed.model';
-import { Observable, bindNodeCallback, bindCallback } from 'rxjs';
+import { Observable, bindNodeCallback } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { Parser } from 'xml2js';
 import { CapAlertWrapper } from '../models/cap-alert.model';
-
-const knownArrayFields = ['items'];
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +28,7 @@ export class CapApiService {
 
   getObservableFromXmlResult<T>(xml: string): Observable<T> {
     const parser = new Parser({ explicitArray: false, ignoreAttrs: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return bindNodeCallback(parser.parseString)(xml).pipe(map((val) => (<any>val) as T));
   }
 }

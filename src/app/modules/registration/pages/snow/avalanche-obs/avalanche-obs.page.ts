@@ -286,10 +286,3 @@ export class AvalancheObsPage extends BasePage {
     }
   }
 }
-
-function isNaNOrNullish(value: number | null | undefined) {
-  if (value == null) {
-    return true;
-  }
-  return isNaN(value);
-}

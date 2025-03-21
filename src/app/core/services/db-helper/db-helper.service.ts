@@ -29,6 +29,7 @@ export class DbHelperService {
         name: settings.db.nanoSql.dbName,
         location: 'default',
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.sqliteobj = await this.sqlite.create(<any>{
         ...config,
         androidDatabaseProvider: 'system',
@@ -49,7 +50,7 @@ export class DbHelperService {
    */
   async getItemById<T>(table: string, id: string | number, idColumn = 'id') {
     if (this.sqliteobj) {
-      return this.getItemByIdSqlLite<T>(table, id, idColumn);
+      return this.getItemByIdSqlLite<T>(table, id);
     } else {
       return this.fallbackGetItemById<T>(table, id, idColumn);
     }
@@ -69,7 +70,7 @@ export class DbHelperService {
     // await this.init();
   }
 
-  private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T | undefined> {
+  private async getItemByIdSqlLite<T>(table: string, id: string | number): Promise<T | undefined> {
     if (!this.sqliteobj) {
       throw new Error('sqliteobj not defined, has service been initiated?');
     }
@@ -92,16 +93,18 @@ export class DbHelperService {
     return <T>nanoSqlResult[0];
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async fastInsert<T extends { [key: string]: any }>(
     table: string,
     data: T[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     idSelector?: (data: T) => any,
     rebuildIndexes = false
   ) {
     if (this.sqliteobj) {
       await this.fastInsertSqlLite(table, data, idSelector);
     } else {
-      await this.fastInsertNanoSql(table, data, idSelector);
+      await this.fastInsertNanoSql(table, data);
     }
     if (rebuildIndexes) {
       nSQL(table).query('rebuild indexes').exec();
@@ -109,10 +112,12 @@ export class DbHelperService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private fastInsertSqlLite<T>(table: string, data: T[], idSelector?: (data: T) => any) {
     if (!this.sqliteobj) {
       throw new Error('sqliteobj not defined, has service been initiated?');
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const _idSelector = idSelector ? idSelector : (_data: T) => (<any>_data).id;
     const statements = data.map((val) => [
       `INSERT OR REPLACE INTO ${table} VALUES (?1, ?2)`,
@@ -121,7 +126,8 @@ export class DbHelperService {
     return this.sqliteobj.sqlBatch(statements);
   }
 
-  private fastInsertNanoSql<T extends { [key: string]: any }>(table: string, data: T[], idSelector?: (data: T) => any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private fastInsertNanoSql<T extends { [key: string]: any }>(table: string, data: T[]) {
     return nSQL().rawImport({ [table]: data }, false);
   }
 }

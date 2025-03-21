@@ -21,7 +21,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 import { injectUuidFromRouteParameters } from 'src/app/core/services/draft/get-uuid';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'EditImagesBarComponent';
 

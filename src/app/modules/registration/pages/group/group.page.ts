@@ -18,7 +18,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -43,11 +43,9 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonRadioGroup,
     IonTitle,
     IonToolbar,
-    NgFor,
     NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
-    AsyncPipe,
   ],
 })
 export class GroupPage extends BasePage {
@@ -98,6 +96,7 @@ export class GroupPage extends BasePage {
   }
 
   checkedChanged(event: CustomEvent): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const checkBox = (<any>event.target) as IonCheckbox;
     let ObserverGroupID: RegistrationEditModel['ObserverGroupID'] = undefined;
     if (checkBox.checked) {

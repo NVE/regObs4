@@ -8,7 +8,7 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import { DamageObsEditModel, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
+import { DamageObsEditModel } from 'src/app/modules/common-regobs-api/models';
 import L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
 import {

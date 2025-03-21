@@ -11,6 +11,7 @@ export interface RegistrationViewConfig {
   /**
    * Hvilken komponent som skal vises
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: Type<any>;
 
   /**
@@ -27,5 +28,6 @@ export interface RegistrationViewConfig {
    * @param registration Registrering / observasjon
    * @returns Et objekt med alle inputs til komponenten.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getInputs: (registration: RegistrationViewModel) => any;
 }

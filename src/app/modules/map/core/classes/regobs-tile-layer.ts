@@ -16,6 +16,7 @@ export class RegObsTileLayer extends L.TileLayer {
   }
 
   _isValidTile(coords: L.Coords) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const valid = (<any>L.GridLayer.prototype)._isValidTile.call(this, coords);
     if (!valid) {
       return false;
@@ -23,6 +24,7 @@ export class RegObsTileLayer extends L.TileLayer {
 
     const excludeBounds = (<IRegObsTileLayerOptions>this.options).excludeBounds;
     if (excludeBounds) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tileBounds: L.LatLngBounds = (<any>L.GridLayer.prototype)._tileCoordsToBounds.call(this, coords);
       const tileBBox = bboxPolygon([
         tileBounds.getSouthWest().lng, // minx

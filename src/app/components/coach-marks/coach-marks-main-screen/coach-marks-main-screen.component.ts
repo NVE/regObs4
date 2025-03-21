@@ -2,7 +2,7 @@ import { IonTabBar, IonLabel, IonTabButton, IonIcon, IonFabButton, IonText, IonF
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, merge } from 'rxjs';
-import { map, distinctUntilChanged, take, takeUntil, filter, delay } from 'rxjs/operators';
+import { map, distinctUntilChanged, takeUntil, filter, delay } from 'rxjs/operators';
 import { trigger } from '@angular/animations';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../core/animations/custom.animation';
 import { NgIf, AsyncPipe } from '@angular/common';

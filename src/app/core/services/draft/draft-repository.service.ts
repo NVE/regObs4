@@ -1,4 +1,4 @@
-import { Injectable, Signal, inject, signal } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import cloneDeep from 'clone-deep';
 import {
   combineLatest,
@@ -13,7 +13,6 @@ import {
   startWith,
   Subject,
   switchMap,
-  take,
   takeWhile,
   tap,
 } from 'rxjs';
@@ -32,7 +31,7 @@ import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft } from './draft-model';
 import { viewModelToEditModel } from './reg-to-draft';
-import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { injectUuidFromRouteParameters } from './get-uuid';
 import { InitDraft } from './init-draft.model';
 

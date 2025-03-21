@@ -135,6 +135,7 @@ export class WarningListPage {
     return this.mapToVirtualScrollItem(warnings, 'WARNING_LIST.FAVOURITES');
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async refresh(cancelPromise?: Promise<any>) {
     await this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
   }

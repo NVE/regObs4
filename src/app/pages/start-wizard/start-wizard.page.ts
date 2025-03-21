@@ -53,6 +53,7 @@ export class StartWizardPage {
     this.userSettingService.updateUserSettings({ language: selectedLang });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSlideChange(event: any) {
     this.currentSlideIndex = event.detail[0].activeIndex;
   }

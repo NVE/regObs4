@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, filter, from, map, Observable, of, ReplaySubject, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, filter, from, map, Observable, of, switchMap } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -12,10 +12,10 @@ const IMAGE_PREFIX = 'REGOBS_IMAGE_';
 
 @Injectable()
 export class LocalStorageAttachmentService extends NewAttachmentService {
-  protected logger = inject(LoggingService);
+  protected override logger = inject(LoggingService);
 
   meta = new BehaviorSubject<{ [registrationId: string]: AttachmentUploadEditModel[] }>({});
-  protected DEBUG_TAG = 'LocalStorageAttachmentService';
+  protected override DEBUG_TAG = 'LocalStorageAttachmentService';
 
   constructor() {
     super();
@@ -26,15 +26,7 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addAttachmentAsUrl(
-    registrationId: string,
-    fileUrl: string,
-    mimeType: string,
-    geoHazard: GeoHazard,
-    registrationTid: RegistrationTid,
-    type?: AttachmentType,
-    ref?: string
-  ): Promise<void> {
+  addAttachmentAsUrl(): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -102,7 +94,7 @@ export class LocalStorageAttachmentService extends NewAttachmentService {
     return this.getAttachmentsObservable(registrationId).pipe(
       map((attachmens) => attachmens.find((a) => a.id === attachmentId)),
       filter((a) => a != null),
-      map((a) => localStorage.getItem(IMAGE_PREFIX + attachmentId)),
+      map(() => localStorage.getItem(IMAGE_PREFIX + attachmentId)),
       switchMap((base64) => fetch(base64).then((res) => res.blob()))
     );
   }

@@ -5,6 +5,7 @@ import { WeakenediceLegendComponent } from './weakenedice-legend/weakenedice-leg
 import { SteepnessCommonLegendComponent } from './steepness-common-legend/steepness-common-legend.component';
 import { NoLegendComponent } from './no-legend.component';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const legendsConfig: { [prop: string]: any } = {
   steepness: SteepnessLegendComponent,
   floodzoones: FloodzonesLegendComponent,

@@ -19,6 +19,7 @@ export class ShortcutService {
   private geoHelperService = inject(GeoHelperService);
 
   init() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const w = <any>window;
     if (this.platform.is('hybrid') && this.platform.is('android') && w.plugins && w.plugins.Shortcuts) {
       this.initAndroidShortcusts();
@@ -65,8 +66,10 @@ export class ShortcutService {
 
   private initAndroidShortcusts() {
     this.loggingService.debug('Initializing dynamic shortcuts for Android', DEBUG_TAG);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const w = <any>window;
     w.plugins.Shortcuts.supportsDynamic(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async (supported: any) => {
         if (!supported) {
           this.loggingService.debug('Dynamic shortcuts not supported', DEBUG_TAG);

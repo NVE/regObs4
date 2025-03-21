@@ -12,8 +12,11 @@ import { LoggingService } from './logging.service';
 export class TestLoggingService implements LoggingService {
   configureLogging(appMode: AppMode) {}
   setUser(user: LoggedInUser) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debug(message: string, tag?: string, ...optionalParams: any[]) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {}
   enable() {}
   disable() {}

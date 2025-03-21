@@ -1,12 +1,9 @@
-import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GeoNameComponent } from './geo-name.component';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
 import { of } from 'rxjs';
-import { LoggingService } from '../../services/logging/logging.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
-import { TestLoggingService } from '../../services/logging/test-logging.service';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 describe('GeoNameComponent', () => {
   let component: GeoNameComponent;

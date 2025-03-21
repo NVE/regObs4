@@ -50,6 +50,8 @@ import { NewAttachmentService } from './modules/common-registration/registration
 import FileAttachmentService from './modules/common-registration/services/add-new-attachment/file-attachment.service';
 import { WebAttachmentService } from './modules/common-registration/services/add-new-attachment/web-attachment.service';
 import { settings } from 'src/settings';
+import { Observable } from 'rxjs';
+import { AppMode } from './modules/common-core/models';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -60,7 +62,7 @@ export class DynamicLocaleId extends String {
   }
 }
 
-export function initAppModeService(userSettingService: UserSettingService): any {
+export function initAppModeService(userSettingService: UserSettingService): { appMode$: Observable<AppMode> } {
   return { appMode$: userSettingService.appMode$ };
 }
 

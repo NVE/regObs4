@@ -10,7 +10,6 @@ import {
   inject,
   input,
 } from '@angular/core';
-// import { IonSlides } from '@ionic/angular';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject } from 'rxjs';
 import { ImageLocation } from './image-location.model';
@@ -43,6 +42,7 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     imgUrl: string;
   }> = new EventEmitter();
   isDesktop?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   slideOptions?: any;
 
   ngOnInit() {

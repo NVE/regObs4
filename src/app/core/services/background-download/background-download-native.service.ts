@@ -14,7 +14,7 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
   constructor() {
     this.currentDownloads = new Map();
   }
-  download(url: string): Observable<DownloadProgress> {
+  download(): Observable<DownloadProgress> {
     throw new Error('Method not implemented.');
   }
 

@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, linkedSignal, untracked } from '@angular/core';
+import { Component, inject, input, linkedSignal } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,
@@ -12,7 +12,6 @@ import {
   IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
-import cloneDeep from 'clone-deep';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
@@ -20,7 +19,6 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { CompressionTestListComponent } from '../../../compression-test-list/compression-test-list.component';
 import { TranslatePipe } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
 
 @Component({

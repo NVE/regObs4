@@ -46,7 +46,7 @@ export function addAttachmentToRegistration(
   if (uploadedAttachment.type === 'WaterLevelMeasurementAttachment' && uploadedAttachment.ref) {
     addWaterLevelAttachment(attachment, draftCopy, uploadedAttachment.ref);
   } else if (uploadedAttachment.type === 'DamageObsAttachment' && uploadedAttachment.ref) {
-    addDamageObsAttachment(attachment, draftCopy, uploadedAttachment.ref);
+    addDamageObsAttachment();
   } else {
     if (draftCopy.Attachments == null) {
       draftCopy.Attachments = [attachment];
@@ -58,7 +58,7 @@ export function addAttachmentToRegistration(
   return draftCopy;
 }
 
-function addDamageObsAttachment(attachment: AttachmentEditModel, draft: RegistrationEditModel, ref: string) {
+function addDamageObsAttachment() {
   throw new Error('Not implemented');
 }
 

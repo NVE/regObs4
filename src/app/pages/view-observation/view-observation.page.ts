@@ -14,7 +14,6 @@ import {
 } from '@ionic/angular/standalone';
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttribute, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { takeUntil, map } from 'rxjs/operators';
@@ -28,11 +27,6 @@ import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
-
-interface RegistrationResult {
-  reg?: RegistrationViewModel;
-  err?: Error;
-}
 
 @Component({
   selector: 'app-view-observation',

@@ -8,6 +8,7 @@
  */
 export const getCircularReplacer = () => {
   const seen = new WeakSet();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (key: any, value: any) => {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {

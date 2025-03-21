@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, NavController, Platform } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
-import { BehaviorSubject, firstValueFrom, from, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';
 import { filter, map, shareReplay, skip, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
@@ -13,7 +13,6 @@ import { AccountService } from 'src/app/modules/common-regobs-api/services';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 
 const DEBUG_TAG = 'RegobsAuthService';

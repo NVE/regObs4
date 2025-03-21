@@ -4,7 +4,7 @@ import { map, take, filter, switchMap, delay } from 'rxjs/operators';
 import moment from 'moment';
 import { AlertController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of, from, firstValueFrom } from 'rxjs';
+import { Observable, from, firstValueFrom } from 'rxjs';
 import { settings } from '../../../../settings';
 import { InfoPopupSettings } from '../../models/user-settings.model';
 

@@ -76,6 +76,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('filter should contain language and geo hazard', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
@@ -103,6 +104,7 @@ describe('SearchCriteriaService', () => {
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     await userSettingService.saveGeoHazardsAndDaysBack({ daysBack: 1 });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(150);
@@ -121,6 +123,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('nick name filter should work', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setObserverNickName('Nick');
@@ -135,6 +138,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('competence filter should set the right criteria and url', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.addCompetence([150, 105]);
@@ -159,6 +163,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type should be ok', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
@@ -192,6 +197,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
@@ -208,6 +214,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType2 = { Id: 40, SubTypes: [26] };
@@ -221,6 +228,7 @@ describe('SearchCriteriaService', () => {
 
   orderByTestCases.forEach((test) => {
     it('orderBy filter should work', fakeAsync(async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let criteria: any;
       service.searchCriteria$.subscribe((c) => (criteria = c));
       service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
@@ -235,7 +243,6 @@ describe('SearchCriteriaService', () => {
 
   it('set correct extent criteria based on mapview coordinates', fakeAsync(async () => {
     //create mapview with coordinates
-    const ms = new TestMapService();
     const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
     mapService.mapView$.next(mv);
 
@@ -243,6 +250,7 @@ describe('SearchCriteriaService', () => {
       BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
       TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
@@ -257,6 +265,7 @@ describe('SearchCriteriaService', () => {
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
@@ -271,6 +280,7 @@ describe('SearchCriteriaService', () => {
 
   it('toDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));

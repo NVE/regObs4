@@ -13,6 +13,7 @@ export function initDeepLinks(
 ) {
   return () => {
     if (platform.is('hybrid')) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       App.addListener('appUrlOpen', (data: any) => {
         ngZone.run(() => {
           if (data?.url.indexOf('regobs://callback') >= 0) {

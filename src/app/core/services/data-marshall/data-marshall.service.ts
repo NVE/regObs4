@@ -2,7 +2,7 @@ import { Injectable, NgZone, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular/standalone';
 import { firstValueFrom, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, take } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';

@@ -12,6 +12,7 @@ import {
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
 
 @Component({

@@ -19,11 +19,11 @@ import type { CaptureContext } from '@sentry/types';
 })
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
     this.log(message, error, LogLevel.Error, tag, optionalParams);
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debug(message: string, tag?: string, optionalParams?: { [key: string]: any }) {
     this.log(message, null, LogLevel.Debug, tag, optionalParams);
   }
@@ -60,7 +60,7 @@ export class SentryService implements LoggingService {
       });
     }
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   log(message?: string, error?: unknown, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }) {
     this.fileLoggingService.log(message, error as Error, level, tag, optionalParams);
     if (message && (level === LogLevel.Warning || level === LogLevel.Info || level === LogLevel.Error)) {

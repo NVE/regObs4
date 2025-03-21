@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
 import { Subject, from } from 'rxjs';
-import { takeUntil, filter, tap, map, concatMap } from 'rxjs/operators';
+import { takeUntil, filter, concatMap } from 'rxjs/operators';
 @Injectable()
 export abstract class RouterPage implements OnDestroy {
   public ngUnsubscribe: Subject<void> = new Subject();
@@ -20,6 +20,7 @@ export abstract class RouterPage implements OnDestroy {
       .subscribe();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private isComponentActive(path: ActivatedRouteSnapshot[], component: any): boolean {
     let isActive = false;
     path.forEach((ss: ActivatedRouteSnapshot) => {

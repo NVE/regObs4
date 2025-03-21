@@ -324,7 +324,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private async startWatchingPosition(): Promise<void> {
-    const watchPositionCallback: WatchPositionCallback = (position: Position | null, err: any) => {
+    const watchPositionCallback: WatchPositionCallback = (position: Position | null, err: Error) => {
       if (err) {
         this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG);
         this.gpsPositionLog.next(this.createPositionError('Unknown error'));
@@ -468,6 +468,7 @@ export class GeoPositionService implements OnDestroy {
       fromEvent<DeviceOrientationEvent>(window, 'deviceorientation')
     ).pipe(
       map((event: DeviceOrientationEvent) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const appleHeading = (event as any).webkitCompassHeading;
         const heading: number = appleHeading || this.getAbsoluteHeading(event);
         return heading;

@@ -15,7 +15,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, EMPTY, firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatest, EMPTY, firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
@@ -51,6 +51,7 @@ interface AvalancheRegion {
   id: number;
   name: string;
   type: 'A' | 'B';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   polygon: any; // TODO: Fix polygon;
   checked?: boolean;
 }
@@ -317,6 +318,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.resetSearchCriteria();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setNewType(event: any, parentId: number, typeId?: number) {
     //if parentid and subtypeid are the same it means there is no subtypes
     let obsType: RegistrationTypeCriteriaDto;

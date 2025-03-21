@@ -13,11 +13,13 @@ import { provideTranslateService } from '@ngx-translate/core';
 
 describe('OfflineMapService', () => {
   let offlineMapService: OfflineMapService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let platformSpy: Platform;
   let packageIndexServiceSpy: PackageIndexService;
 
   beforeEach(() => {
     platformSpy = jasmine.createSpyObj('Platform', {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       is: (platformName: Platforms) => false,
     });
     const packages = new ReplaySubject<Map<string, CompoundPackage>>();

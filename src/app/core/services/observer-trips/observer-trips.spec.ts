@@ -15,6 +15,7 @@ import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-
 
 describe('ObserverTripsService', () => {
   let tripService: jasmine.SpyObj<TripService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let database: any;
   let dbService: DatabaseService;
   let dbServiceGetSpy: jasmine.Spy;

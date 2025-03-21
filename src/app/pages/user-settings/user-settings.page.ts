@@ -27,7 +27,6 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
-import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { FileLoggingService } from '../../modules/shared/services/logging/file-logging.service';
 import { BreakpointService } from '../../core/services/breakpoint.service';
 import {

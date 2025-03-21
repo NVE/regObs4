@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
-import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, Platform } from '@ionic/angular/standalone';
+import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
@@ -9,7 +9,6 @@ import { SearchCriteriaService } from '../../core/services/search-criteria/searc
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { CoachMarksMainScreenComponent } from '../../components/coach-marks/coach-marks-main-screen/coach-marks-main-screen.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map as mapIcon, list, warning } from 'ionicons/icons';
@@ -19,18 +18,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [
-    AsyncPipe,
-    // CoachMarksMainScreenComponent,
-    IonBadge,
-    IonIcon,
-    IonLabel,
-    IonTabBar,
-    IonTabButton,
-    IonTabs,
-    NgIf,
-    TranslatePipe,
-  ],
+  imports: [AsyncPipe, IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, NgIf, TranslatePipe],
 })
 export class TabsPage implements OnInit, OnDestroy {
   private fullscreenService = inject(FullscreenService);

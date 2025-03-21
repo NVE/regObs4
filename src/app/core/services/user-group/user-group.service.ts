@@ -65,6 +65,7 @@ export class UserGroupService {
   private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
     await NanoSql.getInstance(NanoSql.TABLES['OBSERVER_GROUPS'].name, appMode)
       .query('delete')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .where((dbGroup: { [key: string]: any }) => ids.indexOf(dbGroup['key']) < 0)
       .exec();
   }

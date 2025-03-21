@@ -39,6 +39,7 @@ export class NgHttpService implements Requestor {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getHeaders(headers: any): HttpHeaders {
     let httpHeaders: HttpHeaders = new HttpHeaders();
 

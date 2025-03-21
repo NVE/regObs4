@@ -12,7 +12,9 @@ import type { BBox, Feature, FeatureCollection, Geometry, GeometryCollection, Mu
 
 export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
   private isInsideOrIntersects(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     firstGeometry: Geometry | Feature<any>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     secondGeometry: Geometry | Feature<any>
   ): boolean {
     return (
@@ -23,6 +25,7 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
   }
 
   private getRegions(geoHazards: GeoHazard[]): FeatureCollection {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <any>(geoHazards[0] === GeoHazard.Snow ? avalancheRegions : regions);
   }
 
@@ -33,13 +36,16 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
   }
 
   private getFeatureInPoint(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     coordinates: Geometry | Feature<any>,
     featuresInViewBounds: Feature<
       Geometry | GeometryCollection,
       {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [name: string]: any;
       }
     >[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Feature<Geometry | GeometryCollection, { [name: string]: any }> {
     // Region that center view point is inside
     const firstAndBest = (featuresInViewBounds || []).find((f) =>

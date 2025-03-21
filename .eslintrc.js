@@ -11,7 +11,13 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'no-warning-comments': ['warn', { terms: ['todo', 'fixme'], location: 'start' }],
     'no-console': 'error',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^_', // Ignore variables starting with an underscore
+        argsIgnorePattern: '^_', // Ignore function arguments starting with an underscore
+      },
+    ],
   },
 };

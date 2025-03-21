@@ -1,6 +1,5 @@
 import { IonItem, IonSpinner, IonText, IonButton, IonLabel } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Observable } from 'rxjs';
 import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';
 import { NgIf, AsyncPipe, DatePipe } from '@angular/common';
