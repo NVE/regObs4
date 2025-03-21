@@ -11,3 +11,9 @@ ion-list {
 ion-icon {
   float: right;
 }
+
+p {
+  margin: 0;
+  color: var(--ion-color-danger);
+  padding-top: 16px;
+}

@@ -252,6 +252,7 @@
     "MY_PICTURES": "My photos",
     "MY_NICKNAME": "My nickname",
     "NICKNAME": "Nickname",
+    "INVALID_NICKNAME": "Nickname can't be empty!",
     "NICKNAME_TEXT": "Your nickname is visible to everyone on the observations you make",
     "NICKNAME_UPDATE_ERROR": "Your nickname hasn't been updated. Check if you have internet connection and try again later.",
     "NO_GROUPS": "You are not part of any groups",

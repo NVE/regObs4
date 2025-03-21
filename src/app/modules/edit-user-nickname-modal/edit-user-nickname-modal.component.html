@@ -10,5 +10,8 @@
       </ion-input>
     </div>
   </ion-item>
+  @if (!nickName()) {
+    <p>{{ "MY_PROFILE.INVALID_NICKNAME" | translate }}</p>
+  }
   <ion-button class="saveButton" (click)="save()">{{ "MY_PROFILE.SAVE" | translate }}</ion-button>
 </ion-list>

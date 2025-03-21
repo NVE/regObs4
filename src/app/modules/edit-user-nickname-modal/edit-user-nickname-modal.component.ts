@@ -1,6 +1,6 @@
-import { Component, inject, model } from '@angular/core';
+import { Component, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController } from '@ionic/angular/standalone';
+import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController, IonText } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons';
@@ -9,19 +9,22 @@ import { close } from 'ionicons/icons';
   selector: 'app-edit-user-nickname-modal',
   templateUrl: './edit-user-nickname-modal.component.html',
   styleUrls: ['./edit-user-nickname-modal.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslatePipe],
+  imports: [IonText, FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslatePipe],
 })
 export class EditUserNicknameModalComponent {
   modalController = inject(ModalController);
 
   nickName = model<string>();
+  validationError = signal<string>('');
 
   constructor() {
     addIcons({ close });
   }
 
   save() {
-    this.modalController.dismiss({ nick: this.nickName()?.trim() });
+    if (this.nickName()) {
+      this.modalController.dismiss({ nick: this.nickName()?.trim() });
+    }
   }
 
   close() {

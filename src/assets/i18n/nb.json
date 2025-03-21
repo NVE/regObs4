@@ -251,6 +251,7 @@
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine bilder",
     "MY_NICKNAME": "Mitt kallenavn",
+    "INVALID_NICKNAME": "Kallenavn kan ikke være tom!",
     "NICKNAME": "Kallenavn",
     "NICKNAME_TEXT": "Kallenavn er et navn som er synlig for alle og vises sammen med observasjoner du gjør",
     "NICKNAME_UPDATE_ERROR": "Kallenavnet ditt ble ikke oppdatert. Sjekk om du har nettverk og prøv igjen senere.",
