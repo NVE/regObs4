@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { Component, OnInit, computed, inject } from '@angular/core';
+import { firstValueFrom, lastValueFrom, Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -25,12 +25,15 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/edit-picture-info-modal.component';
 import { Router } from '@angular/router';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { EditUserNicknameModalComponent } from 'src/app/modules/edit-user-nickname-modal/edit-user-nickname-modal.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-information',
@@ -58,17 +61,19 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
 })
 export class UserInformation implements OnInit {
+  private accountService = inject(AccountService);
   private regobsAuthService = inject(RegobsAuthService);
   private userSettingService = inject(UserSettingService);
   private externalLinkService = inject(ExternalLinkService);
   private userGroupService = inject(UserGroupService);
-  private accountApiService = inject(AccountService);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
   modalController = inject(ModalController);
   private router = inject(Router);
 
   loggedInUser$!: Observable<LoggedInUser>;
   userGroups$!: Observable<ObserverGroupDto[]>;
-  myPage$!: Observable<MyPageData>;
+  myPage = toSignal(this.regobsAuthService.myPageData$);
 
   myPageSampleData: MyPageData = {
     Competence: [
@@ -111,9 +116,6 @@ export class UserInformation implements OnInit {
   ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
     this.userGroups$ = this.userGroupService.getUserGroupsAsObservable();
-    //TODO - Implement API call for MyPage in api version 5
-    //this.myPage$ = this.accountApiService.AccountGetMyPageData();
-    this.myPage$ = of(this.myPageSampleData);
     this.userGroupService.updateUserGroups();
     this.copyright$ = this.userSettingService.userSetting$.pipe(
       switchMap((userSetting) =>
@@ -176,7 +178,26 @@ export class UserInformation implements OnInit {
     this.userSettingService.saveUserSettings(userSettings);
   }
 
-  async presentModal() {
+  async presentModalForNicknameUpdate() {
+    const modal = await this.modalController.create({
+      component: EditUserNicknameModalComponent,
+      componentProps: {
+        nickName: this.myPage()?.NickName,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data && data.nick) {
+      try {
+        await firstValueFrom(this.accountService.AccountUpdateObserver({ Nick: data.nick }));
+        this.regobsAuthService.refreshMyPageData$.next();
+      } catch (error) {
+        this.showErrorToast('MY_PROFILE.NICKNAME_UPDATE_ERROR');
+      }
+    }
+  }
+
+  async presentModalForCopyRightUpdate() {
     const copyright = await firstValueFrom(this.copyright$);
     const photographer = await firstValueFrom(this.photographer$);
     const modal = await this.modalController.create({
@@ -192,5 +213,16 @@ export class UserInformation implements OnInit {
     if (data != null) {
       await this.saveCopyrightAndPhotographer(data.copyright, data.photographer);
     }
+  }
+
+  private showErrorToast(messageKey: string) {
+    this.translateService.get(messageKey).subscribe(async (translation) => {
+      const toast = await this.toastController.create({
+        message: translation,
+        mode: 'md',
+        duration: 4000,
+      });
+      toast.present();
+    });
   }
 }

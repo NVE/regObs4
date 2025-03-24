@@ -232,7 +232,7 @@
     "MY_GROUPS_TEXT": "Du kan redigera en observation i en grupp upp till 48 timmar efter att den har skickats in.<br/>För att ändra gruppnamn, gruppbeskrivning och medlemmar, <a href=\"mailto:regobs@nve.no\">vänligen kontakta oss</a>.",
     "MY_NVE_ACCOUNT": "Mitt NVE-konto",
     "MY_PICTURES": "Mina bilder",
-    "NICKNAME": "Användarnamn",
+    "MY_NICKNAME": "Användarnamn",
     "NICKNAME_TEXT": "Användarnamn är ett namn som är synligt för alla och som visas tillsammans med observationer du gör",
     "NO_GROUPS": "Du är inte medlem i någon grupp",
     "PHOTOGRAPHER": "Fotograf",
