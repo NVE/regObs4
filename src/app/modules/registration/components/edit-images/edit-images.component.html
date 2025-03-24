@@ -44,7 +44,7 @@
           </ion-item>
           <ion-item>
             <ion-input
-              [value]="attachment.Copyright || userSettings()?.copyright"
+              [value]="attachment.Copyright || userSettings()?.copyright || myPage()?.NickName"
               (ionChange)="updateExistingAttachmentCopyright(attachment, $event)"
               [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
               labelPlacement="stacked"
