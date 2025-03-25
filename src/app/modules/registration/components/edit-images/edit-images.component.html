@@ -19,6 +19,42 @@
       [rows]="2"
       placeholder="{{ pictureCommentPlaceholder() | translate }}"
     ></app-text-comment>
+    <ion-accordion-group>
+      <ion-accordion>
+        <ion-item slot="header" class="accordion-button">
+          <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-item>
+            <app-select
+              label="REGISTRATION.IMAGE_ASPECT"
+              [(selectedValue)]="attachment.Aspect"
+              [options]="aspectOptions"
+            ></app-select>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              [value]="attachment.Photographer || userSettings()?.photographer"
+              (ionChange)="updateExistingAttachmentPhotographer(attachment, $event)"
+              [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
+              labelPlacement="stacked"
+              [placeholder]="'MY_PROFILE.PHOTOGRAPHER' | translate"
+            >
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              [value]="attachment.Copyright || userSettings()?.copyright || myPage()?.NickName"
+              (ionChange)="updateExistingAttachmentCopyright(attachment, $event)"
+              [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
+              labelPlacement="stacked"
+              [placeholder]="'MY_PROFILE.COPYRIGHT' | translate"
+            >
+            </ion-input>
+          </ion-item>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
   </div>
 
   <!-- New attachments -->
@@ -51,6 +87,43 @@
       [rows]="2"
       placeholder="{{ pictureCommentPlaceholder() | translate }}"
     ></app-text-comment>
+    <ion-accordion-group>
+      <ion-accordion>
+        <ion-item slot="header" class="accordion-button">
+          <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-item>
+            <app-select
+              label="REGISTRATION.IMAGE_ASPECT"
+              [(selectedValue)]="attachment.Aspect"
+              [options]="aspectOptions"
+              (ionChange)="addNewAttachmentAspect(attachment, $event)"
+            ></app-select>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              [value]="attachment.Photographer || userSettings()?.photographer"
+              (ionChange)="addNewAttachmentPhotographer(attachment, $event)"
+              [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
+              labelPlacement="stacked"
+              [placeholder]="'MY_PROFILE.PHOTOGRAPHER' | translate"
+            >
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              [value]="attachment.Copyright || userSettings()?.copyright || myPage()?.NickName"
+              (ionChange)="addNewAttachmentCopyright(attachment, $event)"
+              [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
+              labelPlacement="stacked"
+              [placeholder]="'MY_PROFILE.COPYRIGHT' | translate"
+            >
+            </ion-input>
+          </ion-item>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
   </div>
 </div>
 

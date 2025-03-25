@@ -243,7 +243,7 @@
   },
   "MY_PROFILE": {
     "COMPETENCE": "<a href=\"https://varsom.no/om-varsom/regobs/kompetanse/\">Les mer om kompetanse</a>",
-    "COPYRIGHT": "Opphavsrett",
+    "COPYRIGHT": "Kilde/rettighetshaver",
     "EDIT": "Rediger",
     "MY_COMPETENCE": "Min kompetanse",
     "MY_GROUPS": "Mine grupper",
@@ -516,6 +516,7 @@
       }
     },
     "IMAGES": "Bilder",
+    "IMAGE_ASPECT": "Himmelretning",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "IMAGE_ERROR": {
