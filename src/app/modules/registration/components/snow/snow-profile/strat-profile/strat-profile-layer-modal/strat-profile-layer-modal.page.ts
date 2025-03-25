@@ -143,8 +143,7 @@ export class StratProfileLayerModalPage implements OnInit {
   ];
 
   //TODO: dette virker ikke i
-  getIconFunc = (kdvElement: KdvElement) =>
-    `/assets/icon/grainform/${((kdvElement || {}).Name || '').toLowerCase()}.svg`;
+  getIconFunc = (kdvElement: KdvElement) => `svg/md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}.svg`;
 
   constructor() {
     addIcons({ chevronUp, chevronDown, arrowBack, arrowForward, trash });
