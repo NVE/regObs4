@@ -28,6 +28,7 @@ import {
   URL_PARAM_SE_LAT,
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/url-params';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
 
@@ -72,14 +73,14 @@ export class MapService {
   private _mapViewSubject = new BehaviorSubject<IMapView | undefined>(
     parseCoordinatesFromUrl(new URL(document.location.href))
   );
-  private _mapView$: Observable<IMapView>;
+  private _mapView$: Observable<IMapView | undefined>;
   private _noMapExtentAvailable$: Observable<boolean>;
   private _relevantMapChange$: Observable<IMapView>;
 
   /**
    * Extent, center and zoom for the map in HomePage
    */
-  get mapView$(): Observable<IMapView> {
+  get mapView$(): Observable<IMapView | undefined> {
     return this._mapView$;
   }
 
@@ -146,9 +147,8 @@ export class MapService {
     this._centerMapToUserSubject = new Subject<void>();
     this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
-      filter((mapView): mapView is IMapView => mapView != null),
       distinctUntilChanged((prev, curr) => {
-        if (prev == null) {
+        if (prev == null || curr == null) {
           return false;
         }
 
@@ -190,6 +190,7 @@ export class MapService {
 
   private getMapMetersChanged() {
     return this.mapView$.pipe(
+      filter((v) => v != null),
       debounceTime(500), // Det må være rolig 500ms før den emiter nyeste verdi
       // As pairWise(), but always emiting first value
       pairwise(),
@@ -214,12 +215,16 @@ export class MapService {
   }
 
   private getMapViewThatHasRelevantChange(metersBuffer = 10) {
-    return this.mapView$.pipe(
+    const mapViewWithValue = this.mapView$.pipe(filter((v) => v != null));
+    return mapViewWithValue.pipe(
+      filter((v) => v != null),
       bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
       switchMap((buffer) =>
         // Hvis vi har buffra mapview pga liten endring - fortsett med siste element i lista.
         // Hvs ikke, bruk ferskeste mapview..
-        buffer.length > 0 && !!buffer[buffer.length - 1] ? of(buffer[buffer.length - 1]) : this.mapView$.pipe(take(1))
+        buffer.length > 0 && !!buffer[buffer.length - 1]
+          ? of(buffer[buffer.length - 1])
+          : mapViewWithValue.pipe(take(1))
       ),
       tap((val) => this.loggingService.debug('MapView has relevant change!', DEBUG_TAG, val)),
       shareReplay(1)
@@ -228,7 +233,7 @@ export class MapService {
 
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
     const currenteMapViewAndGeoHazards = combineLatest([this.mapView$, this.userSettingService.currentGeoHazard$]).pipe(
-      filter(([mapview]) => mapview != null),
+      filter((value): value is [IMapView, GeoHazard[]] => value[0] != null),
       map(([mapView, geoHazards]) => ({
         mapView,
         bounds: [

@@ -208,7 +208,7 @@ export class SearchCriteriaService {
   }
 
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
-  get useMapExtent$() {
+  get useMapExtent$(): Observable<boolean> {
     return this.useMapExtent.asObservable().pipe(distinctUntilChanged());
   }
 
@@ -218,6 +218,9 @@ export class SearchCriteriaService {
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
 
+  /**
+   * NB: Does not parse map extent. MapService does that.
+   */
   getInitialCriteria() {
     const criteriaFromUrl = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, { criteria: criteriaFromUrl });
@@ -596,7 +599,7 @@ export class SearchCriteriaService {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString(true);
   }
 
-  private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto | undefined {
+  private createExtentCriteria(mapView: IMapView | undefined): WithinExtentCriteriaDto | undefined {
     if (mapView?.bounds) {
       const extent: WithinExtentCriteriaDto = {
         BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),

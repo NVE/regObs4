@@ -14,6 +14,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
+import { MapService, parseCoordinatesFromUrl } from '../../map/services/map/map.service';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -36,6 +37,7 @@ export class RegobsAuthService {
   private storage = inject(StorageBackend);
   private accountApi = inject(AccountService);
   private networkStatusService = inject(NetworkStatusService);
+  private mapService = inject(MapService);
 
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
   public refreshMyPageData$ = new Subject<void>(); //Brukes for å trigge henting av myPageData på nytt
@@ -243,6 +245,13 @@ export class RegobsAuthService {
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
         this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
+        // Map service parses map view from url on startup, but
+        // the redirect url does not contain map view search parameters.
+        // Now that we have the saved return url, parse map view from that.
+        const mapView = parseCoordinatesFromUrl(new URL(returnUrl));
+        if (mapView) {
+          this.mapService.updateMapView(mapView);
+        }
         // Use replaceUrl to remove /auth/callback from history
         await this.navCtrl.navigateForward(returnUrl, { replaceUrl: true });
       } else {

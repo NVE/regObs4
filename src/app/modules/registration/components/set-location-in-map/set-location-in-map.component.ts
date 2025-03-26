@@ -210,6 +210,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   initialZoom = toSignal(
     this.mapService.mapView$.pipe(
+      filter((v) => v != null),
       take(1),
       map((mapView) =>
         mapView.zoom != null && mapView.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM
@@ -304,7 +305,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   onMapReady(m: L.Map): void {
     this.mapView$ = concat(
       // Start with mapview from mapservice
-      this.mapService.mapView$.pipe(take(1)),
+      this.mapService.mapView$.pipe(
+        filter((v) => v != null),
+        take(1)
+      ),
 
       // Listen to events that can change the map view
       fromEventPattern(
