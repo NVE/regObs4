@@ -249,7 +249,7 @@
     "MY_GROUPS": "My groups",
     "MY_GROUPS_TEXT": "You can edit observations in a group for up to 48 hours after registration. <a href=\"mailto:regobs@nve.no\">Please contact us</a> to change group name, group description and members",
     "MY_NVE_ACCOUNT": "My NVE account",
-    "MY_PICTURES": "My photos",
+    "MY_PICTURES": "Default photo settings",
     "MY_NICKNAME": "My nickname",
     "NICKNAME": "Nickname",
     "INVALID_NICKNAME": "Nickname can't be empty!",
@@ -257,7 +257,7 @@
     "NICKNAME_UPDATE_ERROR": "Your nickname hasn't been updated. Check if you have internet connection and try again later.",
     "NO_GROUPS": "You are not part of any groups",
     "PHOTOGRAPHER": "Photographer",
-    "PUBLISH_PHOTOS": "All published photos are licensed under NLOD and can be reused. <a href=\"https://data.norge.no/nlod/en/\">Read more about data</a>",
+    "PUBLISH_PHOTOS": "Yoy can specify this individually for each photo you publish. I you don't set a default copyright we will show your nickname. All published photos are licensed under NLOD and can be reused. <a href=\"https://data.norge.no/nlod/en/\">Read more about data</a>",
     "SAVE": "Save",
     "TITLE": "My profile",
     "USER": "User"

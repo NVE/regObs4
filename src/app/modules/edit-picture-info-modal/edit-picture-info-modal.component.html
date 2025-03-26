@@ -5,13 +5,21 @@
   </ion-item>
   <ion-item>
     <div class="flexContainer margin-mobile">
-      <ion-input [(ngModel)]="copyright" placeholder="copyright">
+      <ion-input
+        [(ngModel)]="copyright"
+        [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
+        labelPlacement="stacked"
+      >
         <strong>{{ "MY_PROFILE.COPYRIGHT" | translate }}:</strong>
       </ion-input>
     </div>
   </ion-item>
   <ion-item>
-    <ion-input [(ngModel)]="photographer" placeholder="photographer">
+    <ion-input
+      [(ngModel)]="photographer"
+      [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
+      labelPlacement="stacked"
+    >
       <strong>{{ "MY_PROFILE.PHOTOGRAPHER" | translate }}:</strong>
     </ion-input>
   </ion-item>

@@ -74,6 +74,14 @@ export class UserInformation implements OnInit {
   loggedInUser$!: Observable<LoggedInUser>;
   userGroups$!: Observable<ObserverGroupDto[]>;
   myPage = toSignal(this.regobsAuthService.myPageData$);
+  private savedCopyright = toSignal(
+    this.userSettingService.userSetting$.pipe(map((userSetting) => userSetting.copyright))
+  );
+  copyright = computed(() => this.savedCopyright() || this.myPage()?.NickName);
+  private savedPhotographer = toSignal(
+    this.userSettingService.userSetting$.pipe(map((userSetting) => userSetting.photographer))
+  );
+  photographer = computed(() => this.savedPhotographer() || '');
 
   myPageSampleData: MyPageData = {
     Competence: [
@@ -198,13 +206,11 @@ export class UserInformation implements OnInit {
   }
 
   async presentModalForCopyRightUpdate() {
-    const copyright = await firstValueFrom(this.copyright$);
-    const photographer = await firstValueFrom(this.photographer$);
     const modal = await this.modalController.create({
       component: EditPictureInfoModalComponent,
       componentProps: {
-        copyright: copyright,
-        photographer: photographer,
+        copyright: this.copyright(),
+        photographer: this.photographer(),
       },
       cssClass: 'editCopyrightModal',
     });

@@ -11,6 +11,7 @@ import { close } from 'ionicons/icons';
   styleUrls: ['./edit-picture-info-modal.component.scss'],
   imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslatePipe],
 })
+/** Brukes til å endre standard rettighetshaver og fotograf for bilder */
 export class EditPictureInfoModalComponent {
   modalController = inject(ModalController);
 
