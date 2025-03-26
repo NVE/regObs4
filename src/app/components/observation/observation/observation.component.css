@@ -75,6 +75,8 @@ ion-chip.chip-disabled {
 .buttons {
   display: flex;
   justify-content: space-between;
+  /* Knapperaden har ion-color-light klasse som endrer --ion-background-color */
+  background-color: var(--ion-background-color);
 }
 
 @media only screen and (max-width: 415px) {
