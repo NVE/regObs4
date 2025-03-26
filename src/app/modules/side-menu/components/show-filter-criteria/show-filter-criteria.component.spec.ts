@@ -4,6 +4,7 @@ import { ShowFilterCriteriaComponent } from './show-filter-criteria.component';
 import { provideTranslateService } from '@ngx-translate/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { ActivatedRoute } from '@angular/router';
 
 describe('ShowFilterCriteriaComponent', () => {
   let component: ShowFilterCriteriaComponent;
@@ -12,7 +13,11 @@ describe('ShowFilterCriteriaComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ShowFilterCriteriaComponent],
-      providers: [{ provide: LoggingService, useClass: TestLoggingService }, provideTranslateService()],
+      providers: [
+        { provide: LoggingService, useClass: TestLoggingService },
+        provideTranslateService(),
+        { provide: ActivatedRoute, useValue: undefined },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ShowFilterCriteriaComponent);

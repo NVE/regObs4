@@ -14,7 +14,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
-import { MapService, parseCoordinatesFromUrl } from '../../map/services/map/map.service';
+import { MapService, parseCoordinatesFromSearchParams } from '../../map/services/map/map.service';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -248,9 +248,13 @@ export class RegobsAuthService {
         // Map service parses map view from url on startup, but
         // the redirect url does not contain map view search parameters.
         // Now that we have the saved return url, parse map view from that.
-        const mapView = parseCoordinatesFromUrl(new URL(returnUrl));
-        if (mapView) {
-          this.mapService.updateMapView(mapView);
+        try {
+          const mapView = parseCoordinatesFromSearchParams(new URLSearchParams(returnUrl));
+          if (mapView) {
+            this.mapService.updateMapView(mapView);
+          }
+        } catch (error) {
+          this.logger.error(error, DEBUG_TAG, 'Failed to parse coordinates from url', { returnUrl, RETURN_URL_KEY });
         }
         // Use replaceUrl to remove /auth/callback from history
         await this.navCtrl.navigateForward(returnUrl, { replaceUrl: true });

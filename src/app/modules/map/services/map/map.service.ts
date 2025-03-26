@@ -40,16 +40,21 @@ export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon
   return mapView;
 };
 
-export const parseCoordinatesFromUrl = (url: URL): IMapView | undefined => {
-  const nwLat = url.searchParams.get(URL_PARAM_NW_LAT);
-  const nwLon = url.searchParams.get(URL_PARAM_NW_LON);
-  const seLat = url.searchParams.get(URL_PARAM_SE_LAT);
-  const seLon = url.searchParams.get(URL_PARAM_SE_LON);
+export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapView | undefined => {
+  const nwLat = params.get(URL_PARAM_NW_LAT);
+  const nwLon = params.get(URL_PARAM_NW_LON);
+  const seLat = params.get(URL_PARAM_SE_LAT);
+  const seLon = params.get(URL_PARAM_SE_LON);
   if (nwLat && nwLon && seLat && seLon) {
     const formatedMapView = createMapView(+nwLat, +nwLon, +seLat, +seLon);
     return formatedMapView;
   }
   return;
+};
+
+const getSearchParams = () => {
+  const url = new URL(document.location.href);
+  return url.searchParams;
 };
 
 /**
@@ -71,7 +76,7 @@ export class MapService {
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject = new BehaviorSubject<IMapView | undefined>(
-    parseCoordinatesFromUrl(new URL(document.location.href))
+    parseCoordinatesFromSearchParams(getSearchParams())
   );
   private _mapView$: Observable<IMapView | undefined>;
   private _noMapExtentAvailable$: Observable<boolean>;

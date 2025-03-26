@@ -11,6 +11,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService } from './search-criteria.service';
 import { separatedStringToNumberArray, UrlParams } from './url-params';
 import { provideTranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export class TestMapService {
   mapView$!: BehaviorSubject<IMapView>;
@@ -30,11 +31,21 @@ describe('SearchCriteriaService', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
+  let router: Router;
 
   const orderByTestCases = [
     { apiValue: 'DtChangeTime', urlValue: 'changeTime' },
     { apiValue: 'DtObsTime', urlValue: 'obsTime' },
   ];
+
+  const expectQueryParameterToHaveBeenApplied = (key: string, value: any) => {
+    const url = new URL(document.location.href + router.url);
+    if (!value) {
+      expect(url.searchParams.has(key)).toBeFalse();
+    } else {
+      expect(url.searchParams.get(key)).toBe(value);
+    }
+  };
 
   beforeEach(async () => {
     mapService = createTestMapService();
@@ -44,9 +55,11 @@ describe('SearchCriteriaService', () => {
         provideTestLogger(),
         UserSettingService,
         { provide: MapService, useValue: mapService },
+        { provide: ActivatedRoute, useValue: undefined },
       ],
     });
 
+    router = TestBed.inject(Router);
     userSettingService = TestBed.inject(UserSettingService);
     service = TestBed.inject(SearchCriteriaService);
 
@@ -55,7 +68,6 @@ describe('SearchCriteriaService', () => {
   });
 
   afterEach(function () {
-    history.pushState(null, '', window.location.pathname); //remove all query params added in test
     jasmine.clock().uninstall();
     moment.tz.setDefault();
   });
@@ -84,8 +96,7 @@ describe('SearchCriteriaService', () => {
     expect(criteria.LangKey).toBeDefined(); // Default langkey hentes fra browserspråk, så ikke test mot én spesifikk
     expect(criteria.SelectedGeoHazards).toEqual([GeoHazard.Snow]);
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('hazard')).toEqual('10');
+    expectQueryParameterToHaveBeenApplied('hazard', '10');
 
     //verify that criteria changes when we change language and geo hazard
     userSettingService.updateUserSettings({
@@ -97,8 +108,7 @@ describe('SearchCriteriaService', () => {
     expect(criteria2.LangKey).toEqual(LangKey.en);
     expect(criteria2.SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
     await service.applyQueryParams();
-    const url2 = new URL(document.location.href);
-    expect(url2.searchParams.get('hazard')).toEqual('20~60');
+    expectQueryParameterToHaveBeenApplied('hazard', '20~60');
   }));
 
   it('default days-back filter should work', fakeAsync(async () => {
@@ -114,12 +124,11 @@ describe('SearchCriteriaService', () => {
     await service.applyQueryParams();
 
     //check daysBack parameter in url. Should be 1 days earlier based on local time
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('daysBack')).toEqual('1');
+    expectQueryParameterToHaveBeenApplied('daysBack', '1');
 
     // Check that fromDate and toDate are not in url while daysBack are there
-    expect(url.searchParams.get('fromDate')).toBeNull();
-    expect(url.searchParams.get('toDate')).toBeNull();
+    expectQueryParameterToHaveBeenApplied('fromDate', null);
+    expectQueryParameterToHaveBeenApplied('toDate', null);
   }));
 
   it('nick name filter should work', fakeAsync(async () => {
@@ -133,8 +142,7 @@ describe('SearchCriteriaService', () => {
     expect(criteria.ObserverNickName).toEqual('Nick');
     await service.applyQueryParams();
     //check that url contains nickname filter
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('nick')).toEqual('Nick');
+    expectQueryParameterToHaveBeenApplied('nick', 'Nick');
   }));
 
   it('competence filter should set the right criteria and url', fakeAsync(async () => {
@@ -146,8 +154,7 @@ describe('SearchCriteriaService', () => {
 
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('competence')).toEqual('150~105');
+    expectQueryParameterToHaveBeenApplied('competence', '150~105');
   }));
 
   it('set new observation type should be ok', fakeAsync(async () => {
@@ -158,8 +165,7 @@ describe('SearchCriteriaService', () => {
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('type')).toEqual('81.13');
+    expectQueryParameterToHaveBeenApplied('type', '81.13');
   }));
 
   it('remove observation type should be ok', fakeAsync(async () => {
@@ -176,8 +182,7 @@ describe('SearchCriteriaService', () => {
     //check that criteria contains only obsType2
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('type')).toEqual('81.13');
+    expectQueryParameterToHaveBeenApplied('type', '81.13');
   }));
 
   it('det skal gå an å fjerne samme observasjonstype som vi nettopp la til i filteret (ro-2734)', fakeAsync(async () => {
@@ -209,8 +214,7 @@ describe('SearchCriteriaService', () => {
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
 
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('type')).toEqual('81.13~81.26');
+    expectQueryParameterToHaveBeenApplied('type', '81.13~81.26');
   }));
 
   it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
@@ -222,8 +226,7 @@ describe('SearchCriteriaService', () => {
     await service.removeObservationType(obsType2);
     expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('type')).toEqual(null);
+    expectQueryParameterToHaveBeenApplied('type', null);
   }));
 
   orderByTestCases.forEach((test) => {
@@ -236,8 +239,7 @@ describe('SearchCriteriaService', () => {
       //check that current criteria contains expected orderBy
       expect(criteria.OrderBy).toEqual(test.apiValue);
       await service.applyQueryParams();
-      const url = new URL(document.location.href);
-      expect(url.searchParams.get('orderBy')).toEqual(test.urlValue);
+      expectQueryParameterToHaveBeenApplied('orderBy', test.urlValue);
     }));
   });
 
@@ -256,11 +258,10 @@ describe('SearchCriteriaService', () => {
     tick(100);
     expect(criteria.Extent).toEqual(extent);
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('nwLat')).toEqual('70.7978');
-    expect(url.searchParams.get('nwLon')).toEqual('21.4343');
-    expect(url.searchParams.get('seLat')).toEqual('67.5715');
-    expect(url.searchParams.get('seLon')).toEqual('33.1458');
+    expectQueryParameterToHaveBeenApplied('nwLat', '70.7978');
+    expectQueryParameterToHaveBeenApplied('nwLon', '21.4343');
+    expectQueryParameterToHaveBeenApplied('seLat', '67.5715');
+    expectQueryParameterToHaveBeenApplied('seLon', '33.1458');
   }));
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
@@ -274,8 +275,7 @@ describe('SearchCriteriaService', () => {
 
     expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('fromDate')).toEqual('2000-12-24');
+    expectQueryParameterToHaveBeenApplied('fromDate', '2000-12-24');
   }));
 
   it('toDate url param should be set or updated', fakeAsync(async () => {
@@ -289,16 +289,13 @@ describe('SearchCriteriaService', () => {
 
     expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('toDate')).toEqual('2000-12-24');
+    expectQueryParameterToHaveBeenApplied('toDate', '2000-12-24');
   }));
 
   it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
-
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('toDate')).toBeNull();
+    expectQueryParameterToHaveBeenApplied('toDate', null);
   }));
 
   it('slush flow filter should set the right criteria and url when turned on', fakeAsync(async () => {
@@ -314,8 +311,7 @@ describe('SearchCriteriaService', () => {
     expect(filter?.Operator).toEqual(0);
 
     await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('slushFlow')).toEqual('true');
+    expectQueryParameterToHaveBeenApplied('slushFlow', 'true');
   }));
 
   it('slush flow filter should be removed from criteria and url when turned off', fakeAsync(async () => {
@@ -325,8 +321,7 @@ describe('SearchCriteriaService', () => {
     tick(500);
     //check that current criteria does not contain filter by slush flow
     expect(criteria!.PropertyFilters).toBeUndefined();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.has('slushFlow')).toBeFalse();
+    expectQueryParameterToHaveBeenApplied('slushFlow', null);
   }));
 
   it('slush flow filter should be removed from criteria and url when we change geo hazard', fakeAsync(async () => {
@@ -342,8 +337,7 @@ describe('SearchCriteriaService', () => {
     tick(500);
     //check that current criteria does not contain filter by slush flow
     expect(criteria!.PropertyFilters).toBeUndefined();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.get('slushFlow')).toBeNull();
+    expectQueryParameterToHaveBeenApplied('slushFlow', null);
   }));
 });
 
@@ -358,6 +352,7 @@ describe('SearchCriteriaService url parsing', () => {
         provideTestLogger(),
         UserSettingService,
         { provide: MapService, useValue: createTestMapService() },
+        { provide: ActivatedRoute, useValue: undefined },
       ],
     });
     return TestBed.inject(SearchCriteriaService);

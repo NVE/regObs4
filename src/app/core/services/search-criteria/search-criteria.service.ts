@@ -53,6 +53,7 @@ import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/c
 import { SearchCriteria } from '../../models/search-criteria';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { removeNullOrUndefined } from '../../helpers/remove-empty';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -184,6 +185,8 @@ export class SearchCriteriaService {
   private userSettingService = inject(UserSettingService);
   private mapService = inject(MapService);
   private logger = inject(LoggingService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   // Jeg tror searchCriteria må være en ReplaySubject for at vi skal være sikre på at scan fungerer som tenkt,
   // i tillfelle noen subscriber sent på searchCriteria$, og vi i mellomtiden har oppdatert søkrekriterier via
@@ -402,11 +405,11 @@ export class SearchCriteriaService {
     const criteria = await firstValueFrom(this.searchCriteria$);
     const daysBack = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
     const useDaysBack = this.useDaysBack.value;
-
-    this.setUrlParams(criteria as SearchCriteriaRequestDto, useDaysBack ? daysBack : null);
+    const params = this.toUrlParams(criteria as SearchCriteriaRequestDto, useDaysBack ? daysBack : null);
+    await this.updateRouterQueryParams(params);
   }
 
-  private setUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null) {
+  private toUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null): UrlParams {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
     if (daysBack != null) {
@@ -441,7 +444,17 @@ export class SearchCriteriaService {
       params.delete(URL_PARAM_SE_LAT);
       params.delete(URL_PARAM_SE_LON);
     }
-    params.apply();
+    return params;
+  }
+
+  private async updateRouterQueryParams(params: UrlParams) {
+    const queryParams = params.entries();
+    await this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   async addToRegionFilter(regionId: number) {
