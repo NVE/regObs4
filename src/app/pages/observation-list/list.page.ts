@@ -3,6 +3,7 @@ import { HeaderComponent } from '../../modules/shared/components/header/header.c
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IonTitle } from '@ionic/angular/standalone';
 
 /**
  * Show a list of observation data that meets current search filter.
@@ -11,11 +12,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-list-page',
   template: `
-    <app-header>{{ 'OBSERVATION_LIST.TITLE' | translate }}</app-header>
+    <app-header>
+      <ion-title>{{ 'OBSERVATION_LIST.TITLE' | translate }}</ion-title>
+    </app-header>
     <router-outlet></router-outlet>
     <app-add-menu></app-add-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AddMenuComponent, HeaderComponent, RouterOutlet, TranslatePipe],
+  imports: [AddMenuComponent, HeaderComponent, RouterOutlet, TranslatePipe, IonTitle],
 })
 export class ObservationListPage {}
