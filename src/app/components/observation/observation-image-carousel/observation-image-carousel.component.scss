@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 }
 
 p {
@@ -59,6 +60,7 @@ swiper-slide {
   border-radius: 100%;
   transition: opacity 0.3s;
   z-index: 2;
+  color: var(--ion-color-primary);
   ion-icon {
     font-size: 1.5rem;
   }
@@ -94,6 +96,14 @@ swiper-slide {
     font-size: 1.5rem;
     color: var(--ion-text-color-heading);
     line-height: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .image-description__title {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
   }
 }
 
