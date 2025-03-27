@@ -29,21 +29,22 @@
             {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
           </app-selected-items-counter-label>
         </ion-item>
-        <ion-item slot="content">
+        <div slot="content">
           <ion-list>
             <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-            <ion-checkbox
-              *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById"
-              [checked]="!slushFlowFilterIsActive && type.isChecked"
-              (click)="setNewType($event, type.parentId, type.id)"
-              [disabled]="slushFlowFilterIsActive"
-              labelPlacement="end"
-              justify="start"
-              >{{ type.name }}
-            </ion-checkbox>
+            <ion-item class="item-height" *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
+              <ion-checkbox
+                [checked]="!slushFlowFilterIsActive && type.isChecked"
+                (click)="setNewType($event, type.parentId, type.id)"
+                [disabled]="slushFlowFilterIsActive"
+                labelPlacement="end"
+                justify="start"
+                >{{ type.name }}
+              </ion-checkbox>
+            </ion-item>
             <app-slush-flow-filter> </app-slush-flow-filter>
           </ion-list>
-        </ion-item>
+        </div>
       </ion-accordion>
 
       <!-- Snøskredregioner -->
@@ -55,20 +56,21 @@
                 {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
               </app-selected-items-counter-label>
             </ion-item>
-            <ion-item slot="content">
+            <div slot="content">
               <ion-list>
-                <ion-checkbox
-                  *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById"
-                  [value]="region"
-                  [checked]="region.checked"
-                  (ionChange)="regionCheckBoxChanged($event)"
-                  labelPlacement="end"
-                  justify="start"
-                >
-                  {{ region.name }}
-                </ion-checkbox>
+                <ion-item *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
+                  <ion-checkbox
+                    [value]="region"
+                    [checked]="region.checked"
+                    (ionChange)="regionCheckBoxChanged($event)"
+                    labelPlacement="end"
+                    justify="start"
+                  >
+                    {{ region.name }}
+                  </ion-checkbox>
+                </ion-item>
               </ion-list>
-            </ion-item>
+            </div>
           </ion-accordion>
           <ion-accordion value="b-regions">
             <ion-item slot="header">
@@ -76,20 +78,21 @@
                 {{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}
               </app-selected-items-counter-label>
             </ion-item>
-            <ion-item slot="content">
+            <div slot="content">
               <ion-list>
-                <ion-checkbox
-                  *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById"
-                  [value]="region"
-                  [checked]="region.checked"
-                  (ionChange)="regionCheckBoxChanged($event)"
-                  labelPlacement="end"
-                  justify="start"
-                >
-                  {{ region.name }}
-                </ion-checkbox>
+                <ion-item *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
+                  <ion-checkbox
+                    [value]="region"
+                    [checked]="region.checked"
+                    (ionChange)="regionCheckBoxChanged($event)"
+                    labelPlacement="end"
+                    justify="start"
+                  >
+                    {{ region.name }}
+                  </ion-checkbox>
+                </ion-item>
               </ion-list>
-            </ion-item>
+            </div>
           </ion-accordion>
         </div>
       </div>
@@ -109,15 +112,16 @@
           </ion-label>
           <div>
             <ion-list>
-              <ion-checkbox
-                *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById"
-                [value]="competence"
-                [checked]="competence.checked"
-                (ionChange)="competenceCheckboxChanged($event)"
-                [title]="competence.descriptions.join('<br />')"
-                labelPlacement="end"
-                justify="start"
-                >{{ competence.name }}</ion-checkbox
+              <ion-item *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById">
+                <ion-checkbox
+                  [value]="competence"
+                  [checked]="competence.checked"
+                  (ionChange)="competenceCheckboxChanged($event)"
+                  [title]="competence.descriptions.join('<br />')"
+                  labelPlacement="end"
+                  justify="start"
+                  >{{ competence.name }}</ion-checkbox
+                ></ion-item
               >
             </ion-list>
           </div>
