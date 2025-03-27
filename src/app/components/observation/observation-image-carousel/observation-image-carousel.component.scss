@@ -1,5 +1,5 @@
 :host {
-  --height: 100vh;
+  --height: 100dvh;
   --width: 100vw;
   --image-description-height: 200px;
   display: flex;
@@ -26,6 +26,13 @@ swiper-container::part(button-prev) {
   transition: opacity 0.3s;
   &:hover {
     opacity: 0.8;
+  }
+}
+
+@media (max-width: 600px) {
+  swiper-container::part(button-next),
+  swiper-container::part(button-prev) {
+    display: none;
   }
 }
 
