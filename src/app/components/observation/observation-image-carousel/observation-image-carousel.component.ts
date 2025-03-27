@@ -17,7 +17,6 @@ import { close, downloadOutline, openOutline } from 'ionicons/icons';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
-import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-observation-image-carousel',
@@ -29,7 +28,6 @@ import { Capacitor } from '@capacitor/core';
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
-  isNativePlatform = Capacitor.isNativePlatform();
   clickedAttachmentUrl = input<string>();
   allAttachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
