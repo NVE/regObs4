@@ -1,8 +1,8 @@
 <ion-list>
-  <ion-item>
+  <div class="header">
     <h2>{{ "MY_PROFILE.MY_PICTURES" | translate }}</h2>
     <ion-icon name="close" size="large" slot="end" (click)="close()"></ion-icon>
-  </ion-item>
+  </div>
   <ion-item>
     <div class="flexContainer margin-mobile">
       <ion-input
@@ -23,5 +23,6 @@
       <strong>{{ "MY_PROFILE.PHOTOGRAPHER" | translate }}:</strong>
     </ion-input>
   </ion-item>
+  <p class="info-text ion-padding-top" [innerHTML]="'MY_PROFILE.PUBLISH_PHOTOS' | translate"></p>
   <ion-button class="saveButton" (click)="save()">{{ "MY_PROFILE.SAVE" | translate }}</ion-button>
 </ion-list>
