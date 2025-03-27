@@ -269,16 +269,16 @@
       "TITLE": "Observatør"
     },
     "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt",
-    "MULTISELECT_SHOW_NO_COUNT": "Viser alle",
+    "MULTISELECT_SHOW_NO_COUNT": "viser alle",
     "NICK_FILTER": {
-      "PLACEHOLDER": "Søk på observatørnavn",
+      "PLACEHOLDER": "Søk på kallenavn",
       "TITLE": "Navn"
     },
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observasjonstype"
     },
-    "REGION_FILTER_B_REGIONS_TITLE": "B-regioner",
-    "REGION_FILTER_TITLE_SNOW": "Snøskredregioner",
+    "REGION_FILTER_B_REGIONS_TITLE": "Region uten fast varsling",
+    "REGION_FILTER_TITLE_SNOW": "Region",
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill alle filtre",
     "TITLE": "Observasjonsfilter"
   },

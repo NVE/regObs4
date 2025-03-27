@@ -2,14 +2,6 @@
   font-size: 17px;
 }
 
-.toggleAllTypesButton {
-  font-size: 17px;
-}
-
-.no-margin-bottom {
-  margin-bottom: 0;
-}
-
 .margin-bottom {
   margin-bottom: 8px;
 }
@@ -37,8 +29,4 @@ ion-list {
 
 .main-list {
   padding-top: env(safe-area-inset-top);
-}
-
-.unselectable {
-  cursor: default;
 }

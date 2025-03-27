@@ -1,5 +1,7 @@
 import {
   CheckboxCustomEvent,
+  IonAccordion,
+  IonAccordionGroup,
   IonButton,
   IonCheckbox,
   IonIcon,
@@ -88,6 +90,8 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   imports: [
     AsyncPipe,
     DateRangeComponent,
+    IonAccordion,
+    IonAccordionGroup,
     IonButton,
     IonCheckbox,
     IonIcon,
