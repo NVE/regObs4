@@ -111,7 +111,7 @@ export class GeoPositionService implements OnDestroy {
       // for å unngå at popup om lokasjon dukker opp for tidlig.
       this.userSettings.userSetting$.pipe(
         // showGeoSelectInfo er om coach marks er ferdig
-        map((userSettings) => userSettings.completedStartWizard && !userSettings.showGeoSelectInfo),
+        map((userSettings) => userSettings.completedStartWizard), // TODO: Ta inn resten av denne linja når coachmarks er på plass igjen: && !userSettings.showGeoSelectInfo),
         skipWhile((startWizardCompleted) => startWizardCompleted === false),
         take(1)
       ),
