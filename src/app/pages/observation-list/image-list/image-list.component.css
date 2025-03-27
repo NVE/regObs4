@@ -30,7 +30,6 @@ ion-content::part(scroll) {
 
 app-grid-image {
   width: 100%;
-  /* border: 1px solid tomato; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
 }
