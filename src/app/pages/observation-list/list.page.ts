@@ -14,14 +14,6 @@ import { RouterOutlet } from '@angular/router';
     <router-outlet></router-outlet>
     <app-add-menu></app-add-menu>
   `,
-  encapsulation: ViewEncapsulation.None,
-  styles: `
-    @media (max-width: 700px) {
-      .list-header {
-        display: none;
-      }
-    }
-  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AddMenuComponent, HeaderComponent, RouterOutlet],
 })
