@@ -40,7 +40,7 @@ import { SelectedItemsCounterLabelComponent } from '../selected-items-counter-la
 import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { eye } from 'ionicons/icons';
+import { locationOutline } from 'ionicons/icons';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -182,7 +182,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         return 0;
       })
     );
-    addIcons({ eye });
+    addIcons({ locationOutline });
   }
 
   async ngOnInit() {
