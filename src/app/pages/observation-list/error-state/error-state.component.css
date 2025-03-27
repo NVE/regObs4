@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.error {
+  flex-direction: column;
+  width: 95%;
+}
+
+ion-row {
+  max-width: 960px;
+  margin: 10px auto;
+  gap: 10px;
+}
+
+ion-col {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media only screen and (max-width: 465px) {
+  ion-col {
+    padding: 5px 0;
+  }
+}

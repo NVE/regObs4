@@ -1,0 +1,32 @@
+<!-- Viser observasjoner i en liste -->
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isDesktop()) {
+    <div class="list-header">
+      <p>{{ isLoading() ? " - " : count() }} {{ "OBSERVATION_LIST.COUNT_POSTFIX" | translate }}</p>
+      <app-show-filter-criteria></app-show-filter-criteria>
+      <app-list-controls></app-list-controls>
+    </div>
+  }
+
+  <div class="list">
+    @for (reg of registrations(); track reg.RegId) {
+      <app-observation class="obs" [registration]="reg"></app-observation>
+    } @empty {
+      @if (error().hasError) {
+        <app-error-state></app-error-state>
+      } @else if (isLoading()) {
+        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+      } @else {
+        <app-empty-state></app-empty-state>
+      }
+    }
+
+    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
+      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>

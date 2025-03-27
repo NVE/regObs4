@@ -27,6 +27,11 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSaveMode": "file"
   },
+  "angular-schematics.schematicsDefaultOptions": {
+    "angular-*": {
+      "externalTemplate": true
+    }
+  },
   // Ionic foreslo å legge til disse, men da finner ikke VSCode en eneste
   // ionic import av seg selv. Kommenterer ut dette, men pass på å alltid
   // importere fra @Ionic/*/standalone nå som vi har gått over til standalone.

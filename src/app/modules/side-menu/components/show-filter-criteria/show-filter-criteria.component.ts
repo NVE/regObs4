@@ -1,27 +1,76 @@
-import { IonMenuButton } from '@ionic/angular/standalone';
-import { Component, inject } from '@angular/core';
+import { IonChip, IonMenuToggle } from '@ionic/angular/standalone';
+import { Component, computed, inject } from '@angular/core';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { BreakpointService } from '../../../../core/services/breakpoint.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { NgIf, LowerCasePipe } from '@angular/common';
-import { GeoNameComponent } from '../../../shared/components/geo-name/geo-name.component';
-import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
+import { distinctUntilChanged, map, switchMap } from 'rxjs';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import moment from 'moment';
 
 @Component({
   selector: 'app-show-filter-criteria',
   templateUrl: './show-filter-criteria.component.html',
   styleUrls: ['./show-filter-criteria.component.scss'],
-  imports: [CheckDaysOrWeeksBackComponent, GeoNameComponent, IonMenuButton, LowerCasePipe, NgIf, TranslatePipe],
+  imports: [TranslatePipe, IonChip, IonMenuToggle],
 })
 export class ShowFilterCriteriaComponent {
-  userSettingService = inject(UserSettingService);
-  private breakpointService = inject(BreakpointService);
+  private userSettingService = inject(UserSettingService);
+  private geoHelperService = inject(GeoHelperService);
+  private searchCriteria = inject(SearchCriteriaService);
+  private translate = inject(TranslateService);
+
+  // Time or date description
+  private fromTime = toSignal(
+    this.searchCriteria.searchCriteria$.pipe(
+      map(({ FromDtObsTime }) => FromDtObsTime),
+      distinctUntilChanged(),
+      map((dateString) => (dateString ? moment(dateString) : undefined))
+    )
+  );
+  private toTime = toSignal(
+    this.searchCriteria.searchCriteria$.pipe(
+      map(({ ToDtObsTime }) => ToDtObsTime),
+      distinctUntilChanged(),
+      map((dateString) => (dateString ? moment(dateString) : undefined))
+    )
+  );
+
+  dateFilter = computed(() => {
+    const from = this.fromTime();
+    const to = this.toTime();
+    const now = moment();
+
+    const isSameWeek = from?.isSame(now, 'week');
+    const isSameYear = from?.isSame(now, 'year');
+
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: isSameWeek ? 'long' : undefined,
+      year: isSameYear ? undefined : 'numeric',
+      day: isSameWeek ? undefined : 'numeric',
+      month: isSameWeek ? undefined : 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+    };
+
+    const formatter = new Intl.DateTimeFormat(this.translate.currentLang, options);
+    const fromFormatted = from ? formatter.format(from.toDate()) : undefined;
+    const toFormatted = to ? formatter.format(to.toDate()) : undefined;
+
+    return {
+      from: fromFormatted,
+      to: toFormatted,
+    };
+  });
 
   daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { initialValue: 1 });
-  isDesktop = toSignal(this.breakpointService.isDesktopView());
-  currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$);
+  geoHazardName = toSignal(
+    this.userSettingService.currentGeoHazard$.pipe(
+      switchMap((geoHazards) => this.geoHelperService.getName(geoHazards))
+    ),
+    { initialValue: '' }
+  );
   language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   showObservations = toSignal(this.userSettingService.showObservations$, { initialValue: false });
 }

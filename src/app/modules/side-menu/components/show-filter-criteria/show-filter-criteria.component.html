@@ -1,23 +1,23 @@
-<ng-container *ngIf="isDesktop()">
-  <div class="show-container" *ngIf="!showObservations(); else showFilterCriteria">
-    <span>{{ "MENU.DEACTIVATE_OBSERVATIONS" | translate }}</span>
-  </div>
-</ng-container>
+<ion-menu-toggle menu="filter">
+  <ion-chip>
+    @if (!showObservations()) {
+      {{ "MENU.DEACTIVATE_OBSERVATIONS" | translate }}
+    } @else {
+      <strong>{{ "FILTER_DESCRIPTION.FILTER" | translate }}&nbsp;</strong>
 
-<ng-template #showFilterCriteria>
-  <div class="show-container" *ngIf="daysBack() as daysBack">
-    <ng-container *ngIf="currentGeoHazard() as geoHazard">
-      <app-geo-name [geoHazards]="geoHazard"></app-geo-name>
-    </ng-container>
-    <span *ngIf="daysBack === 0">:</span>
-    <ng-container *ngIf="language() as lang">
-      <span *ngIf="lang === 2 || daysBack === 0">&nbsp;</span>
-      <span *ngIf="daysBack !== 0">{{ "MENU.SHOWING_OBSERVATIONS" | translate | lowercase }}&nbsp;</span>
-      <app-check-days-or-weeks-back [daysBack]="daysBack"></app-check-days-or-weeks-back>
-      <span *ngIf="daysBack === 0 && lang === 2">&nbsp;{{ "MENU.SHOWING_OBSERVATIONS" | translate | lowercase }}</span>
-      <ion-menu-button menu="filter" color="light">
-        <a>{{ "MY_PROFILE.EDIT" | translate }}</a>
-      </ion-menu-button>
-    </ng-container>
-  </div>
-</ng-template>
+      <!-- Geohazard filter. -->
+      {{ "FILTER_DESCRIPTION.GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX" | translate: { geohazard: geoHazardName() } }}
+
+      <!-- Date filter -->
+      @let from = dateFilter().from;
+      @let to = dateFilter().to;
+      @if (from && to) {
+        {{ "FILTER_DESCRIPTION.TIME_DESCRIPTION_SUBMITTED_BETWEEN" | translate: { from, to } }}
+      } @else if (from) {
+        {{ "FILTER_DESCRIPTION.TIME_DESCRIPTION_SUBMITTED_AFTER" | translate: { datetime: from } }}
+      } @else if (to) {
+        {{ "FILTER_DESCRIPTION.TIME_DESCRIPTION_SUBMITTED_BEFORE" | translate: { datetime: to } }}
+      }
+    }
+  </ion-chip>
+</ion-menu-toggle>

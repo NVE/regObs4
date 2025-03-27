@@ -36,7 +36,7 @@
     </ion-slide>
   </ion-slides> -->
 
-  <ng-container *ngIf="isDesktop && moreThanFourPics">
+  <ng-container *ngIf="isDesktop() && moreThanFourPics">
     <div *ngIf="isPreviousImgAvailable()" class="swiper-button-prev" (click)="prev(); $event.stopPropagation()"></div>
     <div *ngIf="isNextImgAvailable()" class="swiper-button-next" (click)="next(); $event.stopPropagation()"></div>
   </ng-container>
@@ -50,7 +50,7 @@
   @if (isSingleMap && location(); as location) {
     <app-static-map-image class="single" [location]="location" (click)="onLocationClick()"></app-static-map-image>
   }
-  <ion-label *ngIf="showLabel && !isDesktop" [ngClass]="{ loaded: isLoaded }">
+  <ion-label *ngIf="showLabel && !isDesktop()" [ngClass]="{ loaded: isLoaded }">
     <span class="img-comment-header" *ngIf="showIndex">{{ imageIndex + 1 }}/{{ imageLength }}&nbsp;</span>
     <span [ngClass]="{ 'img-comment-header': slides[activeIndex].description }" *ngIf="slides[activeIndex].header"
       >{{ slides[activeIndex].header! | translate

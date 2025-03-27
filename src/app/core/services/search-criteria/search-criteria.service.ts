@@ -53,6 +53,7 @@ import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/c
 import { SearchCriteria } from '../../models/search-criteria';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { removeNullOrUndefined } from '../../helpers/remove-empty';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
 
@@ -184,6 +185,8 @@ export class SearchCriteriaService {
   private userSettingService = inject(UserSettingService);
   private mapService = inject(MapService);
   private logger = inject(LoggingService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   // Jeg tror searchCriteria må være en ReplaySubject for at vi skal være sikre på at scan fungerer som tenkt,
   // i tillfelle noen subscriber sent på searchCriteria$, og vi i mellomtiden har oppdatert søkrekriterier via
@@ -208,7 +211,7 @@ export class SearchCriteriaService {
   }
 
   private useMapExtent: Subject<boolean> = new BehaviorSubject<boolean>(true);
-  get useMapExtent$() {
+  get useMapExtent$(): Observable<boolean> {
     return this.useMapExtent.asObservable().pipe(distinctUntilChanged());
   }
 
@@ -218,6 +221,9 @@ export class SearchCriteriaService {
    */
   readonly searchCriteria$: Observable<Immutable<SearchCriteriaRequestDto>>;
 
+  /**
+   * NB: Does not parse map extent. MapService does that.
+   */
   getInitialCriteria() {
     const criteriaFromUrl = this.readUrlParams();
     this.logger.debug('Criteria from URL params: ', DEBUG_TAG, { criteria: criteriaFromUrl });
@@ -399,11 +405,11 @@ export class SearchCriteriaService {
     const criteria = await firstValueFrom(this.searchCriteria$);
     const daysBack = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
     const useDaysBack = this.useDaysBack.value;
-
-    this.setUrlParams(criteria as SearchCriteriaRequestDto, useDaysBack ? daysBack : null);
+    const params = this.toUrlParams(criteria as SearchCriteriaRequestDto, useDaysBack ? daysBack : null);
+    await this.updateRouterQueryParams(params);
   }
 
-  private setUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null) {
+  private toUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null): UrlParams {
     const params = new UrlParams();
     params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
     if (daysBack != null) {
@@ -438,7 +444,17 @@ export class SearchCriteriaService {
       params.delete(URL_PARAM_SE_LAT);
       params.delete(URL_PARAM_SE_LON);
     }
-    params.apply();
+    return params;
+  }
+
+  private async updateRouterQueryParams(params: UrlParams) {
+    const queryParams = params.entries();
+    await this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   async addToRegionFilter(regionId: number) {
@@ -596,7 +612,7 @@ export class SearchCriteriaService {
     return moment().subtract(daysBack, 'days').startOf('day').toISOString(true);
   }
 
-  private createExtentCriteria(mapView: IMapView): WithinExtentCriteriaDto | undefined {
+  private createExtentCriteria(mapView: IMapView | undefined): WithinExtentCriteriaDto | undefined {
     if (mapView?.bounds) {
       const extent: WithinExtentCriteriaDto = {
         BottomRight: latLngToPositionDto(mapView.bounds.getSouthEast()),

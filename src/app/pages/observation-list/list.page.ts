@@ -1,0 +1,24 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { HeaderComponent } from '../../modules/shared/components/header/header.component';
+import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
+import { RouterOutlet } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { IonTitle } from '@ionic/angular/standalone';
+
+/**
+ * Show a list of observation data that meets current search filter.
+ * The page have two views/modes: 1) A list of observation cards, and 2) A grid of images from the observations.
+ */
+@Component({
+  selector: 'app-list-page',
+  template: `
+    <app-header>
+      <ion-title>{{ 'OBSERVATION_LIST.TITLE' | translate }}</ion-title>
+    </app-header>
+    <router-outlet></router-outlet>
+    <app-add-menu></app-add-menu>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AddMenuComponent, HeaderComponent, RouterOutlet, TranslatePipe, IonTitle],
+})
+export class ObservationListPage {}

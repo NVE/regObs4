@@ -1,41 +1,13 @@
 :host {
   display: block;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 16px;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
   --slide-height: 400px;
   --swiper-theme-color: var(--ion-color-secondary);
-}
-
-h2 {
-  font-size: 1.5rem;
-  color: var(--ion-text-color-heading);
-}
-
-ion-item {
-  --inner-padding-start: 0;
-  --padding-start: 0;
-  font-size: 1.2em;
-
-  ion-button {
-    --ion-color-primary: var(--ion-text-color);
-
-    &.edit-button {
-      margin-left: 0.5rem;
-      font-size: 14px;
-      letter-spacing: 0.75px;
-      text-transform: uppercase;
-      font-weight: 600;
-      color: var(--ion-color-varsom-blue);
-    }
-
-    &.reg-id {
-      ion-icon {
-        font-size: 1.4em;
-      }
-    }
-  }
-}
-
-ion-chip.chip-disabled {
-  opacity: 1;
 }
 
 swiper-container {
@@ -62,7 +34,7 @@ swiper-slide .img-desc {
 
 swiper-slide:first-child {
   /* Map */
-  width: 40vw;
+  width: 40%;
 }
 
 swiper-container swiper-slide:first-child:nth-last-child(1) {
@@ -79,8 +51,32 @@ swiper-slide img {
   object-fit: cover;
 }
 
-.summary strong {
-  font-weight: 600;
+h2 {
+  font-size: 1.5rem;
+  color: var(--ion-text-color-heading);
+}
+
+ion-chip:first-child {
+  margin-left: 0;
+}
+
+ion-chip.chip-disabled {
+  opacity: 1;
+}
+
+.content {
+  margin: 8px;
+}
+
+.registration {
+  margin-top: 12px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  /* Knapperaden har ion-color-light klasse som endrer --ion-background-color */
+  background-color: var(--ion-background-color);
 }
 
 @media only screen and (max-width: 415px) {
@@ -91,6 +87,9 @@ swiper-slide img {
   }
 }
 
-.registration {
-  margin-top: 12px;
+/*
+ * Hvis det bare er én knapp i knapperaden (kopier-regid-knapp)
+ */
+.buttons:has(> :last-child:nth-child(1)) {
+  flex-direction: row-reverse;
 }

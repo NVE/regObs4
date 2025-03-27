@@ -205,7 +205,6 @@
     "OPACITY": "Transparency",
     "OTHER": "Other",
     "SHOW": "Show",
-    "SHOWING_OBSERVATIONS": "observations",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
     "SHOW_TRIPS": "Show trips",
@@ -283,8 +282,11 @@
     "TITLE": "Observation filter"
   },
   "OBSERVATION_LIST": {
+    "COUNT_POSTFIX": "observations",
     "EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED": "Toggle observations on in the left side menu.",
+    "FILTER_BY_MAP_VIEW": "Filter by map view",
     "FORMS": "Forms",
+    "LOADING": "Loading observations",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
     "NO_IMAGES": "No images",
@@ -298,9 +300,9 @@
     "SORT_BY_OBS_TIME": "Recently observed",
     "SORT_BY_TEXT": "Order by",
     "TITLE": "Observations",
-    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "All",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "In map view",
-    "VIEW_TYPE": "View"
+    "VIEW_TYPE": "Show as",
+    "VIEW_TYPE_IMAGES": "Images",
+    "VIEW_TYPE_OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
@@ -1045,5 +1047,12 @@
     "TITLE_SNOW": "Avalanche Forecasts",
     "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
+  },
+  "FILTER_DESCRIPTION": {
+    "FILTER": "Filter:",
+    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}} observations.",
+    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Submitted after {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Submitted between {{from}} and {{to}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Submitted before {{datetime}}."
   }
 }

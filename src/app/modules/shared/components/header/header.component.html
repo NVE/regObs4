@@ -7,9 +7,7 @@
     </ion-buttons>
 
     <ion-buttons slot="end" *ngIf="showMenuButton()">
-      <ion-menu-button color="light">
-        <ion-icon name="menu-outline"></ion-icon>
-      </ion-menu-button>
+      <ion-menu-button color="light"> </ion-menu-button>
     </ion-buttons>
     <ion-buttons slot="start" *ngIf="showMenuButton() && showFilterButton()">
       <ion-menu-button menu="filter" color="light">
@@ -17,16 +15,18 @@
       </ion-menu-button>
     </ion-buttons>
 
-    @if (tripRunning()) {
-      <ion-title>
-        <ion-button class="stop-trip" size="small" color="success" (click)="endTrip()">
-          {{ "TRIP.STOP_TRIP" | translate }}
-        </ion-button>
-      </ion-title>
-    } @else {
-      <ion-title>
-        {{ title() | translate }}
-      </ion-title>
-    }
+    <ng-content>
+      @if (tripRunning()) {
+        <ion-title>
+          <ion-button class="stop-trip" size="small" color="success" (click)="endTrip()">
+            {{ "TRIP.STOP_TRIP" | translate }}
+          </ion-button>
+        </ion-title>
+      } @else if (title()) {
+        <ion-title>
+          {{ title()! | translate }}
+        </ion-title>
+      }
+    </ng-content>
   </ion-toolbar>
 </ion-header>

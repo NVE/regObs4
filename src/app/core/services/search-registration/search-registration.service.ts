@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -81,6 +81,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   private isFetching = new BehaviorSubject<boolean>(false);
   isFetching$ = this.isFetching.asObservable();
   private forceUpdate = new Subject<void>();
+  count = signal<number | undefined>(undefined);
 
   private countError = new ReplaySubject<Error | undefined>(1);
   private searchError = new ReplaySubject<Error | undefined>(1);
@@ -128,6 +129,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       tap(([registrations, totalCount]) => {
         this.allFetchedForCriteria.next(registrations.length >= (totalCount || 0));
         this.maxItemsFetched.next(registrations.length >= PagedSearchResult.MAX_ITEMS);
+        this.count.set(totalCount);
       }),
       // Map to registrations
       map(([registrations]) => registrations),

@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  --max-width: var(--list-search-max-width, 960px);
+}
+
+.list-header {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.list {
+  height: 100%;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+ion-content {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+ion-content::part(scroll) {
+  scrollbar-gutter: stable both-edges;
+}

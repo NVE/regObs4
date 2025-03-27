@@ -1,0 +1,32 @@
+<!-- En liste av bilder fra observasjoner, organisert i tabellform -->
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="list-header">
+    <p>Viser alle bilder fra alle filtrerte observasjoner.</p>
+    <app-show-filter-criteria></app-show-filter-criteria>
+    <app-list-controls pageType="images"></app-list-controls>
+  </div>
+
+  <div class="grid">
+    @for (reg of registrations(); track reg.RegId) {
+      @for (attachment of reg.Attachments; track attachment.AttachmentId) {
+        <app-grid-image [attachment]="attachment"></app-grid-image>
+      }
+    } @empty {
+      @if (error().hasError) {
+        <app-error-state></app-error-state>
+      } @else if (isLoading()) {
+        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+      } @else {
+        <app-empty-state></app-empty-state>
+      }
+    }
+  </div>
+
+  <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
+    <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

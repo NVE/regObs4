@@ -77,9 +77,16 @@ export class UrlParams {
     return this;
   }
 
+  /**
+   * @deprecated Metoden eksisterer fortsatt kun for å tilrettelegge for testing. Testene bør skrives om.
+   */
   apply(): UrlParams {
     const newRelativePathQuery = window.location.pathname + '?' + this.params.toString();
     history.pushState(null, '', newRelativePathQuery);
     return this;
+  }
+
+  entries() {
+    return Object.fromEntries(this.params.entries());
   }
 }

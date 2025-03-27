@@ -54,6 +54,7 @@ import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab
 import { ShowFilterCriteriaComponent } from '../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -128,6 +129,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
+
+  isDesktop = inject(BreakpointService).isDesktop;
 
   constructor() {
     const router = inject(Router);

@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 
 export enum TABS {
   HOME = 'home',
-  OBSERVATION_LIST = 'observation-list',
+  OBSERVATION_LIST = 'search',
   WARNING_LIST = 'warning-list',
 }
 

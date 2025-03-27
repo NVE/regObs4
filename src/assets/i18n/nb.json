@@ -172,6 +172,12 @@
     "SEARCH_HISTORY_HEADER": "Siste søk",
     "SEARCH_TEXT": "Søk etter sted"
   },
+  "FILTER_DESCRIPTION": {
+    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}}observasjoner.",
+    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Sendt inn etter {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Sendt inn mellom {{from}} og {{to}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Sendt inn før {{datetime}}."
+  },
   "MENU": {
     "ABOUT_REGOBS": "Om data og tilgjengelighet",
     "AND": "og",
@@ -205,7 +211,6 @@
     "OPACITY": "Gjennomsiktighet",
     "OTHER": "Annet",
     "SHOW": "Vis",
-    "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
     "SHOW_TRIPS": "Vis turer",
@@ -283,8 +288,11 @@
     "TITLE": "Observasjonsfilter"
   },
   "OBSERVATION_LIST": {
+    "COUNT_POSTFIX": "observasjoner",
     "EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED": "Du kan aktivere visning av observasjoner igjen fra filtermenyen på venstre side.",
+    "FILTER_BY_MAP_VIEW": "Filtrer på kartutsnitt",
     "FORMS": "Skjemaer",
+    "LOADING": "Laster observasjoner",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_IMAGES": "Ingen bilder",
@@ -298,9 +306,9 @@
     "SORT_BY_OBS_TIME": "Observert tid",
     "SORT_BY_TEXT": "Sorter på",
     "TITLE": "Observasjoner",
-    "TOGGLE_BUTTON_OBSERVATIONS_ALL": "Alle",
-    "TOGGLE_BUTTON_OBSERVATIONS_IN_MAP_VIEW": "I kartutsnitt",
-    "VIEW_TYPE": "Visning"
+    "VIEW_TYPE": "Vis som",
+    "VIEW_TYPE_IMAGES": "Bilder",
+    "VIEW_TYPE_OBSERVATIONS": "Observasjoner"
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",

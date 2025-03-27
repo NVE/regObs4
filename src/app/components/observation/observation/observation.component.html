@@ -1,98 +1,99 @@
 <!-- Et observasjonskort. Viser data fra en observasjon, et miniatyrkart over posisjonen og bilder i en karusell -->
-<ion-card>
-  <swiper-container
-    slides-per-view="auto"
-    loop="false"
-    css-mode="false"
-    navigation="true"
-    pagination="true"
-    space-between="0"
-    centered-slides="false"
-    center-insufficient-slides="false"
-    zoom="true"
-    keyboard="false"
-  >
-    <!-- Map -->
-    <swiper-slide>
-      <app-static-map-image [location]="location()"></app-static-map-image>
-    </swiper-slide>
+<swiper-container
+  slides-per-view="auto"
+  loop="false"
+  css-mode="false"
+  navigation="true"
+  pagination="true"
+  space-between="0"
+  centered-slides="false"
+  center-insufficient-slides="false"
+  zoom="true"
+  keyboard="false"
+>
+  <!-- Map -->
+  <swiper-slide>
+    <app-static-map-image [location]="location()"></app-static-map-image>
+  </swiper-slide>
 
-    <!-- lazy-preload-prev-next="2" -->
-    @for (attachment of attachments(); track attachment.AttachmentId) {
-      <swiper-slide (click)="imageClicked(attachment)">
-        <!-- <div class="img-desc">
+  <!-- lazy-preload-prev-next="2" -->
+  @for (attachment of attachments(); track attachment.AttachmentId) {
+    <swiper-slide (click)="imageClicked(attachment)" lazy="true">
+      <!-- <div class="img-desc">
           @if (attachment.Comment) {
             <ion-icon name="chatbubble-ellipses" color="primary"></ion-icon>
           }
         </div> -->
-        <img [alt]="attachment.Comment" [src]="attachment.Url" />
-      </swiper-slide>
+      <img [alt]="attachment.Comment" [src]="attachment.UrlFormats?.Large" loading="lazy" decoding="async" />
+    </swiper-slide>
+  }
+</swiper-container>
+
+<div class="content">
+  <h2>
+    {{ registration().ObsLocation.Title }}
+  </h2>
+  <div>
+    <ion-chip color="primary" (click)="dateClicked.set(true)" [disabled]="dateClicked()">
+      <ion-icon name="calendar-number-outline"></ion-icon>
+      <ion-label>
+        @if (dateClicked()) {
+          Observert: {{ registration().DtObsTime | date: "short" }}. Lagret: {{ savedTime() | date: "short" }}.
+        } @else {
+          {{ registration().DtObsTime | date: "short" }}
+        }
+      </ion-label>
+    </ion-chip>
+
+    <ion-chip color="primary" disabled>
+      <ion-icon [src]="geoIcon()"></ion-icon>
+      <ion-label>{{ geoName() }}</ion-label>
+    </ion-chip>
+
+    <ion-chip color="primary" disabled>
+      <ion-icon name="location-outline"></ion-icon>
+      <ion-label>
+        {{ registration().ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
+      </ion-label>
+    </ion-chip>
+
+    <ion-chip color="primary" disabled>
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
+      <ion-label>
+        {{ registration().Observer.NickName }} ({{ registration().Observer.CompetenceLevelName }})
+      </ion-label>
+    </ion-chip>
+
+    @if (registration().ObserverGroupName; as group) {
+      <ion-chip color="primary" disabled>
+        <ion-icon name="people-circle-outline"></ion-icon>
+        <ion-label>{{ group }}</ion-label>
+      </ion-chip>
     }
-  </swiper-container>
+  </div>
 
-  <ion-card-content>
-    <h2>
-      {{ registration().ObsLocation.Title }}
-    </h2>
-    <div>
-      <ion-chip color="primary" (click)="dateClicked.set(true)" [disabled]="dateClicked()">
-        <ion-icon name="calendar-number-outline"></ion-icon>
-        <ion-label>
-          @if (dateClicked()) {
-            Observert: {{ registration().DtObsTime | date: "short" }}. Lagret: {{ savedTime() | date: "short" }}.
-          } @else {
-            {{ registration().DtObsTime | date: "short" }}
-          }
-        </ion-label>
-      </ion-chip>
-
-      <ion-chip color="primary" disabled>
-        <ion-icon [src]="geoIcon()"></ion-icon>
-        <ion-label>{{ geoName() }}</ion-label>
-      </ion-chip>
-
-      <ion-chip color="primary" disabled>
-        <ion-icon name="location-outline"></ion-icon>
-        <ion-label>
-          {{ registration().ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
-        </ion-label>
-      </ion-chip>
-
-      <ion-chip color="primary" disabled>
-        <ion-icon name="person-circle-outline"></ion-icon>
-        <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
-        <ion-label>
-          {{ registration().Observer.NickName }} ({{ registration().Observer.CompetenceLevelName }})
-        </ion-label>
-      </ion-chip>
-
-      @if (registration().ObserverGroupName; as group) {
-        <ion-chip color="primary" disabled>
-          <ion-icon name="people-circle-outline"></ion-icon>
-          <ion-label>{{ group }}</ion-label>
-        </ion-chip>
-      }
+  @for (view of registrationViews(); track view.tid) {
+    <div class="registration">
+      <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
     </div>
+  }
+</div>
 
-    @for (view of registrationViews(); track view.tid) {
-      <div class="registration">
-        <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
-      </div>
-    }
-  </ion-card-content>
-
-  <!-- Knapperad med deleknapp og endre-knapp -->
-  <ion-item color="light">
-    <ion-button fill="clear" class="edit-button" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit()">
+<!-- Knapperad med deleknapp og endre-knapp -->
+<div class="buttons ion-color-light">
+  @if (userCanEdit()) {
+    <ion-button fill="clear" class="edit-button" (click)="edit()" [disabled]="isLoadingObsForEdit()">
       <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
       {{ "REGISTRATION.EDIT" | translate }}
+      @if (isLoadingObsForEdit()) {
+        <ion-spinner name="dots" slot="end"></ion-spinner>
+      }
     </ion-button>
-    @if (isLoadingObsForEdit()) {
-      <ion-spinner slot="start" name="dots"></ion-spinner>
-    }
-    <ion-button fill="clear" class="reg-id" slot="end" (click)="share()">
-      ID: {{ registration().RegId }}
-      <ion-icon slot="end" name="share-social"></ion-icon>
-    </ion-button>
-  </ion-item>
-</ion-card>
+  }
+
+  <ion-button fill="clear" (click)="share()" class="reg-id">
+    ID: {{ registration().RegId }}
+    <ion-icon slot="end" name="share-social"></ion-icon>
+  </ion-button>
+</div>
