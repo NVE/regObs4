@@ -898,6 +898,12 @@ ion-select-popover ion-list ion-item ion-radio {
 //   height: 100%;
 // }
 
+.fullscreen-modal {
+  --width: 100svw;
+  --height: 100svh;
+  --background: rgba(0, 0, 0, 0.8);
+}
+
 // White screen css fix for ion-item. See https://github.com/ionic-team/ionic-framework/issues/25760
 // and RO-2083.
 // Removes the negative z-index on the ::after psuedo element

@@ -9,9 +9,15 @@ import {
   signal,
   Signal,
 } from '@angular/core';
-import { AlertController, IonChip, IonIcon, IonLabel, ToastController } from '@ionic/angular/standalone';
 import {
-  AttachmentViewModel,
+  AlertController,
+  IonChip,
+  IonIcon,
+  IonLabel,
+  ModalController,
+  ToastController,
+} from '@ionic/angular/standalone';
+import {
   AvalancheObsViewModel,
   LandslideViewModel,
   RegistrationService,
@@ -56,6 +62,7 @@ import { Share } from '@capacitor/share';
 import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
 import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
+import { ObservationImageCarouselComponent } from '../observation-image-carousel/observation-image-carousel.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -81,6 +88,7 @@ export class ObservationComponent {
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
   private confirmationModalService = inject(ConfirmationModalService);
+  modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
   dateClicked = signal(false);
@@ -251,13 +259,18 @@ export class ObservationComponent {
     return promise;
   }
 
-  //TODO: Midlertidig løsning for å åpne detaljert snøprofil og se større bilder direkte fra karusellen.
-  //På sikt skal nok klikk på bildet i karusell ta deg via en modal før du går videre til detaljert profil
-  imageClicked(attachment: AttachmentViewModel) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const url = (attachment as any).Href || attachment.Url;
-    //kun snøprofil-bilder har href. Href er link til detaljert snøprofil. Andre biler åpnes i maks størrelse
-    window.open(url, '_blank');
+  async imageClicked(attachmentUrl: string | undefined) {
+    if (!attachmentUrl) return;
+    const modal = await this.modalController.create({
+      component: ObservationImageCarouselComponent,
+      cssClass: 'fullscreen-modal',
+      componentProps: {
+        clickedAttachmentUrl: attachmentUrl,
+        allAttachments: this.attachments(),
+        registration: this.registration(),
+      },
+    });
+    await modal.present();
   }
 }
 
