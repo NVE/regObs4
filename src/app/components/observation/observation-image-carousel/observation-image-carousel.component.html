@@ -1,0 +1,80 @@
+<ng-container>
+  <swiper-container
+    #swiper
+    slides-per-view="1"
+    loop="false"
+    css-mode="false"
+    [navigation]="!isNativePlatform"
+    pagination="false"
+    space-between="0"
+    centered-slides="false"
+    center-insufficient-slides="false"
+    zoom="false"
+    keyboard="false"
+    (swiperslidechange)="onSlideChange($event)"
+  >
+    @for (attachment of allAttachments(); track attachment.Url) {
+      <swiper-slide>
+        <img [alt]="attachment.Comment" [src]="attachment.Url" />
+      </swiper-slide>
+    }
+  </swiper-container>
+  <div class="image-description">
+    <div class="image-description__inner">
+      <!-- tittel -->
+      <div class="image-description__title">
+        <span> {{ currentAttachmentData().RegistrationName }}</span>
+        <div class="image-description__links">
+          <a [href]="currentAttachmentData().Url" download class="download-button">
+            <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
+          </a>
+          <a [href]="currentAttachmentData().Url" target="_blank" class="download-button">
+            <ion-icon name="open-outline"></ion-icon> {{ "REGISTRATION.CARD.GO_TO_ORIGINAL_IMAGE" | translate }}
+          </a>
+        </div>
+      </div>
+
+      <!-- kommentar -->
+      @if (currentAttachmentData().Comment) {
+        <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="currentAttachmentData().Comment">
+        </app-key-value>
+      }
+      <!-- region -->
+      @if (registration()?.ObsLocation?.ForecastRegionName) {
+        <app-key-value
+          [key]="'REGISTRATION.DANGER_OBS.FOR_REGION' | translate"
+          [value]="registration()?.ObsLocation?.ForecastRegionName"
+        >
+        </app-key-value>
+      }
+      <!-- sendt inn av -->
+      @if (registration()?.Observer?.NickName) {
+        <app-key-value [key]="'REGISTRATION.CARD.OBSERVED_BY' | translate" [value]="registration()?.Observer?.NickName">
+        </app-key-value>
+      }
+
+      <!-- opphavsrett -->
+      @if (currentAttachmentData().Copyright) {
+        <app-key-value [key]="'MY_PROFILE.COPYRIGHT' | translate" [value]="currentAttachmentData().Copyright">
+        </app-key-value>
+      }
+
+      <!-- fotograf -->
+      @if (currentAttachmentData().Photographer) {
+        <app-key-value [key]="'MY_PROFILE.PHOTOGRAPHER' | translate" [value]="currentAttachmentData().Photographer">
+        </app-key-value>
+      }
+      <!-- observert dato-->
+      @if (registration()?.DtObsTime) {
+        <app-key-value
+          [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate"
+          [value]="registration()?.DtObsTime | date: 'short'"
+        >
+        </app-key-value>
+      }
+    </div>
+  </div>
+  <button class="close-button" (click)="closeModal()" [attr.aria-label]="'CLOSE' | translate">
+    <ion-icon name="close"></ion-icon>
+  </button>
+</ng-container>

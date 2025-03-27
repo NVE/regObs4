@@ -381,7 +381,10 @@
         "OBSERVED": "Observert",
         "REGISTERED": "Registrert",
         "UPDATED": "Endret"
-      }
+      },
+      "OBSERVED_BY": "Sendt inn av",
+      "DOWNLOAD": "Last ned",
+      "GO_TO_ORIGINAL_IMAGE": "Se original"
     },
     "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
