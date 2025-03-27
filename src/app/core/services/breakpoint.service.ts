@@ -1,22 +1,29 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, map, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BreakpointService {
-  private isDesktop = new BehaviorSubject(false);
+  private width = new Subject<number>();
+  isDesktop$ = this.width.pipe(
+    debounceTime(500),
+    map((w) => this.checkIfDesktop(w)),
+    distinctUntilChanged()
+  );
+  isDesktop = toSignal(this.isDesktop$, { initialValue: false });
 
-  onResize(size: number): void {
-    if (size < 900) {
-      this.isDesktop.next(false);
-    } else {
-      this.isDesktop.next(true);
-    }
+  private checkIfDesktop(width: number) {
+    return width >= 900;
   }
 
-  isDesktopView(): Observable<boolean> {
-    return this.isDesktop.asObservable().pipe(distinctUntilChanged());
+  onResize(width: number) {
+    this.width.next(width);
+  }
+
+  onResizeEvent(event: UIEvent): void {
+    const target = event.target as Window;
+    this.onResize(target.innerWidth);
   }
 }

@@ -41,14 +41,11 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     index: number;
     imgUrl: string;
   }> = new EventEmitter();
-  isDesktop?: boolean;
+  isDesktop = this.breakpointService.isDesktop;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   slideOptions?: any;
 
   ngOnInit() {
-    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
-      this.isDesktop = isDesktop;
-    });
     this.slideOptions = {
       autoplay: false,
       slidesPerView: 'auto',
@@ -71,7 +68,6 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   slides: ImgSwiperSlide[] = [];
   activeIndex = 0;
 
-  private ngDestroy$ = new Subject<void>();
   private touchStart$ = new Subject<void>();
 
   // @ViewChild(IonSlides) slider: IonSlides;

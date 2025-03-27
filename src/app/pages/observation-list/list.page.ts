@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { RouterOutlet } from '@angular/router';

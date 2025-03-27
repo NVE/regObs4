@@ -52,7 +52,6 @@ export class AppComponent {
   private injector = inject(Injector);
 
   swipeBackEnabled$: Observable<boolean>;
-  isDesktop?: boolean;
 
   private filterMenuOpened = new Subject<boolean>();
   filterMenuOpened$ = this.filterMenuOpened.asObservable();
@@ -60,9 +59,6 @@ export class AppComponent {
   constructor() {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
-    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
-      this.isDesktop = isDesktop;
-    });
   }
 
   private async initializeApp(): Promise<void> {
@@ -94,8 +90,7 @@ export class AppComponent {
 
   @HostListener('window:resize', ['$event'])
   private onResize(event: UIEvent) {
-    const target = event.target as Window;
-    this.breakpointService.onResize(target.innerWidth);
+    this.breakpointService.onResizeEvent(event);
   }
 
   private async logIfError(results: PromiseSettledResult<unknown>[]) {

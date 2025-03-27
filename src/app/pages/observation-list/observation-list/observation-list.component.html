@@ -4,11 +4,13 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <div class="list-header">
-    <p>{{ isLoading() ? " - " : count() }} {{ "OBSERVATION_LIST.COUNT_POSTFIX" | translate }}</p>
-    <app-show-filter-criteria></app-show-filter-criteria>
-    <app-list-controls></app-list-controls>
-  </div>
+  @if (isDesktop()) {
+    <div class="list-header">
+      <p>{{ isLoading() ? " - " : count() }} {{ "OBSERVATION_LIST.COUNT_POSTFIX" | translate }}</p>
+      <app-show-filter-criteria></app-show-filter-criteria>
+      <app-list-controls></app-list-controls>
+    </div>
+  }
 
   <div class="list">
     @for (reg of registrations(); track reg.RegId) {

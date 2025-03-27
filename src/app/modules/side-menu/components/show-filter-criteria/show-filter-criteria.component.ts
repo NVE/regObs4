@@ -1,7 +1,6 @@
 import { IonChip, IonMenuToggle } from '@ionic/angular/standalone';
 import { Component, computed, inject } from '@angular/core';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { BreakpointService } from '../../../../core/services/breakpoint.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -18,7 +17,6 @@ import moment from 'moment';
 })
 export class ShowFilterCriteriaComponent {
   private userSettingService = inject(UserSettingService);
-  private breakpointService = inject(BreakpointService);
   private geoHelperService = inject(GeoHelperService);
   private searchCriteria = inject(SearchCriteriaService);
   private translate = inject(TranslateService);
@@ -67,7 +65,6 @@ export class ShowFilterCriteriaComponent {
   });
 
   daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { initialValue: 1 });
-  isDesktop = toSignal(this.breakpointService.isDesktopView());
   geoHazardName = toSignal(
     this.userSettingService.currentGeoHazard$.pipe(
       switchMap((geoHazards) => this.geoHelperService.getName(geoHazards))

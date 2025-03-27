@@ -17,7 +17,6 @@ import {
   IonToolbar,
   LoadingController,
   NavController,
-  Platform,
 } from '@ionic/angular/standalone';
 import { KdvService } from '../../modules/common-registration/registration.services';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -82,15 +81,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   private navController = inject(NavController);
   private fileLoggingService = inject(FileLoggingService);
   private breakpointService = inject(BreakpointService);
-  private platform = inject(Platform);
   private confirmationModalService = inject(ConfirmationModalService);
 
   userSettings!: UserSetting;
   isUpdating = false;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
-  isDesktopView?: boolean;
-  isDesktopPlatform?: boolean;
   version: AppVersion = version;
 
   appModeOptions = [
@@ -108,12 +104,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    if (this.platform.is('desktop')) {
-      this.isDesktopPlatform = true;
-    }
-    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
-      this.isDesktopView = isDesktop;
-    });
     this.versionClicks = 0;
     this.subscriptions.push(
       this.userSettingService.userSetting$.subscribe((val) => {

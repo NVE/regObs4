@@ -11,13 +11,6 @@
   margin: 0 auto;
 }
 
-/* Skjul knapper / kontroller på små skjermer */
-@media (max-width: 700px) {
-  .list-header {
-    display: none;
-  }
-}
-
 .list {
   height: 100%;
   width: 100%;

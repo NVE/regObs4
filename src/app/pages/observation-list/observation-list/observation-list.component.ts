@@ -17,6 +17,7 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
 import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 
 @Component({
   selector: 'app-observation-list',
@@ -42,6 +43,7 @@ export class ObservationListComponent {
   private searchRegistrations = inject(SearchRegistrationService);
   private infiniteScroll = viewChild(IonInfiniteScroll);
   private ionRefresher = viewChild(IonRefresher);
+  isDesktop = inject(BreakpointService).isDesktop;
 
   private searchHandler = this.searchRegistrations.pagedSearch(this.searchCriteriaService.searchCriteria$);
   registrations = toSignal(

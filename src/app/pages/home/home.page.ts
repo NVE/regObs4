@@ -2,7 +2,7 @@ import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, IonContent, Platform, ToastController } from '@ionic/angular/standalone';
+import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import L from 'leaflet';
@@ -54,6 +54,7 @@ import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab
 import { ShowFilterCriteriaComponent } from '../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -129,7 +130,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
 
-  isDesktop = inject(Platform).is('desktop');
+  isDesktop = inject(BreakpointService).isDesktop;
 
   constructor() {
     const router = inject(Router);
