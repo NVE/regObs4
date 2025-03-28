@@ -1,7 +1,6 @@
-import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../modules/common-core/models';
@@ -11,8 +10,9 @@ import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { map as mapIcon, list, warning } from 'ionicons/icons';
+import { map as mapIcon, list, warning, openOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-tabs',
@@ -20,98 +20,74 @@ import { toSignal } from '@angular/core/rxjs-interop';
   styleUrls: ['tabs.page.scss'],
   imports: [AsyncPipe, IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, NgIf, TranslatePipe],
 })
-export class TabsPage implements OnInit, OnDestroy {
+export class TabsPage {
   private fullscreenService = inject(FullscreenService);
   private searchCriteriaService = inject(SearchCriteriaService);
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
-  private ngZone = inject(NgZone);
   private tabsService = inject(TabsService);
-
-  private warningGroupInMapViewSubscription?: Subscription;
-  private currentGeoHazardSubscription?: Subscription;
+  private warningGroupInMapViewSubscription = toSignal(this.warningService.warningGroupInMapViewObservable$);
+  private currentGeoHazardSubscription = toSignal(this.userSettingService.currentGeoHazard$, {
+    initialValue: [GeoHazard.NotSpecified],
+  });
   readonly selectedTab$: Observable<TABS | null>;
-
   isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
-
-  warningsInView?: {
-    count: number;
-    text: string;
-    maxWarning: number;
-    hasEmergencyWarning: boolean;
-  };
-  showTrips = false;
-
-  get showBadge(): boolean {
-    if (this.warningsInView) {
-      return this.warningsInView.maxWarning > 0;
-    }
-    return false;
-  }
-
-  get badgeColor(): string {
-    if (this.warningsInView) {
-      return 'warninglevel-' + this.warningsInView.maxWarning;
-    }
-    return 'warninglevel-0';
-  }
-
-  get badgeText(): string {
-    if (this.warningsInView) {
-      return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
-    }
-    return '0'; // Ikke vurdert
-  }
+  isNative = Capacitor.isNativePlatform();
 
   constructor() {
     this.selectedTab$ = this.tabsService.selectedTab$;
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
       this.applyCurrentQueryParams(tab)
     );
-    addIcons({ map: mapIcon, list, warning });
+    addIcons({ map: mapIcon, list, warning, openOutline });
   }
+
+  warningsInView = computed(() => {
+    const warningsInView = this.warningGroupInMapViewSubscription();
+    if (!warningsInView) return null;
+    const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
+    const allMaxWarnings = allWarnings.map((g) => g.getMaxWarning(0));
+    const maxWarning = Math.max(...allMaxWarnings.map((x) => x.max));
+    const hasEmergencyWarning = allMaxWarnings.some((x) => x.max === maxWarning && x.hasWarning);
+    return {
+      count: allWarnings.length,
+      text: allWarnings.length > 9 ? '9+' : allWarnings.length.toString(),
+      maxWarning,
+      hasEmergencyWarning,
+    };
+  });
+
+  showBadge = computed(() => {
+    const warningsInView = this.warningsInView();
+    if (!warningsInView) return false;
+    return warningsInView.maxWarning > 0;
+  });
+
+  badgeColor = computed(() => {
+    const warningsInView = this.warningsInView();
+    if (!warningsInView) return 'warninglevel-0';
+    return 'warninglevel-' + warningsInView.maxWarning;
+  });
+
+  badgeText = computed(() => {
+    const warningsInView = this.warningsInView();
+    if (!warningsInView) return '0'; // Ikke vurdert
+    return `${warningsInView.maxWarning}${warningsInView.hasEmergencyWarning ? '!' : ''}`;
+  });
+
+  warningsLink = computed(() => {
+    if (this.currentGeoHazardSubscription()[0] === GeoHazard.Snow) {
+      return 'https://www.varsom.no/snoskred/varsling/';
+    } else if (this.currentGeoHazardSubscription()[0] === GeoHazard.Water) {
+      return 'https://www.varsom.no/flom-og-jordskred/varsling/';
+    } else {
+      return 'https://www.varsom.no/is/isvarsling';
+    }
+  });
 
   private applyCurrentQueryParams(path: TABS | null) {
     if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
       this.searchCriteriaService.applyQueryParams();
-    }
-  }
-
-  ngOnInit(): void {
-    this.warningGroupInMapViewSubscription = this.warningService.warningGroupInMapViewObservable$
-      .pipe(
-        map((warningsInView) => {
-          const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
-          const allMaxWarnings = allWarnings.map((g) => g.getMaxWarning(0));
-          const maxWarning = Math.max(...allMaxWarnings.map((x) => x.max));
-          const hasEmergencyWarning = allMaxWarnings.some((x) => x.max === maxWarning && x.hasWarning);
-          return {
-            count: allWarnings.length,
-            text: allWarnings.length > 9 ? '9+' : allWarnings.length.toString(),
-            maxWarning,
-            hasEmergencyWarning,
-          };
-        })
-      )
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.warningsInView = val;
-        });
-      });
-
-    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
-      });
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.warningGroupInMapViewSubscription) {
-      this.warningGroupInMapViewSubscription.unsubscribe();
-    }
-    if (this.currentGeoHazardSubscription) {
-      this.currentGeoHazardSubscription.unsubscribe();
     }
   }
 }
