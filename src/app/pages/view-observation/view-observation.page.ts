@@ -16,9 +16,9 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttrib
 import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, switchMap } from 'rxjs/operators';
 import { Subject, merge } from 'rxjs';
-import { SearchService } from 'src/app/modules/common-regobs-api';
+import { RegistrationService } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { NgIf, AsyncPipe } from '@angular/common';
@@ -27,6 +27,7 @@ import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 @Component({
   selector: 'app-view-observation',
@@ -55,7 +56,8 @@ import { ObservationComponent } from 'src/app/components/observation/observation
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private popupInfoService = inject(PopupInfoService);
-  private searchService = inject(SearchService);
+  private userSettingService = inject(UserSettingService);
+  private registrationService = inject(RegistrationService);
   private authService = inject(RegobsAuthService);
   private router = inject(Router);
 
@@ -100,11 +102,9 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   }
 
   private getRegistration$(regId: number) {
-    return this.searchService
-      .SearchSearch({
-        RegId: regId,
-      })
-      .pipe(map((result) => result[0]));
+    return this.userSettingService.language$.pipe(
+      switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey }))
+    );
   }
 
   ngOnInit() {
