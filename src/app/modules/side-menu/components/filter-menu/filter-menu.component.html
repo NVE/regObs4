@@ -3,7 +3,6 @@
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
   <ion-item lines="full">
-    <ion-icon name="location-outline" color="primary"></ion-icon>
     <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)">
       {{ "MENU.SHOW_OBSERVATIONS" | translate }}
     </ion-toggle>
@@ -11,11 +10,9 @@
 
   <ng-container *ngIf="showObservations$ | async">
     <app-update-observations></app-update-observations>
-    <ion-item lines="full">
-      <ion-button (click)="onResetFilters()" class="resetFiltersButton" type="button" fill="clear">
-        <ion-icon src="./assets/icon/reset-button.svg"> </ion-icon>
-        {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
-      </ion-button>
+    <ion-item lines="full" button (click)="onResetFilters()">
+      {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
+      <ion-icon slot="end" name="close-circle-outline"></ion-icon>
     </ion-item>
     <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
     <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
