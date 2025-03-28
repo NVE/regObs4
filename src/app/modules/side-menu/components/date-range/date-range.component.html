@@ -1,6 +1,6 @@
 <ion-accordion-group *ngIf="!isNativePlatform; else observationsDaysBackOnly" (ionChange)="toggleAccordion($event)">
   <ion-accordion value="first">
-    <ion-item slot="header">
+    <ion-item slot="header" color="light">
       <ion-label position="stacked">
         {{ "MENU.TIMESPAN" | translate }}
       </ion-label>
@@ -16,7 +16,7 @@
       </ng-container>
     </ion-item>
     <div slot="content">
-      <ion-list *ngIf="mode() as modeValue">
+      <ion-list *ngIf="mode() as modeValue" lines="none">
         <ion-radio-group [value]="modeValue" (ionChange)="changeMode($event)">
           <ion-item>
             <ion-radio slot="start" value="predefined"></ion-radio>

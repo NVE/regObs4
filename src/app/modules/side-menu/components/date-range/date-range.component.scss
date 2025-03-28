@@ -21,10 +21,6 @@ ion-radio-group ion-item.white-background::part(native) {
   --padding-start: 35px;
 }
 
-ion-accordion ion-item[slot='header'] {
-  --ion-color-base: #fff !important;
-}
-
 ion-item::part(native) {
   max-width: 100%;
 }

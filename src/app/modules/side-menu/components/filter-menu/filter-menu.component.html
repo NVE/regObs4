@@ -2,7 +2,7 @@
   <ion-list-header color="primary" class="ion-no-margin">
     <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
   </ion-list-header>
-  <ion-item lines="full">
+  <ion-item lines="full" color="light" button detail="false">
     <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)">
       {{ "MENU.SHOW_OBSERVATIONS" | translate }}
     </ion-toggle>
@@ -10,7 +10,7 @@
 
   <ng-container *ngIf="showObservations$ | async">
     <app-update-observations></app-update-observations>
-    <ion-item lines="full" button (click)="onResetFilters()" detail="false">
+    <ion-item lines="full" button (click)="onResetFilters()" detail="false" color="light">
       {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
       <ion-icon slot="end" name="close-circle-outline"></ion-icon>
     </ion-item>
@@ -19,7 +19,7 @@
 
     <ion-accordion-group>
       <ion-accordion *ngIf="isSupported('observationType')">
-        <ion-item slot="header">
+        <ion-item slot="header" color="light">
           <app-selected-items-counter-label
             [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)"
           >
@@ -27,9 +27,9 @@
           </app-selected-items-counter-label>
         </ion-item>
         <div slot="content">
-          <ion-list>
+          <ion-list lines="none">
             <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-            <ion-item class="item-height" *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
+            <ion-item *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
               <ion-checkbox
                 [checked]="!slushFlowFilterIsActive && type.isChecked"
                 (click)="setNewType($event, type.parentId, type.id)"
@@ -48,13 +48,13 @@
       <div *ngIf="isSupported('region')">
         <div *ngIf="regions$ | async as regions" slot="content">
           <ion-accordion *ngIf="isSupported('region')" value="a-regions">
-            <ion-item slot="header">
+            <ion-item slot="header" color="light">
               <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
                 {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
               </app-selected-items-counter-label>
             </ion-item>
             <div slot="content">
-              <ion-list>
+              <ion-list lines="none">
                 <ion-item *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
                   <ion-checkbox
                     [value]="region"
@@ -70,13 +70,13 @@
             </div>
           </ion-accordion>
           <ion-accordion value="b-regions">
-            <ion-item slot="header">
+            <ion-item slot="header" color="light">
               <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected$ | async">
                 {{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}
               </app-selected-items-counter-label>
             </ion-item>
             <div slot="content">
-              <ion-list>
+              <ion-list lines="none">
                 <ion-item *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
                   <ion-checkbox
                     [value]="region"
@@ -94,7 +94,7 @@
         </div>
       </div>
       <ion-accordion *ngIf="isSupported('competence')" value="competence">
-        <ion-item slot="header">
+        <ion-item slot="header" color="light">
           <ion-label>
             {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
           </ion-label>
@@ -107,21 +107,19 @@
               &nbsp;({{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }})
             </span>
           </ion-label>
-          <div>
-            <ion-list>
-              <ion-item *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById">
-                <ion-checkbox
-                  [value]="competence"
-                  [checked]="competence.checked"
-                  (ionChange)="competenceCheckboxChanged($event)"
-                  [title]="competence.descriptions.join('<br />')"
-                  labelPlacement="end"
-                  justify="start"
-                  >{{ competence.name }}</ion-checkbox
-                ></ion-item
-              >
-            </ion-list>
-          </div>
+          <ion-list lines="none">
+            <ion-item *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById">
+              <ion-checkbox
+                [value]="competence"
+                [checked]="competence.checked"
+                (ionChange)="competenceCheckboxChanged($event)"
+                [title]="competence.descriptions.join('<br />')"
+                labelPlacement="end"
+                justify="start"
+                >{{ competence.name }}</ion-checkbox
+              ></ion-item
+            >
+          </ion-list>
           <div *ngIf="isSupported('nickName')">
             <ion-label class="margin-bottom" position="stacked">{{
               "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
