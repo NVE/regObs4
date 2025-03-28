@@ -1,15 +1,20 @@
+:host {
+  --background: #fff;
+}
+
 ion-list.list-md {
   padding-bottom: 0;
+  background: var(--background);
+  padding: 0;
 }
 
 ion-radio-group ion-item {
-  --background: #f7f7f7;
   --border-width: 0;
   --inner-border-width: 0;
 }
 
 ion-radio-group ion-item.white-background {
-  --background: #fff;
+  --background: var(--background);
 }
 
 ion-radio-group ion-item.white-background::part(native) {

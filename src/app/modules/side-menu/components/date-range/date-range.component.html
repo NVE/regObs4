@@ -1,7 +1,7 @@
 <ion-accordion-group *ngIf="!isNativePlatform; else observationsDaysBackOnly" (ionChange)="toggleAccordion($event)">
   <ion-accordion value="first">
-    <ion-item slot="header" color="light">
-      <ion-label color="dark" position="stacked">
+    <ion-item slot="header">
+      <ion-label position="stacked">
         {{ "MENU.TIMESPAN" | translate }}
       </ion-label>
       <ng-container *ngIf="useDaysBack(); else showDateRange">
