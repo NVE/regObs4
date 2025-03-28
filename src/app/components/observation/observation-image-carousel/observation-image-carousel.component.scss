@@ -1,6 +1,4 @@
 :host {
-  --height: 100dvh;
-  --width: 100%;
   --image-description-height: 200px;
 }
 
@@ -11,6 +9,8 @@ p {
 swiper-container {
   flex: 1;
   width: 100%;
+  height: 0; //stopper img fra å spre skjermen til
+  min-height: 0;
 }
 
 swiper-container::part(button-next),
@@ -34,10 +34,7 @@ swiper-container::part(button-prev) {
 
 swiper-slide {
   display: flex;
-  width: 100%;
-  height: calc(100dvh - var(--image-description-height));
   justify-content: center;
-  align-items: center;
   img {
     max-width: 100%;
     max-height: 100%;
@@ -61,13 +58,6 @@ swiper-slide {
   }
   &:hover {
     opacity: 0.8;
-  }
-}
-
-@media (max-width: 600px) {
-  .close-button {
-    top: 2rem;
-    right: 2rem;
   }
 }
 
