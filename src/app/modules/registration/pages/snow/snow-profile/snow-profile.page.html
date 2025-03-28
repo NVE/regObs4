@@ -50,13 +50,33 @@
       <app-snow-temp [draft]="draft"></app-snow-temp>
       <app-snow-density [draft]="draft"></app-snow-density>
       <app-compression-test [draft]="draft"> </app-compression-test>
+
+      <!-- Snow profile preview -->
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }} </ion-label>
       </ion-list-header>
-      <ion-item [disabled]="noLayersInSnowProfile()" (click)="openPreview()">
+      <ion-item [disabled]="noLayersInSnowProfile()" (click)="openPreview()" button detail="false">
         <ion-icon name="eye" color="dark" slot="start"></ion-icon>
         <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM" | translate }}</ion-label>
       </ion-item>
+      <ion-modal [isOpen]="showPreview()">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar appHeaderColor>
+              <ion-title>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }}</ion-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="showPreview.set(false)">{{ "DIALOGS.OK" | translate }}</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <div class="img-container">
+              <img [src]="previewUrl()" />
+            </div>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ "REGISTRATION.IMAGES" | translate }} </ion-label>
       </ion-list-header>

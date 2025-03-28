@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
@@ -15,10 +15,10 @@ import {
   IonTitle,
   IonToolbar,
   LoadingController,
-  ModalController,
   ToastController,
+  IonModal,
+  IonButton,
 } from '@ionic/angular/standalone';
-import { FullscreenImageModalPage } from '../../../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
@@ -61,6 +61,8 @@ const DEBUG_TAG = 'SnowProfilePage';
   templateUrl: './snow-profile.page.html',
   styleUrls: ['./snow-profile.page.scss'],
   imports: [
+    IonButton,
+    IonModal,
     CompressionTestComponent,
     EditImagesComponent,
     HeaderColorDirective,
@@ -91,7 +93,6 @@ export class SnowProfilePage extends BasePage {
   override registrationTid = RegistrationTid.SnowProfile2;
 
   private httpClient = inject(HttpClient);
-  private modalController = inject(ModalController);
   private loadingController = inject(LoadingController);
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
@@ -108,6 +109,9 @@ export class SnowProfilePage extends BasePage {
     { id: 6, text: 'REGISTRATION.SNOW.SNOW_PROFILE.WEST' },
     { id: 7, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_WEST' },
   ];
+
+  previewUrl = signal<string | undefined>(undefined);
+  showPreview = signal<boolean>(false);
 
   constructor() {
     super();
@@ -143,10 +147,11 @@ export class SnowProfilePage extends BasePage {
       await loader.present();
       const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
       const format = 5; // Mobile profile plot
-      const size = 400;
+      const size = 600;
       const subscription = this.getPlotFromApiWithFallback(userSetting, format, size).subscribe(
         (result) => {
-          this.openImageModal(result);
+          this.showPreview.set(true);
+          this.previewUrl.set(result);
           this.loadingController.dismiss();
         },
         // Error handler
@@ -196,17 +201,5 @@ export class SnowProfilePage extends BasePage {
       });
       toast.present();
     });
-  }
-
-  private async openImageModal(src: string) {
-    const modal = await this.modalController.create({
-      component: FullscreenImageModalPage,
-      cssClass: 'modal-fullscreen',
-      componentProps: {
-        imgIndex: 0,
-        allImages: [src],
-      },
-    });
-    modal.present();
   }
 }
