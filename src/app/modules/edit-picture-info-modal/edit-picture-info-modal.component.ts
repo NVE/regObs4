@@ -1,5 +1,16 @@
 import { Component, inject, model } from '@angular/core';
-import { IonButton, IonIcon, IonInput, IonItem, IonList, ModalController } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonInput,
+  IonItem,
+  IonList,
+  ModalController,
+  IonToolbar,
+  IonTitle,
+  IonHeader,
+  IonContent,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -9,8 +20,21 @@ import { close } from 'ionicons/icons';
   selector: 'app-edit-picture-info-modal',
   templateUrl: './edit-picture-info-modal.component.html',
   styleUrls: ['./edit-picture-info-modal.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonInput, IonItem, IonList, TranslatePipe],
+  imports: [
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    FormsModule,
+    IonButton,
+    IonInput,
+    IonItem,
+    IonList,
+    TranslatePipe,
+  ],
 })
+/** Brukes til å endre standard rettighetshaver og fotograf for bilder */
 export class EditPictureInfoModalComponent {
   modalController = inject(ModalController);
 

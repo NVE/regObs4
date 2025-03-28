@@ -254,7 +254,7 @@
     "MY_GROUPS": "Mine grupper",
     "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe inntil 48 timer etter den er sendt inn.<br/>For å endre gruppenavn, gruppebeskrivelse og medlemmer, <a href=\"mailto:regobs@nve.no\">ta kontakt</a>.",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
-    "MY_PICTURES": "Mine bilder",
+    "MY_PICTURES": "Standard-innstillinger for bildene mine",
     "MY_NICKNAME": "Mitt kallenavn",
     "INVALID_NICKNAME": "Du må ha et kallenavn!",
     "NICKNAME": "Kallenavn",
@@ -262,7 +262,7 @@
     "NICKNAME_UPDATE_ERROR": "Kallenavnet ditt ble ikke oppdatert. Sjekk om du har nettverk og prøv igjen senere.",
     "NO_GROUPS": "Du er ikke medlem av noen grupper",
     "PHOTOGRAPHER": "Fotograf",
-    "PUBLISH_PHOTOS": "Når du publiserer bilder på observasjoner aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
+    "PUBLISH_PHOTOS": "Dette kan overstyres for hvert bilde du publiserer. Hvis du ikke spesifiserer rettighetshaver, viser vi kallenavnet. Når du publiserer bilder på observasjoner aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
     "SAVE": "Lagre",
     "TITLE": "Min side",
     "USER": "Bruker"

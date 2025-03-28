@@ -1,19 +1,34 @@
-<ion-list>
-  <ion-item>
-    <h2>{{ "MY_PROFILE.MY_PICTURES" | translate }}</h2>
-    <ion-icon name="close" size="large" slot="end" (click)="close()"></ion-icon>
-  </ion-item>
-  <ion-item>
-    <div class="flexContainer margin-mobile">
-      <ion-input [(ngModel)]="copyright" placeholder="copyright">
-        <strong>{{ "MY_PROFILE.COPYRIGHT" | translate }}:</strong>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ "MY_PROFILE.MY_PICTURES" | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{ "CLOSE" | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <div class="flexContainer margin-mobile">
+        <ion-input
+          [(ngModel)]="copyright"
+          [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
+          labelPlacement="stacked"
+        >
+          <strong>{{ "MY_PROFILE.COPYRIGHT" | translate }}:</strong>
+        </ion-input>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        [(ngModel)]="photographer"
+        [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
+        labelPlacement="stacked"
+      >
+        <strong>{{ "MY_PROFILE.PHOTOGRAPHER" | translate }}:</strong>
       </ion-input>
-    </div>
-  </ion-item>
-  <ion-item>
-    <ion-input [(ngModel)]="photographer" placeholder="photographer">
-      <strong>{{ "MY_PROFILE.PHOTOGRAPHER" | translate }}:</strong>
-    </ion-input>
-  </ion-item>
-  <ion-button class="saveButton" (click)="save()">{{ "MY_PROFILE.SAVE" | translate }}</ion-button>
-</ion-list>
+    </ion-item>
+    <p class="info-text ion-padding-top" [innerHTML]="'MY_PROFILE.PUBLISH_PHOTOS' | translate"></p>
+    <ion-button class="saveButton" (click)="save()">{{ "MY_PROFILE.SAVE" | translate }}</ion-button>
+  </ion-list>
+</ion-content>
