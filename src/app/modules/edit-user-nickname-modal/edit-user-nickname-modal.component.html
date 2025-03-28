@@ -1,19 +1,25 @@
-<ion-list>
-  <div class="header">
-    <h2>{{ "MY_PROFILE.MY_NICKNAME" | translate }}</h2>
-    <ion-icon name="close" size="large" slot="end" (click)="close()"></ion-icon>
-  </div>
-  <ion-item>
-    <ion-input
-      [(ngModel)]="nickName"
-      [label]="('MY_PROFILE.NICKNAME' | translate).toUpperCase()"
-      labelPlacement="stacked"
-    >
-      <strong>{{ "MY_PROFILE.NICKNAME" | translate }}:</strong>
-    </ion-input>
-  </ion-item>
-  @if (!nickName()) {
-    <p>{{ "MY_PROFILE.INVALID_NICKNAME" | translate }}</p>
-  }
-  <ion-button class="saveButton" (click)="save()">{{ "MY_PROFILE.SAVE" | translate }}</ion-button>
-</ion-list>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ "MY_PROFILE.MY_NICKNAME" | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{ "CLOSE" | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input
+        [(ngModel)]="nickName"
+        [label]="('MY_PROFILE.NICKNAME' | translate).toUpperCase()"
+        labelPlacement="stacked"
+      >
+        <strong>{{ "MY_PROFILE.NICKNAME" | translate }}:</strong>
+      </ion-input>
+    </ion-item>
+    @if (!nickName()) {
+      <p>{{ "MY_PROFILE.INVALID_NICKNAME" | translate }}</p>
+    }
+    <ion-button class="saveButton" (click)="save()">{{ "MY_PROFILE.SAVE" | translate }}</ion-button>
+  </ion-list>
+</ion-content>

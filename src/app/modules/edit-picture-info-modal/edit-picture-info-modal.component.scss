@@ -1,12 +1,3 @@
-.header {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0;
-  h2 {
-    margin-top: 0.5rem;
-  }
-}
-
 .saveButton {
   width: 100%;
   min-height: 44px;
@@ -15,8 +6,4 @@
 
 ion-list {
   padding: 16px;
-}
-
-ion-icon {
-  float: right;
 }
