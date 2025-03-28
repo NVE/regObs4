@@ -1,4 +1,4 @@
-import { IonItem, IonCheckbox, IonLabel } from '@ionic/angular/standalone';
+import { IonItem, IonCheckbox } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { map } from 'rxjs';
@@ -13,7 +13,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
   templateUrl: './slush-flow-filter.component.html',
   styleUrls: ['./slush-flow-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonCheckbox, IonItem, IonLabel, NgIf],
+  imports: [AsyncPipe, IonCheckbox, IonItem, NgIf],
 })
 export class SlushFlowFilterComponent {
   private searchCriteriaService = inject(SearchCriteriaService);

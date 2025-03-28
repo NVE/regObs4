@@ -1,4 +1,5 @@
 <ion-item *ngIf="visible$ | async" class="item-height">
-  <ion-checkbox [checked]="value$ | async" (ionChange)="setValue($event)"> </ion-checkbox>
-  <ion-label class="ion-padding-start">{{ caption$ | async }}</ion-label>
+  <ion-checkbox [checked]="value$ | async" (ionChange)="setValue($event)" labelPlacement="end" justify="start">
+    {{ caption$ | async }}</ion-checkbox
+  >
 </ion-item>

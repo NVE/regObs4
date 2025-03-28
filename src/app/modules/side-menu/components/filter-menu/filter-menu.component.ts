@@ -1,6 +1,7 @@
 import {
   CheckboxCustomEvent,
-  IonButton,
+  IonAccordion,
+  IonAccordionGroup,
   IonCheckbox,
   IonIcon,
   IonItem,
@@ -38,7 +39,7 @@ import { SelectedItemsCounterLabelComponent } from '../selected-items-counter-la
 import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { eye } from 'ionicons/icons';
+import { closeCircleOutline } from 'ionicons/icons';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -88,7 +89,8 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   imports: [
     AsyncPipe,
     DateRangeComponent,
-    IonButton,
+    IonAccordion,
+    IonAccordionGroup,
     IonCheckbox,
     IonIcon,
     IonItem,
@@ -178,7 +180,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         return 0;
       })
     );
-    addIcons({ eye });
+    addIcons({ closeCircleOutline });
   }
 
   async ngOnInit() {

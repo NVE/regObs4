@@ -268,16 +268,16 @@
       "TITLE": "Observer"
     },
     "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen",
-    "MULTISELECT_SHOW_NO_COUNT": "Shows all",
+    "MULTISELECT_SHOW_NO_COUNT": "shows all",
     "NICK_FILTER": {
-      "PLACEHOLDER": "Search by observer name",
+      "PLACEHOLDER": "Search by nickname",
       "TITLE": "Name"
     },
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observation type"
     },
-    "REGION_FILTER_B_REGIONS_TITLE": "B regions",
-    "REGION_FILTER_TITLE_SNOW": "Avalanche regions",
+    "REGION_FILTER_B_REGIONS_TITLE": "Region without regularly warning service",
+    "REGION_FILTER_TITLE_SNOW": "Region",
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
     "TITLE": "Observation filter"
   },
