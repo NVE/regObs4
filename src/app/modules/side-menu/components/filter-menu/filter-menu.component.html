@@ -10,7 +10,7 @@
 
   <ng-container *ngIf="showObservations$ | async">
     <app-update-observations></app-update-observations>
-    <ion-item lines="full" button (click)="onResetFilters()">
+    <ion-item lines="full" button (click)="onResetFilters()" detail="false">
       {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
       <ion-icon slot="end" name="close-circle-outline"></ion-icon>
     </ion-item>
