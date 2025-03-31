@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
