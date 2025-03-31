@@ -59,7 +59,7 @@
         <ion-icon name="eye" color="dark" slot="start"></ion-icon>
         <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM" | translate }}</ion-label>
       </ion-item>
-      <ion-modal [isOpen]="showPreview()">
+      <ion-modal [isOpen]="showPreview()" (ionModalDidDismiss)="showPreview.set(false)">
         <ng-template>
           <ion-header>
             <ion-toolbar appHeaderColor>
