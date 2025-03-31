@@ -16,6 +16,7 @@ import {
   Platform,
   SearchbarCustomEvent,
   ToggleCustomEvent,
+  IonContent,
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
@@ -91,6 +92,7 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    IonContent,
     IonTitle,
     IonToolbar,
     IonHeader,

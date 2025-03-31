@@ -18,13 +18,6 @@ ion-list {
 }
 
 ion-list.main-list {
-  overflow: auto;
-  max-height: 100vh;
-  padding-top: env(safe-area-inset-top);
-
-  // For å sørge for at det er lett å klikke på ting på mobil nederst i lista
-  padding-bottom: 100px;
-
   .item-height {
     max-height: 40px;
     display: flex;
