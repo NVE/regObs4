@@ -1,3 +1,9 @@
+:host {
+  height: 100%;
+  --background-color: #fff;
+  background-color: var(--background-color);
+}
+
 .resetFiltersButton {
   font-size: 17px;
 }
@@ -8,7 +14,7 @@
 
 ion-list {
   width: 100%;
-  background: #fff;
+  background: var(--background-color);
 }
 
 ion-list.main-list {
