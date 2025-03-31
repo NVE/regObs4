@@ -23,7 +23,9 @@
     <div class="image-description__inner">
       <!-- tittel -->
       <div class="image-description__title">
-        <span> {{ currentAttachmentData().RegistrationName }}</span>
+        @if (currentAttachmentData().RegistrationName) {
+          <span> {{ currentAttachmentData().RegistrationName }}</span>
+        }
         <div class="image-description__links">
           <a [href]="currentAttachmentData().Url" download class="download-button">
             <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}

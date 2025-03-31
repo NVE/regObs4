@@ -6,7 +6,7 @@ import {
   ElementRef,
   inject,
   input,
-  signal,
+  model,
   viewChild,
 } from '@angular/core';
 import { IonIcon, ModalController } from '@ionic/angular/standalone';
@@ -28,16 +28,15 @@ import { KeyValueComponent } from '../key-value/key-value.component';
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
-  clickedAttachmentUrl = input<string>();
+  clickedAttachmentIndex = model<number>(0);
   allAttachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
-  currentSlideIndex = signal(0);
 
   constructor() {
     addIcons({ close, downloadOutline, openOutline });
   }
 
-  currentAttachmentData = computed(() => this.allAttachments()?.[this.currentSlideIndex()]);
+  currentAttachmentData = computed(() => this.allAttachments()?.[this.clickedAttachmentIndex()]);
 
   closeModal() {
     this.modalController.dismiss();
@@ -46,12 +45,10 @@ export class ObservationImageCarouselComponent {
   onSlideChange(e: Event) {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
-    this.currentSlideIndex.set(activeIndex);
+    this.clickedAttachmentIndex.set(activeIndex);
   }
 
   ngAfterViewInit() {
-    const activeAttachmentIndex = this.allAttachments()?.findIndex((x) => x.Url === this.clickedAttachmentUrl());
-    if (!activeAttachmentIndex) return;
-    this.swiper()?.nativeElement.swiper.slideTo(activeAttachmentIndex);
+    this.swiper()?.nativeElement.swiper.slideTo(this.clickedAttachmentIndex());
   }
 }
