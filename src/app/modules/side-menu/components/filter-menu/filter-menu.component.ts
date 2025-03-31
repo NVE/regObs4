@@ -3,13 +3,16 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonCheckbox,
+  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonListHeader,
   IonSearchbar,
+  IonTitle,
   IonToggle,
+  IonToolbar,
   Platform,
   SearchbarCustomEvent,
   ToggleCustomEvent,
@@ -40,6 +43,7 @@ import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline } from 'ionicons/icons';
+import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -87,6 +91,9 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    IonTitle,
+    IonToolbar,
+    IonHeader,
     AsyncPipe,
     DateRangeComponent,
     IonAccordion,
@@ -106,6 +113,7 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
     SlushFlowFilterComponent,
     TranslatePipe,
     UpdateObservationsComponent,
+    HeaderColorDirective,
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {

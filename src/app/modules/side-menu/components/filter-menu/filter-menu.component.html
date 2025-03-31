@@ -1,7 +1,9 @@
 <ion-list class="ion-no-margin main-list filtermenu-scrollfix">
-  <ion-list-header color="primary" class="ion-no-margin">
-    <ion-label>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-label>
-  </ion-list-header>
+  <ion-header color="primary" class="ion-no-margin">
+    <ion-toolbar appHeaderColor>
+      <ion-title>{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
   <ion-item lines="full" color="light" button detail="false">
     <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)">
       {{ "MENU.SHOW_OBSERVATIONS" | translate }}

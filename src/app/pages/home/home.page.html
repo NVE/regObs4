@@ -1,29 +1,38 @@
-<app-header title="{{ appname }}" [fullscreenSupport]="true"></app-header>
-<ion-content>
-  <app-map
-    (mapReady)="onMapReady($event)"
-    [autoActivate]="false"
-    [geoTag]="'HomePage'"
-    [showObserverTrips]="true"
-    [activateFollowModeOnStartup]="activateFollowModeInMapOnStartup"
-    [updateMapViewOnExtentChange]="true"
-  ></app-map>
+<ion-split-pane contentId="main-content-home-page">
+  <ion-menu side="start" menuId="filter" contentId="main-content-home-page">
+    @defer {}
+    <app-filter-menu></app-filter-menu>
+  </ion-menu>
 
-  @defer {
-    <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>
+  <div id="main-content-home-page" class="ion-page">
+    <app-header title="{{ appname }}" [fullscreenSupport]="true"></app-header>
+    <ion-content>
+      <app-map
+        (mapReady)="onMapReady($event)"
+        [autoActivate]="false"
+        [geoTag]="'HomePage'"
+        [showObserverTrips]="true"
+        [activateFollowModeOnStartup]="activateFollowModeInMapOnStartup"
+        [updateMapViewOnExtentChange]="true"
+      ></app-map>
 
-    <app-map-item-bar></app-map-item-bar>
+      @defer {
+        <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>
 
-    <!-- TODO sett tilbake etter at veilederen er fiksa  -->
-    <!-- <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab> -->
-    <app-geo-fab></app-geo-fab>
+        <app-map-item-bar></app-map-item-bar>
 
-    @if (isDesktop()) {
-      <app-show-filter-criteria slot="fixed"></app-show-filter-criteria>
-    }
+        <!-- TODO sett tilbake etter at veilederen er fiksa  -->
+        <!-- <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab> -->
+        <app-geo-fab></app-geo-fab>
 
-    <app-add-menu></app-add-menu>
+        @if (isDesktop()) {
+          <app-show-filter-criteria slot="fixed"></app-show-filter-criteria>
+        }
 
-    <app-data-load [show]="isFetchingObservations$ | async" [label]="spinnerLabel"></app-data-load>
-  }
-</ion-content>
+        <app-add-menu></app-add-menu>
+
+        <app-data-load [show]="isFetchingObservations$ | async" [label]="spinnerLabel"></app-data-load>
+      }
+    </ion-content>
+  </div>
+</ion-split-pane>

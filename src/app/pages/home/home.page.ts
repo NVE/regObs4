@@ -2,7 +2,7 @@ import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, IonContent, ToastController } from '@ionic/angular/standalone';
+import { AlertController, IonContent, ToastController, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import L from 'leaflet';
@@ -55,6 +55,7 @@ import { ShowFilterCriteriaComponent } from '../../modules/side-menu/components/
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -79,9 +80,12 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
     AddMenuComponent,
     AsyncPipe,
     DataLoadComponent,
+    FilterMenuComponent,
     GeoFabComponent,
     HeaderComponent,
     IonContent,
+    IonMenu,
+    IonSplitPane,
     MapCenterInfoComponent_1,
     MapComponent,
     MapItemBarComponent,
