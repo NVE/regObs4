@@ -80,14 +80,15 @@ export class TabsPage {
   });
 
   warningsLink = computed(() => {
+    const isNorwegian =
+      this.language() === LangKey.nb ||
+      this.language() === LangKey.nn ||
+      this.language() === LangKey.sv ||
+      this.language() === LangKey.da;
     if (this.currentGeoHazardSubscription()[0] === GeoHazard.Snow) {
-      return this.language() === LangKey.nb
-        ? settings.services.warning.Snow.webBaseUrl.nb
-        : settings.services.warning.Snow.webBaseUrl.en;
+      return isNorwegian ? settings.services.warning.Snow.webBaseUrl.nb : settings.services.warning.Snow.webBaseUrl.en;
     } else if (this.currentGeoHazardSubscription()[0] === GeoHazard.Water) {
-      return this.language() === LangKey.nb
-        ? settings.services.warning.Soil.webBaseUrl.nb
-        : settings.services.warning.Soil.webBaseUrl.en;
+      return isNorwegian ? settings.services.warning.Soil.webBaseUrl.nb : settings.services.warning.Soil.webBaseUrl.en;
     } else {
       return settings.services.warning.Ice.webBaseUrl.nb;
     }
