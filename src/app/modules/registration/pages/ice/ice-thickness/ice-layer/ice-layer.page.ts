@@ -10,19 +10,28 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
+  IonRow,
+  IonCol,
+  IonIcon,
+  IonGrid,
 } from '@ionic/angular/standalone';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
-import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { arrowBack, arrowForward, chevronDown, chevronUp, trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-ice-layer',
   templateUrl: './ice-layer.page.html',
   styleUrls: ['./ice-layer.page.scss'],
   imports: [
+    IonGrid,
+    IonIcon,
+    IonCol,
+    IonRow,
     HeaderColorDirective,
     IonButton,
     IonButtons,
@@ -34,11 +43,11 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    ModalSaveOrDeleteButtonsComponent,
     NumericInputComponent,
     TranslatePipe,
   ],
 })
+/** Skjema for å registrere et islag */
 export class IceLayerPage {
   private modalController = inject(ModalController);
 
@@ -46,7 +55,11 @@ export class IceLayerPage {
   layerTid = linkedSignal(() => this.iceThicknessLayer()?.IceLayerTID);
   thickness = linkedSignal(() => this.iceThicknessLayer()?.IceLayerThickness);
   isValid = computed(() => this.thickness() != null);
-  isNew = computed(() => this.iceThicknessLayer() != null);
+  isNew = computed(() => this.iceThicknessLayer() == null);
+
+  constructor() {
+    addIcons({ chevronUp, chevronDown, arrowBack, arrowForward, trash });
+  }
 
   cancel() {
     this.modalController.dismiss();

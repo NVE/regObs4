@@ -29,11 +29,23 @@
     >
     </app-numeric-input>
   </ion-list>
-  <app-modal-save-or-delete-buttons
-    [saveDisabled]="!isValid()"
-    (saveClicked)="ok()"
-    (deleteClicked)="delete()"
-    [showDelete]="!isNew()"
-  >
-  </app-modal-save-or-delete-buttons>
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)="ok()" [disabled]="!isValid()" type="submit" expand="block" fill="solid" color="primary">
+          {{ "DIALOGS.OK_BACK" | translate }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    @if (!isNew()) {
+      <ion-row>
+        <ion-col size="6" offset="3">
+          <ion-button (click)="delete()" size="small" fill="clear" expand="block">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            {{ "DIALOGS.DELETE" | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    }
+  </ion-grid>
 </ion-content>

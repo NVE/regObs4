@@ -50,16 +50,15 @@
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{ "REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER" | translate }}</ion-label>
       </ion-item>
-      <app-numeric-input
-        [readonly]="true"
-        [(value)]="iceThickness.IceThicknessSum"
-        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM"
-        [min]="0"
-        [max]="999"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-        suffix="cm"
-      ></app-numeric-input>
+      <ion-item>
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+          {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" | translate }}</ion-label
+        >
+        <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
+          <p class="ion-no-margin">{{ iceThickness.IceThicknessSum | metersToCm }} cm</p>
+        </ion-text>
+      </ion-item>
+
       <app-yes-no-select [(value)]="isWaterBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
       </app-yes-no-select>
       <app-numeric-input
