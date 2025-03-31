@@ -3,16 +3,18 @@ import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@
 import { combineLatest, Observable } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from '../../modules/common-core/models';
+import { GeoHazard, LangKey } from '../../modules/common-core/models';
 import { SearchCriteriaService } from '../../core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { map as mapIcon, list, warning, openOutline } from 'ionicons/icons';
+import { mapOutline, list, warning, openOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { Capacitor } from '@capacitor/core';
+import { settings } from 'src/settings';
 
 @Component({
   selector: 'app-tabs',
@@ -26,12 +28,14 @@ export class TabsPage {
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
   private tabsService = inject(TabsService);
+  private language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   private warningGroupInMapViewSubscription = toSignal(this.warningService.warningGroupInMapViewObservable$);
   private currentGeoHazardSubscription = toSignal(this.userSettingService.currentGeoHazard$, {
     initialValue: [GeoHazard.NotSpecified],
   });
   readonly selectedTab$: Observable<TABS | null>;
   isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
+  isDesktop = inject(BreakpointService).isDesktop;
   isNative = Capacitor.isNativePlatform();
 
   constructor() {
@@ -39,7 +43,7 @@ export class TabsPage {
     combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
       this.applyCurrentQueryParams(tab)
     );
-    addIcons({ map: mapIcon, list, warning, openOutline });
+    addIcons({ mapOutline, list, warning, openOutline });
   }
 
   warningsInView = computed(() => {
@@ -77,11 +81,15 @@ export class TabsPage {
 
   warningsLink = computed(() => {
     if (this.currentGeoHazardSubscription()[0] === GeoHazard.Snow) {
-      return 'https://www.varsom.no/snoskred/varsling/';
+      return this.language() === LangKey.nb
+        ? settings.services.warning.Snow.webBaseUrl.nb
+        : settings.services.warning.Snow.webBaseUrl.en;
     } else if (this.currentGeoHazardSubscription()[0] === GeoHazard.Water) {
-      return 'https://www.varsom.no/flom-og-jordskred/varsling/';
+      return this.language() === LangKey.nb
+        ? settings.services.warning.Soil.webBaseUrl.nb
+        : settings.services.warning.Soil.webBaseUrl.en;
     } else {
-      return 'https://www.varsom.no/is/isvarsling';
+      return settings.services.warning.Ice.webBaseUrl.nb;
     }
   });
 
