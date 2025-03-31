@@ -42,6 +42,7 @@ import {
   bugOutline,
   mailOutline,
 } from 'ionicons/icons';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-side-menu',
@@ -78,7 +79,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   private ngZone = inject(NgZone);
   private externalLinkService = inject(ExternalLinkService);
   private fileLoggingService = inject(FileLoggingService);
-
+  legalUrl = toSignal(this.userSettingService.legalUrl$, { initialValue: '' });
   userSettings?: UserSetting;
   settings = settings;
   TopoMap = TopoMap;
@@ -118,8 +119,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       mailOutline,
     });
   }
-
-  legalTermsUrl = computed(() => this.userSettingService.legalUrl);
 
   async ngOnInit() {
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
