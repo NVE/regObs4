@@ -57,6 +57,14 @@ app-map {
   gap: 10px;
 }
 
+/* Vi har ikke en bra støtte på veldig små skjermer, men dette burde holde bra nok for panoramisk viewet */
+@media screen and (max-height: 580px) and (min-width: 600px) {
+  .bottom-background {
+    right: unset;
+    top: 0;
+  }
+}
+
 .flex-row {
   display: flex;
   align-items: stretch;
