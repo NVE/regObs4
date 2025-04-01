@@ -7,6 +7,10 @@ import { debounceTime, distinctUntilChanged, map, Subject } from 'rxjs';
 })
 export class BreakpointService {
   private width = new Subject<number>();
+  private root = document.documentElement;
+  private desktopBreakpoint: number = +getComputedStyle(this.root)
+    .getPropertyValue('--desktop-breakpoint')
+    .replace('px', '');
   isDesktop$ = this.width.pipe(
     debounceTime(500),
     map((w) => this.checkIfDesktop(w)),
@@ -15,7 +19,7 @@ export class BreakpointService {
   isDesktop = toSignal(this.isDesktop$, { initialValue: false });
 
   private checkIfDesktop(width: number) {
-    return width >= 900;
+    return width >= this.desktopBreakpoint;
   }
 
   onResize(width: number) {

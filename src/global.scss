@@ -52,6 +52,9 @@
 }
 
 :root {
+  /* breakpoints */
+  --desktop-breakpoint: 900px;
+
   --ion-color-primary: #00425f;
   --ion-color-primary-rgb: 0, 66, 95;
   --ion-color-primary-contrast: #dff1f9;

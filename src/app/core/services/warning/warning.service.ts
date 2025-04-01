@@ -49,7 +49,7 @@ export class WarningService {
   private _warningsForCurrentGeoHazardObservable: Observable<WarningGroup[]>;
   private _warningGroupInMapViewObservable: Observable<IWarningGroupInMapView>;
   private latestWarnings: BehaviorSubject<{ [key: string]: IWarningGroup[] }>;
-  private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
+  private mapViewAndAreaObservable$: Observable<IMapViewAndArea>;
 
   get warningsObservable$() {
     return this._warningsObservable;
@@ -66,16 +66,12 @@ export class WarningService {
   /**
    * Extent, center, zoom and area info for the map in HomePage
    */
-  get mapViewAndAreaObservable$(): Observable<IMapViewAndArea> {
-    return this._mapViewAndAreaObservable;
-  }
-
   constructor() {
     this.latestWarnings = new BehaviorSubject({});
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
     this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
-    this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
+    this.mapViewAndAreaObservable$ = this.getMapViewAreaObservable();
   }
 
   private getDataLoadId(geoHazard: GeoHazard, language: LangKey) {
@@ -698,7 +694,6 @@ export class WarningService {
     return { from: fromMoment, to: toMoment };
   }
 
-  // TODO: Move to warning service, only used there
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
     const currenteMapViewAndGeoHazards = combineLatest([
       this.mapService.mapView$,

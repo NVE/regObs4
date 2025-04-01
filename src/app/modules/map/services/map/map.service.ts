@@ -26,7 +26,7 @@ import {
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/url-params';
 
-export type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
+type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
 
 const DEBUG_TAG = 'MapService';
 
@@ -48,7 +48,7 @@ export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapV
   return;
 };
 
-export const getSearchParams = () => {
+const getSearchParams = () => {
   const url = new URL(document.location.href);
   return url.searchParams;
 };
