@@ -42,23 +42,17 @@ swiper-slide {
   }
 }
 
-.close-button {
+ion-fab-button {
+  --background: #fff;
+  --color: var(--ion-color-primary);
   position: fixed;
   top: 1rem;
   right: 1rem;
-  height: 44px;
-  width: 44px;
-  background-color: white;
-  border-radius: 100%;
-  transition: opacity 0.3s;
   z-index: 2;
-  color: var(--ion-color-primary);
-  ion-icon {
-    font-size: 1.5rem;
-  }
-  &:hover {
-    opacity: 0.8;
-  }
+}
+
+ion-fab-button::part(native):hover {
+  opacity: 0.8;
 }
 
 .image-description {
@@ -69,6 +63,12 @@ swiper-slide {
   display: flex;
   justify-content: center;
   box-sizing: border-box;
+}
+
+@media (max-height: 550px) {
+  .image-description {
+    display: none;
+  }
 }
 
 .image-description__inner {

@@ -9,7 +9,7 @@ import {
   model,
   viewChild,
 } from '@angular/core';
-import { IonIcon, ModalController } from '@ionic/angular/standalone';
+import { IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { SwiperContainer } from 'swiper/element';
 import { addIcons } from 'ionicons';
@@ -23,7 +23,7 @@ import { KeyValueComponent } from '../key-value/key-value.component';
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonIcon, TranslatePipe, DatePipe, KeyValueComponent],
+  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent],
 })
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
