@@ -47,7 +47,7 @@ export class AddWebUrlModalPage {
   private modalController = inject(ModalController);
 
   readonly url = input<UrlEditModel>();
-  isNew = computed(() => this.url() != null);
+  isNew = computed(() => this.url() == null);
   urlLine = linkedSignal(() => this.url()?.UrlLine);
   urlDesc = linkedSignal(() => this.url()?.UrlDescription);
 
