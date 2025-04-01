@@ -19,6 +19,7 @@ app-map {
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
 }
 
 .bottom-background {
@@ -65,6 +66,9 @@ app-map {
     .bottom-info {
       max-width: 500px;
     }
+  }
+  .regular-bottom {
+    bottom: 0;
   }
 }
 
