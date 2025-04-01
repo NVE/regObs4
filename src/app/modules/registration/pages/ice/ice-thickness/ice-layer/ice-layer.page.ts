@@ -10,15 +10,12 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-  IonRow,
-  IonCol,
-  IonIcon,
-  IonGrid,
 } from '@ionic/angular/standalone';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
+import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward, chevronDown, chevronUp, trash } from 'ionicons/icons';
@@ -28,10 +25,6 @@ import { arrowBack, arrowForward, chevronDown, chevronUp, trash } from 'ionicons
   templateUrl: './ice-layer.page.html',
   styleUrls: ['./ice-layer.page.scss'],
   imports: [
-    IonGrid,
-    IonIcon,
-    IonCol,
-    IonRow,
     HeaderColorDirective,
     IonButton,
     IonButtons,
@@ -43,6 +36,7 @@ import { arrowBack, arrowForward, chevronDown, chevronUp, trash } from 'ionicons
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
+    ModalSaveOrDeleteButtonsComponent,
     NumericInputComponent,
     TranslatePipe,
   ],
