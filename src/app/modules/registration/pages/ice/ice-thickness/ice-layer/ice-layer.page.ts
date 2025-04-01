@@ -17,6 +17,8 @@ import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-
 import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
 import { ModalSaveOrDeleteButtonsComponent } from '../../../../components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { arrowBack, arrowForward, chevronDown, chevronUp, trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-ice-layer',
@@ -39,6 +41,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     TranslatePipe,
   ],
 })
+/** Skjema for å registrere et islag */
 export class IceLayerPage {
   private modalController = inject(ModalController);
 
@@ -46,7 +49,11 @@ export class IceLayerPage {
   layerTid = linkedSignal(() => this.iceThicknessLayer()?.IceLayerTID);
   thickness = linkedSignal(() => this.iceThicknessLayer()?.IceLayerThickness);
   isValid = computed(() => this.thickness() != null);
-  isNew = computed(() => this.iceThicknessLayer() != null);
+  isNew = computed(() => this.iceThicknessLayer() == null);
+
+  constructor() {
+    addIcons({ chevronUp, chevronDown, arrowBack, arrowForward, trash });
+  }
 
   cancel() {
     this.modalController.dismiss();

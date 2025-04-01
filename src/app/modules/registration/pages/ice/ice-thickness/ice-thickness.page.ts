@@ -13,6 +13,7 @@ import {
   IonListHeader,
   IonReorder,
   IonReorderGroup,
+  IonText,
   IonTitle,
   IonToolbar,
   ModalController,
@@ -37,6 +38,7 @@ import { addCircleOutline } from 'ionicons/icons';
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
   imports: [
+    IonText,
     AsyncPipe,
     EditImagesComponent,
     HeaderColorDirective,
@@ -64,6 +66,7 @@ import { addCircleOutline } from 'ionicons/icons';
     YesNoSelectComponent,
   ],
 })
+/** Skjema for istykkelse. Viser alle registrerte islag */
 export class IceThicknessPage extends BasePage {
   override registrationTid = RegistrationTid.IceThickness;
 
