@@ -68,7 +68,7 @@ export class MapService {
   private userSettingService = inject(UserSettingService);
   private loggingService = inject(LoggingService);
 
-  private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
+  private _mapViewAndAreaObservable: Observable<IMapViewAndArea>; // TODO: Move to warning service, only used there
   private _followModeSubject: BehaviorSubject<boolean>;
   private _followModeObservable: Observable<boolean>;
   private _showUserLocationSubject: BehaviorSubject<boolean>;
@@ -96,6 +96,7 @@ export class MapService {
     return this._noMapExtentAvailable$;
   }
 
+  // TODO: Move to warning service, only used there
   /**
    * Extent, center, zoom and area info for the map in HomePage
    */
@@ -236,6 +237,7 @@ export class MapService {
     );
   }
 
+  // TODO: Move to warning service, only used there
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
     const currenteMapViewAndGeoHazards = combineLatest([this.mapView$, this.userSettingService.currentGeoHazard$]).pipe(
       filter((value): value is [IMapView, GeoHazard[]] => value[0] != null),

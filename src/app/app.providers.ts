@@ -52,6 +52,7 @@ import { WebAttachmentService } from './modules/common-registration/services/add
 import { settings } from 'src/settings';
 import { Observable } from 'rxjs';
 import { AppMode } from './modules/common-core/models';
+import { provideWarningService } from './core/services/warning/provide-warning-service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -190,4 +191,5 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
     provide: NewAttachmentService,
     useClass: isPlatform('hybrid') ? FileAttachmentService : WebAttachmentService,
   },
+  provideWarningService(),
 ];
