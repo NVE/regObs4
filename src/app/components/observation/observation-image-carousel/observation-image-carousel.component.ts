@@ -28,27 +28,27 @@ import { KeyValueComponent } from '../key-value/key-value.component';
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
-  clickedAttachmentIndex = model<number>(0);
-  allAttachments = input<AttachmentViewModel[]>([]);
+  attachmentIndex = model<number>(0);
+  attachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
 
   constructor() {
     addIcons({ close, downloadOutline, openOutline });
   }
 
-  currentAttachmentData = computed(() => this.allAttachments()?.[this.clickedAttachmentIndex()]);
+  currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
 
   closeModal() {
     this.modalController.dismiss();
   }
 
-  onSlideChange(e: Event) {
+  setCurrentSlideIndex(e: Event) {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
-    this.clickedAttachmentIndex.set(activeIndex);
+    this.attachmentIndex.set(activeIndex);
   }
 
   ngAfterViewInit() {
-    this.swiper()?.nativeElement.swiper.slideTo(this.clickedAttachmentIndex());
+    this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
   }
 }

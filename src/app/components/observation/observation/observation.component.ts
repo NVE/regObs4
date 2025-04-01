@@ -259,12 +259,12 @@ export class ObservationComponent {
     return promise;
   }
 
-  async imageClicked(index: number) {
+  async openImageCarousel(index: number) {
     const modal = await this.modalController.create({
       component: ObservationImageCarouselComponent,
       cssClass: 'fullscreen-modal',
       componentProps: {
-        clickedAttachmentIndex: index,
+        attachmentIndex: index,
         allAttachments: this.attachments(),
         registration: this.registration(),
       },

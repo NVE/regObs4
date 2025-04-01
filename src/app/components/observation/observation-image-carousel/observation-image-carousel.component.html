@@ -1,18 +1,13 @@
 <swiper-container
   #swiper
-  slides-per-view="1"
-  loop="false"
   css-mode="false"
   navigation="true"
   pagination="false"
-  space-between="0"
-  centered-slides="false"
-  center-insufficient-slides="false"
   zoom="true"
   keyboard="false"
-  (swiperslidechange)="onSlideChange($event)"
+  (swiperslidechange)="setCurrentSlideIndex($event)"
 >
-  @for (attachment of allAttachments(); track attachment.Url) {
+  @for (attachment of attachments(); track attachment.Url) {
     <swiper-slide>
       <img [alt]="attachment.Comment" [src]="attachment.Url" />
     </swiper-slide>
