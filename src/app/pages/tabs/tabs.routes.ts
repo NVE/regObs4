@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { canActivateStartWizard } from '../../core/guards/start-wizard.guard';
-import { DesktopBlockGuard } from 'src/app/core/guards/desktop-block.guard';
+import { desktopBlockGuard } from 'src/app/core/guards/desktop-block.guard';
 
 export const routes: Routes = [
   {
@@ -48,7 +48,7 @@ export const routes: Routes = [
       {
         path: 'warning-list',
         loadComponent: () => import('../warning-list/warning-list.page').then((m) => m.WarningListPage),
-        canActivate: [DesktopBlockGuard],
+        canActivate: [desktopBlockGuard],
       },
       {
         path: 'observation/search',
