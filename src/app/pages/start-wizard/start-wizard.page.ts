@@ -35,7 +35,7 @@ export class StartWizardPage {
   LangKey = LangKey;
   currentSlideIndex = 0;
   language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
-  legalUrl = this.userSettingService.legalUrl;
+  legalUrl = toSignal(this.userSettingService.legalUrl$);
   userSettings = toSignal(this.userSettingService.userSetting$);
   supportedLanguages: {
     lang: string;
