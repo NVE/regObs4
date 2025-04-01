@@ -4,6 +4,10 @@
   background-color: var(--background-color);
 }
 
+ion-title.title-small {
+  padding-bottom: 0;
+}
+
 .resetFiltersButton {
   font-size: 17px;
 }

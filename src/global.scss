@@ -956,3 +956,19 @@ swiper-container::part(button-prev),
 swiper-container::part(button-next) {
   color: var(--ion-color-primary);
 }
+
+/**
+ * Styling for filtermenyen, som skal vises hele tiden på store skjermer.
+ * Reglene ligger globalt siden menyen vises både i kartet og listevisninga.
+ * https://ionicframework.com/docs/api/split-pane#css-custom-properties-1
+ */
+ion-split-pane {
+  --side-max-width: 300px;
+  --border: none;
+}
+
+@media (min-width: 2000px) {
+  ion-split-pane {
+    --side-max-width: 400px;
+  }
+}

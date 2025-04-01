@@ -27,11 +27,6 @@ import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter
       </div>
     </ion-split-pane>
   `,
-  styles: `
-    ion-split-pane {
-      --side-max-width: 300px;
-    }
-  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AddMenuComponent,
