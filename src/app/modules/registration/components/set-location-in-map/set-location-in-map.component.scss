@@ -59,7 +59,7 @@ app-map {
 }
 
 /* Vi har ikke en bra støtte på veldig små skjermer, men dette burde holde bra nok for panoramisk viewet */
-@media screen and (max-height: 580px) and (min-width: 400px) {
+@media screen and (max-height: 650px) and (min-width: 400px) {
   .bottom-background {
     right: unset;
     top: 0;
