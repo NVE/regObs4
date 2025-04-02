@@ -15,7 +15,9 @@ import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter
   template: `
     <ion-split-pane contentId="main-content-list-page">
       <ion-menu side="start" menuId="filter" contentId="main-content-list-page">
-        <app-filter-menu></app-filter-menu>
+        @defer {
+          <app-filter-menu></app-filter-menu>
+        }
       </ion-menu>
 
       <div id="main-content-list-page" class="ion-page">
