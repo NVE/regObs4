@@ -966,9 +966,3 @@ ion-split-pane {
   --side-max-width: 300px;
   --border: none;
 }
-
-@media (min-width: 2000px) {
-  ion-split-pane {
-    --side-max-width: 400px;
-  }
-}
