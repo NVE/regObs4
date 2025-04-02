@@ -20,11 +20,3 @@ ion-list {
   width: 100%;
   background: var(--background-color);
 }
-
-ion-list.main-list {
-  .item-height {
-    max-height: 40px;
-    display: flex;
-    align-items: center;
-  }
-}
