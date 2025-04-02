@@ -17,6 +17,8 @@ import { close, downloadOutline, openOutline } from 'ionicons/icons';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
+import { settings } from 'src/settings';
+import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 
 @Component({
   selector: 'app-observation-image-carousel',
@@ -31,11 +33,17 @@ export class ObservationImageCarouselComponent {
   attachmentIndex = model<number>(0);
   attachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
-
   constructor() {
     addIcons({ close, downloadOutline, openOutline });
   }
 
+  roundedDownOrientationValue = computed(() => {
+    const aspectValue = this.currentAttachmentData().Aspect; //256
+    if (!aspectValue) return '';
+    const roundedDownOrientation = getRoundedDownOrientationValue(aspectValue);
+    if (!roundedDownOrientation) return '';
+    return settings.orientation[roundedDownOrientation];
+  });
   currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
 
   closeModal() {

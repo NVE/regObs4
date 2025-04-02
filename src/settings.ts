@@ -58,6 +58,16 @@ export const settings: ISettings = {
     },
     timeZone: 'Europe/Oslo',
   },
+  orientation: {
+    0: 'COMPASS_DIRECTION.NORTH',
+    45: 'COMPASS_DIRECTION.NORTH_EAST',
+    90: 'COMPASS_DIRECTION.EAST',
+    135: 'COMPASS_DIRECTION.SOUTH_EAST',
+    180: 'COMPASS_DIRECTION.SOUTH',
+    225: 'COMPASS_DIRECTION.SOUTH_WEST',
+    270: 'COMPASS_DIRECTION.WEST',
+    315: 'COMPASS_DIRECTION.NORTH_WEST',
+  },
   services: {
     regObs: {
       apiUrl: {

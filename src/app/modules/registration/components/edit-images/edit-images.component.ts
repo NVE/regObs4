@@ -51,6 +51,7 @@ import { SelectOption } from 'src/app/modules/shared/components/input/select/sel
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -117,20 +118,15 @@ export class EditImagesComponent implements OnInit {
   readonly onBeforeAdd = input<() => Promise<void> | void>();
   readonly attachmentType = input<AttachmentType>('Attachment');
   readonly ref = input<string>();
+  getRoundedDownOrientationValue = getRoundedDownOrientationValue;
   userSettings = toSignal(this.userSettingService.userSetting$);
   myPage = toSignal(this.regobsAuthService.myPageData$);
   selectedAspect = model<number | undefined>(undefined);
 
-  aspectOptions: SelectOption[] = [
-    { id: 0, text: this.translateService.instant('DIRECTION.N') },
-    { id: 45, text: this.translateService.instant('DIRECTION.NE') },
-    { id: 90, text: this.translateService.instant('DIRECTION.E') },
-    { id: 135, text: this.translateService.instant('DIRECTION.SE') },
-    { id: 180, text: this.translateService.instant('DIRECTION.S') },
-    { id: 225, text: this.translateService.instant('DIRECTION.SW') },
-    { id: 270, text: this.translateService.instant('DIRECTION.W') },
-    { id: 315, text: this.translateService.instant('DIRECTION.NW') },
-  ];
+  aspectOptions: SelectOption[] = Object.entries(settings.orientation).map(([key, value]) => ({
+    id: +key,
+    text: this.translateService.instant(value),
+  }));
 
   isHybrid?: boolean;
   accept = ALLOWED_ATTACHMENT_FILE_TYPES;
@@ -183,10 +179,19 @@ export class EditImagesComponent implements OnInit {
     this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Comment: comment });
   }
 
-  addNewAttachmentAspect(attachment: AttachmentUploadEditModel, event: Event) {
-    const aspect = (event.target as HTMLSelectElement).value;
+  addNewAttachmentAspect(attachment: AttachmentUploadEditModel, aspect: string | number | boolean | undefined) {
     if (aspect == null || aspect == undefined) return;
     this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Aspect: +aspect });
+  }
+
+  updateExistingAttachmentAspect(
+    attachment: RemoteOrLocalAttachmentEditModel,
+    aspect: string | number | boolean | undefined
+  ) {
+    if (aspect == null || aspect == undefined) return;
+    this.existingAttachments.update((attachments) =>
+      (attachments || []).map((a) => (a.AttachmentId === attachment.AttachmentId ? { ...a, Aspect: +aspect } : a))
+    );
   }
 
   addNewAttachmentPhotographer(attachment: AttachmentUploadEditModel, event: InputCustomEvent) {

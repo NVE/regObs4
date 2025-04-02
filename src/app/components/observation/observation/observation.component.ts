@@ -265,7 +265,7 @@ export class ObservationComponent {
       cssClass: 'fullscreen-modal',
       componentProps: {
         attachmentIndex: index,
-        allAttachments: this.attachments(),
+        attachments: this.attachments(),
         registration: this.registration(),
       },
     });

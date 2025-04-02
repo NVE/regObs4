@@ -43,6 +43,16 @@
       >
       </app-key-value>
     }
+
+    <!-- himmelretning -->
+    @if (currentAttachmentData().Aspect) {
+      <app-key-value
+        [key]="'REGISTRATION.IMAGE_ASPECT' | translate"
+        [value]="roundedDownOrientationValue() | translate"
+      >
+      </app-key-value>
+    }
+
     <!-- sendt inn av -->
     @if (registration()?.Observer?.NickName) {
       <app-key-value [key]="'REGISTRATION.CARD.OBSERVED_BY' | translate" [value]="registration()?.Observer?.NickName">
