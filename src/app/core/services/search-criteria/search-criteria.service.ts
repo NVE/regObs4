@@ -36,6 +36,7 @@ import {
   URL_PARAM_COMPETENCE,
   URL_PARAM_DAYSBACK,
   URL_PARAM_FROMDATE,
+  URL_PARAM_FROMDATE_OLD,
   URL_PARAM_GEOHAZARD,
   URL_PARAM_NICKNAME,
   URL_PARAM_NW_LAT,
@@ -47,6 +48,7 @@ import {
   URL_PARAM_SE_LON,
   URL_PARAM_SLUSH_FLOW,
   URL_PARAM_TODATE,
+  URL_PARAM_TODATE_OLD,
   UrlParams,
 } from './url-params';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
@@ -333,12 +335,17 @@ export class SearchCriteriaService {
     let fromObsTime: string | undefined;
     let toObsTime: string | undefined;
 
-    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
-      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
+    if (url.searchParams.get(URL_PARAM_FROMDATE) || url.searchParams.get(URL_PARAM_FROMDATE_OLD)) {
+      fromObsTime = convertToIsoDateTime(
+        url.searchParams.get(URL_PARAM_FROMDATE) || url.searchParams.get(URL_PARAM_FROMDATE_OLD)
+      );
     }
 
-    if (url.searchParams.get(URL_PARAM_TODATE)) {
-      toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
+    if (url.searchParams.get(URL_PARAM_TODATE) || url.searchParams.get(URL_PARAM_TODATE_OLD)) {
+      toObsTime = convertToIsoDateTime(
+        url.searchParams.get(URL_PARAM_TODATE) || url.searchParams.get(URL_PARAM_TODATE_OLD),
+        'end'
+      );
     }
 
     this.setUseDaysBack(!fromObsTime);

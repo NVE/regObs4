@@ -37,6 +37,7 @@ import { SubTile, SupportTile } from '../../models/support-tile.model';
 import { isArraysEqual } from 'src/app/modules/common-core/helpers/arrays';
 import {
   URL_PARAM_DAYSBACK,
+  URL_PARAM_DAYSBACK_OLD,
   URL_PARAM_GEOHAZARD,
   URL_PARAM_GEOHAZARDS_OLD,
   isGeoHazardValid,
@@ -197,7 +198,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   protected parseUrlParameters() {
     const url = new URL(document.location.href);
     const geoHazards = this.readGeoHazardsFromUrl(url.searchParams);
-    const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK);
+    const daysBack = url.searchParams.get(URL_PARAM_DAYSBACK) || url.searchParams.get(URL_PARAM_DAYSBACK_OLD);
     const daysBackNumeric = daysBack ? convertToInt(daysBack) : null;
     return {
       geoHazards,

@@ -5,8 +5,11 @@ export const URL_PARAM_SE_LON = 'seLon';
 export const URL_PARAM_GEOHAZARD = 'hazard';
 export const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
 export const URL_PARAM_DAYSBACK = 'daysBack';
+export const URL_PARAM_DAYSBACK_OLD = 'SelectedNumberOfDays';
 export const URL_PARAM_FROMDATE = 'fromDate';
+export const URL_PARAM_FROMDATE_OLD = 'FromDate';
 export const URL_PARAM_TODATE = 'toDate';
+export const URL_PARAM_TODATE_OLD = 'ToDate';
 export const URL_PARAM_NICKNAME = 'nick';
 export const URL_PARAM_COMPETENCE = 'competence';
 export const URL_PARAM_REGISTRATION_TYPE = 'type';
@@ -47,8 +50,8 @@ export function separatedStringToNumberArray(separatedString: string): number[] 
 }
 
 /**
- * A helper class to change url query parameters.
- * Usage: new UrlParams.set('hazard', 10).set('nick', 'siggen').apply()
+ * Bruk denne til å sette eller fjerne url-parametre.
+ * Eksempel: new UrlParams.set('hazard', 10).set('nick', 'siggen')
  */
 export class UrlParams {
   private params = new URLSearchParams(document.location.search);
@@ -74,15 +77,6 @@ export class UrlParams {
 
   delete(key: string): UrlParams {
     this.params.delete(key);
-    return this;
-  }
-
-  /**
-   * @deprecated Metoden eksisterer fortsatt kun for å tilrettelegge for testing. Testene bør skrives om.
-   */
-  apply(): UrlParams {
-    const newRelativePathQuery = window.location.pathname + '?' + this.params.toString();
-    history.pushState(null, '', newRelativePathQuery);
     return this;
   }
 

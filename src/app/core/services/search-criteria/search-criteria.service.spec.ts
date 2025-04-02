@@ -358,6 +358,15 @@ describe('SearchCriteriaService url parsing', () => {
     return TestBed.inject(SearchCriteriaService);
   };
 
+  /**
+   * Bruk denne til å fake at vi har satt en eller flere url-parametre
+   * Eksempel: setUrlQueryPath('hazard=10&nick=Oluf')
+   */
+  const setUrlQueryPath = (queryPath: string) => {
+    const newRelativePathQuery = `${window.location.pathname}?${queryPath}`;
+    history.pushState(null, '', newRelativePathQuery);
+  };
+
   beforeEach(() => {
     jasmine.clock().install();
     moment.tz.setDefault('Europe/Oslo');
@@ -381,7 +390,7 @@ describe('SearchCriteriaService url parsing', () => {
   });
 
   it('competence url filter works properly', fakeAsync(() => {
-    new UrlParams().set('competence', '150~105').apply();
+    setUrlQueryPath('competence=150~105');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -390,7 +399,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('type wrong hazard should search for 10 as default', fakeAsync(() => {
-    new UrlParams().set('hazard', '140').apply();
+    setUrlQueryPath('hazard=140');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -399,7 +408,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('competence url filter with wrong params', fakeAsync(() => {
-    new UrlParams().set('competence', '150~string').apply();
+    setUrlQueryPath('competence=150~string');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -408,7 +417,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('nick name url filter should work', fakeAsync(() => {
-    new UrlParams().set('nick', 'Oluf').apply();
+    setUrlQueryPath('nick=Oluf');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -418,7 +427,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('type url should work', fakeAsync(() => {
-    new UrlParams().set('type', '81.13~81.26~10').apply();
+    setUrlQueryPath('type=81.13~81.26~10');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -431,7 +440,7 @@ describe('SearchCriteriaService url parsing', () => {
 
   wrongObservationTypeUrl.forEach((test) => {
     it('type url wrong format, set undefined in criteria', fakeAsync(() => {
-      new UrlParams().set('type', test).apply();
+      setUrlQueryPath('type=test');
       const service = getService();
       let criteria;
       service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -441,7 +450,7 @@ describe('SearchCriteriaService url parsing', () => {
   });
 
   it('orderBy url filter should work', fakeAsync(() => {
-    new UrlParams().set('orderBy', 'changeTime').apply();
+    setUrlQueryPath('orderBy=changeTime');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -452,7 +461,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('orderBy url filter should work', fakeAsync(() => {
-    new UrlParams().set('orderBy', 'obsTime').apply();
+    setUrlQueryPath('orderBy=obsTime');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -462,7 +471,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('geo hazard url filter should work', fakeAsync(() => {
-    new UrlParams().set('hazard', '70').apply();
+    setUrlQueryPath('hazard=70');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -472,7 +481,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('illegal geo hazard in url should reuturn 10', fakeAsync(() => {
-    new UrlParams().set('hazard', 'illegal').apply();
+    setUrlQueryPath('hazard=illegal');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -484,22 +493,45 @@ describe('SearchCriteriaService url parsing', () => {
 
   it('days back url filter should work', fakeAsync(() => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    new UrlParams().set('daysBack', 1).apply();
+    setUrlQueryPath('daysBack=1');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     tick(100);
 
     //check that criteria contains correct from time. Should be 1 day earlier at midnight
+    expect(criteria!.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+  }));
 
+  it('old days back url filter should work', fakeAsync(() => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    setUrlQueryPath('SelectedNumberOfDays=1');
+    const service = getService();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+
+    //check that criteria contains correct from time. Should be 1 day earlier at midnight
     expect(criteria!.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
   }));
 
   it('toDate and fromDate filter should work', fakeAsync(() => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
 
-    new UrlParams().set('fromDate', '2020-12-24').apply();
-    new UrlParams().set('toDate', '2022-12-24').apply();
+    setUrlQueryPath('fromDate=2020-12-24&toDate=2022-12-24');
+    const service = getService();
+    let criteria;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+
+    expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
+    expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+  }));
+
+  it('old toDate and fromDate filter should work', fakeAsync(() => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+
+    setUrlQueryPath('FromDate=2020-12-24&ToDate=2022-12-24');
     const service = getService();
     let criteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -510,7 +542,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('slush flow filter should be activated by url', fakeAsync(() => {
-    new UrlParams().set('slushFlow', true).apply();
+    setUrlQueryPath('slushFlow=true');
     const service = getService();
     let criteria: SearchCriteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -524,7 +556,7 @@ describe('SearchCriteriaService url parsing', () => {
   }));
 
   it('slush flow filter should be deactivated by url', fakeAsync(() => {
-    new UrlParams().set('slushFlow', false).apply();
+    setUrlQueryPath('slushFlow=false');
     const service = getService();
     let criteria: SearchCriteria;
     service.searchCriteria$.subscribe((c) => (criteria = c));
