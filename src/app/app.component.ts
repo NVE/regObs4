@@ -16,8 +16,7 @@ import { BreakpointService } from './core/services/breakpoint.service';
 import { Keyboard } from '@capacitor/keyboard';
 import { SqliteService } from './core/services/sqlite/sqlite.service';
 import { SideMenuComponent } from './modules/side-menu/components/side-menu.component';
-import { NgIf, AsyncPipe } from '@angular/common';
-import { FilterMenuComponent } from './modules/side-menu/components/filter-menu/filter-menu.component';
+import { AsyncPipe } from '@angular/common';
 import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
 
 const DEBUG_TAG = 'AppComponent';
@@ -25,16 +24,7 @@ const DEBUG_TAG = 'AppComponent';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [
-    AsyncPipe,
-    FilterMenuComponent,
-    GpsDebugComponent,
-    IonApp,
-    IonMenu,
-    IonRouterOutlet,
-    NgIf,
-    SideMenuComponent,
-  ],
+  imports: [AsyncPipe, GpsDebugComponent, IonApp, IonMenu, IonRouterOutlet, SideMenuComponent],
 })
 export class AppComponent {
   private platform = inject(Platform);
@@ -52,9 +42,6 @@ export class AppComponent {
   private injector = inject(Injector);
 
   swipeBackEnabled$: Observable<boolean>;
-
-  private filterMenuOpened = new Subject<boolean>();
-  filterMenuOpened$ = this.filterMenuOpened.asObservable();
 
   constructor() {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
@@ -78,10 +65,6 @@ export class AppComponent {
     this.breakpointService.onResize(this.platform.width());
 
     this.afterAppInitialized();
-  }
-
-  filterMenuWillOpen() {
-    this.filterMenuOpened.next(true);
   }
 
   private afterAppInitialized() {

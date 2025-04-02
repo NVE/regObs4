@@ -4,18 +4,6 @@
       <app-side-menu></app-side-menu>
     }
   </ion-menu>
-  <ion-menu
-    maxEdgeStart="0"
-    side="start"
-    menuId="filter"
-    contentId="main-content"
-    style="--background: #fff"
-    (ionWillOpen)="filterMenuWillOpen()"
-  >
-    @defer {
-      <app-filter-menu *ngIf="filterMenuOpened$ | async"></app-filter-menu>
-    }
-  </ion-menu>
   <ion-router-outlet id="main-content" [swipeGesture]="(swipeBackEnabled$ | async)!"></ion-router-outlet>
   <!-- TODO: Ikke rendre gps debug default -->
   <app-gps-debug></app-gps-debug>
