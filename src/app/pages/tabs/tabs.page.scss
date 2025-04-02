@@ -3,7 +3,7 @@ a {
   text-decoration: none;
 }
 
-@media screen and (min-width: 900px) {
+.tab-bar--desktop {
   ion-tab-button {
     font-size: 1rem;
     transition: background 0.3s ease-in-out;
