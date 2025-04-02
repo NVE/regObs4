@@ -63,9 +63,6 @@ export class WarningService {
     return this._warningGroupInMapViewObservable;
   }
 
-  /**
-   * Extent, center, zoom and area info for the map in HomePage
-   */
   constructor() {
     this.latestWarnings = new BehaviorSubject({});
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
