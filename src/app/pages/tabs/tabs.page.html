@@ -1,21 +1,47 @@
 <ion-tabs>
-  <ion-tab-bar slot="bottom" color="primary" *ngIf="!isFullscreen()">
+  <ion-tab-bar slot="bottom" [class.tab-bar--desktop]="isDesktop()" color="primary" *ngIf="!isFullscreen()">
     <ng-container *ngIf="selectedTab$ | async as selectedTab">
       <!-- home will navigate to route '' / start page / map page, but it is not allowed to set '' as a tab value. Router config redirects to ''. -->
-      <ion-tab-button tab="home" [selected]="selectedTab === 'home'">
-        <ion-icon name="map"></ion-icon>
+      <ion-tab-button
+        [class.tab-button--active]="selectedTab === 'home'"
+        tab="home"
+        [selected]="selectedTab === 'home'"
+        [layout]="isDesktop() ? 'icon-end' : 'icon-top'"
+      >
+        <ion-icon name="map-outline" aria-hidden="true"></ion-icon>
         <ion-label>{{ "TABS.MAP" | translate }}</ion-label>
       </ion-tab-button>
-      <ion-tab-button tab="search" [selected]="selectedTab === 'search'">
-        <ion-icon name="list"></ion-icon>
+      <ion-tab-button
+        [class.tab-button--active]="selectedTab === 'search'"
+        tab="search"
+        [selected]="selectedTab === 'search'"
+        [layout]="isDesktop() ? 'icon-end' : 'icon-top'"
+      >
+        <ion-icon name="list" aria-hidden="true"></ion-icon>
         <ion-label>{{ "TABS.LIST" | translate }}</ion-label>
       </ion-tab-button>
-      <ion-tab-button tab="warning-list" [selected]="selectedTab === 'warning-list'">
-        <ion-icon name="warning"></ion-icon>
-        <ion-label>{{ "TABS.WARNINGS" | translate }}</ion-label>
-        <ion-badge *ngIf="showBadge" [color]="badgeColor">{{ badgeText }}</ion-badge>
-      </ion-tab-button>
+      @if (isNative) {
+        <ion-tab-button
+          tab="warning-list"
+          [selected]="selectedTab === 'warning-list'"
+          [class.tab-button--active]="selectedTab === 'warning-list'"
+        >
+          <ion-icon name="warning" aria-hidden="true"></ion-icon>
+          <ion-label>{{ "TABS.WARNINGS" | translate }}</ion-label>
+          <ion-badge *ngIf="showBadge()" [color]="badgeColor()">{{ badgeText() }}</ion-badge>
+        </ion-tab-button>
+      } @else {
+        <ion-tab-button
+          class="tab-button--desktop"
+          [href]="warningsLink()"
+          target="_blank"
+          [layout]="isDesktop() ? 'icon-end' : 'icon-top'"
+          [class.tab-button--active]="selectedTab === 'warning-list'"
+        >
+          <ion-icon name="open-outline" aria-hidden="true"></ion-icon>
+          <ion-label>{{ "TABS.WARNINGS" | translate }}</ion-label>
+        </ion-tab-button>
+      }
     </ng-container>
   </ion-tab-bar>
 </ion-tabs>
-<!-- <app-coach-marks-main-screen></app-coach-marks-main-screen> -->

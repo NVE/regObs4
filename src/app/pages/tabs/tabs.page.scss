@@ -1,0 +1,32 @@
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tab-bar--desktop {
+  ion-tab-button {
+    font-size: 1rem;
+    transition: background 0.3s ease-in-out;
+  }
+
+  ion-label,
+  ion-icon {
+    transition: color 0.3s ease-in-out;
+  }
+
+  ion-tab-button:hover {
+    background: rgb(200, 234, 249); //--interactive-ghost-background-hover fra designsystem
+  }
+
+  ion-tab-button:hover ion-label,
+  ion-tab-button:hover ion-icon {
+    color: black;
+  }
+
+  .tab-button--active {
+    ion-label,
+    ion-icon {
+      color: white;
+    }
+  }
+}

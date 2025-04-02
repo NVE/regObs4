@@ -5,6 +5,12 @@ import { SVALBARD_BOUNDS } from './app/core/helpers/leaflet/svalbard-bounds';
 import { MapLayerZIndex } from './app/core/models/maplayer-zindex.enum';
 import { ISettings } from './settings.model';
 
+const snowBaseUrlNb = 'https://www.varsom.no/snoskred/varsling';
+const snowBaseUrlEn = 'https://www.varsom.no/en/snow/forecast';
+const floodLandslideBaseUrlNb = 'https://www.varsom.no/flom-og-jordskred/varsling';
+const floodLandslideBaseUrlEn = 'https://www.varsom.no/en/flood-and-landslide-warning-service';
+const iceBaseUrlNb = 'https://www.varsom.no/is/isvarsling/';
+
 export const settings: ISettings = {
   authConfig: {
     TEST: {
@@ -83,30 +89,45 @@ export const settings: ISettings = {
       dateFormat: 'YYYY-MM-DD',
       Snow: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
+        webBaseUrl: {
+          nb: snowBaseUrlNb,
+          en: snowBaseUrlEn,
+        },
         webUrl: {
-          nb: 'https://www.varsom.no/snoskred/varsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
-          en: 'https://www.varsom.no/en/snow/forecast/warning/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+          nb: `${snowBaseUrlNb}/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche`,
+          en: `${snowBaseUrlEn}/warning/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche`,
         },
         featureName: 'omradeID',
       },
       Soil: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
+        webBaseUrl: {
+          nb: floodLandslideBaseUrlNb,
+          en: floodLandslideBaseUrlEn,
+        },
         webUrl: {
-          nb: 'https://www.varsom.no/flom-og-jordskred/varsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
-          en: 'https://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+          nb: `${floodLandslideBaseUrlNb}/warning/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide`,
+          en: `${floodLandslideBaseUrlEn}/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide`,
         },
         featureName: 'fylkesnummer',
       },
       Water: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api',
+        webBaseUrl: {
+          nb: floodLandslideBaseUrlNb,
+          en: floodLandslideBaseUrlEn,
+        },
         webUrl: {
-          nb: 'https://www.varsom.no/flom-og-jordskred/varsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
-          en: 'https://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+          nb: `${floodLandslideBaseUrlNb}/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood`,
+          en: `${floodLandslideBaseUrlNb}/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood`,
         },
         featureName: 'fylkesnummer',
       },
       Ice: {
         apiUrl: 'https://www.iskart.no/json/ice_forecast_regions.json',
+        webBaseUrl: {
+          nb: iceBaseUrlNb,
+        },
         featureName: 'fylkesnummer',
       },
     },

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, BehaviorSubject, Subject, of, concat } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, of, concat } from 'rxjs';
 import {
   switchMap,
   shareReplay,
@@ -16,11 +16,8 @@ import {
   debounceTime,
   pairwise,
 } from 'rxjs/operators';
-import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { fromWorker } from 'observable-webworker';
-import { IRegionInViewInput, IRegionInViewOutput } from '../../web-workers/region-in-view-models';
 import L from 'leaflet';
 import {
   URL_PARAM_NW_LAT,
@@ -28,7 +25,6 @@ import {
   URL_PARAM_SE_LAT,
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/url-params';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 
 type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
 
@@ -68,7 +64,6 @@ export class MapService {
   private userSettingService = inject(UserSettingService);
   private loggingService = inject(LoggingService);
 
-  private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _followModeSubject: BehaviorSubject<boolean>;
   private _followModeObservable: Observable<boolean>;
   private _showUserLocationSubject: BehaviorSubject<boolean>;
@@ -94,13 +89,6 @@ export class MapService {
    */
   get noMapExtentAvailable$(): Observable<boolean> {
     return this._noMapExtentAvailable$;
-  }
-
-  /**
-   * Extent, center, zoom and area info for the map in HomePage
-   */
-  get mapViewAndAreaObservable$(): Observable<IMapViewAndArea> {
-    return this._mapViewAndAreaObservable;
   }
 
   /**
@@ -178,7 +166,6 @@ export class MapService {
       distinctUntilChanged()
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
-    this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
   centerMapToUser(): void {
@@ -232,42 +219,6 @@ export class MapService {
           : mapViewWithValue.pipe(take(1))
       ),
       tap((val) => this.loggingService.debug('MapView has relevant change!', DEBUG_TAG, val)),
-      shareReplay(1)
-    );
-  }
-
-  private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
-    const currenteMapViewAndGeoHazards = combineLatest([this.mapView$, this.userSettingService.currentGeoHazard$]).pipe(
-      filter((value): value is [IMapView, GeoHazard[]] => value[0] != null),
-      map(([mapView, geoHazards]) => ({
-        mapView,
-        bounds: [
-          mapView.bounds.getSouthWest().lng, // minx
-          mapView.bounds.getSouthWest().lat, // miny
-          mapView.bounds.getNorthEast().lng, // maxx
-          mapView.bounds.getNorthEast().lat, // maxy
-        ],
-        center: { lat: mapView.center.lat, lng: mapView.center.lng },
-        geoHazards,
-      }))
-    );
-
-    return currenteMapViewAndGeoHazards.pipe(
-      switchMap((cvg) =>
-        fromWorker<IRegionInViewInput, IRegionInViewOutput>(
-          () =>
-            new Worker(new URL('../../web-workers/region-in-view.worker', import.meta.url), {
-              type: 'module',
-            }),
-          currenteMapViewAndGeoHazards
-        ).pipe(
-          map((result) => ({
-            ...cvg.mapView,
-            ...result,
-          }))
-        )
-      ),
-      tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
       shareReplay(1)
     );
   }
