@@ -32,7 +32,7 @@ export class AvalancheEvaluationViewComponent {
   dangerName = this.dangerLevelKdv.getName(this.dangerTid);
   dangerIcon = computed(() => {
     const dangerTid = this.dangerTid();
-    if (dangerTid != null) {
+    if (dangerTid) {
       return IconConfig[dangerTid];
     }
     return undefined;
