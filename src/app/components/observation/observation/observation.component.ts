@@ -10,7 +10,13 @@ import {
   Signal,
 } from '@angular/core';
 import { AlertController, IonChip, IonIcon, IonLabel, ToastController } from '@ionic/angular/standalone';
-import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import {
+  AttachmentViewModel,
+  AvalancheObsViewModel,
+  LandslideViewModel,
+  RegistrationService,
+  RegistrationViewModel,
+} from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
   calendarNumberOutline,
@@ -28,7 +34,7 @@ import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
-import { ImageLocation } from '../../img-swiper/image-location.model';
+import { ImageLocation, ImageLocationStartStop } from '../../img-swiper/image-location.model';
 import L from 'leaflet';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { catchError, firstValueFrom, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
@@ -270,9 +276,62 @@ function getLocation(obs: RegistrationViewModel): ImageLocation {
   return {
     latLng: L.latLng(obs.ObsLocation.Latitude, obs.ObsLocation.Longitude),
     geoHazard: obs.GeoHazardTID,
-    // startStopLocation: this.getStartStopLocation(obs),
-    // damageLocations: this.getDamagePositions(obs),
+    startStopLocation: getStartStopLocation(obs),
+    damageLocations: getDamagePositions(obs),
   };
+}
+
+function getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop | undefined {
+  if (obs.AvalancheObs) {
+    return {
+      ...obs2Latlng(obs.AvalancheObs),
+      totalPolygon: extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
+      startPolygon: extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
+      endPolygon: extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor),
+    };
+  }
+  if (obs.LandSlideObs) {
+    return {
+      ...obs2Latlng(obs.LandSlideObs),
+      totalPolygon: extent2Polygon(obs.LandSlideObs.Extent, settings.map.extentColor),
+      startPolygon: extent2Polygon(obs.LandSlideObs.StartExtent, settings.map.startExtentColor),
+      endPolygon: extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor),
+    };
+  }
+
+  if (obs.WaterLevel2) {
+    return {
+      totalPolygon: extent2Polygon(obs.WaterLevel2.Extent, settings.map.extentColor),
+    };
+  }
+  return undefined;
+}
+
+function getDamagePositions(obs: RegistrationViewModel) {
+  if (obs.DamageObs?.some((d) => d.DamagePosition)) {
+    const positions = obs.DamageObs.map((d) => d.DamagePosition).filter((p) => p && p.Latitude && p.Longitude) as {
+      Latitude: number;
+      Longitude: number;
+    }[];
+    return positions.map((p) => L.latLng(p.Latitude, p.Longitude));
+  }
+  return undefined;
+}
+
+function obs2Latlng(obs: LandslideViewModel | AvalancheObsViewModel) {
+  return {
+    start: obs.StartLat && obs.StartLong ? L.latLng(obs.StartLat, obs.StartLong) : undefined,
+    stop: obs.StopLat && obs.StopLong ? L.latLng(obs.StopLat, obs.StopLong) : undefined,
+  };
+}
+
+function extent2Polygon(extent: number[][] | undefined, color: string) {
+  return extent
+    ? new L.Polygon(
+        extent.map(([lng, lat]) => [lat, lng]),
+        { color }
+      )
+    : undefined;
 }
 
 /** En liste av alle skjema som skal vises for denne observasjonen  */
