@@ -19,19 +19,9 @@ swiper-container::part(button-prev) {
   &:hover {
     opacity: 0.8;
   }
-}
-
-/**
- * Så lenge image description syns, bruk fixed position på knappene.
- * Image description fjernes under 550px;
- */
-@media (min-height: 550px) {
-  swiper-container::part(button-next),
-  swiper-container::part(button-prev) {
-    position: fixed;
-    bottom: 50%;
-    top: unset;
-  }
+  position: fixed;
+  bottom: 50%;
+  top: unset;
 }
 
 @media (max-width: 600px) {
@@ -76,6 +66,10 @@ ion-fab-button::part(native):hover {
 
 @media (max-height: 550px) {
   .image-description {
+    display: none;
+  }
+  swiper-container::part(button-next),
+  swiper-container::part(button-prev) {
     display: none;
   }
 }
