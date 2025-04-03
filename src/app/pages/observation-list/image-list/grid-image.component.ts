@@ -10,22 +10,19 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
   selector: 'app-grid-image',
   imports: [],
   template: `
-    <div class="grid-image">
-      <img [src]="src()" (load)="setAspectRatioClass($event)" [alt]="attachmentAlt()" />
+    <img [src]="src()" (load)="setAspectRatioClass($event)" [alt]="attachmentAlt()" />
 
-      @if (attachment().RegistrationName) {
-        <div class="grid-image__text">{{ attachment().RegistrationName }}</div>
-      }
-      @if (attachment().Comment) {
-        <div class="grid-image__text">
-          <i>{{ attachment().Comment }}</i>
-        </div>
-      }
-    </div>
+    @if (attachment().RegistrationName) {
+      <div class="grid-image__text">{{ attachment().RegistrationName }}</div>
+    }
+    @if (attachment().Comment) {
+      <div class="grid-image__text">
+        <i>{{ attachment().Comment }}</i>
+      </div>
+    }
   `,
   styles: `
-    .grid-image {
-      width: 100%;
+    :host {
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -39,6 +36,11 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       text-overflow: ellipsis;
       line-height: 100%;
     }
+
+    .grid-image__text + .grid-image__text {
+      margin-top: 4px;
+    }
+
     img {
       flex: 1;
       object-fit: cover;
