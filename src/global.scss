@@ -898,6 +898,12 @@ ion-select-popover ion-list ion-item ion-radio {
 //   height: 100%;
 // }
 
+.fullscreen-modal {
+  --width: 100svw;
+  --height: 100svh;
+  --background: rgba(0, 0, 0, 0.8);
+}
+
 // White screen css fix for ion-item. See https://github.com/ionic-team/ionic-framework/issues/25760
 // and RO-2083.
 // Removes the negative z-index on the ::after psuedo element
@@ -948,13 +954,28 @@ ion-popover.select-options-with-reset ion-item:first-child {
   color: tomato;
 }
 
+swiper-container {
+  --bullet-border-color: var(--ion-color-primary);
+}
+
 swiper-container::part(bullet-active) {
+  --bullet-border-color: white;
   background-color: var(--ion-color-primary);
 }
 
 swiper-container::part(button-prev),
 swiper-container::part(button-next) {
   color: var(--ion-color-primary);
+}
+
+swiper-container::part(bullet) {
+  background-color: white;
+}
+
+swiper-container::part(bullet),
+swiper-container::part(bullet-active) {
+  opacity: 1;
+  border: 1px solid var(--bullet-border-color);
 }
 
 /**

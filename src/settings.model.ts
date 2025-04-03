@@ -109,6 +109,9 @@ export interface ISettings {
   helpTexts: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   images: any;
+  orientation: {
+    [key: number]: string;
+  };
   sentryDsn: string;
   errorEmailAddress: string;
   foregroundUpdateIntervalMs: number;

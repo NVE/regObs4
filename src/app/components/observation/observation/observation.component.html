@@ -17,8 +17,8 @@
   </swiper-slide>
 
   <!-- lazy-preload-prev-next="2" -->
-  @for (attachment of attachments(); track attachment.AttachmentId) {
-    <swiper-slide (click)="imageClicked(attachment)" lazy="true">
+  @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
+    <swiper-slide (click)="openImageCarousel(index)" lazy="true">
       <!-- <div class="img-desc">
           @if (attachment.Comment) {
             <ion-icon name="chatbubble-ellipses" color="primary"></ion-icon>

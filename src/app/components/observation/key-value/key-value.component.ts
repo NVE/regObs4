@@ -20,5 +20,5 @@ import { IonText } from '@ionic/angular/standalone';
 })
 export class KeyValueComponent {
   key = input<string>();
-  value = input<string>();
+  value = input<string | number | null>();
 }
