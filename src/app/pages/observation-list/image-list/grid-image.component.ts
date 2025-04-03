@@ -11,7 +11,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
   imports: [],
   template: `
     <div class="grid-image">
-      <img [src]="src()" (load)="setAspectRatioClass($event)" />
+      <img [src]="src()" (load)="setAspectRatioClass($event)" [alt]="attachmentAlt()" />
 
       @if (attachment().RegistrationName) {
         <div class="grid-image__text">{{ attachment().RegistrationName }}</div>
@@ -31,6 +31,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       height: 100%;
       padding: 10px;
       box-sizing: border-box;
+      background: #fff;
     }
     .grid-image__text {
       overflow: hidden;
@@ -55,6 +56,10 @@ export class GridImageComponent {
 
   hostClass = signal<string>('');
   src = computed(() => this.attachment().UrlFormats?.Large);
+
+  attachmentAlt = computed(
+    () => `${this.attachment().RegistrationName} ${this.attachment().Comment ? ' - ' + this.attachment().Comment : ''}`
+  );
 
   setAspectRatioClass($event: Event) {
     const img = $event.target as HTMLImageElement;
