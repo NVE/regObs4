@@ -1,5 +1,5 @@
 <!-- shows list of registrations not saved on server (both drafts and registrations in sync)-->
-<div *ngIf="drafts$ | async as drafts">
+<div class="draft-list" *ngIf="drafts$ | async as drafts">
   <ion-item-divider *ngIf="(drafts?.length || 0) > 0" no-border>
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>
