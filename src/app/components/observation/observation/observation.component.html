@@ -12,7 +12,7 @@
   keyboard="false"
 >
   <!-- Map -->
-  <swiper-slide>
+  <swiper-slide (click)="openMapModal()">
     <app-static-map-image [location]="location()"></app-static-map-image>
   </swiper-slide>
 
