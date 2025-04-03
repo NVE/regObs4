@@ -9,9 +9,10 @@ import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-
 import { SearchCriteria } from '../../models/search-criteria';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService } from './search-criteria.service';
-import { separatedStringToNumberArray, UrlParams } from './url-params';
+import { separatedStringToNumberArray } from './url-params';
 import { provideTranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 
 export class TestMapService {
   mapView$!: BehaviorSubject<IMapView>;
@@ -38,6 +39,7 @@ describe('SearchCriteriaService', () => {
     { apiValue: 'DtObsTime', urlValue: 'obsTime' },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const expectQueryParameterToHaveBeenApplied = (key: string, value: any) => {
     const url = new URL(document.location.href + router.url);
     if (!value) {
@@ -186,6 +188,7 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('det skal gå an å fjerne samme observasjonstype som vi nettopp la til i filteret (ro-2734)', fakeAsync(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let criteria: any;
     service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType = { Id: 80, SubTypes: [26] };
@@ -367,6 +370,22 @@ describe('SearchCriteriaService url parsing', () => {
     history.pushState(null, '', newRelativePathQuery);
   };
 
+  /**
+   * Bruk denne til å sjekke at vi har fått riktige kriteria basert på angitte url-parametre
+   * @param queryPath url-parameterne som skal brukes
+   * @returns søkekriteria som skal være i henhold til url-parametrene
+   * @example applyUrlParameter('nick=Oluf').ObserverNickName === 'Oluf'
+   */
+  const applyUrlQueryPath = (queryPath: string): SearchCriteriaRequestDto => {
+    setUrlQueryPath(queryPath);
+    const service = getService();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let criteria: any;
+    service.searchCriteria$.subscribe((c) => (criteria = c));
+    tick(100);
+    return criteria as SearchCriteriaRequestDto;
+  };
+
   beforeEach(() => {
     jasmine.clock().install();
     moment.tz.setDefault('Europe/Oslo');
@@ -398,15 +417,6 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.ObserverCompetence).toEqual([150, 105]);
   }));
 
-  it('type wrong hazard should search for 10 as default', fakeAsync(() => {
-    setUrlQueryPath('hazard=140');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    expect(criteria!.SelectedGeoHazards).toEqual([10]);
-  }));
-
   it('competence url filter with wrong params', fakeAsync(() => {
     setUrlQueryPath('competence=150~string');
     const service = getService();
@@ -416,15 +426,11 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.ObserverCompetence).toEqual(undefined);
   }));
 
-  it('nick name url filter should work', fakeAsync(() => {
-    setUrlQueryPath('nick=Oluf');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    //check that current criteria contains expected nick name
-    expect(criteria!.ObserverNickName).toEqual('Oluf');
-  }));
+  ['nick=Oluf', 'ObserverNickName=Oluf'].forEach((queryPath) => {
+    it('nick name url filter should work', fakeAsync(() => {
+      expect(applyUrlQueryPath(queryPath).ObserverNickName).toEqual('Oluf');
+    }));
+  });
 
   it('type url should work', fakeAsync(() => {
     setUrlQueryPath('type=81.13~81.26~10');
@@ -440,7 +446,7 @@ describe('SearchCriteriaService url parsing', () => {
 
   wrongObservationTypeUrl.forEach((test) => {
     it('type url wrong format, set undefined in criteria', fakeAsync(() => {
-      setUrlQueryPath('type=test');
+      setUrlQueryPath(`type=${test}`);
       const service = getService();
       let criteria;
       service.searchCriteria$.subscribe((c) => (criteria = c));
@@ -470,17 +476,13 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.OrderBy).toEqual('DtObsTime');
   }));
 
-  it('geo hazard url filter should work', fakeAsync(() => {
-    setUrlQueryPath('hazard=70');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    //check that current criteria contains expected geo hazard
-    expect(criteria!.SelectedGeoHazards).toEqual([70]);
-  }));
+  ['hazard=70', 'GeoHazards=70'].forEach((queryPath) => {
+    it('geo hazard url filter should work', fakeAsync(() => {
+      expect(applyUrlQueryPath(queryPath).SelectedGeoHazards).toEqual([70]);
+    }));
+  });
 
-  it('illegal geo hazard in url should reuturn 10', fakeAsync(() => {
+  it('illegal geo hazard in url should return 10', fakeAsync(() => {
     setUrlQueryPath('hazard=illegal');
     const service = getService();
     let criteria;
@@ -491,55 +493,23 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.SelectedGeoHazards).toEqual([10]);
   }));
 
-  it('days back url filter should work', fakeAsync(() => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    setUrlQueryPath('daysBack=1');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+  ['daysBack=1', 'SelectedNumberOfDays=1'].forEach((queryPath) => {
+    it('days back url filter should work', fakeAsync(() => {
+      jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+      setUrlQueryPath(queryPath);
 
-    //check that criteria contains correct from time. Should be 1 day earlier at midnight
-    expect(criteria!.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
-  }));
+      //check that criteria contains correct from time. Should be 1 day earlier at midnight
+      expect(applyUrlQueryPath(queryPath).FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+    }));
+  });
 
-  it('old days back url filter should work', fakeAsync(() => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    setUrlQueryPath('SelectedNumberOfDays=1');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-
-    //check that criteria contains correct from time. Should be 1 day earlier at midnight
-    expect(criteria!.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
-  }));
-
-  it('toDate and fromDate filter should work', fakeAsync(() => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-
-    setUrlQueryPath('fromDate=2020-12-24&toDate=2022-12-24');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-
-    expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
-    expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
-  }));
-
-  it('old toDate and fromDate filter should work', fakeAsync(() => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-
-    setUrlQueryPath('FromDate=2020-12-24&ToDate=2022-12-24');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-
-    expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
-    expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
-  }));
+  ['fromDate=2020-12-24&toDate=2022-12-24', 'FromDate=2020-12-24&ToDate=2022-12-24'].forEach((queryPath) => {
+    it('toDate and fromDate filter should work', fakeAsync(() => {
+      const criteria = applyUrlQueryPath(queryPath);
+      expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
+      expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+    }));
+  });
 
   it('slush flow filter should be activated by url', fakeAsync(() => {
     setUrlQueryPath('slushFlow=true');

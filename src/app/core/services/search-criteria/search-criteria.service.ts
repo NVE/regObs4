@@ -39,6 +39,7 @@ import {
   URL_PARAM_FROMDATE_OLD,
   URL_PARAM_GEOHAZARD,
   URL_PARAM_NICKNAME,
+  URL_PARAM_NICKNAME_OLD,
   URL_PARAM_NW_LAT,
   URL_PARAM_NW_LON,
   URL_PARAM_ORDER_BY,
@@ -350,7 +351,7 @@ export class SearchCriteriaService {
 
     this.setUseDaysBack(!fromObsTime);
 
-    const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
+    const nickName = url.searchParams.get(URL_PARAM_NICKNAME) || url.searchParams.get(URL_PARAM_NICKNAME_OLD);
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
     const regTypesRaw = url.searchParams.get(URL_PARAM_REGISTRATION_TYPE);
     const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : [];

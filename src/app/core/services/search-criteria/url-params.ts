@@ -3,13 +3,9 @@ export const URL_PARAM_NW_LON = 'nwLon';
 export const URL_PARAM_SE_LAT = 'seLat';
 export const URL_PARAM_SE_LON = 'seLon';
 export const URL_PARAM_GEOHAZARD = 'hazard';
-export const URL_PARAM_GEOHAZARDS_OLD = 'GeoHazards';
 export const URL_PARAM_DAYSBACK = 'daysBack';
-export const URL_PARAM_DAYSBACK_OLD = 'SelectedNumberOfDays';
 export const URL_PARAM_FROMDATE = 'fromDate';
-export const URL_PARAM_FROMDATE_OLD = 'FromDate';
 export const URL_PARAM_TODATE = 'toDate';
-export const URL_PARAM_TODATE_OLD = 'ToDate';
 export const URL_PARAM_NICKNAME = 'nick';
 export const URL_PARAM_COMPETENCE = 'competence';
 export const URL_PARAM_REGISTRATION_TYPE = 'type';
@@ -17,6 +13,18 @@ export const URL_PARAM_SLUSH_FLOW = 'slushFlow';
 export const URL_PARAM_ORDER_BY = 'orderBy';
 export const URL_PARAM_REGION = 'regions';
 export const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
+
+// gamle url-parametre som ble brukt av regobs.no fram til mai 2025, som vi fortsatt støtter
+export const URL_PARAM_NW_LAT_OLD = 'NWLat';
+export const URL_PARAM_NW_LON_OLD = 'NWLon';
+export const URL_PARAM_SE_LAT_OLD = 'SELat';
+export const URL_PARAM_SE_LON_OLD = 'SELon';
+export const URL_PARAM_GEOHAZARD_OLD = 'GeoHazards';
+export const URL_PARAM_DAYSBACK_OLD = 'SelectedNumberOfDays';
+export const URL_PARAM_FROMDATE_OLD = 'FromDate';
+export const URL_PARAM_TODATE_OLD = 'ToDate';
+export const URL_PARAM_NICKNAME_OLD = 'ObserverNickName';
+
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
 
 export function isGeoHazardValid(hazards: number[]): boolean {
