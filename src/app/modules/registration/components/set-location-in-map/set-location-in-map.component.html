@@ -1,6 +1,6 @@
-<div>
+<div class="set-location-in-map">
   <app-map
-    [ngClass]="geoHazard() === 60 ? 'water-simple-obs-bottom' : 'regular-bottom'"
+    [class]="geoHazard() === 60 ? 'water-simple-obs-bottom' : 'regular-bottom'"
     *ngIf="locationMarker()"
     [showSupportMaps]="false"
     (mapReady)="onMapReady($event)"
