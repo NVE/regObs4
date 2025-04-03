@@ -1,7 +1,6 @@
 :host {
   display: block;
   height: 100%;
-  --max-width: var(--list-search-max-width, 960px);
 }
 
 ion-content {
@@ -14,7 +13,7 @@ ion-content::part(scroll) {
 }
 
 .list-header {
-  max-width: var(--max-width);
+  max-width: var(--desktop-max-width);
   margin: 0 auto;
 }
 

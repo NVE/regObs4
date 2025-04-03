@@ -93,6 +93,10 @@
   --ion-color-danger-contrast-rgb: 255, 255, 255;
   --ion-color-danger-shade: #b40000;
   --ion-color-danger-tint: #d11a1a;
+
+  /*Setter maks bredde på innhold på store skjermer. Foreløpig bør den brukes på hver side, men
+   vi kan vurdere å ha en felles kilde for layoutens maksimale bredde som settes et sted. */
+  --desktop-max-width: 960px;
 }
 
 html {

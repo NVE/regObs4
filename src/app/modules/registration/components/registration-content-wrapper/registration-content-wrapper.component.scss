@@ -1,4 +1,4 @@
 ion-col {
-  max-width: 600px;
+  max-width: var(--desktop-max-width);
   margin: 0 auto;
 }

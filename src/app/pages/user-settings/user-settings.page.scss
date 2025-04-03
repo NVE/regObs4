@@ -23,3 +23,8 @@ ion-item {
     }
   }
 }
+
+ion-content {
+  max-width: var(--desktop-max-width);
+  align-self: center;
+}
