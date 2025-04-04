@@ -6,7 +6,7 @@ import 'moment-timezone';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, tap, switchMap, shareReplay, distinctUntilChanged, filter } from 'rxjs/operators';
+import { map, tap, switchMap, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
@@ -28,11 +28,9 @@ import { nSQL } from '@nano-sql/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { UserSetting } from '../../models/user-settings.model';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
-import { fromWorker } from 'observable-webworker';
-import { IRegionInViewInput, IRegionInViewOutput } from 'src/app/modules/map/web-workers/region-in-view-models';
 
 const DEBUG_TAG = 'WarningService';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -49,7 +47,6 @@ export class WarningService {
   private _warningsForCurrentGeoHazardObservable: Observable<WarningGroup[]>;
   private _warningGroupInMapViewObservable: Observable<IWarningGroupInMapView>;
   private latestWarnings: BehaviorSubject<{ [key: string]: IWarningGroup[] }>;
-  private mapViewAndAreaObservable$: Observable<IMapViewAndArea>;
 
   get warningsObservable$() {
     return this._warningsObservable;
@@ -68,7 +65,6 @@ export class WarningService {
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
     this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
-    this.mapViewAndAreaObservable$ = this.getMapViewAreaObservable();
   }
 
   private getDataLoadId(geoHazard: GeoHazard, language: LangKey) {
@@ -343,7 +339,7 @@ export class WarningService {
   }
 
   private getWarningsForCurrentMapViewAsObservable() {
-    return combineLatest([this.mapViewAndAreaObservable$, this.getWarningsAsObservable()]).pipe(
+    return combineLatest([this.mapService.mapViewAndAreaObservable$, this.getWarningsAsObservable()]).pipe(
       switchMap(([mapViewArea]) => this.getWarningsForCurrentMapView(mapViewArea)),
       map((result) => result),
       tap(() => {
@@ -689,44 +685,5 @@ export class WarningService {
       ? moment(toDate)
       : moment().endOf('day').add(settings.services.warning.defaultWarningDaysAhead, 'days');
     return { from: fromMoment, to: toMoment };
-  }
-
-  private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
-    const currenteMapViewAndGeoHazards = combineLatest([
-      this.mapService.mapView$,
-      this.userSettingService.currentGeoHazard$,
-    ]).pipe(
-      filter((value): value is [IMapView, GeoHazard[]] => value[0] != null),
-      map(([mapView, geoHazards]) => ({
-        mapView,
-        bounds: [
-          mapView.bounds.getSouthWest().lng, // minx
-          mapView.bounds.getSouthWest().lat, // miny
-          mapView.bounds.getNorthEast().lng, // maxx
-          mapView.bounds.getNorthEast().lat, // maxy
-        ],
-        center: { lat: mapView.center.lat, lng: mapView.center.lng },
-        geoHazards,
-      }))
-    );
-
-    return currenteMapViewAndGeoHazards.pipe(
-      switchMap((cvg) =>
-        fromWorker<IRegionInViewInput, IRegionInViewOutput>(
-          () =>
-            new Worker(new URL('../../../modules/map/web-workers/region-in-view.worker', import.meta.url), {
-              type: 'module',
-            }),
-          currenteMapViewAndGeoHazards
-        ).pipe(
-          map((result) => ({
-            ...cvg.mapView,
-            ...result,
-          }))
-        )
-      ),
-      tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
-      shareReplay(1)
-    );
   }
 }
