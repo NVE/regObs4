@@ -87,7 +87,7 @@ export function getSnowProfileAttachments(
 export function getAllAttachmentsFromViewModel(
   viewModel: RegistrationViewModel,
   registrationTid?: RegistrationTid
-): AttachmentViewModel[] {
+): (AttachmentViewModel & { Href?: string })[] {
   const snowProfile = getSnowProfileAttachments(viewModel, registrationTid);
   const attachments = getAllAttachmentsFromEditModel(
     viewModel as RegistrationEditModelWithRemoteOrLocalAttachments,

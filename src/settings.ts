@@ -70,6 +70,11 @@ export const settings: ISettings = {
   },
   services: {
     regObs: {
+      plotUrl: {
+        PROD: 'https://plot.regobs.no/v1',
+        DEMO: 'https://demo-plot.regobs.no/v1',
+        TEST: 'https://test-plot.regobs.no/v1',
+      },
       apiUrl: {
         PROD: 'https://api.regobs.no/v5',
         DEMO: 'https://demo-api.regobs.no/v5',

@@ -8,8 +8,18 @@
   (swiperslidechange)="setCurrentSlideIndex($event)"
 >
   @for (attachment of attachments(); track attachment.Url) {
-    <swiper-slide>
-      <img [alt]="attachment.Comment" [src]="attachment.Url" />
+    <swiper-slide lazy="true">
+      @if (isAttachmentSnowProfile(attachment)) {
+        <img
+          [alt]="attachment.Comment"
+          [src]="snowProfileUrl()"
+          (error)="useFallbackSnowProfileImage(attachment)"
+          class="snow-profile"
+          loading="lazy"
+        />
+      } @else {
+        <img [alt]="attachment.Comment" [src]="attachment.Url" />
+      }
     </swiper-slide>
   }
 </swiper-container>
@@ -21,17 +31,25 @@
         <span> {{ currentAttachmentData().RegistrationName }}</span>
       }
       <div class="image-description__links">
-        <a [href]="currentAttachmentData().Url" download class="download-button">
+        <a [href]="currentAttachmentData().Url" download>
           <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
         </a>
-        <a [href]="currentAttachmentData().Url" target="_blank" class="download-button">
-          <ion-icon name="open-outline"></ion-icon> {{ "REGISTRATION.CARD.GO_TO_ORIGINAL_IMAGE" | translate }}
-        </a>
+
+        @if (currentAttachmentData().Href; as href) {
+          <a [href]="href" target="_blank">
+            <ion-icon name="open-outline"></ion-icon>
+            {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
+          </a>
+        } @else {
+          <a [href]="currentAttachmentData().Url" target="_blank">
+            <ion-icon name="open-outline"></ion-icon> {{ "REGISTRATION.CARD.GO_TO_ORIGINAL_IMAGE" | translate }}
+          </a>
+        }
       </div>
     </div>
 
     <!-- kommentar -->
-    @if (currentAttachmentData().Comment) {
+    @if (comment()) {
       <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="currentAttachmentData().Comment">
       </app-key-value>
     }
