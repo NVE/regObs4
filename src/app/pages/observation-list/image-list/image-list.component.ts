@@ -6,8 +6,10 @@ import {
   IonInfiniteScrollContent,
   IonRefresher,
   IonRefresherContent,
+  LoadingController,
+  ModalController,
 } from '@ionic/angular/standalone';
-import { tap, combineLatest, map } from 'rxjs';
+import { tap, combineLatest, map, firstValueFrom } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
@@ -16,8 +18,10 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { ShowFilterCriteriaComponent } from '../../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
 import { GridImageComponent } from './grid-image.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
+import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 
 /**
  * Bildesøk
@@ -43,10 +47,13 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
 })
 export class ImageListComponent {
   private searchCriteriaService = inject(SearchCriteriaService);
+  private modalController = inject(ModalController);
   private searchRegistrations = inject(SearchRegistrationService);
   private infiniteScroll = viewChild(IonInfiniteScroll);
   private ionRefresher = viewChild(IonRefresher);
   private updateObservationsService = inject(UpdateObservationsService);
+  private translateService = inject(TranslateService);
+  private loadingController = inject(LoadingController);
 
   private searchHandler = this.searchRegistrations.searchAttachments(this.searchCriteriaService.searchCriteria$);
   registrations = toSignal(
@@ -83,5 +90,34 @@ export class ImageListComponent {
 
   refresh() {
     this.searchHandler.update();
+  }
+
+  async openImageCarousel(attachmentUrl: string | undefined, regId: number, attachments: AttachmentViewModel[]) {
+    if (!attachmentUrl) return;
+    this.translateService.get('DATA_LOAD.DATA').subscribe(async (message) => {
+      const loader = await this.loadingController.create({
+        message,
+        backdropDismiss: true, // enable cancel
+      });
+      await loader.present();
+      const searchCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
+        map((criteria) => ({
+          ...criteria,
+          regId,
+        }))
+      );
+      const registration = await firstValueFrom(this.searchRegistrations.search(searchCriteria$).registrations$);
+      const modal = await this.modalController.create({
+        component: ObservationImageCarouselComponent,
+        cssClass: 'fullscreen-modal',
+        componentProps: {
+          clickedAttachmentUrl: attachmentUrl,
+          attachments: attachments,
+          registration: registration[0],
+        },
+      });
+      await modal.present();
+      this.loadingController.dismiss();
+    });
   }
 }
