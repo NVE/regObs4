@@ -44,10 +44,11 @@ swiper-slide {
 ion-fab-button {
   --background: #fff;
   --color: var(--ion-color-primary);
-  position: absolute;
+  position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 1000;
+  will-change: transform;
 }
 
 ion-fab-button::part(native):hover {
