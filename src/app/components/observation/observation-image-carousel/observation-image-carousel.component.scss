@@ -47,7 +47,7 @@ ion-fab-button {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  z-index: 2;
+  z-index: 1000;
 }
 
 ion-fab-button::part(native):hover {
