@@ -626,6 +626,8 @@
         "AREA_START": "Define starting zone",
         "AREA_TOTAL": "Define avalanche boundaries",
         "AVALANCHE_AREA": "Avalanche area",
+        "RELEASE_AREA": "Starting zone",
+        "RUNOUT_AREA": "Runout zone",
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_CAUSE": "Weak layer",

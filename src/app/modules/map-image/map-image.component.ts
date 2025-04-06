@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, input, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { booleanWithin, point } from '@turf/turf';
 import L from 'leaflet';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
@@ -9,6 +9,9 @@ import { settings } from '../../../settings';
 import { ImageLocation, ImageLocationStartStop } from '../../components/img-swiper/image-location.model';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
+import { TranslateService } from '@ngx-translate/core';
+import { map, Subject, switchMap, takeWhile, tap, timer } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export const START_ICON = '/assets/icon/map/GPS_start.svg';
 export const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -22,166 +25,174 @@ export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
   imports: [LeafletModule],
 })
 export class MapImageComponent {
-  readonly location = input.required<ImageLocation>();
-  readonly allowZoom = input<boolean>(false);
+  translations = inject(TranslateService);
+  readonly locationInfo = input<ImageLocation>();
 
-  private map?: L.Map;
+  settings = computed(() => {
+    const loc = this.locationInfo();
+
+    if (!loc) return undefined;
+
+    const feature = point([loc.latLng.lng, loc.latLng.lat]);
+    const baseLayer = getBaseLayer(feature);
+    return {
+      zoom: settings.map.tiles.zoomLevelObservationList,
+      maxZoom: settings.map.tiles.maxZoom,
+      minZoom: 8,
+      bounceAtZoomLimits: false,
+      attributionControl: false,
+      zoomControl: false,
+      trackResize: false,
+      center: loc.latLng,
+      layers: [L.tileLayer(baseLayer.url, { ...baseLayer.options })],
+    };
+  });
+
+  markers = computed(() => {
+    const markers: L.Layer[] = [];
+    const locationInfo = this.locationInfo();
+    if (locationInfo?.latLng) {
+      markers.push(createObsLocationMarker(locationInfo.latLng, locationInfo.geoHazard));
+    }
+
+    if (locationInfo?.startStopLocation) {
+      markers.push(...createStartStopMarkers(locationInfo.startStopLocation, this.translations));
+    }
+
+    if (locationInfo?.damageLocations) {
+      markers.push(...createDamageLocationMarkers(locationInfo.damageLocations));
+    }
+
+    return markers;
+  });
+
+  private map$ = new Subject<L.Map>();
 
   constructor() {
-    effect(() => {
-      const val = this.location();
-      untracked(() => {
-        if (this.map) {
-          this.map.eachLayer((layer) => layer.remove());
-          this.addTileLayers(this.map);
-          if (val && val.latLng) {
-            this.map.setView(val.latLng, this.options.zoom);
-            this.setMarker(val.latLng, val.geoHazard, this.map);
-          }
-          if (val && val.startStopLocation) {
-            this.setStartStopLocation(val.startStopLocation, this.map);
-          }
-          if (val && val.damageLocations && val.damageLocations.length > 0) {
-            this.setDamageLocations(val.damageLocations, this.map);
-          }
-        }
-      });
-    });
+    this.invalidateSize();
   }
 
-  options: L.MapOptions = {
-    zoom: settings.map.tiles.zoomLevelObservationList,
-    maxZoom: settings.map.tiles.maxZoom,
-    minZoom: 8,
-    bounceAtZoomLimits: false,
-    attributionControl: false,
-    zoomControl: false,
-    scrollWheelZoom: 'center', // zoom to center regardless where mouse is
-    touchZoom: 'center',
-    trackResize: false,
-    center: L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
-  };
-
-  private getStartStopIcon(start = false) {
-    return L.icon({
-      iconUrl: start ? START_ICON : END_ICON,
-      iconSize: [27, 42],
-      iconAnchor: [13.5, 41],
-      shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
-    });
-  }
-
-  private getDamageIcon() {
-    return L.icon({
-      iconUrl: DAMAGE_ICON,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
-    });
+  // Når denne komponenten initieres i en modal, er ikke høyden og bredden på containeren riktig fra starten.
+  // Kartet tegnes derfor ikke riktig opp.
+  // invalidateSize sier fra til leaflet at containeren er forandret og at kartet bør tegnes på nytt.
+  // Metoden starter en timer så fort kartet er klart som kaller invalidateSize 10 ganger med 50 ms mellomrom.
+  private invalidateSize() {
+    let counter = 10;
+    this.map$
+      .pipe(
+        takeUntilDestroyed(),
+        switchMap((leafletMap) => timer(0, 50).pipe(map(() => leafletMap))),
+        tap(() => counter--),
+        takeWhile(() => counter > 0)
+      )
+      .subscribe((map) => map.invalidateSize({ debounceMoveend: true, noMoveStart: true, animate: false }));
   }
 
   onLeafletMapReady(map: L.Map) {
-    this.map = map;
-    if (!this.allowZoom()) {
-      if (this.map.tap) {
-        this.map.tap.disable();
-      }
-      this.map.doubleClickZoom.disable();
-      this.map.dragging.disable();
-      this.map.keyboard.disable();
-      this.map.touchZoom.disable();
-      this.map.scrollWheelZoom.disable();
-      this.map.boxZoom.disable();
-    }
-    this.redrawMap();
+    this.map$.next(map);
   }
+}
 
-  redrawMap() {
-    // let counter = 3;
-    // timer(500, 50)
-    //   .pipe(
-    //     takeUntil(this.ngDestroy$),
-    //     takeWhile(() => counter > 0),
-    //     tap(() => counter--)
-    //   )
-    //   .subscribe(() => {
-    //     if (this.map) {
-    //       this.map.invalidateSize();
-    //     }
-    //   });
-
-    // TODO: Er denne nødvendig?
-    this.map?.invalidateSize();
+function getBaseLayer(location: GeoJSON.Feature<GeoJSON.Point>) {
+  if (location && booleanWithin(location, NORWAY_BOUNDS)) {
+    return settings.map.tiles.topoMapLayers[TopoMapLayer.statensKartverk];
   }
-
-  private getMatchingBaseLayer() {
-    const location = point([this.location().latLng.lng, this.location().latLng.lat]);
-    if (booleanWithin(location, NORWAY_BOUNDS)) {
-      return settings.map.tiles.topoMapLayers[TopoMapLayer.statensKartverk];
-    }
-    if (booleanWithin(location, SVALBARD_BOUNDS)) {
-      return settings.map.tiles.topoMapLayers[TopoMapLayer.npolarBasiskart];
-    }
-    return settings.map.tiles.topoMapLayers[TopoMapLayer.arcGisOnline];
+  if (location && booleanWithin(location, SVALBARD_BOUNDS)) {
+    return settings.map.tiles.topoMapLayers[TopoMapLayer.npolarBasiskart];
   }
+  return settings.map.tiles.topoMapLayers[TopoMapLayer.arcGisOnline];
+}
 
-  private addTileLayers(map: L.Map) {
-    const baseLayer = this.getMatchingBaseLayer();
-    L.tileLayer(baseLayer.url, {
-      ...baseLayer.options,
-      updateWhenIdle: true,
-      keepBuffer: 0,
-    }).addTo(map);
-  }
+function createObsLocationMarker(pos: L.LatLng, geoHazard: GeoHazard) {
+  return L.marker(pos, {
+    icon: new RegobsGeoHazardMarker(geoHazard),
+    interactive: false,
+  });
+}
 
-  private setMarker(latLng: L.LatLng, geoHazard: GeoHazard, map: L.Map) {
-    L.marker(latLng, {
-      icon: new RegobsGeoHazardMarker(geoHazard),
-      interactive: false,
-    }).addTo(map);
-  }
+function createStartStopIcon(iconUrl: string) {
+  return L.icon({
+    iconUrl,
+    iconSize: [27, 42],
+    iconAnchor: [13.5, 41],
+    shadowUrl: 'leaflet/marker-shadow.png',
+    shadowSize: [41, 41],
+  });
+}
 
-  private setStartStopLocation(location: ImageLocationStartStop, map: L.Map) {
-    if (location.start) {
+function createStartStopMarkers(location: ImageLocationStartStop, translations: TranslateService): L.Layer[] {
+  const markers = [];
+
+  if (location.start) {
+    markers.push(
       L.marker(location.start, {
-        icon: this.getStartStopIcon(true),
+        icon: createStartStopIcon(START_ICON),
         interactive: false,
-      }).addTo(map);
-    }
-    if (location.stop) {
+      })
+    );
+  }
+
+  if (location.stop) {
+    markers.push(
       L.marker(location.stop, {
-        icon: this.getStartStopIcon(false),
+        icon: createStartStopIcon(END_ICON),
         interactive: false,
-      }).addTo(map);
-    }
-    if (location.start && location.stop) {
+      })
+    );
+  }
+
+  if (location.start && location.stop) {
+    markers.push(
       L.polyline([location.start, location.stop], {
         color: 'red',
         weight: 6,
         opacity: 0.9,
-      }).addTo(map);
-    }
-    if (location.totalPolygon) {
-      location.totalPolygon.addTo(map);
-    }
-    if (location.startPolygon) {
-      location.startPolygon.addTo(map);
-    }
-    if (location.endPolygon) {
-      location.endPolygon.addTo(map);
+        interactive: false,
+      })
+    );
+  }
+
+  if (location.totalPolygon) {
+    const label = translations.instant('REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA');
+    markers.push(location.totalPolygon.bindTooltip(label));
+  }
+
+  if (location.startPolygon) {
+    const label = translations.instant('REGISTRATION.SNOW.AVALANCHE_OBS.AREA_START');
+    markers.push(location.startPolygon.bindTooltip(label));
+  }
+
+  if (location.endPolygon) {
+    const label = translations.instant('REGISTRATION.SNOW.AVALANCHE_OBS.AREA_END');
+    markers.push(location.endPolygon.bindTooltip(label));
+  }
+
+  return markers;
+}
+
+function createDamageIcon() {
+  return L.icon({
+    iconUrl: DAMAGE_ICON,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    shadowUrl: 'leaflet/marker-shadow.png',
+    shadowSize: [41, 41],
+  });
+}
+
+function createDamageLocationMarkers(locations: L.LatLng[]): L.Layer[] {
+  const graphics: L.Layer[] = [];
+
+  if (locations && locations.length > 0) {
+    for (const location of locations) {
+      graphics.push(
+        L.marker(location, {
+          icon: createDamageIcon(),
+          interactive: false,
+        })
+      );
     }
   }
 
-  private setDamageLocations(locations: L.LatLng[], map: L.Map) {
-    if (locations && locations.length > 0) {
-      for (const location of locations) {
-        L.marker(location, {
-          icon: this.getDamageIcon(),
-          interactive: false,
-        }).addTo(map);
-      }
-    }
-  }
+  return graphics;
 }

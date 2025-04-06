@@ -63,6 +63,7 @@ import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-cate
 import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
 import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
 import { ObservationImageCarouselComponent } from '../observation-image-carousel/observation-image-carousel.component';
+import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -134,6 +135,16 @@ export class ObservationComponent {
       });
       toast.present();
     }
+  }
+
+  async openMapModal() {
+    const modal = await this.modalController.create({
+      component: ModalMapImagePage,
+      componentProps: {
+        location: this.location(),
+      },
+    });
+    modal.present();
   }
 
   private observer = toSignal(this.regobsAuthService.myPageData$);

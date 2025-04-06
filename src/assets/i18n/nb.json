@@ -632,6 +632,8 @@
         "AREA_START": "Tegn løsneområde",
         "AREA_TOTAL": "Tegn hele skredområdet",
         "AVALANCHE_AREA": "Skredområde",
+        "RELEASE_AREA": "Løsneområde",
+        "RUNOUT_AREA": "Utløpsområde",
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
         "AVAL_CAUSE": "Svakt lag",

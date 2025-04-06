@@ -1,1 +1,10 @@
-<div leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)"></div>
+@if (settings(); as settings) {
+  <div
+    leaflet
+    [leafletOptions]="settings"
+    [leafletLayers]="markers()"
+    (leafletMapReady)="onLeafletMapReady($event)"
+  ></div>
+} @else {
+  <div>Mangler lokasjon</div>
+}
