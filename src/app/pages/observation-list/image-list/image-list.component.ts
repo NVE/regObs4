@@ -21,7 +21,7 @@ import { GridImageComponent } from './grid-image.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
-import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
 
 /**
  * Bildesøk
@@ -47,6 +47,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 })
 export class ImageListComponent {
   private searchCriteriaService = inject(SearchCriteriaService);
+  private searchService = inject(SearchService);
   private modalController = inject(ModalController);
   private searchRegistrations = inject(SearchRegistrationService);
   private infiniteScroll = viewChild(IonInfiniteScroll);
@@ -100,18 +101,14 @@ export class ImageListComponent {
         backdropDismiss: true, // enable cancel
       });
       await loader.present();
-      const searchCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
-        map((criteria) => ({
-          ...criteria,
-          regId,
-        }))
-      );
-      const registration = await firstValueFrom(this.searchRegistrations.search(searchCriteria$).registrations$);
+
+      const attachmentIndex = attachments.findIndex((attachment) => attachment.Url === attachmentUrl);
+      const registration = await firstValueFrom(this.searchService.SearchSearch({ RegId: regId }));
       const modal = await this.modalController.create({
         component: ObservationImageCarouselComponent,
         cssClass: 'fullscreen-modal',
         componentProps: {
-          clickedAttachmentUrl: attachmentUrl,
+          attachmentIndex: attachmentIndex,
           attachments: attachments,
           registration: registration[0],
         },

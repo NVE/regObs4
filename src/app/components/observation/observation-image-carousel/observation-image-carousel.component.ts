@@ -6,7 +6,7 @@ import {
   ElementRef,
   inject,
   input,
-  signal,
+  model,
   viewChild,
 } from '@angular/core';
 import { IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
@@ -33,7 +33,7 @@ export class ObservationImageCarouselComponent {
   clickedAttachmentUrl = input<string>(); //bruker url istedenfor index fordi det er lettere å finne et bilde via url når man vil åpne denne modalen i bildevisning
   attachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
-  currentSlideIndex = signal(0);
+  attachmentIndex = model<number>(0);
   constructor() {
     addIcons({ close, downloadOutline, openOutline });
   }
@@ -45,7 +45,8 @@ export class ObservationImageCarouselComponent {
     if (!roundedDownOrientation) return '';
     return settings.orientation[roundedDownOrientation];
   });
-  currentAttachmentData = computed(() => this.attachments()?.[this.currentSlideIndex()]);
+
+  currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
 
   closeModal() {
     this.modalController.dismiss();
@@ -54,12 +55,10 @@ export class ObservationImageCarouselComponent {
   setCurrentSlideIndex(e: Event) {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
-    this.currentSlideIndex.set(activeIndex);
+    this.attachmentIndex.set(activeIndex);
   }
 
   ngAfterViewInit() {
-    const activeAttachmentIndex = this.attachments()?.findIndex((x) => x.Url === this.clickedAttachmentUrl());
-    if (!activeAttachmentIndex) return;
-    this.swiper()?.nativeElement.swiper.slideTo(activeAttachmentIndex);
+    this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
   }
 }
