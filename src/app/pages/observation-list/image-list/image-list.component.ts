@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -17,6 +17,7 @@ import { ShowFilterCriteriaComponent } from '../../../modules/side-menu/componen
 import { ListControlsComponent } from '../list-controls/list-controls.component';
 import { GridImageComponent } from './grid-image.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 
 /**
  * Bildesøk
@@ -45,6 +46,7 @@ export class ImageListComponent {
   private searchRegistrations = inject(SearchRegistrationService);
   private infiniteScroll = viewChild(IonInfiniteScroll);
   private ionRefresher = viewChild(IonRefresher);
+  private updateObservationsService = inject(UpdateObservationsService);
 
   private searchHandler = this.searchRegistrations.searchAttachments(this.searchCriteriaService.searchCriteria$);
   registrations = toSignal(
@@ -52,6 +54,7 @@ export class ImageListComponent {
       tap(() => {
         this.infiniteScroll()?.complete();
         this.ionRefresher()?.complete();
+        this.updateObservationsService.setLastFetched(new Date());
       })
     ),
     { initialValue: [] as SearchRegistrationsWithAttachments[] }
@@ -67,6 +70,12 @@ export class ImageListComponent {
   isLoading = toSignal(this.searchHandler.isFetching$, { initialValue: false });
   maxItemsFetched = toSignal(this.searchHandler.maxItemsFetched$, { initialValue: false });
   error = toSignal(this.searchHandler.error$, { initialValue: { hasError: false } });
+
+  constructor() {
+    this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
+    });
+  }
 
   loadNextPage() {
     this.searchHandler.increasePage();
