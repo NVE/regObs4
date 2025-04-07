@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -18,6 +18,7 @@ import { ListControlsComponent } from '../list-controls/list-controls.component'
 import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
+import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 
 @Component({
   selector: 'app-observation-list',
@@ -43,6 +44,7 @@ export class ObservationListComponent {
   private searchRegistrations = inject(SearchRegistrationService);
   private infiniteScroll = viewChild(IonInfiniteScroll);
   private ionRefresher = viewChild(IonRefresher);
+  private updateObservationsService = inject(UpdateObservationsService);
   isDesktop = inject(BreakpointService).isDesktop;
 
   private searchHandler = this.searchRegistrations.pagedSearch(this.searchCriteriaService.searchCriteria$);
@@ -51,6 +53,7 @@ export class ObservationListComponent {
       tap(() => {
         this.infiniteScroll()?.complete();
         this.ionRefresher()?.complete();
+        this.updateObservationsService.setLastFetched(new Date());
       })
     ),
     { initialValue: [] as RegistrationViewModel[] }
@@ -67,6 +70,12 @@ export class ObservationListComponent {
   isLoading = toSignal(this.searchHandler.isFetching$, { initialValue: false });
   maxItemsFetched = toSignal(this.searchHandler.maxItemsFetched$, { initialValue: false });
   error = toSignal(this.searchHandler.error$, { initialValue: { hasError: false } });
+
+  constructor() {
+    this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
+    });
+  }
 
   loadNextPage() {
     this.searchHandler.increasePage();
