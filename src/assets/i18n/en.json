@@ -557,7 +557,8 @@
       "SHOW_DETAILS": "Show details",
       "SOURCE": "Source",
       "TITLE": "Observed Location and Time",
-      "UNCERTAINTY": "Uncertainty in position"
+      "UNCERTAINTY": "Uncertainty in position",
+      "UTMSOURCE": "Source positioning"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",

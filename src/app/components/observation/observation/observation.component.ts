@@ -30,7 +30,7 @@ import {
   locationOutline,
   peopleCircleOutline,
   personCircleOutline,
-  pencil,
+  createOutline,
   shareSocial,
 } from 'ionicons/icons';
 import { Clipboard } from '@capacitor/clipboard';
@@ -161,11 +161,11 @@ export class ObservationComponent {
   constructor() {
     addIcons({
       calendarNumberOutline,
+      createOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
-      pencil,
       shareSocial,
     });
   }

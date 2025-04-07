@@ -36,13 +36,31 @@
   <div>
     <ion-chip color="primary" (click)="dateClicked.set(true)" [disabled]="dateClicked()">
       <ion-icon name="calendar-number-outline"></ion-icon>
+      <ion-label
+        ><b>{{ "REGISTRATION.CARD.TIME.OBSERVED" | translate }}</b
+        >:</ion-label
+      >
       <ion-label>
-        @if (dateClicked()) {
-          Observert: {{ registration().DtObsTime | date: "short" }}. Lagret: {{ savedTime() | date: "short" }}.
-        } @else {
-          {{ registration().DtObsTime | date: "short" }}
-        }
+        {{ registration().DtObsTime | date: "short" }}
       </ion-label>
+    </ion-chip>
+
+    <ion-chip color="primary" disabled>
+      <ion-icon name="calendar-number-outline"></ion-icon>
+      <ion-label
+        ><b> {{ "REGISTRATION.CARD.TIME.REGISTERED" | translate }}</b
+        >:</ion-label
+      >
+      <ion-label> {{ registration().DtRegTime | date: "short" }}</ion-label>
+    </ion-chip>
+
+    <ion-chip color="primary" disabled>
+      <ion-icon name="create-outline"></ion-icon>
+      <ion-label
+        ><b> {{ "REGISTRATION.CARD.TIME.UPDATED" | translate }}</b
+        >:</ion-label
+      >
+      <ion-label> {{ savedTime() | date: "short" }}</ion-label>
     </ion-chip>
 
     <ion-chip color="primary" disabled>
@@ -63,6 +81,23 @@
       <ion-label>
         {{ registration().Observer.NickName }} ({{ registration().Observer.CompetenceLevelName }})
       </ion-label>
+    </ion-chip>
+
+    @if (registration().SourceName) {
+      <ion-chip color="primary" disabled>
+        <ion-label>
+          <b> {{ "REGISTRATION.OBS_LOCATION.SOURCE" | translate }}</b
+          >:</ion-label
+        >
+        <ion-label> {{ registration().SourceName }}</ion-label>
+      </ion-chip>
+    }
+
+    <ion-chip color="primary" disabled>
+      <ion-label>
+        <b>{{ "REGISTRATION.OBS_LOCATION.UTMSOURCE" | translate }}</b> :</ion-label
+      >
+      <ion-label> {{ registration().ObsLocation.UTMSourceName }}</ion-label>
     </ion-chip>
 
     @if (registration().ObserverGroupName; as group) {
