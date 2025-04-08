@@ -95,26 +95,25 @@ export class ImageListComponent {
 
   async openImageCarousel(attachmentUrl: string | undefined, regId: number, attachments: AttachmentViewModel[]) {
     if (!attachmentUrl) return;
-    this.translateService.get('DATA_LOAD.DATA').subscribe(async (message) => {
-      const loader = await this.loadingController.create({
-        message,
-        backdropDismiss: true, // enable cancel
-      });
-      await loader.present();
-
-      const attachmentIndex = attachments.findIndex((attachment) => attachment.Url === attachmentUrl);
-      const registration = await firstValueFrom(this.searchService.SearchSearch({ RegId: regId }));
-      const modal = await this.modalController.create({
-        component: ObservationImageCarouselComponent,
-        cssClass: 'fullscreen-modal',
-        componentProps: {
-          attachmentIndex: attachmentIndex,
-          attachments: attachments,
-          registration: registration[0],
-        },
-      });
-      await modal.present();
-      this.loadingController.dismiss();
+    const message = this.translateService.instant('DATA_LOAD.DATA');
+    const loader = await this.loadingController.create({
+      message,
+      backdropDismiss: true,
     });
+    await loader.present();
+
+    const attachmentIndex = attachments.findIndex((attachment) => attachment.Url === attachmentUrl);
+    const registration = await firstValueFrom(this.searchService.SearchSearch({ RegId: regId }));
+    const modal = await this.modalController.create({
+      component: ObservationImageCarouselComponent,
+      cssClass: 'fullscreen-modal',
+      componentProps: {
+        attachmentIndex: attachmentIndex,
+        attachments: attachments,
+        registration: registration[0],
+      },
+    });
+    await modal.present();
+    this.loadingController.dismiss();
   }
 }

@@ -30,7 +30,6 @@ import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrie
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
-  clickedAttachmentUrl = input<string>(); //bruker url istedenfor index fordi det er lettere å finne et bilde via url når man vil åpne denne modalen i bildevisning
   attachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
