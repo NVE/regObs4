@@ -292,6 +292,7 @@
     "EMPTY_STATE_WHEN_OBSERVATIONS_DISABLED": "Du kan aktivere visning av observasjoner igjen fra filtermenyen på venstre side.",
     "FILTER_BY_MAP_VIEW": "Filtrer på kartutsnitt",
     "FORMS": "Skjemaer",
+    "IMAGES_DESCRIPTION": "Viser alle bilder fra alle filtrerte observasjoner.",
     "LOADING": "Laster observasjoner",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",

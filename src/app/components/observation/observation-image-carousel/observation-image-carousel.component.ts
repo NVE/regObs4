@@ -30,9 +30,9 @@ import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrie
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
-  attachmentIndex = model<number>(0);
   attachments = input<AttachmentViewModel[]>([]);
   registration = input<RegistrationViewModel>();
+  attachmentIndex = model<number>(0);
   constructor() {
     addIcons({ close, downloadOutline, openOutline });
   }
@@ -44,6 +44,7 @@ export class ObservationImageCarouselComponent {
     if (!roundedDownOrientation) return '';
     return settings.orientation[roundedDownOrientation];
   });
+
   currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
 
   closeModal() {
