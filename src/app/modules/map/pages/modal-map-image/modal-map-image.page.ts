@@ -3,7 +3,7 @@ import { IonContent, IonFabButton, IonIcon, ModalController } from '@ionic/angul
 import { MapImageComponent } from '../../../map-image/map-image.component';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons';
-import { ImageLocation } from 'src/app/components/img-swiper/image-location.model';
+import { ImageLocation } from '../../../../core/models/image-location.model';
 
 @Component({
   selector: 'app-modal-map-image',

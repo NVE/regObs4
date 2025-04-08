@@ -6,7 +6,7 @@ import { SVALBARD_BOUNDS } from 'src/app/core/helpers/leaflet/svalbard-bounds';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../settings';
-import { ImageLocation, ImageLocationStartStop } from '../../components/img-swiper/image-location.model';
+import { ImageLocation, ImageLocationStartStop } from '../../core/models/image-location.model';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { TranslateService } from '@ngx-translate/core';
