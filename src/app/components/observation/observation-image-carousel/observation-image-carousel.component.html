@@ -50,8 +50,7 @@
 
     <!-- kommentar -->
     @if (comment()) {
-      <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="currentAttachmentData().Comment">
-      </app-key-value>
+      <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment()"></app-key-value>
     }
     <!-- region -->
     @if (registration()?.ObsLocation?.ForecastRegionName) {
