@@ -36,8 +36,8 @@
         </a>
 
         <!-- Kun snøprofil har Href -->
-        @if (currentAttachmentData().Href; as href) {
-          <a [href]="href" target="_blank">
+        @if (currentAttachmentData().Href; as snowProfileImageUrl) {
+          <a [href]="snowProfileImageUrl" target="_blank">
             <ion-icon name="open-outline"></ion-icon>
             {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
           </a>
