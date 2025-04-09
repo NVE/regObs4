@@ -92,6 +92,7 @@ export class ObservationImageCarouselComponent {
   }
 
   isAttachmentSnowProfile(attachment: AttachmentViewModel & { Href?: string }) {
+    // Kun snøprofil har Href
     return !!attachment.Href;
   }
 }
