@@ -1,7 +1,6 @@
 :host {
   display: block;
   height: 100%;
-
   --max-width: var(--list-search-max-width, 960px);
 }
 
@@ -31,11 +30,6 @@ ion-content::part(scroll) {
 app-grid-image {
   width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-app-grid-image:hover {
-  transform: scale(1.025);
 }
 
 app-grid-image.landscape {
