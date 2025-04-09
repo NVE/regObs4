@@ -22,8 +22,7 @@ import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { PlotService } from 'src/app/core/services/plot.service';
 
 @Component({
   selector: 'app-observation-image-carousel',
@@ -38,24 +37,15 @@ export class ObservationImageCarouselComponent {
   attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
   settings = inject(UserSettingService);
   isDesktop = inject(BreakpointService).isDesktop;
+  plotService = inject(PlotService);
 
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
 
-  private plotApi = toSignal(this.settings.appMode$.pipe(map((x) => settings.services.regObs.plotUrl[x])), {
-    initialValue: settings.services.regObs.plotUrl.PROD,
-  });
-
-  private preferredProfileType = computed(() => {
-    if (this.isDesktop()) {
-      return 'SimpleProfile';
-    }
-
-    return 'MobileProfile';
-  });
-
   snowProfileUrl = linkedSignal(() => {
-    return `${this.plotApi()}/SnowProfile/svg/${this.registration()?.RegId}/${this.preferredProfileType()}?lastMod=${this.registration()?.DtChangeTime}`;
+    const reg = this.registration();
+    if (!reg) return undefined;
+    return this.plotService.getSnowProfileSvgUrl(reg);
   });
 
   useFallbackSnowProfileImage(attachment: AttachmentViewModel) {
