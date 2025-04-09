@@ -42,6 +42,7 @@ export class ObservationImageCarouselComponent {
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
 
+  // Bruker linkedSignal her for å gjøre det mulig å overstyre hva urlen er dersom kall til plot-api feiler
   snowProfileUrl = linkedSignal(() => {
     const reg = this.registration();
     if (!reg) return undefined;
