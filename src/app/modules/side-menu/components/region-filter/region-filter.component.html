@@ -1,19 +1,21 @@
 <!-- Snøskredregioner -->
 <div *ngIf="regions" slot="content">
   <ion-accordion>
-    <ion-item slot="header" color="light">
-      <app-selected-items-counter-label [selectedItemsCount]="nRegionsSelected()">
-        {{ "OBSERVATION_FILTER.REGION.TITLE" | translate }}
-      </app-selected-items-counter-label>
-      <div class="selectedRegionNames">{{ selectedRegionNames() }}</div>
+    <ion-item slot="header">
+      <app-header-with-selected-items titleKey="OBSERVATION_FILTER.REGION.TITLE" [items]="selectedRegionNames()">
+      </app-header-with-selected-items>
     </ion-item>
     <div slot="content">
-      <ion-item slot="header">{{ "OBSERVATION_FILTER.REGION.SHORTCUTS_TITLE" | translate }}</ion-item>
-      @for (shortcut of shortcuts(); track shortcut) {
-        <ion-button (click)="shortcutClicked(shortcut)">
-          {{ shortcut }}
-        </ion-button>
-      }
+      <ion-item slot="header" lines="none">{{ "OBSERVATION_FILTER.REGION.SHORTCUTS_TITLE" | translate }}</ion-item>
+      <ion-item>
+        <ion-label>
+          @for (shortcut of shortcuts(); track shortcut) {
+            <ion-button (click)="shortcutClicked(shortcut)" size="small">
+              {{ shortcut }}
+            </ion-button>
+          }
+        </ion-label>
+      </ion-item>
       <ion-list lines="none">
         <ion-item slot="header">{{ "OBSERVATION_FILTER.REGION.A_REGIONS_TITLE" | translate }}</ion-item>
         @for (region of aRegions(); track region.id) {

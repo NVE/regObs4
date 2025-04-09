@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="title">
+    {{ titleKey() | translate }}
+    @if (count()) {
+      <ion-badge>
+        {{ count() }}
+      </ion-badge>
+    }
+  </div>
+  <div class="items">{{ itemsText() }}</div>
+</div>

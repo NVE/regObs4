@@ -1,4 +1,12 @@
-import { CheckboxCustomEvent, IonAccordion, IonCheckbox, IonItem, IonList, IonButton } from '@ionic/angular/standalone';
+import {
+  CheckboxCustomEvent,
+  IonAccordion,
+  IonCheckbox,
+  IonItem,
+  IonList,
+  IonButton,
+  IonLabel,
+} from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +16,7 @@ import { SearchCriteriaService } from 'src/app/core/services/search-criteria/sea
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { SelectedItemsCounterLabelComponent } from '../selected-items-counter-label/selected-items-counter-label.component';
+import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
 import { arrayHasNotChanged } from '../filter-menu/filter-menu.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -29,13 +37,14 @@ interface AvalancheRegion {
   templateUrl: './region-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    IonLabel,
     IonButton,
     IonAccordion,
     IonCheckbox,
     IonItem,
     IonList,
     NgIf,
-    SelectedItemsCounterLabelComponent,
+    HeaderWithSelectedItemsComponent,
     TranslatePipe,
   ],
 })
@@ -50,18 +59,23 @@ export class RegionFilterComponent {
   aRegions = computed(() => this.regions().filter((r) => r.type === 'A'));
   bRegions = computed(() => this.regions().filter((r) => r.type === 'B')); // regioner uten fast varsling
   nRegionsSelected = computed(() => this.regions().filter((r) => r.checked).length);
-  selectedRegionNames = computed(() => {
+  // selectedRegionNames = computed(() => {
+  //   return this.regions()
+  //     .filter((r) => r.checked)
+  //     .map((r) => r.name)
+  //     .join(', ');
+  // });
+  selectedRegionNames = computed((): string[] => {
     return this.regions()
       .filter((r) => r.checked)
-      .map((r) => r.name)
-      .join(', ');
+      .map((r) => r.name);
   });
 
   // hurtigvalg, ett for hver landsdel
   shortcuts = computed(() => {
     const shortcuts: Set<string> = new Set();
     this.regions().forEach((region) => {
-      region.shortcuts?.forEach((shortcut) => shortcuts.add(shortcut));
+      region.shortcuts?.forEach((shortcut) => shortcuts.add(shortcut.trim()));
     });
     return Array.from(shortcuts);
   });
@@ -87,7 +101,6 @@ export class RegionFilterComponent {
     const matchingRegionIds = this.regions()
       .filter((region) => region.shortcuts?.includes(shortcut))
       .map((region) => region.id);
-    console.log('***shortcutClicked', shortcut, matchingRegionIds);
     this.searchCriteriaService.addToRegionFilter(matchingRegionIds);
   }
 
