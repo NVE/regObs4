@@ -59,12 +59,6 @@ export class RegionFilterComponent {
   aRegions = computed(() => this.regions().filter((r) => r.type === 'A'));
   bRegions = computed(() => this.regions().filter((r) => r.type === 'B')); // regioner uten fast varsling
   nRegionsSelected = computed(() => this.regions().filter((r) => r.checked).length);
-  // selectedRegionNames = computed(() => {
-  //   return this.regions()
-  //     .filter((r) => r.checked)
-  //     .map((r) => r.name)
-  //     .join(', ');
-  // });
   selectedRegionNames = computed((): string[] => {
     return this.regions()
       .filter((r) => r.checked)
