@@ -92,7 +92,6 @@ export class ObservationComponent {
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
-  dateClicked = signal(false);
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
   geoIcon = computed(() => getIconForGeohazards([this.registration().GeoHazardTID]));
   geoName = getNameForGeohazard(this.registration);
