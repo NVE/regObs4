@@ -56,8 +56,12 @@ h2 {
   color: var(--ion-text-color-heading);
 }
 
-ion-chip:first-child {
-  margin-left: 0;
+b {
+  font-weight: 600;
+}
+
+ion-chip ion-label + ion-label {
+  margin-left: 8px;
 }
 
 ion-chip.chip-disabled {

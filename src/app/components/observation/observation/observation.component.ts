@@ -30,7 +30,7 @@ import {
   locationOutline,
   peopleCircleOutline,
   personCircleOutline,
-  pencil,
+  createOutline,
   shareSocial,
 } from 'ionicons/icons';
 import { Clipboard } from '@capacitor/clipboard';
@@ -92,7 +92,6 @@ export class ObservationComponent {
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
-  dateClicked = signal(false);
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
   geoIcon = computed(() => getIconForGeohazards([this.registration().GeoHazardTID]));
   geoName = getNameForGeohazard(this.registration);
@@ -161,11 +160,11 @@ export class ObservationComponent {
   constructor() {
     addIcons({
       calendarNumberOutline,
+      createOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
-      pencil,
       shareSocial,
     });
   }

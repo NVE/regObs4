@@ -564,7 +564,8 @@
       "SHOW_DETAILS": "Vis detaljer",
       "SOURCE": "Kildeangivelse",
       "TITLE": "Observasjonspunkt og -tid",
-      "UNCERTAINTY": "Usikkerhet i posisjon"
+      "UNCERTAINTY": "Usikkerhet i posisjon",
+      "UTMSOURCE": "Posisjoneringskilde"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
