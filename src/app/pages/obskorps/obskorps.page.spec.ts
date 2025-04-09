@@ -12,6 +12,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { provideTranslateService } from '@ngx-translate/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
+import { provideRouter } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -44,6 +45,7 @@ describe('ObskorpsPage', () => {
         provideHttpClientTesting(),
         { provide: LoggingService, useClass: TestLoggingService },
         provideTranslateService(),
+        provideRouter([]),
       ],
       schemas: [NO_ERRORS_SCHEMA],
     });
