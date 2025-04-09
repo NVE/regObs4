@@ -44,7 +44,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { ImageLocation } from '../../components/img-swiper/image-location.model';
+import { ImageLocation } from '../../core/models/image-location.model';
 import { settings } from '../../../settings';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { ITopoMapLayerOptions } from 'src/settings.model';

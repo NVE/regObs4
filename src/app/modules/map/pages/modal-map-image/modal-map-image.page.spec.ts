@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { provideTranslateService } from '@ngx-translate/core';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { provideIonicAngular } from '@ionic/angular/standalone';
-import { ImageLocation } from 'src/app/components/img-swiper/image-location.model';
+import { ImageLocation } from '../../../../core/models/image-location.model';
 import L from 'leaflet';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 

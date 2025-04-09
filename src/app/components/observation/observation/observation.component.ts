@@ -40,7 +40,7 @@ import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
-import { ImageLocation, ImageLocationStartStop } from '../../img-swiper/image-location.model';
+import { ImageLocation, ImageLocationStartStop } from '../../../core/models/image-location.model';
 import L from 'leaflet';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { catchError, firstValueFrom, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
