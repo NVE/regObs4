@@ -35,6 +35,7 @@
           <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
         </a>
 
+        <!-- Kun snøprofil har Href -->
         @if (currentAttachmentData().Href; as href) {
           <a [href]="href" target="_blank">
             <ion-icon name="open-outline"></ion-icon>
