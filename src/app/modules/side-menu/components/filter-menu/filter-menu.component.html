@@ -33,16 +33,32 @@
           <div slot="content">
             <ion-list lines="none">
               <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-              <ion-item *ngFor="let type of observationTypes$ | async; trackBy: obsTypeTrackById">
-                <ion-checkbox
-                  [checked]="!slushFlowFilterIsActive && type.isChecked"
-                  (click)="setNewType($event, type.parentId, type.id)"
-                  [disabled]="slushFlowFilterIsActive"
-                  labelPlacement="end"
-                  justify="start"
-                  >{{ type.name }}
-                </ion-checkbox>
-              </ion-item>
+              <!-- her vise obsgruppe først og så vise obstyper i gruppa og bruke klikks.-->
+              @for (group of this.groupsWithIsCheckedComputed(); track group?.id) {
+                <ion-item>
+                  <ion-checkbox
+                    [checked]="group?.isChecked"
+                    (ionChange)="toggleObservationGroup($event.detail.checked, group.id, group.subTypes)"
+                    labelPlacement="end"
+                    justify="start"
+                  >
+                    {{ group?.name }}
+                  </ion-checkbox>
+                </ion-item>
+                @if (group?.subTypes) {
+                  @for (type of group?.subTypes; track type.id) {
+                    <ion-item class="subtype">
+                      <ion-checkbox
+                        [checked]="!slushFlowFilterIsActive && type.isChecked"
+                        labelPlacement="end"
+                        justify="start"
+                        (ionChange)="toggleObservationType($event.detail.checked, type.parentId, type.id)"
+                        >{{ type.name }}</ion-checkbox
+                      >
+                    </ion-item>
+                  }
+                }
+              }
               <app-slush-flow-filter> </app-slush-flow-filter>
             </ion-list>
           </div>

@@ -96,19 +96,16 @@ export class SearchCriteriaModelService {
   }
 
   /**
-   * Get observation types filter model from API.
+   * Get observation groups from API.
    */
-  getObservationTypesFilterOptions$(): Observable<RegistrationTypeDto[]> {
+  getObservationGroups$(): Observable<(RegistrationTypeDto | undefined)[]> {
     return this.getParams$().pipe(
       switchMap((params) =>
         this.getModel$(params).pipe(
           map((result) => result.RegistrationTypes || {}),
           map((result) => {
             const apiGeoHazardNames = params.geoHazards.map((g) => GEOHAZARDMAP[g]);
-            return apiGeoHazardNames
-              .map((g) => result[g])
-              .filter((names) => names != null)
-              .flat();
+            return apiGeoHazardNames.map((g) => result[g]).flat();
           })
         )
       )
