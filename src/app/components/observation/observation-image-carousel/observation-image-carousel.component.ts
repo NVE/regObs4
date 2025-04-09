@@ -59,10 +59,12 @@ export class ObservationImageCarouselComponent {
 
   currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
   comment = computed(() => {
+    // Prioriter kommentar fra bilde dersom det er lagt til
     if (this.currentAttachmentData().Comment) {
       return this.currentAttachmentData().Comment;
     }
 
+    // Vis kommentar fra snøprofil-skjema dersom det finnes
     if (this.isAttachmentSnowProfile(this.currentAttachmentData())) {
       return this.registration()?.SnowProfile2?.Comment;
     }
