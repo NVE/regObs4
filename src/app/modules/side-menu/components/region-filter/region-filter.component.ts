@@ -58,7 +58,6 @@ export class RegionFilterComponent {
   regions: Signal<AvalancheRegion[]>;
   aRegions = computed(() => this.regions().filter((r) => r.type === 'A'));
   bRegions = computed(() => this.regions().filter((r) => r.type === 'B')); // regioner uten fast varsling
-  nRegionsSelected = computed(() => this.regions().filter((r) => r.checked).length);
   selectedRegionNames = computed((): string[] => {
     return this.regions()
       .filter((r) => r.checked)
