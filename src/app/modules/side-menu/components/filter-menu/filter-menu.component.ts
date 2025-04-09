@@ -19,17 +19,14 @@ import {
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
-import { combineLatest, EMPTY, firstValueFrom, Observable } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationTypeCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { HttpClient } from '@angular/common/http';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { SearchCriteriaModelService } from 'src/app/core/services/search-criteria/search-criteria-model.service';
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
@@ -44,6 +41,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline } from 'ionicons/icons';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
+import { RegionFilterComponent } from '../region-filter/region-filter.component';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -52,21 +50,8 @@ type FilterSupportPerPlatform = {
   [platformType in PlatformType]: { [filter in FilterType]: boolean };
 };
 
-interface AvalancheRegion {
-  id: number;
-  name: string;
-  type: 'A' | 'B';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  polygon: any; // TODO: Fix polygon;
-  checked?: boolean;
-}
-
 const obsTypeTrackById: TrackByFunction<ObservationTypeView> = (index: number, t: ObservationTypeView) => {
   return t.id;
-};
-
-const avalancheRegionTrackById: TrackByFunction<AvalancheRegion> = (index: number, r: AvalancheRegion) => {
-  return r.id;
 };
 
 const competenceOptionTrackById: TrackByFunction<CompetenceOption> = (index: number, c: CompetenceOption) => {
@@ -114,15 +99,13 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
     TranslatePipe,
     UpdateObservationsComponent,
     HeaderColorDirective,
+    RegionFilterComponent,
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private platform = inject(Platform);
   private userSettingService = inject(UserSettingService);
   private searchCriteriaService = inject(SearchCriteriaService);
-  private kdv = inject(KdvService);
-  private http = inject(HttpClient);
-  private logger = inject(LoggingService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
 
   popupType?: SelectInterface;
@@ -154,15 +137,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     },
   };
 
-  regions$: Observable<{ a: AvalancheRegion[]; b: AvalancheRegion[] }>;
-  nRegionsSelected$: Observable<number>;
-
   get competenceOptionTrackById() {
     return competenceOptionTrackById;
-  }
-
-  get avalancheRegionTrackById() {
-    return avalancheRegionTrackById;
   }
 
   get obsTypeTrackById() {
@@ -176,18 +152,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
-    this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
-      switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : EMPTY)),
-      shareReplay(1, 500)
-    );
-    this.nRegionsSelected$ = this.regions$.pipe(
-      map((regions) => {
-        if (regions) {
-          return [...regions.a.filter((r) => r.checked), ...regions.b.filter((r) => r.checked)].length;
-        }
-        return 0;
-      })
-    );
     addIcons({ closeCircleOutline });
   }
 
@@ -312,14 +276,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
-    if (event.detail.checked) {
-      this.searchCriteriaService.addToRegionFilter(event.detail.value.id);
-    } else {
-      this.searchCriteriaService.removeFromRegionFilter(event.detail.value.id);
-    }
-  }
-
   isSupported(filterType: FilterType): boolean {
     return this.filterSupportPerPlatform[this.platformType][filterType];
   }
@@ -342,30 +298,5 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     let nickName = undefined;
     newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
     this.searchCriteriaService.setObserverNickName(nickName);
-  }
-
-  private getSnowRegions() {
-    // Fetch avalanche regions from assets
-    return this.http.get<AvalancheRegion[]>('./assets/json/avalancheRegions.json').pipe(
-      tap(() => this.logger.debug('Fetched regions from assets', DEBUG_TAG)),
-      // Use search criteria to mark what regions are checked
-      switchMap((regions) =>
-        this.searchCriteriaService.searchCriteria$.pipe(
-          map((searchCriteria) => searchCriteria.SelectedRegions || []),
-          distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr)),
-          map((selectedRegions) => {
-            const markChecked = (r: AvalancheRegion): AvalancheRegion => ({
-              ...r,
-              checked: selectedRegions.includes(r.id),
-            });
-
-            return {
-              a: regions.filter((r) => r.type === 'A').map((r) => markChecked(r)),
-              b: regions.filter((r) => r.type === 'B').map((r) => markChecked(r)),
-            };
-          })
-        )
-      )
-    );
   }
 }
