@@ -68,6 +68,7 @@ export const routes: Routes = [
   {
     path: 'obskorps',
     loadComponent: () => import('./pages/obskorps/obskorps.page').then((m) => m.ObskorpsPage),
+    title: 'Obskorps',
   },
   {
     path: 'auth/callback',

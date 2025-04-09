@@ -6,7 +6,19 @@
   </ion-menu>
 
   <div id="main-content-home-page" class="ion-page">
-    <app-header title="{{ appname }}" [fullscreenSupport]="true"></app-header>
+    <app-header>
+      <!-- Høyremeny -->
+      <ion-buttons slot="end">
+        <ion-menu-button color="light"> </ion-menu-button>
+      </ion-buttons>
+
+      <!-- Venstremeny / filtermeny -->
+      <ion-buttons slot="start">
+        <ion-menu-button menu="filter" color="light">
+          <ion-icon name="options-outline"></ion-icon>
+        </ion-menu-button>
+      </ion-buttons>
+    </app-header>
     <ion-content>
       <app-map
         (mapReady)="onMapReady($event)"

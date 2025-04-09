@@ -17,6 +17,7 @@ import {
   IonSegment,
   IonSegmentButton,
   SegmentCustomEvent,
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
@@ -43,18 +44,19 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
     IonCol,
     IonContent,
     IonGrid,
+    IonItemDivider,
     IonLabel,
+    IonList,
     IonRow,
     IonSegment,
     IonSegmentButton,
+    IonTitle,
     NgTemplateOutlet,
     RefreshWithCancelComponent,
     SvgIconComponent,
     TranslatePipe,
-    IonList,
-    WarningListItemComponent,
     WarningListHeaderComponent,
-    IonItemDivider,
+    WarningListItemComponent,
   ],
 })
 export class WarningListPage {

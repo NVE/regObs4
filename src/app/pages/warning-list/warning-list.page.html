@@ -1,4 +1,8 @@
-<app-header [title]="title()"></app-header>
+<app-header>
+  <ion-title>
+    {{ title() }}
+  </ion-title>
+</app-header>
 <ion-segment slot="fixed" [value]="selectedTab()" (ionChange)="onSegmentChange($event)">
   <ion-segment-button value="inMapView" [disabled]="noMapExtentAvailable()">
     <ion-label>{{ "WARNING_LIST.RELEVANT" | translate }}</ion-label>
