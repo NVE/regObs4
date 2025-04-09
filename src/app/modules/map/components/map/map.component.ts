@@ -18,7 +18,7 @@ import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
 import L from 'leaflet';
-import { BehaviorSubject, combineLatest, fromEventPattern, race, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, fromEventPattern, race, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
@@ -100,13 +100,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly showGpsCenter = input(true);
   readonly showScale = input(true);
   readonly showSupportMaps = input(true);
-  readonly center = input(L.latLng(settings.map.unknownMapCenter));
-  readonly zoom = input(settings.map.tiles.defaultZoom);
+  readonly center = input<L.LatLng>();
+  readonly zoom = input<number>();
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   readonly autoActivate = input(true);
   readonly geoTag = input(DEBUG_TAG);
   readonly offlinePackageMode = input(false);
   readonly showObserverTrips = input(false);
+
+  /**
+   * Om kartet skal tilpasse seg bounds fra mapservice under oppstarten, eller ikke.
+   * Hvis ikke kartet tilpasser seg bounds styres første kartutsnitt bare fra zoom og center.
+   */
+  readonly fitBounds = input(true);
 
   /**
    * Update MapService.mapView$ when extent changes.
@@ -187,16 +193,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   async ngOnInit() {
     this.mapService.showUserLocation = this.showUserLocation();
     this.mapService.followMode = this.showUserLocation() && this.activateFollowModeOnStartup();
+    const currentView = await firstValueFrom(this.mapService.mapView$);
+    this.bounds = currentView?.bounds;
 
     this.options = {
-      zoom: this.zoom(),
+      zoom: this.zoom() || currentView?.zoom || settings.map.tiles.defaultZoom,
       maxZoom: settings.map.tiles.maxZoom,
       minZoom: settings.map.tiles.minZoom,
-      center: this.center(),
+      center: this.center() || currentView?.center || L.latLng(settings.map.unknownMapCenter),
       bounceAtZoomLimits: false,
       attributionControl: false,
       zoomControl: false,
-      maxBounds: new L.LatLngBounds(new L.LatLng(90.0, -180.0), new L.LatLng(-90, 180.0)),
+      maxBounds: [
+        [90.0, -180.0],
+        [-90, 180.0],
+      ],
       maxBoundsViscosity: 1.0,
     };
 
@@ -204,26 +215,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.isActive.value && autoActivate) {
       this.isActive.next(autoActivate);
     }
-    try {
-      const zoomValue = this.zoom();
-      const center = this.center();
-      if (center === undefined || zoomValue === undefined) {
-        const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
-        if (currentView && currentView.bounds) {
-          this.bounds = currentView.bounds;
-        }
-        if (currentView && currentView.center) {
-          if (center === undefined) {
-            this.options.center = currentView.center;
-          }
-          if (zoomValue === undefined) {
-            this.options.zoom = currentView.zoom;
-          }
-        }
-      }
-    } finally {
-      this.loaded = true;
-    }
+
+    this.loaded = true;
   }
 
   ngOnDestroy(): void {
@@ -331,10 +324,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(() => {
         // Invalidate map size before we set bounds in case map container size has changed
-        map.invalidateSize();
+        map.invalidateSize({ animate: false, noMoveStart: true, debounceMoveend: true });
 
-        if (this.bounds) {
-          map.fitBounds(this.bounds, { animate: false });
+        if (this.bounds && this.fitBounds()) {
+          map.fitBounds(this.bounds, { animate: false, noMoveStart: true });
         }
 
         // Si fra til map service hva oppdatert extent er etter at kartet er tegnet.
@@ -732,7 +725,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   redrawMap() {
     if (this.map) {
-      this.map.invalidateSize();
+      this.map.invalidateSize({ animate: false, noMoveStart: true, debounceMoveend: true });
     }
     window.dispatchEvent(new Event('resize'));
   }
