@@ -6,6 +6,9 @@ import { settings } from 'src/settings';
 import { BreakpointService } from './breakpoint.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
+/**
+ * Beregner url-er til bruk av plot.regobs.no
+ */
 @Injectable({
   providedIn: 'root',
 })
