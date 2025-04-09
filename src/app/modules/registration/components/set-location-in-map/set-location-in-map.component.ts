@@ -55,7 +55,7 @@ import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { settings } from 'src/settings';
-import { NgIf, NgClass, NgFor, DecimalPipe } from '@angular/common';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 import { MapComponent } from '../../../map/components/map/map.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
@@ -135,7 +135,6 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
     IonToggle,
     KdvSelectComponent,
     MapComponent,
-    NgClass,
     NgFor,
     NgIf,
     SelectComponent,
