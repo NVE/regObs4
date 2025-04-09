@@ -20,7 +20,6 @@ import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
 import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
-import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { PlotService } from 'src/app/core/services/plot.service';
 
@@ -36,7 +35,6 @@ export class ObservationImageCarouselComponent {
   private modalController = inject(ModalController);
   attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
   settings = inject(UserSettingService);
-  isDesktop = inject(BreakpointService).isDesktop;
   plotService = inject(PlotService);
 
   registration = input<RegistrationViewModel>();
