@@ -457,11 +457,12 @@ export class SearchCriteriaService {
     });
   }
 
-  async addToRegionFilter(regionId: number) {
+  async addToRegionFilter(regionIds: number[]) {
     const { SelectedRegions } = await firstValueFrom(this.searchCriteria$);
     const existingRegions = SelectedRegions || [];
+    const updatedRegions = Array.from(new Set([...existingRegions, ...regionIds])); // Kombiner og fjern duplikater
     this.searchCriteriaChanges.next({
-      SelectedRegions: existingRegions.includes(regionId) ? [...existingRegions] : [...existingRegions, regionId],
+      SelectedRegions: updatedRegions,
     });
   }
 

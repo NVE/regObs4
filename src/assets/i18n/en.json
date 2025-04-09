@@ -276,8 +276,13 @@
     "OBSERVATION_TYPE_FILTER": {
       "TITLE": "Observation type"
     },
-    "REGION_FILTER_B_REGIONS_TITLE": "Region without regularly warning service",
-    "REGION_FILTER_TITLE_SNOW": "Region",
+    "REGION": {
+      "A_REGIONS_TITLE": "Varslingsregioner",
+      "B_REGIONS_TITLE": "Regions without regularly warning service",
+      "RESET_CAPTION": "Remove all",
+      "SHORTCUTS_TITLE": "Shortcuts",
+      "TITLE": "Region"
+    },
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
     "TITLE": "Observation filter"
   },
