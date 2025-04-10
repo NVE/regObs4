@@ -2,7 +2,16 @@ import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, IonContent, ToastController, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
+import {
+  AlertController,
+  IonButtons,
+  IonContent,
+  IonIcon,
+  IonMenu,
+  IonMenuButton,
+  IonSplitPane,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import L from 'leaflet';
@@ -83,8 +92,11 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
     FilterMenuComponent,
     GeoFabComponent,
     HeaderComponent,
+    IonButtons,
     IonContent,
+    IonIcon,
     IonMenu,
+    IonMenuButton,
     IonSplitPane,
     MapCenterInfoComponent_1,
     MapComponent,
@@ -278,13 +290,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   private isErrorToastVisible(): boolean {
     return this.errorToast != null;
-  }
-
-  get appname(): string {
-    if (Capacitor.isNativePlatform()) {
-      return 'Varsom';
-    }
-    return 'Varsom Regobs';
   }
 
   ngAfterViewChecked(): void {

@@ -1,4 +1,15 @@
-<app-header title="Obskorps" [showFilterButton]="false"></app-header>
+<app-header>
+  <ion-buttons slot="start">
+    <ion-button color="light" routerLink="/" routerDirection="back">Gå til forside</ion-button>
+  </ion-buttons>
+
+  <!-- Høyremeny -->
+  <ion-buttons slot="end">
+    <ion-menu-button color="light"></ion-menu-button>
+  </ion-buttons>
+
+  <ion-title>Obskorps</ion-title>
+</app-header>
 
 <ion-content [fullscreen]="true" color="light">
   <div class="form">

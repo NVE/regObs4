@@ -18,9 +18,14 @@ import {
   IonList,
   IonNote,
   IonSpinner,
+  IonTitle,
+  IonButtons,
+  IonMenuButton,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { NgIf, AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 const toDateInputValue = (date: Date) => {
   const isoString = date.toISOString();
@@ -36,14 +41,19 @@ const toDateInputValue = (date: Date) => {
     AsyncPipe,
     HeaderComponent,
     IonButton,
+    IonButtons,
     IonContent,
     IonInput,
     IonItem,
     IonLabel,
     IonList,
+    IonMenuButton,
     IonNote,
+    IonRouterLink,
     IonSpinner,
+    IonTitle,
     NgIf,
+    RouterLink,
   ],
 })
 export class ObskorpsPage implements OnInit {
