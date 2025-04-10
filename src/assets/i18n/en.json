@@ -379,7 +379,8 @@
       },
       "OBSERVED_BY": "Sent in by",
       "DOWNLOAD": "Download",
-      "GO_TO_ORIGINAL_IMAGE": "See original"
+      "GO_TO_ORIGINAL_IMAGE": "See original",
+      "GO_TO_SNOW_PROFILE": "Go to profile"
     },
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",

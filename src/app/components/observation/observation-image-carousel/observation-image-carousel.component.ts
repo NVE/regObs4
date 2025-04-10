@@ -6,6 +6,7 @@ import {
   ElementRef,
   inject,
   input,
+  linkedSignal,
   model,
   viewChild,
 } from '@angular/core';
@@ -19,6 +20,7 @@ import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
 import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
+import { PlotService } from 'src/app/core/services/plot.service';
 
 @Component({
   selector: 'app-observation-image-carousel',
@@ -30,11 +32,21 @@ import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrie
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
-  attachments = input<AttachmentViewModel[]>([]);
+  attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
+  plotService = inject(PlotService);
+
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
-  constructor() {
-    addIcons({ close, downloadOutline, openOutline });
+
+  // Bruker linkedSignal her for å gjøre det mulig å overstyre hva urlen er dersom kall til plot-api feiler
+  snowProfileUrl = linkedSignal(() => {
+    const reg = this.registration();
+    if (!reg) return undefined;
+    return this.plotService.getSnowProfileSvgUrl(reg);
+  });
+
+  useFallbackSnowProfileImage(attachment: AttachmentViewModel) {
+    this.snowProfileUrl.set(attachment.Url as string);
   }
 
   roundedDownOrientationValue = computed(() => {
@@ -46,6 +58,23 @@ export class ObservationImageCarouselComponent {
   });
 
   currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
+  comment = computed(() => {
+    // Prioriter kommentar fra bilde dersom det er lagt til
+    if (this.currentAttachmentData().Comment) {
+      return this.currentAttachmentData().Comment;
+    }
+
+    // Vis kommentar fra snøprofil-skjema dersom det finnes
+    if (this.isAttachmentSnowProfile(this.currentAttachmentData())) {
+      return this.registration()?.SnowProfile2?.Comment;
+    }
+
+    return undefined;
+  });
+
+  constructor() {
+    addIcons({ close, downloadOutline, openOutline });
+  }
 
   closeModal() {
     this.modalController.dismiss();
@@ -59,5 +88,10 @@ export class ObservationImageCarouselComponent {
 
   ngAfterViewInit() {
     this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
+  }
+
+  isAttachmentSnowProfile(attachment: AttachmentViewModel & { Href?: string }) {
+    // Kun snøprofil har Href
+    return !!attachment.Href;
   }
 }

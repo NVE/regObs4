@@ -86,6 +86,11 @@ export const settings: ISettings = {
         DEMO: 'https://demo.regobs.no',
         TEST: 'https://test.regobs.no',
       },
+      plotUrl: {
+        PROD: 'https://plot.regobs.no/v1',
+        DEMO: 'https://demo-plot.regobs.no/v1',
+        TEST: 'https://test-plot.regobs.no/v1',
+      },
       createUserUrl: '/Account/Register?c=Home',
       passwordRecoveryUrl: '/Account/PasswordRecovery?c=Home',
       changePasswordUrl: '/Account/ChangePassword?email={email}&c=Home',
@@ -465,9 +470,4 @@ export const settings: ISettings = {
   },
   feedbackWebUrl:
     'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu',
-  iceThicknessPlotUrl: {
-    TEST: 'https://test-plot.regobs.no/v1/IceThickness/',
-    DEMO: 'https://demo-plot.regobs.no/v1/IceThickness/',
-    PROD: 'https://plot.regobs.no/v1/IceThickness/',
-  },
 };
