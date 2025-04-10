@@ -152,6 +152,7 @@ export class MapService {
     this._centerMapToUserSubject = new Subject<void>();
     this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
     this._mapView$ = this._mapViewSubject.asObservable().pipe(
+      debounceTime(100),
       distinctUntilChanged((prev, curr) => {
         if (prev == null || curr == null) {
           return false;
