@@ -299,7 +299,7 @@ export class SearchCriteriaService {
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
         // Remove extent if one or more regions are selected
-        Extent: useMapExtent && (criteria.SelectedRegions || []).length === 0 ? extent : undefined,
+        Extent: useMapExtent ? extent : undefined,
       })),
       map((criteria) => removeNullOrUndefined(criteria)),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
@@ -452,7 +452,6 @@ export class SearchCriteriaService {
     await this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams,
-      queryParamsHandling: 'merge',
       replaceUrl: true,
     });
   }
