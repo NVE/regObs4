@@ -125,16 +125,16 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private http = inject(HttpClient);
   private logger = inject(LoggingService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
-  observationGroups = toSignal(this.searchCriteriaModelService.getObservationGroups$());
+  observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
 
   // returnerer søkekriteria: gruppe id - nøkkel, subtype id [] - verdi
   criteriasObject = toSignal(
     this.searchCriteriaService.searchCriteria$.pipe(
       map((searchCriteria) => searchCriteria.SelectedRegistrationTypes || []),
-      map((selectedRegions) => {
+      map((selectedRegistrationTypes) => {
         const result: Record<number, number[]> = {};
 
-        selectedRegions.forEach((item) => {
+        selectedRegistrationTypes.forEach((item) => {
           const key = item.Id;
           if (!result[key]) {
             result[key] = [];
@@ -197,7 +197,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   // returnerer grupper og typer med isChecked
   groupsWithIsCheckedComputed = computed(() => {
-    const groups = this.observationGroups() || [];
+    const groups = this.observationTypeGroups() || [];
     const criterias = this.criteriasObject();
 
     return groups

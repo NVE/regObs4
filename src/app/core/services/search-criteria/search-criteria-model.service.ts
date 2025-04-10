@@ -98,7 +98,7 @@ export class SearchCriteriaModelService {
   /**
    * Get observation groups from API.
    */
-  getObservationGroups$(): Observable<(RegistrationTypeDto | undefined)[]> {
+  getObservationTypeGroups$(): Observable<(RegistrationTypeDto | undefined)[]> {
     return this.getParams$().pipe(
       switchMap((params) =>
         this.getModel$(params).pipe(

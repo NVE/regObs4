@@ -34,7 +34,7 @@
             <ion-list lines="none">
               <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
               <!-- her vise obsgruppe først og så vise obstyper i gruppa og bruke klikks.-->
-              @for (group of this.groupsWithIsCheckedComputed(); track group?.id) {
+              @for (group of groupsWithIsCheckedComputed(); track group.id) {
                 <ion-item>
                   <ion-checkbox
                     [checked]="group?.isChecked"
