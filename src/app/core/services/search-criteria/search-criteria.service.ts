@@ -299,7 +299,7 @@ export class SearchCriteriaService {
         LangKey: langKey,
         SelectedGeoHazards: geoHazards,
         // Remove extent if one or more regions are selected
-        Extent: useMapExtent ? extent : undefined,
+        Extent: useMapExtent && (criteria.SelectedRegions || []).length === 0 ? extent : undefined,
       })),
       map((criteria) => removeNullOrUndefined(criteria)),
       tap((currentCriteria) => this.logger.debug('Current combined criteria', DEBUG_TAG, currentCriteria)),
