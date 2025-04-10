@@ -14,19 +14,20 @@ a {
     transition: color 0.3s ease-in-out;
   }
 
-  ion-tab-button:hover {
-    background: rgb(200, 234, 249); //--interactive-ghost-background-hover fra designsystem
+  ion-tab-button:not(.tab-button--active):hover {
+    background: rgba(200, 234, 249, 0.9); // --interactive-ghost-background-hover fra designsystem
   }
 
-  ion-tab-button:hover ion-label,
-  ion-tab-button:hover ion-icon {
+  ion-tab-button:not(.tab-button--active):hover ion-label,
+  ion-tab-button:not(.tab-button--active):hover ion-icon {
     color: black;
   }
 
   .tab-button--active {
     ion-label,
     ion-icon {
-      color: white;
+      color: black;
     }
+    background: rgb(200, 234, 249);
   }
 }
