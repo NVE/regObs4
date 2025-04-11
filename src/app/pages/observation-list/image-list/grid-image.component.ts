@@ -29,7 +29,13 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       padding: 10px;
       box-sizing: border-box;
       background: #fff;
+      transition: background 0.3s ease;
+      cursor: pointer;
+      &:hover {
+        background: #cfe9f7;
+      }
     }
+
     .grid-image__text {
       overflow: hidden;
       white-space: nowrap;
