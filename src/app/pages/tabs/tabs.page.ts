@@ -40,10 +40,15 @@ export class TabsPage {
 
   constructor() {
     this.selectedTab$ = this.tabsService.selectedTab$;
-    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(([, tab]) =>
-      this.applyCurrentQueryParams(tab)
-    );
     addIcons({ mapOutline, list, warning, openOutline });
+  }
+
+  async ngOnInit() {
+    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(
+      async ([, tab]) => {
+        await this.applyCurrentQueryParams(tab);
+      }
+    );
   }
 
   warningsInView = computed(() => {
@@ -94,9 +99,9 @@ export class TabsPage {
     }
   });
 
-  private applyCurrentQueryParams(path: TABS | null) {
+  private async applyCurrentQueryParams(path: TABS | null) {
     if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
-      this.searchCriteriaService.applyQueryParams();
+      await this.searchCriteriaService.applyQueryParams();
     }
   }
 }

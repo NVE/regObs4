@@ -452,7 +452,6 @@ export class SearchCriteriaService {
     await this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams,
-      queryParamsHandling: 'merge',
       replaceUrl: true,
     });
   }
