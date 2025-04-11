@@ -20,3 +20,7 @@ ion-list {
   width: 100%;
   background: var(--background-color);
 }
+
+.subtype::part(native) {
+  padding-left: 40px;
+}

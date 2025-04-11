@@ -17,7 +17,7 @@ import {
   ToggleCustomEvent,
   IonContent,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, computed, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, EMPTY, firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
@@ -26,14 +26,14 @@ import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { RegistrationTypeCriteriaDto } from 'src/app/modules/common-regobs-api';
+import { RegistrationTypeCriteriaDto, RegistrationTypeDto } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { SearchCriteriaModelService } from 'src/app/core/services/search-criteria/search-criteria-model.service';
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
-import { ObservationTypeOptions, ObservationTypeView } from './observationTypeOptions';
+import { ObservationTypeView } from './observationTypeOptions';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DateRangeComponent } from '../date-range/date-range.component';
@@ -44,6 +44,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline } from 'ionicons/icons';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type PlatformType = 'app' | 'web';
 type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
@@ -124,6 +125,29 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private http = inject(HttpClient);
   private logger = inject(LoggingService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
+  observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
+
+  // returnerer søkekriteria: gruppe id - nøkkel, subtype id [] - verdi
+  criteriasObject = toSignal(
+    this.searchCriteriaService.searchCriteria$.pipe(
+      map((searchCriteria) => searchCriteria.SelectedRegistrationTypes || []),
+      map((selectedRegistrationTypes) => {
+        const result: Record<number, number[]> = {};
+
+        selectedRegistrationTypes.forEach((item) => {
+          const key = item.Id;
+          if (!result[key]) {
+            result[key] = [];
+          }
+          if (item.SubTypes !== undefined) {
+            result[key] = [...item.SubTypes];
+          }
+        });
+
+        return result;
+      })
+    )
+  );
 
   popupType?: SelectInterface;
   isIosOrAndroid?: boolean;
@@ -136,7 +160,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   currentGeoHazard?: GeoHazard[];
   showObservations$?: Observable<boolean>;
   observationTypes$?: Observable<ObservationTypeView[]>;
-  nTypesSelected$?: Observable<number>;
   noCompetenceFilterActive$?: Observable<boolean>;
 
   filterSupportPerPlatform: FilterSupportPerPlatform = {
@@ -171,9 +194,46 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   slushFlowFilterIsActive = false;
 
+  // returnerer grupper og typer med isChecked
+  groupsWithIsCheckedComputed = computed(() => {
+    const groups = this.observationTypeGroups() || [];
+    const criterias = this.criteriasObject();
+
+    return groups
+      .filter((group): group is RegistrationTypeDto => group?.Id !== undefined) // Filter out any undefined groups
+      .map((group) => {
+        const subtypes = group?.SubTypes?.map((subType) => ({
+          id: subType.Id,
+          name: subType.Name,
+          isChecked: criterias ? criterias[group.Id]?.includes(subType.Id) : false,
+          parentId: group.Id,
+        }));
+
+        return {
+          id: group.Id,
+          name: group?.Name,
+          isChecked: criterias ? criterias[group.Id]?.length === subtypes?.length : false,
+          subTypes: subtypes,
+        };
+      });
+  });
+
+  numSelectedObservationTypes = computed(() => {
+    const groups = this.groupsWithIsCheckedComputed();
+    return groups.reduce((acc, group) => {
+      // Sjekk om gruppen har subtypes
+      if (group.subTypes?.length) {
+        // Inkrement med antall subtypes som er sjekket
+        return acc + group.subTypes.filter((subType) => subType.isChecked).length;
+      } else {
+        // inkrement med 1 hvis gruppen er sjekket
+        return acc + (group.isChecked ? 1 : 0);
+      }
+    }, 0);
+  });
+
   constructor() {
     super();
-
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
     this.regions$ = this.userSettingService.currentGeoHazard$.pipe(
@@ -199,64 +259,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.showObservations$ = this.userSettingService.showObservations$;
 
     this.userSettingService.currentGeoHazard$.subscribe((curGeohazard) => (this.currentGeoHazard = curGeohazard));
-
-    this.observationTypes$ = combineLatest([
-      this.searchCriteriaModelService
-        .getObservationTypesFilterOptions$()
-        .pipe(map((obsTypesList) => new ObservationTypeOptions(obsTypesList))),
-
-      this.searchCriteriaService.searchCriteria$.pipe(
-        map((searchCriteria) => searchCriteria.SelectedRegistrationTypes || []),
-        // Sort ids, so distinct check is easier
-        map((regTypes) => [...regTypes].sort((a, b) => a.Id - b.Id)),
-        distinctUntilChanged((prev, curr) => {
-          if (prev.length !== curr.length) {
-            return false;
-          }
-
-          // Length is the same, check if any items has changed
-          if (prev.some((p, i) => curr[i].Id !== p.Id)) {
-            return false;
-          }
-
-          // Check if any subTypes has changed
-          return prev.every((p, i) => arrayHasNotChanged(p.SubTypes || [], curr[i].SubTypes || []));
-        })
-      ),
-    ]).pipe(
-      map(([obsTypesOptions, obsTypes]) => {
-        // assure that we set boxes back to false since we dont handle proper isChecked => false mutation yet
-        for (const v of obsTypesOptions.optionsToReturnMap.values()) {
-          v.isChecked = false;
-        }
-        obsTypes.forEach((type) => {
-          const subTypes = type.SubTypes || [];
-          if (subTypes.length > 0) {
-            subTypes.forEach((subtype) => {
-              const obsTypeView = obsTypesOptions.optionsToReturnMap.get(+`${type.Id}.${subtype}`);
-              if (obsTypeView) {
-                obsTypeView.isChecked = true;
-              }
-            });
-          } else {
-            const obsTypeView = obsTypesOptions.optionsToReturnMap.get(type.Id);
-            if (obsTypeView) {
-              obsTypeView.isChecked = true;
-            }
-          }
-        });
-        return obsTypesOptions.options;
-      })
-    );
-
-    this.nTypesSelected$ = this.observationTypes$.pipe(
-      map((obsType) => {
-        if (obsType) {
-          return [...obsType.filter((ot) => ot.isChecked)].length;
-        }
-        return 0;
-      })
-    );
 
     const competenceCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
       map((searchCriteria) => searchCriteria.ObserverCompetence || []),
@@ -328,14 +330,22 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.searchCriteriaService.resetSearchCriteria();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setNewType(event: any, parentId: number, typeId?: number) {
+  async toggleObservationType(checked: boolean, parentId: number, typeId?: number) {
     //if parentid and subtypeid are the same it means there is no subtypes
     let obsType: RegistrationTypeCriteriaDto;
     if (parentId == typeId) obsType = { Id: parentId, SubTypes: [] };
     else obsType = { Id: parentId, SubTypes: typeId ? [typeId] : [] };
-    if (!event.currentTarget.checked) this.searchCriteriaService.setObservationType(obsType);
-    else this.searchCriteriaService.removeObservationType(obsType);
+    if (checked) await this.searchCriteriaService.setObservationType(obsType);
+    else await this.searchCriteriaService.removeObservationType(obsType);
+  }
+
+  async toggleObservationGroup(checked: boolean, groupId: number, subtypes: ObservationTypeView[] | undefined) {
+    const obsGroup = { Id: groupId, SubTypes: subtypes ? subtypes.map((m) => m.id) : [] };
+    if (checked) {
+      await this.searchCriteriaService.setObservationType(obsGroup);
+    } else {
+      await this.searchCriteriaService.removeObservationType(obsGroup);
+    }
   }
 
   setNickName(newNick: SearchbarCustomEvent) {
