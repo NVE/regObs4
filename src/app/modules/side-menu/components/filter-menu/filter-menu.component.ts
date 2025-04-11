@@ -160,7 +160,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   currentGeoHazard?: GeoHazard[];
   showObservations$?: Observable<boolean>;
   observationTypes$?: Observable<ObservationTypeView[]>;
-  nTypesSelected$?: Observable<number>;
   noCompetenceFilterActive$?: Observable<boolean>;
 
   filterSupportPerPlatform: FilterSupportPerPlatform = {
@@ -217,6 +216,20 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
           subTypes: subtypes,
         };
       });
+  });
+
+  numSelectedObservationTypes = computed(() => {
+    const groups = this.groupsWithIsCheckedComputed();
+    return groups.reduce((acc, group) => {
+      // Sjekk om gruppen har subtypes
+      if (group.subTypes?.length) {
+        // Inkrement med antall subtypes som er sjekket
+        return acc + group.subTypes.filter((subType) => subType.isChecked).length;
+      } else {
+        // inkrement med 1 hvis gruppen er sjekket
+        return acc + (group.isChecked ? 1 : 0);
+      }
+    }, 0);
   });
 
   constructor() {

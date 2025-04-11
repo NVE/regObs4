@@ -25,7 +25,7 @@
         <ion-accordion *ngIf="isSupported('observationType')">
           <ion-item slot="header" color="light">
             <app-selected-items-counter-label
-              [selectedItemsCount]="slushFlowFilterIsActive ? 1 : (nTypesSelected$ | async)"
+              [selectedItemsCount]="slushFlowFilterIsActive ? 1 : numSelectedObservationTypes()"
             >
               {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
             </app-selected-items-counter-label>
