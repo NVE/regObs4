@@ -1,0 +1,156 @@
+# Regobs web bygg og release pipeline.
+trigger:
+  - develop
+
+name: $(Date:yyyyMMdd)$(Rev:.r)
+
+stages:
+  - stage: 'Build'
+    displayName: 'Build'
+    jobs:
+      - job:
+        pool:
+          vmImage: 'windows-latest'
+
+        steps:
+          - task: Cache@2
+            displayName: Cache npm dependencies
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: node_modules
+
+          - task: NodeTool@0
+            displayName: 'Use Node 18.x'
+            inputs:
+              versionSpec: 18.x
+
+          - task: Npm@1
+            displayName: 'npm install'
+
+          - task: Npm@1
+            displayName: 'npm run test-ci'
+            enabled: true
+            inputs:
+              command: custom
+              customCommand: 'run test-ci'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results **/TESTS-*.xml'
+            condition: succeededOrFailed()
+            enabled: true
+            inputs:
+              testResultsFiles: '**/TESTS-*.xml'
+
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publish code coverage from **/cobertura-coverage.xml'
+            condition: succeededOrFailed()
+            enabled: true
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+              reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+              failIfCoverageEmpty: true
+
+          - task: Npm@1
+            displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
+            inputs:
+              command: custom
+              customCommand: 'run create-version-file'
+
+          - task: Npm@1
+            displayName: 'npm run build:prod'
+            inputs:
+              command: custom
+              customCommand: 'run build:prod'
+
+          - task: CopyFiles@2
+            displayName: 'copy files to $(Build.ArtifactStagingDirectory)'
+            inputs:
+              sourceFolder: 'www'
+              contents: '**/*'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
+              cleanTargetFolder: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish BuildArtifact'
+            inputs:
+              pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              artifactName: drop
+
+  - stage: Test
+    displayName: 'Deploy to Test'
+    dependsOn: Build
+    jobs:
+      - deployment: DeployToTest
+        displayName: 'Deploy to Test'
+        environment:
+          name: RegObs-Test
+          resourceName: NF-WEB-E-TST01
+        variables:
+          targetFolder: 'Z:\SharedData\Web\test.regobs.no\Releases_$(Build.BuildNumber)'
+          appName: 'test.regobs.no'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+
+                - task: CopyFiles@2
+                  enabled: true
+                  displayName: 'Copy Files to WebAppBasePath'
+                  inputs:
+                    SourceFolder: $(Pipeline.Workspace)\drop\browser
+                    TargetFolder: '$(targetFolder)'
+                    OverWrite: true
+
+                - task: IISWebAppManagementOnMachineGroup@0
+                  displayName: 'Deploy to IIS'
+                  inputs:
+                    IISDeploymentType: 'IISWebApplication'
+                    ParentWebsiteNameForApplication: '$(appName)'
+                    VirtualPathForApplication: '/'
+                    PhysicalPathForApplication: '$(targetFolder)'
+                    AppPoolName: '$(appName)'
+                    AppPoolNameForWebsite: '$(appName)'
+                    AppPoolNameForApplication: '$(appName)'
+
+  - stage: Prod
+    displayName: 'Deploy to Prod'
+    dependsOn: Test
+    jobs:
+      - deployment: DeployToProd
+        displayName: 'Deploy to Prod'
+        environment:
+          name: RegObs-Prod
+          resourceName: NF-REGOBS-E-PRO
+        variables:
+          targetFolder: 'Z:\SharedData\Web\regobs2025\Releases_$(Build.BuildNumber)'
+          appName: 'regobs2025'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+
+                - task: CopyFiles@2
+                  enabled: true
+                  displayName: 'Copy Files to WebAppBasePath'
+                  inputs:
+                    SourceFolder: $(Pipeline.Workspace)\drop\browser
+                    TargetFolder: '$(targetFolder)'
+                    OverWrite: true
+
+                - task: IISWebAppManagementOnMachineGroup@0
+                  displayName: 'Deploy to IIS'
+                  inputs:
+                    IISDeploymentType: 'IISWebApplication'
+                    ParentWebsiteNameForApplication: '$(appName)'
+                    VirtualPathForApplication: '/'
+                    PhysicalPathForApplication: '$(targetFolder)'
+                    AppPoolName: '$(appName)'
+                    AppPoolNameForWebsite: '$(appName)'
+                    AppPoolNameForApplication: '$(appName)'
