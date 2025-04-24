@@ -1,5 +1,4 @@
-# Varsom app build script
-# https://aka.ms/yaml
+# Regobs ci script. Kjører tester og publiserer test rapport.
 
 trigger:
   - develop
