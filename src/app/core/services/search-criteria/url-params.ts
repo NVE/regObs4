@@ -16,15 +16,15 @@ export const URL_PARAM_ORDER_BY = 'orderBy';
 export const URL_PARAM_REGION = 'regions';
 export const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
-// gamle url-parametre som ble brukt av regobs.no fram til mai 2025, som vi fortsatt støtter
 type OldParamMapper = (params: URLSearchParams, oldKey: string, newKey: string) => string | undefined;
 
 interface OldParamConfig {
   oldKey: string;
-  newKey: string;
+  newKey?: string;
   mapper?: OldParamMapper;
 }
 
+// gamle url-parametre som ble brukt av regobs.no fram til mai 2025
 const OLD_PARAM_CONFIG: OldParamConfig[] = [
   { oldKey: 'NWLat', newKey: URL_PARAM_NW_LAT },
   { oldKey: 'NWLon', newKey: URL_PARAM_NW_LON },
@@ -61,6 +61,19 @@ const OLD_PARAM_CONFIG: OldParamConfig[] = [
       return arrayToSeparatedString(unique);
     },
   },
+
+  {
+    oldKey: 'ObserverCompetence',
+    newKey: URL_PARAM_COMPETENCE,
+    mapper: (params, oldKey) => {
+      const values = params.getAll(oldKey);
+      return arrayToSeparatedString(values);
+    },
+  },
+
+  // Entries without newKey will be deleted
+  { oldKey: 'Countries' },
+  { oldKey: 'SupportMaps' },
 ];
 
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
@@ -75,13 +88,19 @@ function defaultMapper(params: URLSearchParams, oldKey: string) {
 export function mapOldParamsToNew(params: URLSearchParams): void {
   for (const config of OLD_PARAM_CONFIG) {
     const { oldKey, newKey } = config;
-    if (!params.has(oldKey)) continue;
 
-    const mapper = config.mapper || defaultMapper;
-    const value = mapper(params, oldKey, newKey);
-    if (value != undefined && value !== '') {
-      params.set(newKey, value);
+    if (!params.has(oldKey)) {
+      continue;
     }
+
+    if (newKey !== undefined) {
+      const mapper = config.mapper || defaultMapper;
+      const value = mapper(params, oldKey, newKey);
+      if (value != undefined && value !== '') {
+        params.set(newKey, value);
+      }
+    }
+
     params.delete(oldKey);
   }
 }
