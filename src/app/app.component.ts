@@ -30,7 +30,7 @@ export class AppComponent {
 
   private filterMenuOpened = new Subject<boolean>();
   filterMenuOpened$ = this.filterMenuOpened.asObservable();
-
+  //test
   constructor(
     private platform: Platform,
     private userSettings: UserSettingService,
