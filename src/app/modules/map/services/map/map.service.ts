@@ -39,7 +39,7 @@ export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon
   const mapView: IMapView = { bounds, center: bounds.getCenter() };
   return mapView;
 };
-
+//test2
 export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapView | undefined => {
   const nwLat = params.get(URL_PARAM_NW_LAT);
   const nwLon = params.get(URL_PARAM_NW_LON);
