@@ -1,4 +1,1 @@
-<ion-item>
-  <ion-label [color]="labelColor()" position="stacked" class="ion-text-uppercase">{{ title() | translate }}</ion-label>
-  <app-select [(selectedValue)]="value" [title]="title()" [options]="options"></app-select>
-</ion-item>
+<app-select [(selectedValue)]="value" [label]="title()" [options]="options"></app-select>

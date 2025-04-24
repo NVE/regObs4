@@ -1,4 +1,3 @@
-import { IonItem } from '@ionic/angular/standalone';
 import { Component, ChangeDetectionStrategy, inject, input, model, computed, Signal } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
@@ -15,7 +14,7 @@ type FilterFunc = (value: number) => boolean;
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonItem, NgIf, SelectComponent],
+  imports: [NgIf, SelectComponent],
 })
 export class KdvSelectComponent {
   private kdvService = inject(KdvService);

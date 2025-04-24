@@ -1,60 +1,40 @@
-<ng-container *ngIf="isApp; else popover">
-  <ion-label color="medium" position="stacked">
-    {{ label() | translate }}
-  </ion-label>
-  <ion-button
-    class="open-actionsheet"
-    role="combobox"
-    aria-expanded="false"
-    aria-haspopup="dialog"
-    expand="full"
-    type="button"
-    fill="clear"
-    (click)="openSelect()"
-  >
-  </ion-button>
-  <ion-icon class="value-icon" *ngIf="valueIcon" [name]="valueIcon"></ion-icon>
-  <ion-text>
-    {{ valueText() | translate }}
-  </ion-text>
-  <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
-</ng-container>
-
-<ng-template #popover>
-  <ion-select
-    [label]="label() | translate"
-    labelPlacement="stacked"
-    [placeholder]="valueText() | translate"
-    [disabled]="disabled()"
-    cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-    interface="popover"
-    [(ngModel)]="selectedValue"
-    justify="start"
-  >
-    <!--
-  [interfaceOptions]="popoverOptions()"
-    Kan sette cssClass dynamisk basert på om reset vises eller ikke.
-    Hvis reset vises, style første element i lista med rød farge :)
-  -->
-    <!-- @if (resetEnabled()) {
-      <ion-select-option [value]="undefined">
-        <ion-text color="danger">{{ "DIALOGS.RESET" | translate }}</ion-text>
-      </ion-select-option>
-    } -->
-    <ion-select-option *ngFor="let option of filteredOptions()" [value]="option.id">
-      {{ option.text | translate }}
-    </ion-select-option>
-  </ion-select>
-  @if (resetEnabled()) {
-    <ion-button
-      class="reset"
-      fill="outline"
-      slot="end"
-      [attr.aria-label]="'DIALOGS.RESET' | translate"
-      (click)="reset()"
+@if (useActionSheet()) {
+  <ion-item [color]="color()" button [detail]="false" (click)="openActionSheet()">
+    <ion-label color="medium" position="stacked">
+      {{ label() | translate | uppercase }}
+    </ion-label>
+    <ion-text class="ion-align-self-start" color="medium">
+      @if (valueIcon(); as icon) {
+        <ion-icon class="value-icon" [src]="icon"></ion-icon>
+      }
+      {{ valueText() | translate }}
+    </ion-text>
+    <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
+  </ion-item>
+} @else {
+  <ion-item [color]="color()">
+    <ion-select
+      [label]="label() | translate | uppercase"
+      labelPlacement="stacked"
+      [placeholder]="valueText() | translate"
+      [disabled]="disabled()"
+      cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+      interface="popover"
+      [interfaceOptions]="popoverOptionsWithResetCss()"
+      [value]="selectedValue()"
+      (ionChange)="savePopoverSelectValue($event)"
+      justify="start"
     >
-      {{ "DIALOGS.RESET" | translate }}
-      <ion-icon slot="end" name="close-circle-outline" aria-hidden="true"></ion-icon>
-    </ion-button>
-  }
-</ng-template>
+      @if (resetEnabled()) {
+        <ion-select-option [value]="resetValue">
+          {{ "DIALOGS.RESET" | translate }}
+        </ion-select-option>
+      }
+      @for (option of filteredOptions(); track option.id) {
+        <ion-select-option [value]="option.id">
+          {{ option.text | translate }}
+        </ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+}

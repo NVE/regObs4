@@ -22,17 +22,13 @@
     </ion-item>
 
     <!-- App mode -->
-    <ion-item>
-      <ion-label position="stacked" color="medium" class="ion-text-uppercase"
-        >{{ "SETTINGS.APPMODE" | translate }}
-      </ion-label>
-      <app-select
-        [(selectedValue)]="userSettings.appMode"
-        [options]="appModeOptions"
-        (selectedValueChange)="updateSettings()"
-        [showReset]="false"
-      ></app-select>
-    </ion-item>
+    <app-select
+      [(selectedValue)]="userSettings.appMode"
+      [options]="appModeOptions"
+      (selectedValueChange)="updateSettings()"
+      [showReset]="false"
+      label="SETTINGS.APPMODE"
+    ></app-select>
 
     <!-- Use high detail maps -->
     <ion-item>

@@ -950,8 +950,9 @@ ion-popover.select-popover.ios {
   --width: min(90vw, fit-content);
 }
 
-ion-popover.select-options-with-reset ion-item:first-child {
-  color: tomato;
+ion-popover.app-select-with-reset ion-item:first-child {
+  color: red;
+  --color-hover: red;
 }
 
 swiper-container {

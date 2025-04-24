@@ -71,13 +71,11 @@
         </ion-text>
         <ion-icon slot="end" class="item-detail-icon" name="chevron-forward"> </ion-icon>
       </ion-item>
-      <ion-item>
-        <app-select
-          label="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
-          [(selectedValue)]="avalancheObs.ValidExposition"
-          [options]="expoArray"
-        ></app-select>
-      </ion-item>
+      <app-select
+        label="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
+        [(selectedValue)]="avalancheObs.ValidExposition"
+        [options]="expoArray"
+      ></app-select>
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE"
         kdvKey="Snow_DestructiveSizeKDV"

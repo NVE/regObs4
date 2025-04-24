@@ -137,17 +137,12 @@
               kdvKey="SourceKDV"
               [(value)]="sourceTid"
             ></app-kdv-select>
-            <ion-item class="flex-grow selectors">
-              <!-- <ion-label color="rgb(68, 68, 68)" position="stacked">
-                {{  | translate }}</ion-label
-              > -->
-              <app-select
-                label="REGISTRATION.OBS_LOCATION.UNCERTAINTY"
-                [(selectedValue)]="spatialAccuracy"
-                [options]="spatialAccuracyOptions"
-                class="no-padding"
-              ></app-select>
-            </ion-item>
+            <app-select
+              label="REGISTRATION.OBS_LOCATION.UNCERTAINTY"
+              [(selectedValue)]="spatialAccuracy"
+              [options]="spatialAccuracyOptions"
+              class="no-padding flex-grow selectors"
+            ></app-select>
           </div>
         </div>
       </div>

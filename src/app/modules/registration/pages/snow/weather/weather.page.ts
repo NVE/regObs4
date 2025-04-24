@@ -1,7 +1,6 @@
 import {
   IonToolbar,
   IonListHeader,
-  IonItem,
   IonLabel,
   IonItemDivider,
   IonContent,
@@ -37,7 +36,6 @@ import { NgIf } from '@angular/common';
     IonButtons,
     IonContent,
     IonHeader,
-    IonItem,
     IonItemDivider,
     IonLabel,
     IonList,

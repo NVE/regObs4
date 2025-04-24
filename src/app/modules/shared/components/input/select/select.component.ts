@@ -1,23 +1,21 @@
-import { Component, inject, input, model, computed } from '@angular/core';
+import { Component, inject, input, model, computed, Signal } from '@angular/core';
 import {
   ActionSheetController,
-  IonButton,
   IonIcon,
   IonLabel,
   IonSelect,
   IonSelectOption,
   IonText,
+  IonItem,
 } from '@ionic/angular/standalone';
-import { ActionSheetButton } from '@ionic/core';
+import { ActionSheetButton, PopoverOptions, SelectCustomEvent } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';
-import { firstValueFrom } from 'rxjs';
-import { NgIf, NgFor } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { caretDownSharp, closeCircleOutline } from 'ionicons/icons';
-import { Capacitor } from '@capacitor/core';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -26,12 +24,12 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe, IonLabel],
+  imports: [IonItem, FormsModule, IonIcon, IonSelect, IonSelectOption, IonText, TranslatePipe, IonLabel, UpperCasePipe],
 })
 export class SelectComponent {
   private actionSheetController = inject(ActionSheetController);
   private translateService = inject(TranslateService);
-  platform = inject(Platform);
+  private platform = inject(Platform);
 
   readonly label = input<string>('');
   readonly subTitle = input<string>();
@@ -39,17 +37,28 @@ export class SelectComponent {
   readonly options = input<Array<SelectOption>>([]);
   readonly showReset = input(true);
   readonly disabled = input(false);
+  readonly color = input<undefined | string>(undefined);
 
-  isApp = Capacitor.isNativePlatform();
+  useActionSheet = computed(() => {
+    if (this.platform.is('mobileweb') || this.platform.is('hybrid')) {
+      return true;
+    }
+
+    // Hvis en eller flere options har ikon, bruk action sheet
+    return this.options().some((x) => !!x.icon);
+  });
+
   filteredOptions = computed(() => this.options().filter((x) => !x.disabled));
 
   private selectedOption = computed(() => (this.options() || []).find((x) => x.id === this.selectedValue()));
   valueText = computed(() => this.selectedOption()?.text || '');
   valueIcon = computed(() => this.selectedOption()?.icon);
   resetEnabled = computed(() => this.showReset() && this.selectedValue() != null);
-  popoverOptions = computed(() => {
+  readonly resetValue = 'RESET';
+
+  popoverOptionsWithResetCss: Signal<Partial<PopoverOptions>> = computed(() => {
     if (this.resetEnabled()) {
-      return { cssClass: 'select-options-with-reset' };
+      return { cssClass: 'app-select-with-reset' };
     }
     return {};
   });
@@ -58,54 +67,59 @@ export class SelectComponent {
     addIcons({ caretDownSharp, closeCircleOutline });
   }
 
-  private async getActionSheetButtons() {
+  private getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
-    for (const option of (this.options() || []).filter((x) => !x.disabled)) {
-      const translatedText = await firstValueFrom(this.translateService.get(option.text));
+
+    // Reset button
+    if (this.selectedValue() !== undefined && this.showReset()) {
       buttons.push({
-        text: translatedText,
+        text: this.translateService.instant(TRANSLATION_KEY_RESET),
+        handler: () => this.reset(),
+        role: 'destructive',
+      });
+    }
+
+    // Options
+    for (const option of this.filteredOptions()) {
+      buttons.push({
+        text: this.translateService.instant(option.text),
         icon: option.icon,
         role: option.id === this.selectedValue() ? 'selected' : undefined,
         handler: () => this.selectedValue.set(option.id),
       });
     }
-    if (this.selectedValue() !== undefined && this.showReset()) {
-      const resetTextTranslated = await firstValueFrom(this.translateService.get(TRANSLATION_KEY_RESET));
-      buttons.splice(0, 0, {
-        text: resetTextTranslated,
-        handler: () => this.selectedValue.set(undefined),
-        role: 'destructive',
-      });
-    }
-    const cancelTextTranslated = await firstValueFrom(this.translateService.get(TRANSLATION_KEY_CANCEL));
+
+    // Cancel button
     buttons.push({
-      text: cancelTextTranslated,
+      text: this.translateService.instant(TRANSLATION_KEY_CANCEL),
       role: 'cancel',
     });
+
     return buttons;
   }
 
-  async getTitleTranslations() {
+  private getTitleTranslations() {
     let titleTextTranslated: string | undefined;
     const label = this.label();
     if (label) {
-      titleTextTranslated = await firstValueFrom(this.translateService.get(label));
+      titleTextTranslated = this.translateService.instant(label);
     }
     let subTitleTextTranslated: string | undefined;
     const subTitle = this.subTitle();
     if (subTitle) {
-      subTitleTextTranslated = await firstValueFrom(this.translateService.get(subTitle));
+      subTitleTextTranslated = this.translateService.instant(subTitle);
     }
+
     return {
       titleTextTranslated,
       subTitleTextTranslated,
     };
   }
 
-  async openSelect() {
+  async openActionSheet() {
     if (!this.disabled()) {
-      const translations = await this.getTitleTranslations();
-      const buttons = await this.getActionSheetButtons();
+      const translations = this.getTitleTranslations();
+      const buttons = this.getActionSheetButtons();
       const actionSheet = await this.actionSheetController.create({
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
@@ -115,7 +129,15 @@ export class SelectComponent {
     }
   }
 
-  reset() {
+  private reset() {
     this.selectedValue.set(undefined);
+  }
+
+  savePopoverSelectValue(event: SelectCustomEvent<string>) {
+    if (event.detail.value === this.resetValue) {
+      this.reset();
+    } else {
+      this.selectedValue.set(event.detail.value);
+    }
   }
 }

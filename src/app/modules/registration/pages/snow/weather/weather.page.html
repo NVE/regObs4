@@ -49,16 +49,11 @@
         placeholder="REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE"
         [decimalPlaces]="0"
       ></app-numeric-input>
-      <ion-item>
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.WEATHER.WIND_DIRECTION" | translate }}
-        </ion-label>
-        <app-select
-          [(selectedValue)]="weather.WindDirection"
-          [options]="windDirectionOptions"
-          label="REGISTRATION.SNOW.WEATHER.WIND_DIRECTION"
-        ></app-select>
-      </ion-item>
+      <app-select
+        [(selectedValue)]="weather.WindDirection"
+        [options]="windDirectionOptions"
+        label="REGISTRATION.SNOW.WEATHER.WIND_DIRECTION"
+      ></app-select>
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ "REGISTRATION.SNOW.WEATHER.COMMENT_HEADER" | translate }} </ion-label>
       </ion-list-header>
