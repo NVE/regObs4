@@ -1,6 +1,5 @@
 # Regobs ci script. Kjører tester og publiserer test rapport.
-
-trigger:
+pr:
   - develop
 
 pool:
