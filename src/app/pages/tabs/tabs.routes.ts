@@ -50,10 +50,12 @@ export const routes: Routes = [
         loadComponent: () => import('../warning-list/warning-list.page').then((m) => m.WarningListPage),
         canActivate: [desktopBlockGuard],
       },
+      // Redirect from old regobs.no route
       {
         path: 'observation/search',
         redirectTo: 'search',
       },
+      // Support old route used in app
       {
         path: 'observation-list',
         redirectTo: 'search',

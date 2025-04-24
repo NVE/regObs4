@@ -1,3 +1,5 @@
+import { RegistrationTypeCriteriaDto } from 'src/app/modules/common-regobs-api';
+
 export const URL_PARAM_NW_LAT = 'nwLat';
 export const URL_PARAM_NW_LON = 'nwLon';
 export const URL_PARAM_SE_LAT = 'seLat';
@@ -15,17 +17,74 @@ export const URL_PARAM_REGION = 'regions';
 export const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 // gamle url-parametre som ble brukt av regobs.no fram til mai 2025, som vi fortsatt støtter
-export const URL_PARAM_NW_LAT_OLD = 'NWLat';
-export const URL_PARAM_NW_LON_OLD = 'NWLon';
-export const URL_PARAM_SE_LAT_OLD = 'SELat';
-export const URL_PARAM_SE_LON_OLD = 'SELon';
-export const URL_PARAM_GEOHAZARD_OLD = 'GeoHazards';
-export const URL_PARAM_DAYSBACK_OLD = 'SelectedNumberOfDays';
-export const URL_PARAM_FROMDATE_OLD = 'FromDate';
-export const URL_PARAM_TODATE_OLD = 'ToDate';
-export const URL_PARAM_NICKNAME_OLD = 'ObserverNickName';
+type OldParamMapper = (params: URLSearchParams, oldKey: string, newKey: string) => string | undefined;
+
+interface OldParamConfig {
+  oldKey: string;
+  newKey: string;
+  mapper?: OldParamMapper;
+}
+
+const OLD_PARAM_CONFIG: OldParamConfig[] = [
+  { oldKey: 'NWLat', newKey: URL_PARAM_NW_LAT },
+  { oldKey: 'NWLon', newKey: URL_PARAM_NW_LON },
+  { oldKey: 'SELat', newKey: URL_PARAM_SE_LAT },
+  { oldKey: 'SELon', newKey: URL_PARAM_SE_LON },
+  { oldKey: 'GeoHazards', newKey: URL_PARAM_GEOHAZARD },
+  { oldKey: 'SelectedNumberOfDays', newKey: URL_PARAM_DAYSBACK },
+  { oldKey: 'FromDate', newKey: URL_PARAM_FROMDATE },
+  { oldKey: 'ToDate', newKey: URL_PARAM_TODATE },
+  { oldKey: 'ObserverNickName', newKey: URL_PARAM_NICKNAME },
+  {
+    oldKey: 'SelectedRegistrationTypes',
+    newKey: URL_PARAM_REGISTRATION_TYPE,
+    mapper: (params, oldKey) => {
+      const values = params.getAll(oldKey);
+      const parsedValues = values
+        .map((v) => {
+          try {
+            return JSON.parse(v);
+          } catch (error) {
+            return undefined;
+          }
+        })
+        .filter((v) => v !== undefined);
+      return convertRegTypeDtoToUrl(parsedValues);
+    },
+  },
+  {
+    oldKey: 'SelectedRegions',
+    newKey: URL_PARAM_REGION,
+    mapper: (params, oldKey) => {
+      const values = params.getAll(oldKey);
+      const unique = values.filter((v, i, arr) => arr.indexOf(v) === i);
+      return arrayToSeparatedString(unique);
+    },
+  },
+];
 
 const VALID_GEO_HAZARDS = new Set([[60, 20], [70], [10]]);
+
+function defaultMapper(params: URLSearchParams, oldKey: string) {
+  return params.get(oldKey);
+}
+
+/**
+ * NB: Modifies passed in params
+ */
+export function mapOldParamsToNew(params: URLSearchParams): void {
+  for (const config of OLD_PARAM_CONFIG) {
+    const { oldKey, newKey } = config;
+    if (!params.has(oldKey)) continue;
+
+    const mapper = config.mapper || defaultMapper;
+    const value = mapper(params, oldKey, newKey);
+    if (value != undefined && value !== '') {
+      params.set(newKey, value);
+    }
+    params.delete(oldKey);
+  }
+}
 
 export function isGeoHazardValid(hazards: number[]): boolean {
   hazards.sort((a, b) => b - a);
@@ -91,4 +150,28 @@ export class UrlParams {
   entries() {
     return Object.fromEntries(this.params.entries());
   }
+}
+
+//[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
+export function convertRegTypeDtoToUrl(types?: RegistrationTypeCriteriaDto[]) {
+  if (types != null) {
+    const url = [] as string[];
+    types.forEach((type) => {
+      const parentId = type.Id;
+      if (type.SubTypes && type.SubTypes.length > 0) {
+        type.SubTypes.forEach((subtype) => url.push(`${parentId}.${subtype}`));
+      } else {
+        url.push(parentId.toString());
+      }
+    });
+    return url.join('~');
+  }
+  return;
+}
+
+export function arrayToSeparatedString<T extends number | string>(values: T[] | undefined): string | undefined {
+  if (values?.length) {
+    return values.join(URL_PARAM_ARRAY_DELIMITER);
+  }
+  return;
 }

@@ -31,15 +31,15 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import {
+  arrayToSeparatedString,
+  convertRegTypeDtoToUrl,
   separatedStringToNumberArray,
   URL_PARAM_ARRAY_DELIMITER,
   URL_PARAM_COMPETENCE,
   URL_PARAM_DAYSBACK,
   URL_PARAM_FROMDATE,
-  URL_PARAM_FROMDATE_OLD,
   URL_PARAM_GEOHAZARD,
   URL_PARAM_NICKNAME,
-  URL_PARAM_NICKNAME_OLD,
   URL_PARAM_NW_LAT,
   URL_PARAM_NW_LON,
   URL_PARAM_ORDER_BY,
@@ -49,7 +49,6 @@ import {
   URL_PARAM_SE_LON,
   URL_PARAM_SLUSH_FLOW,
   URL_PARAM_TODATE,
-  URL_PARAM_TODATE_OLD,
   UrlParams,
 } from './url-params';
 import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
@@ -107,13 +106,6 @@ function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string | undefine
   return;
 }
 
-function numberArrayToSeparatedString(numbers: number[] | undefined): string | undefined {
-  if (numbers?.length) {
-    return numbers.join(URL_PARAM_ARRAY_DELIMITER);
-  }
-  return;
-}
-
 function isCompetenceUrlValid(competence: string): RegExpMatchArray | null {
   //check if its a sequence of numbers to max 3 digits with optional tilde as param
   const regex = /^(\b\d{0,3}\b~?)*$/g;
@@ -146,23 +138,6 @@ function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[]
       {} as { [key: number]: RegistrationTypeCriteriaDto }
     );
   return Object.values(regTypeCriteriaDto);
-}
-
-//[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
-function convertRegTypeDtoToUrl(types?: RegistrationTypeCriteriaDto[]) {
-  if (types != null) {
-    const url = [] as string[];
-    types.forEach((type) => {
-      const parentId = type.Id;
-      if (type.SubTypes && type.SubTypes.length > 0) {
-        type.SubTypes.forEach((subtype) => url.push(`${parentId}.${subtype}`));
-      } else {
-        url.push(parentId.toString());
-      }
-    });
-    return url.join('~');
-  }
-  return;
 }
 
 const DEFAULT_SEARCH_CRITERIA: SearchCriteriaRequestDto = {
@@ -336,22 +311,17 @@ export class SearchCriteriaService {
     let fromObsTime: string | undefined;
     let toObsTime: string | undefined;
 
-    if (url.searchParams.get(URL_PARAM_FROMDATE) || url.searchParams.get(URL_PARAM_FROMDATE_OLD)) {
-      fromObsTime = convertToIsoDateTime(
-        url.searchParams.get(URL_PARAM_FROMDATE) || url.searchParams.get(URL_PARAM_FROMDATE_OLD)
-      );
+    if (url.searchParams.get(URL_PARAM_FROMDATE)) {
+      fromObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_FROMDATE));
     }
 
-    if (url.searchParams.get(URL_PARAM_TODATE) || url.searchParams.get(URL_PARAM_TODATE_OLD)) {
-      toObsTime = convertToIsoDateTime(
-        url.searchParams.get(URL_PARAM_TODATE) || url.searchParams.get(URL_PARAM_TODATE_OLD),
-        'end'
-      );
+    if (url.searchParams.get(URL_PARAM_TODATE)) {
+      toObsTime = convertToIsoDateTime(url.searchParams.get(URL_PARAM_TODATE), 'end');
     }
 
     this.setUseDaysBack(!fromObsTime);
 
-    const nickName = url.searchParams.get(URL_PARAM_NICKNAME) || url.searchParams.get(URL_PARAM_NICKNAME_OLD);
+    const nickName = url.searchParams.get(URL_PARAM_NICKNAME);
     const observerCompetence = competenceFromUrlToDto(url.searchParams.get(URL_PARAM_COMPETENCE));
     const regTypesRaw = url.searchParams.get(URL_PARAM_REGISTRATION_TYPE);
     const regTypes = regTypesRaw != null ? convertRegTypeFromUrlToDto(regTypesRaw) : [];
@@ -419,7 +389,7 @@ export class SearchCriteriaService {
 
   private toUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null): UrlParams {
     const params = new UrlParams();
-    params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
+    params.set(URL_PARAM_GEOHAZARD, arrayToSeparatedString(criteria.SelectedGeoHazards));
     if (daysBack != null) {
       params.set(URL_PARAM_DAYSBACK, daysBack.toString()); // Convert to string so that 0 is accepted as a value
       params.delete(URL_PARAM_FROMDATE);
@@ -433,7 +403,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
-    params.set(URL_PARAM_REGION, numberArrayToSeparatedString(criteria.SelectedRegions));
+    params.set(URL_PARAM_REGION, arrayToSeparatedString(criteria.SelectedRegions));
 
     if (this.isSlushFlow(criteria)) {
       params.set(URL_PARAM_SLUSH_FLOW, true);

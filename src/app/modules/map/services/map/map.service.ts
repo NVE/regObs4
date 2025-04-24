@@ -24,13 +24,9 @@ import { IRegionInViewInput, IRegionInViewOutput } from '../../web-workers/regio
 import L from 'leaflet';
 import {
   URL_PARAM_NW_LAT,
-  URL_PARAM_NW_LAT_OLD,
   URL_PARAM_NW_LON,
-  URL_PARAM_NW_LON_OLD,
   URL_PARAM_SE_LAT,
-  URL_PARAM_SE_LAT_OLD,
   URL_PARAM_SE_LON,
-  URL_PARAM_SE_LON_OLD,
 } from 'src/app/core/services/search-criteria/url-params';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 
@@ -45,10 +41,10 @@ export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon
 };
 
 export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapView | undefined => {
-  const nwLat = params.get(URL_PARAM_NW_LAT) || params.get(URL_PARAM_NW_LAT_OLD);
-  const nwLon = params.get(URL_PARAM_NW_LON) || params.get(URL_PARAM_NW_LON_OLD);
-  const seLat = params.get(URL_PARAM_SE_LAT) || params.get(URL_PARAM_SE_LAT_OLD);
-  const seLon = params.get(URL_PARAM_SE_LON) || params.get(URL_PARAM_SE_LON_OLD);
+  const nwLat = params.get(URL_PARAM_NW_LAT);
+  const nwLon = params.get(URL_PARAM_NW_LON);
+  const seLat = params.get(URL_PARAM_SE_LAT);
+  const seLon = params.get(URL_PARAM_SE_LON);
   if (nwLat && nwLon && seLat && seLon) {
     const formatedMapView = createMapView(+nwLat, +nwLon, +seLat, +seLon);
     return formatedMapView;
