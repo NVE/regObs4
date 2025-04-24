@@ -2,6 +2,11 @@
 trigger:
   - develop
 
+pr:
+  branches:
+    exclude:
+      - '*'
+
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
 stages:
