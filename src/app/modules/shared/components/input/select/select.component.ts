@@ -38,6 +38,7 @@ export class SelectComponent {
   readonly showReset = input(true);
   readonly disabled = input(false);
   readonly color = input<undefined | string>(undefined);
+  readonly lines = input<'full' | 'inset' | 'none' | undefined>();
 
   useActionSheet = computed(() => {
     if (this.platform.is('mobileweb') || this.platform.is('hybrid')) {

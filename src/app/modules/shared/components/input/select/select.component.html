@@ -1,5 +1,5 @@
 @if (useActionSheet()) {
-  <ion-item [color]="color()" button [detail]="false" (click)="openActionSheet()">
+  <ion-item [color]="color()" button [detail]="false" (click)="openActionSheet()" [lines]="lines()">
     <ion-label color="medium" position="stacked">
       {{ label() | translate | uppercase }}
     </ion-label>
@@ -12,10 +12,10 @@
     <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
   </ion-item>
 } @else {
-  <ion-item [color]="color()">
+  <ion-item [color]="color()" [lines]="lines()">
     <ion-select
       [label]="label() | translate | uppercase"
-      labelPlacement="stacked"
+      label-placement="stacked"
       [placeholder]="valueText() | translate"
       [disabled]="disabled()"
       cancelText="{{ 'DIALOGS.CANCEL' | translate }}"

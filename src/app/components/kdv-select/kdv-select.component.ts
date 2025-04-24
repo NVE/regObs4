@@ -29,6 +29,7 @@ export class KdvSelectComponent {
   readonly filter = input<FilterFunc>();
   readonly getIconFunc = input<(kdvElement: KdvElement) => string>();
   readonly color = input<string>();
+  readonly lines = input<'full' | 'inset' | 'none' | undefined>();
 
   selectOptionsResource = rxResource({
     request: () => this.kdvKey(),
