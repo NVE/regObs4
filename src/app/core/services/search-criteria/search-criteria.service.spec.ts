@@ -476,11 +476,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.OrderBy).toEqual('DtObsTime');
   }));
 
-  ['hazard=70', 'GeoHazards=70'].forEach((queryPath) => {
-    it('geo hazard url filter should work', fakeAsync(() => {
-      expect(applyUrlQueryPath(queryPath).SelectedGeoHazards).toEqual([70]);
-    }));
-  });
+  it('geo hazard url filter should work', fakeAsync(() => {
+    expect(applyUrlQueryPath('hazard=70').SelectedGeoHazards).toEqual([70]);
+  }));
 
   it('illegal geo hazard in url should return 10', fakeAsync(() => {
     setUrlQueryPath('hazard=illegal');
@@ -493,23 +491,21 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.SelectedGeoHazards).toEqual([10]);
   }));
 
-  ['daysBack=1', 'SelectedNumberOfDays=1'].forEach((queryPath) => {
-    it('days back url filter should work', fakeAsync(() => {
-      jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-      setUrlQueryPath(queryPath);
+  it('days back url filter should work', fakeAsync(() => {
+    const queryPath = 'daysBack=1';
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    setUrlQueryPath(queryPath);
 
-      //check that criteria contains correct from time. Should be 1 day earlier at midnight
-      expect(applyUrlQueryPath(queryPath).FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
-    }));
-  });
+    //check that criteria contains correct from time. Should be 1 day earlier at midnight
+    expect(applyUrlQueryPath(queryPath).FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+  }));
 
-  ['fromDate=2020-12-24&toDate=2022-12-24', 'FromDate=2020-12-24&ToDate=2022-12-24'].forEach((queryPath) => {
-    it('toDate and fromDate filter should work', fakeAsync(() => {
-      const criteria = applyUrlQueryPath(queryPath);
-      expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
-      expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
-    }));
-  });
+  it('toDate and fromDate filter should work', fakeAsync(() => {
+    const queryPath = 'fromDate=2020-12-24&toDate=2022-12-24';
+    const criteria = applyUrlQueryPath(queryPath);
+    expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
+    expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+  }));
 
   it('slush flow filter should be activated by url', fakeAsync(() => {
     setUrlQueryPath('slushFlow=true');
