@@ -9,6 +9,10 @@ import { rxResource } from '@angular/core/rxjs-interop';
 
 type FilterFunc = (value: number) => boolean;
 
+/**
+ * Select med options fra KDV-tabell.
+ * Inneholder en ion-item og SKAL derfor bruker i en ion-list.
+ */
 @Component({
   selector: 'app-kdv-select',
   templateUrl: './kdv-select.component.html',

@@ -20,6 +20,10 @@ import { caretDownSharp, closeCircleOutline } from 'ionicons/icons';
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
 
+/**
+ * En wrapper rundt ion-select eller ion-action-sheet avhengig av mobil / desktop.
+ * Inneholder en ion-item og SKAL derfor bruker i en ion-list.
+ */
 @Component({
   selector: 'app-select',
   templateUrl: './select.component.html',
