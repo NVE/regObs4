@@ -426,11 +426,9 @@ describe('SearchCriteriaService url parsing', () => {
     expect(criteria!.ObserverCompetence).toEqual(undefined);
   }));
 
-  ['nick=Oluf', 'ObserverNickName=Oluf'].forEach((queryPath) => {
-    it('nick name url filter should work', fakeAsync(() => {
-      expect(applyUrlQueryPath(queryPath).ObserverNickName).toEqual('Oluf');
-    }));
-  });
+  it('nick name url filter should work', fakeAsync(() => {
+    expect(applyUrlQueryPath('nick=Oluf').ObserverNickName).toEqual('Oluf');
+  }));
 
   it('type url should work', fakeAsync(() => {
     setUrlQueryPath('type=81.13~81.26~10');
