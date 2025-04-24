@@ -142,7 +142,7 @@ export class StratProfileLayerModalPage implements OnInit {
     { id: 0.1, text: '10' },
   ];
 
-  getIconFunc = (kdvElement: KdvElement) => `svg/md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}.svg`;
+  getIconFunc = (kdvElement: KdvElement) => `md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}`;
 
   constructor() {
     addIcons({ chevronUp, chevronDown, arrowBack, arrowForward, trash });

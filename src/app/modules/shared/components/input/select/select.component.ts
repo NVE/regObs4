@@ -1,10 +1,19 @@
 import { Component, inject, input, model, computed } from '@angular/core';
-import { ActionSheetController, IonButton, IonIcon, IonLabel, IonText } from '@ionic/angular/standalone';
+import {
+  ActionSheetController,
+  IonButton,
+  IonIcon,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonText,
+} from '@ionic/angular/standalone';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
+import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { caretDownSharp, closeCircleOutline } from 'ionicons/icons';
@@ -17,7 +26,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
-  imports: [FormsModule, IonButton, IonIcon, IonText, TranslatePipe, IonLabel],
+  imports: [FormsModule, IonButton, IonIcon, IonSelect, IonSelectOption, IonText, NgFor, NgIf, TranslatePipe, IonLabel],
 })
 export class SelectComponent {
   private actionSheetController = inject(ActionSheetController);
@@ -45,10 +54,6 @@ export class SelectComponent {
     return {};
   });
 
-  setValue(selectOption: SelectOption) {
-    this.selectedValue.set(selectOption.id);
-  }
-
   constructor() {
     addIcons({ caretDownSharp, closeCircleOutline });
   }
@@ -61,7 +66,7 @@ export class SelectComponent {
         text: translatedText,
         icon: option.icon,
         role: option.id === this.selectedValue() ? 'selected' : undefined,
-        handler: () => this.setValue(option),
+        handler: () => this.selectedValue.set(option.id),
       });
     }
     if (this.selectedValue() !== undefined && this.showReset()) {
