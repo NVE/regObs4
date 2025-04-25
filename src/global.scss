@@ -375,9 +375,9 @@ ion-list {
   overflow-y: scroll !important;
 }
 
-.sc-ion-action-sheet-ios-h,
-.sc-ion-action-sheet-md-h {
+ion-action-sheet.custom-bg {
   --ion-background-color: var(--ion-item-background);
+  --background: var(--ion-item-background);
 }
 
 ion-menu {

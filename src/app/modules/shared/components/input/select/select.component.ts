@@ -15,7 +15,7 @@ import { Platform } from '@ionic/angular/standalone';
 import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { caretDownSharp, closeCircleOutline } from 'ionicons/icons';
+import { caretDownSharp, chevronExpandOutline } from 'ionicons/icons';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -44,6 +44,7 @@ export class SelectComponent {
   readonly color = input<undefined | string>(undefined);
   readonly lines = input<'full' | 'inset' | 'none' | undefined>();
 
+  selectIcon = this.platform.is('ios') ? 'chevron-expand-outline' : 'caret-down-sharp';
   useActionSheet = computed(() => {
     if (this.platform.is('mobileweb') || this.platform.is('hybrid')) {
       return true;
@@ -69,7 +70,7 @@ export class SelectComponent {
   });
 
   constructor() {
-    addIcons({ caretDownSharp, closeCircleOutline });
+    addIcons({ caretDownSharp, chevronExpandOutline });
   }
 
   private getActionSheetButtons() {
@@ -129,6 +130,7 @@ export class SelectComponent {
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
         buttons,
+        cssClass: 'custom-bg',
       });
       await actionSheet.present();
     }

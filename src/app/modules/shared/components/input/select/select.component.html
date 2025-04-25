@@ -9,7 +9,7 @@
       }
       {{ valueText() | translate }}
     </ion-text>
-    <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
+    <ion-icon slot="end" [name]="selectIcon"></ion-icon>
   </ion-item>
 } @else {
   <ion-item [color]="color()" [lines]="lines()">
