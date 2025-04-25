@@ -15,7 +15,6 @@ import { SearchRegistrationService } from 'src/app/core/services/search-registra
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { ShowFilterCriteriaComponent } from '../../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
 import { GridImageComponent } from './grid-image.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -36,7 +35,6 @@ import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regob
     EmptyStateComponent,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
-    ShowFilterCriteriaComponent,
     ListControlsComponent,
     GridImageComponent,
     TranslatePipe,

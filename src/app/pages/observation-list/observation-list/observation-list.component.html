@@ -7,7 +7,6 @@
   @if (isDesktop()) {
     <div class="list-header">
       <p>{{ isLoading() ? " - " : count() }} {{ "OBSERVATION_LIST.COUNT_POSTFIX" | translate }}</p>
-      <app-show-filter-criteria></app-show-filter-criteria>
       <app-list-controls></app-list-controls>
     </div>
   }
