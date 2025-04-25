@@ -38,7 +38,6 @@ import { isArraysEqual } from 'src/app/modules/common-core/helpers/arrays';
 import {
   URL_PARAM_DAYSBACK,
   URL_PARAM_GEOHAZARD,
-  URL_PARAM_GEOHAZARDS_OLD,
   isGeoHazardValid,
   separatedStringToNumberArray,
 } from '../search-criteria/url-params';
@@ -214,15 +213,6 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         return geoHazards;
       }
     }
-
-    // read param used in (old) regobs.no
-    const geoHazardsParamValueOld = searchParams.getAll(URL_PARAM_GEOHAZARDS_OLD);
-    if (geoHazardsParamValueOld?.length) {
-      const geoHazards = geoHazardsParamValueOld.filter((x) => x.trim().length && !isNaN(parseInt(x))).map(Number);
-      // new UrlParams().delete(URL_PARAM_GEOHAZARDS_OLD).apply(); //we will create url params in new format instead
-      return geoHazards;
-    }
-
     return null;
   }
 

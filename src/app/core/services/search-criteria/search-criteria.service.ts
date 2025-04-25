@@ -31,6 +31,8 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import {
+  arrayToSeparatedString,
+  convertRegTypeDtoToUrl,
   separatedStringToNumberArray,
   URL_PARAM_ARRAY_DELIMITER,
   URL_PARAM_COMPETENCE,
@@ -104,13 +106,6 @@ function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string | undefine
   return;
 }
 
-function numberArrayToSeparatedString(numbers: number[] | undefined): string | undefined {
-  if (numbers?.length) {
-    return numbers.join(URL_PARAM_ARRAY_DELIMITER);
-  }
-  return;
-}
-
 function isCompetenceUrlValid(competence: string): RegExpMatchArray | null {
   //check if its a sequence of numbers to max 3 digits with optional tilde as param
   const regex = /^(\b\d{0,3}\b~?)*$/g;
@@ -143,23 +138,6 @@ function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[]
       {} as { [key: number]: RegistrationTypeCriteriaDto }
     );
   return Object.values(regTypeCriteriaDto);
-}
-
-//[{Id: 80, SubTypes: [26,11]}] => 80.11~80.26
-function convertRegTypeDtoToUrl(types?: RegistrationTypeCriteriaDto[]) {
-  if (types != null) {
-    const url = [] as string[];
-    types.forEach((type) => {
-      const parentId = type.Id;
-      if (type.SubTypes && type.SubTypes.length > 0) {
-        type.SubTypes.forEach((subtype) => url.push(`${parentId}.${subtype}`));
-      } else {
-        url.push(parentId.toString());
-      }
-    });
-    return url.join('~');
-  }
-  return;
 }
 
 const DEFAULT_SEARCH_CRITERIA: SearchCriteriaRequestDto = {
@@ -411,7 +389,7 @@ export class SearchCriteriaService {
 
   private toUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null): UrlParams {
     const params = new UrlParams();
-    params.set(URL_PARAM_GEOHAZARD, numberArrayToSeparatedString(criteria.SelectedGeoHazards));
+    params.set(URL_PARAM_GEOHAZARD, arrayToSeparatedString(criteria.SelectedGeoHazards));
     if (daysBack != null) {
       params.set(URL_PARAM_DAYSBACK, daysBack.toString()); // Convert to string so that 0 is accepted as a value
       params.delete(URL_PARAM_FROMDATE);
@@ -425,7 +403,7 @@ export class SearchCriteriaService {
     params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
     params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
     params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
-    params.set(URL_PARAM_REGION, numberArrayToSeparatedString(criteria.SelectedRegions));
+    params.set(URL_PARAM_REGION, arrayToSeparatedString(criteria.SelectedRegions));
 
     if (this.isSlushFlow(criteria)) {
       params.set(URL_PARAM_SLUSH_FLOW, true);

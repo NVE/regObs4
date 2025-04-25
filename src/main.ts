@@ -28,13 +28,27 @@ import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 import { authFactory } from './app/modules/auth/factories/auth-factory';
 import { register } from 'swiper/element/bundle';
+import { mapOldParamsToNew } from './app/core/services/search-criteria/url-params';
 
 if (environment.production) {
   enableProdMode();
 }
 
+function replaceOldParamsWithNew() {
+  console.log('rewrite old regobs.no query paramters');
+  try {
+    const url = new URL(window.location.href);
+    mapOldParamsToNew(url.searchParams);
+    history.replaceState(null, '', url);
+  } catch (error) {
+    console.error('Got error when rewriting old params');
+    console.error(error);
+  }
+}
+
 function startApp() {
   register();
+  replaceOldParamsWithNew();
 
   console.log('starting app');
   bootstrapApplication(AppComponent, {
