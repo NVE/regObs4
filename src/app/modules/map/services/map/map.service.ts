@@ -29,6 +29,7 @@ import {
   URL_PARAM_SE_LON,
 } from 'src/app/core/services/search-criteria/url-params';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { settings } from 'src/settings';
 
 type WithMargin = (ob: L.LatLngBoundsExpression, maxMargin: number) => boolean;
 
@@ -50,6 +51,17 @@ export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapV
     return formatedMapView;
   }
   return;
+};
+
+const getInitialMapView = (): IMapView => {
+  const mapView = parseCoordinatesFromSearchParams(getSearchParams());
+  if (mapView) return mapView;
+
+  const bounds = L.latLngBounds([settings.map.startupBounds.topLeft, settings.map.startupBounds.bottomRight]);
+  return {
+    bounds,
+    center: bounds.getCenter(),
+  };
 };
 
 const getSearchParams = () => {
@@ -75,9 +87,7 @@ export class MapService {
   private _showUserLocationObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
-  private _mapViewSubject = new BehaviorSubject<IMapView | undefined>(
-    parseCoordinatesFromSearchParams(getSearchParams())
-  );
+  private _mapViewSubject = new BehaviorSubject<IMapView>(getInitialMapView());
   private _mapView$: Observable<IMapView | undefined>;
   private _noMapExtentAvailable$: Observable<boolean>;
   private _relevantMapChange$: Observable<IMapView>;

@@ -420,6 +420,10 @@ export const settings: ISettings = {
     },
     mapSearchZoomToLevel: 13,
     unknownMapCenter: [59.911197, 10.741059],
+    startupBounds: {
+      topLeft: [81.256, 3.237107], // NW of Svalbard
+      bottomRight: [57.68535, 12.8905], // SE, includes all of Finnmark and southern norway
+    },
     flyToOnGpsZoom: 13,
     maxClusterRadius: 60, // 30,
     extentColor: '#3344bb',

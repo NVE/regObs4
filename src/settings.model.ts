@@ -79,6 +79,7 @@ interface IMapSettings {
   search: any;
   mapSearchZoomToLevel: number;
   unknownMapCenter: L.LatLngTuple;
+  startupBounds: { topLeft: L.PointTuple; bottomRight: L.PointTuple };
   flyToOnGpsZoom: number;
   maxClusterRadius: number;
   extentColor: string;
