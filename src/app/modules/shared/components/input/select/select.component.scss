@@ -1,4 +1,7 @@
 :host {
+  // Siden denne er ment å brukes i en ion-list og egentlig bare forenkler oppsettet av en ion-item med en select
+  // er det like greit å bare videresende innholdet i templaten, ikke tegne host element.
+  // Det er noe styling på subkomponenter som ion-list gjør som ikke fungerer om ikke denne er med.
   display: contents;
 }
 
