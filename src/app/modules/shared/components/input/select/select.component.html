@@ -1,5 +1,12 @@
 @if (useActionSheet()) {
-  <ion-item [color]="color()" button [detail]="false" (click)="openActionSheet()" [lines]="lines()">
+  <ion-item
+    [color]="color()"
+    button
+    [detail]="false"
+    (click)="openActionSheet()"
+    [lines]="lines()"
+    class="action-sheet-button"
+  >
     <ion-label color="medium" position="stacked">
       {{ label() | translate | uppercase }}
     </ion-label>

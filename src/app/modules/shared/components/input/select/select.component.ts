@@ -15,10 +15,11 @@ import { Platform } from '@ionic/angular/standalone';
 import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { caretDownSharp, chevronExpandOutline } from 'ionicons/icons';
+import { caretDownSharp, chevronExpand } from 'ionicons/icons';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
+const CSS_RESET_CLASS = 'app-select-with-reset';
 
 /**
  * En wrapper rundt ion-select eller ion-action-sheet avhengig av mobil / desktop.
@@ -44,7 +45,7 @@ export class SelectComponent {
   readonly color = input<undefined | string>(undefined);
   readonly lines = input<'full' | 'inset' | 'none' | undefined>();
 
-  selectIcon = this.platform.is('ios') ? 'chevron-expand-outline' : 'caret-down-sharp';
+  selectIcon = this.platform.is('ios') ? 'chevron-expand' : 'caret-down-sharp';
   useActionSheet = computed(() => {
     if (this.platform.is('mobileweb') || this.platform.is('hybrid')) {
       return true;
@@ -64,20 +65,20 @@ export class SelectComponent {
 
   popoverOptionsWithResetCss: Signal<Partial<PopoverOptions>> = computed(() => {
     if (this.resetEnabled()) {
-      return { cssClass: 'app-select-with-reset' };
+      return { cssClass: CSS_RESET_CLASS };
     }
     return {};
   });
 
   constructor() {
-    addIcons({ caretDownSharp, chevronExpandOutline });
+    addIcons({ caretDownSharp, chevronExpand });
   }
 
   private getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
 
     // Reset button
-    if (this.selectedValue() !== undefined && this.showReset()) {
+    if (this.resetEnabled()) {
       buttons.push({
         text: this.translateService.instant(TRANSLATION_KEY_RESET),
         handler: () => this.reset(),
@@ -123,6 +124,11 @@ export class SelectComponent {
   }
 
   async openActionSheet() {
+    const cssClass = ['action-sheet-white-bg'];
+    if (this.resetEnabled()) {
+      cssClass.push(CSS_RESET_CLASS);
+    }
+
     if (!this.disabled()) {
       const translations = this.getTitleTranslations();
       const buttons = this.getActionSheetButtons();
@@ -130,7 +136,7 @@ export class SelectComponent {
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
         buttons,
-        cssClass: 'custom-bg',
+        cssClass,
       });
       await actionSheet.present();
     }

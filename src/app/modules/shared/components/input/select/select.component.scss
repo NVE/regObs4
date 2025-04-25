@@ -2,7 +2,7 @@
   display: contents;
 }
 
-ion-text {
+.action-sheet-button ion-text {
   display: flex;
   align-items: center;
 
@@ -11,6 +11,20 @@ ion-text {
   }
 }
 
-ion-icon[slot='end'] {
-  font-size: 1em;
+.action-sheet-button ion-icon[slot='end'] {
+  // Kopiert fra Ionic.
+  // Siden vi lager select knappen selv, er det fint at den ser så lik som mulig ut som Ionic sin
+  width: 0.8125rem;
+  color: var(--ion-color-step-500, var(--ion-text-color-step-500, gray));
+  margin-inline: 4px 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  position: relative;
+  flex-shrink: 0;
+
+  &.ios {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--ion-color-step-650, var(--ion-text-color-step-350, #595959));
+  }
 }
