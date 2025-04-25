@@ -8,7 +8,8 @@ export const DEFAULT_USER_SETTINGS: (langKey?: LangKey) => UserSetting = (langKe
 
   let isTestRegobsNo = false;
   try {
-    isTestRegobsNo = window.location.href.indexOf('https://test.regobs.no') === 0;
+    const url = new URL(window.location.href);
+    isTestRegobsNo = url.hostname === 'test.regobs.no';
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('isTestRegobsNo check failed', error);
