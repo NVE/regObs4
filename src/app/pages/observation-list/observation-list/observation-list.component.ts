@@ -15,7 +15,6 @@ import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
-import { ShowFilterCriteriaComponent } from 'src/app/modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
@@ -32,7 +31,6 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
     ErrorStateComponent,
     EmptyStateComponent,
     ListControlsComponent,
-    ShowFilterCriteriaComponent,
     TranslatePipe,
   ],
   templateUrl: './observation-list.component.html',

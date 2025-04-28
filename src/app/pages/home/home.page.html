@@ -38,10 +38,6 @@
         <!-- <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab> -->
         <app-geo-fab></app-geo-fab>
 
-        @if (isDesktop()) {
-          <app-show-filter-criteria slot="fixed"></app-show-filter-criteria>
-        }
-
         <app-add-menu></app-add-menu>
 
         <app-data-load [show]="isFetchingObservations$ | async" [label]="spinnerLabel"></app-data-load>

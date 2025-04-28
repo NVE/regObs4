@@ -60,10 +60,8 @@ import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { MapCenterInfoComponent as MapCenterInfoComponent_1 } from '../../modules/map/components/map-center-info/map-center-info.component';
 import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab.component';
-import { ShowFilterCriteriaComponent } from '../../modules/side-menu/components/show-filter-criteria/show-filter-criteria.component';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
-import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 
 const DEBUG_TAG = 'HomePage';
@@ -102,7 +100,6 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
     MapComponent,
     MapItemBarComponent,
     NgIf,
-    ShowFilterCriteriaComponent,
   ],
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
@@ -145,8 +142,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
-
-  isDesktop = inject(BreakpointService).isDesktop;
 
   constructor() {
     const router = inject(Router);
