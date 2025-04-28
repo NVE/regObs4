@@ -14,7 +14,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
-import { MapService, parseCoordinatesFromSearchParams } from '../../map/services/map/map.service';
+import { MapService, parseMapViewFromSearchParams } from '../../map/services/map/map.service';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -249,7 +249,7 @@ export class RegobsAuthService {
         // the redirect url does not contain map view search parameters.
         // Now that we have the saved return url, parse map view from that.
         try {
-          const mapView = parseCoordinatesFromSearchParams(new URLSearchParams(returnUrl));
+          const mapView = parseMapViewFromSearchParams(new URLSearchParams(returnUrl));
           if (mapView) {
             this.mapService.updateMapView(mapView);
           }

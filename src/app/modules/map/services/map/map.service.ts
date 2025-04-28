@@ -41,7 +41,7 @@ export const createMapView = (nwLat: number, nwLon: number, seLat: number, seLon
   return mapView;
 };
 
-export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapView | undefined => {
+export const parseMapViewFromSearchParams = (params: URLSearchParams): IMapView | undefined => {
   const nwLat = params.get(URL_PARAM_NW_LAT);
   const nwLon = params.get(URL_PARAM_NW_LON);
   const seLat = params.get(URL_PARAM_SE_LAT);
@@ -54,7 +54,7 @@ export const parseCoordinatesFromSearchParams = (params: URLSearchParams): IMapV
 };
 
 const getInitialMapView = (): IMapView => {
-  const mapView = parseCoordinatesFromSearchParams(getSearchParams());
+  const mapView = parseMapViewFromSearchParams(getSearchParams());
   if (mapView) return mapView;
 
   const bounds = L.latLngBounds([settings.map.startupBounds.topLeft, settings.map.startupBounds.bottomRight]);
