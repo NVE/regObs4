@@ -63,11 +63,11 @@ export class SelectComponent {
   resetEnabled = computed(() => this.showReset() && this.selectedValue() != null);
   readonly resetValue = 'RESET';
 
-  popoverOptionsWithResetCss: Signal<Partial<PopoverOptions>> = computed(() => {
+  popoverOptions: Signal<Partial<PopoverOptions>> = computed(() => {
     if (this.resetEnabled()) {
-      return { cssClass: CSS_RESET_CLASS };
+      return { cssClass: CSS_RESET_CLASS, size: 'auto' };
     }
-    return {};
+    return { size: 'auto' };
   });
 
   constructor() {
