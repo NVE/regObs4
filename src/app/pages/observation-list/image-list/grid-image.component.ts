@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
+import { IonChip } from '@ionic/angular/standalone';
 
 /**
  * Komponent som viser ett bilde i bildesøk. Bør ikke brukes andre steder enn det.
@@ -8,17 +9,15 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
  */
 @Component({
   selector: 'app-grid-image',
-  imports: [],
+  imports: [IonChip],
   template: `
     <img [src]="src()" (load)="setAspectRatioClass($event)" [alt]="attachmentAlt()" />
 
     @if (attachment().RegistrationName) {
-      <div class="grid-image__text">{{ attachment().RegistrationName }}</div>
+      <ion-chip color="primary" class="grid-image__text">{{ attachment().RegistrationName }}</ion-chip>
     }
     @if (attachment().Comment) {
-      <div class="grid-image__text">
-        <i>{{ attachment().Comment }}</i>
-      </div>
+      <div class="grid-image__text">{{ attachment().Comment }}</div>
     }
   `,
   styles: `
@@ -27,6 +26,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       flex-direction: column;
       height: 100%;
       padding: 10px;
+      border-radius: 6px;
       box-sizing: border-box;
       background: #fff;
       transition: background 0.3s ease;
@@ -36,6 +36,11 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       }
     }
 
+    ion-chip {
+      font-size: 1rem;
+      width: fit-content;
+      margin: 0;
+    }
     .grid-image__text {
       overflow: hidden;
       white-space: nowrap;
