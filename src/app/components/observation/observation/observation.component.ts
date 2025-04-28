@@ -149,12 +149,17 @@ export class ObservationComponent {
   private observer = toSignal(this.regobsAuthService.myPageData$);
 
   userCanEdit = computed(() => {
+    // sjekk om obs ble opprettet for flere enn 2 dager siden
+    const now = new Date();
+    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+    const registrationDate = new Date(this.registration().DtRegTime);
+    const isObsOlderThanTwoDays = registrationDate && registrationDate < twoDaysAgo;
     const user = this.observer();
     if (!user) {
       return false;
     }
     const editMode = checkEditPriviliges(this.registration(), user);
-    return editMode === 'EDIT_OWN_REGISTRATION' || editMode === 'EDIT_AS_MODERATOR';
+    return (editMode === 'EDIT_OWN_REGISTRATION' && !isObsOlderThanTwoDays) || editMode === 'EDIT_AS_MODERATOR';
   });
 
   constructor() {

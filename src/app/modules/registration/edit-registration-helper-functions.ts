@@ -1,7 +1,4 @@
 import { RegistrationViewModel, MyPageData } from 'src/app/modules/common-regobs-api/models';
-import { Observable, of, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
-import moment from 'moment';
 
 export type EditMode = 'EDIT_AS_MODERATOR' | 'EDIT_OWN_REGISTRATION';
 
@@ -40,36 +37,4 @@ export function checkEditPriviliges(reg: RegistrationViewModel, observer: MyPage
     return 'EDIT_OWN_REGISTRATION';
   }
   return undefined;
-}
-
-export function getWithin48HoursCheckUntilFalseObservable(reg: RegistrationViewModel): Observable<boolean> {
-  const completeWith =
-    <T>(predicate: (arg: T) => boolean) =>
-    (source: Observable<T>) =>
-      new Observable<T>((observer) =>
-        source.subscribe(
-          (value) => {
-            observer.next(value);
-            if (predicate(value)) {
-              observer.complete();
-            }
-          },
-          (error) => observer.error(error),
-          () => observer.complete()
-        )
-      );
-
-  const forthyEightHoursInMS = 48 * 60 * 60 * 1000;
-  const timerCheckEveryMinuteMS = 60 * 1000;
-  return timer(0, timerCheckEveryMinuteMS).pipe(
-    map(() => isWithinMilliseconds(moment(reg.DtRegTime), forthyEightHoursInMS)),
-    completeWith((val) => !val)
-  );
-}
-
-export function isWithinMilliseconds(m: moment.Moment, msLimit: number, now: moment.Moment = moment()): boolean {
-  if (!m) {
-    return false;
-  }
-  return m.isSameOrAfter(now.subtract(msLimit, 'milliseconds'));
 }
