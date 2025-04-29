@@ -1,10 +1,10 @@
-<ion-item [color]="color()">
-  <app-select
-    *ngIf="selectOptions() as options"
-    [(selectedValue)]="value"
-    [options]="options"
-    [disabled]="disabled()"
-    [label]="label()"
-    [showReset]="showResetButton()"
-  ></app-select>
-</ion-item>
+<app-select
+  *ngIf="selectOptions() as options"
+  [(selectedValue)]="value"
+  [options]="options"
+  [disabled]="disabled()"
+  [label]="label()"
+  [showReset]="showResetButton()"
+  [color]="ionItemColor()"
+  [lines]="ionItemLines()"
+></app-select>

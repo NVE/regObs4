@@ -24,7 +24,8 @@
     <ion-select
       cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
       [(ngModel)]="userSettings.language"
-      [interface]="popupType"
+      [interface]="ionSelectInterface()"
+      [interfaceOptions]="ionSelectInterfaceOptions()"
       (ngModelChange)="saveUserSettings()"
       [label]="selectLanguageLabel$ | async | uppercase"
       labelPlacement="stacked"
@@ -67,7 +68,8 @@
     <ion-select
       cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
       [(ngModel)]="userSettings.topoMap"
-      [interface]="popupType"
+      [interface]="ionSelectInterface()"
+      [interfaceOptions]="ionSelectInterfaceOptions()"
       (ngModelChange)="saveUserSettings()"
       label="{{ 'MENU.MAP' | translate }}"
       labelPlacement="stacked"

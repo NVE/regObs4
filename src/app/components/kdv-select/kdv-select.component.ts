@@ -1,4 +1,3 @@
-import { IonItem } from '@ionic/angular/standalone';
 import { Component, ChangeDetectionStrategy, inject, input, model, computed, Signal } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
@@ -7,15 +6,20 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 import { NgIf } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { IonItemOption, IonList } from '@ionic/angular/standalone';
 
 type FilterFunc = (value: number) => boolean;
 
+/**
+ * Select med options fra KDV-tabell.
+ * Inneholder en ion-item og SKAL derfor bruker i en ion-list.
+ */
 @Component({
   selector: 'app-kdv-select',
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonItem, NgIf, SelectComponent],
+  imports: [NgIf, SelectComponent],
 })
 export class KdvSelectComponent {
   private kdvService = inject(KdvService);
@@ -29,7 +33,20 @@ export class KdvSelectComponent {
   readonly useDescription = input<boolean>();
   readonly filter = input<FilterFunc>();
   readonly getIconFunc = input<(kdvElement: KdvElement) => string>();
-  readonly color = input<string>();
+
+  /**
+   * Videresendes til IonItem.
+   *
+   * Se https://ionicframework.com/docs/api/item#color
+   */
+  readonly ionItemColor = input<undefined | IonItemOption['color']>(undefined, { alias: 'color' });
+
+  /**
+   * Om IonItem som wrapper select komponent skal vise linjer, evt hva slags type linjer.
+   *
+   * Se https://ionicframework.com/docs/api/item#lines
+   */
+  readonly ionItemLines = input<undefined | IonList['lines']>(undefined, { alias: 'lines' });
 
   selectOptionsResource = rxResource({
     request: () => this.kdvKey(),

@@ -20,7 +20,7 @@
       [(value)]="propagationTid"
     >
     </app-kdv-select>
-    <ion-item *ngIf="tapsFractureVisible()">
+    @if (tapsFractureVisible()) {
       <app-select
         [label]="
           isRB() ? 'REGISTRATION.SNOW.COMPRESSION_TEST.RB_SCORE' : 'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
@@ -29,7 +29,7 @@
         [options]="tapsArray()"
         label="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"
       ></app-select>
-    </ion-item>
+    }
     <app-numeric-input
       *ngIf="!isCTNorECTXorRB7() && propagationTid() != null"
       [(value)]="fractureDepth"

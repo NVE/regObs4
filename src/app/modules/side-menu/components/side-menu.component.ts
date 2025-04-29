@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, inject, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, inject, computed, Signal } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -23,7 +23,7 @@ import version from '../../../../environments/version.json';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
-import { SelectInterface } from '@ionic/core';
+import { PopoverOptions, SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
 import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
@@ -100,7 +100,16 @@ export class SideMenuComponent implements OnInit, OnDestroy {
    */
   selectLanguageLabel$?: Observable<string>;
   isNativePlatform = computed(() => Capacitor.isNativePlatform());
-  popupType: SelectInterface = this.isNativePlatform() ? 'action-sheet' : 'popover';
+  ionSelectInterface: Signal<SelectInterface> = computed(() => (this.isNativePlatform() ? 'action-sheet' : 'popover'));
+  ionSelectInterfaceOptions: Signal<Partial<PopoverOptions>> = computed(() => {
+    if (this.ionSelectInterface() === 'popover') {
+      return {
+        size: 'auto',
+      };
+    }
+    return {};
+  });
+
   observerTrips: ObserverTripsService;
 
   private userSettingSubscription?: Subscription;

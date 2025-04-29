@@ -25,14 +25,12 @@
           <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}</ion-label>
         </ion-item>
         <div class="ion-padding" slot="content">
-          <ion-item>
-            <app-select
-              label="REGISTRATION.IMAGE_ASPECT"
-              [selectedValue]="getRoundedDownOrientationValue(attachment.Aspect)"
-              [options]="aspectOptions"
-              (selectedValueChange)="updateExistingAttachmentAspect(attachment, $event)"
-            ></app-select>
-          </ion-item>
+          <app-select
+            label="REGISTRATION.IMAGE_ASPECT"
+            [selectedValue]="getRoundedDownOrientationValue(attachment.Aspect)"
+            [options]="aspectOptions"
+            (selectedValueChange)="updateExistingAttachmentAspect(attachment, $event)"
+          ></app-select>
           <ion-item>
             <ion-input
               [value]="attachment.Photographer || userSettings()?.photographer"

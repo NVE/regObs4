@@ -1,7 +1,7 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
 import { Component, model, computed } from '@angular/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -21,7 +21,7 @@ enum ExposedHeightCombo {
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
   styleUrls: ['./exposed-height.component.scss'],
-  imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, NgIf, SelectComponent, TranslatePipe],
+  imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, SelectComponent, TranslatePipe],
 })
 export class ExposedHeightComponent {
   readonly exposedHeightComboTID = model<number>();

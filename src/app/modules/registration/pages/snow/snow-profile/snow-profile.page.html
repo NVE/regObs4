@@ -23,16 +23,11 @@
         title="REGISTRATION.SNOW.SNOW_PROFILE.IS_PROFILE_TO_GROUND"
       >
       </app-yes-no-select>
-      <ion-item>
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ "REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION" | translate }}</ion-label
-        >
-        <app-select
-          [(selectedValue)]="snowProfile.Exposition"
-          [options]="expositionOptions"
-          title="REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION"
-        ></app-select>
-      </ion-item>
+      <app-select
+        [(selectedValue)]="snowProfile.Exposition"
+        [options]="expositionOptions"
+        label="REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION"
+      ></app-select>
       <app-numeric-input
         [(value)]="snowProfile.SlopeAngle"
         label="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE"

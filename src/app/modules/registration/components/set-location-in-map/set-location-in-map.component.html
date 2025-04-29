@@ -131,23 +131,22 @@
             </div>
           </div>
           <div *ngIf="isDesktop" class="flex-row">
-            <app-kdv-select
-              class="flex-grow selectors"
-              label="REGISTRATION.OBS_LOCATION.SOURCE"
-              kdvKey="SourceKDV"
-              [(value)]="sourceTid"
-            ></app-kdv-select>
-            <ion-item class="flex-grow selectors">
-              <!-- <ion-label color="rgb(68, 68, 68)" position="stacked">
-                {{  | translate }}</ion-label
-              > -->
+            <div class="flex-grow selectors">
+              <app-kdv-select
+                label="REGISTRATION.OBS_LOCATION.SOURCE"
+                kdvKey="SourceKDV"
+                [(value)]="sourceTid"
+                lines="none"
+              ></app-kdv-select>
+            </div>
+            <div class="flex-grow selectors">
               <app-select
                 label="REGISTRATION.OBS_LOCATION.UNCERTAINTY"
                 [(selectedValue)]="spatialAccuracy"
                 [options]="spatialAccuracyOptions"
-                class="no-padding"
+                lines="none"
               ></app-select>
-            </ion-item>
+            </div>
           </div>
         </div>
       </div>

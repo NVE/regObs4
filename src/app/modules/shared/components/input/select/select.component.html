@@ -1,29 +1,47 @@
-<ion-button
-  class="open-actionsheet"
-  role="combobox"
-  aria-expanded="false"
-  aria-haspopup="dialog"
-  expand="full"
-  type="button"
-  fill="clear"
-  (click)="openSelect()"
->
-</ion-button>
-<div class="select">
-  <div class="select__inner">
+@if (useActionSheet()) {
+  <ion-item
+    [color]="ionItemColor()"
+    button
+    [detail]="false"
+    (click)="openActionSheet()"
+    [lines]="ionItemLines()"
+    class="action-sheet-button"
+  >
     <ion-label color="medium" position="stacked">
-      {{ label() | translate }}
+      {{ label() | translate | uppercase }}
     </ion-label>
-    <div class="select__icon-text">
-      @if (valueIcon()) {
-        <ion-icon class="value-icon" [src]="valueIcon()"></ion-icon>
+    <ion-text class="ion-align-self-start" color="medium">
+      @if (valueIcon(); as icon) {
+        <ion-icon class="value-icon" [src]="icon"></ion-icon>
       }
-      @if (valueText()) {
-        <ion-text>
-          {{ valueText() | translate }}
-        </ion-text>
+      {{ valueText() | translate }}
+    </ion-text>
+    <ion-icon slot="end" [name]="selectIcon"></ion-icon>
+  </ion-item>
+} @else {
+  <ion-item [color]="ionItemColor()" [lines]="ionItemLines()">
+    <ion-select
+      [label]="label() | translate | uppercase"
+      label-placement="stacked"
+      [placeholder]="valueText() | translate"
+      [disabled]="disabled()"
+      cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+      interface="popover"
+      [interfaceOptions]="popoverOptions()"
+      [value]="selectedValue()"
+      (ionChange)="savePopoverSelectValue($event)"
+      justify="start"
+    >
+      @if (resetEnabled()) {
+        <ion-select-option [value]="resetValue">
+          {{ "DIALOGS.RESET" | translate }}
+        </ion-select-option>
       }
-    </div>
-  </div>
-  <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
-</div>
+      @for (option of filteredOptions(); track option.id) {
+        <ion-select-option [value]="option.id">
+          {{ option.text | translate }}
+        </ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+}

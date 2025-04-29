@@ -25,13 +25,11 @@
       [showResetButton]="false"
     >
     </app-kdv-select>
-    <ion-item>
-      <app-select
-        label="{{ 'REGISTRATION.DANGER_OBS.AREA' | translate }}"
-        [(selectedValue)]="area"
-        [options]="areaOptions()"
-      ></app-select>
-    </ion-item>
+    <app-select
+      label="{{ 'REGISTRATION.DANGER_OBS.AREA' | translate }}"
+      [(selectedValue)]="area"
+      [options]="areaOptions()"
+    ></app-select>
     <app-text-comment
       [(value)]="comment"
       label="REGISTRATION.DANGER_OBS.COMMENT"

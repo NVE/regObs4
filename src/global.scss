@@ -375,9 +375,15 @@ ion-list {
   overflow-y: scroll !important;
 }
 
-.sc-ion-action-sheet-ios-h,
-.sc-ion-action-sheet-md-h {
-  --ion-background-color: var(--ion-item-background);
+// Jeg syns action sheet knappene så veldig grå ut, i alle fall på ios.
+// Det kan hende at vi har endra en global variabel som også påvirker bakgrunnsfargene til knappene, trolig feks
+// --background. Setter det foreløpig bare til hvit bakgrunn.
+ion-action-sheet,
+ion-action-sheet.select-action-sheet,
+ion-action-sheet.action-sheet-white-bg {
+  --background: white;
+  --button-background: white;
+  --button-background-selected: white;
 }
 
 ion-menu {
@@ -944,14 +950,19 @@ ion-select-popover ion-list ion-item ion-radio {
 //   }
 // }
 
-// ion-select "popover" interface is too narrow on ios, make it fit its contents
+// La select popover vise alt innhold opp til 90% av sidebredden
 // These styles needs to be applied globally according to ionic docs: https://ionicframework.com/docs/api/popover#styling
-ion-popover.select-popover.ios {
-  --width: min(90vw, fit-content);
+ion-popover.select-popover {
+  --width: fit-content(90vw);
+  --max-width: 90vw;
 }
 
-ion-popover.select-options-with-reset ion-item:first-child {
-  color: tomato;
+// På android er det vanskelig å skille mellom "Nullstill" og vanlige valg i action sheet.
+// Det samme gjelder i select popovers på web.
+ion-popover.app-select-with-reset ion-item:first-child,
+ion-action-sheet.app-select-with-reset.md .action-sheet-group:first-child button.action-sheet-button:first-of-type {
+  color: red;
+  --color-hover: red;
 }
 
 swiper-container {
