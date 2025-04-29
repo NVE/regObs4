@@ -1,10 +1,10 @@
 @if (useActionSheet()) {
   <ion-item
-    [color]="color()"
+    [color]="ionItemColor()"
     button
     [detail]="false"
     (click)="openActionSheet()"
-    [lines]="lines()"
+    [lines]="ionItemLines()"
     class="action-sheet-button"
   >
     <ion-label color="medium" position="stacked">
@@ -19,7 +19,7 @@
     <ion-icon slot="end" [name]="selectIcon"></ion-icon>
   </ion-item>
 } @else {
-  <ion-item [color]="color()" [lines]="lines()">
+  <ion-item [color]="ionItemColor()" [lines]="ionItemLines()">
     <ion-select
       [label]="label() | translate | uppercase"
       label-placement="stacked"

@@ -7,6 +7,8 @@ import {
   IonSelectOption,
   IonText,
   IonItem,
+  IonItemOption,
+  IonList,
 } from '@ionic/angular/standalone';
 import { ActionSheetButton, PopoverOptions, SelectCustomEvent } from '@ionic/core';
 import { SelectOption } from './select-option.model';
@@ -37,13 +39,29 @@ export class SelectComponent {
   private platform = inject(Platform);
 
   readonly label = input<string>('');
+
+  /**
+   * Vises bare for når ion-action-sheet brukes
+   */
   readonly subTitle = input<string>();
   readonly selectedValue = model<SelectOption['id']>();
   readonly options = input<Array<SelectOption>>([]);
   readonly showReset = input(true);
   readonly disabled = input(false);
-  readonly color = input<undefined | string>(undefined);
-  readonly lines = input<'full' | 'inset' | 'none' | undefined>();
+
+  /**
+   * Videresendes til IonItem.
+   *
+   * Se https://ionicframework.com/docs/api/item#color
+   */
+  readonly ionItemColor = input<undefined | IonItemOption['color']>(undefined, { alias: 'color' });
+
+  /**
+   * Om IonItem som wrapper select komponent skal vise linjer, evt hva slags type linjer.
+   *
+   * Se https://ionicframework.com/docs/api/item#lines
+   */
+  readonly ionItemLines = input<undefined | IonList['lines']>(undefined, { alias: 'lines' });
 
   selectIcon = this.platform.is('ios') ? 'chevron-expand' : 'caret-down-sharp';
   useActionSheet = computed(() => {

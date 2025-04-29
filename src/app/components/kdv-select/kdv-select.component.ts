@@ -6,6 +6,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 import { NgIf } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { IonItemOption, IonList } from '@ionic/angular/standalone';
 
 type FilterFunc = (value: number) => boolean;
 
@@ -32,8 +33,20 @@ export class KdvSelectComponent {
   readonly useDescription = input<boolean>();
   readonly filter = input<FilterFunc>();
   readonly getIconFunc = input<(kdvElement: KdvElement) => string>();
-  readonly color = input<string>();
-  readonly lines = input<'full' | 'inset' | 'none' | undefined>();
+
+  /**
+   * Videresendes til IonItem.
+   *
+   * Se https://ionicframework.com/docs/api/item#color
+   */
+  readonly ionItemColor = input<undefined | IonItemOption['color']>(undefined, { alias: 'color' });
+
+  /**
+   * Om IonItem som wrapper select komponent skal vise linjer, evt hva slags type linjer.
+   *
+   * Se https://ionicframework.com/docs/api/item#lines
+   */
+  readonly ionItemLines = input<undefined | IonList['lines']>(undefined, { alias: 'lines' });
 
   selectOptionsResource = rxResource({
     request: () => this.kdvKey(),
