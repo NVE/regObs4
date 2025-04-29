@@ -157,7 +157,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   competenceItems$?: Observable<CompetenceOption[]>;
 
-  currentGeoHazard?: GeoHazard[];
+  private currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
+  isGeohazardSnow = computed(() => this.currentGeoHazard().includes(GeoHazard.Snow));
   showObservations$?: Observable<boolean>;
   observationTypes$?: Observable<ObservationTypeView[]>;
   noCompetenceFilterActive$?: Observable<boolean>;
@@ -257,8 +258,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     this.isMobileWeb = this.platform.is('mobileweb');
     this.platformType = this.isIosOrAndroid ? 'app' : 'web';
     this.showObservations$ = this.userSettingService.showObservations$;
-
-    this.userSettingService.currentGeoHazard$.subscribe((curGeohazard) => (this.currentGeoHazard = curGeohazard));
 
     const competenceCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
       map((searchCriteria) => searchCriteria.ObserverCompetence || []),
