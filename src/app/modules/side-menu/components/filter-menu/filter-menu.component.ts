@@ -17,7 +17,7 @@ import {
   ToggleCustomEvent,
   IonContent,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, TrackByFunction, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, TrackByFunction, computed, inject } from '@angular/core';
 import { SelectInterface } from '@ionic/core';
 import { combineLatest, EMPTY, firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
@@ -126,6 +126,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private logger = inject(LoggingService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
   observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
+  aRegionsSelectedCount: Signal<number>; //antall valgte a-regioner
+  bRegionsSelectedCount: Signal<number>; //antall valgte b-regioner
 
   // returnerer søkekriteria: gruppe id - nøkkel, subtype id [] - verdi
   criteriasObject = toSignal(
@@ -179,7 +181,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   };
 
   regions$: Observable<{ a: AvalancheRegion[]; b: AvalancheRegion[] }>;
-  nRegionsSelected$: Observable<number>;
 
   get competenceOptionTrackById() {
     return competenceOptionTrackById;
@@ -241,14 +242,11 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : EMPTY)),
       shareReplay(1, 500)
     );
-    this.nRegionsSelected$ = this.regions$.pipe(
-      map((regions) => {
-        if (regions) {
-          return [...regions.a.filter((r) => r.checked), ...regions.b.filter((r) => r.checked)].length;
-        }
-        return 0;
-      })
-    );
+
+    const regions = toSignal(this.regions$, { initialValue: { a: [], b: [] } });
+    this.aRegionsSelectedCount = computed(() => regions().a.filter((r) => r.checked).length);
+    this.bRegionsSelectedCount = computed(() => regions().b.filter((r) => r.checked).length);
+
     addIcons({ closeCircleOutline });
   }
 
