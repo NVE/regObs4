@@ -6,12 +6,14 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { settings } from '../../../../settings';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { RegobsAuthServiceOverride } from '../services/regobs-auth-service-override';
+import { LoggingService } from '../../shared/services/logging/logging.service';
 
 export const AUTH_CALLBACK_PATH = 'auth/callback';
 
 export const authFactory = (): AuthService => {
   const platform = inject(Platform);
   const requestor = inject(Requestor);
+  const logger = inject(LoggingService);
   const browser = inject(Browser);
   const storage = inject(StorageBackend);
   const userSettingService = inject(UserSettingService);
@@ -21,6 +23,7 @@ export const authFactory = (): AuthService => {
     authService.authConfig = settings.authConfig[appMode];
     if (!platform.is('hybrid')) {
       const url = `${window.location.origin}/${AUTH_CALLBACK_PATH}`;
+      logger.debug('auth url', 'auth_url', { url });
       authService.authConfig.redirect_url = url;
       authService.authConfig.end_session_redirect_url = url;
     }
