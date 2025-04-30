@@ -22,6 +22,11 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               {
+                "glob": "web.config",
+                "input": "./",
+                "output": "/"
+              },
+              {
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
