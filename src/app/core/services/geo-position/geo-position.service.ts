@@ -222,7 +222,7 @@ export class GeoPositionService implements OnDestroy {
   private async createToast(message?: string) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 6000,
+      duration: 10000,
     });
     await toast.present();
   }
