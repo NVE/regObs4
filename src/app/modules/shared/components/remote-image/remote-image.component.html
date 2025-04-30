@@ -2,7 +2,7 @@
   <img (error)="onError()" [src]="this.imgUrlSafe()" class="image-preview" />
 } @else {
   <div [class]="{ error: true, large: largeFallback() }">
-    <img style="width: 100px" src=".\assets\images\broken-image.svg" />
+    <img style="width: 100px" src=".\assets\images\broken-image.svg" [alt]="alt()" (load)="onLoad($event)" />
     @if (withFallbackText()) {
       <p>{{ "REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE" | translate }}</p>
       <p>{{ "REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE_NET_Q" | translate }}</p>

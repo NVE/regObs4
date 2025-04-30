@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { IonChip } from '@ionic/angular/standalone';
+import { RemoteImageComponent } from '../../../modules/shared/components/remote-image/remote-image.component';
 
 /**
  * Komponent som viser ett bilde i bildesøk. Bør ikke brukes andre steder enn det.
@@ -9,9 +10,16 @@ import { IonChip } from '@ionic/angular/standalone';
  */
 @Component({
   selector: 'app-grid-image',
-  imports: [IonChip],
+  imports: [IonChip, RemoteImageComponent],
   template: `
-    <img [src]="src()" (load)="setAspectRatioClass($event)" [alt]="attachmentAlt()" />
+    <app-remote-image
+      [attachment]="attachment()"
+      (load)="setAspectRatioClass($event)"
+      [alt]="attachmentAlt()"
+      preferSize="Large"
+      [withFallbackText]="true"
+      [largeFallback]="false"
+    />
 
     @if (attachment().RegistrationName) {
       <ion-chip color="primary" class="grid-image__text">{{ attachment().RegistrationName }}</ion-chip>

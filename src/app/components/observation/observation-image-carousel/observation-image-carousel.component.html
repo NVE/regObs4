@@ -18,7 +18,12 @@
           loading="lazy"
         />
       } @else {
-        <img [alt]="attachment.Comment" [src]="attachment.Url" />
+        <app-remote-image
+          [attachment]="attachment"
+          preferSize="Large"
+          [withFallbackText]="true"
+          [largeFallback]="false"
+        ></app-remote-image>
       }
     </swiper-slide>
   }

@@ -7,6 +7,8 @@ import {
   computed,
   linkedSignal,
   signal,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
@@ -31,10 +33,12 @@ export class RemoteImageComponent {
   private sanitizer = inject(DomSanitizer);
 
   readonly attachment = input.required<RemoteOrLocalAttachmentEditModel>();
+  readonly alt = input<string>(''); // alternativ tekst til bildet
   readonly preferSize = input<keyof NonNullable<RemoteOrLocalAttachmentEditModel['UrlFormats']>>('Thumbnail');
   readonly largeFallback = input(false);
   readonly withFallbackText = input(false);
   readonly isThumbnail = input(false);
+  @Output() load = new EventEmitter<Event>(); // kalles når bildet er lastet inn
 
   private readonly imgUrl = linkedSignal(() => {
     let imageUrl: string;
@@ -56,6 +60,10 @@ export class RemoteImageComponent {
 
   @HostBinding('style.pointer-events')
   pointerEvents = 'auto';
+
+  onLoad(event: Event) {
+    this.load.emit(event);
+  }
 
   onError() {
     const attachment = this.attachment();

@@ -22,13 +22,23 @@ import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 import { PlotService } from 'src/app/core/services/plot.service';
 import { Router, RouterLink } from '@angular/router';
+import { RemoteImageComponent } from '../../../modules/shared/components/remote-image/remote-image.component';
 
 @Component({
   selector: 'app-observation-image-carousel',
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent, RouterLink, IonChip],
+  imports: [
+    IonIcon,
+    IonFabButton,
+    TranslatePipe,
+    DatePipe,
+    KeyValueComponent,
+    RouterLink,
+    IonChip,
+    RemoteImageComponent,
+  ],
 })
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
