@@ -6,7 +6,3 @@
 .key {
   font-weight: var(--key-value-font-weight, 600);
 }
-
-.value {
-  font-style: var(--key-value-font-style, italic);
-}

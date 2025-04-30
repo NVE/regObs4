@@ -18,7 +18,6 @@ export enum ExposedHeightType {
     `
       text {
         fill: var(--safe-text-gray);
-        font-style: italic;
       }
 
       svg + svg {

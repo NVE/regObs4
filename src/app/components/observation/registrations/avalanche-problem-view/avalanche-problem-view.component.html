@@ -4,7 +4,7 @@
   <h4 class="title">{{ cause() }}</h4>
 }
 @if (comment()) {
-  <ion-text color="dark" class="soft-layer-attributes">{{ comment() }}</ion-text>
+  <ion-text color="dark">{{ comment() }}</ion-text>
 }
 @if (type()) {
   <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE' | translate" [value]="type()" />
@@ -12,7 +12,7 @@
 @if (causeDepth()) {
   <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH' | translate" [value]="causeDepth()" />
 }
-<ion-text color="dark" class="soft-layer-attributes">
+<ion-text color="dark">
   @if (easyCollapseLabel()) {
     {{ easyCollapseLabel() }}
   }

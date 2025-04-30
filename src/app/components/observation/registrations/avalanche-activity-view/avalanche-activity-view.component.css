@@ -14,10 +14,6 @@ app-key-value {
   display: block;
 }
 
-.body-text {
-  font-style: var(--key-value-font-style, italic);
-}
-
 .exposition-graphics {
   display: flex;
   justify-content: left;

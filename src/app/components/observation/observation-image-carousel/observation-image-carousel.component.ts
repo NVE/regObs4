@@ -10,28 +10,31 @@ import {
   model,
   viewChild,
 } from '@angular/core';
-import { IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
+import { IonFabButton, IonIcon, ModalController, IonChip } from '@ionic/angular/standalone';
 import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { SwiperContainer } from 'swiper/element';
 import { addIcons } from 'ionicons';
-import { close, downloadOutline, openOutline } from 'ionicons/icons';
+import { close, downloadOutline, openOutline, eyeOutline } from 'ionicons/icons';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
 import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 import { PlotService } from 'src/app/core/services/plot.service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-observation-image-carousel',
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent],
+  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent, RouterLink, IonChip],
 })
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
+  private router = inject(Router);
+  isImageListView = computed(() => this.router.url.includes('search/pictures'));
   attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
   plotService = inject(PlotService);
 
@@ -73,7 +76,7 @@ export class ObservationImageCarouselComponent {
   });
 
   constructor() {
-    addIcons({ close, downloadOutline, openOutline });
+    addIcons({ close, downloadOutline, openOutline, eyeOutline });
   }
 
   closeModal() {

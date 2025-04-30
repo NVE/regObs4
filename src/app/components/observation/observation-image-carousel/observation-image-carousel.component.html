@@ -24,78 +24,83 @@
   }
 </swiper-container>
 <div class="image-description">
-  <div class="image-description__inner">
+  <div class="image-description__content">
     <!-- tittel -->
-    <div class="image-description__title">
-      @if (currentAttachmentData().RegistrationName) {
-        <span> {{ currentAttachmentData().RegistrationName }}</span>
-      }
-      <div class="image-description__links">
-        <a [href]="currentAttachmentData().Url" download>
-          <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
-        </a>
-
-        <!-- Kun snøprofil har Href -->
-        @if (currentAttachmentData().Href; as snowProfileImageUrl) {
-          <a [href]="snowProfileImageUrl" target="_blank">
-            <ion-icon name="open-outline"></ion-icon>
-            {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
-          </a>
-        } @else {
-          <a [href]="currentAttachmentData().Url" target="_blank">
-            <ion-icon name="open-outline"></ion-icon> {{ "REGISTRATION.CARD.GO_TO_ORIGINAL_IMAGE" | translate }}
-          </a>
-        }
-      </div>
-    </div>
-
+    @if (currentAttachmentData().RegistrationName) {
+      <ion-chip color="primary"> {{ currentAttachmentData().RegistrationName }}</ion-chip>
+    }
     <!-- kommentar -->
     @if (comment()) {
       <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment()"></app-key-value>
     }
-    <!-- region -->
-    @if (registration()?.ObsLocation?.ForecastRegionName) {
-      <app-key-value
-        [key]="'REGISTRATION.DANGER_OBS.FOR_REGION' | translate"
-        [value]="registration()?.ObsLocation?.ForecastRegionName"
-      >
-      </app-key-value>
-    }
+    <div class="image-description__params">
+      <!-- region -->
+      @if (registration()?.ObsLocation?.ForecastRegionName) {
+        <app-key-value
+          [key]="'REGISTRATION.DANGER_OBS.FOR_REGION' | translate"
+          [value]="registration()?.ObsLocation?.ForecastRegionName"
+        >
+        </app-key-value>
+      }
 
-    <!-- himmelretning -->
-    @if (currentAttachmentData().Aspect) {
-      <app-key-value
-        [key]="'REGISTRATION.IMAGE_ASPECT' | translate"
-        [value]="roundedDownOrientationValue() | translate"
-      >
-      </app-key-value>
-    }
+      <!-- himmelretning -->
+      @if (currentAttachmentData().Aspect) {
+        <app-key-value
+          [key]="'REGISTRATION.IMAGE_ASPECT' | translate"
+          [value]="roundedDownOrientationValue() | translate"
+        >
+        </app-key-value>
+      }
 
-    <!-- sendt inn av -->
-    @if (registration()?.Observer?.NickName) {
-      <app-key-value [key]="'REGISTRATION.CARD.OBSERVED_BY' | translate" [value]="registration()?.Observer?.NickName">
-      </app-key-value>
-    }
+      <!-- sendt inn av -->
+      @if (registration()?.Observer?.NickName) {
+        <app-key-value [key]="'REGISTRATION.CARD.OBSERVED_BY' | translate" [value]="registration()?.Observer?.NickName">
+        </app-key-value>
+      }
 
-    <!-- opphavsrett -->
-    @if (currentAttachmentData().Copyright) {
-      <app-key-value [key]="'MY_PROFILE.COPYRIGHT' | translate" [value]="currentAttachmentData().Copyright">
-      </app-key-value>
-    }
+      <!-- opphavsrett -->
+      @if (currentAttachmentData().Copyright) {
+        <app-key-value [key]="'MY_PROFILE.COPYRIGHT' | translate" [value]="currentAttachmentData().Copyright">
+        </app-key-value>
+      }
 
-    <!-- fotograf -->
-    @if (currentAttachmentData().Photographer) {
-      <app-key-value [key]="'MY_PROFILE.PHOTOGRAPHER' | translate" [value]="currentAttachmentData().Photographer">
-      </app-key-value>
-    }
-    <!-- observert dato-->
-    @if (registration()?.DtObsTime) {
-      <app-key-value
-        [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate"
-        [value]="registration()?.DtObsTime | date: 'short'"
-      >
-      </app-key-value>
-    }
+      <!-- fotograf -->
+      @if (currentAttachmentData().Photographer) {
+        <app-key-value [key]="'MY_PROFILE.PHOTOGRAPHER' | translate" [value]="currentAttachmentData().Photographer">
+        </app-key-value>
+      }
+      <!-- observert dato-->
+      @if (registration()?.DtObsTime) {
+        <app-key-value
+          [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate"
+          [value]="registration()?.DtObsTime | date: 'short'"
+        >
+        </app-key-value>
+      }
+    </div>
+    <div class="image-description__links">
+      <a [href]="currentAttachmentData().Url" download>
+        <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
+      </a>
+
+      <!-- Kun snøprofil har Href -->
+      @if (currentAttachmentData().Href; as snowProfileImageUrl) {
+        <a [href]="snowProfileImageUrl" target="_blank">
+          <ion-icon name="open-outline"></ion-icon>
+          {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
+        </a>
+      } @else {
+        <a [href]="currentAttachmentData().Url" target="_blank">
+          <ion-icon name="open-outline"></ion-icon> {{ "REGISTRATION.CARD.GO_TO_ORIGINAL_IMAGE" | translate }}
+        </a>
+      }
+      @if (isImageListView()) {
+        <a [routerLink]="'registration/' + registration()?.RegId" (click)="closeModal()">
+          <ion-icon name="eye-outline"></ion-icon>
+          {{ "REGISTRATION.GO_TO" | translate }}
+        </a>
+      }
+    </div>
   </div>
 </div>
 <ion-fab-button (click)="closeModal()" [attr.aria-label]="'CLOSE' | translate">
