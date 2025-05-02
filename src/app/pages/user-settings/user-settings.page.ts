@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject, computed } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import {
@@ -39,6 +39,7 @@ import { FormsModule } from '@angular/forms';
 import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
 import { addIcons } from 'ionicons';
 import { refresh, mailOutline, medkit } from 'ionicons/icons';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -80,9 +81,9 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   private appResetService = inject(AppResetService);
   private navController = inject(NavController);
   private fileLoggingService = inject(FileLoggingService);
-  private breakpointService = inject(BreakpointService);
   private confirmationModalService = inject(ConfirmationModalService);
 
+  isNativePlatform = Capacitor.isNativePlatform();
   userSettings!: UserSetting;
   isUpdating = false;
   private subscriptions: Subscription[] = [];
