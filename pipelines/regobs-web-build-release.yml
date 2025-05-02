@@ -64,6 +64,18 @@ stages:
               command: custom
               customCommand: 'run create-version-file'
 
+          - task: Bash@3
+            displayName: Install sentry-cli
+            inputs:
+              targetType: inline
+              script: curl -sL https://sentry.io/get-cli/ | sh
+
+          - script: |
+              sentry-cli releases new $(json.version)
+              sentry-cli releases set-commits $(json.version) --local --ignore-missing
+              sentry-cli releases files $(json.version) upload-sourcemaps www/browser -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+            displayName: 'Create Sentry release and upload sourcemaps to Sentry'
+
           - task: Npm@1
             displayName: 'npm run build:prod'
             inputs:
