@@ -15,7 +15,7 @@ stages:
     jobs:
       - job:
         pool:
-          vmImage: 'windows-latest'
+          vmImage: 'ubuntu-latest'
 
         steps:
           - task: Cache@2
