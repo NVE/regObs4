@@ -50,28 +50,13 @@ type FilterSupportPerPlatform = {
   [platformType in PlatformType]: { [filter in FilterType]: boolean };
 };
 
-interface AvalancheRegion {
-  id: number;
-  name: string;
-  type: 'A' | 'B';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  polygon: any; // TODO: Fix polygon;
-  checked?: boolean;
-}
-
 const obsTypeTrackById: TrackByFunction<ObservationTypeView> = (index: number, t: ObservationTypeView) => {
   return t.id;
-};
-
-const avalancheRegionTrackById: TrackByFunction<AvalancheRegion> = (index: number, r: AvalancheRegion) => {
-  return r.id;
 };
 
 const competenceOptionTrackById: TrackByFunction<CompetenceOption> = (index: number, c: CompetenceOption) => {
   return c.ids.join('-');
 };
-
-const DEBUG_TAG = 'FilterMenuComponent';
 
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
@@ -173,10 +158,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   get competenceOptionTrackById() {
     return competenceOptionTrackById;
-  }
-
-  get avalancheRegionTrackById() {
-    return avalancheRegionTrackById;
   }
 
   get obsTypeTrackById() {
@@ -295,14 +276,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
       this.searchCriteriaService.addCompetence(event.detail.value.ids);
     } else {
       this.searchCriteriaService.removeCompetence(event.detail.value.ids);
-    }
-  }
-
-  regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
-    if (event.detail.checked) {
-      this.searchCriteriaService.addToRegionFilter(event.detail.value.id);
-    } else {
-      this.searchCriteriaService.removeFromRegionFilter(event.detail.value.id);
     }
   }
 
