@@ -9,6 +9,9 @@ pr:
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
+variables:
+  - group: sentryProperties
+
 stages:
   - stage: 'Build'
     displayName: 'Build'
@@ -69,6 +72,14 @@ stages:
             inputs:
               jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
               shouldPrefixVariables: true
+
+          - task: CopyFiles@2
+            displayName: 'Ta med sentry.properties i bygget. Trengs for å lage release i Sentry'
+            inputs:
+              SourceFolder: '$(Agent.TempDirectory)'
+              Contents: |
+                sentry.properties
+              TargetFolder: ./
 
           - task: Bash@3
             displayName: Install sentry-cli
