@@ -83,7 +83,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   private fileLoggingService = inject(FileLoggingService);
   private confirmationModalService = inject(ConfirmationModalService);
 
-  isNativePlatform = computed(() => Capacitor.isNativePlatform());
+  isNativePlatform = Capacitor.isNativePlatform();
   userSettings!: UserSetting;
   isUpdating = false;
   private subscriptions: Subscription[] = [];
