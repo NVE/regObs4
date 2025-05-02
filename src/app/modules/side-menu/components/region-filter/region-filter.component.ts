@@ -29,12 +29,11 @@ interface AvalancheRegion {
 })
 /** Filtervalg for region / område */
 export class RegionFilterComponent {
-  private userSettingService = inject(UserSettingService);
   private searchCriteriaService = inject(SearchCriteriaService);
   private http = inject(HttpClient);
   private logger = inject(LoggingService);
 
-  regions: Signal<AvalancheRegion[]>;
+  regions: Signal<AvalancheRegion[]> = toSignal(this.getSnowRegions(), { initialValue: [] });
   aRegions = computed(() => this.regions().filter((r) => r.type === 'A'));
   bRegions = computed(() => this.regions().filter((r) => r.type === 'B')); // regioner uten fast varsling
   selectedAregionNames = computed((): string[] => {
@@ -49,14 +48,6 @@ export class RegionFilterComponent {
       .filter((r) => r.checked)
       .map((r) => r.name);
   });
-
-  constructor() {
-    const regions$ = this.userSettingService.currentGeoHazard$.pipe(
-      switchMap((geoHazards) => (geoHazards.includes(GeoHazard.Snow) ? this.getSnowRegions() : EMPTY)),
-      shareReplay(1, 500)
-    );
-    this.regions = toSignal(regions$, { initialValue: [] });
-  }
 
   regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
     if (event.detail.checked) {
