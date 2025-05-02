@@ -31,7 +31,7 @@ export class AnalyticService {
 
   private isTrackingOn(): boolean {
     const url = new URL(window.location.href);
-    const isTestSite = ['test.regobs.no', 'demo.regobs.no', 'localhost'].includes(url.hostname);
+    const isTestSite = ['test.regobs.no', 'demo.regobs.no'].includes(url.hostname);
     return !!window.plausible && environment.production && !isTestSite;
   }
 
