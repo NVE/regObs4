@@ -30,7 +30,9 @@ export class AnalyticService {
   private loggingService = inject(LoggingService);
 
   private isTrackingOn(): boolean {
-    return !!window.plausible && environment.production;
+    const url = new URL(window.location.href);
+    const isTestSite = ['test.regobs.no', 'demo.regobs.no', 'localhost'].includes(url.hostname);
+    return !!window.plausible && environment.production && !isTestSite;
   }
 
   trackView(url: string) {
@@ -74,7 +76,7 @@ export class AnalyticService {
       return;
     }
     if (!this.isTrackingOn()) {
-      this.loggingService.debug('Init Plausible (DEV-MODE! Analytics data is not sent to server!)', DEBUG_TAG);
+      this.loggingService.debug('Init Plausible (DEV/TEST-MODE! Analytics data is not sent to server!)', DEBUG_TAG);
       return;
     }
     this.loggingService.debug('Init Plausible', DEBUG_TAG);
