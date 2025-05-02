@@ -1,0 +1,53 @@
+<!-- Snøskredregioner -->
+<ion-accordion>
+  <ion-item slot="header" color="light">
+    <app-header-with-selected-items
+      titleKey="OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW"
+      [items]="selectedAregionNames()"
+    >
+    </app-header-with-selected-items>
+  </ion-item>
+  <div slot="content">
+    <ion-list lines="none">
+      @for (region of aRegions(); track region.id) {
+        <ion-item>
+          <ion-checkbox
+            [value]="region"
+            [checked]="region.checked"
+            (ionChange)="regionCheckBoxChanged($event)"
+            labelPlacement="end"
+            justify="start"
+          >
+            {{ region.name }}
+          </ion-checkbox>
+        </ion-item>
+      }
+    </ion-list>
+  </div>
+</ion-accordion>
+<ion-accordion>
+  <ion-item slot="header" color="light">
+    <app-header-with-selected-items
+      titleKey="OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE"
+      [items]="selectedBregionNames()"
+    >
+    </app-header-with-selected-items>
+  </ion-item>
+  <div slot="content">
+    <ion-list lines="none">
+      @for (region of bRegions(); track region.id) {
+        <ion-item>
+          <ion-checkbox
+            [value]="region"
+            [checked]="region.checked"
+            (ionChange)="regionCheckBoxChanged($event)"
+            labelPlacement="end"
+            justify="start"
+          >
+            {{ region.name }}
+          </ion-checkbox>
+        </ion-item>
+      }
+    </ion-list>
+  </div>
+</ion-accordion>
