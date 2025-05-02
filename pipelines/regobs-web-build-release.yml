@@ -64,6 +64,12 @@ stages:
               command: custom
               customCommand: 'run create-version-file'
 
+          - task: oneLuckiDevJson2Variable@1
+            displayName: 'Create environment variables from version.json file'
+            inputs:
+              jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
+              shouldPrefixVariables: true
+
           - task: Bash@3
             displayName: Install sentry-cli
             inputs:
