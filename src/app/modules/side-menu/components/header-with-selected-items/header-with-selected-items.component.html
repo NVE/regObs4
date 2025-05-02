@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="title">
+    {{ titleKey() | translate }}
+    @if (count() === 0) {
+      <span>
+        {{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }}
+      </span>
+    }
+  </div>
+  <div class="items">{{ itemsText() }}</div>
+</div>

@@ -24,11 +24,11 @@
       <ion-accordion-group>
         <ion-accordion *ngIf="isSupported('observationType')">
           <ion-item slot="header" color="light">
-            <app-selected-items-counter-label
-              [selectedItemsCount]="slushFlowFilterIsActive ? 1 : numSelectedObservationTypes()"
+            <app-header-with-selected-items
+              titleKey="OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE"
+              [items]="selectedObservationTypes()"
             >
-              {{ "OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE" | translate }}
-            </app-selected-items-counter-label>
+            </app-header-with-selected-items>
           </ion-item>
           <div slot="content">
             <ion-list lines="none">
@@ -64,55 +64,8 @@
           </div>
         </ion-accordion>
 
-        <!-- Snøskredregioner -->
-        <div *ngIf="isSupported('region') && isGeohazardSnow()">
-          <div *ngIf="regions$ | async as regions" slot="content">
-            <ion-accordion value="a-regions">
-              <ion-item slot="header" color="light">
-                <app-selected-items-counter-label [selectedItemsCount]="aRegionsSelectedCount()">
-                  {{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}
-                </app-selected-items-counter-label>
-              </ion-item>
-              <div slot="content">
-                <ion-list lines="none">
-                  <ion-item *ngFor="let region of regions.a; trackBy: avalancheRegionTrackById">
-                    <ion-checkbox
-                      [value]="region"
-                      [checked]="region.checked"
-                      (ionChange)="regionCheckBoxChanged($event)"
-                      labelPlacement="end"
-                      justify="start"
-                    >
-                      {{ region.name }}
-                    </ion-checkbox>
-                  </ion-item>
-                </ion-list>
-              </div>
-            </ion-accordion>
-            <ion-accordion value="b-regions">
-              <ion-item slot="header" color="light">
-                <app-selected-items-counter-label [selectedItemsCount]="bRegionsSelectedCount()">
-                  {{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}
-                </app-selected-items-counter-label>
-              </ion-item>
-              <div slot="content">
-                <ion-list lines="none">
-                  <ion-item *ngFor="let region of regions.b; trackBy: avalancheRegionTrackById">
-                    <ion-checkbox
-                      [value]="region"
-                      [checked]="region.checked"
-                      (ionChange)="regionCheckBoxChanged($event)"
-                      labelPlacement="end"
-                      justify="start"
-                    >
-                      {{ region.name }}
-                    </ion-checkbox>
-                  </ion-item>
-                </ion-list>
-              </div>
-            </ion-accordion>
-          </div>
-        </div>
+        <app-region-filter *ngIf="isSupported('region')"></app-region-filter>
+
         <ion-accordion *ngIf="isSupported('competence')" value="competence">
           <ion-item slot="header" color="light">
             <ion-label>
