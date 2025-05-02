@@ -18,55 +18,62 @@
         {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
         <ion-icon slot="end" name="close-circle-outline"></ion-icon>
       </ion-item>
-      <app-observations-days-back *ngIf="isIosOrAndroid"></app-observations-days-back>
-      <app-date-range *ngIf="!isIosOrAndroid"></app-date-range>
+      @if (isWebPlatform) {
+        <app-date-range></app-date-range>
+      } @else {
+        <app-observations-days-back></app-observations-days-back>
+      }
 
       <ion-accordion-group>
-        <ion-accordion *ngIf="isSupported('observationType')">
-          <ion-item slot="header" color="light">
-            <app-header-with-selected-items
-              titleKey="OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE"
-              [items]="selectedObservationTypes()"
-            >
-            </app-header-with-selected-items>
-          </ion-item>
-          <div slot="content">
-            <ion-list lines="none">
-              <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-              <!-- her vise obsgruppe først og så vise obstyper i gruppa og bruke klikks.-->
-              @for (group of groupsWithIsCheckedComputed(); track group.id) {
-                <ion-item>
-                  <ion-checkbox
-                    [checked]="group?.isChecked"
-                    (ionChange)="toggleObservationGroup($event.detail.checked, group.id, group.subTypes)"
-                    labelPlacement="end"
-                    justify="start"
-                  >
-                    {{ group?.name }}
-                  </ion-checkbox>
-                </ion-item>
-                @if (group?.subTypes) {
-                  @for (type of group?.subTypes; track type.id) {
-                    <ion-item class="subtype">
-                      <ion-checkbox
-                        [checked]="!slushFlowFilterIsActive && type.isChecked"
-                        labelPlacement="end"
-                        justify="start"
-                        (ionChange)="toggleObservationType($event.detail.checked, type.parentId, type.id)"
-                        >{{ type.name }}</ion-checkbox
-                      >
-                    </ion-item>
+        @if (isWebPlatform) {
+          <ion-accordion>
+            <ion-item slot="header" color="light">
+              <app-header-with-selected-items
+                titleKey="OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE"
+                [items]="selectedObservationTypes()"
+              >
+              </app-header-with-selected-items>
+            </ion-item>
+            <div slot="content">
+              <ion-list lines="none">
+                <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
+                <!-- her vise obsgruppe først og så vise obstyper i gruppa og bruke klikks.-->
+                @for (group of groupsWithIsCheckedComputed(); track group.id) {
+                  <ion-item>
+                    <ion-checkbox
+                      [checked]="group?.isChecked"
+                      (ionChange)="toggleObservationGroup($event.detail.checked, group.id, group.subTypes)"
+                      labelPlacement="end"
+                      justify="start"
+                    >
+                      {{ group?.name }}
+                    </ion-checkbox>
+                  </ion-item>
+                  @if (group?.subTypes) {
+                    @for (type of group?.subTypes; track type.id) {
+                      <ion-item class="subtype">
+                        <ion-checkbox
+                          [checked]="!slushFlowFilterIsActive && type.isChecked"
+                          labelPlacement="end"
+                          justify="start"
+                          (ionChange)="toggleObservationType($event.detail.checked, type.parentId, type.id)"
+                          >{{ type.name }}</ion-checkbox
+                        >
+                      </ion-item>
+                    }
                   }
                 }
-              }
-              <app-slush-flow-filter> </app-slush-flow-filter>
-            </ion-list>
-          </div>
-        </ion-accordion>
+                <app-slush-flow-filter> </app-slush-flow-filter>
+              </ion-list>
+            </div>
+          </ion-accordion>
+        }
 
-        <app-region-filter *ngIf="isSupported('region')"></app-region-filter>
+        @if (isWebPlatform && isGeohazardSnow()) {
+          <app-region-filter></app-region-filter>
+        }
 
-        <ion-accordion *ngIf="isSupported('competence')" value="competence">
+        <ion-accordion value="competence">
           <ion-item slot="header" color="light">
             <ion-label>
               {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
@@ -93,7 +100,7 @@
                 ></ion-item
               >
             </ion-list>
-            <div *ngIf="isSupported('nickName')">
+            <div>
               <ion-label class="margin-bottom" position="stacked">{{
                 "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
               }}</ion-label>

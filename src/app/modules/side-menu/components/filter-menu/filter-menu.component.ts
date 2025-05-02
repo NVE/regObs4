@@ -22,7 +22,6 @@ import { SelectInterface } from '@ionic/core';
 import { combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { RegistrationTypeCriteriaDto, RegistrationTypeDto } from 'src/app/modules/common-regobs-api';
@@ -42,13 +41,8 @@ import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
 import { RegionFilterComponent } from '../region-filter/region-filter.component';
-
-type PlatformType = 'app' | 'web';
-type FilterType = 'observationType' | 'competence' | 'nickName' | 'region';
-
-type FilterSupportPerPlatform = {
-  [platformType in PlatformType]: { [filter in FilterType]: boolean };
-};
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { Capacitor } from '@capacitor/core';
 
 const obsTypeTrackById: TrackByFunction<ObservationTypeView> = (index: number, t: ObservationTypeView) => {
   return t.id;
@@ -101,11 +95,13 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
-  private platform = inject(Platform);
   private userSettingService = inject(UserSettingService);
   private searchCriteriaService = inject(SearchCriteriaService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
   observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
+
+  private currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
+  isGeohazardSnow = computed(() => this.currentGeoHazard().includes(GeoHazard.Snow));
 
   // returnerer søkekriteria: gruppe id - nøkkel, subtype id [] - verdi
   criteriasObject = toSignal(
@@ -129,10 +125,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     )
   );
 
-  popupType?: SelectInterface;
-  isIosOrAndroid?: boolean;
-  isMobileWeb: boolean;
-  platformType: PlatformType;
+  isWebPlatform = !Capacitor.isNativePlatform();
   nickName?: string | null = null;
 
   competenceItems$?: Observable<CompetenceOption[]>;
@@ -140,21 +133,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   showObservations$?: Observable<boolean>;
   observationTypes$?: Observable<ObservationTypeView[]>;
   noCompetenceFilterActive$?: Observable<boolean>;
-
-  filterSupportPerPlatform: FilterSupportPerPlatform = {
-    app: {
-      observationType: false,
-      competence: true,
-      nickName: true,
-      region: false,
-    },
-    web: {
-      observationType: true,
-      competence: true,
-      nickName: true,
-      region: true,
-    },
-  };
 
   get competenceOptionTrackById() {
     return competenceOptionTrackById;
@@ -213,16 +191,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   constructor() {
     super();
-    this.isMobileWeb = this.platform.is('mobileweb');
-    this.platformType = this.isIosOrAndroid ? 'app' : 'web';
     addIcons({ closeCircleOutline });
   }
 
   async ngOnInit() {
-    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
-    this.isIosOrAndroid = isAndroidOrIos(this.platform);
-    this.isMobileWeb = this.platform.is('mobileweb');
-    this.platformType = this.isIosOrAndroid ? 'app' : 'web';
     this.showObservations$ = this.userSettingService.showObservations$;
 
     const competenceCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
@@ -277,10 +249,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     } else {
       this.searchCriteriaService.removeCompetence(event.detail.value.ids);
     }
-  }
-
-  isSupported(filterType: FilterType): boolean {
-    return this.filterSupportPerPlatform[this.platformType][filterType];
   }
 
   async onResetFilters() {
