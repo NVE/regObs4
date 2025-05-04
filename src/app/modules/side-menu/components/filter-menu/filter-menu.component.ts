@@ -13,11 +13,9 @@ import {
   IonToggle,
   IonToolbar,
   SearchbarCustomEvent,
-  ToggleCustomEvent,
   IonContent,
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, Signal, TrackByFunction, computed, inject } from '@angular/core';
-import { firstValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -179,7 +177,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     return filter;
   });
 
-  showObservations$?: Observable<boolean>;
+  showObservations$ = this.userSettingService.showObservations$;
 
   get competenceOptionTrackById() {
     return competenceOptionTrackById;
@@ -242,17 +240,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async ngOnInit() {
-    this.showObservations$ = this.userSettingService.showObservations$;
-
     this.searchCriteriaService.searchCriteria$.subscribe((criteria) => {
       this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
     });
-  }
-
-  async saveShowObservation(value: ToggleCustomEvent) {
-    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
-    userSettings.showObservations = value.detail.checked;
-    this.userSettingService.saveUserSettings(userSettings);
   }
 
   competenceCheckboxChanged(event: CheckboxCustomEvent<CompetenceOption>) {

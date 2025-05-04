@@ -6,11 +6,8 @@
 
 <ion-content>
   <ion-list class="ion-no-margin main-list filtermenu-scrollfix">
-    <ion-item lines="full" color="light" button detail="false">
-      <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)">
-        {{ "MENU.SHOW_OBSERVATIONS" | translate }}
-      </ion-toggle>
-    </ion-item>
+    <!-- Slot to add extra filter or buttons -->
+    <ng-content></ng-content>
 
     <ng-container *ngIf="showObservations$ | async">
       <app-update-observations></app-update-observations>

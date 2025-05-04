@@ -11,8 +11,11 @@ import {
   IonMenuButton,
   IonSplitPane,
   ToastController,
+  IonItem,
+  IonToggle,
+  ToggleCustomEvent,
 } from '@ionic/angular/standalone';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import L from 'leaflet';
 import 'leaflet.markercluster';
@@ -93,13 +96,16 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
     IonButtons,
     IonContent,
     IonIcon,
+    IonItem,
     IonMenu,
     IonMenuButton,
     IonSplitPane,
+    IonToggle,
     MapCenterInfoComponent_1,
     MapComponent,
     MapItemBarComponent,
     NgIf,
+    TranslatePipe,
   ],
 })
 export class HomePage extends RouterPage implements OnInit, AfterViewChecked, OnDestroy {
@@ -181,6 +187,12 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
     this.warnAboutOutdatedMapPackages();
     this.initSearch();
+  }
+
+  async saveShowObservation(value: ToggleCustomEvent) {
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
+    userSettings.showObservations = value.detail.checked;
+    this.userSettingService.saveUserSettings(userSettings);
   }
 
   private async initSearch() {

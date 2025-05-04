@@ -1,7 +1,13 @@
 <ion-split-pane contentId="main-content-home-page">
   <ion-menu side="start" menuId="filter" contentId="main-content-home-page">
     @defer {
-      <app-filter-menu></app-filter-menu>
+      <app-filter-menu>
+        <ion-item lines="full" color="light" button detail="false">
+          <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)">
+            {{ "MENU.SHOW_OBSERVATIONS" | translate }}
+          </ion-toggle>
+        </ion-item>
+      </app-filter-menu>
     }
   </ion-menu>
 
