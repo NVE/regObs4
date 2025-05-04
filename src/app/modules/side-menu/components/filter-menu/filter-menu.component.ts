@@ -10,12 +10,12 @@ import {
   IonList,
   IonSearchbar,
   IonTitle,
-  IonToggle,
   IonToolbar,
   SearchbarCustomEvent,
   IonContent,
+  IonListHeader,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, Signal, TrackByFunction, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -25,7 +25,7 @@ import { SearchCriteriaModelService } from 'src/app/core/services/search-criteri
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
 import { ObservationTypeView } from './observationTypeOptions';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, AsyncPipe } from '@angular/common';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DateRangeComponent } from '../date-range/date-range.component';
 import { UpdateObservationsComponent } from '../update-observations/update-observations.component';
@@ -39,14 +39,6 @@ import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/
 import { RegionFilterComponent } from '../region-filter/region-filter.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Capacitor } from '@capacitor/core';
-
-const obsTypeTrackById: TrackByFunction<ObservationTypeView> = (index: number, t: ObservationTypeView) => {
-  return t.id;
-};
-
-const competenceOptionTrackById: TrackByFunction<CompetenceOption> = (index: number, c: CompetenceOption) => {
-  return c.ids.join('-');
-};
 
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
@@ -64,30 +56,29 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    IonContent,
-    IonTitle,
-    IonToolbar,
-    IonHeader,
     AsyncPipe,
     DateRangeComponent,
+    HeaderColorDirective,
+    HeaderWithSelectedItemsComponent,
     IonAccordion,
     IonAccordionGroup,
     IonCheckbox,
+    IonContent,
+    IonHeader,
     IonIcon,
     IonItem,
     IonLabel,
     IonList,
+    IonListHeader,
     IonSearchbar,
-    IonToggle,
-    NgFor,
+    IonTitle,
+    IonToolbar,
     NgIf,
     ObservationsDaysBackComponent,
+    RegionFilterComponent,
     SlushFlowFilterComponent,
     TranslatePipe,
     UpdateObservationsComponent,
-    HeaderColorDirective,
-    HeaderWithSelectedItemsComponent,
-    RegionFilterComponent,
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
@@ -178,14 +169,6 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   });
 
   showObservations$ = this.userSettingService.showObservations$;
-
-  get competenceOptionTrackById() {
-    return competenceOptionTrackById;
-  }
-
-  get obsTypeTrackById() {
-    return obsTypeTrackById;
-  }
 
   slushFlowFilterIsActive = false;
 

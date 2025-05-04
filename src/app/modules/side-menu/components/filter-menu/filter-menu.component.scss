@@ -5,23 +5,17 @@
   margin-bottom: 56px; // høyde på tab bar.
 }
 
-ion-title.title-small {
-  padding-bottom: 0;
-}
-
-.resetFiltersButton {
-  font-size: 17px;
-}
-
-.margin-bottom {
-  margin-bottom: 8px;
-}
-
-ion-list {
-  width: 100%;
-  background: var(--background-color);
-}
-
 .subtype::part(native) {
   padding-left: 40px;
+}
+
+ion-list ion-list-header {
+  font-size: 0.8rem;
+  text-transform: none;
+  font-weight: normal;
+}
+
+ion-item.nickname-search {
+  // Search bar shadow is hidden if overflow hidden
+  overflow: visible;
 }

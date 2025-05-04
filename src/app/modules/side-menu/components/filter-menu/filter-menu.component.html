@@ -88,40 +88,46 @@
             </app-header-with-selected-items>
           </ion-item>
 
-          <ion-item slot="content" lines="none">
-            <ion-label position="stacked" class="margin-bottom">
-              {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
-              <span *ngIf="noCompetenceFilterActive()">
-                &nbsp;({{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }})
-              </span>
-            </ion-label>
+          <div slot="content">
             <ion-list lines="none">
-              <ion-item *ngFor="let competence of competenceCheckboxes(); trackBy: competenceOptionTrackById">
-                <ion-checkbox
-                  [value]="competence"
-                  [checked]="competence.checked"
-                  (ionChange)="competenceCheckboxChanged($event)"
-                  [title]="competence.descriptions.join('<br />')"
-                  labelPlacement="end"
-                  justify="start"
-                  >{{ competence.name }}</ion-checkbox
-                ></ion-item
-              >
+              <ion-list-header>
+                <ion-label>
+                  {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
+                  @if (noCompetenceFilterActive()) {
+                    &nbsp;({{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }})
+                  }
+                </ion-label>
+              </ion-list-header>
+              @for (competence of competenceCheckboxes(); track competence.ids) {
+                <ion-item>
+                  <ion-checkbox
+                    [value]="competence"
+                    [checked]="competence.checked"
+                    (ionChange)="competenceCheckboxChanged($event)"
+                    [title]="competence.descriptions.join('<br />')"
+                    labelPlacement="end"
+                    justify="start"
+                    >{{ competence.name }}</ion-checkbox
+                  ></ion-item
+                >
+              }
             </ion-list>
-            <div>
-              <ion-label class="margin-bottom" position="stacked">{{
-                "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
-              }}</ion-label>
-              <ion-searchbar
-                [value]="nickName()"
-                [debounce]="1000"
-                class="ion-no-padding"
-                [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"
-                (ionChange)="setNickName($event)"
-              >
-              </ion-searchbar>
-            </div>
-          </ion-item>
+            <ion-list lines="none">
+              <ion-list-header>
+                <ion-label>{{ "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate }}</ion-label>
+              </ion-list-header>
+              <ion-item class="nickname-search">
+                <ion-searchbar
+                  [value]="nickName()"
+                  [debounce]="1000"
+                  class="ion-no-padding"
+                  [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"
+                  (ionChange)="setNickName($event)"
+                >
+                </ion-searchbar>
+              </ion-item>
+            </ion-list>
+          </div>
         </ion-accordion>
       </ion-accordion-group>
     </ng-container>
