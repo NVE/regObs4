@@ -21,7 +21,7 @@ export class ObservationsDaysBackComponent {
   private searchCriteria = inject(SearchCriteriaService);
 
   labelKey = input('MENU.TIMESPAN');
-  daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { requireSync: true });
+  daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$);
   private geoHazard = toSignal(this.userSettingService.currentGeoHazard$);
   daysBackOptions = computed(() => {
     const geoHazard = this.geoHazard();
