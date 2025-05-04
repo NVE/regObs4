@@ -18,13 +18,22 @@
         {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
         <ion-icon slot="end" name="close-circle-outline"></ion-icon>
       </ion-item>
-      @if (isWebPlatform) {
-        <app-date-range></app-date-range>
-      } @else {
-        <app-observations-days-back></app-observations-days-back>
+
+      @if (!isWebPlatform) {
+        <!--
+          På mobil ønsker vi bare å kunne velge maks 2 uker tilbake, det er kun det vi støtter offline.
+          På web brukes <app-date-range>, som også bruker <app-observations-days-back>
+        -->
+        <ion-item lines="full" color="light">
+          <app-observations-days-back (daysBackChange)="setUseDaysBack($event)"></app-observations-days-back>
+        </ion-item>
       }
 
       <ion-accordion-group>
+        @if (isWebPlatform) {
+          <app-date-range></app-date-range>
+        }
+
         @if (isWebPlatform) {
           <ion-accordion>
             <ion-item slot="header" color="light">
@@ -75,20 +84,22 @@
 
         <ion-accordion value="competence">
           <ion-item slot="header" color="light">
-            <ion-label>
-              {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE" | translate }}
-            </ion-label>
+            <app-header-with-selected-items
+              titleKey="OBSERVATION_FILTER.COMPETANCE_FILTER.TITLE"
+              [items]="observerFilter()"
+            >
+            </app-header-with-selected-items>
           </ion-item>
 
           <ion-item slot="content" lines="none">
             <ion-label position="stacked" class="margin-bottom">
               {{ "OBSERVATION_FILTER.COMPETANCE_FILTER.LABEL" | translate }}
-              <span *ngIf="noCompetenceFilterActive$ | async">
+              <span *ngIf="noCompetenceFilterActive()">
                 &nbsp;({{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }})
               </span>
             </ion-label>
             <ion-list lines="none">
-              <ion-item *ngFor="let competence of competenceItems$ | async; trackBy: competenceOptionTrackById">
+              <ion-item *ngFor="let competence of competenceCheckboxes(); trackBy: competenceOptionTrackById">
                 <ion-checkbox
                   [value]="competence"
                   [checked]="competence.checked"
@@ -105,7 +116,7 @@
                 "OBSERVATION_FILTER.NICK_FILTER.TITLE" | translate
               }}</ion-label>
               <ion-searchbar
-                [value]="nickName"
+                [value]="nickName()"
                 [debounce]="1000"
                 class="ion-no-padding"
                 [placeholder]="'OBSERVATION_FILTER.NICK_FILTER.PLACEHOLDER' | translate"

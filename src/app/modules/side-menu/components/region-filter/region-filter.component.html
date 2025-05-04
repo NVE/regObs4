@@ -1,11 +1,15 @@
 <!-- Snøskredregioner -->
 <ion-accordion>
   <ion-item slot="header" color="light">
-    <app-header-with-selected-items
-      titleKey="OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW"
-      [items]="selectedAregionNames()"
-    >
-    </app-header-with-selected-items>
+    @if (showARegionNames()) {
+      <app-header-with-selected-items
+        titleKey="OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW"
+        [items]="selectedAregionNames()"
+      >
+      </app-header-with-selected-items>
+    } @else {
+      <ion-label>{{ "OBSERVATION_FILTER.REGION_FILTER_TITLE_SNOW" | translate }}</ion-label>
+    }
   </ion-item>
   <div slot="content">
     <ion-list lines="none">
@@ -27,11 +31,15 @@
 </ion-accordion>
 <ion-accordion>
   <ion-item slot="header" color="light">
-    <app-header-with-selected-items
-      titleKey="OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE"
-      [items]="selectedBregionNames()"
-    >
-    </app-header-with-selected-items>
+    @if (showBRegionNames()) {
+      <app-header-with-selected-items
+        titleKey="OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE"
+        [items]="selectedBregionNames()"
+      >
+      </app-header-with-selected-items>
+    } @else {
+      <ion-label>{{ "OBSERVATION_FILTER.REGION_FILTER_B_REGIONS_TITLE" | translate }}</ion-label>
+    }
   </ion-item>
   <div slot="content">
     <ion-list lines="none">
