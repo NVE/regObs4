@@ -30,7 +30,14 @@ const OLD_PARAM_CONFIG: OldParamConfig[] = [
   { oldKey: 'NWLon', newKey: URL_PARAM_NW_LON },
   { oldKey: 'SELat', newKey: URL_PARAM_SE_LAT },
   { oldKey: 'SELon', newKey: URL_PARAM_SE_LON },
-  { oldKey: 'GeoHazards', newKey: URL_PARAM_GEOHAZARD },
+  {
+    oldKey: 'GeoHazards',
+    newKey: URL_PARAM_GEOHAZARD,
+    mapper: (params, oldKey) => {
+      const values = params.getAll(oldKey);
+      return arrayToSeparatedString(values);
+    },
+  },
   { oldKey: 'SelectedNumberOfDays', newKey: URL_PARAM_DAYSBACK },
   { oldKey: 'FromDate', newKey: URL_PARAM_FROMDATE },
   { oldKey: 'ToDate', newKey: URL_PARAM_TODATE },
