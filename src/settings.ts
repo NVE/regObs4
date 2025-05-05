@@ -419,10 +419,10 @@ export const settings: ISettings = {
       searchHistorySize: 5,
     },
     mapSearchZoomToLevel: 13,
-    unknownMapCenter: [59.911197, 10.741059],
+    unknownMapCenter: [61.46125881009806, 7.871872706969867],
     startupBounds: {
-      topLeft: [81.256, 3.237107], // NW of Svalbard
-      bottomRight: [57.68535, 12.8905], // SE, includes all of Finnmark and southern norway
+      topLeft: [80.59833, 3.237107], // NW of Svalbard
+      bottomRight: [57.68535, 31.745317], // SE, includes all of Finnmark and southern norway
     },
     flyToOnGpsZoom: 13,
     maxClusterRadius: 60, // 30,

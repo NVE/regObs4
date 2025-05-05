@@ -63,6 +63,7 @@ import { GeoFabComponent } from '../../modules/shared/components/geo-fab/geo-fab
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
 import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
+import { settings } from 'src/settings';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -333,6 +334,12 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   async onMapReady(leafletMap: L.Map) {
     this.map = leafletMap;
+
+    // Hvis applikasjonen har startet opp uten kartutsnitt i url, sett bounds til hele norge (inkl. svalbard)
+    if (!this.mapService.hadStartupMapView) {
+      const bounds = L.latLngBounds([settings.map.startupBounds.topLeft, settings.map.startupBounds.bottomRight]);
+      leafletMap.fitBounds(bounds, { animate: false, noMoveStart: true });
+    }
 
     this.map.on('click', () => {
       this.mapItemBar().hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
