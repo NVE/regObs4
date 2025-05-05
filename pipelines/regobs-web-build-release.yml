@@ -9,13 +9,16 @@ pr:
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
+variables:
+  - group: sentryProperties
+
 stages:
   - stage: 'Build'
     displayName: 'Build'
     jobs:
       - job:
         pool:
-          vmImage: 'windows-latest'
+          vmImage: 'ubuntu-latest'
 
         steps:
           - task: Cache@2
@@ -63,6 +66,32 @@ stages:
             inputs:
               command: custom
               customCommand: 'run create-version-file'
+
+          - task: oneLuckiDevJson2Variable@1
+            displayName: 'Create environment variables from version.json file'
+            inputs:
+              jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
+              shouldPrefixVariables: true
+
+          - task: CopyFiles@2
+            displayName: 'Ta med sentry.properties i bygget. Trengs for å lage release i Sentry'
+            inputs:
+              SourceFolder: '$(Agent.TempDirectory)'
+              Contents: |
+                sentry.properties
+              TargetFolder: ./
+
+          - task: Bash@3
+            displayName: Install sentry-cli
+            inputs:
+              targetType: inline
+              script: curl -sL https://sentry.io/get-cli/ | sh
+
+          - script: |
+              sentry-cli releases new $(json.version)
+              sentry-cli releases set-commits $(json.version) --local --ignore-missing
+              sentry-cli releases files $(json.version) upload-sourcemaps www/browser -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+            displayName: 'Create Sentry release and upload sourcemaps to Sentry'
 
           - task: Npm@1
             displayName: 'npm run build:prod'
