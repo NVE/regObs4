@@ -132,8 +132,8 @@ stages:
           name: RegObs-Prod
           resourceName: NF-REGOBS-E-PRO
         variables:
-          targetFolder: 'Z:\SharedData\Web\regobs2025\Releases_$(Build.BuildNumber)'
-          appName: 'regobs2025'
+          targetFolder: 'Z:\SharedData\Web\www.regobs.no\Releases_$(Build.BuildNumber)'
+          appName: 'www.regobs.no'
         strategy:
           runOnce:
             deploy:
