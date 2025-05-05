@@ -3,6 +3,11 @@ import { isUserLoggedIn } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
+    path: 'index.html',
+    redirectTo: '',
+    pathMatch: 'full',
+  },
+  {
     path: '',
     loadChildren: () => import('./pages/tabs/tabs.routes').then((m) => m.routes),
   },
