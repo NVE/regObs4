@@ -57,8 +57,6 @@ const getSearchParams = () => {
   return url.searchParams;
 };
 
-const startupMapView = parseMapViewFromSearchParams(getSearchParams());
-
 /**
  * Common data and functions for MapComponent.
  * Some functions and data are based on the map on HomePage only
@@ -77,12 +75,13 @@ export class MapService {
   private _showUserLocationObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
-  private _mapViewSubject = new BehaviorSubject<IMapView | undefined>(startupMapView);
   private _mapView$: Observable<IMapView | undefined>;
   private _noMapExtentAvailable$: Observable<boolean>;
   private _relevantMapChange$: Observable<IMapView>;
 
-  hadStartupMapView = startupMapView !== undefined;
+  // Disse to baserer seg på samme variabel og må initialiseres sammen i constructor
+  private _mapViewSubject: BehaviorSubject<IMapView | undefined>;
+  hadStartupMapView: boolean;
 
   /**
    * Extent, center and zoom for the map in HomePage
@@ -147,6 +146,10 @@ export class MapService {
   }
 
   constructor() {
+    const startupMapView = parseMapViewFromSearchParams(getSearchParams());
+    this.hadStartupMapView = startupMapView != undefined;
+    this._mapViewSubject = new BehaviorSubject<IMapView | undefined>(startupMapView);
+
     this._showUserLocationSubject = new BehaviorSubject<boolean>(true);
     this._showUserLocationObservable = this._showUserLocationSubject.asObservable();
     this._followModeSubject = new BehaviorSubject<boolean>(false);
