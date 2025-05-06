@@ -176,7 +176,10 @@ export class ObservationComponent {
   }
 
   setFallbackImage(attachment: AttachmentViewModel) {
-    attachment.Url = 'assets/images/broken-image-w-bg.svg';
+    if (!attachment.UrlFormats) {
+      return;
+    }
+    attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
     attachment.Comment = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }
 
