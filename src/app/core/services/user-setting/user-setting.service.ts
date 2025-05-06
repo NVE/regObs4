@@ -482,27 +482,22 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }: {
     geoHazards?: number[] | undefined;
     daysBack?: number | null;
-  }): Promise<boolean | number> {
+  }): Promise<number> {
     let userSetting = await firstValueFrom(this.userSetting$);
-    let changed = false;
     if (geoHazards != null) {
       if (!isArraysEqual(geoHazards, userSetting.currentGeoHazard)) {
         userSetting = {
           ...userSetting,
           currentGeoHazard: geoHazards,
         };
-        changed = true;
       }
     }
     if (daysBack != null) {
-      changed = this.setDaysBackForCurrentGeoHazard(daysBack, userSetting);
+      this.setDaysBackForCurrentGeoHazard(daysBack, userSetting);
     }
-    if (changed) {
-      this.saveUserSettings(userSetting);
-      return await firstValueFrom(this.daysBackForCurrentGeoHazard$);
-    } else {
-      return new Promise((resolve) => resolve(false));
-    }
+
+    this.saveUserSettings(userSetting);
+    return await firstValueFrom(this.daysBackForCurrentGeoHazard$);
   }
 
   /**
@@ -514,20 +509,16 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       (x) => x.geoHazard === currentGeoHazards[0]
     );
     const userSettings = await firstValueFrom(this.userSetting$);
-    if (this.setDaysBackForCurrentGeoHazard(defaultDaysBackForCurrentGeoHazard?.daysBack || 2, userSettings)) {
-      this.saveUserSettings(userSettings);
-    }
+    this.setDaysBackForCurrentGeoHazard(defaultDaysBackForCurrentGeoHazard?.daysBack || 2, userSettings);
+    this.saveUserSettings(userSettings);
   }
 
-  private setDaysBackForCurrentGeoHazard(daysBack: number, userSettings: UserSetting): boolean {
-    let changed = false;
+  private setDaysBackForCurrentGeoHazard(daysBack: number, userSettings: UserSetting) {
     for (const geoHazard of userSettings.currentGeoHazard) {
       const existingValue = userSettings.observationDaysBack.find((x) => x.geoHazard === geoHazard);
       if (existingValue && existingValue.daysBack !== daysBack) {
         existingValue.daysBack = daysBack;
-        changed = true;
       }
     }
-    return changed;
   }
 }

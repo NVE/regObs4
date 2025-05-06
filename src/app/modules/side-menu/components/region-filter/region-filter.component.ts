@@ -1,14 +1,13 @@
-import { CheckboxCustomEvent, IonAccordion, IonCheckbox, IonItem, IonList } from '@ionic/angular/standalone';
+import { CheckboxCustomEvent, IonAccordion, IonCheckbox, IonItem, IonList, IonLabel } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { distinctUntilChanged, EMPTY, map, Observable, shareReplay, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, map, Observable, switchMap, tap } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
 import { arrayHasNotChanged } from '../filter-menu/filter-menu.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'RegionFilterComponent';
 
@@ -25,7 +24,7 @@ interface AvalancheRegion {
   selector: 'app-region-filter',
   templateUrl: './region-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonAccordion, IonCheckbox, IonItem, IonList, HeaderWithSelectedItemsComponent],
+  imports: [IonLabel, IonAccordion, IonCheckbox, IonItem, IonList, HeaderWithSelectedItemsComponent, TranslatePipe],
 })
 /** Filtervalg for region / område */
 export class RegionFilterComponent {
@@ -37,16 +36,26 @@ export class RegionFilterComponent {
   aRegions = computed(() => this.regions().filter((r) => r.type === 'A'));
   bRegions = computed(() => this.regions().filter((r) => r.type === 'B')); // regioner uten fast varsling
   selectedAregionNames = computed((): string[] => {
-    return this.regions()
-      .filter((r) => r.type === 'A')
+    return this.aRegions()
       .filter((r) => r.checked)
       .map((r) => r.name);
   });
   selectedBregionNames = computed((): string[] => {
-    return this.regions()
-      .filter((r) => r.type === 'B')
+    return this.bRegions()
       .filter((r) => r.checked)
       .map((r) => r.name);
+  });
+  showARegionNames = computed(() => {
+    if (this.selectedBregionNames().length === 0) {
+      return true;
+    }
+    return this.selectedAregionNames().length > 0;
+  });
+  showBRegionNames = computed(() => {
+    if (this.selectedAregionNames().length === 0) {
+      return true;
+    }
+    return this.selectedBregionNames().length > 0;
   });
 
   regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {

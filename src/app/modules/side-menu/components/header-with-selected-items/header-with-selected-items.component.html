@@ -1,9 +1,12 @@
-<div class="title">
+<ion-label>
   {{ titleKey() | translate }}
-  @if (count() === 0) {
-    <span>
+</ion-label>
+<ion-note>
+  <ng-content>
+    @if (count() === 0) {
       {{ "OBSERVATION_FILTER.MULTISELECT_SHOW_NO_COUNT" | translate }}
-    </span>
-  }
-</div>
-<div class="items">{{ itemsText() }}</div>
+    } @else {
+      {{ itemsText() }}
+    }
+  </ng-content>
+</ion-note>

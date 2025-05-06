@@ -1,34 +1,3 @@
 :host {
-  --background: #fff;
-}
-
-ion-list.list-md {
-  padding-bottom: 0;
-  background: var(--background);
-  padding: 0;
-}
-
-ion-radio-group ion-item {
-  --border-width: 0;
-  --inner-border-width: 0;
-}
-
-ion-radio-group ion-item.white-background {
-  --background: var(--background);
-}
-
-ion-radio-group ion-item.white-background::part(native) {
-  --padding-start: 35px;
-}
-
-ion-item::part(native) {
-  max-width: 100%;
-}
-
-ion-item::part(native) {
-  border-bottom: 1px solid #dedede;
-}
-
-app-observations-days-back {
-  width: 100%;
+  display: contents;
 }

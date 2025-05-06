@@ -10,16 +10,12 @@ import {
   IonList,
   IonSearchbar,
   IonTitle,
-  IonToggle,
   IonToolbar,
-  Platform,
   SearchbarCustomEvent,
-  ToggleCustomEvent,
   IonContent,
+  IonListHeader,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, Signal, TrackByFunction, computed, inject } from '@angular/core';
-import { SelectInterface } from '@ionic/core';
-import { combineLatest, firstValueFrom, Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -29,7 +25,7 @@ import { SearchCriteriaModelService } from 'src/app/core/services/search-criteri
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
 import { ObservationTypeView } from './observationTypeOptions';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, AsyncPipe } from '@angular/common';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DateRangeComponent } from '../date-range/date-range.component';
 import { UpdateObservationsComponent } from '../update-observations/update-observations.component';
@@ -43,14 +39,6 @@ import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/
 import { RegionFilterComponent } from '../region-filter/region-filter.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Capacitor } from '@capacitor/core';
-
-const obsTypeTrackById: TrackByFunction<ObservationTypeView> = (index: number, t: ObservationTypeView) => {
-  return t.id;
-};
-
-const competenceOptionTrackById: TrackByFunction<CompetenceOption> = (index: number, c: CompetenceOption) => {
-  return c.ids.join('-');
-};
 
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
@@ -68,30 +56,29 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
   styleUrls: ['./filter-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    IonContent,
-    IonTitle,
-    IonToolbar,
-    IonHeader,
     AsyncPipe,
     DateRangeComponent,
+    HeaderColorDirective,
+    HeaderWithSelectedItemsComponent,
     IonAccordion,
     IonAccordionGroup,
     IonCheckbox,
+    IonContent,
+    IonHeader,
     IonIcon,
     IonItem,
     IonLabel,
     IonList,
+    IonListHeader,
     IonSearchbar,
-    IonToggle,
-    NgFor,
+    IonTitle,
+    IonToolbar,
     NgIf,
     ObservationsDaysBackComponent,
+    RegionFilterComponent,
     SlushFlowFilterComponent,
     TranslatePipe,
     UpdateObservationsComponent,
-    HeaderColorDirective,
-    HeaderWithSelectedItemsComponent,
-    RegionFilterComponent,
   ],
 })
 export class FilterMenuComponent extends NgDestoryBase implements OnInit {
@@ -126,21 +113,62 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   );
 
   isWebPlatform = !Capacitor.isNativePlatform();
-  nickName?: string | null = null;
 
-  competenceItems$?: Observable<CompetenceOption[]>;
+  nickName = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((x) => x.ObserverNickName)));
 
-  showObservations$?: Observable<boolean>;
-  observationTypes$?: Observable<ObservationTypeView[]>;
-  noCompetenceFilterActive$?: Observable<boolean>;
+  private competenceCriteria = toSignal(
+    this.searchCriteriaService.searchCriteria$.pipe(
+      map((searchCriteria) => (searchCriteria.ObserverCompetence as number[]) || []),
+      distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
+    ),
+    { initialValue: [] }
+  );
 
-  get competenceOptionTrackById() {
-    return competenceOptionTrackById;
-  }
+  noCompetenceFilterActive = computed(() => this.competenceCriteria().length === 0);
 
-  get obsTypeTrackById() {
-    return obsTypeTrackById;
-  }
+  private competenceOptions = toSignal(
+    this.searchCriteriaModelService.getCompetenceFilterOptions$().pipe(
+      // The values in this pipe starts as arrays of ObserverCompetenceLevelDto for all selected geohazards.
+      // So we can have two ObserverCompetenceLevelDto for three stars, etc.
+
+      // Group competence by Id and Name so they are easier to work with
+      map((competenceList) => new CompetenceOptions(competenceList))
+    )
+  );
+
+  competenceCheckboxes = computed(() => {
+    const competenceOptions = this.competenceOptions();
+    if (!competenceOptions) return [];
+
+    // Reset all checked properties before values from search criteria are applied
+    for (const competence of competenceOptions.options) {
+      competence.checked = false;
+    }
+
+    // Set all active competences to checked
+    for (const competence of this.competenceCriteria()) {
+      const compItem = competenceOptions.idToItem.get(competence);
+      if (compItem) compItem.checked = true;
+    }
+
+    return competenceOptions.options;
+  });
+
+  observerFilter: Signal<string[]> = computed(() => {
+    const filter: string[] = [];
+    const nick = this.nickName();
+    if (nick) {
+      filter.push(nick);
+    }
+    for (const competence of this.competenceCheckboxes()) {
+      if (competence.checked) {
+        filter.push(competence.name);
+      }
+    }
+    return filter;
+  });
+
+  showObservations$ = this.userSettingService.showObservations$;
 
   slushFlowFilterIsActive = false;
 
@@ -195,52 +223,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   }
 
   async ngOnInit() {
-    this.showObservations$ = this.userSettingService.showObservations$;
-
-    const competenceCriteria$ = this.searchCriteriaService.searchCriteria$.pipe(
-      map((searchCriteria) => searchCriteria.ObserverCompetence || []),
-      distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
-    );
-
-    this.noCompetenceFilterActive$ = competenceCriteria$.pipe(map((c) => c.length === 0));
-
-    this.competenceItems$ = combineLatest([
-      this.searchCriteriaModelService.getCompetenceFilterOptions$().pipe(
-        // The values in this pipe starts as arrays of ObserverCompetenceLevelDto for all selected geohazards.
-        // So we can have two ObserverCompetenceLevelDto for three stars, etc.
-
-        // Group competence by Id and Name so they are easier to work with
-        map((competenceList) => new CompetenceOptions(competenceList))
-      ),
-
-      competenceCriteria$,
-    ]).pipe(
-      map(([competenceOptions, competences]) => {
-        // Reset all checked properties before values from search criteria are applied
-        for (const competence of competenceOptions.options) {
-          competence.checked = false;
-        }
-
-        // Set all active competences to checked
-        for (const competence of competences) {
-          const compItem = competenceOptions.idToItem.get(competence);
-          if (compItem) compItem.checked = true;
-        }
-
-        return competenceOptions.options;
-      })
-    );
-
     this.searchCriteriaService.searchCriteria$.subscribe((criteria) => {
-      this.nickName = criteria.ObserverNickName;
       this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
     });
-  }
-
-  async saveShowObservation(value: ToggleCustomEvent) {
-    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
-    userSettings.showObservations = value.detail.checked;
-    this.userSettingService.saveUserSettings(userSettings);
   }
 
   competenceCheckboxChanged(event: CheckboxCustomEvent<CompetenceOption>) {
@@ -277,5 +262,10 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
     let nickName = undefined;
     newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
     this.searchCriteriaService.setObserverNickName(nickName);
+  }
+
+  setUseDaysBack(daysBack: number): void {
+    this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack });
+    this.searchCriteriaService.setUseDaysBack(true);
   }
 }

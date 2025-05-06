@@ -3,94 +3,48 @@ import { SearchCriteriaService } from '../../../../core/services/search-criteria
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { map } from 'rxjs';
 import moment from 'moment';
-import {
-  IonAccordion,
-  IonAccordionGroup,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonRadio,
-  IonRadioGroup,
-  IonText,
-} from '@ionic/angular/standalone';
-import { RadioGroupChangeEventDetail as IRadioGroupRadioGroupChangeEventDetail } from '@ionic/core/dist/types/components/radio-group/radio-group-interface';
-import { Capacitor } from '@capacitor/core';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { IonAccordion, IonItem, IonLabel, IonList } from '@ionic/angular/standalone';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AccordionGroupChangeEventDetail, IonAccordionGroupCustomEvent } from '@ionic/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
 
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
   imports: [
-    AsyncPipe,
     CheckDaysOrWeeksBackComponent,
     DatetimePickerComponent,
     IonAccordion,
-    IonAccordionGroup,
     IonItem,
     IonLabel,
     IonList,
-    IonRadio,
-    IonRadioGroup,
-    IonText,
-    NgIf,
     ObservationsDaysBackComponent,
     TranslatePipe,
+    HeaderWithSelectedItemsComponent,
   ],
 })
 export class DateRangeComponent {
   private searchCriteriaService = inject(SearchCriteriaService);
-  userSettingService = inject(UserSettingService);
+  private userSettingService = inject(UserSettingService);
+  private translations = inject(TranslateService);
+
+  daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$);
 
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
-  isOpen = false;
-  isNativePlatform = Capacitor.isNativePlatform();
-
-  mode = toSignal(
-    this.searchCriteriaService.useDaysBack$.pipe(
-      map((useDaysBack) => (useDaysBack ? ('predefined' as const) : ('custom' as const)))
-    )
-  );
   fromDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.FromDtObsTime)));
   toDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime)));
-  dateRangeText = computed(() => generateDateRange(this.fromDate(), this.toDate()));
+  dateRangeText = computed(() => generateDateRange(this.translations, this.fromDate(), this.toDate()));
   useDaysBack = toSignal(this.searchCriteriaService.useDaysBack$);
   dateFormat: Intl.DateTimeFormatOptions = {
     day: 'numeric',
     month: 'numeric',
     year: 'numeric',
   };
-
-  /**
-   * e.detail.value will return one of the following:
-   * 1. 'predefined' - if the user has selected a predefined date range
-   * 2. 'custom' - if the user has selected a custom date range
-   * 3. undefined - When closing the accordion
-   * 4. 'first' - When opening the accordion
-   * We only care about 3 and 4, so we ignore the rest
-   * @param e - The event from the ionChange event
-   */
-  toggleAccordion(e: IonAccordionGroupCustomEvent<AccordionGroupChangeEventDetail<string>>): void {
-    // IonAccordionGroupCustomEvent<AccordionGroupChangeEventDetail<any>>
-    switch (e.detail.value) {
-      case 'first':
-        this.isOpen = true;
-        break;
-      case undefined:
-        this.isOpen = false;
-        break;
-      case 'predefined':
-      case 'custom':
-        break;
-    }
-  }
 
   setFromDate(date: string | undefined): void {
     this.searchCriteriaService.setFromDate(date);
@@ -104,26 +58,20 @@ export class DateRangeComponent {
     this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack });
     this.searchCriteriaService.setUseDaysBack(true);
   }
-
-  changeMode($event: CustomEvent<IRadioGroupRadioGroupChangeEventDetail>) {
-    if ($event.detail.value === 'predefined') {
-      this.searchCriteriaService.setUseDaysBack(true);
-    } else if ($event.detail.value === 'custom') {
-      this.searchCriteriaService.setUseDaysBack(false);
-    }
-  }
 }
 
-export function generateDateRange(fromDate?: string, toDate?: string) {
+export function generateDateRange(translations: TranslateService, fromDate?: string, toDate?: string) {
   let dateRange = '';
   if (fromDate) {
     dateRange = moment(fromDate).format('DD.MM.yyyy');
   }
+
+  dateRange += ' - ';
+
   if (toDate) {
-    if (fromDate) {
-      dateRange += ' - ';
-    }
     dateRange += moment(toDate).format('DD.MM.yyyy');
+  } else {
+    dateRange += translations.instant('MENU.DATE_RANGE.TODAY');
   }
   return dateRange;
 }
