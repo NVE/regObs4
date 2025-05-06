@@ -12,15 +12,20 @@
   }
 
   <div class="list">
-    @for (reg of registrations(); track reg.RegId) {
-      <app-observation class="obs" [registration]="reg"></app-observation>
-    } @empty {
-      @if (error().hasError) {
-        <app-error-state></app-error-state>
-      } @else if (isLoading()) {
+    @if (isLoading()) {
+      <div class="list__spinner">
+        <ion-spinner></ion-spinner>
         <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
-      } @else {
-        <app-empty-state></app-empty-state>
+      </div>
+    } @else {
+      @for (reg of registrations(); track reg.RegId) {
+        <app-observation class="obs" [registration]="reg"></app-observation>
+      } @empty {
+        @if (error().hasError) {
+          <app-error-state></app-error-state>
+        } @else {
+          <app-empty-state></app-empty-state>
+        }
       }
     }
 

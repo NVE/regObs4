@@ -31,9 +31,10 @@
   </ion-list>
 </ng-container>
 <ng-template #skeleton>
-  <app-observation-skeleton></app-observation-skeleton>
-  <app-observation-skeleton></app-observation-skeleton>
-  <app-observation-skeleton></app-observation-skeleton>
+  <div class="list__spinner">
+    <ion-spinner></ion-spinner>
+    <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+  </div>
 </ng-template>
 <ng-template #empty>
   <ion-grid class="full-grid">

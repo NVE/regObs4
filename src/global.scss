@@ -364,6 +364,12 @@ ion-list {
   }
 }
 
+.list__spinner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .ion-label-fat {
   font-weight: 600 !important;
   font-size: 14px !important;

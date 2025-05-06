@@ -18,6 +18,7 @@ import {
   IonLabel,
   IonList,
   IonRow,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
@@ -34,7 +35,6 @@ import { LogLevel } from '../../../../modules/shared/services/logging/log-level.
 import { LoggingService } from '../../../../modules/shared/services/logging/logging.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
-import { ObservationSkeletonComponent } from '../../../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -58,9 +58,9 @@ const DEBUG_TAG = 'SentListComponent';
     IonLabel,
     IonList,
     IonRow,
+    IonSpinner,
     NgIf,
     ObservationComponent,
-    ObservationSkeletonComponent,
     SvgIconComponent,
     TranslatePipe,
   ],

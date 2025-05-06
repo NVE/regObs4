@@ -6,6 +6,7 @@ import {
   IonInfiniteScrollContent,
   IonRefresher,
   IonRefresherContent,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { combineLatest, map, tap } from 'rxjs';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
@@ -22,6 +23,7 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
 @Component({
   selector: 'app-observation-list',
   imports: [
+    IonSpinner,
     ObservationComponent,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
