@@ -25,6 +25,7 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
+  eyeOutline,
   calendarNumberOutline,
   chatbubbleEllipses,
   locationOutline,
@@ -98,6 +99,7 @@ export class ObservationComponent {
   location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
   isLoadingObsForEdit = signal(false);
+  isRegistrationPage = computed(() => this.router.url.includes('registration'));
 
   private async canShareNative(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {
@@ -166,6 +168,7 @@ export class ObservationComponent {
     addIcons({
       calendarNumberOutline,
       createOutline,
+      eyeOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,

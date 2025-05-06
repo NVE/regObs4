@@ -110,15 +110,21 @@
   }
 </div>
 
-<!-- Knapperad med deleknapp og endre-knapp -->
+<!-- Knapperad med deleknapp, gå til obs og endre-knapp -->
 <div class="buttons ion-color-light">
   @if (userCanEdit()) {
     <ion-button fill="clear" class="edit-button" (click)="edit()" [disabled]="isLoadingObsForEdit()">
-      <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
+      <ion-icon name="create-outline"></ion-icon>
       {{ "REGISTRATION.EDIT" | translate }}
       @if (isLoadingObsForEdit()) {
         <ion-spinner name="dots" slot="end"></ion-spinner>
       }
+    </ion-button>
+  }
+  @if (!isRegistrationPage()) {
+    <ion-button fill="clear" class="edit-button" [href]="'registration/' + registration().RegId">
+      <ion-icon name="eye-outline"></ion-icon>
+      {{ "REGISTRATION.GO_TO" | translate }}
     </ion-button>
   }
 
