@@ -384,7 +384,7 @@
     },
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
-    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image.",
     "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "DANGER_OBS": {
       "AREA": "Area",

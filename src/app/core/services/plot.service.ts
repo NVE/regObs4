@@ -4,7 +4,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { settings } from 'src/settings';
 import { BreakpointService } from './breakpoint.service';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 
 /**
  * Beregner url-er til bruk av plot.regobs.no
@@ -31,10 +30,10 @@ export class PlotService {
     return `${this.plotApi()}/IceThickness/${regid}`;
   }
 
-  getSnowProfileSvgUrl(registration: RegistrationViewModel) {
-    const { RegId, DtChangeTime } = registration;
+  getSnowProfileSvgUrl(regId: number | undefined, changeTime: string | undefined): string | undefined {
     // Nettleseren cacher i utgangspunktet svg-ene. For å fremprovosere den til å hente nytt plott ved endring av obs
     // legger vi på lastMod= med endret dato. Da caches fortsatt plotet inntil obsen er endra.
-    return `${this.plotApi()}/SnowProfile/svg/${RegId}/${this.preferredSnowProfileType()}?lastMod=${DtChangeTime}`;
+    if (!regId) return undefined;
+    return `${this.plotApi()}/SnowProfile/svg/${regId}/${this.preferredSnowProfileType()}?lastMod=${changeTime}`;
   }
 }

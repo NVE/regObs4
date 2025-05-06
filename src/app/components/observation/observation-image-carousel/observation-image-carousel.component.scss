@@ -30,11 +30,6 @@ swiper-container::part(button-prev) {
 swiper-slide {
   display: flex;
   justify-content: center;
-  img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
 }
 
 ion-fab-button {
@@ -116,10 +111,4 @@ ion-fab-button::part(native):hover {
   ion-icon {
     font-size: 1.25rem;
   }
-}
-
-.snow-profile {
-  width: 100%;
-  height: 100%;
-  background-color: white;
 }

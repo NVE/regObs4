@@ -19,7 +19,11 @@
   <!-- lazy-preload-prev-next="2" -->
   @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
     <swiper-slide (click)="openImageCarousel(index)" lazy="true">
-      <img [alt]="attachment.Comment" [src]="attachment.UrlFormats?.Large" loading="lazy" decoding="async" />
+      <app-observation-image
+        [attachment]="attachment"
+        [regId]="registration().RegId"
+        [changeTime]="this.registration().DtChangeTime"
+      ></app-observation-image>
     </swiper-slide>
   }
 </swiper-container>

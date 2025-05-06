@@ -390,7 +390,7 @@
     },
     "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
-    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde.",
     "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "DANGER_OBS": {
       "AREA": "Område",

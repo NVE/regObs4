@@ -64,13 +64,23 @@ import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action
 import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
 import { ObservationImageCarouselComponent } from '../observation-image-carousel/observation-image-carousel.component';
 import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
+import { ObservationImageComponent } from '../observation-image-carousel/observation-image.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-observation',
-  imports: [IonChip, IonIcon, IonLabel, DatePipe, TranslatePipe, StaticMapImageComponent, NgComponentOutlet],
+  imports: [
+    IonChip,
+    IonIcon,
+    IonLabel,
+    DatePipe,
+    TranslatePipe,
+    StaticMapImageComponent,
+    NgComponentOutlet,
+    ObservationImageComponent,
+  ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
