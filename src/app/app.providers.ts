@@ -119,7 +119,7 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
     provide: TranslateLoader,
     useFactory: () => {
       const http = inject(HttpClient);
-      return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
+      return new TranslateHttpLoader(http, '../assets/i18n/', '.json?v5cache-bust');
     },
   },
 
