@@ -365,7 +365,7 @@ export class OfflineMapPage extends NgDestoryBase {
     this.logger.debug('Update package', DEBUG_TAG, { name: map.name });
     await this.delete(map);
     const packageOnServer = this.getPackageOnServer(map.name); // TODO: Handle possible error?
-    this.offlineMapService.downloadPackage(packageOnServer, false);
+    this.offlineMapService.downloadPackage(packageOnServer);
   }
 
   private async delete(map: OfflineMapPackage) {
@@ -375,9 +375,5 @@ export class OfflineMapPage extends NgDestoryBase {
 
   isDownloaded(map: OfflineMapPackage): boolean {
     return !!map.downloadComplete;
-  }
-
-  getSpaceAvailable(): string {
-    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available || 0, 0);
   }
 }

@@ -4,7 +4,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
-import { Observable, Subject, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';

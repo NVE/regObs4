@@ -313,7 +313,6 @@
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
-    "DISKSPACE_ERROR_MESSAGE": "Beklager, du har ikke nok plass tilgjengelig på telefonen til å lagre kartpakken. Vennligst frigjør plass og prøv på nytt.",
     "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling. På iPhone/iPad må du ha Varsom-appen aktiv inntil kartpakka er lasted ned og pakket ut.",
     "ERROR_ICON_LABEL": "Feil",
     "MAP_PACKAGE_DETAILS_PAGE": {
@@ -347,8 +346,7 @@
       "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}",
       "WAITING_FOR_NETWORK": "Venter på nettverk"
     },
-    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen. På iPhone/iPad må du ha Varsom-appen aktiv inntil kartpakka er lasted ned og pakket ut.",
-    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen. På iPhone/iPad må du ha Varsom-appen aktiv inntil kartpakka er lasted ned og pakket ut."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

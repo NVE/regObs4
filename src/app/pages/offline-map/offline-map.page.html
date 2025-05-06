@@ -36,10 +36,6 @@
 
       <ion-label class="packages-size">{{ packageTotals.spaceUsed }}</ion-label>
 
-      <ion-label class="space-available">
-        ({{ "OFFLINE_MAP.SPACE_AVAILABLE" | translate: { spaceAvailable: getSpaceAvailable() } }})
-      </ion-label>
-
       <ion-icon
         *ngIf="packageTotals.numPackages > 0"
         slot="end"

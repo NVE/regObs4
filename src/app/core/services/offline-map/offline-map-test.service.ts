@@ -72,11 +72,6 @@ export class OfflineMapTestService extends OfflineMapService {
     ...TEST_PACKAGES,
   ]);
 
-  override availableDiskspace = {
-    available: 500_000_000, // 500 MB
-    used: TEST_PACKAGES.reduce((acc, p) => acc + (p.size || 0), 0),
-  };
-
   override downloadAndUnzipProgress$: Observable<OfflineMapPackage[]> = new BehaviorSubject([
     {
       name: '134-74-8',
