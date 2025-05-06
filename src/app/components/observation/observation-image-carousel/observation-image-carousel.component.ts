@@ -6,6 +6,7 @@ import {
   ElementRef,
   inject,
   input,
+  linkedSignal,
   model,
   viewChild,
 } from '@angular/core';
@@ -14,30 +15,20 @@ import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/comm
 import { SwiperContainer } from 'swiper/element';
 import { addIcons } from 'ionicons';
 import { close, downloadOutline, openOutline, eyeOutline } from 'ionicons/icons';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
 import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 import { PlotService } from 'src/app/core/services/plot.service';
 import { Router, RouterLink } from '@angular/router';
-import { ObservationImageComponent } from './observation-image.component';
 
 @Component({
   selector: 'app-observation-image-carousel',
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    IonIcon,
-    IonFabButton,
-    TranslatePipe,
-    DatePipe,
-    KeyValueComponent,
-    RouterLink,
-    IonChip,
-    ObservationImageComponent,
-  ],
+  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent, RouterLink, IonChip],
 })
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
@@ -46,6 +37,7 @@ export class ObservationImageCarouselComponent {
   isImageListView = computed(() => this.router.url.includes('search/pictures'));
   attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
   plotService = inject(PlotService);
+  translateService = inject(TranslateService);
 
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
@@ -91,5 +83,16 @@ export class ObservationImageCarouselComponent {
 
   ngAfterViewInit() {
     this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
+  }
+
+  snowProfileUrl = linkedSignal(() => {
+    const reg = this.registration();
+    if (!reg) return undefined;
+    return this.plotService.getSnowProfileSvgUrl(reg);
+  });
+
+  setFallbackImage(attachment: AttachmentViewModel) {
+    attachment.Url = 'assets/images/broken-image-w-bg.svg';
+    attachment.Comment = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }
 }

@@ -9,11 +9,17 @@
 >
   @for (attachment of attachments(); track attachment.Url) {
     <swiper-slide lazy="true">
-      <app-observation-image
-        [attachment]="attachment"
-        [regId]="registration()?.RegId"
-        [changeTime]="this.registration()?.DtChangeTime"
-      ></app-observation-image>
+      @if (attachment.Href) {
+        <img
+          [alt]="attachment.Comment"
+          [src]="snowProfileUrl()"
+          (error)="setFallbackImage(attachment)"
+          class="snow-profile"
+          loading="lazy"
+        />
+      } @else {
+        <img [alt]="attachment.Comment" [src]="attachment.Url" loading="lazy" (error)="setFallbackImage(attachment)" />
+      }
     </swiper-slide>
   }
 </swiper-container>
