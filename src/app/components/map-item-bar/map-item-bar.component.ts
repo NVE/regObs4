@@ -1,9 +1,9 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
-import { Subscription, firstValueFrom, map } from 'rxjs';
+import { Component, OnInit, NgZone, OnDestroy, inject, computed, effect } from '@angular/core';
+import { Subscription, filter, firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { AtAGlanceViewModel, AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -14,6 +14,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -62,9 +63,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
   private appMode?: AppMode;
   competenceLevelName?: string;
-
-  // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
-
+  private lastPath: string | null = null;
   constructor() {
     this.visible = false;
   }
@@ -74,6 +73,24 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.appMode = appMode;
       this.hide();
     });
+    this.subscription = this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map((event: NavigationEnd) =>
+          this.router
+            .parseUrl(event.urlAfterRedirects)
+            //fjerner query params fra ruten
+            .root.children['primary']?.segments.map((segment) => segment.path)
+            .join('/')
+        )
+      )
+      .subscribe((currentPath) => {
+        // endrer vi ruten til en annen, så skjules map-item-bar
+        if (this.lastPath !== currentPath) {
+          this.lastPath = currentPath;
+          this.hide();
+        }
+      });
   }
 
   ngOnDestroy(): void {
