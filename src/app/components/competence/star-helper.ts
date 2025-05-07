@@ -1,5 +1,5 @@
 export class StarRatingHelper {
-  static getStarRating(id: number): 1 | 2 | 3 | 4 | 5 | undefined {
+  static getStarRating(id: number | undefined): 1 | 2 | 3 | 4 | 5 | undefined {
     if (id === 110 || id === 210 || id === 310 || id === 410 || id === 610 || id === 710) {
       return 1;
     } else if (id === 115 || id === 220 || id === 320 || id === 420 || id === 620 || id === 720) {

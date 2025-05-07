@@ -1,12 +1,11 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, NgZone, OnDestroy, inject, computed, effect } from '@angular/core';
-import { Subscription, filter, firstValueFrom, map } from 'rxjs';
+import { Component, OnInit, inject, input, signal, computed, Output, EventEmitter } from '@angular/core';
+import { firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
-import { NavigationEnd, Router } from '@angular/router';
-import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AtAGlanceViewModel, AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { Router } from '@angular/router';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { StarRatingHelper } from '../competence/star-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { NgIf, NgClass, AsyncPipe } from '@angular/common';
@@ -14,7 +13,6 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -39,83 +37,49 @@ import { toSignal } from '@angular/core/rxjs-interop';
  * To show this, klick on a registrations icon in the map.
  * Also include an image slider if registration contain images.
  */
-export class MapItemBarComponent implements OnInit, OnDestroy {
+export class MapItemBarComponent implements OnInit {
+  @Output() cardClicked = new EventEmitter<void>();
   private kdvService = inject(KdvService);
   private router = inject(Router);
-  private zone = inject(NgZone);
-  private userSettingService = inject(UserSettingService);
   private sanitizer = inject(DomSanitizer);
+  registration = input<MapItem | null>();
 
-  visible: boolean;
-  topHeader?: string;
-  title?: string;
   distanceAndType?: string;
-  firstAttachmentUrl?: SafeUrl;
-  additionaAttachmentCount?: number;
-  name?: string;
+  firstAttachmentUrl = signal<SafeUrl | undefined>(undefined);
+  additionaAttachmentCount = computed(() => {
+    const attachmentCount = this.registration()?.AttachmentsCount;
+    if (!attachmentCount) {
+      return 0;
+    }
+    return attachmentCount > 1 ? attachmentCount - 1 : 0;
+  });
   id?: number;
   geoHazard?: GeoHazard;
   attachments: AttachmentViewModel[] = [];
   masl?: number;
-  starCount?: number;
-  showAdditionalAttachmentCount?: boolean;
+  showAdditionalAttachmentCount = signal(true);
 
-  private subscription?: Subscription;
-  private appMode?: AppMode;
-  competenceLevelName?: string;
-  private lastPath: string | null = null;
-  constructor() {
-    this.visible = false;
-  }
+  title = computed(() => this.registration()?.FormNames?.join(', '));
+  starCount = computed(() => StarRatingHelper.getStarRating(this.registration()?.CompetenceLevelTID));
+  competenceLevelName?: string = undefined;
 
-  ngOnInit() {
-    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, _, __]) => {
-      this.appMode = appMode;
-      this.hide();
-    });
-    this.subscription = this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map((event: NavigationEnd) =>
-          this.router
-            .parseUrl(event.urlAfterRedirects)
-            //fjerner query params fra ruten
-            .root.children['primary']?.segments.map((segment) => segment.path)
-            .join('/')
-        )
-      )
-      .subscribe((currentPath) => {
-        // endrer vi ruten til en annen, så skjules map-item-bar
-        if (this.lastPath !== currentPath) {
-          this.lastPath = currentPath;
-          this.hide();
-        }
-      });
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  async ngOnInit() {
+    if (this.registration()?.CompetenceLevelTID) {
+      const competence = this.registration()?.CompetenceLevelTID;
+      if (!competence) return;
+      const competenceLevelName = await this.getCompetenceKdvById(competence);
+      this.competenceLevelName = competenceLevelName.Name;
     }
-  }
-
-  getTitle(item: AtAGlanceViewModel) {
-    return item.FormNames?.join(', ');
-  }
-
-  getAdditionalAttachmentsCount(count?: number): number {
-    if (!count) {
-      return 0;
-    }
-    return count > 1 ? count - 1 : 0;
+    this.firstAttachmentUrl.set(this.sanitize(this.registration()?.FirstAttachmentUrl));
   }
 
   handleMissingImage() {
-    this.firstAttachmentUrl = './assets/images/broken-image-w-bg.svg';
-    this.showAdditionalAttachmentCount = false;
+    this.firstAttachmentUrl.set('./assets/images/broken-image-w-bg.svg');
+    this.showAdditionalAttachmentCount.set(false);
   }
 
-  private sanitize(url: string): SafeUrl {
+  private sanitize(url: string | undefined): SafeUrl | undefined {
+    if (!url) return;
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
@@ -129,35 +93,13 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     );
   }
 
-  show(item: MapItem) {
-    this.showAdditionalAttachmentCount = true;
-    this.zone.run(async () => {
-      this.id = item.RegId;
-      this.topHeader = item.DtObsTime;
-      this.title = this.getTitle(item);
-      this.name = item.NickName;
-      this.starCount = item.CompetenceLevelTID && StarRatingHelper.getStarRating(item.CompetenceLevelTID);
-      this.competenceLevelName = item.CompetenceLevelTID
-        ? (await this.getCompetenceKdvById(item.CompetenceLevelTID))?.Name
-        : undefined;
-      this.geoHazard = item.GeoHazardTID;
-      // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
-      // this.setDistanceAndType(item);
-      this.attachments = [];
-      this.firstAttachmentUrl = item.FirstAttachmentUrl ? this.sanitize(item.FirstAttachmentUrl) : undefined;
-      this.additionaAttachmentCount = this.getAdditionalAttachmentsCount(item.AttachmentsCount);
-      this.visible = true;
-    });
-  }
-
-  hide() {
-    this.zone.run(() => {
-      this.visible = false;
-    });
-  }
-
   navigateToItem() {
-    this.router.navigateByUrl(`view-observation/${this.id}`);
+    const targetUrl = `view-observation/${this.registration()?.RegId}`;
+    this.router.navigateByUrl(targetUrl).then((navigationSuccess) => {
+      if (navigationSuccess) {
+        this.cardClicked.emit();
+      }
+    });
   }
 
   // TODO
