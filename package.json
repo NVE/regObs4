@@ -86,6 +86,7 @@
     "@types/leaflet-draw": "^1.0.6",
     "angular-svg-icon": "^16.1.0",
     "clone-deep": "^4.0.1",
+    "cordova-plugin-device": "^2.0.3",
     "cordova-sqlite-storage": "^6.0.0",
     "core-js": "^3.17.1",
     "fast-deep-equal": "^3.1.3",
