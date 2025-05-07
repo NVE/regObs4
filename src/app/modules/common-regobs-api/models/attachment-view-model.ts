@@ -2,6 +2,10 @@
 export interface AttachmentViewModel {
 
   /**
+   * Unik beskrivelsen for bildet.
+   */
+  Alt?: string;
+  /**
    * Hvilken himmelretning peker bilde. Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
    */
   Aspect?: number;

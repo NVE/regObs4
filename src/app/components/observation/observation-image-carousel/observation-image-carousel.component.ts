@@ -41,7 +41,14 @@ export class ObservationImageCarouselComponent {
 
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
-
+  useFallbackSnowProfileImage(attachment: AttachmentViewModel, event: Event) {
+    const target = event.target as HTMLImageElement;
+    if (target.src === attachment.Url) {
+      attachment.Url = 'assets/images/broken-image-w-bg.svg';
+      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    }
+    this.snowProfileUrl.set(attachment.Url as string);
+  }
   roundedDownOrientationValue = computed(() => {
     const aspectValue = this.currentAttachmentData().Aspect; //256
     if (!aspectValue) return '';
@@ -93,6 +100,6 @@ export class ObservationImageCarouselComponent {
 
   setFallbackImage(attachment: AttachmentViewModel) {
     attachment.Url = 'assets/images/broken-image-w-bg.svg';
-    attachment.Comment = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }
 }

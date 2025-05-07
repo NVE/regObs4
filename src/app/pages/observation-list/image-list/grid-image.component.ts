@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, signal } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { IonChip, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -101,12 +101,8 @@ export class GridImageComponent {
   readonly attachment = input.required<AttachmentViewModel>();
 
   hostClass = signal<string>('');
-  src = signal<string>('');
+  src = linkedSignal(() => this.attachment().UrlFormats?.Large || '');
   isError = signal(false);
-
-  ngOnInit() {
-    this.src.set(this.attachment().UrlFormats?.Large || '');
-  }
   attachmentAlt = computed(
     () => `${this.attachment().RegistrationName} ${this.attachment().Comment ? ' - ' + this.attachment().Comment : ''}`
   );
