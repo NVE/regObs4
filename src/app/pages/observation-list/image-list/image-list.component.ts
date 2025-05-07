@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   IonContent,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonRefresher,
-  IonRefresherContent,
   LoadingController,
   ModalController,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { tap, combineLatest, map, firstValueFrom } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
@@ -28,9 +28,9 @@ import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regob
 @Component({
   selector: 'app-image-list',
   imports: [
+    IonSpinner,
     IonContent,
     IonRefresher,
-    IonRefresherContent,
     ErrorStateComponent,
     EmptyStateComponent,
     IonInfiniteScroll,

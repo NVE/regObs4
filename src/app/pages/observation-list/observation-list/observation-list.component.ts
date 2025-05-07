@@ -5,7 +5,6 @@ import {
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonRefresher,
-  IonRefresherContent,
   IonSpinner,
 } from '@ionic/angular/standalone';
 import { combineLatest, map, tap } from 'rxjs';
@@ -29,7 +28,6 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
     IonInfiniteScrollContent,
     IonContent,
     IonRefresher,
-    IonRefresherContent,
     ErrorStateComponent,
     EmptyStateComponent,
     ListControlsComponent,

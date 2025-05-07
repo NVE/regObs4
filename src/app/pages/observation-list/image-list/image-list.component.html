@@ -1,15 +1,19 @@
 <!-- En liste av bilder fra observasjoner, organisert i tabellform -->
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="refresh()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh()"> </ion-refresher>
 
   <div class="list-header">
     <p>{{ "OBSERVATION_LIST.IMAGES_DESCRIPTION" | translate }}</p>
     <app-list-controls pageType="images"></app-list-controls>
   </div>
 
-  <div class="grid">
+  @if (isLoading()) {
+    <div class="list__spinner">
+      <ion-spinner></ion-spinner>
+      <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+    </div>
+  }
+  <div class="grid" [class.list--hidden]="isLoading()">
     @for (reg of registrations(); track reg.RegId) {
       @for (attachment of reg.Attachments; track attachment.AttachmentId) {
         <app-grid-image
@@ -20,8 +24,6 @@
     } @empty {
       @if (error().hasError) {
         <app-error-state></app-error-state>
-      } @else if (isLoading()) {
-        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
       } @else {
         <app-empty-state></app-empty-state>
       }
