@@ -97,6 +97,7 @@
   /*Setter maks bredde på innhold på store skjermer. Foreløpig bør den brukes på hver side, men
    vi kan vurdere å ha en felles kilde for layoutens maksimale bredde som settes et sted. */
   --desktop-max-width: 960px;
+  --form-max-width: 650px;
 }
 
 html {
@@ -958,6 +959,7 @@ ion-select-popover ion-list ion-item ion-radio {
 // These styles needs to be applied globally according to ionic docs: https://ionicframework.com/docs/api/popover#styling
 ion-popover.select-popover {
   --width: fit-content(90vw);
+  --min-width: 150px;
   --max-width: 90vw;
 }
 
