@@ -24,14 +24,16 @@
                 <ion-label>{{ registration()?.DtObsTime! | formatDate | async }}</ion-label>
               </div>
             }
-            <div class="card-icon-item" *ngIf="masl">
-              <svg-icon
-                class="card-icon-item-icon"
-                src="/assets/icon/moh.svg"
-                [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-              ></svg-icon>
-              <ion-label>{{ masl }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</ion-label>
-            </div>
+            @if (masl) {
+              <div class="card-icon-item">
+                <svg-icon
+                  class="card-icon-item-icon"
+                  src="/assets/icon/moh.svg"
+                  [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+                ></svg-icon>
+                <ion-label>{{ masl }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</ion-label>
+              </div>
+            }
           </ion-col>
         </ion-row>
         <ion-row>
