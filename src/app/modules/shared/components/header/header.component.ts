@@ -33,7 +33,7 @@ export class HeaderComponent {
   private tripLoggerService = inject(TripLoggerService);
   private userSettingService = inject(UserSettingService);
 
-  readonly defaultTitle = Capacitor.isNativePlatform() ? 'Varsom' : 'Varsom Regobs';
+  readonly defaultTitle = Capacitor.isNativePlatform() ? 'Varsom' : '';
 
   tripRunning = toSignal(this.tripLoggerService.isTripRunning$, { initialValue: false });
   private appMode = toSignal(this.userSettingService.appMode$, { initialValue: AppMode.Prod });
