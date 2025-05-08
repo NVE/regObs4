@@ -25,6 +25,7 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
+  eyeOutline,
   calendarNumberOutline,
   chatbubbleEllipses,
   locationOutline,
@@ -44,7 +45,7 @@ import { ImageLocation, ImageLocationStartStop } from '../../../core/models/imag
 import L from 'leaflet';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { catchError, firstValueFrom, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   ConfirmationModalService,
   PopupResponse,
@@ -70,7 +71,16 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-observation',
-  imports: [IonChip, IonIcon, IonLabel, DatePipe, TranslatePipe, StaticMapImageComponent, NgComponentOutlet],
+  imports: [
+    IonChip,
+    IonIcon,
+    IonLabel,
+    DatePipe,
+    TranslatePipe,
+    RouterLink,
+    StaticMapImageComponent,
+    NgComponentOutlet,
+  ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -98,6 +108,7 @@ export class ObservationComponent {
   location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
   isLoadingObsForEdit = signal(false);
+  isRegistrationPage = this.router.url.includes('registration');
 
   private async canShareNative(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {
@@ -166,6 +177,7 @@ export class ObservationComponent {
     addIcons({
       calendarNumberOutline,
       createOutline,
+      eyeOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,

@@ -60,6 +60,10 @@ b {
   font-weight: 600;
 }
 
+ion-button ion-icon {
+  margin-right: 4px;
+}
+
 ion-chip ion-label + ion-label {
   margin-left: 8px;
 }
@@ -78,9 +82,12 @@ ion-chip.chip-disabled {
 
 .buttons {
   display: flex;
-  justify-content: space-between;
   /* Knapperaden har ion-color-light klasse som endrer --ion-background-color */
   background-color: var(--ion-background-color);
+}
+
+.reg-id {
+  margin-left: auto;
 }
 
 @media only screen and (max-width: 415px) {
