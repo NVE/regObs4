@@ -122,10 +122,12 @@
     </ion-button>
   }
   @if (!isRegistrationPage && registration().RegId) {
-    <ion-button fill="clear" class="edit-button" [routerLink]="'/registration/' + registration().RegId">
-      <ion-icon name="eye-outline"></ion-icon>
-      {{ "REGISTRATION.GO_TO" | translate }}
-    </ion-button>
+    <a [routerLink]="'/registration/' + registration().RegId">
+      <ion-button fill="clear" class="edit-button">
+        <ion-icon name="eye-outline"></ion-icon>
+        {{ "REGISTRATION.GO_TO" | translate }}
+      </ion-button>
+    </a>
   }
 
   <ion-button fill="clear" (click)="share()" class="reg-id">
