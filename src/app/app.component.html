@@ -1,5 +1,11 @@
 <ion-app>
-  <ion-menu contentId="main-content" type="overlay" side="end" maxEdgeStart="0">
+  @if (!isNative) {
+    <header>
+      <img [routerLink]="'/'" src="assets/images/varsom.svg" alt="logo" />
+      RegObs
+    </header>
+  }
+  <ion-menu [class.ion-menu--web]="!isNative" contentId="main-content" type="overlay" side="end" maxEdgeStart="0">
     @defer {
       <app-side-menu></app-side-menu>
     }
