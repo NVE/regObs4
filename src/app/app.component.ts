@@ -4,7 +4,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
-import { Observable, Subject, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
@@ -18,13 +18,37 @@ import { SqliteService } from './core/services/sqlite/sqlite.service';
 import { SideMenuComponent } from './modules/side-menu/components/side-menu.component';
 import { AsyncPipe } from '@angular/common';
 import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
+import { RouterLink } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'AppComponent';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [AsyncPipe, GpsDebugComponent, IonApp, IonMenu, IonRouterOutlet, SideMenuComponent],
+  imports: [AsyncPipe, GpsDebugComponent, IonApp, IonMenu, IonRouterOutlet, SideMenuComponent, RouterLink],
+  styles: `
+    :host {
+      --header-height: 60px;
+    }
+    #main-content {
+      top: 60px !important;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      gap: 1rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      img {
+        height: 100%;
+      }
+    }
+    .ion-menu--web {
+      margin-top: var(--header-height);
+    }
+  `,
 })
 export class AppComponent {
   private platform = inject(Platform);
@@ -40,6 +64,7 @@ export class AppComponent {
   private draftToRegService = inject(DraftToRegistrationService);
   private breakpointService = inject(BreakpointService);
   private injector = inject(Injector);
+  isNative = Capacitor.isNativePlatform();
 
   swipeBackEnabled$: Observable<boolean>;
 
