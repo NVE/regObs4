@@ -318,7 +318,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   ionViewWillEnter() {
-    this.clickedRegistration.set(null);
+    this.clickedRegistration.set(null); // lukker atglance kort når vi kommer inn på siden
     this.searchCriteriaService.setExtentFilterActive(true);
   }
 

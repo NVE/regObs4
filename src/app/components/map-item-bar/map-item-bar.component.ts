@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, inject, input, signal, computed, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, inject, input, signal, computed, output } from '@angular/core';
 import { firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
@@ -37,7 +37,7 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
  * Also include an image slider if registration contain images.
  */
 export class MapItemBarComponent implements OnInit {
-  @Output() cardClicked = new EventEmitter<void>();
+  cardClicked = output();
   private kdvService = inject(KdvService);
   private router = inject(Router);
   private sanitizer = inject(DomSanitizer);
