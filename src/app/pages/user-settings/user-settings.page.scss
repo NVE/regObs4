@@ -24,7 +24,7 @@ ion-item {
   }
 }
 
-ion-content {
+main {
   max-width: var(--desktop-max-width);
-  align-self: center;
+  margin: 0 auto;
 }

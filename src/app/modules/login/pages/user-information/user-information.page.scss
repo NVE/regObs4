@@ -10,6 +10,7 @@
   background: var(--background-color-menu);
   border-radius: var(--border-radius-large);
   --ion-grid-padding: 32px;
+  max-width: var(--desktop-max-width);
 }
 
 .profile-icon {
@@ -103,9 +104,4 @@ ion-col {
 
 ion-buttons a {
   color: inherit;
-}
-
-ion-content {
-  max-width: var(--desktop-max-width);
-  align-self: center;
 }

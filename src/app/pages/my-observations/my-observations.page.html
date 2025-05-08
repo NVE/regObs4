@@ -8,21 +8,23 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <app-draft-list (isEmpty)="refreshDraftEmptyState($event)"></app-draft-list>
-  <app-sent-list (isEmpty)="refreshSentEmptyState($event)"></app-sent-list>
-  <ion-grid *ngIf="draftIsEmpty && sentRegistrationsIsEmpty" class="full-grid">
-    <ion-row class="full-grid-row">
-      <ion-col class="ion-text-center ion-align-self-center">
-        <svg-icon src="/assets/images/empty-states/no-my-observations.svg"></svg-icon>
-      </ion-col>
-    </ion-row>
-    <ion-row class="full-grid-row">
-      <ion-col class="ion-text-center ion-margin-horizontal">
-        <h2>{{ "MY_OBSERVATIONS.NO_OBSERVATIONS" | translate }}</h2>
-        <h3 class="ion-text-wrap">{{ "MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT" | translate }}</h3>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <main>
+    <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+    <app-draft-list (isEmpty)="refreshDraftEmptyState($event)"></app-draft-list>
+    <app-sent-list (isEmpty)="refreshSentEmptyState($event)"></app-sent-list>
+    <ion-grid *ngIf="draftIsEmpty && sentRegistrationsIsEmpty" class="full-grid">
+      <ion-row class="full-grid-row">
+        <ion-col class="ion-text-center ion-align-self-center">
+          <svg-icon src="/assets/images/empty-states/no-my-observations.svg"></svg-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-grid-row">
+        <ion-col class="ion-text-center ion-margin-horizontal">
+          <h2>{{ "MY_OBSERVATIONS.NO_OBSERVATIONS" | translate }}</h2>
+          <h3 class="ion-text-wrap">{{ "MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT" | translate }}</h3>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </main>
 </ion-content>
 <app-add-menu></app-add-menu>

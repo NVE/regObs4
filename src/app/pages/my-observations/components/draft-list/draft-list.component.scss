@@ -1,16 +1,7 @@
 ion-item-divider {
   margin-bottom: 10px;
-  max-width: var(--desktop-max-width);
 }
 
 ion-list {
-  max-width: var(--desktop-max-width);
   width: 100%;
-}
-
-.draft-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }

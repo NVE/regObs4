@@ -1,8 +1,3 @@
-:host {
-  max-width: var(--desktop-max-width);
-  width: 100%;
-}
-
 .skeleton-header {
   height: 27px;
   width: 124px;
@@ -18,7 +13,8 @@
 
 ion-card {
   border-radius: 0;
-  margin: 10px 0;
+  margin: 1rem;
+  max-width: 960px;
 
   ion-card-content {
     padding: 2rem 2rem 0 2rem;

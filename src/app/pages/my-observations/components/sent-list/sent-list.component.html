@@ -1,37 +1,34 @@
-<!-- A list of observations sent to server -->
-<div class="sent-list">
-  <ng-container *ngIf="myRegistrations; else skeleton">
-    <ion-item-divider no-border>
-      <ion-grid class="ion-no-padding ion-no-margin">
-        <ion-row>
-          <h3 class="ion-text-uppercase">{{ "MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate }}</h3>
-        </ion-row>
-        <ion-row>
-          <ion-label *ngIf="myRegistrations?.length" class="ion-text-wrap" color="medium">
-            {{ "MY_OBSERVATIONS.SENT_SUBTITLE" | translate }}
-          </ion-label>
-          <ion-label *ngIf="!myRegistrations?.length && (isOffline$ | async)" class="ion-text-wrap" color="medium">
-            {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
-          </ion-label>
-          <ion-label *ngIf="error$ | async" class="ion-text-wrap" color="medium">
-            {{ "MY_OBSERVATIONS.SEARCH_ERROR" | translate }}
-          </ion-label>
-        </ion-row>
-      </ion-grid>
-    </ion-item-divider>
-    <ion-list *ngIf="myRegistrations.length > 0">
-      @for (reg of myRegistrations; track reg.RegId) {
-        <app-observation [registration]="reg"></app-observation>
-      } @empty {
-        <!-- TODO: Bruk empty template -->
-        <p>Ingen observasjoner</p>
-      }
-      <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
-        <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-      </ion-infinite-scroll>
-    </ion-list>
-  </ng-container>
-</div>
+<ng-container *ngIf="myRegistrations; else skeleton">
+  <ion-item-divider no-border>
+    <ion-grid class="ion-no-padding ion-no-margin">
+      <ion-row>
+        <h3 class="ion-text-uppercase">{{ "MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate }}</h3>
+      </ion-row>
+      <ion-row>
+        <ion-label *ngIf="myRegistrations?.length" class="ion-text-wrap" color="medium">
+          {{ "MY_OBSERVATIONS.SENT_SUBTITLE" | translate }}
+        </ion-label>
+        <ion-label *ngIf="!myRegistrations?.length && (isOffline$ | async)" class="ion-text-wrap" color="medium">
+          {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
+        </ion-label>
+        <ion-label *ngIf="error$ | async" class="ion-text-wrap" color="medium">
+          {{ "MY_OBSERVATIONS.SEARCH_ERROR" | translate }}
+        </ion-label>
+      </ion-row>
+    </ion-grid>
+  </ion-item-divider>
+  <ion-list *ngIf="myRegistrations.length > 0">
+    @for (reg of myRegistrations; track reg.RegId) {
+      <app-observation [registration]="reg"></app-observation>
+    } @empty {
+      <!-- TODO: Bruk empty template -->
+      <p>Ingen observasjoner</p>
+    }
+    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="shouldDisableScroller$ | async">
+      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-list>
+</ng-container>
 <ng-template #skeleton>
   <app-observation-skeleton></app-observation-skeleton>
   <app-observation-skeleton></app-observation-skeleton>
