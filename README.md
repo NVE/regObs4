@@ -44,7 +44,10 @@ Et eksempel på nødvendige miljøvariabler:
 ANDROID_SDK_ROOT=C:\NVE\Prosjektmappe\bin\android-sdk
 JAVA_HOME=C:\NVE\Prosjektmappe\bin\android-studio\jbr
 JDK_HOME=C:\NVE\Prosjektmappe\bin\android-studio\jbr
+GRADLE_USER_HOME=C:\NVE\Prosjektmappe\bin\gradle-user-home
 ```
+
+Android Studio tar ikke hensyn til GRADLE_USER_HOME, så sett dette manuelt i Android Studio under `File > Settings > Build, Execution, Deployment > Build Tools > Gradle`, hvis du bruker Android Studio.
 
 - Et eksempel på søkesti som kan funke:
 
@@ -58,7 +61,7 @@ JDK_HOME=C:\NVE\Prosjektmappe\bin\android-studio\jbr
 Du må avinstallere den vanlige RegObs-appen fra telefonen din for å kunne feilsøke.
 Se her hvis du har sliter med å få kontakt med telefonen fra Android Studio eller under `npx cap run android`: [mer info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
-Bruk chrome://inspect/#devices i Chrome på pc for å debugge appen etter at du har startet den på telefonen.
+Bruk `chrome://inspect/#devices` i Chrome på pc for å debugge appen etter at du har startet den på telefonen.
 
 #### Error: package android.support.v4.content does not exist
 
