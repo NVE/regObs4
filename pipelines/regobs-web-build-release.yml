@@ -62,6 +62,12 @@ stages:
               failIfCoverageEmpty: true
 
           - task: Npm@1
+            displayName: 'npm run translations:add-nn-app-fallback'
+            inputs:
+              command: custom
+              customCommand: 'run translations:add-nn-app-fallback'
+
+          - task: Npm@1
             displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
             inputs:
               command: custom
