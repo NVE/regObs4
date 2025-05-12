@@ -1,15 +1,14 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
-import { Subscription, firstValueFrom, map } from 'rxjs';
+import { Component, OnInit, inject, input, signal, computed, output } from '@angular/core';
+import { firstValueFrom, map } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
 import { Router } from '@angular/router';
-import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AtAGlanceViewModel, AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { StarRatingHelper } from '../competence/star-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { NgIf, NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +27,6 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
     IonLabel,
     IonRow,
     NgClass,
-    NgIf,
     SvgIconComponent,
     TranslatePipe,
   ],
@@ -38,67 +36,49 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
  * To show this, klick on a registrations icon in the map.
  * Also include an image slider if registration contain images.
  */
-export class MapItemBarComponent implements OnInit, OnDestroy {
+export class MapItemBarComponent implements OnInit {
+  cardClicked = output();
   private kdvService = inject(KdvService);
   private router = inject(Router);
-  private zone = inject(NgZone);
-  private userSettingService = inject(UserSettingService);
   private sanitizer = inject(DomSanitizer);
+  registration = input<MapItem | null>();
 
-  visible: boolean;
-  topHeader?: string;
-  title?: string;
   distanceAndType?: string;
-  firstAttachmentUrl?: SafeUrl;
-  additionaAttachmentCount?: number;
-  name?: string;
+  firstAttachmentUrl = signal<SafeUrl | undefined>(undefined);
+  additionaAttachmentCount = computed(() => {
+    const attachmentCount = this.registration()?.AttachmentsCount;
+    if (!attachmentCount) {
+      return 0;
+    }
+    return attachmentCount > 1 ? attachmentCount - 1 : 0;
+  });
   id?: number;
   geoHazard?: GeoHazard;
   attachments: AttachmentViewModel[] = [];
   masl?: number;
-  starCount?: number;
-  showAdditionalAttachmentCount?: boolean;
+  showAdditionalAttachmentCount = signal(true);
 
-  private subscription?: Subscription;
-  private appMode?: AppMode;
-  competenceLevelName?: string;
+  title = computed(() => this.registration()?.FormNames?.join(', '));
+  starCount = computed(() => StarRatingHelper.getStarRating(this.registration()?.CompetenceLevelTID));
+  competenceLevelName?: string = undefined;
 
-  // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
-
-  constructor() {
-    this.visible = false;
-  }
-
-  ngOnInit() {
-    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, _, __]) => {
-      this.appMode = appMode;
-      this.hide();
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  async ngOnInit() {
+    if (this.registration()?.CompetenceLevelTID) {
+      const competence = this.registration()?.CompetenceLevelTID;
+      if (!competence) return;
+      const competenceLevelName = await this.getCompetenceKdvById(competence);
+      this.competenceLevelName = competenceLevelName.Name;
     }
-  }
-
-  getTitle(item: AtAGlanceViewModel) {
-    return item.FormNames?.join(', ');
-  }
-
-  getAdditionalAttachmentsCount(count?: number): number {
-    if (!count) {
-      return 0;
-    }
-    return count > 1 ? count - 1 : 0;
+    this.firstAttachmentUrl.set(this.sanitize(this.registration()?.FirstAttachmentUrl));
   }
 
   handleMissingImage() {
-    this.firstAttachmentUrl = './assets/images/broken-image-w-bg.svg';
-    this.showAdditionalAttachmentCount = false;
+    this.firstAttachmentUrl.set('./assets/images/broken-image-w-bg.svg');
+    this.showAdditionalAttachmentCount.set(false);
   }
 
-  private sanitize(url: string): SafeUrl {
+  private sanitize(url: string | undefined): SafeUrl | undefined {
+    if (!url) return;
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
@@ -112,35 +92,13 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     );
   }
 
-  show(item: MapItem) {
-    this.showAdditionalAttachmentCount = true;
-    this.zone.run(async () => {
-      this.id = item.RegId;
-      this.topHeader = item.DtObsTime;
-      this.title = this.getTitle(item);
-      this.name = item.NickName;
-      this.starCount = item.CompetenceLevelTID && StarRatingHelper.getStarRating(item.CompetenceLevelTID);
-      this.competenceLevelName = item.CompetenceLevelTID
-        ? (await this.getCompetenceKdvById(item.CompetenceLevelTID))?.Name
-        : undefined;
-      this.geoHazard = item.GeoHazardTID;
-      // this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
-      // this.setDistanceAndType(item);
-      this.attachments = [];
-      this.firstAttachmentUrl = item.FirstAttachmentUrl ? this.sanitize(item.FirstAttachmentUrl) : undefined;
-      this.additionaAttachmentCount = this.getAdditionalAttachmentsCount(item.AttachmentsCount);
-      this.visible = true;
-    });
-  }
-
-  hide() {
-    this.zone.run(() => {
-      this.visible = false;
-    });
-  }
-
   navigateToItem() {
-    this.router.navigateByUrl(`view-observation/${this.id}`);
+    const targetUrl = `view-observation/${this.registration()?.RegId}`;
+    this.router.navigateByUrl(targetUrl).then((navigationSuccess) => {
+      if (navigationSuccess) {
+        this.cardClicked.emit();
+      }
+    });
   }
 
   // TODO

@@ -1,5 +1,5 @@
 import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
+import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -67,6 +67,7 @@ import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-m
 import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
 import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 import { settings } from 'src/settings';
+import { MapItem } from 'src/app/core/models/map-item.model';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -149,6 +150,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private mapCenterInfoHeight = new Subject<number>();
   activateFollowModeInMapOnStartup = Capacitor.isNativePlatform();
   private refreshRequested$ = new Observable<unknown>();
+  clickedRegistration = signal<MapItem | null>(null);
 
   constructor() {
     const router = inject(Router);
@@ -316,6 +318,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   }
 
   ionViewWillEnter() {
+    this.clickedRegistration.set(null); // lukker atglance kort når vi kommer inn på siden
     this.searchCriteriaService.setExtentFilterActive(true);
   }
 
@@ -354,7 +357,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     }
 
     this.map.on('click', () => {
-      this.mapItemBar().hide(); // click outside marker will deselect any marker, so hide the at-a-glance view
+      this.clickedRegistration.set(null); // click outside marker will deselect any marker so hide ataglance
     });
   }
 
@@ -487,7 +490,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     markerLayer.on('click', (e: L.LeafletMouseEvent) => {
       const layer: L.MarkerCluster = e.propagatedFrom;
       const registration: AtAGlanceViewModel = layer.feature?.properties;
-      this.mapItemBar().show(registration);
+      this.clickedRegistration.set(registration);
     });
     this.map.addLayer(markerLayer);
     return markerLayer;

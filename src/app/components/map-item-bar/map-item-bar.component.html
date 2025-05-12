@@ -1,38 +1,44 @@
-<div class="map-item-bar" (click)="navigateToItem()" *ngIf="visible">
+<div class="map-item-bar" (click)="navigateToItem()">
   <ion-grid class="ion-text-wrap">
     <ion-row class="ion-justify-content-center ion-nowrap">
-      <ion-col *ngIf="firstAttachmentUrl" size="auto">
-        <div class="image">
-          <img [src]="firstAttachmentUrl" (error)="handleMissingImage()" />
-          <span *ngIf="additionaAttachmentCount && showAdditionalAttachmentCount" class="image-count"
-            >+{{ additionaAttachmentCount }}</span
-          >
-        </div>
-      </ion-col>
-      <ion-col size="auto" [ngClass]="firstAttachmentUrl ? 'image-show' : 'image-show-not'">
+      @if (firstAttachmentUrl()) {
+        <ion-col size="auto">
+          <div class="image">
+            <img [src]="firstAttachmentUrl()" (error)="handleMissingImage()" />
+            @if (additionaAttachmentCount() && showAdditionalAttachmentCount()) {
+              <span class="image-count">+{{ additionaAttachmentCount() }}</span>
+            }
+          </div>
+        </ion-col>
+      }
+      <ion-col size="auto" [ngClass]="firstAttachmentUrl() ? 'image-show' : 'image-show-not'">
         <ion-row>
           <ion-col>
-            <div class="card-icon-item" *ngIf="topHeader">
-              <svg-icon
-                class="card-icon-item-icon"
-                src="/assets/icon/time.svg"
-                [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-              ></svg-icon>
-              <ion-label>{{ topHeader | formatDate | async }}</ion-label>
-            </div>
-            <div class="card-icon-item" *ngIf="masl">
-              <svg-icon
-                class="card-icon-item-icon"
-                src="/assets/icon/moh.svg"
-                [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
-              ></svg-icon>
-              <ion-label>{{ masl }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</ion-label>
-            </div>
+            @if (registration()?.DtObsTime) {
+              <div class="card-icon-item">
+                <svg-icon
+                  class="card-icon-item-icon"
+                  src="/assets/icon/time.svg"
+                  [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+                ></svg-icon>
+                <ion-label>{{ registration()?.DtObsTime! | formatDate | async }}</ion-label>
+              </div>
+            }
+            @if (masl) {
+              <div class="card-icon-item">
+                <svg-icon
+                  class="card-icon-item-icon"
+                  src="/assets/icon/moh.svg"
+                  [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
+                ></svg-icon>
+                <ion-label>{{ masl }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</ion-label>
+              </div>
+            }
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
-            <h5 class="ion-no-margin ion-text-nowrap">{{ title }}</h5>
+            <h5 class="ion-no-margin ion-text-nowrap">{{ title() }}</h5>
           </ion-col>
         </ion-row>
         <ion-row class="ion-align-items-center">
@@ -43,10 +49,13 @@
                 src="/assets/icon/user.svg"
                 [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
               ></svg-icon>
-              <ion-label>{{ name }}</ion-label>
+              <ion-label>{{ registration()?.NickName }}</ion-label>
             </div>
             <div class="card-icon-item">
-              <app-competence [starCount]="starCount" [competenceLevelName]="competenceLevelName"></app-competence>
+              <app-competence
+                [starCount]="starCount()"
+                [competenceLevelName]="registration()?.CompetenceLevelTID?.toString()"
+              ></app-competence>
             </div>
           </ion-col>
         </ion-row>

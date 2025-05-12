@@ -38,7 +38,12 @@
       @defer {
         <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>
 
-        <app-map-item-bar></app-map-item-bar>
+        @if (clickedRegistration()) {
+          <app-map-item-bar
+            (cardClicked)="clickedRegistration.set(null)"
+            [registration]="clickedRegistration()"
+          ></app-map-item-bar>
+        }
 
         <!-- TODO sett tilbake etter at veilederen er fiksa  -->
         <!-- <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab> -->
