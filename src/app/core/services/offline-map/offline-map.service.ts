@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { Device } from '@capacitor/device';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { AlertController, Platform } from '@ionic/angular/standalone';
@@ -18,10 +17,9 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import { exhaustMap, finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { exhaustMap, finalize, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
 import { DownloadAndUnzip } from 'src/download-and-unzip-plugin';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
@@ -70,7 +68,6 @@ export class OfflineMapService implements OnReset {
   private downloadAndUnzipProgress = new BehaviorSubject([] as OfflineMapPackage[]);
   downloadAndUnzipProgress$ = this.downloadAndUnzipProgress.asObservable();
 
-  availableDiskspace?: { available: number; used: number };
   private downloadSubscription?: Subscription;
   private cancel = false;
 
@@ -87,22 +84,6 @@ export class OfflineMapService implements OnReset {
       })
       .catch((err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Failed to get map packages');
-      });
-    this.packages$
-      .pipe(
-        switchMap((packages) =>
-          from(this.getDeviceFreeDiskSpace()).pipe(
-            map((available) => ({
-              available,
-              used: this.calculateTotalOfflinePackagesDiskspaceUsed(packages),
-            }))
-          )
-        )
-      )
-      .subscribe((val) => {
-        setTimeout(() => {
-          this.availableDiskspace = val;
-        });
       });
 
     combineLatest([this.packageIndex.packages$, this.packages$])
@@ -165,10 +146,7 @@ export class OfflineMapService implements OnReset {
     ).filter((packageName) => packageName != null);
   }
 
-  public async downloadPackage(
-    packageMetadataCombined: CompoundPackage,
-    checkAvailableDiskSpace = false
-  ): Promise<void> {
+  public async downloadPackage(packageMetadataCombined: CompoundPackage): Promise<void> {
     const packageInfo = {
       name: packageMetadataCombined.getName(),
       xyz: packageMetadataCombined.getXYZ(),
@@ -176,16 +154,7 @@ export class OfflineMapService implements OnReset {
       parts: packageMetadataCombined.getParts(),
     };
 
-    this.loggingService.debug('downloadPackage', DEBUG_TAG, { packageInfo, checkAvailableDiskSpace });
-
-    if (checkAvailableDiskSpace) {
-      //TODO: Ask user to prefer saving to external SD card if available?
-      const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined);
-      if (!availableSpace) {
-        this.loggingService.debug('Not enough disk space to save and extract package', DEBUG_TAG, { packageInfo });
-        return;
-      }
-    }
+    this.loggingService.debug('downloadPackage', DEBUG_TAG, { packageInfo });
 
     if (await this.isPermissionToSaveFilesDenied()) {
       this.loggingService.debug('Permission to save files denied', DEBUG_TAG, { packageInfo });
@@ -513,28 +482,6 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  public async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackage): Promise<boolean> {
-    if (isAndroidOrIos(this.platform) && this.availableDiskspace != null) {
-      const neededSpace = await this.getNeededDiskSpaceForPackage(packageMetadataCombined);
-
-      this.loggingService.debug(
-        `Available storage is ${this.helperService.humanReadableByteSize(this.availableDiskspace.available)}.
-      Needs ${this.helperService.humanReadableByteSize(neededSpace)}`,
-        DEBUG_TAG
-      );
-
-      if (this.availableDiskspace.available < neededSpace) {
-        this.loggingService.log('Not enough disk space to save and extract package', null, LogLevel.Warning, DEBUG_TAG);
-
-        await this.showNotEnoughDiskSpaceAvailableErrorMessage();
-        return false;
-      }
-    } else {
-      return Promise.resolve(true);
-    }
-    return true;
-  }
-
   public async getNeededDiskSpaceForPackage(
     packageMetadataCombined: CompoundPackage,
     compressionFactor = 1.1
@@ -556,30 +503,12 @@ export class OfflineMapService implements OnReset {
     );
   }
 
-  private async showNotEnoughDiskSpaceAvailableErrorMessage() {
-    const translations = await this.translateService
-      .get(['OFFLINE_MAP.DISKSPACE_ERROR_MESSAGE', 'ALERT.OK'])
-      .toPromise();
-    const alert = await this.alertController.create({
-      message: translations['OFFLINE_MAP.DISKSPACE_ERROR_MESSAGE'],
-      buttons: [
-        {
-          text: translations['ALERT.OK'],
-        },
-      ],
-    });
-    alert.present();
-  }
-
   private async showDownloadOrUnzipErrorMessage(isDownloading: boolean) {
     let messageKey = null;
     if (isDownloading) {
       messageKey = 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE';
-    } else if (this.availableDiskspace?.available != null && this.availableDiskspace.available > 300000000) {
-      //we have more than 300MB available
-      messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_GENERIC';
     } else {
-      messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT';
+      messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_GENERIC';
     }
     const translations = await firstValueFrom(this.translateService.get([messageKey, 'ALERT.OK']));
     const alert = await this.alertController.create({
@@ -591,24 +520,6 @@ export class OfflineMapService implements OnReset {
       ],
     });
     alert.present();
-  }
-
-  private getDeviceFreeDiskSpace(): Promise<number> {
-    if (!isAndroidOrIos(this.platform)) {
-      return Promise.resolve(0);
-    }
-
-    return new Promise((resolve, reject) => {
-      Device.getInfo()
-        .then((info) => {
-          if (info?.realDiskFree) {
-            resolve(info.realDiskFree);
-          } else {
-            resolve(0);
-          }
-        })
-        .catch((err) => reject(err));
-    });
   }
 
   private addMapPackage(newPackage: OfflineMapPackage) {

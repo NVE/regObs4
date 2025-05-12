@@ -23,55 +23,86 @@ npm run start
 
 [More info](https://ionicframework.com/docs/building/running)
 
-### To debug app on Android device
+### Installere og debugge appen på en Android-enhet
 
 ```
-npm run build (or ionic build)
+npm run build
 npx cap sync android
-npx cap run android
+npx cap run android (eller start appen fra Android Studio)
 ```
 
-[More info](https://ionicframework.com/docs/building/android)
-We use Capacitor (and not Cordova) to build the native app.
-A few tips on development environment setup on Windows:
+[Mer info](https://capacitorjs.com/docs/android#running-your-app)
 
-- Android SDK and Gradle cache may give you authorization trouble if installed in your user profile folder.
-- JDK is included with Android Studio, but you need to set JDK_HOME to the JDK folder location.
-- An example of environment variables you need:
+Vi bruker Capacitor for å bygge den "native" appen.
+Her er noen tips for oppsett av utviklingsmiljø på Windows:
 
-```
-ANDROID_SDK_ROOT=C:\android\sdk
-JDK_HOME=C:\Program Files\Android\Android Studio\jbr
+Android SDK og Gradle-cache kan gi tilgangsproblemer hvis de er installert under brukerprofilen din. Installer heller disse under `c:\nve\prosjektmappe`.
+JDK og Gradle er inkludert med Android Studio, men du må sette JDK_HOME til plasseringen av JDK-mappen.
+Et eksempel på nødvendige miljøvariabler:
 
 ```
-
-- An example of search path that may work:
-
-```
-C:\android\sdk\tools\bin
-C:\android\sdk\platform-tools
-C:\android\sdk\emulator
-C:\Program Files\Android\Android Studio\jbr\bin
-
+ANDROID_SDK_ROOT=C:\NVE\Prosjektmappe\bin\android-sdk
+JAVA_HOME=C:\NVE\Prosjektmappe\bin\android-studio\jbr
+JDK_HOME=C:\NVE\Prosjektmappe\bin\android-studio\jbr
+GRADLE_USER_HOME=C:\NVE\Prosjektmappe\bin\gradle-user-home
 ```
 
-- You have to uninstall the regular RegObs app from your phone in order to debug
-- This may be helpful for device connection
-  problems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+Android Studio tar ikke hensyn til GRADLE_USER_HOME, så sett dette manuelt i Android Studio under `File > Settings > Build, Execution, Deployment > Build Tools > Gradle`, hvis du bruker Android Studio.
+
+- Et eksempel på søkesti som kan funke:
+
+```
+%JAVA_HOME%\bin
+%ANDROID_SDK_ROOT%\tools\bin
+%ANDROID_SDK_ROOT%\platform-tools
+%ANDROID_SDK_ROOT%\emulator
+```
+
+Du må avinstallere den vanlige RegObs-appen fra telefonen din for å kunne feilsøke.
+Se her hvis du har sliter med å få kontakt med telefonen fra Android Studio eller under `npx cap run android`: [mer info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+
+Bruk `chrome://inspect/#devices` i Chrome på pc for å debugge appen etter at du har startet den på telefonen.
 
 #### Error: package android.support.v4.content does not exist
 
 [More info] https://github.com/ionic-team/capacitor/issues/2822
 
-### Debugge på iPhone/iPad: XCode
+### Debugge / kjøre på iPhone/iPad: XCode
+
+#### Ved første gangs oppstart eller ved oppdateringer av native kode:
+
+Hvis du bruker mac med M\*-prosessor (arm64), kjør dette manuelt inne i ios/App-mappa hvis det har vært endringer på
+plugins eller oppdatering av Capacitor:
 
 ```
-npm run build (or ionic build)
+arch -x86_64 pod install
+```
+
+> På ett eller annet tidspunkt trenger vi sikkert ikke spesifisere arkitektur, prøv gjerne uten å spesifisere først
+
+Hvis du får feil under `pod install` eller `npx cap sync ios`, prøv å oppdatere cocoapods:
+
+```
+brew install cocoapods
+```
+
+Og eventuelt lag symlink av ny cocoapods hvis det ikke skjer automatisk, eller du ikke har gjort det før:
+
+```
+brew link --overwrite cocoapods
+```
+
+#### Ved vanlig kjøring / debugging
+
+```
+npm run build   # eller ionic build, eventuelt npm run build:prod for å teste prod-bygg
 npx cap sync ios
-npx cap open ios
+npx cap open ios  # For å åpne prosjektet i xcode
 ```
 
-npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
+Kjør appen fra XCode.
+
+> Ved vanlig bygg og kjøring via xcode slettes ikke brukerinstillinger, kartpakker og lignende fra telefonen. Husk det når du tester. Det kan være lurt å teste med gamle innstillinger osv først, og prøve en helt fersk installasjon etterpå (ved å slette appen før installasjon).
 
 [Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
 

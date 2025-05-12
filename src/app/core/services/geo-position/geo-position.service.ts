@@ -34,7 +34,7 @@ const POSITION_OPTIONS_DEFAULT: PositionOptions = {
 
 const POSITION_OPTIONS_ANDROID: PositionOptions = {
   enableHighAccuracy: true,
-  timeout: 1000, //get notified with new position data at least each 1 sec
+  timeout: 20 * 1000, // 20 sek
   maximumAge: 0, //we do not accept cached positions, ask for GPS position immediately
 };
 

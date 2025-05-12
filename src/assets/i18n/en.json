@@ -307,7 +307,6 @@
   },
   "OFFLINE_MAP": {
     "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
-    "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection. On iPhone/iPad you must have the Varsom app active while downloading and unzipping.",
     "ERROR_ICON_LABEL": "Error",
     "MAP_PACKAGE_DETAILS_PAGE": {
@@ -341,8 +340,7 @@
       "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}",
       "WAITING_FOR_NETWORK": "Waiting for network"
     },
-    "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again. On iPhone/iPad you must have the Varsom app active while downloading and unzipping.",
-    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again. On iPhone/iPad you must have the Varsom app active while downloading and unzipping."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

@@ -143,13 +143,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   }
 
   async startDownload(): Promise<void> {
-    this.isCheckingAvailableDiskspace = true;
-    this.cdr.detectChanges();
-
-    if (await this.offlineMapService.checkAvailableDiskSpace(this.packageOnServer())) {
-      this.offlineMapService.downloadPackage(this.packageOnServer());
-    }
-    this.isCheckingAvailableDiskspace = false;
+    this.offlineMapService.downloadPackage(this.packageOnServer());
     this.cdr.detectChanges();
   }
 
