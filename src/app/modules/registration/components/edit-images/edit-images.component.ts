@@ -31,7 +31,6 @@ import {
   RegistrationTid,
 } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { File } from '@awesome-cordova-plugins/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -98,7 +97,6 @@ export class EditImagesComponent implements OnInit {
   private regobsAuthService = inject(RegobsAuthService);
   private translateService = inject(TranslateService);
   private platform = inject(Platform);
-  private file = inject(File);
   private logger = inject(LoggingService);
   private toastController = inject(ToastController);
   private actionSheetController = inject(ActionSheetController);

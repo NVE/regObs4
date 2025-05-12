@@ -6,7 +6,7 @@ import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable, inject } from '@angular/core';
-import { Filesystem } from '@capacitor/filesystem';
+import { Encoding, Filesystem } from '@capacitor/filesystem';
 
 const ROOT_DIR = 'attachments';
 
@@ -175,7 +175,13 @@ export default class FileAttachmentService extends NewAttachmentService {
     if (!(await this.directoryForRegistrationExists(registrationId))) {
       throw Error(`Directory for registration ${rootDir}/${registrationId} does not exist`);
     }
-    const content = await this.file.readAsText(`${rootDir}/${registrationId}`, filename);
+    const path = `${rootDir}/${registrationId}/${filename}`;
+    const fileResult = await Filesystem.readFile({
+      path,
+      encoding: Encoding.ASCII,
+    });
+    const content: string = fileResult.data as string;
+    this.logger.debug(`Read metadata file ${filename}`, this.DEBUG_TAG, { content });
     return JSON.parse(content);
   }
 
@@ -185,8 +191,23 @@ export default class FileAttachmentService extends NewAttachmentService {
     if (!metadata.fileName) {
       throw new Error('No filename in metadata');
     }
-    const buffer = await this.file.readAsArrayBuffer(`${rootDir}/${registrationId}`, metadata.fileName);
+    const path = `${rootDir}/${registrationId}/${metadata.fileName}`;
+    const fileResult = await Filesystem.readFile({
+      path,
+    });
+    const content = fileResult.data as string;
+    const buffer = this.base64ToArrayBuffer(content);
     return new Blob([buffer], { type: metadata.AttachmentMimeType });
+  }
+
+  private base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const binaryString = atob(base64); //TODO: Kunne vi brukt Buffer.from() i stedet?
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
