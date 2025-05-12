@@ -67,15 +67,42 @@ Bruk `chrome://inspect/#devices` i Chrome på pc for å debugge appen etter at d
 
 [More info] https://github.com/ionic-team/capacitor/issues/2822
 
-### Debugge på iPhone/iPad: XCode
+### Debugge / kjøre på iPhone/iPad: XCode
+
+#### Ved første gangs oppstart eller ved oppdateringer av native kode:
+
+Hvis du bruker mac med M\*-prosessor (arm64), kjør dette manuelt inne i ios/App-mappa hvis det har vært endringer på
+plugins eller oppdatering av Capacitor:
 
 ```
-npm run build (or ionic build)
+arch -x86_64 pod install
+```
+
+> På ett eller annet tidspunkt trenger vi sikkert ikke spesifisere arkitektur, prøv gjerne uten å spesifisere først
+
+Hvis du får feil under `pod install` eller `npx cap sync ios`, prøv å oppdatere cocoapods:
+
+```
+brew install cocoapods
+```
+
+Og eventuelt lag symlink av ny cocoapods hvis det ikke skjer automatisk, eller du ikke har gjort det før:
+
+```
+brew link --overwrite cocoapods
+```
+
+#### Ved vanlig kjøring / debugging
+
+```
+npm run build   # eller ionic build, eventuelt npm run build:prod for å teste prod-bygg
 npx cap sync ios
-npx cap open ios
+npx cap open ios  # For å åpne prosjektet i xcode
 ```
 
-npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
+Kjør appen fra XCode.
+
+> Ved vanlig bygg og kjøring via xcode slettes ikke brukerinstillinger, kartpakker og lignende fra telefonen. Husk det når du tester. Det kan være lurt å teste med gamle innstillinger osv først, og prøve en helt fersk installasjon etterpå (ved å slette appen før installasjon).
 
 [Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
 
