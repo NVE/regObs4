@@ -27,7 +27,7 @@ npm run start
 
 ```
 npm run build
-npx cap sync android
+npx cap sync --inline android
 npx cap run android (eller start appen fra Android Studio)
 ```
 
@@ -62,6 +62,10 @@ Du må avinstallere den vanlige RegObs-appen fra telefonen din for å kunne feil
 Se her hvis du har sliter med å få kontakt med telefonen fra Android Studio eller under `npx cap run android`: [mer info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
 Bruk `chrome://inspect/#devices` i Chrome på pc for å debugge appen etter at du har startet den på telefonen.
+
+#### Får ikke debugget i Chrome Webtools pga. manglende sourcemaps?
+
+Prøv å legge til `--inline` i `npx cap sync --inline android`. [Mer info] https://capacitorjs.com/docs/cli/commands/sync
 
 #### Error: package android.support.v4.content does not exist
 
