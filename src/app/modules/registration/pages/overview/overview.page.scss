@@ -7,7 +7,7 @@ ion-list {
 }
 
 .content-wrapper {
-  max-width: 960px;
+  max-width: var(--form-max-width);
   margin: auto;
 
   ion-item {
