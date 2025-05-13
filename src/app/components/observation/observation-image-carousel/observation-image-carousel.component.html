@@ -8,13 +8,14 @@
   (swiperslidechange)="setCurrentSlideIndex($event)"
 >
   @for (attachment of attachments(); track attachment.Url) {
-    <swiper-slide>
+    <swiper-slide lazy="true">
       @if (attachment.Href) {
         <img
           [alt]="attachment.Alt || attachment.Comment"
           [src]="snowProfileUrl()"
           (error)="useFallbackSnowProfileImage(attachment, $event)"
           class="snow-profile"
+          loading="lazy"
         />
       } @else {
         <img

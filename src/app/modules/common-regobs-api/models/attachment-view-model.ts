@@ -2,7 +2,7 @@
 export interface AttachmentViewModel {
 
   /**
-   * Unik beskrivelsen for bildet.
+   * Unik beskrivelsen for bildet. Legges på klienten. Dette feltet kommer ikke fra api.
    */
   Alt?: string;
   /**

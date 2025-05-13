@@ -35,7 +35,6 @@ export class PlotService {
     const { RegId, DtChangeTime } = registration;
     // Nettleseren cacher i utgangspunktet svg-ene. For å fremprovosere den til å hente nytt plott ved endring av obs
     // legger vi på lastMod= med endret dato. Da caches fortsatt plotet inntil obsen er endra.
-    if (!RegId) return undefined;
     return `${this.plotApi()}/SnowProfile/svg/${RegId}/${this.preferredSnowProfileType()}?lastMod=${DtChangeTime}`;
   }
 }

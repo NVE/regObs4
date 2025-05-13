@@ -180,7 +180,7 @@ export class ObservationComponent {
       return;
     }
     attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
-    attachment.Comment = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }
 
   private fetchRegistrationBeforeEdit(
