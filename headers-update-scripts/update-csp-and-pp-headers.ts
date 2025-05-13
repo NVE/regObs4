@@ -7,8 +7,10 @@
   Scriptet genererer strenger basert på konfigurasjonene i contentSecurityPolicy.ts og permisionPolicy.config.ts,
   og oppdaterer de relevante filene. Dette scriptet skal kjøres manuelt når verdiene endres.
 */
-import fs from 'fs';
-import path from 'path';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fs = require('fs');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path');
 import cspConfig from './contentSecurityPolicy';
 import permissionsPolicyConfig from './permisionPolicy.config';
 
