@@ -29,7 +29,7 @@
   "globalHeaders": {
     "X-Powered-By": null,
     "Permissions-Policy": "accelerometer=(), autoplay=(), bluetooth=(), browsing-topics=(), camera=self, display-capture=(), fullscreen=self, geolocation=self, gyroscope=(), magnetometer=(), microphone=(), midi=(), usb=(), xr-spatial-tracking=()",
-    "Content-Security-Policy": "upgrade-insecure-requests; frame-ancestors 'self'; form-action 'self'; object-src 'none'; font-src 'self'; style-src-elem 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; script-src 'self' https://plausible.io; connect-src 'self' https://plausible.io https://offlinemap.blob.core.windows.net https://api.regobs.no; worker-src 'self' blob:; default-src 'self' data: gap: cdvfile: blob:; img-src * filesystem: app-file: cdvfile: data: blob:; media-src * blob:;",
+    "Content-Security-Policy": "upgrade-insecure-requests; frame-ancestors 'self'; form-action 'self'; object-src 'none'; font-src 'self'; style-src-elem 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; script-src 'self' https://plausible.io; connect-src 'self' https://plausible.io https://offlinemap.blob.core.windows.net https://api.regobs.no https://test-api.regobs.no https://demo-api.regobs.no; worker-src 'self' blob:; default-src 'self' data: gap: cdvfile: blob:; img-src * filesystem: app-file: cdvfile: data: blob:; media-src * blob:;",
     "Cache-Control": "no-cache",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-Content-Type-Options": "nosniff",
