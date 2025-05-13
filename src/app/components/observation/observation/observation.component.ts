@@ -18,6 +18,7 @@ import {
   ToastController,
 } from '@ionic/angular/standalone';
 import {
+  AttachmentViewModel,
   AvalancheObsViewModel,
   LandslideViewModel,
   RegistrationService,
@@ -184,6 +185,14 @@ export class ObservationComponent {
       chatbubbleEllipses,
       shareSocial,
     });
+  }
+
+  setFallbackImage(attachment: AttachmentViewModel) {
+    if (!attachment.UrlFormats) {
+      return;
+    }
+    attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
+    attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }
 
   private fetchRegistrationBeforeEdit(

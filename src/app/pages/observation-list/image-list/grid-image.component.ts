@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, signal } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
-import { IonChip } from '@ionic/angular/standalone';
+import { IonChip, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { warningOutline } from 'ionicons/icons';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Komponent som viser ett bilde i bildesøk. Bør ikke brukes andre steder enn det.
@@ -9,15 +12,27 @@ import { IonChip } from '@ionic/angular/standalone';
  */
 @Component({
   selector: 'app-grid-image',
-  imports: [IonChip],
+  imports: [IonChip, IonIcon, TranslatePipe],
   template: `
-    <img [src]="src()" (load)="setAspectRatioClass($event)" [alt]="attachmentAlt()" />
+    <img
+      (error)="onError()"
+      [class]="{ 'img-error': isError() }"
+      [src]="src()"
+      (load)="setAspectRatioClass($event)"
+      [alt]="attachmentAlt()"
+    />
 
     @if (attachment().RegistrationName) {
       <ion-chip color="primary" class="grid-image__text">{{ attachment().RegistrationName }}</ion-chip>
     }
     @if (attachment().Comment) {
       <div class="grid-image__text">{{ attachment().Comment }}</div>
+    }
+    @if (isError()) {
+      <ion-chip color="danger">
+        <ion-icon name="warning-outline"></ion-icon>
+        {{ 'REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE' | translate }}
+      </ion-chip>
     }
   `,
   styles: `
@@ -40,7 +55,16 @@ import { IonChip } from '@ionic/angular/standalone';
       font-size: 1rem;
       width: fit-content;
       margin: 0;
+      ion-icon {
+        margin: 0;
+        margin-right: 4px;
+      }
     }
+
+    ion-chip:last-of-type {
+      margin-top: 8px;
+    }
+
     .grid-image__text {
       overflow: hidden;
       white-space: nowrap;
@@ -58,6 +82,12 @@ import { IonChip } from '@ionic/angular/standalone';
       object-position: right center;
       margin-bottom: 7px;
     }
+
+    .img-error {
+      object-fit: unset;
+      max-width: 50%;
+      align-self: center;
+    }
   `,
   host: {
     '[class]': 'hostClass()',
@@ -65,14 +95,22 @@ import { IonChip } from '@ionic/angular/standalone';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridImageComponent {
+  constructor() {
+    addIcons({ warningOutline });
+  }
   readonly attachment = input.required<AttachmentViewModel>();
 
   hostClass = signal<string>('');
-  src = computed(() => this.attachment().UrlFormats?.Large);
-
+  src = linkedSignal(() => this.attachment().UrlFormats?.Large || '');
+  isError = signal(false);
   attachmentAlt = computed(
     () => `${this.attachment().RegistrationName} ${this.attachment().Comment ? ' - ' + this.attachment().Comment : ''}`
   );
+
+  onError() {
+    this.isError.set(true);
+    this.src.set('assets/images/broken-image.svg');
+  }
 
   setAspectRatioClass($event: Event) {
     const img = $event.target as HTMLImageElement;

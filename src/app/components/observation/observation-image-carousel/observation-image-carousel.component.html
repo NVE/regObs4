@@ -9,16 +9,20 @@
 >
   @for (attachment of attachments(); track attachment.Url) {
     <swiper-slide lazy="true">
-      @if (isAttachmentSnowProfile(attachment)) {
+      @if (attachment.Href) {
         <img
-          [alt]="attachment.Comment"
+          [alt]="attachment.Alt || attachment.Comment"
           [src]="snowProfileUrl()"
-          (error)="useFallbackSnowProfileImage(attachment)"
+          (error)="useFallbackSnowProfileImage(attachment, $event)"
           class="snow-profile"
           loading="lazy"
         />
       } @else {
-        <img [alt]="attachment.Comment" [src]="attachment.Url" />
+        <img
+          [alt]="attachment.Alt || attachment.Comment"
+          [src]="attachment.Url"
+          (error)="setFallbackImage(attachment)"
+        />
       }
     </swiper-slide>
   }

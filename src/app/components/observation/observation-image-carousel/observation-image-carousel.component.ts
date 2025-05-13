@@ -15,7 +15,7 @@ import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/comm
 import { SwiperContainer } from 'swiper/element';
 import { addIcons } from 'ionicons';
 import { close, downloadOutline, openOutline, eyeOutline } from 'ionicons/icons';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
 import { settings } from 'src/settings';
@@ -37,21 +37,18 @@ export class ObservationImageCarouselComponent {
   isImageListView = computed(() => this.router.url.includes('search/pictures'));
   attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
   plotService = inject(PlotService);
+  translateService = inject(TranslateService);
 
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
-
-  // Bruker linkedSignal her for å gjøre det mulig å overstyre hva urlen er dersom kall til plot-api feiler
-  snowProfileUrl = linkedSignal(() => {
-    const reg = this.registration();
-    if (!reg) return undefined;
-    return this.plotService.getSnowProfileSvgUrl(reg);
-  });
-
-  useFallbackSnowProfileImage(attachment: AttachmentViewModel) {
+  useFallbackSnowProfileImage(attachment: AttachmentViewModel, event: Event) {
+    const target = event.target as HTMLImageElement;
+    if (target.src === attachment.Url) {
+      attachment.Url = 'assets/images/broken-image-w-bg.svg';
+      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    }
     this.snowProfileUrl.set(attachment.Url as string);
   }
-
   roundedDownOrientationValue = computed(() => {
     const aspectValue = this.currentAttachmentData().Aspect; //256
     if (!aspectValue) return '';
@@ -61,6 +58,7 @@ export class ObservationImageCarouselComponent {
   });
 
   currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
+
   comment = computed(() => {
     // Prioriter kommentar fra bilde dersom det er lagt til
     if (this.currentAttachmentData().Comment) {
@@ -68,7 +66,7 @@ export class ObservationImageCarouselComponent {
     }
 
     // Vis kommentar fra snøprofil-skjema dersom det finnes
-    if (this.isAttachmentSnowProfile(this.currentAttachmentData())) {
+    if (this.currentAttachmentData().Href) {
       return this.registration()?.SnowProfile2?.Comment;
     }
 
@@ -87,14 +85,21 @@ export class ObservationImageCarouselComponent {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
     this.attachmentIndex.set(activeIndex);
+    this;
   }
 
   ngAfterViewInit() {
     this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
   }
 
-  isAttachmentSnowProfile(attachment: AttachmentViewModel & { Href?: string }) {
-    // Kun snøprofil har Href
-    return !!attachment.Href;
+  snowProfileUrl = linkedSignal(() => {
+    const reg = this.registration();
+    if (!reg) return undefined;
+    return this.plotService.getSnowProfileSvgUrl(reg);
+  });
+
+  setFallbackImage(attachment: AttachmentViewModel) {
+    attachment.Url = 'assets/images/broken-image-w-bg.svg';
+    attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }
 }
