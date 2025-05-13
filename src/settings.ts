@@ -20,9 +20,9 @@ export const settings: ISettings = {
       end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
-      getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
+      getObserverUrl: 'https://test-api.regobs.no/v6/Account/GetObserver',
       myPageUrl: 'https://test-konto.nve.no/User',
-      updateObserverUrl: 'https://test-api.regobs.no/v5/Account/UpdateObserver',
+      updateObserverUrl: 'https://test-api.regobs.no/v6/Account/UpdateObserver',
     },
     DEMO: {
       client_id: '7149f248-5e18-4feb-8a0c-e988dc021977',
@@ -43,9 +43,9 @@ export const settings: ISettings = {
       end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
-      getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',
+      getObserverUrl: 'https://api.regobs.no/v6/Account/GetObserver',
       myPageUrl: 'https://konto.nve.no/User',
-      updateObserverUrl: 'https://api.regobs.no/v5/Account/UpdateObserver',
+      updateObserverUrl: 'https://api.regobs.no/v6/Account/UpdateObserver',
     },
   },
   observations: {
@@ -73,7 +73,7 @@ export const settings: ISettings = {
       apiUrl: {
         PROD: 'https://api.regobs.no/v5',
         DEMO: 'https://demo-api.regobs.no/v5',
-        TEST: 'https://test-api.regobs.no/v5',
+        TEST: 'https://test-api.regobs.no/v6',
         //TEST: 'http://localhost:40001',
       },
       serviceUrl: {
