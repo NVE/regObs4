@@ -19,6 +19,7 @@ const cspConfig = {
     'https://ws.geonorge.no/stedsnavn',
     'https://secure.geonames.org',
     'https://www.iskart.no',
+    'https://sentry.io',
   ],
   'upgrade-insecure-requests': true,
   'frame-ancestors': ["'self'"],
