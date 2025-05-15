@@ -127,4 +127,8 @@ export interface ISettings {
     en: string;
   };
   feedbackWebUrl: string;
+  userCompetence: {
+    nb: string;
+    en: string;
+  };
 }

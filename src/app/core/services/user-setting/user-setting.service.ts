@@ -110,6 +110,14 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     );
   }
 
+  get userCompetenceUrl$() {
+    return this.language$.pipe(
+      map((language) =>
+        language === LangKey.nb || language === LangKey.nn ? settings.userCompetence.nb : settings.userCompetence.en
+      )
+    );
+  }
+
   constructor() {
     super();
     this.userSetting$ = combineLatest([

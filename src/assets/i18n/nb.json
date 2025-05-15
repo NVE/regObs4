@@ -272,7 +272,8 @@
     "COMPETANCE_FILTER": {
       "ALL": "Alle",
       "LABEL": "Kompetanse",
-      "TITLE": "Observatør"
+      "TITLE": "Observatør",
+      "READ_MORE": "Les mer om kompetanse"
     },
     "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt",
     "MULTISELECT_SHOW_NO_COUNT": "viser alle",
