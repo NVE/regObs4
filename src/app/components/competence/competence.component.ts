@@ -12,6 +12,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class CompetenceComponent {
   readonly maxCompetenceLevel = 5;
-  readonly competenceLevelName = input<string>();
+  readonly competenceLevelTID = input<number>();
   readonly starCount = input<number>();
 }

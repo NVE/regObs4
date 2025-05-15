@@ -10,10 +10,6 @@
 </ng-template>
 <ng-template #noStars>
   <ion-label class="small-text">
-    @if (competenceLevelName(); as competence) {
-      {{ competence }}
-    } @else {
-      {{ "COMPETENCE.UNKNOWN" | translate }}
-    }
+    {{ "COMPETENCE.UNKNOWN" | translate }}
   </ion-label>
 </ng-template>

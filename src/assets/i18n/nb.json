@@ -56,7 +56,8 @@
     "WEST_SHORT": "V"
   },
   "COMPETENCE": {
-    "UNKNOWN": "Ukjent kompetanse"
+    "UNKNOWN": "Ukjent kompetanse",
+    "UNKNOWN_SHORT": "Ukjent"
   },
   "DATA_LOAD": {
     "DATA": "Laster data...",
