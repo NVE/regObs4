@@ -33,6 +33,8 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
 import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { InitDraft } from 'src/app/core/services/draft/init-draft.model';
+import { Capacitor } from '@capacitor/core';
+import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 
 @Component({
   selector: 'app-obs-location',
@@ -61,6 +63,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   private fullscreenService = inject(FullscreenService);
   private swipeBackService = inject(SwipeBackService);
   private userSettingService = inject(UserSettingService);
+  private geoPositionService = inject(GeoPositionService);
 
   locationMarker!: L.Marker;
   isLoaded = false;
@@ -129,6 +132,13 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         LocationDescription: obsLocation.LocationDescription,
         Id: obsLocation.ObsLocationID,
       };
+    }
+    // hvis man bruker appen på mobil, og registerer en ny observajon - kan vi sette posisjonen fra gps
+    else if (Capacitor.isNativePlatform()) {
+      const position = await this.geoPositionService.getSingleCurrentPosition();
+      if (position && position.coords) {
+        this.setLocationMarker(position.coords.latitude, position.coords.longitude);
+      }
     }
 
     this.ngZone.run(() => {
