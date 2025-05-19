@@ -47,7 +47,8 @@
                 @for (group of groupsWithIsCheckedComputed(); track group.id) {
                   <ion-item>
                     <ion-checkbox
-                      [checked]="group?.isChecked"
+                      [checked]="!isSlushFlowFilterActive() && group?.isChecked"
+                      [disabled]="isSlushFlowFilterActive()"
                       (ionChange)="toggleObservationGroup($event.detail.checked, group.id, group.subTypes)"
                       labelPlacement="end"
                       justify="start"
@@ -59,7 +60,8 @@
                     @for (type of group?.subTypes; track type.id) {
                       <ion-item class="subtype">
                         <ion-checkbox
-                          [checked]="!slushFlowFilterIsActive && type.isChecked"
+                          [checked]="!isSlushFlowFilterActive() && type.isChecked"
+                          [disabled]="isSlushFlowFilterActive()"
                           labelPlacement="end"
                           justify="start"
                           (ionChange)="toggleObservationType($event.detail.checked, type.parentId, type.id)"
@@ -69,7 +71,7 @@
                     }
                   }
                 }
-                <app-slush-flow-filter> </app-slush-flow-filter>
+                <app-slush-flow-filter [label]="slushFlowLabel()"> </app-slush-flow-filter>
               </ion-list>
             </div>
           </ion-accordion>
