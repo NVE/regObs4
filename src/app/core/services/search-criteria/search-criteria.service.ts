@@ -557,15 +557,15 @@ export class SearchCriteriaService {
       SubTypes: [RegistrationTid.AvalancheObs],
     };
     if (slushFlow) {
-      this.searchCriteriaChanges.next({ PropertyFilters: [CRITERIA_SLUSH_FLOW] });
-
-      // turn on avalancheObs automatically since slush flow is a type of avalancheObs
-      this.setObservationType(avalacheObsType);
+      this.searchCriteriaChanges.next({
+        PropertyFilters: [CRITERIA_SLUSH_FLOW],
+        SelectedRegistrationTypes: [avalacheObsType], //Fjerner alt annet bortsett fra skredhendelse
+      });
     } else {
       this.searchCriteriaChanges.next({ PropertyFilters: undefined });
 
       // turn off avalancheObs automatically since slush flow is a type of avalancheObs
-      this.removeObservationType(avalacheObsType);
+      await this.removeObservationType(avalacheObsType);
     }
   }
 

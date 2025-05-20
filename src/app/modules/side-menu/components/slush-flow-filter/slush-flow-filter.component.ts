@@ -1,11 +1,10 @@
 import { IonItem, IonCheckbox } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { map } from 'rxjs';
-import { SearchCriteriaService, SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
@@ -18,7 +17,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 export class SlushFlowFilterComponent {
   private searchCriteriaService = inject(SearchCriteriaService);
   private userSettingService = inject(UserSettingService);
-  private kdvService = inject(KdvService);
+  label = input<string>('');
 
   visible$ = this.userSettingService.currentGeoHazard$.pipe(
     map((geoHazard) => {
@@ -30,16 +29,6 @@ export class SlushFlowFilterComponent {
   value$ = this.searchCriteriaService.searchCriteria$.pipe(
     map((criteria) => {
       return this.searchCriteriaService.isSlushFlow(criteria);
-    })
-  );
-
-  caption$ = this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheKDV').pipe(
-    map((avalancheKdvs) => {
-      const slushFlowKdv = avalancheKdvs.find((type) => type.Id === SLUSH_FLOW_ID);
-      if (slushFlowKdv) {
-        return slushFlowKdv.Name;
-      }
-      return "Slush flow'"; // fallback name
     })
   );
 

@@ -15,9 +15,9 @@ import {
   IonContent,
   IonListHeader,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchCriteriaService, SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { RegistrationTypeCriteriaDto, RegistrationTypeDto } from 'src/app/modules/common-regobs-api';
@@ -39,6 +39,7 @@ import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/
 import { RegionFilterComponent } from '../region-filter/region-filter.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Capacitor } from '@capacitor/core';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
@@ -85,6 +86,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private userSettingService = inject(UserSettingService);
   private searchCriteriaService = inject(SearchCriteriaService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
+  private kdvService = inject(KdvService);
+  private slushFlowKdv = toSignal(this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheKDV'));
   observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
 
   private currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
@@ -170,7 +173,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   showObservations$ = this.userSettingService.showObservations$;
 
-  slushFlowFilterIsActive = false;
+  isSlushFlowFilterActive = signal(false);
+  slushFlowLabel = computed(() => {
+    const slushFlowLabel = this.slushFlowKdv()?.find((type) => type.Id === SLUSH_FLOW_ID);
+    if (slushFlowLabel && slushFlowLabel.Name) {
+      return slushFlowLabel.Name;
+    }
+    return 'Slush flow'; // fallback name
+  });
 
   // returnerer observasjonstyper med evt. grupper
   groupsWithIsCheckedComputed = computed(() => {
@@ -198,7 +208,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   // Returnerer navn på valgte observasjonstyper
   selectedObservationTypes: Signal<string[]> = computed(() => {
-    const result: string[] = [];
+    let result: string[] = [];
+
     const groups = this.groupsWithIsCheckedComputed();
     for (const group of groups) {
       if (group.subTypes?.length) {
@@ -214,6 +225,15 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
         }
       }
     }
+
+    // Slushflow er eneste som skal returneres hvis isSlushFlowFilterActive er true
+    if (this.isSlushFlowFilterActive()) {
+      const slushFlowLabel = this.slushFlowLabel();
+      if (slushFlowLabel) {
+        result = [slushFlowLabel];
+      }
+    }
+
     return result;
   });
 
@@ -224,7 +244,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   async ngOnInit() {
     this.searchCriteriaService.searchCriteria$.subscribe((criteria) => {
-      this.slushFlowFilterIsActive = this.searchCriteriaService.isSlushFlow(criteria);
+      this.isSlushFlowFilterActive.set(this.searchCriteriaService.isSlushFlow(criteria));
     });
   }
 
