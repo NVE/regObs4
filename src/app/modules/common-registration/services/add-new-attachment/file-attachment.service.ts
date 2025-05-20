@@ -46,24 +46,6 @@ export default class FileAttachmentService extends NewAttachmentService {
     return false;
   }
 
-  /**
-   * @param path sti til mappa som skal opprettes, relativ til appens data-mappe
-   */
-  // async createDirectory(path: string): Promise<void> {
-  //   const directoryExists = await this.doesFileOrDirectoryExist(path);
-  //   if (!directoryExists) {
-  //     try {
-  //       await Filesystem.mkdir({
-  //         path: path,
-  //         directory: Directory.Data,
-  //         recursive: true,
-  //       });
-  //     } catch (err) {
-  //       this.logger.log(`Error creating directory ${path}`, err, LogLevel.Debug, this.DEBUG_TAG);
-  //     }
-  //   }
-  // }
-
   async deleteFile(path: string): Promise<void> {
     if (await this.doesFileOrDirectoryExist(path)) {
       try {
