@@ -187,6 +187,8 @@ export class ObservationComponent {
     });
   }
 
+  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
+
   setFallbackImage(attachment: AttachmentViewModel) {
     if (!attachment.UrlFormats) {
       return;

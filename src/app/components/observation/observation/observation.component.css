@@ -104,3 +104,16 @@ ion-chip.chip-disabled {
 .buttons:has(> :last-child:nth-child(1)) {
   flex-direction: row-reverse;
 }
+
+/* Her må vi overskrive ion-chip der hvor man skal ha en lenke på stjerner - grunnen fordi pointer-events er blokkert som default
+derfor vises ikke riktig cursor når hover over stjerner */
+.competence-chip {
+  pointer-events: auto;
+}
+.competence-chip:hover {
+  background-color: rgba(0, 66, 95, 0.08);
+}
+
+.competence-link {
+  text-decoration: none;
+}

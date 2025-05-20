@@ -76,13 +76,14 @@
       </ion-label>
     </ion-chip>
 
-    <ion-chip color="primary" disabled>
+    <ion-chip class="competence-chip" color="primary" disabled>
       <ion-icon name="person-circle-outline"></ion-icon>
       <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
       <ion-label>
-        {{ registration().Observer.NickName }} ({{
+        {{ registration().Observer.NickName }} (<a class="competence-link" [href]="userCompetenceUrl()">{{
           registration().Observer.CompetenceLevelName || "COMPETENCE.UNKNOWN_SHORT" | translate
-        }})
+        }}</a
+        >)
       </ion-label>
     </ion-chip>
 
