@@ -56,7 +56,8 @@
     "WEST_SHORT": "W"
   },
   "COMPETENCE": {
-    "UNKNOWN": "Competence unknown"
+    "UNKNOWN": "Competence unknown",
+    "UNKNOWN_SHORT": "Unknown"
   },
   "DATA_LOAD": {
     "DATA": "Loading...",
