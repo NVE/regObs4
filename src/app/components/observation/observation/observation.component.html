@@ -80,9 +80,12 @@
       <ion-icon name="person-circle-outline"></ion-icon>
       <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
       <ion-label>
-        {{ registration().Observer.NickName }} (<a class="competence-link" [href]="userCompetenceUrl()">{{
-          registration().Observer.CompetenceLevelName || "COMPETENCE.UNKNOWN_SHORT" | translate
-        }}</a
+        {{ registration().Observer.NickName }} (<a
+          target="_blank"
+          class="competence-link"
+          bl
+          [href]="userCompetenceUrl()"
+          >{{ registration().Observer.CompetenceLevelName || "COMPETENCE.UNKNOWN_SHORT" | translate }}</a
         >)
       </ion-label>
     </ion-chip>
