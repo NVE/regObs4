@@ -8,6 +8,7 @@ import { Injectable } from '@angular/core';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { deleteFile, doesFileOrDirectoryExist, getUri } from 'src/app/utils/file-utils';
 
 const ROOT_DIR = 'attachments';
 
@@ -28,59 +29,6 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   /**
-   * @returns true hvis angitt fil eller mappe finnes. Du må bruke full sti til filen eller mappa
-   */
-  async doesFileOrDirectoryExist(path: string): Promise<boolean> {
-    const name = path.split('/').pop();
-    const directory = path.split('/').slice(0, -1).join('/');
-    try {
-      const readDirResult = await Filesystem.readdir({
-        path: directory,
-      });
-      if (readDirResult.files.filter((fileInfo) => fileInfo.name === name).length > 0) {
-        return true;
-      }
-    } catch (err) {
-      this.logger.log(`Error checking if file or directory exists: ${path}`, err, LogLevel.Debug, this.DEBUG_TAG);
-    }
-    return false;
-  }
-
-  async deleteFile(path: string): Promise<void> {
-    if (await this.doesFileOrDirectoryExist(path)) {
-      try {
-        await Filesystem.deleteFile({ path });
-        this.logger.debug(`Deleted file ${path}`, this.DEBUG_TAG);
-      } catch (err) {
-        this.logger.log(`Error deleting file ${path}`, err, LogLevel.Debug, this.DEBUG_TAG);
-      }
-    } else {
-      this.logger.debug(`File ${path} does not exist, so cannot be deleted`, this.DEBUG_TAG);
-    }
-  }
-
-  /**
-   * Gjør om angitt filsti til en URI som kan brukes i nettleser
-   * @param path sti til fila, relativ til appens data-mappe
-   */
-  async getUri(path: string): Promise<string> {
-    try {
-      const uriResult = await Filesystem.getUri({
-        path: path,
-        directory: Directory.Data,
-      });
-      const uri = uriResult.uri;
-      if (uri.endsWith('/')) {
-        return uri.slice(0, -1);
-      }
-      return uri;
-    } catch (err) {
-      this.logger.log(`Error getting URI for path ${path}`, err, LogLevel.Debug, this.DEBUG_TAG);
-    }
-    return '';
-  }
-
-  /**
    * @returns sti til mappa vi lagrer vedleggene i for alle registreringer, uten / på slutten
    */
   private async getRootFileUrl(): Promise<string> {
@@ -98,7 +46,7 @@ export default class FileAttachmentService extends NewAttachmentService {
             directory: dataDirectory,
           });
         }
-        this.rootFileUrl = await this.getUri(ROOT_DIR);
+        this.rootFileUrl = await getUri(ROOT_DIR, Directory.Data, this.logger);
       } catch (err) {
         this.logger.error(err, this.DEBUG_TAG, `Error getting root directory url ${ROOT_DIR}`);
         throw err;
@@ -126,7 +74,7 @@ export default class FileAttachmentService extends NewAttachmentService {
         });
       }
     } catch (err) {
-      this.logger.error(err, this.DEBUG_TAG, `Error reading og creating directory ${folderPath}`);
+      this.logger.error(err, this.DEBUG_TAG, `Error reading or creating directory ${folderPath}`);
     }
     return folderPath;
   }
@@ -288,14 +236,14 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
-    const path = await this.getUri(ROOT_DIR + '/' + registrationId);
+    const path = await getUri(ROOT_DIR + '/' + registrationId, Directory.Data, this.logger);
     const metadataFileName = this.getMetadataFileName(attachmentId);
     const imageFilePath = await this.getImageFilePath(registrationId, attachmentId);
 
     if (imageFilePath) {
-      await this.deleteFile(imageFilePath);
+      await deleteFile(imageFilePath, this.logger);
     }
-    await this.deleteFile(`${path}/${metadataFileName}`);
+    await deleteFile(`${path}/${metadataFileName}`, this.logger);
 
     // slett vedlegg-mappa for denne observasjonen hvis det ikke er flere vedlegg igjen
     try {

@@ -29,7 +29,6 @@
  */
 
 import { formatDate } from '@angular/common';
-import { Entry, File } from '@awesome-cordova-plugins/file/ngx';
 import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular/standalone';
 import _ from 'lodash';
@@ -41,30 +40,33 @@ import { LogLevel } from './log-level.model';
 import version from '../../../../../environments/version.json';
 import { Device } from '@capacitor/device';
 import { getCircularReplacer } from 'src/app/core/helpers/circular-replacer';
+import { Capacitor } from '@capacitor/core';
+import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
+import { Dir } from 'fs';
+import { deleteFile, doesFileOrDirectoryExist, getUri } from 'src/app/utils/file-utils';
 
 @Injectable({
   providedIn: 'root',
 })
+/** Lagrer debug-logg til fil på telefon. NB! Vi logger kun til fil i produksjonsbygg */
 export class FileLoggingService {
-  private file = inject(File);
   private platform = inject(Platform);
   private emailComposer = inject(EmailComposer);
   private emailComposerService = inject(EmailComposerService);
 
   private fileLoggerReady = false;
   private initFailed = false;
-  private currentFile?: Entry;
+  private currentFile?: FileInfo;
   private lines = 0;
   private queue: string[] = [];
   private processing = false;
+  private logDirPath = '';
 
   private readonly defaultConfig: LogProviderConfig;
 
   private config: LogProviderConfig;
 
   constructor() {
-    const file = this.file;
-
     this.defaultConfig = new LogProviderConfig({
       enableMetaLogging: false,
       logToConsole: false,
@@ -73,7 +75,7 @@ export class FileLoggingService {
       fileMaxLines: 2000,
       fileMaxSize: 1000000,
       totalLogSize: 5000000,
-      baseDir: file.cacheDirectory,
+      baseDir: Directory.Cache,
       logDir: 'logs',
       logPrefix: 'regobs',
       devMode: false,
@@ -93,7 +95,7 @@ export class FileLoggingService {
       if (!this.config.baseDir) {
         if (this.platform.is('hybrid')) {
           // Can only initialize this after platform is ready
-          this.config.baseDir = this.file.dataDirectory;
+          this.config.baseDir = Directory.Cache;
         } else {
           this.debug_metaLog('FileLoggingService: No baseDirectory set');
         }
@@ -111,16 +113,22 @@ export class FileLoggingService {
       }
       this.debug_metaLog('Data directory: ' + this.config.baseDir);
       this.logVersionAndDeviceInfo();
-      return this.file
-        .checkDir(this.config.baseDir, this.config.logDir)
-        .then(() => {
-          this.debug_metaLog('Found logging directory');
-          return this.initLogFile();
-        })
-        .catch((err) => {
-          this.debug_metaLog('Could not find logging directory: ' + JSON.stringify(err));
-          return this.createLogDir();
-        });
+      getUri(`${this.config.baseDir}/${this.config.logDir}`, this.config.baseDir as Directory).then((logPath) => {
+        this.logDirPath = logPath;
+        return doesFileOrDirectoryExist(logPath)
+          .then((exist) => {
+            if (exist) {
+              this.debug_metaLog('Logging directory already exists');
+              return this.initLogFile();
+            } else {
+              return this.createLogDir();
+            }
+          })
+          .catch((err) => {
+            this.debug_metaLog('Could not find logging directory: ' + JSON.stringify(err));
+            return this.createLogDir();
+          });
+      });
     });
   }
 
@@ -151,8 +159,10 @@ export class FileLoggingService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private createLogDir(): Promise<any> {
     this.debug_metaLog('Attempting to create logging directory');
-    return this.file
-      .createDir(this.config.baseDir, this.config.logDir, false)
+    return Filesystem.mkdir({
+      path: this.config.logDir,
+      directory: Directory.Cache,
+    })
       .then(() => {
         this.debug_metaLog('Successfully created logging directory');
         return this.initLogFile();
@@ -167,38 +177,34 @@ export class FileLoggingService {
    * Attempts to initialize the current log file
    * @returns a promise upon completion or failure
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private initLogFile(): Promise<any> {
+  private async initLogFile() {
     this.debug_metaLog('Attempting to initialize log file');
-    return this.file
-      .listDir(this.config.baseDir, this.config.logDir)
-      .then((entries: Entry[]) => {
-        if (entries && entries.length > 0) {
-          this.debug_metaLog(entries.length + ' existing log files found.');
-          return this.cleanupFiles(entries);
-        } else {
-          this.debug_metaLog('No existing log files found.');
-          return this.cleanupCompleted(null, 0);
-        }
-      })
-      .catch((err) => {
-        this.debug_metaLog('Failed to get file list: ' + JSON.stringify(err, Object.getOwnPropertyNames(err)));
-        throw err;
+    try {
+      const readDirResult = await Filesystem.readdir({
+        path: this.logDirPath,
       });
+      if (readDirResult.files.length > 0) {
+        this.debug_metaLog('Found existing log files');
+        return this.cleanupFiles(readDirResult.files);
+      } else {
+        this.debug_metaLog('No existing log files found.');
+        return this.cleanupCompleted(null, 0);
+      }
+    } catch (err) {
+      this.debug_metaLog('Failed to get file list: ' + JSON.stringify(err, Object.getOwnPropertyNames(err)));
+    }
   }
 
   /**
    * Checks the total size of log files against the configured maximum size and deletes oldest if necessary
    * @param entries the files found in the logging directory
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async cleanupFiles(entries: Entry[]): Promise<any> {
+  private async cleanupFiles(entries: FileInfo[]) {
     this.debug_metaLog('Starting cleanup of ' + entries.length + ' log files');
-    entries = _.filter(
-      entries,
-      (entry: Entry) => entry.isFile && entry.name && entry.name.startsWith(this.config.logPrefix)
-    ) as Entry[];
-    if (entries.length === 0) {
+    const logfiles = entries.filter(
+      (entry) => entry.type === 'file' && entry.name && entry.name.startsWith(this.config.logPrefix)
+    );
+    if (logfiles.length === 0) {
       return this.cleanupCompleted(null, 0).catch((err) => {
         // Now we're well and truly buggered
         this.initFailed = true;
@@ -212,7 +218,7 @@ export class FileLoggingService {
     try {
       // Loop over entries
       for (const entry of entries) {
-        const size = await this.getFileSize(entry);
+        const size = entry.size;
         // Calculate total size of log files
         calculated++;
         sizeTotal += size;
@@ -247,24 +253,6 @@ export class FileLoggingService {
   }
 
   /**
-   * Wraps getMetadata in a Promise
-   * @param entry
-   * @returns a promise
-   */
-  private async getFileSize(entry: Entry): Promise<number> {
-    return new Promise((resolve: (number: number) => void, reject) => {
-      entry.getMetadata(
-        (metadata) => {
-          resolve(metadata.size);
-        },
-        (failure) => {
-          reject('SEVERE ERROR: could not retrieve metadata. ' + JSON.stringify(failure));
-        }
-      );
-    });
-  }
-
-  /**
    * Attempts to remove one file and recursively check total size again
    * @param entries
    * @param lastEntrySize
@@ -272,7 +260,7 @@ export class FileLoggingService {
    * @param reject
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private maxSizeExceeded(entries: Entry[], lastEntrySize: number): Promise<any> {
+  private maxSizeExceeded(entries: FileInfo[], lastEntrySize: number): Promise<any> {
     return this.removeFile(entries[0])
       .then(() => {
         this.debug_metaLog('Entry successfully removed');
@@ -295,7 +283,7 @@ export class FileLoggingService {
    * @param error Any error to be logged after initialization
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private cleanupCompleted(lastEntry: Entry | null, lastEntrySize: number, error?: string): Promise<any> {
+  private cleanupCompleted(lastEntry: FileInfo | null, lastEntrySize: number, error?: string): Promise<any> {
     this.debug_metaLog('Log file cleanup done');
     if (lastEntry && lastEntrySize < this.config.fileMaxSize) {
       this.currentFile = lastEntry;
@@ -303,7 +291,7 @@ export class FileLoggingService {
       if (error) {
         this.log(error);
       }
-      this.debug_metaLog('File logger initialized at existing file: ' + this.currentFile.fullPath);
+      this.debug_metaLog('File logger initialized at existing file: ' + this.currentFile.uri);
       this.log('File logger initialized at existing file: ' + this.currentFile.name);
       return Promise.resolve();
     } else {
@@ -313,7 +301,7 @@ export class FileLoggingService {
         if (error) {
           this.log(error);
         }
-        this.debug_metaLog('File logger initialized at new file: ' + this.currentFile?.fullPath);
+        this.debug_metaLog('File logger initialized at new file: ' + this.currentFile?.uri);
         this.log('File logger initialized at new file: ' + this.currentFile?.name);
         return Promise.resolve();
       });
@@ -322,14 +310,10 @@ export class FileLoggingService {
 
   /**
    * Attempts to remove a file
-   * @param entry
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private removeFile(entry: Entry): Promise<any> {
-    this.debug_metaLog('Removing file: ' + entry.fullPath);
-    const fullPath = entry.fullPath;
-    const path = fullPath.replace(entry.name, '');
-    return this.file.removeFile(this.config.baseDir + path, entry.name);
+  private removeFile(entry: FileInfo) {
+    this.debug_metaLog('Removing file: ' + entry.uri);
+    return deleteFile(entry.uri);
   }
 
   /**
@@ -448,31 +432,26 @@ export class FileLoggingService {
   /**
    * Writes the oldest entry in the queue to file, then checks if file rollover is required
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private processQueue(): Promise<any> {
+  private async processQueue() {
     this.debug_metaLog('Processing queue of length ' + this.queue.length);
     if (!this.currentFile) {
       throw new Error('currentFile not initialized');
     }
     if (this.queue.length > 0) {
       const message = this.queue.shift();
-      if (!message) {
-        return Promise.resolve();
-      }
-      return this.file
-        .writeFile(this.config.baseDir + '/' + this.config.logDir, this.currentFile.name, message, {
-          append: true,
-          replace: false,
-        })
-        .then(() => {
+      if (message) {
+        try {
+          await Filesystem.appendFile({
+            path: this.currentFile.uri,
+            data: message,
+            encoding: Encoding.UTF8,
+          });
           this.lines++;
-          return this.checkFileLength();
-        })
-        .catch((err) => {
+          this.checkFileLength();
+        } catch (err) {
           this.debug_metaLog('Error writing to file: ' + err);
-        });
-    } else {
-      return Promise.resolve();
+        }
+      }
     }
   }
 
