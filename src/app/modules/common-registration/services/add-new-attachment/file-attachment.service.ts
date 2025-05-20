@@ -68,6 +68,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     if (await this.doesFileOrDirectoryExist(path)) {
       try {
         await Filesystem.deleteFile({ path });
+        this.logger.debug(`Deleted file ${path}`, this.DEBUG_TAG);
       } catch (err) {
         this.logger.log(`Error deleting file ${path}`, err, LogLevel.Debug, this.DEBUG_TAG);
       }
@@ -115,15 +116,7 @@ export default class FileAttachmentService extends NewAttachmentService {
             directory: dataDirectory,
           });
         }
-        const uriResult = await Filesystem.getUri({
-          path: ROOT_DIR,
-          directory: dataDirectory,
-        });
-        this.rootFileUrl = uriResult.uri;
-
-        if (this.rootFileUrl.endsWith('/')) {
-          this.rootFileUrl = this.rootFileUrl.slice(0, -1);
-        }
+        this.rootFileUrl = await this.getUri(ROOT_DIR);
       } catch (err) {
         this.logger.error(err, this.DEBUG_TAG, `Error getting root directory url ${ROOT_DIR}`);
         throw err;
@@ -153,7 +146,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     } catch (err) {
       this.logger.error(err, this.DEBUG_TAG, `Error reading og creating directory ${folderPath}`);
     }
-    return await this.getUri(folderPath);
+    return folderPath;
   }
 
   async addAttachmentAsUrl(
@@ -210,16 +203,19 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   saveAttachmentMeta$(registrationId: string, meta: AttachmentUploadEditModel): Observable<unknown> {
-    const folderPath = from(this.getFolderPath(registrationId));
+    return from(this.saveAttachmentMeta(registrationId, meta));
+  }
+
+  private async saveAttachmentMeta(registrationId: string, meta: AttachmentUploadEditModel) {
+    const folderPath = await this.getFolderPath(registrationId);
     const filePath = `${folderPath}/${this.getMetadataFileName(meta.id)}`;
-    return from(
-      Filesystem.writeFile({
-        path: filePath,
-        data: JSON.stringify(meta),
-        encoding: Encoding.UTF8,
-        recursive: true,
-      })
-    ).pipe(tap(() => this.attachmentsChanged.next()));
+    await Filesystem.writeFile({
+      path: filePath,
+      data: JSON.stringify(meta),
+      encoding: Encoding.UTF8,
+      recursive: true,
+    });
+    this.attachmentsChanged.next();
   }
 
   protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
@@ -254,31 +250,31 @@ export default class FileAttachmentService extends NewAttachmentService {
     try {
       const readDirResult = await Filesystem.readdir({ path });
       const fileEntries: FileInfo[] = readDirResult.files;
-      return await Promise.all(
+      const metadatas = await Promise.all(
         fileEntries
           .filter((entry) => entry.type === 'file' && entry.name.endsWith('.json'))
           .map((entry) => this.readMetadataFile(registrationId, entry.name))
       );
+      return metadatas.filter((metadata) => metadata !== null); //fjern filer vi ikke greide å lese
     } catch (err) {
       this.logger.error(err, this.DEBUG_TAG, `Error reading directory ${path}`);
       return [];
     }
   }
 
-  private async readMetadataFile(registrationId: string, filename: string): Promise<AttachmentUploadEditModel> {
+  private async readMetadataFile(registrationId: string, filename: string): Promise<AttachmentUploadEditModel | null> {
     const registrationFolder = await this.getFolderPath(registrationId);
-    const path = `${registrationFolder}/${registrationId}/${filename}`;
+    const path = `${registrationFolder}/${filename}`;
     try {
       const fileResult = await Filesystem.readFile({
         path,
         encoding: Encoding.UTF8,
       });
       const content: string = fileResult.data as string;
-      this.logger.debug(`Read metadata file ${path}`, this.DEBUG_TAG, { content });
       return JSON.parse(content);
     } catch (err) {
       this.logger.error(err, this.DEBUG_TAG, `Error reading metadata file ${path}`);
-      throw err; //TODO: Skal vi kaste feilen videre eller håndtere den?
+      return null;
     }
   }
 
@@ -300,7 +296,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     const path = await this.getFolderPath(registrationId);
     try {
       const metadata = await this.readMetadataFile(registrationId, `${attachmentId}.json`);
-      if (metadata.fileName) {
+      if (metadata?.fileName) {
         return `${path}/${metadata.fileName}`;
       }
     } catch (err) {
@@ -324,6 +320,7 @@ export default class FileAttachmentService extends NewAttachmentService {
       const remainingEntries = await Filesystem.readdir({ path, directory: Directory.Data });
       if (remainingEntries.files.length === 0) {
         await Filesystem.rmdir({ path: path, directory: Directory.Data });
+        this.logger.debug(`Removed empty directory ${path}`, this.DEBUG_TAG);
       }
     } catch (err) {
       this.logger.log(`Error removing empty directory ${path}`, err, LogLevel.Warning, this.DEBUG_TAG);
