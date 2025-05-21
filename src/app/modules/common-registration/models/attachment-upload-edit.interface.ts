@@ -5,7 +5,7 @@ export interface AttachmentUploadEditModel extends AttachmentEditModel {
   id: string;
   type: AttachmentType;
   fileSize?: number;
-  fileName?: string; //attachment filename
+  imageFileUri?: string; // file-uri til lokalt lagret bilde
   fileAddedTime?: number; //milliseconds
   error?: Error;
   ref?: string; // Guid

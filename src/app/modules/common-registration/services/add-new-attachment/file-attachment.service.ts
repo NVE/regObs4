@@ -92,12 +92,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     const attachmentFileName = `${attachmentId}.${this.getFileExtension(mimeType)}`;
     const destinationPath = await this.getFolderPath(registrationId);
     try {
-      // TODO: Kunne vi la være å kopiere fila og heller laste den opp fra der OS'et legger den?
-      const result = await Filesystem.copy({
-        from: `${fileNameWithFullPath}`,
-        to: `${destinationPath}/${attachmentFileName}`,
-      });
-      const statResult = await Filesystem.stat({ path: `${result.uri}` });
+      const statResult = await Filesystem.stat({ path: `${fileNameWithFullPath}` });
       const metadata: AttachmentUploadEditModel = {
         GeoHazardTID: geoHazard,
         RegistrationTID: registrationTid,
@@ -105,12 +100,12 @@ export default class FileAttachmentService extends NewAttachmentService {
         id: attachmentId,
         type,
         fileSize: statResult.size,
-        fileName: attachmentFileName,
+        imageFileUri: fileNameWithFullPath,
         fileAddedTime: Date.now(),
         ref,
       };
-      this.logger.debug(`Attachment copied from ${fileNameWithFullPath} to ${result.uri}`, this.DEBUG_TAG, metadata);
-      await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
+      await this.saveAttachmentMeta(registrationId, metadata);
+      this.logger.debug(`Attachment saved. Image file: ${fileNameWithFullPath}`, this.DEBUG_TAG, metadata);
     } catch (err) {
       this.logger.error(
         err,
@@ -223,11 +218,10 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   private async getImageFilePath(registrationId: string, attachmentId: string): Promise<string | null> {
-    const path = await this.getFolderPath(registrationId);
     try {
       const metadata = await this.readMetadataFile(registrationId, `${attachmentId}.json`);
-      if (metadata?.fileName) {
-        return `${path}/${metadata.fileName}`;
+      if (metadata?.imageFileUri) {
+        return metadata?.imageFileUri;
       }
     } catch (err) {
       this.logger.error(err, this.DEBUG_TAG, `Error getting image file path for attachment ${attachmentId}`);
