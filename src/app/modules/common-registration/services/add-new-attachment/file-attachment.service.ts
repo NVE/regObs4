@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
-import { deleteFile, doesFileOrDirectoryExist, getUri } from 'src/app/utils/file-utils';
+import { deleteFile, getUri } from 'src/app/utils/file-utils';
 
 const ROOT_DIR = 'attachments';
 
