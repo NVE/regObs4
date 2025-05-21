@@ -22,7 +22,7 @@ const cspConfig = {
     'https://sentry.io',
   ],
   'upgrade-insecure-requests': true,
-  'frame-ancestors': ["'self'"],
+  'frame-ancestors': ["'none'"],
   'form-action': ["'self'"],
   'object-src': ["'none'"],
   'font-src': ["'self'"],
