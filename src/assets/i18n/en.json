@@ -266,7 +266,8 @@
     "COMPETANCE_FILTER": {
       "ALL": "All",
       "LABEL": "Competence",
-      "TITLE": "Observer"
+      "TITLE": "Observer",
+      "READ_MORE": "Read more about competence"
     },
     "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen",
     "MULTISELECT_SHOW_NO_COUNT": "shows all",

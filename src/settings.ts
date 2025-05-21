@@ -474,4 +474,8 @@ export const settings: ISettings = {
   },
   feedbackWebUrl:
     'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu',
+  userCompetence: {
+    nb: 'https://www.varsom.no/om-varsom/varsom-app-regobs/kompetanse/',
+    en: 'https://www.varsom.no/en/about/regobs/regobs-competence/',
+  },
 };

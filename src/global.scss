@@ -36,6 +36,12 @@
 // @import '@ionic/angular/css/palettes/dark.system.css';
 // @import '@ionic/angular/css/palettes/high-contrast.system.css';
 // @import '@ionic/angular/css/palettes/high-contrast-dark.system.css';
+
+a {
+  color: var(--link-color);
+  cursor: pointer;
+}
+
 /* Font for arrows */
 @font-face {
   font-family: 'Custom Arrows';
@@ -96,6 +102,8 @@
    vi kan vurdere å ha en felles kilde for layoutens maksimale bredde som settes et sted. */
   --desktop-max-width: 960px;
   --form-max-width: 650px;
+
+  --link-color: #006b99; //samme farge som i designsystemet
 }
 
 html {

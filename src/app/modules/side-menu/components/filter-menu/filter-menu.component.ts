@@ -32,7 +32,7 @@ import { UpdateObservationsComponent } from '../update-observations/update-obser
 import { SlushFlowFilterComponent } from '../slush-flow-filter/slush-flow-filter.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { closeCircleOutline } from 'ionicons/icons';
+import { closeCircleOutline, openOutline } from 'ionicons/icons';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
@@ -92,6 +92,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   private currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
   isGeohazardSnow = computed(() => this.currentGeoHazard().includes(GeoHazard.Snow));
+
+  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
   // returnerer søkekriteria: gruppe id - nøkkel, subtype id [] - verdi
   criteriasObject = toSignal(
@@ -239,7 +241,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   constructor() {
     super();
-    addIcons({ closeCircleOutline });
+    addIcons({ closeCircleOutline, openOutline });
   }
 
   async ngOnInit() {

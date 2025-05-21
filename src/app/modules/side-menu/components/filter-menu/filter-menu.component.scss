@@ -19,3 +19,13 @@ ion-item.nickname-search {
   // Search bar shadow is hidden if overflow hidden
   overflow: visible;
 }
+
+.competence-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 16px;
+  ion-icon {
+    font-size: 1.2rem;
+  }
+}

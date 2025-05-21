@@ -1,10 +1,10 @@
-<div class="competence-wrapper">
+<a target="_blank" [href]="userCompetenceUrl()" class="competence-wrapper">
   <ng-container *ngIf="starCount() as starCount; else noStars">
     <ng-container *ngFor="let index of [0, 1, 2, 3, 4]">
       <svg-icon *ngIf="starCount <= index; else filledStar" src="/assets/icon/star.svg"></svg-icon>
     </ng-container>
   </ng-container>
-</div>
+</a>
 <ng-template #filledStar>
   <svg-icon src="/assets/icon/star.svg" class="filledStar"></svg-icon>
 </ng-template>
