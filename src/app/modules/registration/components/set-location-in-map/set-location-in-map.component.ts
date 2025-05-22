@@ -211,9 +211,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.mapService.mapView$.pipe(
       filter((v) => v != null),
       take(1),
-      map((mapView) =>
-        mapView.zoom != null && mapView.zoom > INITIAL_ZOOM_MINIMUM ? mapView.zoom : INITIAL_ZOOM_MINIMUM
-      )
+      map((mapView) => mapView.zoom || INITIAL_ZOOM_MINIMUM)
     ),
     { initialValue: INITIAL_ZOOM_MINIMUM }
   );
