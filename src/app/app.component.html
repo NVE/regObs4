@@ -10,7 +10,11 @@
       <app-side-menu></app-side-menu>
     }
   </ion-menu>
-  <ion-router-outlet id="main-content" [swipeGesture]="(swipeBackEnabled$ | async)!"></ion-router-outlet>
+  <ion-router-outlet
+    id="main-content"
+    [class.main-content--web]="!isNative"
+    [swipeGesture]="(swipeBackEnabled$ | async)!"
+  ></ion-router-outlet>
   <!-- TODO: Ikke rendre gps debug default -->
   <app-gps-debug></app-gps-debug>
 </ion-app>
