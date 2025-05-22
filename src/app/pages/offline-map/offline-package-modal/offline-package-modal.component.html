@@ -11,7 +11,7 @@
 
 <ion-content class="offline-package-map-wrapper">
   <div class="map-container" *ngIf="center">
-    <app-map
+    <!--app-map
       [offlinePackageMode]="true"
       [showMapSearch]="false"
       [showFullscreenToggle]="false"
@@ -21,7 +21,8 @@
       [center]="center"
       [zoom]="zoom"
       (mapReady)="showTileOnMap($event)"
-    ></app-map>
+    ></app-map-->
+    <app-static-map-image [location]="location()"></app-static-map-image>
   </div>
   <ion-grid class="footer-container">
     <ion-row>

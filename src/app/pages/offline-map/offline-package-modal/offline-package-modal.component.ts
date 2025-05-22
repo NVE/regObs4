@@ -1,4 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject, input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+  input,
+  computed,
+  Signal,
+} from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -35,6 +44,9 @@ import {
   trash,
 } from 'ionicons/icons';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { StaticMapImageComponent } from '../../../modules/static-map-image/static-map-image.component';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { ImageLocation } from 'src/app/core/models/image-location.model';
 
 const DEBUG_TAG = 'OfflinePackageModalComponent';
 
@@ -60,6 +72,7 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
     IonTitle,
     IonToolbar,
     MapComponent,
+    StaticMapImageComponent,
     NgIf,
     NgStyle,
     TranslatePipe,
@@ -74,6 +87,11 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   readonly feature = input.required<CompoundPackageFeature>();
   readonly packageOnServer = input.required<CompoundPackage>();
   readonly offlinePackageStatus$ = input.required<Observable<OfflineMapPackage>>();
+
+  location: Signal<ImageLocation> = computed(() => ({
+    latLng: this.center ?? new L.LatLng(0, 0),
+    geoHazard: GeoHazard.Snow,
+  }));
 
   zoom = 10; // Just as a fallback value
   center?: L.LatLng;

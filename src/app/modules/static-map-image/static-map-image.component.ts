@@ -145,6 +145,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
 
   readonly location = input.required<ImageLocation>();
   readonly allowZoom = input<boolean>();
+  readonly bounds = input<LatLngBounds>();
 
   readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
 
