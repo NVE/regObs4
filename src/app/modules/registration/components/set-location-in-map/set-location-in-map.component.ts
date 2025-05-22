@@ -73,7 +73,7 @@ export interface LocationTime {
   spatialAccuracy?: number;
 }
 
-const INITIAL_ZOOM_MINIMUM = 15;
+const INITIAL_ZOOM_MINIMUM = 5;
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -302,6 +302,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   onMapReady(m: L.Map): void {
     this.mapView$ = concat(
       // Start with mapview from mapservice
+
       this.mapService.mapView$.pipe(
         filter((v) => v != null),
         take(1)
