@@ -33,7 +33,8 @@
     "translations:pr": "ts-node --project tsconfig.npm-script.json translations/triggerPRs.ts",
     "translations:update-fallback": "ts-node --project tsconfig.npm-script.json translations/updateDbFallback.ts",
     "translations:add-nn-app-fallback": "ts-node --project tsconfig.npm-script.json translations/addNynorskFallback.ts",
-    "prettier:fix": "prettier --write src"
+    "prettier:fix": "prettier --write src",
+    "update-headers": "ts-node --project tsconfig.npm-script.json headers-update-scripts/update-csp-and-pp-headers.ts"
   },
   "private": true,
   "dependencies": {
