@@ -1,3 +1,5 @@
+import { Directory } from '@capacitor/filesystem';
+
 /** Copyright 2019 SmartMove */
 export interface ILogProviderConfig {
   // If true, logs verbose details of file logging operations to console
@@ -26,7 +28,7 @@ export interface ILogProviderConfig {
   logDir?: string;
 
   // Name of directory in which to create log directory
-  baseDir?: string;
+  baseDir?: Directory;
 
   // Prefix for log files
   logPrefix?: string;

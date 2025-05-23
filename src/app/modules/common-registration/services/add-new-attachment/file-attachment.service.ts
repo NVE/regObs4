@@ -4,26 +4,79 @@ import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } fro
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
-import { File } from '@awesome-cordova-plugins/file/ngx';
-import { Injectable, inject } from '@angular/core';
-import { Filesystem } from '@capacitor/filesystem';
+import { Injectable } from '@angular/core';
+import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
+import { Capacitor } from '@capacitor/core';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { deleteFile, getUri } from 'src/app/utils/file-utils';
 
 const ROOT_DIR = 'attachments';
 
 /**
- * Provides attachments saved on local drive
+ * Tilbyr mellomlagring av bilder til en observasjon på lokal disk. Bruker native funksjoner via Capacitor Filesystem API.
+ * Alle bilder lagres i mappa "attachments" i appens data-mappe.
+ * Bildene lagres i en egen mappe for hver observasjon, og metadata lagres i en json-fil med samme navn som bildet.
  */
 @Injectable()
 export default class FileAttachmentService extends NewAttachmentService {
-  private file = inject(File);
-
   protected override DEBUG_TAG = 'FileAttachmentService';
-  private hasCreatedRootFolder = false;
   private attachmentsChanged = new BehaviorSubject<void>(undefined); //get a tick each time an attachment changes
+  private rootFileUrl = '';
 
   constructor() {
     super();
     this.attachmentsChanged.pipe(tap(() => this.logger.debug('Attachments changed', this.DEBUG_TAG)));
+  }
+
+  /**
+   * @returns sti til mappa vi lagrer vedleggene i for alle registreringer, uten / på slutten
+   */
+  private async getRootFileUrl(): Promise<string> {
+    if (this.rootFileUrl === '') {
+      const dataDirectory = Directory.Data;
+      try {
+        const readDirResult = await Filesystem.readdir({
+          path: '',
+          directory: dataDirectory,
+        });
+        if (readDirResult.files.filter((fileInfo) => fileInfo.name === ROOT_DIR).length === 0) {
+          //no root folder yet, so create it
+          await Filesystem.mkdir({
+            path: ROOT_DIR,
+            directory: dataDirectory,
+          });
+        }
+        this.rootFileUrl = await getUri(ROOT_DIR, Directory.Data, this.logger);
+      } catch (err) {
+        this.logger.error(err, this.DEBUG_TAG, `Error getting root directory url ${ROOT_DIR}`);
+        throw err;
+      }
+    }
+    return this.rootFileUrl;
+  }
+
+  /**
+   * @returns sti til mappa vi lagrer vedleggene i for angitt registrering, uten / på slutten
+   */
+  private async getFolderPath(registrationId: string): Promise<string> {
+    const rootFileUrl = await this.getRootFileUrl();
+    const folderPath = `${rootFileUrl}/${registrationId}`;
+    try {
+      const readDirResult = await Filesystem.readdir({
+        path: rootFileUrl,
+      });
+
+      // sjekk om mappa for registrering allerede finnes
+      if (readDirResult.files.filter((fileInfo) => fileInfo.name === registrationId).length === 0) {
+        //opprett mappa for registreringa hvis den ikke finnes
+        await Filesystem.mkdir({
+          path: folderPath,
+        });
+      }
+    } catch (err) {
+      this.logger.error(err, this.DEBUG_TAG, `Error reading or creating directory ${folderPath}`);
+    }
+    return folderPath;
   }
 
   async addAttachmentAsUrl(
@@ -35,31 +88,36 @@ export default class FileAttachmentService extends NewAttachmentService {
     type: AttachmentType = 'Attachment',
     ref?: string
   ): Promise<void> {
-    const rootDir = await this.getRootPath();
-    await this.file.createDir(rootDir, registrationId, true);
     const attachmentId = uuidv4();
-
     const attachmentFileName = `${attachmentId}.${this.getFileExtension(mimeType)}`;
-    const destinationPath = `${rootDir}/${registrationId}`;
-    const result = await Filesystem.copy({
-      from: `${fileNameWithFullPath}`,
-      to: `${destinationPath}/${attachmentFileName}`,
-    });
-    const statResult = await Filesystem.stat({ path: `${result.uri}` });
-    const metadata: AttachmentUploadEditModel = {
-      GeoHazardTID: geoHazard,
-      RegistrationTID: registrationTid,
-      AttachmentMimeType: mimeType,
-      id: attachmentId,
-      type,
-      fileSize: statResult.size,
-      fileName: attachmentFileName,
-      fileAddedTime: Date.now(),
-      ref,
-    };
-
-    this.logger.debug(`Attachment copied from ${fileNameWithFullPath} to ${result.uri}`, this.DEBUG_TAG, metadata);
-    await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
+    const destinationPath = await this.getFolderPath(registrationId);
+    try {
+      // TODO: Kunne vi la være å kopiere fila og heller laste den opp fra der OS'et legger den?
+      const result = await Filesystem.copy({
+        from: `${fileNameWithFullPath}`,
+        to: `${destinationPath}/${attachmentFileName}`,
+      });
+      const statResult = await Filesystem.stat({ path: `${result.uri}` });
+      const metadata: AttachmentUploadEditModel = {
+        GeoHazardTID: geoHazard,
+        RegistrationTID: registrationTid,
+        AttachmentMimeType: mimeType,
+        id: attachmentId,
+        type,
+        fileSize: statResult.size,
+        fileName: attachmentFileName,
+        fileAddedTime: Date.now(),
+        ref,
+      };
+      this.logger.debug(`Attachment copied from ${fileNameWithFullPath} to ${result.uri}`, this.DEBUG_TAG, metadata);
+      await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
+    } catch (err) {
+      this.logger.error(
+        err,
+        this.DEBUG_TAG,
+        `Error copying file from ${fileNameWithFullPath} to ${destinationPath}/${attachmentFileName}`
+      );
+    }
   }
 
   async addAttachment(
@@ -68,42 +126,26 @@ export default class FileAttachmentService extends NewAttachmentService {
     mimeType: string,
     geoHazard: GeoHazard,
     registrationTid: RegistrationTid,
-    type: AttachmentType = 'Attachment',
-    ref?: string
+    _type: AttachmentType = 'Attachment',
+    _ref?: string
   ): Promise<void> {
-    const rootDir = await this.getRootPath();
-    await this.file.createDir(rootDir, registrationId, true);
-    const attachmentId = uuidv4();
-
-    const attachmentFileName = `${attachmentId}.${this.getFileExtension(mimeType)}`;
-    await this.file.writeFile(`${rootDir}/${registrationId}`, attachmentFileName, data, { replace: true });
-
-    const metadata: AttachmentUploadEditModel = {
-      GeoHazardTID: geoHazard,
-      RegistrationTID: registrationTid,
-      AttachmentMimeType: mimeType,
-      id: attachmentId,
-      type,
-      fileSize: data.size,
-      fileName: attachmentFileName,
-      fileAddedTime: Date.now(),
-      ref,
-    };
-
-    this.logger.debug(
-      `Attachment saved in ${rootDir}/${registrationId}/${attachmentFileName}`,
-      this.DEBUG_TAG,
-      metadata
-    );
-    await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
+    throw new Error('Ikke implementert, fordi vi bruker ikke funksjonen i app');
   }
 
   saveAttachmentMeta$(registrationId: string, meta: AttachmentUploadEditModel): Observable<unknown> {
-    return from(
-      this.getRootPath().then((rootDir) =>
-        this.file.writeFile(`${rootDir}/${registrationId}`, `${meta.id}.json`, JSON.stringify(meta), { replace: true })
-      )
-    ).pipe(tap(() => this.attachmentsChanged.next()));
+    return from(this.saveAttachmentMeta(registrationId, meta));
+  }
+
+  private async saveAttachmentMeta(registrationId: string, meta: AttachmentUploadEditModel) {
+    const folderPath = await this.getFolderPath(registrationId);
+    const filePath = `${folderPath}/${this.getMetadataFileName(meta.id)}`;
+    await Filesystem.writeFile({
+      path: filePath,
+      data: JSON.stringify(meta),
+      encoding: Encoding.UTF8,
+      recursive: true,
+    });
+    this.attachmentsChanged.next();
   }
 
   protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
@@ -123,12 +165,8 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   async removeAttachments(registrationId: string): Promise<void> {
-    const path = await this.getRootPath();
-    if (await this.directoryForRegistrationExists(registrationId)) {
-      await this.file.removeRecursively(`${path}/`, registrationId);
-    } else {
-      this.logger.debug(`Tried to remove ${path}/${registrationId}, but didn't find it`, this.DEBUG_TAG);
-    }
+    const path = await this.getFolderPath(registrationId);
+    await Filesystem.rmdir({ path: path, recursive: true });
     this.attachmentsChanged.next();
   }
 
@@ -136,72 +174,86 @@ export default class FileAttachmentService extends NewAttachmentService {
     return from(this.removeAttachments(registrationId));
   }
 
-  /**
-   * Get file url for data directory
-   * @returns file url as string, with trailing /
-   */
-  private getDataDirectoryFileUrl(): string {
-    return this.file.dataDirectory;
-  }
-
-  /**
-   * Get root directory folder path
-   * @returns directory path as string (without trailing /)
-   */
-  private async getRootPath(): Promise<string> {
-    const dataFolder = this.getDataDirectoryFileUrl();
-    if (!this.hasCreatedRootFolder) {
-      await this.file.createDir(dataFolder, ROOT_DIR, true);
-      this.hasCreatedRootFolder = true;
-    }
-    return `${dataFolder}${ROOT_DIR}`;
-  }
-
+  /** Henter metadata for alle vedlegg til angitt observasjon */
   private async getAttachmentsFromFile(registrationId: string): Promise<AttachmentUploadEditModel[]> {
-    const path = await this.getRootPath();
-    if (await this.directoryForRegistrationExists(registrationId)) {
-      const entries = await this.file.listDir(path, registrationId);
-      return await Promise.all(
-        entries
-          .filter((entry) => entry.isFile && entry.name.endsWith('.json'))
+    const path = await this.getFolderPath(registrationId);
+    try {
+      const readDirResult = await Filesystem.readdir({ path });
+      const fileEntries: FileInfo[] = readDirResult.files;
+      const metadatas = await Promise.all(
+        fileEntries
+          .filter((entry) => entry.type === 'file' && entry.name.endsWith('.json'))
           .map((entry) => this.readMetadataFile(registrationId, entry.name))
       );
+      return metadatas.filter((metadata) => metadata !== null); //fjern filer vi ikke greide å lese
+    } catch (err) {
+      this.logger.error(err, this.DEBUG_TAG, `Error reading directory ${path}`);
+      return [];
     }
-    return [];
   }
 
-  private async readMetadataFile(registrationId: string, filename: string): Promise<AttachmentUploadEditModel> {
-    const rootDir = await this.getRootPath();
-    if (!(await this.directoryForRegistrationExists(registrationId))) {
-      throw Error(`Directory for registration ${rootDir}/${registrationId} does not exist`);
+  private async readMetadataFile(registrationId: string, filename: string): Promise<AttachmentUploadEditModel | null> {
+    const registrationFolder = await this.getFolderPath(registrationId);
+    const path = `${registrationFolder}/${filename}`;
+    try {
+      const fileResult = await Filesystem.readFile({
+        path,
+        encoding: Encoding.UTF8,
+      });
+      const content: string = fileResult.data as string;
+      return JSON.parse(content);
+    } catch (err) {
+      this.logger.error(err, this.DEBUG_TAG, `Error reading metadata file ${path}`);
+      return null;
     }
-    const content = await this.file.readAsText(`${rootDir}/${registrationId}`, filename);
-    return JSON.parse(content);
   }
 
   private async getBlobInternal(registrationId: string, attachmentId: string): Promise<Blob> {
-    const rootDir = await this.getRootPath();
-    const metadata = await this.readMetadataFile(registrationId, `${attachmentId}.json`);
-    if (!metadata.fileName) {
-      throw new Error('No filename in metadata');
+    try {
+      const nativePath = await this.getImageFilePath(registrationId, attachmentId);
+      if (nativePath) {
+        const webPath = Capacitor.convertFileSrc(nativePath);
+        const response = await fetch(webPath);
+        return response.blob();
+      }
+    } catch (err) {
+      this.logger.error(err, this.DEBUG_TAG, `Error getting blob for attachment ${attachmentId}`);
     }
-    const buffer = await this.file.readAsArrayBuffer(`${rootDir}/${registrationId}`, metadata.fileName);
-    return new Blob([buffer], { type: metadata.AttachmentMimeType });
+    return new Blob(); //TODO: Funker det å returnere tom blob hvis vi ikke finner fila?
+  }
+
+  private async getImageFilePath(registrationId: string, attachmentId: string): Promise<string | null> {
+    const path = await this.getFolderPath(registrationId);
+    try {
+      const metadata = await this.readMetadataFile(registrationId, `${attachmentId}.json`);
+      if (metadata?.fileName) {
+        return `${path}/${metadata.fileName}`;
+      }
+    } catch (err) {
+      this.logger.error(err, this.DEBUG_TAG, `Error getting image file path for attachment ${attachmentId}`);
+    }
+    return null;
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
-    const rootPath = await this.getRootPath();
-    const path = `${rootPath}/${registrationId}/`;
+    const path = await getUri(ROOT_DIR + '/' + registrationId, Directory.Data, this.logger);
     const metadataFileName = this.getMetadataFileName(attachmentId);
-    const metadata = await this.readMetadataFile(registrationId, metadataFileName);
-    if (metadata.fileName) {
-      await this.file.removeFile(path, metadata.fileName);
-    }
-    await this.file.removeFile(path, metadataFileName);
+    const imageFilePath = await this.getImageFilePath(registrationId, attachmentId);
 
-    const remainingEntries = await this.file.listDir(rootPath, registrationId);
-    if (remainingEntries.length === 0) {
-      await this.file.removeDir(rootPath, registrationId);
+    if (imageFilePath) {
+      await deleteFile(imageFilePath, this.logger);
+    }
+    await deleteFile(`${path}/${metadataFileName}`, this.logger);
+
+    // slett vedlegg-mappa for denne observasjonen hvis det ikke er flere vedlegg igjen
+    try {
+      const remainingEntries = await Filesystem.readdir({ path, directory: Directory.Data });
+      if (remainingEntries.files.length === 0) {
+        await Filesystem.rmdir({ path: path, directory: Directory.Data });
+        this.logger.debug(`Removed empty directory ${path}`, this.DEBUG_TAG);
+      }
+    } catch (err) {
+      this.logger.log(`Error removing empty directory ${path}`, err, LogLevel.Warning, this.DEBUG_TAG);
     }
     this.attachmentsChanged.next();
     return true;
@@ -219,15 +271,5 @@ export default class FileAttachmentService extends NewAttachmentService {
         return 'png';
     }
     return 'jpg';
-  }
-
-  private async directoryForRegistrationExists(registrationId: string): Promise<boolean> {
-    const path = await this.getRootPath();
-    try {
-      await this.file.checkDir(`${path}/`, registrationId);
-      return true;
-    } catch (err) {
-      return false;
-    }
   }
 }
