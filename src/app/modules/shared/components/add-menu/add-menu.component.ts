@@ -1,4 +1,6 @@
-import { Component, OnInit, inject, viewChild } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf, UpperCasePipe } from '@angular/common';
+import { Component, computed, inject, OnInit, viewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   IonFab,
   IonFabButton,
@@ -10,25 +12,24 @@ import {
   NavController,
   Platform,
 } from '@ionic/angular/standalone';
-import { Observable, from, combineLatest, of } from 'rxjs';
-import moment from 'moment';
-import { DateHelperService } from '../../services/date-helper/date-helper.service';
-import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { GeoHazard } from 'src/app/modules/common-core/models';
-import { map, tap, switchMap } from 'rxjs/operators';
-import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
-import { LoggingService } from '../../services/logging/logging.service';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
-import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
-import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
-import { GeoIconComponent } from '../geo-icon/geo-icon.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { add, create } from 'ionicons/icons';
+import moment from 'moment';
+import { combineLatest, from, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
+import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { DateHelperService } from '../../services/date-helper/date-helper.service';
+import { LoggingService } from '../../services/logging/logging.service';
+import { GeoIconComponent } from '../geo-icon/geo-icon.component';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -72,7 +73,7 @@ export class AddMenuComponent implements OnInit {
   showSpace$?: Observable<boolean>;
   isIosOrAndroid?: boolean;
 
-  constructor() {
+  constructor(private router: Router) {
     addIcons({ add, create });
   }
 
@@ -97,6 +98,8 @@ export class AddMenuComponent implements OnInit {
     );
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
+
+  isMyObservations = computed(() => this.router.url === '/my-observations');
 
   private convertDraftToDate(
     draft: RegistrationDraft

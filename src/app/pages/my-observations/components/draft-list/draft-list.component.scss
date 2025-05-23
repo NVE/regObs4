@@ -5,3 +5,8 @@ ion-item-divider {
 ion-list {
   width: 100%;
 }
+
+.draft-list {
+  max-width: var(--desktop-max-width);
+  margin: 0 auto;
+}
