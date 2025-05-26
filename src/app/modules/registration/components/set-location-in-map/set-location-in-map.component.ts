@@ -65,6 +65,7 @@ import { addIcons } from 'ionicons';
 import { calendarOutline, createOutline, radioButtonOn, timeOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
+import { ActivatedRoute } from '@angular/router';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -74,6 +75,7 @@ export interface LocationTime {
 }
 
 const INITIAL_ZOOM_MINIMUM = 5;
+const EXTERNAL_MAP_ZOOM = 15; //Zoom nivå for eksterne tjenester som sender lat,lng eller locationId til regobs for å starte en ny observasjon
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -152,6 +154,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locationService = inject(LocationService);
   private translateService = inject(TranslateService);
   private platform = inject(Platform);
+  private activatedRoute = inject(ActivatedRoute);
 
   // TODO: For mange måter denne komponenten kommuniserer med omverdenen på...
   readonly geoHazard = input.required<GeoHazard>();
@@ -206,15 +209,24 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
   private mapView$?: Observable<IMapView>;
-
-  initialZoom = toSignal(
+  private lat = this.activatedRoute.snapshot.queryParams['lat'];
+  private lon = this.activatedRoute.snapshot.queryParams['lon'];
+  private locationId = this.activatedRoute.snapshot.queryParams['locationId'];
+  private mapView = toSignal(
     this.mapService.mapView$.pipe(
       filter((v) => v != null),
-      take(1),
-      map((mapView) => mapView.zoom || INITIAL_ZOOM_MINIMUM)
-    ),
-    { initialValue: INITIAL_ZOOM_MINIMUM }
+      take(1)
+    )
   );
+
+  initialZoom = computed(() => {
+    if (this.mapView()?.zoom != null) return undefined;
+    if ((this.lat && this.lon) || this.locationId) {
+      return EXTERNAL_MAP_ZOOM;
+    } else {
+      return this.mapView()?.zoom || INITIAL_ZOOM_MINIMUM;
+    }
+  });
 
   isDesktop = this.platform.is('desktop');
   spatialAccuracyOptions: SelectOption[] = [];
