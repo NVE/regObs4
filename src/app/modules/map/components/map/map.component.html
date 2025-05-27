@@ -1,5 +1,5 @@
-@if (loaded && options) {
-  <div leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)"></div>
+@if (options() !== undefined) {
+  <div leaflet [leafletOptions]="options()!" (leafletMapReady)="onLeafletMapReady($event)"></div>
 }
 <app-map-controls [showFullscreenToggle]="showFullscreenToggle()" [showGpsCenter]="showGpsCenter()"></app-map-controls>
 
