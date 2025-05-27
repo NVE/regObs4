@@ -1,4 +1,4 @@
-<ion-header translucent>
+<ion-header>
   <ion-toolbar>
     <ion-title>{{
       "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.HEADER" | translate: { name: packageOnServer().getName() }
@@ -9,8 +9,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="offline-package-map-wrapper">
-  <div class="map-container" *ngIf="center">
+<ion-content>
+  <div class="content">
     <app-map
       [offlinePackageMode]="true"
       [showMapSearch]="false"
@@ -21,82 +21,85 @@
       [center]="center"
       [zoom]="zoom"
       (mapReady)="showTileOnMap($event)"
+      [updateMapViewOnExtentChange]="false"
+      [showControls]="false"
+      [fitBounds]="false"
     ></app-map>
-  </div>
-  <ion-grid class="footer-container">
-    <ion-row>
-      <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_PRODUCED_DATE" | translate }}</ion-col>
-      <ion-col>{{ packageOnServer().getLastModified() | date: "short" }}</ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE" | translate }}</ion-col>
-      <ion-col>{{
-        "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE_VALUE_WITH_UNIT"
-          | translate: { size: packageOnServer().getSizeInMiB() | number: "1.0-1" }
-      }}</ion-col>
-    </ion-row>
-
-    <div *ngIf="offlinePackageStatusThatTriggersChangeDetection$ | async as packageStatus; else downloadPackage">
+    <ion-grid class="footer-container">
       <ion-row>
-        <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOAD_STATUS" | translate }}</ion-col>
-        <ion-col>
-          {{ packageStatus.progress?.description }}
-          <span *ngIf="!!packageStatus.downloadComplete && packageStatus.downloadComplete"
-            >{{
-              "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOADED_DATE"
-                | translate: { date: getDownloadCompleteDate(packageStatus.downloadComplete) | date: "short" }
-            }}
-          </span>
-          <span *ngIf="!packageStatus.downloadComplete">({{ getPercentage(packageStatus) + "%" }})</span>
-        </ion-col>
-        <ion-col size="1">
-          <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
-          <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 0" name="stopwatch-outline">
-          </ion-icon>
-          <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 1" name="cloud-download-outline">
-          </ion-icon>
-          <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 2" name="folder-open-outline">
-          </ion-icon>
-          <ion-icon *ngIf="packageStatus.error" name="warning-outline"></ion-icon>
-        </ion-col>
+        <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_PRODUCED_DATE" | translate }}</ion-col>
+        <ion-col>{{ packageOnServer().getLastModified() | date: "short" }}</ion-col>
       </ion-row>
-      <ion-row *ngIf="!packageStatus.downloadComplete && !packageStatus.error">
-        <ion-col>
-          <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">{{
-            "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.CANCEL_DOWNLOAD_BUTTON" | translate
-          }}</ion-button>
-        </ion-col>
+
+      <ion-row>
+        <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE" | translate }}</ion-col>
+        <ion-col>{{
+          "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_SIZE_VALUE_WITH_UNIT"
+            | translate: { size: packageOnServer().getSizeInMiB() | number: "1.0-1" }
+        }}</ion-col>
       </ion-row>
-      <ion-row class="buttons-container" *ngIf="packageStatus.error">
-        <ion-col>
-          <ion-button expand="block" (click)="startDownload()">{{
-            "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.TRY_AGAIN_BUTTON" | translate
-          }}</ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button (click)="delete()" expand="block" color="danger">{{
-            "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate
-          }}</ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row class="buttons-container" *ngIf="packageStatus.downloadComplete">
-        <ion-col *ngIf="isPackageOutdated">
-          <!-- TODO: Vis hvis det finnes en nyere versjon -->
-          <ion-button expand="block" (click)="update()">
-            <ion-icon slot="start" name="refresh"></ion-icon>
-            {{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON" | translate }}
-          </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button (click)="delete()" expand="block" color="danger">
-            <ion-icon slot="start" name="trash"></ion-icon>
-            {{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate }}
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </div>
-  </ion-grid>
+
+      <div *ngIf="offlinePackageStatusThatTriggersChangeDetection$ | async as packageStatus; else downloadPackage">
+        <ion-row>
+          <ion-col size="4">{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOAD_STATUS" | translate }}</ion-col>
+          <ion-col>
+            {{ packageStatus.progress?.description }}
+            <span *ngIf="!!packageStatus.downloadComplete && packageStatus.downloadComplete"
+              >{{
+                "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.PACKAGE_DOWNLOADED_DATE"
+                  | translate: { date: getDownloadCompleteDate(packageStatus.downloadComplete) | date: "short" }
+              }}
+            </span>
+            <span *ngIf="!packageStatus.downloadComplete">({{ getPercentage(packageStatus) + "%" }})</span>
+          </ion-col>
+          <ion-col size="1">
+            <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
+            <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 0" name="stopwatch-outline">
+            </ion-icon>
+            <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 1" name="cloud-download-outline">
+            </ion-icon>
+            <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 2" name="folder-open-outline">
+            </ion-icon>
+            <ion-icon *ngIf="packageStatus.error" name="warning-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!packageStatus.downloadComplete && !packageStatus.error">
+          <ion-col>
+            <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">{{
+              "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.CANCEL_DOWNLOAD_BUTTON" | translate
+            }}</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row class="buttons-container" *ngIf="packageStatus.error">
+          <ion-col>
+            <ion-button expand="block" (click)="startDownload()">{{
+              "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.TRY_AGAIN_BUTTON" | translate
+            }}</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button (click)="delete()" expand="block" color="danger">{{
+              "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate
+            }}</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row class="buttons-container" *ngIf="packageStatus.downloadComplete">
+          <ion-col *ngIf="isPackageOutdated">
+            <!-- TODO: Vis hvis det finnes en nyere versjon -->
+            <ion-button expand="block" (click)="update()">
+              <ion-icon slot="start" name="refresh"></ion-icon>
+              {{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON" | translate }}
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button (click)="delete()" expand="block" color="danger">
+              <ion-icon slot="start" name="trash"></ion-icon>
+              {{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-grid>
+  </div>
 </ion-content>
 
 <ng-template #downloadPackage>

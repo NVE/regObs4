@@ -155,7 +155,11 @@ export class OfflineMapPage extends NgDestoryBase {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).LEAFLET_MAP = map;
 
-    map.setZoom(7);
+    // Sett noen maks grenser for bruk av kartet mtp zoom.
+    // Det har vært et problem at folk tror at det bare er på denne siden
+    // offline-kartet finnes. Ved å ikke kunne zoome for langt inn skjønner
+    // kanskje folk bedre at denne siden bare er til nedlasting.
+    map.setMaxZoom(8);
 
     this.tilesLayer = new L.GeoJSON(undefined, {
       onEachFeature: (feature: CompoundPackageFeature, layer) => {

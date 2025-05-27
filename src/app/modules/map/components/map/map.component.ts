@@ -13,6 +13,7 @@ import {
   input,
   effect,
   untracked,
+  signal,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -95,6 +96,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private mapZoomService = inject(MapZoomService);
   private observerTripsService = inject(ObserverTripsService);
 
+  readonly showControls = input(true);
+  readonly showZoomButtons = input(true);
   readonly showMapSearch = input(true);
   readonly showFullscreenToggle = input(true);
   readonly showGpsCenter = input(true);
@@ -138,7 +141,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private observationTripLayers?: L.GeoJSON[] | null;
   private removeObserverTripEventHandlers = new Subject<void>();
 
-  loaded = false;
   private map?: L.Map;
   private layerGroup = L.layerGroup();
   private offlineTopoLayerGroup = L.layerGroup();
@@ -152,7 +154,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private offlineMapService?: OfflineMapService;
   private bounds?: L.LatLngBounds;
 
-  options?: L.MapOptions;
+  options = signal<L.MapOptions | undefined>(undefined);
 
   constructor() {
     // Update map view when map center input changes
@@ -190,13 +192,23 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isActive = new BehaviorSubject(false);
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.mapService.showUserLocation = this.showUserLocation();
     this.mapService.followMode = this.showUserLocation() && this.activateFollowModeOnStartup();
+
+    const autoActivate = this.autoActivate();
+    if (!this.isActive.value && autoActivate) {
+      this.isActive.next(autoActivate);
+    }
+
+    this.initMapOptions();
+  }
+
+  async initMapOptions() {
     const currentView = await firstValueFrom(this.mapService.mapView$);
     this.bounds = currentView?.bounds;
 
-    this.options = {
+    this.options.set({
       zoom: this.zoom() || currentView?.zoom || settings.map.tiles.defaultZoom,
       maxZoom: settings.map.tiles.maxZoom,
       minZoom: settings.map.tiles.minZoom,
@@ -209,14 +221,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         [-90, 180.0],
       ],
       maxBoundsViscosity: 1.0,
-    };
-
-    const autoActivate = this.autoActivate();
-    if (!this.isActive.value && autoActivate) {
-      this.isActive.next(autoActivate);
-    }
-
-    this.loaded = true;
+    });
   }
 
   ngOnDestroy(): void {
