@@ -81,8 +81,8 @@ describe('OfflineMapService', () => {
         size: 1.0 * 1024 * 1024,
         progress: { step: ProgressStep.pending, percentage: 0, description: 'test-package in queue' },
         downloadStart: new Date().getTime() / 1000,
-        downloadComplete: null,
-        error: null,
+        downloadComplete: undefined,
+        error: undefined,
         maps: {},
       },
       {
@@ -90,8 +90,8 @@ describe('OfflineMapService', () => {
         size: 1.0 * 1024 * 1024,
         progress: { step: ProgressStep.download, percentage: 0.2, description: 'test-package downloading' },
         downloadStart: new Date().getTime() / 1000,
-        downloadComplete: null,
-        error: null,
+        downloadComplete: undefined,
+        error: undefined,
         maps: {},
       },
     ]);

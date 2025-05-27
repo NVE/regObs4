@@ -318,8 +318,10 @@ export class FileLoggingService {
     const logMessage = '[' + dateString + '] ' + message + '\r\n';
     if (this.config.logToConsole) {
       if (err) {
+        // eslint-disable-next-line no-console
         console.error(logMessage);
       } else {
+        // eslint-disable-next-line no-console
         console.log(logMessage);
       }
     }
@@ -340,7 +342,7 @@ export class FileLoggingService {
     }
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: any }) {
+  log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: unknown }) {
     let msg = `[${level?.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
     if (optionalParams) {
       msg += `. Params: ${this.stringify(optionalParams)}`;
@@ -367,7 +369,7 @@ export class FileLoggingService {
    * @param message
    * @param error
    */
-  err(message: string, error?: any) {
+  err(message: string, error?: Error) {
     this.logInternal(message, true);
 
     if (error == null) {
@@ -384,7 +386,7 @@ export class FileLoggingService {
     }
   }
 
-  private stringify(data: { [key: string]: any }): string {
+  private stringify(data: { [key: string]: unknown }): string {
     if (data) {
       return JSON.stringify(data, getCircularReplacer());
     }
@@ -503,6 +505,7 @@ export class FileLoggingService {
 
   private debug_metaLog(message: string) {
     if (this.config.enableMetaLogging) {
+      // eslint-disable-next-line no-console
       console.log('**LOGGER_META**: ' + message);
     }
   }
@@ -559,7 +562,8 @@ class LogProviderConfig implements ILogProviderConfig {
 
   // Developer-level logging will appear in log files if true
   devMode!: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(fields: any) {
     // Quick and dirty extend/assign fields to this model
     for (const f in fields) {
@@ -571,6 +575,7 @@ class LogProviderConfig implements ILogProviderConfig {
    * Overrides this object's uninitialized fields with the passed parameter's fields
    * @param config
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   merge(config: any) {
     for (const k in config) {
       if (!(k in this)) {
