@@ -139,7 +139,12 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
   showTileOnMap(map: L.Map) {
     if (this.tileLayer) {
       this.tileLayer.addTo(map);
+      // Begrens panorering i kartet i modalen
+      map.setMaxBounds(this.tileLayer.getBounds().pad(0.1));
     }
+    // Begrens zooming i kartet i modalen
+    map.setMinZoom(this.zoom);
+    map.setMaxZoom(this.zoom);
   }
 
   async startDownload(): Promise<void> {

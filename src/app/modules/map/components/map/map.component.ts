@@ -96,6 +96,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private mapZoomService = inject(MapZoomService);
   private observerTripsService = inject(ObserverTripsService);
 
+  readonly showControls = input(true);
+  readonly showZoomButtons = input(true);
   readonly showMapSearch = input(true);
   readonly showFullscreenToggle = input(true);
   readonly showGpsCenter = input(true);

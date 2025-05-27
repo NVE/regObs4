@@ -1,6 +1,4 @@
-import { Component, inject, input } from '@angular/core';
-import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
-import { NgClass, NgIf, AsyncPipe } from '@angular/common';
+import { Component, input } from '@angular/core';
 import { MapSearchComponent } from './map-search/map-search.component';
 import { FullscreenToggleComponent } from './fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from './gps-center/gps-center.component';
@@ -10,20 +8,10 @@ import { MapZoomComponent } from './map-zoom/map-zoom.component';
   selector: 'app-map-controls',
   templateUrl: './map-controls.component.html',
   styleUrls: ['./map-controls.component.scss'],
-  imports: [
-    NgClass,
-    MapSearchComponent,
-    NgIf,
-    FullscreenToggleComponent,
-    GpsCenterComponent,
-    MapZoomComponent,
-    AsyncPipe,
-  ],
+  imports: [MapSearchComponent, FullscreenToggleComponent, GpsCenterComponent, MapZoomComponent],
 })
 export class MapControlsComponent {
-  private fullscreenService = inject(FullscreenService);
-
   readonly showFullscreenToggle = input(true);
   readonly showGpsCenter = input(true);
-  fullscreen$ = this.fullscreenService.isFullscreen$;
+  readonly showZoomButtons = input(true);
 }
