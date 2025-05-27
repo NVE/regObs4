@@ -159,9 +159,7 @@ export class OfflineMapPage extends NgDestoryBase {
     // Det har vært et problem at folk tror at det bare er på denne siden
     // offline-kartet finnes. Ved å ikke kunne zoome for langt inn skjønner
     // kanskje folk bedre at denne siden bare er til nedlasting.
-    map.setZoom(7);
     map.setMaxZoom(8);
-    map.setMinZoom(4);
 
     this.tilesLayer = new L.GeoJSON(undefined, {
       onEachFeature: (feature: CompoundPackageFeature, layer) => {
