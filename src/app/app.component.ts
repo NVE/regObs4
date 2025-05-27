@@ -31,7 +31,7 @@ const DEBUG_TAG = 'AppComponent';
     :host {
       --header-height: 60px;
     }
-    #main-content .main-content--web {
+    .main-content--web {
       top: 60px !important;
     }
     header {
