@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 export enum ExposedHeightType {
@@ -16,12 +16,23 @@ export enum ExposedHeightType {
   templateUrl: './exposed-height.component.html',
   styles: [
     `
-      text {
-        fill: var(--safe-text-gray);
+      .container {
+        display: flex;
       }
 
-      svg + svg {
-        margin-left: 8px;
+      svg {
+        width: 65px;
+        height: 65px;
+      }
+
+      svg:has(text) {
+        flex: 1;
+        width: 100%;
+        height: 65px;
+      }
+
+      text {
+        fill: var(--safe-text-gray);
       }
     `,
   ],

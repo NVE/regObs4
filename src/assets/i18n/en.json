@@ -612,7 +612,8 @@
         "HOW_MANY_AVALANCHES": "Number of avalanches",
         "NO_AVALANCHE_ACTIVITY": "No avalanche activity observed",
         "TITLE": "Avalanche Activity",
-        "UNKNOWN_NUMBER": "Unknown number of"
+        "UNKNOWN_NUMBER": "Unknown number of",
+        "UNKNOWN_SHORT": "Unknown"
       },
       "AVALANCHE_EVALUATION": {
         "AVALANCHE_DANGER": "Danger level",
