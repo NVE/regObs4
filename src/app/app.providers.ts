@@ -11,14 +11,11 @@ import {
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
-import { File } from '@awesome-cordova-plugins/file/ngx';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
-// import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
-// import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
 import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular/standalone';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -98,7 +95,6 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
     deps: [TranslateService],
   },
   DeviceOrientation,
-  File,
   InAppBrowser,
   SafariViewController,
   HTTP,
