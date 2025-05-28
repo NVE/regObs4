@@ -49,7 +49,6 @@
     "@awesome-cordova-plugins/core": "^6.3.0",
     "@awesome-cordova-plugins/device-orientation": "^6.3.0",
     "@awesome-cordova-plugins/email-composer": "^6.3.0",
-    "@awesome-cordova-plugins/file": "^6.3.0",
     "@awesome-cordova-plugins/in-app-browser": "^6.3.0",
     "@awesome-cordova-plugins/ionic-webview": "^6.3.0",
     "@awesome-cordova-plugins/safari-view-controller": "^6.3.0",
