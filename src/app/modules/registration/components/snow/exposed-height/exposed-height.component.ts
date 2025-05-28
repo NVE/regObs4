@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import { Component, computed, model, signal } from '@angular/core';
 import { IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -27,7 +26,7 @@ type HeightsState = Record<ExposedHeightPosition, boolean>;
   selector: 'app-exposed-height',
   templateUrl: './exposed-height.component.html',
   styleUrls: ['./exposed-height.component.scss'],
-  imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, NgClass, SelectComponent, TranslatePipe],
+  imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, SelectComponent, TranslatePipe],
 })
 export class ExposedHeightComponent {
   readonly exposedHeightComboTID = model<number>();
@@ -82,7 +81,15 @@ export class ExposedHeightComponent {
       (!this.heights().top && !this.heights().bottom && this.heights().middle)
   );
 
-  currentExposedHeightComboTID = computed(() => {
+  applyChanges() {
+    if (!this.sholdUseExposedHight2()) {
+      this.exposedHeight2.set(undefined);
+    }
+    const currentExposedHeightComboTID = this.currentExposedHeightComboTID();
+    this.exposedHeightComboTID.set(currentExposedHeightComboTID);
+  }
+
+  private currentExposedHeightComboTID(): number | undefined {
     if (this.heights().top && this.heights().middle && this.heights().bottom) {
       return ExposedHeightCombo.NotGiven;
     }
@@ -99,13 +106,6 @@ export class ExposedHeightComponent {
       return ExposedHeightCombo.BottomWhite;
     }
     return undefined;
-  });
-
-  applyChanges() {
-    if (!this.sholdUseExposedHight2()) {
-      this.exposedHeight2.set(undefined);
-    }
-    this.exposedHeightComboTID.set(this.currentExposedHeightComboTID());
   }
 }
 
