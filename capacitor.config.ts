@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
     },
     Keyboard: {
       resize: KeyboardResize.Ionic,
-      resizeOnFullScreen: true,
+      resizeOnFullScreen: false,
       style: KeyboardStyle.Default,
     },
   },
