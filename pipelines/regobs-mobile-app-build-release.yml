@@ -160,13 +160,13 @@ steps:
       signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
       provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
 
-  - task: JavaToolInstaller@0
+  - task: JavaToolInstaller@1
     inputs:
-      versionSpec: '17'
+      versionSpec: '21'
       jdkArchitectureOption: 'x64'
       jdkSourceOption: 'PreInstalled'
 
-  - task: Gradle@2
+  - task: Gradle@4
     displayName: 'Create Android app bundle'
     inputs:
       gradleWrapperFile: 'android/gradlew'
@@ -174,8 +174,6 @@ steps:
       tasks: 'bundleRelease'
       publishJUnitResults: false
       javaHomeOption: 'JDKVersion'
-      sonarQubeRunAnalysis: false
-      spotBugsAnalysis: false
 
   - task: CmdLine@2
     inputs:
