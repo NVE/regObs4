@@ -2,7 +2,7 @@
   <ion-menu side="start" menuId="filter" contentId="main-content-home-page">
     @defer {
       <app-filter-menu>
-        <ion-item lines="full" color="light" button detail="false">
+        <ion-item lines="full" color="light" swipeGesture="false" button detail="false">
           <ion-toggle [checked]="showObservations$ | async" (ionChange)="saveShowObservation($event)">
             {{ "MENU.SHOW_OBSERVATIONS" | translate }}
           </ion-toggle>
