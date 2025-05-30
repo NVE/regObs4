@@ -1,6 +1,8 @@
 <ion-header color="primary" class="ion-no-margin">
   <ion-toolbar appHeaderColor>
-    <ion-title [size]="isMobile ? '' : 'small'">{{ "OBSERVATION_FILTER.TITLE" | translate }}</ion-title>
+    <ion-title [class.title--mobile]="isMobile" [size]="isMobile ? '' : 'small'">{{
+      "OBSERVATION_FILTER.TITLE" | translate
+    }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
