@@ -5,12 +5,6 @@
     background-position: center !important;
     background-size: contain !important;
 
-    &.selected {
-      ion-col {
-        color: #fff;
-      }
-    }
-
     &.top {
       background: #fff url('/assets/images/mountain-top-grey.png') no-repeat;
       &.selected {
@@ -36,4 +30,8 @@
 
 ion-text {
   width: 100%;
+}
+
+.selected {
+  color: #fff;
 }

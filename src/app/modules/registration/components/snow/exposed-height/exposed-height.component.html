@@ -4,37 +4,24 @@
   }}</ion-label>
   <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
     <ion-grid class="exposedHight">
-      <ion-row
-        class="top padding-bottom"
-        (click)="toggleExsposedHeightCombo('top')"
-        [ngClass]="{ selected: exposedHeightTop }"
-      >
-        <ion-col size="12" class="ion-text-center ion-align-self-center">
-          {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.TOP" | translate }}
-        </ion-col>
-      </ion-row>
-      <ion-row
-        class="middle padding-bottom"
-        (click)="toggleExsposedHeightCombo('middle')"
-        [ngClass]="{ selected: exposedHeightMiddle }"
-      >
-        <ion-col size="12" class="ion-text-center ion-align-self-center">
-          {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.MIDDLE" | translate }}
-        </ion-col>
-      </ion-row>
-      <ion-row
-        (click)="toggleExsposedHeightCombo('bottom')"
-        class="bottom"
-        [ngClass]="{ selected: exposedHeightBottom }"
-      >
-        <ion-col size="12" class="ion-text-center ion-align-self-center">
-          {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.BOTTOM" | translate }}
-        </ion-col>
-      </ion-row>
+      @for (item of heightEntries(); track item.key) {
+        <ion-row
+          [class]="item.key + ' padding-bottom'"
+          [class.selected]="item.value"
+          (click)="toggleExsposedHeightCombo(item.key)"
+        >
+          <ion-col size="12" class="ion-text-center ion-align-self-center">
+            <p [class.selected]="item.value">
+              {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM." + item.key.toUpperCase() | translate }}
+            </p>
+          </ion-col>
+        </ion-row>
+      }
     </ion-grid>
   </ion-text>
 </ion-item>
-@if (exposedHeightTop || exposedHeightMiddle || exposedHeightBottom) {
+
+@if (heights().top || heights().middle || heights().bottom) {
   <app-select
     [(selectedValue)]="exposedHeight1"
     [options]="heightArray"
