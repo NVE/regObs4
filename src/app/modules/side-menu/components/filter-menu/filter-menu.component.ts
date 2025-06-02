@@ -14,7 +14,6 @@ import {
   SearchbarCustomEvent,
   IonContent,
   IonListHeader,
-  Platform,
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -90,6 +89,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private kdvService = inject(KdvService);
   private slushFlowKdv = toSignal(this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheKDV'));
   observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
+
   private currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
   isGeohazardSnow = computed(() => this.currentGeoHazard().includes(GeoHazard.Snow));
 
