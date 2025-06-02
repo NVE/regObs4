@@ -618,7 +618,8 @@
         "HOW_MANY_AVALANCHES": "Antall skred",
         "NO_AVALANCHE_ACTIVITY": "Ingen skredaktivitet observert",
         "TITLE": "Skredaktivitet",
-        "UNKNOWN_NUMBER": "Ukjent antall"
+        "UNKNOWN_NUMBER": "Ukjent antall",
+        "UNKNOWN_SHORT": "Ukjent"
       },
       "AVALANCHE_EVALUATION": {
         "AVALANCHE_DANGER": "Faregrad",

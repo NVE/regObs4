@@ -22,7 +22,7 @@
   </div>
 }
 <ng-template #middle>
-  <svg xmlns="http://www.w3.org/2000/svg" width="65" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <path
       fill="#E3E3E3"
       d="M37 12.8c-4.5 2.1-5.4.5-8-.7-3-1.8-6.6-.7-7-.7l.2-.4L26 1.8c.5-1 1.2-1.8 2-1.8s1.5.5 2.3 1.2l6.5 11.6z"
@@ -43,7 +43,7 @@
 </ng-template>
 
 <ng-template #bottom>
-  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none">
     <path fill="#fff" d="M0 0h64v64H0z" />
     <path
       fill="#E3E3E3"
@@ -61,7 +61,7 @@
 </ng-template>
 
 <ng-template #top>
-  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <path
       fill="#D21523"
       d="M50.3 41.8c-2.7 1.8-4.8 1.8-9.2-1.1-2.8-2-4.2-3.7-8-5.2-3.1-1.4-4.5 1-9.1 1-3.2 0-3.5-.6-5.3-2.2 0 0-3-3-6.7-2.9L25.6 2c.5-1.1 1.2-2 2.3-2 .9 0 1.7.5 2.4 1.6L52 37.8c.7 2.4-1.8 4-1.6 4z"
@@ -78,7 +78,7 @@
 </ng-template>
 
 <ng-template #topBottom>
-  <svg xmlns="http://www.w3.org/2000/svg" width="65" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <path
       fill="#D21523"
       d="M37 12.8c-4.5 2.1-5.4.5-8-.7-3-1.8-6.6-.7-7-.7l.2-.4L26 1.8c.5-1 1.2-1.8 2-1.8s1.5.5 2.3 1.2l6.5 11.6z"
@@ -103,43 +103,67 @@
 </ng-template>
 
 <ng-template #topHeight>
-  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <path fill="#fff" d="M0 0h45v64H0z" />
     <text x=".1" y="49.4">
-      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+      {{
+        exposedHeight1() !== null
+          ? exposedHeight1() + "m"
+          : ("REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_SHORT" | translate)
+      }}
     </text>
     <path fill="#D21523" d="M30 23h-5v10h-5V23h-5l7.5-10L30 23z" />
   </svg>
 </ng-template>
 
 <ng-template #bottomHeight>
-  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <text x=".1" y="28.4">
-      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+      {{
+        exposedHeight1() !== null
+          ? exposedHeight1() + "m"
+          : ("REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_SHORT" | translate)
+      }}
     </text>
     <path fill="#D21523" d="M15 42h5V32h5v10h5l-7.5 10L15 42z" />
   </svg>
 </ng-template>
 
 <ng-template #middleHeight>
-  <svg xmlns="http://www.w3.org/2000/svg" width="72" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <text x="19" y="24.4">
-      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+      {{
+        exposedHeight1() !== null
+          ? exposedHeight1() + "m"
+          : ("REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_SHORT" | translate)
+      }}
     </text>
     <text x="19" y="52.4">
-      {{ exposedHeight2() !== null ? exposedHeight2() + "m" : ("Unknown" | translate) }}
+      {{
+        exposedHeight2() !== null
+          ? exposedHeight2() + "m"
+          : ("REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_SHORT" | translate)
+      }}
     </text>
     <path fill="#D21523" d="M0 18h5V8h5v10h5L7.5 28 0 18zM15 46h-5v10H5V46H0l7.5-10L15 46z" />
   </svg>
 </ng-template>
 
 <ng-template #topBottomHeight>
-  <svg xmlns="http://www.w3.org/2000/svg" width="72" height="64">
+  <svg xmlns="http://www.w3.org/2000/svg">
     <text x="19" y="24.4">
-      {{ exposedHeight1() !== null ? exposedHeight1() + "m" : ("Unknown" | translate) }}
+      {{
+        exposedHeight1() !== null
+          ? exposedHeight1() + "m"
+          : ("REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_SHORT" | translate)
+      }}
     </text>
     <text x="19" y="52.4">
-      {{ exposedHeight2() !== null ? exposedHeight2() + "m" : ("Unknown" | translate) }}
+      {{
+        exposedHeight2() !== null
+          ? exposedHeight2() + "m"
+          : ("REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_SHORT" | translate)
+      }}
     </text>
     <path fill="#D21523" d="M0 46h5V36h5v10h5L7.5 56 0 46zM15 18h-5v10H5V18H0L7.5 8 15 18z" />
   </svg>
