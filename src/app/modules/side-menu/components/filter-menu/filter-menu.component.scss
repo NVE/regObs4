@@ -30,7 +30,10 @@ ion-item.nickname-search {
   }
 }
 
-.title--mobile {
-  padding-inline-start: unset;
-  padding-inline-end: unset;
+/**
+ * Tittel får default alt for stor padding i bunnen på iOS.
+ */
+ion-title.ios.title-small {
+  padding-bottom: 0;
+  padding-top: 0;
 }

@@ -88,10 +88,8 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   private searchCriteriaService = inject(SearchCriteriaService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
   private kdvService = inject(KdvService);
-  private platform = inject(Platform);
   private slushFlowKdv = toSignal(this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheKDV'));
   observationTypeGroups = toSignal(this.searchCriteriaModelService.getObservationTypeGroups$());
-  isMobile = this.platform.is('android') || this.platform.is('ios') || this.platform.is('mobileweb');
   private currentGeoHazard = toSignal(this.userSettingService.currentGeoHazard$, { initialValue: [GeoHazard.Snow] });
   isGeohazardSnow = computed(() => this.currentGeoHazard().includes(GeoHazard.Snow));
 
