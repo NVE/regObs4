@@ -29,3 +29,11 @@ ion-item.nickname-search {
     font-size: 1.2rem;
   }
 }
+
+/**
+ * Tittel får default alt for stor padding i bunnen på iOS.
+ */
+ion-title.ios.title-small {
+  padding-bottom: 0;
+  padding-top: 0;
+}
