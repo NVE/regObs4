@@ -187,9 +187,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   onMapReady(map: L.Map) {
     this.map = map;
-    setTimeout(() => {
-      this.updateMarkers();
-    });
+    this.updateMarkers();
     this.ngZone.runOutsideAngular(() => {
       this.map.on('drag', () => this.updatePolyline());
       this.updatePolyline();

@@ -1,7 +1,6 @@
 import {
   Component,
   EventEmitter,
-  NgZone,
   OnDestroy,
   OnInit,
   Output,
@@ -10,6 +9,8 @@ import {
   input,
   model,
   computed,
+  signal,
+  linkedSignal,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -29,17 +30,8 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import L from 'leaflet';
 import 'leaflet-draw';
 import moment from 'moment';
-import { concat, firstValueFrom, fromEventPattern, Observable, Subject } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs/operators';
+import { firstValueFrom, Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
@@ -50,7 +42,6 @@ import { LocationService } from '../../../../core/services/location/location.ser
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
@@ -63,9 +54,8 @@ import { SelectComponent } from '../../../shared/components/input/select/select.
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { calendarOutline, createOutline, radioButtonOn, timeOutline } from 'ionicons/icons';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
-import { ActivatedRoute } from '@angular/router';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -73,9 +63,6 @@ export interface LocationTime {
   source?: number;
   spatialAccuracy?: number;
 }
-
-const INITIAL_ZOOM_MINIMUM = 5;
-const EXTERNAL_MAP_ZOOM = 15; //Zoom nivå for eksterne tjenester som sender lat,lng eller locationId til regobs for å starte en ny observasjon
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -148,13 +135,11 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private mapService = inject(MapService);
   private helperService = inject(HelperService);
-  private ngZone = inject(NgZone);
   private mapSearchService = inject(MapSearchService);
   private geoPositionService = inject(GeoPositionService);
   private locationService = inject(LocationService);
   private translateService = inject(TranslateService);
   private platform = inject(Platform);
-  private activatedRoute = inject(ActivatedRoute);
 
   // TODO: For mange måter denne komponenten kommuniserer med omverdenen på...
   readonly geoHazard = input.required<GeoHazard>();
@@ -182,6 +167,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   readonly localDate = model(moment().toISOString(true));
   readonly sourceTid = model<ObsLocationEditModel['UTMSourceTID']>();
   readonly spatialAccuracy = model<ObsLocationEditModel['Uncertainty']>();
+  readonly minStartupZoom = input(15);
+
+  private mapViewInfoUpdateRequested = new Subject<void>();
+  mapViewInfoIsLoading = signal(false);
+  mapViewInfoElevation = signal<number | undefined>(undefined);
+  mapViewInfoLocationName = signal<string | undefined>(undefined);
 
   locationMarker = computed(() => {
     const markerInput = this.locationMarkerInput();
@@ -203,29 +194,26 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   followMode = false;
   private userposition?: Position;
   private pathLine?: L.Polyline; // line between observation location and device location
-  distanceToObservationText = '';
-  viewInfo: ViewInfo | null = null;
-  isLoading = false;
+  distanceToObservationText = signal('');
+
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject<void>();
-  private mapView$?: Observable<IMapView>;
-  private lat = this.activatedRoute.snapshot.queryParams['lat'];
-  private lon = this.activatedRoute.snapshot.queryParams['lon'];
-  private locationId = this.activatedRoute.snapshot.queryParams['locationId'];
-  private mapView = toSignal(
+
+  private initialMapServiceZoom = toSignal(
     this.mapService.mapView$.pipe(
       filter((v) => v != null),
-      take(1)
+      take(1),
+      map((mapView) => mapView.zoom)
     )
   );
 
   initialZoom = computed(() => {
-    if (this.mapView()?.zoom != null) return undefined;
-    if ((this.lat && this.lon) || this.locationId) {
-      return EXTERNAL_MAP_ZOOM;
-    } else {
-      return this.mapView()?.zoom || INITIAL_ZOOM_MINIMUM;
+    const minStartupZoom = this.minStartupZoom();
+    const zoom = this.initialMapServiceZoom();
+    if (zoom != null && zoom >= minStartupZoom) {
+      return zoom;
     }
+    return minStartupZoom;
   });
 
   isDesktop = this.platform.is('desktop');
@@ -236,7 +224,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
-  locationName?: string;
+  locationName = linkedSignal(() => this.selectedLocation()?.Name || '');
   maxDate = moment().minutes(59).toISOString(true);
   locale = this.translateService.currentLang;
 
@@ -246,10 +234,35 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return this.allowEditLocationName();
   }
 
+  private createMapViewInfoUpdateSubscription() {
+    this.mapViewInfoUpdateRequested
+      .pipe(
+        tap(() => {
+          this.mapViewInfoIsLoading.set(true);
+        }),
+        debounceTime(500),
+        switchMap(() => {
+          const latLng = this.locationMarker().getLatLng();
+          return this.mapSearchService.getViewInfo(latLng, this.geoHazard());
+        }),
+        catchError(() => {
+          // TODO: Log error
+          return of(undefined);
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe((viewInfo) => {
+        this.mapViewInfoIsLoading.set(false);
+        this.mapViewInfoElevation.set(viewInfo?.elevation);
+        this.mapViewInfoLocationName.set(this.getLocationName(viewInfo?.location));
+      });
+  }
+
   constructor() {
     this.setTranslatedAccuracies();
     addIcons({ calendarOutline, radioButtonOn, createOutline, timeOutline });
     L.Marker.prototype.options.icon = defaultIcon;
+    this.createMapViewInfoUpdateSubscription();
   }
 
   async ngOnInit(): Promise<void> {
@@ -277,9 +290,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  private getLocationsObservable(mapView$: Observable<IMapView>): Observable<ObsLocationsResponseDtoV2[]> {
-    return mapView$.pipe(
-      filter((mapView) => mapView && mapView.center != null && mapView.bounds != null),
+  private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
+    return this.mapService.mapView$.pipe(
+      filter((mapView) => mapView != null),
       switchMap((mapView) =>
         this.locationService.getLocationWithinRadiusObservable(
           this.geoHazard(),
@@ -302,39 +315,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  // bounds, center and zoom for this map
-  private getCurrentMapView(map: L.Map): IMapView {
-    return {
-      bounds: map.getBounds(),
-      center: map.getCenter(),
-      zoom: map.getZoom(),
-    };
-  }
-
   onMapReady(m: L.Map): void {
-    this.mapView$ = concat(
-      // Start with mapview from mapservice
-
-      this.mapService.mapView$.pipe(
-        filter((v) => v != null),
-        take(1)
-      ),
-
-      // Listen to events that can change the map view
-      fromEventPattern(
-        (handler) => m.on('resize moveend dragend', handler),
-        (handler) => m.off('resize moveend dragend', handler)
-      ).pipe(
-        takeUntil(this.ngDestroy$),
-        debounceTime(200),
-        map(() => this.getCurrentMapView(m))
-      )
-    ).pipe(shareReplay(1));
-
+    this.map = m;
     const locationMarker = this.locationMarker();
     if (locationMarker) {
       // TODO: Ikke ha locationMarker som input... dette blir rart
       locationMarker.setZIndexOffset(100).addTo(m);
+      locationMarker.setOpacity(1);
     } else {
       throw new Error('No location marker supplied or initialized');
     }
@@ -343,30 +330,24 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       fromMarker.addTo(m);
     }
     this.locationGroup.addTo(m);
-    m.on('dragstart', () => {
-      this.ngZone.run(() => {
-        this.isLoading = true;
+
+    m.on('drag', () => this.moveLocationMarkerToPos(m.getCenter()));
+    if (this.setObsTime()) {
+      m.on('click', (e: L.LeafletMouseEvent) => {
+        this.moveLocationMarkerToPos(e.latlng);
+        this.requestMapViewInfoUpdate();
       });
-    });
-    m.on('drag', () => this.moveLocationMarkerToCenter(m));
+      m.on('dragstart', () => this.mapViewInfoIsLoading.set(true));
+      m.on('dragend', () => this.requestMapViewInfoUpdate());
+    }
 
     if (this.showPreviousUsedLocations()) {
-      this.getLocationsObservable(this.mapView$)
+      this.getLocationsObservable()
         .pipe(takeUntil(this.ngDestroy$))
         .subscribe((locations) => {
           locations.forEach((loc) => this.addLocationIfNotExists(loc, m));
         });
     }
-
-    this.mapView$
-      .pipe(
-        // ikke søke på nytt hvis kartsenter ikke flytter seg nevneverdig (f.eks. ved zoom)
-        distinctUntilChanged((prev, curr) => mapCenterIsStableOrNotAvailable(prev, curr)),
-        takeUntil(this.ngDestroy$)
-      )
-      .subscribe(() => {
-        this.updateMapViewInfo();
-      });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.followMode = val;
@@ -490,7 +471,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private setLocationMarkerLatLng(latLng: L.LatLngExpression): void {
     this.locationMarker().setLatLng(latLng);
     this.updatePathAndDistance();
-    this.updateMapViewInfo();
+    this.requestMapViewInfoUpdate();
   }
 
   private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2, map: L.Map): void {
@@ -506,31 +487,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  private moveLocationMarkerToCenter(map: L.Map): void {
+  private moveLocationMarkerToPos(pos: L.LatLng): void {
     this.mapService.followMode = false;
     this.selectedLocation.set(undefined);
     this.allowEditLocationName.set(true);
-    const center = map.getCenter();
-    this.locationMarker().setLatLng(center);
+    this.locationMarker().setLatLng(pos);
     this.updatePathAndDistance();
   }
 
-  private updateMapViewInfo(): void {
-    const latLng = this.locationMarker().getLatLng();
-    this.mapSearchService.getViewInfo(latLng, this.geoHazard()).subscribe(
-      (val) => {
-        this.ngZone.run(() => {
-          this.viewInfo = val;
-          this.isLoading = false;
-        });
-      },
-      () => {
-        this.ngZone.run(() => {
-          this.viewInfo = null;
-          this.isLoading = false;
-        });
-      }
-    );
+  private requestMapViewInfoUpdate(): void {
+    this.mapViewInfoUpdateRequested.next();
   }
 
   private positionChange(position: Position) {
@@ -582,16 +548,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.ngZone.run(() => {
-      this.distanceToObservationText = this.helperService.getDistanceText(locationMarkerLatLng.distanceTo(from));
-    });
+    this.distanceToObservationText.set(this.helperService.getDistanceText(locationMarkerLatLng.distanceTo(from)));
   }
 
-  getLocationName(location: LocationName): string {
+  private getLocationName(location?: LocationName) {
     if (location) {
       return location.adminName !== location.name ? `${location.name} / ${location.adminName}` : location.name;
     }
-    return '';
+    return undefined;
   }
 
   confirm(): void {
@@ -607,7 +571,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.locationTimeSet.emit(locationTime);
   }
 
-  getLocation(): ObsLocationEditModel {
+  private getLocation(): ObsLocationEditModel {
     const obsLocation: ObsLocationEditModel = {
       Latitude: this.locationMarker().getLatLng().lat,
       Longitude: this.locationMarker().getLatLng().lng,
@@ -615,15 +579,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     };
     // check if location name is the same as location description if yes then allow edition
     const selectedLocation = this.selectedLocation();
-    if (this.editLocationName && this.locationName && this.locationName.length > 0) {
-      obsLocation.ObsLocationID = undefined;
-      obsLocation.LocationName = this.locationName.substring(0, 60);
+    if (this.allowEditLocationName() && this.locationName().length > 0) {
+      obsLocation.LocationName = this.locationName().substring(0, 60);
     } else if (selectedLocation && selectedLocation?.Name !== selectedLocation?.LocationDescription) {
       obsLocation.ObsLocationID = selectedLocation.Id;
       obsLocation.LocationName = selectedLocation.Name;
     }
-    if (this.viewInfo && this.viewInfo.location) {
-      obsLocation.LocationDescription = this.getLocationName(this.viewInfo.location);
+    if (this.mapViewInfoLocationName()) {
+      obsLocation.LocationDescription = this.mapViewInfoLocationName();
     }
     if (this.followMode && this.userposition) {
       obsLocation.UTMSourceTID = UtmSource.GPS;
@@ -645,14 +608,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   onLocationEditComplete(): void {
-    const locNameInput = this.editLocationNameInput();
-    if (!locNameInput) {
-      return;
-    }
-    if (locNameInput.value?.toString().length === 0) {
+    if (!this.locationName()) {
       // User has deleted all text
       this.editLocationName = false;
-      this.updateMapViewInfo();
+      this.selectedLocation.set(undefined);
+      this.requestMapViewInfoUpdate();
     }
   }
 
