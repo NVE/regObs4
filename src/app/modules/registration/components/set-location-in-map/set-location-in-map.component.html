@@ -12,7 +12,7 @@
   ></app-map>
   <div class="bottom-background flex-row">
     <div class="bottom-info flex-col flex-grow">
-      <div *ngIf="setObsTime() && isDesktop && distanceToObservationText !== '0 m'" class="flex-row">
+      <div *ngIf="setObsTime() && isDesktop && distanceToObservationText() !== '0 m'" class="flex-row">
         <!-- TODO: horisontal dist box bør ikke vises vi ikke har posisjon -->
         <div class="horizontal-dist-box flex-row flex-center flex-space">
           <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl()"></svg-icon>
@@ -28,7 +28,7 @@
               stroke-dasharray="1,4"
             ></line>
           </svg>
-          <ion-label class="distance-label small-text ion-no-margin">{{ distanceToObservationText }}</ion-label>
+          <ion-label class="distance-label small-text ion-no-margin">{{ distanceToObservationText() }}</ion-label>
           <svg class="dotted-line" width="27px" height="4px" viewBox="0 0 27 4">
             <line
               x1="2"
@@ -62,7 +62,7 @@
                 stroke-dasharray="1,4"
               ></line>
             </svg>
-            <ion-label class="small-text ion-no-margin">{{ distanceToObservationText }}</ion-label>
+            <ion-label class="small-text ion-no-margin">{{ distanceToObservationText() }}</ion-label>
             <svg class="dotted-line" width="4px" height="27px" viewBox="0 0 4 27">
               <line
                 x1="1"
@@ -86,26 +86,34 @@
               <ion-row>
                 <ion-col class="ion-no-padding">
                   <ng-container *ngIf="!editLocationName; else editLocationTemplate">
-                    <ng-container *ngIf="selectedLocation(); else viewInfoTemplate">
+                    @if (selectedLocation()) {
                       <ion-label class="detail-obs-info ion-no-margin ion-text-wrap">
                         <span>{{ selectedLocation()?.Name }}</span>
                       </ion-label>
-                    </ng-container>
+                    } @else {
+                      @if (mapViewInfoIsLoading()) {
+                        <ion-spinner color="dark" name="dots"></ion-spinner>
+                      } @else {
+                        <ion-label class="detail-obs-info ion-no-margin ion-text-wrap">
+                          {{ mapViewInfoLocationName() }}
+                        </ion-label>
+                      }
+                    }
                   </ng-container>
                 </ion-col>
               </ion-row>
               <ion-label class="small-text ion-no-margin">
-                <span *ngIf="!isLoading && locationMarker()"
-                  >{{ locationMarker().getLatLng().lat | number: "0.3" }}&deg;{{
-                    "MAP_CENTER_INFO.NORTH_SHORT" | translate
-                  }}, {{ locationMarker().getLatLng().lng | number: "0.3" }}&deg;{{
-                    "MAP_CENTER_INFO.EAST_SHORT" | translate
-                  }}</span
-                >
-                <span *ngIf="!isLoading && viewInfo && viewInfo.elevation !== null"
-                  >, {{ viewInfo.elevation }}
-                  {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
-                </span>
+                @if (locationMarker()) {
+                  <span>
+                    {{ locationMarker().getLatLng().lat | number: "0.3" }}&deg;
+                    {{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},
+                    {{ locationMarker().getLatLng().lng | number: "0.3" }}&deg;
+                    {{ "MAP_CENTER_INFO.EAST_SHORT" | translate }}
+                  </span>
+                }
+                @if (!mapViewInfoIsLoading() && mapViewInfoElevation() !== undefined) {
+                  <span>, {{ mapViewInfoElevation() }}{{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</span>
+                }
               </ion-label>
             </div>
             <button
@@ -187,18 +195,4 @@
     (ionBlur)="onLocationEditComplete()"
   >
   </ion-input>
-</ng-template>
-
-<ng-template #viewInfoTemplate>
-  <ng-container *ngIf="!isLoading">
-    <ng-container *ngIf="viewInfo && viewInfo.location">
-      <ion-label class="detail-obs-info ion-no-margin ion-text-wrap">
-        <span *ngIf="viewInfo.location.name !== viewInfo.location.adminName">{{ viewInfo.location.name }},&nbsp;</span
-        >{{ viewInfo.location.adminName }}&nbsp;
-      </ion-label>
-    </ng-container>
-  </ng-container>
-  <ng-container *ngIf="isLoading">
-    <ion-spinner color="dark" name="dots"></ion-spinner>
-  </ng-container>
 </ng-template>

@@ -36,6 +36,8 @@ import { InitDraft } from 'src/app/core/services/draft/init-draft.model';
 import { Capacitor } from '@capacitor/core';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 
+const DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION = 15;
+
 @Component({
   selector: 'app-obs-location',
   templateUrl: './obs-location.page.html',
@@ -64,6 +66,13 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   private swipeBackService = inject(SwipeBackService);
   private userSettingService = inject(UserSettingService);
   private geoPositionService = inject(GeoPositionService);
+
+  // Kommentar fra RO-2890:
+  // Tillat et lite zoomnivå her (langt zooma ut).
+  // Hvis man starter en ny observasjon kan man miste oversikten om man plutselig er veldig langt zooma inn.
+  // Det er heller ikke alle bakgrunnskart som har tiles langt zooma inn for havområdene feks, så hvis man har
+  // kartsenter ute i havet, og blir zooma inn til 15 (som det var før), får man ikke opp kart.
+  initialMinZoom = 1;
 
   locationMarker!: L.Marker;
   isLoaded = false;
@@ -113,6 +122,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     }
     if (lat && lon) {
       this.setLocationMarker(lat, lon);
+      this.initialMinZoom = DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION;
     } else if (locationId) {
       const location = (await firstValueFrom(
         this.locationService.LocationGet({ locationId: locationId })
@@ -123,6 +133,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         LocationDescription: location.LocationDescription,
         Id: locationId,
       };
+      this.initialMinZoom = DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION;
     } else if (this.hasLocation(this.draft)) {
       const obsLocation = this.draft.registration.ObsLocation;
       this.allowEditLocationName = obsLocation.LocationName && obsLocation.ObsLocationID ? false : true;
@@ -132,12 +143,14 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         LocationDescription: obsLocation.LocationDescription,
         Id: obsLocation.ObsLocationID,
       };
+      this.initialMinZoom = DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION;
     }
     // hvis man bruker appen på mobil, og registerer en ny observajon - kan vi sette posisjonen fra gps
     else if (Capacitor.isNativePlatform()) {
       const position = await this.geoPositionService.getSingleCurrentPosition();
       if (position && position.coords) {
         this.setLocationMarker(position.coords.latitude, position.coords.longitude);
+        this.initialMinZoom = DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION;
       }
     }
 
@@ -188,7 +201,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   private async setLocationTimeAndSaveDraft(
-    { location, datetime, source, spatialAccuracy }: LocationTime,
+    { location, datetime, source }: LocationTime,
     draft: InitDraft | RegistrationDraft
   ) {
     const DtObsTime = datetime || draft.registration.DtObsTime;
@@ -203,9 +216,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         DtObsTime,
         SourceTID: source || draft.registration.SourceTID,
         ObsLocation: {
-          ...draft.registration.ObsLocation,
-          ...location,
-          Uncertainty: spatialAccuracy,
+          ...(location || draft.registration.ObsLocation),
         },
       },
     };

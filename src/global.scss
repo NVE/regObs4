@@ -561,9 +561,12 @@ ion-slides {
   transform-style: preserve-3d;
 }
 
+/**
+ * Samme stiler som spesifisert i markerCluster.layer.ts
+ */
 .circle-marker-cluster {
-  background-color: var(--ion-color-varsom-blue-light-2);
-  border: 2px solid #fff;
+  background-color: #9bb9c2;
+  border: 2px solid white;
   border-radius: 50% !important;
   font-size: 14px;
   display: flex !important;
