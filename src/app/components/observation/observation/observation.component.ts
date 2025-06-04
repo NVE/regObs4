@@ -193,8 +193,16 @@ export class ObservationComponent {
     if (!attachment.UrlFormats) {
       return;
     }
-    attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
-    attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+
+    // Raw bildene prosesseres ikke - har ikke vannmerke.
+    // De bør derfor kunne hentes med en gang observasjonen har blitt sendt inn.
+    // Prøv derfor først å hente de hvis Large har feila.
+    if (attachment.UrlFormats.Large !== attachment.UrlFormats.Raw) {
+      attachment.UrlFormats.Large = attachment.UrlFormats.Raw;
+    } else {
+      attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
+      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    }
   }
 
   private fetchRegistrationBeforeEdit(
