@@ -211,6 +211,10 @@ export const settings: ISettings = {
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             maxNativeZoom: 18,
+            bounds: [
+              [57.9, 4.626617431640625],
+              [71.15939141681443, 31.3],
+            ],
           },
         },
         openTopo: {
@@ -253,11 +257,9 @@ export const settings: ISettings = {
         mixOpenTopo: [
           {
             layer: 'openTopo',
-            options: {
-              zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
-            },
-            excludeBounds: [NORWAY_BOUNDS, SVALBARD_BOUNDS],
           },
+        ],
+        geoDataLandskap: [
           {
             layer: 'npolarFkb',
           },
@@ -265,12 +267,14 @@ export const settings: ISettings = {
             layer: 'npolarBasiskart',
           },
           {
-            layer: 'statensKartverk',
-          },
-        ],
-        geoDataLandskap: [
-          {
             layer: 'geoDataLandskap',
+          },
+          {
+            layer: 'arcGisOnline',
+            options: {
+              zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
+            },
+            excludeBounds: [NORWAY_BOUNDS, SVALBARD_BOUNDS],
           },
         ],
       },
