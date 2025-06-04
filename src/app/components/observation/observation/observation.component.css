@@ -90,13 +90,6 @@ ion-chip.chip-disabled {
   margin-left: auto;
 }
 
-@media only screen and (max-width: 415px) {
-  /* On small screens, constrain the edit button size so that the share button is not pushed outside of the obs card */
-  /* Dette må testes fordi det gjør at knappen er for liten og viser ikke ikonet*/
-  .edit-button {
-  }
-}
-
 /*
  * Hvis det bare er én knapp i knapperaden (kopier-regid-knapp)
  */
