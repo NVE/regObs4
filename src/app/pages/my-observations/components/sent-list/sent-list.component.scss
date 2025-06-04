@@ -3,5 +3,6 @@
 }
 
 ion-item-divider {
-  padding-right: 16px;
+  max-width: var(--desktop-max-width);
+  margin: 0 auto;
 }

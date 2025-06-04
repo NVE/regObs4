@@ -8,7 +8,7 @@ ion-spinner {
   margin-bottom: 10px;
 }
 
-main {
-  max-width: var(--desktop-max-width);
-  margin: 0 auto;
+ion-content {
+  --padding-start: 8px;
+  --padding-end: 8px;
 }
