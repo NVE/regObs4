@@ -136,7 +136,6 @@
   @if (!isRegistrationPage && registration().RegId) {
     <a [routerLink]="'/registration/' + registration().RegId">
       <ion-button fill="clear" class="edit-button">
-        <ion-icon name="eye-outline"></ion-icon>
         {{ "REGISTRATION.GO_TO" | translate }}
       </ion-button>
     </a>

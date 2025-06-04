@@ -26,7 +26,6 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
-  eyeOutline,
   calendarNumberOutline,
   chatbubbleEllipses,
   locationOutline,
@@ -178,7 +177,6 @@ export class ObservationComponent {
     addIcons({
       calendarNumberOutline,
       createOutline,
-      eyeOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,
