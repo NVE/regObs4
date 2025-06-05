@@ -68,12 +68,15 @@ staticWebAppConfig.globalHeaders['Content-Security-Policy'] = cspString;
 staticWebAppConfig.globalHeaders['Permissions-Policy'] = permissionsPolicyString;
 fs.writeFileSync(staticWebAppConfigPath, JSON.stringify(staticWebAppConfig, null, 2), 'utf8');
 
-// Oppdater index.html (uten frame-ancestors - den støttes ikke i <meta> tag)
+// Oppdater index.html
 const indexPath = path.join(__dirname, '../src/index.html');
 let indexHtml = fs.readFileSync(indexPath, 'utf8');
 const cspStringForIndexHtml = cspString
   .split('; ')
+  // fjern frame-ancestors - den støttes ikke i <meta> tag
   .filter((directive) => !directive.startsWith('frame-ancestors'))
+  // fjern upgrade-insecure-requests, den kræsjer localhost i safari
+  .filter((directive) => !directive.startsWith('upgrade-insecure-requests'))
   .join('; ');
 indexHtml = indexHtml.replace(
   /<meta\s+http-equiv="Content-Security-Policy"\s+content="[^"]*"\s*\/?>/,

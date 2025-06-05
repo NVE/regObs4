@@ -20,6 +20,8 @@ const cspConfig = {
     'https://secure.geonames.org',
     'https://www.iskart.no',
     'https://sentry.io',
+    'https://ws.geonorge.no',
+    'https://www.yr.no',
   ],
   'upgrade-insecure-requests': true,
   'frame-ancestors': ["'none'"],
