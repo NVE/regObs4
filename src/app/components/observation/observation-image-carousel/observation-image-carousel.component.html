@@ -8,8 +8,8 @@
   (swiperslidechange)="setCurrentSlideIndex($event)"
 >
   @for (attachment of attachments(); track attachment.Url) {
-    <swiper-slide lazy="true">
-      @if (attachment.Href) {
+    @if (attachment.Href) {
+      <swiper-slide lazy="true">
         <img
           [alt]="attachment.Alt || attachment.Comment"
           [src]="snowProfileUrl()"
@@ -17,14 +17,18 @@
           class="snow-profile"
           loading="lazy"
         />
-      } @else {
-        <img
-          [alt]="attachment.Alt || attachment.Comment"
-          [src]="attachment.Url"
-          (error)="setFallbackImage(attachment)"
-        />
-      }
-    </swiper-slide>
+      </swiper-slide>
+    } @else {
+      <swiper-slide>
+        <div class="swiper-zoom-container">
+          <img
+            [alt]="attachment.Alt || attachment.Comment"
+            [src]="attachment.Url"
+            (error)="setFallbackImage(attachment)"
+          />
+        </div>
+      </swiper-slide>
+    }
   }
 </swiper-container>
 <div class="image-description">
