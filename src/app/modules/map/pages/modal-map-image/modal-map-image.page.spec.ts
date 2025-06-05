@@ -10,6 +10,7 @@ import { provideIonicAngular } from '@ionic/angular/standalone';
 import { ImageLocation } from '../../../../core/models/image-location.model';
 import L from 'leaflet';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 
 describe('ModalMapImagePage', () => {
   let component: ModalMapImagePage;
@@ -21,6 +22,7 @@ describe('ModalMapImagePage', () => {
         provideIonicAngular(),
         provideTranslateService(),
         importProvidersFrom([CommonModule, FormsModule, LeafletModule]),
+        provideTestLogger(),
       ],
       imports: [ModalMapImagePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
