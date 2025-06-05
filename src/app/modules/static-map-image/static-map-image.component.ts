@@ -23,14 +23,13 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   AfterViewInit,
   ElementRef,
-  TrackByFunction,
   HostListener,
   inject,
   viewChild,
   input,
+  signal,
 } from '@angular/core';
 import {
   debounceTime,
@@ -56,23 +55,41 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { END_ICON, START_ICON } from '../map-image/map-image.component';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { LatLng } from 'leaflet';
-import { NgFor, NgStyle } from '@angular/common';
 import type { Feature, Polygon } from 'geojson';
 
-interface TileProps {
+/**
+ * Element in static map, either a tile or a graphic
+ */
+interface MapElement {
+  /**
+   * Position in pixels from top
+   */
+  top: number;
+
+  /**
+   * Position in pixels from left
+   */
+  left: number;
+}
+
+interface TileProps extends MapElement {
+  /**
+   * Map tile img src
+   */
   src: SafeUrl;
-  top: string;
-  left: string;
 }
 
-interface Graphic {
+interface Graphic extends MapElement {
+  /**
+   * Id used for change detection tracking in for loop
+   */
   id: string;
-  svg: SafeHtml;
-  style: { [styleDesc: string]: number };
-}
 
-const trackByImgProps: TrackByFunction<TileProps> = (index, item) => item.src;
-const trackByGraphic: TrackByFunction<Graphic> = (index, item) => item.id;
+  /**
+   * Svg to display in map
+   */
+  svg: SafeHtml;
+}
 
 // We only have map services with 256px tiles at the moment.
 const TILE_SIZE = 256;
@@ -135,11 +152,9 @@ const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): 
       useClass: isPlatform('hybrid') ? OfflineCapableMapLayersService : MapLayersService,
     },
   ],
-  imports: [NgFor, NgStyle],
 })
 export class StaticMapImageComponent extends NgDestoryBase implements AfterViewInit {
   private sanitizer = inject(DomSanitizer);
-  private cdr = inject(ChangeDetectorRef);
   private mapLayerService = inject(MapLayersService);
   private logger = inject(LoggingService);
 
@@ -153,8 +168,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     this.componentCreatedOrResized.next();
   }
 
-  tiles?: TileProps[];
-  graphics: Graphic[] = [];
+  tiles = signal([] as TileProps[]);
+  graphics = signal([] as Graphic[]);
 
   private componentCreatedOrResized = new Subject<void>();
   private size = new ReplaySubject<{ w: number; h: number }>(1);
@@ -171,14 +186,6 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     map(({ w, h }) => ({ w: +w, h: +h })),
     share()
   );
-
-  get trackByImgProps() {
-    return trackByImgProps;
-  }
-
-  get trackByGraphic() {
-    return trackByGraphic;
-  }
 
   private mercator = new SphericalMercator({ size: TILE_SIZE });
 
@@ -221,8 +228,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
 
         result.push({
           src: this.sanitizer.bypassSecurityTrustUrl(url),
-          left: `${tileX * tileSize - x0}px`,
-          top: `${tileY * tileSize - y0}px`,
+          left: tileX * tileSize - x0,
+          top: tileY * tileSize - y0,
         });
       }
     }
@@ -345,7 +352,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     return polygons;
   }
 
-  private async createMap(w: number, h: number) {
+  private createMap(w: number, h: number) {
     const positions = this.getPositionsToPlot();
     const polygons = this.getPolygons();
     //add all positions together to find max and min latlng
@@ -358,17 +365,19 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     ];
 
     const { latLngBounds, geojsonBounds } = this.getLatLngBounds(positionsAndPolygonsLatLngs);
-    const mapLayers = await this.mapLayerService.getMapLayerForLocation(geojsonBounds);
+    const mapLayers = this.mapLayerService.getMapLayerForLocation(geojsonBounds);
     const mercatorBounds = this.getMercatorBounds(latLngBounds, w, h);
 
     // Map tiles
-    this.tiles = mapLayers
-      .map(({ layerId, layerConfig }) => this.getTileProperties(layerId, layerConfig, mercatorBounds, w, h, TILE_SIZE))
-      .flat();
+    this.tiles.set(
+      mapLayers
+        .map(({ layerId, layerConfig }) =>
+          this.getTileProperties(layerId, layerConfig, mercatorBounds, w, h, TILE_SIZE)
+        )
+        .flat()
+    );
 
     this.createGraphics(positions, polygons, mercatorBounds);
-
-    this.cdr.detectChanges(); // Async operation, so we must notify angular that changes has occured
   }
 
   private createGraphics(
@@ -377,7 +386,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     { w: x0, n: y0, zoom }: MercatorBounds
   ) {
     // Reset map graphics
-    this.graphics = [];
+    this.graphics.set([]);
     let start = null;
     let stop = null;
     for (const { pos, type } of positions) {
@@ -429,9 +438,10 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
       .flat()
       .join(',');
 
-    this.graphics.unshift({
-      id: 'start-stop-line',
-      svg: this.sanitizer.bypassSecurityTrustHtml(`
+    this.graphics.update((graphics) => [
+      {
+        id: 'start-stop-line',
+        svg: this.sanitizer.bypassSecurityTrustHtml(`
       <svg pointer-events="none" viewBox="0 0 ${width} ${height}" width=${width} height=${height}>
         <polyline points="${polylinesPointsToString}"
           stroke="${fill}"
@@ -443,11 +453,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
           fill-opacity="0.2"
           fill-rule="evenodd" />
       </svg>`),
-      style: {
-        'left.px': svg_x0 - w,
-        'top.px': svg_y0 - n,
+        left: svg_x0 - w,
+        top: svg_y0 - n,
       },
-    });
+      ...graphics,
+    ]);
   }
 
   private getMercatorPointsFromPolygonsLtLng(polygons: LatLng[], zoom: number): LatLng[] {
@@ -473,35 +483,38 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     // TODO: Can we extract width and height from svg?
     const svgWidth = 26;
     const svgHeight = 37;
-    const style = { 'left.px': leftPx - svgWidth / 2, 'top.px': topPx - svgHeight };
-    this.graphics.push({ svg, style, id: 'centerMarker' });
+    const style = { left: leftPx - svgWidth / 2, top: topPx - svgHeight };
+
+    this.graphics.update((graphics) => [...graphics, { svg, ...style, id: 'centerMarker' }]);
   }
 
   private createStartGraphic(topPx: number, leftPx: number) {
     const w = 18;
     const h = 28;
 
-    this.graphics.push({
-      id: 'start',
-      svg: `<img src="${START_ICON}">`,
-      style: {
-        'left.px': leftPx - w / 2,
-        'top.px': topPx - h,
+    this.graphics.update((graphics) => [
+      ...graphics,
+      {
+        id: 'start',
+        svg: `<img src="${START_ICON}">`,
+        left: leftPx - w / 2,
+        top: topPx - h,
       },
-    });
+    ]);
   }
   private createStopGraphic(topPx: number, leftPx: number) {
     const w = 18;
     const h = 28;
 
-    this.graphics.push({
-      id: 'start',
-      svg: `<img src="${END_ICON}">`,
-      style: {
-        'left.px': leftPx - w / 2,
-        'top.px': topPx - h,
+    this.graphics.update((graphics) => [
+      ...graphics,
+      {
+        id: 'start',
+        svg: `<img src="${END_ICON}">`,
+        left: leftPx - w / 2,
+        top: topPx - h,
       },
-    });
+    ]);
   }
 
   private createStartStopLine(start: { x: number; y: number }, stop: { x: number; y: number }, x0: number, y0: number) {
@@ -510,10 +523,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     const w = Math.ceil(Math.abs(start.x - stop.x)) + SVG_PADDING * 2;
     const h = Math.ceil(Math.abs(start.y - stop.y)) + SVG_PADDING * 2;
 
-    this.graphics.unshift({
-      id: 'start-stop-line',
-      // width and height on svg?
-      svg: this.sanitizer.bypassSecurityTrustHtml(`
+    this.graphics.update((graphics) => [
+      {
+        id: 'start-stop-line',
+        // width and height on svg?
+        svg: this.sanitizer.bypassSecurityTrustHtml(`
       <svg pointer-events="none" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
         <path
           stroke="red"
@@ -524,11 +538,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
           fill="none"
           d="M${start.x - svg_x0} ${start.y - svg_y0}L${stop.x - svg_x0} ${stop.y - svg_y0}"></path>
       </svg>`),
-      style: {
-        'left.px': svg_x0 - x0,
-        'top.px': svg_y0 - y0,
+        left: svg_x0 - x0,
+        top: svg_y0 - y0,
       },
-    });
+      ...graphics,
+    ]);
   }
 
   private createDamageGraphic() {
