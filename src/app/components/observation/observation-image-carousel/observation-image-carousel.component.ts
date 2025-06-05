@@ -110,7 +110,7 @@ export class ObservationImageCarouselComponent {
     // Raw bildene prosesseres ikke - har ikke vannmerke.
     // De bør derfor kunne hentes med en gang observasjonen har blitt sendt inn.
     // Prøv derfor først å hente de hvis Large har feila.
-    if (attachment.UrlFormats && attachment.Url !== attachment.UrlFormats?.Raw) {
+    if (attachment.UrlFormats && attachment.Url !== attachment.UrlFormats.Raw) {
       this.logger.log('Image loading failed. Will try Raw.', null, LogLevel.Warning, DEBUG_TAG, {
         id: attachment.AttachmentId,
         img: attachment.Url,
