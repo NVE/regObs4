@@ -7,7 +7,7 @@
   keyboard="false"
   (swiperslidechange)="setCurrentSlideIndex($event)"
 >
-  @for (attachment of attachments(); track attachment.Url) {
+  @for (attachment of attachments(); track attachment.AttachmentId) {
     @if (attachment.Href) {
       <swiper-slide lazy="true">
         <img

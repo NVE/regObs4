@@ -22,6 +22,10 @@ import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
 import { PlotService } from 'src/app/core/services/plot.service';
 import { Router, RouterLink } from '@angular/router';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+
+const DEBUG_TAG = 'ImageCarousel';
 
 @Component({
   selector: 'app-observation-image-carousel',
@@ -34,21 +38,16 @@ export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
   private router = inject(Router);
+  private plotService = inject(PlotService);
+  private logger = inject(LoggingService);
+
   isImageListView = computed(() => this.router.url.includes('search/pictures'));
   attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
-  plotService = inject(PlotService);
   translateService = inject(TranslateService);
 
   registration = input<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
-  useFallbackSnowProfileImage(attachment: AttachmentViewModel, event: Event) {
-    const target = event.target as HTMLImageElement;
-    if (target.src === attachment.Url) {
-      attachment.Url = 'assets/images/broken-image-w-bg.svg';
-      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
-    }
-    this.snowProfileUrl.set(attachment.Url as string);
-  }
+
   roundedDownOrientationValue = computed(() => {
     const aspectValue = this.currentAttachmentData().Aspect; //256
     if (!aspectValue) return '';
@@ -73,8 +72,23 @@ export class ObservationImageCarouselComponent {
     return undefined;
   });
 
+  snowProfileUrl = linkedSignal(() => {
+    const reg = this.registration();
+    if (!reg) return undefined;
+    return this.plotService.getSnowProfileSvgUrl(reg);
+  });
+
   constructor() {
     addIcons({ close, downloadOutline, openOutline, eyeOutline });
+  }
+
+  useFallbackSnowProfileImage(attachment: AttachmentViewModel, event: Event) {
+    const target = event.target as HTMLImageElement;
+    if (target.src === attachment.Url) {
+      attachment.Url = 'assets/images/broken-image-w-bg.svg';
+      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    }
+    this.snowProfileUrl.set(attachment.Url as string);
   }
 
   closeModal() {
@@ -92,13 +106,25 @@ export class ObservationImageCarouselComponent {
     this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
   }
 
-  snowProfileUrl = linkedSignal(() => {
-    const reg = this.registration();
-    if (!reg) return undefined;
-    return this.plotService.getSnowProfileSvgUrl(reg);
-  });
-
   setFallbackImage(attachment: AttachmentViewModel) {
+    // Raw bildene prosesseres ikke - har ikke vannmerke.
+    // De bør derfor kunne hentes med en gang observasjonen har blitt sendt inn.
+    // Prøv derfor først å hente de hvis Large har feila.
+    if (attachment.UrlFormats && attachment.Url !== attachment.UrlFormats.Raw) {
+      this.logger.log('Image loading failed. Will try Raw.', null, LogLevel.Warning, DEBUG_TAG, {
+        id: attachment.AttachmentId,
+        img: attachment.Url,
+        raw: attachment.UrlFormats.Raw,
+      });
+      attachment.Url = attachment.UrlFormats.Raw;
+      return;
+    }
+
+    this.logger.error(null, DEBUG_TAG, 'Image loading failed. Will set fallback', {
+      id: attachment.AttachmentId,
+      img: attachment.Url,
+    });
+
     attachment.Url = 'assets/images/broken-image-w-bg.svg';
     attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
   }

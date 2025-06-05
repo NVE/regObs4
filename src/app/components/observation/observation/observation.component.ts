@@ -66,6 +66,7 @@ import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action
 import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
 import { ObservationImageCarouselComponent } from '../observation-image-carousel/observation-image-carousel.component';
 import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -193,8 +194,25 @@ export class ObservationComponent {
     if (!attachment.UrlFormats) {
       return;
     }
-    attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
-    attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+
+    // Raw bildene prosesseres ikke - har ikke vannmerke.
+    // De bør derfor kunne hentes med en gang observasjonen har blitt sendt inn.
+    // Prøv derfor først å hente de hvis Large har feila.
+    if (attachment.UrlFormats.Large !== attachment.UrlFormats.Raw) {
+      this.logger.log('Loading image failed, trying Raw', null, LogLevel.Warning, DEBUG_TAG, {
+        id: attachment.AttachmentId,
+        img: attachment.UrlFormats.Large,
+        raw: attachment.UrlFormats.Raw,
+      });
+      attachment.UrlFormats.Large = attachment.UrlFormats.Raw;
+    } else {
+      this.logger.log('Loading image failed, setting fallback img', null, LogLevel.Error, DEBUG_TAG, {
+        id: attachment.AttachmentId,
+        img: attachment.UrlFormats.Large,
+      });
+      attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
+      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+    }
   }
 
   private fetchRegistrationBeforeEdit(
