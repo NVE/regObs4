@@ -366,7 +366,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
-      this.configureTileLayers(userSetting);
+      this.configureTileLayers(userSetting, map);
     });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
@@ -611,13 +611,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
-  private configureTileLayers(userSetting: UserSetting) {
-    if (this.map == null) {
-      throw new Error('Map needs to be initialized');
-    }
-
-    const map = this.map;
-
+  private configureTileLayers(userSetting: UserSetting, map: L.Map) {
     const useRetinaMap = userSetting.useRetinaMap && L.Browser.retina;
 
     this.zone.runOutsideAngular(() => {

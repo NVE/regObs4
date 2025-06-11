@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { booleanWithin, point } from '@turf/turf';
+import { point } from '@turf/turf';
 import L from 'leaflet';
-import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
-import { SVALBARD_BOUNDS } from 'src/app/core/helpers/leaflet/svalbard-bounds';
-import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../settings';
 import { ImageLocation, ImageLocationStartStop } from '../../core/models/image-location.model';
@@ -12,6 +9,8 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { map, Subject, switchMap, takeWhile, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MapLayersService, OfflineCapableMapLayersService } from '../static-map-image/static-tiles.service';
+import { isPlatform } from '@ionic/angular/standalone';
 
 export const START_ICON = '/assets/icon/map/GPS_start.svg';
 export const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -23,9 +22,17 @@ export const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
   styleUrls: ['./map-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LeafletModule],
+  providers: [
+    {
+      provide: MapLayersService,
+      useClass: isPlatform('hybrid') ? OfflineCapableMapLayersService : MapLayersService,
+    },
+  ],
 })
 export class MapImageComponent {
-  translations = inject(TranslateService);
+  private translations = inject(TranslateService);
+  private mapLayers = inject(MapLayersService);
+
   readonly locationInfo = input<ImageLocation>();
 
   settings = computed(() => {
@@ -34,18 +41,27 @@ export class MapImageComponent {
     if (!loc) return undefined;
 
     const feature = point([loc.latLng.lng, loc.latLng.lat]);
-    const baseLayer = getBaseLayer(feature);
-    return {
+    const layersConfig = this.mapLayers.getMapLayerForLocation(feature);
+    const layers = layersConfig.map((x) =>
+      L.tileLayer(x.layerConfig.url, {
+        minZoom: settings.map.tiles.minZoom,
+        maxZoom: settings.map.tiles.maxZoom,
+        updateWhenIdle: settings.map.tiles.updateWhenIdle,
+        ...x.layerConfig.options,
+      })
+    );
+    const mapSettings: L.MapOptions = {
       zoom: settings.map.tiles.zoomLevelObservationList,
       maxZoom: settings.map.tiles.maxZoom,
       minZoom: 8,
       bounceAtZoomLimits: false,
       attributionControl: false,
       zoomControl: false,
-      trackResize: false,
+      // trackResize: false,
       center: loc.latLng,
-      layers: [L.tileLayer(baseLayer.url, { ...baseLayer.options })],
+      layers,
     };
+    return mapSettings;
   });
 
   markers = computed(() => {
@@ -91,16 +107,6 @@ export class MapImageComponent {
   onLeafletMapReady(map: L.Map) {
     this.map$.next(map);
   }
-}
-
-function getBaseLayer(location: GeoJSON.Feature<GeoJSON.Point>) {
-  if (location && booleanWithin(location, NORWAY_BOUNDS)) {
-    return settings.map.tiles.topoMapLayers[TopoMapLayer.statensKartverk];
-  }
-  if (location && booleanWithin(location, SVALBARD_BOUNDS)) {
-    return settings.map.tiles.topoMapLayers[TopoMapLayer.npolarBasiskart];
-  }
-  return settings.map.tiles.topoMapLayers[TopoMapLayer.arcGisOnline];
 }
 
 function createObsLocationMarker(pos: L.LatLng, geoHazard: GeoHazard) {

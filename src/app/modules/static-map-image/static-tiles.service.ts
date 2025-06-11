@@ -1,8 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { bbox, bboxPolygon, booleanWithin, lineString } from '@turf/turf';
 import type { Feature } from 'geojson';
 import { LatLngTuple } from 'leaflet';
-import { firstValueFrom } from 'rxjs';
+import { TopoMap } from 'src/app/core/models/topo-map.enum';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { settings } from 'src/settings';
@@ -64,16 +65,15 @@ function formatTileUrl(urlTemplate: string, tileX: number, tileY: number, tileZo
  */
 @Injectable()
 export class MapLayersService {
-  private userSettings = inject(UserSettingService);
+  private userSettings = toSignal(inject(UserSettingService).userSetting$);
 
-  private async getUserSelectedMapConfig() {
-    const { topoMap: userSelectedMap } = await firstValueFrom(this.userSettings.userSetting$);
-    const mapConfig = settings.map.tiles.topoMaps[userSelectedMap];
-    return mapConfig;
-  }
+  mapConfig = computed(() => {
+    const topoMap = this.userSettings()?.topoMap || TopoMap.default;
+    return settings.map.tiles.topoMaps[topoMap];
+  });
 
-  async getMapLayerForLocation(location: Feature) {
-    const mapConfig = await this.getUserSelectedMapConfig();
+  getMapLayerForLocation(location: Feature) {
+    const mapConfig = this.mapConfig();
     const mapLayers = getMapLayersWithMatchingBoundsForLocation(mapConfig, location);
     return mapLayers;
   }

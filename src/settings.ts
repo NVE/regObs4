@@ -177,7 +177,7 @@ export const settings: ISettings = {
               [57.9, 4.626617431640625],
               [71.15939141681443, 31.3],
             ],
-            maxNativeZoom: 19,
+            maxNativeZoom: 18,
           },
           supportsOffline: true,
         },

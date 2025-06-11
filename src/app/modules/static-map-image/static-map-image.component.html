@@ -1,20 +1,18 @@
 <div class="container" #container>
   <!-- We could add some error handling here, using onerror or (error) to reset the src to something else -->
-  <img
-    *ngFor="let props of tiles; trackBy: trackByImgProps"
-    class="tile"
-    [style.top]="props.top"
-    [style.left]="props.left"
-    [src]="props.src"
-    loading="lazy"
-    alt="Map tile"
-    decoding="async"
-  />
+  @for (tile of tiles(); track tile.src) {
+    <img
+      class="tile"
+      [style.top.px]="tile.top"
+      [style.left.px]="tile.left"
+      [src]="tile.src"
+      loading="lazy"
+      alt="Map tile"
+      decoding="async"
+    />
+  }
 
-  <div
-    class="graphic"
-    *ngFor="let graphic of graphics; trackBy: trackByGraphic"
-    [innerHTML]="graphic.svg"
-    [ngStyle]="graphic.style"
-  ></div>
+  @for (graphic of graphics(); track graphic.id) {
+    <div class="graphic" [innerHTML]="graphic.svg" [style.left.px]="graphic.left" [style.top.px]="graphic.top"></div>
+  }
 </div>
