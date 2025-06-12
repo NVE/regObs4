@@ -20,6 +20,7 @@ import { AsyncPipe } from '@angular/common';
 import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
 import { RouterLink } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { StatusbarColorService } from './core/services/statusbarColor.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -51,6 +52,7 @@ const DEBUG_TAG = 'AppComponent';
   `,
 })
 export class AppComponent {
+  private statusbarColorService = inject(StatusbarColorService); // brukes ikke her, men må være her for å startes
   private platform = inject(Platform);
   private userSettings = inject(UserSettingService);
   private dataMarshallService = inject(DataMarshallService);

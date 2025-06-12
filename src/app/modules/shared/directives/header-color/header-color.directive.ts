@@ -1,7 +1,7 @@
 import { Directive, inject, computed } from '@angular/core';
-import { AppMode } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { getHeaderBackgroundColorCssVariablePostfix } from 'src/app/utils/color-utils';
 
 @Directive({
   selector: '[appHeaderColor]',
@@ -14,12 +14,6 @@ export class HeaderColorDirective {
 
   private appMode = toSignal(this.userSettingService.appMode$);
   color = computed(() => {
-    switch (this.appMode()) {
-      case AppMode.Demo:
-        return 'danger';
-      case AppMode.Test:
-        return 'success';
-    }
-    return 'primary';
+    return getHeaderBackgroundColorCssVariablePostfix(this.appMode());
   });
 }
