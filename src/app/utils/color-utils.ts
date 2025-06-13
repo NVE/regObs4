@@ -1,10 +1,11 @@
 import { AppMode } from '../modules/common-core/models';
 
 /**
- * Returnerer siste del av CSS-variabel-navn på bakgrunnsfarge i header på bakgrunn av valgt appmodus.
- * Så hvis appMode er Demo, returneres 'danger', slik at CSS-variabelen blir --ion-color-danger.
+ * Returnerer tema-fargenavn for header på bakgrunn av valgt appmodus.
+ * Vi har CSS-variable for bakgrunnsfarge i header som passer med tema-fargenavnet.
+ * Eksempel: Hvis appMode er Demo, returneres 'danger'. CSS-variabelen som styrer fargen blir da --ion-color-danger.
  */
-export const getHeaderBackgroundColorCssVariablePostfix = (appMode: AppMode | undefined): string => {
+export const getHeaderThemeColor = (appMode: AppMode | undefined): string => {
   switch (appMode) {
     case AppMode.Demo:
       return 'danger';
