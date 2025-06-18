@@ -17,6 +17,11 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: false,
       style: KeyboardStyle.Default,
     },
+    StatusBar: {
+      overlaysWebView: false,
+      style: 'light',
+      backgroundColor: '#488AFF',
+    },
   },
   cordova: {
     preferences: {
@@ -38,6 +43,9 @@ const config: CapacitorConfig = {
       ResolveServiceWorkerRequests: 'true',
       AndroidXEnabled: 'true',
     },
+  },
+  android: {
+    adjustMarginsForEdgeToEdge: 'disable',
   },
 };
 
