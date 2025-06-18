@@ -407,6 +407,6 @@ Vi trenger å sette riktige headere i tre forskjellige konfigurasjonsfiler:
 - `staticwebapp.config.json` for Azure Static Website som kjører PR-bygg
 - `index.html` for native applikasjoner
 
-`Content-Security-Policy` og `Permissions-Policy` har sine egne konfigurasjonsfiler, som leses og legges til i de tre filene. Dette gjør at vi ikke trenger å oppdatere alle tre filene manuelt med mange URL-er, for eksempel. Man kan bare oppdatere enten `headers-update-scripts/contentSecurityPolicy.config.ts` eller `headers-update-scripts/permissionPolicy.config.ts`, og deretter kjøre `npm run update-headers`-scriptet, som automatisk oppdaterer alle tre filene.
+`Content-Security-Policy` og `Permissions-Policy` har sine egne konfigurasjonsfiler, som leses og legges til i de tre filene. Dette gjør at vi ikke trenger å oppdatere alle tre filene manuelt med mange URL-er, for eksempel. Man kan bare oppdatere enten `headers-update-scripts/contentSecurityPolicy.config.ts` eller `headers-update-scripts/permissionsPolicy.config.ts`, og deretter kjøre `npm run update-headers`-scriptet, som automatisk oppdaterer alle tre filene.
 
 Scriptet er ikke inkludert i det automatiske byggeprosessen fordi headerne ikke oppdateres ofte.
