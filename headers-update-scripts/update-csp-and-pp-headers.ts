@@ -4,15 +4,15 @@
   - web.config
   - staticwebapp.config.json
 
-  Scriptet genererer strenger basert på konfigurasjonene i contentSecurityPolicy.ts og permisionPolicy.config.ts,
+  Scriptet genererer strenger basert på konfigurasjonene i contentSecurityPolicy.config.ts og permissionsPolicy.config.ts,
   og oppdaterer de relevante filene. Dette scriptet skal kjøres manuelt når verdiene endres.
 */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
-import cspConfig from './contentSecurityPolicy';
-import permissionsPolicyConfig from './permisionPolicy.config';
+import cspConfig from './contentSecurityPolicy.config';
+import permissionsPolicyConfig from './permissionsPolicy.config';
 
 /**
  * Genererer en Content-Security-Policy-streng basert på konfigurasjonen.

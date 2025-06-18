@@ -22,6 +22,7 @@ const cspConfig = {
     'https://sentry.io',
     'https://ws.geonorge.no',
     'https://www.yr.no',
+    'data:',
   ],
   'upgrade-insecure-requests': true,
   'frame-ancestors': ["'none'"],
