@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color tools:ignore="UnusedResources" name="colorPrimary">#3F51B5</color>
-    <color tools:ignore="UnusedResources" name="colorPrimaryDark">#303F9F</color>
-    <color tools:ignore="UnusedResources" name="colorAccent">#FF4081</color>
-    <color tools:ignore="UnusedResources" name="colorSplashBackground">#00425F</color>
+    <color tools:ignore="UnusedResources" name="colorPrimary">#00425f</color>
+    <color tools:ignore="UnusedResources" name="colorPrimaryDark">#00364e</color>
+    <color tools:ignore="UnusedResources" name="colorAccent">#ff5f1b</color>
+    <color tools:ignore="UnusedResources" name="colorSplashBackground">#00425f</color>
 </resources>
 
