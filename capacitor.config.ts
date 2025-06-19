@@ -9,6 +9,14 @@ const config: CapacitorConfig = {
     iosScheme: 'ionic',
   },
   plugins: {
+    // EdgeToEdge: {
+    //   backgroundColor: '#bada55',
+    // },
+    StatusBar: {
+      backgroundColor: '#bada55',
+      style: 'DARK',
+      overlaysWebView: false,
+    },
     SplashScreen: {
       launchAutoHide: false,
     },
@@ -17,6 +25,9 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: false,
       style: KeyboardStyle.Default,
     },
+  },
+  android: {
+    adjustMarginsForEdgeToEdge: 'auto',
   },
   cordova: {
     preferences: {
