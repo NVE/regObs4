@@ -1,3 +1,4 @@
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { AppMode } from '../modules/common-core/models';
 
 /**
@@ -14,3 +15,22 @@ export const getHeaderThemeColor = (appMode: AppMode | undefined): string => {
   }
   return 'primary';
 };
+
+/**
+ * Setter bakgrunnsfarge på statuslinja i OS'et til det samme som menylinja øverst
+ *
+ * NB: Det virker som farger definert i android/app/src/main/res/values/styles.xml også har en effekt,
+ * i alle fall inntil setBackgroundColor kalles første gang.
+ *
+ * Det virker også som setBackgroundColor ikke har noen effekt om den kalles for tidlig under oppstarten.
+ */
+export async function setStatusBarBackgroundColor(appMode: AppMode = AppMode.Prod) {
+  const themeColor = getHeaderThemeColor(appMode);
+
+  // Henter hex-verdien for fargen fra CSS
+  const documentStyle = getComputedStyle(document.body);
+  const colorValue = documentStyle.getPropertyValue(`--ion-color-${themeColor}`);
+
+  await StatusBar.setBackgroundColor({ color: colorValue });
+  await StatusBar.setStyle({ style: Style.Dark }); // Lys tekst
+}

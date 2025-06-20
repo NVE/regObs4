@@ -20,7 +20,7 @@ import { AsyncPipe } from '@angular/common';
 import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
 import { RouterLink } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { setBackgroundColor } from './core/services/statusbarColor.service';
+import { setStatusBarBackgroundColor } from './utils/color-utils';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -91,11 +91,11 @@ export class AppComponent {
     this.breakpointService.onResize(this.platform.width());
 
     // Fargen på menylinja endres når appMode endres.
-    // Se docstring på setBackgroundColor
+    // Se docstring på setStatusBarBackgroundColor
     if (Capacitor.isNativePlatform()) {
       this.userSettings.appMode$
         .pipe(
-          concatMap((appMode) => setBackgroundColor(appMode)),
+          concatMap((appMode) => setStatusBarBackgroundColor(appMode)),
           tap((appMode) => this.loggingService.debug('Changed statusbar color', DEBUG_TAG, { appMode }))
         )
         .subscribe();

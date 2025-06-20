@@ -9,9 +9,6 @@ const config: CapacitorConfig = {
     iosScheme: 'ionic',
   },
   plugins: {
-    // EdgeToEdge: {
-    //   backgroundColor: '#bada55',
-    // },
     StatusBar: {
       backgroundColor: '#bada55',
       style: 'DARK',
