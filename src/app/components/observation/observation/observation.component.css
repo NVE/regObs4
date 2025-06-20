@@ -43,12 +43,6 @@ swiper-slide {
   height: 100%;
   width: fit-content;
   cursor: pointer;
-
-  /*
-    Uten fast bredde på slidesene ble de ofte tegnet med bredde 0 etter at vi la til bruk av IntersectionObserver for å
-    tegne swiperen.
-  */
-  width: 100%;
 }
 
 swiper-slide .img-desc {
