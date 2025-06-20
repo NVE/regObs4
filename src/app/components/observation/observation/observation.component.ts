@@ -1,11 +1,14 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   computed,
   CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
   inject,
   input,
+  OnDestroy,
   signal,
   Signal,
 } from '@angular/core';
@@ -45,7 +48,17 @@ import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static
 import { ImageLocation, ImageLocationStartStop } from '../../../core/models/image-location.model';
 import L from 'leaflet';
 import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
-import { catchError, firstValueFrom, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  firstValueFrom,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  timeout,
+  TimeoutError,
+} from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import {
   ConfirmationModalService,
@@ -88,7 +101,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ObservationComponent {
+export class ObservationComponent implements AfterViewInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
   private cdr = inject(ChangeDetectorRef);
   private analyticService = inject(AnalyticService);
@@ -101,6 +114,7 @@ export class ObservationComponent {
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
   private confirmationModalService = inject(ConfirmationModalService);
+  private elementRef = inject(ElementRef);
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
@@ -122,6 +136,7 @@ export class ObservationComponent {
   private userSettings = toSignal(this.userSettingService.userSetting$, { requireSync: true });
   private baseUrl = settings.services.regObs.webUrl[this.userSettings().appMode];
   private registrationUrl = computed(() => `${this.baseUrl}/Registration/${this.registration().RegId}`);
+  private intersectionObserver?: IntersectionObserver;
 
   registrationViews = computed(() => getRegistrationViews(this.registration()));
 
@@ -186,6 +201,32 @@ export class ObservationComponent {
       chatbubbleEllipses,
       shareSocial,
     });
+  }
+
+  // For å håndtere veldig kjapp scrolling oppover sluser vi eventene via en subject med en debounce
+  // Da vil forhåpentligvis de observasjonskortene som bare scrolles superkjapt forbi ikke rendre swiper
+  // i det hele tatt.
+  // Etter å ha lagt til dette fikk jeg ikke lenger sporadiske kræsj ved superhurtig scrolling,
+  // men bør sikkert testes mer.
+  private isVisible$ = new Subject<boolean>();
+  isVisible = toSignal(this.isVisible$.pipe(debounceTime(100)), { initialValue: false });
+
+  ngAfterViewInit(): void {
+    this.intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        this.isVisible$.next(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    this.intersectionObserver.observe(this.elementRef.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    this.intersectionObserver?.disconnect(); // Vet ikke om denne er nødvendig
   }
 
   userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });

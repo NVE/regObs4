@@ -5,19 +5,42 @@
   margin-top: 16px;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /**
+   * Denne komponenten brukes i listevisninga som har ytelsesproblemer på iOS.
+   * contain: layout paint; hjelper trolig.
+   **/
+  contain: layout paint;
 
   --slide-height: 400px;
   --swiper-theme-color: var(--ion-color-secondary);
 }
 
-swiper-container {
+.swiper-wrapper {
+  /*
+    Viktig at høyde og bredde er satt fast her, siden det er en if-setning som rendrer selve swiperen, inni denne.
+    Uten fast bredde og høyde vil innholdet hoppe.
+  */
+  height: var(--slide-height);
+  width: 100%;
+  /*
+    Siden .swiper-wrapper har en if-setning som kun rendrer swiperen vha IntersectionObserver,
+    sjekk om contain layout paint git bedre ytelse.
+    Da trenger forhåpentligvis ikke mer enn bare det inni if-setningen tegnes opp på nytt.
+  */
+  contain: layout paint;
+
+  /* Bakgrunnsfarge for å fylle swiperen med noe før selwe swiperen, bildene og kartet laster. */
   background-color: rgba(var(--ion-color-primary-rgb), 0.2);
+}
+
+swiper-container {
+  height: 100%;
+  width: 100%;
 }
 
 swiper-slide {
   position: relative;
-  background-color: lightgray;
-  height: var(--slide-height);
+  height: 100%;
   width: fit-content;
   cursor: pointer;
 }
@@ -102,6 +125,7 @@ derfor vises ikke riktig cursor når hover over stjerner */
 .competence-chip {
   pointer-events: auto;
 }
+
 .competence-chip:hover {
   background-color: rgba(0, 66, 95, 0.08);
 }

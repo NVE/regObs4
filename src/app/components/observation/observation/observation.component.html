@@ -1,34 +1,38 @@
 <!-- Et observasjonskort. Viser data fra en observasjon, et miniatyrkart over posisjonen og bilder i en karusell -->
-<swiper-container
-  slides-per-view="auto"
-  loop="false"
-  css-mode="false"
-  navigation="true"
-  pagination="true"
-  space-between="0"
-  centered-slides="false"
-  center-insufficient-slides="false"
-  zoom="true"
-  keyboard="false"
->
-  <!-- Map -->
-  <swiper-slide (click)="openMapModal()">
-    <app-static-map-image [location]="location()"></app-static-map-image>
-  </swiper-slide>
+<div class="swiper-wrapper">
+  @if (isVisible()) {
+    <swiper-container
+      slides-per-view="auto"
+      loop="false"
+      css-mode="false"
+      navigation="true"
+      pagination="true"
+      space-between="0"
+      centered-slides="false"
+      center-insufficient-slides="false"
+      zoom="true"
+      keyboard="false"
+    >
+      <!-- Map -->
+      <swiper-slide (click)="openMapModal()">
+        <app-static-map-image [location]="location()"></app-static-map-image>
+      </swiper-slide>
 
-  <!-- lazy-preload-prev-next="2" -->
-  @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
-    <swiper-slide (click)="openImageCarousel(index)" lazy="true">
-      <img
-        [src]="attachment.UrlFormats?.Large"
-        [alt]="attachment.Comment"
-        loading="lazy"
-        decoding="async"
-        (error)="setFallbackImage(attachment)"
-      />
-    </swiper-slide>
+      <!-- lazy-preload-prev-next="2" -->
+      @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
+        <swiper-slide (click)="openImageCarousel(index)" lazy="true">
+          <img
+            [src]="attachment.UrlFormats?.Large"
+            [alt]="attachment.Comment"
+            loading="lazy"
+            decoding="async"
+            (error)="setFallbackImage(attachment)"
+          />
+        </swiper-slide>
+      }
+    </swiper-container>
   }
-</swiper-container>
+</div>
 
 <div class="content">
   <h2>
