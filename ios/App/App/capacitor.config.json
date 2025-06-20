@@ -15,6 +15,9 @@
 			"style": "DEFAULT"
 		}
 	},
+	"android": {
+		"adjustMarginsForEdgeToEdge": "auto"
+	},
 	"cordova": {
 		"preferences": {
 			"ScrollEnabled": "false",

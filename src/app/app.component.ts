@@ -4,7 +4,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, concatMap, firstValueFrom, tap } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
@@ -20,6 +20,7 @@ import { AsyncPipe } from '@angular/common';
 import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
 import { RouterLink } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { setStatusBarBackgroundColor } from './utils/color-utils';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -88,6 +89,17 @@ export class AppComponent {
     this.logIfError(result);
 
     this.breakpointService.onResize(this.platform.width());
+
+    // Fargen på menylinja endres når appMode endres.
+    // Se docstring på setStatusBarBackgroundColor
+    if (Capacitor.isNativePlatform()) {
+      this.userSettings.appMode$
+        .pipe(
+          concatMap((appMode) => setStatusBarBackgroundColor(appMode)),
+          tap((appMode) => this.loggingService.debug('Changed statusbar color', DEBUG_TAG, { appMode }))
+        )
+        .subscribe();
+    }
 
     this.afterAppInitialized();
   }
