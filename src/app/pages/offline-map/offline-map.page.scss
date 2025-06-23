@@ -3,6 +3,10 @@
   overflow-y: auto;
 }
 
+ion-footer {
+  padding-bottom: var(--ion-safe-area-bottom, initial);
+}
+
 .desc {
   font-size: smaller;
   margin: 16px;
