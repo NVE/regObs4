@@ -6,12 +6,17 @@
 		"iosScheme": "ionic"
 	},
 	"plugins": {
+		"StatusBar": {
+			"backgroundColor": "#00425f",
+			"style": "DARK",
+			"overlaysWebView": false
+		},
 		"SplashScreen": {
 			"launchAutoHide": false
 		},
 		"Keyboard": {
 			"resize": "ionic",
-			"resizeOnFullScreen": true,
+			"resizeOnFullScreen": false,
 			"style": "DEFAULT"
 		}
 	},
