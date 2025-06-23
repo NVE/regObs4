@@ -121,6 +121,7 @@
 
   @for (view of registrationViews(); track view.tid) {
     <div class="registration">
+      <h3>{{ view.header | translate }}</h3>
       <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
     </div>
   }

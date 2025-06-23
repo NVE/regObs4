@@ -566,7 +566,8 @@
       "SOURCE": "Kildeangivelse",
       "TITLE": "Observasjonspunkt og -tid",
       "UNCERTAINTY": "Usikkerhet i posisjon",
-      "UTMSOURCE": "Posisjoneringskilde"
+      "UTMSOURCE": "Posisjoneringskilde",
+      "POSITION_LABEL": "Posisjon"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",

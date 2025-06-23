@@ -1,0 +1,9 @@
+/**
+ * Styles common for observation.component and observation.page
+ */
+
+h3 {
+  font-size: var(--registration-header-font-size, 1.3rem);
+  font-weight: var(--registration-header-font-weight, 600);
+  color: var(--ion-text-color-heading);
+}

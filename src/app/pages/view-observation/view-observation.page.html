@@ -6,7 +6,13 @@
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
 
-    <ion-title> {{ "REGISTRATION.OVERVIEW.TITLE" | translate }} </ion-title>
+    <ion-title>
+      @if (registration.value(); as registration) {
+        {{ registration.ObsLocation.Title }}
+      } @else {
+        {{ "REGISTRATION.OVERVIEW.TITLE" | translate }}
+      }
+    </ion-title>
 
     <ion-buttons slot="end" class="ion-hide-md-down">
       <!-- Nickname button - takes user to my page so they can log out etc -->
@@ -31,27 +37,175 @@
 </ion-header>
 
 <ion-content>
-  @if (registration.value(); as obs) {
-    <app-observation [registration]="obs"></app-observation>
-  } @else if (registration.isLoading()) {
-    <!-- TODO! Vise spinner -->
-    <p>Laster observasjon</p>
-  } @else {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Fant ikke observasjonen.</ion-card-title>
-      </ion-card-header>
+  <div class="content-wrapper-full-width">
+    <div class="content">
+      @if (registration.value(); as registration) {
+        <ul class="metadata">
+          <li>
+            <app-key-value [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate">
+              <time [dateTime]="registration.DtObsTime">{{ registration.DtObsTime | date: "short" }}</time>
+            </app-key-value>
+          </li>
+          <li>
+            <app-key-value [key]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
+              <time [dateTime]="registration.DtRegTime">{{ registration.DtRegTime | date: "short" }}</time>
+            </app-key-value>
+          </li>
+          <li>
+            <app-key-value [key]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
+              <time [dateTime]="registration.DtChangeTime">{{ registration.DtChangeTime | date: "short" }}</time>
+            </app-key-value>
+          </li>
+        </ul>
+        <ul class="metadata">
+          <li>
+            <app-key-value
+              [key]="'REGISTRATION.OBS_LOCATION.SOURCE' | translate"
+              [value]="registration.SourceName"
+            ></app-key-value>
+          </li>
+          <li>
+            <app-key-value
+              [key]="'REGISTRATION.OBS_LOCATION.UTMSOURCE' | translate"
+              [value]="registration.ObsLocation.UTMSourceName"
+            ></app-key-value>
+          </li>
+          <li>
+            <app-key-value
+              [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL'"
+              value="
+              {{ registration.ObsLocation.Latitude | number: '1.3-3' : lang }} /
+              {{ registration.ObsLocation.Longitude | number: '1.3-3' : lang }}"
+            ></app-key-value>
+          </li>
+        </ul>
 
-      <ion-card-content>
-        <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
+        <!-- Kart, full bredde -->
+        <!-- TODO: Klikk på kart bør trigge kart modal. Samme som for observasjonskort. -->
+        <app-static-map-image [location]="getLocation(registration)"></app-static-map-image>
 
-        @if (errorMessage()) {
-          <div>
-            <p>Feilmelding:</p>
-            <pre>{{ errorMessage() }}</pre>
+        <div>
+          <!-- <ion-chip color="primary" disabled>
+            <ion-icon name="calendar-number-outline"></ion-icon>
+            <ion-label
+              ><b>{{ "REGISTRATION.CARD.TIME.OBSERVED" | translate }}</b
+              >:</ion-label
+            >
+            <ion-label>
+              {{ registration.DtObsTime | date: "short" }}
+            </ion-label>
+          </ion-chip> -->
+
+          <!-- <ion-chip color="primary" disabled>
+            <ion-icon name="calendar-number-outline"></ion-icon>
+            <ion-label
+              ><b> {{ "REGISTRATION.CARD.TIME.REGISTERED" | translate }}</b
+              >:</ion-label
+            >
+            <ion-label> {{ registration.DtRegTime | date: "short" }}</ion-label>
+          </ion-chip> -->
+
+          <!-- <ion-chip color="primary" disabled>
+            <ion-icon name="create-outline"></ion-icon>
+            <ion-label
+              ><b> {{ "REGISTRATION.CARD.TIME.UPDATED" | translate }}</b
+              >:</ion-label
+            >
+            <ion-label> {{ savedTime() | date: "short" }}</ion-label>
+          </ion-chip> -->
+
+          <!-- <ion-chip color="primary" disabled>
+            <ion-icon [src]="geoIcon()"></ion-icon>
+            <ion-label>{{ geoName() }}</ion-label>
+          </ion-chip> -->
+
+          <!-- <ion-chip color="primary" disabled>
+            <ion-icon name="location-outline"></ion-icon>
+            <ion-label>
+              {{ registration.ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
+            </ion-label>
+          </ion-chip> -->
+
+          <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
+          <!-- <ion-chip class="competence-chip" color="primary" disabled>
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <ion-label>
+              {{ registration.Observer.NickName }} (<a
+                target="_blank"
+                class="competence-link"
+                bl
+                [href]="userCompetenceUrl()"
+                >{{ registration.Observer.CompetenceLevelName || "COMPETENCE.UNKNOWN_SHORT" | translate }}</a
+              >)
+            </ion-label>
+          </ion-chip> -->
+
+          <!-- @if (registration.SourceName) {
+            <ion-chip color="primary" disabled>
+              <ion-label>
+                <b> {{ "REGISTRATION.OBS_LOCATION.SOURCE" | translate }}</b
+                >:</ion-label
+              >
+              <ion-label> {{ registration.SourceName }}</ion-label>
+            </ion-chip>
+          } -->
+
+          <!-- <ion-chip color="primary" disabled>
+            <ion-label>
+              <b>{{ "REGISTRATION.OBS_LOCATION.UTMSOURCE" | translate }}</b> :</ion-label
+            >
+            <ion-label> {{ registration.ObsLocation.UTMSourceName }}</ion-label>
+          </ion-chip> -->
+
+          <!-- @if (registration.ObserverGroupName; as group) {
+            <ion-chip color="primary" disabled>
+              <ion-icon name="people-circle-outline"></ion-icon>
+              <ion-label>{{ group }}</ion-label>
+            </ion-chip>
+          } -->
+        </div>
+
+        @for (view of registrationViews(); track view.tid) {
+          <div class="registration">
+            <details open>
+              <summary>
+                <h3>{{ view.header | translate }}</h3>
+              </summary>
+              <div class="attachments">
+                @for (attachment of view.attachments; track attachment.AttachmentId) {
+                  <div class="attachment">
+                    <img [src]="attachment.UrlFormats?.Medium" />
+                    @if (attachment.Comment) {
+                      <div class="comment">{{ attachment.Comment }}</div>
+                    }
+                  </div>
+                }
+              </div>
+              <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
+            </details>
           </div>
         }
-      </ion-card-content>
-    </ion-card>
-  }
+      } @else if (registration.isLoading()) {
+        <!-- TODO! Vise spinner -->
+        <p>Laster observasjon</p>
+      } @else {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Fant ikke observasjonen.</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
+
+            @if (errorMessage()) {
+              <div>
+                <p>Feilmelding:</p>
+                <pre>{{ errorMessage() }}</pre>
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  </div>
 </ion-content>

@@ -47,7 +47,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
 import { ImageLocation, ImageLocationStartStop } from '../../../core/models/image-location.model';
 import L from 'leaflet';
-import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import {
+  getAllAttachmentsFromViewModel,
+  getAttachmentsFromRegistrationViewModel,
+} from 'src/app/modules/common-registration/registration.helpers';
 import {
   catchError,
   debounceTime,
@@ -97,7 +100,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     NgComponentOutlet,
   ],
   templateUrl: './observation.component.html',
-  styleUrl: './observation.component.css',
+  styleUrls: ['../common-styles.css', './observation.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -381,7 +384,7 @@ function getNameForGeohazard(registration: Signal<RegistrationViewModel>) {
   return nameResource.value.asReadonly();
 }
 
-function getLocation(obs: RegistrationViewModel): ImageLocation {
+export function getLocation(obs: RegistrationViewModel): ImageLocation {
   return {
     latLng: L.latLng(obs.ObsLocation.Latitude, obs.ObsLocation.Longitude),
     geoHazard: obs.GeoHazardTID,
@@ -443,11 +446,14 @@ function extent2Polygon(extent: number[][] | undefined, color: string) {
     : undefined;
 }
 
+// TODO: Denne burde kanskje flyttes til en egen fil?
 /** En liste av alle skjema som skal vises for denne observasjonen  */
-function getRegistrationViews(obs: RegistrationViewModel) {
+export function getRegistrationViews(obs: RegistrationViewModel, includeAttachments = false) {
   return REGISTRATION_VIEW_CONFIG.filter((config) => !config.isEmpty(obs)).map((config) => ({
     tid: Number(config.tid),
     component: config.component,
     inputs: config.getInputs(obs),
+    header: config.getHeader(obs),
+    attachments: includeAttachments ? getAttachmentsFromRegistrationViewModel(obs, config.tid) : undefined,
   }));
 }

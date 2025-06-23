@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+// TODO: Delete?
 @Component({
   selector: 'app-registration-header',
   imports: [],

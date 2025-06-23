@@ -11,30 +11,51 @@ import {
   IonHeader,
   IonButton,
   IonButtons,
+  IonChip,
+  IonLabel,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttribute, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  numberAttribute,
+  computed,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
 import { Subject, merge } from 'rxjs';
-import { RegistrationService } from 'src/app/modules/common-regobs-api';
+import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
-import { NgIf, AsyncPipe } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { NgIf, AsyncPipe, NgComponentOutlet, DatePipe, DecimalPipe } from '@angular/common';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
+import {
+  getLocation,
+  getRegistrationViews,
+  ObservationComponent,
+} from 'src/app/components/observation/observation/observation.component';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { StaticMapImageComponent } from '../../modules/static-map-image/static-map-image.component';
+import { KeyValueComponent } from '../../components/observation/key-value/key-value.component';
+import { LangKey } from 'src/app/modules/common-core/models';
+import { GridImageComponent } from '../observation-list/image-list/grid-image.component';
 
 @Component({
   selector: 'app-view-observation',
   templateUrl: './view-observation.page.html',
-  styleUrls: ['./view-observation.page.scss'],
+  styleUrls: ['../../components/observation/common-styles.css', './view-observation.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    IonLabel,
+    IonChip,
     AsyncPipe,
     HeaderColorDirective,
     IonBackButton,
@@ -52,6 +73,12 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
     NgIf,
     TranslatePipe,
     ObservationComponent,
+    NgComponentOutlet,
+    StaticMapImageComponent,
+    DatePipe,
+    KeyValueComponent,
+    DecimalPipe,
+    GridImageComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -63,10 +90,18 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
+  lang = inject(TranslateService).currentLang;
+  // language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
+
   registration = rxResource({
     params: () => ({ regId: this.regId() }),
     stream: ({ params }) => this.getRegistration$(params.regId),
   });
+
+  registrationViews = computed(() =>
+    this.registration.hasValue() ? getRegistrationViews(this.registration.value(), true) : []
+  );
+
   errorMessage = computed(() => {
     const err = this.registration.error();
     if (err instanceof Error) {
@@ -84,6 +119,10 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   constructor() {
     super();
     addIcons({ personCircle });
+  }
+
+  getLocation(obs: RegistrationViewModel) {
+    return getLocation(obs);
   }
 
   goToMyPage() {

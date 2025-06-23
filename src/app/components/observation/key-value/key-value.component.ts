@@ -12,7 +12,9 @@ import { IonText } from '@ionic/angular/standalone';
       @if (key()) {
         <span class="key">{{ key() }}:</span>&nbsp;
       }
-      <span>{{ value() }}</span>
+      <ng-content>
+        <span>{{ value() }}</span>
+      </ng-content>
     </ion-text>
   `,
   styleUrl: './key-value.component.css',

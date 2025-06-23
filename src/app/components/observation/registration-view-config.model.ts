@@ -30,4 +30,9 @@ export interface RegistrationViewConfig {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getInputs: (registration: RegistrationViewModel) => any;
+
+  /**
+   * Skal returnere en språknøkkel eller allerede oversatt tekst til tittel
+   */
+  getHeader: (registration: RegistrationViewModel) => string;
 }
