@@ -400,13 +400,14 @@ I `src/assets/json` ligger det fallback-data for nedtrekksmenyer og hjelpetekste
 
 # Sikkerhet
 
-Vi bruker anbefalte oppsette på headerne som står i [nve-wiki.nve.no](https://nve-wiki.nve.no/spaces/UTV/pages/257295077/Frontend+sikkerhet). Vi legger til en del headers som passer for regobs.no.
-Vi trenger å sette riktige headere i tre forskjellige konfigurasjonsfiler:
+Vi bruker anbefalt oppsett av headerne som står i [nve-wiki.nve.no](https://nve-wiki.nve.no/spaces/UTV/pages/257295077/Frontend+sikkerhet), men med noen justeringer for regobs.no.
+Siden appen kjører i forskjellige miljøer, må vi ha disse headerne i tre forskjellige konfigurasjonsfiler:
 
 - `web.config` for IIS-serveren
 - `staticwebapp.config.json` for Azure Static Website som kjører PR-bygg
 - `index.html` for native applikasjoner
 
-`Content-Security-Policy` og `Permissions-Policy` har sine egne konfigurasjonsfiler, som leses og legges til i de tre filene. Dette gjør at vi ikke trenger å oppdatere alle tre filene manuelt med mange URL-er, for eksempel. Man kan bare oppdatere enten `headers-update-scripts/contentSecurityPolicy.config.ts` eller `headers-update-scripts/permissionsPolicy.config.ts`, og deretter kjøre `npm run update-headers`-scriptet, som automatisk oppdaterer alle tre filene.
+**Ikke endre `Content-Security-Policy` og `Permissions-Policy` manuelt i disse filene.**
+Endre heller `headers-update-scripts/contentSecurityPolicy.config.ts` og `headers-update-scripts/permissionsPolicy.config.ts`, og kjør deretter `npm run update-headers`. Dette scriptet oppdaterer alle tre filene.
 
 Scriptet er ikke inkludert i det automatiske byggeprosessen fordi headerne ikke oppdateres ofte.
