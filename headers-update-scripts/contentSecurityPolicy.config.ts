@@ -24,6 +24,7 @@ const cspConfig = {
     'https://www.yr.no',
     'data:',
   ],
+  'frame-src': ['https://plot.regobs.no', 'https://test-plot.regobs.no', 'https://demo-plot.regobs.no'],
   'upgrade-insecure-requests': true,
   'frame-ancestors': ["'none'"],
   'form-action': ["'self'"],
