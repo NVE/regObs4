@@ -121,7 +121,7 @@ export const settings: ISettings = {
           en: floodLandslideBaseUrlEn,
         },
         webUrl: {
-          nb: `${floodLandslideBaseUrlNb}/warning/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide`,
+          nb: `${floodLandslideBaseUrlNb}/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide`,
           en: `${floodLandslideBaseUrlEn}/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide`,
         },
         featureName: 'fylkesnummer',
@@ -134,7 +134,7 @@ export const settings: ISettings = {
         },
         webUrl: {
           nb: `${floodLandslideBaseUrlNb}/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood`,
-          en: `${floodLandslideBaseUrlNb}/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood`,
+          en: `${floodLandslideBaseUrlEn}/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood`,
         },
         featureName: 'fylkesnummer',
       },
