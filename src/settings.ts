@@ -71,7 +71,7 @@ export const settings: ISettings = {
   services: {
     regObs: {
       apiUrl: {
-        PROD: 'https://api.regobs.no/v5',
+        PROD: 'https://api.regobs.no/v6',
         DEMO: 'https://demo-api.regobs.no/v5',
         TEST: 'https://test-api.regobs.no/v6',
         //TEST: 'http://localhost:40001',
