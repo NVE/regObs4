@@ -55,6 +55,8 @@
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>mailto</string>
+      <string>googlegmail</string>
+      <string>ms-outlook</string>
     </array>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>This app requires access to your location when the screen is on and the app is displayed.</string>
