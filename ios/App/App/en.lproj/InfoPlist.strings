@@ -8,5 +8,5 @@
 NSCameraUsageDescription = "Add images to observations";
 NSLocationWhenInUseUsageDescription = "Location is used to show your position in the map and to set initial position when documenting observations";
 NSLocationAlwaysAndWhenInUseUsageDescription = "Location is used to show your position in the map and to set initial position when documenting observations";
-NSPhotoLibraryAddUsageDescription = "Add images to observations";
+NSPhotoLibraryAddUsageDescription = "This app requires photo library access to add photos from camera to library.";
 NSPhotoLibraryUsageDescription = "Add images to observations";
