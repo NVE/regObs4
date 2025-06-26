@@ -64,8 +64,8 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
   registration = rxResource({
-    request: () => ({ regId: this.regId() }),
-    loader: ({ request }) => this.getRegistration$(request.regId),
+    params: () => ({ regId: this.regId() }),
+    stream: ({ params }) => this.getRegistration$(params.regId),
   });
   errorMessage = computed(() => {
     const err = this.registration.error();

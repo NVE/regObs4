@@ -374,8 +374,8 @@ function getNameForGeohazard(registration: Signal<RegistrationViewModel>) {
   const helper = inject(GeoHelperService);
 
   const nameResource = rxResource({
-    request: () => [registration().GeoHazardTID],
-    loader: ({ request: geohazards }) => helper.getName(geohazards),
+    params: () => [registration().GeoHazardTID],
+    stream: ({ params: geohazards }) => helper.getName(geohazards),
   });
 
   return nameResource.value.asReadonly();
