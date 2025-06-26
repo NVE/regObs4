@@ -4,7 +4,7 @@
       <a role="button" (click)="navigateBack()"> <ion-back-button text="" defaultHref="/"></ion-back-button></a>
     </ion-buttons>
     <ion-title>
-      {{ loggedInUser.isLoggedIn ? ("MY_PROFILE.TITLE" | translate) : ("LOGIN.TITLE" | translate) }}
+      {{ "MY_PROFILE.TITLE" | translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -168,7 +168,7 @@
   </ion-grid>
 </ion-content>
 <ng-template #login>
-  <ion-button class="login-button" expand="block" type="submit" color="varsom-orange" (click)="signIn()">
+  <ion-button class="login-button" expand="block" type="submit" color="secondary" (click)="signIn()">
     {{ "LOGIN.LOGIN" | translate }}
   </ion-button>
 </ng-template>
