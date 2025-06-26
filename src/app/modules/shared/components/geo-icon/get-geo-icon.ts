@@ -18,8 +18,7 @@ export function getNameForGeohazard(geohazards: GeoHazard[]) {
   const helper = inject(GeoHelperService);
 
   const nameResource = rxResource({
-    // request: () => this.geoHazards(),
-    loader: () => helper.getName(geohazards),
+    stream: () => helper.getName(geohazards),
   });
 
   return nameResource.value.asReadonly();

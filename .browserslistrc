@@ -4,9 +4,4 @@
 #
 # For IE 9-11 support, please remove 'not' from the last line of the file and adjust as needed
 
-Chrome >=79
-ChromeAndroid >=79
-Firefox >=70
-Edge >=79
-Safari >=14
-iOS >=14
+defaults

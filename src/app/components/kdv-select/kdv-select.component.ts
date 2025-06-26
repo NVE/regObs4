@@ -49,8 +49,8 @@ export class KdvSelectComponent {
   readonly ionItemLines = input<undefined | IonList['lines']>(undefined, { alias: 'lines' });
 
   selectOptionsResource = rxResource({
-    request: () => this.kdvKey(),
-    loader: ({ request }) => this.kdvService.getKdvRepositoryByKeyObservable(request),
+    params: () => this.kdvKey(),
+    stream: ({ params }) => this.kdvService.getKdvRepositoryByKeyObservable(params),
   });
 
   selectOptions: Signal<SelectOption[]> = computed(() => {

@@ -15,8 +15,8 @@ export class GeoNameComponent {
   readonly geoHazards = input.required<GeoHazard[]>();
 
   private nameResource = rxResource({
-    request: () => this.geoHazards(),
-    loader: ({ request: geohazards }) => this.geoHelperService.getName(geohazards),
+    params: () => this.geoHazards(),
+    stream: ({ params: geohazards }) => this.geoHelperService.getName(geohazards),
   });
 
   name = this.nameResource.value.asReadonly();

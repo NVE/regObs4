@@ -58,8 +58,8 @@ export class ModalSearchPage implements ViewDidEnter {
   private searchText$ = this.searchField.valueChanges.pipe(debounceTime(400), distinctUntilChanged());
   searchText: Signal<string> = toSignal(this.searchText$, { initialValue: '' });
   private mapSearch = rxResource({
-    request: () => this.searchText(),
-    loader: ({ request: searchText }) => this.mapSearchService.searchAll(searchText),
+    params: () => this.searchText(),
+    stream: ({ params: searchText }) => this.mapSearchService.searchAll(searchText),
   });
 
   searchResults = computed(() => this.mapSearch.value() || []);
