@@ -43,8 +43,6 @@
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <true/>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>$PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION</string>
     <key>CFBundleURLTypes</key>
     <array>
       <dict>
@@ -66,6 +64,8 @@
     <string>This app requires camera access to function properly.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>This app requires photo library access to function properly.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app requires photo library access to add photos from camera to library.</string>
     <key>NSMotionUsageDescription</key>
     <string>This app requires motion detection access to function properly.</string>
     <key>ITSAppUsesNonExemptEncryption</key>
