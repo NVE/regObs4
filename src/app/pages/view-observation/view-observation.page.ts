@@ -102,6 +102,10 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     this.registration.hasValue() ? getRegistrationViews(this.registration.value(), true) : []
   );
 
+  unknownRegistrationAttachments = computed(
+    () => this.registration.value()?.Attachments?.filter((a) => a.RegistrationTID == null) || []
+  );
+
   errorMessage = computed(() => {
     const err = this.registration.error();
     if (err instanceof Error) {
