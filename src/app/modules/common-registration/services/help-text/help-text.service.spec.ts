@@ -6,7 +6,7 @@ xdescribe('HelpTextService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: HelpTextService = TestBed.get(HelpTextService);
+    const service: HelpTextService = TestBed.inject(HelpTextService);
     expect(service).toBeTruthy();
   });
 });

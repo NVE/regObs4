@@ -6,7 +6,7 @@ xdescribe('GeoPositionService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: GeoPositionService = TestBed.get(GeoPositionService);
+    const service: GeoPositionService = TestBed.inject(GeoPositionService);
     expect(service).toBeTruthy();
   });
 });

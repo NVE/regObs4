@@ -6,7 +6,7 @@ xdescribe('KdvService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: KdvService = TestBed.get(KdvService);
+    const service: KdvService = TestBed.inject(KdvService);
     expect(service).toBeTruthy();
   });
 });

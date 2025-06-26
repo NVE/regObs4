@@ -12,7 +12,7 @@ describe('GeoHelperService', () => {
     TestBed.configureTestingModule({
       providers: [TranslateService, provideMock(TranslateService)],
     });
-    geoHelperService = TestBed.get(GeoHelperService);
+    geoHelperService = TestBed.inject(GeoHelperService);
   });
 
   it('should be created', () => {

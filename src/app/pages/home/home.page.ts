@@ -1,5 +1,5 @@
-import { DOCUMENT, NgIf, AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, signal, viewChild } from '@angular/core';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, signal, viewChild, DOCUMENT } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {
