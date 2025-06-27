@@ -44,6 +44,7 @@
           {{ reg.ObsLocation.Title }}
         </app-registration-header>
 
+        <!-- #region Metadata -->
         <app-key-value-group>
           <app-key-value [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate">
             <time [dateTime]="reg.DtObsTime">{{ reg.DtObsTime | date: "short" }}</time>
@@ -71,6 +72,7 @@
             {{ reg.ObsLocation.Longitude | number: '1.3-3' : lang }}"
           ></app-key-value>
         </app-key-value-group>
+        <!-- #endregion Metadata -->
 
         <!-- TODO: Legg til chips -->
 
@@ -81,27 +83,88 @@
         -->
         <app-static-map-image [location]="getLocation(reg)"></app-static-map-image>
 
-        @for (view of registrationViews(); track view.tid) {
-          <app-registration-view [header]="view.header | translate">
-            @if (view.attachments) {
-              <app-attachment-grid
-                [attachments]="view.attachments"
-                (attachmentClicked)="openImageCarousel($event, view.attachments)"
-              ></app-attachment-grid>
-            }
-            <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
+        <!-- #region Registration Views -->
+
+        @if (hasData(reg.DangerObs)) {
+          @let tid = RegistrationTid.DangerObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="'REGISTRATION.DANGER_OBS.TITLE' | translate">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
           </app-registration-view>
         }
 
-        <!--
-        TODO: Sjekk om vi kan fjerne config helt og lage en generell skjema-liste-komponent som har template a la:
+        @if (hasData(reg.AvalancheDangerObs)) {
+          @let tid = RegistrationTid.AvalancheDangerObs;
+          @let attachments = getAttachments(reg, tid);
 
-        @if (registration.value()?.SnowProfile2) {
-          <snow-profile></snow-profile>
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
         }
 
-        <kommentar></kommentar>
-        -->
+        @if (hasData(reg.AvalancheObs)) {
+          @let tid = RegistrationTid.AvalancheObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.Incident)) {
+          @let tid = RegistrationTid.Incident;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.AvalancheActivityObs2)) {
+          @let tid = RegistrationTid.AvalancheActivityObs2;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-avalanche-activities-view [data]="reg.AvalancheActivityObs2"></app-avalanche-activities-view>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.SnowProfile2)) {
+          @let tid = RegistrationTid.SnowProfile2;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <p>TODO! Legg inn interaktiv snøprofil her</p>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        <!-- #endregion Registration Views -->
 
         <!--
           TODO!

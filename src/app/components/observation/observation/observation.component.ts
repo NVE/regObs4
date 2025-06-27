@@ -79,12 +79,15 @@ import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
 import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
-import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
 import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
 import { injectImageCarousel } from '../observation-image-carousel/inject-image-carousel';
 import { RegistrationViewComponent } from '../registration-view/registration-view.component';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { getSummaries, getSummaryHeader } from '../summary/get-summary-input';
+import { SummaryComponent } from '../summary/summary.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -102,6 +105,7 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     NgComponentOutlet,
     RegistrationHeaderComponent,
     RegistrationViewComponent,
+    SummaryComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -132,7 +136,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
   isLoadingObsForEdit = signal(false);
-  isRegistrationPage = this.router.url.includes('registration');
 
   private async canShareNative(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {
@@ -145,8 +148,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   private baseUrl = settings.services.regObs.webUrl[this.userSettings().appMode];
   private registrationUrl = computed(() => `${this.baseUrl}/Registration/${this.registration().RegId}`);
   private intersectionObserver?: IntersectionObserver;
-
-  registrationViews = computed(() => getRegistrationViews(this.registration()));
 
   async share(): Promise<void> {
     const url = this.registrationUrl();
@@ -367,6 +368,24 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   async openImageCarousel(index: number) {
     await this.imageCarousel.open(index, this.attachments(), this.registration());
   }
+
+  hasData(data: unknown) {
+    return !isEmpty(data);
+  }
+
+  RegistrationTid = RegistrationTid;
+
+  getSummaries(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getSummaries(registration, tid);
+  }
+
+  getAttachments(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getAttachmentsFromRegistrationViewModel(registration, tid);
+  }
+
+  getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getSummaryHeader(registration, tid);
+  }
 }
 
 function getNameForGeohazard(registration: Signal<RegistrationViewModel>) {
@@ -440,24 +459,4 @@ function extent2Polygon(extent: number[][] | undefined, color: string) {
         { color }
       )
     : undefined;
-}
-
-interface RegistrationViewExtraConfig {
-  includeAttachments?: boolean;
-  isDetailPage?: boolean;
-}
-
-// TODO: Disse burde kanskje flyttes til en egen fil?
-/** En liste av alle skjema som skal vises for denne observasjonen  */
-export function getRegistrationViews(obs: RegistrationViewModel, config: RegistrationViewExtraConfig = {}) {
-  const configWithDefaults: RegistrationViewExtraConfig = { includeAttachments: false, isDetailPage: false, ...config };
-  return REGISTRATION_VIEW_CONFIG.filter((config) => !config.isEmpty(obs)).map((config) => ({
-    tid: Number(config.tid),
-    component: config.component,
-    inputs: { ...config.getInputs(obs), isDetailPage: configWithDefaults.isDetailPage },
-    header: config.getHeader(obs),
-    attachments: configWithDefaults.includeAttachments
-      ? getAttachmentsFromRegistrationViewModel(obs, config.tid)
-      : undefined,
-  }));
 }

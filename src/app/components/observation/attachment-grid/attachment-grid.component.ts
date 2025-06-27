@@ -10,7 +10,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
   imports: [],
   template: `
     @for (attachment of attachments(); track attachment.AttachmentId) {
-      <div class="attachment" (click)="attachmentClicked.emit({ index: $index, attachment })">
+      <div class="attachment" (click)="attachmentClicked.emit({ index: $index })">
         <img [src]="attachment.UrlFormats?.Medium" />
         @if (attachment.Comment) {
           <div class="comment">{{ attachment.Comment }}</div>
@@ -47,5 +47,5 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 })
 export class AttachmentGridComponent {
   attachments = input.required<AttachmentViewModel[]>();
-  attachmentClicked = output<{ index: number; attachment: AttachmentViewModel }>();
+  attachmentClicked = output<{ index: number }>();
 }

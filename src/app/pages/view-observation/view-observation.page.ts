@@ -21,12 +21,12 @@ import { Subject, merge } from 'rxjs';
 import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
-import { NgIf, AsyncPipe, NgComponentOutlet, DatePipe, DecimalPipe } from '@angular/common';
+import { NgIf, AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { getLocation, getRegistrationViews } from 'src/app/components/observation/observation/observation.component';
+import { getLocation } from 'src/app/components/observation/observation/observation.component';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { StaticMapImageComponent } from '../../modules/static-map-image/static-map-image.component';
 import { KeyValueComponent } from '../../components/observation/key-value/key-value.component';
@@ -35,6 +35,12 @@ import { RegistrationHeaderComponent } from '../../components/observation/regist
 import { RegistrationViewComponent } from '../../components/observation/registration-view/registration-view.component';
 import { AttachmentGridComponent } from '../../components/observation/attachment-grid/attachment-grid.component';
 import { injectImageCarousel } from 'src/app/components/observation/observation-image-carousel/inject-image-carousel';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { getSummaries, getSummaryHeader } from 'src/app/components/observation/summary/get-summary-input';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { SummaryComponent } from '../../components/observation/summary/summary.component';
+import { getAttachmentsFromRegistrationViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import { AvalancheActivitesViewComponent } from '../../components/observation/registrations/avalanche-activity-view/avalanche-activities-view.component';
 
 @Component({
   selector: 'app-view-observation',
@@ -61,12 +67,13 @@ import { injectImageCarousel } from 'src/app/components/observation/observation-
     IonToolbar,
     KeyValueComponent,
     KeyValueGroupComponent,
-    NgComponentOutlet,
     NgIf,
     RegistrationHeaderComponent,
     RegistrationViewComponent,
     StaticMapImageComponent,
     TranslatePipe,
+    SummaryComponent,
+    AvalancheActivitesViewComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -80,18 +87,11 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
   lang = inject(TranslateService).currentLang;
-  // language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
 
   registration = rxResource({
     params: () => ({ regId: this.regId() }),
     stream: ({ params }) => this.getRegistration$(params.regId),
   });
-
-  registrationViews = computed(() =>
-    this.registration.hasValue()
-      ? [...getRegistrationViews(this.registration.value(), { includeAttachments: true, isDetailPage: true })]
-      : []
-  );
 
   unknownRegistrationAttachments = computed(
     () => this.registration.value()?.Attachments?.filter((a) => a.RegistrationTID == null) || []
@@ -147,9 +147,29 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
   }
 
-  openImageCarousel($event: { index: number; attachment: AttachmentViewModel }, attachments: AttachmentViewModel[]) {
+  openImageCarousel($event: { index: number }, attachments: AttachmentViewModel[]) {
     if (this.registration.hasValue()) {
       this.imageCarousel.open($event.index, attachments, this.registration.value());
     }
+  }
+
+  hasData(data: unknown) {
+    // TODO: Endre til å sjekke både om viewmodell og bilder er tomme
+    //   i observasjonskort holder det å sjekke viewmodell
+    return !isEmpty(data);
+  }
+
+  RegistrationTid = RegistrationTid;
+
+  getSummaries(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getSummaries(registration, tid);
+  }
+
+  getAttachments(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getAttachmentsFromRegistrationViewModel(registration, tid);
+  }
+
+  getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getSummaryHeader(registration, tid);
   }
 }

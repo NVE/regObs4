@@ -119,10 +119,33 @@
     }
   </div>
 
-  @for (view of registrationViews(); track view.tid) {
-    <app-registration-view [header]="view.header | translate">
-      <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
-    </app-registration-view>
+  @let reg = registration();
+
+  @if (hasData(reg.DangerObs)) {
+    <h3>{{ "REGISTRATION.DANGER_OBS.TITLE" | translate }}</h3>
+    <app-summary [summaries]="getSummaries(reg, RegistrationTid.DangerObs)"></app-summary>
+  }
+
+  @if (hasData(reg.AvalancheDangerObs)) {
+    @let tid = RegistrationTid.AvalancheDangerObs;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.AvalancheObs)) {
+    <h3>{{ "REGISTRATION.SNOW.AVALANCHE_OBS.TITLE" | translate }}</h3>
+    <app-summary [summaries]="getSummaries(reg, RegistrationTid.AvalancheObs)"></app-summary>
+  }
+
+  @if (hasData(reg.Incident)) {
+    @let tid = RegistrationTid.Incident;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.SnowProfile2)) {
+    <h3>{{ "REGISTRATION.SNOW.SNOW_PROFILE.TITLE" | translate }}</h3>
+    <app-summary [summaries]="getSummaries(reg, RegistrationTid.SnowProfile2)"></app-summary>
   }
 </div>
 
@@ -137,14 +160,13 @@
       }
     </ion-button>
   }
-  @if (!isRegistrationPage && registration().RegId) {
-    <a [routerLink]="'/registration/' + registration().RegId">
-      <ion-button fill="clear" class="edit-button">
-        <ion-icon name="eye-outline"></ion-icon>
-        {{ "REGISTRATION.GO_TO" | translate }}
-      </ion-button>
-    </a>
-  }
+
+  <a [routerLink]="'/registration/' + registration().RegId">
+    <ion-button fill="clear" class="edit-button">
+      <ion-icon name="eye-outline"></ion-icon>
+      {{ "REGISTRATION.GO_TO" | translate }}
+    </ion-button>
+  </a>
 
   <ion-button fill="clear" (click)="share()" class="reg-id">
     ID: {{ registration().RegId }}
