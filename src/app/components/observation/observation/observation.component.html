@@ -35,9 +35,9 @@
 </div>
 
 <div class="content">
-  <h2>
+  <app-registration-header>
     {{ registration().ObsLocation.Title }}
-  </h2>
+  </app-registration-header>
   <div>
     <ion-chip color="primary" disabled>
       <ion-icon name="calendar-number-outline"></ion-icon>
@@ -120,10 +120,9 @@
   </div>
 
   @for (view of registrationViews(); track view.tid) {
-    <div class="registration">
-      <h3>{{ view.header | translate }}</h3>
+    <app-registration-view [header]="view.header | translate">
       <ng-container *ngComponentOutlet="view.component; inputs: view.inputs" />
-    </div>
+    </app-registration-view>
   }
 </div>
 

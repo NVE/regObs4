@@ -80,9 +80,11 @@ import { Share } from '@capacitor/share';
 import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
 import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
-import { ObservationImageCarouselComponent } from '../observation-image-carousel/observation-image-carousel.component';
 import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
+import { injectImageCarousel } from '../observation-image-carousel/inject-image-carousel';
+import { RegistrationViewComponent } from '../registration-view/registration-view.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -98,9 +100,11 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     RouterLink,
     StaticMapImageComponent,
     NgComponentOutlet,
+    RegistrationHeaderComponent,
+    RegistrationViewComponent,
   ],
   templateUrl: './observation.component.html',
-  styleUrls: ['../common-styles.css', './observation.component.css'],
+  styleUrl: './observation.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -118,6 +122,7 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   private translateService = inject(TranslateService);
   private confirmationModalService = inject(ConfirmationModalService);
   private elementRef = inject(ElementRef);
+  private imageCarousel = injectImageCarousel();
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
@@ -360,16 +365,7 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   }
 
   async openImageCarousel(index: number) {
-    const modal = await this.modalController.create({
-      component: ObservationImageCarouselComponent,
-      cssClass: 'fullscreen-modal',
-      componentProps: {
-        attachmentIndex: index,
-        attachments: this.attachments(),
-        registration: this.registration(),
-      },
-    });
-    await modal.present();
+    await this.imageCarousel.open(index, this.attachments(), this.registration());
   }
 }
 
@@ -446,7 +442,7 @@ function extent2Polygon(extent: number[][] | undefined, color: string) {
     : undefined;
 }
 
-// TODO: Denne burde kanskje flyttes til en egen fil?
+// TODO: Disse burde kanskje flyttes til en egen fil?
 /** En liste av alle skjema som skal vises for denne observasjonen  */
 export function getRegistrationViews(obs: RegistrationViewModel, includeAttachments = false) {
   return REGISTRATION_VIEW_CONFIG.filter((config) => !config.isEmpty(obs)).map((config) => ({
