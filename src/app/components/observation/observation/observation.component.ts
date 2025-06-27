@@ -442,14 +442,22 @@ function extent2Polygon(extent: number[][] | undefined, color: string) {
     : undefined;
 }
 
+interface RegistrationViewExtraConfig {
+  includeAttachments?: boolean;
+  isDetailPage?: boolean;
+}
+
 // TODO: Disse burde kanskje flyttes til en egen fil?
 /** En liste av alle skjema som skal vises for denne observasjonen  */
-export function getRegistrationViews(obs: RegistrationViewModel, includeAttachments = false) {
+export function getRegistrationViews(obs: RegistrationViewModel, config: RegistrationViewExtraConfig = {}) {
+  const configWithDefaults: RegistrationViewExtraConfig = { includeAttachments: false, isDetailPage: false, ...config };
   return REGISTRATION_VIEW_CONFIG.filter((config) => !config.isEmpty(obs)).map((config) => ({
     tid: Number(config.tid),
     component: config.component,
-    inputs: config.getInputs(obs),
+    inputs: { ...config.getInputs(obs), isDetailPage: configWithDefaults.isDetailPage },
     header: config.getHeader(obs),
-    attachments: includeAttachments ? getAttachmentsFromRegistrationViewModel(obs, config.tid) : undefined,
+    attachments: configWithDefaults.includeAttachments
+      ? getAttachmentsFromRegistrationViewModel(obs, config.tid)
+      : undefined,
   }));
 }

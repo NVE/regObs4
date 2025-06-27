@@ -1,0 +1,8 @@
+<!-- Visning av istykkelse -->
+Er på detaljside: {{ isDetailPage() }}
+
+@if (isDetailPage()) {
+  <p>Vise figur av snøprofil</p>
+}
+
+<app-summary [summaries]="summaries()"></app-summary>
