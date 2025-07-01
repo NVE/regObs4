@@ -62,14 +62,12 @@ export function getSnowProfileAttachments(
     return null;
   }
   const snowProfileSummary = viewModel.Summaries?.find((s) => s.RegistrationTID === RegistrationTid.SnowProfile2);
-  const snowProfilePlot = snowProfileSummary?.AdaptiveElements?.find(
-    (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
-  ) as SnowProfileData | undefined;
+  const snowProfilePlot = viewModel.SnowProfile2?.StratProfile?.PlotImageUrl;
   if (snowProfilePlot) {
     return {
       GeoHazardTID: viewModel?.GeoHazardTID,
       GeoHazardName: viewModel?.GeoHazardName,
-      RegistrationTID: snowProfileSummary?.RegistrationTID,
+      RegistrationTID: RegistrationTid.SnowProfile2,
       RegistrationName: snowProfileSummary?.RegistrationName,
       UrlFormats: {
         Original: snowProfilePlot?.svgUrl,
