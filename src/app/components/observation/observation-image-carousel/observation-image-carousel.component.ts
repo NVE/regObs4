@@ -42,10 +42,10 @@ export class ObservationImageCarouselComponent {
   private logger = inject(LoggingService);
 
   isImageListView = computed(() => this.router.url.includes('search/pictures'));
-  attachments = input<(AttachmentViewModel & { Href?: string })[]>([]);
+  attachments = input<AttachmentViewModel[]>([]);
   translateService = inject(TranslateService);
 
-  registration = input<RegistrationViewModel>();
+  registration = input.required<RegistrationViewModel>();
   attachmentIndex = model<number>(0);
 
   roundedDownOrientationValue = computed(() => {
@@ -57,20 +57,6 @@ export class ObservationImageCarouselComponent {
   });
 
   currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
-
-  comment = computed(() => {
-    // Prioriter kommentar fra bilde dersom det er lagt til
-    if (this.currentAttachmentData().Comment) {
-      return this.currentAttachmentData().Comment;
-    }
-
-    // Vis kommentar fra snøprofil-skjema dersom det finnes
-    if (this.currentAttachmentData().Href) {
-      return this.registration()?.SnowProfile2?.Comment;
-    }
-
-    return undefined;
-  });
 
   snowProfileUrl = linkedSignal(() => {
     const reg = this.registration();
