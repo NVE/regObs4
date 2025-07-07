@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 import { GeoHazard } from '../../common-core/models';
 import { RegistrationViewModel } from '../../common-regobs-api';
 import { RegistrationTid } from '../models/registration-tid.enum';
@@ -34,17 +33,12 @@ const viewModel: RegistrationViewModel = {
       DtAvalancheTime: new Date(1970).toISOString(),
     },
   ],
-  Summaries: [
-    {
+  SnowProfile2: {
+    PlotImage: {
       RegistrationTID: RegistrationTid.SnowProfile2,
-      AdaptiveElements: [
-        {
-          type: 'SnowProfilePlot',
-          pngUrl: 'snow',
-        } as SnowProfileData,
-      ],
+      UrlFormats: { Medium: 'snow' },
     },
-  ],
+  },
   WaterLevel2: {
     WaterLevelMeasurement: [
       {

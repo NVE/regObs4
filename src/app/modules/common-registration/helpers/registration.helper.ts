@@ -7,7 +7,6 @@ import {
   RegistrationEditModelWithRemoteOrLocalAttachments,
   RemoteOrLocalAttachmentEditModel,
 } from 'src/app/core/services/draft/draft-model';
-import { AppMode } from '../../common-core/models';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
 
@@ -54,18 +53,23 @@ export function getWaterLevelAttachments(
   );
 }
 
-/** Returnerer alle bilder for aktuell registrering inkludert evt. snøprofil-plott */
+/**
+ * Returnerer alle bilder for aktuell registrering
+ * Hvis registrationTid er satt, så returneres kun bilder for den registreringstypen.
+ */
 export function getAllAttachmentsFromViewModel(
   viewModel: RegistrationViewModel,
   registrationTid?: RegistrationTid
 ): AttachmentViewModel[] {
-  const snowProfile = viewModel?.SnowProfile2?.PlotImage;
   const attachments = getAllAttachmentsFromEditModel(
     viewModel as RegistrationEditModelWithRemoteOrLocalAttachments,
     registrationTid
   );
-  if (snowProfile) {
-    attachments.unshift(snowProfile);
+  if (!registrationTid || registrationTid === RegistrationTid.SnowProfile2) {
+    const snowProfile = viewModel?.SnowProfile2?.PlotImage;
+    if (snowProfile) {
+      attachments.unshift(snowProfile); // legg snøprofil-bildet først i lista
+    }
   }
   return attachments;
 }
