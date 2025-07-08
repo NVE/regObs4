@@ -32,9 +32,9 @@ export const settings: ISettings = {
       end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
-      getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
+      getObserverUrl: 'https://demo-api.regobs.no/v6/Account/GetObserver',
       myPageUrl: 'https://demo-konto.nve.no/User',
-      updateObserverUrl: 'https://demo-api.regobs.no/v5/Account/UpdateObserver',
+      updateObserverUrl: 'https://demo-api.regobs.no/v6/Account/UpdateObserver',
     },
     PROD: {
       client_id: 'a0b10e50-f942-4619-a9ab-cf5c900a98d5',
@@ -72,7 +72,7 @@ export const settings: ISettings = {
     regObs: {
       apiUrl: {
         PROD: 'https://api.regobs.no/v6',
-        DEMO: 'https://demo-api.regobs.no/v5',
+        DEMO: 'https://demo-api.regobs.no/v6',
         TEST: 'https://test-api.regobs.no/v6',
         //TEST: 'http://localhost:5130',
       },
