@@ -8,7 +8,7 @@
   (swiperslidechange)="setCurrentSlideIndex($event)"
 >
   @for (attachment of attachments(); track attachment.AttachmentId) {
-    @if (attachment.Href) {
+    @if (attachment.IsSnowProfilePlot) {
       <swiper-slide lazy="true">
         <img
           [alt]="attachment.Alt || attachment.Comment"
@@ -38,15 +38,18 @@
       <ion-chip color="primary"> {{ currentAttachmentData().RegistrationName }}</ion-chip>
     }
     <!-- kommentar -->
-    @if (comment()) {
-      <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment()"></app-key-value>
+    @if (currentAttachmentData().Comment) {
+      <app-key-value
+        [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate"
+        [value]="currentAttachmentData().Comment"
+      ></app-key-value>
     }
     <div class="image-description__params">
       <!-- region -->
-      @if (registration()?.ObsLocation?.ForecastRegionName) {
+      @if (registration().ObsLocation.ForecastRegionName) {
         <app-key-value
           [key]="'REGISTRATION.DANGER_OBS.FOR_REGION' | translate"
-          [value]="registration()?.ObsLocation?.ForecastRegionName"
+          [value]="registration().ObsLocation.ForecastRegionName"
         >
         </app-key-value>
       }
@@ -61,8 +64,8 @@
       }
 
       <!-- sendt inn av -->
-      @if (registration()?.Observer?.NickName) {
-        <app-key-value [key]="'REGISTRATION.CARD.OBSERVED_BY' | translate" [value]="registration()?.Observer?.NickName">
+      @if (registration().Observer.NickName) {
+        <app-key-value [key]="'REGISTRATION.CARD.OBSERVED_BY' | translate" [value]="registration().Observer.NickName">
         </app-key-value>
       }
 
@@ -78,10 +81,10 @@
         </app-key-value>
       }
       <!-- observert dato-->
-      @if (registration()?.DtObsTime) {
+      @if (registration().DtObsTime) {
         <app-key-value
           [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate"
-          [value]="registration()?.DtObsTime | date: 'short'"
+          [value]="registration().DtObsTime | date: 'short'"
         >
         </app-key-value>
       }
@@ -91,9 +94,8 @@
         <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
       </a>
 
-      <!-- Kun snøprofil har Href -->
-      @if (currentAttachmentData().Href; as snowProfileImageUrl) {
-        <a [href]="snowProfileImageUrl" target="_blank">
+      @if (currentAttachmentData().IsSnowProfilePlot) {
+        <a [href]="snowProfileUrl()" target="_blank">
           <ion-icon name="open-outline"></ion-icon>
           {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
         </a>
@@ -103,7 +105,7 @@
         </a>
       }
       @if (isImageListView()) {
-        <a [routerLink]="'registration/' + registration()?.RegId" (click)="closeModal()">
+        <a [routerLink]="'registration/' + registration().RegId" (click)="closeModal()">
           <ion-icon name="eye-outline"></ion-icon>
           {{ "REGISTRATION.GO_TO" | translate }}
         </a>

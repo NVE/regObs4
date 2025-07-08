@@ -15,6 +15,8 @@ const cspConfig = {
     'https://api.regobs.no',
     'https://test-api.regobs.no',
     'https://demo-api.regobs.no',
+    'http://localhost:5130/',
+    'http://localhost:40001/',
     'https://api01.nve.no',
     'https://ws.geonorge.no/stedsnavn',
     'https://secure.geonames.org',

@@ -61,4 +61,9 @@ export interface AttachmentViewModel {
    * Urls in different formats
    */
   UrlFormats?: {Raw?: string, Original?: string, Thumbnail?: string, Large?: string, Medium?: string};
+
+  /**
+   * Om bildet er generert fra et snøprofil-plott
+   */
+  IsSnowProfilePlot?: boolean;
 }

@@ -1,13 +1,12 @@
 import { RegistrationTid } from '../models/registration-tid.enum';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
-import { AdaptiveElement, AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import {
   RegistrationDraft,
   RegistrationEditModelWithRemoteOrLocalAttachments,
   RemoteOrLocalAttachmentEditModel,
 } from 'src/app/core/services/draft/draft-model';
-import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
 
@@ -54,47 +53,23 @@ export function getWaterLevelAttachments(
   );
 }
 
-export function getSnowProfileAttachments(
-  viewModel: RegistrationViewModel,
-  registrationTid?: RegistrationTid
-): null | (AttachmentViewModel & { Href: string }) {
-  if (registrationTid && registrationTid != RegistrationTid.SnowProfile2) {
-    return null;
-  }
-  const snowProfileSummary = viewModel.Summaries?.find((s) => s.RegistrationTID === RegistrationTid.SnowProfile2);
-  const snowProfilePlot = snowProfileSummary?.AdaptiveElements?.find(
-    (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
-  ) as SnowProfileData | undefined;
-  if (snowProfilePlot) {
-    return {
-      GeoHazardTID: viewModel?.GeoHazardTID,
-      GeoHazardName: viewModel?.GeoHazardName,
-      RegistrationTID: snowProfileSummary?.RegistrationTID,
-      RegistrationName: snowProfileSummary?.RegistrationName,
-      UrlFormats: {
-        Original: snowProfilePlot?.svgUrl,
-        Large: snowProfilePlot?.svgUrl,
-        Medium: snowProfilePlot?.pngUrl,
-      },
-      Url: snowProfilePlot?.svgUrl,
-      Comment: viewModel?.SnowProfile2?.Comment,
-      Href: snowProfilePlot?.interactiveUrl,
-    };
-  }
-  return null;
-}
-
+/**
+ * Returnerer alle bilder for aktuell registrering
+ * Hvis registrationTid er satt, så returneres kun bilder for den registreringstypen.
+ */
 export function getAllAttachmentsFromViewModel(
   viewModel: RegistrationViewModel,
   registrationTid?: RegistrationTid
-): (AttachmentViewModel & { Href?: string })[] {
-  const snowProfile = getSnowProfileAttachments(viewModel, registrationTid);
+): AttachmentViewModel[] {
   const attachments = getAllAttachmentsFromEditModel(
     viewModel as RegistrationEditModelWithRemoteOrLocalAttachments,
     registrationTid
   );
-  if (snowProfile) {
-    attachments.unshift(snowProfile);
+  if (!registrationTid || registrationTid === RegistrationTid.SnowProfile2) {
+    const snowProfile = viewModel?.SnowProfile2?.PlotImage;
+    if (snowProfile) {
+      attachments.unshift(snowProfile); // legg snøprofil-bildet først i lista
+    }
   }
   return attachments;
 }
