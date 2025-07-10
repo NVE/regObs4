@@ -1,0 +1,11 @@
+<!-- Viser en chip med kallenavn og kompetanse til en observatør -->
+<ion-chip class="competence-chip" color="primary" disabled>
+  <ion-icon name="person-circle-outline"></ion-icon>
+  <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
+  <ion-label>
+    {{ observer().NickName }} (<a target="_blank" class="competence-link" bl [href]="userCompetenceUrl()">{{
+      observer().CompetenceLevelName || "COMPETENCE.UNKNOWN_SHORT" | translate
+    }}</a
+    >)
+  </ion-label>
+</ion-chip>

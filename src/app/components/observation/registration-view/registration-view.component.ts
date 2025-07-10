@@ -2,35 +2,28 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 /**
  * Viser data for ett skjema i regobs. Med tittel, eventuelle bilder / kart / osv, og selve observasjonsdata.
- * Kan lukkes for å vise kun tittel.
  */
 @Component({
   selector: 'app-registration-view',
   imports: [],
   template: `
-    <details open>
-      <summary>
-        <h3>{{ header() }}</h3>
-      </summary>
-      <ng-content select="app-attachment-grid"></ng-content>
-      <ng-content>Her var det tomt!</ng-content>
-    </details>
+    <h3>{{ header() }}</h3>
+    <ng-content select="app-attachment-grid"></ng-content>
+    <ng-content>Her var det tomt!</ng-content>
   `,
   styles: `
     :host {
-      display: block;
+      display: flex;
+      flex-direction: column;
     }
 
     h3 {
       margin: 0;
       display: inline-block;
-    }
-
-    summary {
+      width: 100%;
       background-color: var(--ion-color-light-tint);
       padding: 4px;
       margin-top: 32px;
-      cursor: pointer;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

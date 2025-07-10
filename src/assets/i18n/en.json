@@ -560,7 +560,8 @@
       "SOURCE": "Source",
       "TITLE": "Observed Location and Time",
       "UNCERTAINTY": "Uncertainty in position",
-      "UTMSOURCE": "Position source"
+      "UTMSOURCE": "Position source",
+      "POSITION_LABEL": "Position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",

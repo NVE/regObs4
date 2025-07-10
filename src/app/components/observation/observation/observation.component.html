@@ -68,10 +68,7 @@
       <ion-label> {{ savedTime() | date: "short" }}</ion-label>
     </ion-chip>
 
-    <ion-chip color="primary" disabled>
-      <ion-icon [src]="geoIcon()"></ion-icon>
-      <ion-label>{{ geoName() }}</ion-label>
-    </ion-chip>
+    <app-geohazard-chip [registration]="registration()"></app-geohazard-chip>
 
     <ion-chip color="primary" disabled>
       <ion-icon name="location-outline"></ion-icon>
@@ -80,19 +77,7 @@
       </ion-label>
     </ion-chip>
 
-    <ion-chip class="competence-chip" color="primary" disabled>
-      <ion-icon name="person-circle-outline"></ion-icon>
-      <!-- https://css-tricks.com/five-methods-for-five-star-ratings/#method-5-using-unicode-symbols -->
-      <ion-label>
-        {{ registration().Observer.NickName }} (<a
-          target="_blank"
-          class="competence-link"
-          bl
-          [href]="userCompetenceUrl()"
-          >{{ registration().Observer.CompetenceLevelName || "COMPETENCE.UNKNOWN_SHORT" | translate }}</a
-        >)
-      </ion-label>
-    </ion-chip>
+    <app-observer-chip [observer]="registration().Observer"></app-observer-chip>
 
     @if (registration().SourceName) {
       <ion-chip color="primary" disabled>

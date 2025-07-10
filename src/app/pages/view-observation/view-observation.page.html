@@ -1,14 +1,13 @@
 <!-- Viser alle data på en observasjon -->
 <ion-header>
   <ion-toolbar appHeaderColor>
-    <!-- Back button -->
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
 
     <ion-title>
       @if (registration.value(); as reg) {
-        {{ reg.ObsLocation.Title }}
+        {{ reg.ObsLocation.Title }}, {{ reg.DtObsTime | date: "shortDate" }}
       } @else {
         {{ "REGISTRATION.OVERVIEW.TITLE" | translate }}
       }
@@ -75,6 +74,14 @@
         <!-- #endregion Metadata -->
 
         <!-- TODO: Legg til chips -->
+        <app-geohazard-chip [registration]="reg"></app-geohazard-chip>
+
+        <ion-chip color="primary" disabled>
+          <ion-icon name="location-outline"></ion-icon>
+          <ion-label> {{ reg.ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }} </ion-label>
+        </ion-chip>
+
+        <app-observer-chip [observer]="reg.Observer"></app-observer-chip>
 
         <!-- Kart, full bredde -->
         <!--

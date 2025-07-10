@@ -563,10 +563,10 @@
       "NAME_LOCATION": "Navngi sted",
       "NAME_LOCATION_TOOLTIP": "Å navngi stedet gjør det mulig å lage en tidsserie på samme observasjonspunkt",
       "SHOW_DETAILS": "Vis detaljer",
-      "SOURCE": "Kildeangivelse",
+      "SOURCE": "Kilde",
       "TITLE": "Observasjonspunkt og -tid",
       "UNCERTAINTY": "Usikkerhet i posisjon",
-      "UTMSOURCE": "Posisjoneringskilde",
+      "UTMSOURCE": "Posisjonskilde",
       "POSITION_LABEL": "Posisjon"
     },
     "OVERVIEW": {

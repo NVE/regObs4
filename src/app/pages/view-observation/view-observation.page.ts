@@ -11,6 +11,8 @@ import {
   IonHeader,
   IonButton,
   IonButtons,
+  IonChip,
+  IonLabel,
 } from '@ionic/angular/standalone';
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttribute, computed } from '@angular/core';
 import { Router } from '@angular/router';
@@ -21,7 +23,7 @@ import { Subject, merge } from 'rxjs';
 import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
-import { NgIf, AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
@@ -41,6 +43,8 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { SummaryComponent } from '../../components/observation/summary/summary.component';
 import { getAttachmentsFromRegistrationViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import { AvalancheActivitesViewComponent } from '../../components/observation/registrations/avalanche-activity-view/avalanche-activities-view.component';
+import { ObserverChipComponent } from 'src/app/components/observation/observer-chip/observer-chip.component';
+import { GeohazardChipComponent } from 'src/app/components/observation/geohazard-chip/geohazard-chip.component';
 
 @Component({
   selector: 'app-view-observation',
@@ -60,20 +64,23 @@ import { AvalancheActivitesViewComponent } from '../../components/observation/re
     IonCardContent,
     IonCardHeader,
     IonCardTitle,
+    IonChip,
     IonContent,
     IonHeader,
     IonIcon,
+    IonLabel,
     IonTitle,
     IonToolbar,
     KeyValueComponent,
     KeyValueGroupComponent,
-    NgIf,
+    ObserverChipComponent,
     RegistrationHeaderComponent,
     RegistrationViewComponent,
     StaticMapImageComponent,
     TranslatePipe,
     SummaryComponent,
     AvalancheActivitesViewComponent,
+    GeohazardChipComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -160,6 +167,8 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   }
 
   RegistrationTid = RegistrationTid;
+
+  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
   getSummaries(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaries(registration, tid);

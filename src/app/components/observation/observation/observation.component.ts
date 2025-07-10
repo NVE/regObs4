@@ -39,9 +39,7 @@ import {
   shareSocial,
 } from 'ionicons/icons';
 import { Clipboard } from '@capacitor/clipboard';
-import { DatePipe, NgComponentOutlet } from '@angular/common';
-import { getIconForGeohazards } from 'src/app/modules/shared/components/geo-icon/get-geo-icon';
-import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
+import { DatePipe } from '@angular/common';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
@@ -88,6 +86,7 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getSummaries, getSummaryHeader } from '../summary/get-summary-input';
 import { SummaryComponent } from '../summary/summary.component';
+import { ObserverChipComponent } from '../observer-chip/observer-chip.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -102,10 +101,9 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     TranslatePipe,
     RouterLink,
     StaticMapImageComponent,
-    NgComponentOutlet,
     RegistrationHeaderComponent,
-    RegistrationViewComponent,
     SummaryComponent,
+    ObserverChipComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -131,8 +129,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
 
   readonly registration = input.required<RegistrationViewModel>();
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
-  geoIcon = computed(() => getIconForGeohazards([this.registration().GeoHazardTID]));
-  geoName = getNameForGeohazard(this.registration);
   location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
   isLoadingObsForEdit = signal(false);
@@ -237,8 +233,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.intersectionObserver?.disconnect(); // Vet ikke om denne er nødvendig
   }
-
-  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
   setFallbackImage(attachment: AttachmentViewModel) {
     if (!attachment.UrlFormats) {
@@ -386,17 +380,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaryHeader(registration, tid);
   }
-}
-
-function getNameForGeohazard(registration: Signal<RegistrationViewModel>) {
-  const helper = inject(GeoHelperService);
-
-  const nameResource = rxResource({
-    params: () => [registration().GeoHazardTID],
-    stream: ({ params: geohazards }) => helper.getName(geohazards),
-  });
-
-  return nameResource.value.asReadonly();
 }
 
 export function getLocation(obs: RegistrationViewModel): ImageLocation {
