@@ -17,6 +17,10 @@ import { StorageBackend } from '@openid/appauth';
 import { ApiVersionService } from '../services/api-version/api-version.service';
 import { Capacitor } from '@capacitor/core';
 
+const DEBUG_TAG = 'ApiInterceptor';
+const RETRY_HEADER = 'X-Regobs-Retry';
+const MAX_RETRIES = 1; // Antall ganger vi prøver å kjøre kallet på nytt hvis vi får 401
+
 /**
  * Sender innloggings-token med kall til Regobs API der kallene krever at man er logget inn.
  * Hvis api-kallet feiler pga. innloggingsfeil (HTTP 401), prøver vi å fornye tokenet og kjører kallet en gang til.
@@ -90,7 +94,7 @@ export class ApiInterceptor implements HttpInterceptor {
       // take(1) makes the observable complete after getting the first loggedInUser.
       take(1),
       catchError((err) => {
-        this.loggerService.debug('Could not get valid token', 'API interceptor', { err });
+        this.loggerService.debug('Could not get valid token', DEBUG_TAG, { err });
         this.regobsAuthService.signIn();
         return EMPTY; //TODO: Why this?
       }),
@@ -108,9 +112,22 @@ export class ApiInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     if (error instanceof HttpErrorResponse && error.status === 401) {
       // Vi er ikke autorisert, trolig fordi tokenet ikke er gyldig
-      this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...');
+      const retryCount = Number(request.headers.get(RETRY_HEADER) ?? '0');
+      if (retryCount >= MAX_RETRIES) {
+        // Har allerede forsøkt å oppfriske token én gang, kast feilen videre
+        console.log('ApiInterceptor: MAX_RETRIES reached, not retrying');
+        this.loggerService.debug('401 after token refresh, not retrying again.', DEBUG_TAG);
+        throw error;
+      }
+      this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...', DEBUG_TAG);
       return from(this.regobsAuthService.refreshToken()).pipe(
         switchMap(() => this.addAuthHeader(request)),
+        map((req) =>
+          req.clone({
+            // legger på en header for å indikere at vi forsøker samme kall til API på nytt
+            headers: req.headers.set(RETRY_HEADER, String(retryCount + 1)),
+          })
+        ),
         switchMap((req) => next.handle(req))
       );
     }
