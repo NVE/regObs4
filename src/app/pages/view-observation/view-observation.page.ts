@@ -26,7 +26,7 @@ import { HeaderColorDirective } from '../../modules/shared/directives/header-col
 import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { personCircle } from 'ionicons/icons';
+import { personCircle, locationOutline } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { getLocation } from 'src/app/components/observation/observation/observation.component';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -45,6 +45,7 @@ import { getAttachmentsFromRegistrationViewModel } from 'src/app/modules/common-
 import { AvalancheActivitesViewComponent } from '../../components/observation/registrations/avalanche-activity-view/avalanche-activities-view.component';
 import { ObserverChipComponent } from 'src/app/components/observation/observer-chip/observer-chip.component';
 import { GeohazardChipComponent } from 'src/app/components/observation/geohazard-chip/geohazard-chip.component';
+import { IceThicknessViewComponent } from 'src/app/components/observation/registrations/ice-thickness-view/ice-thickness-view.component';
 
 @Component({
   selector: 'app-view-observation',
@@ -81,6 +82,7 @@ import { GeohazardChipComponent } from 'src/app/components/observation/geohazard
     SummaryComponent,
     AvalancheActivitesViewComponent,
     GeohazardChipComponent,
+    IceThicknessViewComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -120,7 +122,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   constructor() {
     super();
-    addIcons({ personCircle });
+    addIcons({ personCircle, locationOutline });
   }
 
   getLocation(obs: RegistrationViewModel) {

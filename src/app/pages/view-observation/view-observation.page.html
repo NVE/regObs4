@@ -65,7 +65,7 @@
             [value]="reg.ObsLocation.UTMSourceName"
           ></app-key-value>
           <app-key-value
-            [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL'"
+            [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL' | translate"
             value="
             {{ reg.ObsLocation.Latitude | number: '1.3-3' : lang }} /
             {{ reg.ObsLocation.Longitude | number: '1.3-3' : lang }}"
@@ -76,7 +76,7 @@
         <!-- TODO: Legg til chips -->
         <app-geohazard-chip [registration]="reg"></app-geohazard-chip>
 
-        <ion-chip color="primary" disabled>
+        <ion-chip color="primary">
           <ion-icon name="location-outline"></ion-icon>
           <ion-label> {{ reg.ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }} </ion-label>
         </ion-chip>
@@ -144,6 +144,19 @@
           </app-registration-view>
         }
 
+        @if (hasData(reg.DamageObs)) {
+          @let tid = RegistrationTid.DamageObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
         @if (hasData(reg.AvalancheActivityObs2)) {
           @let tid = RegistrationTid.AvalancheActivityObs2;
           @let attachments = getAttachments(reg, tid);
@@ -157,6 +170,71 @@
           </app-registration-view>
         }
 
+        @if (hasData(reg.AvalancheActivityObs)) {
+          @let tid = RegistrationTid.AvalancheActivityObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.WeatherObservation)) {
+          @let tid = RegistrationTid.WeatherObservation;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.SnowSurfaceObservation)) {
+          @let tid = RegistrationTid.SnowSurfaceObservation;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.SnowCoverObs)) {
+          @let tid = RegistrationTid.SnowCoverObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.CompressionTest)) {
+          @let tid = RegistrationTid.CompressionTest;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
         @if (hasData(reg.SnowProfile2)) {
           @let tid = RegistrationTid.SnowProfile2;
           @let attachments = getAttachments(reg, tid);
@@ -167,6 +245,142 @@
               (attachmentClicked)="openImageCarousel($event, attachments)"
             ></app-attachment-grid>
             <p>TODO! Legg inn interaktiv snøprofil her</p>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.AvalancheEvalProblem2)) {
+          @let tid = RegistrationTid.AvalancheEvalProblem2;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.AvalancheEvaluation)) {
+          @let tid = RegistrationTid.AvalancheEvaluation;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.AvalancheEvaluation)) {
+          @let tid = RegistrationTid.AvalancheEvaluation2;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.AvalancheEvaluation3)) {
+          @let tid = RegistrationTid.AvalancheEvaluation3;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.IceCoverObs)) {
+          @let tid = RegistrationTid.IceCoverObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.IceThickness)) {
+          @let tid = RegistrationTid.IceThickness;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-ice-thickness-view
+              [data]="reg.IceThickness"
+              ,
+              [regId]="reg.RegId"
+              ,
+              [summaries]="getSummaries(reg, tid)"
+            ></app-ice-thickness-view>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.WaterLevel)) {
+          @let tid = RegistrationTid.WaterLevel;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.WaterLevel2)) {
+          @let tid = RegistrationTid.WaterLevel2;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.LandSlideObs)) {
+          @let tid = RegistrationTid.LandSlideObs;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
+            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+          </app-registration-view>
+        }
+
+        @if (hasData(reg.GeneralObservation)) {
+          @let tid = RegistrationTid.GeneralObservation;
+          @let attachments = getAttachments(reg, tid);
+
+          <app-registration-view [header]="getSummaryHeader(reg, tid)">
+            <app-attachment-grid
+              [attachments]="attachments"
+              (attachmentClicked)="openImageCarousel($event, attachments)"
+            ></app-attachment-grid>
             <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
           </app-registration-view>
         }
@@ -185,6 +399,7 @@
         <!-- TODO! Vise spinner -->
         <p>Laster observasjon</p>
       } @else {
+        <!-- TODO: Vise samme feilmelding som gammel detaljside (med språkstøtte)-->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Fant ikke observasjonen.</ion-card-title>
