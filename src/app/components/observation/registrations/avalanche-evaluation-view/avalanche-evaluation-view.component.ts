@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { TranslatePipe } from '@ngx-translate/core';
 import { injectKdv } from 'src/app/modules/common-registration/services/kdv/inject-kdv';
 import { AvalancheEvaluation3ViewModel } from 'src/app/modules/common-regobs-api';
-import { RegistrationHeaderComponent } from '../../registration-header/registration-header.component';
 import { KeyValueComponent } from '../../key-value/key-value.component';
 import { IonText } from '@ionic/angular/standalone';
 
@@ -17,11 +16,12 @@ const IconConfig: Record<number, string> = {
 
 @Component({
   selector: 'app-avalanche-evaluation-view',
-  imports: [TranslatePipe, RegistrationHeaderComponent, KeyValueComponent, IonText],
+  imports: [TranslatePipe, KeyValueComponent, IonText],
   templateUrl: './avalanche-evaluation-view.component.html',
   styleUrl: './avalanche-evaluation-view.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+/** Viser en skredfarevurdering i observasjonskort og på detaljside for observasjon */
 export class AvalancheEvaluationViewComponent {
   private forecastCorrectKdv = injectKdv('Snow_ForecastCorrectKDV');
   private dangerLevelKdv = injectKdv('Snow_AvalancheDangerKDV');

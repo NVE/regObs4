@@ -3,6 +3,20 @@
 @if (cause()) {
   <h4 class="title">{{ cause() }}</h4>
 }
+
+<div class="exposition-graphics">
+  @if (exposition()) {
+    <app-exposition [value]="exposition()" text="test:)" />
+  }
+  @if (exposedHeightComboTid()) {
+    <app-exposed-height
+      [exposedHeightComboTid]="exposedHeightComboTid()"
+      [exposedHeight1]="exposedHeight1()"
+      [exposedHeight2]="exposedHeight2()"
+    />
+  }
+</div>
+
 @if (comment()) {
   <ion-text color="dark">{{ comment() }}</ion-text>
 }
@@ -41,15 +55,3 @@
 @if (propagation()) {
   <app-key-value [key]="'REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION' | translate" [value]="propagation()" />
 }
-<div class="exposition-graphics">
-  @if (exposition()) {
-    <app-exposition [value]="exposition()" text="test:)" />
-  }
-  @if (exposedHeightComboTid()) {
-    <app-exposed-height
-      [exposedHeightComboTid]="exposedHeightComboTid()"
-      [exposedHeight1]="exposedHeight1()"
-      [exposedHeight2]="exposedHeight2()"
-    />
-  }
-</div>

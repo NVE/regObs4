@@ -18,13 +18,13 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttrib
 import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { takeUntil, map, switchMap } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { Subject, merge } from 'rxjs';
 import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircle, locationOutline } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
@@ -46,6 +46,11 @@ import { AvalancheActivitesViewComponent } from '../../components/observation/re
 import { ObserverChipComponent } from 'src/app/components/observation/observer-chip/observer-chip.component';
 import { GeohazardChipComponent } from 'src/app/components/observation/geohazard-chip/geohazard-chip.component';
 import { IceThicknessViewComponent } from 'src/app/components/observation/registrations/ice-thickness-view/ice-thickness-view.component';
+import { AvalancheProblemsViewComponent } from 'src/app/components/observation/registrations/avalanche-problem-view/avalanche-problems-view.component';
+import { AvalancheEvaluationViewComponent } from 'src/app/components/observation/registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
+import { linkedSignal } from '@angular/core';
+import { PlotService } from 'src/app/core/services/plot.service';
+import { RegistrationEditButtonComponent } from 'src/app/components/observation/registration-edit-button/registration-edit-button.component';
 
 @Component({
   selector: 'app-view-observation',
@@ -55,9 +60,14 @@ import { IceThicknessViewComponent } from 'src/app/components/observation/regist
   imports: [
     AsyncPipe,
     AttachmentGridComponent,
+    AvalancheActivitesViewComponent,
+    AvalancheProblemsViewComponent,
+    AvalancheEvaluationViewComponent,
     DatePipe,
     DecimalPipe,
+    GeohazardChipComponent,
     HeaderColorDirective,
+    IceThicknessViewComponent,
     IonBackButton,
     IonButton,
     IonButtons,
@@ -75,14 +85,12 @@ import { IceThicknessViewComponent } from 'src/app/components/observation/regist
     KeyValueComponent,
     KeyValueGroupComponent,
     ObserverChipComponent,
+    RegistrationEditButtonComponent,
     RegistrationHeaderComponent,
     RegistrationViewComponent,
     StaticMapImageComponent,
     TranslatePipe,
     SummaryComponent,
-    AvalancheActivitesViewComponent,
-    GeohazardChipComponent,
-    IceThicknessViewComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -92,14 +100,18 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private authService = inject(RegobsAuthService);
   private router = inject(Router);
   private imageCarousel = injectImageCarousel();
+  private plotService = inject(PlotService);
+  private regobsAuthService = inject(RegobsAuthService);
 
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
-  lang = inject(TranslateService).currentLang;
+  readonly langKey = toSignal(this.userSettingService.language$, { initialValue: 1 });
+  private observer = toSignal(this.regobsAuthService.myPageData$);
+  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
   registration = rxResource({
-    params: () => ({ regId: this.regId() }),
-    stream: ({ params }) => this.getRegistration$(params.regId),
+    params: () => ({ regId: this.regId(), langKey: this.langKey() }),
+    stream: ({ params }) => this.registrationService.RegistrationGet({ regId: params.regId, langKey: params.langKey }),
   });
 
   unknownRegistrationAttachments = computed(
@@ -108,17 +120,29 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   errorMessage = computed(() => {
     const err = this.registration.error();
+    console.log('ERROR', err);
+    if (err) {
+      console.log('ERROR cause', err.cause);
+    }
     if (err instanceof Error) {
       return err.message;
     }
     return null;
   });
 
+  RegistrationTid = RegistrationTid;
+
   private _isLoggingIn = new Subject<boolean>();
   loggedInUserEmail = toSignal(
     this.authService.loggedInUser$.pipe(map((user) => (user.isLoggedIn ? user.email : null)))
   );
   isLoggingIn$ = merge(this._isLoggingIn, this.authService.isLoggingIn$);
+
+  snowProfileUrl = linkedSignal(() => {
+    const reg = this.registration.value();
+    if (!reg) return undefined;
+    return this.plotService.getSnowProfileSvgUrl(reg);
+  });
 
   constructor() {
     super();
@@ -144,12 +168,6 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     await this.authService.signIn();
   }
 
-  private getRegistration$(regId: number) {
-    return this.userSettingService.language$.pipe(
-      switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey }))
-    );
-  }
-
   ngOnInit() {
     this.isLoggingIn$ = merge(this._isLoggingIn, this.authService.isLoggingIn$);
 
@@ -168,10 +186,6 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     return !isEmpty(data);
   }
 
-  RegistrationTid = RegistrationTid;
-
-  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
-
   getSummaries(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaries(registration, tid);
   }
@@ -182,5 +196,9 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaryHeader(registration, tid);
+  }
+
+  share() {
+    //TODO: Skill ut delingsknappen som en egen komponent med innebygget delingslogikk og bruk denne i både kort og detaljvisning
   }
 }

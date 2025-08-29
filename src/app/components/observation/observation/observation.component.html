@@ -104,6 +104,7 @@
     }
   </div>
 
+  <!-- #region skjemaliste -->
   @let reg = registration();
 
   @if (hasData(reg.DangerObs)) {
@@ -128,30 +129,129 @@
     <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
   }
 
+  @if (hasData(reg.DamageObs)) {
+    @let tid = RegistrationTid.DamageObs;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.AvalancheActivityObs)) {
+    @let tid = RegistrationTid.AvalancheActivityObs;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.AvalancheActivityObs2)) {
+    @let tid = RegistrationTid.AvalancheActivityObs2;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-avalanche-activities-view [data]="reg.AvalancheActivityObs2"> </app-avalanche-activities-view>
+  }
+
+  @if (hasData(reg.WeatherObservation)) {
+    @let tid = RegistrationTid.WeatherObservation;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.SnowSurfaceObservation)) {
+    @let tid = RegistrationTid.SnowSurfaceObservation;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.SnowCoverObs)) {
+    @let tid = RegistrationTid.SnowCoverObs;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.CompressionTest)) {
+    @let tid = RegistrationTid.CompressionTest;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
   @if (hasData(reg.SnowProfile2)) {
     <h3>{{ "REGISTRATION.SNOW.SNOW_PROFILE.TITLE" | translate }}</h3>
     <app-summary [summaries]="getSummaries(reg, RegistrationTid.SnowProfile2)"></app-summary>
   }
+
+  @if (hasData(reg.AvalancheEvalProblem2)) {
+    @let tid = RegistrationTid.AvalancheEvalProblem2;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-avalanche-problems-view [data]="reg.AvalancheEvalProblem2"></app-avalanche-problems-view>
+  }
+
+  @if (hasData(reg.AvalancheEvaluation)) {
+    @let tid = RegistrationTid.AvalancheEvaluation;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.AvalancheEvaluation2)) {
+    @let tid = RegistrationTid.AvalancheEvaluation2;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.AvalancheEvaluation3)) {
+    @let tid = RegistrationTid.AvalancheEvaluation3;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-avalanche-evaluation-view [data]="reg.AvalancheEvaluation3"></app-avalanche-evaluation-view>
+  }
+
+  @if (hasData(reg.IceCoverObs)) {
+    @let tid = RegistrationTid.IceCoverObs;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.IceThickness)) {
+    @let tid = RegistrationTid.IceThickness;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-ice-thickness-view
+      [regId]="reg.RegId"
+      [data]="reg.IceThickness"
+      [summaries]="getSummaries(reg, tid)"
+    ></app-ice-thickness-view>
+  }
+
+  @if (hasData(reg.WaterLevel)) {
+    @let tid = RegistrationTid.WaterLevel;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.WaterLevel2)) {
+    @let tid = RegistrationTid.WaterLevel2;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.LandSlideObs)) {
+    @let tid = RegistrationTid.LandSlideObs;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+
+  @if (hasData(reg.GeneralObservation)) {
+    @let tid = RegistrationTid.GeneralObservation;
+    <h3>{{ getSummaryHeader(reg, tid) }}</h3>
+    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+  }
+  <!-- #endregion skjemaliste -->
 </div>
 
 <!-- Knapperad med deleknapp, gå til obs og endre-knapp -->
 <div class="buttons ion-color-light">
-  @if (userCanEdit()) {
-    <ion-button fill="clear" class="edit-button" (click)="edit()" [disabled]="isLoadingObsForEdit()">
-      <ion-icon name="create-outline"></ion-icon>
-      {{ "REGISTRATION.EDIT" | translate }}
-      @if (isLoadingObsForEdit()) {
-        <ion-spinner name="dots" slot="end"></ion-spinner>
-      }
-    </ion-button>
-  }
-
   <a [routerLink]="'/registration/' + registration().RegId">
     <ion-button fill="clear" class="edit-button">
       <ion-icon name="eye-outline"></ion-icon>
       {{ "REGISTRATION.GO_TO" | translate }}
     </ion-button>
   </a>
+
+  <app-registration-edit-button [registration]="registration()"></app-registration-edit-button>
 
   <ion-button fill="clear" (click)="share()" class="reg-id">
     ID: {{ registration().RegId }}

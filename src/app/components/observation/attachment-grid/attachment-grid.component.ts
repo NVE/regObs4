@@ -23,6 +23,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      padding: 10px 0;
     }
 
     .attachment {
@@ -39,8 +40,6 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 
     .comment {
       width: 100%;
-      max-height: 100px;
-      text-overflow: ellipsis;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

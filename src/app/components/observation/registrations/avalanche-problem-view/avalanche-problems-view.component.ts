@@ -16,7 +16,7 @@ import { AvalancheProblemViewComponent } from './avalanche-problem-view.componen
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AbalancheProblemsViewComponent {
+export class AvalancheProblemsViewComponent {
   readonly data = input.required<AvalancheEvalProblem2ViewModel[]>();
   count = computed(() => this.data().length);
 }

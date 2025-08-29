@@ -15,21 +15,17 @@
 
     <ion-buttons slot="end" class="ion-hide-md-down">
       <!-- Nickname button - takes user to my page so they can log out etc -->
-      <ng-container *ngIf="loggedInUserEmail() as email; else loginTemplate">
+      @if (loggedInUserEmail(); as email) {
         <ion-button fill="outline" (click)="goToMyPage()">
           <ion-icon slot="start" name="person-circle"></ion-icon>
           {{ email }}
         </ion-button>
-      </ng-container>
-
-      <!-- Login button -->
-      <ng-template #loginTemplate>
+      } @else {
         <ion-button fill="outline" (click)="signIn()" [disabled]="isLoggingIn$ | async">
           <ion-icon slot="start" name="person-circle"></ion-icon>
           {{ "LOGIN.LOGIN" | translate }}
         </ion-button>
-      </ng-template>
-
+      }
       <!-- Button to open right side menu with login, settings etc -->
     </ion-buttons>
   </ion-toolbar>
@@ -51,9 +47,11 @@
           <app-key-value [key]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
             <time [dateTime]="reg.DtRegTime">{{ reg.DtRegTime | date: "short" }}</time>
           </app-key-value>
-          <app-key-value [key]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
-            <time [dateTime]="reg.DtChangeTime">{{ reg.DtChangeTime | date: "short" }}</time>
-          </app-key-value>
+          @if (reg.DtChangeTime != reg.DtRegTime) {
+            <app-key-value [key]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
+              <time [dateTime]="reg.DtChangeTime">{{ reg.DtChangeTime | date: "short" }}</time>
+            </app-key-value>
+          }
         </app-key-value-group>
         <app-key-value-group>
           <app-key-value
@@ -64,11 +62,13 @@
             [key]="'REGISTRATION.OBS_LOCATION.UTMSOURCE' | translate"
             [value]="reg.ObsLocation.UTMSourceName"
           ></app-key-value>
+
+          <!-- Vi bruker punktum som desimalskilletegn, fordi det er vanlig å skrive koordinater slik -->
           <app-key-value
             [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL' | translate"
             value="
-            {{ reg.ObsLocation.Latitude | number: '1.3-3' : lang }} /
-            {{ reg.ObsLocation.Longitude | number: '1.3-3' : lang }}"
+            {{ reg.ObsLocation.Latitude | number: '1.3-3' : 'en-US' }},
+            {{ reg.ObsLocation.Longitude | number: '1.3-3' : 'en-US' }}"
           ></app-key-value>
         </app-key-value-group>
         <!-- #endregion Metadata -->
@@ -244,7 +244,9 @@
               [attachments]="attachments"
               (attachmentClicked)="openImageCarousel($event, attachments)"
             ></app-attachment-grid>
-            <p>TODO! Legg inn interaktiv snøprofil her</p>
+            @if (snowProfileUrl()) {
+              <img [src]="snowProfileUrl()" alt="Snow Profile" />
+            }
             <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
           </app-registration-view>
         }
@@ -258,7 +260,7 @@
               [attachments]="attachments"
               (attachmentClicked)="openImageCarousel($event, attachments)"
             ></app-attachment-grid>
-            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+            <app-avalanche-problems-view [data]="reg.AvalancheEvalProblem2"></app-avalanche-problems-view>
           </app-registration-view>
         }
 
@@ -297,7 +299,7 @@
               [attachments]="attachments"
               (attachmentClicked)="openImageCarousel($event, attachments)"
             ></app-attachment-grid>
-            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+            <app-avalanche-evaluation-view [data]="reg.AvalancheEvaluation3"></app-avalanche-evaluation-view>
           </app-registration-view>
         }
 
@@ -395,11 +397,11 @@
         @if (unknownRegistrationAttachments().length > 0) {
           <app-attachment-grid [attachments]="unknownRegistrationAttachments()"></app-attachment-grid>
         }
-      } @else if (registration.isLoading()) {
-        <!-- TODO! Vise spinner -->
-        <p>Laster observasjon</p>
-      } @else {
-        <!-- TODO: Vise samme feilmelding som gammel detaljside (med språkstøtte)-->
+      } @else if (errorMessage()) {
+        <!-- TODO: Vise samme feilmelding som gammel detaljside (med språkstøtte)
+         Vi bør håndtere både 400 (ugyldig id), 410 (slettet) og 404 (ikke funnet)
+         NB! Feilhåndteringa virker ikke nå. Hvis vi får feil fra API'et, er registration().error() undefined og registration.loading() er true selv etter det har feilet
+         -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Fant ikke observasjonen.</ion-card-title>
@@ -408,15 +410,28 @@
           <ion-card-content>
             <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
 
-            @if (errorMessage()) {
-              <div>
-                <p>Feilmelding:</p>
-                <pre>{{ errorMessage() }}</pre>
-              </div>
-            }
+            <div>
+              <p>Feilmelding:</p>
+              <pre>{{ errorMessage() }}</pre>
+            </div>
           </ion-card-content>
         </ion-card>
+      } @else if (registration.isLoading()) {
+        <!-- TODO! Vise spinner -->
+        <p>Laster observasjon</p>
       }
     </div>
+  </div>
+
+  <!-- Knapperad med deleknapp og endre-knapp -->
+  <div class="buttons ion-color-light">
+    @if (registration.value(); as reg) {
+      <app-registration-edit-button [registration]="reg"></app-registration-edit-button>
+
+      <ion-button fill="clear" (click)="share()" class="reg-id">
+        ID: {{ reg.RegId }}
+        <ion-icon slot="end" name="share-social"></ion-icon>
+      </ion-button>
+    }
   </div>
 </ion-content>

@@ -1,24 +1,26 @@
 @if (hasHeightValue()) {
-  <div [ngSwitch]="exposedHeightComboTid()" class="container">
-    <ng-container *ngSwitchCase="0">
-      <!-- <ng-container *ngTemplateOutlet="middle"></ng-container> -->
-    </ng-container>
-    <ng-container *ngSwitchCase="1">
-      <ng-container *ngTemplateOutlet="top"></ng-container>
-      <ng-container *ngTemplateOutlet="topHeight"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="2">
-      <ng-container *ngTemplateOutlet="bottom"></ng-container>
-      <ng-container *ngTemplateOutlet="bottomHeight"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="3">
-      <ng-container *ngTemplateOutlet="topBottom"></ng-container>
-      <ng-container *ngTemplateOutlet="topBottomHeight"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="4">
-      <ng-container *ngTemplateOutlet="middle"></ng-container>
-      <ng-container *ngTemplateOutlet="middleHeight"></ng-container>
-    </ng-container>
+  <div class="container">
+    @switch (exposedHeightComboTid()) {
+      @case (0) {
+        <ng-container *ngTemplateOutlet="middle"></ng-container>
+      }
+      @case (1) {
+        <ng-container *ngTemplateOutlet="top"></ng-container>
+        <ng-container *ngTemplateOutlet="topHeight"></ng-container>
+      }
+      @case (2) {
+        <ng-container *ngTemplateOutlet="bottom"></ng-container>
+        <ng-container *ngTemplateOutlet="bottomHeight"></ng-container>
+      }
+      @case (3) {
+        <ng-container *ngTemplateOutlet="topBottom"></ng-container>
+        <ng-container *ngTemplateOutlet="topBottomHeight"></ng-container>
+      }
+      @case (4) {
+        <ng-container *ngTemplateOutlet="middle"></ng-container>
+        <ng-container *ngTemplateOutlet="middleHeight"></ng-container>
+      }
+    }
   </div>
 }
 <ng-template #middle>

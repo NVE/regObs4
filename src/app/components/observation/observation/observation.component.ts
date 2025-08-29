@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   computed,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -9,22 +8,12 @@ import {
   inject,
   input,
   OnDestroy,
-  signal,
-  Signal,
 } from '@angular/core';
-import {
-  AlertController,
-  IonChip,
-  IonIcon,
-  IonLabel,
-  ModalController,
-  ToastController,
-} from '@ionic/angular/standalone';
+import { IonChip, IonIcon, IonLabel, ModalController, ToastController } from '@ionic/angular/standalone';
 import {
   AttachmentViewModel,
   AvalancheObsViewModel,
   LandslideViewModel,
-  RegistrationService,
   RegistrationViewModel,
 } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
@@ -40,7 +29,7 @@ import {
 } from 'ionicons/icons';
 import { Clipboard } from '@capacitor/clipboard';
 import { DatePipe } from '@angular/common';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
 import { ImageLocation, ImageLocationStartStop } from '../../../core/models/image-location.model';
@@ -49,29 +38,11 @@ import {
   getAllAttachmentsFromViewModel,
   getAttachmentsFromRegistrationViewModel,
 } from 'src/app/modules/common-registration/registration.helpers';
-import {
-  catchError,
-  debounceTime,
-  firstValueFrom,
-  Observable,
-  of,
-  Subject,
-  switchMap,
-  timeout,
-  TimeoutError,
-} from 'rxjs';
-import { Router, RouterLink } from '@angular/router';
-import {
-  ConfirmationModalService,
-  PopupResponse,
-} from 'src/app/core/services/confirmation-modal/confirmation-modal.service';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { debounceTime, firstValueFrom, Subject } from 'rxjs';
+import { RouterLink } from '@angular/router';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
-import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { checkEditPriviliges } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { settings } from 'src/settings';
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
@@ -81,15 +52,18 @@ import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/mod
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
 import { injectImageCarousel } from '../observation-image-carousel/inject-image-carousel';
-import { RegistrationViewComponent } from '../registration-view/registration-view.component';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getSummaries, getSummaryHeader } from '../summary/get-summary-input';
 import { SummaryComponent } from '../summary/summary.component';
 import { ObserverChipComponent } from '../observer-chip/observer-chip.component';
+import { IceThicknessViewComponent } from '../registrations/ice-thickness-view/ice-thickness-view.component';
+import { AvalancheProblemsViewComponent } from '../registrations/avalanche-problem-view/avalanche-problems-view.component';
+import { AvalancheEvaluationViewComponent } from '../registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
+import { AvalancheActivitesViewComponent } from '../registrations/avalanche-activity-view/avalanche-activities-view.component';
+import { RegistrationEditButtonComponent } from 'src/app/components/observation/registration-edit-button/registration-edit-button.component';
 
 const DEBUG_TAG = 'ObservationComponent';
-const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-observation',
@@ -104,6 +78,11 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     RegistrationHeaderComponent,
     SummaryComponent,
     ObserverChipComponent,
+    IceThicknessViewComponent,
+    AvalancheActivitesViewComponent,
+    AvalancheProblemsViewComponent,
+    AvalancheEvaluationViewComponent,
+    RegistrationEditButtonComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -112,17 +91,10 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 })
 export class ObservationComponent implements AfterViewInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
-  private cdr = inject(ChangeDetectorRef);
   private analyticService = inject(AnalyticService);
-  private regobsAuthService = inject(RegobsAuthService);
-  private registrationService = inject(RegistrationService);
-  private draftRepository = inject(DraftRepositoryService);
-  private router = inject(Router);
   private logger = inject(LoggingService);
-  private alertController = inject(AlertController);
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
-  private confirmationModalService = inject(ConfirmationModalService);
   private elementRef = inject(ElementRef);
   private imageCarousel = injectImageCarousel();
   modalController = inject(ModalController);
@@ -131,7 +103,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
   location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
-  isLoadingObsForEdit = signal(false);
 
   private async canShareNative(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {
@@ -178,22 +149,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
     });
     modal.present();
   }
-
-  private observer = toSignal(this.regobsAuthService.myPageData$);
-
-  userCanEdit = computed(() => {
-    // sjekk om obs ble opprettet for flere enn 2 dager siden
-    const now = new Date();
-    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
-    const registrationDate = new Date(this.registration().DtRegTime);
-    const isObsOlderThanTwoDays = registrationDate && registrationDate < twoDaysAgo;
-    const user = this.observer();
-    if (!user) {
-      return false;
-    }
-    const editMode = checkEditPriviliges(this.registration(), user);
-    return (editMode === 'EDIT_OWN_REGISTRATION' && !isObsOlderThanTwoDays) || editMode === 'EDIT_AS_MODERATOR';
-  });
 
   constructor() {
     addIcons({
@@ -257,106 +212,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
       attachment.UrlFormats.Large = 'assets/images/broken-image-w-bg.svg';
       attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
     }
-  }
-
-  private fetchRegistrationBeforeEdit(
-    regId: RegistrationService.RegistrationGetParams['regId']
-  ): Observable<RegistrationViewModel | null> {
-    return this.userSettingService.language$.pipe(
-      switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey })),
-      timeout(FETCH_OBS_TIMEOUT_MS),
-      catchError((error) => {
-        let msg: string;
-        if (error instanceof TimeoutError) {
-          msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms`;
-        } else if (error instanceof HttpErrorResponse && error.status === 410) {
-          msg = 'Obs was deleted from Regobs';
-        } else {
-          msg = 'An unknown error occured while fetching obs before edit';
-        }
-        this.logger.error(error, DEBUG_TAG, msg);
-        return of(null);
-      })
-    );
-  }
-
-  async edit() {
-    this.isLoadingObsForEdit.set(true);
-    const uuid = this.registration().ExternalReferenceId;
-
-    try {
-      if (!uuid) {
-        await this.notifyAboutMissingExternalReferenceId();
-        return;
-      }
-
-      const draft = await this.draftRepository.load(uuid);
-      if (!draft) {
-        let registrationDataToEdit: RegistrationViewModel = this.registration();
-
-        //we don't have a local working copy of this registration yet, so fetch it and save as draft
-        const obs = this.registration();
-        this.logger.debug(`Registration edit: Fetching from API. RegID = ${obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
-        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(obs.RegId));
-        if (registrationFromServer === null) {
-          const continueEditing = await this.confirmEditDespiteNoFreshRegistrationFromServer();
-          if (!continueEditing) {
-            this.isLoadingObsForEdit.set(false);
-            return;
-          }
-        } else {
-          registrationDataToEdit = registrationFromServer;
-        }
-
-        await this.draftRepository.saveAsDraft(registrationDataToEdit); //save cached copy from card as draft
-      } else {
-        this.logger.debug(
-          `Registration edit: Using local draft. RegID = ${this.registration().RegId}, uuid = ${uuid}`,
-          DEBUG_TAG
-        );
-      }
-    } finally {
-      this.isLoadingObsForEdit.set(false);
-      this.cdr.markForCheck();
-    }
-    this.router.navigate(['registration', 'edit', uuid]);
-  }
-
-  private async notifyAboutMissingExternalReferenceId() {
-    // This alert is not translated and that is OK, this is a weird case that can only happen with registrations
-    // submitted directly to the database, outside of the API
-    const alert = await this.alertController.create({
-      header: 'Missing ExternalReferenceId',
-      message: 'Error: This observation is missing ExternalReferenceId and cannot be edited.',
-      buttons: ['OK'],
-    });
-    await alert.present();
-  }
-
-  private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {
-    let resolveFunction: (confirm: boolean) => void;
-    const promise = new Promise<boolean>((resolve) => {
-      resolveFunction = resolve;
-    });
-
-    await this.confirmationModalService.askForConfirmation({
-      message: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
-      header: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
-      buttons: [
-        {
-          text: 'DIALOGS.CANCEL',
-          handler: () => resolveFunction(false),
-          role: PopupResponse.CANCEL,
-        },
-        {
-          text: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON',
-          handler: () => resolveFunction(true),
-          role: PopupResponse.CONFIRM,
-        },
-      ],
-    });
-
-    return promise;
   }
 
   async openImageCarousel(index: number) {
