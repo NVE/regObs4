@@ -27,7 +27,6 @@ import {
   createOutline,
   shareSocial,
 } from 'ionicons/icons';
-import { Clipboard } from '@capacitor/clipboard';
 import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -38,16 +37,11 @@ import {
   getAllAttachmentsFromViewModel,
   getAttachmentsFromRegistrationViewModel,
 } from 'src/app/modules/common-registration/registration.helpers';
-import { debounceTime, firstValueFrom, Subject } from 'rxjs';
-import { RouterLink } from '@angular/router';
+import { debounceTime, Subject } from 'rxjs';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
-import { Capacitor } from '@capacitor/core';
-import { Share } from '@capacitor/share';
-import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
-import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
 import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
@@ -61,7 +55,7 @@ import { IceThicknessViewComponent } from '../registrations/ice-thickness-view/i
 import { AvalancheProblemsViewComponent } from '../registrations/avalanche-problem-view/avalanche-problems-view.component';
 import { AvalancheEvaluationViewComponent } from '../registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
 import { AvalancheActivitesViewComponent } from '../registrations/avalanche-activity-view/avalanche-activities-view.component';
-import { RegistrationEditButtonComponent } from 'src/app/components/observation/registration-edit-button/registration-edit-button.component';
+import { ObservationActionsComponent } from '../observation-actions/observation-actions.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 
@@ -73,7 +67,6 @@ const DEBUG_TAG = 'ObservationComponent';
     IonLabel,
     DatePipe,
     TranslatePipe,
-    RouterLink,
     StaticMapImageComponent,
     RegistrationHeaderComponent,
     SummaryComponent,
@@ -82,7 +75,7 @@ const DEBUG_TAG = 'ObservationComponent';
     AvalancheActivitesViewComponent,
     AvalancheProblemsViewComponent,
     AvalancheEvaluationViewComponent,
-    RegistrationEditButtonComponent,
+    ObservationActionsComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -97,48 +90,14 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   private translateService = inject(TranslateService);
   private elementRef = inject(ElementRef);
   private imageCarousel = injectImageCarousel();
+  private intersectionObserver?: IntersectionObserver;
+
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
   location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
-
-  private async canShareNative(): Promise<boolean> {
-    if (!Capacitor.isNativePlatform()) {
-      return false;
-    }
-    const canShareResult = await Share.canShare();
-    return canShareResult.value;
-  }
-  private userSettings = toSignal(this.userSettingService.userSetting$, { requireSync: true });
-  private baseUrl = settings.services.regObs.webUrl[this.userSettings().appMode];
-  private registrationUrl = computed(() => `${this.baseUrl}/Registration/${this.registration().RegId}`);
-  private intersectionObserver?: IntersectionObserver;
-
-  async share(): Promise<void> {
-    const url = this.registrationUrl();
-    this.analyticService.trackEvent(
-      AppEventCategory.Observations,
-      AppEventAction.Share,
-      url,
-      this.registration().RegId
-    );
-    if (await this.canShareNative()) {
-      Share.share({
-        url,
-      });
-    } else {
-      Clipboard.write({ string: url });
-      const toastText = await firstValueFrom(this.translateService.get('REGISTRATION.COPIED_TO_CLIPBOARD'));
-      const toast = await this.toastController.create({
-        message: toastText,
-        mode: 'md',
-        duration: 2000,
-      });
-      toast.present();
-    }
-  }
 
   async openMapModal() {
     const modal = await this.modalController.create({

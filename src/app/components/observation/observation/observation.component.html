@@ -50,23 +50,16 @@
       </ion-label>
     </ion-chip>
 
-    <ion-chip color="primary" disabled>
-      <ion-icon name="calendar-number-outline"></ion-icon>
-      <ion-label
-        ><b> {{ "REGISTRATION.CARD.TIME.REGISTERED" | translate }}</b
-        >:</ion-label
-      >
-      <ion-label> {{ registration().DtRegTime | date: "short" }}</ion-label>
-    </ion-chip>
-
-    <ion-chip color="primary" disabled>
-      <ion-icon name="create-outline"></ion-icon>
-      <ion-label
-        ><b> {{ "REGISTRATION.CARD.TIME.UPDATED" | translate }}</b
-        >:</ion-label
-      >
-      <ion-label> {{ savedTime() | date: "short" }}</ion-label>
-    </ion-chip>
+    @if (savedTime() != registration().DtRegTime) {
+      <ion-chip color="primary" disabled>
+        <ion-icon name="create-outline"></ion-icon>
+        <ion-label
+          ><b> {{ "REGISTRATION.CARD.TIME.UPDATED" | translate }}</b
+          >:</ion-label
+        >
+        <ion-label> {{ savedTime() | date: "short" }}</ion-label>
+      </ion-chip>
+    }
 
     <app-geohazard-chip [registration]="registration()"></app-geohazard-chip>
 
@@ -78,23 +71,6 @@
     </ion-chip>
 
     <app-observer-chip [observer]="registration().Observer"></app-observer-chip>
-
-    @if (registration().SourceName) {
-      <ion-chip color="primary" disabled>
-        <ion-label>
-          <b> {{ "REGISTRATION.OBS_LOCATION.SOURCE" | translate }}</b
-          >:</ion-label
-        >
-        <ion-label> {{ registration().SourceName }}</ion-label>
-      </ion-chip>
-    }
-
-    <ion-chip color="primary" disabled>
-      <ion-label>
-        <b>{{ "REGISTRATION.OBS_LOCATION.UTMSOURCE" | translate }}</b> :</ion-label
-      >
-      <ion-label> {{ registration().ObsLocation.UTMSourceName }}</ion-label>
-    </ion-chip>
 
     @if (registration().ObserverGroupName; as group) {
       <ion-chip color="primary" disabled>
@@ -241,20 +217,4 @@
   }
   <!-- #endregion skjemaliste -->
 </div>
-
-<!-- Knapperad med deleknapp, gå til obs og endre-knapp -->
-<div class="buttons ion-color-light">
-  <a [routerLink]="'/registration/' + registration().RegId">
-    <ion-button fill="clear" class="edit-button">
-      <ion-icon name="eye-outline"></ion-icon>
-      {{ "REGISTRATION.GO_TO" | translate }}
-    </ion-button>
-  </a>
-
-  <app-registration-edit-button [registration]="registration()"></app-registration-edit-button>
-
-  <ion-button fill="clear" (click)="share()" class="reg-id">
-    ID: {{ registration().RegId }}
-    <ion-icon slot="end" name="share-social"></ion-icon>
-  </ion-button>
-</div>
+<app-observation-actions [registration]="registration()" [showGoToDetails]="true"></app-observation-actions>

@@ -50,7 +50,7 @@ import { AvalancheProblemsViewComponent } from 'src/app/components/observation/r
 import { AvalancheEvaluationViewComponent } from 'src/app/components/observation/registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
 import { linkedSignal } from '@angular/core';
 import { PlotService } from 'src/app/core/services/plot.service';
-import { RegistrationEditButtonComponent } from 'src/app/components/observation/registration-edit-button/registration-edit-button.component';
+import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
 
 @Component({
   selector: 'app-view-observation',
@@ -84,8 +84,8 @@ import { RegistrationEditButtonComponent } from 'src/app/components/observation/
     IonToolbar,
     KeyValueComponent,
     KeyValueGroupComponent,
+    ObservationActionsComponent,
     ObserverChipComponent,
-    RegistrationEditButtonComponent,
     RegistrationHeaderComponent,
     RegistrationViewComponent,
     StaticMapImageComponent,
@@ -120,6 +120,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   errorMessage = computed(() => {
     const err = this.registration.error();
+    //TODO: Bedre feilhåndtering
     console.log('ERROR', err);
     if (err) {
       console.log('ERROR cause', err.cause);
@@ -196,9 +197,5 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaryHeader(registration, tid);
-  }
-
-  share() {
-    //TODO: Skill ut delingsknappen som en egen komponent med innebygget delingslogikk og bruk denne i både kort og detaljvisning
   }
 }

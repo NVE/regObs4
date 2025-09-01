@@ -1,7 +1,5 @@
 import {
   ChangeDetectorRef,
-  InputSignal,
-  WritableSignal,
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -11,9 +9,9 @@ import {
   computed,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IonChip, IonIcon, IonLabel } from '@ionic/angular/standalone';
+import { IonIcon } from '@ionic/angular/standalone';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { ObserverViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { TranslatePipe } from '@ngx-translate/core';
 import {} from '@angular/core';
 import { catchError, firstValueFrom, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
@@ -60,8 +58,6 @@ export class RegistrationEditButtonComponent {
   private confirmationModalService = inject(ConfirmationModalService);
   private regobsAuthService = inject(RegobsAuthService);
   private observer = toSignal(this.regobsAuthService.myPageData$);
-
-  constructor() {}
 
   userCanEdit = computed(() => {
     return canEditRegistration(this.registration(), this.observer());

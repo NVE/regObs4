@@ -397,6 +397,7 @@
         @if (unknownRegistrationAttachments().length > 0) {
           <app-attachment-grid [attachments]="unknownRegistrationAttachments()"></app-attachment-grid>
         }
+        <app-observation-actions [registration]="reg"></app-observation-actions>
       } @else if (errorMessage()) {
         <!-- TODO: Vise samme feilmelding som gammel detaljside (med språkstøtte)
          Vi bør håndtere både 400 (ugyldig id), 410 (slettet) og 404 (ikke funnet)
@@ -421,17 +422,5 @@
         <p>Laster observasjon</p>
       }
     </div>
-  </div>
-
-  <!-- Knapperad med deleknapp og endre-knapp -->
-  <div class="buttons ion-color-light">
-    @if (registration.value(); as reg) {
-      <app-registration-edit-button [registration]="reg"></app-registration-edit-button>
-
-      <ion-button fill="clear" (click)="share()" class="reg-id">
-        ID: {{ reg.RegId }}
-        <ion-icon slot="end" name="share-social"></ion-icon>
-      </ion-button>
-    }
   </div>
 </ion-content>

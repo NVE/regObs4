@@ -1,0 +1,16 @@
+.buttons {
+  display: flex;
+  /* Knapperaden har ion-color-light klasse som endrer --ion-background-color */
+  background-color: var(--ion-background-color);
+}
+
+.reg-id {
+  margin-left: auto;
+}
+
+/*
+ * Hvis det bare er én knapp i knapperaden (kopier-regid-knapp)
+ */
+.buttons:has(> :last-child:nth-child(1)) {
+  flex-direction: row-reverse;
+}

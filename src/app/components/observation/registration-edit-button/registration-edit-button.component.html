@@ -1,6 +1,6 @@
 @if (userCanEdit()) {
   <ion-button fill="clear" class="edit-button" (click)="edit()" [disabled]="isLoadingObsForEdit()">
-    <ion-icon name="create-outline"></ion-icon>
+    <ion-icon name="create-outline" slot="start"></ion-icon>
     {{ "REGISTRATION.EDIT" | translate }}
     @if (isLoadingObsForEdit()) {
       <ion-spinner name="dots" slot="end"></ion-spinner>
