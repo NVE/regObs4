@@ -16,6 +16,8 @@ import { settings } from 'src/settings';
 import { firstValueFrom } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { RegistrationEditButtonComponent } from '../registration-edit-button/registration-edit-button.component';
+import { eyeOutline, shareSocial } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-observation-actions',
@@ -42,6 +44,13 @@ export class ObservationActionsComponent {
   private userSettings = toSignal(this.userSettingService.userSetting$, { requireSync: true });
   private baseUrl = settings.services.regObs.webUrl[this.userSettings().appMode];
   private registrationUrl = computed(() => `${this.baseUrl}/Registration/${this.registration().RegId}`);
+
+  constructor() {
+    addIcons({
+      eyeOutline,
+      shareSocial,
+    });
+  }
 
   private async canShareNative(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {

@@ -26,6 +26,8 @@ import {
 } from 'src/app/core/services/confirmation-modal/confirmation-modal.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { canEditRegistration } from 'src/app/modules/registration/edit-registration-helper-functions';
+import { createOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 const DEBUG_TAG = 'RegistrationEditButtonComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -62,6 +64,12 @@ export class RegistrationEditButtonComponent {
   userCanEdit = computed(() => {
     return canEditRegistration(this.registration(), this.observer());
   });
+
+  constructor() {
+    addIcons({
+      createOutline,
+    });
+  }
 
   private fetchRegistrationBeforeEdit(
     regId: RegistrationService.RegistrationGetParams['regId']

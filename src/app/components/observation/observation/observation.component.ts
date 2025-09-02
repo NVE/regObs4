@@ -18,14 +18,11 @@ import {
 } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
-  eyeOutline,
   calendarNumberOutline,
   chatbubbleEllipses,
   locationOutline,
   peopleCircleOutline,
   personCircleOutline,
-  createOutline,
-  shareSocial,
 } from 'ionicons/icons';
 import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -112,13 +109,10 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   constructor() {
     addIcons({
       calendarNumberOutline,
-      createOutline,
-      eyeOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
-      shareSocial,
     });
   }
 

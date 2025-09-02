@@ -7,39 +7,49 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
  */
 @Component({
   selector: 'app-attachment-grid',
-  imports: [],
   template: `
-    @for (attachment of attachments(); track attachment.AttachmentId) {
-      <div class="attachment" (click)="attachmentClicked.emit({ index: $index })">
-        <img [src]="attachment.UrlFormats?.Medium" />
-        @if (attachment.Comment) {
-          <div class="comment">{{ attachment.Comment }}</div>
+    @if (attachments().length > 0) {
+      <div class="grid">
+        @if (attachments().length > 0) {
+          @for (attachment of attachments(); track attachment.AttachmentId) {
+            <div class="attachment" (click)="attachmentClicked.emit({ index: $index })">
+              <img [src]="attachment.UrlFormats?.Medium" />
+              @if (attachment.Comment) {
+                <div class="comment">{{ attachment.Comment }}</div>
+              }
+            </div>
+          }
         }
       </div>
     }
   `,
   styles: `
     :host {
-      display: flex;
+      display: block;
+    }
+    .grid {
+      display: grid;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 24px;
       padding: 10px 0;
     }
 
     .attachment {
-      width: 200px;
+      max-width: 272px;
       cursor: pointer;
+      background-color: #00000011;
     }
 
     img {
       width: 100%;
-      height: 200px;
+      max-height: 272px;
       object-fit: contain;
-      background-color: #00000011;
+      background-color: transparent;
     }
 
     .comment {
       width: 100%;
+      padding: 8px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

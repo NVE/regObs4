@@ -17,12 +17,12 @@
       <!-- Nickname button - takes user to my page so they can log out etc -->
       @if (loggedInUserEmail(); as email) {
         <ion-button fill="outline" (click)="goToMyPage()">
-          <ion-icon slot="start" name="person-circle"></ion-icon>
+          <ion-icon slot="start" name="person-circle-outline"></ion-icon>
           {{ email }}
         </ion-button>
       } @else {
         <ion-button fill="outline" (click)="signIn()" [disabled]="isLoggingIn$ | async">
-          <ion-icon slot="start" name="person-circle"></ion-icon>
+          <ion-icon slot="start" name="person-circle-outline"></ion-icon>
           {{ "LOGIN.LOGIN" | translate }}
         </ion-button>
       }

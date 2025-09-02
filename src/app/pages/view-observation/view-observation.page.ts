@@ -26,7 +26,13 @@ import { HeaderColorDirective } from '../../modules/shared/directives/header-col
 import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { personCircle, locationOutline } from 'ionicons/icons';
+import {
+  calendarNumberOutline,
+  chatbubbleEllipses,
+  locationOutline,
+  peopleCircleOutline,
+  personCircleOutline,
+} from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { getLocation } from 'src/app/components/observation/observation/observation.component';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -147,7 +153,13 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   constructor() {
     super();
-    addIcons({ personCircle, locationOutline });
+    addIcons({
+      calendarNumberOutline,
+      locationOutline,
+      personCircleOutline,
+      peopleCircleOutline,
+      chatbubbleEllipses,
+    });
   }
 
   getLocation(obs: RegistrationViewModel) {
