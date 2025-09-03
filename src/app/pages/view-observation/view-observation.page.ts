@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { takeUntil, map } from 'rxjs/operators';
-import { Subject, merge } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
@@ -56,7 +56,10 @@ import { linkedSignal } from '@angular/core';
 import { PlotService } from 'src/app/core/services/plot.service';
 import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from 'src/app/components/observation/observation-location-map/observation-location-map.component';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
+type RegistrationType = { Id: number; Name: string; SubTypes?: RegistrationType[] };
+type RegistrationTypesV = { [geoHazardId: string]: RegistrationType[] };
 @Component({
   selector: 'app-view-observation',
   templateUrl: './view-observation.page.html',
@@ -106,12 +109,11 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private router = inject(Router);
   private imageCarousel = injectImageCarousel();
   private plotService = inject(PlotService);
-  private regobsAuthService = inject(RegobsAuthService);
+  private kdvService = inject(KdvService);
 
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
   readonly langKey = toSignal(this.userSettingService.language$, { initialValue: 1 });
-  private observer = toSignal(this.regobsAuthService.myPageData$);
   userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
   registration = rxResource({
@@ -136,6 +138,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     return null;
   });
 
+  geoHazardTid = computed(() => this.registration.value()?.GeoHazardTID as number | undefined);
   RegistrationTid = RegistrationTid;
 
   private _isLoggingIn = new Subject<boolean>();
@@ -149,6 +152,11 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     if (!reg) return undefined;
     return this.plotService.getSnowProfileSvgUrl(reg);
   });
+
+  // Inneholder navn på hvert skjema for angitt språk
+  registrationTypesV = toSignal<RegistrationTypesV>(
+    this.kdvService.getViewRepositoryByKeyObservable('RegistrationTypesV') as Observable<RegistrationTypesV>
+  );
 
   constructor() {
     super();
@@ -188,10 +196,13 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     }
   }
 
-  hasData(data: unknown) {
-    // TODO: Endre til å sjekke både om viewmodell og bilder er tomme
-    //   i observasjonskort holder det å sjekke viewmodell
-    return !isEmpty(data);
+  hasData(data: unknown, tid: RegistrationTid): boolean {
+    return !isEmpty(data) || this.hasAttachments(tid);
+  }
+
+  private hasAttachments(tid: RegistrationTid): boolean {
+    if (!this.registration.hasValue()) return false;
+    return !isEmpty(this.getAttachments(this.registration.value(), tid));
   }
 
   getSummaries(registration: RegistrationViewModel, tid: RegistrationTid) {
@@ -204,5 +215,30 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaryHeader(registration, tid);
+  }
+
+  // Finner navn på angitt skjema
+  getRegistrationTypeName(geoHazardId: number | undefined, typeId: number): string {
+    const unknownRegistrationType = 'Ukjent skjema';
+    if (!geoHazardId || !typeId) return unknownRegistrationType;
+    if (!this.registrationTypesV() == undefined) return unknownRegistrationType;
+    const typesForHazard = this.registrationTypesV()?.[geoHazardId];
+    if (!typesForHazard) return unknownRegistrationType;
+
+    // Søk i toppnivå først
+    const found = typesForHazard.find((type) => type.Id === typeId);
+    if (found) {
+      return found.Name;
+    }
+    // Søk i subtypes hvis ikke funnet på toppnivå
+    for (const type of typesForHazard) {
+      if (type.SubTypes && Array.isArray(type.SubTypes)) {
+        const found = type.SubTypes.find((sub) => sub.Id === typeId);
+        if (found) {
+          return found.Name;
+        }
+      }
+    }
+    return unknownRegistrationType;
   }
 }
