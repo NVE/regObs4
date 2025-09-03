@@ -11,6 +11,7 @@ ion-content {
   --padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Denne trenger vi for å midstille innholdet på sida når sida er bredere enn 960px */
 .content-wrapper-full-width {
   width: 100%;
   display: flex;
@@ -18,6 +19,7 @@ ion-content {
 }
 
 .content {
+  width: 100%;
   max-width: var(--desktop-max-width, 960px);
   background: white;
 }
