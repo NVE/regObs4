@@ -323,10 +323,8 @@
               (attachmentClicked)="openImageCarousel($event, attachments)"
             ></app-attachment-grid>
             <app-ice-thickness-view
-              [data]="reg.IceThickness"
-              ,
               [regId]="reg.RegId"
-              ,
+              [data]="reg.IceThickness"
               [summaries]="getSummaries(reg, tid)"
             ></app-ice-thickness-view>
           </app-registration-view>
