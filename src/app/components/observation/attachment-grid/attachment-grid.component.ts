@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, input, output } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 
 /**
@@ -8,30 +8,23 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 @Component({
   selector: 'app-attachment-grid',
   template: `
-    @if (attachments().length > 0) {
-      <div class="grid">
-        @if (attachments().length > 0) {
-          @for (attachment of attachments(); track attachment.AttachmentId) {
-            <div class="attachment" (click)="attachmentClicked.emit({ index: $index })">
-              <img [src]="attachment.UrlFormats?.Medium" />
-              @if (attachment.Comment) {
-                <div class="comment">{{ attachment.Comment }}</div>
-              }
-            </div>
-          }
+    @for (attachment of attachments(); track attachment.AttachmentId) {
+      <div class="attachment" (click)="attachmentClicked.emit({ index: $index })">
+        <img [src]="attachment.UrlFormats?.Medium" />
+        @if (attachment.Comment) {
+          <div class="comment">{{ attachment.Comment }}</div>
         }
       </div>
     }
   `,
   styles: `
     :host {
-      display: block;
-    }
-    .grid {
-      display: grid;
-      flex-wrap: wrap;
+      display: flex;
+      flex-direction: row;
       gap: 24px;
-      padding: 10px 0;
+    }
+    :host(.hidden) {
+      display: none;
     }
 
     .attachment {
@@ -57,4 +50,9 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 export class AttachmentGridComponent {
   attachments = input.required<AttachmentViewModel[]>();
   attachmentClicked = output<{ index: number }>();
+
+  @HostBinding('class.hidden')
+  get isHidden() {
+    return this.attachments()?.length === 0;
+  }
 }

@@ -15,6 +15,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     :host {
       display: flex;
       flex-direction: column;
+      gap: 8px;
     }
 
     h3 {
