@@ -392,7 +392,10 @@
           Må finne på noe smart å gjøre med de, eller bare putte de inni "GeneralObservation" / Kommentar
         -->
         @if (unknownRegistrationAttachments().length > 0) {
-          <app-attachment-grid [attachments]="unknownRegistrationAttachments()"></app-attachment-grid>
+          <app-attachment-grid
+            [attachments]="unknownRegistrationAttachments()"
+            (attachmentClicked)="openImageCarousel($event, unknownRegistrationAttachments())"
+          ></app-attachment-grid>
         }
         <app-observation-actions [registration]="reg"></app-observation-actions>
       } @else if (errorMessage()) {
