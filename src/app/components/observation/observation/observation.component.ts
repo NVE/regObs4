@@ -9,13 +9,8 @@ import {
   input,
   OnDestroy,
 } from '@angular/core';
-import { IonChip, IonIcon, IonLabel, ModalController, ToastController } from '@ionic/angular/standalone';
-import {
-  AttachmentViewModel,
-  AvalancheObsViewModel,
-  LandslideViewModel,
-  RegistrationViewModel,
-} from 'src/app/modules/common-regobs-api';
+import { IonChip, IonIcon, IonLabel, ModalController } from '@ionic/angular/standalone';
+import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
   calendarNumberOutline,
@@ -27,19 +22,12 @@ import {
 import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
-import { ImageLocation, ImageLocationStartStop } from '../../../core/models/image-location.model';
-import L from 'leaflet';
 import {
   getAllAttachmentsFromViewModel,
   getAttachmentsFromRegistrationViewModel,
 } from 'src/app/modules/common-registration/registration.helpers';
 import { debounceTime, Subject } from 'rxjs';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { settings } from 'src/settings';
-import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
 import { injectImageCarousel } from '../observation-image-carousel/inject-image-carousel';
@@ -53,6 +41,7 @@ import { AvalancheProblemsViewComponent } from '../registrations/avalanche-probl
 import { AvalancheEvaluationViewComponent } from '../registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
 import { AvalancheActivitesViewComponent } from '../registrations/avalanche-activity-view/avalanche-activities-view.component';
 import { ObservationActionsComponent } from '../observation-actions/observation-actions.component';
+import { ObservationLocationMapComponent } from '../observation-location-map/observation-location-map.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 
@@ -64,10 +53,10 @@ const DEBUG_TAG = 'ObservationComponent';
     IonLabel,
     DatePipe,
     TranslatePipe,
-    StaticMapImageComponent,
     RegistrationHeaderComponent,
     SummaryComponent,
     ObserverChipComponent,
+    ObservationLocationMapComponent,
     IceThicknessViewComponent,
     AvalancheActivitesViewComponent,
     AvalancheProblemsViewComponent,
@@ -80,10 +69,7 @@ const DEBUG_TAG = 'ObservationComponent';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ObservationComponent implements AfterViewInit, OnDestroy {
-  private userSettingService = inject(UserSettingService);
-  private analyticService = inject(AnalyticService);
   private logger = inject(LoggingService);
-  private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
   private elementRef = inject(ElementRef);
   private imageCarousel = injectImageCarousel();
@@ -93,18 +79,7 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
 
   readonly registration = input.required<RegistrationViewModel>();
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
-  location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
-
-  async openMapModal() {
-    const modal = await this.modalController.create({
-      component: ModalMapImagePage,
-      componentProps: {
-        location: this.location(),
-      },
-    });
-    modal.present();
-  }
 
   constructor() {
     addIcons({
@@ -188,66 +163,4 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
     return getSummaryHeader(registration, tid);
   }
-}
-
-export function getLocation(obs: RegistrationViewModel): ImageLocation {
-  return {
-    latLng: L.latLng(obs.ObsLocation.Latitude, obs.ObsLocation.Longitude),
-    geoHazard: obs.GeoHazardTID,
-    startStopLocation: getStartStopLocation(obs),
-    damageLocations: getDamagePositions(obs),
-  };
-}
-
-function getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop | undefined {
-  if (obs.AvalancheObs) {
-    return {
-      ...obs2Latlng(obs.AvalancheObs),
-      totalPolygon: extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
-      startPolygon: extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
-      endPolygon: extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor),
-    };
-  }
-  if (obs.LandSlideObs) {
-    return {
-      ...obs2Latlng(obs.LandSlideObs),
-      totalPolygon: extent2Polygon(obs.LandSlideObs.Extent, settings.map.extentColor),
-      startPolygon: extent2Polygon(obs.LandSlideObs.StartExtent, settings.map.startExtentColor),
-      endPolygon: extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor),
-    };
-  }
-
-  if (obs.WaterLevel2) {
-    return {
-      totalPolygon: extent2Polygon(obs.WaterLevel2.Extent, settings.map.extentColor),
-    };
-  }
-  return undefined;
-}
-
-function getDamagePositions(obs: RegistrationViewModel) {
-  if (obs.DamageObs?.some((d) => d.DamagePosition)) {
-    const positions = obs.DamageObs.map((d) => d.DamagePosition).filter((p) => p && p.Latitude && p.Longitude) as {
-      Latitude: number;
-      Longitude: number;
-    }[];
-    return positions.map((p) => L.latLng(p.Latitude, p.Longitude));
-  }
-  return undefined;
-}
-
-function obs2Latlng(obs: LandslideViewModel | AvalancheObsViewModel) {
-  return {
-    start: obs.StartLat && obs.StartLong ? L.latLng(obs.StartLat, obs.StartLong) : undefined,
-    stop: obs.StopLat && obs.StopLong ? L.latLng(obs.StopLat, obs.StopLong) : undefined,
-  };
-}
-
-function extent2Polygon(extent: number[][] | undefined, color: string) {
-  return extent
-    ? new L.Polygon(
-        extent.map(([lng, lat]) => [lat, lng]),
-        { color }
-      )
-    : undefined;
 }

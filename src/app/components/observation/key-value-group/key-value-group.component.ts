@@ -17,7 +17,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-start;
-      gap: 10px;
+      column-gap: 20px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

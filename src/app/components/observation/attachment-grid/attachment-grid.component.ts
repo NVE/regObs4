@@ -21,6 +21,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
     :host {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
       gap: 24px;
     }
     :host(.hidden) {
@@ -29,6 +30,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 
     .attachment {
       max-width: 272px;
+      min-width: 272px;
       cursor: pointer;
       background-color: #00000011;
     }

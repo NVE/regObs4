@@ -22,11 +22,14 @@ ion-content {
   background: white;
 }
 
-app-static-map-image {
-  display: block;
-  height: 300px;
-  width: 100%;
-  cursor: pointer;
+.metadata {
+  padding-left: var(--padding);
+  padding-right: var(--padding);
+  padding-bottom: var(--padding);
+}
+
+.map {
+  height: 256px;
 }
 
 app-registration-view {

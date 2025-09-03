@@ -34,9 +34,7 @@ import {
   personCircleOutline,
 } from 'ionicons/icons';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { getLocation } from 'src/app/components/observation/observation/observation.component';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { StaticMapImageComponent } from '../../modules/static-map-image/static-map-image.component';
 import { KeyValueComponent } from '../../components/observation/key-value/key-value.component';
 import { KeyValueGroupComponent } from '../../components/observation/key-value-group/key-value-group.component';
 import { RegistrationHeaderComponent } from '../../components/observation/registration-header/registration-header.component';
@@ -57,6 +55,7 @@ import { AvalancheEvaluationViewComponent } from 'src/app/components/observation
 import { linkedSignal } from '@angular/core';
 import { PlotService } from 'src/app/core/services/plot.service';
 import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
+import { ObservationLocationMapComponent } from 'src/app/components/observation/observation-location-map/observation-location-map.component';
 
 @Component({
   selector: 'app-view-observation',
@@ -92,9 +91,9 @@ import { ObservationActionsComponent } from 'src/app/components/observation/obse
     KeyValueGroupComponent,
     ObservationActionsComponent,
     ObserverChipComponent,
+    ObservationLocationMapComponent,
     RegistrationHeaderComponent,
     RegistrationViewComponent,
-    StaticMapImageComponent,
     TranslatePipe,
     SummaryComponent,
   ],
@@ -160,10 +159,6 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
       peopleCircleOutline,
       chatbubbleEllipses,
     });
-  }
-
-  getLocation(obs: RegistrationViewModel) {
-    return getLocation(obs);
   }
 
   goToMyPage() {

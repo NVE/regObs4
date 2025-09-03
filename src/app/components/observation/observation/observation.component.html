@@ -14,8 +14,8 @@
       keyboard="false"
     >
       <!-- Map -->
-      <swiper-slide (click)="openMapModal()">
-        <app-static-map-image [location]="location()"></app-static-map-image>
+      <swiper-slide>
+        <app-observation-location-map [registration]="reg"></app-observation-location-map>
       </swiper-slide>
 
       <!-- lazy-preload-prev-next="2" -->

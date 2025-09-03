@@ -35,60 +35,57 @@
   <div class="content-wrapper-full-width">
     <div class="content">
       @if (registration.value(); as reg) {
-        <app-registration-header>
-          {{ reg.ObsLocation.Title }}
-        </app-registration-header>
+        <div class="metadata">
+          <app-registration-header>
+            {{ reg.ObsLocation.Title }}
+          </app-registration-header>
 
-        <!-- #region Metadata -->
-        <app-key-value-group>
-          <app-key-value [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate">
-            <time [dateTime]="reg.DtObsTime">{{ reg.DtObsTime | date: "short" }}</time>
-          </app-key-value>
-          <app-key-value [key]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
-            <time [dateTime]="reg.DtRegTime">{{ reg.DtRegTime | date: "short" }}</time>
-          </app-key-value>
-          @if (reg.DtChangeTime != reg.DtRegTime) {
-            <app-key-value [key]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
-              <time [dateTime]="reg.DtChangeTime">{{ reg.DtChangeTime | date: "short" }}</time>
+          <!-- #region Metadata -->
+          <app-key-value-group>
+            <app-key-value [key]="'REGISTRATION.CARD.TIME.OBSERVED' | translate">
+              <time [dateTime]="reg.DtObsTime">{{ reg.DtObsTime | date: "short" }}</time>
             </app-key-value>
-          }
-        </app-key-value-group>
-        <app-key-value-group>
-          <app-key-value
-            [key]="'REGISTRATION.OBS_LOCATION.SOURCE' | translate"
-            [value]="reg.SourceName"
-          ></app-key-value>
-          <app-key-value
-            [key]="'REGISTRATION.OBS_LOCATION.UTMSOURCE' | translate"
-            [value]="reg.ObsLocation.UTMSourceName"
-          ></app-key-value>
+            <app-key-value [key]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
+              <time [dateTime]="reg.DtRegTime">{{ reg.DtRegTime | date: "short" }}</time>
+            </app-key-value>
+            @if (reg.DtChangeTime != reg.DtRegTime) {
+              <app-key-value [key]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
+                <time [dateTime]="reg.DtChangeTime">{{ reg.DtChangeTime | date: "short" }}</time>
+              </app-key-value>
+            }
+          </app-key-value-group>
+          <app-key-value-group>
+            <app-key-value
+              [key]="'REGISTRATION.OBS_LOCATION.SOURCE' | translate"
+              [value]="reg.SourceName"
+            ></app-key-value>
+            <app-key-value
+              [key]="'REGISTRATION.OBS_LOCATION.UTMSOURCE' | translate"
+              [value]="reg.ObsLocation.UTMSourceName"
+            ></app-key-value>
 
-          <!-- Vi bruker punktum som desimalskilletegn, fordi det er vanlig å skrive koordinater slik -->
-          <app-key-value
-            [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL' | translate"
-            value="
+            <!-- Vi bruker punktum som desimalskilletegn, fordi det er vanlig å skrive koordinater slik -->
+            <app-key-value
+              [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL' | translate"
+              value="
             {{ reg.ObsLocation.Latitude | number: '1.3-3' : 'en-US' }},
             {{ reg.ObsLocation.Longitude | number: '1.3-3' : 'en-US' }}"
-          ></app-key-value>
-        </app-key-value-group>
+            ></app-key-value>
+          </app-key-value-group>
+
+          <app-geohazard-chip [registration]="reg"></app-geohazard-chip>
+
+          <ion-chip color="primary">
+            <ion-icon name="location-outline"></ion-icon>
+            <ion-label> {{ reg.ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }} </ion-label>
+          </ion-chip>
+
+          <app-observer-chip [observer]="reg.Observer"></app-observer-chip>
+        </div>
         <!-- #endregion Metadata -->
 
-        <!-- TODO: Legg til chips -->
-        <app-geohazard-chip [registration]="reg"></app-geohazard-chip>
-
-        <ion-chip color="primary">
-          <ion-icon name="location-outline"></ion-icon>
-          <ion-label> {{ reg.ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }} </ion-label>
-        </ion-chip>
-
-        <app-observer-chip [observer]="reg.Observer"></app-observer-chip>
-
         <!-- Kart, full bredde -->
-        <!--
-          TODO: Klikk på kart bør trigge kart modal. Samme som for observasjonskort.
-          Lag eventuelt logikk som for injectImageCarousel
-        -->
-        <app-static-map-image [location]="getLocation(reg)"></app-static-map-image>
+        <app-observation-location-map class="map" [registration]="reg"></app-observation-location-map>
 
         <!-- #region Registration Views -->
 
