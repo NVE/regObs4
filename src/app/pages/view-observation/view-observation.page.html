@@ -34,6 +34,9 @@
 <ion-content>
   <div class="content-wrapper-full-width">
     <div class="content">
+      @if (registration.error()) {
+        <p>Feil ved lasting av observasjon</p>
+      }
       @if (registration.value(); as reg) {
         <div class="metadata">
           <app-registration-header>

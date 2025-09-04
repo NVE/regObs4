@@ -57,9 +57,12 @@ import { PlotService } from 'src/app/core/services/plot.service';
 import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from 'src/app/components/observation/observation-location-map/observation-location-map.component';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { HttpErrorResponse } from '@angular/common/http';
 
+// Dette er strukturen for registreringstyper. Brukes til å hente ut navn på hvert skjema.
 type RegistrationType = { Id: number; Name: string; SubTypes?: RegistrationType[] };
 type RegistrationTypesV = { [geoHazardId: string]: RegistrationType[] };
+
 @Component({
   selector: 'app-view-observation',
   templateUrl: './view-observation.page.html',
@@ -128,9 +131,13 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   errorMessage = computed(() => {
     const err = this.registration.error();
     //TODO: Bedre feilhåndtering
-    console.log('ERROR', err);
+    console.log('***status', this.registration.status());
+    console.log('***ERROR', err);
+    if (err instanceof HttpErrorResponse) {
+      console.log('***ERROR er HttpErrorResponse', err);
+    }
     if (err) {
-      console.log('ERROR cause', err.cause);
+      console.log('***ERROR cause', err.cause);
     }
     if (err instanceof Error) {
       return err.message;
@@ -154,7 +161,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   });
 
   // Inneholder navn på hvert skjema for angitt språk
-  registrationTypesV = toSignal<RegistrationTypesV>(
+  private registrationTypesV = toSignal<RegistrationTypesV>(
     this.kdvService.getViewRepositoryByKeyObservable('RegistrationTypesV') as Observable<RegistrationTypesV>
   );
 

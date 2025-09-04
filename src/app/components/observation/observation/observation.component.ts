@@ -42,6 +42,7 @@ import { AvalancheEvaluationViewComponent } from '../registrations/avalanche-eva
 import { AvalancheActivitesViewComponent } from '../registrations/avalanche-activity-view/avalanche-activities-view.component';
 import { ObservationActionsComponent } from '../observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from '../observation-location-map/observation-location-map.component';
+import { GeohazardChipComponent } from '../geohazard-chip/geohazard-chip.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 
@@ -52,6 +53,7 @@ const DEBUG_TAG = 'ObservationComponent';
     IonIcon,
     IonLabel,
     DatePipe,
+    GeohazardChipComponent,
     TranslatePipe,
     RegistrationHeaderComponent,
     SummaryComponent,

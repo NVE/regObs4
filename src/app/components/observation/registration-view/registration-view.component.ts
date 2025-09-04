@@ -13,9 +13,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   `,
   styles: `
     :host {
+      border: 2px solid var(--ion-color-light-tint);
       display: flex;
       flex-direction: column;
       gap: 8px;
+      padding-top: 24px;
+      padding-bottom: 32px;
+      padding-left: 32px;
+      padding-right: 32px;
     }
 
     h3 {
@@ -23,8 +28,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       display: inline-block;
       width: 100%;
       background-color: var(--ion-color-light-tint);
-      padding: 4px;
-      margin-top: 32px;
+      font-size: 20px;
+      font-weight: 600;
+      padding: 8px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
