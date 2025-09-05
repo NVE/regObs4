@@ -4,7 +4,7 @@ This is the Varsom RegObs app version 4. It is based on code from version 3 but 
 
 ## Installation
 
-1. Installer node v18.20.x (.msi-fil for
+1. Installer node v20.19.x (.msi-fil for
    Windows) **
    Ikke nyere eller
    eldre versjon**
@@ -12,6 +12,7 @@ This is the Varsom RegObs app version 4. It is based on code from version 3 but 
 3. [Installer git](https://git-scm.com/download/win)
 4. Clone repo (`git clone https://github.com/NVE/regObs4.git`)
 5. Install packages (`npm install`)
+6. Lag versjonsfil (`npm run create-version-file`)
 
 ## Debug and test on device
 
