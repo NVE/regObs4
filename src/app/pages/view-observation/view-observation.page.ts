@@ -158,11 +158,11 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   errorMesage = computed(() => {
     const status = this.httpErrorStatus();
     if (status === 204 || status === 400 || status === 404) {
-      return this.translateService.instant('REGISTRATION.FETCH_ERROR.NOT_FOUND');
+      return this.translateService.instant('REGISTRATION.DETAILS.ERROR.NOT_FOUND');
     } else if (status === 410) {
-      return this.translateService.instant('REGISTRATION.FETCH_ERROR.GONE');
+      return this.translateService.instant('REGISTRATION.DETAILS.ERROR.GONE');
     } else {
-      return this.translateService.instant(`REGISTRATION.FETCH_ERROR.SERVER_ERROR`);
+      return this.translateService.instant(`REGISTRATION.DETAILS.ERROR.SERVER_ERROR`);
     }
   });
 

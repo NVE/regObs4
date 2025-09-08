@@ -423,6 +423,14 @@
         "MESSAGE": "Do you want to delete this observation from Regobs?"
       }
     },
+    "DETAILS": {
+      "ERROR": {
+        "TITLE": "Observation not found",
+        "NOT_FOUND": "Probably because the ID is incorrect.",
+        "GONE": "The observation has been deleted.",
+        "SERVER_ERROR": "The call to the Regobs API failed. Please let us know if the problem persists."
+      }
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AREA_TOTAL": "Define landslide boundaries",
@@ -468,12 +476,6 @@
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
       "TITLE": "Submission failed",
       "UNAUTHORIZED": "Authorization failed. Could you please try to log out and in again and then try to submit the observation again?"
-    },
-    "FETCH_ERROR": {
-      "TITLE": "Observation not found",
-      "NOT_FOUND": "Probably because the ID is incorrect.",
-      "GONE": "The observation has been deleted.",
-      "SERVER_ERROR": "The call to the Regobs API failed. Please let us know if the problem persists."
     },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Edit observation",
