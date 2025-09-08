@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 
 /**
@@ -23,9 +23,6 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
       flex-direction: row;
       flex-wrap: wrap;
       gap: 24px;
-    }
-    :host(.hidden) {
-      display: none;
     }
 
     .attachment {
@@ -52,11 +49,6 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 export class AttachmentGridComponent {
   attachments = input.required<AttachmentViewModel[]>();
   attachmentClicked = output<{ index: number }>();
-
-  @HostBinding('class.hidden')
-  get isHidden() {
-    return this.attachments()?.length === 0;
-  }
 
   /**
    * Returnerer kommentar som bildebeskrivelse eller en tom string hvis det ikke finnes kommentar.
