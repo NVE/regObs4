@@ -469,6 +469,12 @@
       "TITLE": "Submission failed",
       "UNAUTHORIZED": "Authorization failed. Could you please try to log out and in again and then try to submit the observation again?"
     },
+    "FETCH_ERROR": {
+      "TITLE": "Observation not found",
+      "NOT_FOUND": "Probably because the ID is incorrect.",
+      "GONE": "The observation has been deleted.",
+      "SERVER_ERROR": "The call to the Regobs API failed. Please let us know if the problem persists."
+    },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Edit observation",
       "HEADER": "Synchronization failed",

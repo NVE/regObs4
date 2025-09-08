@@ -14,17 +14,26 @@ import {
   IonChip,
   IonLabel,
 } from '@ionic/angular/standalone';
-import { Component, OnInit, ChangeDetectionStrategy, inject, input, numberAttribute, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  numberAttribute,
+  computed,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, catchError } from 'rxjs/operators';
 import { Observable, Subject, merge } from 'rxjs';
 import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import {
   calendarNumberOutline,
@@ -57,7 +66,10 @@ import { PlotService } from 'src/app/core/services/plot.service';
 import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from 'src/app/components/observation/observation-location-map/observation-location-map.component';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { HttpErrorResponse } from '@angular/common/http';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+
+const DEBUG_TAG = 'ViewObservationPage';
 
 // Dette er strukturen for registreringstyper. Brukes til å hente ut navn på hvert skjema.
 type RegistrationType = { Id: number; Name: string; SubTypes?: RegistrationType[] };
@@ -113,37 +125,50 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private imageCarousel = injectImageCarousel();
   private plotService = inject(PlotService);
   private kdvService = inject(KdvService);
+  private translateService = inject(TranslateService);
+  private logger = inject(LoggingService);
 
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
   readonly langKey = toSignal(this.userSettingService.language$, { initialValue: 1 });
   userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
+  /**
+   * Evt. HTTP feilkode hvis API-kallet for å hente observasjonen feiler.
+   * Setter denne til 204 som standard i tilfelle angitt regId ikke finnes i Regobs.
+   * Når vi får 204 fra API'et vil ikke dette fanges opp som en feil ellers.
+   * Se https://nveprojects.atlassian.net/browse/RO-2997
+   */
+  private httpErrorStatus = signal(204); // 204 = No Content, initial value
+
   registration = rxResource({
     params: () => ({ regId: this.regId(), langKey: this.langKey() }),
-    stream: ({ params }) => this.registrationService.RegistrationGet({ regId: params.regId, langKey: params.langKey }),
+    stream: ({ params }) =>
+      this.registrationService.RegistrationGet({ regId: params.regId, langKey: params.langKey }).pipe(
+        catchError((err) => {
+          this.logger.log('Feil ved henting av observasjon', err, LogLevel.Warning, DEBUG_TAG);
+          if (err.status != undefined) {
+            this.httpErrorStatus.set(err.status);
+          }
+          throw new Error('Feil ved henting av observasjon', { cause: err });
+        })
+      ),
+  });
+
+  errorMesage = computed(() => {
+    const status = this.httpErrorStatus();
+    if (status === 204 || status === 400 || status === 404) {
+      return this.translateService.instant('REGISTRATION.FETCH_ERROR.NOT_FOUND');
+    } else if (status === 410) {
+      return this.translateService.instant('REGISTRATION.FETCH_ERROR.GONE');
+    } else {
+      return this.translateService.instant(`REGISTRATION.FETCH_ERROR.SERVER_ERROR`);
+    }
   });
 
   unknownRegistrationAttachments = computed(
     () => this.registration.value()?.Attachments?.filter((a) => a.RegistrationTID == null) || []
   );
-
-  errorMessage = computed(() => {
-    const err = this.registration.error();
-    //TODO: Bedre feilhåndtering
-    console.log('***status', this.registration.status());
-    console.log('***ERROR', err);
-    if (err instanceof HttpErrorResponse) {
-      console.log('***ERROR er HttpErrorResponse', err);
-    }
-    if (err) {
-      console.log('***ERROR cause', err.cause);
-    }
-    if (err instanceof Error) {
-      return err.message;
-    }
-    return null;
-  });
 
   geoHazardTid = computed(() => this.registration.value()?.GeoHazardTID as number | undefined);
   RegistrationTid = RegistrationTid;

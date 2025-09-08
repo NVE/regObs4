@@ -6,7 +6,7 @@
     </ion-buttons>
 
     <ion-title>
-      @if (registration.value(); as reg) {
+      @if (registration.hasValue() && registration.value(); as reg) {
         {{ reg.ObsLocation.Title }}, {{ reg.DtObsTime | date: "shortDate" }}
       } @else {
         {{ "REGISTRATION.OVERVIEW.TITLE" | translate }}
@@ -34,10 +34,7 @@
 <ion-content>
   <div class="content-wrapper-full-width">
     <div class="content">
-      @if (registration.error()) {
-        <p>Feil ved lasting av observasjon</p>
-      }
-      @if (registration.value(); as reg) {
+      @if (registration.hasValue() && registration.value(); as reg) {
         <div class="metadata">
           <app-registration-header>
             {{ reg.ObsLocation.Title }}
@@ -71,8 +68,8 @@
             <app-key-value
               [key]="'REGISTRATION.OBS_LOCATION.POSITION_LABEL' | translate"
               value="
-            {{ reg.ObsLocation.Latitude | number: '1.3-3' : 'en-US' }},
-            {{ reg.ObsLocation.Longitude | number: '1.3-3' : 'en-US' }}"
+          {{ reg.ObsLocation.Latitude | number: '1.3-3' : 'en-US' }},
+          {{ reg.ObsLocation.Longitude | number: '1.3-3' : 'en-US' }}"
             ></app-key-value>
           </app-key-value-group>
 
@@ -407,28 +404,19 @@
           ></app-attachment-grid>
         }
         <app-observation-actions [registration]="reg"></app-observation-actions>
-      } @else if (errorMessage()) {
-        <!-- TODO: Vise samme feilmelding som gammel detaljside (med språkstøtte)
-         Vi bør håndtere både 400 (ugyldig id), 410 (slettet) og 404 (ikke funnet)
-         NB! Feilhåndteringa virker ikke nå. Hvis vi får feil fra API'et, er registration().error() undefined og registration.loading() er true selv etter det har feilet
-         -->
+      } @else if (registration.isLoading()) {
+        <!-- TODO! Vise spinner -->
+        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+      } @else {
         <ion-card>
           <ion-card-header>
-            <ion-card-title>Fant ikke observasjonen.</ion-card-title>
+            <ion-card-title>{{ "REGISTRATION.FETCH_ERROR.TITLE" | translate }}</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            <p>Det kan være den er slettet fra regobs eller at id-en til observasjonen er ugyldig.</p>
-
-            <div>
-              <p>Feilmelding:</p>
-              <pre>{{ errorMessage() }}</pre>
-            </div>
+            <p>{{ errorMesage() }}</p>
           </ion-card-content>
         </ion-card>
-      } @else if (registration.isLoading()) {
-        <!-- TODO! Vise spinner -->
-        <p>Laster observasjon</p>
       }
     </div>
   </div>

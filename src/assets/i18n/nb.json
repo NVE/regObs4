@@ -479,6 +479,12 @@
       "TITLE": "Innsending feilet",
       "UNAUTHORIZED": "Vi lykkes ikke med å sjekke om du har tilgang. Prøv å sende inn på nytt. Om dette ikke hjelper, kan du forsøke å logge ut og inn igjen før du prøver å sende inn på nytt?"
     },
+    "FETCH_ERROR": {
+      "TITLE": "Fant ikke observasjonen",
+      "NOT_FOUND": "Antakelig fordi ID er feil.",
+      "GONE": "Observasjonen er slettet.",
+      "SERVER_ERROR": "Kallet til Regobs-API'et feilet. Gi beskjed hvis problemet vedvarer."
+    },
     "FETCH_FOR_EDIT_FAILED": {
       "CONFIRM_BUTTON": "Rediger observasjon",
       "HEADER": "Synkronisering feilet",
