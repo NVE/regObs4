@@ -10,7 +10,7 @@ import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
   template: `
     @for (attachment of attachments(); track attachment.AttachmentId) {
       <div class="attachment" (click)="attachmentClicked.emit({ index: $index })">
-        <img [src]="attachment.UrlFormats?.Medium" />
+        <img [src]="attachment.UrlFormats?.Medium" [alt]="alt(attachment)" />
         @if (attachment.Comment) {
           <div class="comment">{{ attachment.Comment }}</div>
         }
@@ -56,5 +56,15 @@ export class AttachmentGridComponent {
   @HostBinding('class.hidden')
   get isHidden() {
     return this.attachments()?.length === 0;
+  }
+
+  /**
+   * Returnerer kommentar som bildebeskrivelse eller en tom string hvis det ikke finnes kommentar.
+   * Skjermlesere vil hoppe over bilder med tom kommentar.
+   * Et alternativ er kanskje å legge til oversettelser som kan gi oss feks "Bilde av snødekke" som alt, men
+   * har det noe verdi for brukerene?
+   */
+  alt(attachment: AttachmentViewModel): string {
+    return attachment.Comment || '';
   }
 }
