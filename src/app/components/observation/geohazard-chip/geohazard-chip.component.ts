@@ -3,7 +3,6 @@ import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { getIconForGeohazards } from 'src/app/modules/shared/components/geo-icon/get-geo-icon';
 import { IonChip, IonIcon, IonLabel } from '@ionic/angular/standalone';
 import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
-import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-geohazard-chip',
@@ -34,9 +33,5 @@ export class GeohazardChipComponent {
   private helper = inject(GeoHelperService);
 
   geoIcon = computed(() => getIconForGeohazards([this.registration().GeoHazardTID]));
-  geoName = computed(() => this.geoNameResource.value());
-
-  private geoNameResource = rxResource({
-    stream: () => this.helper.getName([this.registration().GeoHazardTID]),
-  });
+  geoName = computed(() => this.helper.getName([this.registration().GeoHazardTID]));
 }

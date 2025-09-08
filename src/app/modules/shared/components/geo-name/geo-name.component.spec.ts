@@ -18,7 +18,7 @@ describe('GeoNameComponent', () => {
     });
 
     geoHelperService = TestBed.inject(GeoHelperService) as unknown as Spied<GeoHelperService>;
-    geoHelperService.getName.and.returnValue(of(dummyname));
+    geoHelperService.getName$.and.returnValue(of(dummyname));
 
     fixture = TestBed.createComponent(GeoNameComponent);
     fixture.componentRef.setInput('geoHazards', [GeoHazard.Snow]);
@@ -34,8 +34,8 @@ describe('GeoNameComponent', () => {
     await fixture.whenStable();
 
     const htmlElement: HTMLElement = fixture.debugElement.nativeElement;
-    expect(geoHelperService.getName).toHaveBeenCalled();
-    expect(geoHelperService.getName).toHaveBeenCalledTimes(1);
+    expect(geoHelperService.getName$).toHaveBeenCalled();
+    expect(geoHelperService.getName$).toHaveBeenCalledTimes(1);
     expect(component.name()).toBe(dummyname);
     expect(htmlElement.textContent).toBe(dummyname);
   });
