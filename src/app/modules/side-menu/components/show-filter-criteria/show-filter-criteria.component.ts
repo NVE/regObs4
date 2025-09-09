@@ -67,7 +67,7 @@ export class ShowFilterCriteriaComponent {
   daysBack = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { initialValue: 1 });
   geoHazardName = toSignal(
     this.userSettingService.currentGeoHazard$.pipe(
-      switchMap((geoHazards) => this.geoHelperService.getName(geoHazards))
+      switchMap((geoHazards) => this.geoHelperService.getName$(geoHazards))
     ),
     { initialValue: '' }
   );

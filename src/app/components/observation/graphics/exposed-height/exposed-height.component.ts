@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -12,7 +12,7 @@ export enum ExposedHeightType {
 
 @Component({
   selector: 'app-exposed-height',
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, NgTemplateOutlet],
   templateUrl: './exposed-height.component.html',
   styles: [
     `

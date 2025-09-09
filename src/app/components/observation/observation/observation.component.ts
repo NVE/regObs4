@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   computed,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -9,80 +8,43 @@ import {
   inject,
   input,
   OnDestroy,
-  signal,
-  Signal,
 } from '@angular/core';
-import {
-  AlertController,
-  IonChip,
-  IonIcon,
-  IonLabel,
-  ModalController,
-  ToastController,
-} from '@ionic/angular/standalone';
-import {
-  AttachmentViewModel,
-  AvalancheObsViewModel,
-  LandslideViewModel,
-  RegistrationService,
-  RegistrationViewModel,
-} from 'src/app/modules/common-regobs-api';
+import { IonChip, IonIcon, IonLabel, ModalController } from '@ionic/angular/standalone';
+import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {
-  eyeOutline,
   calendarNumberOutline,
   chatbubbleEllipses,
   locationOutline,
   peopleCircleOutline,
   personCircleOutline,
-  createOutline,
-  shareSocial,
 } from 'ionicons/icons';
-import { Clipboard } from '@capacitor/clipboard';
-import { DatePipe, NgComponentOutlet } from '@angular/common';
-import { getIconForGeohazards } from 'src/app/modules/shared/components/geo-icon/get-geo-icon';
-import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { DatePipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { StaticMapImageComponent } from 'src/app/modules/static-map-image/static-map-image.component';
-import { ImageLocation, ImageLocationStartStop } from '../../../core/models/image-location.model';
-import L from 'leaflet';
-import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 import {
-  catchError,
-  debounceTime,
-  firstValueFrom,
-  Observable,
-  of,
-  Subject,
-  switchMap,
-  timeout,
-  TimeoutError,
-} from 'rxjs';
-import { Router, RouterLink } from '@angular/router';
-import {
-  ConfirmationModalService,
-  PopupResponse,
-} from 'src/app/core/services/confirmation-modal/confirmation-modal.service';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
-import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { checkEditPriviliges } from 'src/app/modules/registration/edit-registration-helper-functions';
+  getAllAttachmentsFromViewModel,
+  getAttachmentsFromRegistrationViewModel,
+} from 'src/app/modules/common-registration/registration.helpers';
+import { debounceTime, Subject } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { settings } from 'src/settings';
-import { Capacitor } from '@capacitor/core';
-import { Share } from '@capacitor/share';
-import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
-import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
-import { REGISTRATION_VIEW_CONFIG } from '../registration-view-config';
-import { ObservationImageCarouselComponent } from '../observation-image-carousel/observation-image-carousel.component';
-import { ModalMapImagePage } from 'src/app/modules/map/pages/modal-map-image/modal-map-image.page';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { RegistrationHeaderComponent } from '../registration-header/registration-header.component';
+import { injectImageCarousel } from '../observation-image-carousel/inject-image-carousel';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { getSummaries, getSummaryHeader } from '../summary/get-summary-input';
+import { SummaryComponent } from '../summary/summary.component';
+import { ObserverChipComponent } from '../observer-chip/observer-chip.component';
+import { IceThicknessViewComponent } from '../registrations/ice-thickness-view/ice-thickness-view.component';
+import { AvalancheProblemsViewComponent } from '../registrations/avalanche-problem-view/avalanche-problems-view.component';
+import { AvalancheEvaluationViewComponent } from '../registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
+import { AvalancheActivitesViewComponent } from '../registrations/avalanche-activity-view/avalanche-activities-view.component';
+import { ObservationActionsComponent } from '../observation-actions/observation-actions.component';
+import { ObservationLocationMapComponent } from '../observation-location-map/observation-location-map.component';
+import { GeohazardChipComponent } from '../geohazard-chip/geohazard-chip.component';
 
 const DEBUG_TAG = 'ObservationComponent';
-const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-observation',
@@ -91,10 +53,17 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
     IonIcon,
     IonLabel,
     DatePipe,
+    GeohazardChipComponent,
     TranslatePipe,
-    RouterLink,
-    StaticMapImageComponent,
-    NgComponentOutlet,
+    RegistrationHeaderComponent,
+    SummaryComponent,
+    ObserverChipComponent,
+    ObservationLocationMapComponent,
+    IceThicknessViewComponent,
+    AvalancheActivitesViewComponent,
+    AvalancheProblemsViewComponent,
+    AvalancheEvaluationViewComponent,
+    ObservationActionsComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -102,104 +71,25 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ObservationComponent implements AfterViewInit, OnDestroy {
-  private userSettingService = inject(UserSettingService);
-  private cdr = inject(ChangeDetectorRef);
-  private analyticService = inject(AnalyticService);
-  private regobsAuthService = inject(RegobsAuthService);
-  private registrationService = inject(RegistrationService);
-  private draftRepository = inject(DraftRepositoryService);
-  private router = inject(Router);
   private logger = inject(LoggingService);
-  private alertController = inject(AlertController);
-  private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
-  private confirmationModalService = inject(ConfirmationModalService);
   private elementRef = inject(ElementRef);
+  private imageCarousel = injectImageCarousel();
+  private intersectionObserver?: IntersectionObserver;
+
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
   savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
-  geoIcon = computed(() => getIconForGeohazards([this.registration().GeoHazardTID]));
-  geoName = getNameForGeohazard(this.registration);
-  location = computed(() => getLocation(this.registration()));
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
-  isLoadingObsForEdit = signal(false);
-  isRegistrationPage = this.router.url.includes('registration');
-
-  private async canShareNative(): Promise<boolean> {
-    if (!Capacitor.isNativePlatform()) {
-      return false;
-    }
-    const canShareResult = await Share.canShare();
-    return canShareResult.value;
-  }
-  private userSettings = toSignal(this.userSettingService.userSetting$, { requireSync: true });
-  private baseUrl = settings.services.regObs.webUrl[this.userSettings().appMode];
-  private registrationUrl = computed(() => `${this.baseUrl}/Registration/${this.registration().RegId}`);
-  private intersectionObserver?: IntersectionObserver;
-
-  registrationViews = computed(() => getRegistrationViews(this.registration()));
-
-  async share(): Promise<void> {
-    const url = this.registrationUrl();
-    this.analyticService.trackEvent(
-      AppEventCategory.Observations,
-      AppEventAction.Share,
-      url,
-      this.registration().RegId
-    );
-    if (await this.canShareNative()) {
-      Share.share({
-        url,
-      });
-    } else {
-      Clipboard.write({ string: url });
-      const toastText = await firstValueFrom(this.translateService.get('REGISTRATION.COPIED_TO_CLIPBOARD'));
-      const toast = await this.toastController.create({
-        message: toastText,
-        mode: 'md',
-        duration: 2000,
-      });
-      toast.present();
-    }
-  }
-
-  async openMapModal() {
-    const modal = await this.modalController.create({
-      component: ModalMapImagePage,
-      componentProps: {
-        location: this.location(),
-      },
-    });
-    modal.present();
-  }
-
-  private observer = toSignal(this.regobsAuthService.myPageData$);
-
-  userCanEdit = computed(() => {
-    // sjekk om obs ble opprettet for flere enn 2 dager siden
-    const now = new Date();
-    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
-    const registrationDate = new Date(this.registration().DtRegTime);
-    const isObsOlderThanTwoDays = registrationDate && registrationDate < twoDaysAgo;
-    const user = this.observer();
-    if (!user) {
-      return false;
-    }
-    const editMode = checkEditPriviliges(this.registration(), user);
-    return (editMode === 'EDIT_OWN_REGISTRATION' && !isObsOlderThanTwoDays) || editMode === 'EDIT_AS_MODERATOR';
-  });
 
   constructor() {
     addIcons({
       calendarNumberOutline,
-      createOutline,
-      eyeOutline,
       locationOutline,
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
-      shareSocial,
     });
   }
 
@@ -229,8 +119,6 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
     this.intersectionObserver?.disconnect(); // Vet ikke om denne er nødvendig
   }
 
-  userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
-
   setFallbackImage(attachment: AttachmentViewModel) {
     if (!attachment.UrlFormats) {
       return;
@@ -256,198 +144,25 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private fetchRegistrationBeforeEdit(
-    regId: RegistrationService.RegistrationGetParams['regId']
-  ): Observable<RegistrationViewModel | null> {
-    return this.userSettingService.language$.pipe(
-      switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey })),
-      timeout(FETCH_OBS_TIMEOUT_MS),
-      catchError((error) => {
-        let msg: string;
-        if (error instanceof TimeoutError) {
-          msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms`;
-        } else if (error instanceof HttpErrorResponse && error.status === 410) {
-          msg = 'Obs was deleted from Regobs';
-        } else {
-          msg = 'An unknown error occured while fetching obs before edit';
-        }
-        this.logger.error(error, DEBUG_TAG, msg);
-        return of(null);
-      })
-    );
-  }
-
-  async edit() {
-    this.isLoadingObsForEdit.set(true);
-    const uuid = this.registration().ExternalReferenceId;
-
-    try {
-      if (!uuid) {
-        await this.notifyAboutMissingExternalReferenceId();
-        return;
-      }
-
-      const draft = await this.draftRepository.load(uuid);
-      if (!draft) {
-        let registrationDataToEdit: RegistrationViewModel = this.registration();
-
-        //we don't have a local working copy of this registration yet, so fetch it and save as draft
-        const obs = this.registration();
-        this.logger.debug(`Registration edit: Fetching from API. RegID = ${obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
-        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(obs.RegId));
-        if (registrationFromServer === null) {
-          const continueEditing = await this.confirmEditDespiteNoFreshRegistrationFromServer();
-          if (!continueEditing) {
-            this.isLoadingObsForEdit.set(false);
-            return;
-          }
-        } else {
-          registrationDataToEdit = registrationFromServer;
-        }
-
-        await this.draftRepository.saveAsDraft(registrationDataToEdit); //save cached copy from card as draft
-      } else {
-        this.logger.debug(
-          `Registration edit: Using local draft. RegID = ${this.registration().RegId}, uuid = ${uuid}`,
-          DEBUG_TAG
-        );
-      }
-    } finally {
-      this.isLoadingObsForEdit.set(false);
-      this.cdr.markForCheck();
-    }
-    this.router.navigate(['registration', 'edit', uuid]);
-  }
-
-  private async notifyAboutMissingExternalReferenceId() {
-    // This alert is not translated and that is OK, this is a weird case that can only happen with registrations
-    // submitted directly to the database, outside of the API
-    const alert = await this.alertController.create({
-      header: 'Missing ExternalReferenceId',
-      message: 'Error: This observation is missing ExternalReferenceId and cannot be edited.',
-      buttons: ['OK'],
-    });
-    await alert.present();
-  }
-
-  private async confirmEditDespiteNoFreshRegistrationFromServer(): Promise<boolean> {
-    let resolveFunction: (confirm: boolean) => void;
-    const promise = new Promise<boolean>((resolve) => {
-      resolveFunction = resolve;
-    });
-
-    await this.confirmationModalService.askForConfirmation({
-      message: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.MESSAGE',
-      header: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.HEADER',
-      buttons: [
-        {
-          text: 'DIALOGS.CANCEL',
-          handler: () => resolveFunction(false),
-          role: PopupResponse.CANCEL,
-        },
-        {
-          text: 'REGISTRATION.FETCH_FOR_EDIT_FAILED.CONFIRM_BUTTON',
-          handler: () => resolveFunction(true),
-          role: PopupResponse.CONFIRM,
-        },
-      ],
-    });
-
-    return promise;
-  }
-
   async openImageCarousel(index: number) {
-    const modal = await this.modalController.create({
-      component: ObservationImageCarouselComponent,
-      cssClass: 'fullscreen-modal',
-      componentProps: {
-        attachmentIndex: index,
-        attachments: this.attachments(),
-        registration: this.registration(),
-      },
-    });
-    await modal.present();
-  }
-}
-
-function getNameForGeohazard(registration: Signal<RegistrationViewModel>) {
-  const helper = inject(GeoHelperService);
-
-  const nameResource = rxResource({
-    params: () => [registration().GeoHazardTID],
-    stream: ({ params: geohazards }) => helper.getName(geohazards),
-  });
-
-  return nameResource.value.asReadonly();
-}
-
-function getLocation(obs: RegistrationViewModel): ImageLocation {
-  return {
-    latLng: L.latLng(obs.ObsLocation.Latitude, obs.ObsLocation.Longitude),
-    geoHazard: obs.GeoHazardTID,
-    startStopLocation: getStartStopLocation(obs),
-    damageLocations: getDamagePositions(obs),
-  };
-}
-
-function getStartStopLocation(obs: RegistrationViewModel): ImageLocationStartStop | undefined {
-  if (obs.AvalancheObs) {
-    return {
-      ...obs2Latlng(obs.AvalancheObs),
-      totalPolygon: extent2Polygon(obs.AvalancheObs.Extent, settings.map.extentColor),
-      startPolygon: extent2Polygon(obs.AvalancheObs.StartExtent, settings.map.startExtentColor),
-      endPolygon: extent2Polygon(obs.AvalancheObs.StopExtent, settings.map.endExtentColor),
-    };
-  }
-  if (obs.LandSlideObs) {
-    return {
-      ...obs2Latlng(obs.LandSlideObs),
-      totalPolygon: extent2Polygon(obs.LandSlideObs.Extent, settings.map.extentColor),
-      startPolygon: extent2Polygon(obs.LandSlideObs.StartExtent, settings.map.startExtentColor),
-      endPolygon: extent2Polygon(obs.LandSlideObs.StopExtent, settings.map.endExtentColor),
-    };
+    await this.imageCarousel.open(index, this.attachments(), this.registration());
   }
 
-  if (obs.WaterLevel2) {
-    return {
-      totalPolygon: extent2Polygon(obs.WaterLevel2.Extent, settings.map.extentColor),
-    };
+  hasData(data: unknown) {
+    return !isEmpty(data);
   }
-  return undefined;
-}
 
-function getDamagePositions(obs: RegistrationViewModel) {
-  if (obs.DamageObs?.some((d) => d.DamagePosition)) {
-    const positions = obs.DamageObs.map((d) => d.DamagePosition).filter((p) => p && p.Latitude && p.Longitude) as {
-      Latitude: number;
-      Longitude: number;
-    }[];
-    return positions.map((p) => L.latLng(p.Latitude, p.Longitude));
+  RegistrationTid = RegistrationTid;
+
+  getSummaries(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getSummaries(registration, tid);
   }
-  return undefined;
-}
 
-function obs2Latlng(obs: LandslideViewModel | AvalancheObsViewModel) {
-  return {
-    start: obs.StartLat && obs.StartLong ? L.latLng(obs.StartLat, obs.StartLong) : undefined,
-    stop: obs.StopLat && obs.StopLong ? L.latLng(obs.StopLat, obs.StopLong) : undefined,
-  };
-}
+  getAttachments(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getAttachmentsFromRegistrationViewModel(registration, tid);
+  }
 
-function extent2Polygon(extent: number[][] | undefined, color: string) {
-  return extent
-    ? new L.Polygon(
-        extent.map(([lng, lat]) => [lat, lng]),
-        { color }
-      )
-    : undefined;
-}
-
-/** En liste av alle skjema som skal vises for denne observasjonen  */
-function getRegistrationViews(obs: RegistrationViewModel) {
-  return REGISTRATION_VIEW_CONFIG.filter((config) => !config.isEmpty(obs)).map((config) => ({
-    tid: Number(config.tid),
-    component: config.component,
-    inputs: config.getInputs(obs),
-  }));
+  getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid) {
+    return getSummaryHeader(registration, tid);
+  }
 }

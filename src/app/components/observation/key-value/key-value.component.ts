@@ -12,7 +12,16 @@ import { IonText } from '@ionic/angular/standalone';
       @if (key()) {
         <span class="key">{{ key() }}:</span>&nbsp;
       }
-      <span>{{ value() }}</span>
+      <!--
+        Komponenten tillater at man angir "value" / verdien selv uten å bruke value-inputen.
+        Feks
+        <app-key-value name="Har en verdi med en egen rød stil">
+          <p color="red">Verdi</p>
+        </app-key-value>
+      -->
+      <ng-content>
+        <span>{{ value() }}</span>
+      </ng-content>
     </ion-text>
   `,
   styleUrl: './key-value.component.css',

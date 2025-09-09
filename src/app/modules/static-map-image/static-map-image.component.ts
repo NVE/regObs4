@@ -159,8 +159,6 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private logger = inject(LoggingService);
 
   readonly location = input.required<ImageLocation>();
-  readonly allowZoom = input<boolean>();
-
   readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
 
   @HostListener('window:resize', ['$event'])

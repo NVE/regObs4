@@ -16,7 +16,7 @@ export class GeoNameComponent {
 
   private nameResource = rxResource({
     params: () => this.geoHazards(),
-    stream: ({ params: geohazards }) => this.geoHelperService.getName(geohazards),
+    stream: ({ params: geohazards }) => this.geoHelperService.getName$(geohazards),
   });
 
   name = this.nameResource.value.asReadonly();

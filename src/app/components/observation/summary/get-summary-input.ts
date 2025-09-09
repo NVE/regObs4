@@ -12,3 +12,11 @@ export function getSummaryInputs(registration: RegistrationViewModel, tid: Regis
     summaries: getSummaries(registration, tid),
   };
 }
+
+export function getSummaryHeader(registration: RegistrationViewModel, tid: RegistrationTid): string {
+  const summary = getSummaries(registration, tid)[0];
+  if (!summary?.RegistrationName) {
+    throw new Error(`No Summary or RegistrationName for registrationtid ${tid} in registration`);
+  }
+  return summary.RegistrationName;
+}

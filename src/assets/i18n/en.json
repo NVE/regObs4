@@ -423,6 +423,14 @@
         "MESSAGE": "Do you want to delete this observation from Regobs?"
       }
     },
+    "DETAILS": {
+      "ERROR": {
+        "TITLE": "Observation not found",
+        "NOT_FOUND": "Probably because the ID is incorrect.",
+        "GONE": "The observation has been deleted.",
+        "SERVER_ERROR": "The call to the Regobs API failed. Please let us know if the problem persists."
+      }
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AREA_TOTAL": "Define landslide boundaries",
@@ -560,7 +568,8 @@
       "SOURCE": "Source",
       "TITLE": "Observed Location and Time",
       "UNCERTAINTY": "Uncertainty in position",
-      "UTMSOURCE": "Position source"
+      "UTMSOURCE": "Position source",
+      "POSITION_LABEL": "Position"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",

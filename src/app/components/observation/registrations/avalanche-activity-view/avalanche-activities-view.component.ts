@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { TranslatePipe } from '@ngx-translate/core';
 import { AvalancheActivityObs2ViewModel } from 'src/app/modules/common-regobs-api';
-import { RegistrationHeaderComponent } from '../../registration-header/registration-header.component';
 import { AvalancheActivityViewComponent } from './avalanche-activity-view.component';
 
 /**
@@ -10,9 +8,8 @@ import { AvalancheActivityViewComponent } from './avalanche-activity-view.compon
  */
 @Component({
   selector: 'app-avalanche-activities-view',
-  imports: [TranslatePipe, RegistrationHeaderComponent, AvalancheActivityViewComponent],
+  imports: [AvalancheActivityViewComponent],
   template: `
-    <app-registration-header>{{ 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate }}</app-registration-header>
     @for (activity of data(); track $index) {
       <app-avalanche-activity-view [data]="activity"></app-avalanche-activity-view>
     }

@@ -3,6 +3,7 @@
   line-height: 24px;
   letter-spacing: 0.15px;
   padding-bottom: 10px;
+
   h3 {
     font-size: var(--h3-font-size);
     font-weight: 600;
@@ -18,5 +19,20 @@
   }
   .text {
     white-space: pre-line;
+  }
+
+  // Mobilvennlig visning: ett felt per linje
+  @media only screen and (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    > * {
+      width: 100%;
+      display: block;
+    }
+    .bullet {
+      display: none;
+    }
   }
 }

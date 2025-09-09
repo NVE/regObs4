@@ -399,7 +399,7 @@
       "DESCRIPTION": "Beskrivelse",
       "DROPDOWN_TITLE": "Faretegn (obligatorisk)",
       "FOR_MUNICIPAL": "For kommunen",
-      "FOR_REGION": "Fylket/varslingsregion",
+      "FOR_REGION": "Fylke/region",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",
       "IN_THE_VALLEY_OR_FJORD": "I dalen/fjorden",
       "MANY_WATER_NEARBY": "Mange vann i nærheten",
@@ -427,6 +427,14 @@
         },
         "HEADER": "Slett observasjon",
         "MESSAGE": "Vil du slette denne observasjonen fra Regobs for godt?"
+      }
+    },
+    "DETAILS": {
+      "ERROR": {
+        "TITLE": "Fant ikke observasjonen",
+        "NOT_FOUND": "Antakelig fordi ID er feil.",
+        "GONE": "Observasjonen er slettet.",
+        "SERVER_ERROR": "Kallet til Regobs-API'et feilet. Gi beskjed hvis problemet vedvarer."
       }
     },
     "DIRT": {
@@ -563,10 +571,11 @@
       "NAME_LOCATION": "Navngi sted",
       "NAME_LOCATION_TOOLTIP": "Å navngi stedet gjør det mulig å lage en tidsserie på samme observasjonspunkt",
       "SHOW_DETAILS": "Vis detaljer",
-      "SOURCE": "Kildeangivelse",
+      "SOURCE": "Kilde",
       "TITLE": "Observasjonspunkt og -tid",
       "UNCERTAINTY": "Usikkerhet i posisjon",
-      "UTMSOURCE": "Posisjoneringskilde"
+      "UTMSOURCE": "Posisjonskilde",
+      "POSITION_LABEL": "Posisjon"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
@@ -669,7 +678,7 @@
         "TITLE": "Skredhendelse",
         "TRAFFIC_OBSTRUCTED": "Trafikk hindret",
         "TRAJECTORY_NAME": "Skredbanenavn",
-        "VALID_EXPOSITION": "Eksposisjon"
+        "VALID_EXPOSITION": "Himmelretning"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
@@ -690,7 +699,7 @@
         "TITLE": "Skredproblem",
         "TOP": "Øverst",
         "UNKNOWN_TYPE": "Ukjent svakt lag",
-        "VALID_EXPOSITION": "Eksposisjon",
+        "VALID_EXPOSITION": "Himmelretning",
         "WEAK_LAYER": "Svakt lag",
         "WEAK_LAYER_DEPTH": "Svakt lags dybde"
       },
@@ -787,12 +796,12 @@
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordnet",
         "TITLE": "Snøprofil",
-        "VALID_EXPOSITION": "Eksposisjon",
+        "VALID_EXPOSITION": "Himmelretning",
         "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
-        "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
+        "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt mtp. høyde og himmelretning? Er det forskjell i regionen?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense for snø uten lagdeling (moh)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysnø siste 24t (cm)",

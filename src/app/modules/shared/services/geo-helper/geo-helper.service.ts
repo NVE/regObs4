@@ -22,9 +22,15 @@ export class GeoHelperService {
     return [];
   }
 
-  getName(geoHazards: GeoHazard[]): Observable<string> {
+  getName$(geoHazards: GeoHazard[]): Observable<string> {
     const keys = this.getTranslationKeys(geoHazards);
     return this.translateService.get(keys).pipe(map((val) => keys.map((k) => val[k]).join(' / ')));
+  }
+
+  getName(geoHazards: GeoHazard[]): string {
+    const keys = this.getTranslationKeys(geoHazards);
+    const translations = this.translateService.instant(keys);
+    return keys.map((k) => translations[k]).join(' / ');
   }
 
   getAllGeoHazards(): GeoHazard[] {

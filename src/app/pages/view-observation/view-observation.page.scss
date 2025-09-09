@@ -1,5 +1,35 @@
+:host {
+  --padding: 32px;
+}
+
 ion-content {
-  --padding-start: 8px;
-  --padding-end: 8px;
   --padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Denne trenger vi for å midstille innholdet på sida når sida er bredere enn 960px */
+.content-wrapper-full-width {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  width: 100%;
+  max-width: var(--desktop-max-width, 960px);
+  background: white;
+}
+
+.metadata {
+  padding-left: var(--padding);
+  padding-right: var(--padding);
+  padding-bottom: var(--padding);
+}
+
+.map {
+  height: 256px;
+}
+
+app-registration-view {
+  padding-left: var(--padding);
+  padding-right: var(--padding);
 }

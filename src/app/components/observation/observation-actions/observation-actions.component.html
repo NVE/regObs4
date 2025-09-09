@@ -1,0 +1,18 @@
+<!-- Knapperad med deleknapp, gå til obs og endre-knapp -->
+<div class="buttons ion-color-light">
+  @if (showGoToDetails()) {
+    <a [routerLink]="'/registration/' + registration().RegId">
+      <ion-button fill="clear" class="edit-button">
+        <ion-icon name="eye-outline" slot="start"></ion-icon>
+        {{ "REGISTRATION.GO_TO" | translate }}
+      </ion-button>
+    </a>
+  }
+
+  <app-registration-edit-button [registration]="registration()"></app-registration-edit-button>
+
+  <ion-button fill="clear" (click)="share()" class="reg-id">
+    ID: {{ registration().RegId }}
+    <ion-icon slot="end" name="share-social"></ion-icon>
+  </ion-button>
+</div>
