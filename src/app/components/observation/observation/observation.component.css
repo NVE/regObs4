@@ -65,10 +65,6 @@ swiper-container swiper-slide:first-child:nth-last-child(1) {
   width: 100%;
 }
 
-observation-location-map {
-  height: 256px;
-}
-
 swiper-slide img {
   height: 100%;
   object-fit: cover;
