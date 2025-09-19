@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ApiInterceptor } from './ApiInterceptor';
-import { HttpHandler, HttpRequest, HttpErrorResponse, HttpEvent, HttpResponse } from '@angular/common/http';
+import { HttpHandler, HttpRequest, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -42,7 +42,7 @@ describe('ApiInterceptor retry logic', () => {
     const req = new HttpRequest('GET', url);
 
     // Spy som alltid returnerer 401
-    const handleSpy = jasmine.createSpy('handle').and.callFake((request: HttpRequest<any>) => {
+    const handleSpy = jasmine.createSpy('handle').and.callFake(() => {
       return throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }));
     });
 

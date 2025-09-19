@@ -115,11 +115,18 @@ export class ApiInterceptor implements HttpInterceptor {
       const retryCount = Number(request.headers.get(RETRY_HEADER) ?? '0');
       if (retryCount >= MAX_RETRIES) {
         // Har allerede forsøkt å oppfriske token én gang, kast feilen videre
-        console.log('ApiInterceptor: MAX_RETRIES reached, not retrying');
-        this.loggerService.debug('401 after token refresh, not retrying again.', DEBUG_TAG);
+        this.loggerService.debug('401 after token refresh, not retrying again.', DEBUG_TAG, {
+          retryCount,
+          url: request.url,
+          method: request.method,
+        });
         throw error;
       }
-      this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...', DEBUG_TAG);
+      this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...', DEBUG_TAG, {
+        retryCount,
+        url: request.url,
+        method: request.method,
+      });
       return from(this.regobsAuthService.refreshToken()).pipe(
         switchMap(() => this.addAuthHeader(request)),
         map((req) =>
