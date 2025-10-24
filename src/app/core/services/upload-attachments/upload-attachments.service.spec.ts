@@ -1,4 +1,3 @@
-import { AlertController } from '@ionic/angular/standalone';
 import { provideTranslateService } from '@ngx-translate/core';
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
@@ -43,7 +42,7 @@ describe('UploadAttachmentsService', () => {
       simpleMode: false,
       registration: {
         GeoHazardTID: 10,
-        DtObsTime: 'test',
+        DtObsTime: '2025-10-21T11:19:58+02:00',
       },
     };
 
@@ -101,7 +100,7 @@ describe('UploadAttachmentsService', () => {
       simpleMode: false,
       registration: {
         GeoHazardTID: 10,
-        DtObsTime: 'test',
+        DtObsTime: '2025-10-21T11:19:58+02:00',
       },
     };
 
@@ -139,7 +138,6 @@ describe('UploadAttachmentsService', () => {
         provideTestLogger(),
         { provide: NewAttachmentService, useValue: newAttachmentService },
         { provide: UploadSingleAttachmentService, useValue: null },
-        { provide: AlertController, useValue: null },
       ],
     });
     const service = TestBed.inject(UploadAttachmentsService);
@@ -153,7 +151,7 @@ describe('UploadAttachmentsService', () => {
       simpleMode: false,
       registration: {
         GeoHazardTID: 10,
-        DtObsTime: 'test',
+        DtObsTime: '2025-10-21T11:19:58+02:00',
       },
     };
 

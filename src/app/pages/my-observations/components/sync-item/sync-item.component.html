@@ -16,7 +16,7 @@
       {{ locationName() }}
     </h2>
     <p class="ion-text-wrap">
-      <ion-icon name="calendar"></ion-icon> {{ draft().registration.DtObsTime | formatDate | async }}
+      <ion-icon name="calendar"></ion-icon> {{ draft().registration.DtObsTime | formatDate }}
       @if (isDraft()) {
         <span> - {{ "DRAFT" | translate }}</span>
       }

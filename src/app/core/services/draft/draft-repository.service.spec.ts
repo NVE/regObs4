@@ -1,4 +1,4 @@
-import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import {
   AttachmentUploadEditModel,
@@ -53,7 +53,6 @@ class TestDatabaseService {
 }
 
 describe('DraftRepositoryService', () => {
-  let service: DraftRepositoryService;
   let database: TestDatabaseService;
   let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
   let userSettingService: UserSettingService;
@@ -75,13 +74,13 @@ describe('DraftRepositoryService', () => {
         },
       ],
     });
-    service = TestBed.inject(DraftRepositoryService);
     newAttachmentService = TestBed.inject(NewAttachmentService) as jasmine.SpyObj<NewAttachmentService>;
     userSettingService = TestBed.inject(UserSettingService);
     userSettingService.updateUserSettings({ appMode: AppMode.Test });
   });
 
   it('create() should return an empty draft', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft = await service.create(GeoHazard.Ice);
     expect(draft.uuid.length).toBeGreaterThan(0);
     expect(draft.syncStatus).toBe(SyncStatus.Draft);
@@ -94,6 +93,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('create() should choose simple mode for snow registrations if simple mode setting is set', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const snowDraft = await service.create(GeoHazard.Snow);
     expect(snowDraft.simpleMode).toBeTrue();
 
@@ -116,6 +116,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('load() should be backward compatible with database model before simpleMode was added', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const uuid = 'DRAFT_WITHOUT_SIMPLE_MODE';
     const oldDraftRecord = {
       UUID: uuid,
@@ -135,6 +136,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('save() should store a draft', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft = await service.create(GeoHazard.Snow);
     const registration: RegistrationEditModel = {
       ...draft.registration,
@@ -162,6 +164,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('newly saved drafts should be unique', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft = await service.create(GeoHazard.Snow);
     await service.save(draft as RegistrationDraft);
     const draft2 = await service.create(GeoHazard.Snow);
@@ -172,6 +175,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('we can change a registration, save it and load the changed registration', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const irrelevantDraft1 = await service.create(GeoHazard.Snow);
     await service.save(irrelevantDraft1 as RegistrationDraft);
 
@@ -198,14 +202,15 @@ describe('DraftRepositoryService', () => {
   });
 
   it('we get notified when registrations are saved', fakeAsync(async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft = await service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
     await service.save(draft as RegistrationDraft);
+    tick();
 
     //check if we get notified after first save
     const updatedDrafts = await firstValueFrom(service.drafts$);
-
     expect(updatedDrafts.length).toBe(1);
     const updatedDraft = updatedDrafts[0];
     expect(updatedDraft.uuid).toEqual(draft.uuid);
@@ -216,7 +221,7 @@ describe('DraftRepositoryService', () => {
     await service.save(updatedDraft);
 
     // Let draftService handle the update
-    tick(1);
+    tick();
 
     //check notfication
     const updatedDrafts2 = await firstValueFrom(service.drafts$);
@@ -227,6 +232,7 @@ describe('DraftRepositoryService', () => {
   }));
 
   it('we can use drafts$ as a stream when registrations are saved', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft = await service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
@@ -264,13 +270,15 @@ describe('DraftRepositoryService', () => {
     expect(updatedDraft2.registration.GeneralObservation).toEqual({ Comment: 'v.2' });
   });
 
-  it('delete works', async () => {
+  it('delete works', fakeAsync(async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft = await service.create(GeoHazard.Ice);
     await service.save(draft as RegistrationDraft);
 
     expect(database.store.size).toBe(1);
 
     await service.delete(draft.uuid);
+    tick();
 
     const draftChanges = await firstValueFrom(service.drafts$);
 
@@ -280,9 +288,10 @@ describe('DraftRepositoryService', () => {
     expect(await service.load(draft.uuid)).toBeUndefined();
     // Check that draftService requests newAttachmentService to delete draft images
     expect(newAttachmentService.removeAttachments).toHaveBeenCalledWith(draft.uuid);
-  });
+  }));
 
   it('we do not mix data from different environments', fakeAsync(async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     //save 2 drafts in test environment
     const draft1inTest = await service.create(GeoHazard.Ice);
     await service.save(draft1inTest as RegistrationDraft);
@@ -294,6 +303,7 @@ describe('DraftRepositoryService', () => {
       ...(await firstValueFrom(userSettingService.userSetting$)),
       appMode: AppMode.Demo,
     });
+    tick();
 
     const draftChanges = await firstValueFrom(service.drafts$);
     expect(draftChanges.length).toBe(0); //no drafts in demo yet
@@ -315,7 +325,7 @@ describe('DraftRepositoryService', () => {
       appMode: AppMode.Test,
     });
 
-    tick(1);
+    tick();
 
     const draftChanges2 = await firstValueFrom(service.drafts$);
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
@@ -333,6 +343,7 @@ describe('DraftRepositoryService', () => {
   }));
 
   it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     let draft = {
       ...(await service.create(GeoHazard.Ice)),
       uuid: 'test',
@@ -349,26 +360,22 @@ describe('DraftRepositoryService', () => {
         completed = true;
       },
     });
-
-    tick(1);
+    tick();
 
     await service.save(draft as RegistrationDraft);
-
-    tick(1);
+    tick();
 
     // Update draft
     draft = { ...draft, regId: 123 };
     await service.save(draft as RegistrationDraft);
-
-    tick(1);
+    tick();
 
     // The observable should have emitted two times, two versions of the draft
     expect(i).toBe(2);
 
     // draft = null;
     await service.delete('test');
-
-    flush();
+    tick();
 
     // The observable should still only have emitted two times, two versions of the draft
     expect(i).toBe(2);
@@ -381,6 +388,7 @@ describe('DraftRepositoryService', () => {
   }));
 
   it('saveAsDraft works', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const viewModel = {
       RegId: 42,
       ExternalReferenceId: 'externalReferenceId',
@@ -407,6 +415,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('copyDraftAndSave works', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const draft: RegistrationDraft = {
       uuid: 'original-uuid',
       regId: 123456,
@@ -444,6 +453,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('hasAttachments() should work', async () => {
+    const service = TestBed.inject(DraftRepositoryService);
     const attachments: AttachmentUploadEditModel[] = [
       {
         id: '1',

@@ -21,7 +21,7 @@
                   src="/assets/icon/time.svg"
                   [svgStyle]="{ 'width.px': 16, 'height.px': 16 }"
                 ></svg-icon>
-                <ion-label>{{ registration()?.DtObsTime! | formatDate | async }}</ion-label>
+                <ion-label>{{ registration()?.DtObsTime! | formatDate }}</ion-label>
               </div>
             }
             @if (masl) {

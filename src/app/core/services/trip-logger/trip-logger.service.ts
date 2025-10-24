@@ -18,6 +18,7 @@ import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateO
 import { AppMode } from 'src/app/modules/common-core/models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export const isTripFromToday = (trip: LegacyTrip) => {
   const tripStartedTime = moment.unix(trip?.timestamp);
@@ -52,6 +53,8 @@ export class TripLoggerService {
   }
 
   private tripStartedSubject = new BehaviorSubject(false);
+
+  isTripRunning = toSignal(this.isTripRunning$, { initialValue: false });
 
   constructor() {
     this.userSettingService.appMode$

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject, computed } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import {
@@ -27,13 +27,11 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { FileLoggingService } from '../../modules/shared/services/logging/file-logging.service';
-import { BreakpointService } from '../../core/services/breakpoint.service';
 import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../core/services/confirmation-modal/confirmation-modal.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
-import { NgIf, AsyncPipe } from '@angular/common';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { FormsModule } from '@angular/forms';
 import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-date.pipe';
@@ -49,7 +47,6 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
   templateUrl: './user-settings.page.html',
   styleUrls: ['./user-settings.page.scss'],
   imports: [
-    AsyncPipe,
     FormatDatePipe,
     FormsModule,
     HeaderColorDirective,
@@ -66,7 +63,6 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
     IonTitle,
     IonToggle,
     IonToolbar,
-    NgIf,
     SelectComponent,
     TranslatePipe,
   ],

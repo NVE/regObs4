@@ -8,7 +8,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { AttachmentViewModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { StarRatingHelper } from '../competence/star-helper';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -19,7 +19,6 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss'],
   imports: [
-    AsyncPipe,
     CompetenceComponent,
     FormatDatePipe,
     IonCol,
