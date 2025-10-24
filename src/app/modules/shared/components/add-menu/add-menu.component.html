@@ -1,39 +1,44 @@
-<ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed" *ngIf="geoHazardInfo$ | async as geoHazardInfo">
+<ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed">
   <!-- TODO: Legg til aria labels, hva gjør knappene -->
-  <ion-fab-button color="secondary" [class.fab--safe-space]="isMyObservations()">
+  <ion-fab-button color="secondary" [class.fab--safe-space]="isMyObservations">
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
     <ion-list lines="full" class="ion-no-padding ion-no-margin add-menu-list">
       <!-- New observation button -->
-      <ion-item button (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazardInfo.geoHazards">
-        <app-geo-icon slot="start" [useGeoColors]="false" [geoHazards]="[geoHazard]"></app-geo-icon>
-        <ion-label>{{ "ADD_MENU.NEW_" + getName(geoHazard) + "_OBSERVATION" | uppercase | translate }}</ion-label>
-      </ion-item>
+      @for (geoHazard of geoHazards(); track geoHazard) {
+        <ion-item button (click)="createRegistration(geoHazard)">
+          <app-geo-icon slot="start" [useGeoColors]="false" [geoHazards]="[geoHazard]"></app-geo-icon>
+          <ion-label>{{ "ADD_MENU.NEW_" + getName(geoHazard) + "_OBSERVATION" | uppercase | translate }}</ion-label>
+        </ion-item>
+      }
 
       <!-- Drafts -->
-      <ion-item button *ngFor="let draft of drafts$ | async" (click)="editRegistration(draft.id)">
-        <ion-icon slot="start" name="create"></ion-icon>
-        <ion-label>
-          {{ "ADD_MENU.DRAFT_TITLE_" + getName(draft.geoHazard) | uppercase | translate }}
-          <p>{{ draft.date }}</p>
-        </ion-label>
-      </ion-item>
+      @for (draft of drafts(); track draft.id) {
+        <ion-item button (click)="editRegistration(draft.id)">
+          <ion-icon slot="start" name="create"></ion-icon>
+          <ion-label>
+            {{ "ADD_MENU.DRAFT_TITLE_" + getName(draft.geoHazard) | uppercase | translate }}
+            <p>{{ draft.lastSaved | formatDate }}</p>
+          </ion-label>
+        </ion-item>
+      }
 
       <!-- Start / stop trip -->
-      <ng-container *ngIf="geoHazardInfo.showTrip && isIosOrAndroid">
-        <ion-item button *ngIf="tripStarted$ | async; else startTrip" (click)="startOrStopTrip(true)">
-          <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
-          <ion-label>{{ "TRIP.STOP_TRIP" | translate }}</ion-label>
-        </ion-item>
-      </ng-container>
+      @if (showTrip() && isIosOrAndroid) {
+        @if (tripStarted()) {
+          <ion-item button (click)="startOrStopTrip(true)">
+            <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
+            <ion-label>{{ "TRIP.STOP_TRIP" | translate }}</ion-label>
+          </ion-item>
+        } @else {
+          <ion-item button (click)="startOrStopTrip(false)">
+            <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
+            <ion-label>{{ "TRIP.START_TRIP" | translate }}</ion-label>
+          </ion-item>
+        }
+      }
     </ion-list>
     <div class="backdrop" (click)="closeMenu()"></div>
   </ion-fab-list>
 </ion-fab>
-<ng-template #startTrip>
-  <ion-item button (click)="startOrStopTrip(false)">
-    <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
-    <ion-label>{{ "TRIP.START_TRIP" | translate }}</ion-label>
-  </ion-item>
-</ng-template>

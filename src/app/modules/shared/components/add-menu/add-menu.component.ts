@@ -1,5 +1,5 @@
-import { AsyncPipe, NgFor, NgIf, UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, viewChild } from '@angular/core';
+import { UpperCasePipe } from '@angular/common';
+import { Component, computed, inject, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonFab,
@@ -15,30 +15,22 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { add, create } from 'ionicons/icons';
-import moment from 'moment';
-import { combineLatest, from, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
-import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { DateHelperService } from '../../services/date-helper/date-helper.service';
-import { LoggingService } from '../../services/logging/logging.service';
 import { GeoIconComponent } from '../geo-icon/geo-icon.component';
-
-const DEBUG_TAG = 'AddMenuComponent';
+import { FormatDatePipe } from '../../pipes/format-date/format-date.pipe';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-add-menu',
   templateUrl: './add-menu.component.html',
   styleUrls: ['./add-menu.component.scss'],
   imports: [
-    AsyncPipe,
     GeoIconComponent,
     IonFab,
     IonFabButton,
@@ -47,77 +39,49 @@ const DEBUG_TAG = 'AddMenuComponent';
     IonItem,
     IonLabel,
     IonList,
-    NgFor,
-    NgIf,
     TranslatePipe,
     UpperCasePipe,
+    FormatDatePipe,
   ],
 })
-export class AddMenuComponent implements OnInit {
+export class AddMenuComponent {
   private draftService = inject(DraftRepositoryService);
   private navController = inject(NavController);
-  private dateHelperService = inject(DateHelperService);
   private tripLoggerService = inject(TripLoggerService);
   private userSettingService = inject(UserSettingService);
-  private loggingService = inject(LoggingService);
   private platform = inject(Platform);
 
   readonly menuFab = viewChild<IonFab>('menuFab');
 
-  drafts$?: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
-  geoHazardInfo$?: Observable<{
-    geoHazards: GeoHazard[];
-    showTrip: boolean;
-  }>;
-  tripStarted$?: Observable<boolean>;
-  showSpace$?: Observable<boolean>;
-  isIosOrAndroid?: boolean;
+  geoHazards = toSignal(this.userSettingService.userSetting$.pipe(map((us) => us.currentGeoHazard)), {
+    initialValue: [GeoHazard.Snow],
+  });
+  showTrip = computed(() => this.geoHazards().indexOf(GeoHazard.Snow) > -1);
+  tripStarted = this.tripLoggerService.isTripRunning;
+  isIosOrAndroid = isAndroidOrIos(this.platform);
+
+  private draftsSignal = toSignal(this.draftService.drafts$, { initialValue: [] });
+
+  drafts = computed(() =>
+    this.draftsSignal()
+      .filter((d) => d.syncStatus === SyncStatus.Draft)
+      // Sorter fra nyeste til eldste
+      .sort((d1, d2) => d2.lastSavedTime - d1.lastSavedTime)
+      .map((d) => ({
+        id: d.uuid,
+        geoHazard: d.registration.GeoHazardTID,
+        lastSaved: new Date(d.lastSavedTime),
+      }))
+  );
+
+  isMyObservations = this.router.url === '/my-observations';
 
   constructor(private router: Router) {
     addIcons({ add, create });
   }
 
-  ngOnInit(): void {
-    this.isIosOrAndroid = isAndroidOrIos(this.platform);
-    this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
-      map((us) => ({
-        geoHazards: us.currentGeoHazard,
-        showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0,
-      })),
-      setObservableTimeout()
-    );
-
-    this.drafts$ = this.draftService.drafts$.pipe(
-      tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
-      map((drafts) => drafts.filter((d) => d.syncStatus === SyncStatus.Draft)),
-      switchMap((drafts) =>
-        drafts.length > 0 ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft))) : of([])
-      ),
-      tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
-      setObservableTimeout()
-    );
-    this.tripStarted$ = this.tripLoggerService.isTripRunning$;
-  }
-
-  isMyObservations = computed(() => this.router.url === '/my-observations');
-
-  private convertDraftToDate(
-    draft: RegistrationDraft
-  ): Observable<{ id: string; geoHazard: RegistrationEditModel['GeoHazardTID']; date: string }> {
-    if (!draft.lastSavedTime) {
-      return of({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date: '' });
-    }
-    return from(this.getDate(draft.lastSavedTime)).pipe(
-      map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
-    );
-  }
-
   getName(geoHazard: GeoHazard): string {
     return GeoHazard[geoHazard];
-  }
-
-  getDate(timestamp: number): Promise<string> {
-    return this.dateHelperService.formatDate(moment(timestamp));
   }
 
   closeAndNavigate(url: string): void {

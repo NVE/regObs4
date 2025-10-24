@@ -6,11 +6,11 @@
     <ion-title> {{ "SETTINGS.TITLE" | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding" *ngIf="userSettings">
+<ion-content class="ion-padding">
   <main>
     <ion-list lines="full">
       <!-- App version -->
-      <ion-item *ngIf="version" (click)="versionClick()">
+      <ion-item (click)="versionClick()">
         <ion-label position="stacked" color="medium" class="ion-text-uppercase"
           >{{ "SETTINGS.APP_VERSION" | translate }}
         </ion-label>
@@ -18,7 +18,7 @@
           {{ version.version }} ({{ version.buildNumber }})
         </ion-text>
         <ion-text class="build-rev ion-align-self-start" color="medium">
-          {{ version.revision }} - {{ version.date | formatDate | async }}
+          {{ version.revision }} - {{ version.date | formatDate }}
         </ion-text>
       </ion-item>
 
@@ -38,11 +38,13 @@
       </ion-item>
 
       <!-- GPS Debug -->
-      <ion-item *ngIf="userSettings.featureToggleDeveloperMode">
-        <ion-label> GPS debug </ion-label>
-        <ion-toggle slot="end" [(ngModel)]="userSettings.featureToggeGpsDebug" (ngModelChange)="updateSettings()">
-        </ion-toggle>
-      </ion-item>
+      @if (userSettings.featureToggleDeveloperMode) {
+        <ion-item>
+          <ion-label> GPS debug </ion-label>
+          <ion-toggle slot="end" [(ngModel)]="userSettings.featureToggeGpsDebug" (ngModelChange)="updateSettings()">
+          </ion-toggle>
+        </ion-item>
+      }
     </ion-list>
 
     <ion-list lines="none">

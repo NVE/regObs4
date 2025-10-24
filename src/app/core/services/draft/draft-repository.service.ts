@@ -38,6 +38,18 @@ import { InitDraft } from './init-draft.model';
 const DEBUG_TAG = 'DraftRepositoryService';
 
 /**
+ * Kladder som er lagret i databasen har alltid lastSavedTime.
+ * Dette interfacet forenkler bruken av lastSavedTime,
+ * men det bør ikke være nædvendig å eksportere denne, RegistrationDraft bør
+ * brukes alle steder man lager en draft.
+ * Vi kan også vurdere å gjøre lastSavedTime påkrevd siden vi allerede har et
+ * interface som heter InitDraft, men det er en større jobb.
+ */
+interface SavedRegistrationDraft extends RegistrationDraft {
+  lastSavedTime: number;
+}
+
+/**
  * Takes care of your draft registrations and save them on your device.
  * Drafts saved in different app modes / environments are separate.
  * The service relates to current app mode all the time, so drafts saved in other app modes are not available
@@ -58,7 +70,7 @@ export class DraftRepositoryService {
   /**
    * A list of drafts that are saved locally. Drafts under sumbission are also included.
    */
-  readonly drafts$: Observable<RegistrationDraft[]>;
+  readonly drafts$: Observable<SavedRegistrationDraft[]>;
 
   constructor() {
     this.drafts$ = combineLatest([
@@ -383,14 +395,14 @@ export class DraftRepositoryService {
   /**
    * @returns all drafts for given geo hazard and app mode or empty list if not found
    */
-  private async loadAllFromDatabase(appMode: AppMode): Promise<RegistrationDraft[]> {
+  private async loadAllFromDatabase(appMode: AppMode): Promise<SavedRegistrationDraft[]> {
     const start = Date.now();
-    const drafts: RegistrationDraft[] = [];
+    const drafts: SavedRegistrationDraft[] = [];
     const keyPrefix = this.createKeyForAllDrafts(appMode);
     const keys = await this.databaseService.keys();
     const keysForAppMode = keys.filter((k) => k.startsWith(keyPrefix));
     for (const key of keysForAppMode) {
-      const draft = await this.databaseService.get<RegistrationDraft>(key);
+      const draft = await this.databaseService.get<SavedRegistrationDraft>(key);
       drafts.push(draft);
     }
     this.logger.debug(`${drafts.length} drafts loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
