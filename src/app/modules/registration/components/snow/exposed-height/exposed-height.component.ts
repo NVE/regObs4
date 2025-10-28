@@ -56,13 +56,13 @@ export class ExposedHeightComponent {
     if (this.exposedHeightComboTID() === 0) {
       this.heights.update(() => ({ top: true, middle: true, bottom: true }));
     } else if (this.exposedHeightComboTID() === 1) {
-      // Hvit nederst
-      this.heights.update((heights) => ({ ...heights, top: true, bottom: true }));
+      // Svart øverst
+      this.heights.update((heights) => ({ ...heights, top: true, bottom: false }));
     } else if (this.exposedHeightComboTID() === 2) {
       // Svart nederst
       this.heights.update((heights) => ({ ...heights, bottom: true }));
     } else if (this.exposedHeightComboTID() === 3) {
-      // Hvit i midten
+      // Svart øverst og nederst
       this.heights.update((heights) => ({ ...heights, top: true, bottom: true }));
     } else if (this.exposedHeightComboTID() === 4) {
       // Svart i midten
