@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   IonContent,
+  IonIcon,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonRefresher,
@@ -18,6 +19,8 @@ import { ListControlsComponent } from '../list-controls/list-controls.component'
 import { TranslatePipe } from '@ngx-translate/core';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+import { addIcons } from 'ionicons';
+import { informationCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-observation-list',
@@ -26,6 +29,7 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonContent,
+    IonIcon,
     IonRefresher,
     IonRefresherContent,
     ErrorStateComponent,
@@ -70,6 +74,7 @@ export class ObservationListComponent {
   error = toSignal(this.searchHandler.error$, { initialValue: { hasError: false } });
 
   constructor() {
+    addIcons({ informationCircleOutline });
     this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
     });
