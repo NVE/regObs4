@@ -1,0 +1,13 @@
+@let endText =
+  maxItemsFetched
+    ? "OBSERVATION_LIST.MAX_COUNT_REACHED"
+    : registrationsLength && registrationsLength <= registrationsCount
+      ? "OBSERVATION_LIST.NO_MORE_OBS_IN_VIEW"
+      : "";
+
+@if (endText) {
+  <span class="list-end-info">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <span>{{ endText | translate }}</span>
+  </span>
+}

@@ -26,9 +26,13 @@
         <app-empty-state></app-empty-state>
       }
     }
+    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
+      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <app-list-end-info
+      [maxItemsFetched]="maxItemsFetched()"
+      [registrationsLength]="registrations().length"
+      [registrationsCount]="count() || 0"
+    ></app-list-end-info>
   </div>
-
-  <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
-    <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 </ion-content>
