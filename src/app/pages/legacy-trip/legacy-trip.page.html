@@ -12,20 +12,22 @@
       <ion-col class="ion-no-padding">
         <ion-list lines="full">
           <app-kdv-select
-            [color]="hasClicked && tripDto.TripTypeID === undefined ? 'danger' : 'medium'"
             [disabled]="isRunning || isLoading"
             label="TRIP.TRIP_TYPE"
             kdvKey="TripTypeKDV"
             [(value)]="tripDto.TripTypeID"
           ></app-kdv-select>
           <app-select
-            [color]="hasClicked && tripDto.ObservationExpectedMinutes === undefined ? 'danger' : 'medium'"
             [disabled]="isRunning || isLoading"
             [(selectedValue)]="tripDto.ObservationExpectedMinutes"
             [options]="minutes"
             label="TRIP.TRIP_END_DESCRIPTION"
           ></app-select>
-          <app-text-comment label="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
+          <app-text-comment
+            label="TRIP.COMMENT_CAPTION"
+            [disabled]="isRunning || isLoading"
+            [(value)]="tripDto.Comment"
+          >
           </app-text-comment>
           <ion-item-divider>
             <ion-label class="ion-text-wrap"> {{ "TRIP.COMMENT_DESCRIPTION" | translate }} </ion-label>
@@ -58,15 +60,15 @@
               <ion-button (click)="showHelp()" fill="clear">{{ "HELP.TITLE" | translate }}</ion-button>
             </ion-col>
           </ion-row>
-          <ion-row class="white-background">
+          <ion-row>
             <ion-col size="12" class="start-buttons">
               <ion-button
                 (click)="startTrip()"
                 [disabled]="isLoading || !isValid"
                 *ngIf="!isRunning"
-                class="back-button"
+                fill="solid"
                 expand="block"
-                color="varsom-orange"
+                color="secondary"
               >
                 {{ "TRIP.START_TRIP" | translate }}
               </ion-button>
@@ -74,21 +76,20 @@
                 *ngIf="isRunning"
                 (click)="stopTrip()"
                 [disabled]="isLoading"
-                class="back-button"
+                fill="solid"
                 expand="block"
-                color="varsom-orange"
+                color="secondary"
               >
                 {{ "TRIP.STOP_TRIP" | translate }}
               </ion-button>
             </ion-col>
           </ion-row>
-          <ion-row class="white-background" *ngIf="!isEmpty">
+          <ion-row *ngIf="!isEmpty">
             <ion-col class="ion-text-center">
               <ion-button
                 (click)="clearPage()"
                 [disabled]="isRunning || isLoading"
                 class="reset-button"
-                color="dark"
                 size="small"
                 fill="clear"
               >

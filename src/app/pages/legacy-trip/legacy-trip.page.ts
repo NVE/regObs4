@@ -94,6 +94,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     return (
       this.tripDto.ObservationExpectedMinutes !== undefined &&
       this.tripDto.TripTypeID !== undefined &&
+      this.tripDto.Comment !== undefined &&
       this.currentPosition != null
     );
   }
@@ -174,6 +175,9 @@ export class LegacyTripPage implements OnInit, OnDestroy {
               (error) => {
                 this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
                 this.tripLoggerService.showTripErrorMessage(true);
+                this.ngZone.run(() => {
+                  this.isLoading = false;
+                });
               },
               () => {
                 this.ngZone.run(() => {
