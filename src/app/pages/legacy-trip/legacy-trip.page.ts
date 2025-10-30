@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from '../../modules/common-regobs-api';
@@ -31,7 +31,6 @@ import { GeoPositionService } from '../../core/services/geo-position/geo-positio
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 import { Position } from '@capacitor/geolocation';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
 import { KdvSelectComponent } from '../../components/kdv-select/kdv-select.component';
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { TextCommentComponent } from '../../modules/registration/components/text-comment/text-comment.component';
@@ -44,6 +43,7 @@ const DEBUG_TAG = 'LegacyTripPage';
   selector: 'app-legacy-trip',
   templateUrl: './legacy-trip.page.html',
   styleUrls: ['./legacy-trip.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeaderColorDirective,
     IonBackButton,
@@ -61,7 +61,6 @@ const DEBUG_TAG = 'LegacyTripPage';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    NgIf,
     SelectComponent,
     SvgIconComponent,
     TextCommentComponent,
@@ -70,7 +69,6 @@ const DEBUG_TAG = 'LegacyTripPage';
 })
 export class LegacyTripPage implements OnInit, OnDestroy {
   private tripLoggerService = inject(TripLoggerService);
-  private ngZone = inject(NgZone);
   private regobsAuthService = inject(RegobsAuthService);
   private translateService = inject(TranslateService);
   private geoPositionService = inject(GeoPositionService);
@@ -80,12 +78,12 @@ export class LegacyTripPage implements OnInit, OnDestroy {
 
   private tripLoggerSubscription!: Subscription;
 
-  isRunning = false;
+  isRunning = signal(false);
   tripDto: CreateTripDto;
   minutes: SelectOption[] = this.getHoursToMidnight();
-  isLoading = false;
-  hasClicked = false;
-  isLoadingCurrentPosition = false;
+  isLoading = signal(false);
+  hasClicked = signal(false);
+  isLoadingCurrentPosition = signal(false);
   currentPosition?: Position | null;
 
   private startTripSubscription?: Subscription;
@@ -108,22 +106,20 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isLoading = false;
+    this.isLoading.set(false);
     this.tripLoggerSubscription = this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
-      this.ngZone.run(() => {
-        if (val) {
-          this.tripDto = val.request;
-          this.isRunning = true;
-        } else {
-          this.isRunning = false;
-        }
-      });
+      if (val) {
+        this.tripDto = val.request;
+        this.isRunning.set(true);
+      } else {
+        this.isRunning.set(false);
+      }
     });
     this.initCurrentPosition();
   }
 
   private async initCurrentPosition(): Promise<void> {
-    this.isLoadingCurrentPosition = true;
+    this.isLoadingCurrentPosition.set(true);
     try {
       this.currentPosition = await this.geoPositionService.getSingleCurrentPosition();
       if (this.currentPosition == null) {
@@ -134,9 +130,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
       this.loggingService.log('Could not get geolocation', err, LogLevel.Warning, DEBUG_TAG);
       this.tripLoggerService.showTripNoPositionErrorMessage();
     } finally {
-      this.ngZone.run(() => {
-        this.isLoadingCurrentPosition = false;
-      });
+      this.isLoadingCurrentPosition.set(false);
     }
   }
 
@@ -157,12 +151,12 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   async startTrip(): Promise<void> {
     this.cancel();
     if (!this.isValid) {
-      this.hasClicked = true;
+      this.hasClicked.set(true);
       return;
     } else {
       const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
       if (loggedInUser && loggedInUser.isLoggedIn) {
-        this.isLoading = true;
+        this.isLoading.set(true);
         // this.tripDto.ObserverGuid = loggedInUser.user.Guid; // TODO: Fix api to use access token for this call
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = uuidv4();
@@ -170,27 +164,23 @@ export class LegacyTripPage implements OnInit, OnDestroy {
           if (this.currentPosition && this.currentPosition.coords) {
             this.tripDto.Lat = this.currentPosition.coords.latitude.toString();
             this.tripDto.Lng = this.currentPosition.coords.longitude.toString();
-            this.startTripSubscription = this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(
-              () => this.navController.navigateRoot('/'),
-              (error) => {
+            this.startTripSubscription = this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe({
+              next: () => this.navController.navigateRoot('/'),
+              error: (error) => {
                 this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
                 this.tripLoggerService.showTripErrorMessage(true);
-                this.ngZone.run(() => {
-                  this.isLoading = false;
-                });
+                this.isLoading.set(false);
               },
-              () => {
-                this.ngZone.run(() => {
-                  this.isLoading = false;
-                });
-              }
-            );
+              complete: () => {
+                this.isLoading.set(false);
+              },
+            });
           } else {
-            this.isLoading = false;
+            this.isLoading.set(false);
             this.tripLoggerService.showTripNoPositionErrorMessage();
           }
         } catch (error) {
-          this.isLoading = false;
+          this.isLoading.set(false);
           const err = error instanceof Error ? error : typeof error === 'string' ? new Error(error) : undefined;
           this.loggingService.log('Could not get geolocation', err, LogLevel.Warning, DEBUG_TAG);
           this.tripLoggerService.showTripNoPositionErrorMessage();
@@ -204,7 +194,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
       this.startTripSubscription.unsubscribe();
       this.startTripSubscription = undefined;
     }
-    this.isLoading = false;
+    this.isLoading.set(false);
   }
 
   stopTrip(): void {

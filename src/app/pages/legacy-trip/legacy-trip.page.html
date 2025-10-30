@@ -8,25 +8,25 @@
 </ion-header>
 <ion-content>
   <ion-grid class="pull-last-bottom ion-no-paddig ion-no-margin">
-    @if (!isLoading) {
+    @if (!isLoading()) {
       <ion-row>
         <ion-col class="ion-no-padding">
           <ion-list lines="full">
             <app-kdv-select
-              [disabled]="isRunning || isLoading"
+              [disabled]="isRunning() || isLoading()"
               label="TRIP.TRIP_TYPE"
               kdvKey="TripTypeKDV"
               [(value)]="tripDto.TripTypeID"
             ></app-kdv-select>
             <app-select
-              [disabled]="isRunning || isLoading"
+              [disabled]="isRunning() || isLoading()"
               [(selectedValue)]="tripDto.ObservationExpectedMinutes"
               [options]="minutes"
               label="TRIP.TRIP_END_DESCRIPTION"
             ></app-select>
             <app-text-comment
               label="TRIP.COMMENT_CAPTION"
-              [disabled]="isRunning || isLoading"
+              [disabled]="isRunning() || isLoading()"
               [(value)]="tripDto.Comment"
             >
             </app-text-comment>
@@ -37,14 +37,14 @@
         </ion-col>
       </ion-row>
     }
-    @if (isLoadingCurrentPosition) {
+    @if (isLoadingCurrentPosition()) {
       <ion-row>
         <ion-col class="ion-text-center">
           <ion-spinner name="dots"></ion-spinner>
         </ion-col>
       </ion-row>
     }
-    @if (isLoading) {
+    @if (isLoading()) {
       <ng-container>
         <ion-row>
           <ion-col class="ion-no-padding ion-text-center">
@@ -68,11 +68,10 @@
           </ion-row>
           <ion-row>
             <ion-col size="12" class="start-buttons">
-              @if (!isRunning) {
+              @if (!isRunning()) {
                 <ion-button
                   (click)="startTrip()"
-                  [disabled]="isLoading || !isValid"
-                  *ngIf="!isRunning"
+                  [disabled]="isLoading() || !isValid"
                   fill="solid"
                   expand="block"
                   color="secondary"
