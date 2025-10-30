@@ -79,7 +79,7 @@
                   {{ "TRIP.START_TRIP" | translate }}
                 </ion-button>
               } @else {
-                <ion-button (click)="stopTrip()" [disabled]="isLoading" fill="solid" expand="block" color="secondary">
+                <ion-button (click)="stopTrip()" [disabled]="isLoading()" fill="solid" expand="block" color="secondary">
                   {{ "TRIP.STOP_TRIP" | translate }}
                 </ion-button>
               }
@@ -90,7 +90,7 @@
               <ion-col class="ion-text-center">
                 <ion-button
                   (click)="clearPage()"
-                  [disabled]="isRunning || isLoading"
+                  [disabled]="isRunning() || isLoading()"
                   class="reset-button"
                   size="small"
                   fill="clear"
