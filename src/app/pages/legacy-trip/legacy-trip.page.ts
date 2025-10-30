@@ -106,7 +106,6 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isLoading.set(false);
     this.tripLoggerSubscription = this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
       if (val) {
         this.tripDto = val.request;
