@@ -64,7 +64,7 @@
     "@capacitor/core": "^7.4.0",
     "@capacitor/device": "^7.0.0",
     "@capacitor/filesystem": "^7.0.0",
-    "@capacitor/geolocation": "^7.0.0",
+    "@capacitor/geolocation": "8.0.0-next.3",
     "@capacitor/ios": "^7.4.0",
     "@capacitor/keyboard": "^7.0.0",
     "@capacitor/network": "^7.0.0",
