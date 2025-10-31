@@ -8,48 +8,56 @@
 </ion-header>
 <ion-content>
   <ion-grid class="pull-last-bottom ion-no-paddig ion-no-margin">
-    <ion-row *ngIf="!isLoading">
-      <ion-col class="ion-no-padding">
-        <ion-list lines="full">
-          <app-kdv-select
-            [color]="hasClicked && tripDto.TripTypeID === undefined ? 'danger' : 'medium'"
-            [disabled]="isRunning || isLoading"
-            label="TRIP.TRIP_TYPE"
-            kdvKey="TripTypeKDV"
-            [(value)]="tripDto.TripTypeID"
-          ></app-kdv-select>
-          <app-select
-            [color]="hasClicked && tripDto.ObservationExpectedMinutes === undefined ? 'danger' : 'medium'"
-            [disabled]="isRunning || isLoading"
-            [(selectedValue)]="tripDto.ObservationExpectedMinutes"
-            [options]="minutes"
-            label="TRIP.TRIP_END_DESCRIPTION"
-          ></app-select>
-          <app-text-comment label="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
-          </app-text-comment>
-          <ion-item-divider>
-            <ion-label class="ion-text-wrap"> {{ "TRIP.COMMENT_DESCRIPTION" | translate }} </ion-label>
-          </ion-item-divider>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="isLoadingCurrentPosition">
-      <ion-col class="ion-text-center">
-        <ion-spinner name="dots"></ion-spinner>
-      </ion-col>
-    </ion-row>
-    <ng-container *ngIf="isLoading">
+    @if (!isLoading()) {
       <ion-row>
-        <ion-col class="ion-no-padding ion-text-center">
-          <div>
-            <ion-spinner name="dots"></ion-spinner>
-          </div>
-          <div>
-            <ion-button fill="clear" type="button" (click)="cancel()">{{ "ALERT.CANCEL" | translate }}</ion-button>
-          </div>
+        <ion-col class="ion-no-padding">
+          <ion-list lines="full">
+            <app-kdv-select
+              [disabled]="isRunning() || isLoading()"
+              label="TRIP.TRIP_TYPE"
+              kdvKey="TripTypeKDV"
+              [(value)]="tripDto.TripTypeID"
+            ></app-kdv-select>
+            <app-select
+              [disabled]="isRunning() || isLoading()"
+              [(selectedValue)]="tripDto.ObservationExpectedMinutes"
+              [options]="minutes"
+              label="TRIP.TRIP_END_DESCRIPTION"
+            ></app-select>
+            <app-text-comment
+              label="TRIP.COMMENT_CAPTION"
+              [disabled]="isRunning() || isLoading()"
+              [(value)]="tripDto.Comment"
+            >
+            </app-text-comment>
+            <ion-item-divider>
+              <ion-label class="ion-text-wrap"> {{ "TRIP.COMMENT_DESCRIPTION" | translate }} </ion-label>
+            </ion-item-divider>
+          </ion-list>
         </ion-col>
       </ion-row>
-    </ng-container>
+    }
+    @if (isLoadingCurrentPosition()) {
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-spinner name="dots"></ion-spinner>
+        </ion-col>
+      </ion-row>
+    }
+    @if (isLoading()) {
+      <ng-container>
+        <ion-row>
+          <ion-col class="ion-no-padding ion-text-center">
+            <div>
+              <ion-spinner name="dots"></ion-spinner>
+            </div>
+            <div>
+              <ion-button fill="clear" type="button" (click)="cancel()">{{ "ALERT.CANCEL" | translate }}</ion-button>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+    }
     <ion-row>
       <ion-col class="ion-no-padding">
         <ion-grid class="ion-no-padding">
@@ -58,45 +66,41 @@
               <ion-button (click)="showHelp()" fill="clear">{{ "HELP.TITLE" | translate }}</ion-button>
             </ion-col>
           </ion-row>
-          <ion-row class="white-background">
+          <ion-row>
             <ion-col size="12" class="start-buttons">
-              <ion-button
-                (click)="startTrip()"
-                [disabled]="isLoading || !isValid"
-                *ngIf="!isRunning"
-                class="back-button"
-                expand="block"
-                color="varsom-orange"
-              >
-                {{ "TRIP.START_TRIP" | translate }}
-              </ion-button>
-              <ion-button
-                *ngIf="isRunning"
-                (click)="stopTrip()"
-                [disabled]="isLoading"
-                class="back-button"
-                expand="block"
-                color="varsom-orange"
-              >
-                {{ "TRIP.STOP_TRIP" | translate }}
-              </ion-button>
+              @if (!isRunning()) {
+                <ion-button
+                  (click)="startTrip()"
+                  [disabled]="isLoading() || !isValid"
+                  fill="solid"
+                  expand="block"
+                  color="secondary"
+                >
+                  {{ "TRIP.START_TRIP" | translate }}
+                </ion-button>
+              } @else {
+                <ion-button (click)="stopTrip()" [disabled]="isLoading()" fill="solid" expand="block" color="secondary">
+                  {{ "TRIP.STOP_TRIP" | translate }}
+                </ion-button>
+              }
             </ion-col>
           </ion-row>
-          <ion-row class="white-background" *ngIf="!isEmpty">
-            <ion-col class="ion-text-center">
-              <ion-button
-                (click)="clearPage()"
-                [disabled]="isRunning || isLoading"
-                class="reset-button"
-                color="dark"
-                size="small"
-                fill="clear"
-              >
-                <svg-icon src="/assets/icon/reset.svg"></svg-icon>
-                {{ "REGISTRATION.RESET" | translate }}
-              </ion-button>
-            </ion-col>
-          </ion-row>
+          @if (!isEmpty) {
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-button
+                  (click)="clearPage()"
+                  [disabled]="isRunning() || isLoading()"
+                  class="reset-button"
+                  size="small"
+                  fill="clear"
+                >
+                  <svg-icon src="/assets/icon/reset.svg"></svg-icon>
+                  {{ "REGISTRATION.RESET" | translate }}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          }
         </ion-grid>
       </ion-col>
     </ion-row>
