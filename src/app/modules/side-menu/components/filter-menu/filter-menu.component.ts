@@ -17,10 +17,14 @@ import {
 } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { SearchCriteriaService, SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/search-criteria.service';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { RegistrationTypeCriteriaDto, RegistrationTypeDto } from 'src/app/modules/common-regobs-api';
+import {
+  RegistrationTypeCriteriaDto,
+  RegistrationTypeDto,
+  SearchCriteriaRequestDto,
+} from 'src/app/modules/common-regobs-api';
 import { SearchCriteriaModelService } from 'src/app/core/services/search-criteria/search-criteria-model.service';
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
@@ -40,6 +44,7 @@ import { RegionFilterComponent } from '../region-filter/region-filter.component'
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Capacitor } from '@capacitor/core';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { isSlushFlow, SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/slush-flow';
 
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
@@ -246,7 +251,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   async ngOnInit() {
     this.searchCriteriaService.searchCriteria$.subscribe((criteria) => {
-      this.isSlushFlowFilterActive.set(this.searchCriteriaService.isSlushFlow(criteria));
+      this.isSlushFlowFilterActive.set(isSlushFlow(criteria as SearchCriteriaRequestDto));
     });
   }
 

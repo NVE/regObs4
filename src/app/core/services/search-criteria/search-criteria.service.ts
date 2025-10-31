@@ -21,8 +21,8 @@ import {
 import { Immutable } from 'src/app/core/models/immutable';
 import {
   PositionDto,
-  PropertyFilter,
   RegistrationTypeCriteriaDto,
+  RegistrationViewModel,
   SearchCriteriaRequestDto,
   WithinExtentCriteriaDto,
 } from 'src/app/modules/common-regobs-api';
@@ -31,49 +31,28 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import {
-  arrayToSeparatedString,
-  convertRegTypeDtoToUrl,
   separatedStringToNumberArray,
   URL_PARAM_ARRAY_DELIMITER,
   URL_PARAM_COMPETENCE,
-  URL_PARAM_DAYSBACK,
   URL_PARAM_FROMDATE,
-  URL_PARAM_GEOHAZARD,
   URL_PARAM_NICKNAME,
-  URL_PARAM_NW_LAT,
-  URL_PARAM_NW_LON,
   URL_PARAM_ORDER_BY,
   URL_PARAM_REGION,
   URL_PARAM_REGISTRATION_TYPE,
-  URL_PARAM_SE_LAT,
-  URL_PARAM_SE_LON,
   URL_PARAM_SLUSH_FLOW,
   URL_PARAM_TODATE,
-  UrlParams,
+  UrlDtoOrderByMap,
 } from './url-params';
-import { isoDateTimeToLocalDate, convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
-import { SearchCriteria } from '../../models/search-criteria';
+import { convertToIsoDateTime } from '../../../modules/common-core/helpers/date-converters';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { removeNullOrUndefined } from '../../helpers/remove-empty';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CRITERIA_SLUSH_FLOW } from './slush-flow';
+import { QueryParamsService } from '../query-params/query-params.service';
 
-export type SearchCriteriaOrderBy = 'DtObsTime' | 'DtChangeTime';
-
-const UrlDtoOrderByMap = new Map([
-  ['changeTime', 'DtChangeTime'],
-  ['obsTime', 'DtObsTime'],
-]);
+export type SearchCriteriaOrderBy = keyof Pick<RegistrationViewModel, 'DtObsTime' | 'DtChangeTime'>;
 
 const DEBUG_TAG = 'SearchCriteriaService';
 
-const ULR_COORDS_PRECISION = 4;
-
-export const SLUSH_FLOW_ID = 30;
-export const CRITERIA_SLUSH_FLOW: PropertyFilter = {
-  Name: 'AvalancheObs.AvalancheTID',
-  Operator: 0,
-  Value: SLUSH_FLOW_ID.toString(),
-};
 const REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN = 80;
 
 const latLngToPositionDto = (latLng: L.LatLng): PositionDto => ({
@@ -89,21 +68,6 @@ function competenceFromUrlToDto(competence: string | null): number[] {
     return [];
   }
   return competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c));
-}
-
-function competenceFromDtoToUrl(competence?: number[]): string | undefined {
-  return competence ? competence.join(URL_PARAM_ARRAY_DELIMITER) : undefined;
-}
-
-//DtObsTime => obsTime
-function convertApiOrderByToUrl(value: SearchCriteriaOrderBy): string | undefined {
-  if (value) {
-    const orderBy = [...UrlDtoOrderByMap].find(([, val]) => val == value);
-    if (orderBy?.[0] != null) {
-      return orderBy[0];
-    }
-  }
-  return;
 }
 
 function isCompetenceUrlValid(competence: string): RegExpMatchArray | null {
@@ -148,7 +112,6 @@ const DEFAULT_SEARCH_CRITERIA: SearchCriteriaRequestDto = {
  * Contains current filter for registrations.
  * Use this to change which registrations you want to find.
  *
- * Also responsible for saving the filter as query params in the url.
  * Initializes filter from url query params on startup.
  * The URL should be short, easily readable for the user and easy to type.
  * Multi-select parameters, like geoHazard and type should be represented as a delimited list, example:
@@ -163,8 +126,7 @@ export class SearchCriteriaService {
   private userSettingService = inject(UserSettingService);
   private mapService = inject(MapService);
   private logger = inject(LoggingService);
-  private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
+  private queryParams = inject(QueryParamsService);
 
   // Jeg tror searchCriteria må være en ReplaySubject for at vi skal være sikre på at scan fungerer som tenkt,
   // i tillfelle noen subscriber sent på searchCriteria$, og vi i mellomtiden har oppdatert søkrekriterier via
@@ -383,55 +345,7 @@ export class SearchCriteriaService {
     const criteria = await firstValueFrom(this.searchCriteria$);
     const daysBack = await firstValueFrom(this.userSettingService.daysBackForCurrentGeoHazard$);
     const useDaysBack = this.useDaysBack.value;
-    const params = this.toUrlParams(criteria as SearchCriteriaRequestDto, useDaysBack ? daysBack : null);
-    await this.updateRouterQueryParams(params);
-  }
-
-  private toUrlParams(criteria: SearchCriteriaRequestDto, daysBack: number | null): UrlParams {
-    const params = new UrlParams();
-    params.set(URL_PARAM_GEOHAZARD, arrayToSeparatedString(criteria.SelectedGeoHazards));
-    if (daysBack != null) {
-      params.set(URL_PARAM_DAYSBACK, daysBack.toString()); // Convert to string so that 0 is accepted as a value
-      params.delete(URL_PARAM_FROMDATE);
-      params.delete(URL_PARAM_TODATE);
-    } else {
-      params.delete(URL_PARAM_DAYSBACK);
-      params.set(URL_PARAM_FROMDATE, isoDateTimeToLocalDate(criteria.FromDtObsTime));
-      params.set(URL_PARAM_TODATE, isoDateTimeToLocalDate(criteria.ToDtObsTime));
-    }
-    params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
-    params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
-    params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
-    params.set(URL_PARAM_ORDER_BY, convertApiOrderByToUrl(criteria.OrderBy as SearchCriteriaOrderBy));
-    params.set(URL_PARAM_REGION, arrayToSeparatedString(criteria.SelectedRegions));
-
-    if (this.isSlushFlow(criteria)) {
-      params.set(URL_PARAM_SLUSH_FLOW, true);
-    } else {
-      params.delete(URL_PARAM_SLUSH_FLOW);
-    }
-
-    if (isValidExtent(criteria.Extent)) {
-      params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
-      params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
-      params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
-      params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(ULR_COORDS_PRECISION));
-    } else {
-      params.delete(URL_PARAM_NW_LAT);
-      params.delete(URL_PARAM_NW_LON);
-      params.delete(URL_PARAM_SE_LAT);
-      params.delete(URL_PARAM_SE_LON);
-    }
-    return params;
-  }
-
-  private async updateRouterQueryParams(params: UrlParams) {
-    const queryParams = params.entries();
-    await this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-      replaceUrl: true,
-    });
+    await this.queryParams.apply({ criteria, daysBack: useDaysBack ? daysBack : undefined });
   }
 
   async addToRegionFilter(regionId: number) {
@@ -569,13 +483,6 @@ export class SearchCriteriaService {
     }
   }
 
-  /**
-   * @returns true if slush flow filter is on
-   */
-  isSlushFlow(criteria: SearchCriteria): boolean {
-    return criteria.PropertyFilters?.length === 1 && criteria.PropertyFilters[0] === CRITERIA_SLUSH_FLOW;
-  }
-
   private removeSlushFlowFilterIfFilterByAvalancheIsRemoved(typeToRemove: RegistrationTypeCriteriaDto) {
     if (
       typeToRemove.Id === REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN &&
@@ -599,35 +506,4 @@ export class SearchCriteriaService {
     }
     return;
   }
-}
-
-interface ValidPos {
-  Latitude: number;
-  Longitude: number;
-}
-
-interface ValidExtent {
-  BottomRight: ValidPos;
-  TopLeft: ValidPos;
-}
-
-function isValidExtent(extent?: WithinExtentCriteriaDto): extent is ValidExtent {
-  if (extent == null) {
-    return false;
-  }
-  for (const cornerProp of ['TopLeft', 'BottomRight'] as const) {
-    if (extent[cornerProp] == null) {
-      return false;
-    }
-    for (const coordProp of ['Latitude', 'Longitude'] as const) {
-      if (extent[cornerProp][coordProp] == null) {
-        return false;
-      }
-    }
-  }
-  return true;
-  // params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
-  // params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
-  // params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
-  // params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(ULR_COORDS_PRECISION));
 }

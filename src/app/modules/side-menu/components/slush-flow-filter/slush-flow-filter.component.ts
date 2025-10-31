@@ -6,6 +6,8 @@ import { SearchCriteriaService } from 'src/app/core/services/search-criteria/sea
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { NgIf, AsyncPipe } from '@angular/common';
+import { isSlushFlow } from 'src/app/core/services/search-criteria/slush-flow';
+import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-slush-flow-filter',
@@ -28,7 +30,7 @@ export class SlushFlowFilterComponent {
 
   value$ = this.searchCriteriaService.searchCriteria$.pipe(
     map((criteria) => {
-      return this.searchCriteriaService.isSlushFlow(criteria);
+      return isSlushFlow(criteria as SearchCriteriaRequestDto);
     })
   );
 

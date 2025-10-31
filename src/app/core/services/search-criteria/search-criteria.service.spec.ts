@@ -11,7 +11,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService } from './search-criteria.service';
 import { separatedStringToNumberArray } from './url-params';
 import { provideTranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 
 export class TestMapService {
@@ -32,22 +32,11 @@ describe('SearchCriteriaService', () => {
   let service: SearchCriteriaService;
   let userSettingService: UserSettingService;
   let mapService: TestMapService;
-  let router: Router;
 
   const orderByTestCases = [
     { apiValue: 'DtChangeTime', urlValue: 'changeTime' },
     { apiValue: 'DtObsTime', urlValue: 'obsTime' },
   ];
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const expectQueryParameterToHaveBeenApplied = (key: string, value: any) => {
-    const url = new URL(document.location.href + router.url);
-    if (!value) {
-      expect(url.searchParams.has(key)).toBeFalse();
-    } else {
-      expect(url.searchParams.get(key)).toBe(value);
-    }
-  };
 
   beforeEach(async () => {
     mapService = createTestMapService();
@@ -61,7 +50,6 @@ describe('SearchCriteriaService', () => {
       ],
     });
 
-    router = TestBed.inject(Router);
     userSettingService = TestBed.inject(UserSettingService);
     service = TestBed.inject(SearchCriteriaService);
 
@@ -97,8 +85,6 @@ describe('SearchCriteriaService', () => {
     //check default criteria
     expect(criteria.LangKey).toBeDefined(); // Default langkey hentes fra browserspråk, så ikke test mot én spesifikk
     expect(criteria.SelectedGeoHazards).toEqual([GeoHazard.Snow]);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('hazard', '10');
 
     //verify that criteria changes when we change language and geo hazard
     userSettingService.updateUserSettings({
@@ -109,144 +95,93 @@ describe('SearchCriteriaService', () => {
     const criteria2 = await firstValueFrom(service.searchCriteria$);
     expect(criteria2.LangKey).toEqual(LangKey.en);
     expect(criteria2.SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('hazard', '20~60');
   }));
 
   it('default days-back filter should work', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     await userSettingService.saveGeoHazardsAndDaysBack({ daysBack: 1 });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(150);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     //check that criteria contains correct from time. Should be 1 days earlier at midnight
     expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
-
-    await service.applyQueryParams();
-
-    //check daysBack parameter in url. Should be 1 days earlier based on local time
-    expectQueryParameterToHaveBeenApplied('daysBack', '1');
-
-    // Check that fromDate and toDate are not in url while daysBack are there
-    expectQueryParameterToHaveBeenApplied('fromDate', null);
-    expectQueryParameterToHaveBeenApplied('toDate', null);
   }));
 
   it('nick name filter should work', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setObserverNickName('Nick');
-    tick(500);
+    tick();
     //check that current criteria contains expected nick name
-
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverNickName).toEqual('Nick');
-    await service.applyQueryParams();
-    //check that url contains nickname filter
-    expectQueryParameterToHaveBeenApplied('nick', 'Nick');
   }));
 
-  it('competence filter should set the right criteria and url', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    service.addCompetence([150, 105]);
+  it('competence filter should set the right criteria', fakeAsync(async () => {
+    await service.addCompetence([150, 105]);
     tick(500);
-
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ObserverCompetence).toEqual([150, 105]);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('competence', '150~105');
   }));
 
   it('set new observation type should be ok', fakeAsync(async () => {
     const obsType = { Id: 81, SubTypes: [13] };
-    service.setObservationType(obsType);
+    await service.setObservationType(obsType);
     tick(500);
     //check that current criteria contains expected type
     const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('type', '81.13');
   }));
 
   it('remove observation type should be ok', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
     const obsType2 = { Id: 81, SubTypes: [26] };
-    tick(500);
     await service.setObservationType(obsType1);
     tick(500);
     await service.removeObservationType(obsType2);
     tick(500);
+    const criteria = await firstValueFrom(service.searchCriteria$);
     //check that criteria contains only obsType2
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('type', '81.13');
   }));
 
   it('det skal gå an å fjerne samme observasjonstype som vi nettopp la til i filteret (ro-2734)', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType = { Id: 80, SubTypes: [26] };
-    tick(500);
     await service.setObservationType(obsType);
     tick(500);
     await service.removeObservationType(obsType);
     tick(500);
-    //check that criteria contains only obsType2
-    expect(criteria.SelectedRegistrationTypes.length).toEqual(0);
-    await service.applyQueryParams();
-    const url = new URL(document.location.href);
-    expect(url.searchParams.has('type')).toBeFalse();
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.SelectedRegistrationTypes?.length).toEqual(0);
   }));
 
   it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType1 = { Id: 81, SubTypes: [13, 26] };
     const obsType2 = { Id: 40, SubTypes: [26] };
-    tick(500);
     await service.setObservationType(obsType1);
+    tick(500);
     await service.removeObservationType(obsType2);
     tick(500);
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
-
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('type', '81.13~81.26');
   }));
 
   it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     const obsType2 = { Id: 40, SubTypes: [26] };
-    tick(500);
     await service.removeObservationType(obsType2);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('type', null);
   }));
 
   orderByTestCases.forEach((test) => {
     it('orderBy filter should work', fakeAsync(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let criteria: any;
-      service.searchCriteria$.subscribe((c) => (criteria = c));
       service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
-      tick(100);
+      tick();
+      const criteria = await firstValueFrom(service.searchCriteria$);
       //check that current criteria contains expected orderBy
       expect(criteria.OrderBy).toEqual(test.apiValue);
-      await service.applyQueryParams();
-      expectQueryParameterToHaveBeenApplied('orderBy', test.urlValue);
     }));
   });
 
-  it('set correct extent criteria based on mapview coordinates', fakeAsync(async () => {
+  it('should set correct extent criteria based on mapview coordinates', fakeAsync(async () => {
     //create mapview with coordinates
     const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
     mapService.mapView$.next(mv);
@@ -255,92 +190,65 @@ describe('SearchCriteriaService', () => {
       BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
       TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.Extent).toEqual(extent);
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('nwLat', '70.7978');
-    expectQueryParameterToHaveBeenApplied('nwLon', '21.4343');
-    expectQueryParameterToHaveBeenApplied('seLat', '67.5715');
-    expectQueryParameterToHaveBeenApplied('seLon', '33.1458');
   }));
 
   it('fromDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
-
-    tick(100);
-
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('fromDate', '2000-12-24');
   }));
 
   it('toDate url param should be set or updated', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
-
-    tick(100);
-
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('toDate', '2000-12-24');
   }));
 
-  it('toDate url param should be removed when updating fromDate with true', fakeAsync(async () => {
+  it('toDate criteria should be removed when updating fromDate with true', fakeAsync(async () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
-    expectQueryParameterToHaveBeenApplied('toDate', null);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
+    expect(criteria.ToDtObsTime).toBeUndefined();
   }));
 
-  it('slush flow filter should set the right criteria and url when turned on', fakeAsync(async () => {
-    let criteria: SearchCriteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
+  it('slush flow filter should set the right criteria when turned on', fakeAsync(async () => {
     service.setSlushFlow();
-    tick(500);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     //check that current criteria contains filter by slush flow
-    expect(criteria!.PropertyFilters?.length).toEqual(1);
+    expect(criteria.PropertyFilters?.length).toEqual(1);
     const filter = criteria!.PropertyFilters?.[0];
     expect(filter?.Name).toEqual('AvalancheObs.AvalancheTID');
     expect(filter?.Value).toEqual('30');
     expect(filter?.Operator).toEqual(0);
-
-    await service.applyQueryParams();
-    expectQueryParameterToHaveBeenApplied('slushFlow', 'true');
   }));
 
-  it('slush flow filter should be removed from criteria and url when turned off', fakeAsync(async () => {
-    let criteria: SearchCriteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
+  it('slush flow filter should be removed from criteria when turned off', fakeAsync(async () => {
     service.setSlushFlow(false);
-    tick(500);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     //check that current criteria does not contain filter by slush flow
-    expect(criteria!.PropertyFilters).toBeUndefined();
-    expectQueryParameterToHaveBeenApplied('slushFlow', null);
+    expect(criteria.PropertyFilters).toBeUndefined();
   }));
 
-  it('slush flow filter should be removed from criteria and url when we change geo hazard', fakeAsync(async () => {
-    let criteria: SearchCriteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-
+  it('slush flow filter should be removed from criteria when we change geo hazard', fakeAsync(async () => {
     service.setSlushFlow(); //turn filter by slush flow on
-
     userSettingService.updateUserSettings({
       language: LangKey.nn,
       currentGeoHazard: [GeoHazard.Ice],
     });
-    tick(500);
+    tick();
+    const criteria = await firstValueFrom(service.searchCriteria$);
     //check that current criteria does not contain filter by slush flow
-    expect(criteria!.PropertyFilters).toBeUndefined();
-    expectQueryParameterToHaveBeenApplied('slushFlow', null);
+    expect(criteria.PropertyFilters).toBeUndefined();
   }));
 });
 

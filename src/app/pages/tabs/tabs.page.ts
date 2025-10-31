@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
-import { combineLatest, Observable } from 'rxjs';
+import { auditTime, combineLatest, concatMap, Observable } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard, LangKey } from '../../modules/common-core/models';
@@ -28,6 +28,7 @@ export class TabsPage {
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
   private tabsService = inject(TabsService);
+
   private language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   private warningGroupInMapViewSubscription = toSignal(this.warningService.warningGroupInMapViewObservable$);
   private currentGeoHazardSubscription = toSignal(this.userSettingService.currentGeoHazard$, {
@@ -43,12 +44,13 @@ export class TabsPage {
     addIcons({ mapOutline, list, warning, openOutline });
   }
 
-  async ngOnInit() {
-    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(
-      async ([, tab]) => {
-        await this.applyCurrentQueryParams(tab);
-      }
-    );
+  ngOnInit() {
+    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$])
+      .pipe(
+        auditTime(500), // Oppdater url maks hvert 500 ms
+        concatMap(([, tab]) => this.applyCurrentQueryParams(tab))
+      )
+      .subscribe();
   }
 
   warningsInView = computed(() => {
