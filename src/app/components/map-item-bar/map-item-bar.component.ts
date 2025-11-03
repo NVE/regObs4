@@ -3,9 +3,7 @@ import { Component, inject, input, signal, computed, output, effect } from '@ang
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
 import { Router } from '@angular/router';
-import { AttachmentViewModel } from 'src/app/modules/common-regobs-api/models';
 import { StarRatingHelper } from '../competence/star-helper';
-import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { NgClass } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { CompetenceComponent } from '../competence/competence.component';
@@ -35,7 +33,6 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
  */
 export class MapItemBarComponent {
   cardClicked = output();
-  private kdvService = inject(KdvService);
   private router = inject(Router);
   private sanitizer = inject(DomSanitizer);
   registration = input<MapItem | null>();
@@ -47,7 +44,6 @@ export class MapItemBarComponent {
     }
     return attachmentCount > 1 ? attachmentCount - 1 : 0;
   });
-  attachments: AttachmentViewModel[] = [];
   masl?: number;
   showAdditionalAttachmentCount = signal(true);
   title = signal('');
