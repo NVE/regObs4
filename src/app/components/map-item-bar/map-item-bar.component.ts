@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, inject, input, signal, computed, output, effect } from '@angular/core';
+import { Component, inject, input, signal, computed, output, linkedSignal } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
 import { Router } from '@angular/router';
@@ -46,17 +46,9 @@ export class MapItemBarComponent {
   });
   masl?: number;
   showAdditionalAttachmentCount = signal(true);
-  title = signal('');
-  starCount = signal<number | undefined>(undefined);
-  firstAttachmentUrl = signal<SafeUrl | undefined>(undefined);
-
-  constructor() {
-    effect(() => {
-      this.firstAttachmentUrl.set(this.sanitize(this.registration()?.FirstAttachmentUrl));
-      this.title.set(this.registration()?.FormNames?.join(', ') || '');
-      this.starCount.set(StarRatingHelper.getStarRating(this.registration()?.CompetenceLevelTID));
-    });
-  }
+  title = computed(() => this.registration()?.FormNames?.join(', ') || '');
+  starCount = computed(() => StarRatingHelper.getStarRating(this.registration()?.CompetenceLevelTID));
+  firstAttachmentUrl = linkedSignal(() => this.sanitize(this.registration()?.FirstAttachmentUrl));
 
   handleMissingImage() {
     this.firstAttachmentUrl.set(this.sanitize('./assets/images/broken-image-w-bg.svg'));
