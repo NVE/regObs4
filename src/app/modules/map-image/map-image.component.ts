@@ -72,7 +72,9 @@ export class MapImageComponent {
     }
 
     if (locationInfo?.startStopLocation) {
-      markers.push(...createStartStopMarkers(locationInfo.startStopLocation, this.translations));
+      markers.push(
+        ...createStartStopMarkers(locationInfo.startStopLocation, locationInfo.geoHazard, this.translations)
+      );
     }
 
     if (locationInfo?.damageLocations) {
@@ -126,7 +128,11 @@ function createStartStopIcon(iconUrl: string) {
   });
 }
 
-function createStartStopMarkers(location: ImageLocationStartStop, translations: TranslateService): L.Layer[] {
+function createStartStopMarkers(
+  location: ImageLocationStartStop,
+  geoHazard: GeoHazard,
+  translations: TranslateService
+): L.Layer[] {
   const markers = [];
 
   if (location.start) {
@@ -159,7 +165,18 @@ function createStartStopMarkers(location: ImageLocationStartStop, translations: 
   }
 
   if (location.totalPolygon) {
-    const label = translations.instant('REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA');
+    let label = '';
+    switch (geoHazard) {
+      case GeoHazard.Snow:
+        label = translations.instant('REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_AREA');
+        break;
+      case GeoHazard.Soil:
+        label = translations.instant('REGISTRATION.DIRT.LAND_SLIDE_OBS.AREA_TOTAL');
+        break;
+      case GeoHazard.Water:
+        label = translations.instant('REGISTRATION.WATER.WATER_LEVEL.FLOOD_AREA');
+        break;
+    }
     markers.push(location.totalPolygon.bindTooltip(label));
   }
 

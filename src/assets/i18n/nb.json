@@ -439,7 +439,7 @@
     },
     "DIRT": {
       "LAND_SLIDE_OBS": {
-        "AREA_TOTAL": "Tegn hele skredarealet",
+        "AREA_TOTAL": "Hele skredarealet",
         "AVAL_TRIGGER": "Skredutløser",
         "CONFIRM_END_POSITION": "Bekreft sluttpunkt",
         "CONFIRM_LANDSLIDE_AREA": "Bekreft skredområde",
@@ -641,9 +641,9 @@
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
-        "AREA_END": "Tegn utløpsområde",
-        "AREA_START": "Tegn løsneområde",
-        "AREA_TOTAL": "Tegn hele skredområdet",
+        "AREA_END": "Utløpsområde",
+        "AREA_START": "Løsneområde",
+        "AREA_TOTAL": "Totalt skredområde",
         "AVALANCHE_AREA": "Skredområde",
         "RELEASE_AREA": "Løsneområde",
         "RUNOUT_AREA": "Utløpsområde",
@@ -856,6 +856,7 @@
         "DESCRIBE_HEIGHT": "Beskriv høyde",
         "DESCRIBE_SITUATION": "Hvordan vil du beskrive situasjonen?",
         "DT_REQUIRED_TEXT": "Tidspunkt er obligatorisk!",
+        "FLOOD_AREA": "Flomområde",
         "HOW_DO_YOU_READ": "Hvordan leser du av vannstanden?",
         "MARKED_WITH": "Jeg har markert vannstanden med",
         "MARKING": "Markering",
@@ -869,7 +870,7 @@
         "RELATIVE": "Høyden er relativ til",
         "SET_FLOOD_POSITION_CONFIRM": "Bekreft flomområde",
         "SET_FLOOD_POSITION_SUMMARY_TITLE": "Inntegning av område",
-        "SET_FLOOD_POSITION_TITLE": "Sett flomposisjon",
+        "SET_FLOOD_POSITION_TITLE": "Sett flomområde",
         "TITLE": "Vannstand",
         "WATER_LEVEL_METERS": "Vannstand i meter",
         "WATER_MARKING": "Vannstandsmarkering",
