@@ -55,25 +55,24 @@ export class ImageListComponent {
   private loadingController = inject(LoadingController);
 
   private searchHandler = this.searchRegistrations.searchAttachments(this.searchCriteriaService.searchCriteria$);
-  count = this.searchHandler.count.asReadonly();
+
   /**
    * Sjekker om innholdet i grid er kortere enn vindushøyden, og laster i så fall flere bilder. Vi viser bilder kun fra
    * 10 observasjoner om gangen. Hvis bildene fra 10 observasjoner ikke dekker hele skjermen, vil infinite scroll
    * aldri trigges ved scroll og derfor man kan ikke laste ned flere bilder.
    */
   checkAndLoadMoreImages() {
-    const count = this.count() ?? 0;
-    const regLength = this.registrations().length;
-    if (count > regLength) {
+    setTimeout(() => {
       const grid = document.querySelector('.grid');
       if (!grid) return;
 
       const windowHeight = window.innerHeight;
       const gridRect = grid.getBoundingClientRect();
+      // Sjekk om grid høyde er mindre enn vindushøyden, hvis ja, last flere bilder
       if (gridRect.height < windowHeight && !this.disableInfiniteScroll()) {
         this.loadNextPage();
       }
-    }
+    }, 100);
   }
 
   registrations = toSignal(
