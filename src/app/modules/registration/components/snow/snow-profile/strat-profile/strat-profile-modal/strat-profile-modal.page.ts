@@ -127,7 +127,7 @@ export class StratProfileModalPage {
   }
 
   addLayerTop(): void {
-    this.addOrEditLayer(0);
+    this.addOrEditLayer(-1);
   }
 
   addLayerBottom(): void {

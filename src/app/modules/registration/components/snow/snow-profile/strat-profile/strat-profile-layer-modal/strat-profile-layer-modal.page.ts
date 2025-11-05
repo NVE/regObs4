@@ -74,7 +74,9 @@ export class StratProfileLayerModalPage implements OnInit {
   private translateService = inject(TranslateService);
   private draftRepository = inject(DraftRepositoryService);
 
+  // indeks for laget. Bruk -1 for å legge til lag øverst og index = antall lag for å legge til lag nederst
   readonly index = input.required<number>();
+
   readonly uuid = input.required<string>();
   draft = this.draftRepository.getDraftSignal(this.uuid);
   private readonly backupHandler = injectBackupHandler({ uuid: this.uuid });
@@ -82,7 +84,11 @@ export class StratProfileLayerModalPage implements OnInit {
   currentIndex = linkedSignal(() => this.index());
   okPressed = linkedSignal(() => this.currentIndex() === Infinity); // Start alltid false
   layers = linkedSignal(() => this.draft()?.registration.SnowProfile2?.StratProfile?.Layers || []);
-  layer = computed(() => this.layers()[this.currentIndex()]);
+  layer = computed(() => {
+    const i = this.currentIndex();
+    if (i < 0) return undefined;
+    return this.layers()[i];
+  });
   isNewLayer = computed(() => this.layer() == null);
 
   // Form values
@@ -174,7 +180,11 @@ export class StratProfileLayerModalPage implements OnInit {
   addOrUpdateLayer() {
     const layer = this.getEdit();
     if (this.isNewLayer()) {
-      this.layers.update((layers) => [...layers, layer]);
+      if (this.index() === -1) {
+        this.layers.update((layers) => [layer, ...layers]); // legg til øverst
+      } else {
+        this.layers.update((layers) => [...layers, layer]); // legg til nederst
+      }
     } else {
       const index = this.currentIndex();
       this.layers.update((layers) => layers.map((l, i) => (i === index ? layer : l)));
@@ -214,7 +224,12 @@ export class StratProfileLayerModalPage implements OnInit {
     await this.save();
 
     if (gotoIndex != null) {
-      this.currentIndex.update((i) => i + gotoIndex);
+      if (this.currentIndex() === -1) {
+        // vi la til et nytt lag øverst, som nå er lagret på index 0, derfor blir neste lag på index 1
+        this.currentIndex.set(1);
+      } else {
+        this.currentIndex.update((i) => i + gotoIndex);
+      }
     } else {
       this.modalController.dismiss();
     }
