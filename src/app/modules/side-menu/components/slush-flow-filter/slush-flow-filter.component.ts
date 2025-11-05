@@ -1,40 +1,21 @@
 import { IonItem, IonCheckbox } from '@ionic/angular/standalone';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
-import { map } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { GeoHazard } from 'src/app/modules/common-core/models';
-import { NgIf, AsyncPipe } from '@angular/common';
-import { isSlushFlow } from 'src/app/core/services/search-criteria/slush-flow';
-import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-slush-flow-filter',
   templateUrl: './slush-flow-filter.component.html',
   styleUrls: ['./slush-flow-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonCheckbox, IonItem, NgIf],
+  imports: [IonCheckbox, IonItem],
 })
 export class SlushFlowFilterComponent {
   private searchCriteriaService = inject(SearchCriteriaService);
-  private userSettingService = inject(UserSettingService);
   label = input<string>('');
 
-  visible$ = this.userSettingService.currentGeoHazard$.pipe(
-    map((geoHazard) => {
-      const snow = geoHazard.length === 1 && geoHazard.includes(GeoHazard.Snow);
-      return !Capacitor.isNativePlatform() && snow;
-    })
-  );
+  isChecked = this.searchCriteriaService.slushFlow;
 
-  value$ = this.searchCriteriaService.searchCriteria$.pipe(
-    map((criteria) => {
-      return isSlushFlow(criteria as SearchCriteriaRequestDto);
-    })
-  );
-
-  setValue(event: CustomEvent) {
+  setIsChecked(event: CustomEvent) {
     const checked = event.detail.checked;
     this.searchCriteriaService.setSlushFlow(checked);
   }

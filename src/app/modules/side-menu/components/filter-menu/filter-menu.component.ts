@@ -15,16 +15,11 @@ import {
   IonContent,
   IonListHeader,
 } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import {
-  RegistrationTypeCriteriaDto,
-  RegistrationTypeDto,
-  SearchCriteriaRequestDto,
-} from 'src/app/modules/common-regobs-api';
+import { RegistrationTypeCriteriaDto, RegistrationTypeDto } from 'src/app/modules/common-regobs-api';
 import { SearchCriteriaModelService } from 'src/app/core/services/search-criteria/search-criteria-model.service';
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
@@ -38,13 +33,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline, openOutline } from 'ionicons/icons';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
 import { RegionFilterComponent } from '../region-filter/region-filter.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Capacitor } from '@capacitor/core';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { isSlushFlow, SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/slush-flow';
+import { SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/slush-flow';
 
 // Return true if not changed
 export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
@@ -87,7 +82,7 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
     UpdateObservationsComponent,
   ],
 })
-export class FilterMenuComponent extends NgDestoryBase implements OnInit {
+export class FilterMenuComponent {
   private userSettingService = inject(UserSettingService);
   private searchCriteriaService = inject(SearchCriteriaService);
   private searchCriteriaModelService = inject(SearchCriteriaModelService);
@@ -124,16 +119,9 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   isWebPlatform = !Capacitor.isNativePlatform();
 
-  nickName = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((x) => x.ObserverNickName)));
+  nickName = this.searchCriteriaService.nickName;
 
-  private competenceCriteria = toSignal(
-    this.searchCriteriaService.searchCriteria$.pipe(
-      map((searchCriteria) => (searchCriteria.ObserverCompetence as number[]) || []),
-      distinctUntilChanged((prev, curr) => arrayHasNotChanged(prev, curr))
-    ),
-    { initialValue: [] }
-  );
-
+  private competenceCriteria = computed(() => this.searchCriteriaService.competence() || []);
   noCompetenceFilterActive = computed(() => this.competenceCriteria().length === 0);
 
   private competenceOptions = toSignal(
@@ -180,7 +168,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   showObservations$ = this.userSettingService.showObservations$;
 
-  isSlushFlowFilterActive = signal(false);
+  isSlushFlowFilterActive = this.searchCriteriaService.slushFlow;
   slushFlowLabel = computed(() => {
     const slushFlowLabel = this.slushFlowKdv()?.find((type) => type.Id === SLUSH_FLOW_ID);
     if (slushFlowLabel && slushFlowLabel.Name) {
@@ -245,14 +233,7 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
   });
 
   constructor() {
-    super();
     addIcons({ closeCircleOutline, openOutline });
-  }
-
-  async ngOnInit() {
-    this.searchCriteriaService.searchCriteria$.subscribe((criteria) => {
-      this.isSlushFlowFilterActive.set(isSlushFlow(criteria as SearchCriteriaRequestDto));
-    });
   }
 
   competenceCheckboxChanged(event: CheckboxCustomEvent<CompetenceOption>) {
@@ -287,12 +268,14 @@ export class FilterMenuComponent extends NgDestoryBase implements OnInit {
 
   setNickName(newNick: SearchbarCustomEvent) {
     let nickName = undefined;
-    newNick?.target?.value && (nickName = newNick.target.value.toLowerCase());
-    this.searchCriteriaService.setObserverNickName(nickName);
+    if (newNick?.target?.value) {
+      nickName = newNick.target.value.toLowerCase();
+    }
+    this.searchCriteriaService.nickName.set(nickName);
   }
 
   setUseDaysBack(daysBack: number): void {
     this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack });
-    this.searchCriteriaService.setUseDaysBack(true);
+    this.searchCriteriaService.useDaysBack.set(true);
   }
 }

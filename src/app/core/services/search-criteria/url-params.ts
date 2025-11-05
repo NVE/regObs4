@@ -1,4 +1,4 @@
-import { isoDateTimeToLocalDate } from 'src/app/modules/common-core/helpers/date-converters';
+import { convertToIsoDateTime, isoDateTimeToLocalDate } from 'src/app/modules/common-core/helpers/date-converters';
 import {
   RegistrationTypeCriteriaDto,
   SearchCriteriaRequestDto,
@@ -14,29 +14,30 @@ export const URL_PARAM_GEOHAZARD = 'hazard';
 export const URL_PARAM_DAYSBACK = 'daysBack';
 export const URL_PARAM_FROMDATE = 'fromDate';
 export const URL_PARAM_TODATE = 'toDate';
-export const URL_PARAM_NICKNAME = 'nick';
-export const URL_PARAM_COMPETENCE = 'competence';
-export const URL_PARAM_REGISTRATION_TYPE = 'type';
-export const URL_PARAM_SLUSH_FLOW = 'slushFlow';
-export const URL_PARAM_ORDER_BY = 'orderBy';
-export const URL_PARAM_REGION = 'regions';
-export const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
+const URL_PARAM_NICKNAME = 'nick';
+const URL_PARAM_COMPETENCE = 'competence';
+const URL_PARAM_REGISTRATION_TYPE = 'type';
+const URL_PARAM_SLUSH_FLOW = 'slushFlow';
+const URL_PARAM_ORDER_BY = 'orderBy';
+const URL_PARAM_REGION = 'regions';
+const URL_PARAM_ARRAY_DELIMITER = '~'; //https://www.rfc-editor.org/rfc/rfc3986#section-2.3
 
 /**
  * Removes 'optional' attributes
- *
  * Copied from https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#mapping-modifiers
  */
 type Concrete<Type> = {
   [Property in keyof Type]-?: Concrete<Type[Property]>;
 };
 
-const ULR_COORDS_PRECISION = 4;
+const URL_COORDS_PRECISION = 4;
 
-export const UrlDtoOrderByMap = new Map([
-  ['changeTime', 'DtChangeTime'],
-  ['obsTime', 'DtObsTime'],
-]);
+const URL_PARAM_CHANGE_TIME = 'changeTime';
+const URL_PARAM_OBS_TIME = 'obsTime';
+const UrlDtoOrderByMap = {
+  [URL_PARAM_CHANGE_TIME]: 'DtChangeTime',
+  [URL_PARAM_OBS_TIME]: 'DtObsTime',
+} as const;
 
 type OldParamMapper = (params: URLSearchParams, oldKey: string, newKey: string) => string | undefined;
 
@@ -231,7 +232,7 @@ function competenceFromDtoToUrl(competence?: number[]): string | undefined {
 //DtObsTime => obsTime
 function convertApiOrderByToUrl(value: SearchCriteriaRequestDto['OrderBy']): string | undefined {
   if (value) {
-    const orderBy = [...UrlDtoOrderByMap].find(([, val]) => val == value);
+    const orderBy = Object.entries(UrlDtoOrderByMap).find(([, val]) => val == value);
     if (orderBy?.[0] != null) {
       return orderBy[0];
     }
@@ -262,10 +263,10 @@ function isValidExtent(extent?: WithinExtentCriteriaDto): extent is Concrete<Wit
 
 function setExtentParams(params: UrlParams, criteria: SearchCriteriaRequestDto): UrlParams {
   if (isValidExtent(criteria.Extent)) {
-    params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(ULR_COORDS_PRECISION));
-    params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(ULR_COORDS_PRECISION));
-    params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(ULR_COORDS_PRECISION));
-    params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(ULR_COORDS_PRECISION));
+    params.set(URL_PARAM_NW_LAT, +criteria.Extent.TopLeft.Latitude.toFixed(URL_COORDS_PRECISION));
+    params.set(URL_PARAM_NW_LON, +criteria.Extent.TopLeft.Longitude.toFixed(URL_COORDS_PRECISION));
+    params.set(URL_PARAM_SE_LAT, +criteria.Extent.BottomRight.Latitude.toFixed(URL_COORDS_PRECISION));
+    params.set(URL_PARAM_SE_LON, +criteria.Extent.BottomRight.Longitude.toFixed(URL_COORDS_PRECISION));
   } else {
     params.delete(URL_PARAM_NW_LAT);
     params.delete(URL_PARAM_NW_LON);
@@ -310,3 +311,92 @@ export function toUrlParams(criteria: SearchCriteriaRequestDto, daysBack?: numbe
   setExtentParams(params, criteria);
   return params;
 }
+
+function competenceFromUrlToDto(competence?: string | null): SearchCriteriaRequestDto['ObserverCompetence'] {
+  if (competence == null) {
+    return undefined;
+  }
+  if (!isCompetenceUrlValid(competence)) {
+    return undefined;
+  }
+  return competence.split(URL_PARAM_ARRAY_DELIMITER).map((c) => parseInt(c));
+}
+
+function isCompetenceUrlValid(competence: string): RegExpMatchArray | null {
+  //check if its a sequence of numbers to max 3 digits with optional tilde as param
+  const regex = /^(\b\d{0,3}\b~?)*$/g;
+  const isValid = competence.match(regex);
+  return isValid;
+}
+
+function isRegTypeValid(type: string) {
+  //accepts only two digits or two digits with coma, and optional tilde as delimiter
+  const regex = /^((\b\d{2}\b~?)|(\b\d{2}\.\d{2}\b~?))*$/g;
+  const found = type.match(regex);
+  return found;
+}
+
+//81.15~81.26 => [{Id: 81, SubTypes: [15,26]}]
+function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[] {
+  if (!isRegTypeValid(type)) return [];
+  //81.15~81.26~13 => [['81', '15'], ['81', '26'], ['13]]
+  const splitUrlToArray = type.split('~').map((i) => i.split('.'));
+  //[['81', '15'], ['81', '26'], ['13]] => [{Id: 81, SubTypes: [15,26]}, {Id:13, SubTypes: []}]
+  const regTypeCriteriaDto = splitUrlToArray
+    .map((i) => {
+      return { Id: parseInt(i[0]), SubTypes: i[1] ? [parseInt(i[1])] : [] };
+    })
+    .reduce(
+      (obj, item) => {
+        obj[item.Id] ? (obj[item.Id].SubTypes || []).push(...item.SubTypes) : (obj[item.Id] = { ...item });
+        return obj;
+      },
+      {} as { [key: number]: RegistrationTypeCriteriaDto }
+    );
+  return Object.values(regTypeCriteriaDto);
+}
+
+/**
+ * Hjelpemetode for å lese verdier fra query parametere
+ */
+export const initUrl = (doc: Document) => {
+  const url = new URL(doc.location.href);
+
+  const readValue = (key: string) => {
+    const value = url.searchParams.get(key);
+    if (value) {
+      return value;
+    }
+    return undefined;
+  };
+
+  const readDate = (key: string, startOrEnd?: 'end') => {
+    if (url.searchParams.has(key)) {
+      return convertToIsoDateTime(url.searchParams.get(key), startOrEnd);
+    }
+    return undefined;
+  };
+
+  return {
+    nick: () => readValue(URL_PARAM_NICKNAME),
+    fromTime: () => readDate(URL_PARAM_FROMDATE),
+    toTime: () => readDate(URL_PARAM_TODATE, 'end'),
+    orderBy: () => {
+      const value = readValue(URL_PARAM_ORDER_BY);
+      if (value === URL_PARAM_CHANGE_TIME || value === URL_PARAM_OBS_TIME) {
+        return UrlDtoOrderByMap[value];
+      }
+      return undefined;
+    },
+    slushFlow: () => readValue(URL_PARAM_SLUSH_FLOW) === 'true',
+    competence: () => competenceFromUrlToDto(readValue(URL_PARAM_COMPETENCE)),
+    regTypes: () => {
+      const value = readValue(URL_PARAM_REGISTRATION_TYPE);
+      return value != null ? convertRegTypeFromUrlToDto(value) : [];
+    },
+    regions: () => {
+      const value = readValue(URL_PARAM_REGION);
+      return value ? separatedStringToNumberArray(value) : [];
+    },
+  };
+};

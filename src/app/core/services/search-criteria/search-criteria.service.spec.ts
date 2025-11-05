@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import moment from 'moment-timezone';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, map, of } from 'rxjs';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { createMapView, MapService } from 'src/app/modules/map/services/map/map.service';
 import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
-import { SearchCriteria } from '../../models/search-criteria';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { SearchCriteriaOrderBy, SearchCriteriaService } from './search-criteria.service';
 import { separatedStringToNumberArray } from './url-params';
 import { provideTranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
+import { DOCUMENT } from '@angular/core';
+import { SearchCriteriaModelService } from './search-criteria-model.service';
+import { UserSetting } from '../../models/user-settings.model';
+import { DEFAULT_USER_SETTINGS } from '../user-setting/user-settings.default';
 import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 
 export class TestMapService {
@@ -29,236 +32,314 @@ export function createTestMapService(): TestMapService {
 }
 
 describe('SearchCriteriaService', () => {
-  let service: SearchCriteriaService;
-  let userSettingService: UserSettingService;
-  let mapService: TestMapService;
-
   const orderByTestCases = [
     { apiValue: 'DtChangeTime', urlValue: 'changeTime' },
     { apiValue: 'DtObsTime', urlValue: 'obsTime' },
   ];
 
-  beforeEach(async () => {
-    mapService = createTestMapService();
+  // Kan initialisere servicen vi tester basert på queryPath + userSettings med gitte verdier
+  const init = ({
+    userSettings,
+    queryPath,
+    langKey,
+  }: { userSettings?: Partial<UserSetting>; queryPath?: string; langKey?: LangKey } = {}) => {
+    const mapService = createTestMapService();
+    const userSetting$ = new BehaviorSubject<UserSetting>({
+      ...DEFAULT_USER_SETTINGS(langKey || LangKey.nb),
+      ...userSettings,
+    });
+    const userSettingsMock: Partial<UserSettingService> = {
+      userSetting$: userSetting$,
+      updateUserSettings: (settings) => {
+        userSetting$.next({ ...userSetting$.value, ...settings });
+      },
+      daysBackForCurrentGeoHazard$: userSetting$.pipe(
+        map((us) => {
+          const gh = us.currentGeoHazard[0];
+          return us.observationDaysBack.find((x) => x.geoHazard === gh)?.daysBack || 2;
+        })
+      ),
+      language$: userSetting$.pipe(map((us) => us.language)),
+      currentGeoHazard$: userSetting$.pipe(map((us) => us.currentGeoHazard)),
+    };
     TestBed.configureTestingModule({
       providers: [
+        { provide: DOCUMENT, useValue: { location: { href: `http://regobs.no/${queryPath ? '?' + queryPath : ''}` } } },
         provideTranslateService(),
         provideTestLogger(),
-        UserSettingService,
+        { provide: UserSettingService, useValue: userSettingsMock },
         { provide: MapService, useValue: mapService },
         { provide: ActivatedRoute, useValue: undefined },
+        { provide: SearchCriteriaModelService, useValue: { getCompetenceFilterOptions$: () => of([]) } },
       ],
     });
 
-    userSettingService = TestBed.inject(UserSettingService);
-    service = TestBed.inject(SearchCriteriaService);
+    return {
+      userSettings: userSettingsMock as UserSettingService,
+      service: TestBed.inject(SearchCriteriaService),
+      mapService,
+    };
+  };
 
+  beforeEach(() => {
     jasmine.clock().install();
     moment.tz.setDefault('Europe/Oslo');
   });
 
-  afterEach(function () {
+  afterEach(() => {
     jasmine.clock().uninstall();
     moment.tz.setDefault();
   });
 
   it('should be created', () => {
+    const { service } = init();
     expect(service).toBeTruthy();
   });
 
   it('initial criteria should use OrderBy: DtChangeTime', () => {
-    const criteria = service.getInitialCriteria();
-    expect(criteria.OrderBy).toBe('DtChangeTime');
+    const { service } = init();
+    expect(service.criteria().OrderBy).toBe('DtChangeTime');
   });
 
-  it('initial criteria$ should use OrderBy: DtChangeTime', fakeAsync(() => {
-    const orderBy = firstValueFrom(service.searchCriteria$).then((c) => c.OrderBy);
-    tick();
-    expectAsync(orderBy).toBeResolvedTo('DtChangeTime');
-  }));
-
-  it('filter should contain language and geo hazard', fakeAsync(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(150);
+  it('filter should contain language and geo hazard', () => {
+    const { service, userSettings } = init({ userSettings: { language: LangKey.fr } });
     //check default criteria
-    expect(criteria.LangKey).toBeDefined(); // Default langkey hentes fra browserspråk, så ikke test mot én spesifikk
-    expect(criteria.SelectedGeoHazards).toEqual([GeoHazard.Snow]);
+    expect(service.criteria().LangKey).toEqual(LangKey.fr);
+    expect(service.criteria().SelectedGeoHazards).toEqual([GeoHazard.Snow]);
 
     //verify that criteria changes when we change language and geo hazard
-    userSettingService.updateUserSettings({
+    userSettings.updateUserSettings({
       language: LangKey.en,
       currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water],
     });
-    tick(500);
-    const criteria2 = await firstValueFrom(service.searchCriteria$);
-    expect(criteria2.LangKey).toEqual(LangKey.en);
-    expect(criteria2.SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
-  }));
-
-  it('default days-back filter should work', fakeAsync(async () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    await userSettingService.saveGeoHazardsAndDaysBack({ daysBack: 1 });
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    //check that criteria contains correct from time. Should be 1 days earlier at midnight
-    expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
-  }));
-
-  it('nick name filter should work', fakeAsync(async () => {
-    service.setObserverNickName('Nick');
-    tick();
-    //check that current criteria contains expected nick name
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.ObserverNickName).toEqual('Nick');
-  }));
-
-  it('competence filter should set the right criteria', fakeAsync(async () => {
-    await service.addCompetence([150, 105]);
-    tick(500);
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.ObserverCompetence).toEqual([150, 105]);
-  }));
-
-  it('set new observation type should be ok', fakeAsync(async () => {
-    const obsType = { Id: 81, SubTypes: [13] };
-    await service.setObservationType(obsType);
-    tick(500);
-    //check that current criteria contains expected type
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.SelectedRegistrationTypes).toEqual([obsType]);
-  }));
-
-  it('remove observation type should be ok', fakeAsync(async () => {
-    const obsType1 = { Id: 81, SubTypes: [13, 26] };
-    const obsType2 = { Id: 81, SubTypes: [26] };
-    await service.setObservationType(obsType1);
-    tick(500);
-    await service.removeObservationType(obsType2);
-    tick(500);
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    //check that criteria contains only obsType2
-    expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
-  }));
-
-  it('det skal gå an å fjerne samme observasjonstype som vi nettopp la til i filteret (ro-2734)', fakeAsync(async () => {
-    const obsType = { Id: 80, SubTypes: [26] };
-    await service.setObservationType(obsType);
-    tick(500);
-    await service.removeObservationType(obsType);
-    tick(500);
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.SelectedRegistrationTypes?.length).toEqual(0);
-  }));
-
-  it('remove observation type with wrong parameter, should return the same object', fakeAsync(async () => {
-    const obsType1 = { Id: 81, SubTypes: [13, 26] };
-    const obsType2 = { Id: 40, SubTypes: [26] };
-    await service.setObservationType(obsType1);
-    tick(500);
-    await service.removeObservationType(obsType2);
-    tick(500);
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
-  }));
-
-  it('remove observation type when criteria empty, should return null', fakeAsync(async () => {
-    const obsType2 = { Id: 40, SubTypes: [26] };
-    await service.removeObservationType(obsType2);
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
-  }));
-
-  orderByTestCases.forEach((test) => {
-    it('orderBy filter should work', fakeAsync(async () => {
-      service.setOrderBy(test.apiValue as SearchCriteriaOrderBy);
-      tick();
-      const criteria = await firstValueFrom(service.searchCriteria$);
-      //check that current criteria contains expected orderBy
-      expect(criteria.OrderBy).toEqual(test.apiValue);
-    }));
+    expect(service.criteria().LangKey).toEqual(LangKey.en);
+    expect(service.criteria().SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
   });
 
-  it('should set correct extent criteria based on mapview coordinates', fakeAsync(async () => {
+  it('addRegion should add regions to SelectedRegions', () => {
+    const { service } = init();
+    service.addRegion(1000);
+    expect(service.criteria().SelectedRegions).toEqual([1000]);
+    service.addRegion(2000);
+    expect(service.criteria().SelectedRegions).toEqual([1000, 2000]);
+    service.addRegion(3000);
+    expect(service.criteria().SelectedRegions).toEqual([1000, 2000, 3000]);
+  });
+
+  it('removeRegion should remove regions from SelectedRegions', () => {
+    const { service } = init();
+    service.addRegion(1000);
+    service.addRegion(2000);
+    service.addRegion(3000);
+    expect(service.criteria().SelectedRegions).toEqual([1000, 2000, 3000]);
+    service.removeRegion(2000);
+    expect(service.criteria().SelectedRegions).toEqual([1000, 3000]);
+    service.removeRegion(1000);
+    expect(service.criteria().SelectedRegions).toEqual([3000]);
+  });
+
+  it('daysBack from userSettings should be used to set FromDtObsTime', () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    const { service, userSettings } = init({
+      userSettings: {
+        currentGeoHazard: [GeoHazard.Snow],
+        observationDaysBack: [{ geoHazard: GeoHazard.Snow, daysBack: 1 }],
+      },
+    });
+    //check that criteria contains correct from time. Should be 1 days earlier at midnight
+    expect(service.criteria().FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+
+    // Sjekk at FromDtObsTime endres når daysBack endres
+    userSettings.updateUserSettings({ observationDaysBack: [{ geoHazard: GeoHazard.Snow, daysBack: 14 }] });
+    expect(service.criteria().FromDtObsTime).toEqual('2000-12-10T00:00:00.000+01:00');
+
+    // Sjekk at FromDtObsTime bevares når useDaysBack settes til false.
+    service.useDaysBack.set(false);
+    expect(service.criteria().FromDtObsTime).toEqual('2000-12-10T00:00:00.000+01:00');
+  });
+
+  it('nick name filter should work', () => {
+    const { service } = init();
+    service.nickName.set('Nick');
+    //check that current criteria contains expected nick name
+    expect(service.criteria().ObserverNickName).toEqual('Nick');
+  });
+
+  it('competence filter should set the right criteria', () => {
+    const { service } = init({ userSettings: { currentGeoHazard: [GeoHazard.Ice] } });
+    service.addCompetence([750, 705]);
+    expect(service.criteria().ObserverCompetence).toEqual([750, 705]);
+  });
+
+  it('set new observation type should be ok', () => {
+    const { service } = init();
+    const obsType = { Id: 81, SubTypes: [13] };
+    service.setObservationType(obsType);
+    //check that current criteria contains expected type
+    expect(service.criteria().SelectedRegistrationTypes).toEqual([obsType]);
+  });
+
+  it('should be possible to remove a subtype', () => {
+    const { service } = init();
+    const obsType1 = { Id: 81, SubTypes: [13, 26] };
+    const obsType2 = { Id: 81, SubTypes: [26] };
+    service.setObservationType(obsType1);
+    service.removeObservationType(obsType2);
+    //check that criteria contains only obsType2
+    expect(service.criteria().SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13] }]);
+  });
+
+  it('det skal gå an å fjerne samme observasjonstype som vi nettopp la til i filteret (ro-2734)', () => {
+    const { service } = init();
+    const obsType = { Id: 80, SubTypes: [26] };
+    service.setObservationType(obsType);
+    expect(service.criteria().SelectedRegistrationTypes?.length).toEqual(1);
+    service.removeObservationType(obsType);
+    expect(service.criteria().SelectedRegistrationTypes).toBeUndefined();
+  });
+
+  it('remove observation type with wrong root id, should not change anything', () => {
+    const { service } = init();
+    const obsType1 = { Id: 81, SubTypes: [13, 26] };
+    const obsType2 = { Id: 40, SubTypes: [26] };
+    service.setObservationType(obsType1);
+    expect(service.criteria().SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
+    service.removeObservationType(obsType2);
+    expect(service.criteria().SelectedRegistrationTypes).toEqual([{ Id: 81, SubTypes: [13, 26] }]);
+  });
+
+  it('remove observation type when criteria empty, should return null', () => {
+    const { service } = init();
+    const obsType2 = { Id: 40, SubTypes: [26] };
+    service.removeObservationType(obsType2);
+    expect(service.criteria().SelectedRegistrationTypes).toEqual(undefined);
+  });
+
+  orderByTestCases.forEach((test) => {
+    it('orderBy filter should work', () => {
+      const { service } = init();
+      service.orderBy.set(test.apiValue as SearchCriteriaOrderBy);
+      //check that current criteria contains expected orderBy
+      expect(service.criteria().OrderBy).toEqual(test.apiValue);
+    });
+  });
+
+  it('should set correct extent criteria based on mapview coordinates', fakeAsync(() => {
     //create mapview with coordinates
     const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
+    const { service, mapService } = init();
     mapService.mapView$.next(mv);
 
     const extent = {
       BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
       TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
     };
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.Extent).toEqual(extent);
+
+    // Det er satt en debounce på 50 ms på mapView i servicen,
+    // for å håndtere drag-events osv. Kan hende mapService i seg selv håndterer det godt nok.
+    tick(51);
+    expect(service.criteriaWithExtent().Extent).toEqual(extent);
   }));
 
-  it('fromDate url param should be set or updated', fakeAsync(async () => {
+  it('FromDtObsTime should be set or updated', () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    const { service } = init();
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
-  }));
+    expect(service.criteria().FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
+  });
 
-  it('toDate url param should be set or updated', fakeAsync(async () => {
+  it('ToDtObsTime should be set or updated', () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    const { service } = init();
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
-  }));
+    expect(service.criteria().ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
+  });
 
-  it('toDate criteria should be removed when updating fromDate with true', fakeAsync(async () => {
+  it('ToDtObsTime and FromDtObsTime should be possible to update when daysBack initially is used', () => {
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    expect(criteria.ToDtObsTime).toBeUndefined();
-  }));
+    const { service } = init({
+      userSettings: {
+        currentGeoHazard: [GeoHazard.Snow],
+        observationDaysBack: [{ geoHazard: GeoHazard.Snow, daysBack: 4 }],
+      },
+    });
+    // Teste useDaysBack er egentlig ikke så viktig og kan eventuelt fjernes.
+    // Det som er viktig for oss er at riktig FromDtObsTime og ToDtObsTime settes.
+    // Fjerner vi useDaysBack i servicen kan disse linjene fjernes.
+    expect(service.useDaysBack()).toBe(true);
+    expect(service.criteria().FromDtObsTime).toEqual('2000-12-20T00:00:00.000+01:00');
 
-  it('slush flow filter should set the right criteria when turned on', fakeAsync(async () => {
-    service.setSlushFlow();
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
+    service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
+    expect(service.useDaysBack()).toBe(false);
+    expect(service.criteria().FromDtObsTime).toEqual('2000-12-20T00:00:00.000+01:00');
+    expect(service.criteria().ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
+  });
+
+  it('ToDtObsTime should be removed when updating fromDate with true', () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    const { service } = init({ queryPath: 'fromDate=2025-10-21&toDate=2025-11-04' });
+    expect(service.fromDate()).toBeDefined();
+    expect(service.toDate()).toBeDefined();
+
+    service.setFromDate(moment(new Date('2000-12-24T00:00:00')).toISOString(true), true);
+    expect(service.toDate()).toBeUndefined();
+    expect(service.criteria().ToDtObsTime).toBeUndefined();
+  });
+
+  const expectSlushFlowCriteriaToExist = (criteria: SearchCriteriaRequestDto) => {
     //check that current criteria contains filter by slush flow
     expect(criteria.PropertyFilters?.length).toEqual(1);
     const filter = criteria!.PropertyFilters?.[0];
     expect(filter?.Name).toEqual('AvalancheObs.AvalancheTID');
     expect(filter?.Value).toEqual('30');
     expect(filter?.Operator).toEqual(0);
-  }));
+  };
 
-  it('slush flow filter should be removed from criteria when turned off', fakeAsync(async () => {
+  it('slush flow filter should set the right criteria when turned on', () => {
+    const { service } = init();
+    service.setSlushFlow();
+    expectSlushFlowCriteriaToExist(service.criteria());
+  });
+
+  it('slush flow filter should be removed from criteria when turned off', () => {
+    const { service } = init({ queryPath: 'slushFlow=true' });
+
+    // Sjekk at slush flow filter er aktivert pga query parameter
+    expect(service.slushFlow()).toBe(true);
+    expectSlushFlowCriteriaToExist(service.criteria());
+
     service.setSlushFlow(false);
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
-    //check that current criteria does not contain filter by slush flow
-    expect(criteria.PropertyFilters).toBeUndefined();
-  }));
+    // Sjekk at sørpeskredfilter er deaktivert
+    expect(service.criteria().PropertyFilters).toBeUndefined();
+  });
 
-  it('slush flow filter should be removed from criteria when we change geo hazard', fakeAsync(async () => {
+  // Testen er deaktivert fordi dette vil kreve at både filter på sørpeskred og SelectedRegistrationTypes beregnes
+  // basert på geoHazard. Eller at vi bruker en effect for å resette disse når geoHazard endres.
+  // Jeg tror koden blir enklere å forstå hvis vi heller bruker reset-metoden til å
+  // nullstille filterne når geoHazard har blitt endret i appen.
+  it('slush flow filter should be removed from criteria when we change geo hazard', () => {
+    pending('Legg til reset-test i stedet.');
+    const { service, userSettings } = init();
     service.setSlushFlow(); //turn filter by slush flow on
-    userSettingService.updateUserSettings({
+    expectSlushFlowCriteriaToExist(service.criteria());
+    userSettings.updateUserSettings({
       language: LangKey.nn,
       currentGeoHazard: [GeoHazard.Ice],
     });
-    tick();
-    const criteria = await firstValueFrom(service.searchCriteria$);
     //check that current criteria does not contain filter by slush flow
-    expect(criteria.PropertyFilters).toBeUndefined();
-  }));
+    expect(service.criteria().PropertyFilters).toBeUndefined();
+    expect(service.criteria().SelectedRegistrationTypes).toBeUndefined();
+  });
 });
 
 //a separate suite because we want to add url parameters before we create the service
 describe('SearchCriteriaService url parsing', () => {
   const wrongObservationTypeUrl = ['42,66', '23456', 'testMe'];
 
-  const getService = () => {
+  const getService = (queryPath = '') => {
     TestBed.configureTestingModule({
       providers: [
+        { provide: DOCUMENT, useValue: { location: { href: `http://regobs.no/?${queryPath}` } } },
         provideTranslateService(),
         provideTestLogger(),
         UserSettingService,
@@ -269,38 +350,12 @@ describe('SearchCriteriaService url parsing', () => {
     return TestBed.inject(SearchCriteriaService);
   };
 
-  /**
-   * Bruk denne til å fake at vi har satt en eller flere url-parametre
-   * Eksempel: setUrlQueryPath('hazard=10&nick=Oluf')
-   */
-  const setUrlQueryPath = (queryPath: string) => {
-    const newRelativePathQuery = `${window.location.pathname}?${queryPath}`;
-    history.pushState(null, '', newRelativePathQuery);
-  };
-
-  /**
-   * Bruk denne til å sjekke at vi har fått riktige kriteria basert på angitte url-parametre
-   * @param queryPath url-parameterne som skal brukes
-   * @returns søkekriteria som skal være i henhold til url-parametrene
-   * @example applyUrlParameter('nick=Oluf').ObserverNickName === 'Oluf'
-   */
-  const applyUrlQueryPath = (queryPath: string): SearchCriteriaRequestDto => {
-    setUrlQueryPath(queryPath);
-    const service = getService();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let criteria: any;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    return criteria as SearchCriteriaRequestDto;
-  };
-
   beforeEach(() => {
     jasmine.clock().install();
     moment.tz.setDefault('Europe/Oslo');
   });
 
   afterEach(function () {
-    history.pushState(null, '', window.location.pathname); //remove all query params added in test
     moment.tz.setDefault();
     jasmine.clock().uninstall();
   });
@@ -316,124 +371,110 @@ describe('SearchCriteriaService url parsing', () => {
     expect(separatedStringToNumberArray('~70~20~')).toEqual([70, 20]);
   });
 
-  it('competence url filter works properly', fakeAsync(() => {
-    setUrlQueryPath('competence=150~105');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    expect(criteria!.ObserverCompetence).toEqual([150, 105]);
-  }));
+  it('competence url filter works properly', () => {
+    const service = getService('competence=150~105');
+    const criteria = service.criteria();
+    expect(criteria.ObserverCompetence).toEqual([150, 105]);
+  });
 
-  it('competence url filter with wrong params', fakeAsync(() => {
-    setUrlQueryPath('competence=150~string');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    expect(criteria!.ObserverCompetence).toEqual(undefined);
-  }));
+  it('competence url filter with wrong params', () => {
+    const service = getService('competence=150~string');
+    const criteria = service.criteria();
+    expect(criteria.ObserverCompetence).toEqual(undefined);
+  });
 
-  it('nick name url filter should work', fakeAsync(() => {
-    expect(applyUrlQueryPath('nick=Oluf').ObserverNickName).toEqual('Oluf');
-  }));
+  it('nick name url filter should work', () => {
+    const service = getService('nick=Oluf');
+    const criteria = service.criteria();
+    expect(criteria.ObserverNickName).toEqual('Oluf');
+  });
 
-  it('type url should work', fakeAsync(() => {
-    setUrlQueryPath('type=81.13~81.26~10');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
-    expect(criteria!.SelectedRegistrationTypes).toEqual([
+  it('type url should work', () => {
+    const service = getService('type=81.13~81.26~10');
+    const criteria = service.criteria();
+    expect(criteria.SelectedRegistrationTypes).toEqual([
       { Id: 10, SubTypes: [] },
       { Id: 81, SubTypes: [13, 26] },
     ]);
-  }));
-
-  wrongObservationTypeUrl.forEach((test) => {
-    it('type url wrong format, set undefined in criteria', fakeAsync(() => {
-      setUrlQueryPath(`type=${test}`);
-      const service = getService();
-      let criteria;
-      service.searchCriteria$.subscribe((c) => (criteria = c));
-      tick(100);
-      expect(criteria!.SelectedRegistrationTypes).toEqual(undefined);
-    }));
   });
 
-  it('orderBy url filter should work', fakeAsync(() => {
-    setUrlQueryPath('orderBy=changeTime');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+  wrongObservationTypeUrl.forEach((test) => {
+    it('type url wrong format, set undefined in criteria', () => {
+      const service = getService(`type=${test}`);
+      const criteria = service.criteria();
+      expect(criteria.SelectedRegistrationTypes).toEqual(undefined);
+    });
+  });
+
+  it('orderBy url filter should work', () => {
+    const service = getService('orderBy=changeTime');
+    const criteria = service.criteria();
     //check that current criteria contains expected orderBy
+    expect(criteria.OrderBy).toEqual('DtChangeTime');
+  });
 
-    expect(criteria!.OrderBy).toEqual('DtChangeTime');
-  }));
-
-  it('orderBy url filter should work', fakeAsync(() => {
-    setUrlQueryPath('orderBy=obsTime');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+  it('orderBy url filter should work', () => {
+    const service = getService('orderBy=obsTime');
+    const criteria = service.criteria();
     //check that current criteria contains expected orderBy
-    expect(criteria!.OrderBy).toEqual('DtObsTime');
-  }));
+    expect(criteria.OrderBy).toEqual('DtObsTime');
+  });
 
-  it('geo hazard url filter should work', fakeAsync(() => {
-    expect(applyUrlQueryPath('hazard=70').SelectedGeoHazards).toEqual([70]);
-  }));
+  // TODO: Flytt test til test suite for userSettings, siden det er der denne parses fra url.
+  // Det finnes allerede en test som sjekker at riktig GeoHazard settes på søkekriterene basert på det userSettings
+  // tilbyr, og det er dette som er relevant å teste for søkekritere-servicen.
+  it('geo hazard url filter should work', () => {
+    pending('Flytt test til userSettings-tester');
+    const service = getService('hazard=70');
+    const criteria = service.criteria();
+    expect(criteria.SelectedGeoHazards).toEqual([70]);
+  });
 
-  it('illegal geo hazard in url should return 10', fakeAsync(() => {
-    setUrlQueryPath('hazard=illegal');
-    const service = getService();
-    let criteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+  // TODO: Flytt test til test suite for userSettings, siden det er der denne parses fra url.
+  // Det finnes allerede en test som sjekker at riktig GeoHazard settes på søkekriterene basert på det userSettings
+  // tilbyr, og det er dette som er relevant å teste for søkekritere-servicen.
+  it('illegal geo hazard in url should return 10', () => {
+    pending('Flytt test til userSettings-tester');
+    const service = getService('hazard=illegal');
+    const criteria = service.criteria();
     //check that current criteria contains expected geo hazard
+    expect(criteria.SelectedGeoHazards).toEqual([10]);
+  });
 
-    expect(criteria!.SelectedGeoHazards).toEqual([10]);
-  }));
-
-  it('days back url filter should work', fakeAsync(() => {
+  // TODO: Flytt test til test suite for userSettings, siden det er der denne parses fra url.
+  // Det finnes allerede tester som sjekker at daysBack fra usersettings brukes riktig.
+  it('days back url filter should work', () => {
+    pending('Flytt test til userSettings-tester');
     const queryPath = 'daysBack=1';
     jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
-    setUrlQueryPath(queryPath);
-
+    const service = getService(queryPath);
+    const criteria = service.criteria();
     //check that criteria contains correct from time. Should be 1 day earlier at midnight
-    expect(applyUrlQueryPath(queryPath).FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
-  }));
+    expect(criteria.FromDtObsTime).toEqual('2000-12-23T00:00:00.000+01:00');
+  });
 
-  it('toDate and fromDate filter should work', fakeAsync(() => {
-    const queryPath = 'fromDate=2020-12-24&toDate=2022-12-24';
-    const criteria = applyUrlQueryPath(queryPath);
-    expect(criteria!.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
-    expect(criteria!.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
-  }));
+  it('toDate and fromDate filter should work', () => {
+    const service = getService('fromDate=2020-12-24&toDate=2022-12-24');
+    const criteria = service.criteria();
+    expect(criteria.FromDtObsTime).toEqual('2020-12-24T00:00:00.000+01:00');
+    expect(criteria.ToDtObsTime).toEqual('2022-12-24T23:59:59.999+01:00');
+  });
 
-  it('slush flow filter should be activated by url', fakeAsync(() => {
-    setUrlQueryPath('slushFlow=true');
-    const service = getService();
-    let criteria: SearchCriteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+  it('slush flow filter should be activated by url', () => {
+    const service = getService('slushFlow=true');
+    const criteria = service.criteria();
     //check that current criteria contains filter by slush flow
-    expect(criteria!.PropertyFilters?.length).toEqual(1);
-    const filter = criteria!.PropertyFilters?.[0];
+    expect(criteria.PropertyFilters?.length).toEqual(1);
+    const filter = criteria.PropertyFilters?.[0];
     expect(filter?.Name).toEqual('AvalancheObs.AvalancheTID');
     expect(filter?.Value).toEqual('30');
     expect(filter?.Operator).toEqual(0);
-  }));
+  });
 
-  it('slush flow filter should be deactivated by url', fakeAsync(() => {
-    setUrlQueryPath('slushFlow=false');
-    const service = getService();
-    let criteria: SearchCriteria;
-    service.searchCriteria$.subscribe((c) => (criteria = c));
-    tick(100);
+  it('slush flow filter should not become active if query param is false', () => {
+    const service = getService('slushFlow=false');
+    const criteria = service.criteria();
     //check that current criteria does not contain filter by slush flow
-    expect(criteria!.PropertyFilters).toBeUndefined();
-  }));
+    expect(criteria.PropertyFilters).toBeUndefined();
+  });
 });

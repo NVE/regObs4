@@ -29,13 +29,11 @@ export class ListControlsComponent {
 
   pageType = input<Page>('observations');
 
-  private mapExtentFilterActive = toSignal(this.searchCriteria.useMapExtent$);
+  private mapExtentFilterActive = signal(true); // TODO! toSignal(this.searchCriteria.useMapExtent$);
   mapExtentFilterDisabled = toSignal(this.mapService.mapView$.pipe(map((v) => v == null)), { initialValue: false });
   mapExtentFilterValue = computed(() => this.mapExtentFilterActive() && !this.mapExtentFilterDisabled());
 
-  orderBy = toSignal(this.searchCriteria.searchCriteria$.pipe(map((x) => x.OrderBy as SearchCriteriaOrderBy)), {
-    initialValue: 'DtChangeTime',
-  });
+  orderBy = this.searchCriteria.orderBy;
 
   toggleExtentFilter() {
     const isActive = !this.mapExtentFilterActive();
@@ -47,6 +45,6 @@ export class ListControlsComponent {
   }
 
   setOrderBy(orderBy: SearchCriteriaOrderBy) {
-    this.searchCriteria.setOrderBy(orderBy);
+    this.searchCriteria.orderBy.set(orderBy);
   }
 }

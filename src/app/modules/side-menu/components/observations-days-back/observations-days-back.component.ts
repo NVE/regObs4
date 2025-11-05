@@ -31,7 +31,7 @@ export class ObservationsDaysBackComponent {
     return [];
   });
 
-  useDaysBack = toSignal(this.searchCriteria.useDaysBack$, { initialValue: true });
+  useDaysBack = this.searchCriteria.useDaysBack;
   isNativePlatform = Capacitor.isNativePlatform();
   popupType: SelectInterface = this.isNativePlatform ? 'action-sheet' : 'popover';
 
