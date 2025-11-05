@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -45,7 +45,7 @@ export class ObservationListComponent {
   private updateObservationsService = inject(UpdateObservationsService);
   isDesktop = inject(BreakpointService).isDesktop;
 
-  private searchHandler = this.searchRegistrations.pagedSearch(this.searchCriteriaService.searchCriteria$);
+  private searchHandler = this.searchRegistrations.pagedSearch(toObservable(this.searchCriteriaService.criteria));
   registrations = toSignal(
     this.searchHandler.registrations$.pipe(
       tap(() => {

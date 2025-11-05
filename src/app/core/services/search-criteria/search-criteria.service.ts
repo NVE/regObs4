@@ -197,33 +197,54 @@ export class SearchCriteriaService {
    */
   extent = computed<SearchCriteriaRequestDto['Extent']>(() => createExtentCriteria(this.mapView()));
 
+  private hasExtent = computed(() => this.extent() !== undefined);
+  private hasRegions = computed(() => (this.regions() || []).length > 0);
+  isExtentCriteriaDisabled = computed(() => !this.hasExtent() || this.hasRegions());
+  isExtentCriteriaActive = linkedSignal(() => {
+    if (this.isExtentCriteriaDisabled()) {
+      return false;
+    }
+    return true;
+  });
+
+  private criteriaNoExtent = computed<SearchCriteriaRequestDto>(() => ({
+    SelectedGeoHazards: this.geoHazards(),
+    ObserverNickName: this.nickName(),
+    ObserverCompetence: this.competence(),
+    PropertyFilters: this.propertyFilters(),
+    LangKey: this.langKey(),
+    OrderBy: this.orderBy(),
+    SelectedRegistrationTypes: this.regTypes(),
+    SelectedRegions: this.regions(),
+    FromDtObsTime: this._fromDate(),
+    ToDtObsTime: this._toDate(),
+  }));
+
   /**
    * SearchCriteriaRequestDto - kan sendes til apiet for søk.
    *
-   * NB! Inkluderer IKKE kartutsnitt.
+   * NB! Inkluderer kun kartutsnitt hvis `isExtentCriteriaActive` er `true`.
+   *
+   * Brukes i listevisninga og bildesøket.
    */
   criteria = computed<SearchCriteriaRequestDto>(() =>
     removeEmpty({
-      SelectedGeoHazards: this.geoHazards(),
-      ObserverNickName: this.nickName(),
-      ObserverCompetence: this.competence(),
-      PropertyFilters: this.propertyFilters(),
-      LangKey: this.langKey(),
-      OrderBy: this.orderBy(),
-      SelectedRegistrationTypes: this.regTypes(),
-      SelectedRegions: this.regions(),
-      FromDtObsTime: this._fromDate(),
-      ToDtObsTime: this._toDate(),
+      ...this.criteriaNoExtent(),
+      Extent: this.isExtentCriteriaActive() ? this.extent() : undefined,
     })
   );
 
   /**
-   * SearchCriteriaRequestDto - med kartutsnitt.
+   * SearchCriteriaRequestDto - alltid med kartutsnitt (dersom det finnes).
+   *
+   * Brukes på forsiden der man alltid er interessert i kartutsnitt.
    */
-  criteriaWithExtent = computed(() => ({
-    ...this.criteria(),
-    Extent: this.extent(),
-  }));
+  criteriaWithExtent = computed(() =>
+    removeEmpty({
+      ...this.criteriaNoExtent(),
+      Extent: this.extent(),
+    })
+  );
 
   /**
    * @deprecated Bruk heller `criteria` eller `criteriaWithExtent`.

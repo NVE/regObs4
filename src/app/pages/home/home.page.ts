@@ -1,5 +1,15 @@
 import { NgIf, AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, NgZone, OnDestroy, OnInit, inject, signal, viewChild, DOCUMENT } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  inject,
+  signal,
+  viewChild,
+  DOCUMENT,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -319,7 +329,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   ionViewWillEnter() {
     this.clickedRegistration.set(null); // lukker atglance kort når vi kommer inn på siden
-    this.searchCriteriaService.setExtentFilterActive(true);
   }
 
   checkIfShouldSearchCriteriaUpdateOnEnter() {

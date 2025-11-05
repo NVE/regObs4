@@ -1,8 +1,8 @@
 <!-- Gjør det mulig å bytte fra liste- til bildevisning + endre sortering -->
 <ion-checkbox
-  [checked]="mapExtentFilterValue()"
+  [checked]="extentCheckboxValue()"
   (ionChange)="toggleExtentFilter()"
-  [disabled]="mapExtentFilterDisabled()"
+  [disabled]="extentCheckboxDisabled()"
 >
   {{ "OBSERVATION_LIST.FILTER_BY_MAP_VIEW" | translate }}
 </ion-checkbox>
