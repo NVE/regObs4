@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { DOCUMENT, inject, Injectable } from '@angular/core';
 import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
-import { toUrlParams } from '../search-criteria/url-params';
+import { readParamsFromDoc, toUrlParams } from '../search-criteria/url-params';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SearchCriteria } from '../../models/search-criteria';
 
@@ -10,6 +10,7 @@ import { SearchCriteria } from '../../models/search-criteria';
 export class QueryParamsService {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  startup = readParamsFromDoc(inject(DOCUMENT));
 
   async apply({ criteria, daysBack }: { criteria: SearchCriteria; daysBack?: number }) {
     const params = toUrlParams(criteria as SearchCriteriaRequestDto, daysBack);

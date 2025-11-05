@@ -4,6 +4,7 @@ import { QueryParamsService } from './query-params.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { URL_PARAM_DAYSBACK, URL_PARAM_FROMDATE, URL_PARAM_TODATE } from '../search-criteria/url-params';
+import moment from 'moment';
 
 describe('QueryParamsService', () => {
   let service: QueryParamsService;
@@ -20,11 +21,19 @@ describe('QueryParamsService', () => {
   };
 
   beforeEach(() => {
+    jasmine.clock().install();
+    moment.tz.setDefault('Europe/Oslo');
+
     TestBed.configureTestingModule({
       providers: [{ provide: ActivatedRoute, useValue: undefined }],
     });
     router = TestBed.inject(Router);
     service = TestBed.inject(QueryParamsService);
+  });
+
+  afterEach(() => {
+    jasmine.clock().uninstall();
+    moment.tz.setDefault();
   });
 
   it('should be created', () => {
@@ -42,6 +51,8 @@ describe('QueryParamsService', () => {
   });
 
   it('should apply dates', async () => {
+    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+
     await service.apply({
       criteria: { FromDtObsTime: '2000-12-24T00:00:00.000+01:00' },
     });

@@ -359,7 +359,7 @@ function convertRegTypeFromUrlToDto(type: string): RegistrationTypeCriteriaDto[]
 /**
  * Hjelpemetode for å lese verdier fra query parametere
  */
-export const initUrl = (doc: Document) => {
+export const readParamsFromDoc = (doc: Document) => {
   const url = new URL(doc.location.href);
 
   const readValue = (key: string) => {

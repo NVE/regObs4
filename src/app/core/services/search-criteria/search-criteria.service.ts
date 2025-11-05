@@ -1,4 +1,4 @@
-import { DOCUMENT, Injectable, computed, effect, inject, linkedSignal, signal, untracked } from '@angular/core';
+import { Injectable, computed, effect, inject, linkedSignal, signal, untracked } from '@angular/core';
 import L from 'leaflet';
 import moment from 'moment';
 import { debounceTime } from 'rxjs';
@@ -13,7 +13,6 @@ import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { initUrl } from './url-params';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { removeEmpty } from '../../helpers/remove-empty';
 import { CRITERIA_SLUSH_FLOW } from './slush-flow';
@@ -49,20 +48,17 @@ export class SearchCriteriaService {
   private logger = inject(LoggingService);
   private queryParams = inject(QueryParamsService);
 
-  // TODO: Flytt til egne service
+  // TODO: bør kunne slettes etter hvert når vi får over til signals flere steder
   private daysBackUserSettings = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { initialValue: 2 });
   daysBack = linkedSignal(() => this.daysBackUserSettings());
   private langKey = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   private geoHazards = toSignal(this.userSettingService.currentGeoHazard$); // TODO: Move to usersettings
 
-  // TODO: Flytt til QueryParamsService
-  private initUrl = initUrl(inject(DOCUMENT));
-
   /**
    * Om dager tilbake, eller fra og til-dato skal ligge til grunn for
    * FromDtObsTime og ToDtObsTime.
    */
-  useDaysBack = signal(this.initUrl.fromTime() == undefined);
+  useDaysBack = signal(this.queryParams.startup.fromTime() == undefined);
 
   private _fromDate = linkedSignal<
     { useDaysBack: boolean; daysBack: number },
@@ -77,7 +73,7 @@ export class SearchCriteriaService {
       }
 
       if (!previous) {
-        return this.initUrl.fromTime();
+        return this.queryParams.startup.fromTime();
       }
 
       // Hvis endringer på daysBack eller useDaysBack har fått computation til å kjøre,
@@ -107,7 +103,7 @@ export class SearchCriteriaService {
         return undefined;
       }
       if (!previous) {
-        return this.initUrl.toTime();
+        return this.queryParams.startup.toTime();
       }
       return previous.value;
     },
@@ -120,7 +116,7 @@ export class SearchCriteriaService {
    */
   toDate = this._toDate.asReadonly();
 
-  private _slushFlow = signal<boolean>(this.initUrl.slushFlow());
+  private _slushFlow = signal<boolean>(this.queryParams.startup.slushFlow());
 
   /**
    * Om filter på sørpeskred er påskrudd eller ikke. Dette legger til `PropertyFilters` som sendes til apiet.
@@ -134,21 +130,21 @@ export class SearchCriteriaService {
    *
    * Kan endres direkte med `nickName.set('Nick')`.
    */
-  nickName = signal<SearchCriteriaRequestDto['ObserverNickName']>(this.initUrl.nick());
+  nickName = signal<SearchCriteriaRequestDto['ObserverNickName']>(this.queryParams.startup.nick());
 
   /**
    * OrderBy - sorter på endret eller observert tidspunkt.
    *
    * Kan endres direkte med `orderBy.set('DtChangeTime')`.
    */
-  orderBy = signal<SearchCriteriaOrderBy>(this.initUrl.orderBy() || DEFAULT_SEARCH_CRITERIA['OrderBy']);
+  orderBy = signal<SearchCriteriaOrderBy>(this.queryParams.startup.orderBy() || DEFAULT_SEARCH_CRITERIA['OrderBy']);
 
   /**
    * SelectedRegistrationTypes - Hvilke "skjema" / observasjonstyper en observasjon må ha for å bli inkludert i et søk.
    *
    * Kan endres direkte, men `setObservationType` og `removeObservationType` eksisterer som hjelp.
    */
-  regTypes = signal<SearchCriteriaRequestDto['SelectedRegistrationTypes']>(this.initUrl.regTypes());
+  regTypes = signal<SearchCriteriaRequestDto['SelectedRegistrationTypes']>(this.queryParams.startup.regTypes());
 
   /**
    * SelectedRegions - Hvilke regioner som skal inkluderes i et søk.
@@ -157,7 +153,7 @@ export class SearchCriteriaService {
    *
    * Kan endres direkte, men `addRegion` og `removeRegion` eksisterer som hjelp.
    */
-  regions = signal<SearchCriteriaRequestDto['SelectedRegions']>(this.initUrl.regions());
+  regions = signal<SearchCriteriaRequestDto['SelectedRegions']>(this.queryParams.startup.regions());
 
   /**
    * ObserverCompetence - Hvilken kompetanse en observatør må ha for at hens observasjoner skal inkluderes i et søk.
@@ -166,7 +162,7 @@ export class SearchCriteriaService {
    */
   competence = linkedSignal<SearchCriteriaRequestDto['ObserverCompetence']>(() => {
     // Query parameter fra oppstarten har alltid førstepri
-    const initComp = this.initUrl.competence();
+    const initComp = this.queryParams.startup.competence();
     if (initComp && initComp.length > 0) {
       return initComp;
     }
