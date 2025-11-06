@@ -18,16 +18,12 @@ import { DEFAULT_USER_SETTINGS } from '../user-setting/user-settings.default';
 import { SearchCriteriaRequestDto } from 'src/app/modules/common-regobs-api';
 
 export class TestMapService {
-  mapView$!: BehaviorSubject<IMapView>;
+  mapView$!: BehaviorSubject<IMapView | undefined>;
 }
 
 export function createTestMapService(): TestMapService {
   const service = new TestMapService();
-  service.mapView$ = new BehaviorSubject({
-    bounds: undefined,
-    center: undefined,
-    zoom: undefined,
-  } as unknown as IMapView);
+  service.mapView$ = new BehaviorSubject<IMapView | undefined>(undefined);
   return service;
 }
 
@@ -239,6 +235,85 @@ describe('SearchCriteriaService', () => {
     // for å håndtere drag-events osv. Kan hende mapService i seg selv håndterer det godt nok.
     tick(51);
     expect(service.criteriaWithExtent().Extent).toEqual(extent);
+  }));
+
+  it('extent on criteria should be controllable using isExtentCriteriaActive', fakeAsync(() => {
+    const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
+    const { service, mapService } = init();
+    mapService.mapView$.next(mv);
+
+    const extent = {
+      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
+      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
+    };
+
+    // Det er satt en debounce på 50 ms på mapView i servicen,
+    // for å håndtere drag-events osv. Kan hende mapService i seg selv håndterer det godt nok.
+    tick(51);
+
+    service.isExtentCriteriaActive.set(true);
+    expect(service.criteria().Extent).toEqual(extent);
+
+    service.isExtentCriteriaActive.set(false);
+    expect(service.criteria().Extent).toBeUndefined();
+
+    // Sjekk at ikke extent legges til om det kommer et nytt mapView
+    mapService.mapView$.next(createMapView(70.7978, 21.4343, 67.5715, 34.1458));
+    tick(51);
+    expect(service.isExtentCriteriaActive()).toBeFalse();
+    expect(service.criteria().Extent).toBeUndefined();
+
+    // Sjekk at man kan skru det på igjen
+    service.isExtentCriteriaActive.set(true);
+    expect(service.criteria().Extent).toBeDefined();
+  }));
+
+  it('no extent should always set isExtentCriteriaActive to false', fakeAsync(() => {
+    const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
+    const { service, mapService } = init();
+
+    // Skal initielt være avskrudd siden vi ikke har noe kartutsnitt
+    expect(service.isExtentCriteriaActive()).toBe(false);
+    expect(service.criteria().Extent).toBeUndefined();
+
+    mapService.mapView$.next(mv);
+    // Det er satt en debounce på 50 ms på mapView i servicen,
+    // for å håndtere drag-events osv. Kan hende mapService i seg selv håndterer det godt nok.
+    tick(51);
+    // Skal nå ha fått et kartutsnitt
+    expect(service.isExtentCriteriaActive()).toBe(true);
+    expect(service.criteria().Extent).toBeDefined();
+
+    // Usikker på om dette faktisk kan skje etter oppstarten av appen, hvis man allerede har et kartutsnitt
+    mapService.mapView$.next(undefined);
+    tick(51);
+    expect(service.isExtentCriteriaActive()).toBe(false);
+    expect(service.criteria().Extent).toBeUndefined();
+  }));
+
+  it('region filter should set isExtentCriteriaActive to false)', fakeAsync(() => {
+    const mv = createMapView(70.7978, 21.4343, 67.5715, 33.1458);
+    const { service, mapService } = init();
+    mapService.mapView$.next(mv);
+    // Det er satt en debounce på 50 ms på mapView i servicen,
+    // for å håndtere drag-events osv. Kan hende mapService i seg selv håndterer det godt nok.
+    tick(51);
+
+    // Kartutsnitt er nå aktivt i filteret
+    expect(service.isExtentCriteriaActive()).toBe(true);
+    expect(service.criteria().Extent).toBeDefined();
+
+    // Legge til region bør deaktivere kartutsnitt-filter
+    service.addRegion(1000);
+    expect(service.isExtentCriteriaActive()).toBe(false);
+    expect(service.criteria().Extent).toBeUndefined();
+
+    // Kartutsnitt i criteriaWithExtent bør ikke påvirkes
+    expect(service.criteriaWithExtent().Extent).toEqual({
+      BottomRight: Object({ Latitude: 67.5715, Longitude: 33.1458 }),
+      TopLeft: Object({ Latitude: 70.7978, Longitude: 21.4343 }),
+    });
+    expect(service.criteriaWithExtent().SelectedRegions).toEqual([1000]);
   }));
 
   it('FromDtObsTime should be set or updated', () => {
