@@ -223,6 +223,9 @@ export class SetAvalanchePositionPage implements OnInit {
     } else if (geoHazard == GeoHazard.Soil) {
       this.confirmLocationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.CONFIRM_LANDSLIDE_AREA'];
       this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_AREA'];
+    } else if (geoHazard == GeoHazard.Water) {
+      this.confirmLocationText = this.translations['REGISTRATION.WATER.WATER_LEVEL.SET_FLOOD_POSITION_CONFIRM'];
+      this.locationText = this.translations['REGISTRATION.WATER.WATER_LEVEL.FLOOD_AREA'];
     }
   }
 
