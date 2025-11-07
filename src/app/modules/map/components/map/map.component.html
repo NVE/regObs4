@@ -9,18 +9,14 @@
   ></app-map-controls>
 }
 
-@if (showObserverTrips()) {
-  <div
-    #observerTripsContainer
-    class="observer-trip-backdrop"
-    style="display: none"
-    (click)="removeObserverTripDescription()"
-  >
+<!-- TODO: I stedet for dette, få opp detaljside for en tur som modal? -->
+@if (showObserverTrips() && metadataName()) {
+  <div class="observer-trip-backdrop" (click)="removeObserverTripDescription()">
     <div class="observer-trip-desc">
       <div>
-        <strong>Obsturbeskrivelse{{ observationTripName ? " " + observationTripName : "" }}:</strong>
+        <strong>Obsturbeskrivelse{{ metadataName() ? " " + metadataName() : "" }}:</strong>
       </div>
-      <div>{{ observationTripDescription }}</div>
+      <div>{{ metadataDescription() }}</div>
     </div>
   </div>
 }
