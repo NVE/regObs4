@@ -21,7 +21,6 @@ import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-
 import { RouterLink } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { setStatusBarBackgroundColor } from './utils/color-utils';
-import { icons, registerIconLibrary } from 'nve-designsystem/registerIcons/systemLibraryCustomization.js';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -102,8 +101,6 @@ export class AppComponent {
         .subscribe();
     }
 
-    this.registerNveDesignsystemIcons();
-
     this.afterAppInitialized();
   }
 
@@ -149,14 +146,5 @@ export class AppComponent {
     }
 
     return [this.dbHelperService.init(), this.auth.init(), this.initSqliteIfNative()];
-  }
-
-  // fordi vi overstyrer Shoelace sine system-ikoner i NVE designsystem må vi registrere disse ikonene manuelt
-  private registerNveDesignsystemIcons() {
-    registerIconLibrary('system', {
-      resolver: (name) => {
-        return `data:image/svg+xml, ${encodeURIComponent(icons[name])}`;
-      },
-    });
   }
 }
