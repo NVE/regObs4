@@ -25,6 +25,10 @@
 @import '@ionic/angular/css/flex-utils.css';
 @import './app/core/helpers/leaflet/user-marker/user-marker.css';
 @import '@ionic/angular/css/text-transformation.css';
+
+/* Varsom-tema for NVE designsystem */
+@import 'nve-designsystem/css/varsom.css';
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -53,6 +57,40 @@ a {
     url('/assets/fonts/Calibri.ttf') format('truetype');
   /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
+}
+
+/* Source Sans Pro brukes av NVE designsystem. TODO: Er ikke helt sikker på om vi trenger italic-variantene */
+@font-face {
+  font-family: 'Source Sans Pro';
+  src:
+    local('Source Sans Pro'),
+    url('/fonts/source-sans-3-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  src:
+    local('Source Sans Pro'),
+    url('/fonts/source-sans-3-latin-400-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  src:
+    local('Source Sans Pro'),
+    url('/fonts/source-sans-3-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  src:
+    local('Source Sans Pro'),
+    url('/fonts/source-sans-3-latin-600-italic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
 }
 
 :root {
