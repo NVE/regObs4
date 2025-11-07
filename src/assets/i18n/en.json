@@ -351,6 +351,12 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again. On iPhone/iPad you must have the Varsom app active while downloading and unzipping."
   },
+  "PLANS": {
+    "TITLE": "Plans and tracks",
+    "IMPORT_BUTTON": {
+      "CAPTION": "Import GPX files"
+    }
+  },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "About observations",
@@ -1015,7 +1021,8 @@
     "LIST": "List",
     "MAP": "Map",
     "TRIPS": "Trips",
-    "WARNINGS": "Warnings"
+    "WARNINGS": "Warnings",
+    "PLANS": "Plans"
   },
   "TRIP": {
     "COMMENT_CAPTION": "Description (required)",
