@@ -19,12 +19,16 @@
     <nve-message-card variant="warning" label="Import-funksjonen er ikke laget ennå"></nve-message-card>
   }
 
+  @for (item of items(); track item.id) {
+    <p>{{ item.name }} - {{ item.id }} - {{ item.date }}</p>
+  }
+
   <ngx-file-drop
     style="width: 100%"
     dropZoneLabel="Slipp GPX-filer her"
     [accept]="'.gpx'"
     dropZoneClassName="drop-zone"
-    (onFileDrop)="onGpxDrop($event)"
+    (onFileDrop)="onFileDrop($event)"
   >
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
       <button type="button" (click)="openFileSelector()">Importer GPX-fil</button>
