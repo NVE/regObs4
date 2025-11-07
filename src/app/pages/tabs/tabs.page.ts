@@ -1,16 +1,15 @@
 import { Component, computed, inject } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard, LangKey } from '../../modules/common-core/models';
 import { SearchCriteriaService } from '../../core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
-import { NgIf, AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { mapOutline, list, warning, openOutline } from 'ionicons/icons';
+import { mapOutline, list, warning, openOutline, analyticsOutline } from 'ionicons/icons';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { Capacitor } from '@capacitor/core';
@@ -20,7 +19,7 @@ import { settings } from 'src/settings';
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [AsyncPipe, IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, NgIf, TranslatePipe],
+  imports: [IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, TranslatePipe],
 })
 export class TabsPage {
   private fullscreenService = inject(FullscreenService);
@@ -33,14 +32,13 @@ export class TabsPage {
   private currentGeoHazardSubscription = toSignal(this.userSettingService.currentGeoHazard$, {
     initialValue: [GeoHazard.NotSpecified],
   });
-  readonly selectedTab$: Observable<TABS | null>;
+  selectedTab = toSignal(this.tabsService.selectedTab$, { initialValue: null });
   isFullscreen = toSignal(this.fullscreenService.isFullscreen$, { initialValue: false });
   isDesktop = inject(BreakpointService).isDesktop;
   isNative = Capacitor.isNativePlatform();
 
   constructor() {
-    this.selectedTab$ = this.tabsService.selectedTab$;
-    addIcons({ mapOutline, list, warning, openOutline });
+    addIcons({ mapOutline, list, warning, openOutline, analyticsOutline });
   }
 
   async ngOnInit() {
@@ -98,6 +96,8 @@ export class TabsPage {
       return settings.services.warning.Ice.webBaseUrl.nb;
     }
   });
+
+  iconLayout = computed(() => (this.isDesktop() ? 'icon-start' : 'icon-top'));
 
   private async applyCurrentQueryParams(path: TABS | null) {
     if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {

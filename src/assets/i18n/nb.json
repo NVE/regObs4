@@ -350,6 +350,12 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen. På iPhone/iPad må du ha Varsom-appen aktiv inntil kartpakka er lasted ned og pakket ut."
   },
+  "PLANS": {
+    "TITLE": "Planer og spor",
+    "IMPORT_BUTTON": {
+      "CAPTION": "Importer GPX-filer"
+    }
+  },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "Om observasjoner",
@@ -1012,7 +1018,8 @@
     "LIST": "Liste",
     "MAP": "Kart",
     "TRIPS": "Turer",
-    "WARNINGS": "Varsler"
+    "WARNINGS": "Varsler",
+    "PLANS": "Planer"
   },
   "TRIP": {
     "COMMENT_CAPTION": "Beskrivelse (obligatorisk)",

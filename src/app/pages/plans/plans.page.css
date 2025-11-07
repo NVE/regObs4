@@ -1,0 +1,12 @@
+:host {
+  justify-content: unset;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-small);
+  gap: var(--spacing-small);
+}
+svg {
+  fill: currentColor;
+}

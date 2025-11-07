@@ -1,0 +1,21 @@
+<!-- Side som viser planer og sporfiler -->
+<app-header>
+  <!-- Høyremeny -->
+  <ion-buttons slot="end">
+    <ion-menu-button color="light"> </ion-menu-button>
+  </ion-buttons>
+
+  <ion-title>{{ "PLANS.TITLE" | translate }}</ion-title>
+</app-header>
+<div class="content">
+  <h1>TODO: Planer</h1>
+
+  <nve-button size="large" (click)="importGpxFiles()"
+    >{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}
+    <nve-icon slot="prefix" src="/assets/icon/input.svg"></nve-icon>
+  </nve-button>
+
+  @if (showImportmessage()) {
+    <nve-message-card variant="warning" label="Import-funksjonen er ikke laget ennå"></nve-message-card>
+  }
+</div>
