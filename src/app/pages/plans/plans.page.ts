@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import { IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
@@ -6,6 +6,10 @@ import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
 import 'nve-designsystem/components/nve-message-card/nve-message-card.component.js';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
+import { toGeoJSON } from './gpx';
+import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
+import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
+import { generateShortRandomId } from './utils';
 
 @Component({
   selector: 'app-plans',
@@ -17,7 +21,10 @@ import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 })
 /** Side som viser planer og sporfiler */
 export class PlansPage {
+  private geoJSON = inject(GeoJSONService);
   showImportmessage = signal<boolean>(false);
+
+  items = this.geoJSON.metadata;
 
   importGpxFiles = () => {
     //TODO: Velg og importer GPX-filer
@@ -26,12 +33,19 @@ export class PlansPage {
       this.showImportmessage.set(false);
     }, 3000);
   };
+
   /**
    * Log GPX filenames when files are dropped in the dropzone
    */
-  onGpxDrop(gpxFiles: NgxFileDropEntry[]) {
-    for (const gpxFile of gpxFiles) {
-      console.log(gpxFile.relativePath);
+  async onFileDrop(files: NgxFileDropEntry[]) {
+    for (const { fileEntry, relativePath } of files) {
+      const geojson = await toGeoJSON(fileEntry);
+      const metadata: GeoJSONItem = {
+        id: generateShortRandomId(),
+        name: relativePath,
+        date: Date.now(),
+      };
+      await this.geoJSON.save(metadata, geojson);
     }
   }
 }
