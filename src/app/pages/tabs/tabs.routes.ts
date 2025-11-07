@@ -3,6 +3,9 @@ import { TabsPage } from './tabs.page';
 import { canActivateStartWizard } from '../../core/guards/start-wizard.guard';
 import { desktopBlockGuard } from 'src/app/core/guards/desktop-block.guard';
 
+/**
+ * Ruter for navigasjon mellom faner nederst på skjermen
+ */
 export const routes: Routes = [
   {
     path: '',
@@ -49,6 +52,10 @@ export const routes: Routes = [
         path: 'warning-list',
         loadComponent: () => import('../warning-list/warning-list.page').then((m) => m.WarningListPage),
         canActivate: [desktopBlockGuard],
+      },
+      {
+        path: 'plans',
+        loadComponent: () => import('../plans/plans.page').then((m) => m.PlansPage),
       },
       // Redirect from old regobs.no route
       {
