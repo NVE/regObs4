@@ -118,6 +118,9 @@ describe('SearchCriteriaService', () => {
     expect(service.criteria().SelectedRegions).toEqual([1000]);
     service.addRegion(2000);
     expect(service.criteria().SelectedRegions).toEqual([1000, 2000]);
+    // Prøv å legge til samme region flere ganger
+    service.addRegion(2000);
+    expect(service.criteria().SelectedRegions).toEqual([1000, 2000]);
     service.addRegion(3000);
     expect(service.criteria().SelectedRegions).toEqual([1000, 2000, 3000]);
   });
@@ -131,6 +134,12 @@ describe('SearchCriteriaService', () => {
     service.removeRegion(2000);
     expect(service.criteria().SelectedRegions).toEqual([1000, 3000]);
     service.removeRegion(1000);
+    expect(service.criteria().SelectedRegions).toEqual([3000]);
+    // Prøv å slette samme region to ganger
+    service.removeRegion(1000);
+    expect(service.criteria().SelectedRegions).toEqual([3000]);
+    // Prøv å slette en region som ikke finnes
+    service.removeRegion(NaN);
     expect(service.criteria().SelectedRegions).toEqual([3000]);
   });
 
@@ -392,8 +401,7 @@ describe('SearchCriteriaService', () => {
   // basert på geoHazard. Eller at vi bruker en effect for å resette disse når geoHazard endres.
   // Jeg tror koden blir enklere å forstå hvis vi heller bruker reset-metoden til å
   // nullstille filterne når geoHazard har blitt endret i appen.
-  it('slush flow filter should be removed from criteria when we change geo hazard', () => {
-    pending('Legg til reset-test i stedet.');
+  xit('slush flow filter should be removed from criteria when we change geo hazard', () => {
     const { service, userSettings } = init();
     service.setSlushFlow(); //turn filter by slush flow on
     expectSlushFlowCriteriaToExist(service.criteria());

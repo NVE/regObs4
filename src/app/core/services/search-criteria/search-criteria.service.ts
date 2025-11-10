@@ -21,7 +21,6 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 
 export type SearchCriteriaOrderBy = keyof Pick<RegistrationViewModel, 'DtObsTime' | 'DtChangeTime'>;
-type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
 const DEBUG_TAG = 'SearchCriteriaService';
 const REGISTRATION_TYPE_AVALANCHE_AND_DANGER_SIGN = 80;
@@ -262,7 +261,7 @@ export class SearchCriteriaService {
     this.regTypes.set(undefined);
     this.nickName.set(undefined);
     this._slushFlow.set(false);
-    this.userSettingService.resetDaysBackForCurrentGeoHazard(); // TODO: Test
+    this.userSettingService.resetDaysBackForCurrentGeoHazard();
     this.useDaysBack.set(true);
   }
 
@@ -273,7 +272,7 @@ export class SearchCriteriaService {
     await this.queryParams.apply({ criteria, daysBack: useDaysBack ? daysBack : undefined });
   }
 
-  addRegion(region: Exclude<Flatten<SearchCriteriaRequestDto['SelectedRegions']>, undefined>) {
+  addRegion(region: number) {
     this.regions.update((regions) => {
       if (!regions || regions.length === 0) {
         return [region];
@@ -282,18 +281,18 @@ export class SearchCriteriaService {
     });
   }
 
-  removeRegion(region: Exclude<Flatten<SearchCriteriaRequestDto['SelectedRegions']>, undefined>) {
+  removeRegion(region: number) {
     this.regions.update((regions) => regions && regions.filter((r) => r !== region));
   }
 
-  addCompetence(competenceIds: Exclude<SearchCriteriaRequestDto['ObserverCompetence'], undefined>) {
+  addCompetence(competenceIds: number[]) {
     this.competence.update((competence) => {
       const current = competence ?? [];
       return [...new Set([...current, ...competenceIds])];
     });
   }
 
-  removeCompetence(competenceIds: Exclude<SearchCriteriaRequestDto['ObserverCompetence'], undefined>) {
+  removeCompetence(competenceIds: number[]) {
     this.competence.update((competence) => competence?.filter((x) => !competenceIds.includes(x)));
   }
 
