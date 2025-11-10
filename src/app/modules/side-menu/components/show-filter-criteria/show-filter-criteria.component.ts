@@ -5,7 +5,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
-import { distinctUntilChanged, map, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import moment from 'moment';
 
@@ -22,20 +22,10 @@ export class ShowFilterCriteriaComponent {
   private translate = inject(TranslateService);
 
   // Time or date description
-  private fromTime = toSignal(
-    this.searchCriteria.searchCriteria$.pipe(
-      map(({ FromDtObsTime }) => FromDtObsTime),
-      distinctUntilChanged(),
-      map((dateString) => (dateString ? moment(dateString) : undefined))
-    )
+  private fromTime = computed(() =>
+    this.searchCriteria.fromDate() ? moment(this.searchCriteria.fromDate()) : undefined
   );
-  private toTime = toSignal(
-    this.searchCriteria.searchCriteria$.pipe(
-      map(({ ToDtObsTime }) => ToDtObsTime),
-      distinctUntilChanged(),
-      map((dateString) => (dateString ? moment(dateString) : undefined))
-    )
-  );
+  private toTime = computed(() => (this.searchCriteria.toDate() ? moment(this.searchCriteria.toDate()) : undefined));
 
   dateFilter = computed(() => {
     const from = this.fromTime();

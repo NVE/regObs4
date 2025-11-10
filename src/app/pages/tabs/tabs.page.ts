@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
-import { combineLatest, Observable } from 'rxjs';
+import { auditTime, combineLatest, concatMap, Observable } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard, LangKey } from '../../modules/common-core/models';
@@ -11,7 +11,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { mapOutline, list, warning, openOutline } from 'ionicons/icons';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { Capacitor } from '@capacitor/core';
 import { settings } from 'src/settings';
@@ -28,6 +28,7 @@ export class TabsPage {
   private warningService = inject(WarningService);
   private userSettingService = inject(UserSettingService);
   private tabsService = inject(TabsService);
+
   private language = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   private warningGroupInMapViewSubscription = toSignal(this.warningService.warningGroupInMapViewObservable$);
   private currentGeoHazardSubscription = toSignal(this.userSettingService.currentGeoHazard$, {
@@ -41,14 +42,16 @@ export class TabsPage {
   constructor() {
     this.selectedTab$ = this.tabsService.selectedTab$;
     addIcons({ mapOutline, list, warning, openOutline });
-  }
-
-  async ngOnInit() {
-    combineLatest([this.searchCriteriaService.searchCriteria$, this.tabsService.selectedTab$]).subscribe(
-      async ([, tab]) => {
-        await this.applyCurrentQueryParams(tab);
-      }
-    );
+    combineLatest([
+      this.searchCriteriaService.searchCriteria$,
+      toObservable(this.searchCriteriaService.isExtentCriteriaActive),
+      this.tabsService.selectedTab$,
+    ])
+      .pipe(
+        auditTime(500), // Oppdater url maks hvert 500 ms
+        concatMap(([, , tab]) => this.applyCurrentQueryParams(tab))
+      )
+      .subscribe();
   }
 
   warningsInView = computed(() => {
@@ -100,8 +103,10 @@ export class TabsPage {
   });
 
   private async applyCurrentQueryParams(path: TABS | null) {
-    if (path == TABS.HOME || path == TABS.OBSERVATION_LIST || path == TABS.WARNING_LIST) {
+    if (path == TABS.HOME || path == TABS.WARNING_LIST) {
       await this.searchCriteriaService.applyQueryParams();
+    } else if (path == TABS.OBSERVATION_LIST) {
+      await this.searchCriteriaService.applyQueryParams(false);
     }
   }
 }

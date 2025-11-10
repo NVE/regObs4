@@ -7,6 +7,7 @@ import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core
 import { toSignal } from '@angular/core/rxjs-interop';
 import { GeoNameComponent } from '../geo-name/geo-name.component';
 import { isArraysEqual } from 'src/app/modules/common-core/helpers/arrays';
+import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 
 const GEOHAZARD_CONFIG = [
   { id: 1, geohazards: [GeoHazard.Snow], icon: '/assets/icon/snow.svg' },
@@ -54,6 +55,7 @@ const GEOHAZARD_CONFIG = [
 })
 export class GeoFabComponent {
   private userSettingService = inject(UserSettingService);
+  private searchCriteria = inject(SearchCriteriaService);
 
   readonly isOpen = model(false);
   readonly showLabels = input(true);
@@ -87,6 +89,7 @@ export class GeoFabComponent {
 
   setCurrentGeoHazard(geoHazards: GeoHazard[]) {
     this.userSettingService.updateUserSettings({ currentGeoHazard: geoHazards });
+    this.searchCriteria.resetSearchCriteria();
     this.isOpen.set(false);
   }
 }

@@ -16,7 +16,9 @@ import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter
     <ion-split-pane contentId="main-content-list-page">
       <ion-menu side="start" menuId="list-filter" contentId="main-content-list-page" max-edge-start="0">
         @defer {
-          <app-filter-menu></app-filter-menu>
+          <app-filter-menu>
+            <!-- TODO: Legg til filter for kartutsnitt her  -->
+          </app-filter-menu>
         }
       </ion-menu>
 

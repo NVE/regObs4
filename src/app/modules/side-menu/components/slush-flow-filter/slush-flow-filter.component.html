@@ -1,5 +1,5 @@
-<ion-item *ngIf="visible$ | async">
-  <ion-checkbox [checked]="value$ | async" (ionChange)="setValue($event)" labelPlacement="end" justify="start">
-    {{ label() }}</ion-checkbox
-  >
+<ion-item>
+  <ion-checkbox [checked]="isChecked()" (ionChange)="setIsChecked($event)" labelPlacement="end" justify="start">
+    {{ label() }}
+  </ion-checkbox>
 </ion-item>

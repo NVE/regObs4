@@ -60,9 +60,9 @@ export class RegionFilterComponent {
 
   regionCheckBoxChanged(event: CheckboxCustomEvent<AvalancheRegion>) {
     if (event.detail.checked) {
-      this.searchCriteriaService.addToRegionFilter(event.detail.value.id);
+      this.searchCriteriaService.addRegion(event.detail.value.id);
     } else {
-      this.searchCriteriaService.removeFromRegionFilter(event.detail.value.id);
+      this.searchCriteriaService.removeRegion(event.detail.value.id);
     }
   }
 

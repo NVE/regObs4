@@ -1,7 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { map } from 'rxjs';
 import moment from 'moment';
 import { IonAccordion, IonItem, IonLabel, IonList } from '@ionic/angular/standalone';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
@@ -36,10 +35,10 @@ export class DateRangeComponent {
 
   minDate = new Date('2010-01-01T00:00:00').toISOString();
   maxDate = new Date().toISOString();
-  fromDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.FromDtObsTime)));
-  toDate = toSignal(this.searchCriteriaService.searchCriteria$.pipe(map((criteria) => criteria.ToDtObsTime)));
+  fromDate = this.searchCriteriaService.fromDate;
+  toDate = this.searchCriteriaService.toDate;
   dateRangeText = computed(() => generateDateRange(this.translations, this.fromDate(), this.toDate()));
-  useDaysBack = toSignal(this.searchCriteriaService.useDaysBack$);
+  useDaysBack = this.searchCriteriaService.useDaysBack;
   dateFormat: Intl.DateTimeFormatOptions = {
     day: 'numeric',
     month: 'numeric',
@@ -56,7 +55,7 @@ export class DateRangeComponent {
 
   setUseDaysBack(daysBack: number): void {
     this.userSettingService.saveGeoHazardsAndDaysBack({ daysBack });
-    this.searchCriteriaService.setUseDaysBack(true);
+    this.searchCriteriaService.useDaysBack.set(true);
   }
 }
 

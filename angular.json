@@ -195,7 +195,8 @@
       "type": "directive"
     },
     "@schematics/angular:service": {
-      "type": "service"
+      "path": "src/app/core/services",
+      "flat": false
     },
     "@schematics/angular:guard": {
       "typeSeparator": "."

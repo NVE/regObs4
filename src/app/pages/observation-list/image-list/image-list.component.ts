@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -54,7 +54,7 @@ export class ImageListComponent {
   private translateService = inject(TranslateService);
   private loadingController = inject(LoadingController);
 
-  private searchHandler = this.searchRegistrations.searchAttachments(this.searchCriteriaService.searchCriteria$);
+  private searchHandler = this.searchRegistrations.searchAttachments(toObservable(this.searchCriteriaService.criteria));
 
   /**
    * Sjekker om innholdet i grid er kortere enn vindushøyden, og laster i så fall flere bilder. Vi viser bilder kun fra
