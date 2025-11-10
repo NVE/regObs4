@@ -71,7 +71,7 @@
                     }
                   }
                 }
-                @if (isGeohazardSnow() && !isWebPlatform) {
+                @if (isGeohazardSnow() && isWebPlatform) {
                   <app-slush-flow-filter [label]="slushFlowLabel()"> </app-slush-flow-filter>
                 }
               </ion-list>
