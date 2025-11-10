@@ -33,7 +33,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline, openOutline } from 'ionicons/icons';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/header-with-selected-items.component';
 import { RegionFilterComponent } from '../region-filter/region-filter.component';
 import { GeoHazard } from 'src/app/modules/common-core/models';
