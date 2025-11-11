@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -18,12 +18,29 @@ import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
 import { LangKey } from '../model/lang-key';
+// @ts-ignore
+import { ObsLocationsResponseDtoV2 } from '../model/obs-locations-response-dto-v2';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 
+
+export interface LocationGetRequestParams {
+    /** The ID of the location. */
+    locationId: number;
+    /** The language key. */
+    langKey?: LangKey;
+}
+
+export interface LocationWithinRadiusRequestParams {
+    latitude?: number;
+    longitude?: number;
+    radius?: number;
+    geoHazardTypeIds?: Array<number>;
+    returnCount?: number;
+}
 
 
 @Injectable({
@@ -38,18 +55,19 @@ export class LocationService extends BaseService {
     /**
      * Gets a specific location by ID.
      * @endpoint get /Location/{locationId}
-     * @param locationId The ID of the location.
-     * @param langKey The language key.
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public locationGet(locationId: number, langKey?: LangKey, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public locationGet(locationId: number, langKey?: LangKey, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public locationGet(locationId: number, langKey?: LangKey, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public locationGet(locationId: number, langKey?: LangKey, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationGet(requestParameters: LocationGetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public locationGet(requestParameters: LocationGetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public locationGet(requestParameters: LocationGetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public locationGet(requestParameters: LocationGetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const locationId = requestParameters?.locationId;
         if (locationId === null || locationId === undefined) {
             throw new Error('Required parameter locationId was null or undefined when calling locationGet.');
         }
+        const langKey = requestParameters?.langKey;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -104,18 +122,19 @@ export class LocationService extends BaseService {
     /**
      * Returns a list of locations within the given radius from the given coordinates.  For an unauthenticated client, it only returns public ice locations.  For an authenticated client, it returns public locations as well as the  authenticated user\&#39;s private locations.  Empty list if no registrations found.
      * @endpoint get /Location/WithinRadius
-     * @param latitude 
-     * @param longitude 
-     * @param radius 
-     * @param geoHazardTypeIds 
-     * @param returnCount 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public locationWithinRadius(latitude?: number, longitude?: number, radius?: number, geoHazardTypeIds?: Array<number>, returnCount?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public locationWithinRadius(latitude?: number, longitude?: number, radius?: number, geoHazardTypeIds?: Array<number>, returnCount?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public locationWithinRadius(latitude?: number, longitude?: number, radius?: number, geoHazardTypeIds?: Array<number>, returnCount?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public locationWithinRadius(latitude?: number, longitude?: number, radius?: number, geoHazardTypeIds?: Array<number>, returnCount?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationWithinRadius(requestParameters?: LocationWithinRadiusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ObsLocationsResponseDtoV2>>;
+    public locationWithinRadius(requestParameters?: LocationWithinRadiusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ObsLocationsResponseDtoV2>>>;
+    public locationWithinRadius(requestParameters?: LocationWithinRadiusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ObsLocationsResponseDtoV2>>>;
+    public locationWithinRadius(requestParameters?: LocationWithinRadiusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const latitude = requestParameters?.latitude;
+        const longitude = requestParameters?.longitude;
+        const radius = requestParameters?.radius;
+        const geoHazardTypeIds = requestParameters?.geoHazardTypeIds;
+        const returnCount = requestParameters?.returnCount;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -142,6 +161,9 @@ export class LocationService extends BaseService {
         localVarHeaders = this.configuration.addCredentialToHeaders('Bearer', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -165,7 +187,7 @@ export class LocationService extends BaseService {
 
         let localVarPath = `/Location/WithinRadius`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<ObsLocationsResponseDtoV2>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

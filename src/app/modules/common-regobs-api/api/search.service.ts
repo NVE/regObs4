@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -41,6 +41,58 @@ import { Configuration }                                     from '../configurat
 import { BaseService } from '../api.base.service';
 
 
+export interface SearchAtAGlanceRequestParams {
+    /** Search criteria */
+    searchCriteriaRequestDto?: SearchCriteriaRequestDto;
+}
+
+export interface SearchAttachmentsCountRequestParams {
+    /** Search criteria */
+    searchCriteriaRequestDto?: SearchCriteriaRequestDto;
+}
+
+export interface SearchCountRequestParams {
+    /** Search criteria */
+    searchCriteriaRequestDto?: SearchCriteriaRequestDto;
+}
+
+export interface SearchCountMyRegistrationsRequestParams {
+    /** You may add additional filters */
+    searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto;
+}
+
+export interface SearchGetRegIdsFromDeletedRegistrationsRequestParams {
+    /** Search criteria */
+    searchCriteriaRequestDto?: SearchCriteriaRequestDto;
+}
+
+export interface SearchGetSearchCriteriaRequestParams {
+    /** A comma separated list of geo hazard ID\&#39;s. Snow &#x3D; 10, dirt &#x3D; 20, water &#x3D; 60, ice &#x3D; 70. At least one geo hazard is required. */
+    geoHazards: string;
+    /** NO &#x3D; 1, EN &#x3D; 2, DE &#x3D; 3, SL &#x3D; 4, SV &#x3D; 5, IT &#x3D; 6, NN &#x3D; 7 */
+    langKey: number;
+}
+
+export interface SearchSearchRequestParams {
+    /** Use this to filter out registrations and change ordering of them.  The attribute \&quot;ObserverGuid\&quot; is deprecated and will be removed in the future. */
+    searchCriteriaRequestDto?: SearchCriteriaRequestDto;
+}
+
+export interface SearchSearchCriteriaRequestParams {
+    /** A request for relevant search criteria */
+    searchSideBarRequestDto?: SearchSideBarRequestDto;
+}
+
+export interface SearchSearchImagesRequestParams {
+    /** Search criteria */
+    searchCriteriaRequestDto?: SearchCriteriaRequestDto;
+}
+
+export interface SearchSearchMyRegistrationsRequestParams {
+    /** Use this to filter out registrations and change ordering of them */
+    searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -54,14 +106,15 @@ export class SearchService extends BaseService {
     /**
      * Simplified search for registrations. Returns less data per registration, so faster than /Search  Returns empty list if no registrations found.  Returns only first attachment and count on how many other attachments user can expect when opening  a detailed info
      * @endpoint post /Search/AtAGlance
-     * @param searchCriteriaRequestDto Search criteria
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchAtAGlance(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AtAGlanceViewModel>>;
-    public searchAtAGlance(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AtAGlanceViewModel>>>;
-    public searchAtAGlance(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AtAGlanceViewModel>>>;
-    public searchAtAGlance(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchAtAGlance(requestParameters?: SearchAtAGlanceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AtAGlanceViewModel>>;
+    public searchAtAGlance(requestParameters?: SearchAtAGlanceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AtAGlanceViewModel>>>;
+    public searchAtAGlance(requestParameters?: SearchAtAGlanceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AtAGlanceViewModel>>>;
+    public searchAtAGlance(requestParameters?: SearchAtAGlanceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaRequestDto = requestParameters?.searchCriteriaRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -126,14 +179,15 @@ export class SearchService extends BaseService {
     /**
      * Returns search result count for registrations with attachments
      * @endpoint post /Search/Attachments/Count
-     * @param searchCriteriaRequestDto Search criteria
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchAttachmentsCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchCountResponseDto>;
-    public searchAttachmentsCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchCountResponseDto>>;
-    public searchAttachmentsCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchCountResponseDto>>;
-    public searchAttachmentsCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchAttachmentsCount(requestParameters?: SearchAttachmentsCountRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchCountResponseDto>;
+    public searchAttachmentsCount(requestParameters?: SearchAttachmentsCountRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchCountResponseDto>>;
+    public searchAttachmentsCount(requestParameters?: SearchAttachmentsCountRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchCountResponseDto>>;
+    public searchAttachmentsCount(requestParameters?: SearchAttachmentsCountRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaRequestDto = requestParameters?.searchCriteriaRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -198,14 +252,15 @@ export class SearchService extends BaseService {
     /**
      * Returns search result count
      * @endpoint post /Search/Count
-     * @param searchCriteriaRequestDto Search criteria
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchCountResponseDto>;
-    public searchCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchCountResponseDto>>;
-    public searchCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchCountResponseDto>>;
-    public searchCount(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchCount(requestParameters?: SearchCountRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchCountResponseDto>;
+    public searchCount(requestParameters?: SearchCountRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchCountResponseDto>>;
+    public searchCount(requestParameters?: SearchCountRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchCountResponseDto>>;
+    public searchCount(requestParameters?: SearchCountRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaRequestDto = requestParameters?.searchCriteriaRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -270,14 +325,15 @@ export class SearchService extends BaseService {
     /**
      * Returns number of registrations that were registered by the logged in user
      * @endpoint post /Search/MyRegistrationsCount
-     * @param searchCriteriaExclUserRequestDto You may add additional filters
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchCountMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchCountResponseDto>;
-    public searchCountMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchCountResponseDto>>;
-    public searchCountMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchCountResponseDto>>;
-    public searchCountMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchCountMyRegistrations(requestParameters?: SearchCountMyRegistrationsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchCountResponseDto>;
+    public searchCountMyRegistrations(requestParameters?: SearchCountMyRegistrationsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchCountResponseDto>>;
+    public searchCountMyRegistrations(requestParameters?: SearchCountMyRegistrationsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchCountResponseDto>>;
+    public searchCountMyRegistrations(requestParameters?: SearchCountMyRegistrationsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaExclUserRequestDto = requestParameters?.searchCriteriaExclUserRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -342,14 +398,15 @@ export class SearchService extends BaseService {
     /**
      * Returns list of regIds from deleted registrations that can be filtered with criteria model.  Used with offline syncing on mobile devices.
      * @endpoint post /Search/DeletedRegistrations
-     * @param searchCriteriaRequestDto Search criteria
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchGetRegIdsFromDeletedRegistrations(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<number>>;
-    public searchGetRegIdsFromDeletedRegistrations(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<number>>>;
-    public searchGetRegIdsFromDeletedRegistrations(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<number>>>;
-    public searchGetRegIdsFromDeletedRegistrations(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchGetRegIdsFromDeletedRegistrations(requestParameters?: SearchGetRegIdsFromDeletedRegistrationsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<number>>;
+    public searchGetRegIdsFromDeletedRegistrations(requestParameters?: SearchGetRegIdsFromDeletedRegistrationsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<number>>>;
+    public searchGetRegIdsFromDeletedRegistrations(requestParameters?: SearchGetRegIdsFromDeletedRegistrationsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<number>>>;
+    public searchGetRegIdsFromDeletedRegistrations(requestParameters?: SearchGetRegIdsFromDeletedRegistrationsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaRequestDto = requestParameters?.searchCriteriaRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -414,18 +471,19 @@ export class SearchService extends BaseService {
     /**
      * Returns relevant search criteria for the specified geo hazard types and language.  This can help you to find the right criteria to use in the other search methods.
      * @endpoint get /Search/SearchCriteria/{geoHazards}/{langKey}
-     * @param geoHazards A comma separated list of geo hazard ID\&#39;s. Snow &#x3D; 10, dirt &#x3D; 20, water &#x3D; 60, ice &#x3D; 70. At least one geo hazard is required.
-     * @param langKey NO &#x3D; 1, EN &#x3D; 2, DE &#x3D; 3, SL &#x3D; 4, SV &#x3D; 5, IT &#x3D; 6, NN &#x3D; 7
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchGetSearchCriteria(geoHazards: string, langKey: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchSideBarDto>;
-    public searchGetSearchCriteria(geoHazards: string, langKey: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchSideBarDto>>;
-    public searchGetSearchCriteria(geoHazards: string, langKey: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchSideBarDto>>;
-    public searchGetSearchCriteria(geoHazards: string, langKey: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchGetSearchCriteria(requestParameters: SearchGetSearchCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchSideBarDto>;
+    public searchGetSearchCriteria(requestParameters: SearchGetSearchCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchSideBarDto>>;
+    public searchGetSearchCriteria(requestParameters: SearchGetSearchCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchSideBarDto>>;
+    public searchGetSearchCriteria(requestParameters: SearchGetSearchCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const geoHazards = requestParameters?.geoHazards;
         if (geoHazards === null || geoHazards === undefined) {
             throw new Error('Required parameter geoHazards was null or undefined when calling searchGetSearchCriteria.');
         }
+        const langKey = requestParameters?.langKey;
         if (langKey === null || langKey === undefined) {
             throw new Error('Required parameter langKey was null or undefined when calling searchGetSearchCriteria.');
         }
@@ -482,14 +540,15 @@ export class SearchService extends BaseService {
      * Returns a list of complete registrations that matches your filter. Empty list if no registrations found.  Use POST /Search/AtAGlance for faster search.
      * Example critera for returning the 10 newest registrations:  &#x60;&#x60;&#x60;  { \&quot;NumberOfRecords\&quot;: 10 }  &#x60;&#x60;&#x60;
      * @endpoint post /Search
-     * @param searchCriteriaRequestDto Use this to filter out registrations and change ordering of them.  The attribute \&quot;ObserverGuid\&quot; is deprecated and will be removed in the future.
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchSearch(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegistrationViewModel>>;
-    public searchSearch(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegistrationViewModel>>>;
-    public searchSearch(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegistrationViewModel>>>;
-    public searchSearch(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchSearch(requestParameters?: SearchSearchRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegistrationViewModel>>;
+    public searchSearch(requestParameters?: SearchSearchRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegistrationViewModel>>>;
+    public searchSearch(requestParameters?: SearchSearchRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegistrationViewModel>>>;
+    public searchSearch(requestParameters?: SearchSearchRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaRequestDto = requestParameters?.searchCriteriaRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -554,15 +613,16 @@ export class SearchService extends BaseService {
     /**
      * Please use GET /Search/SearchCriteria instead.  Returns relevant search criteria for the specified geo hazard types and language.  This can help you to find the right criteria to use in the other search methods.
      * @endpoint post /Search/SearchCriteria
-     * @param searchSideBarRequestDto A request for relevant search criteria
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @deprecated
      */
-    public searchSearchCriteria(searchSideBarRequestDto?: SearchSideBarRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchSideBarDto>;
-    public searchSearchCriteria(searchSideBarRequestDto?: SearchSideBarRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchSideBarDto>>;
-    public searchSearchCriteria(searchSideBarRequestDto?: SearchSideBarRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchSideBarDto>>;
-    public searchSearchCriteria(searchSideBarRequestDto?: SearchSideBarRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchSearchCriteria(requestParameters?: SearchSearchCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<SearchSideBarDto>;
+    public searchSearchCriteria(requestParameters?: SearchSearchCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SearchSideBarDto>>;
+    public searchSearchCriteria(requestParameters?: SearchSearchCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SearchSideBarDto>>;
+    public searchSearchCriteria(requestParameters?: SearchSearchCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchSideBarRequestDto = requestParameters?.searchSideBarRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -627,14 +687,15 @@ export class SearchService extends BaseService {
     /**
      * Search for images only
      * @endpoint post /Search/Attachments
-     * @param searchCriteriaRequestDto Search criteria
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchSearchImages(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegistrationsWithAttachments>>;
-    public searchSearchImages(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegistrationsWithAttachments>>>;
-    public searchSearchImages(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegistrationsWithAttachments>>>;
-    public searchSearchImages(searchCriteriaRequestDto?: SearchCriteriaRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchSearchImages(requestParameters?: SearchSearchImagesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegistrationsWithAttachments>>;
+    public searchSearchImages(requestParameters?: SearchSearchImagesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegistrationsWithAttachments>>>;
+    public searchSearchImages(requestParameters?: SearchSearchImagesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegistrationsWithAttachments>>>;
+    public searchSearchImages(requestParameters?: SearchSearchImagesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaRequestDto = requestParameters?.searchCriteriaRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -700,14 +761,15 @@ export class SearchService extends BaseService {
      * Returns a list of complete registrations that were registered by the logged in user.  Empty list if no registrations found.
      * Example critera for returning the 10 newest registrations:  &#x60;&#x60;&#x60;  { \&quot;NumberOfRecords\&quot;: 10 }  &#x60;&#x60;&#x60;
      * @endpoint post /Search/MyRegistrations
-     * @param searchCriteriaExclUserRequestDto Use this to filter out registrations and change ordering of them
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchSearchMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegistrationViewModel>>;
-    public searchSearchMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegistrationViewModel>>>;
-    public searchSearchMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegistrationViewModel>>>;
-    public searchSearchMyRegistrations(searchCriteriaExclUserRequestDto?: SearchCriteriaExclUserRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public searchSearchMyRegistrations(requestParameters?: SearchSearchMyRegistrationsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegistrationViewModel>>;
+    public searchSearchMyRegistrations(requestParameters?: SearchSearchMyRegistrationsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegistrationViewModel>>>;
+    public searchSearchMyRegistrations(requestParameters?: SearchSearchMyRegistrationsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegistrationViewModel>>>;
+    public searchSearchMyRegistrations(requestParameters?: SearchSearchMyRegistrationsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const searchCriteriaExclUserRequestDto = requestParameters?.searchCriteriaExclUserRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 

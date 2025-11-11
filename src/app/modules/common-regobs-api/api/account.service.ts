@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -35,6 +35,14 @@ import { Configuration }                                     from '../configurat
 import { BaseService } from '../api.base.service';
 
 
+export interface AccountGetMyPageDataRequestParams {
+    langKey?: LangKey;
+}
+
+export interface AccountUpdateObserverRequestParams {
+    observerPatchRequestDto?: ObserverPatchRequestDto;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -47,14 +55,15 @@ export class AccountService extends BaseService {
 
     /**
      * @endpoint get /Account/Mypage
-     * @param langKey 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public accountGetMyPageData(langKey?: LangKey, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<MyPageData>;
-    public accountGetMyPageData(langKey?: LangKey, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MyPageData>>;
-    public accountGetMyPageData(langKey?: LangKey, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MyPageData>>;
-    public accountGetMyPageData(langKey?: LangKey, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public accountGetMyPageData(requestParameters?: AccountGetMyPageDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<MyPageData>;
+    public accountGetMyPageData(requestParameters?: AccountGetMyPageDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MyPageData>>;
+    public accountGetMyPageData(requestParameters?: AccountGetMyPageDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MyPageData>>;
+    public accountGetMyPageData(requestParameters?: AccountGetMyPageDataRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const langKey = requestParameters?.langKey;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -228,14 +237,15 @@ export class AccountService extends BaseService {
     /**
      * Set nickname for an observer
      * @endpoint put /Account/UpdateObserver
-     * @param observerPatchRequestDto 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public accountUpdateObserver(observerPatchRequestDto?: ObserverPatchRequestDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public accountUpdateObserver(observerPatchRequestDto?: ObserverPatchRequestDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public accountUpdateObserver(observerPatchRequestDto?: ObserverPatchRequestDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public accountUpdateObserver(observerPatchRequestDto?: ObserverPatchRequestDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public accountUpdateObserver(requestParameters?: AccountUpdateObserverRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public accountUpdateObserver(requestParameters?: AccountUpdateObserverRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public accountUpdateObserver(requestParameters?: AccountUpdateObserverRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public accountUpdateObserver(requestParameters?: AccountUpdateObserverRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const observerPatchRequestDto = requestParameters?.observerPatchRequestDto;
 
         let localVarHeaders = this.defaultHeaders;
 

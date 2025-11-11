@@ -9,8 +9,9 @@
  */
 
 
-export interface CountyDto { 
-    CountyNo?: string | null;
+export interface KdvElement { 
+    Id?: number;
     Name?: string | null;
+    Description?: string | null;
 }
 

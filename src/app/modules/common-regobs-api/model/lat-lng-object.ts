@@ -9,8 +9,8 @@
  */
 
 
-export interface CountyDto { 
-    CountyNo?: string | null;
-    Name?: string | null;
+export interface LatLngObject { 
+    Latitude?: number;
+    Longitude?: number;
 }
 

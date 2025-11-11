@@ -49,6 +49,8 @@ model/forecast-region-sub-region-dto.ts
 model/general-observation-edit-model.ts
 model/general-observation-view-model.ts
 model/geo-hazard-types.ts
+model/geo-location-info.ts
+model/geo-location-summary.ts
 model/helptext-dto.ts
 model/ice-cover-edit-model.ts
 model/ice-cover-view-model.ts
@@ -58,14 +60,18 @@ model/ice-thickness-layer-view-model.ts
 model/ice-thickness-view-model.ts
 model/incident-edit-model.ts
 model/incident-view-model.ts
+model/kdv-element.ts
+model/kdv-elements-response-dto.ts
 model/landslide-edit-model.ts
 model/landslide-view-model.ts
 model/lang-key.ts
+model/lat-lng-object.ts
 model/lat-lng.ts
 model/models.ts
 model/my-page-data.ts
 model/obs-location-edit-model.ts
 model/obs-location-view-model.ts
+model/obs-locations-response-dto-v2.ts
 model/observer-competence-dto.ts
 model/observer-competence-level-dto.ts
 model/observer-group-dto.ts

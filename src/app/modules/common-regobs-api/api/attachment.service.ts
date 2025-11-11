@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -23,6 +23,17 @@ import { Configuration }                                     from '../configurat
 import { BaseService } from '../api.base.service';
 
 
+export interface AttachmentGetRequestParams {
+    /** Attachment id */
+    id: number;
+    /** Image format. For video, use Raw. Possible image formats: Raw, Original, Large, Medium, Thumbnail */
+    format: string;
+}
+
+export interface AttachmentUploadRequestParams {
+    file?: Blob;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -36,18 +47,19 @@ export class AttachmentService extends BaseService {
     /**
      * Get Attachment file by id
      * @endpoint get /Attachment/{format}/{id}
-     * @param id Attachment id
-     * @param format Image format. For video, use Raw. Possible image formats: Raw, Original, Large, Medium, Thumbnail
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public attachmentGet(id: number, format: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public attachmentGet(id: number, format: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public attachmentGet(id: number, format: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public attachmentGet(id: number, format: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public attachmentGet(requestParameters: AttachmentGetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public attachmentGet(requestParameters: AttachmentGetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public attachmentGet(requestParameters: AttachmentGetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public attachmentGet(requestParameters: AttachmentGetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling attachmentGet.');
         }
+        const format = requestParameters?.format;
         if (format === null || format === undefined) {
             throw new Error('Required parameter format was null or undefined when calling attachmentGet.');
         }
@@ -100,14 +112,15 @@ export class AttachmentService extends BaseService {
     /**
      * Upload an image to a registration
      * @endpoint post /Attachment/Upload
-     * @param file 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public attachmentUpload(file?: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<string>;
-    public attachmentUpload(file?: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
-    public attachmentUpload(file?: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
-    public attachmentUpload(file?: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public attachmentUpload(requestParameters?: AttachmentUploadRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<string>;
+    public attachmentUpload(requestParameters?: AttachmentUploadRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
+    public attachmentUpload(requestParameters?: AttachmentUploadRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
+    public attachmentUpload(requestParameters?: AttachmentUploadRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const file = requestParameters?.file;
 
         let localVarHeaders = this.defaultHeaders;
 

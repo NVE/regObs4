@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -17,6 +17,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { KdvElementsResponseDto } from '../model/kdv-elements-response-dto';
+// @ts-ignore
 import { LangKey } from '../model/lang-key';
 
 // @ts-ignore
@@ -24,6 +26,15 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 
+
+export interface KdvElementsGetKdvsRequestParams {
+    /** 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 7 &#x3D; norwegian nynorsk, 8 &#x3D; french. Norwegian is the default language if none is selected. Default langKey is norwegian */
+    langkey?: LangKey;
+    /** False returns data types that are no longer in use */
+    isActive?: boolean;
+    /** False returns data types sorted by id */
+    sortOrder?: boolean;
+}
 
 
 @Injectable({
@@ -38,16 +49,17 @@ export class KdvElementsService extends BaseService {
     /**
      * Returns id, name, and description for data types. This is most often used in input fields, dropdowns etc.  KDVElements that belong to a geo hazard are prefixed with the corresponding hazard (Snow_, Ice_, Water_, Landslide_).  If a type is missing in given language, we will fill the holes with equivalent types in English (if they exist).
      * @endpoint get /KdvElements
-     * @param langkey 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 7 &#x3D; norwegian nynorsk, 8 &#x3D; french. Norwegian is the default language if none is selected. Default langKey is norwegian
-     * @param isActive False returns data types that are no longer in use
-     * @param sortOrder False returns data types sorted by id
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public kdvElementsGetKdvs(langkey?: LangKey, isActive?: boolean, sortOrder?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public kdvElementsGetKdvs(langkey?: LangKey, isActive?: boolean, sortOrder?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public kdvElementsGetKdvs(langkey?: LangKey, isActive?: boolean, sortOrder?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public kdvElementsGetKdvs(langkey?: LangKey, isActive?: boolean, sortOrder?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public kdvElementsGetKdvs(requestParameters?: KdvElementsGetKdvsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<KdvElementsResponseDto>;
+    public kdvElementsGetKdvs(requestParameters?: KdvElementsGetKdvsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<KdvElementsResponseDto>>;
+    public kdvElementsGetKdvs(requestParameters?: KdvElementsGetKdvsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<KdvElementsResponseDto>>;
+    public kdvElementsGetKdvs(requestParameters?: KdvElementsGetKdvsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const langkey = requestParameters?.langkey;
+        const isActive = requestParameters?.isActive;
+        const sortOrder = requestParameters?.sortOrder;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -66,6 +78,9 @@ export class KdvElementsService extends BaseService {
         localVarHeaders = this.configuration.addCredentialToHeaders('Bearer', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -89,7 +104,7 @@ export class KdvElementsService extends BaseService {
 
         let localVarPath = `/KdvElements`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<KdvElementsResponseDto>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

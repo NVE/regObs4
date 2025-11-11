@@ -9,7 +9,8 @@
         "inputSpec": "https://test-api.regobs.no/v6/swagger/v6/swagger.json",
         "output": "src/app/modules/common-regobs-api",
         "additionalProperties": {
-          "fileNaming": "kebab-case"
+          "fileNaming": "kebab-case",
+          "useSingleRequestParameter": true
         }
       }
     }

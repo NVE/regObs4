@@ -7,10 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { KdvElement } from './kdv-element';
 
 
-export interface CountyDto { 
-    CountyNo?: string | null;
-    Name?: string | null;
+export interface KdvElementsResponseDto { 
+    KdvRepositories?: { [key: string]: Array<KdvElement>; } | null;
+    ViewRepositories?: any | null;
 }
 

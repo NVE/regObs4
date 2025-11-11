@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -17,6 +17,10 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { GeoLocationInfo } from '../model/geo-location-info';
+// @ts-ignore
+import { GeoLocationSummary } from '../model/geo-location-summary';
+// @ts-ignore
 import { LangKey } from '../model/lang-key';
 
 // @ts-ignore
@@ -24,6 +28,26 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 
+
+export interface GeoCodeLocationInfoRequestParams {
+    /** Latitude */
+    latitude?: number;
+    /** Longitude */
+    longitude?: number;
+    /** Geohazard ID */
+    geoHazardId?: number;
+}
+
+export interface GeoCodeLocationSummaryRequestParams {
+    /** Latitude */
+    latitude?: number;
+    /** Longitude */
+    longitude?: number;
+    /** Language key */
+    langKey?: LangKey;
+    /** Geohazard ID */
+    geoHazardId?: number;
+}
 
 
 @Injectable({
@@ -38,16 +62,17 @@ export class GeoCodeService extends BaseService {
     /**
      * Get detailed geolocation info.
      * @endpoint get /GeoCode/LocationInfo
-     * @param latitude Latitude
-     * @param longitude Longitude
-     * @param geoHazardId Geohazard ID
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public geoCodeLocationInfo(latitude?: number, longitude?: number, geoHazardId?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public geoCodeLocationInfo(latitude?: number, longitude?: number, geoHazardId?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public geoCodeLocationInfo(latitude?: number, longitude?: number, geoHazardId?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public geoCodeLocationInfo(latitude?: number, longitude?: number, geoHazardId?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public geoCodeLocationInfo(requestParameters?: GeoCodeLocationInfoRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<GeoLocationInfo>;
+    public geoCodeLocationInfo(requestParameters?: GeoCodeLocationInfoRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GeoLocationInfo>>;
+    public geoCodeLocationInfo(requestParameters?: GeoCodeLocationInfoRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GeoLocationInfo>>;
+    public geoCodeLocationInfo(requestParameters?: GeoCodeLocationInfoRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const latitude = requestParameters?.latitude;
+        const longitude = requestParameters?.longitude;
+        const geoHazardId = requestParameters?.geoHazardId;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -66,6 +91,9 @@ export class GeoCodeService extends BaseService {
         localVarHeaders = this.configuration.addCredentialToHeaders('Bearer', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -89,7 +117,7 @@ export class GeoCodeService extends BaseService {
 
         let localVarPath = `/GeoCode/LocationInfo`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<GeoLocationInfo>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -106,17 +134,18 @@ export class GeoCodeService extends BaseService {
     /**
      * Get preformatted geolocation summary.
      * @endpoint get /GeoCode/LocationSummary
-     * @param latitude Latitude
-     * @param longitude Longitude
-     * @param langKey Language key
-     * @param geoHazardId Geohazard ID
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public geoCodeLocationSummary(latitude?: number, longitude?: number, langKey?: LangKey, geoHazardId?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public geoCodeLocationSummary(latitude?: number, longitude?: number, langKey?: LangKey, geoHazardId?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public geoCodeLocationSummary(latitude?: number, longitude?: number, langKey?: LangKey, geoHazardId?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public geoCodeLocationSummary(latitude?: number, longitude?: number, langKey?: LangKey, geoHazardId?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public geoCodeLocationSummary(requestParameters?: GeoCodeLocationSummaryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<GeoLocationSummary>;
+    public geoCodeLocationSummary(requestParameters?: GeoCodeLocationSummaryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GeoLocationSummary>>;
+    public geoCodeLocationSummary(requestParameters?: GeoCodeLocationSummaryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GeoLocationSummary>>;
+    public geoCodeLocationSummary(requestParameters?: GeoCodeLocationSummaryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const latitude = requestParameters?.latitude;
+        const longitude = requestParameters?.longitude;
+        const langKey = requestParameters?.langKey;
+        const geoHazardId = requestParameters?.geoHazardId;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -137,6 +166,9 @@ export class GeoCodeService extends BaseService {
         localVarHeaders = this.configuration.addCredentialToHeaders('Bearer', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -160,7 +192,7 @@ export class GeoCodeService extends BaseService {
 
         let localVarPath = `/GeoCode/LocationSummary`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<GeoLocationSummary>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

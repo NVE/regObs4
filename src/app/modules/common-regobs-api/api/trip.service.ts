@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -27,6 +27,14 @@ import { Configuration }                                     from '../configurat
 import { BaseService } from '../api.base.service';
 
 
+export interface TripCreateTripRequestParams {
+    createTripDto?: CreateTripDto;
+}
+
+export interface TripUpdateTripRequestParams {
+    finishTripDto?: FinishTripDto;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -39,14 +47,15 @@ export class TripService extends BaseService {
 
     /**
      * @endpoint post /Trip
-     * @param createTripDto 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tripCreateTrip(createTripDto?: CreateTripDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public tripCreateTrip(createTripDto?: CreateTripDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public tripCreateTrip(createTripDto?: CreateTripDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public tripCreateTrip(createTripDto?: CreateTripDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public tripCreateTrip(requestParameters?: TripCreateTripRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public tripCreateTrip(requestParameters?: TripCreateTripRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public tripCreateTrip(requestParameters?: TripCreateTripRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public tripCreateTrip(requestParameters?: TripCreateTripRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const createTripDto = requestParameters?.createTripDto;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -163,14 +172,15 @@ export class TripService extends BaseService {
 
     /**
      * @endpoint put /Trip
-     * @param finishTripDto 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tripUpdateTrip(finishTripDto?: FinishTripDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public tripUpdateTrip(finishTripDto?: FinishTripDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public tripUpdateTrip(finishTripDto?: FinishTripDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public tripUpdateTrip(finishTripDto?: FinishTripDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public tripUpdateTrip(requestParameters?: TripUpdateTripRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public tripUpdateTrip(requestParameters?: TripUpdateTripRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public tripUpdateTrip(requestParameters?: TripUpdateTripRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public tripUpdateTrip(requestParameters?: TripUpdateTripRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const finishTripDto = requestParameters?.finishTripDto;
 
         let localVarHeaders = this.defaultHeaders;
 

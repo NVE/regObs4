@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.4 - commit: 59238037
+ * RegObs API, build: 20251103.5 - commit: 62e967e0
  *
  * Contact: regobs@nve.no
  *
@@ -11,7 +11,7 @@
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext 
+         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext
         }       from '@angular/common/http';
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
@@ -29,6 +29,66 @@ import { Configuration }                                     from '../configurat
 import { BaseService } from '../api.base.service';
 
 
+export interface RegistrationDeleteRequestParams {
+    id: number;
+}
+
+export interface RegistrationGetRequestParams {
+    /** Registration Id */
+    regId: number;
+    /** 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk. */
+    langKey: LangKey;
+}
+
+export interface RegistrationGetCaamlRequestParams {
+    /** Registration Id */
+    regId: number;
+}
+
+export interface RegistrationInsertRequestParams {
+    /** Unique identifier for registration, in GUID format. This parameter will be required in next version of the API */
+    externalReferenceId?: string;
+    /** 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk. */
+    langKey?: LangKey;
+    /** ObsLocation, GeoHazardTID and DtObsTime are mandatory. */
+    registrationEditModel?: RegistrationEditModel;
+}
+
+export interface RegistrationInsertOrUpdateRequestParams {
+    /** Set to regId if update existing registration, else leave blank */
+    id: number;
+    /** External reference id, must be unique for application and in GUID format */
+    externalReferenceId?: string;
+    /** 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk. */
+    langKey?: LangKey;
+    /** Set this to true if you want to replace the last saved version of this registration even if your copy is outdated */
+    ignoreVersionCheck?: boolean;
+    /** Registration data */
+    registrationEditModel?: RegistrationEditModel;
+}
+
+export interface RegistrationPlotPreviewPngRequestParams {
+    /**  */
+    format?: number;
+    /**  */
+    height?: number;
+    /**  */
+    width?: number;
+    /** 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk. */
+    langKey?: LangKey;
+    /** Snow profile registration */
+    registrationEditModel?: RegistrationEditModel;
+}
+
+export interface RegistrationValidateRequestParams {
+    /** RegId if existing registration else null if new */
+    id: number;
+    /** External reference id, must be unique for application and in GUID format */
+    externalReferenceId?: string;
+    /** Registration data */
+    registrationEditModel?: RegistrationEditModel;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -42,14 +102,15 @@ export class RegistrationService extends BaseService {
     /**
      * Delete registration
      * @endpoint delete /Registration/{id}
-     * @param id 
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationDelete(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public registrationDelete(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public registrationDelete(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public registrationDelete(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationDelete(requestParameters: RegistrationDeleteRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public registrationDelete(requestParameters: RegistrationDeleteRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public registrationDelete(requestParameters: RegistrationDeleteRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public registrationDelete(requestParameters: RegistrationDeleteRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling registrationDelete.');
         }
@@ -102,18 +163,19 @@ export class RegistrationService extends BaseService {
     /**
      * Get registration by regId.
      * @endpoint get /Registration/{regId}/{langKey}
-     * @param regId Registration Id
-     * @param langKey 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk.
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationGet(regId: number, langKey: LangKey, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public registrationGet(regId: number, langKey: LangKey, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public registrationGet(regId: number, langKey: LangKey, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public registrationGet(regId: number, langKey: LangKey, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const regId = requestParameters?.regId;
         if (regId === null || regId === undefined) {
             throw new Error('Required parameter regId was null or undefined when calling registrationGet.');
         }
+        const langKey = requestParameters?.langKey;
         if (langKey === null || langKey === undefined) {
             throw new Error('Required parameter langKey was null or undefined when calling registrationGet.');
         }
@@ -167,14 +229,15 @@ export class RegistrationService extends BaseService {
      * Get a registration in CAAML format
      * CAAML (Canadian Avalanche Association Markup Language) is a standard  for the electronic representation of information pertinent to avalanche  safety operations. See http://caaml.org/.
      * @endpoint get /Registration/Caaml/{regId}
-     * @param regId Registration Id
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationGetCaaml(regId: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public registrationGetCaaml(regId: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public registrationGetCaaml(regId: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public registrationGetCaaml(regId: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const regId = requestParameters?.regId;
         if (regId === null || regId === undefined) {
             throw new Error('Required parameter regId was null or undefined when calling registrationGetCaaml.');
         }
@@ -228,16 +291,17 @@ export class RegistrationService extends BaseService {
      * Create a new registration. The purpose is to send in one or more forms.
      * Example critera for creating a new registration with one form.                    {          \&quot;GeoHazardTID\&quot;: 20,          \&quot;DtObsTime\&quot;: \&quot;2021-06-25T13:18:00.000Z\&quot;,          \&quot;ObsLocation\&quot;: {              \&quot;Latitude\&quot;: 60.919917123811992,              \&quot;Longitude\&quot;: 7.210167614875667,          },          \&quot;LandSlideObs\&quot;: {              \&quot;LandSlideTID\&quot;: 2,              \&quot;LandSlideTriggerTID\&quot;: 0,              \&quot;LandSlideSizeTID\&quot;: 0,              \&quot;Comment\&quot;: \&quot;Flomskred på FV5627 løsnet fra vegskjæring 0-50m. Anslått skredvolum på veg: mindre enn 10m^3.Blokkert veglengde: Kun i grøft.\&quot;,              \&quot;GeoHazardTID\&quot;: 20,              \&quot;ActivityInfluencedTID\&quot;: 220,              \&quot;ForecastAccurateTID\&quot;: 0,              \&quot;DamageExtentTID\&quot;: 0,              \&quot;DtLandSlideTime\&quot;: \&quot;2021-06-25T08:10:00+02:00\&quot;,          }      }
      * @endpoint post /Registration
-     * @param externalReferenceId Unique identifier for registration, in GUID format. This parameter will be required in next version of the API
-     * @param langKey 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk.
-     * @param registrationEditModel ObsLocation, GeoHazardTID and DtObsTime are mandatory.
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationInsert(externalReferenceId?: string, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
-    public registrationInsert(externalReferenceId?: string, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
-    public registrationInsert(externalReferenceId?: string, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
-    public registrationInsert(externalReferenceId?: string, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationInsert(requestParameters?: RegistrationInsertRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
+    public registrationInsert(requestParameters?: RegistrationInsertRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
+    public registrationInsert(requestParameters?: RegistrationInsertRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
+    public registrationInsert(requestParameters?: RegistrationInsertRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const externalReferenceId = requestParameters?.externalReferenceId;
+        const langKey = requestParameters?.langKey;
+        const registrationEditModel = requestParameters?.registrationEditModel;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -309,21 +373,22 @@ export class RegistrationService extends BaseService {
     /**
      * Update registration. Updating existing obsLocation with new values will be possible only  if there is no other registrations connected to that location from before. Otherwise new values are ignored. User don\&#39;t get any error message.
      * @endpoint put /Registration/{id}
-     * @param id Set to regId if update existing registration, else leave blank
-     * @param externalReferenceId External reference id, must be unique for application and in GUID format
-     * @param langKey 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk.
-     * @param ignoreVersionCheck Set this to true if you want to replace the last saved version of this registration even if your copy is outdated
-     * @param registrationEditModel Registration data
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationInsertOrUpdate(id: number, externalReferenceId?: string, langKey?: LangKey, ignoreVersionCheck?: boolean, registrationEditModel?: RegistrationEditModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
-    public registrationInsertOrUpdate(id: number, externalReferenceId?: string, langKey?: LangKey, ignoreVersionCheck?: boolean, registrationEditModel?: RegistrationEditModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
-    public registrationInsertOrUpdate(id: number, externalReferenceId?: string, langKey?: LangKey, ignoreVersionCheck?: boolean, registrationEditModel?: RegistrationEditModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
-    public registrationInsertOrUpdate(id: number, externalReferenceId?: string, langKey?: LangKey, ignoreVersionCheck?: boolean, registrationEditModel?: RegistrationEditModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationInsertOrUpdate(requestParameters: RegistrationInsertOrUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
+    public registrationInsertOrUpdate(requestParameters: RegistrationInsertOrUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
+    public registrationInsertOrUpdate(requestParameters: RegistrationInsertOrUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
+    public registrationInsertOrUpdate(requestParameters: RegistrationInsertOrUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling registrationInsertOrUpdate.');
         }
+        const externalReferenceId = requestParameters?.externalReferenceId;
+        const langKey = requestParameters?.langKey;
+        const ignoreVersionCheck = requestParameters?.ignoreVersionCheck;
+        const registrationEditModel = requestParameters?.registrationEditModel;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -397,18 +462,19 @@ export class RegistrationService extends BaseService {
     /**
      * Generate a preview figure for a snow profile registration.
      * @endpoint post /Registration/PlotPreviewPng
-     * @param format 
-     * @param height 
-     * @param width 
-     * @param langKey 1 &#x3D; norwegian, 2 &#x3D; english, 3 &#x3D; german, 4 &#x3D; slovenian, 5 &#x3D; swedish, 6 &#x3D; italian, 7 &#x3D; norwegian nynorsk.
-     * @param registrationEditModel Snow profile registration
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationPlotPreviewPng(format?: number, height?: number, width?: number, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public registrationPlotPreviewPng(format?: number, height?: number, width?: number, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public registrationPlotPreviewPng(format?: number, height?: number, width?: number, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public registrationPlotPreviewPng(format?: number, height?: number, width?: number, langKey?: LangKey, registrationEditModel?: RegistrationEditModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationPlotPreviewPng(requestParameters?: RegistrationPlotPreviewPngRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public registrationPlotPreviewPng(requestParameters?: RegistrationPlotPreviewPngRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public registrationPlotPreviewPng(requestParameters?: RegistrationPlotPreviewPngRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public registrationPlotPreviewPng(requestParameters?: RegistrationPlotPreviewPngRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const format = requestParameters?.format;
+        const height = requestParameters?.height;
+        const width = requestParameters?.width;
+        const langKey = requestParameters?.langKey;
+        const registrationEditModel = requestParameters?.registrationEditModel;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -481,19 +547,20 @@ export class RegistrationService extends BaseService {
     /**
      * Validate registration data.
      * @endpoint post /Registration/Validate/{id}
-     * @param id RegId if existing registration else null if new
-     * @param externalReferenceId External reference id, must be unique for application and in GUID format
-     * @param registrationEditModel Registration data
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationValidate(id: number, externalReferenceId?: string, registrationEditModel?: RegistrationEditModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<boolean>;
-    public registrationValidate(id: number, externalReferenceId?: string, registrationEditModel?: RegistrationEditModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<boolean>>;
-    public registrationValidate(id: number, externalReferenceId?: string, registrationEditModel?: RegistrationEditModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<boolean>>;
-    public registrationValidate(id: number, externalReferenceId?: string, registrationEditModel?: RegistrationEditModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationValidate(requestParameters: RegistrationValidateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<boolean>;
+    public registrationValidate(requestParameters: RegistrationValidateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<boolean>>;
+    public registrationValidate(requestParameters: RegistrationValidateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<boolean>>;
+    public registrationValidate(requestParameters: RegistrationValidateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling registrationValidate.');
         }
+        const externalReferenceId = requestParameters?.externalReferenceId;
+        const registrationEditModel = requestParameters?.registrationEditModel;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
