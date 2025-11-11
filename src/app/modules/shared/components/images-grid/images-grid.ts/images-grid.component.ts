@@ -1,6 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
 import { LoggingService } from '../../../services/logging/logging.service';
-import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
+import { RegistrationsWithAttachments } from 'src/app/modules/common-regobs-api';
 import { ModalController } from '@ionic/angular/standalone';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 import { FullscreenImageModalPage } from 'src/app/pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
@@ -17,7 +17,7 @@ export class ImagesGridComponent {
   private logger = inject(LoggingService);
   private modalController = inject(ModalController);
 
-  @Input() attachments: SearchRegistrationsWithAttachments[];
+  @Input() attachments: RegistrationsWithAttachments[];
 
   trackById(_, obs: HasRegId) {
     return obs ? obs.RegId : undefined;

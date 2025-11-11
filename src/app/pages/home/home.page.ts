@@ -49,12 +49,7 @@ import { Immutable } from 'src/app/core/models/immutable';
 import { SearchCriteria } from 'src/app/core/models/search-criteria';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { SearchService } from 'src/app/modules/common-regobs-api';
-import {
-  AtAGlanceViewModel,
-  PositionDto,
-  SearchCriteriaRequestDto,
-  WithinExtentCriteriaDto,
-} from 'src/app/modules/common-regobs-api/models';
+import { AtAGlanceViewModel, PositionDto, SearchCriteriaRequestDto, WithinExtentCriteriaDto } from 'src/app/modules/common-regobs-api';
 import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
@@ -249,7 +244,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       tap(() => this.isFetchingObservations.next(true)),
 
       switchMap((criteria: SearchCriteriaRequestDto) =>
-        this.searchService.SearchAtAGlance(criteria).pipe(
+        this.searchService.searchAtAGlance(criteria).pipe(
           timeout(120000),
 
           // Successfull search handling

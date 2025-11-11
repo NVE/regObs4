@@ -12,7 +12,7 @@ import {
 import { tap, combineLatest, map, firstValueFrom } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';
-import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
+import { RegistrationsWithAttachments } from 'src/app/modules/common-regobs-api';
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { ListControlsComponent } from '../list-controls/list-controls.component';
@@ -84,7 +84,7 @@ export class ImageListComponent {
         this.checkAndLoadMoreImages();
       })
     ),
-    { initialValue: [] as SearchRegistrationsWithAttachments[] }
+  { initialValue: [] as RegistrationsWithAttachments[] }
   );
 
   disableInfiniteScroll = toSignal(
@@ -122,7 +122,7 @@ export class ImageListComponent {
     await loader.present();
 
     const attachmentIndex = attachments.findIndex((attachment) => attachment.Url === attachmentUrl);
-    const registration = await firstValueFrom(this.searchService.SearchSearch({ RegId: regId }));
+  const registration = await firstValueFrom(this.searchService.searchSearch({ RegId: regId }));
     const modal = await this.modalController.create({
       component: ObservationImageCarouselComponent,
       cssClass: 'fullscreen-modal',

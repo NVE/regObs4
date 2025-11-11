@@ -26,7 +26,7 @@ import {
   SearchCriteriaRequestDto,
   SearchService,
 } from 'src/app/modules/common-regobs-api';
-import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
+import { RegistrationsWithAttachments } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 export class SearchResult<TViewModel> {
@@ -254,11 +254,11 @@ export class SearchRegistrationService {
 
   searchAttachments(
     searchCriteria$: Observable<SearchCriteria>
-  ): PagedSearchResult<SearchRegistrationsWithAttachments> {
-    return new PagedSearchResult<SearchRegistrationsWithAttachments>(
+  ): PagedSearchResult<RegistrationsWithAttachments> {
+    return new PagedSearchResult<RegistrationsWithAttachments>(
       searchCriteria$,
-      this.searchService.SearchAttachments.bind(this.searchService),
-      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
+      this.searchService.searchAttachments.bind(this.searchService),
+      (searchCriteria) => this.searchService.searchCount(searchCriteria).pipe(map((result: any) => result.TotalMatches))
     );
   }
 }
