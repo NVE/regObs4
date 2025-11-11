@@ -3,8 +3,7 @@ import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { of, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { KdvElementsResponseDto, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { KdvElementsService } from 'src/app/modules/common-regobs-api/services';
+import { KdvElementsService, type KdvElementsResponseDto, type KdvElement } from 'src/app/modules/common-regobs-api';
 import { HttpClient } from '@angular/common/http';
 import { KdvKey } from '../../models/kdv-key.type';
 import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
@@ -50,7 +49,7 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
   }
 
   protected getUpdatedData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
-    return this.kdvElementsService.KdvElementsGetKdvs({ langkey: langKey });
+    return this.kdvElementsService.kdvElementsGetKdvs(langKey);
   }
 
   protected getOfflineDatabaseKey(appMode: AppMode, langKey: LangKey): string {

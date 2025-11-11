@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { LocationService as RegobsApiLocationService } from 'src/app/modules/common-regobs-api/services';
+import { LocationService as RegobsApiLocationService } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { catchError, switchMap } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
@@ -17,14 +17,8 @@ export class LocationService {
 
   getLocationWithinRadiusObservable(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     return this.regobsAuthService.loggedInUser$.pipe(
-      switchMap(() =>
-        this.apiLocationService.LocationWithinRadius({
-          geoHazardTypeIds: [geoHazard],
-          radius,
-          latitude: lat,
-          longitude: lng,
-          returnCount: 100,
-        })
+      switchMap(
+        () => this.apiLocationService.locationWithinRadius(lat, lng, radius, [geoHazard], 100) //TODO: sjekk om dette fungerer
       ),
       catchError((err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Could not fetch loactions within radius');

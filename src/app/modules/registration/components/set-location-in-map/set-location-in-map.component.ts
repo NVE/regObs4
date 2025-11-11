@@ -33,7 +33,7 @@ import moment from 'moment';
 import { firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { ObsLocationEditModel, ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api/models';
+import { type ObsLocationEditModel, type ObsLocationsResponseDtoV2 } from 'src/app/modules/common-regobs-api';
 import { IMapView } from 'src/app/modules/map/services/map/map-view.interface';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
@@ -58,10 +58,10 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
 
 export interface LocationTime {
-  location: ObsLocationEditModel;
+  location: ObsLocationEditModel | null;
   datetime?: string;
-  source?: number;
-  spatialAccuracy?: number;
+  source?: number | null;
+  spatialAccuracy?: number | null;
 }
 
 const defaultIcon = L.icon({

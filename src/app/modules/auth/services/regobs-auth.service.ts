@@ -8,13 +8,12 @@ import { filter, map, shareReplay, skip, switchMap, take, tap, withLatestFrom } 
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
-import { MyPageData, ObserverResponseDto } from 'src/app/modules/common-regobs-api/models';
-import { AccountService } from 'src/app/modules/common-regobs-api/services';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
 import { MapService, parseMapViewFromSearchParams } from '../../map/services/map/map.service';
+import { AccountService, type MyPageData, type ObserverResponseDto } from '../../common-regobs-api';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -84,7 +83,7 @@ export class RegobsAuthService {
         return this.loggedInUser$.pipe(
           take(1),
           switchMap((loggedInUser) =>
-            loggedInUser.isLoggedIn ? this.accountApi.AccountGetMyPageData() : of(undefined)
+            loggedInUser.isLoggedIn ? this.accountApi.accountGetMyPageData() : of(undefined)
           )
         );
       }),
@@ -186,12 +185,12 @@ export class RegobsAuthService {
 
   private async checkAndSetNickIfNickIsNull(): Promise<ObserverResponseDto | undefined> {
     try {
-      const user = await lastValueFrom(this.accountService.AccountGetObserver());
+      const user = await lastValueFrom(this.accountService.accountGetObserver());
       if (user && user.Nick != null && user.Nick != '') {
         return user;
       }
       const nick = await this.showSetNickDialog();
-      await lastValueFrom(this.accountService.AccountUpdateObserver({ Nick: nick }));
+      await lastValueFrom(this.accountService.accountUpdateObserver({ Nick: nick }));
       user.Nick = nick;
       return user;
     } catch (err) {

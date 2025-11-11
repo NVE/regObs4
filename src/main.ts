@@ -16,7 +16,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideMarkdown } from 'ngx-markdown';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
-import { RegobsApiModuleWithConfig } from './app/modules/common-regobs-api';
+import { provideApi } from './app/modules/common-regobs-api';
 import { AppComponent } from './app/app.component';
 import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { provideRouter, RouteReuseStrategy, withComponentInputBinding } from '@angular/router';
@@ -86,10 +86,10 @@ function startApp() {
           storeName: settings.db.nanoSql.dbName,
         }),
         AngularSvgIconModule.forRoot(),
-        LeafletModule,
-
+        LeafletModule
         // This module is auto generated using ng-swagger-gen
-        RegobsApiModuleWithConfig.forRoot()
+        //RegobsApiModuleWithConfig.forRoot()
+        //ApiModule.forRoot()
       ),
 
       provideMarkdown(),
@@ -99,6 +99,7 @@ function startApp() {
       provideRouter(routes, withComponentInputBinding()),
 
       provideHttpClient(withInterceptorsFromDi()),
+      provideApi('https://test-api.regobs.no/v6'),
       ...APP_PROVIDERS,
       provideAnimations(),
     ],

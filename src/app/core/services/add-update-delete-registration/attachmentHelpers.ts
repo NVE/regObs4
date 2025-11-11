@@ -6,7 +6,7 @@ import {
   AttachmentUploadEditModel,
   WaterLevelMeasurementUploadModel,
 } from 'src/app/modules/common-registration/registration.models';
-import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { type AttachmentEditModel, type RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { removeEmpty } from '../../helpers/remove-empty';
 
 /**

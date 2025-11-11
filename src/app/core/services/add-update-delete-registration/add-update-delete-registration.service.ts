@@ -5,7 +5,11 @@ import { AnalyticService } from 'src/app/modules/analytics/services/analytic.ser
 import { LangKey } from 'src/app/modules/common-core/models';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationEditModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import {
+  type RegistrationEditModel,
+  RegistrationService,
+  type RegistrationViewModel,
+} from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments } from '../draft/draft-model';
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -67,16 +71,16 @@ export class AddUpdateDeleteRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
-    const data: RegistrationService.RegistrationInsertParams = {
-      registration: registrationWithMeta,
-      langKey,
-      externalReferenceId: draft.uuid,
-    };
-
-    this.logger.debug('RegistrationInsert', DEBUG_TAG, data);
+    this.logger.debug('RegistrationInsert', DEBUG_TAG, {
+      uuid: draft.uuid,
+      langKey: langKey,
+      registrationWithMeta: registrationWithMeta,
+    });
 
     // Send registration to regobs
-    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert(data));
+    const result = await firstValueFrom(
+      this.regobsApiRegistrationService.registrationInsert(draft.uuid, langKey, registrationWithMeta)
+    );
 
     this.logger.debug('RegistrationInsert result', DEBUG_TAG, { result, externalReferenceId: draft.uuid });
 
@@ -102,28 +106,33 @@ export class AddUpdateDeleteRegistrationService {
   async update(draft: RegistrationDraft, ignoreVersionCheck = false): Promise<RegistrationViewModel> {
     this.logger.debug('Update registration', DEBUG_TAG, { draft, ignoreVersionCheck });
 
-    if (draft.regId == null) {
-      throw new Error('Update operation needs regid');
-    }
-
     const langKey = await firstValueFrom(this.userSettings.language$);
     draft = removeEmptyRegistrations(draft);
     const uploadedAttachments = await this.uploadAttachments(draft);
     const registration = this.addAttachmentToRegistration(uploadedAttachments, draft.registration);
     const registrationWithMeta = this.addMetadata(registration, draft);
 
-    const data: RegistrationService.RegistrationInsertOrUpdateParams = {
-      registration: registrationWithMeta,
-      langKey,
-      externalReferenceId: draft.uuid,
-      id: draft.regId as number, // Type check higher up
+    this.logger.debug('RegistrationInsertOrUpdate', DEBUG_TAG, {
+      regId: draft.regId,
+      uuid: draft.uuid,
+      langKey: langKey,
       ignoreVersionCheck: ignoreVersionCheck,
-    };
+      registrationWithMeta: registrationWithMeta,
+    });
 
-    this.logger.debug('RegistrationInsertOrUpdate', DEBUG_TAG, data);
-
+    if (draft.regId == null) {
+      throw new Error('Update operation needs regid');
+    }
     // Send registration to regobs
-    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate(data));
+    const result = await firstValueFrom(
+      this.regobsApiRegistrationService.registrationInsertOrUpdate(
+        draft.regId,
+        draft.uuid,
+        langKey,
+        ignoreVersionCheck,
+        registrationWithMeta
+      )
+    );
 
     this.logger.debug('RegistrationInsertOrUpdate result', DEBUG_TAG, { result, externalReferenceId: draft.uuid });
 
@@ -148,7 +157,7 @@ export class AddUpdateDeleteRegistrationService {
       throw new Error('regId required');
     }
     return firstValueFrom(
-      this.regobsApiRegistrationService.RegistrationDelete(regId).pipe(
+      this.regobsApiRegistrationService.registrationDelete(regId).pipe(
         timeout(timeoutInMillis),
         tap(() => this.deletedRegistrationIds.next(regId))
       )

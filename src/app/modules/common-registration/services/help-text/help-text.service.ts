@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
-import { HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
+import { HelptextService as HelpTextApiService, type HelptextDto } from 'src/app/modules/common-regobs-api';
 import { AppMode, LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
@@ -30,7 +29,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
   }
 
   protected getUpdatedData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
-    return this.helpTextApiService.HelptextGet(langKey);
+    return this.helpTextApiService.helptextGet(langKey);
   }
 
   protected getFallbackData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
@@ -43,7 +42,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     );
   }
 
-  public getHelpTextObservable(geoHazard: GeoHazard, registrationTid: number): Observable<string | undefined> {
+  public getHelpTextObservable(geoHazard: GeoHazard, registrationTid: number): Observable<string | null | undefined> {
     return this.data$.pipe(
       map((helptexts: HelptextDto[]) =>
         helptexts.find((data) => data.GeoHazardTID === geoHazard && data.RegistrationTID === registrationTid)

@@ -71,11 +71,9 @@ export class RegistrationEditButtonComponent {
     });
   }
 
-  private fetchRegistrationBeforeEdit(
-    regId: RegistrationService.RegistrationGetParams['regId']
-  ): Observable<RegistrationViewModel | null> {
+  private fetchRegistrationBeforeEdit(regId: number): Observable<RegistrationViewModel | null> {
     return this.userSettingService.language$.pipe(
-      switchMap((langKey) => this.registrationService.RegistrationGet({ regId, langKey })),
+      switchMap((langKey) => this.registrationService.registrationGet(regId, langKey)),
       timeout(FETCH_OBS_TIMEOUT_MS),
       catchError((error) => {
         let msg: string;
@@ -109,6 +107,9 @@ export class RegistrationEditButtonComponent {
         //we don't have a local working copy of this registration yet, so fetch it and save as draft
         const obs = this.registration();
         this.logger.debug(`Registration edit: Fetching from API. RegID = ${obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+        if (!obs.RegId) {
+          throw new Error('regId is required to fetch registration for editing');
+        }
         const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(obs.RegId));
         if (registrationFromServer === null) {
           const continueEditing = await this.confirmEditDespiteNoFreshRegistrationFromServer();

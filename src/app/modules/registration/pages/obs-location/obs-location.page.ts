@@ -9,12 +9,6 @@ import {
   IonToolbar,
   NavController,
 } from '@ionic/angular/standalone';
-import {
-  ObsLocationEditModel,
-  ObsLocationsResponseDtoV2,
-  ObsLocationViewModel,
-  RegistrationEditModel,
-} from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
@@ -27,7 +21,13 @@ import {
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
-import { LocationService } from 'src/app/modules/common-regobs-api';
+import {
+  LocationService,
+  type ObsLocationEditModel,
+  type ObsLocationsResponseDtoV2,
+  type ObsLocationViewModel,
+  type RegistrationEditModel,
+} from 'src/app/modules/common-regobs-api';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -124,9 +124,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.setLocationMarker(lat, lon);
       this.initialMinZoom = DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION;
     } else if (locationId) {
-      const location = (await firstValueFrom(
-        this.locationService.LocationGet({ locationId: locationId })
-      )) as ObsLocationViewModel;
+      const location = (await firstValueFrom(this.locationService.locationGet(locationId))) as ObsLocationViewModel;
       this.setLocationMarker(location.Latitude, location.Longitude);
       this.selectedLocation = {
         Name: location.LocationName || location.LocationDescription,

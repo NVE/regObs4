@@ -9,7 +9,7 @@ import { ExternalLinkService } from '../../../../core/services/external-link/ext
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { StarRatingHelper } from '../../../../components/competence/star-helper';
-import { AccountService, MyPageData, ObserverGroupDto } from 'src/app/modules/common-regobs-api';
+import { AccountService, type MyPageData, type ObserverGroupDto } from 'src/app/modules/common-regobs-api';
 import {
   IonBackButton,
   IonButton,
@@ -197,7 +197,7 @@ export class UserInformation implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data && data.nick) {
       try {
-        await firstValueFrom(this.accountService.AccountUpdateObserver({ Nick: data.nick }));
+        await firstValueFrom(this.accountService.accountUpdateObserver({ Nick: data.nick }));
         this.regobsAuthService.refreshMyPageData$.next();
       } catch (error) {
         this.showErrorToast('MY_PROFILE.NICKNAME_UPDATE_ERROR');

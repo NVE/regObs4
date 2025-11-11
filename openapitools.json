@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.17.0",
+    "generators": {
+      "regobs-client": {
+        "generatorName": "typescript-angular",
+        "inputSpec": "https://test-api.regobs.no/v6/swagger/v6/swagger.json",
+        "output": "src/app/modules/common-regobs-api",
+        "additionalProperties": {
+          "fileNaming": "kebab-case"
+        }
+      }
+    }
+  }
+}

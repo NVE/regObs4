@@ -1,7 +1,4 @@
-import { WritableSignal } from '@angular/core';
-import { Observable } from 'rxjs';
-import { RegistrationViewModel, MyPageData } from 'src/app/modules/common-regobs-api/models';
-import { RegistrationService } from '../common-regobs-api';
+import { type RegistrationViewModel, type MyPageData } from 'src/app/modules/common-regobs-api';
 
 export type EditMode = 'EDIT_AS_MODERATOR' | 'EDIT_OWN_REGISTRATION';
 
@@ -9,7 +6,7 @@ export function isSameObserver(reg: RegistrationViewModel, observer: MyPageData)
   if (!observer) {
     return false;
   }
-  return observer.ObserverId === reg.Observer.ObserverID;
+  return observer.ObserverId === reg.Observer?.ObserverID;
 }
 
 export function isInGroup(reg: RegistrationViewModel, observer: MyPageData): boolean {
@@ -43,6 +40,9 @@ export function checkEditPriviliges(reg: RegistrationViewModel, observer: MyPage
 }
 
 function isRegistrationOlderThan2days(reg: RegistrationViewModel): boolean {
+  if (!reg?.DtRegTime) {
+    return false;
+  }
   const now = new Date();
   const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
   const registrationDate = new Date(reg?.DtRegTime);

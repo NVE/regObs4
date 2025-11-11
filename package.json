@@ -11,6 +11,7 @@
   "scripts": {
     "ng": "ng",
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
+    "generate-openapi-models": "npx openapi-generator-cli generate --generator-key regobs-client",
     "start": "ionic serve",
     "build": "ionic build",
     "build:prod": "ng build --configuration production",
@@ -126,6 +127,7 @@
     "@ionic/angular-toolkit": "^11.0.1",
     "@ionic/cli": "^7.2.1",
     "@lokalise/node-api": "^8.5.1",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
     "@sentry/cli": "^1.68.0",
     "@sentry/wizard": "^1.2.11",
     "@types/clone-deep": "^4.0.1",
@@ -164,6 +166,7 @@
     "karma-junit-reporter": "^2.0.1",
     "madge": "^5.0.1",
     "manifest-android": "^0.1.1",
+    "ng-openapi": "^0.2.8",
     "ng-swagger-gen": "^2.3.1",
     "plist": "^3.0.5",
     "prettier": "^3.4.2",

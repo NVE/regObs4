@@ -29,7 +29,11 @@ import { PopupInfoService } from '../../core/services/popup-info/popup-info.serv
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { Observable, Subject, merge } from 'rxjs';
-import { AttachmentViewModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import {
+  type AttachmentViewModel,
+  RegistrationService,
+  type RegistrationViewModel,
+} from 'src/app/modules/common-regobs-api';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
@@ -144,7 +148,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   registration = rxResource({
     params: () => ({ regId: this.regId(), langKey: this.langKey() }),
     stream: ({ params }) =>
-      this.registrationService.RegistrationGet({ regId: params.regId, langKey: params.langKey }).pipe(
+      this.registrationService.registrationGet({ regId: params.regId, langKey: params.langKey }).pipe(
         catchError((err) => {
           this.logger.log('Feil ved henting av observasjon', err, LogLevel.Warning, DEBUG_TAG);
           if (err.status != undefined) {

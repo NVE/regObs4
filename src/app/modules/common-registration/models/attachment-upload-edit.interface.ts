@@ -1,5 +1,5 @@
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
-import { AttachmentEditModel } from 'src/app/modules/common-regobs-api/models';
+import { type AttachmentEditModel } from 'src/app/modules/common-regobs-api';
 
 export interface AttachmentUploadEditModel extends AttachmentEditModel {
   id: string;

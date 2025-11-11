@@ -3,8 +3,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { NanoSql } from '../../../../nanosql';
 import { AppMode } from 'src/app/modules/common-core/models';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
-import { ObserverGroupDto } from 'src/app/modules/common-regobs-api/models';
-import { AccountService as RegobsApiAccountService } from 'src/app/modules/common-regobs-api/services';
+import { AccountService as RegobsApiAccountService, type ObserverGroupDto } from 'src/app/modules/common-regobs-api';
 import moment from 'moment';
 import { from, combineLatest, Observable, lastValueFrom, firstValueFrom } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -40,7 +39,7 @@ export class UserGroupService {
   async updateUserGroupsForUser(appMode: AppMode, email: string) {
     const dataLoadId = this.getDataLoadId(appMode, email);
     await this.dataLoadService.startLoading(dataLoadId);
-    const result = await lastValueFrom(this.accountApiService.AccountGetObserverGroups());
+    const result = await lastValueFrom(this.accountApiService.accountGetObserverGroups());
     this.saveUserGroups(appMode, email, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);
   }
