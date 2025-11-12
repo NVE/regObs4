@@ -22,17 +22,8 @@ import { generateShortRandomId } from './utils';
 /** Side som viser planer og sporfiler */
 export class PlansPage {
   private geoJSON = inject(GeoJSONService);
-  showImportmessage = signal<boolean>(false);
 
   items = this.geoJSON.metadata;
-
-  importGpxFiles = () => {
-    //TODO: Velg og importer GPX-filer
-    this.showImportmessage.set(true);
-    setTimeout(() => {
-      this.showImportmessage.set(false);
-    }, 3000);
-  };
 
   /**
    * Log GPX filenames when files are dropped in the dropzone
