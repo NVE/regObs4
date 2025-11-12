@@ -354,7 +354,8 @@
     "TITLE": "Planer og spor",
     "IMPORT_BUTTON": {
       "CAPTION": "Importer GPX-filer",
-      "DROP_LABEL": "Dra og slipp eller klikk for å legge til"
+      "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
+      "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
     }
   },
   "POPUP_DISCLAMER": {
