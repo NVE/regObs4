@@ -102,6 +102,13 @@
     "W": "W"
   },
   "DRAFT": "Draft",
+  "FILTER_DESCRIPTION": {
+    "FILTER": "Filter:",
+    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}} observations.",
+    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Submitted after {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Submitted before {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Submitted between {{from}} and {{to}}."
+  },
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Invalid position data",
@@ -245,14 +252,14 @@
     "COMPETENCE": "<a href=\"https://varsom.no/om-varsom/regobs/kompetanse/\">Read more about competence</a>",
     "COPYRIGHT": "Copyright",
     "EDIT": "Edit",
+    "INVALID_NICKNAME": "Nickname can't be empty!",
     "MY_COMPETENCE": "My competence",
     "MY_GROUPS": "My groups",
     "MY_GROUPS_TEXT": "You can edit observations in a group for up to 48 hours after registration. <a href=\"mailto:regobs@nve.no\">Please contact us</a> to change group name, group description and members",
+    "MY_NICKNAME": "My nickname",
     "MY_NVE_ACCOUNT": "My NVE account",
     "MY_PICTURES": "Default photo settings",
-    "MY_NICKNAME": "My nickname",
     "NICKNAME": "Nickname",
-    "INVALID_NICKNAME": "Nickname can't be empty!",
     "NICKNAME_TEXT": "Your nickname is visible to everyone on the observations you make",
     "NICKNAME_UPDATE_ERROR": "Your nickname hasn't been updated. Check if you have internet connection and try again later.",
     "NO_GROUPS": "You are not part of any groups",
@@ -266,8 +273,8 @@
     "COMPETANCE_FILTER": {
       "ALL": "All",
       "LABEL": "Competence",
-      "TITLE": "Observer",
-      "READ_MORE": "Read more about competence"
+      "READ_MORE": "Read more about competence",
+      "TITLE": "Observer"
     },
     "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen",
     "MULTISELECT_SHOW_NO_COUNT": "shows all",
@@ -372,15 +379,15 @@
     },
     "BACK_TO_OBSERVATION": "Back to observation",
     "CARD": {
+      "DOWNLOAD": "Download",
+      "GO_TO_ORIGINAL_IMAGE": "See original",
+      "GO_TO_SNOW_PROFILE": "Go to profile",
+      "OBSERVED_BY": "Sent in by",
       "TIME": {
         "OBSERVED": "Observed",
         "REGISTERED": "Registered",
         "UPDATED": "Changed"
-      },
-      "OBSERVED_BY": "Sent in by",
-      "DOWNLOAD": "Download",
-      "GO_TO_ORIGINAL_IMAGE": "See original",
-      "GO_TO_SNOW_PROFILE": "Go to profile"
+      }
     },
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
@@ -425,10 +432,10 @@
     },
     "DETAILS": {
       "ERROR": {
-        "TITLE": "Observation not found",
-        "NOT_FOUND": "Probably because the ID is incorrect.",
         "GONE": "The observation has been deleted.",
-        "SERVER_ERROR": "The call to the Regobs API failed. Please let us know if the problem persists."
+        "NOT_FOUND": "Probably because the ID is incorrect.",
+        "SERVER_ERROR": "The call to the Regobs API failed. Please let us know if the problem persists.",
+        "TITLE": "Observation not found"
       }
     },
     "DIRT": {
@@ -564,12 +571,12 @@
       "MORETHANONEKM": "More than 1 km",
       "NAME_LOCATION": "Name location",
       "NAME_LOCATION_TOOLTIP": "Naming a location makes it possible to create a time series at the same observation point",
+      "POSITION_LABEL": "Position",
       "SHOW_DETAILS": "Show details",
       "SOURCE": "Source",
       "TITLE": "Observed Location and Time",
       "UNCERTAINTY": "Uncertainty in position",
-      "UTMSOURCE": "Position source",
-      "POSITION_LABEL": "Position"
+      "UTMSOURCE": "Position source"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and Time",
@@ -639,8 +646,6 @@
         "AREA_START": "Define starting zone",
         "AREA_TOTAL": "Define avalanche boundaries",
         "AVALANCHE_AREA": "Avalanche area",
-        "RELEASE_AREA": "Starting zone",
-        "RUNOUT_AREA": "Runout zone",
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_CAUSE": "Weak layer",
@@ -663,7 +668,9 @@
         "LOCAL_TOURIST_TID": "Local or visiting",
         "MATERIAL_DAMAGES": "Material damages",
         "POSITION": "Avalanche position",
+        "RELEASE_AREA": "Starting zone",
         "REMOTELY_TRIGGERED": "Remotely triggered",
+        "RUNOUT_AREA": "Runout zone",
         "SAFETY_GEAR_TID": "Sender/receiver",
         "SET_AVALANCHE_POSITION": "Set avalanche position",
         "SLOPE_ACTIVITY_TID": "Tour phase",
@@ -1067,12 +1074,5 @@
     "TITLE_SNOW": "Avalanche Forecasts",
     "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
-  },
-  "FILTER_DESCRIPTION": {
-    "FILTER": "Filter:",
-    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}} observations.",
-    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Submitted after {{datetime}}.",
-    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Submitted between {{from}} and {{to}}.",
-    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Submitted before {{datetime}}."
   }
 }
