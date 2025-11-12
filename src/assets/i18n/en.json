@@ -355,7 +355,8 @@
     "TITLE": "Plans and tracks",
     "IMPORT_BUTTON": {
       "CAPTION": "Import GPX files",
-      "DROP_LABEL": "Drag and drop or click to add"
+      "DROP_LABEL_DESKTOP": "Drag and drop or click to add",
+      "DROP_LABEL_MOBILE": "Tap to add files"
     }
   },
   "POPUP_DISCLAMER": {
