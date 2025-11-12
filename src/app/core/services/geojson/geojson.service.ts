@@ -4,6 +4,7 @@ import { FeatureCollection } from 'geojson';
 import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { cleanFeatureCollection } from 'src/app/pages/plans/geojson';
 
 const DEBUG_TAG = 'GeoJSON';
 
@@ -54,6 +55,12 @@ export class GeoJSONService {
    */
   async save(metadata: GeoJSONItem, geojson: FeatureCollection): Promise<void> {
     this.logger.debug('Save', DEBUG_TAG, { metadata });
+    try {
+      cleanFeatureCollection(geojson);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Error in cleaning process, but object may be mutated - half cleaned');
+    }
+
     try {
       await this.db.set(`geojson:${metadata.id}`, geojson);
       this.metadata.update((items) => [...items, metadata]);
