@@ -353,7 +353,8 @@
   "PLANS": {
     "TITLE": "Planer og spor",
     "IMPORT_BUTTON": {
-      "CAPTION": "Importer GPX-filer"
+      "CAPTION": "Importer GPX-filer",
+      "DROP_LABEL": "Dra og slipp eller klikk for å legge til"
     }
   },
   "POPUP_DISCLAMER": {
