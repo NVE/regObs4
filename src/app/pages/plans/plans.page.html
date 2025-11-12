@@ -18,7 +18,13 @@
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
       <button type="button" (click)="openFileSelector()">
         <h1>{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</h1>
-        <p>{{ "PLANS.IMPORT_BUTTON.DROP_LABEL" | translate }}</p>
+        <p>
+          @if (!isMobile) {
+            {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_DESKTOP" | translate }}
+          } @else {
+            {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_MOBILE" | translate }}
+          }
+        </p>
       </button>
     </ng-template>
   </ngx-file-drop>
