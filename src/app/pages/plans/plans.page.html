@@ -10,28 +10,16 @@
 <div class="content">
   <h1>TODO: Planer</h1>
 
-  <nve-button size="large" (click)="importGpxFiles()"
-    >{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}
-    <nve-icon slot="prefix" src="/assets/icon/input.svg"></nve-icon>
-  </nve-button>
-
-  @if (showImportmessage()) {
-    <nve-message-card variant="warning" label="Import-funksjonen er ikke laget ennå"></nve-message-card>
-  }
-
   @for (item of items(); track item.id) {
     <p>{{ item.name }} - {{ item.id }} - {{ item.date }}</p>
   }
 
-  <ngx-file-drop
-    style="width: 100%"
-    dropZoneLabel="Slipp GPX-filer her"
-    [accept]="'.gpx'"
-    dropZoneClassName="drop-zone"
-    (onFileDrop)="onFileDrop($event)"
-  >
+  <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx'" (onFileDrop)="onFileDrop($event)">
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-      <button type="button" (click)="openFileSelector()">Importer GPX-fil</button>
+      <button type="button" (click)="openFileSelector()">
+        <h1>{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</h1>
+        <p>{{ "PLANS.IMPORT_BUTTON.DROP_LABEL" | translate }}</p>
+      </button>
     </ng-template>
   </ngx-file-drop>
 </div>
