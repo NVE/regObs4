@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
+import { Platform } from '@ionic/angular';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
@@ -21,8 +22,10 @@ import { generateShortRandomId } from './utils';
 })
 /** Side som viser planer og sporfiler */
 export class PlansPage {
+  private platform = inject(Platform);
   private geoJSON = inject(GeoJSONService);
 
+  isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
   items = this.geoJSON.metadata;
 
   /**
