@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -11,10 +11,10 @@ import { ForecastRegionSubRegionDto } from './forecast-region-sub-region-dto';
 
 
 export interface ForecastRegionDto { 
-    Id?: number;
+    Id: number;
     Text?: string | null;
-    SortOrder?: number;
+    SortOrder: number;
     SubRegions?: Array<ForecastRegionSubRegionDto> | null;
-    IsRegionForGrouping?: boolean;
+    IsRegionForGrouping: boolean;
 }
 

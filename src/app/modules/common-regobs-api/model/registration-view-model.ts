@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -56,7 +56,7 @@ export interface RegistrationViewModel {
      * If set to true, the user\'s account will not be shown publicly. NVE will still be able to see who sent in the observation.
      */
     Anonymous?: boolean | null;
-    RegId?: number;
+    RegId: number;
     /**
      * Ekstern referanse ID. Må være unik for Applikasjon.
      */

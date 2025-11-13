@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -74,7 +74,7 @@ export interface SearchGetSearchCriteriaRequestParams {
 }
 
 export interface SearchSearchRequestParams {
-    /** Use this to filter out registrations and change ordering of them.  The attribute \&quot;ObserverGuid\&quot; is deprecated and will be removed in the future. */
+    /** Use this to filter out registrations and change ordering of them. The attribute \&quot;ObserverGuid\&quot; is deprecated and will be removed in the future. */
     searchCriteriaRequestDto?: SearchCriteriaRequestDto;
 }
 
@@ -104,7 +104,7 @@ export class SearchService extends BaseService {
     }
 
     /**
-     * Simplified search for registrations. Returns less data per registration, so faster than /Search  Returns empty list if no registrations found.  Returns only first attachment and count on how many other attachments user can expect when opening  a detailed info
+     * Simplified search for registrations. Returns less data per registration, so faster than /Search Returns empty list if no registrations found. Returns only first attachment and count on how many other attachments user can expect when opening a detailed info
      * @endpoint post /Search/AtAGlance
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -396,7 +396,7 @@ export class SearchService extends BaseService {
     }
 
     /**
-     * Returns list of regIds from deleted registrations that can be filtered with criteria model.  Used with offline syncing on mobile devices.
+     * Returns list of regIds from deleted registrations that can be filtered with criteria model. Used with offline syncing on mobile devices.
      * @endpoint post /Search/DeletedRegistrations
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -469,7 +469,7 @@ export class SearchService extends BaseService {
     }
 
     /**
-     * Returns relevant search criteria for the specified geo hazard types and language.  This can help you to find the right criteria to use in the other search methods.
+     * Returns relevant search criteria for the specified geo hazard types and language. This can help you to find the right criteria to use in the other search methods.
      * @endpoint get /Search/SearchCriteria/{geoHazards}/{langKey}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -537,8 +537,8 @@ export class SearchService extends BaseService {
     }
 
     /**
-     * Returns a list of complete registrations that matches your filter. Empty list if no registrations found.  Use POST /Search/AtAGlance for faster search.
-     * Example critera for returning the 10 newest registrations:  &#x60;&#x60;&#x60;  { \&quot;NumberOfRecords\&quot;: 10 }  &#x60;&#x60;&#x60;
+     * Returns a list of complete registrations that matches your filter. Empty list if no registrations found. Use POST /Search/AtAGlance for faster search.
+     * Example critera for returning the 10 newest registrations: &#x60;&#x60;&#x60; { \&quot;NumberOfRecords\&quot;: 10 } &#x60;&#x60;&#x60;
      * @endpoint post /Search
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -611,7 +611,7 @@ export class SearchService extends BaseService {
     }
 
     /**
-     * Please use GET /Search/SearchCriteria instead.  Returns relevant search criteria for the specified geo hazard types and language.  This can help you to find the right criteria to use in the other search methods.
+     * Please use GET /Search/SearchCriteria instead. Returns relevant search criteria for the specified geo hazard types and language. This can help you to find the right criteria to use in the other search methods.
      * @endpoint post /Search/SearchCriteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -758,8 +758,8 @@ export class SearchService extends BaseService {
     }
 
     /**
-     * Returns a list of complete registrations that were registered by the logged in user.  Empty list if no registrations found.
-     * Example critera for returning the 10 newest registrations:  &#x60;&#x60;&#x60;  { \&quot;NumberOfRecords\&quot;: 10 }  &#x60;&#x60;&#x60;
+     * Returns a list of complete registrations that were registered by the logged in user. Empty list if no registrations found.
+     * Example critera for returning the 10 newest registrations: &#x60;&#x60;&#x60; { \&quot;NumberOfRecords\&quot;: 10 } &#x60;&#x60;&#x60;
      * @endpoint post /Search/MyRegistrations
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

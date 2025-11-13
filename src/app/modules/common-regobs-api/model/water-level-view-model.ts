@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -12,10 +12,10 @@
 export interface WaterLevelViewModel { 
     WaterLevelDescribed?: string | null;
     WaterLevelValue?: number | null;
-    WaterLevelRefTID?: number;
+    WaterLevelRefTID: number;
     WaterLevelRefName?: string | null;
     Comment?: string | null;
     MeasuredDischarge?: number | null;
-    IsRiver?: boolean;
+    IsRiver: boolean;
 }
 

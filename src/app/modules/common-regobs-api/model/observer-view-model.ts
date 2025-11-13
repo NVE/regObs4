@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -11,8 +11,8 @@
 
 export interface ObserverViewModel { 
     NickName?: string | null;
-    ObserverID?: number;
-    CompetenceLevelTID?: number;
+    ObserverID: number;
+    CompetenceLevelTID: number;
     CompetenceLevelName?: string | null;
 }
 

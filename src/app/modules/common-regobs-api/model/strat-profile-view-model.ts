@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -12,6 +12,6 @@ import { StratProfileLayerViewModel } from './strat-profile-layer-view-model';
 
 export interface StratProfileViewModel { 
     Layers?: Array<StratProfileLayerViewModel> | null;
-    TotalDepth?: number;
+    TotalDepth: number;
 }
 

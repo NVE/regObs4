@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -12,11 +12,11 @@ import { ObserverCompetenceDto } from './observer-competence-dto';
 
 
 export interface MyPageData { 
-    Guid?: string;
+    Guid: string;
     /**
      * Returns unique id that identifies an observer
      */
-    ObserverId?: number;
+    ObserverId: number;
     NickName?: string | null;
     Email?: string | null;
     MobPhoneNr?: string | null;
@@ -28,8 +28,8 @@ export interface MyPageData {
     MemberOfGroups?: Array<ObserverGroupDto> | null;
     PendingInvitationsToGroups?: Array<ObserverGroupDto> | null;
     Competence?: Array<ObserverCompetenceDto> | null;
-    NumberOfObservations?: number;
-    MainGeohazardTID?: number;
+    NumberOfObservations: number;
+    MainGeohazardTID: number;
     LastRegistrationDate?: string | null;
     DefaultMunicipality?: string | null;
     Roles?: Array<string> | null;

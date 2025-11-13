@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -21,6 +21,6 @@ export interface StratProfileLayerEditModel {
     WetnessTID?: number | null;
     CriticalLayerTID?: number | null;
     Comment?: string | null;
-    SortOrder?: number;
+    SortOrder: number;
 }
 

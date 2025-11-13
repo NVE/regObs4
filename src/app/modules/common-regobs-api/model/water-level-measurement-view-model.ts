@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -11,7 +11,7 @@ import { AttachmentViewModel } from './attachment-view-model';
 
 
 export interface WaterLevelMeasurementViewModel { 
-    WaterLevelMeasurementId?: number;
+    WaterLevelMeasurementId: number;
     WaterLevelValue?: number | null;
     DtMeasurementTime: string;
     Comment?: string | null;

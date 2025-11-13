@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -13,19 +13,19 @@ export interface AvalancheActivityObsViewModel {
     /**
      * Unik id på denne tabellen da flere er mulig pr RegID.
      */
-    AvalancheActivityObsID?: number;
+    AvalancheActivityObsID: number;
     /**
      * Hvilken side av fjellene har skredene gått? Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
      */
-    Aspect?: number;
+    Aspect: number;
     /**
      * Meter over havet på løsneområdet.
      */
-    HeigthStartZone?: number;
+    HeigthStartZone: number;
     /**
      * Når gikk skredene? Her bruker vi feltet som en ca. tid og brukerene oppfordres til å anta best mulig.
      */
-    DtAvalancheTime?: string;
+    DtAvalancheTime: string;
     /**
      * Hvor store er skredene?. The DestructiveSizeKD unique identifier
      */
@@ -60,6 +60,6 @@ export interface AvalancheActivityObsViewModel {
      * Kommentarfelt for å skrive utfyllende tekst om observasjonen.
      */
     Comment?: string | null;
-    DtOffAvalancheTime?: string;
+    DtOffAvalancheTime: string;
 }
 

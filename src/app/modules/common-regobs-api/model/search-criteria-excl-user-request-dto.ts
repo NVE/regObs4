@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -22,7 +22,7 @@ export interface SearchCriteriaExclUserRequestDto {
      */
     RegId?: number | null;
     /**
-     * Language of result  Norwegian = 1, English = 2, German = 3, Slovenian = 4, Swedish = 5, Italian = 6, Norwegian (nn) = 7.  Default = 1
+     * Language of result Norwegian = 1, English = 2, German = 3, Slovenian = 4, Swedish = 5, Italian = 6, Norwegian (nn) = 7. Default = 1
      */
     LangKey?: number | null;
     LocationId?: number | null;
@@ -52,27 +52,27 @@ export interface SearchCriteriaExclUserRequestDto {
     Offset?: number | null;
     TimeZone?: string | null;
     /**
-     * Find registrations of given types.  Use /Search/SearchCriteria to find out which types are used for different geo hazards.
+     * Find registrations of given types. Use /Search/SearchCriteria to find out which types are used for different geo hazards.
      */
     SelectedRegistrationTypes?: Array<RegistrationTypeCriteriaDto> | null;
     /**
-     * Find registrations in given regions.  Use /Search/SearchCriteria to find the forecast region IDs that are used for different geo hazards.
+     * Find registrations in given regions. Use /Search/SearchCriteria to find the forecast region IDs that are used for different geo hazards.
      */
     SelectedRegions?: Array<number> | null;
     /**
-     * Find registrations on given geo hazard ID\'s.  Snow = 10, soil = 20, water = 60, ice = 70.
+     * Find registrations on given geo hazard ID\'s. Snow = 10, soil = 20, water = 60, ice = 70.
      */
     SelectedGeoHazards?: Array<number> | null;
     Countries?: Array<number> | null;
     /**
-     * Find registrations in given county.  Only relevant for Norway.  Current valid county numbers are here (from 2024): https://no.wikipedia.org/wiki/Fylkesnummer
+     * Find registrations in given county. Only relevant for Norway. Current valid county numbers are here (from 2024): https://no.wikipedia.org/wiki/Fylkesnummer
      */
     Counties?: Array<string> | null;
     TextSearch?: string | null;
     Radius?: WithinRadiusCriteriaDto | null;
     Extent?: WithinExtentCriteriaDto | null;
     /**
-     * Find registrations with given property value.  [Obsolete(\"Experimental feature that may be changed or removed in later versions\")]
+     * Find registrations with given property value. [Obsolete(\"Experimental feature that may be changed or removed in later versions\")]
      */
     PropertyFilters?: Array<PropertyFilter> | null;
     /**
@@ -82,6 +82,6 @@ export interface SearchCriteriaExclUserRequestDto {
     /**
      * Descending order is default. Set this to true to use ascending order.
      */
-    AscendingOrder?: boolean;
+    AscendingOrder: boolean;
 }
 

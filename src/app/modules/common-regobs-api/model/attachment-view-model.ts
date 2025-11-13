@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -40,7 +40,7 @@ export interface AttachmentViewModel {
      * Om bildet skal vises først i registreringen, eller ikke
      */
     IsMainAttachment?: boolean | null;
-    AttachmentId?: number;
+    AttachmentId: number;
     /**
      * GeoHazard name
      */
@@ -57,6 +57,6 @@ export interface AttachmentViewModel {
     /**
      * If true, the attachment is an image generated from a snow profile plot
      */
-    IsSnowProfilePlot?: boolean;
+    IsSnowProfilePlot: boolean;
 }
 

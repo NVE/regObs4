@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -11,7 +11,7 @@
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext
+         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext 
         }       from '@angular/common/http';
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
@@ -167,10 +167,10 @@ export class RegistrationService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
-    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
-    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
-    public registrationGet(requestParameters: RegistrationGetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationViewModel>;
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationViewModel>>;
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationViewModel>>;
+    public registrationGet(requestParameters: RegistrationGetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const regId = requestParameters?.regId;
         if (regId === null || regId === undefined) {
             throw new Error('Required parameter regId was null or undefined when calling registrationGet.');
@@ -189,6 +189,9 @@ export class RegistrationService extends BaseService {
         localVarHeaders = this.configuration.addCredentialToHeaders('Bearer', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -212,7 +215,7 @@ export class RegistrationService extends BaseService {
 
         let localVarPath = `/Registration/${this.configuration.encodeParam({name: "regId", value: regId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/${this.configuration.encodeParam({name: "langKey", value: langKey, in: "path", style: "simple", explode: false, dataType: "LangKey", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<RegistrationViewModel>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -227,16 +230,16 @@ export class RegistrationService extends BaseService {
 
     /**
      * Get a registration in CAAML format
-     * CAAML (Canadian Avalanche Association Markup Language) is a standard  for the electronic representation of information pertinent to avalanche  safety operations. See http://caaml.org/.
+     * CAAML (Canadian Avalanche Association Markup Language) is a standard for the electronic representation of information pertinent to avalanche safety operations. See http://caaml.org/.
      * @endpoint get /Registration/Caaml/{regId}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/xml', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/xml', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/xml', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public registrationGetCaaml(requestParameters: RegistrationGetCaamlRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/xml', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const regId = requestParameters?.regId;
         if (regId === null || regId === undefined) {
             throw new Error('Required parameter regId was null or undefined when calling registrationGetCaaml.');
@@ -251,6 +254,7 @@ export class RegistrationService extends BaseService {
         localVarHeaders = this.configuration.addCredentialToHeaders('Bearer', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/xml'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -289,7 +293,7 @@ export class RegistrationService extends BaseService {
 
     /**
      * Create a new registration. The purpose is to send in one or more forms.
-     * Example critera for creating a new registration with one form.                    {          \&quot;GeoHazardTID\&quot;: 20,          \&quot;DtObsTime\&quot;: \&quot;2021-06-25T13:18:00.000Z\&quot;,          \&quot;ObsLocation\&quot;: {              \&quot;Latitude\&quot;: 60.919917123811992,              \&quot;Longitude\&quot;: 7.210167614875667,          },          \&quot;LandSlideObs\&quot;: {              \&quot;LandSlideTID\&quot;: 2,              \&quot;LandSlideTriggerTID\&quot;: 0,              \&quot;LandSlideSizeTID\&quot;: 0,              \&quot;Comment\&quot;: \&quot;Flomskred på FV5627 løsnet fra vegskjæring 0-50m. Anslått skredvolum på veg: mindre enn 10m^3.Blokkert veglengde: Kun i grøft.\&quot;,              \&quot;GeoHazardTID\&quot;: 20,              \&quot;ActivityInfluencedTID\&quot;: 220,              \&quot;ForecastAccurateTID\&quot;: 0,              \&quot;DamageExtentTID\&quot;: 0,              \&quot;DtLandSlideTime\&quot;: \&quot;2021-06-25T08:10:00+02:00\&quot;,          }      }
+     * Example critera for creating a new registration with one form.                  {         \&quot;GeoHazardTID\&quot;: 20,         \&quot;DtObsTime\&quot;: \&quot;2021-06-25T13:18:00.000Z\&quot;,         \&quot;ObsLocation\&quot;: {             \&quot;Latitude\&quot;: 60.919917123811992,             \&quot;Longitude\&quot;: 7.210167614875667,         },         \&quot;LandSlideObs\&quot;: {             \&quot;LandSlideTID\&quot;: 2,             \&quot;LandSlideTriggerTID\&quot;: 0,             \&quot;LandSlideSizeTID\&quot;: 0,             \&quot;Comment\&quot;: \&quot;Flomskred på FV5627 løsnet fra vegskjæring 0-50m. Anslått skredvolum på veg: mindre enn 10m^3.Blokkert veglengde: Kun i grøft.\&quot;,             \&quot;GeoHazardTID\&quot;: 20,             \&quot;ActivityInfluencedTID\&quot;: 220,             \&quot;ForecastAccurateTID\&quot;: 0,             \&quot;DamageExtentTID\&quot;: 0,             \&quot;DtLandSlideTime\&quot;: \&quot;2021-06-25T08:10:00+02:00\&quot;,         }     }
      * @endpoint post /Registration
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -371,7 +375,7 @@ export class RegistrationService extends BaseService {
     }
 
     /**
-     * Update registration. Updating existing obsLocation with new values will be possible only  if there is no other registrations connected to that location from before. Otherwise new values are ignored. User don\&#39;t get any error message.
+     * Update registration. Updating existing obsLocation with new values will be possible only if there is no other registrations connected to that location from before. Otherwise new values are ignored. User don\&#39;t get any error message.
      * @endpoint put /Registration/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

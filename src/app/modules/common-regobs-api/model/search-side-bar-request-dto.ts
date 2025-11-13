@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -13,13 +13,13 @@ import { LangKey } from './lang-key';
 
 export interface SearchSideBarRequestDto { 
     /**
-     * Snow = 10, dirt = 20, water = 60, ice = 70.  At least one geo hazard is required.
+     * Snow = 10, dirt = 20, water = 60, ice = 70. At least one geo hazard is required.
      */
     GeoHazards?: Array<GeoHazardTypes> | null;
     /**
-     * NO = 1, EN = 2, DE = 3, SL = 4, SV = 5, IT = 6  Default = 2.
+     * NO = 1, EN = 2, DE = 3, SL = 4, SV = 5, IT = 6 Default = 2.
      */
-    LangKey?: LangKey;
+    LangKey: LangKey;
 }
 export namespace SearchSideBarRequestDto {
 }

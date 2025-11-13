@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -120,7 +120,7 @@ export class LocationService extends BaseService {
     }
 
     /**
-     * Returns a list of locations within the given radius from the given coordinates.  For an unauthenticated client, it only returns public ice locations.  For an authenticated client, it returns public locations as well as the  authenticated user\&#39;s private locations.  Empty list if no registrations found.
+     * Returns a list of locations within the given radius from the given coordinates. For an unauthenticated client, it only returns public ice locations. For an authenticated client, it returns public locations as well as the authenticated user\&#39;s private locations. Empty list if no registrations found.
      * @endpoint get /Location/WithinRadius
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -10,8 +10,8 @@
 
 
 export interface ObserverCompetenceDto { 
-    CompetenceTID?: number;
-    GeohazardTID?: number;
+    CompetenceTID: number;
+    GeohazardTID: number;
     CompetenceName?: string | null;
     CompetenceDescription?: string | null;
 }

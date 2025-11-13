@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -54,10 +54,10 @@ export interface AvalancheEvalProblem2EditModel {
      * Hvilket svakt lag løsner skredet på? The AvalCauseKD unique identifier
      */
     AvalCauseTID?: number | null;
-    AvalCauseAttributeLightTID?: number;
-    AvalCauseAttributeThinTID?: number;
-    AvalCauseAttributeSoftTID?: number;
-    AvalCauseAttributeCrystalTID?: number;
+    AvalCauseAttributeLightTID: number;
+    AvalCauseAttributeThinTID: number;
+    AvalCauseAttributeSoftTID: number;
+    AvalCauseAttributeCrystalTID: number;
     /**
      * Sannsynlig tilleggsbelastning for å utløse skred. The DestructiveSizeKD unique identifier
      */

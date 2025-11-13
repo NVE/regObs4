@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -47,7 +47,7 @@ export class KdvElementsService extends BaseService {
     }
 
     /**
-     * Returns id, name, and description for data types. This is most often used in input fields, dropdowns etc.  KDVElements that belong to a geo hazard are prefixed with the corresponding hazard (Snow_, Ice_, Water_, Landslide_).  If a type is missing in given language, we will fill the holes with equivalent types in English (if they exist).
+     * Returns id, name, and description for data types. This is most often used in input fields, dropdowns etc. KDVElements that belong to a geo hazard are prefixed with the corresponding hazard (Snow_, Ice_, Water_, Landslide_). If a type is missing in given language, we will fill the holes with equivalent types in English (if they exist).
      * @endpoint get /KdvElements
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

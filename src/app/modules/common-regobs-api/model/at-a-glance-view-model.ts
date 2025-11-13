@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -10,16 +10,16 @@
 
 
 export interface AtAGlanceViewModel { 
-    RegId?: number;
+    RegId: number;
     GeoHazardTID?: number | null;
-    DtObsTime?: string;
+    DtObsTime: string;
     NickName?: string | null;
     CompetenceLevelTID?: number | null;
     Title?: string | null;
-    Latitude?: number;
-    Longitude?: number;
-    UtmNorth?: number;
-    UtmEast?: number;
+    Latitude: number;
+    Longitude: number;
+    UtmNorth: number;
+    UtmEast: number;
     FormNames?: Array<string> | null;
     /**
      * Returns first attachement url from the observation or null

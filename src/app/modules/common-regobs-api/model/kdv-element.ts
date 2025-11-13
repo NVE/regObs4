@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -10,7 +10,7 @@
 
 
 export interface KdvElement { 
-    Id?: number;
+    Id: number;
     Name?: string | null;
     Description?: string | null;
 }

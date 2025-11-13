@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: 20251103.5 - commit: 62e967e0
+ * RegObs API, build: Local build - commit: 446d2219
  *
  * Contact: regobs@nve.no
  *
@@ -115,7 +115,7 @@ export class TripService extends BaseService {
     }
 
     /**
-     * Fetches GeoJSON representations of the pre-approved observation trips.  Only available for users in Obskorps administrative group.
+     * Fetches GeoJSON representations of the pre-approved observation trips. Only available for users in Obskorps administrative group.
      * @endpoint get /Trip/ObserverTrips
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
