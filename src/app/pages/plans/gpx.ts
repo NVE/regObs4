@@ -1,10 +1,11 @@
 import { FileSystemEntry } from 'ngx-file-drop';
 import { assertIsFileEntry, toText } from './utils';
 import { gpx } from '@tmcw/togeojson';
+import { isGpxFile } from './utils';
 
 function assertIsGpxFile(fileEntry: FileSystemEntry): asserts fileEntry is FileSystemFileEntry {
   assertIsFileEntry(fileEntry);
-  if (!fileEntry.name.toLowerCase().endsWith('.gpx')) {
+  if (!isGpxFile(fileEntry)) {
     throw new Error('fileEntry is not GPX file');
   }
 }

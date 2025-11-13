@@ -14,7 +14,7 @@
     <p>{{ item.name }} - {{ item.id }} - {{ item.date }}</p>
   }
 
-  <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx'" (onFileDrop)="onFileDrop($event)">
+  <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx, .geojson, .json'" (onFileDrop)="onFileDrop($event)">
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
       <button type="button" (click)="openFileSelector()">
         <h1>{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</h1>
