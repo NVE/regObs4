@@ -71,8 +71,8 @@ export interface RegistrationViewModel {
      */
     DtChangeTime?: string | null;
     SourceName?: string | null;
-    Observer?: ObserverViewModel | null;
-    ObsLocation?: ObsLocationViewModel | null;
+    Observer: ObserverViewModel;
+    ObsLocation: ObsLocationViewModel;
     Attachments?: Array<AttachmentViewModel> | null;
     AvalancheActivityObs2?: Array<AvalancheActivityObs2ViewModel> | null;
     AvalancheEvalProblem2?: Array<AvalancheEvalProblem2ViewModel> | null;

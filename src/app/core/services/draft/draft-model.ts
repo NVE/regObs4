@@ -32,7 +32,8 @@ export interface RegistrationDraftError {
   message?: string;
 }
 
-export type RemoteOrLocalAttachmentEditModel = Pick<AttachmentViewModel, 'Url' | 'UrlFormats'> & AttachmentEditModel;
+export type RemoteOrLocalAttachmentEditModel = Pick<AttachmentViewModel, 'Url' | 'UrlFormats' | 'IsSnowProfilePlot'> &
+  AttachmentEditModel;
 
 export interface RegistrationEditModelWithRemoteOrLocalAttachments extends Omit<RegistrationEditModel, 'Attachments'> {
   Attachments?: RemoteOrLocalAttachmentEditModel[] | null;

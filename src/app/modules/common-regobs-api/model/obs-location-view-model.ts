@@ -10,10 +10,7 @@
 
 
 export interface ObsLocationViewModel { 
-    /**
-     * ObsLocationID
-     */
-    ObsLocationID?: number | null;
+    ObsLocationID: number;
     /**
      * Navn på stedet
      */
@@ -33,7 +30,8 @@ export interface ObsLocationViewModel {
     /**
      * Kildehenvisning på hvordan koordinaten er satt. (GPS i tlf, klikk i kart, osv). Verdier gitt i UTMSourceKD
      */
-    UTMSourceTID?: number | null;
+    UTMSourceTID: number;
+    UTMSourceName?: string | null;
     /**
      * Usikkerhet i posisjon i meter. Anslås på web og i app hentes det fra gps.
      */
@@ -51,7 +49,6 @@ export interface ObsLocationViewModel {
     MunicipalNo?: string | null;
     CountryId?: number | null;
     CountryName?: string | null;
-    UTMSourceName?: string | null;
     /**
      * Read-only generert tittel
      */
