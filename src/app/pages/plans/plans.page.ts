@@ -1,5 +1,5 @@
 import { Platform } from '@ionic/angular';
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import { IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
@@ -37,17 +37,18 @@ import { DatePipe } from '@angular/common';
   ],
 })
 /** Side som viser planer og sporfiler */
-export class PlansPage implements OnInit {
+export class PlansPage {
   private platform = inject(Platform);
   private geoJSON = inject(GeoJSONService);
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
-  items = this.geoJSON.metadata;
-  sortValue = signal<'name' | 'date'>('date');
 
-  ngOnInit() {
-    this.sort(this.sortValue());
-  }
+  sortValue = signal<'name' | 'date'>('date');
+  items = computed(() => {
+    const sorter = sortFunctions[this.sortValue()];
+    return sorter(this.geoJSON.metadata());
+  });
+
   /**
    * Log GPX filenames when files are dropped in the dropzone
    */
@@ -60,54 +61,38 @@ export class PlansPage implements OnInit {
   }
 
   /**
-   * Sorterer basert på navn, alfabetisk
-   */
-  sortByName() {
-    this.items.set(
-      this.items()
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-    );
-  }
-
-  /**
-   * Sorterer basert på dato, nyeste først
-   */
-  sortByDate() {
-    this.items.set(
-      this.items()
-        .slice()
-        .sort((a, b) => {
-          if (a.date && b.date) {
-            return b.date - a.date;
-          }
-          if (!a.date && !b.date) {
-            return 0;
-          }
-          return a.date ? -1 : 1;
-        })
-    );
-  }
-
-  /**
-   * Sorterer basert på valgt verdi
-   * @param value 'name' | 'date'
-   */
-  sort(value: 'name' | 'date') {
-    if (value === 'name') {
-      this.sortByName();
-    } else {
-      this.sortByDate();
-    }
-  }
-
-  /**
    * Hånderer sorting når bruker endrer valg i select
    */
   onSortChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     const value = select.value as 'name' | 'date';
     this.sortValue.set(value);
-    this.sort(value);
   }
 }
+
+/**
+ * Sorterer basert på navn, alfabetisk
+ */
+export function sortByName(items: GeoJSONItem[]) {
+  return items.toSorted((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Sorterer basert på dato, nyeste først
+ */
+export function sortByDate(items: GeoJSONItem[]) {
+  return items.toSorted((a, b) => {
+    if (a.date && b.date) {
+      return b.date - a.date;
+    }
+    if (!a.date && !b.date) {
+      return 0;
+    }
+    return a.date ? -1 : 1;
+  });
+}
+
+const sortFunctions = {
+  name: sortByName,
+  date: sortByDate,
+} as const;
