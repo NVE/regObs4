@@ -357,7 +357,11 @@
       "CAPTION": "Import GPX files",
       "DROP_LABEL_DESKTOP": "Drag and drop or click to add",
       "DROP_LABEL_MOBILE": "Tap to add files"
-    }
+    },
+    "SORT_TITLE": " Sort by",
+    "SORT_BY_NAME": "Name",
+    "SORT_BY_TIME": "Recently updated",
+    "VISIBLE_ON_MAP": "Visible on map"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

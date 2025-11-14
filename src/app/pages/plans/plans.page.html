@@ -10,9 +10,33 @@
 <div class="content">
   <h1>TODO: Planer</h1>
 
-  @for (item of items(); track item.id) {
-    <p>{{ item.name }} - {{ item.id }} - {{ item.date }}</p>
-  }
+  <div class="filter-panel">
+    <nve-select [label]="'PLANS.SORT_TITLE' | translate" [value]="sortValue()" (sl-change)="onSortChange($event)">
+      <nve-option value="name">{{ "PLANS.SORT_BY_NAME" | translate }}</nve-option>
+      <nve-option value="date">{{ "PLANS.SORT_BY_TIME" | translate }}</nve-option>
+    </nve-select>
+  </div>
+
+  <nve-menu>
+    @for (item of items(); track item.id; let last = $last) {
+      <nve-menu-item>
+        <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
+        <div class="text-wrapper">
+          <span class="label"
+            >{{ item.name }}
+            @if (item.on) {
+              <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
+            }
+          </span>
+          <span>{{ item.date | date }}</span>
+        </div>
+        <nve-icon slot="suffix" name="chevron_forward"></nve-icon
+      ></nve-menu-item>
+      @if (!last) {
+        <nve-divider></nve-divider>
+      }
+    }
+  </nve-menu>
 
   <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx'" (onFileDrop)="onFileDrop($event)">
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
