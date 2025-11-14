@@ -55,27 +55,10 @@
     "WEST": "West",
     "WEST_SHORT": "W"
   },
-  "COMPETENCE": {
-    "UNKNOWN": "Competence unknown",
-    "UNKNOWN_SHORT": "Unknown"
-  },
-  "DATA_LOAD": {
-    "DATA": "Loading...",
-    "LOADING": "Loading",
-    "SPINNER_FETCH_OBSERVATIONS": "Fetching observations"
-  },
+  "COMPETENCE": { "UNKNOWN": "Competence unknown", "UNKNOWN_SHORT": "Unknown" },
+  "DATA_LOAD": { "DATA": "Loading...", "LOADING": "Loading", "SPINNER_FETCH_OBSERVATIONS": "Fetching observations" },
   "DATE": "Date",
-  "DAYS": {
-    "SHORT": {
-      "0": "Sun",
-      "1": "Mon",
-      "2": "Tue",
-      "3": "Wed",
-      "4": "Thu",
-      "5": "Fri",
-      "6": "Sat"
-    }
-  },
+  "DAYS": { "SHORT": { "0": "Sun", "1": "Mon", "2": "Tue", "3": "Wed", "4": "Thu", "5": "Fri", "6": "Sat" } },
   "DIALOGS": {
     "ARE_YOU_SURE": "Are you sure?",
     "CANCEL": "Cancel",
@@ -91,16 +74,7 @@
     "RESET": "Reset",
     "YES": "Yes"
   },
-  "DIRECTION": {
-    "E": "E",
-    "N": "N",
-    "NE": "NE",
-    "NW": "NW",
-    "S": "S",
-    "SE": "SE",
-    "SW": "SW",
-    "W": "W"
-  },
+  "DIRECTION": { "E": "E", "N": "N", "NE": "NE", "NW": "NW", "S": "S", "SE": "SE", "SW": "SW", "W": "W" },
   "DRAFT": "Draft",
   "FILTER_DESCRIPTION": {
     "FILTER": "Filter:",
@@ -118,18 +92,9 @@
       "UNSUPPORTED": "Positioning is not supported on this device"
     }
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Logging trip"
-  },
-  "GEO_HAZARDS": {
-    "DIRT": "Soil",
-    "ICE": "Ice",
-    "SNOW": "Snow",
-    "WATER": "Water"
-  },
-  "HELP": {
-    "TITLE": "Help"
-  },
+  "GEOLOCATION_SERVICE": { "NOTIFICATION_TITLE": "Logging trip" },
+  "GEO_HAZARDS": { "DIRT": "Soil", "ICE": "Ice", "SNOW": "Snow", "WATER": "Water" },
+  "HELP": { "TITLE": "Help" },
   "HOME_PAGE": {
     "OBSERVATIONS_SEARCH_ERROR": {
       "BUTTON": "Dismiss",
@@ -172,14 +137,8 @@
     "WEATHER_ERROR": "Weather forecast not found!",
     "WEATHER_FROM": "Weather from"
   },
-  "MAP_ITEM_BAR": {
-    "AWAY": "Away",
-    "OBSERVATION": "Observation"
-  },
-  "MAP_SEARCH": {
-    "SEARCH_HISTORY_HEADER": "Latest searches",
-    "SEARCH_TEXT": "Search for location"
-  },
+  "MAP_ITEM_BAR": { "AWAY": "Away", "OBSERVATION": "Observation" },
+  "MAP_SEARCH": { "SEARCH_HISTORY_HEADER": "Latest searches", "SEARCH_TEXT": "Search for location" },
   "MENU": {
     "ABOUT_REGOBS": "About data in Varsom",
     "AND": "and",
@@ -233,9 +192,7 @@
     "USER_SETTINGS": "User",
     "WEEKS_BACK": "Weeks back"
   },
-  "MONTHS": {
-    "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"
-  },
+  "MONTHS": { "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des" },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Loading more observations...",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
@@ -278,13 +235,8 @@
     },
     "MULTISELECT_SHOW_COUNT": " {{selectedItemsCount}} chosen",
     "MULTISELECT_SHOW_NO_COUNT": "shows all",
-    "NICK_FILTER": {
-      "PLACEHOLDER": "Search by nickname",
-      "TITLE": "Name"
-    },
-    "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observation type"
-    },
+    "NICK_FILTER": { "PLACEHOLDER": "Search by nickname", "TITLE": "Name" },
+    "OBSERVATION_TYPE_FILTER": { "TITLE": "Observation type" },
     "REGION_FILTER_B_REGIONS_TITLE": "Region without regularly warning service",
     "REGION_FILTER_TITLE_SNOW": "Region",
     "RESET_FILTER_BUTTON_TITLE": "Reset filters",
@@ -353,11 +305,11 @@
   },
   "PLANS": {
     "TITLE": "Plans and tracks",
-    "IMPORT_BUTTON": {
-      "CAPTION": "Import GPX files",
-      "DROP_LABEL_DESKTOP": "Drag and drop or click to add",
-      "DROP_LABEL_MOBILE": "Tap to add files"
-    }
+    "IMPORT_BUTTON": { "CAPTION": "Import GPX files" },
+    "SORT_TITLE": " Sort by",
+    "SORT_BY_NAME": "Name",
+    "SORT_BY_TIME": "Recently updated",
+    "VISIBLE_ON_MAP": "Visible on map"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
@@ -376,26 +328,15 @@
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
-    "ADD_WEB_URL": {
-      "LABEL": "Web urls",
-      "TITLE": "Add",
-      "URL": "Url"
-    },
-    "ANONYMIZE": {
-      "CHECK_TO_ANONYMIZE": "Check to anonymize",
-      "TITLE": "Anonymize"
-    },
+    "ADD_WEB_URL": { "LABEL": "Web urls", "TITLE": "Add", "URL": "Url" },
+    "ANONYMIZE": { "CHECK_TO_ANONYMIZE": "Check to anonymize", "TITLE": "Anonymize" },
     "BACK_TO_OBSERVATION": "Back to observation",
     "CARD": {
       "DOWNLOAD": "Download",
       "GO_TO_ORIGINAL_IMAGE": "See original",
       "GO_TO_SNOW_PROFILE": "Go to profile",
       "OBSERVED_BY": "Sent in by",
-      "TIME": {
-        "OBSERVED": "Observed",
-        "REGISTERED": "Registered",
-        "UPDATED": "Changed"
-      }
+      "TIME": { "OBSERVED": "Observed", "REGISTERED": "Registered", "UPDATED": "Changed" }
     },
     "CONFIRM_RESET": "Are you sure you want to reset all fields?",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
@@ -509,10 +450,7 @@
       "TITLE": "Images and notes"
     },
     "GO_TO": "Go to observation",
-    "GROUP": {
-      "SUBTITLE": "Share observation with",
-      "TITLE": "Share with group"
-    },
+    "GROUP": { "SUBTITLE": "Share observation with", "TITLE": "Share with group" },
     "ICE": {
       "ICE_COVER": {
         "ICE_CAPACITY": "Bearing strength",
@@ -616,10 +554,7 @@
     },
     "SELECTION_COUNT": "{{ count }} selected",
     "SEND": "Submit",
-    "SET_DAMAGE_LOCATION": {
-      "CONFIRM_TEXT": "Confirm damage location",
-      "TITLE": "Damage Location"
-    },
+    "SET_DAMAGE_LOCATION": { "CONFIRM_TEXT": "Confirm damage location", "TITLE": "Damage Location" },
     "SET_TIME": {
       "CONFIRM": "Confirm date and time",
       "HEADER": "What time did you observe?",
@@ -936,10 +871,7 @@
       "LINE_1": "Use the information in Varsom, but also make your own judgments. View the observations in context of the observer's competence that appears as stars by the name."
     },
     "I_UNDERSTAND": "Ok, I understand",
-    "PAGE_1": {
-      "HEADER": "Plan safe trips!",
-      "LINE_1": "View observations and warnings when you plan your trip."
-    },
+    "PAGE_1": { "HEADER": "Plan safe trips!", "LINE_1": "View observations and warnings when you plan your trip." },
     "PAGE_2": {
       "HEADER": "Understand the terrain better!",
       "LINE_1": "See where you are in relation to danger zones in the terrain. Use support maps adapted to the dangers you are looking for."
@@ -1017,13 +949,7 @@
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche runout zones",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },
-  "TABS": {
-    "LIST": "List",
-    "MAP": "Map",
-    "TRIPS": "Trips",
-    "WARNINGS": "Warnings",
-    "PLANS": "Plans"
-  },
+  "TABS": { "LIST": "List", "MAP": "Map", "TRIPS": "Trips", "WARNINGS": "Warnings", "PLANS": "Plans" },
   "TRIP": {
     "COMMENT_CAPTION": "Description (required)",
     "COMMENT_DESCRIPTION": "Describe what kind of field observations you are going to do and what you are looking for, etc.",

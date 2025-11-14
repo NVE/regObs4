@@ -55,27 +55,10 @@
     "WEST": "Vest",
     "WEST_SHORT": "V"
   },
-  "COMPETENCE": {
-    "UNKNOWN": "Ukjent kompetanse",
-    "UNKNOWN_SHORT": "Ukjent"
-  },
-  "DATA_LOAD": {
-    "DATA": "Laster data...",
-    "LOADING": "Laster",
-    "SPINNER_FETCH_OBSERVATIONS": "Henter observasjoner"
-  },
+  "COMPETENCE": { "UNKNOWN": "Ukjent kompetanse", "UNKNOWN_SHORT": "Ukjent" },
+  "DATA_LOAD": { "DATA": "Laster data...", "LOADING": "Laster", "SPINNER_FETCH_OBSERVATIONS": "Henter observasjoner" },
   "DATE": "Dato",
-  "DAYS": {
-    "SHORT": {
-      "0": "Søn",
-      "1": "Man",
-      "2": "Tir",
-      "3": "Ons",
-      "4": "Tor",
-      "5": "Fre",
-      "6": "Lør"
-    }
-  },
+  "DAYS": { "SHORT": { "0": "Søn", "1": "Man", "2": "Tir", "3": "Ons", "4": "Tor", "5": "Fre", "6": "Lør" } },
   "DIALOGS": {
     "ARE_YOU_SURE": "Er du sikker?",
     "CANCEL": "Avbryt",
@@ -91,16 +74,7 @@
     "RESET": "Nullstill",
     "YES": "Ja"
   },
-  "DIRECTION": {
-    "E": "Ø",
-    "N": "N",
-    "NE": "NØ",
-    "NW": "NV",
-    "S": "S",
-    "SE": "SØ",
-    "SW": "SV",
-    "W": "V"
-  },
+  "DIRECTION": { "E": "Ø", "N": "N", "NE": "NØ", "NW": "NV", "S": "S", "SE": "SØ", "SW": "SV", "W": "V" },
   "DRAFT": "Kladd",
   "FILTER_DESCRIPTION": {
     "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "{{geohazard}}observasjoner.",
@@ -117,18 +91,9 @@
       "UNSUPPORTED": "Enheten kan ikke gi deg posisjonsdata"
     }
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Tur pågår"
-  },
-  "GEO_HAZARDS": {
-    "DIRT": "Jord",
-    "ICE": "Is",
-    "SNOW": "Snø",
-    "WATER": "Vann"
-  },
-  "HELP": {
-    "TITLE": "Hjelp"
-  },
+  "GEOLOCATION_SERVICE": { "NOTIFICATION_TITLE": "Tur pågår" },
+  "GEO_HAZARDS": { "DIRT": "Jord", "ICE": "Is", "SNOW": "Snø", "WATER": "Vann" },
+  "HELP": { "TITLE": "Hjelp" },
   "HOME_PAGE": {
     "OBSERVATIONS_SEARCH_ERROR": {
       "BUTTON": "Lukk",
@@ -171,14 +136,8 @@
     "WEATHER_ERROR": "Fant ikke værvarsel!",
     "WEATHER_FROM": "Værvarsel på"
   },
-  "MAP_ITEM_BAR": {
-    "AWAY": "Unna",
-    "OBSERVATION": "Observasjon"
-  },
-  "MAP_SEARCH": {
-    "SEARCH_HISTORY_HEADER": "Siste søk",
-    "SEARCH_TEXT": "Søk etter sted"
-  },
+  "MAP_ITEM_BAR": { "AWAY": "Unna", "OBSERVATION": "Observasjon" },
+  "MAP_SEARCH": { "SEARCH_HISTORY_HEADER": "Siste søk", "SEARCH_TEXT": "Søk etter sted" },
   "MENU": {
     "ABOUT_REGOBS": "Om data og tilgjengelighet",
     "AND": "og",
@@ -232,9 +191,7 @@
     "USER_SETTINGS": "Brukervalg",
     "WEEKS_BACK": "Uker tilbake"
   },
-  "MONTHS": {
-    "SHORT_LIST": "jan, feb, mar, apr, mai, jun, jul, aug, sep, okt, nov, des"
-  },
+  "MONTHS": { "SHORT_LIST": "jan, feb, mar, apr, mai, jun, jul, aug, sep, okt, nov, des" },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Laster flere observasjoner...",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
@@ -277,13 +234,8 @@
     },
     "MULTISELECT_SHOW_COUNT": "{{selectedItemsCount}} valgt",
     "MULTISELECT_SHOW_NO_COUNT": "viser alle",
-    "NICK_FILTER": {
-      "PLACEHOLDER": "Søk på kallenavn",
-      "TITLE": "Navn"
-    },
-    "OBSERVATION_TYPE_FILTER": {
-      "TITLE": "Observasjonstype"
-    },
+    "NICK_FILTER": { "PLACEHOLDER": "Søk på kallenavn", "TITLE": "Navn" },
+    "OBSERVATION_TYPE_FILTER": { "TITLE": "Observasjonstype" },
     "REGION_FILTER_B_REGIONS_TITLE": "Region uten fast varsling",
     "REGION_FILTER_TITLE_SNOW": "Region",
     "RESET_FILTER_BUTTON_TITLE": "Tilbakestill alle filtre",
@@ -352,11 +304,11 @@
   },
   "PLANS": {
     "TITLE": "Planer og spor",
-    "IMPORT_BUTTON": {
-      "CAPTION": "Importer GPX-filer",
-      "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
-      "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
-    }
+    "IMPORT_BUTTON": { "CAPTION": "Importer GPX-filer" },
+    "SORT_TITLE": "Sortering",
+    "SORT_BY_NAME": "Navn",
+    "SORT_BY_TIME": "Sist endret",
+    "VISIBLE_ON_MAP": "Vises i kart"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
@@ -375,26 +327,15 @@
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
-    "ADD_WEB_URL": {
-      "LABEL": "Weblenker",
-      "TITLE": "Legg til",
-      "URL": "Url"
-    },
-    "ANONYMIZE": {
-      "CHECK_TO_ANONYMIZE": "Send inn anonymt",
-      "TITLE": "Anonymisering"
-    },
+    "ADD_WEB_URL": { "LABEL": "Weblenker", "TITLE": "Legg til", "URL": "Url" },
+    "ANONYMIZE": { "CHECK_TO_ANONYMIZE": "Send inn anonymt", "TITLE": "Anonymisering" },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "CARD": {
       "DOWNLOAD": "Last ned",
       "GO_TO_ORIGINAL_IMAGE": "Se original",
       "GO_TO_SNOW_PROFILE": "Gå til profil",
       "OBSERVED_BY": "Sendt inn av",
-      "TIME": {
-        "OBSERVED": "Observert",
-        "REGISTERED": "Registrert",
-        "UPDATED": "Endret"
-      }
+      "TIME": { "OBSERVED": "Observert", "REGISTERED": "Registrert", "UPDATED": "Endret" }
     },
     "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
@@ -508,10 +449,7 @@
       "TITLE": "Bilde og notat"
     },
     "GO_TO": "Gå til observasjon",
-    "GROUP": {
-      "SUBTITLE": "Del observasjonen med",
-      "TITLE": "Del med gruppe"
-    },
+    "GROUP": { "SUBTITLE": "Del observasjonen med", "TITLE": "Del med gruppe" },
     "ICE": {
       "ICE_COVER": {
         "ICE_CAPACITY": "Bæreevne",
@@ -615,16 +553,8 @@
     },
     "SELECTION_COUNT": "{{ count }} valgt",
     "SEND": "Send inn",
-    "SET_DAMAGE_LOCATION": {
-      "CONFIRM_TEXT": "Bekreft skadepunkt",
-      "TITLE": "Skadepunkt"
-    },
-    "SET_TIME": {
-      "CONFIRM": "Bekreft dato og tid",
-      "HEADER": "Når observerte du?",
-      "NOW": "Nå",
-      "TITLE": "Tidspunkt"
-    },
+    "SET_DAMAGE_LOCATION": { "CONFIRM_TEXT": "Bekreft skadepunkt", "TITLE": "Skadepunkt" },
+    "SET_TIME": { "CONFIRM": "Bekreft dato og tid", "HEADER": "Når observerte du?", "NOW": "Nå", "TITLE": "Tidspunkt" },
     "SNOW": {
       "AVALANCHE_ACTIVITY": {
         "ADD_NEW": "Legg til ny skredaktivitet",
@@ -1016,13 +946,7 @@
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområder for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
-  "TABS": {
-    "LIST": "Liste",
-    "MAP": "Kart",
-    "TRIPS": "Turer",
-    "WARNINGS": "Varsler",
-    "PLANS": "Planer"
-  },
+  "TABS": { "LIST": "Liste", "MAP": "Kart", "TRIPS": "Turer", "WARNINGS": "Varsler", "PLANS": "Planer" },
   "TRIP": {
     "COMMENT_CAPTION": "Beskrivelse (obligatorisk)",
     "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
