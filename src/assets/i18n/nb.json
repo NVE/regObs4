@@ -356,7 +356,11 @@
       "CAPTION": "Importer GPX-filer",
       "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
       "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
-    }
+    },
+    "SORT_TITLE": "Sortering",
+    "SORT_BY_NAME": "Navn",
+    "SORT_BY_TIME": "Sist endret",
+    "VISIBLE_ON_MAP": "Vises i kart"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

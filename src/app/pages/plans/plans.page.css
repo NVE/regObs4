@@ -10,3 +10,40 @@
 svg {
   fill: currentColor;
 }
+
+.filter-panel {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--spacing-small);
+}
+
+nve-select {
+  width: fit-content;
+}
+
+.text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font: var(--label-medium);
+}
+
+nve-menu-item {
+  nve-icon {
+    --icon-size: 30px;
+  }
+}
+
+nve-menu-item::part(base) {
+  height: fit-content;
+}
+
+nve-badge::part(base) {
+  line-height: 1;
+}
