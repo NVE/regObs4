@@ -19,19 +19,21 @@
 
   <nve-menu>
     @for (item of items(); track item.id; let last = $last) {
-      <nve-menu-item>
-        <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
-        <div class="text-wrapper">
-          <span class="label"
-            >{{ item.name }}
-            @if (item.on) {
-              <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
-            }
-          </span>
-          <span>{{ item.date | date }}</span>
-        </div>
-        <nve-icon slot="suffix" name="chevron_forward"></nve-icon
-      ></nve-menu-item>
+      <a [routerLink]="item.id">
+        <nve-menu-item>
+          <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
+          <div class="text-wrapper">
+            <span class="label"
+              >{{ item.name }}
+              @if (item.on) {
+                <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
+              }
+            </span>
+            <span>{{ item.date | date }}</span>
+          </div>
+          <nve-icon slot="suffix" name="chevron_forward"></nve-icon
+        ></nve-menu-item>
+      </a>
       @if (!last) {
         <nve-divider></nve-divider>
       }

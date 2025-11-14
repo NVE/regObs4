@@ -18,6 +18,7 @@ import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { generateShortRandomId } from './utils';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-plans',
@@ -34,6 +35,7 @@ import { DatePipe } from '@angular/common';
     TranslatePipe,
     TranslatePipe,
     NgxFileDropModule,
+    RouterLink,
   ],
 })
 /** Side som viser planer og sporfiler */
