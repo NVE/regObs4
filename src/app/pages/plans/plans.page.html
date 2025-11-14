@@ -23,8 +23,11 @@
         <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
         <div class="text-wrapper">
           <span class="label"
-            >{{ item.name }} <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge></span
-          >
+            >{{ item.name }}
+            @if (item.on) {
+              <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
+            }
+          </span>
           <span>{{ item.date | date }}</span>
         </div>
         <nve-icon slot="suffix" name="chevron_forward"></nve-icon
