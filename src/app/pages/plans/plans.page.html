@@ -10,22 +10,47 @@
 <div class="content">
   <h1>TODO: Planer</h1>
 
-  @for (item of items(); track item.id) {
-    <p>{{ item.name }} - {{ item.id }} - {{ item.date }}</p>
+  @if (showImportmessage()) {
+    <nve-message-card variant="warning" label="Import-funksjonen er ikke laget ennå"></nve-message-card>
   }
 
-  <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx'" (onFileDrop)="onFileDrop($event)">
+  <div class="filter-panel">
+    <nve-select [label]="'PLANS.SORT_TITLE' | translate" [value]="sortValue()" (sl-change)="onSortChange($event)">
+      <nve-option value="name">{{ "PLANS.SORT_BY_NAME" | translate }}</nve-option>
+      <nve-option value="date">{{ "PLANS.SORT_BY_TIME" | translate }}</nve-option>
+    </nve-select>
+  </div>
+
+  <nve-menu>
+    @for (item of items(); track item.id; let last = $last) {
+      <nve-menu-item>
+        <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
+        <div class="text-wrapper">
+          <span class="label"
+            >{{ item.name }}
+            @if (item.on) {
+              <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
+            }
+          </span>
+          <span>{{ item.date | date }}</span>
+        </div>
+        <nve-icon slot="suffix" name="chevron_forward"></nve-icon
+      ></nve-menu-item>
+      @if (!last) {
+        <nve-divider></nve-divider>
+      }
+    }
+  </nve-menu>
+
+  <ngx-file-drop
+    style="width: 100%"
+    dropZoneLabel="Slipp GPX-filer her"
+    [accept]="'.gpx'"
+    dropZoneClassName="drop-zone"
+    (onFileDrop)="onFileDrop($event)"
+  >
     <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-      <button type="button" (click)="openFileSelector()">
-        <h1>{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</h1>
-        <p>
-          @if (!isMobile) {
-            {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_DESKTOP" | translate }}
-          } @else {
-            {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_MOBILE" | translate }}
-          }
-        </p>
-      </button>
+      <button type="button" (click)="openFileSelector()">{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</button>
     </ng-template>
   </ngx-file-drop>
 </div>
