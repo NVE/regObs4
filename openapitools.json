@@ -6,8 +6,9 @@
     "generators": {
       "regobs-client": {
         "generatorName": "typescript-angular",
-        "inputSpec": "https://test-api.regobs.no/v6/swagger/v6/swagger.json",
+        "inputSpec": "http://localhost:5130/swagger/v6/swagger.json",
         "output": "src/app/modules/common-regobs-api",
+        "templateDir": "openapi-templates",
         "additionalProperties": {
           "fileNaming": "kebab-case",
           "useSingleRequestParameter": true
