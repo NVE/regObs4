@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: ec80925f
+ * RegObs API, build: Local build - commit: b86cb26d
  *
  * Contact: regobs@nve.no
  *
