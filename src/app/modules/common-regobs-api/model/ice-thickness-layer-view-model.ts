@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -22,6 +22,6 @@ export interface IceThicknessLayerViewModel {
      * Comment
      */
     Comment?: string | null;
-    IceLayerName?: string | null;
+    IceLayerName?: string;
 }
 

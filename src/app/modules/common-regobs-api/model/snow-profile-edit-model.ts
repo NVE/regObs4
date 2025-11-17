@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -18,7 +18,7 @@ export interface SnowProfileEditModel {
     Exposition?: number | null;
     SlopeAngle?: number | null;
     SnowTemp?: SnowTempModel | null;
-    SnowDensity?: Array<SnowDensityModel> | null;
-    StratProfile?: StratProfileEditModel | null;
+    SnowDensity?: Array<SnowDensityModel>;
+    StratProfile?: StratProfileEditModel;
 }
 

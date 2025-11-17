@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -13,10 +13,10 @@ import { CountyDto } from './county-dto';
 
 export interface AreasDto { 
     CountryId: number;
-    CountryName?: string | null;
-    CountryDescription?: string | null;
+    CountryName?: string;
+    CountryDescription?: string;
     SortOrder: number;
-    ForecastRegions?: AreasDtoForecastRegions | null;
-    Counties?: Array<CountyDto> | null;
+    ForecastRegions?: AreasDtoForecastRegions;
+    Counties?: Array<CountyDto>;
 }
 

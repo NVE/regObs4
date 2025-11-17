@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -11,6 +11,6 @@ import { SnowTempObsModel } from './snow-temp-obs-model';
 
 
 export interface SnowTempModel { 
-    Layers?: Array<SnowTempObsModel> | null;
+    Layers?: Array<SnowTempObsModel>;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -10,10 +10,7 @@
 
 
 export interface RegistrationTypeCriteriaDto { 
-    /**
-     * TODO: See
-     */
     Id: number;
-    SubTypes?: Array<number> | null;
+    SubTypes?: Array<number>;
 }
 

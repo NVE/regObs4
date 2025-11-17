@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -11,14 +11,14 @@ import { LatLngObject } from './lat-lng-object';
 
 
 export interface ObsLocationsResponseDtoV2 { 
-    Name?: string | null;
+    Name?: string;
     Id: number;
     Distance: number;
-    LatLngObject?: LatLngObject | null;
-    ObserverNickName?: string | null;
-    ObserverGroupName?: string | null;
+    LatLngObject?: LatLngObject;
+    ObserverNickName?: string;
+    ObserverGroupName?: string;
     ObserverGroupId?: number | null;
-    LocationDescription?: string | null;
+    LocationDescription?: string;
     GeoHazardId?: number | null;
 }
 

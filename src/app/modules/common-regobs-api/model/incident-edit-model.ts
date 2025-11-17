@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -98,6 +98,6 @@ export interface IncidentEditModel {
     /**
      * Provide description for IncidentURLs
      */
-    IncidentURLs?: Array<UrlEditModel> | null;
+    IncidentURLs?: Array<UrlEditModel>;
 }
 

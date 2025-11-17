@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -12,7 +12,7 @@ import { ObserverGroupDto } from './observer-group-dto';
 
 export interface ObserverResponseDto { 
     Guid: string;
-    ObserverGroup?: Array<ObserverGroupDto> | null;
-    Nick?: string | null;
+    ObserverGroup?: Array<ObserverGroupDto>;
+    Nick?: string;
 }
 

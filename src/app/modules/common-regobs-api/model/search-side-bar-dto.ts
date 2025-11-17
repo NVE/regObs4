@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -13,8 +13,8 @@ import { SearchSideBarDtoRegistrationTypes } from './search-side-bar-dto-registr
 
 
 export interface SearchSideBarDto { 
-    RegistrationTypes?: SearchSideBarDtoRegistrationTypes | null;
-    ObserverCompetenceLevels?: SearchSideBarDtoObserverCompetenceLevels | null;
-    Areas?: Array<AreasDto> | null;
+    RegistrationTypes?: SearchSideBarDtoRegistrationTypes;
+    ObserverCompetenceLevels?: SearchSideBarDtoObserverCompetenceLevels;
+    Areas?: Array<AreasDto>;
 }
 

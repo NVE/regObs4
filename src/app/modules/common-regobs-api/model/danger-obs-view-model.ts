@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -22,7 +22,7 @@ export interface DangerObsViewModel {
      * Kommentarfelt for å skrive utfyllende tekst om faretegnet.
      */
     Comment?: string | null;
-    GeoHazardName?: string | null;
-    DangerSignName?: string | null;
+    GeoHazardName?: string;
+    DangerSignName?: string;
 }
 

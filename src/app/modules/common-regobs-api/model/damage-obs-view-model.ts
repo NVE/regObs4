@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -16,8 +16,8 @@ export interface DamageObsViewModel {
     DamageTypeTID: number;
     DamagePosition?: LatLng | null;
     Comment?: string | null;
-    Attachments?: Array<AttachmentViewModel> | null;
-    GeoHazardName?: string | null;
-    DamageTypeName?: string | null;
+    Attachments?: Array<AttachmentViewModel>;
+    GeoHazardName?: string;
+    DamageTypeName?: string;
 }
 

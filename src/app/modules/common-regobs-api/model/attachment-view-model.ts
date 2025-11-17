@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -44,16 +44,16 @@ export interface AttachmentViewModel {
     /**
      * GeoHazard name
      */
-    GeoHazardName?: string | null;
+    GeoHazardName?: string;
     /**
      * Registration name
      */
-    RegistrationName?: string | null;
-    UrlFormats?: AttachmentViewModelUrlFormats | null;
+    RegistrationName?: string;
+    UrlFormats?: AttachmentViewModelUrlFormats;
     /**
      * Full original image url
      */
-    Url?: string | null;
+    Url?: string;
     /**
      * If true, the attachment is an image generated from a snow profile plot
      */

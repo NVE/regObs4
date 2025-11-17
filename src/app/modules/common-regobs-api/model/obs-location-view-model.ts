@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -31,7 +31,7 @@ export interface ObsLocationViewModel {
      * Kildehenvisning på hvordan koordinaten er satt. (GPS i tlf, klikk i kart, osv). Verdier gitt i UTMSourceKD
      */
     UTMSourceTID: number;
-    UTMSourceName?: string | null;
+    UTMSourceName?: string;
     /**
      * Usikkerhet i posisjon i meter. Anslås på web og i app hentes det fra gps.
      */
@@ -40,18 +40,18 @@ export interface ObsLocationViewModel {
      * Anngir varslingsregion stedet tilhører. Varslingsregioner gitt i ForecastRegionKD. The ForecastRegionKD unique identifier
      */
     ForecastRegionTID?: number | null;
-    ForecastRegionName?: string | null;
+    ForecastRegionName?: string;
     Height?: number | null;
-    MunicipalName?: string | null;
+    MunicipalName?: string;
     /**
      * Kommune nr stedet tilhører
      */
-    MunicipalNo?: string | null;
+    MunicipalNo?: string;
     CountryId?: number | null;
-    CountryName?: string | null;
+    CountryName?: string;
     /**
      * Read-only generert tittel
      */
-    Title?: string | null;
+    Title?: string;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -27,6 +27,6 @@ export interface GeneralObservationEditModel {
      * Kommentarfelt for å skrive utfyllende tekst
      */
     Comment?: string | null;
-    Urls?: Array<UrlEditModel> | null;
+    Urls?: Array<UrlEditModel>;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -62,17 +62,17 @@ export interface AvalancheEvalProblem2ViewModel {
      * Sannsynlig tilleggsbelastning for å utløse skred. The DestructiveSizeKD unique identifier
      */
     DestructiveSizeTID?: number | null;
-    AvalProbabilityName?: string | null;
-    AvalTriggerSimpleName?: string | null;
-    AvalCauseDepthName?: string | null;
-    ExposedHeightComboName?: string | null;
-    AvalancheExtName?: string | null;
-    AvalCauseName?: string | null;
-    DestructiveSizeName?: string | null;
-    AvalPropagationName?: string | null;
-    AvalCauseAttributeLightName?: string | null;
-    AvalCauseAttributeThinName?: string | null;
-    AvalCauseAttributeSoftName?: string | null;
-    AvalCauseAttributeCrystalName?: string | null;
+    AvalProbabilityName?: string;
+    AvalTriggerSimpleName?: string;
+    AvalCauseDepthName?: string;
+    ExposedHeightComboName?: string;
+    AvalancheExtName?: string;
+    AvalCauseName?: string;
+    DestructiveSizeName?: string;
+    AvalPropagationName?: string;
+    AvalCauseAttributeLightName?: string;
+    AvalCauseAttributeThinName?: string;
+    AvalCauseAttributeSoftName?: string;
+    AvalCauseAttributeCrystalName?: string;
 }
 

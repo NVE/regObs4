@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -32,11 +32,11 @@ export interface IceCoverViewModel {
      * Bæreevne. IceCapacityKD unique identifier
      */
     IceCapacityTID?: number | null;
-    Urls?: Array<UrlViewModel> | null;
-    IceCoverBeforeName?: string | null;
-    IceCoverName?: string | null;
-    IceCoverAfterName?: string | null;
-    IceSkateabilityName?: string | null;
-    IceCapacityName?: string | null;
+    Urls?: Array<UrlViewModel>;
+    IceCoverBeforeName?: string;
+    IceCoverName?: string;
+    IceCoverAfterName?: string;
+    IceSkateabilityName?: string;
+    IceCapacityName?: string;
 }
 

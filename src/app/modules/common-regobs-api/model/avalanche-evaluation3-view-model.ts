@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -30,7 +30,7 @@ export interface AvalancheEvaluation3ViewModel {
      * Kommetarfelt for utdypende kommentar om varslet stemmer eller ikke.
      */
     ForecastComment?: string | null;
-    AvalancheDangerName?: string | null;
-    ForecastCorrectName?: string | null;
+    AvalancheDangerName?: string;
+    ForecastCorrectName?: string;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -76,13 +76,13 @@ export interface LandslideViewModel {
      * Når stoppet skredet?
      */
     DtLandSlideTimeEnd?: string | null;
-    Urls?: Array<UrlViewModel> | null;
-    LandSlideName?: string | null;
-    LandSlideTriggerName?: string | null;
-    LandSlideSizeName?: string | null;
-    GeoHazardName?: string | null;
-    ActivityInfluencedName?: string | null;
-    ForecastAccurateName?: string | null;
-    DamageExtentName?: string | null;
+    Urls?: Array<UrlViewModel>;
+    LandSlideName?: string;
+    LandSlideTriggerName?: string;
+    LandSlideSizeName?: string;
+    GeoHazardName?: string;
+    ActivityInfluencedName?: string;
+    ForecastAccurateName?: string;
+    DamageExtentName?: string;
 }
 

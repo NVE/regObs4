@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -29,11 +29,11 @@ export interface SnowCoverObsViewModel {
     /**
      * SnowPilotRef
      */
-    SnowPilotRef?: string | null;
+    SnowPilotRef?: string;
     /**
      * Comment.
      */
-    Comment?: string | null;
-    CriticalLayerName?: string | null;
+    Comment?: string;
+    CriticalLayerName?: string;
 }
 

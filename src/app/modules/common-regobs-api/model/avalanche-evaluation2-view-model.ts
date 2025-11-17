@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -11,18 +11,18 @@ import { AvalancheEvalProblemViewModel } from './avalanche-eval-problem-view-mod
 
 
 export interface AvalancheEvaluation2ViewModel { 
-    AvalancheDangerName?: string | null;
-    ValidExposition?: string | null;
-    Comment?: string | null;
-    AvalancheEvaluation?: string | null;
-    AvalancheDevelopment?: string | null;
+    AvalancheDangerName?: string;
+    ValidExposition?: string;
+    Comment?: string;
+    AvalancheEvaluation?: string;
+    AvalancheDevelopment?: string;
     ExposedHeight1?: number | null;
     ExposedHeight2?: number | null;
     ExposedHeightComboTID?: number | null;
-    ExposedHeightComboName?: string | null;
+    ExposedHeightComboName?: string;
     ExposedClimateTID?: number | null;
-    ExposedClimateName?: string | null;
+    ExposedClimateName?: string;
     AvalancheDangerTID?: number | null;
-    AvalancheEvalProblems?: Array<AvalancheEvalProblemViewModel> | null;
+    AvalancheEvalProblems?: Array<AvalancheEvalProblemViewModel>;
 }
 

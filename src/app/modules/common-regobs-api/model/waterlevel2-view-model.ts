@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -20,19 +20,19 @@ export interface Waterlevel2ViewModel {
     WaterLevelStateTID?: number | null;
     MarkingTypeTID?: number | null;
     MeasuringToolDescription?: string | null;
-    WaterLevelMeasurement?: Array<WaterLevelMeasurementViewModel> | null;
+    WaterLevelMeasurement?: Array<WaterLevelMeasurementViewModel>;
     Comment?: string | null;
-    WaterLevelStateName?: string | null;
-    WaterAstrayName?: string | null;
-    ObservationTimingName?: string | null;
-    MeasurementReferenceName?: string | null;
-    MeasurementTypeName?: string | null;
-    WaterLevelMethodName?: string | null;
-    MarkingReferenceName?: string | null;
-    MarkingTypeName?: string | null;
+    WaterLevelStateName?: string;
+    WaterAstrayName?: string;
+    ObservationTimingName?: string;
+    MeasurementReferenceName?: string;
+    MeasurementTypeName?: string;
+    WaterLevelMethodName?: string;
+    MarkingReferenceName?: string;
+    MarkingTypeName?: string;
     /**
      * Flood polygon area, List(lon, lat)
      */
-    Extent?: Array<Array<number>> | null;
+    Extent?: Array<Array<number>>;
 }
 

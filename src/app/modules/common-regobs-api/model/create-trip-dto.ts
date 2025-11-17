@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -10,11 +10,11 @@
 
 
 export interface CreateTripDto { 
-    Comment?: string | null;
+    Comment?: string;
     DeviceGuid: string;
     GeoHazardID: number;
-    Lat?: string | null;
-    Lng?: string | null;
+    Lat?: string;
+    Lng?: string;
     ObservationExpectedMinutes: number;
     TripTypeID: number;
 }

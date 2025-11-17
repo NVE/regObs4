@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -12,8 +12,8 @@ import { ValueKind } from './value-kind';
 
 export interface RegObsGenericValue { 
     Kind: ValueKind;
-    readonly KindType?: string | null;
-    Header?: string | null;
+    readonly KindType?: string;
+    Header?: string;
     Value?: any | null;
 }
 export namespace RegObsGenericValue {

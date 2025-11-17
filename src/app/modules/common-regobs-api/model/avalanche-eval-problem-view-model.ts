@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -12,21 +12,21 @@
 export interface AvalancheEvalProblemViewModel { 
     AvalancheEvalProblemID: number;
     AvalProbabilityTID?: number | null;
-    AvalProbabilityName?: string | null;
+    AvalProbabilityName?: string;
     AvalTriggerSimpleTID?: number | null;
-    AvalTriggerSimpleName?: string | null;
+    AvalTriggerSimpleName?: string;
     DestructiveSizeExtTID?: number | null;
-    DestructiveSizeExtName?: string | null;
+    DestructiveSizeExtName?: string;
     AvalancheExtTID?: number | null;
-    AvalancheExtName?: string | null;
+    AvalancheExtName?: string;
     AvalCauseTID?: number | null;
-    AvalCauseName?: string | null;
+    AvalCauseName?: string;
     AvalCauseExtTID?: number | null;
-    AvalCauseExtName?: string | null;
+    AvalCauseExtName?: string;
     AvalReleaseHeightTID?: number | null;
-    AvalReleaseHeightName?: string | null;
-    AvalancheProbabilityAutoText?: string | null;
-    AvalancheProblemAutoText?: string | null;
-    Comment?: string | null;
+    AvalReleaseHeightName?: string;
+    AvalancheProbabilityAutoText?: string;
+    AvalancheProblemAutoText?: string;
+    Comment?: string;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -10,7 +10,7 @@
 
 
 export interface CountyDto { 
-    CountyNo?: string | null;
-    Name?: string | null;
+    CountyNo?: string;
+    Name?: string;
 }
 

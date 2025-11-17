@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -16,7 +16,7 @@ export interface WeatherViewModel {
     WindDirection?: number | null;
     CloudCover?: number | null;
     Comment?: string | null;
-    PrecipitationName?: string | null;
-    WindDirectionName?: string | null;
+    PrecipitationName?: string;
+    WindDirectionName?: string;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -12,8 +12,8 @@ import { RegistrationTypeSubTypeDto } from './registration-type-sub-type-dto';
 
 export interface RegistrationTypeDto { 
     Id: number;
-    Name?: string | null;
-    SubTypes?: Array<RegistrationTypeSubTypeDto> | null;
+    Name?: string;
+    SubTypes?: Array<RegistrationTypeSubTypeDto>;
     SortOrder: number;
 }
 

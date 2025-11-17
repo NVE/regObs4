@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -11,9 +11,9 @@
 
 export interface ObserverGroupDto { 
     Id: number;
-    Name?: string | null;
-    ObserverGroupDescription?: string | null;
-    WorkPlace?: string | null;
-    Comment?: string | null;
+    Name?: string;
+    ObserverGroupDescription?: string;
+    WorkPlace?: string;
+    Comment?: string;
 }
 

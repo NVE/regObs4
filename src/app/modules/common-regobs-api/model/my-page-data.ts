@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -17,21 +17,21 @@ export interface MyPageData {
      * Returns unique id that identifies an observer
      */
     ObserverId: number;
-    NickName?: string | null;
-    Email?: string | null;
-    MobPhoneNr?: string | null;
-    FirstName?: string | null;
-    LastName?: string | null;
-    WorkPlace?: string | null;
+    NickName?: string;
+    Email?: string;
+    MobPhoneNr?: string;
+    FirstName?: string;
+    LastName?: string;
+    WorkPlace?: string;
     Adrnr?: number | null;
     DtRegTime?: string | null;
-    MemberOfGroups?: Array<ObserverGroupDto> | null;
-    PendingInvitationsToGroups?: Array<ObserverGroupDto> | null;
-    Competence?: Array<ObserverCompetenceDto> | null;
+    MemberOfGroups?: Array<ObserverGroupDto>;
+    PendingInvitationsToGroups?: Array<ObserverGroupDto>;
+    Competence?: Array<ObserverCompetenceDto>;
     NumberOfObservations: number;
     MainGeohazardTID: number;
     LastRegistrationDate?: string | null;
-    DefaultMunicipality?: string | null;
-    Roles?: Array<string> | null;
+    DefaultMunicipality?: string;
+    Roles?: Array<string>;
 }
 

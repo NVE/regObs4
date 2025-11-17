@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -98,30 +98,30 @@ export interface IncidentViewModel {
     /**
      * Provide description for IncidentURLs
      */
-    IncidentURLs?: Array<UrlViewModel> | null;
-    GeoHazardName?: string | null;
-    ActivityInfluencedName?: string | null;
-    DamageExtentName?: string | null;
-    ForecastAccurateName?: string | null;
+    IncidentURLs?: Array<UrlViewModel>;
+    GeoHazardName?: string;
+    ActivityInfluencedName?: string;
+    DamageExtentName?: string;
+    ForecastAccurateName?: string;
     /**
      * Hadde man sikkerhetsutstyr?
      */
-    SafetyGearName?: string | null;
+    SafetyGearName?: string;
     /**
      * Var man lokal, norsk eller utenlandsk turist?
      */
-    LocalTouristName?: string | null;
+    LocalTouristName?: string;
     /**
      * Hvor ofte er man i området?
      */
-    LocalKnowledgeName?: string | null;
+    LocalKnowledgeName?: string;
     /**
      * Hvem gjennomførte redningen?
      */
-    RescueName?: string | null;
+    RescueName?: string;
     /**
      * Hvilken turfase gjelder det?
      */
-    SlopeActivityName?: string | null;
+    SlopeActivityName?: string;
 }
 

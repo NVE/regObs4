@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -55,9 +55,9 @@ export interface CompressionTestViewModel {
      */
     Comment?: string | null;
     IncludeInSnowProfile?: boolean | null;
-    CompressionTestName?: string | null;
-    PropagationName?: string | null;
-    StabilityEvalName?: string | null;
-    ComprTestFractureName?: string | null;
+    CompressionTestName?: string;
+    PropagationName?: string;
+    StabilityEvalName?: string;
+    ComprTestFractureName?: string;
 }
 

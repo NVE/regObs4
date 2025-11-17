@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -54,16 +54,16 @@ export interface SearchCriteriaExclUserRequestDto {
     /**
      * Find registrations of given types. Use /Search/SearchCriteria to find out which types are used for different geo hazards.
      */
-    SelectedRegistrationTypes?: Array<RegistrationTypeCriteriaDto> | null;
+    SelectedRegistrationTypes?: Array<RegistrationTypeCriteriaDto>;
     /**
      * Find registrations in given regions. Use /Search/SearchCriteria to find the forecast region IDs that are used for different geo hazards.
      */
-    SelectedRegions?: Array<number> | null;
+    SelectedRegions?: Array<number>;
     /**
      * Find registrations on given geo hazard ID\'s. Snow = 10, soil = 20, water = 60, ice = 70.
      */
-    SelectedGeoHazards?: Array<number> | null;
-    Countries?: Array<number> | null;
+    SelectedGeoHazards?: Array<number>;
+    Countries?: Array<number>;
     /**
      * Find registrations in given county. Only relevant for Norway. Current valid county numbers are here (from 2024): https://no.wikipedia.org/wiki/Fylkesnummer
      */
@@ -78,7 +78,7 @@ export interface SearchCriteriaExclUserRequestDto {
     /**
      * Field to order by. You may use these fields: DtObsTime, DtRegTime, DtChangeTime. Default is DtObsTime. A few other fields may also work
      */
-    OrderBy?: string | null;
+    OrderBy?: string;
     /**
      * Descending order is default. Set this to true to use ascending order.
      */

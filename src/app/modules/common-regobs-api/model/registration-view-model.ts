@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -38,42 +38,24 @@ import { GeneralObservationViewModel } from './general-observation-view-model';
 
 
 export interface RegistrationViewModel { 
-    /**
-     * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
-     */
-    GeoHazardTID: GeoHazardTypes;
-    /**
-     * Kildereferanse på en registrering. F.eks. har brukeren sette dette selv eller er det referert til fra nyheter. The SourceKD unique identifier
-     */
-    SourceTID?: number | null;
-    /**
-     * Tiden da observasjonen ble gjort.
-     */
-    DtObsTime: string;
-    ObserverGroupID?: number | null;
-    ObserverGroupName?: string | null;
-    /**
-     * If set to true, the user\'s account will not be shown publicly. NVE will still be able to see who sent in the observation.
-     */
-    Anonymous?: boolean | null;
     RegId: number;
     /**
-     * Ekstern referanse ID. Må være unik for Applikasjon.
+     * NotSpecified = 0, Avalanche = 10, EarthFlow = 20, LandSlide = 30, RockFall = 40, IceFall = 50, Flooding = 60, Ice = 70, EventOnGlacier = 100, Jøkulhaup = 110, Drought = 200, Unknown = 999
      */
-    ExternalReferenceId?: string | null;
-    GeoHazardName?: string | null;
-    /**
-     * Timestamp for registrert i systemet. (Read-Only)
-     */
-    DtRegTime?: string | null;
-    /**
-     * Timestamp for endret i systemet. (Read-Only)
-     */
+    GeoHazardTID: GeoHazardTypes;
+    SourceTID: number;
+    DtObsTime: string;
     DtChangeTime?: string | null;
-    SourceName?: string | null;
+    ObserverGroupID?: number | null;
+    ObserverGroupName?: string | null;
+    Anonymous?: boolean | null;
+    ExternalReferenceId?: string | null;
+    GeoHazardName?: string;
+    DtRegTime: string;
+    SourceName?: string;
     Observer: ObserverViewModel;
     ObsLocation: ObsLocationViewModel;
-    Attachments?: Array<AttachmentViewModel> | null;
+    Attachments?: Array<AttachmentViewModel>;
     AvalancheActivityObs2?: Array<AvalancheActivityObs2ViewModel> | null;
     AvalancheEvalProblem2?: Array<AvalancheEvalProblem2ViewModel> | null;
     AvalancheEvaluation3?: AvalancheEvaluation3ViewModel | null;
@@ -90,7 +72,7 @@ export interface RegistrationViewModel {
     WeatherObservation?: WeatherViewModel | null;
     WaterLevel2?: Waterlevel2ViewModel | null;
     DamageObs?: Array<DamageObsViewModel> | null;
-    Summaries?: Array<Summary> | null;
+    Summaries?: Array<Summary>;
     AttachmentSummaries?: Array<Summary> | null;
     SnowProfile?: AttachmentViewModel | null;
     AvalancheEvaluation?: AvalancheEvaluationViewModel | null;

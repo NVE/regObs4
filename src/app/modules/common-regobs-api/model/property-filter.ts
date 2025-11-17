@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -17,12 +17,12 @@ export interface PropertyFilter {
     /**
      * Property name. Properties in sub schemas must be prefixed with schema name. Example: AvalancheObs.AvalancheTID Multiple instance schemas, like DangerSign, are not supported. If you use unknown/unsupported properties, you will get an HTTP 400.
      */
-    Name?: string | null;
+    Name?: string;
     Operator: Operator;
     /**
      * Target property value
      */
-    Value?: string | null;
+    Value?: string;
 }
 export namespace PropertyFilter {
 }

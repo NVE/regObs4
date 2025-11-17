@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -12,7 +12,7 @@ import { RegObsGenericValue } from './reg-obs-generic-value';
 
 export interface Summary { 
     RegistrationTID: number;
-    RegistrationName?: string | null;
-    Summaries?: Array<RegObsGenericValue> | null;
+    RegistrationName?: string;
+    Summaries?: Array<RegObsGenericValue>;
 }
 

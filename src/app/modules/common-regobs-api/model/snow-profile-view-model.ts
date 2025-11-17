@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -19,12 +19,12 @@ export interface SnowProfileViewModel {
     Exposition?: number | null;
     SlopeAngle?: number | null;
     SnowTemp?: SnowTempModel | null;
-    SnowDensity?: Array<SnowDensityModel> | null;
-    StratProfile?: StratProfileViewModel | null;
+    SnowDensity?: Array<SnowDensityModel>;
+    StratProfile?: StratProfileViewModel;
     TotalDepth: number;
     /**
      * Urls to simplified images of the snow profile model
      */
-    PlotImage?: AttachmentViewModel | null;
+    PlotImage?: AttachmentViewModel;
 }
 

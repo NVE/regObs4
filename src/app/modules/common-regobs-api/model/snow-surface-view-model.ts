@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -50,16 +50,16 @@ export interface SnowSurfaceViewModel {
      * Obsolete - Only in View Model
      */
     SnowWindDepth24?: number | null;
-    SurfaceWaterContentName?: string | null;
-    SnowDriftName?: string | null;
-    SnowSurfaceName?: string | null;
+    SurfaceWaterContentName?: string;
+    SnowDriftName?: string;
+    SnowSurfaceName?: string;
     SkiConditionsTID?: number | null;
-    SkiConditionsName?: string | null;
+    SkiConditionsName?: string;
     /**
      * Obsolete - Only in View Model
      */
     SurfaceRougnessTID?: number | null;
-    SurfaceRougnessName?: string | null;
+    SurfaceRougnessName?: string;
     /**
      * Obsolete - Only in View Model
      */

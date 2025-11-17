@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -51,14 +51,14 @@ export interface RegistrationEditModel {
     /**
      * The observation location object. Latitude and longitute are needed to create a new registration.
      */
-    ObsLocation?: ObsLocationEditModel | null;
-    Attachments?: Array<AttachmentEditModel> | null;
-    AvalancheActivityObs2?: Array<AvalancheActivityObs2EditModel> | null;
-    AvalancheEvalProblem2?: Array<AvalancheEvalProblem2EditModel> | null;
+    ObsLocation?: ObsLocationEditModel;
+    Attachments?: Array<AttachmentEditModel>;
+    AvalancheActivityObs2?: Array<AvalancheActivityObs2EditModel>;
+    AvalancheEvalProblem2?: Array<AvalancheEvalProblem2EditModel>;
     AvalancheEvaluation3?: AvalancheEvaluation3EditModel | null;
     AvalancheObs?: AvalancheObsEditModel | null;
-    CompressionTest?: Array<CompressionTestEditModel> | null;
-    DangerObs?: Array<DangerObsEditModel> | null;
+    CompressionTest?: Array<CompressionTestEditModel>;
+    DangerObs?: Array<DangerObsEditModel>;
     GeneralObservation?: GeneralObservationEditModel | null;
     IceCoverObs?: IceCoverEditModel | null;
     IceThickness?: IceThicknessEditModel | null;
@@ -68,7 +68,7 @@ export interface RegistrationEditModel {
     SnowSurfaceObservation?: SnowSurfaceEditModel | null;
     WeatherObservation?: WeatherEditModel | null;
     WaterLevel2?: Waterlevel2EditModel | null;
-    DamageObs?: Array<DamageObsEditModel> | null;
+    DamageObs?: Array<DamageObsEditModel>;
 }
 export namespace RegistrationEditModel {
 }

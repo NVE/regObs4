@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -13,6 +13,6 @@ export interface HelptextDto {
     RegistrationTID: number;
     GeoHazardTID: number;
     LangKey: number;
-    Text?: string | null;
+    Text?: string;
 }
 

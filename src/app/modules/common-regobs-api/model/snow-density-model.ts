@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -14,6 +14,6 @@ export interface SnowDensityModel {
     CylinderDiameter?: number | null;
     TareWeight?: number | null;
     Comment?: string | null;
-    Layers?: Array<SnowDensityLayerModel> | null;
+    Layers?: Array<SnowDensityLayerModel>;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -12,7 +12,7 @@
 export interface AvalancheDangerObsViewModel { 
     AvalancheDangerObsID: number;
     DangerSignTID?: number | null;
-    DangerSignName?: string | null;
-    Comment?: string | null;
+    DangerSignName?: string;
+    Comment?: string;
 }
 

@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -30,36 +30,36 @@ export interface AvalancheActivityObsViewModel {
      * Hvor store er skredene?. The DestructiveSizeKD unique identifier
      */
     DestructiveSizeTID?: number | null;
-    DestructiveSizeName?: string | null;
+    DestructiveSizeName?: string;
     /**
      * Hvor mange skred er gått? The EstimatedNumKD unique identifier
      */
     EstimatedNumTID?: number | null;
-    EstimatedNumName?: string | null;
+    EstimatedNumName?: string;
     /**
      * Typen skred som er gått. The AvalancheKD unique identifier
      */
     AvalancheTID?: number | null;
-    AvalancheName?: string | null;
+    AvalancheName?: string;
     /**
      * Hva utløste skredet? Det er ofte beskrevet som det svake laget i snødekket. The AvalancheTriggerKD unique identifier
      */
     AvalancheTriggerTID?: number | null;
-    AvalancheTriggerName?: string | null;
+    AvalancheTriggerName?: string;
     /**
      * Hva slags terrengtype var det i løsneområdet. The TerrainStartZoneKD unique identifier
      */
     TerrainStartZoneTID?: number | null;
-    TerrainStartZoneName?: string | null;
+    TerrainStartZoneName?: string;
     /**
      * Hvor går snøgrensa i området?
      */
     SnowLine?: number | null;
-    SnowLineName?: string | null;
+    SnowLineName?: string;
     /**
      * Kommentarfelt for å skrive utfyllende tekst om observasjonen.
      */
-    Comment?: string | null;
+    Comment?: string;
     DtOffAvalancheTime: string;
 }
 

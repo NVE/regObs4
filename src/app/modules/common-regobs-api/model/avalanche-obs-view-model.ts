@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -106,10 +106,10 @@ export interface AvalancheObsViewModel {
      * Comment
      */
     Comment?: string | null;
-    DestructiveSizeName?: string | null;
-    AvalancheTriggerName?: string | null;
-    AvalancheName?: string | null;
-    TerrainStartZoneName?: string | null;
-    AvalCauseName?: string | null;
+    DestructiveSizeName?: string;
+    AvalancheTriggerName?: string;
+    AvalancheName?: string;
+    TerrainStartZoneName?: string;
+    AvalCauseName?: string;
 }
 

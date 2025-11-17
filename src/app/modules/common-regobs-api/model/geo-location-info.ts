@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -10,16 +10,16 @@
 
 
 export interface GeoLocationInfo { 
-    Name?: string | null;
-    Municipality?: string | null;
-    MunicipalityId?: string | null;
-    AdminAreaName?: string | null;
-    AdminAreaId?: string | null;
-    Country?: string | null;
-    CountryCode?: string | null;
+    Name?: string;
+    Municipality?: string;
+    MunicipalityId?: string;
+    AdminAreaName?: string;
+    AdminAreaId?: string;
+    Country?: string;
+    CountryCode?: string;
     Masl?: number | null;
     Steepness?: number | null;
-    WarningRegionId?: string | null;
-    WarningRegionName?: string | null;
+    WarningRegionId?: string;
+    WarningRegionName?: string;
 }
 

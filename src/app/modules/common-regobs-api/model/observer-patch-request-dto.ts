@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -10,6 +10,6 @@
 
 
 export interface ObserverPatchRequestDto { 
-    Nick?: string | null;
+    Nick?: string;
 }
 

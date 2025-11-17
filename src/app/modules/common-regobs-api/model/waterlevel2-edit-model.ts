@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -20,7 +20,7 @@ export interface Waterlevel2EditModel {
     WaterLevelStateTID?: number | null;
     MarkingTypeTID?: number | null;
     MeasuringToolDescription?: string | null;
-    WaterLevelMeasurement?: Array<WaterLevelMeasurementEditModel> | null;
+    WaterLevelMeasurement?: Array<WaterLevelMeasurementEditModel>;
     /**
      * Flood polygon area, List(lon, lat)
      */

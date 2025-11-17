@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -11,7 +11,7 @@ import { KdvElement } from './kdv-element';
 
 
 export interface KdvElementsResponseDto { 
-    KdvRepositories?: { [key: string]: Array<KdvElement>; } | null;
+    KdvRepositories?: { [key: string]: Array<KdvElement>; };
     ViewRepositories?: any | null;
 }
 

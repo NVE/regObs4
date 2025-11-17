@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -22,11 +22,11 @@ export interface StratProfileLayerViewModel {
     CriticalLayerTID?: number | null;
     Comment?: string | null;
     SortOrder: number;
-    GrainFormPrimaryTName?: string | null;
-    GrainFormSecondaryTName?: string | null;
-    HardnessTName?: string | null;
-    HardnessBottomTName?: string | null;
-    WetnessTName?: string | null;
-    CriticalLayerTName?: string | null;
+    GrainFormPrimaryTName?: string;
+    GrainFormSecondaryTName?: string;
+    HardnessTName?: string;
+    HardnessBottomTName?: string;
+    WetnessTName?: string;
+    CriticalLayerTName?: string;
 }
 

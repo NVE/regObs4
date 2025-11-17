@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -23,12 +23,12 @@ export interface AvalancheActivityObs2ViewModel {
     DestructiveSizeTID?: number | null;
     AvalPropagationTID?: number | null;
     Comment?: string | null;
-    EstimatedNumName?: string | null;
-    ExposedHeightComboName?: string | null;
-    AvalancheExtName?: string | null;
-    AvalCauseName?: string | null;
-    AvalTriggerSimpleName?: string | null;
-    DestructiveSizeName?: string | null;
-    AvalPropagationName?: string | null;
+    EstimatedNumName?: string;
+    ExposedHeightComboName?: string;
+    AvalancheExtName?: string;
+    AvalCauseName?: string;
+    AvalTriggerSimpleName?: string;
+    DestructiveSizeName?: string;
+    AvalPropagationName?: string;
 }
 

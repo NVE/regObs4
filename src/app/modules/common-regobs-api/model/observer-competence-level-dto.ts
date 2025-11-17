@@ -1,5 +1,5 @@
 /**
- * RegObs API, build: Local build - commit: 446d2219
+ * RegObs API, build: Local build - commit: ec80925f
  *
  * Contact: regobs@nve.no
  *
@@ -11,8 +11,8 @@
 
 export interface ObserverCompetenceLevelDto { 
     Id: number;
-    Name?: string | null;
-    Description?: string | null;
+    Name: string;
+    Description?: string;
     SortOrder: number;
 }
 
