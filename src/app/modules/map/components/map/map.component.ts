@@ -44,6 +44,7 @@ import { MapService } from '../../services/map/map.service';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { MapControlsComponent } from '../map-controls/map-controls.component';
 import type { FeatureCollection } from 'geojson';
+import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -179,6 +180,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private platform = inject(Platform);
   private mapZoomService = inject(MapZoomService);
   private observerTripsService = inject(ObserverTripsService);
+  private geoJSONService = inject(GeoJSONService);
 
   readonly showControls = input(true);
   readonly showZoomButtons = input(true);
@@ -344,7 +346,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param geojson FeatureCollection to add
    */
   private async addGeojsonLayer(map: L.Map, id: string, geojson: FeatureCollection) {
-    const geojsonLayer = L.geoJSON(geojson, { style: { dashArray: '4', color: 'red', stroke: true } });
+    const pointIcon = L.icon({
+      iconUrl: '/assets/icon/map/prev-used-place.svg',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      shadowUrl: 'leaflet/marker-shadow.png',
+      shadowSize: [41, 41],
+    });
+    const geojsonLayer = L.geoJSON(geojson, {
+      style: { dashArray: '4', color: 'red', stroke: true },
+      pointToLayer: (_, latlng) => {
+        return L.marker(latlng, { icon: pointIcon });
+      },
+    });
 
     let extraTapRadiusLayer: L.Layer | undefined;
     if (isAndroidOrIos(this.platform)) {
@@ -537,6 +551,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe(() => {
             this.updateMapView();
           });
+      }
+    });
+
+    // Lytt på endringer i evt. geojson-metadata og tegn geojson-lag (på nytt)
+    this.geoJSONService.metadata$.pipe(takeUntil(this.ngDestroy$)).subscribe(async (metadataForAllTracks) => {
+      if (metadataForAllTracks && map) {
+        metadataForAllTracks.forEach(async (trackMetadata) => {
+          // Fjern eksisterende geojson-lag for id
+          this.removeGeojsonLayer(map, trackMetadata.id);
+          // Hent oppdatert geojson fra tjenesten
+          const geojson = await this.geoJSONService.get(trackMetadata.id);
+          if (geojson) {
+            this.addGeojsonLayer(map, trackMetadata.id, geojson);
+          }
+        });
       }
     });
 
