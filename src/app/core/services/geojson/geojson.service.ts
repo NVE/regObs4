@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import { FeatureCollection } from 'geojson';
 import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'GeoJSON';
 
@@ -14,6 +15,7 @@ export class GeoJSONService {
   private logger = inject(LoggingService);
 
   metadata = signal<GeoJSONItem[]>([]);
+  readonly metadata$ = toObservable(this.metadata);
   private initialized = false;
 
   constructor() {
