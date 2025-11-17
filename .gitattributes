@@ -3,6 +3,7 @@
 
 # Language files. When we download files from lokalise, they only get <LF> as line break character
 src/assets/i18n/*.json text eol=lf
+src/app/modules/common-regobs-api/**/*.ts text eol=lf
 
 # Custom for Visual Studio
 *.cs     diff=csharp
