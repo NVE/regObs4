@@ -13,7 +13,7 @@ import 'nve-designsystem/components/nve-option/nve-option.component.js';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
 import 'nve-designsystem/components/nve-message-card/nve-message-card.component.js';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
-import { toGeoJSON } from './gpx';
+import { toGeoJSON } from './utils';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { generateShortRandomId } from './utils';
