@@ -1,6 +1,6 @@
 import { Platform } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
-import { IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
+import { IonButtons, IonMenuButton, IonRouterLinkWithHref, IonTitle } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
@@ -36,6 +36,7 @@ import { RouterLink } from '@angular/router';
     TranslatePipe,
     NgxFileDropModule,
     RouterLink,
+    IonRouterLinkWithHref,
   ],
 })
 /** Side som viser planer og sporfiler */

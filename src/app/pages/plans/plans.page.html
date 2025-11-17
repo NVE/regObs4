@@ -19,7 +19,7 @@
 
   <nve-menu>
     @for (item of items(); track item.id; let last = $last) {
-      <a [routerLink]="item.id">
+      <a [routerLink]="item.id" routerDirection="forward">
         <nve-menu-item>
           <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
           <div class="text-wrapper">
