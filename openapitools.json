@@ -11,7 +11,9 @@
         "templateDir": "openapi-templates",
         "additionalProperties": {
           "fileNaming": "kebab-case",
-          "useSingleRequestParameter": true
+          "useSingleRequestParameter": true,
+          "modelPackage": "models",
+          "nullableReference": false
         }
       }
     }

@@ -12,6 +12,7 @@
     "ng": "ng",
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
     "generate-openapi-models": "npx openapi-generator-cli generate --generator-key regobs-client",
+    "generate-openapi-models-sort": "npx openapi-generator-cli generate --generator-key regobs-client & ts-node --project tsconfig.pm-script.json sort-model-fields.ts",
     "start": "ionic serve",
     "build": "ionic build",
     "build:prod": "ng build --configuration production",
@@ -170,6 +171,7 @@
     "ng-swagger-gen": "^2.3.1",
     "plist": "^3.0.5",
     "prettier": "^3.4.2",
+    "ts-morph": "^27.0.2",
     "ts-node": "^10.9.1",
     "typescript": "5.9.2"
   },
