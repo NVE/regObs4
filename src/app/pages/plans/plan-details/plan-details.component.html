@@ -1,4 +1,28 @@
 @if (metadata(); as info) {
-  <p>{{ info.name }}</p>
-  <p>{{ info.id }}</p>
+  <!--<app-static-map-image [location]="location()"></app-static-map-image>-->
+  <nve-menu-item>
+    <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
+    <div class="text-wrapper">
+      <span class="label">{{ info.name }} </span>
+    </div>
+  </nve-menu-item>
+
+  <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; padding: 16px 0px">
+    <nve-tag saturation="default" variant="neutral">
+      <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
+      <span>Dato redigert:</span> <span slot="extra">{{ info.date | date }}</span>
+    </nve-tag>
+    <nve-tag saturation="default" variant="neutral">
+      <nve-icon slot="prefix" src="assets\icon\altitude.svg" />
+      <span slot="extra">-- moh</span>
+    </nve-tag>
+    <nve-tag saturation="default" variant="neutral">
+      <nve-icon slot="prefix" src="assets\icon\arrow_range.svg" />
+      <span slot="extra">-- km</span>
+    </nve-tag>
+    <nve-switch>Vis i kart</nve-switch>
+    <nve-input [value]="info.name" label="Navn"></nve-input>
+    <nve-textarea label="Kommentar"></nve-textarea>
+    <nve-button variant="primary">Lagre</nve-button>
+  </div>
 }
