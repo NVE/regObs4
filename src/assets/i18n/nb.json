@@ -526,7 +526,8 @@
         "ICE_THICKNESS_SUM": "Total istykkelse (cm)",
         "ICE_TYPE": "Type is",
         "SLUSH_SNOW_BEFORE_DRILL": "Sørpe før boring (cm)",
-        "TITLE": "Istykkelse"
+        "TITLE": "Istykkelse",
+        "UNKNOWN_SHORT": "Ukjent"
       },
       "INCIDENT": {
         "CASUALTIES_NUM": "Antall gjennom isen",
