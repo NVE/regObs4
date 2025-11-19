@@ -1,3 +1,4 @@
+{{! Denne trenger vi for å overstyre nullable felter i API'et, slik at ikke alle nullable felter i modellene får typen | null i tillegg }}
 export interface {{classname}}{{#allParents}}{{#-first}} extends {{/-first}}{{{.}}}{{^-last}}, {{/-last}}{{/allParents}} { {{>modelGenericAdditionalProperties}}
 {{#vars}}
     {{#description}}
@@ -13,6 +14,6 @@ export interface {{classname}}{{#allParents}}{{#-first}} extends {{/-first}}{{{.
     {{#isReadOnly}}
     /** Readonly property */
     {{/isReadOnly}}
-    {{name}}{{^required}}?{{/required}}: {{#type}}{{{type}}}{{/type}}{{^type}}unknown{{/type}}{{#nullable}}{{^isPrimitiveType}} | null{{/isPrimitiveType}}{{/nullable}};
+    {{name}}{{^required}}?{{/required}}: {{{datatypeWithEnum}}}{{#nullable}}{{^isPrimitiveType}} | null{{/isPrimitiveType}}{{/nullable}};
 {{/vars}}
 }{{>modelGenericEnums}}

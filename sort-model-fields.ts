@@ -1,8 +1,10 @@
-import { Project } from 'ts-morph';
+import { Project, PropertySignature } from 'ts-morph';
 import { join } from 'path';
 import { readdirSync } from 'fs';
 
-const modelDir = join(__dirname, '/src/app/modules/common-regobs-api/model');
+console.log(`Starter sortering av felter i modell-typer i alfabetisk rekkefølge...`);
+
+const modelDir = join(__dirname, '/src/app/modules/common-regobs-api/models');
 const files = readdirSync(modelDir).filter((f) => f.endsWith('.ts'));
 
 const project = new Project();
@@ -17,18 +19,12 @@ files.forEach((file) => {
 
   sourceFile.getInterfaces().forEach((intf) => {
     // Hent ut alle props og deres JSDoc før du fjerner dem
-    const props = intf.getProperties().map((p) => {
-      // Slå sammen alle JSDoc-kommentarer til én, hvis de finnes
-      const jsDocText = p
-        .getJsDocs()
-        .map((d) => d.getText().trim())
-        .filter(Boolean)
-        .join('\n');
+    const props = intf.getProperties().map((p: PropertySignature) => {
+      console.log(`Leser interface ${intf.getName()} i fil ${file}, property ${p.getName()}`);
       return {
         name: p.getName(),
         type: p.getTypeNode()?.getText() ?? 'unknown',
         hasQuestionToken: p.hasQuestionToken(),
-        docs: jsDocText ? [jsDocText] : [],
       };
     });
 
@@ -40,6 +36,9 @@ files.forEach((file) => {
 
     // Legg til sorterte properties med JSDoc
     sorted.forEach((p) => {
+      console.log(
+        `Legger til property ${p.name} i alfabetisk rekkefølge til interface ${intf.getName()} i fil ${file}}`
+      );
       intf.addProperty(p);
     });
   });
@@ -47,4 +46,4 @@ files.forEach((file) => {
   sourceFile.saveSync();
 });
 
-console.log('All model interfaces sorted alphabetically with JSDoc preserved.');
+console.log('Felter i alle modell-typer er sortert alfabetisk. TODO: JSDOC er utelatt pga. tekniske utfordringer');

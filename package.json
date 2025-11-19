@@ -11,8 +11,8 @@
   "scripts": {
     "ng": "ng",
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
-    "generate-openapi-models": "npx openapi-generator-cli generate --generator-key regobs-client",
-    "generate-openapi-models-sort": "npx openapi-generator-cli generate --generator-key regobs-client & ts-node --project tsconfig.pm-script.json sort-model-fields.ts",
+    "generate-openapi-models": "npx openapi-generator-cli generate --generator-key regobs-client & ts-node --project tsconfig.npm-script.json generate-models-index.ts",
+    "generate-openapi-models-sort": "npx openapi-generator-cli generate --generator-key regobs-client & ts-node --project tsconfig.npm-script.json generate-models-index.ts & ts-node --project tsconfig.npm-script.json sort-model-fields.ts",
     "start": "ionic serve",
     "build": "ionic build",
     "build:prod": "ng build --configuration production",
