@@ -8,7 +8,7 @@ import { Observable, forkJoin, of, Subject, firstValueFrom } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
-import { GeoCodeService } from 'src/app/modules/common-regobs-api/services';
+import { GeoCodeService } from 'src/app/modules/common-regobs-api';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
@@ -146,7 +146,7 @@ export class MapSearchService {
 
   getViewInfo(latLng: L.LatLng, geoHazard = GeoHazard.Soil): Observable<ViewInfo> {
     return this.geoCodeService
-      .GeoCodeLocationInfo({
+      .geoCodeLocationInfo({
         latitude: latLng.lat,
         longitude: latLng.lng,
         geoHazardId: geoHazard,

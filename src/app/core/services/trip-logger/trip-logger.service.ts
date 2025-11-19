@@ -6,7 +6,7 @@ import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, from, BehaviorSubject, throwError, firstValueFrom, of, EMPTY } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
-import { TripService } from 'src/app/modules/common-regobs-api/services';
+import { TripService } from 'src/app/modules/common-regobs-api';
 import { switchMap, take, map, concatMap, tap, catchError, timeout } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular/standalone';

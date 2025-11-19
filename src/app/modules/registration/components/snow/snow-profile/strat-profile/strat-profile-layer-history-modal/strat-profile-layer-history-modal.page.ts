@@ -19,7 +19,7 @@ import {
   SearchCriteriaExclUserRequestDto,
   StratProfileLayerViewModel,
 } from 'src/app/modules/common-regobs-api/models';
-import { SearchService } from 'src/app/modules/common-regobs-api/services';
+import { SearchService } from 'src/app/modules/common-regobs-api';
 import { Observable, of } from 'rxjs';
 import moment from 'moment';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -68,7 +68,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
 
   ngOnInit() {
     if (this.draft()?.registration?.ObsLocation) {
-      this.$previousUsedLayers = this.searchService.SearchPostSearchMyRegistrations(this.criteria).pipe(
+      this.$previousUsedLayers = this.searchService.searchSearchMyRegistrations(this.criteria).pipe(
         map((result) => this.getLayersFromSearchResult(result)),
         tap(() => {
           this.isLoading = false;
