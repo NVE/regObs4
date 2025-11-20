@@ -27,6 +27,7 @@ import { nSQL } from '@nano-sql/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { UserSetting } from '../../models/user-settings.model';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
+import { CapacitorHttp } from '@capacitor/core';
 
 const DEBUG_TAG = 'WarningService';
 
@@ -39,7 +40,6 @@ export class WarningService {
   private mapService = inject(MapService);
   private dataLoadService = inject(DataLoadService);
   private platform = inject(Platform);
-  private http = inject(HttpClient);
   private loggingService = inject(LoggingService);
   private dbHelperService = inject(DbHelperService);
   private _warningsObservable: Observable<WarningGroup[]>;
@@ -649,11 +649,20 @@ export class WarningService {
   }
 
   private async getIceWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
-    return await firstValueFrom(
-      this.http.get<IIceWarningApiResult>(url, { headers: { 'Content-Type': 'application/json' } })
-    ).catch((err) => {
-      throw Error(`Could not download warnings from: ${url}. Message: ${err.message}`);
-    });
+    try {
+      const response = await CapacitorHttp.get({ url, headers: { 'Content-Type': 'application/json' } }).catch(
+        (err) => {
+          throw Error(`Could not download warnings from: ${url}. Message: ${err.message}`);
+        }
+      );
+      if (response.status === 200) {
+        return response.data as IIceWarningApiResult;
+      } else {
+        throw Error(`Could not download warnings from: ${url}. Status code: ${response.status}`);
+      }
+    } catch (err) {
+      throw Error(`Could not download warnings from: ${url}. Message: ${err instanceof Error ? err.message : err}`);
+    }
   }
 
   private getDefaultIceForecastRegions(): IIceWarningApiResult {
