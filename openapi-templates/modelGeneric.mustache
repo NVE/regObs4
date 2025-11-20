@@ -16,4 +16,8 @@ export interface {{classname}}{{#allParents}}{{#-first}} extends {{/-first}}{{{.
     {{/isReadOnly}}
     {{name}}{{^required}}?{{/required}}: {{{datatypeWithEnum}}}{{#nullable}}{{^isPrimitiveType}} | null{{/isPrimitiveType}}{{/nullable}};
 {{/vars}}
-}{{>modelGenericEnums}}
+}
+{{! Fjern tom namespace-blokk }}
+{{#hasEnums}}
+{{>modelGenericEnums}}
+{{/hasEnums}}
