@@ -22,6 +22,9 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: false,
       style: KeyboardStyle.Default,
     },
+    CapacitorHttp: {
+      enabled: true, // bruker denne til å hente isvarsler
+    },
   },
   android: {
     adjustMarginsForEdgeToEdge: 'auto',

@@ -11,7 +11,6 @@ import {
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
-import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
@@ -97,7 +96,6 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   DeviceOrientation,
   InAppBrowser,
   SafariViewController,
-  HTTP,
   WebView,
   EmailComposer,
   SQLite,

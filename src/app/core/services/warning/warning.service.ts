@@ -17,7 +17,6 @@ import { DataLoadService } from '../../../modules/data-load/services/data-load.s
 import { IWarningGroup } from './warning-group.interface';
 import { IIceWarningApiResult } from './ice-warning-api-result.interface';
 import { Platform } from '@ionic/angular/standalone';
-import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
 import { toPromiseWithCancel } from '../../helpers/observable-helper';
@@ -40,7 +39,7 @@ export class WarningService {
   private mapService = inject(MapService);
   private dataLoadService = inject(DataLoadService);
   private platform = inject(Platform);
-  private nativeHttp = inject(HTTP);
+  private http = inject(HttpClient);
   private loggingService = inject(LoggingService);
   private dbHelperService = inject(DbHelperService);
   private _warningsObservable: Observable<WarningGroup[]>;
@@ -650,19 +649,11 @@ export class WarningService {
   }
 
   private async getIceWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
-    this.nativeHttp.setDataSerializer('json');
-    const result = await this.nativeHttp.get(
-      url,
-      {},
-      {
-        'Content-Type': 'application/json',
-      }
-    );
-    if (result.status === 200) {
-      return JSON.parse(result.data.trim());
-    } else {
-      throw Error(`Could not download warnings from: ${url}. Status: ${result.status}. Message: ${result.error}`);
-    }
+    return await firstValueFrom(
+      this.http.get<IIceWarningApiResult>(url, { headers: { 'Content-Type': 'application/json' } })
+    ).catch((err) => {
+      throw Error(`Could not download warnings from: ${url}. Message: ${err.message}`);
+    });
   }
 
   private getDefaultIceForecastRegions(): IIceWarningApiResult {
