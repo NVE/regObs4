@@ -55,7 +55,11 @@
           {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" | translate }}</ion-label
         >
         <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
-          <p class="ion-no-margin">{{ iceThickness.IceThicknessSum || 0 | metersToCm }} cm</p>
+          @if (iceThickness.IceThicknessSum != null) {
+            {{ iceThickness.IceThicknessSum | metersToCm }} cm
+          } @else {
+            {{ "REGISTRATION.ICE.ICE_THICKNESS.UNKNOWN_SHORT" | translate }}
+          }
         </ion-text>
       </ion-item>
 
