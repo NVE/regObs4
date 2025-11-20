@@ -55,12 +55,11 @@
           {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" | translate }}</ion-label
         >
         <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
-          <p *ngIf="iceThickness.IceThicknessSum; else IceThicknessUnknown" class="ion-no-margin">
+          @if (iceThickness.IceThicknessSum != null) {
             {{ iceThickness.IceThicknessSum | metersToCm }} cm
-          </p>
-          <ng-template #IceThicknessUnknown>
+          } @else {
             {{ "REGISTRATION.ICE.ICE_THICKNESS.UNKNOWN_SHORT" | translate }}
-          </ng-template>
+          }
         </ion-text>
       </ion-item>
 
