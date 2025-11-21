@@ -44,11 +44,11 @@
         class="expand-icon"
       ></ion-icon>
     </ion-item>
-    <ng-container *ngIf="nPackagesToUpdate$ | async as nPackagesToUpdate">
-      <ion-item *ngIf="nPackagesToUpdate" lines="full" color="warning" (click)="expanded = !expanded">
-        <ion-label>{{ "OFFLINE_MAP.N_PACKAGES_TO_UPDATE" | translate: { n: nPackagesToUpdate } }}</ion-label>
+    @if (nPackagesToUpdate() > 0) {
+      <ion-item lines="full" color="warning" (click)="expanded = !expanded">
+        <ion-label>{{ "OFFLINE_MAP.N_PACKAGES_TO_UPDATE" | translate: { n: nPackagesToUpdate() } }}</ion-label>
       </ion-item>
-    </ng-container>
+    }
     <div class="footer">
       <ng-container *ngIf="expanded">
         <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of allPackages$ | async" lines="full">

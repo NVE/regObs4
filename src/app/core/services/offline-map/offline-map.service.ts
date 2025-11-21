@@ -86,7 +86,7 @@ export class OfflineMapService implements OnReset {
         this.loggingService.error(err, DEBUG_TAG, 'Failed to get map packages');
       });
 
-    combineLatest([this.packageIndex.packages$, this.packages$])
+    combineLatest([this.packageIndex.map$, this.packages$])
       .pipe(takeUntil(this.hasOutdatedPackages$))
       .subscribe(([packageIndex, downloadedPackages]) => {
         for (const downloadedPackage of downloadedPackages) {
@@ -203,13 +203,19 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  private startDownloadPackage(offlineMapPackage: OfflineMapPackage) {
+  private async startDownloadPackage(offlineMapPackage: OfflineMapPackage) {
     if (offlineMapPackage.compoundPackageMetadata == null) {
       throw new Error('compoundPackageMetadata are required when downloading packages');
     }
 
+    const queryParams = await this.packageIndex.getSasQueryParams();
+
     // Find all zip-files (urls) to download and unzip
-    const parts = offlineMapPackage.compoundPackageMetadata.getParts();
+    // Attach query params to all urls
+    const parts = offlineMapPackage.compoundPackageMetadata.getParts().map((part) => ({
+      ...part,
+      url: part.url + queryParams,
+    }));
 
     // Start recursive download and unzip
     this.downloadAndUnzipPart(parts[0], parts, offlineMapPackage, 0);

@@ -5,19 +5,20 @@ type XYZ = [number, number, number];
 
 /** Opplysninger om et offlinekart for et begrenset område */
 export interface PackageMetadata {
-  name: string;
-  lastModified: string; // in UTC
-  urls: string[];
-  sizeInMib: number;
+  Name: string;
+  LastModified: string; // in UTC
+  Urls: string[];
+  SizeInMib: number;
 }
 
 /** Opplysninger om en sammensatt kartpakke. Består gjerne av både bakgrunnskart og hjelpekart (f.eks. svekket is) */
 export interface CompoundPackageMetadata {
-  id: string;
-  xyz: XYZ;
-  bbox: BBox;
-  sizeInMib: number;
-  maps: PackageMetadata[];
+  Id: string;
+  Xyz: XYZ;
+  Bbox: BBox;
+  SizeInMib: number;
+  Maps: PackageMetadata[];
+  ZMax: number;
 }
 
 export interface Part {
@@ -43,11 +44,11 @@ export class CompoundPackage {
   }
 
   getFeature(): CompoundPackageFeature {
-    const [xMin, yMin, xMax, yMax] = this.metadata.bbox;
+    const [xMin, yMin, xMax, yMax] = this.metadata.Bbox;
     return {
       type: 'Feature',
       geometry: {
-        bbox: this.metadata.bbox,
+        bbox: this.metadata.Bbox,
         type: 'Polygon',
         coordinates: [
           [
@@ -60,25 +61,25 @@ export class CompoundPackage {
         ],
       },
       properties: null,
-      id: CompoundPackage.GetFeatureId(...this.metadata.xyz),
+      id: CompoundPackage.GetFeatureId(...this.metadata.Xyz),
     };
   }
 
   getSizeInMiB(): number {
-    return this.metadata.sizeInMib;
+    return this.metadata.SizeInMib;
   }
 
   getName(): string {
-    const [x, y, z] = this.metadata.xyz;
+    const [x, y, z] = this.metadata.Xyz;
     return CompoundPackage.GetNameFromXYZ(x, y, z);
   }
 
   /** Returnerer produksjonstidspunkt for den nyeste pakka. Hvis produksjonstidspunkt mangler, returneres 01.01.1970 00:00 */
   getLastModified(): Date {
     let latestDate = moment(0);
-    for (const map of this.metadata.maps) {
-      if (map.lastModified) {
-        latestDate = moment.max(latestDate, moment(map.lastModified));
+    for (const map of this.metadata.Maps) {
+      if (map.LastModified) {
+        latestDate = moment.max(latestDate, moment(map.LastModified));
       }
     }
     return latestDate.toDate();
@@ -86,15 +87,15 @@ export class CompoundPackage {
 
   getParts(): Part[] {
     return (
-      this.metadata.maps
+      this.metadata.Maps
         // Hent name / url for alle pakker
-        .map((p) => p.urls.map((url) => ({ name: p.name, url })))
+        .map((p) => p.Urls.map((url) => ({ name: p.Name, url })))
         // Flatten array
         .reduce((a, b) => a.concat(b), [])
     );
   }
 
   getXYZ(): XYZ {
-    return this.metadata.xyz;
+    return this.metadata.Xyz;
   }
 }
