@@ -56,7 +56,7 @@ export class PackageIndexService {
   map = computed(() => new Map(this.index().map((pkg) => [pkg.getName(), pkg])));
   map$ = toObservable(this.map);
 
-  async getSasQueryParams() {
+  getSasQueryParams() {
     const url = `${this.apiUrl()}/OfflineMap/QueryString`;
     return firstValueFrom(this.httpClient.get(url, { headers: { accept: 'text/plain' }, responseType: 'text' }));
   }
