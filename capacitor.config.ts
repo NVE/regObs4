@@ -30,9 +30,9 @@ const config: CapacitorConfig = {
     preferences: {
       ScrollEnabled: 'false',
       'android-minSdkVersion': '24',
-      'android-compileSdkVersion': '30',
+      'android-compileSdkVersion': '35',
       'android-build-tool': '30.0.3',
-      'android-targetSdkVersion': '30',
+      'android-targetSdkVersion': '35',
       BackupWebStorage: 'none',
       SplashMaintainAspectRatio: 'true',
       AutoHideSplashScreen: 'true',
