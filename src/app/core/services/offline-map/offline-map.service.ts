@@ -208,7 +208,13 @@ export class OfflineMapService implements OnReset {
       throw new Error('compoundPackageMetadata are required when downloading packages');
     }
 
-    const queryParams = await this.packageIndex.getSasQueryParams();
+    let queryParams: string;
+    try {
+      queryParams = await this.packageIndex.getSasQueryParams();
+    } catch (error) {
+      this.onUnzipOrDownloadError(offlineMapPackage, error, true, 'Could not fetch sas query params');
+      return;
+    }
 
     // Find all zip-files (urls) to download and unzip
     // Attach query params to all urls
