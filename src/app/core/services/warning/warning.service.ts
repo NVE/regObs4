@@ -650,11 +650,7 @@ export class WarningService {
 
   private async getIceWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
     try {
-      const response = await CapacitorHttp.get({ url, headers: { 'Content-Type': 'application/json' } }).catch(
-        (err) => {
-          throw Error(`Could not download warnings from: ${url}. Message: ${err.message}`);
-        }
-      );
+      const response = await CapacitorHttp.get({ url, headers: { 'Content-Type': 'application/json' } });
       if (response.status === 200) {
         return response.data as IIceWarningApiResult;
       } else {
