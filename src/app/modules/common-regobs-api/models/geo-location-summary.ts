@@ -6,7 +6,7 @@
 
 
 
-export interface GeoLocationSummary {
+export interface GeoLocationSummary { 
     Header?: string;
     Lines?: Array<string>;
 }

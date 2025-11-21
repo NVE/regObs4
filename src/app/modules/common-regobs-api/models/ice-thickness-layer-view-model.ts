@@ -6,10 +6,19 @@
 
 
 
-export interface IceThicknessLayerViewModel {
+export interface IceThicknessLayerViewModel { 
+    /**
+     * Comment
+     */
     Comment?: string;
     IceLayerName?: string;
+    /**
+     * IceLayerThickness
+     */
     IceLayerThickness?: number;
+    /**
+     * The IceLayerKD unique identifier
+     */
     IceLayerTID?: number;
 }
 

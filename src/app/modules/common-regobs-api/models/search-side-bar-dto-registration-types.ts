@@ -7,7 +7,7 @@
 import { RegistrationTypeDto } from './registration-type-dto';
 
 
-export interface SearchSideBarDtoRegistrationTypes {
+export interface SearchSideBarDtoRegistrationTypes { 
     Avalanche?: Array<RegistrationTypeDto>;
     Drought?: Array<RegistrationTypeDto>;
     EarthFlow?: Array<RegistrationTypeDto>;

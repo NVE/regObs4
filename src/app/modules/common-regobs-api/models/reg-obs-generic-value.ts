@@ -7,13 +7,14 @@
 import { ValueKind } from './value-kind';
 
 
-export interface RegObsGenericValue {
+export interface RegObsGenericValue { 
     Header?: string;
     Kind: ValueKind;
+    /** Readonly property */
     KindType?: string;
     Value?: any;
 }
+
 export namespace RegObsGenericValue {
 }
-
 

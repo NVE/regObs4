@@ -6,7 +6,7 @@
 
 
 
-export interface ForecastRegionSubRegionDto {
+export interface ForecastRegionSubRegionDto { 
     Id: number;
     RegionType?: string;
     SortOrder: number;

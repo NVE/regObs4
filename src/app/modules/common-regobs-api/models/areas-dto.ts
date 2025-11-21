@@ -8,7 +8,7 @@ import { AreasDtoForecastRegions } from './areas-dto-forecast-regions';
 import { CountyDto } from './county-dto';
 
 
-export interface AreasDto {
+export interface AreasDto { 
     Counties?: Array<CountyDto>;
     CountryDescription?: string;
     CountryId: number;

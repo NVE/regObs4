@@ -7,7 +7,7 @@
 import { StratProfileLayerEditModel } from './strat-profile-layer-edit-model';
 
 
-export interface StratProfileEditModel {
+export interface StratProfileEditModel { 
     Layers?: Array<StratProfileLayerEditModel>;
 }
 

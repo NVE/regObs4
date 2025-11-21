@@ -7,7 +7,7 @@
 import { KdvElement } from './kdv-element';
 
 
-export interface KdvElementsResponseDto {
+export interface KdvElementsResponseDto { 
     KdvRepositories?: { [key: string]: Array<KdvElement>; };
     ViewRepositories?: any;
 }

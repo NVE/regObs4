@@ -6,7 +6,7 @@
 
 
 
-export interface RegistrationTypeSubTypeDto {
+export interface RegistrationTypeSubTypeDto { 
     Id: number;
     Name?: string;
     SortOrder: number;

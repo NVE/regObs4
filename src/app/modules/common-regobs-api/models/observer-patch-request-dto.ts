@@ -6,7 +6,7 @@
 
 
 
-export interface ObserverPatchRequestDto {
+export interface ObserverPatchRequestDto { 
     Nick?: string;
 }
 

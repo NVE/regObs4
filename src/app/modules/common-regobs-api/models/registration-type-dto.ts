@@ -7,7 +7,7 @@
 import { RegistrationTypeSubTypeDto } from './registration-type-sub-type-dto';
 
 
-export interface RegistrationTypeDto {
+export interface RegistrationTypeDto { 
     Id: number;
     Name?: string;
     SortOrder: number;

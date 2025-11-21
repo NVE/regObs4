@@ -6,7 +6,7 @@
 
 
 
-export interface AvalancheDangerObsViewModel {
+export interface AvalancheDangerObsViewModel { 
     AvalancheDangerObsID: number;
     Comment?: string;
     DangerSignName?: string;

@@ -6,9 +6,18 @@
 
 
 
-export interface IceThicknessLayerEditModel {
+export interface IceThicknessLayerEditModel { 
+    /**
+     * Comment
+     */
     Comment?: string;
+    /**
+     * IceLayerThickness
+     */
     IceLayerThickness?: number;
+    /**
+     * The IceLayerKD unique identifier
+     */
     IceLayerTID?: number;
 }
 

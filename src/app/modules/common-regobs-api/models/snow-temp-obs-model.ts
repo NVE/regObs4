@@ -6,7 +6,7 @@
 
 
 
-export interface SnowTempObsModel {
+export interface SnowTempObsModel { 
     Depth: number;
     SnowTemp: number;
 }

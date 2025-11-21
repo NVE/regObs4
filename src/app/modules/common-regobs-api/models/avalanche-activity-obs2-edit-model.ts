@@ -6,7 +6,7 @@
 
 
 
-export interface AvalancheActivityObs2EditModel {
+export interface AvalancheActivityObs2EditModel { 
     AvalancheExtTID?: number;
     AvalCauseTID?: number;
     AvalPropagationTID?: number;

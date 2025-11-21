@@ -6,7 +6,7 @@
 
 
 
-export interface GeoLocationInfo {
+export interface GeoLocationInfo { 
     AdminAreaId?: string;
     AdminAreaName?: string;
     Country?: string;

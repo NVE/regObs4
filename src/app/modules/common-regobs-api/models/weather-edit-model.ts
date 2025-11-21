@@ -6,7 +6,7 @@
 
 
 
-export interface WeatherEditModel {
+export interface WeatherEditModel { 
     AirTemperature?: number;
     CloudCover?: number;
     Comment?: string;

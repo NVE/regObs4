@@ -7,7 +7,7 @@
 import { SnowTempObsModel } from './snow-temp-obs-model';
 
 
-export interface SnowTempModel {
+export interface SnowTempModel { 
     Layers?: Array<SnowTempObsModel>;
 }
 

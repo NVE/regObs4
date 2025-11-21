@@ -6,7 +6,7 @@
 
 
 
-export interface StratProfileLayerEditModel {
+export interface StratProfileLayerEditModel { 
     Comment?: string;
     CriticalLayerTID?: number;
     DepthTop?: number;

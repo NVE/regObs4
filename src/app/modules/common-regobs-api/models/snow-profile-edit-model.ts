@@ -9,7 +9,7 @@ import { StratProfileEditModel } from './strat-profile-edit-model';
 import { SnowTempModel } from './snow-temp-model';
 
 
-export interface SnowProfileEditModel {
+export interface SnowProfileEditModel { 
     Comment?: string;
     Exposition?: number;
     IsProfileToGround?: boolean;

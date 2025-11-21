@@ -7,8 +7,14 @@
 import { AttachmentViewModel } from './attachment-view-model';
 
 
-export interface RegistrationsWithAttachments {
+export interface RegistrationsWithAttachments { 
+    /**
+     * List of registration\'s attachments
+     */
     Attachments?: Array<AttachmentViewModel>;
+    /**
+     * Unique registration id that contains attachments
+     */
     RegId: number;
 }
 

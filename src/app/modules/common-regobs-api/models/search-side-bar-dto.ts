@@ -9,7 +9,7 @@ import { SearchSideBarDtoObserverCompetenceLevels } from './search-side-bar-dto-
 import { SearchSideBarDtoRegistrationTypes } from './search-side-bar-dto-registration-types';
 
 
-export interface SearchSideBarDto {
+export interface SearchSideBarDto { 
     Areas?: Array<AreasDto>;
     ObserverCompetenceLevels?: SearchSideBarDtoObserverCompetenceLevels;
     RegistrationTypes?: SearchSideBarDtoRegistrationTypes;

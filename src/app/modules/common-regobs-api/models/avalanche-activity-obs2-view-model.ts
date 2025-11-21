@@ -6,7 +6,7 @@
 
 
 
-export interface AvalancheActivityObs2ViewModel {
+export interface AvalancheActivityObs2ViewModel { 
     AvalancheExtName?: string;
     AvalancheExtTID?: number;
     AvalCauseName?: string;

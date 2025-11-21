@@ -7,8 +7,11 @@
 import { WaterLevelMeasurementEditModel } from './water-level-measurement-edit-model';
 
 
-export interface Waterlevel2EditModel {
+export interface Waterlevel2EditModel { 
     Comment?: string;
+    /**
+     * Flood polygon area, List(lon, lat)
+     */
     Extent?: Array<Array<number>>;
     MarkingReferenceTID?: number;
     MarkingTypeTID?: number;

@@ -8,6 +8,8 @@
 
 export interface ProblemDetails { 
   [key: string]: any | any;
+
+
     detail?: string;
     instance?: string;
     status?: number;

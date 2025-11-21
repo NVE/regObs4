@@ -6,7 +6,7 @@
 
 
 
-export interface HelptextDto {
+export interface HelptextDto { 
     GeoHazardTID: number;
     LangKey: number;
     RegistrationTID: number;

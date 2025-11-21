@@ -25,7 +25,10 @@ import { IceCoverEditModel } from './ice-cover-edit-model';
 import { AvalancheEvaluation3EditModel } from './avalanche-evaluation3-edit-model';
 
 
-export interface RegistrationEditModel {
+export interface RegistrationEditModel { 
+    /**
+     * If set to true, the user\'s account will not be shown publicly. NVE will still be able to see who sent in the observation.
+     */
     Anonymous?: boolean;
     Attachments?: Array<AttachmentEditModel>;
     AvalancheActivityObs2?: Array<AvalancheActivityObs2EditModel>;
@@ -36,8 +39,14 @@ export interface RegistrationEditModel {
     DamageObs?: Array<DamageObsEditModel>;
     DangerObs?: Array<DangerObsEditModel>;
     DtChangeTime?: string;
+    /**
+     * Tiden da observasjonen ble gjort.
+     */
     DtObsTime: string;
     GeneralObservation?: GeneralObservationEditModel;
+    /**
+     * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
+     */
     GeoHazardTID: GeoHazardTypes;
     IceCoverObs?: IceCoverEditModel;
     IceThickness?: IceThicknessEditModel;
@@ -45,14 +54,20 @@ export interface RegistrationEditModel {
     LandSlideObs?: LandslideEditModel;
     ObserverGroupID?: number;
     ObserverGroupName?: string;
+    /**
+     * The observation location object. Latitude and longitute are needed to create a new registration.
+     */
     ObsLocation?: ObsLocationEditModel;
     SnowProfile2?: SnowProfileEditModel;
     SnowSurfaceObservation?: SnowSurfaceEditModel;
+    /**
+     * Kildereferanse på en registrering. F.eks. har brukeren sette dette selv eller er det referert til fra nyheter. The SourceKD unique identifier
+     */
     SourceTID?: number;
     WaterLevel2?: Waterlevel2EditModel;
     WeatherObservation?: WeatherEditModel;
 }
+
 export namespace RegistrationEditModel {
 }
-
 

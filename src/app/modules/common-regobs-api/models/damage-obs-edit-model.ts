@@ -8,7 +8,7 @@ import { LatLng } from './lat-lng';
 import { AttachmentEditModel } from './attachment-edit-model';
 
 
-export interface DamageObsEditModel {
+export interface DamageObsEditModel { 
     Attachments?: Array<AttachmentEditModel>;
     Comment?: string;
     DamagePosition?: LatLng;

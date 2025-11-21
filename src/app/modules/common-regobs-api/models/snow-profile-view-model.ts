@@ -10,10 +10,13 @@ import { AttachmentViewModel } from './attachment-view-model';
 import { SnowTempModel } from './snow-temp-model';
 
 
-export interface SnowProfileViewModel {
+export interface SnowProfileViewModel { 
     Comment?: string;
     Exposition?: number;
     IsProfileToGround?: boolean;
+    /**
+     * Urls to simplified images of the snow profile model
+     */
     PlotImage?: AttachmentViewModel;
     SlopeAngle?: number;
     SnowDensity?: Array<SnowDensityModel>;

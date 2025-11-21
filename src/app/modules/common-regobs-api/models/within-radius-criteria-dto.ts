@@ -7,7 +7,7 @@
 import { PositionDto } from './position-dto';
 
 
-export interface WithinRadiusCriteriaDto {
+export interface WithinRadiusCriteriaDto { 
     Position?: PositionDto;
     Radius: number;
 }

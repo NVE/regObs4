@@ -7,7 +7,7 @@
 import { AvalancheEvalProblemViewModel } from './avalanche-eval-problem-view-model';
 
 
-export interface AvalancheEvaluation2ViewModel {
+export interface AvalancheEvaluation2ViewModel { 
     AvalancheDangerName?: string;
     AvalancheDangerTID?: number;
     AvalancheDevelopment?: string;

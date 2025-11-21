@@ -7,7 +7,7 @@
 import { AttachmentEditModel } from './attachment-edit-model';
 
 
-export interface WaterLevelMeasurementEditModel {
+export interface WaterLevelMeasurementEditModel { 
     Attachments?: Array<AttachmentEditModel>;
     Comment?: string;
     DtMeasurementTime: string;

@@ -6,7 +6,7 @@
 
 
 
-export interface CountyDto {
+export interface CountyDto { 
     CountyNo?: string;
     Name?: string;
 }

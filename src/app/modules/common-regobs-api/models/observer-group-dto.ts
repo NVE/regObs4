@@ -6,7 +6,7 @@
 
 
 
-export interface ObserverGroupDto {
+export interface ObserverGroupDto { 
     Comment?: string;
     Id: number;
     Name?: string;

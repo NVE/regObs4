@@ -6,7 +6,7 @@
 
 
 
-export interface RegistrationTypeCriteriaDto {
+export interface RegistrationTypeCriteriaDto { 
     Id: number;
     SubTypes?: Array<number>;
 }

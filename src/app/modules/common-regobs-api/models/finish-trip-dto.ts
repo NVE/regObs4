@@ -6,7 +6,7 @@
 
 
 
-export interface FinishTripDto {
+export interface FinishTripDto { 
     DeviceGuid: string;
 }
 

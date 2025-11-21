@@ -7,8 +7,11 @@
 import { WaterLevelMeasurementViewModel } from './water-level-measurement-view-model';
 
 
-export interface Waterlevel2ViewModel {
+export interface Waterlevel2ViewModel { 
     Comment?: string;
+    /**
+     * Flood polygon area, List(lon, lat)
+     */
     Extent?: Array<Array<number>>;
     MarkingReferenceName?: string;
     MarkingReferenceTID?: number;

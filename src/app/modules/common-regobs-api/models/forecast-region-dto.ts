@@ -7,7 +7,7 @@
 import { ForecastRegionSubRegionDto } from './forecast-region-sub-region-dto';
 
 
-export interface ForecastRegionDto {
+export interface ForecastRegionDto { 
     Id: number;
     IsRegionForGrouping: boolean;
     SortOrder: number;

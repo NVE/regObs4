@@ -6,7 +6,7 @@
 
 
 
-export interface KdvElement {
+export interface KdvElement { 
     Description?: string;
     Id: number;
     Name?: string;

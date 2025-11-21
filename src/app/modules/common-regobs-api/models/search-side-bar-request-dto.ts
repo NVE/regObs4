@@ -8,11 +8,17 @@ import { GeoHazardTypes } from './geo-hazard-types';
 import { LangKey } from './lang-key';
 
 
-export interface SearchSideBarRequestDto {
+export interface SearchSideBarRequestDto { 
+    /**
+     * Snow = 10, dirt = 20, water = 60, ice = 70.  At least one geo hazard is required.
+     */
     GeoHazards?: Array<GeoHazardTypes>;
+    /**
+     * NO = 1, EN = 2, DE = 3, SL = 4, SV = 5, IT = 6  Default = 2.
+     */
     LangKey: LangKey;
 }
+
 export namespace SearchSideBarRequestDto {
 }
-
 

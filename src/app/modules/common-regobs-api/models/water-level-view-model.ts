@@ -6,7 +6,7 @@
 
 
 
-export interface WaterLevelViewModel {
+export interface WaterLevelViewModel { 
     Comment?: string;
     IsRiver: boolean;
     MeasuredDischarge?: number;

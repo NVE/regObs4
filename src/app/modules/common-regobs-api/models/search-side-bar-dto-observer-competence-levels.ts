@@ -7,7 +7,7 @@
 import { ObserverCompetenceLevelDto } from './observer-competence-level-dto';
 
 
-export interface SearchSideBarDtoObserverCompetenceLevels {
+export interface SearchSideBarDtoObserverCompetenceLevels { 
     Avalanche?: Array<ObserverCompetenceLevelDto>;
     Drought?: Array<ObserverCompetenceLevelDto>;
     EarthFlow?: Array<ObserverCompetenceLevelDto>;

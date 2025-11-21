@@ -8,7 +8,7 @@ import { AttachmentViewModel } from './attachment-view-model';
 import { LatLng } from './lat-lng';
 
 
-export interface DamageObsViewModel {
+export interface DamageObsViewModel { 
     Attachments?: Array<AttachmentViewModel>;
     Comment?: string;
     DamagePosition?: LatLng;

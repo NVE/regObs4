@@ -7,7 +7,7 @@
 import { PositionDto } from './position-dto';
 
 
-export interface WithinExtentCriteriaDto {
+export interface WithinExtentCriteriaDto { 
     BottomRight?: PositionDto;
     TopLeft?: PositionDto;
 }

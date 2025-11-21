@@ -6,7 +6,7 @@
 
 
 
-export interface LatLngObject {
+export interface LatLngObject { 
     Latitude: number;
     Longitude: number;
 }

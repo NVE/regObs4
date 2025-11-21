@@ -34,7 +34,7 @@ import { Summary } from './summary';
 import { GeneralObservationViewModel } from './general-observation-view-model';
 
 
-export interface RegistrationViewModel {
+export interface RegistrationViewModel { 
     Anonymous?: boolean;
     Attachments?: Array<AttachmentViewModel>;
     AttachmentSummaries?: Array<Summary>;
@@ -52,10 +52,13 @@ export interface RegistrationViewModel {
     DangerObs?: Array<DangerObsViewModel>;
     DtChangeTime?: string;
     DtObsTime: string;
-    DtRegTime?: string;
+    DtRegTime: string;
     ExternalReferenceId?: string;
     GeneralObservation?: GeneralObservationViewModel;
     GeoHazardName?: string;
+    /**
+     * NotSpecified = 0, Avalanche = 10, EarthFlow = 20, LandSlide = 30, RockFall = 40, IceFall = 50, Flooding = 60, Ice = 70, EventOnGlacier = 100, Jøkulhaup = 110, Drought = 200, Unknown = 999
+     */
     GeoHazardTID: GeoHazardTypes;
     IceCoverObs?: IceCoverViewModel;
     IceThickness?: IceThicknessViewModel;
@@ -71,13 +74,13 @@ export interface RegistrationViewModel {
     SnowProfile2?: SnowProfileViewModel;
     SnowSurfaceObservation?: SnowSurfaceViewModel;
     SourceName?: string;
-    SourceTID?: number;
+    SourceTID: number;
     Summaries?: Array<Summary>;
     WaterLevel?: WaterLevelViewModel;
     WaterLevel2?: Waterlevel2ViewModel;
     WeatherObservation?: WeatherViewModel;
 }
+
 export namespace RegistrationViewModel {
 }
-
 

@@ -6,10 +6,10 @@
 
 
 
-export interface ObserverCompetenceLevelDto {
+export interface ObserverCompetenceLevelDto { 
     Description?: string;
     Id: number;
-    Name?: string;
+    Name: string;
     SortOrder: number;
 }
 

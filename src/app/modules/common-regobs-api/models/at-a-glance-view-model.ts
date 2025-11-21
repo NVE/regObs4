@@ -6,10 +6,16 @@
 
 
 
-export interface AtAGlanceViewModel {
+export interface AtAGlanceViewModel { 
+    /**
+     * Count of all attachments
+     */
     AttachmentsCount?: number;
     CompetenceLevelTID?: number;
     DtObsTime: string;
+    /**
+     * Returns first attachement url from the observation or null
+     */
     FirstAttachmentUrl?: string;
     FormNames?: Array<string>;
     GeoHazardTID?: number;

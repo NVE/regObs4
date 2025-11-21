@@ -6,7 +6,7 @@
 
 
 
-export interface PositionDto {
+export interface PositionDto { 
     Latitude: number;
     Longitude: number;
 }

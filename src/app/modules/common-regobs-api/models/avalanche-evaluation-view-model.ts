@@ -6,7 +6,7 @@
 
 
 
-export interface AvalancheEvaluationViewModel {
+export interface AvalancheEvaluationViewModel { 
     AvalancheDangerName?: string;
     AvalancheDangerTID: number;
     AvalancheEvaluation1?: string;

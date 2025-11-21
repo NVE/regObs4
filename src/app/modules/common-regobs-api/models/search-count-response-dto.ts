@@ -6,7 +6,7 @@
 
 
 
-export interface SearchCountResponseDto {
+export interface SearchCountResponseDto { 
     TotalMatches: number;
 }
 

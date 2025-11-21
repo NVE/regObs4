@@ -6,7 +6,7 @@
 
 
 
-export interface AvalancheEvalProblemViewModel {
+export interface AvalancheEvalProblemViewModel { 
     AvalancheEvalProblemID: number;
     AvalancheExtName?: string;
     AvalancheExtTID?: number;

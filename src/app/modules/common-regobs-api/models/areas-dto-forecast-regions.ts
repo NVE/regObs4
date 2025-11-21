@@ -7,7 +7,7 @@
 import { ForecastRegionDto } from './forecast-region-dto';
 
 
-export interface AreasDtoForecastRegions {
+export interface AreasDtoForecastRegions { 
     Avalanche?: Array<ForecastRegionDto>;
     Drought?: Array<ForecastRegionDto>;
     EarthFlow?: Array<ForecastRegionDto>;

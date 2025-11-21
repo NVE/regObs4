@@ -6,7 +6,7 @@
 
 
 
-export interface CreateTripDto {
+export interface CreateTripDto { 
     Comment?: string;
     DeviceGuid: string;
     GeoHazardID: number;

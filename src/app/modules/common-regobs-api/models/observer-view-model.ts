@@ -6,7 +6,7 @@
 
 
 
-export interface ObserverViewModel {
+export interface ObserverViewModel { 
     CompetenceLevelName?: string;
     CompetenceLevelTID: number;
     NickName?: string;

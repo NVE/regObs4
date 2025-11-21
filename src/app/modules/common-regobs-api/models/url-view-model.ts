@@ -6,8 +6,14 @@
 
 
 
-export interface UrlViewModel {
+export interface UrlViewModel { 
+    /**
+     * UrlDescription
+     */
     UrlDescription?: string;
+    /**
+     * UrlLine
+     */
     UrlLine: string;
 }
 

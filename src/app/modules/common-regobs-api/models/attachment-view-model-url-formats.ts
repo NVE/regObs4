@@ -9,7 +9,7 @@
 /**
  * Urls in different formats
  */
-export interface AttachmentViewModelUrlFormats {
+export interface AttachmentViewModelUrlFormats { 
     Large?: string;
     Medium?: string;
     Original?: string;

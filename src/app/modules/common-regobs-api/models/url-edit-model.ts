@@ -6,8 +6,14 @@
 
 
 
-export interface UrlEditModel {
+export interface UrlEditModel { 
+    /**
+     * UrlDescription
+     */
     UrlDescription?: string;
+    /**
+     * UrlLine
+     */
     UrlLine: string;
 }
 

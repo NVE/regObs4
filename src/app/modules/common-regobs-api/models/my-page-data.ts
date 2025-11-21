@@ -8,7 +8,7 @@ import { ObserverGroupDto } from './observer-group-dto';
 import { ObserverCompetenceDto } from './observer-competence-dto';
 
 
-export interface MyPageData {
+export interface MyPageData { 
     Adrnr?: number;
     Competence?: Array<ObserverCompetenceDto>;
     DefaultMunicipality?: string;
@@ -23,6 +23,9 @@ export interface MyPageData {
     MobPhoneNr?: string;
     NickName?: string;
     NumberOfObservations: number;
+    /**
+     * Returns unique id that identifies an observer
+     */
     ObserverId: number;
     PendingInvitationsToGroups?: Array<ObserverGroupDto>;
     Roles?: Array<string>;

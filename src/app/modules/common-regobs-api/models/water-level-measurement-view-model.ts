@@ -7,7 +7,7 @@
 import { AttachmentViewModel } from './attachment-view-model';
 
 
-export interface WaterLevelMeasurementViewModel {
+export interface WaterLevelMeasurementViewModel { 
     Attachments?: Array<AttachmentViewModel>;
     Comment?: string;
     DtMeasurementTime: string;

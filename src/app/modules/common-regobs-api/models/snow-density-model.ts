@@ -7,7 +7,7 @@
 import { SnowDensityLayerModel } from './snow-density-layer-model';
 
 
-export interface SnowDensityModel {
+export interface SnowDensityModel { 
     Comment?: string;
     CylinderDiameter?: number;
     Layers?: Array<SnowDensityLayerModel>;
