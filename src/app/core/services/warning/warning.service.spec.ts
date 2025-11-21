@@ -6,7 +6,6 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { Platform } from '@ionic/angular/standalone';
-import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
@@ -19,7 +18,6 @@ describe('WarningService', () => {
   let mapService: MapService;
   let dataLoadService: DataLoadService;
   let platform: Platform;
-  let nativeHttp: HTTP;
   let loggingService: LoggingService;
   let dbHelperService: DbHelperService;
   let service: WarningService;
@@ -30,7 +28,6 @@ describe('WarningService', () => {
     mapService = <MapService>{};
     dataLoadService = <DataLoadService>{};
     platform = <Platform>{};
-    nativeHttp = <HTTP>{};
     loggingService = <LoggingService>{};
     dbHelperService = <DbHelperService>{};
     // httpClient = jasmine.createSpyObj('HttpClient', { _: true });
@@ -49,7 +46,6 @@ describe('WarningService', () => {
         { provide: MapService, useValue: mapService },
         { provide: DataLoadService, useValue: dataLoadService },
         { provide: Platform, useValue: platform },
-        { provide: HTTP, useValue: nativeHttp },
         { provide: LoggingService, useValue: loggingService },
         { provide: DbHelperService, useValue: dbHelperService },
         WarningService,
@@ -66,7 +62,7 @@ describe('WarningService', () => {
   });
 
   it('aggregateWarningRegions should return empty array', () => {
-    const warningResult = [];
+    const warningResult: IWarningApiResult[] = [];
     const result = service.aggregateWarningRegions(warningResult, GeoHazard.Soil, LangKey.nb);
 
     expect(result).toEqual([]);
@@ -85,7 +81,7 @@ describe('WarningService', () => {
           {
             Id: '50',
             Name: 'Trøndelag',
-            MunicipalityList: null,
+            MunicipalityList: [],
           },
         ],
         MunicipalityCsvString: '1;',
@@ -101,7 +97,7 @@ describe('WarningService', () => {
           {
             Id: '50',
             Name: 'Trøndelag',
-            MunicipalityList: null,
+            MunicipalityList: [],
           },
         ],
         MunicipalityCsvString: '1;',
