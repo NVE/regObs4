@@ -27,7 +27,7 @@ describe('OfflineMapService', () => {
       'PackageIndexService',
       {},
       {
-        packages$: packages.asObservable(),
+        map$: packages,
       }
     );
 
@@ -53,11 +53,12 @@ describe('OfflineMapService', () => {
 
   it('get needed diskspace adds compression factor', async () => {
     const cp = new CompoundPackage({
-      bbox: [1, 2, 3, 4],
-      id: 'test',
-      xyz: [1, 2, 3],
-      sizeInMib: 1.0,
-      maps: [],
+      Bbox: [1, 2, 3, 4],
+      Id: 'test',
+      Xyz: [1, 2, 3],
+      SizeInMib: 1.0,
+      ZMax: 0,
+      Maps: [],
     });
 
     const compressionFactor = 1.5;
@@ -68,11 +69,12 @@ describe('OfflineMapService', () => {
 
   it('get needed diskspace also sums up items in queue and currently downloading', async () => {
     const cp = new CompoundPackage({
-      bbox: [1, 2, 3, 4],
-      id: 'test',
-      xyz: [1, 2, 3],
-      sizeInMib: 1.0,
-      maps: [],
+      Bbox: [1, 2, 3, 4],
+      Id: 'test',
+      Xyz: [1, 2, 3],
+      SizeInMib: 1.0,
+      ZMax: 0,
+      Maps: [],
     });
 
     offlineMapService.downloadAndUnzipProgress$ = of([

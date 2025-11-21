@@ -4,22 +4,23 @@ import { isPackageOutdated } from './utils';
 
 describe('isPackageOutdated', () => {
   const packageOnServer = new CompoundPackage({
-    bbox: [1, 2, 3, 4],
-    id: 'pakke-1',
-    xyz: [1, 2, 3],
-    sizeInMib: 1.0,
-    maps: [
+    Bbox: [1, 2, 3, 4],
+    Id: 'pakke-1',
+    Xyz: [1, 2, 3],
+    SizeInMib: 1.0,
+    ZMax: 0,
+    Maps: [
       {
-        name: '1',
-        lastModified: '2021-01-01T00:00:01Z',
-        urls: [],
-        sizeInMib: 0,
+        Name: '1',
+        LastModified: '2021-01-01T00:00:01Z',
+        Urls: [],
+        SizeInMib: 0,
       },
       {
-        name: '2',
-        lastModified: '2021-01-03T00:00:01Z',
-        urls: [],
-        sizeInMib: 0,
+        Name: '2',
+        LastModified: '2021-01-03T00:00:01Z',
+        Urls: [],
+        SizeInMib: 0,
       },
     ],
   });
