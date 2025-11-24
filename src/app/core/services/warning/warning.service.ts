@@ -17,7 +17,6 @@ import { DataLoadService } from '../../../modules/data-load/services/data-load.s
 import { IWarningGroup } from './warning-group.interface';
 import { IIceWarningApiResult } from './ice-warning-api-result.interface';
 import { Platform } from '@ionic/angular/standalone';
-import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
 import { toPromiseWithCancel } from '../../helpers/observable-helper';
@@ -28,6 +27,7 @@ import { nSQL } from '@nano-sql/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { UserSetting } from '../../models/user-settings.model';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
+import { CapacitorHttp } from '@capacitor/core';
 
 const DEBUG_TAG = 'WarningService';
 
@@ -40,7 +40,6 @@ export class WarningService {
   private mapService = inject(MapService);
   private dataLoadService = inject(DataLoadService);
   private platform = inject(Platform);
-  private nativeHttp = inject(HTTP);
   private loggingService = inject(LoggingService);
   private dbHelperService = inject(DbHelperService);
   private _warningsObservable: Observable<WarningGroup[]>;
@@ -650,18 +649,15 @@ export class WarningService {
   }
 
   private async getIceWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
-    this.nativeHttp.setDataSerializer('json');
-    const result = await this.nativeHttp.get(
-      url,
-      {},
-      {
-        'Content-Type': 'application/json',
+    try {
+      const response = await CapacitorHttp.get({ url, headers: { 'Content-Type': 'application/json' } });
+      if (response.status === 200) {
+        return response.data as IIceWarningApiResult;
+      } else {
+        throw Error(`Could not download warnings from: ${url}. Status code: ${response.status}`);
       }
-    );
-    if (result.status === 200) {
-      return JSON.parse(result.data.trim());
-    } else {
-      throw Error(`Could not download warnings from: ${url}. Status: ${result.status}. Message: ${result.error}`);
+    } catch (err) {
+      throw Error(`Could not download warnings from: ${url}. Message: ${err instanceof Error ? err.message : err}`);
     }
   }
 
