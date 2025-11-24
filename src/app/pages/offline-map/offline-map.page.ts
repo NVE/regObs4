@@ -1,4 +1,4 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, NgZone, inject, signal } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -107,7 +107,7 @@ export class OfflineMapPage extends NgDestoryBase {
   featureMap = new Map<string, { feature: CompoundPackageFeature; layer: L.Layer }>();
   expanded = false; //show list of downloads if this is true
 
-  nPackagesToUpdate$ = new Subject<number>();
+  nPackagesToUpdate = signal(0);
 
   constructor() {
     super();
@@ -148,7 +148,7 @@ export class OfflineMapPage extends NgDestoryBase {
         n++;
       }
     }
-    this.nPackagesToUpdate$.next(n);
+    this.nPackagesToUpdate.set(n);
   }
 
   onMapReady(map: L.Map) {
@@ -174,13 +174,13 @@ export class OfflineMapPage extends NgDestoryBase {
 
     map.addLayer(this.tilesLayer);
 
-    this.packageIndex.packages$.subscribe((packages) => {
+    this.packageIndex.map$.subscribe((packages) => {
       packages.forEach((mapPackage) => {
         this.tilesLayer?.addData(mapPackage.getFeature());
       });
     });
 
-    combineLatest([this.installedPackages$, this.packageIndex.packages$])
+    combineLatest([this.installedPackages$, this.packageIndex.map$])
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([installedPackages, packageIndex]) => {
         this.installedPackages = installedPackages;
