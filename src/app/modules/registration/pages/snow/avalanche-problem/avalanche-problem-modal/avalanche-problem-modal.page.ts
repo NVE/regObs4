@@ -42,6 +42,8 @@ interface AvalancheProblemKeys {
   AvalCauseTID: number;
 }
 
+const noopFilter = (_: number) => true;
+
 /**
  * Modal for å legge til ett enkelt skredproblem.
  *
@@ -115,29 +117,54 @@ export class AvalancheProblemModalPage {
     }
     return this.avalancheEvalProblem()?.AvalCauseAttributeSoftTID === Attribute.Soft;
   });
-  avalancheExt = linkedSignal(() => {
-    const value = this.avalancheEvalProblem()?.AvalancheExtTID;
-    if (value == null) {
-      return value;
-    }
-
-    // Hvis filter endrer seg, reset avalancheExt om nødvendig
-    const filter = this.avalancheExtKdvFilter();
-    return filter(value) ? value : undefined;
-  });
 
   easyCollapseLabel = computed(() => this.attributeFlags()?.find((kdv) => kdv.Id === Attribute.Light)?.Name);
   softLayerLabel = computed(() => this.attributeFlags()?.find((kdv) => kdv.Id === Attribute.Soft)?.Name);
   largeCrystalLabel = computed(() => this.attributeFlags()?.find((kdv) => kdv.Id === Attribute.Crystal)?.Name);
   noWeakLayers = computed(() => this.avalCauseTid() === NO_WEAK_LAYER_KDV_VALUE);
   isNew = computed(() => !isEmpty(this.avalancheEvalProblem()));
-  avalancheExtKdvFilter = computed(() => {
-    const avalCauseTid = this.avalCauseTid();
-    const extTids = (this.avalancheProblemView() || [])
-      .filter((v) => v.AvalCauseTID === avalCauseTid)
-      .map((v) => v.AvalancheExtTID);
 
+  /**
+   * Filter som brukes for å sette tillatte skredtyper basert på angitt skredproblem.
+   */
+  avalancheExtKdvFilter = computed<(tid: number) => boolean>(() => {
+    const avalCauseTid = this.avalCauseTid();
+    const filterValues = this.avalancheProblemView();
+    if (filterValues == undefined) {
+      return noopFilter;
+    }
+    if (avalCauseTid == undefined) {
+      return noopFilter;
+    }
+
+    const extTids = filterValues.filter((v) => v.AvalCauseTID === avalCauseTid).map((v) => v.AvalancheExtTID);
     return (tid: number) => extTids.indexOf(tid) >= 0;
+  });
+
+  /**
+   * Skredtype - mulige verdier styres av et filter som baserer seg på type svakt lag (avalCauseTid).
+   * Hvis filteret sjekker denne om gjeldende verdi er gyldig, og resetter den til undefined hvis ikke.
+   */
+  avalancheExt = linkedSignal<(tid: number) => boolean, number | undefined>({
+    source: this.avalancheExtKdvFilter,
+    computation: (filter, previous) => {
+      let value: number | undefined;
+      if (previous) {
+        // previous er forrige avalancheExt
+        value = previous.value;
+      } else {
+        // Hvis det er første gang - ingen previous, bruk inputverdi
+        value = this.avalancheEvalProblem()?.AvalancheExtTID;
+      }
+
+      // Ikke kjør filter på undefined
+      if (value == undefined) {
+        return value;
+      }
+
+      // Hvis filter endrer seg, reset avalancheExt om nødvendig
+      return filter(value) ? value : undefined;
+    },
   });
 
   toggleNoWeakLayers() {
