@@ -13,7 +13,12 @@
       <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER" | translate }} </ion-label>
     </ion-list-header>
     <ion-item>
-      <ion-checkbox [checked]="noWeakLayers()" (ionChange)="toggleNoWeakLayers()" labelPlacement="end" justify="start">
+      <ion-checkbox
+        [ngModel]="noWeakLayers()"
+        (ngModelChange)="toggleNoWeakLayers()"
+        labelPlacement="end"
+        justify="start"
+      >
         {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS" | translate }}
       </ion-checkbox>
     </ion-item>
