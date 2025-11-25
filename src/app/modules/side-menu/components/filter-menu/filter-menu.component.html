@@ -31,51 +31,53 @@
           <app-date-range></app-date-range>
         }
 
-        <ion-accordion>
-          <ion-item slot="header" color="light">
-            <app-header-with-selected-items
-              titleKey="OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE"
-              [items]="selectedObservationTypes()"
-            >
-            </app-header-with-selected-items>
-          </ion-item>
-          <div slot="content">
-            <ion-list lines="none">
-              <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
-              <!-- her vise obsgruppe først og så vise obstyper i gruppa og bruke klikks.-->
-              @for (group of groupsWithIsCheckedComputed(); track group.id) {
-                <ion-item>
-                  <ion-checkbox
-                    [checked]="!isSlushFlowFilterActive() && group?.isChecked"
-                    [disabled]="isSlushFlowFilterActive()"
-                    (ionChange)="toggleObservationGroup($event.detail.checked, group.id, group.subTypes)"
-                    labelPlacement="end"
-                    justify="start"
-                  >
-                    {{ group?.name }}
-                  </ion-checkbox>
-                </ion-item>
-                @if (group?.subTypes) {
-                  @for (type of group?.subTypes; track type.id) {
-                    <ion-item class="subtype">
-                      <ion-checkbox
-                        [checked]="!isSlushFlowFilterActive() && type.isChecked"
-                        [disabled]="isSlushFlowFilterActive()"
-                        labelPlacement="end"
-                        justify="start"
-                        (ionChange)="toggleObservationType($event.detail.checked, type.parentId, type.id)"
-                        >{{ type.name }}</ion-checkbox
-                      >
-                    </ion-item>
+        @if (isWebPlatform) {
+          <ion-accordion>
+            <ion-item slot="header" color="light">
+              <app-header-with-selected-items
+                titleKey="OBSERVATION_FILTER.OBSERVATION_TYPE_FILTER.TITLE"
+                [items]="selectedObservationTypes()"
+              >
+              </app-header-with-selected-items>
+            </ion-item>
+            <div slot="content">
+              <ion-list lines="none">
+                <!--if slush flow filter is set, disable filter by observation type because it cannot be combined -->
+                <!-- her vise obsgruppe først og så vise obstyper i gruppa og bruke klikks.-->
+                @for (group of groupsWithIsCheckedComputed(); track group.id) {
+                  <ion-item>
+                    <ion-checkbox
+                      [checked]="!isSlushFlowFilterActive() && group?.isChecked"
+                      [disabled]="isSlushFlowFilterActive()"
+                      (ionChange)="toggleObservationGroup($event.detail.checked, group.id, group.subTypes)"
+                      labelPlacement="end"
+                      justify="start"
+                    >
+                      {{ group?.name }}
+                    </ion-checkbox>
+                  </ion-item>
+                  @if (group?.subTypes) {
+                    @for (type of group?.subTypes; track type.id) {
+                      <ion-item class="subtype">
+                        <ion-checkbox
+                          [checked]="!isSlushFlowFilterActive() && type.isChecked"
+                          [disabled]="isSlushFlowFilterActive()"
+                          labelPlacement="end"
+                          justify="start"
+                          (ionChange)="toggleObservationType($event.detail.checked, type.parentId, type.id)"
+                          >{{ type.name }}</ion-checkbox
+                        >
+                      </ion-item>
+                    }
                   }
                 }
-              }
-              @if (isGeohazardSnow() && isWebPlatform) {
-                <app-slush-flow-filter [label]="slushFlowLabel()"> </app-slush-flow-filter>
-              }
-            </ion-list>
-          </div>
-        </ion-accordion>
+                @if (isGeohazardSnow() && isWebPlatform) {
+                  <app-slush-flow-filter [label]="slushFlowLabel()"> </app-slush-flow-filter>
+                }
+              </ion-list>
+            </div>
+          </ion-accordion>
+        }
 
         @if (isWebPlatform && isGeohazardSnow()) {
           <app-region-filter></app-region-filter>
