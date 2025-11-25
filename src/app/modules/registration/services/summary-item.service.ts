@@ -126,10 +126,10 @@ export class SummaryItemService {
     );
   }
 
-  async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem> {
+  getLocationAndTimeSummaryItem(draft: RegistrationDraft): ISummaryItem {
     const reg = draft.registration;
     const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
-    const timeSummary = reg.DtObsTime ? await this.dateHelperService.formatDateString(reg.DtObsTime) : '';
+    const timeSummary = reg.DtObsTime ? this.dateHelperService.formatDateString(reg.DtObsTime) : '';
     return {
       uuid: draft.uuid,
       href: '/registration/obs-location',
