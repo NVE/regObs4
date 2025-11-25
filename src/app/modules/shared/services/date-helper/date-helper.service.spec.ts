@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DateHelperService } from './date-helper.service';
 import { provideTranslateService, TranslateService } from '@ngx-translate/core';
-import moment from 'moment';
-import 'moment-timezone';
 import { firstValueFrom } from 'rxjs';
 
 describe('DateHelperService', () => {
@@ -14,16 +12,24 @@ describe('DateHelperService', () => {
     });
 
     service = TestBed.inject(DateHelperService);
-    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
+
+    // setter språk for å få norsk datoformat
+    await firstValueFrom(TestBed.inject(TranslateService).use('no'));
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('show basic date', () => {
-    const result = service.formatMoment(moment(new Date(2019, 0, 1)));
-    expect(result).toEqual('Jan 1, 2019, 12:00 AM');
+  it('should format ISO date string as Norwegian date and time', () => {
+    const result = service.formatDateString('2024-06-01T14:30:00');
+    expect(result).toBe('1. juni 2024, 14:30');
+  });
+
+  it('should format Date object as Norwegian date and time', () => {
+    const date = new Date('2024-06-01T14:30:00');
+    const result = service.formatDate(date);
+    expect(result).toBe('1. juni 2024, 14:30');
   });
 
   // Vet ikke helt hvorfor det var veldig viktig å vise hvilken tidssone observasjoner er lagt inn i.
