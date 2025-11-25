@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject } from '@angular/core';
-import { firstValueFrom, from, map, Observable, switchMap, takeUntil } from 'rxjs';
+import { firstValueFrom, map, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
@@ -107,7 +107,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   summaryItems$: Observable<Array<ISummaryItem>> = this.draft$.pipe(
     switchMap((draft) => {
       if (this.showSimpleSnowMode(draft) || this.showSimpleWaterMode(draft)) {
-        return from(this.getLocationAndTimeSummaryItem(draft));
+        return of(this.getLocationAndTimeSummaryItem(draft));
       } else {
         return this.summaryItemService.getSummaryItems$(this.uuid);
       }
@@ -137,8 +137,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     return this.draftHasStatusSync(draft) ? !!draft.error : false;
   }
 
-  private async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem[]> {
-    return [await this.summaryItemService.getLocationAndTimeSummaryItem(draft)];
+  private getLocationAndTimeSummaryItem(draft: RegistrationDraft): ISummaryItem[] {
+    return [this.summaryItemService.getLocationAndTimeSummaryItem(draft)];
   }
 
   showSimpleSnowMode(draft: RegistrationDraft): boolean {

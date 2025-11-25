@@ -126,7 +126,7 @@ export class SummaryItemService {
     );
   }
 
-  async getLocationAndTimeSummaryItem(draft: RegistrationDraft): Promise<ISummaryItem> {
+  getLocationAndTimeSummaryItem(draft: RegistrationDraft): ISummaryItem {
     const reg = draft.registration;
     const locSummary = reg.ObsLocation?.LocationName || reg.ObsLocation?.LocationDescription || '';
     const timeSummary = reg.DtObsTime ? this.dateHelperService.formatDateString(reg.DtObsTime) : '';
