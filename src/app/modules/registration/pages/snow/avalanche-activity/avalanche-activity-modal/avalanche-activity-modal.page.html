@@ -12,8 +12,8 @@
     <ion-item>
       <ion-checkbox
         slot="start"
-        [checked]="noAvalancheActivity()"
-        (ionChange)="toggleNoAvalancheActivity()"
+        [ngModel]="noAvalancheActivity()"
+        (ngModelChange)="toggleNoAvalancheActivity()"
         labelPlacement="end"
       >
         {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY" | translate }}
