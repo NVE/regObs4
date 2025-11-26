@@ -585,13 +585,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       Longitude: this.locationMarker().getLatLng().lng,
       UTMSourceTID: UtmSource.SelectedInMap,
     };
-    // check if location name is the same as location description if yes then allow edition
     const selectedLocation = this.selectedLocation();
-    if (this.allowEditLocationName() && this.locationName().length > 0) {
-      obsLocation.LocationName = this.locationName().substring(0, 60);
-    } else if (selectedLocation && selectedLocation?.Name !== selectedLocation?.LocationDescription) {
+    if (selectedLocation) {
+      // vi har valgt en tidligere brukt lokasjon som har navn og id
       obsLocation.ObsLocationID = selectedLocation.Id;
-      obsLocation.LocationName = selectedLocation.Name;
+      if (this.allowEditLocationName() && this.locationName().length > 0) {
+        // check if location name is the same as location description if yes then allow edition
+        obsLocation.LocationName = this.locationName().substring(0, 60);
+      } else {
+        obsLocation.LocationName = selectedLocation.Name;
+      }
     }
     if (this.mapViewInfoLocationName()) {
       obsLocation.LocationDescription = this.mapViewInfoLocationName();
