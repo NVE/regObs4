@@ -56,6 +56,7 @@ import { addIcons } from 'ionicons';
 import { calendarOutline, createOutline, radioButtonOn, timeOutline } from 'ionicons/icons';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 export interface LocationTime {
   location: ObsLocationEditModel;
@@ -106,6 +107,8 @@ function computeMapViewRadius(bounds: L.LatLngBounds): number {
   return 3000;
 }
 
+const DEBUG_TAG = 'SetLocationInMap';
+
 @Component({
   selector: 'app-set-location-in-map',
   templateUrl: './set-location-in-map.component.html',
@@ -140,6 +143,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locationService = inject(LocationService);
   private translateService = inject(TranslateService);
   private platform = inject(Platform);
+  private logger = inject(LoggingService);
 
   // TODO: For mange måter denne komponenten kommuniserer med omverdenen på...
   readonly geoHazard = input.required<GeoHazard>();
@@ -245,8 +249,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           const latLng = this.locationMarker().getLatLng();
           return this.mapSearchService.getViewInfo(latLng, this.geoHazard());
         }),
-        catchError(() => {
-          // TODO: Log error
+        catchError((err) => {
+          this.logger.error(err, DEBUG_TAG, 'Could not get location info');
           return of(undefined);
         }),
         takeUntilDestroyed()
@@ -256,6 +260,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.mapViewInfoElevation.set(viewInfo?.elevation);
         this.mapViewInfoLocationName.set(this.getLocationName(viewInfo?.location));
       });
+
+    // Sørg for at lokasjonsinfo alltid hentes minst én gang under oppstarten av komponenten.
+    this.mapViewInfoUpdateRequested.next();
   }
 
   constructor() {
@@ -269,6 +276,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const hasDefaultPos = markerHasDefaultSettingsPos(this.locationMarker());
     this.followMode = hasDefaultPos && !this.fromMarker();
     this.mapService.followMode = this.followMode;
+    this.logger.debug('OnInit', DEBUG_TAG, { hasDefaultPos, followMode: this.followMode });
 
     if (hasDefaultPos) {
       let latLng: L.LatLngExpression = settings.map.unknownMapCenter;
