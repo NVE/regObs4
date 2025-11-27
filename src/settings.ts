@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 
+import { env } from 'process';
 import { NORWAY_BOUNDS } from './app/core/helpers/leaflet/norway-bounds';
 import { SVALBARD_BOUNDS } from './app/core/helpers/leaflet/svalbard-bounds';
 import { MapLayerZIndex } from './app/core/models/maplayer-zindex.enum';
 import { ISettings } from './settings.model';
+import { environment } from './environments/environment';
 
 const snowBaseUrlNb = 'https://www.varsom.no/snoskred/varsling';
 const snowBaseUrlEn = 'https://www.varsom.no/en/snow/forecast';
@@ -46,7 +48,7 @@ export const settings: ISettings = {
       getObserverUrl: 'https://api.regobs.no/v6/Account/GetObserver',
       myPageUrl: 'https://konto.nve.no/User',
       updateObserverUrl: 'https://api.regobs.no/v6/Account/UpdateObserver',
-    },
+    }
   },
   observations: {
     maxObservationsToFetch: 5000,
@@ -481,5 +483,9 @@ export const settings: ISettings = {
   userCompetence: {
     nb: 'https://www.varsom.no/om-varsom/varsom-app-regobs/kompetanse/',
     en: 'https://www.varsom.no/en/about/regobs/regobs-competence/',
+  },
+  previewEnvironment: {
+    urlPrefix: 'https://victorious-water-056410803',
+    serverHostProxyPath: '/pullrequest',
   },
 };
