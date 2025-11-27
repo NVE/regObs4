@@ -146,6 +146,9 @@ export class StratProfileModalPage {
       if (!this.layerModal) {
         this.layerModal = await this.modalController.create({
           component: StratProfileLayerHistoryModalPage,
+          componentProps: {
+            draft: this.draft(),
+          },
         });
         this.layerModal.present();
         await this.layerModal.onDidDismiss();
