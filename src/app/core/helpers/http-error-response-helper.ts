@@ -1,6 +1,18 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { RegistrationDraftErrorCode } from '../services/draft/draft-model';
 
+function extractBadRequestMessage(error: HttpErrorResponse): string {
+  const messages: string[] = [];
+  if (error.error?.Message) messages.push(error.error.Message);
+
+  const modelState = error.error?.ModelState;
+  if (modelState && typeof modelState === 'object' && modelState !== null) {
+    messages.push(...Object.values(modelState as Record<string, string | string[]>).flat());
+  }
+
+  return messages.length > 0 ? messages.join(' ') : error.message;
+}
+
 /**
  * Create a formatted message for an angular HttpErrorResponse
  *
@@ -12,40 +24,28 @@ export const getHttpErrorResponseMessageAndCode = (
   error: HttpErrorResponse
 ): { message: string; code: RegistrationDraftErrorCode } => {
   let code: RegistrationDraftErrorCode;
-  let message: string;
 
-  if (error.status === 0) {
-    code = RegistrationDraftErrorCode.NoNetworkOrTimedOut;
-    message = error.message || 'Response failed with status code 0, probably no network?';
-  } else if (error.status === HttpStatusCode.BadRequest) {
-    code = RegistrationDraftErrorCode.RegistrationError;
-    // Regobs api returns additional info for bad requests.
-    // Put this info into a readable error message.
-    let messages = [];
-    if (error.error?.Message) {
-      messages.push(error.error.Message);
-    }
-    if (error.error?.ModelState) {
-      messages = [...messages, ...Object.values(error.error.ModelState)];
-    }
-    if (messages.length > 0) {
-      message = messages.join(' ');
-    } else {
-      message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
-    }
-  } else if (error.status === HttpStatusCode.Conflict) {
-    code = RegistrationDraftErrorCode.ConflictError;
-    message = error.message || `Registration conflict ${error.status} - ${error.statusText}`;
-  } else if (error.status === HttpStatusCode.Gone) {
-    code = RegistrationDraftErrorCode.GoneError;
-    message = error.message || `Registration is deleted in Regobs ${error.status} - ${error.statusText}`;
-  } else if (error.status > HttpStatusCode.BadRequest) {
-    code = RegistrationDraftErrorCode.ServerError;
-    message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
-  } else {
-    code = RegistrationDraftErrorCode.Unknown;
-    message = error.message || `Got an unknown http error: ${error.status} - ${error.statusText}`;
+  switch (error.status) {
+    case 0:
+      code = RegistrationDraftErrorCode.NoNetworkOrTimedOut;
+      break;
+    case HttpStatusCode.BadRequest:
+      code = RegistrationDraftErrorCode.RegistrationError;
+      return { code, message: extractBadRequestMessage(error) };
+    case HttpStatusCode.Conflict:
+      code = RegistrationDraftErrorCode.ConflictError;
+      break;
+    case HttpStatusCode.Gone:
+      code = RegistrationDraftErrorCode.GoneError;
+      break;
+    case HttpStatusCode.Unauthorized:
+      code = RegistrationDraftErrorCode.Unauthorized;
+      break;
+    default:
+      code = error.status >= HttpStatusCode.InternalServerError
+        ? RegistrationDraftErrorCode.ServerError
+        : RegistrationDraftErrorCode.Unknown;
   }
 
-  return { code, message };
+  return { code, message: error.message };
 };
