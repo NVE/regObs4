@@ -46,7 +46,7 @@ export const settings: ISettings = {
       getObserverUrl: 'https://api.regobs.no/v6/Account/GetObserver',
       myPageUrl: 'https://konto.nve.no/User',
       updateObserverUrl: 'https://api.regobs.no/v6/Account/UpdateObserver',
-    },
+    }
   },
   observations: {
     maxObservationsToFetch: 5000,
@@ -481,5 +481,9 @@ export const settings: ISettings = {
   userCompetence: {
     nb: 'https://www.varsom.no/om-varsom/varsom-app-regobs/kompetanse/',
     en: 'https://www.varsom.no/en/about/regobs/regobs-competence/',
+  },
+  previewEnvironment: {
+    urlPrefix: 'https://victorious-water-056410803',
+    serverHostProxyPath: '/pullrequest',
   },
 };
