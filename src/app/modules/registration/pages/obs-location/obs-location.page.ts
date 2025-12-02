@@ -136,7 +136,9 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.initialMinZoom = DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION;
     } else if (this.hasLocation(this.draft)) {
       const obsLocation = this.draft.registration.ObsLocation;
-      // det er ikke lov å endre navn på en allerede lagret lokasjon hvis den har navn fra før. Litt pussig, egentlig?
+      // det er ikke lov å endre navn på en allerede lagret lokasjon hvis den har navn fra før. 
+      // isvarslinga opererer med felles lokasjoner, og vi ønsker ikke at brukere skal endre navn på disse.
+      // det hadde vært bedre om en lokasjon kunne være eid av en bruker, men det er ikke støttet i regobs-api i dag.
       this.allowEditLocationName = obsLocation.LocationName && obsLocation.ObsLocationID ? false : true;
       this.setLocationMarker(obsLocation.Latitude, obsLocation.Longitude);
       this.selectedLocation = {

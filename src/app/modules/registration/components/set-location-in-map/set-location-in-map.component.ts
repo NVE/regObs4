@@ -590,7 +590,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       // vi har valgt en tidligere brukt lokasjon som har navn og id
       obsLocation.ObsLocationID = selectedLocation.Id;
       if (this.allowEditLocationName() && this.locationName().length > 0) {
-        // TODO: check if location name is the same as location description if yes then allow edition
         obsLocation.LocationName = this.locationName().substring(0, 60);
       } else {
         obsLocation.LocationName = selectedLocation.Name;
