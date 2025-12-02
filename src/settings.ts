@@ -1,11 +1,9 @@
 /* eslint-disable max-len */
 
-import { env } from 'process';
 import { NORWAY_BOUNDS } from './app/core/helpers/leaflet/norway-bounds';
 import { SVALBARD_BOUNDS } from './app/core/helpers/leaflet/svalbard-bounds';
 import { MapLayerZIndex } from './app/core/models/maplayer-zindex.enum';
 import { ISettings } from './settings.model';
-import { environment } from './environments/environment';
 
 const snowBaseUrlNb = 'https://www.varsom.no/snoskred/varsling';
 const snowBaseUrlEn = 'https://www.varsom.no/en/snow/forecast';
