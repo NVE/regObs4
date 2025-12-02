@@ -10,16 +10,7 @@ function extractBadRequestMessage(error: HttpErrorResponse): string {
     messages.push(...Object.values(modelState as Record<string, string | string[]>).flat());
   }
 
-  return messages.length > 0
-    ? messages.join(' ')
-    : error.message || `Response failed with ${error.status} - ${error.statusText}`;
-}
-
-function formatMessage(error: HttpErrorResponse, fallbackMessage: string): string {
-  if (error.message) {
-    return error.message;
-  }
-  return `${fallbackMessage} ${error.status} - ${error.statusText}`;
+  return messages.length > 0 ? messages.join(' ') : error.message;
 }
 
 /**
@@ -33,38 +24,28 @@ export const getHttpErrorResponseMessageAndCode = (
   error: HttpErrorResponse
 ): { message: string; code: RegistrationDraftErrorCode } => {
   let code: RegistrationDraftErrorCode;
-  let message: string;
 
   switch (error.status) {
     case 0:
       code = RegistrationDraftErrorCode.NoNetworkOrTimedOut;
-      message = formatMessage(error, 'Response failed with status code 0, probably no network?');
       break;
     case HttpStatusCode.BadRequest:
       code = RegistrationDraftErrorCode.RegistrationError;
-      message = extractBadRequestMessage(error);
-      break;
+      return { code, message: extractBadRequestMessage(error) };
     case HttpStatusCode.Conflict:
       code = RegistrationDraftErrorCode.ConflictError;
-      message = formatMessage(error, 'Registration conflict');
       break;
     case HttpStatusCode.Gone:
       code = RegistrationDraftErrorCode.GoneError;
-      message = formatMessage(error, 'Registration is deleted in Regobs');
       break;
     case HttpStatusCode.Unauthorized:
       code = RegistrationDraftErrorCode.Unauthorized;
-      message = formatMessage(error, 'Unauthorized');
       break;
     default:
-      if (error.status > HttpStatusCode.BadRequest) {
-        code = RegistrationDraftErrorCode.ServerError;
-        message = formatMessage(error, 'Response failed with server error');
-      } else {
-        code = RegistrationDraftErrorCode.Unknown;
-        message = formatMessage(error, 'Got an unknown http error');
-      }
+      code = error.status >= HttpStatusCode.InternalServerError
+        ? RegistrationDraftErrorCode.ServerError
+        : RegistrationDraftErrorCode.Unknown;
   }
 
-  return { code, message };
+  return { code, message: error.message };
 };
