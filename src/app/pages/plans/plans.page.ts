@@ -68,6 +68,10 @@ export class PlansPage {
     const value = select.value as 'name' | 'date';
     this.sortValue.set(value);
   }
+
+  onRemoveItem(item: GeoJSONItem) {
+    this.geoJSON.remove(item.id);
+  }
 }
 
 /**

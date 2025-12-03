@@ -30,6 +30,9 @@
           </span>
           <span>{{ item.date | date }}</span>
         </div>
+        <nve-button slot="suffix" variant="text" size="small" (click)="onRemoveItem(item)">
+          <nve-icon src="/assets/icon/delete.svg" />
+        </nve-button>
         <nve-icon slot="suffix" name="chevron_forward"></nve-icon
       ></nve-menu-item>
       @if (!last) {
