@@ -2,10 +2,12 @@
   justify-content: unset;
 }
 .content {
-  display: flex;
-  flex-direction: column;
-  padding: var(--spacing-small);
-  gap: var(--spacing-small);
+  height: 100%;
+  width: 100%;
+  max-width: var(--desktop-max-width);
+  margin: 0 auto;
+  margin-bottom: var(--spacing-large);
+  overflow: auto;
 }
 svg {
   fill: currentColor;
@@ -46,4 +48,8 @@ nve-menu-item::part(base) {
 
 nve-badge::part(base) {
   line-height: 1;
+}
+
+.drop-zone-wrapper {
+  height: 200px;
 }

@@ -48,8 +48,29 @@ export class GeoJSONService {
   }
 
   /**
+   * Updates metadata for a given item
+   * @param item the geojson item to update
+   */
+  async updateMetadata(item: GeoJSONItem) {
+    try {
+      const items = this.metadata();
+      const index = items.findIndex((i) => i.id === item.id);
+      if (index === -1) {
+        throw new Error(`Item with id ${item.id} not found`);
+      }
+
+      const updatedItems = items.map((m) => (m.id === item.id ? { ...m, ...item } : m));
+      await this.saveMetadata(updatedItems);
+      this.metadata.set(updatedItems);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Could not update metadata', { item });
+      throw error;
+    }
+  }
+
+  /**
    * Save a geojson object with a given id
-   * @param id unique id for the geojson
+   * @param metadata the metadata for the geojson
    * @param geojson the geojson object
    */
   async save(metadata: GeoJSONItem, geojson: FeatureCollection): Promise<void> {

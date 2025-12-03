@@ -360,6 +360,11 @@
     "SORT_TITLE": "Sortering",
     "SORT_BY_NAME": "Navn",
     "SORT_BY_TIME": "Sist endret",
+    "DATE_EDITED": "Dato redigert",
+    "SHOW_ON_MAP": "Vis i kart",
+    "HIDE_ON_MAP": "Skjul i kart",
+    "FILE_NAME": "Filnavn",
+    "COMMENT": "Kommentar",
     "VISIBLE_ON_MAP": "Vises i kart"
   },
   "POPUP_DISCLAMER": {

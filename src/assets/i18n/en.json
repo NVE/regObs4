@@ -361,6 +361,11 @@
     "SORT_TITLE": " Sort by",
     "SORT_BY_NAME": "Name",
     "SORT_BY_TIME": "Recently updated",
+    "DATE_EDITED": "Date edited",
+    "SHOW_ON_MAP": "Show on map",
+    "HIDE_ON_MAP": "Hide on map",
+    "FILE_NAME": "File name",
+    "COMMENT": "Comment",
     "VISIBLE_ON_MAP": "Visible on map"
   },
   "POPUP_DISCLAMER": {

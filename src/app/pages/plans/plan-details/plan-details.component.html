@@ -1,28 +1,44 @@
-@if (metadata(); as info) {
+@if (itemMetadata(); as info) {
   <!--<app-static-map-image [location]="location()"></app-static-map-image>-->
-  <nve-menu-item>
-    <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
-    <div class="text-wrapper">
-      <span class="label">{{ info.name }} </span>
-    </div>
-  </nve-menu-item>
+  <ion-header>
+    <ion-toolbar appHeaderColor>
+      <ion-buttons slot="start">
+        <ion-back-button text="" defaultHref="/plans"></ion-back-button>
+      </ion-buttons>
+      <ion-title> {{ info.name }} </ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-  <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; padding: 16px 0px">
-    <nve-tag saturation="default" variant="neutral">
-      <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
-      <span>Dato redigert:</span> <span slot="extra">{{ info.date | date }}</span>
-    </nve-tag>
-    <nve-tag saturation="default" variant="neutral">
-      <nve-icon slot="prefix" src="assets\icon\altitude.svg" />
-      <span slot="extra">-- moh</span>
-    </nve-tag>
-    <nve-tag saturation="default" variant="neutral">
-      <nve-icon slot="prefix" src="assets\icon\arrow_range.svg" />
-      <span slot="extra">-- km</span>
-    </nve-tag>
-    <nve-switch>Vis i kart</nve-switch>
-    <nve-input [value]="info.name" label="Navn"></nve-input>
-    <nve-textarea label="Kommentar"></nve-textarea>
-    <nve-button variant="primary">Lagre</nve-button>
+  <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; padding: 16px 0px">
+    <div style="display: flex; gap: 4px">
+      <nve-tag saturation="default" variant="neutral">
+        <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
+        <span>{{ "PLANS.DATE_EDITED" | translate }}</span> <span slot="extra">{{ info.date | date }}</span>
+      </nve-tag>
+      <nve-tag saturation="default" variant="neutral">
+        <nve-icon slot="prefix" src="assets\icon\altitude.svg" />
+        <span slot="extra">-- {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</span>
+      </nve-tag>
+      <nve-tag saturation="default" variant="neutral">
+        <nve-icon slot="prefix" src="assets\icon\arrow_range.svg" />
+        <span slot="extra">-- km</span>
+      </nve-tag>
+    </div>
+    <form style="display: flex; flex-direction: column; gap: 8px">
+      <nve-switch [checked]="visibleOnMap()" (change)="onVisibleOnMapChange($event)">
+        {{ visibleOnMap() ? ("PLANS.HIDE_ON_MAP" | translate) : ("PLANS.SHOW_ON_MAP" | translate) }}
+      </nve-switch>
+      <nve-input
+        [value]="name()"
+        [label]="'PLANS.FILE_NAME' | translate"
+        (sl-change)="onNameChange($event)"
+      ></nve-input>
+      <nve-textarea
+        [value]="comment()"
+        (sl-change)="onCommentChange($event)"
+        [label]="'PLANS.COMMENT' | translate"
+      ></nve-textarea>
+      <nve-button [loading]="uploading()" variant="primary" type="submit" (click)="onSave()">Lagre</nve-button>
+    </form>
   </div>
 }

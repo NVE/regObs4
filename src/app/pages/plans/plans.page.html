@@ -25,7 +25,7 @@
           <div class="text-wrapper">
             <span class="label"
               >{{ item.name }}
-              @if (item.on) {
+              @if (item.visibleOnMap) {
                 <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
               }
             </span>
@@ -40,18 +40,20 @@
     }
   </nve-menu>
 
-  <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx, .geojson, .json'" (onFileDrop)="onFileDrop($event)">
-    <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-      <button type="button" (click)="openFileSelector()">
-        <h1>{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</h1>
-        <p>
-          @if (!isMobile) {
-            {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_DESKTOP" | translate }}
-          } @else {
-            {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_MOBILE" | translate }}
-          }
-        </p>
-      </button>
-    </ng-template>
-  </ngx-file-drop>
+  <div class="drop-zone-wrapper">
+    <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx, .geojson, .json'" (onFileDrop)="onFileDrop($event)">
+      <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+        <button type="button" (click)="openFileSelector()">
+          <h1>{{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }}</h1>
+          <p>
+            @if (!isMobile) {
+              {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_DESKTOP" | translate }}
+            } @else {
+              {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_MOBILE" | translate }}
+            }
+          </p>
+        </button>
+      </ng-template>
+    </ngx-file-drop>
+  </div>
 </div>
