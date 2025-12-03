@@ -5,6 +5,7 @@ import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { cleanFeatureCollection } from 'src/app/pages/plans/geojson';
+import { length } from '@turf/turf';
 
 const DEBUG_TAG = 'GeoJSON';
 
@@ -73,6 +74,16 @@ export class GeoJSONService {
     }
 
     try {
+      const lineFeature = geojson.features.find((f) => f.geometry.type === 'LineString');
+
+      if (!lineFeature) {
+        throw new Error('No LineString found in geojson');
+      }
+
+      // Calculate length in kilometers
+      const km = length(lineFeature);
+      metadata.lengthKm = km;
+
       await this.db.set(`geojson:${metadata.id}`, geojson);
       this.metadata.update((items) => [...items, metadata]);
     } catch (error) {
