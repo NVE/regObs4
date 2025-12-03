@@ -357,6 +357,7 @@
       "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
       "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
     },
+    "DELETE": "Slett",
     "SORT_TITLE": "Sortering",
     "SORT_BY_NAME": "Navn",
     "SORT_BY_TIME": "Sist endret",

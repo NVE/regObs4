@@ -12,3 +12,8 @@ nve-input::part(form-control-label) {
   font: var(--label-small);
   color: black;
 }
+
+.button-group {
+  display: flex;
+  gap: var(--spacing-small);
+}

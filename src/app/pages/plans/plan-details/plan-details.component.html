@@ -38,7 +38,13 @@
         (sl-change)="onCommentChange($event)"
         [label]="'PLANS.COMMENT' | translate"
       ></nve-textarea>
-      <nve-button [loading]="uploading()" variant="primary" type="submit" (click)="onSave()">Lagre</nve-button>
+      <div class="button-group">
+        <nve-button [loading]="uploading()" variant="primary" type="submit" (click)="onSave()">Lagre</nve-button>
+        <nve-button variant="danger" type="button" (click)="onRemove()">
+          <nve-icon slot="prefix" src="assets/icon/delete_white.svg"></nve-icon>
+          {{ "PLANS.DELETE" | translate }}
+        </nve-button>
+      </div>
     </form>
   </div>
 }

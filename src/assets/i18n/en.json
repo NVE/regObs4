@@ -358,6 +358,7 @@
       "DROP_LABEL_DESKTOP": "Drag and drop or click to add",
       "DROP_LABEL_MOBILE": "Tap to add files"
     },
+    "DELETE": "Delete",
     "SORT_TITLE": " Sort by",
     "SORT_BY_NAME": "Name",
     "SORT_BY_TIME": "Recently updated",

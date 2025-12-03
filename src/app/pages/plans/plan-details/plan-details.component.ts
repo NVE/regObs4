@@ -10,6 +10,7 @@ import 'nve-designsystem/components/nve-textarea/nve-textarea.component.js';
 import 'nve-designsystem/components/nve-switch/nve-switch.component.js';
 import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 /**
  * Detaljer for en turplan.
  * Ideen er at denne kan brukes både på /plans/:id, og kunne brukes i en modal som åpnes fra kartet, når man
@@ -24,6 +25,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class PlanDetailsComponent {
   geoJSON = inject(GeoJSONService);
+  router = inject(Router);
   id = input.required<string>();
 
   itemMetadata = computed(() => this.geoJSON.metadata().find((m) => m.id === this.id()));
@@ -47,7 +49,16 @@ export class PlanDetailsComponent {
     this.visibleOnMap.set(checked);
   }
 
+  async onRemove() {
+    if (this.uploading()) return;
+    this.uploading.set(true);
+    await this.geoJSON.remove(this.id());
+    this.uploading.set(false);
+    await this.router.navigate(['/plans']);
+  }
+
   async onSave() {
+    if (this.uploading()) return;
     const itemToUpdate = {
       id: this.id(),
       name: this.name(),
