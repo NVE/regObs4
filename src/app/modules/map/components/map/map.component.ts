@@ -18,7 +18,7 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
 import L from 'leaflet';
 import { BehaviorSubject, combineLatest, firstValueFrom, fromEventPattern, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -241,6 +241,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   >();
 
+  /** Dato for for siste geojson-sporet vi har tegnet */
+  private lastGeoJSONmetadataChanged = signal<number>(0);
+
   private map?: L.Map;
   private layerGroup = L.layerGroup();
   private offlineTopoLayerGroup = L.layerGroup();
@@ -415,11 +418,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  onLeafletMapReady(map: L.Map) {
+  onLeafletMapReady(leafletMap: L.Map) {
     //TODO: Denne metoden er altfor lang, splitte opp i flere funksjoner!
-    this.map = map;
+    this.map = leafletMap;
     if (this.showScale()) {
-      L.control.scale({ imperial: false }).addTo(map);
+      L.control.scale({ imperial: false }).addTo(leafletMap);
     }
 
     // Det virker som kartet noen ganger kan zoome til hele verden om vi kaller
@@ -428,10 +431,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(() => {
         // Invalidate map size before we set bounds in case map container size has changed
-        map.invalidateSize({ animate: false, noMoveStart: true, debounceMoveend: true });
+        leafletMap.invalidateSize({ animate: false, noMoveStart: true, debounceMoveend: true });
 
         if (this.bounds && this.fitBounds()) {
-          map.fitBounds(this.bounds, { animate: false, noMoveStart: true });
+          leafletMap.fitBounds(this.bounds, { animate: false, noMoveStart: true });
         }
 
         // Si fra til map service hva oppdatert extent er etter at kartet er tegnet.
@@ -442,22 +445,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       // For backward compatibility, use a single id if only one geojson is provided
       this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
         if (geojson) {
-          this.addGeojsonLayer(map, 'obsturer', geojson);
+          this.addGeojsonLayer(leafletMap, 'obsturer', geojson);
         } else {
-          this.removeGeojsonLayer(map, 'obsturer');
+          this.removeGeojsonLayer(leafletMap, 'obsturer');
         }
       });
     }
 
-    this.offlineTopoLayerGroup.addTo(map);
-    this.layerGroup.addTo(map);
-    this.offlineSupportMapLayerGroup.addTo(map);
+    this.offlineTopoLayerGroup.addTo(leafletMap);
+    this.layerGroup.addTo(leafletMap);
+    this.offlineSupportMapLayerGroup.addTo(leafletMap);
 
     if (this.offlinePackageMode()) {
       // Style all online maps grayscale.
       // We need the dom element that contains the layer to use css and add a grayscale filter.
       // After the load event, getContainer returns the container, earlier, it may return null or undefined.
-      map.on('load layeradd', () => {
+      leafletMap.on('load layeradd', () => {
         this.layerGroup.eachLayer((l: L.Layer) => {
           if (l instanceof L.TileLayer) {
             const container = l.getContainer();
@@ -470,7 +473,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
-      this.configureTileLayers(userSetting, map);
+      this.configureTileLayers(userSetting, leafletMap);
     });
 
     this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
@@ -497,7 +500,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             this.flyToMaxZoom(latLng);
           } else {
             // Use existing zoom
-            this.flyTo(latLng, map.getZoom());
+            this.flyTo(latLng, leafletMap.getZoom());
           }
           this.firstClickOnZoomToUser = false;
         }
@@ -505,8 +508,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.zone.runOutsideAngular(() => {
-      map.on('movestart', () => this.onMapMove());
-      map.on('zoomstart', () => this.onMapMove());
+      leafletMap.on('movestart', () => this.onMapMove());
+      leafletMap.on('zoomstart', () => this.onMapMove());
     });
 
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
@@ -540,12 +543,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.zone.runOutsideAngular(() => {
       this.startInvalidateSizeMapTimer();
 
-      // this.updateMapViewOnExtentChange er en input, og kan i prinsippet endre seg.
+      // this.updateMapViewOnExtentChange er en input, og kan i prinsipp endre seg.
       // Tror ikke vi bruker dette i dag, men hvis vi starter med det, så bør denne if-sjekken fjernes..
       if (this.updateMapViewOnExtentChange()) {
         fromEventPattern(
-          (handler) => map.on('resize moveend zoomend', handler),
-          (handler) => map.off('resize moveend zoomend', handler)
+          (handler) => leafletMap.on('resize moveend zoomend', handler),
+          (handler) => leafletMap.off('resize moveend zoomend', handler)
         )
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe(() => {
@@ -554,20 +557,47 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    // Lytt på endringer i evt. geojson-metadata og tegn geojson-lag (på nytt)
-    this.geoJSONService.metadata$.pipe(takeUntil(this.ngDestroy$)).subscribe(async (metadataForAllTracks) => {
-      if (metadataForAllTracks && map) {
-        metadataForAllTracks.forEach(async (trackMetadata) => {
-          // Fjern eksisterende geojson-lag for id
-          this.removeGeojsonLayer(map, trackMetadata.id);
-          // Hent oppdatert geojson fra tjenesten
-          const geojson = await this.geoJSONService.get(trackMetadata.id);
-          if (geojson) {
-            this.addGeojsonLayer(map, trackMetadata.id, geojson);
-          }
-        });
-      }
+    // Fjern geojson-lag hvis et geojson-objekt blir slettet
+    this.geoJSONService.removedId$.pipe(takeUntil(this.ngDestroy$)).subscribe((id) => {
+      this.removeGeojsonLayer(leafletMap, id);
+      this.loggingService.debug(`Fjernet geojson-lag med id ${id}`, DEBUG_TAG);
     });
+
+    // Lytt på endringer i evt. geojson-metadata og tegn geojson-lag (på nytt)
+    this.geoJSONService.metadata$
+      .pipe(
+        map((metadataForAllTracks) => {
+          // vi vil kun ha spor som er endret siden sist vi sjekket
+          const lastChanged = this.lastGeoJSONmetadataChanged();
+          return metadataForAllTracks?.filter((track) => track.date > lastChanged) || [];
+        }),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(async (changedTracks) => {
+        if (changedTracks.length > 0 && leafletMap) {
+          for (const trackMetadata of changedTracks) {
+            const geojson = await this.geoJSONService.get(trackMetadata.id);
+            if (geojson) {
+              const existingLayer = this.geojsonLayers.get(trackMetadata.id);
+              if (existingLayer) {
+                // Fjern eksisterende geojson-lag for id
+                this.removeGeojsonLayer(leafletMap, trackMetadata.id);
+                this.loggingService.debug(
+                  `Geojson-lag med id ${trackMetadata.id} og navn ${trackMetadata.name} er endret, fjernet eksisterende lag`,
+                  DEBUG_TAG
+                );
+              }
+              // Tegn laget (på nytt)
+              this.addGeojsonLayer(leafletMap, trackMetadata.id, geojson);
+              this.loggingService.debug(
+                `Tegnet geojson-lag med id ${trackMetadata.id} og navn ${trackMetadata.name}`,
+                DEBUG_TAG
+              );
+            }
+            this.lastGeoJSONmetadataChanged.set(trackMetadata.date);
+          }
+        }
+      });
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
@@ -583,10 +613,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe(() => this.redrawMap());
 
-    this.mapReady.emit(map);
+    this.mapReady.emit(leafletMap);
 
-    this.addGeojsonLayer(map, 'test', testGeojson1);
-    this.addGeojsonLayer(map, 'test', testGeojson2);
+    this.addGeojsonLayer(leafletMap, 'test', testGeojson1);
+    this.addGeojsonLayer(leafletMap, 'test', testGeojson2);
   }
 
   private async initOfflineMaps() {

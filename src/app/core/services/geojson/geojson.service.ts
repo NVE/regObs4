@@ -4,18 +4,26 @@ import { FeatureCollection } from 'geojson';
 import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { Subject } from 'rxjs';
 
 const DEBUG_TAG = 'GeoJSON';
 
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Tilbyr lagring og henting av GeoJSON-objekter i nettleserens database (IndexedDB).
+ */
 export class GeoJSONService {
   private db = inject(DatabaseService);
   private logger = inject(LoggingService);
 
   metadata = signal<GeoJSONItem[]>([]);
   readonly metadata$ = toObservable(this.metadata);
+  private removedId = new Subject<string>();
+
+  /** Gir beskjed om ID'er til objekter som er slettet */
+  readonly removedId$ = this.removedId.asObservable();
   private initialized = false;
 
   constructor() {
@@ -80,6 +88,7 @@ export class GeoJSONService {
     this.logger.debug('Remove', DEBUG_TAG, { id });
     await this.db.remove(`geojson:${id}`);
     this.metadata.update((items) => items.filter((item) => item.id !== id));
+    this.removedId.next(id);
   }
 
   /**
