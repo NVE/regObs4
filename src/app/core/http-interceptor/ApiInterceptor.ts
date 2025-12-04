@@ -121,6 +121,10 @@ export class ApiInterceptor implements HttpInterceptor {
             method: request.method,
           })
         ),
+        catchError((err) => {
+          this.loggerService.debug('Token refresh failed', DEBUG_TAG, { err, url: request.url });
+          throw error; // Rethrow original 401 error
+        }),
         switchMap(() => this.addAuthHeader(request)),
         switchMap((req) => next.handle(req))
       );
