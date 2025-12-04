@@ -19,7 +19,10 @@ export class GeoJSONService {
   private logger = inject(LoggingService);
 
   metadata = signal<GeoJSONItem[]>([]);
+
+  /** Inneholder metadata for alle objekter som er lagret */
   readonly metadata$ = toObservable(this.metadata);
+  
   private removedId = new Subject<string>();
 
   /** Gir beskjed om ID'er til objekter som er slettet */
