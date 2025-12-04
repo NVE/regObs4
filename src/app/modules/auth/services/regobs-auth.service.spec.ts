@@ -9,7 +9,7 @@ import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { httpFactory } from '../factories/http-factory';
 import { TokenResponseFullJson } from './token-response-full';
-import { filter, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { RegobsAuthServiceOverride } from './regobs-auth-service-override';
 import { inject } from '@angular/core';
 import { ApiInterceptor } from 'src/app/core/http-interceptor/ApiInterceptor';
@@ -114,6 +114,11 @@ describe('RegobsAuthService', () => {
     storage = TestBed.inject(StorageBackend);
   });
 
+  beforeEach(async () => {
+    // Dette skjer i AppComponent
+    await authService.init();
+  });
+
   it('token age check should work', () => {
     const nowInSeconds = Date.now() / 1000;
     const tokenIssuedAt = nowInSeconds - 300; //5 minutes ago
@@ -123,14 +128,11 @@ describe('RegobsAuthService', () => {
   });
 
   it('auth service has token on startup', async () => {
-    await authService.init();
-    await firstValueFrom(authService.initComplete$.pipe(filter((v) => v === true)));
     const token = await firstValueFrom(authService.token$);
     expect(token.idToken).toBe(TOKEN_RESPONSE.id_token);
   });
 
   it('has loggedInUser$ on startup', async () => {
-    await authService.init();
     const loggedInUser = await firstValueFrom(service.loggedInUser$);
     expect(loggedInUser.email).toBe(TOKEN_INFO.email);
   });
@@ -145,9 +147,6 @@ describe('RegobsAuthService', () => {
           revocation_endpoint: '',
         })
     );
-
-    // Initialiser service
-    await authService.init();
 
     const refreshTokenPromise = service.refreshToken();
 
@@ -170,14 +169,14 @@ describe('RegobsAuthService', () => {
   }));
 
   it('failing to fetch b2c config should not reset token', async () => {
-    await authService.init();
-
     // Trigg token refresh som igjen trigger henting av config
     const refreshTokenPromise = service.refreshToken();
 
-    // Simuler en nettverksfeil under henting av config. Dette fungerer litt som å hente config uten nett, feks.
-    const req = httpTesting.expectOne('/test/.well-known/openid-configuration');
-    req.error(new ProgressEvent('network error!'));
+    // Simuler nettverksfeil under henting av config. Dette fungerer litt som å hente config uten nett, feks.
+    const reqs = httpTesting.match('/test/.well-known/openid-configuration');
+    for (const req of reqs) {
+      req.error(new ProgressEvent('network error!'));
+    }
 
     await expectAsync(refreshTokenPromise).toBeRejected();
 
