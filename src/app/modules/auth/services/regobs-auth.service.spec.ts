@@ -35,7 +35,7 @@ const TOKEN_RESPONSE_FULL: Partial<TokenResponseFullJson> = {
 };
 
 class InMemoryStorageBackend extends StorageBackend {
-  db: any = {};
+  db: Record<string, string> = {};
 
   override async getItem(name: string): Promise<string | null> {
     return this.db[name];
