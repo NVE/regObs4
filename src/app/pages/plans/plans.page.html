@@ -12,6 +12,18 @@
     <h1>TODO: Planer</h1>
 
     <div class="filter-panel">
+      <button
+        class="filter-button"
+        [class.filter-button--active]="filterVisibleOnMap()"
+        (click)="filterVisibleOnMap.set(!filterVisibleOnMap())"
+      >
+        <nve-tag
+          >{{ "PLANS.VISIBLE_ON_MAP" | translate }}
+          @if (filterVisibleOnMap()) {
+            <nve-icon slot="prefix" src="/assets/icon/check_black.svg" />
+          }
+        </nve-tag>
+      </button>
       <nve-select [label]="'PLANS.SORT_TITLE' | translate" [value]="sortValue()" (sl-change)="onSortChange($event)">
         <nve-option value="name">{{ "PLANS.SORT_BY_NAME" | translate }}</nve-option>
         <nve-option value="date">{{ "PLANS.SORT_BY_TIME" | translate }}</nve-option>

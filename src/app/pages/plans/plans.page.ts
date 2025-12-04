@@ -11,6 +11,7 @@ import 'nve-designsystem/components/nve-badge/nve-badge.component.js';
 import 'nve-designsystem/components/nve-select/nve-select.component.js';
 import 'nve-designsystem/components/nve-option/nve-option.component.js';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
+import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import 'nve-designsystem/components/nve-message-card/nve-message-card.component.js';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { toGeoJSON } from './utils';
@@ -48,10 +49,15 @@ export class PlansPage {
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
 
+  filterVisibleOnMap = signal(false);
   sortValue = signal<'name' | 'date'>('date');
   items = computed(() => {
     const sorter = sortFunctions[this.sortValue()];
-    return sorter(this.geoJSON.metadata());
+    const sortedItems = sorter(this.geoJSON.metadata());
+    if (this.filterVisibleOnMap()) {
+      return sortedItems.filter((item) => item.on);
+    }
+    return sortedItems;
   });
 
   /**
