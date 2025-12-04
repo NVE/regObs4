@@ -1,6 +1,5 @@
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { AuthorizationServiceConfiguration, Requestor, StorageBackend, TokenResponseJson } from '@openid/appauth';
 import { provideTestLogger } from '../../shared/services/logging/test-logging.service';
@@ -12,7 +11,6 @@ import { TokenResponseFullJson } from './token-response-full';
 import { firstValueFrom } from 'rxjs';
 import { RegobsAuthServiceOverride } from './regobs-auth-service-override';
 import { inject } from '@angular/core';
-import { ApiInterceptor } from 'src/app/core/http-interceptor/ApiInterceptor';
 
 const TOKEN_INFO = { email: 'test@test.no' };
 const TOKEN = `test.${btoa(JSON.stringify(TOKEN_INFO))}`;
@@ -62,9 +60,8 @@ describe('RegobsAuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([]),
         provideTranslateService(),
         provideTestLogger(),
         {
@@ -104,8 +101,10 @@ describe('RegobsAuthService', () => {
             return service;
           },
         },
-        // We rely on the HTTP_INTERCEPTORS token to register the AuthInterceptor as an HttpInterceptor
-        { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
+        // NB! ApiInterceptor kjøres ikke i testene nå, prøver å ikke involvere mer enn nødvendig i testene
+        // { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
+        // For å få interceptoren til å brukes i testene må denne også oppdateres:
+        // provideHttpClient(withInterceptorsFromDi())
       ],
     });
     service = TestBed.inject(RegobsAuthService);
@@ -115,7 +114,7 @@ describe('RegobsAuthService', () => {
   });
 
   beforeEach(async () => {
-    // Dette skjer i AppComponent
+    // Dette skjer i AppComponent i appen
     await authService.init();
   });
 
