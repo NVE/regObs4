@@ -94,7 +94,9 @@ export class ApiInterceptor implements HttpInterceptor {
       catchError((err) => {
         this.loggerService.debug('Could not get valid token', DEBUG_TAG, { err });
         this.regobsAuthService.signIn();
-        return EMPTY; //TODO: Why this?
+        // .signIn trigger en login-flyt med navigering til b2c-login.
+        // EMPTY sørger for at denne requesten avbrytes uten å emitte noe videre.
+        return EMPTY;
       }),
       map((user) => {
         const headers = request.headers.set('Authorization', `Bearer ${user.token}`);
