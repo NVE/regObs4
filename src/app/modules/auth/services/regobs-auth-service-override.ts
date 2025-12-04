@@ -48,16 +48,12 @@ export class RegobsAuthServiceOverride extends AuthService {
       const shouldClearTokens = await this.shouldTokensBeCleared(error);
       if (shouldClearTokens) {
         await this.clearTokens();
-      }
-      // Error message: 'Unable to obtain server configuration' means we didn't reach B2C,
-      // but since we refresh pretty often and we might be offline, we just ignore it.
-      // If we trigger a RefreshFailed action the token will be cleared by the auth library
-      if (
-        error instanceof Error &&
-        error.message.toLowerCase().indexOf('unable to obtain server configuration') === -1
-      ) {
         this.notifyActionListers(AuthActionBuilder.RefreshFailed(error));
       }
+
+      // TODO: Lurer på om dette bør egentlig bør feile - sånn at feks ApiInterceptoren kan plukke opp feilen?
+      // Ved "No token defined" kastes jo uansett exception videre, se de første linjene i catch-blokka her
+      //throw error;
     }
   }
 

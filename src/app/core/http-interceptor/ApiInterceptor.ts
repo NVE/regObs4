@@ -18,8 +18,6 @@ import { ApiVersionService } from '../services/api-version/api-version.service';
 import { Capacitor } from '@capacitor/core';
 
 const DEBUG_TAG = 'ApiInterceptor';
-const RETRY_HEADER = 'X-Regobs-Retry';
-const MAX_RETRIES = 1; // Antall ganger vi prøver å kjøre kallet på nytt hvis vi får 401
 
 /**
  * Sender innloggings-token med kall til Regobs API der kallene krever at man er logget inn.
@@ -112,29 +110,18 @@ export class ApiInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     if (error instanceof HttpErrorResponse && error.status === 401) {
       // Vi er ikke autorisert, trolig fordi tokenet ikke er gyldig
-      const retryCount = Number(request.headers.get(RETRY_HEADER) ?? '0');
-      if (retryCount >= MAX_RETRIES) {
-        // Har allerede forsøkt å oppfriske token én gang, kast feilen videre
-        this.loggerService.debug('401 after token refresh, not retrying again.', DEBUG_TAG, {
-          retryCount,
-          url: request.url,
-          method: request.method,
-        });
-        throw error;
-      }
       this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...', DEBUG_TAG, {
-        retryCount,
         url: request.url,
         method: request.method,
       });
       return from(this.regobsAuthService.refreshToken()).pipe(
-        switchMap(() => this.addAuthHeader(request)),
-        map((req) =>
-          req.clone({
-            // legger på en header for å indikere at vi forsøker samme kall til API på nytt
-            headers: req.headers.set(RETRY_HEADER, String(retryCount + 1)),
+        tap(() =>
+          this.loggerService.debug('Token refreshed', DEBUG_TAG, {
+            url: request.url,
+            method: request.method,
           })
         ),
+        switchMap(() => this.addAuthHeader(request)),
         switchMap((req) => next.handle(req))
       );
     }
