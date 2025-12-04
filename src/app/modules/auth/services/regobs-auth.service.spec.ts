@@ -159,7 +159,7 @@ describe('RegobsAuthService', () => {
     httpTesting.expectOne('/token').flush({}, { status: 401, statusText: 'Unauthorized' });
 
     // Vent på refreshToken
-    await refreshTokenPromise;
+    await expectAsync(refreshTokenPromise).toBeRejected();
 
     // Sjekk at alle relevante token-håndterings-ting er nullstilt
     expect(await storage.getItem(TOKEN_RESPONSE_KEY)).toBe(undefined);
@@ -170,13 +170,6 @@ describe('RegobsAuthService', () => {
   }));
 
   it('failing to fetch b2c config should not reset token', async () => {
-    // Siden bare henting av b2c-config feiler, så forventer vi at shouldTokensBeCleared skal returnere false.
-    // Spioner på denne så vi kan sjekke det.
-    const shouldTokensBeClearedSpy = spyOn(
-      authService as RegobsAuthServiceOverride,
-      'shouldTokensBeCleared'
-    ).and.callThrough();
-
     await authService.init();
 
     // Trigg token refresh som igjen trigger henting av config
@@ -186,12 +179,7 @@ describe('RegobsAuthService', () => {
     const req = httpTesting.expectOne('/test/.well-known/openid-configuration');
     req.error(new ProgressEvent('network error!'));
 
-    // TODO! Bør dette gå an, eller bør det feile? - ApiInterceptoren fortsetter sånn som det er nå
-    await refreshTokenPromise;
-
-    expect(shouldTokensBeClearedSpy).toHaveBeenCalled();
-    const shouldTokensBeCleared = await shouldTokensBeClearedSpy.calls.first().returnValue;
-    expect(shouldTokensBeCleared).toBe(false);
+    await expectAsync(refreshTokenPromise).toBeRejected();
 
     // Sjekk at innlogging fortsatt er gyldig
     expect(await storage.getItem(TOKEN_RESPONSE_KEY)).toBeDefined();

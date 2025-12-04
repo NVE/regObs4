@@ -51,9 +51,7 @@ export class RegobsAuthServiceOverride extends AuthService {
         this.notifyActionListers(AuthActionBuilder.RefreshFailed(error));
       }
 
-      // TODO: Lurer på om dette bør egentlig bør feile - sånn at feks ApiInterceptoren kan plukke opp feilen?
-      // Ved "No token defined" kastes jo uansett exception videre, se de første linjene i catch-blokka her
-      //throw error;
+      throw error;
     }
   }
 
