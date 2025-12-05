@@ -1,4 +1,4 @@
-import { Component, inject, viewChild, input, model, effect, untracked } from '@angular/core';
+import { Component, inject, viewChild, input, model, effect, untracked, computed } from '@angular/core';
 import { IonDatetime, IonDatetimeButton, IonModal, Platform } from '@ionic/angular/standalone';
 import { DatetimePresentation } from '@ionic/core/components';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -24,6 +24,9 @@ let counter = 0;
 export class DatetimePickerComponent {
   private platform = inject(Platform);
   private modal = viewChild(IonModal);
+  private ionDatetimeElement = viewChild(IonDatetime);
+
+  dateTimeMounted = computed(() => this.ionDatetimeElement() != undefined);
 
   readonly dateTime = model<string>(); // Supports Date.prototype.toISOString() format (YYYY-MM-DDTHH:mm:ss.sssZ)
   readonly language = input<string>(); // Automatically sets formatting of Ionic Datetime component. Can be manually overridden.
@@ -45,9 +48,11 @@ export class DatetimePickerComponent {
     minute: '2-digit',
   });
 
-  id = `app-datetime-picker-${counter++}`;
+  id: string;
 
   constructor() {
+    this.id = `app-datetime-picker-${counter++}`;
+
     // Fant ikke noe enkel annen måte å oppdatere tiden på hvis max endres.
     // Det er egentlig ikke anbefalt å oppdatere state fra effect.
     effect(() => {
