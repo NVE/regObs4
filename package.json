@@ -85,6 +85,8 @@
     "@placemarkio/check-geojson": "^0.1.14",
     "@sentry/browser": "^7.120.4",
     "@tmcw/togeojson": "^7.1.2",
+    "@turf/clean-coords": "^7.2.0",
+    "@turf/truncate": "^7.2.0",
     "@turf/turf": "^7.1.0",
     "@types/leaflet-draw": "^1.0.6",
     "angular-svg-icon": "^16.1.0",
