@@ -45,12 +45,9 @@ export class DatetimePickerComponent {
     minute: '2-digit',
   });
 
-  id: string;
+  id = `app-datetime-picker-${counter++}`;
 
   constructor() {
-    counter++;
-    this.id = 'app-datetime-picker-' + counter;
-
     // Fant ikke noe enkel annen måte å oppdatere tiden på hvis max endres.
     // Det er egentlig ikke anbefalt å oppdatere state fra effect.
     effect(() => {
