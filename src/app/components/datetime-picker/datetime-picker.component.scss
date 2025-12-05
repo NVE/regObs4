@@ -6,7 +6,10 @@
 }
 
 ion-datetime {
+  --background: white;
+  --background-rgb: 255, 255, 255;
   --wheel-highlight-background: var(--ion-color-primary-contrast, rgb(218, 216, 255));
+  --wheel-fade-background-rgb: 255, 255, 255;
 }
 
 ion-datetime-button {
@@ -15,4 +18,11 @@ ion-datetime-button {
 
 ion-datetime-button::part(native) {
   background: none;
+}
+
+// Denne komponenten har en egen modal, men brukes også inne i en modal (avalanche-activity-modal.page)
+// For å sørge for at datovelgerens backdrop dukker opp over bakenforliggende modal trenger vi dette
+ion-modal::part(backdrop) {
+  --backdrop-opacity: 0.32;
+  background-color: var(--ion-backdrop-color, #000);
 }
