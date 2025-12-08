@@ -21,6 +21,15 @@ export const RETURN_URL_KEY = 'authreturnurl';
 export const TOKEN_RESPONSE_KEY = 'token_response';
 export const TOKEN_RESPONSE_FULL_KEY = 'token_response_full';
 
+/**
+ * Dette er en service som håndterer innlogging. Men oppsettet er komplisert og andre servicer/klasser er også i bruk:
+ *  - AuthService fra IonicAppAuth håndterer selve innlogginga og brukes her
+ *  - RegobsAuthServiceOverride overrider noen metoder på AuthService, og provides for AuthService i authFactory.
+ *  - authFactory har noe kode som håndterer at miljøvariabler settes riktig
+ *  - Initialisering av AuthService / RegobsAuthServiceOverride skjer i AppComponent
+ *  - Http-kall for innlogging gjøres av NgHttpService og initialiseres av httpFactory
+ *  - ApiInterceptor har kode som legger på token / trigger tokenRefresh / innlogging om nødvendig
+ */
 @Injectable({
   providedIn: 'root',
 })
