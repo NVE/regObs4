@@ -1,5 +1,5 @@
-import { Component, computed, inject, input, CUSTOM_ELEMENTS_SCHEMA, linkedSignal, signal } from '@angular/core';
-import { IonToolbar, IonBackButton, IonTitle, IonHeader, IonButtons } from '@ionic/angular/standalone';
+import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal, signal } from '@angular/core';
+import { IonToolbar, IonContent, IonBackButton, IonTitle, IonHeader, IonButtons } from '@ionic/angular/standalone';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { DatePipe } from '@angular/common';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
@@ -11,19 +11,15 @@ import 'nve-designsystem/components/nve-switch/nve-switch.component.js';
 import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-/**
- * Detaljer for en turplan.
- * Ideen er at denne kan brukes både på /plans/:id, og kunne brukes i en modal som åpnes fra kartet, når man
- * klikker på en tur i kartet.
- */
+
 @Component({
-  selector: 'app-plan-details',
-  templateUrl: './plan-details.component.html',
-  styleUrls: ['./plan-details.component.css'],
+  selector: 'app-plan.page',
+  templateUrl: './plan.page.html',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [DatePipe, IonToolbar, IonBackButton, IonTitle, IonHeader, IonButtons, TranslatePipe],
+  imports: [DatePipe, IonContent, IonToolbar, IonBackButton, IonTitle, IonHeader, IonButtons, TranslatePipe],
+  styleUrl: './plan.page.css',
 })
-export class PlanDetailsComponent {
+export class PlanPage {
   geoJSON = inject(GeoJSONService);
   router = inject(Router);
   id = input.required<string>();

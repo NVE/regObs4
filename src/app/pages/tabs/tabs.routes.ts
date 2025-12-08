@@ -59,7 +59,7 @@ export const routes: Routes = [
       },
       {
         path: 'plans/:id',
-        loadComponent: () => import('../plans/plan.page').then((m) => m.PlanPage),
+        loadComponent: () => import('../plans/plan/plan.page').then((m) => m.PlanPage),
       },
       // Redirect from old regobs.no route
       {
