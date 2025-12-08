@@ -1,6 +1,6 @@
 import { Platform } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
-import { IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
+import { IonButtons, IonMenuButton, IonRouterLinkWithHref, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
@@ -18,6 +18,7 @@ import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { generateShortRandomId } from './utils';
 import { DatePipe } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-plans',
@@ -34,11 +35,15 @@ import { DatePipe } from '@angular/common';
     TranslatePipe,
     TranslatePipe,
     NgxFileDropModule,
+    RouterLink,
+    IonRouterLinkWithHref,
+    IonContent,
   ],
 })
 /** Side som viser planer og sporfiler */
 export class PlansPage {
   private platform = inject(Platform);
+  private router = inject(Router);
   private geoJSON = inject(GeoJSONService);
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
@@ -55,8 +60,13 @@ export class PlansPage {
   async onFileDrop(files: NgxFileDropEntry[]) {
     for (const { fileEntry, relativePath } of files) {
       const geojson = await toGeoJSON(fileEntry);
-      const metadata: GeoJSONItem = { id: generateShortRandomId(), name: relativePath, date: Date.now() };
+      const id = generateShortRandomId();
+      const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now() };
       await this.geoJSON.save(metadata, geojson);
+      // Åpne detaljsiden kun når en fil er lastet opp.
+      if (files.length === 1) {
+        this.router.navigate(['/plans', id]);
+      }
     }
   }
 

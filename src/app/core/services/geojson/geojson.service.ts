@@ -49,9 +49,20 @@ export class GeoJSONService {
   }
 
   /**
+   * Updates metadata for a given item
+   * @param item the geojson item to update
+   */
+  updateMetadata(item: GeoJSONItem) {
+    this.metadata.update((items) => {
+      const other = items.filter((x) => x.id !== item.id);
+      return [...other, item];
+    });
+  }
+
+  /**
    * Save a geojson object with a given id
-   * @param id unique id for the geojson
-   * @param geojson the geojson object
+   * @param metadata metadata for the geojson
+   * @param geojson geojson object
    */
   async save(metadata: GeoJSONItem, geojson: FeatureCollection): Promise<void> {
     this.logger.debug('Save', DEBUG_TAG, { metadata });
