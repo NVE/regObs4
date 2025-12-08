@@ -192,10 +192,13 @@ export class EditImagesComponent implements OnInit {
     );
   }
 
-  addNewAttachmentPhotographer(attachment: AttachmentUploadEditModel, event: InputCustomEvent) {
-    const photographer = event.detail.value;
+  addNewAttachmentPhotographer(attachment: AttachmentUploadEditModel, event: InputCustomEvent<FocusEvent>) {
+    const photographer = event.target.value;
     if (photographer == null || photographer == undefined) return;
-    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Photographer: photographer });
+    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), {
+      ...attachment,
+      Photographer: photographer as string,
+    });
   }
 
   updateExistingAttachmentPhotographer(attachment: RemoteOrLocalAttachmentEditModel, event: InputCustomEvent) {
@@ -208,10 +211,10 @@ export class EditImagesComponent implements OnInit {
     );
   }
 
-  addNewAttachmentCopyright(attachment: AttachmentUploadEditModel, event: InputCustomEvent) {
-    const copyRight = event.detail.value;
+  addNewAttachmentCopyright(attachment: AttachmentUploadEditModel, event: InputCustomEvent<FocusEvent>) {
+    const copyRight = event.target.value;
     if (copyRight == null || copyRight == undefined) return;
-    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Copyright: copyRight });
+    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid(), { ...attachment, Copyright: copyRight as string });
   }
 
   updateExistingAttachmentCopyright(attachment: RemoteOrLocalAttachmentEditModel, event: InputCustomEvent) {

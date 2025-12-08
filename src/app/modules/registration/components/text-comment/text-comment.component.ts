@@ -1,5 +1,5 @@
 import { IonItem, IonTextarea } from '@ionic/angular/standalone';
-import { Component, input, model } from '@angular/core';
+import { Component, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UpperCasePipe } from '@angular/common';
@@ -17,8 +17,13 @@ export class TextCommentComponent {
   readonly rows = input(4);
   readonly disabled = input(false);
   readonly max = input(1024);
+  /**
+   * Emiter kommentar ved blur på kommentarfelt
+   */
+  readonly blur = output<string | undefined>();
 
   onBlur() {
     this.value.update((v) => (v ? v.trim() : v));
+    this.blur.emit(this.value());
   }
 }
