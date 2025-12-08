@@ -1,0 +1,33 @@
+nve-menu-item {
+  nve-icon {
+    --icon-size: 30px;
+  }
+}
+
+nve-menu-item::part(base) {
+  height: fit-content;
+}
+
+nve-input::part(form-control-label) {
+  font: var(--label-small);
+  color: black;
+}
+
+.button-group {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.tag-row {
+  display: flex;
+  gap: var(--spacing-x-small);
+}
+
+.content {
+  max-width: var(--form-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium) 0px;
+}
