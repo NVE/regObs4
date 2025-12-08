@@ -249,13 +249,51 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * Search for images only
+   * Search for attachment count
    * @param criteria Search criteria
    * @return OK
    */
   SearchAttachments(criteria: SearchCriteriaRequestDto): __Observable<SearchRegistrationsWithAttachments[]> {
     return this.SearchAttachmentsResponse(criteria).pipe(
       __map(_r => _r.body as SearchRegistrationsWithAttachments[])
+    );
+  }
+
+    /**
+   * Returns search attachment count
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchAttachmentsCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = criteria;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/Search/Attachments/Count`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<SearchCountResponseDto>;
+      })
+    );
+  }
+  /**
+   * Returns search result count
+   * @param criteria Search criteria
+   * @return OK
+   */
+  SearchAttachmentsCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountResponseDto> {
+    return this.SearchAttachmentsCountResponse(criteria).pipe(
+      __map(_r => _r.body as SearchCountResponseDto)
     );
   }
 

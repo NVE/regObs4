@@ -82,6 +82,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
   isFetching$ = this.isFetching.asObservable();
   private forceUpdate = new Subject<void>();
   count = signal<number | undefined>(undefined);
+  attachmentCount = signal<number | undefined>(undefined);
 
   private countError = new ReplaySubject<Error | undefined>(1);
   private searchError = new ReplaySubject<Error | undefined>(1);
@@ -108,7 +109,8 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
     // Not sure what is best here, provide SearchService to this class, or provide the flexibility to create these
     // functions outside
     fetchFunc: (criteria: SearchCriteriaRequestDto) => Observable<TViewModel[]>,
-    countFunc: (criteria: SearchCriteriaRequestDto) => Observable<number | undefined>
+    regCountFunc: (criteria: SearchCriteriaRequestDto) => Observable<number | undefined>,
+    attCountFunc?: (criteria: SearchCriteriaRequestDto) => Observable<number | undefined>
   ) {
     this.registrations$ = combineLatest([searchCriteria$, this.forceUpdate.pipe(startWith(null))]).pipe(
       // For every new search criteria, create a paged search and check what the total count is
@@ -116,20 +118,30 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
       switchMap(([searchCriteria]) =>
         combineLatest([
           this.createPagedSearch(searchCriteria, fetchFunc),
-          countFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+          regCountFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
             tap(() => this.countError.next(undefined)),
             catchError((err) => {
               this.countError.next(err);
               return of(0);
             })
           ),
+          attCountFunc
+            ? attCountFunc(searchCriteria as SearchCriteriaRequestDto).pipe(
+                tap(() => this.countError.next(undefined)),
+                catchError((err) => {
+                  this.countError.next(err);
+                  return of(0);
+                })
+              )
+            : of(undefined),
         ])
       ),
       // Save search state
-      tap(([registrations, totalCount]) => {
+      tap(([registrations, totalCount, attachmentCount]) => {
         this.allFetchedForCriteria.next(registrations.length >= (totalCount || 0));
         this.maxItemsFetched.next(registrations.length >= PagedSearchResult.MAX_ITEMS);
         this.count.set(totalCount);
+        this.attachmentCount.set(attachmentCount === undefined ? undefined : attachmentCount);
       }),
       // Map to registrations
       map(([registrations]) => registrations),
@@ -258,7 +270,9 @@ export class SearchRegistrationService {
     return new PagedSearchResult<SearchRegistrationsWithAttachments>(
       searchCriteria$,
       this.searchService.SearchAttachments.bind(this.searchService),
-      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches))
+      (searchCriteria) => this.searchService.SearchCount(searchCriteria).pipe(map((result) => result.TotalMatches)),
+      (searchCriteria) =>
+        this.searchService.SearchAttachmentsCount(searchCriteria).pipe(map((result) => result.TotalMatches))
     );
   }
 }

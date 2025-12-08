@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, viewChild } from '@angular/core';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -55,24 +55,24 @@ export class ImageListComponent {
   private loadingController = inject(LoadingController);
 
   private searchHandler = this.searchRegistrations.searchAttachments(toObservable(this.searchCriteriaService.criteria));
-
+  attCount = this.searchHandler.attachmentCount.asReadonly();
   /**
    * Sjekker om innholdet i grid er kortere enn vindushøyden, og laster i så fall flere bilder. Vi viser bilder kun fra
    * 10 observasjoner om gangen. Hvis bildene fra 10 observasjoner ikke dekker hele skjermen, vil infinite scroll
    * aldri trigges ved scroll og derfor man kan ikke laste ned flere bilder.
    */
   checkAndLoadMoreImages() {
-    setTimeout(() => {
+    const attCount = this.attCount() || 0;
+    //compare number of currently downloaded attachments with total attachment count
+    if (this.currentlyDownloadedAttachments().length <= attCount) {
       const grid = document.querySelector('.grid');
       if (!grid) return;
-
       const windowHeight = window.innerHeight;
       const gridRect = grid.getBoundingClientRect();
-      // Sjekk om grid høyde er mindre enn vindushøyden, hvis ja, last flere bilder
       if (gridRect.height < windowHeight && !this.disableInfiniteScroll()) {
         this.loadNextPage();
       }
-    }, 100);
+    }
   }
 
   registrations = toSignal(
@@ -81,11 +81,14 @@ export class ImageListComponent {
         this.infiniteScroll()?.complete();
         this.ionRefresher()?.complete();
         this.updateObservationsService.setLastFetched(new Date());
+
         this.checkAndLoadMoreImages();
       })
     ),
     { initialValue: [] as SearchRegistrationsWithAttachments[] }
   );
+
+  currentlyDownloadedAttachments = computed(() => this.registrations().flatMap((reg) => reg.Attachments || []));
 
   disableInfiniteScroll = toSignal(
     combineLatest([this.searchHandler.allFetchedForCriteria$, this.searchHandler.maxItemsFetched$]).pipe(
