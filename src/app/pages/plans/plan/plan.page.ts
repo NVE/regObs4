@@ -53,8 +53,7 @@ export class PlanPage {
     await this.router.navigate(['/plans']);
   }
 
-  async onSave() {
-    if (this.uploading()) return;
+  onSave() {
     const itemToUpdate = {
       id: this.id(),
       name: this.name(),
@@ -62,8 +61,6 @@ export class PlanPage {
       visibleOnMap: this.visibleOnMap(),
       date: Date.now(),
     };
-    this.uploading.set(true);
-    await this.geoJSON.updateMetadata(itemToUpdate);
-    this.uploading.set(false);
+    this.geoJSON.updateMetadata(itemToUpdate);
   }
 }
