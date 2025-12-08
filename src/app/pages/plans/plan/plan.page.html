@@ -1,0 +1,52 @@
+@if (itemMetadata(); as info) {
+  <!--<app-static-map-image [location]="location()"></app-static-map-image>-->
+  <ion-header>
+    <ion-toolbar appHeaderColor>
+      <ion-buttons slot="start">
+        <ion-back-button text="" defaultHref="/plans"></ion-back-button>
+      </ion-buttons>
+      <ion-title> {{ info.name }} </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="content">
+      <div class="tag-row">
+        <nve-tag saturation="default" variant="neutral">
+          <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
+          <span>{{ "PLANS.DATE_EDITED" | translate }}</span> <span slot="extra">{{ info.date | date }}</span>
+        </nve-tag>
+        <nve-tag saturation="default" variant="neutral">
+          <nve-icon slot="prefix" src="assets\icon\altitude.svg" />
+          <span slot="extra">-- {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</span>
+        </nve-tag>
+        <nve-tag saturation="default" variant="neutral">
+          <nve-icon slot="prefix" src="assets\icon\arrow_range.svg" />
+          <span slot="extra">-- km</span>
+        </nve-tag>
+      </div>
+      <form style="display: flex; flex-direction: column; gap: 8px">
+        <nve-switch [checked]="visibleOnMap()" (change)="onVisibleOnMapChange($event)">
+          {{ visibleOnMap() ? ("PLANS.HIDE_ON_MAP" | translate) : ("PLANS.SHOW_ON_MAP" | translate) }}
+        </nve-switch>
+        <nve-input
+          [value]="name()"
+          [label]="'PLANS.FILE_NAME' | translate"
+          (sl-change)="onNameChange($event)"
+        ></nve-input>
+        <nve-textarea
+          [value]="comment()"
+          (sl-change)="onCommentChange($event)"
+          [label]="'PLANS.COMMENT' | translate"
+        ></nve-textarea>
+        <div class="button-group">
+          <nve-button variant="primary" type="submit" (click)="onSave()">Lagre</nve-button>
+          <nve-button variant="danger" type="button" (click)="onRemove()">
+            <nve-icon slot="prefix" src="assets/icon/delete_white.svg"></nve-icon>
+            {{ "PLANS.DELETE" | translate }}
+          </nve-button>
+        </div>
+      </form>
+    </div>
+  </ion-content>
+}

@@ -560,6 +560,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         metadataForAllTracks.forEach(async (trackMetadata) => {
           // Fjern eksisterende geojson-lag for id
           this.removeGeojsonLayer(map, trackMetadata.id);
+          if (!trackMetadata.visibleOnMap) {
+            return;
+          }
           // Hent oppdatert geojson fra tjenesten
           const geojson = await this.geoJSONService.get(trackMetadata.id);
           if (geojson) {
