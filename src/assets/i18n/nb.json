@@ -357,9 +357,15 @@
       "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
       "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
     },
+    "DELETE": "Slett",
     "SORT_TITLE": "Sortering",
     "SORT_BY_NAME": "Navn",
     "SORT_BY_TIME": "Sist endret",
+    "DATE_EDITED": "Dato redigert",
+    "SHOW_ON_MAP": "Vis i kart",
+    "HIDE_ON_MAP": "Skjul i kart",
+    "FILE_NAME": "Filnavn",
+    "COMMENT": "Kommentar",
     "VISIBLE_ON_MAP": "Vises i kart"
   },
   "POPUP_DISCLAMER": {
