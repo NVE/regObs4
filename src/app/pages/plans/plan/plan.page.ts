@@ -1,4 +1,4 @@
-import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal, signal } from '@angular/core';
+import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal } from '@angular/core';
 import { IonToolbar, IonContent, IonBackButton, IonTitle, IonHeader, IonButtons } from '@ionic/angular/standalone';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { DatePipe } from '@angular/common';
@@ -29,7 +29,6 @@ export class PlanPage {
   name = linkedSignal<string>(() => this.itemMetadata()?.name || '');
   comment = linkedSignal<string>(() => this.itemMetadata()?.comment || '');
   visibleOnMap = linkedSignal<boolean>(() => this.itemMetadata()?.visibleOnMap || false);
-  uploading = signal(false);
 
   onNameChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
@@ -46,10 +45,7 @@ export class PlanPage {
   }
 
   async onRemove() {
-    if (this.uploading()) return;
-    this.uploading.set(true);
     await this.geoJSON.remove(this.id());
-    this.uploading.set(false);
     await this.router.navigate(['/plans']);
   }
 
