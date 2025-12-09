@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
-import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
-import { NgIf } from '@angular/common';
+import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
@@ -11,7 +10,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
   selector: 'app-compression-test',
   templateUrl: './compression-test.component.html',
   styleUrls: ['./compression-test.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
+  imports: [IonIcon, IonItem, IonLabel, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompressionTestComponent {

@@ -10,7 +10,7 @@
       tabindex="0"
       detail="true"
       (click)="addOrEditCompressionTest(i)"
-      (keyup.enter)="addOrEditCompressionTest(i)"
+      (keyup.enter)="addOrEditCompressionTest(i)" button
     >
       <ion-label>
         @if (test.PropagationTID) {
@@ -32,7 +32,7 @@
     </ion-item>
   }
 
-  <ion-item tabindex="0" (click)="addOrEditCompressionTest()" (keyup.enter)="addOrEditCompressionTest()">
+  <ion-item tabindex="0" (click)="addOrEditCompressionTest()" (keyup.enter)="addOrEditCompressionTest()" button>
     <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
     <ion-label>{{ "REGISTRATION.SNOW.COMPRESSION_TEST.ADD_NEW" | translate }}</ion-label>
   </ion-item>

@@ -19,13 +19,13 @@
       </ion-list-header>
       <ion-reorder-group disabled="false" (ionItemReorder)="onProblemReorder($event)">
         @for (ap of draft.registration.AvalancheEvalProblem2; track $index) {
-          <ion-item detail="true" (click)="addOrEditAvalancheProblem($index)">
+          <ion-item detail="true" (click)="addOrEditAvalancheProblem($index)" button>
             <ion-label>{{ getDescription(ap) | translate }}</ion-label>
             <ion-reorder slot="end"></ion-reorder>
           </ion-item>
         }
       </ion-reorder-group>
-      <ion-item (click)="addOrEditAvalancheProblem()">
+      <ion-item (click)="addOrEditAvalancheProblem()" button>
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.ADD_NEW" | translate }}</ion-label>
       </ion-item>
