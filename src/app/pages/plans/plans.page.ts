@@ -55,7 +55,7 @@ export class PlansPage {
     const sorter = sortFunctions[this.sortValue()];
     const sortedItems = sorter(this.geoJSON.metadata());
     if (this.filterVisibleOnMap()) {
-      return sortedItems.filter((item) => item.on);
+      return sortedItems.filter((item) => item.visibleOnMap);
     }
     return sortedItems;
   });
