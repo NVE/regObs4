@@ -78,7 +78,7 @@ export class ImageListComponent {
   checkAndLoadMoreImages() {
     const attCount = this.attCount() || 0;
     // Sammenligner antall nedlastede vedlegg med totalt antall vedlegg
-    if (this.currentlyDownloadedAttachments().length <= attCount) {
+    if (this.currentlyDownloadedAttachments().length < attCount) {
       const grid = document.querySelector('.grid');
       if (!grid) return;
       const windowHeight = window.innerHeight;
