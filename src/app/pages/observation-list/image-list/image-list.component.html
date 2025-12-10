@@ -9,7 +9,7 @@
     <app-list-controls pageType="images"></app-list-controls>
   </div>
 
-  <div class="grid">
+  <div class="grid" #grid>
     @for (reg of registrations(); track reg.RegId) {
       @for (attachment of reg.Attachments; track attachment.AttachmentId) {
         <app-grid-image
