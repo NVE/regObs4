@@ -13,7 +13,7 @@
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE" | translate }} </ion-label>
       </ion-list-header>
-      <ion-item tabindex="0" (click)="getPrevousUsedLayers()" (keyup.enter)="getPrevousUsedLayers()">
+      <ion-item tabindex="0" (click)="getPrevousUsedLayers()" (keyup.enter)="getPrevousUsedLayers()" button>
         <ion-icon color="dark" name="cloud-download" slot="start"></ion-icon>
         <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_ITEM_TEXT" | translate }}</ion-label>
       </ion-item>
@@ -26,7 +26,7 @@
         <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE" | translate }} </ion-label>
       </ion-list-header>
       <ng-container *ngIf="hasLayers(); else noLayers">
-        <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()">
+        <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()" button>
           <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
           <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP" | translate }}</ion-label>
         </ion-item>
@@ -36,6 +36,7 @@
             (click)="addOrEditLayer(i)"
             (keyup.enter)="addOrEditLayer(i)"
             *ngFor="let layer of layers(); let i = index"
+            button
           >
             <ion-label [color]="(layer.CriticalLayerTID || 0) > 0 ? 'danger' : 'dark'">
               <ng-container *ngIf="layer.Thickness !== undefined"> {{ layer.Thickness | metersToCm }}cm </ng-container>
@@ -55,7 +56,7 @@
             <ion-reorder slot="end"></ion-reorder>
           </ion-item>
         </ion-reorder-group>
-        <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
+        <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()" button>
           <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
           <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM" | translate }}</ion-label>
         </ion-item>
@@ -86,7 +87,7 @@
   </form>
 </ion-content>
 <ng-template #noLayers>
-  <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
+  <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()" button>
     <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
     <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER" | translate }}</ion-label>
   </ion-item>

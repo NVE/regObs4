@@ -594,7 +594,8 @@
         "IMAGES_MODAL_TITLE": "Images of {{registrationType}}",
         "TOGGLE": "Simple observation"
       },
-      "TITLE": "Observation"
+      "TITLE": "Observation",
+      "TITLE_EDIT": "Observation with ID={{regId}}"
     },
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",

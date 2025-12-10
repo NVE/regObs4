@@ -3,22 +3,15 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ng-container *ngIf="geoHazardName$ | async as geoHazardName">
-      <ion-title class="header-title">
-        {{ isDesktop ? "Varsom" : ("ADD_MENU.NEW_" + geoHazardName + "_OBSERVATION" | uppercase | translate) }}
-      </ion-title>
-    </ng-container>
+    <ion-title>
+      {{ title() }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ng-container *ngIf="draft$ | async as draft">
   <ion-content>
     <!-- Simple snow obs header-->
     <div class="content-wrapper">
-      <ng-container *ngIf="isDesktop">
-        <h2 *ngIf="geoHazardName$ | async as geoHazardName">
-          {{ "ADD_MENU.NEW_" + geoHazardName + "_OBSERVATION" | uppercase | translate }}
-        </h2>
-      </ng-container>
       <ng-container *ngIf="showSnowObsModeSelector$ | async">
         <ion-grid class="header">
           <ion-row>

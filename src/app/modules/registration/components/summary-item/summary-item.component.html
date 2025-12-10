@@ -1,4 +1,4 @@
-<ion-item class="summary-item" (click)="navigate()" [detail]="!readonly()" *ngIf="!(readonly() && !item().hasData)">
+<ion-item class="summary-item" (click)="navigate()" [detail]="!readonly()" *ngIf="!(readonly() && !item().hasData)" [button]="!readonly()">
   <ion-label class="ion-padding-vertical ion-padding-end">
     <h2 [ngClass]="{ 'ion-label-fat': simpleObsMode() }">{{ item().title | translate }}</h2>
     <p *ngIf="item().subTitle as subTitle" [ngClass]="{ 'simple-mode-sub': simpleObsMode() }">

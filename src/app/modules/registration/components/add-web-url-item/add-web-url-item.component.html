@@ -1,10 +1,12 @@
 <ion-item>
   <h2 class="ion-label-fat">{{ "REGISTRATION.ADD_WEB_URL.LABEL" | translate }}</h2>
-  <div (click)="addOrEdit(i)" *ngFor="let url of weburls(); let i = index">
-    <span class="url">{{ url.UrlDescription && url.UrlDescription + " -" }} {{ url.UrlLine }}</span>
-  </div>
-  <div class="add-button" (click)="addOrEdit()">
+  @for (url of weburls(); track $index) {
+    <ion-button (click)="addOrEdit($index)" fill="clear">
+      <span class="url">{{ url.UrlDescription && url.UrlDescription + " -" }} {{ url.UrlLine }}</span>
+    </ion-button>
+  }
+  <ion-button fill="clear" (click)="addOrEdit()">
     <ion-icon [color]="iconColor()" name="add-circle-outline" slot="start"></ion-icon>
-    <span>{{ title() | translate }}</span>
-  </div>
+    {{ title() | translate }}
+  </ion-button>
 </ion-item>

@@ -593,7 +593,8 @@
         "IMAGES_MODAL_TITLE": "Bilder av {{registrationType}}",
         "TOGGLE": "Enkel observasjon"
       },
-      "TITLE": "Observasjon"
+      "TITLE": "Observasjon",
+      "TITLE_EDIT": "Observasjon med ID={{regId}}"
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",

@@ -17,7 +17,7 @@
 </ion-header>
 <ion-content>
   <ion-list lines="full" class="search-result">
-    <ion-item *ngFor="let item of searchResults()" (click)="searchItemClicked(item)">
+    <ion-item *ngFor="let item of searchResults()" (click)="searchItemClicked(item)" button>
       <ion-label>
         <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight: searchText()"></ion-text>
         <ion-text color="medium" class="search-description">{{ item.description }}</ion-text>
@@ -28,7 +28,7 @@
     <ion-list-header class="ion-text-uppercase">
       <ion-label>{{ "MAP_SEARCH.SEARCH_HISTORY_HEADER" | translate }}</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let item of searchHistory()" (click)="searchItemClicked(item)">
+    <ion-item *ngFor="let item of searchHistory()" (click)="searchItemClicked(item)" button>
       <ion-icon slot="start" name="time"></ion-icon>
       <ion-label>
         <ion-text class="search-result-name">{{ item.name }}</ion-text>
