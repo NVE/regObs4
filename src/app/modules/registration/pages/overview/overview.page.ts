@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnInit, computed, inject } from '@angular/core';
 import { firstValueFrom, map, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
@@ -15,7 +15,7 @@ import { getRegistrationName } from 'src/app/modules/common-registration/registr
 import { DangerObsEditModel, SnowSurfaceEditModel } from 'src/app/modules/common-regobs-api';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   IonBackButton,
   IonButtons,
@@ -45,6 +45,7 @@ import { SimpleWaterObsComponent } from '../../components/water/simple-water-obs
 import { SummaryItemComponent } from '../../components/summary-item/summary-item.component';
 import { SendButtonComponent } from '../../components/send-button/send-button.component';
 import { CoachMarksSimpleObsComponent } from '../../../../components/coach-marks/coach-marks-simple-obs/coach-marks-simple-obs.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'OverviewPage';
 
@@ -100,6 +101,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   private logger = inject(LoggingService);
   private draftRepository = inject(DraftRepositoryService);
   private confirmationModalService = inject(ConfirmationModalService);
+  private translateService = inject(TranslateService);
 
   private uuid = this.activatedRoute.snapshot.params['id'];
 
@@ -119,6 +121,22 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   );
   geoHazardName$ = this.draft$.pipe(map((draft) => GeoHazard[draft.registration.GeoHazardTID]));
   isDesktop = !Capacitor.isNativePlatform();
+
+  draft = toSignal(this.draft$);
+  regId = computed(() => this.draft()?.regId);
+  geoHazardName = toSignal(this.geoHazardName$);
+
+  title = computed(() => {
+    if (this.draft()?.regId) {
+      // dette er en observasjon som er sendt inn tidligere
+      const regId = this.draft()?.regId;
+      return this.translateService.instant('REGISTRATION.OVERVIEW.TITLE_EDIT', { regId });
+    } else {
+      // dette er en ny observasjon som ikke er sendt inn enda
+      const geoHazard = this.geoHazardName()?.toUpperCase();
+      return this.translateService.instant(`ADD_MENU.NEW_${geoHazard}_OBSERVATION`);
+    }
+  });
 
   ngOnInit() {
     this.userGroupService.updateUserGroups();
