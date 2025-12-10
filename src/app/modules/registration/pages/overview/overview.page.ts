@@ -35,7 +35,6 @@ import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
-import { Capacitor } from '@capacitor/core';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -119,10 +118,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     map((draft) => draft.registration.GeoHazardTID === GeoHazard.Snow && !this.syncFailed(draft))
   );
   geoHazardName$ = this.draft$.pipe(map((draft) => GeoHazard[draft.registration.GeoHazardTID]));
-  isDesktop = !Capacitor.isNativePlatform();
 
   draft = toSignal(this.draft$);
-  regId = computed(() => this.draft()?.regId);
   geoHazardName = toSignal(this.geoHazardName$);
 
   title = computed(() => {
