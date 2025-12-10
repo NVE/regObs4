@@ -37,7 +37,7 @@ import {
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { Capacitor } from '@capacitor/core';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
 import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
@@ -88,7 +88,6 @@ const DEBUG_TAG = 'OverviewPage';
     SimpleWaterObsComponent,
     SummaryItemComponent,
     TranslatePipe,
-    UpperCasePipe,
   ],
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
