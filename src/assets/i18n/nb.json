@@ -594,7 +594,7 @@
         "TOGGLE": "Enkel observasjon"
       },
       "TITLE": "Observasjon",
-      "TITLE_EDIT": "Rediger observasjon med ID={{regId}}"
+      "TITLE_EDIT": "Observasjon med ID={{regId}}"
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
