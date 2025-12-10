@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  Injector,
+  viewChild,
+} from '@angular/core';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -21,6 +30,9 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
 import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'ImageList';
 
 /**
  * Bildesøk
@@ -53,8 +65,19 @@ export class ImageListComponent {
   private updateObservationsService = inject(UpdateObservationsService);
   private translateService = inject(TranslateService);
   private loadingController = inject(LoadingController);
+  private logger = inject(LoggingService);
+  private injector = inject(Injector);
 
   private searchHandler = this.searchRegistrations.searchAttachments(toObservable(this.searchCriteriaService.criteria));
+  attCount = this.searchHandler.attachmentCount.asReadonly();
+
+  private gridElement = viewChild.required<ElementRef<HTMLDivElement>>('grid');
+
+  constructor() {
+    this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
+    });
+  }
 
   /**
    * Sjekker om innholdet i grid er kortere enn vindushøyden, og laster i så fall flere bilder. Vi viser bilder kun fra
@@ -62,17 +85,19 @@ export class ImageListComponent {
    * aldri trigges ved scroll og derfor man kan ikke laste ned flere bilder.
    */
   checkAndLoadMoreImages() {
-    setTimeout(() => {
-      const grid = document.querySelector('.grid');
-      if (!grid) return;
-
+    const attCount = this.attCount() || 0;
+    // Sammenligner antall nedlastede vedlegg med totalt antall vedlegg
+    if (this.currentlyDownloadedAttachments().length < attCount) {
       const windowHeight = window.innerHeight;
-      const gridRect = grid.getBoundingClientRect();
-      // Sjekk om grid høyde er mindre enn vindushøyden, hvis ja, last flere bilder
-      if (gridRect.height < windowHeight && !this.disableInfiniteScroll()) {
+      const gridHeight = this.gridElement().nativeElement.getBoundingClientRect().height;
+      if (gridHeight < windowHeight && !this.disableInfiniteScroll()) {
+        this.logger.debug('image grid height < window height, loading more images', DEBUG_TAG, {
+          gridHeight,
+          windowHeight,
+        });
         this.loadNextPage();
       }
-    }, 100);
+    }
   }
 
   registrations = toSignal(
@@ -81,11 +106,21 @@ export class ImageListComponent {
         this.infiniteScroll()?.complete();
         this.ionRefresher()?.complete();
         this.updateObservationsService.setLastFetched(new Date());
-        this.checkAndLoadMoreImages();
+        // Kjører checkAndLoadMoreImages etter grid er oppdatert i DOM for å sørge for at skjermen fylles opp
+        afterNextRender(
+          {
+            read: () => {
+              this.checkAndLoadMoreImages();
+            },
+          },
+          { injector: this.injector }
+        );
       })
     ),
     { initialValue: [] as SearchRegistrationsWithAttachments[] }
   );
+
+  currentlyDownloadedAttachments = computed(() => this.registrations().flatMap((reg) => reg.Attachments || []));
 
   disableInfiniteScroll = toSignal(
     combineLatest([this.searchHandler.allFetchedForCriteria$, this.searchHandler.maxItemsFetched$]).pipe(
@@ -97,12 +132,6 @@ export class ImageListComponent {
   isLoading = toSignal(this.searchHandler.isFetching$, { initialValue: false });
   maxItemsFetched = toSignal(this.searchHandler.maxItemsFetched$, { initialValue: false });
   error = toSignal(this.searchHandler.error$, { initialValue: { hasError: false } });
-
-  constructor() {
-    this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
-      this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
-    });
-  }
 
   loadNextPage() {
     this.searchHandler.increasePage();
