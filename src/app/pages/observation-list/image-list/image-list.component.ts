@@ -1,5 +1,13 @@
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ChangeDetectionStrategy, Component, computed, inject, viewChild } from '@angular/core';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  viewChild,
+} from '@angular/core';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -21,6 +29,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
 import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
+import { write } from 'fs';
 
 /**
  * Bildesøk
@@ -56,6 +65,20 @@ export class ImageListComponent {
 
   private searchHandler = this.searchRegistrations.searchAttachments(toObservable(this.searchCriteriaService.criteria));
   attCount = this.searchHandler.attachmentCount.asReadonly();
+
+  constructor() {
+    this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
+    });
+
+    afterRenderEffect({
+      // Kjører checkAndLoadMoreImages etter hver registration endring for å sikre at DOM er oppdatert før vi måler høyder
+      read: () => {
+        this.registrations();
+        this.checkAndLoadMoreImages();
+      },
+    });
+  }
   /**
    * Sjekker om innholdet i grid er kortere enn vindushøyden, og laster i så fall flere bilder. Vi viser bilder kun fra
    * 10 observasjoner om gangen. Hvis bildene fra 10 observasjoner ikke dekker hele skjermen, vil infinite scroll
@@ -81,8 +104,6 @@ export class ImageListComponent {
         this.infiniteScroll()?.complete();
         this.ionRefresher()?.complete();
         this.updateObservationsService.setLastFetched(new Date());
-
-        this.checkAndLoadMoreImages();
       })
     ),
     { initialValue: [] as SearchRegistrationsWithAttachments[] }
@@ -100,12 +121,6 @@ export class ImageListComponent {
   isLoading = toSignal(this.searchHandler.isFetching$, { initialValue: false });
   maxItemsFetched = toSignal(this.searchHandler.maxItemsFetched$, { initialValue: false });
   error = toSignal(this.searchHandler.error$, { initialValue: { hasError: false } });
-
-  constructor() {
-    this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
-      this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen
-    });
-  }
 
   loadNextPage() {
     this.searchHandler.increasePage();
