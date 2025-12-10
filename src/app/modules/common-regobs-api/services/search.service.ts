@@ -287,7 +287,7 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * Returns search result count
+   * Returns search attachment count
    * @param criteria Search criteria
    * @return OK
    */

@@ -141,7 +141,7 @@ export class PagedSearchResult<TViewModel extends HasRegId> {
         this.allFetchedForCriteria.next(registrations.length >= (totalCount || 0));
         this.maxItemsFetched.next(registrations.length >= PagedSearchResult.MAX_ITEMS);
         this.count.set(totalCount);
-        this.attachmentCount.set(attachmentCount === undefined ? undefined : attachmentCount);
+        this.attachmentCount.set(attachmentCount);
       }),
       // Map to registrations
       map(([registrations]) => registrations),
