@@ -21,7 +21,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
 import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
-
+import { ListEndInfoComponent } from '../list-end-info/list-end-info.component';
 /**
  * Bildesøk
  */
@@ -38,6 +38,7 @@ import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regob
     ListControlsComponent,
     GridImageComponent,
     TranslatePipe,
+    ListEndInfoComponent,
   ],
   templateUrl: './image-list.component.html',
   styleUrl: './image-list.component.css',
@@ -97,7 +98,7 @@ export class ImageListComponent {
   isLoading = toSignal(this.searchHandler.isFetching$, { initialValue: false });
   maxItemsFetched = toSignal(this.searchHandler.maxItemsFetched$, { initialValue: false });
   error = toSignal(this.searchHandler.error$, { initialValue: { hasError: false } });
-
+  count = this.searchHandler.count.asReadonly();
   constructor() {
     this.updateObservationsService.refreshRequested$?.pipe(takeUntilDestroyed()).subscribe(() => {
       this.refresh(); // oppfrisk sida når bruker trykker på oppfrisk-knappen i menyen

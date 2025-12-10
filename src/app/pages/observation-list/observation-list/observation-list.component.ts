@@ -18,6 +18,7 @@ import { ListControlsComponent } from '../list-controls/list-controls.component'
 import { TranslatePipe } from '@ngx-translate/core';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+import { ListEndInfoComponent } from '../list-end-info/list-end-info.component';
 
 @Component({
   selector: 'app-observation-list',
@@ -32,6 +33,7 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
     EmptyStateComponent,
     ListControlsComponent,
     TranslatePipe,
+    ListEndInfoComponent,
   ],
   templateUrl: './observation-list.component.html',
   styleUrl: './observation-list.component.css',
