@@ -1,18 +1,17 @@
 <ion-item tabindex="0" class="summary-item" (click)="openModal()" button>
   <ion-label class="ion-padding-vertical ion-padding-end">
     <h2>{{ "REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.TITLE" | translate }}</h2>
-    <ion-item lines="none" class="ion-no-padding ion-no-margin">
-      @if(nTests() > 0) {
+    <p>
+      @if (nTests() > 0) {
         {{ connectedTests().length }} / {{ nTests() }}
         {{ "REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.MULTIPLE_TESTS" | translate }}
         {{ "REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.ATTACHED" | translate }}
-      }
-      @else {
+      } @else {
         {{ "REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.EMPTY" | translate }}
       }
-    </ion-item>
+    </p>
   </ion-label>
-  @if(!isEmpty()) {
+  @if (!isEmpty()) {
     <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
   }
 </ion-item>
