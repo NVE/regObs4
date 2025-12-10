@@ -1,13 +1,5 @@
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import {
-  afterRenderEffect,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  viewChild,
-} from '@angular/core';
+import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, inject, viewChild } from '@angular/core';
 import {
   IonContent,
   IonInfiniteScroll,
@@ -29,7 +21,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
 import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
-import { write } from 'fs';
 
 /**
  * Bildesøk
