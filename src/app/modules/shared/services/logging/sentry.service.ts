@@ -72,14 +72,7 @@ export class SentryService implements LoggingService {
       };
 
       if (optionalParams != null) {
-        // Serialize optionalParams to avoid "Object captured as exception with keys" in Sentry
-        // when they contain HttpErrorResponse or other complex objects
-        try {
-          breadcrumb.data = JSON.parse(toSafeString(optionalParams));
-        } catch {
-          // If parsing fails, use stringified version as a single field
-          breadcrumb.data = { serialized: toSafeString(optionalParams) };
-        }
+        breadcrumb.data = { ...optionalParams };
       }
 
       Sentry.addBreadcrumb(breadcrumb);
