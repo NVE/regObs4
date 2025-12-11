@@ -12,7 +12,7 @@ function serializeError(err: unknown): Record<string, unknown> {
   for (const key of Object.getOwnPropertyNames(err)) {
     // unngå å overskrive standardfeltene
     if (!(key in base)) {
-      base[key] = (err as any)[key];
+      base[key] = (err as Record<string, unknown>)[key];
     }
   }
 
