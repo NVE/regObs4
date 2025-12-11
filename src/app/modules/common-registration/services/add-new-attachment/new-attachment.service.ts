@@ -5,6 +5,7 @@ import {
   AttachmentType,
   AttachmentUploadEditModel,
   AttachmentUploadEditModelWithBlob,
+  AttachmentUploadEditModelWithUrl,
   RegistrationTid,
 } from '../../registration.models';
 import { inject } from '@angular/core';
@@ -129,6 +130,24 @@ export abstract class NewAttachmentService {
     return this.getAttachments(registrationId, options).pipe(this.addBlobs(registrationId));
   }
 
+  getAttachmentsWithUrl(
+    registrationId: string,
+    options?: GetAttachmentFilterOptions
+  ): Observable<AttachmentUploadEditModelWithUrl[]> {
+    this.logger.debug('getAttachmentsWithUrl', this.DEBUG_TAG, { registrationId, options });
+    return this.getAttachments(registrationId, options).pipe(
+      switchMap((attachments) => this.addUrls(registrationId, attachments)),
+      map((attachments) => attachments.filter((a) => a != null))
+    );
+  }
+
+  addUrls(
+    registrationId: string,
+    attachments: AttachmentUploadEditModel[]
+  ): Promise<(AttachmentUploadEditModelWithUrl | null)[]> {
+    return Promise.all(attachments.map((a) => this.addUrl(registrationId, a)));
+  }
+
   addBlobs(registrationId: string): OperatorFunction<AttachmentUploadEditModel[], AttachmentUploadEditModelWithBlob[]> {
     // Get the blob for a single attachment
     const addBlob = (attachment: AttachmentUploadEditModel): Observable<AttachmentUploadEditModelWithBlob> => {
@@ -148,6 +167,10 @@ export abstract class NewAttachmentService {
     return switchMap((attachments) => (attachments.length > 0 ? addBlobs(attachments) : of([])));
   }
 
+  abstract addUrl(
+    registrationId: string,
+    attachment: AttachmentUploadEditModel
+  ): Promise<AttachmentUploadEditModelWithUrl | null>;
   abstract getBlob(registrationId: string, attachmentId: string): Observable<Blob>;
   abstract removeAttachment(registrationId: string, attachmentId: string): void;
   abstract removeAttachment$(registrationId: string, attachmentId: string): Observable<boolean>;

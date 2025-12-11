@@ -15,6 +15,10 @@ export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditM
   blob?: Blob;
 }
 
+export interface AttachmentUploadEditModelWithUrl extends AttachmentUploadEditModel {
+  url: string;
+}
+
 export type ExistingOrNewAttachmentModel = AttachmentUploadEditModel | RemoteOrLocalAttachmentEditModel;
 export type NewAttachmentType = 'new';
 export type ExistingAttachmentType = 'existing';

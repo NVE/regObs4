@@ -1,7 +1,11 @@
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } from 'rxjs';
-import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
+import {
+  AttachmentType,
+  AttachmentUploadEditModel,
+  AttachmentUploadEditModelWithUrl,
+} from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
 import { Injectable } from '@angular/core';
@@ -110,7 +114,7 @@ export default class FileAttachmentService extends NewAttachmentService {
         ref,
       };
       this.logger.debug(`Attachment copied from ${fileNameWithFullPath} to ${result.uri}`, this.DEBUG_TAG, metadata);
-      await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
+      await this.saveAttachmentMeta(registrationId, metadata);
     } catch (err) {
       this.logger.error(
         err,
@@ -271,5 +275,24 @@ export default class FileAttachmentService extends NewAttachmentService {
         return 'png';
     }
     return 'jpg';
+  }
+
+  override async addUrl(
+    registrationId: string,
+    attachment: AttachmentUploadEditModel
+  ): Promise<AttachmentUploadEditModelWithUrl | null> {
+    try {
+      const imageFilePath = await this.getImageFilePath(registrationId, attachment.id);
+      if (!imageFilePath) {
+        throw new Error('Image file not found');
+      }
+      return {
+        ...attachment,
+        url: Capacitor.convertFileSrc(imageFilePath),
+      };
+    } catch (error) {
+      this.logger.error(error, this.DEBUG_TAG, `Could not find image file for attachment ${attachment.id}`);
+    }
+    return null;
   }
 }

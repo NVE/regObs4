@@ -8,7 +8,11 @@ import {
 } from 'src/app/core/services/upload-attachments/upload-single-attachment.service';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
+import {
+  AttachmentType,
+  AttachmentUploadEditModel,
+  AttachmentUploadEditModelWithUrl,
+} from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { AddAttachmentState, NewAttachmentService } from './new-attachment.service';
 
@@ -288,6 +292,32 @@ export class WebAttachmentService extends NewAttachmentService {
 
   removeAttachments$(registrationId: string): Observable<void> {
     return from(this.removeAttachments(registrationId));
+  }
+
+  override async addUrl(
+    registrationId: string,
+    attachment: AttachmentUploadEditModel
+  ): Promise<AttachmentUploadEditModelWithUrl | null> {
+    try {
+      // Read the image from DB to get the base64 URL
+      const base64Url = await this.readImageFromDB(attachment.id);
+      if (!base64Url) {
+        throw new Error('No image found in DB');
+      }
+
+      const attachmentWithUrl: AttachmentUploadEditModelWithUrl = {
+        ...attachment,
+        url: base64Url,
+      };
+
+      return attachmentWithUrl;
+    } catch (error) {
+      this.logger.error(error, this.DEBUG_TAG, 'Failed to add URL to attachment', {
+        attachmentId: attachment.id,
+        registrationId,
+      });
+      return null;
+    }
   }
 }
 

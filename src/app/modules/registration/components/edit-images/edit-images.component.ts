@@ -28,6 +28,7 @@ import {
   AttachmentType,
   AttachmentUploadEditModel,
   AttachmentUploadEditModelWithBlob,
+  AttachmentUploadEditModelWithUrl,
   RegistrationTid,
 } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
@@ -63,7 +64,7 @@ const ERRORS_TO_IGNORE = [
   'User cancelled camera app',
 ];
 
-interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachmentState {}
+interface NewAttachment extends AttachmentUploadEditModelWithUrl, AddAttachmentState {}
 
 @Component({
   selector: 'app-edit-images',
@@ -152,7 +153,7 @@ export class EditImagesComponent implements OnInit {
     this.isHybrid = this.platform.is('hybrid');
 
     this.newAttachments$ = combineLatest([
-      this.newAttachmentService.getAttachmentsWithBlob(this.draftUuid(), {
+      this.newAttachmentService.getAttachmentsWithUrl(this.draftUuid(), {
         ref: this.ref(),
         type: this.attachmentType(),
         registrationTid: this.registrationTid(),
@@ -369,10 +370,8 @@ export class EditImagesComponent implements OnInit {
       } else {
         imageUrls = await this.takePhotoAndReturnImageUrl(options);
       }
-      for (const imageUrl of imageUrls) {
-        this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
-        await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
-      }
+      this.logger.debug(`Got image urls from camera plugin`, DEBUG_TAG, { imageUrls });
+      await Promise.all(imageUrls.map((x) => this.attachImageFileToDraft(x, MIME_TYPE)));
     } catch (err) {
       const hasMessage = err instanceof Error && err.message != null;
       // we ignore errors we get if user cancels taking photo or gallery selection

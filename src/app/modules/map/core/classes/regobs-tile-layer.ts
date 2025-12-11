@@ -10,6 +10,11 @@ export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   excludeBounds?: Polygon[];
 }
 
+/**
+ * Kartlag med støtte for "excludeBounds".
+ *
+ * ExcludeBounds brukes for å ikke laste tiles dobbelt der det ligger verdenskart bak norgeskart, feks.
+ */
 export class RegObsTileLayer extends L.TileLayer {
   constructor(url: string, options: IRegObsTileLayerOptions) {
     super(url, options);
@@ -38,6 +43,11 @@ export class RegObsTileLayer extends L.TileLayer {
   }
 }
 
+/**
+ * Kartlag som vet hvilke offlinekartlag som finnes, og dropper å laste tiles for de områdene.
+ *
+ * Det er altså ikke dette kartlaget som laster offlinetiles, men det lar vær å laste tiles der offlinetiles finnes.
+ */
 export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
   constructor(
     private mapType: string,
@@ -47,6 +57,7 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     private loggingService: LoggingService
   ) {
     super(url, options);
+    this.loggingService.debug('Init', DEBUG_TAG, { mapType, url });
   }
 
   canUseOfflineTiles(coords: L.Coords) {
@@ -62,10 +73,10 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
   override _isValidTile(coords: L.Coords) {
     const valid = super._isValidTile(coords);
     if (valid && this.canUseOfflineTiles(coords)) {
-      this.loggingService.debug(
-        `Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`,
-        DEBUG_TAG
-      );
+      // this.loggingService.debug(
+      //   `Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`,
+      //   DEBUG_TAG
+      // );
       return false;
     }
     return valid;
