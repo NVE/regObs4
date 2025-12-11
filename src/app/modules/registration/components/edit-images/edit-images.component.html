@@ -81,7 +81,7 @@
 
     <app-text-comment
       [value]="attachment.Comment"
-      (valueChange)="setNewAttachmentComment(attachment, $event)"
+      (blur)="setNewAttachmentComment(attachment, $event)"
       label="{{ pictureCommentText() | translate }}"
       [rows]="2"
       placeholder="{{ pictureCommentPlaceholder() | translate }}"
@@ -103,7 +103,7 @@
           <ion-item>
             <ion-input
               [value]="attachment.Photographer || userSettings()?.photographer"
-              (ionChange)="addNewAttachmentPhotographer(attachment, $event)"
+              (ionBlur)="addNewAttachmentPhotographer(attachment, $event)"
               [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
               labelPlacement="stacked"
               [placeholder]="'MY_PROFILE.PHOTOGRAPHER' | translate"
@@ -113,7 +113,7 @@
           <ion-item>
             <ion-input
               [value]="attachment.Copyright || userSettings()?.copyright || myPage()?.NickName"
-              (ionChange)="addNewAttachmentCopyright(attachment, $event)"
+              (ionBlur)="addNewAttachmentCopyright(attachment, $event)"
               [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
               labelPlacement="stacked"
               [placeholder]="'MY_PROFILE.COPYRIGHT' | translate"
