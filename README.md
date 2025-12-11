@@ -185,10 +185,15 @@ Det er enklere å gjøre dette med en Mac, men det er også mulig å gjøre i Wi
 
 #### Generere sertifikater og provisioning profiles for Apple / App Store på en Windows-maskin
 
-Vi har brukt openssl som følger med Git.
-Det funket bra å kjøre openssl-kommandoene i bash-konsollet, som følger med Git. Bash ligger gjerne i mappa bin der du har installert Git. F.eks. `C:\Program Files\Git\bin`.
+Vi har prøvd to måter å gjøre dette på:
 
-1. Gå til en en mappe du vil ha setifikatene i og start bash fra kommandolinja: `C:\Program Files\Git\bin\bash`. Kjør resten av openssl-kommandoene i bash-konsollet.
+- Om du har WSL, kan du bruke f.eks. Ubuntu-konsollet.
+- Hvis ikke, bruk openssl som følger med Git for Windows.
+  Det funket bra å kjøre openssl-kommandoene i bash-konsollet, som følger med Git. Bash ligger gjerne i mappa bin der du har installert Git. F.eks. `C:\Program Files\Git\bin`.
+  Gå til en en mappe du vil ha sertifikatene i og start bash fra kommandolinja: `C:\Program Files\Git\bin\bash`. Kjør resten av openssl-kommandoene i bash-konsollet.
+
+Slik gjør du det:
+
 1. Generer privat nøkkel: `openssl genrsa -out apple-distribution-2024-11-27.key 2048`
 1. Generer sertifikatforespørsel: `openssl req -new -key apple-distribution-2024-11-27.key -out apple-distribution-2024-11-27.csr`
 1. Logg deg inn på https://developer.apple.com/account, gå til sertifikater og last opp sertifikatforespørsel. Last deretter ned sertifikatet. Jeg gjorde om navnet på sertifikatet til `apple-distribution-2024-11-27.cer` etter at jeg lastet det ned.
@@ -202,16 +207,13 @@ Det funket bra å kjøre openssl-kommandoene i bash-konsollet, som følger med G
 1. Last opp p12-fila og distribusjonsprofilen til Azure Devops, under Library / Secure Files.
 1. Lag en variabel som inneholder passordet til p12-fila under Library / Variable Groups
 
-Navnet på de to filene og navnet på variabelen legger du inn i azure-pipelines-release.yml (se nedenfor).
+Navnet på de to filene endrer du på disse stedene i azure-pipelines-release.yml:
 
-Du må også endre disse filene i prosjektet:
-
-| File                        | Setting                        |
-| --------------------------- | ------------------------------ |
-| azure-pipelines-release.yml | certSecureFile                 |
-| azure-pipelines-release.yml | provisioningProfileName        |
-| azure-pipelines-release.yml | provProfileSecureFile          |
-| project.pbxproj             | PROVISIONING_PROFILE_SPECIFIER |
+| Fil                         | Variabel                |
+| --------------------------- | ----------------------- |
+| azure-pipelines-release.yml | certSecureFile          |
+| azure-pipelines-release.yml | provisioningProfileName |
+| azure-pipelines-release.yml | provProfileSecureFile   |
 
 ## Beta-testing
 
