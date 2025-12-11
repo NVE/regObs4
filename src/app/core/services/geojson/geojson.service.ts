@@ -1,6 +1,6 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { DatabaseService } from '../database/database.service';
-import { FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -50,6 +50,15 @@ export class GeoJSONService {
   }
 
   /**
+   * Kalkulerer lengden av LineString features i et GeoJSON objekt
+   * @param geojson
+   * @returns lengde i kilometer
+   */
+  private calculateLengthKm(geojson: Feature<Geometry, GeoJsonProperties>[]): number {
+    return geojson.reduce((sum, feature) => sum + length(feature), 0);
+  }
+
+  /**
    * Updates metadata for a given item
    * @param item the geojson item to update
    */
@@ -74,15 +83,12 @@ export class GeoJSONService {
     }
 
     try {
-      const lineFeature = geojson.features.find((f) => f.geometry.type === 'LineString');
+      const lineFeatures = geojson.features.filter((f) => f.geometry.type === 'LineString');
 
-      if (!lineFeature) {
-        throw new Error('No LineString found in geojson');
+      if (lineFeatures.length) {
+        const lengthKm = this.calculateLengthKm(lineFeatures);
+        metadata.lengthKm = lengthKm;
       }
-
-      // Calculate length in kilometers
-      const km = length(lineFeature);
-      metadata.lengthKm = km;
 
       await this.db.set(`geojson:${metadata.id}`, geojson);
       this.metadata.update((items) => [...items, metadata]);
