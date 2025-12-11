@@ -13,13 +13,26 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { getHttpErrorResponseMessageAndCode } from 'src/app/core/helpers/http-error-response-helper';
 import { RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
 import type { CaptureContext } from '@sentry/types';
-import { toSafeString } from './utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
+
+  // Protected wrapper methods for easier testing
+  protected sentryAddBreadcrumb(breadcrumb: Sentry.Breadcrumb): void {
+    Sentry.addBreadcrumb(breadcrumb);
+  }
+
+  protected sentryCaptureMessage(message: string, context?: CaptureContext): void {
+    Sentry.captureMessage(message, context);
+  }
+
+  protected sentryCaptureException(exception: unknown, context?: CaptureContext): void {
+    Sentry.captureException(exception, context);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
     this.log(message, error, LogLevel.Error, tag, optionalParams);
@@ -75,11 +88,11 @@ export class SentryService implements LoggingService {
         breadcrumb.data = { ...optionalParams };
       }
 
-      Sentry.addBreadcrumb(breadcrumb);
+      this.sentryAddBreadcrumb(breadcrumb);
     }
 
     // Handle HttpErrorResponse separately for both Error and Warning levels
-    if (error instanceof HttpErrorResponse) {
+    if (error instanceof HttpErrorResponse && (level == LogLevel.Warning || level == LogLevel.Error)) {
       // Angular HttpErrorResponses are not instance of Error and are just logged as
       // "Object captured as exception with keys: error, headers, message, name, ok" in Sentry.
       // See https://github.com/getsentry/sentry-javascript/issues/2292.
@@ -99,14 +112,14 @@ export class SentryService implements LoggingService {
 
       // If the HttpErrorResponse contains an actual Error object, use captureException for better stack traces
       if (error.error instanceof Error) {
-        Sentry.captureException(error.error, context);
+        this.sentryCaptureException(error.error, context);
       } else {
-        Sentry.captureMessage(errorMessage, context);
+        this.sentryCaptureMessage(errorMessage, context);
       }
     } else if (error && level === LogLevel.Error) {
       // Assume instance of error, we can add additional if checks if we see that we more custom error objects are
       // thrown and we are getting more "Object captured as exception with keys" events in Sentry
-      Sentry.captureException(error);
+      this.sentryCaptureException(error);
     }
   }
 }
