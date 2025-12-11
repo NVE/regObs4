@@ -47,6 +47,7 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     private loggingService: LoggingService
   ) {
     super(url, options);
+    this.loggingService.debug('Init', DEBUG_TAG, { mapType, url });
   }
 
   canUseOfflineTiles(coords: L.Coords) {
@@ -62,10 +63,11 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
   override _isValidTile(coords: L.Coords) {
     const valid = super._isValidTile(coords);
     if (valid && this.canUseOfflineTiles(coords)) {
-      this.loggingService.debug(
-        `Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`,
-        DEBUG_TAG
-      );
+      // Denne delen av offlinekart kan vel anses som relativt stabilt nå, og dette gir mye støy i loggene
+      // this.loggingService.debug(
+      //   `Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`,
+      //   DEBUG_TAG
+      // );
       return false;
     }
     return valid;

@@ -19,6 +19,20 @@ import type { CaptureContext } from '@sentry/types';
 })
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
+
+  // Protected wrapper methods for easier testing
+  protected sentryAddBreadcrumb(breadcrumb: Sentry.Breadcrumb): void {
+    Sentry.addBreadcrumb(breadcrumb);
+  }
+
+  protected sentryCaptureMessage(message: string, context?: CaptureContext): void {
+    Sentry.captureMessage(message, context);
+  }
+
+  protected sentryCaptureException(exception: unknown, context?: CaptureContext): void {
+    Sentry.captureException(exception, context);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error(error: Error, tag?: string, message?: string, optionalParams?: { [key: string]: any }) {
     this.log(message, error, LogLevel.Error, tag, optionalParams);
@@ -67,40 +81,45 @@ export class SentryService implements LoggingService {
       const breadcrumb: Sentry.Breadcrumb = {
         category: tag,
         message,
-        level: level as unknown as Sentry.SeverityLevel,
+        level: level as Sentry.SeverityLevel,
       };
 
       if (optionalParams != null) {
         breadcrumb.data = { ...optionalParams };
       }
 
-      Sentry.addBreadcrumb(breadcrumb);
+      this.sentryAddBreadcrumb(breadcrumb);
     }
-    if (error && level === LogLevel.Error) {
-      if (error instanceof HttpErrorResponse) {
-        // Angular HttpErrorResponses are not instance of Error and are just logged as
-        // "Object captured as exception with keys: error, headers, message, name, ok" in Sentry.
-        // See https://github.com/getsentry/sentry-javascript/issues/2292.
-        // Here we turn the HttpErrorResponse into useful info for Sentry.
-        const { message: errorMessage, code } = getHttpErrorResponseMessageAndCode(error);
 
-        const context: CaptureContext = {
-          level: code === RegistrationDraftErrorCode.NoNetworkOrTimedOut ? 'warning' : 'error',
-          extra: {
-            status: error.status,
-            statusText: error.statusText,
-            error: error.error,
-            message: error.message,
-            url: error.url,
-          },
-        };
+    // Handle HttpErrorResponse separately for both Error and Warning levels
+    if (error instanceof HttpErrorResponse && (level == LogLevel.Warning || level == LogLevel.Error)) {
+      // Angular HttpErrorResponses are not instance of Error and are just logged as
+      // "Object captured as exception with keys: error, headers, message, name, ok" in Sentry.
+      // See https://github.com/getsentry/sentry-javascript/issues/2292.
+      // Here we turn the HttpErrorResponse into useful info for Sentry.
+      const { message: errorMessage, code } = getHttpErrorResponseMessageAndCode(error);
 
-        Sentry.captureMessage(errorMessage, context);
+      const context: CaptureContext = {
+        level: code === RegistrationDraftErrorCode.NoNetworkOrTimedOut ? 'warning' : level,
+        extra: {
+          status: error.status,
+          statusText: error.statusText,
+          error: error.error,
+          message: error.message,
+          url: error.url,
+        },
+      };
+
+      // If the HttpErrorResponse contains an actual Error object, use captureException for better stack traces
+      if (error.error instanceof Error) {
+        this.sentryCaptureException(error.error, context);
       } else {
-        // Assume instance of error, we can add additional if checks if we see that we more custom error objects are
-        // thrown and we are getting more "Object captured as exception with keys" events in Sentry
-        Sentry.captureException(error);
+        this.sentryCaptureMessage(errorMessage, context);
       }
+    } else if (error && level === LogLevel.Error) {
+      // Assume instance of error, we can add additional if checks if we see that we more custom error objects are
+      // thrown and we are getting more "Object captured as exception with keys" events in Sentry
+      this.sentryCaptureException(error);
     }
   }
 }

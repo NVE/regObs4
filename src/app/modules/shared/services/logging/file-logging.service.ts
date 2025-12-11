@@ -38,9 +38,9 @@ import { settings } from 'src/settings';
 import { LogLevel } from './log-level.model';
 import version from '../../../../../environments/version.json';
 import { Device } from '@capacitor/device';
-import { getCircularReplacer } from 'src/app/core/helpers/circular-replacer';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { deleteFile, doesFileOrDirectoryExist, getUri } from 'src/app/utils/file-utils';
+import { toSafeString } from './utils';
 
 @Injectable({
   providedIn: 'root',
@@ -121,7 +121,7 @@ export class FileLoggingService {
             }
           })
           .catch((err) => {
-            this.debug_metaLog('Could not find logging directory: ' + JSON.stringify(err));
+            this.debug_metaLog('Could not find logging directory: ' + toSafeString(err));
             return this.createLogDir();
           });
       });
@@ -164,7 +164,7 @@ export class FileLoggingService {
       })
       .catch((err) => {
         this.initFailed = true;
-        this.debug_metaLog('Failed to create logging directory: ' + JSON.stringify(err));
+        this.debug_metaLog('Failed to create logging directory: ' + toSafeString(err));
       });
   }
 
@@ -186,7 +186,7 @@ export class FileLoggingService {
         return this.cleanupCompleted(null, 0);
       }
     } catch (err) {
-      this.debug_metaLog('Failed to get file list: ' + JSON.stringify(err, Object.getOwnPropertyNames(err)));
+      this.debug_metaLog('Failed to get file list: ' + toSafeString(err));
     }
   }
 
@@ -345,7 +345,7 @@ export class FileLoggingService {
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, optionalParams?: { [key: string]: unknown }) {
     let msg = `[${level?.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
     if (optionalParams) {
-      msg += `. Params: ${this.stringify(optionalParams)}`;
+      msg += `. Params: ${toSafeString(optionalParams)}`;
     }
     if (error || (level && level == LogLevel.Error)) {
       this.err(msg, error);
@@ -376,21 +376,10 @@ export class FileLoggingService {
       return;
     }
 
-    const errorTypeAndMessage = error.toString?.();
+    const errorTypeAndMessage = toSafeString(error);
     if (errorTypeAndMessage) {
       this.logInternal(errorTypeAndMessage, true);
     }
-
-    if (error.stack != null) {
-      this.logInternal(error.stack, true);
-    }
-  }
-
-  private stringify(data: { [key: string]: unknown }): string {
-    if (data) {
-      return JSON.stringify(data, getCircularReplacer());
-    }
-    return '';
   }
 
   /**
@@ -408,13 +397,13 @@ export class FileLoggingService {
               this.processing = false;
             })
             .catch((err) => {
-              this.debug_metaLog('Error checking file length: ' + JSON.stringify(err));
+              this.debug_metaLog('Error checking file length: ' + toSafeString(err));
               this.processing = false;
             });
         }
       })
       .catch((err) => {
-        this.debug_metaLog('Error processing queue: ' + err);
+        this.debug_metaLog('Error processing queue: ' + toSafeString(err));
         this.processing = false;
       });
   }
@@ -439,7 +428,7 @@ export class FileLoggingService {
           this.lines++;
           this.checkFileLength();
         } catch (err) {
-          this.debug_metaLog('Error writing to file: ' + err);
+          this.debug_metaLog('Error writing to file: ' + toSafeString(err));
         }
       }
     }
@@ -481,7 +470,7 @@ export class FileLoggingService {
       this.currentFilePath = result.uri;
       this.debug_metaLog('Created new file at: ' + result.uri);
     } catch (err) {
-      this.debug_metaLog('Error creating file: ' + err);
+      this.debug_metaLog('Error creating file: ' + toSafeString(err));
     }
   }
 
@@ -497,7 +486,7 @@ export class FileLoggingService {
         const result = await Filesystem.readdir({ path: this.logDirPath });
         return result.files;
       } catch (err) {
-        this.debug_metaLog('Error retrieving log files: ' + JSON.stringify(err));
+        this.debug_metaLog('Error retrieving log files: ' + toSafeString(err));
       }
     }
     return [];
