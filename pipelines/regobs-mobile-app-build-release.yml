@@ -32,13 +32,13 @@ steps:
   - task: InstallAppleCertificate@2
     displayName: 'Install Apple App Store distribution certificate'
     inputs:
-      certSecureFile: 'apple-distribution-2024-11-27.p12'
+      certSecureFile: 'apple-distribution-2025-12-11.p12'
       certPwd: '$(apple.dist.cert.password_nov2025)'
 
   - task: InstallAppleProvisioningProfile@1
     displayName: 'Install an Apple App Store distribution provisioning profile'
     inputs:
-      provProfileSecureFile: 'appledistribution20241127.mobileprovision'
+      provProfileSecureFile: 'appledistribution20251211.mobileprovision'
 
   - task: NodeTool@0
     displayName: 'Use Node 20.x'
