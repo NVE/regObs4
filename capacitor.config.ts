@@ -19,7 +19,7 @@ const config: CapacitorConfig = {
     },
     Keyboard: {
       resize: KeyboardResize.Ionic,
-      resizeOnFullScreen: true,
+      resizeOnFullScreen: true, // RO-3111: Hindre at tataturet dekker over tekstfelt i Android 15 og 16
       style: KeyboardStyle.Default,
     },
   },
