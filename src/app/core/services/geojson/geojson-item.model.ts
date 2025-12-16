@@ -4,4 +4,5 @@ export interface GeoJSONItem {
   date?: number;
   visibleOnMap?: boolean;
   comment?: string;
+  lengthKm?: number;
 }
