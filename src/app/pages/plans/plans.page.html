@@ -30,7 +30,12 @@
                   <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
                 }
               </span>
-              <span>{{ item.date | date }}</span>
+              <span
+                >{{ item.date | date }}
+                @if (item.lengthKm !== undefined && item.lengthKm !== null) {
+                  , {{ item.lengthKm.toFixed(2) }} km
+                }
+              </span>
             </div>
             <nve-icon slot="suffix" name="chevron_forward"></nve-icon
           ></nve-menu-item>
