@@ -22,7 +22,7 @@
         </nve-tag>
         <nve-tag saturation="default" variant="neutral">
           <nve-icon slot="prefix" src="assets\icon\arrow_range.svg" />
-          <span slot="extra">-- km</span>
+          <span slot="extra">{{ info.lengthKm ? `${info.lengthKm.toFixed(2)} km` : '-- km' }}</span>
         </nve-tag>
       </div>
       <form style="display: flex; flex-direction: column; gap: 8px">

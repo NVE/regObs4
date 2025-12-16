@@ -367,7 +367,8 @@
     "HIDE_ON_MAP": "Hide on map",
     "FILE_NAME": "File name",
     "COMMENT": "Comment",
-    "VISIBLE_ON_MAP": "Visible on map"
+    "VISIBLE_ON_MAP": "Visible on map",
+    "CAPTION": "Import GPX files"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

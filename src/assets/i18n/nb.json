@@ -366,7 +366,8 @@
     "HIDE_ON_MAP": "Skjul i kart",
     "FILE_NAME": "Filnavn",
     "COMMENT": "Kommentar",
-    "VISIBLE_ON_MAP": "Vises i kart"
+    "VISIBLE_ON_MAP": "Vises i kart",
+    "CAPTION": "Importer GPX-filer"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
