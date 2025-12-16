@@ -16,11 +16,23 @@ svg {
 .filter-panel {
   display: flex;
   justify-content: flex-end;
+  align-items: flex-end;
+  gap: var(--spacing-medium);
   padding: var(--spacing-small);
 }
 
 nve-select {
   width: fit-content;
+}
+
+@media screen and (max-width: 650px) {
+  .filter-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  nve-select {
+    width: 100%;
+  }
 }
 
 .text-wrapper {

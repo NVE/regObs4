@@ -10,8 +10,15 @@
 <ion-content>
   <div class="content">
     <h1>TODO: Planer</h1>
-
     <div class="filter-panel">
+      <nve-select
+        [label]="'PLANS.SHOW' | translate"
+        [value]="visibilityFilter()"
+        (sl-change)="onVisibilityFilterChange($event)"
+      >
+        <nve-option value="all">{{ "PLANS.SHOW_ALL" | translate }}</nve-option>
+        <nve-option value="onlyVisibleOnMap">{{ "PLANS.SHOW_ONLY_VISIBLE_ON_MAP" | translate }}</nve-option>
+      </nve-select>
       <nve-select [label]="'PLANS.SORT_TITLE' | translate" [value]="sortValue()" (sl-change)="onSortChange($event)">
         <nve-option value="name">{{ "PLANS.SORT_BY_NAME" | translate }}</nve-option>
         <nve-option value="date">{{ "PLANS.SORT_BY_TIME" | translate }}</nve-option>
