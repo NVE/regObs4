@@ -48,12 +48,12 @@ export class PlansPage {
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
 
-  filterVisibleOnMap = signal(false);
   sortValue = signal<'name' | 'date'>('date');
+  showFilter = signal<'all' | 'onlyVisibleOnMap'>('all');
   items = computed(() => {
     const sorter = sortFunctions[this.sortValue()];
     const sortedItems = sorter(this.geoJSON.metadata());
-    if (this.filterVisibleOnMap()) {
+    if (this.showFilter() === 'onlyVisibleOnMap') {
       return sortedItems.filter((item) => item.visibleOnMap);
     }
     return sortedItems;
@@ -82,6 +82,12 @@ export class PlansPage {
     const select = event.target as HTMLSelectElement;
     const value = select.value as 'name' | 'date';
     this.sortValue.set(value);
+  }
+
+  onShowFilterChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value as 'all' | 'onlyVisibleOnMap';
+    this.showFilter.set(value);
   }
 }
 
