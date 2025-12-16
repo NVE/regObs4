@@ -8,6 +8,7 @@
   margin: 0 auto;
   margin-bottom: var(--spacing-large);
   overflow: auto;
+  padding: 0px var(--spacing-medium);
 }
 svg {
   fill: currentColor;
@@ -18,7 +19,7 @@ svg {
   justify-content: flex-end;
   align-items: flex-end;
   gap: var(--spacing-medium);
-  padding: var(--spacing-small);
+  padding: var(--spacing-small) 0px;
 }
 
 nve-select {
