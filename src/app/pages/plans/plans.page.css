@@ -21,6 +21,20 @@ svg {
   padding: var(--spacing-small);
 }
 
+nve-select {
+  width: fit-content;
+}
+
+@media screen and (max-width: 650px) {
+  .filter-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  nve-select {
+    width: 100%;
+  }
+}
+
 .filter-button {
   height: fit-content;
   border: 2px solid transparent;
@@ -30,10 +44,6 @@ svg {
 
 .filter-button--active {
   border-color: var(--neutrals-border-default);
-}
-
-nve-select {
-  width: fit-content;
 }
 
 .text-wrapper {
