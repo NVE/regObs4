@@ -1,5 +1,4 @@
 @if (itemMetadata(); as info) {
-  <!--<app-static-map-image [location]="location()"></app-static-map-image>-->
   <ion-header>
     <ion-toolbar appHeaderColor>
       <ion-buttons slot="start">
@@ -11,6 +10,7 @@
 
   <ion-content>
     <div class="content">
+      <div class="map" leaflet [leafletOptions]="mapOptions()" (leafletMapReady)="onMapReady($event)"></div>
       <div class="tag-row">
         <nve-tag saturation="default" variant="neutral">
           <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
