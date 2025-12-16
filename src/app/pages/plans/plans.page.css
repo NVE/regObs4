@@ -35,17 +35,6 @@ nve-select {
   }
 }
 
-.filter-button {
-  height: fit-content;
-  border: 2px solid transparent;
-  border-radius: var(--border-radius-small);
-  transition: border-color 0.3s;
-}
-
-.filter-button--active {
-  border-color: var(--neutrals-border-default);
-}
-
 .text-wrapper {
   display: flex;
   flex-direction: column;
