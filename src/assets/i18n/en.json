@@ -359,8 +359,8 @@
       "DROP_LABEL_MOBILE": "Tap to add files"
     },
     "DELETE": "Delete",
-    "MISSING_COMMENT": "Beskrivelse/kommentar mangler",
-    "MISSING_NAME": "Spor uten navn",
+    "MISSING_COMMENT": "Description/comment missing",
+    "MISSING_NAME": "Track without name",
     "NAME": "Name",
     "SORT_TITLE": " Sort by",
     "SORT_BY_NAME": "Name",
