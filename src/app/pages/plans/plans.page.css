@@ -53,3 +53,7 @@ nve-badge::part(base) {
 .drop-zone-wrapper {
   height: 200px;
 }
+
+a {
+  text-decoration: none;
+}

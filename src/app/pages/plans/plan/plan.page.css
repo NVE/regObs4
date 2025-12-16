@@ -13,6 +13,11 @@ nve-input::part(form-control-label) {
   color: black;
 }
 
+nve-tag::part(extra),
+nve-tag::part(text) {
+  line-height: 1;
+}
+
 .button-group {
   display: flex;
   gap: var(--spacing-small);
