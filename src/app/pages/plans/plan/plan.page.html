@@ -14,7 +14,7 @@
       <div class="tag-row">
         <nve-tag saturation="default" variant="neutral">
           <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
-          <span>{{ "PLANS.DATE_EDITED" | translate }}</span> <span slot="extra">{{ info.date | date }}</span>
+          <span>{{ "PLANS.DATE_EDITED" | translate }}</span> <span slot="extra">{{ info.date | date: "short" }}</span>
         </nve-tag>
         <nve-tag saturation="default" variant="neutral">
           <nve-icon slot="prefix" src="assets\icon\altitude.svg" />
@@ -25,15 +25,11 @@
           <span slot="extra">{{ info.lengthKm ? `${info.lengthKm.toFixed(2)} km` : '-- km' }}</span>
         </nve-tag>
       </div>
-      <form style="display: flex; flex-direction: column; gap: 8px">
-        <nve-switch [checked]="visibleOnMap()" (change)="onVisibleOnMapChange($event)">
-          {{ visibleOnMap() ? ("PLANS.HIDE_ON_MAP" | translate) : ("PLANS.SHOW_ON_MAP" | translate) }}
-        </nve-switch>
-        <nve-input
-          [value]="name()"
-          [label]="'PLANS.FILE_NAME' | translate"
-          (sl-change)="onNameChange($event)"
-        ></nve-input>
+      <form>
+        <nve-checkbox [checked]="visibleOnMap()" (sl-change)="onVisibleOnMapChange($event)">
+          {{ "PLANS.VISIBLE_ON_MAP" | translate }}
+        </nve-checkbox>
+        <nve-input [value]="name()" [label]="'PLANS.NAME' | translate" (sl-change)="onNameChange($event)"></nve-input>
         <nve-textarea
           [value]="comment()"
           (sl-change)="onCommentChange($event)"

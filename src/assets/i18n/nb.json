@@ -353,24 +353,24 @@
   "PLANS": {
     "TITLE": "Planer og spor",
     "IMPORT_BUTTON": {
-      "CAPTION": "Importer GPX-filer",
+      "CAPTION": "Importer GPX/GeoJSON-filer",
       "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
       "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
     },
     "DELETE": "Slett",
+    "MISSING_COMMENT": "Beskrivelse/kommentar mangler",
+    "MISSING_NAME": "Spor uten navn",
+    "NAME": "Navn",
     "SORT_TITLE": "Sortering",
     "SORT_BY_NAME": "Navn",
-    "SORT_BY_TIME": "Sist endret",
-    "DATE_EDITED": "Dato redigert",
-    "SHOW_ON_MAP": "Vis i kart",
+    "SORT_BY_TIME": "Sist lagret",
+    "DATE_EDITED": "Sist lagret",
     "SHOW": "Vis",
     "SHOW_ONLY_VISIBLE_ON_MAP": "Kun synlige i kart",
     "SHOW_ALL": "Alle",
-    "HIDE_ON_MAP": "Skjul i kart",
     "FILE_NAME": "Filnavn",
     "COMMENT": "Kommentar",
-    "VISIBLE_ON_MAP": "Vises i kart",
-    "CAPTION": "Importer GPX-filer"
+    "VISIBLE_ON_MAP": "Vises i kart"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
@@ -1035,7 +1035,6 @@
   "TABS": {
     "LIST": "Liste",
     "MAP": "Kart",
-    "TRIPS": "Turer",
     "WARNINGS": "Varsler",
     "PLANS": "Planer"
   },
