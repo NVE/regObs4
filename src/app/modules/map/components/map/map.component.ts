@@ -45,10 +45,11 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { MapControlsComponent } from '../map-controls/map-controls.component';
 import type { FeatureCollection } from 'geojson';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
+import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'MapComponent';
 
-const noObserverTripDescription = 'Turen har ikke beskrivelse';
 const observerTripsMinZoom = 10;
 
 // TODO: Slett senere
@@ -181,6 +182,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private mapZoomService = inject(MapZoomService);
   private observerTripsService = inject(ObserverTripsService);
   private geoJSONService = inject(GeoJSONService);
+  private translateService = inject(TranslateService);
 
   readonly showControls = input(true);
   readonly showZoomButtons = input(true);
@@ -344,8 +346,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param map Leaflet map
    * @param id Unique id for the geojson layer
    * @param geojson FeatureCollection to add
+   * @param metadata Metadata associated with the geojson layer
    */
-  private async addGeojsonLayer(map: L.Map, id: string, geojson: FeatureCollection) {
+  private async addGeojsonLayer(map: L.Map, id: string, geojson: FeatureCollection, metadata?: GeoJSONItem) {
     const pointIcon = L.icon({
       iconUrl: '/assets/icon/map/prev-used-place.svg',
       iconSize: [25, 41],
@@ -375,8 +378,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Click handler for this geojson
     const setMetadata = (e: L.LeafletMouseEvent) => {
-      this.metadataName.set(e.layer?.feature?.properties?.navn || 'Mangler navn');
-      this.metadataDescription.set(e.layer?.feature?.properties?.beskrivelse || noObserverTripDescription);
+      const missingName = this.translateService.instant('PLANS.MISSING_NAME');
+      const missingDescription = this.translateService.instant('PLANS.MISSING_COMMENT');
+      const name = metadata?.name || e.layer?.feature?.properties?.navn || missingName;
+      const description = metadata?.comment || e.layer?.feature?.properties?.beskrivelse || missingDescription;
+      this.metadataName.set(name);
+      this.metadataDescription.set(description);
     };
 
     // Zoom handler for this geojson
@@ -566,7 +573,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           // Hent oppdatert geojson fra tjenesten
           const geojson = await this.geoJSONService.get(trackMetadata.id);
           if (geojson) {
-            this.addGeojsonLayer(map, trackMetadata.id, geojson);
+            this.addGeojsonLayer(map, trackMetadata.id, geojson, trackMetadata);
           }
         });
       }

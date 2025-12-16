@@ -7,7 +7,7 @@ import 'nve-designsystem/components/nve-menu-item/nve-menu-item.component.js';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import 'nve-designsystem/components/nve-input/nve-input.component.js';
 import 'nve-designsystem/components/nve-textarea/nve-textarea.component.js';
-import 'nve-designsystem/components/nve-switch/nve-switch.component.js';
+import 'nve-designsystem/components/nve-checkbox/nve-checkbox.component.js';
 import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -49,14 +49,16 @@ export class PlanPage {
     await this.router.navigate(['/plans']);
   }
 
-  onSave() {
+  async onSave() {
     const itemToUpdate = {
       id: this.id(),
       name: this.name(),
       comment: this.comment(),
       visibleOnMap: this.visibleOnMap(),
+      lengthKm: this.itemMetadata()?.lengthKm,
       date: Date.now(),
     };
-    this.geoJSON.updateMetadata(itemToUpdate);
+    await this.geoJSON.updateMetadata(itemToUpdate);
+    await this.router.navigate(['/plans']);
   }
 }
