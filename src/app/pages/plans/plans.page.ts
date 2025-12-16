@@ -65,7 +65,7 @@ export class PlansPage {
     for (const { fileEntry, relativePath } of files) {
       const geojson = await toGeoJSON(fileEntry);
       const id = generateShortRandomId();
-      const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now() };
+      const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now(), visibleOnMap: true };
       await this.geoJSON.save(metadata, geojson);
       // Åpne detaljsiden kun når en fil er lastet opp.
       if (files.length === 1) {
