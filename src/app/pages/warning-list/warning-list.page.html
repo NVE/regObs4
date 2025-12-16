@@ -24,7 +24,7 @@
           <app-warning-list-header
             [title]="warningGroup.header || ''"
             [subTitle]="warningGroup.infoText || ''"
-            [showDayNames]="showDayNames(warningGroup)"
+            [showDayNames]="warningGroup.showDayNames ?? true"
           ></app-warning-list-header>
         </ion-item-divider>
       }

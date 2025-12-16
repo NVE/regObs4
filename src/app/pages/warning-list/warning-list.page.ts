@@ -142,20 +142,6 @@ export class WarningListPage {
     await this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
   }
 
-  myHeaderFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
-    return item.header
-      ? {
-          header: item.header,
-          infoText: item.infoText,
-          showDayNames: items.some((x) => x.item.key.geoHazard !== GeoHazard.Ice),
-        }
-      : null;
-  }
-
-  showDayNames(warningGroup: IVirtualScrollItem<WarningGroup>) {
-    return warningGroup.item.key.geoHazard !== GeoHazard.Ice;
-  }
-
   onSegmentChange(event: SegmentCustomEvent) {
     const selectedTab = event.detail.value as SelectedTab;
     this.selectedTab.set(selectedTab);
@@ -175,6 +161,7 @@ export class WarningListPage {
     return wg.map((item, index) => ({
       header: index === 0 ? header : undefined,
       infoText: index === 0 ? infoText : undefined,
+      showDayNames: item.key.geoHazard !== GeoHazard.Ice,
       item,
     }));
   }
