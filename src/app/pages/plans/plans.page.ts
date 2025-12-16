@@ -11,7 +11,6 @@ import 'nve-designsystem/components/nve-badge/nve-badge.component.js';
 import 'nve-designsystem/components/nve-select/nve-select.component.js';
 import 'nve-designsystem/components/nve-option/nve-option.component.js';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
-import 'nve-designsystem/components/nve-message-card/nve-message-card.component.js';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { toGeoJSON } from './utils';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
@@ -49,9 +48,14 @@ export class PlansPage {
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
 
   sortValue = signal<'name' | 'date'>('date');
+  visibilityFilter = signal<'all' | 'onlyVisibleOnMap'>('all');
   items = computed(() => {
     const sorter = sortFunctions[this.sortValue()];
-    return sorter(this.geoJSON.metadata());
+    const sortedItems = sorter(this.geoJSON.metadata());
+    if (this.visibilityFilter() === 'onlyVisibleOnMap') {
+      return sortedItems.filter((item) => item.visibleOnMap);
+    }
+    return sortedItems;
   });
 
   /**
@@ -77,6 +81,15 @@ export class PlansPage {
     const select = event.target as HTMLSelectElement;
     const value = select.value as 'name' | 'date';
     this.sortValue.set(value);
+  }
+
+  /**
+   * Hånderer visning av planer filter når bruker endrer valg i select
+   */
+  onVisibilityFilterChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value as 'all' | 'onlyVisibleOnMap';
+    this.visibilityFilter.set(value);
   }
 }
 
