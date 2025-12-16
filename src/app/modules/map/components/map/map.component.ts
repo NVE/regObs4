@@ -52,92 +52,6 @@ const DEBUG_TAG = 'MapComponent';
 
 const observerTripsMinZoom = 10;
 
-// TODO: Slett senere
-const testGeojson1: FeatureCollection = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [
-          [10.434983145022613, 59.85676353864457],
-          [10.438120130858607, 59.858023738491084],
-          [10.439270358998897, 59.859178879751596],
-          [10.440420587139272, 59.86080651072464],
-          [10.440943418111715, 59.862591562806955],
-          [10.441152550500334, 59.86448151354634],
-          [10.44136168288992, 59.8674737159337],
-          [10.439584057582863, 59.87030818567084],
-          [10.444707801115584, 59.872670059237464],
-          [10.452654831901441, 59.872827511510394],
-          [10.455059854376373, 59.87062311183959],
-          [10.451295471372532, 59.86736873093335],
-          [10.447635654562987, 59.86427152432276],
-          [10.445021499699465, 59.86316905914833],
-        ],
-        type: 'LineString',
-      },
-    },
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [10.444422542402833, 59.86307021223675],
-        type: 'Point',
-      },
-    },
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [10.43974311270091, 59.8597976822449],
-        type: 'Point',
-      },
-    },
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [10.447152209729126, 59.86894317654611],
-        type: 'Point',
-      },
-    },
-  ],
-};
-
-const testGeojson2: FeatureCollection = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [
-          [10.407297796622316, 59.85167139553894],
-          [10.399870074640745, 59.85012867124155],
-          [10.391046164316293, 59.84920300233472],
-          [10.38713683695724, 59.84822120414702],
-          [10.385014630677546, 59.84771626808717],
-          [10.384679545475137, 59.84889444031086],
-          [10.385852343682615, 59.85015672141279],
-          [10.38713683695724, 59.85088601756061],
-          [10.38803039749638, 59.8514189546388],
-        ],
-        type: 'LineString',
-      },
-    },
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [10.384791240542256, 59.848249255925964],
-        type: 'Point',
-      },
-    },
-  ],
-};
-
 export const isTopoMapLayer = (mapId: string) => (<string[]>Object.values(TopoMapLayer)).includes(mapId);
 const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
   layerGroup.eachLayer((layer) => {
@@ -594,9 +508,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => this.redrawMap());
 
     this.mapReady.emit(map);
-
-    this.addGeojsonLayer(map, 'test', testGeojson1);
-    this.addGeojsonLayer(map, 'test', testGeojson2);
   }
 
   private async initOfflineMaps() {
