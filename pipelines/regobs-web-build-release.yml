@@ -91,12 +91,12 @@ stages:
             displayName: Install sentry-cli
             inputs:
               targetType: inline
-              script: curl -sL https://sentry.io/get-cli/ | sh
+              script: curl sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="3.0.0" sh
 
           - script: |
               sentry-cli releases new $(json.version)
               sentry-cli releases set-commits $(json.version) --local --ignore-missing
-              sentry-cli releases files $(json.version) upload-sourcemaps www/browser -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
+              sentry-cli sourcemaps upload --release $(json.version) --dist $(json.revision) www/browser -x .js -x .map --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
             displayName: 'Create Sentry release and upload sourcemaps to Sentry'
 
           - task: Npm@1
