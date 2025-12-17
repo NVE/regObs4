@@ -38,6 +38,12 @@ stages:
             displayName: 'npm install'
 
           - task: Npm@1
+            displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
+            inputs:
+              command: custom
+              customCommand: 'run create-version-file'
+
+          - task: Npm@1
             displayName: 'npm run test-ci'
             enabled: true
             inputs:
@@ -66,12 +72,6 @@ stages:
             inputs:
               command: custom
               customCommand: 'run translations:add-nn-app-fallback'
-
-          - task: Npm@1
-            displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
-            inputs:
-              command: custom
-              customCommand: 'run create-version-file'
 
           - task: oneLuckiDevJson2Variable@1
             displayName: 'Create environment variables from version.json file'
