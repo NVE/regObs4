@@ -271,19 +271,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       shadowSize: [41, 41],
     });
     const geojsonLayer = L.geoJSON(geojson, {
-      style: { dashArray: '4', color: 'red', stroke: true },
+      style: { dashArray: '4', color: 'red', stroke: true, weight: 3 },
       pointToLayer: (_, latlng) => {
         return L.marker(latlng, { icon: pointIcon });
       },
     });
 
-    let extraTapRadiusLayer: L.Layer | undefined;
-    if (isAndroidOrIos(this.platform)) {
-      // To get a bigger tap hit radius on devices, add the geojson twice with much wider stroke
-      extraTapRadiusLayer = L.geoJSON(geojson, { style: { color: 'rgba(0,0,0,0)', weight: 30, stroke: true } });
-    }
+    // Add an invisible layer with wider stroke for easier interaction
+    const extraTapRadiusLayer = L.geoJSON(geojson, {
+      style: { color: 'rgba(0,0,0,0)', weight: 30, stroke: true },
+    });
 
-    const layer: L.Layer = extraTapRadiusLayer ? L.featureGroup([geojsonLayer, extraTapRadiusLayer]) : geojsonLayer;
+    const layer: L.Layer = L.featureGroup([geojsonLayer, extraTapRadiusLayer]);
 
     // Add layer to map if zoom is sufficient
     if (map.getZoom() >= observerTripsMinZoom) {
