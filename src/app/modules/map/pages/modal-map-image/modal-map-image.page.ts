@@ -3,7 +3,6 @@ import { IonContent, IonFabButton, IonIcon, ModalController } from '@ionic/angul
 import { MapImageComponent } from '../../../map-image/map-image.component';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons';
-import { ImageLocation } from '../../../../core/models/image-location.model';
 
 @Component({
   selector: 'app-modal-map-image',
@@ -14,7 +13,7 @@ import { ImageLocation } from '../../../../core/models/image-location.model';
 export class ModalMapImagePage {
   private modalController = inject(ModalController);
 
-  readonly location = input.required<ImageLocation>();
+  readonly geojson = input.required<L.GeoJSON>();
 
   constructor() {
     addIcons({ close });
