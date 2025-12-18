@@ -3,9 +3,9 @@ import { DatabaseService } from '../database/database.service';
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { cleanFeatureCollection } from 'src/app/pages/plans/geojson';
 import { length } from '@turf/turf';
+import { Subject } from 'rxjs';
 
 const DEBUG_TAG = 'GeoJSON';
 
@@ -15,10 +15,18 @@ const DEBUG_TAG = 'GeoJSON';
 export class GeoJSONService {
   private db = inject(DatabaseService);
   private logger = inject(LoggingService);
-
-  metadata = signal<GeoJSONItem[]>([]);
-  readonly metadata$ = toObservable(this.metadata);
   private initialized = false;
+  private changedMetadataItem = new Subject<GeoJSONItem>();
+  private removedMetadataItemId = new Subject<string>();
+
+  /** Metadata for alle lagrede spor */
+  metadata = signal<GeoJSONItem[]>([]);
+
+  /** Lytt på denne for å få beskjed om nye eller endrede spor */
+  changedMetadataItem$ = this.changedMetadataItem.asObservable();
+
+  /** Lytt på denne for å få beskjed om slettede spor */
+  removedMetadataItemId$ = this.removedMetadataItemId.asObservable();
 
   constructor() {
     this.init();
@@ -67,6 +75,7 @@ export class GeoJSONService {
       const other = items.filter((x) => x.id !== item.id);
       return [...other, item];
     });
+    this.changedMetadataItem.next(item);
   }
 
   /**
@@ -92,6 +101,7 @@ export class GeoJSONService {
 
       await this.db.set(`geojson:${metadata.id}`, geojson);
       this.metadata.update((items) => [...items, metadata]);
+      this.changedMetadataItem.next(metadata);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Could not save', { metadata, geojson });
       throw error;
@@ -115,6 +125,7 @@ export class GeoJSONService {
     this.logger.debug('Remove', DEBUG_TAG, { id });
     await this.db.remove(`geojson:${id}`);
     this.metadata.update((items) => items.filter((item) => item.id !== id));
+    this.removedMetadataItemId.next(id);
   }
 
   /**

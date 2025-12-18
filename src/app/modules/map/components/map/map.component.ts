@@ -17,8 +17,8 @@ import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
 import L from 'leaflet';
-import { BehaviorSubject, combineLatest, firstValueFrom, fromEventPattern, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, fromEventPattern, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -291,11 +291,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Click handler for this geojson
-    const setMetadata = (e: L.LeafletMouseEvent) => {
+    const setMetadata = () => {
       const missingName = this.translateService.instant('PLANS.MISSING_NAME');
       const missingDescription = this.translateService.instant('PLANS.MISSING_COMMENT');
-      const name = metadata?.name || e.layer?.feature?.properties?.navn || missingName;
-      const description = metadata?.comment || e.layer?.feature?.properties?.beskrivelse || missingDescription;
+      const name = metadata?.name || missingName;
+      const description = metadata?.comment || missingDescription;
       this.metadataName.set(name);
       this.metadataDescription.set(description);
     };
@@ -475,23 +475,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    // Lytt på endringer i evt. geojson-metadata og tegn geojson-lag (på nytt)
-    this.geoJSONService.metadata$.pipe(takeUntil(this.ngDestroy$)).subscribe(async (metadataForAllTracks) => {
-      if (metadataForAllTracks && map) {
-        metadataForAllTracks.forEach(async (trackMetadata) => {
-          // Fjern eksisterende geojson-lag for id
-          this.removeGeojsonLayer(map, trackMetadata.id);
-          if (!trackMetadata.visibleOnMap) {
-            return;
-          }
-          // Hent oppdatert geojson fra tjenesten
-          const geojson = await this.geoJSONService.get(trackMetadata.id);
-          if (geojson) {
-            this.addGeojsonLayer(map, trackMetadata.id, geojson, trackMetadata);
-          }
-        });
-      }
-    });
+    this.addGeoJsonLayers(map);
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
@@ -508,6 +492,52 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => this.redrawMap());
 
     this.mapReady.emit(map);
+  }
+
+  // Henter alle lagrede geoJSON-objekter og oppretter et kartlag for hver av dem
+  private async addGeoJsonLayers(map: L.Map) {
+    const allMetadata = await this.geoJSONService.metadata();
+    for (const metadata of allMetadata) {
+      if (metadata.visibleOnMap) {
+        const geojson = await this.geoJSONService.get(metadata.id);
+        if (geojson) {
+          this.addGeojsonLayer(map, metadata.id, geojson, metadata);
+        }
+      }
+    }
+    this.geoJSONService.changedMetadataItem$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap((metadata) => from(this.updateGeoJsonLayer(map, metadata)))
+      )
+      .subscribe();
+    this.geoJSONService.removedMetadataItemId$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap((id) => from(this.removeGeojsonLayer(map, id)))
+      )
+      .subscribe();
+  }
+
+  // Oppdaterer et GeoJSON-lag i kartet basert på endrede metadata
+  private async updateGeoJsonLayer(map: L.Map, metadata: GeoJSONItem) {
+    await this.removeGeojsonLayer(map, metadata.id);
+
+    if (metadata.visibleOnMap) {
+      const geojson = await this.geoJSONService.get(metadata.id);
+      if (geojson) {
+        this.loggingService.debug(
+          `GeoJson med id = ${metadata.id} er ny eller endret. Tegner sporet (på nytt)`,
+          DEBUG_TAG,
+          { metadata }
+        );
+        this.addGeojsonLayer(map, metadata.id, geojson, metadata);
+      }
+    } else {
+      this.loggingService.debug(`GeoJson med id = ${metadata.id} er deaktivert. Fjernet sporet`, DEBUG_TAG, {
+        metadata,
+      });
+    }
   }
 
   private async initOfflineMaps() {
