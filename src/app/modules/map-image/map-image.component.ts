@@ -3,7 +3,6 @@ import { point } from '@turf/turf';
 import L from 'leaflet';
 import { settings } from '../../../settings';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
-import { TranslateService } from '@ngx-translate/core';
 import { map, Subject, switchMap, takeWhile, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MapLayersService, OfflineCapableMapLayersService } from '../static-map-image/static-tiles.service';
@@ -23,7 +22,6 @@ import { isPlatform } from '@ionic/angular/standalone';
   ],
 })
 export class MapImageComponent {
-  private translations = inject(TranslateService);
   private mapLayers = inject(MapLayersService);
 
   readonly geojson = input.required<L.GeoJSON>();
