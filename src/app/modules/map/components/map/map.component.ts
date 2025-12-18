@@ -18,7 +18,7 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
 import L from 'leaflet';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, fromEventPattern, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -496,6 +496,23 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Henter alle lagrede geoJSON-objekter og oppretter et kartlag for hver av dem
   private async addGeoJsonLayers(map: L.Map) {
+    // Endre eller legg til geoJSON-lag når metadata endres
+    this.geoJSONService.changedMetadataItem$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        concatMap((metadata) => from(this.updateGeoJsonLayer(map, metadata)))
+      )
+      .subscribe();
+
+    // Fjern geoJSON-lag når metadata slettes
+    this.geoJSONService.removedMetadataItemId$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        concatMap((id) => from(this.removeGeojsonLayer(map, id)))
+      )
+      .subscribe();
+
+    // Tegn alle lagrede geoJSON-objekter ved oppstart
     const allMetadata = await this.geoJSONService.metadata();
     for (const metadata of allMetadata) {
       if (metadata.visibleOnMap) {
@@ -505,18 +522,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    this.geoJSONService.changedMetadataItem$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap((metadata) => from(this.updateGeoJsonLayer(map, metadata)))
-      )
-      .subscribe();
-    this.geoJSONService.removedMetadataItemId$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap((id) => from(this.removeGeojsonLayer(map, id)))
-      )
-      .subscribe();
   }
 
   // Oppdaterer et GeoJSON-lag i kartet basert på endrede metadata

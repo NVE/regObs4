@@ -104,6 +104,16 @@ describe('GeoJSONService', () => {
       expect(databaseService.set).toHaveBeenCalledWith('geojson-metadata', [mockMetadataItem]);
     }));
 
+    it('should emit changed metadata item', fakeAsync(() => {
+      let emittedMetadata: GeoJSONItem | undefined;
+      service.changedMetadataItem$.subscribe((metadata) => (emittedMetadata = metadata));
+
+      service.save(mockMetadataItem, mockGeoJSON);
+      tick();
+
+      expect(emittedMetadata).toEqual(mockMetadataItem);
+    }));
+
     it('should throw error if save fails', fakeAsync(() => {
       const error = new Error('Save failed');
       databaseService.set.and.returnValue(Promise.reject(error));
@@ -170,7 +180,7 @@ describe('GeoJSONService', () => {
     }));
   });
 
-  describe('metadata$', () => {
+  describe('changedMetadataItem$', () => {
     beforeEach(fakeAsync(() => {
       service = TestBed.inject(GeoJSONService);
       tick();
