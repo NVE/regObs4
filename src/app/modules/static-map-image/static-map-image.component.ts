@@ -43,7 +43,6 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { ImageLocation } from '../../core/models/image-location.model';
 import { settings } from '../../../settings';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { ITopoMapLayerOptions } from 'src/settings.model';
@@ -54,7 +53,8 @@ import { MapLayersService, OfflineCapableMapLayersService } from './static-tiles
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { LatLng } from 'leaflet';
-import type { Feature, Polygon } from 'geojson';
+import type { Feature, FeatureCollection, Geometry, Point, Polygon } from 'geojson';
+import type { GeoHazard } from 'src/app/modules/common-core/models';
 import {
   END_ICON,
   START_ICON,
@@ -99,15 +99,15 @@ const TILE_SIZE = 256;
 const PADDING = 15;
 const SVG_PADDING = 20;
 interface PositionToPlot {
-  pos: ImageLocation['latLng'];
+  pos: LatLng;
   type: 'start' | 'stop' | 'damage' | 'obs';
   px?: { x: number; y: number };
 }
 
 interface PolygonsToPlot {
-  totalPolygon: LatLng[];
-  startPolygon: LatLng[];
-  endPolygon: LatLng[];
+  totalPolygon?: LatLng[];
+  startPolygon?: LatLng[];
+  endPolygon?: LatLng[];
 }
 
 interface LatLngBounds {
@@ -161,7 +161,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private mapLayerService = inject(MapLayersService);
   private logger = inject(LoggingService);
 
-  readonly location = input.required<ImageLocation>();
+  readonly featureCollection = input.required<FeatureCollection<Geometry, { type?: string }>>();
+  readonly geoHazard = input.required<GeoHazard>();
   readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
 
   @HostListener('window:resize', ['$event'])
@@ -238,33 +239,19 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     return result;
   }
 
-  private getPositionsToPlot(): PositionToPlot[] {
-    // This controls the draw order / z-index for graphics
-    const positions = [];
-    const location = this.location();
-    if (location.startStopLocation?.start) {
-      positions.push({ pos: location.startStopLocation.start, type: 'start' as const });
-    }
-    if (location.startStopLocation?.stop) {
-      positions.push({ pos: location.startStopLocation.stop, type: 'stop' as const });
-    }
-    if (location.damageLocations) {
-      positions.push(...location.damageLocations.map((pos) => ({ pos, type: 'damage' as const })));
-    }
-    if (location.latLng) {
-      positions.push({ pos: location.latLng, type: 'obs' as const });
-    }
-    return positions;
-  }
-
   private getStartZoom() {
-    // If start / stop avalanche should be plotted, start more zoomed in. If we are zoomed out we cant see the
-    // avalanche path.
-    const location = this.location();
-    if (
-      (location?.startStopLocation?.start && location?.startStopLocation?.stop) ||
-      location?.startStopLocation?.totalPolygon
-    ) {
+    // If start / stop avalanche or an extent polygon should be plotted, start more zoomed in.
+    const features = this.featureCollection().features;
+    const types = features.map((f) => (f.properties as { type?: string } | undefined)?.type);
+    const hasStart = types.includes('AvalancheStart');
+    const hasStop = types.includes('AvalancheStop');
+    const hasExtent =
+      types.includes('AvalancheExtent') ||
+      types.includes('AvalancheExtentStart') ||
+      types.includes('AvalancheExtentStop') ||
+      types.includes('WaterLevelExtent');
+
+    if ((hasStart && hasStop) || hasExtent) {
       return 14;
     }
     return settings.map.tiles.zoomLevelObservationList;
@@ -337,25 +324,45 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     return { zoom, n, s, e, w };
   }
 
-  private getPolygons(): PolygonsToPlot {
-    // getLatLngs on polygons may return nested arrays with depth of 3 therefore we use flat(3) to simplify the result
-    const polygons = {} as PolygonsToPlot;
-    const startStoplocation = this.location()?.startStopLocation;
-    if (startStoplocation?.totalPolygon) {
-      polygons.totalPolygon = startStoplocation.totalPolygon.getLatLngs().flat(3);
+  private getDataFromGeojson(): { positions: PositionToPlot[]; polygons: PolygonsToPlot } {
+    const positions: PositionToPlot[] = [];
+    const polygons: PolygonsToPlot = {};
+
+    for (const feature of this.featureCollection().features) {
+      const type = (feature.properties as { type?: string } | undefined)?.type;
+
+      if (feature.geometry.type === 'Point') {
+        const [lng, lat] = (feature.geometry as Point).coordinates;
+        const pos = new LatLng(lat, lng);
+
+        if (type === 'ObsLocation') {
+          positions.push({ pos, type: 'obs' });
+        } else if (type === 'AvalancheStart') {
+          positions.push({ pos, type: 'start' });
+        } else if (type === 'AvalancheStop') {
+          positions.push({ pos, type: 'stop' });
+        } else if (type === 'DamagePos') {
+          positions.push({ pos, type: 'damage' });
+        }
+      } else if (feature.geometry.type === 'Polygon') {
+        const coords = (feature.geometry as Polygon).coordinates[0] ?? [];
+        const ring = coords.map(([lng, lat]) => new LatLng(lat, lng));
+
+        if (type === 'AvalancheExtent' || type === 'WaterLevelExtent') {
+          polygons.totalPolygon = ring;
+        } else if (type === 'AvalancheExtentStart') {
+          polygons.startPolygon = ring;
+        } else if (type === 'AvalancheExtentStop') {
+          polygons.endPolygon = ring;
+        }
+      }
     }
-    if (startStoplocation?.startPolygon) {
-      polygons.startPolygon = startStoplocation.startPolygon.getLatLngs().flat(3);
-    }
-    if (startStoplocation?.endPolygon) {
-      polygons.endPolygon = startStoplocation.endPolygon.getLatLngs().flat(3);
-    }
-    return polygons;
+
+    return { positions, polygons };
   }
 
   private createMap(w: number, h: number) {
-    const positions = this.getPositionsToPlot();
-    const polygons = this.getPolygons();
+    const { positions, polygons } = this.getDataFromGeojson();
     //add all positions together to find max and min latlng
     const positionsDestructured = positions.map((p) => p.pos);
     const positionsAndPolygonsLatLngs = [
@@ -364,6 +371,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
       ...(polygons.startPolygon ? polygons.startPolygon : []),
       ...(polygons.endPolygon ? polygons.endPolygon : []),
     ];
+
+    if (!positionsAndPolygonsLatLngs.length) {
+      this.logger.debug('no positions or polygons to plot', 'StaticMapImage');
+      return;
+    }
 
     const { latLngBounds, geojsonBounds } = this.getLatLngBounds(positionsAndPolygonsLatLngs);
     const mapLayers = this.mapLayerService.getMapLayerForLocation(geojsonBounds);
@@ -390,13 +402,14 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     this.graphics.set([]);
     let start = null;
     let stop = null;
+    let obsMarker: { topPx: number; leftPx: number } | null = null;
     for (const { pos, type } of positions) {
       const [x, y] = this.mercator.px([pos.lng, pos.lat], zoom);
       const topPx = y - y0;
       const leftPx = x - x0;
 
       if (type === 'obs') {
-        this.createCenterMarker(topPx, leftPx);
+        obsMarker = { topPx, leftPx };
       } else if (type === 'start') {
         this.createStartGraphic(topPx, leftPx);
         start = { x, y };
@@ -421,6 +434,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     }
     if (polygons.endPolygon) {
       this.createPolygons(polygons.endPolygon, x0, y0, zoom, '#bb3344');
+    }
+
+    // Draw ObsLocation marker last so it appears on top
+    if (obsMarker) {
+      this.createCenterMarker(obsMarker.topPx, obsMarker.leftPx);
     }
   }
 
@@ -480,7 +498,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   }
 
   private createCenterMarker(topPx: number, leftPx: number) {
-    const svg = this.sanitizer.bypassSecurityTrustHtml(RegobsGeoHazardMarker.getIconSvg(this.location().geoHazard));
+    const svg = this.sanitizer.bypassSecurityTrustHtml(RegobsGeoHazardMarker.getIconSvg(this.geoHazard()));
     // TODO: Can we extract width and height from svg?
     const svgWidth = 26;
     const svgHeight = 37;
