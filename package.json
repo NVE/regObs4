@@ -75,7 +75,6 @@
     "@ionic/angular": "^8.7.7",
     "@ionic/storage-angular": "^4.0.0",
     "@mapbox/leaflet-pip": "^1.1.0",
-    "@mapbox/sphericalmercator": "^1.2.0",
     "@nano-sql/adapter-sqlite-cordova": "2.1.2",
     "@nano-sql/core": "^2.3.7",
     "@ngx-translate/core": "^16.0.4",

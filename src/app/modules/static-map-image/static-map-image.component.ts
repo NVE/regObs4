@@ -25,7 +25,6 @@ import {
   ChangeDetectionStrategy,
   AfterViewInit,
   ElementRef,
-  HostListener,
   inject,
   viewChild,
   input,
@@ -48,11 +47,10 @@ import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-mark
 import { ITopoMapLayerOptions } from 'src/settings.model';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 import { isPlatform } from '@ionic/angular/standalone';
-import SphericalMercator from '@mapbox/sphericalmercator';
 import { MapLayersService, OfflineCapableMapLayersService } from './static-tiles.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { LoggingService } from '../shared/services/logging/logging.service';
-import { LatLng } from 'leaflet';
+import { CRS, latLngBounds, LatLng, LatLngBounds } from 'leaflet';
 import type { Feature, FeatureCollection, Geometry, Point, Polygon } from 'geojson';
 import type { GeoHazard } from 'src/app/modules/common-core/models';
 import {
@@ -110,13 +108,6 @@ interface PolygonsToPlot {
   endPolygon?: LatLng[];
 }
 
-interface LatLngBounds {
-  minLng: number;
-  minLat: number;
-  maxLng: number;
-  maxLat: number;
-}
-
 // n, s, e, w in pixels from top left of world
 interface MercatorBounds {
   n: number;
@@ -125,8 +116,22 @@ interface MercatorBounds {
   w: number;
   zoom: number;
 }
+interface PixelPoint {
+  x: number;
+  y: number;
+}
 
-const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): Feature<Polygon> => ({
+const createGeojsonBounds = ({
+  minLng,
+  minLat,
+  maxLng,
+  maxLat,
+}: {
+  minLng: number;
+  minLat: number;
+  maxLng: number;
+  maxLat: number;
+}): Feature<Polygon> => ({
   type: 'Feature',
   properties: {},
   bbox: [minLng, minLat, maxLng, maxLat],
@@ -155,6 +160,9 @@ const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): 
       useClass: isPlatform('hybrid') ? OfflineCapableMapLayersService : MapLayersService,
     },
   ],
+  host: {
+    '(window:resize)': 'onResize()',
+  },
 })
 export class StaticMapImageComponent extends NgDestoryBase implements AfterViewInit {
   private sanitizer = inject(DomSanitizer);
@@ -164,8 +172,6 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   readonly featureCollection = input.required<FeatureCollection<Geometry, { type?: string }>>();
   readonly geoHazard = input.required<GeoHazard>();
   readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
-
-  @HostListener('window:resize', ['$event'])
   onResize() {
     this.componentCreatedOrResized.next();
   }
@@ -188,8 +194,6 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     map(({ w, h }) => ({ w: +w, h: +h })),
     share()
   );
-
-  private mercator = new SphericalMercator({ size: TILE_SIZE });
 
   constructor() {
     super();
@@ -256,37 +260,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     }
     return settings.map.tiles.zoomLevelObservationList;
   }
-
-  private getLatLngBounds(positions: LatLng[]): {
-    latLngBounds: LatLngBounds;
-    geojsonBounds: Feature<Polygon>;
-  } {
-    const positionsForBoundsCheck = [...positions];
-    const pos = positionsForBoundsCheck.shift();
-    if (!pos) {
-      throw new Error('Needs at least one position');
-    }
-    let minLat = pos.lat;
-    let maxLat = pos.lat;
-    let minLng = pos.lng;
-    let maxLng = pos.lng;
-
-    while (positionsForBoundsCheck.length) {
-      const pos = positionsForBoundsCheck.shift() as LatLng;
-      minLat = pos.lat < minLat ? pos.lat : minLat;
-      maxLat = pos.lat > maxLat ? pos.lat : maxLat;
-      minLng = pos.lng < minLng ? pos.lng : minLng;
-      maxLng = pos.lng > maxLng ? pos.lng : maxLng;
-    }
-
-    const latLngBounds = { minLat, minLng, maxLat, maxLng };
-    const geojsonBounds = createGeojsonBounds(latLngBounds);
-
-    return { latLngBounds, geojsonBounds };
-  }
-
   private getMercatorBounds(
-    { minLat, maxLat, minLng, maxLng }: LatLngBounds,
+    bounds: LatLngBounds,
     width: number, // Map width in px
     height: number // Map height in px
   ): MercatorBounds {
@@ -301,8 +276,16 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     let boundsWidth = 0;
     let boundsHeight = 0;
     while (zoom) {
-      [w, n] = this.mercator.px([minLng, maxLat], zoom);
-      [e, s] = this.mercator.px([maxLng, minLat], zoom);
+      const northWest = bounds.getNorthWest();
+      const southEast = bounds.getSouthEast();
+
+      const northWestPoint = CRS.EPSG3857.latLngToPoint(northWest, zoom);
+      const southEastPoint = CRS.EPSG3857.latLngToPoint(southEast, zoom);
+
+      w = northWestPoint.x;
+      n = northWestPoint.y;
+      e = southEastPoint.x;
+      s = southEastPoint.y;
 
       boundsHeight = s - n + PADDING * 2;
       boundsWidth = e - w + PADDING * 2;
@@ -377,9 +360,16 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
       return;
     }
 
-    const { latLngBounds, geojsonBounds } = this.getLatLngBounds(positionsAndPolygonsLatLngs);
+    const bounds = latLngBounds(positionsAndPolygonsLatLngs);
+    const geojsonBounds = createGeojsonBounds({
+      minLng: bounds.getWest(),
+      minLat: bounds.getSouth(),
+      maxLng: bounds.getEast(),
+      maxLat: bounds.getNorth(),
+    });
+
     const mapLayers = this.mapLayerService.getMapLayerForLocation(geojsonBounds);
-    const mercatorBounds = this.getMercatorBounds(latLngBounds, w, h);
+    const mercatorBounds = this.getMercatorBounds(bounds, w, h);
 
     // Map tiles
     this.tiles.set(
@@ -396,7 +386,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   private createGraphics(
     positions: PositionToPlot[],
     polygons: PolygonsToPlot,
-    { w: x0, n: y0, zoom }: MercatorBounds
+    { w: worldX0, n: worldY0, zoom }: MercatorBounds
   ) {
     // Reset map graphics
     this.graphics.set([]);
@@ -404,18 +394,18 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     let stop = null;
     let obsMarker: { topPx: number; leftPx: number } | null = null;
     for (const { pos, type } of positions) {
-      const [x, y] = this.mercator.px([pos.lng, pos.lat], zoom);
-      const topPx = y - y0;
-      const leftPx = x - x0;
+      const point = CRS.EPSG3857.latLngToPoint(pos, zoom);
+      const topPx = point.y - worldY0;
+      const leftPx = point.x - worldX0;
 
       if (type === 'obs') {
         obsMarker = { topPx, leftPx };
       } else if (type === 'start') {
         this.createStartGraphic(topPx, leftPx);
-        start = { x, y };
+        start = { x: point.x, y: point.y };
       } else if (type === 'stop') {
         this.createStopGraphic(topPx, leftPx);
-        stop = { x, y };
+        stop = { x: point.x, y: point.y };
       } else if (type === 'damage') {
         this.createDamageGraphic();
       } else {
@@ -424,16 +414,16 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     }
 
     if (start && stop) {
-      this.createStartStopLine(start, stop, x0, y0);
+      this.createStartStopLine(start, stop, worldX0, worldY0);
     }
     if (polygons.totalPolygon) {
-      this.createPolygons(polygons.totalPolygon, x0, y0, zoom, '#3344bb');
+      this.createPolygons(polygons.totalPolygon, worldX0, worldY0, zoom, '#3344bb', 'total');
     }
     if (polygons.startPolygon) {
-      this.createPolygons(polygons.startPolygon, x0, y0, zoom, '#33bb44');
+      this.createPolygons(polygons.startPolygon, worldX0, worldY0, zoom, '#33bb44', 'start');
     }
     if (polygons.endPolygon) {
-      this.createPolygons(polygons.endPolygon, x0, y0, zoom, '#bb3344');
+      this.createPolygons(polygons.endPolygon, worldX0, worldY0, zoom, '#bb3344', 'end');
     }
 
     // Draw ObsLocation marker last so it appears on top
@@ -442,27 +432,45 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     }
   }
 
-  private createPolygons(polygons: LatLng[], w: number, n: number, zoom: number, fill: string) {
-    const mercatorPoints = this.getMercatorPointsFromPolygonsLtLng(polygons, zoom);
-    const listOfXPoints = mercatorPoints.map((l) => l.lat);
-    const listOfYPoints = mercatorPoints.map((l) => l.lng);
-    // find lowest x point
-    const svg_x0 = Math.min(...listOfXPoints) - SVG_PADDING;
-    //find lowest y point
-    const svg_y0 = Math.min(...listOfYPoints) - SVG_PADDING;
-    // get width and height to set viewBox size
-    const width = Math.max(...listOfXPoints);
-    const height = Math.max(...listOfYPoints);
-    const polylinesPointsToString = this.createPolylinesPointsFromMercatorPoints(mercatorPoints, svg_x0, svg_y0)
-      .flat()
-      .join(',');
+  private createPolygons(
+    polygon: LatLng[],
+    mapWorldX0: number,
+    mapWorldY0: number,
+    zoom: number,
+    fill: string,
+    id: string
+  ) {
+    if (!polygon.length) {
+      return;
+    }
+
+    const pixelPoints: PixelPoint[] = polygon.map((vertex) => {
+      const point = CRS.EPSG3857.latLngToPoint(vertex, zoom);
+      return { x: point.x, y: point.y };
+    });
+
+    // Close the polygon by repeating the first point at the end
+    pixelPoints.push({ ...pixelPoints[0] });
+
+    const xs = pixelPoints.map((p) => p.x);
+    const ys = pixelPoints.map((p) => p.y);
+
+    const minX = Math.min(...xs) - SVG_PADDING;
+    const minY = Math.min(...ys) - SVG_PADDING;
+    const maxX = Math.max(...xs) + SVG_PADDING;
+    const maxY = Math.max(...ys) + SVG_PADDING;
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    const pointsAttribute = pixelPoints.map((p) => `${p.x - minX},${p.y - minY}`).join(' ');
 
     this.graphics.update((graphics) => [
       {
-        id: 'start-stop-line',
+        id: `polygon-${id}`,
         svg: this.sanitizer.bypassSecurityTrustHtml(`
-      <svg pointer-events="none" viewBox="0 0 ${width} ${height}" width=${width} height=${height}>
-        <polyline points="${polylinesPointsToString}"
+      <svg pointer-events="none" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
+        <polyline points="${pointsAttribute}"
           stroke="${fill}"
           stroke-opacity="1"
           stroke-width="3"
@@ -472,29 +480,11 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
           fill-opacity="0.2"
           fill-rule="evenodd" />
       </svg>`),
-        left: svg_x0 - w,
-        top: svg_y0 - n,
+        left: minX - mapWorldX0,
+        top: minY - mapWorldY0,
       },
       ...graphics,
     ]);
-  }
-
-  private getMercatorPointsFromPolygonsLtLng(polygons: LatLng[], zoom: number): LatLng[] {
-    const points: LatLng[] = [];
-    for (let i = 0; i < polygons.length; i++) {
-      const [xA, yA] = this.mercator.px([polygons[i].lng, polygons[i].lat], zoom);
-      points.push(new LatLng(xA, yA));
-    }
-    // adding first point one more time to close the path
-    const [xA, yA] = this.mercator.px([polygons[0].lng, polygons[0].lat], zoom);
-    points.push(new LatLng(xA, yA));
-    return points;
-  }
-
-  private createPolylinesPointsFromMercatorPoints(lines: LatLng[], svg_x0: number, svg_y0: number): number[][] {
-    return lines.map((l) => {
-      return [l.lat - svg_x0, l.lng - svg_y0];
-    });
   }
 
   private createCenterMarker(topPx: number, leftPx: number) {
@@ -528,7 +518,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     this.graphics.update((graphics) => [
       ...graphics,
       {
-        id: 'start',
+        id: 'stop',
         svg: `<img src="${END_ICON}">`,
         left: leftPx - w / 2,
         top: topPx - h,
