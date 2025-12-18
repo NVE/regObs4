@@ -2,7 +2,7 @@
   <div
     leaflet
     [leafletOptions]="settings"
-    [leafletLayers]="markers()"
+    [leafletLayers]="[geojson()]"
     (leafletMapReady)="onLeafletMapReady($event)"
   ></div>
 } @else {

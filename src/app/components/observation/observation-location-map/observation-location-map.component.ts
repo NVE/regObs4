@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { ModalController } from '@ionic/angular/standalone';
 import { TranslateService } from '@ngx-translate/core';
 import { featureCollection, lineString, point, polygon } from '@turf/turf';
-import { Feature, Geometry, Point } from 'geojson';
+import { Feature, FeatureCollection, Geometry, Point } from 'geojson';
 import L from 'leaflet';
 import { ImageLocation, ImageLocationStartStop } from 'src/app/core/models/image-location.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -48,7 +48,8 @@ export class ObservationLocationMapComponent {
   location = computed(() => getLocation(this.registration()));
 
   async openMapModal() {
-    const geojson = getGeojsonLayer(this.registration(), this.translations);
+    const fc = getGeojson(this.registration());
+    const geojson = getGeojsonLayer(fc, this.registration(), this.translations);
     const modal = await this.modalController.create({
       component: ModalMapImagePage,
       componentProps: {
@@ -72,7 +73,7 @@ interface FeatureProperties {
     | 'DamagePos';
 }
 
-function getGeojsonLayer(obs: RegistrationViewModel, translations: TranslateService): L.GeoJSON {
+function getGeojson(obs: RegistrationViewModel): FeatureCollection<Geometry, FeatureProperties> {
   const features: Feature<Geometry, FeatureProperties>[] = [
     point([obs.ObsLocation.Longitude, obs.ObsLocation.Latitude], {
       type: 'ObsLocation',
@@ -99,8 +100,14 @@ function getGeojsonLayer(obs: RegistrationViewModel, translations: TranslateServ
     features.push(...getDamageFeatures(obs.DamageObs));
   }
 
-  const fc = featureCollection(features);
+  return featureCollection(features);
+}
 
+function getGeojsonLayer(
+  fc: FeatureCollection<Geometry, FeatureProperties>,
+  obs: RegistrationViewModel,
+  translations: TranslateService
+): L.GeoJSON {
   return L.geoJSON(fc, {
     pointToLayer: (point: Feature<Point, FeatureProperties>, latlng) => {
       if (point.properties.type === 'ObsLocation') {

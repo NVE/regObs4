@@ -52,10 +52,13 @@ import { isPlatform } from '@ionic/angular/standalone';
 import SphericalMercator from '@mapbox/sphericalmercator';
 import { MapLayersService, OfflineCapableMapLayersService } from './static-tiles.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { END_ICON, START_ICON } from '../map-image/map-image.component';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { LatLng } from 'leaflet';
 import type { Feature, Polygon } from 'geojson';
+import {
+  END_ICON,
+  START_ICON,
+} from 'src/app/components/observation/observation-location-map/observation-location-map.component';
 
 /**
  * Element in static map, either a tile or a graphic
