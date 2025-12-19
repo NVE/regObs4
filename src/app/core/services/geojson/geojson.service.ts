@@ -1,10 +1,9 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { DatabaseService } from '../database/database.service';
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
+import { FeatureCollection } from 'geojson';
 import { GeoJSONItem } from './geojson-item.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { cleanFeatureCollection } from 'src/app/pages/plans/geojson';
-import { length } from '@turf/turf';
+import { calculateLengthKm, cleanFeatureCollection } from 'src/app/pages/plans/geojson';
 import { Subject } from 'rxjs';
 
 const DEBUG_TAG = 'GeoJSON';
@@ -59,15 +58,6 @@ export class GeoJSONService {
   }
 
   /**
-   * Kalkulerer lengden av LineString features i et GeoJSON objekt
-   * @param geojson
-   * @returns lengde i kilometer
-   */
-  private calculateLengthKm(geojson: Feature<Geometry, GeoJsonProperties>[]): number {
-    return geojson.reduce((sum, feature) => sum + length(feature), 0);
-  }
-
-  /**
    * Updates metadata for a given item
    * @param item the geojson item to update
    */
@@ -92,17 +82,23 @@ export class GeoJSONService {
       this.logger.error(error, DEBUG_TAG, 'Error in cleaning process, but object may be mutated - half cleaned');
     }
 
+    const metdataToSave = { ...metadata };
+
     try {
       const lineFeatures = geojson.features.filter((f) => f.geometry.type === 'LineString');
 
       if (lineFeatures.length) {
-        const lengthKm = this.calculateLengthKm(lineFeatures);
-        metadata.lengthKm = lengthKm;
+        try {
+          const lengthKm = calculateLengthKm(lineFeatures);
+          metdataToSave.lengthKm = lengthKm;
+        } catch (error) {
+          this.logger.error(error, DEBUG_TAG, 'Could not calculate lengthKm', { lineFeatures });
+        }
       }
 
-      await this.db.set(`geojson:${metadata.id}`, geojson);
-      this.metadata_.update((items) => [...items, metadata]);
-      this.changedMetadataItem.next(metadata);
+      await this.db.set(`geojson:${metdataToSave.id}`, geojson);
+      this.metadata_.update((items) => [...items, metdataToSave]);
+      this.changedMetadataItem.next(metdataToSave);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Could not save', { metadata, geojson });
       throw error;
