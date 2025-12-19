@@ -362,6 +362,7 @@
     "MISSING_COMMENT": "Description/comment missing",
     "MISSING_NAME": "Track without name",
     "NAME": "Name",
+    "SAVE": "Save",
     "SORT_TITLE": " Sort by",
     "SORT_BY_NAME": "Name",
     "SORT_BY_TIME": "Last saved",
@@ -371,7 +372,8 @@
     "SHOW_ALL": "All",
     "FILE_NAME": "File name",
     "COMMENT": "Comment",
-    "VISIBLE_ON_MAP": "Visible on map"
+    "VISIBLE_ON_MAP": "Visible on map",
+    "WRONG_FILE_TYPE": "The file(s) '{{filenames}}' have an incorrect type and were rejected. Allowed file types: {{allowedFileExtensions}}"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
