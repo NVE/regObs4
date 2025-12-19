@@ -18,7 +18,7 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
 import L from 'leaflet';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, fromEventPattern, Subject, timer } from 'rxjs';
-import { concatMap, distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, filter, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
@@ -326,7 +326,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param map Leaflet map
    * @param id Unique id for the geojson layer
    */
-  private async removeGeojsonLayer(map: L.Map, id: string) {
+  private removeGeojsonLayer(map: L.Map, id: string) {
     const entry = this.geojsonLayers.get(id);
     if (entry) {
       if (map.hasLayer(entry.layer)) map.removeLayer(entry.layer);
@@ -506,12 +506,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
 
     // Fjern geoJSON-lag når metadata slettes
-    this.geoJSONService.removedMetadataItemId$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        concatMap((id) => from(this.removeGeojsonLayer(map, id)))
-      )
-      .subscribe();
+    this.geoJSONService.removedMetadataItemId$.pipe(takeUntil(this.ngDestroy$)).subscribe((id) => {
+      this.loggingService.debug(`GeoJSON med id = ${id} er slettet, fjerner kartlaget`, DEBUG_TAG, { id });
+      this.removeGeojsonLayer(map, id);
+    });
 
     // Tegn alle lagrede geoJSON-objekter ved oppstart
     const allMetadata = this.geoJSONService.metadata();
@@ -527,7 +525,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Oppdaterer et GeoJSON-lag i kartet basert på endrede metadata
   private async updateGeoJsonLayer(map: L.Map, metadata: GeoJSONItem) {
-    await this.removeGeojsonLayer(map, metadata.id);
+    this.removeGeojsonLayer(map, metadata.id);
 
     if (metadata.visibleOnMap) {
       const geojson = await this.geoJSONService.get(metadata.id);
