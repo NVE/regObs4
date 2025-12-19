@@ -496,6 +496,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.geoJSONService.geojsonItemToShowOnMap$.pipe(takeUntil(this.ngDestroy$)).subscribe((latLngBounds) => {
       if (latLngBounds && this.map) {
         this.flyToBounds(latLngBounds);
+        this.geoJSONService.geojsonItemToShowOnMap.set(null);
       }
     });
 
