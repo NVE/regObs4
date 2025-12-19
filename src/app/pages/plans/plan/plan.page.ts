@@ -46,10 +46,10 @@ export class PlanPage {
 
   async onRemove() {
     await this.geoJSON.remove(this.id());
-    await this.router.navigate(['/plans']);
+    this.router.navigate(['/plans']);
   }
 
-  async onSave() {
+  onSave() {
     const itemToUpdate = {
       id: this.id(),
       name: this.name(),
@@ -58,7 +58,7 @@ export class PlanPage {
       lengthKm: this.itemMetadata()?.lengthKm,
       date: Date.now(),
     };
-    await this.geoJSON.updateMetadata(itemToUpdate);
-    await this.router.navigate(['/plans']);
+    this.geoJSON.updateMetadata(itemToUpdate);
+    this.router.navigate(['/plans']);
   }
 }
