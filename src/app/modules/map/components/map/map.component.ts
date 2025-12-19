@@ -18,7 +18,7 @@ import { Position } from '@capacitor/geolocation';
 import { Platform } from '@ionic/angular/standalone';
 import L from 'leaflet';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, fromEventPattern, Subject, timer } from 'rxjs';
-import { concatMap, distinctUntilChanged, filter, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { concatMap, distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';

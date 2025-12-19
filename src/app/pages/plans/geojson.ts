@@ -1,5 +1,6 @@
-import { FeatureCollection, Geometry, GeometryCollection } from 'geojson';
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry, GeometryCollection } from 'geojson';
 import { cleanCoords } from '@turf/clean-coords';
+import { length } from '@turf/turf';
 import { truncate } from '@turf/truncate';
 
 /**
@@ -43,4 +44,13 @@ export function cleanFeatureCollection(fc: FeatureCollection) {
     cleanCoordinates(feature.geometry);
   }
   removeProperties(fc);
+}
+
+/**
+ * Kalkulerer lengden av LineString features i et GeoJSON objekt
+ * @param geojson
+ * @returns lengde i kilometer
+ */
+export function calculateLengthKm(geojson: Feature<Geometry, GeoJsonProperties>[]): number {
+  return geojson.reduce((sum, feature) => sum + length(feature), 0);
 }

@@ -32,7 +32,6 @@ import { Router, RouterLink } from '@angular/router';
     IonMenuButton,
     IonTitle,
     TranslatePipe,
-    TranslatePipe,
     NgxFileDropModule,
     RouterLink,
     IonRouterLinkWithHref,
@@ -59,7 +58,7 @@ export class PlansPage {
   });
 
   /**
-   * Log GPX filenames when files are dropped in the dropzone
+   * Importerer og lagrer sporfiler som GeoJSON-objekter i lokal database
    */
   async onFileDrop(files: NgxFileDropEntry[]) {
     for (const { fileEntry, relativePath } of files) {
