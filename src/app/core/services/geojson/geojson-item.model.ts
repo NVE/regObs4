@@ -1,7 +1,7 @@
 export interface GeoJSONItem {
   id: string;
   name: string;
-  date?: number;
+  date: number;
   visibleOnMap?: boolean;
   comment?: string;
   lengthKm?: number;
