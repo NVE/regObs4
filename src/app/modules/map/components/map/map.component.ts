@@ -514,7 +514,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
 
     // Tegn alle lagrede geoJSON-objekter ved oppstart
-    const allMetadata = await this.geoJSONService.metadata();
+    const allMetadata = this.geoJSONService.metadata();
     for (const metadata of allMetadata) {
       if (metadata.visibleOnMap) {
         const geojson = await this.geoJSONService.get(metadata.id);

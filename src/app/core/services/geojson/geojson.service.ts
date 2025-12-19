@@ -16,11 +16,12 @@ export class GeoJSONService {
   private db = inject(DatabaseService);
   private logger = inject(LoggingService);
   private initialized = false;
+  private metadata_ = signal<GeoJSONItem[]>([]);
   private changedMetadataItem = new Subject<GeoJSONItem>();
   private removedMetadataItemId = new Subject<string>();
 
   /** Metadata for alle lagrede spor */
-  metadata = signal<GeoJSONItem[]>([]);
+  metadata = this.metadata_.asReadonly();
 
   /** Lytt på denne for å få beskjed om nye eller endrede spor */
   changedMetadataItem$ = this.changedMetadataItem.asObservable();
@@ -42,7 +43,7 @@ export class GeoJSONService {
     this.logger.debug('Init', DEBUG_TAG);
     const items = await this.getMetadata();
     if (items && items.length > 0) {
-      this.metadata.set(items);
+      this.metadata_.set(items);
     }
     setTimeout(() => (this.initialized = true)); // For å unngå en første unødvendig lagring i effecten
   }
@@ -71,7 +72,7 @@ export class GeoJSONService {
    * @param item the geojson item to update
    */
   updateMetadata(item: GeoJSONItem) {
-    this.metadata.update((items) => {
+    this.metadata_.update((items) => {
       const other = items.filter((x) => x.id !== item.id);
       return [...other, item];
     });
@@ -100,7 +101,7 @@ export class GeoJSONService {
       }
 
       await this.db.set(`geojson:${metadata.id}`, geojson);
-      this.metadata.update((items) => [...items, metadata]);
+      this.metadata_.update((items) => [...items, metadata]);
       this.changedMetadataItem.next(metadata);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Could not save', { metadata, geojson });
@@ -124,15 +125,7 @@ export class GeoJSONService {
   async remove(id: GeoJSONItem['id']): Promise<void> {
     this.logger.debug('Remove', DEBUG_TAG, { id });
     await this.db.remove(`geojson:${id}`);
-    this.metadata.update((items) => items.filter((item) => item.id !== id));
+    this.metadata_.update((items) => items.filter((item) => item.id !== id));
     this.removedMetadataItemId.next(id);
   }
-
-  /**
-   * List all geojson ids
-   */
-  // async listIds(): Promise<GeoJSONItem['id'][]> {
-  //   const keys = await this.db.keys();
-  //   return keys.filter((k) => k.startsWith('geojson:')).map((k) => k.replace('geojson:', ''));
-  // }
 }

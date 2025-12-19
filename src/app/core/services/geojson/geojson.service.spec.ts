@@ -148,7 +148,7 @@ describe('GeoJSONService', () => {
       service = TestBed.inject(GeoJSONService);
       tick();
       // Add an item first
-      service.metadata.set([mockMetadataItem]);
+      service.save(mockMetadataItem, mockGeoJSON);
       tick();
       databaseService.set.calls.reset();
     }));
