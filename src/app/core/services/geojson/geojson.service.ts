@@ -6,6 +6,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { cleanFeatureCollection } from 'src/app/pages/plans/geojson';
 import { length } from '@turf/turf';
 import { Subject } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'GeoJSON';
 
@@ -15,6 +16,10 @@ const DEBUG_TAG = 'GeoJSON';
 export class GeoJSONService {
   private db = inject(DatabaseService);
   private logger = inject(LoggingService);
+
+  // tur som skal vises på kartet når bruker klikker på vis i kart knappen i turlisten.
+  geojsonItemToShowOnMap = signal<L.LatLngBounds | null>(null);
+  readonly geojsonItemToShowOnMap$ = toObservable(this.geojsonItemToShowOnMap);
   private initialized = false;
   private metadata_ = signal<GeoJSONItem[]>([]);
   private changedMetadataItem = new Subject<GeoJSONItem>();

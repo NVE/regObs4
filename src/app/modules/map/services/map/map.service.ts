@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, BehaviorSubject, Subject, of, concat } from 'rxjs';
 import {
@@ -81,7 +81,7 @@ export class MapService {
 
   // Disse to baserer seg på samme variabel og må initialiseres sammen i constructor
   private _mapViewSubject: BehaviorSubject<IMapView | undefined>;
-  hadStartupMapView: boolean;
+  hadStartupMapView = signal(false);
 
   /**
    * Extent, center and zoom for the map in HomePage
@@ -147,7 +147,7 @@ export class MapService {
 
   constructor() {
     const startupMapView = parseMapViewFromSearchParams(getSearchParams());
-    this.hadStartupMapView = startupMapView != undefined;
+    this.hadStartupMapView.set(startupMapView != undefined);
     this._mapViewSubject = new BehaviorSubject<IMapView | undefined>(startupMapView);
 
     this._showUserLocationSubject = new BehaviorSubject<boolean>(true);

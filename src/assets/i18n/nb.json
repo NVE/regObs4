@@ -370,7 +370,8 @@
     "SHOW_ALL": "Alle",
     "FILE_NAME": "Filnavn",
     "COMMENT": "Kommentar",
-    "VISIBLE_ON_MAP": "Vises i kart"
+    "VISIBLE_ON_MAP": "Vises i kart",
+    "SHOW_PLAN_ON_MAP_ARIA_LABEL": "Vis plan i kartet (videresender til startsiden)"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

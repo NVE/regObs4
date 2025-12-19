@@ -492,6 +492,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe(() => this.redrawMap());
 
+    // setter nye bounds når geojson item skal vises på kartet
+    this.geoJSONService.geojsonItemToShowOnMap$.pipe(takeUntil(this.ngDestroy$)).subscribe((latLngBounds) => {
+      if (latLngBounds && this.map) {
+        this.flyToBounds(latLngBounds);
+      }
+    });
+
     this.mapReady.emit(map);
   }
 
@@ -832,6 +839,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private flyToMaxZoom(latLng: L.LatLng) {
     const currentZoom = this.map?.getZoom() || 0;
     this.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, currentZoom));
+  }
+
+  // Går til angitte bounds med padding
+  private flyToBounds(bounds: L.LatLngBounds) {
+    if (this.map == null) {
+      throw new Error('Map not initialized');
+    }
+
+    this.isDoingMoveAction = true;
+    this.map.fitBounds(bounds, { padding: [5, 5] });
+    //sikre at kart ikke skriver om bounds i home.page
+    this.mapService.hadStartupMapView.set(true);
+    this.isDoingMoveAction = false;
   }
 
   private flyTo(latLng: L.LatLng, zoom: number) {

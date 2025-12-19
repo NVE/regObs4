@@ -24,9 +24,42 @@
       </nve-select>
     </div>
 
-    <nve-menu>
+    <ul>
       @for (item of items(); track item.id; let last = $last) {
-        <a [routerLink]="item.id" routerDirection="forward">
+        <li>
+          <nve-icon src="/assets/icon/tour.svg"></nve-icon>
+          <div class="text-wrapper">
+            <span class="label"
+              >{{ item.name }}
+              @if (item.visibleOnMap) {
+                <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
+              }
+            </span>
+            <span
+              >{{ item.date | date }}
+              @if (item.lengthKm !== undefined && item.lengthKm !== null) {
+                , {{ item.lengthKm.toFixed(2) }} km
+              }
+            </span>
+          </div>
+          <div class="button-group">
+            <a [routerLink]="item.id" routerDirection="forward">
+              <nve-button variant="text" title="Vis detalj" tabindex="-1">
+                <nve-icon src="/assets/icon/visibility.svg"></nve-icon>
+              </nve-button>
+            </a>
+
+            <nve-button
+              variant="text"
+              title="Vis i kart"
+              (click)="onDetailClick($event, item)"
+              [aria-label]="'PLANS.SHOW_PLAN_ON_MAP_ARIA_LABEL' | translate"
+            >
+              <nve-icon src="/assets/icon/map.svg"></nve-icon>
+            </nve-button>
+          </div>
+        </li>
+        <!--<a [routerLink]="item.id" routerDirection="forward">
           <nve-menu-item>
             <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
             <div class="text-wrapper">
@@ -45,12 +78,12 @@
             </div>
             <nve-icon slot="suffix" name="chevron_forward"></nve-icon
           ></nve-menu-item>
-        </a>
+        </a>-->
         @if (!last) {
           <nve-divider></nve-divider>
         }
       }
-    </nve-menu>
+    </ul>
 
     <div class="drop-zone-wrapper">
       <ngx-file-drop dropZoneClassName="drop-zone" [accept]="'.gpx, .geojson, .json'" (onFileDrop)="onFileDrop($event)">

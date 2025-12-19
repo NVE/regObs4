@@ -11,6 +11,7 @@ import 'nve-designsystem/components/nve-badge/nve-badge.component.js';
 import 'nve-designsystem/components/nve-select/nve-select.component.js';
 import 'nve-designsystem/components/nve-option/nve-option.component.js';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
+import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { toGeoJSON } from './utils';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
@@ -18,6 +19,7 @@ import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { generateShortRandomId } from './utils';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import L from 'leaflet';
 
 @Component({
   selector: 'app-plans',
@@ -43,7 +45,7 @@ import { Router, RouterLink } from '@angular/router';
 export class PlansPage {
   private platform = inject(Platform);
   private router = inject(Router);
-  private geoJSON = inject(GeoJSONService);
+  private geoJSONService = inject(GeoJSONService);
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
 
@@ -51,7 +53,7 @@ export class PlansPage {
   visibilityFilter = signal<'all' | 'onlyVisibleOnMap'>('all');
   items = computed(() => {
     const sorter = sortFunctions[this.sortValue()];
-    const sortedItems = sorter(this.geoJSON.metadata());
+    const sortedItems = sorter(this.geoJSONService.metadata());
     if (this.visibilityFilter() === 'onlyVisibleOnMap') {
       return sortedItems.filter((item) => item.visibleOnMap);
     }
@@ -66,12 +68,26 @@ export class PlansPage {
       const geojson = await toGeoJSON(fileEntry);
       const id = generateShortRandomId();
       const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now(), visibleOnMap: true };
-      await this.geoJSON.save(metadata, geojson);
+      await this.geoJSONService.save(metadata, geojson);
       // Åpne detaljsiden kun når en fil er lastet opp.
       if (files.length === 1) {
         this.router.navigate(['/plans', id]);
       }
     }
+  }
+
+  async onDetailClick(event: Event, item: GeoJSONItem) {
+    event.preventDefault();
+    await this.updateGeojsonItemToShowOnMap(item.id);
+    this.router.navigate([item.id]);
+  }
+
+  async updateGeojsonItemToShowOnMap(id: string) {
+    const geoJSON = await this.geoJSONService.get(id);
+    const geoJsonLayer = L.geoJSON(geoJSON);
+    const bounds = geoJsonLayer.getBounds();
+
+    this.geoJSONService.geojsonItemToShowOnMap.set(bounds);
   }
 
   /**

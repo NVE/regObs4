@@ -49,6 +49,12 @@ nve-select {
   font: var(--label-medium);
 }
 
+.button-group {
+  display: flex;
+  margin-left: auto;
+  gap: var(--spacing-xx-small);
+}
+
 nve-menu-item {
   nve-icon {
     --icon-size: 30px;
@@ -69,4 +75,29 @@ nve-badge::part(base) {
 
 a {
   text-decoration: none;
+  border-radius: var(--border-radius-small);
+}
+
+a:focus-visible {
+  outline: var(--sl-focus-ring);
+  outline-offset: var(--sl-focus-ring-offset);
+}
+
+ul {
+  margin: 0;
+  padding: var(--spacing-small);
+  background: var(--neutrals-background-primary);
+  box-shadow: var(--hard);
+}
+
+li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  color: inherit;
+}
+
+li > nve-icon {
+  --icon-size: 26px;
 }

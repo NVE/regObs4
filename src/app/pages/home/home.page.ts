@@ -362,7 +362,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     // Hvis applikasjonen har startet opp uten kartutsnitt i url, sett bounds til hele norge (inkl. svalbard),
     // men bare hvis vi ikke har på GPS-sporing (som vi gjør i appen)
     const followMode = await firstValueFrom(this.mapService.followMode$);
-    if (!this.mapService.hadStartupMapView && !followMode) {
+    if (!this.mapService.hadStartupMapView() && !followMode) {
       const bounds = L.latLngBounds([settings.map.startupBounds.topLeft, settings.map.startupBounds.bottomRight]);
       leafletMap.fitBounds(bounds, { animate: false, noMoveStart: true });
     }
