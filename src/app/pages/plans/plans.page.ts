@@ -1,7 +1,8 @@
 import { Platform } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import { IonButtons, IonMenuButton, IonRouterLinkWithHref, IonTitle, IonContent } from '@ionic/angular/standalone';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import 'nve-designsystem/components/nve-menu/nve-menu.component.js';
@@ -18,6 +19,7 @@ import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { generateShortRandomId } from './utils';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-plans',
@@ -43,6 +45,13 @@ export class PlansPage {
   private platform = inject(Platform);
   private router = inject(Router);
   private geoJSON = inject(GeoJSONService);
+  private toastController = inject(ToastController);
+  private translateService = inject(TranslateService);
+
+  private allowedFileExtensions = ['.gpx', '.geojson', '.json'];
+
+  // Ikke alle Android-telefoner håndterer spesifikke filtyper, så vi tillater alle på mobile plattformer
+  acceptFileTypes = Capacitor.isNativePlatform() ? '*' : this.allowedFileExtensions.join(',');
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
 
@@ -61,16 +70,49 @@ export class PlansPage {
    * Importerer og lagrer sporfiler som GeoJSON-objekter i lokal database
    */
   async onFileDrop(files: NgxFileDropEntry[]) {
+    const ignoredFiles: string[] = [];
+
     for (const { fileEntry, relativePath } of files) {
-      const geojson = await toGeoJSON(fileEntry);
-      const id = generateShortRandomId();
-      const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now(), visibleOnMap: true };
-      await this.geoJSON.save(metadata, geojson);
-      // Åpne detaljsiden kun når en fil er lastet opp.
-      if (files.length === 1) {
-        this.router.navigate(['/plans', id]);
+      if (fileEntry.isFile && this.validateFileExtension(relativePath)) {
+        const geojson = await toGeoJSON(fileEntry);
+        const id = generateShortRandomId();
+        const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now(), visibleOnMap: true };
+        await this.geoJSON.save(metadata, geojson);
+        // Åpne detaljsiden kun når en fil er lastet opp.
+        if (files.length === 1) {
+          this.router.navigate(['/plans', id]);
+        }
+      } else {
+        ignoredFiles.push(relativePath);
       }
     }
+    if (ignoredFiles.length > 0) {
+      this.showFileTypeError(ignoredFiles);
+    }
+  }
+
+  private validateFileExtension(filename: string): boolean {
+    const extMatch = filename.toLowerCase().match(/(\.[a-z0-9]+)$/);
+    const ext = extMatch ? extMatch[1] : '';
+    return this.allowedFileExtensions.includes(ext);
+  }
+
+  /**
+   * Viser feilmelding til brukeren når filtype ikke er tillatt
+   */
+  private async showFileTypeError(filenames: string[]): Promise<void> {
+    const message = this.translateService.instant('PLANS.WRONG_FILE_TYPE', {
+      filenames: filenames.join(', '),
+      allowedFileExtensions: this.allowedFileExtensions.join(', '),
+    });
+    const toast = await this.toastController.create({
+      message,
+      duration: 5000,
+      color: 'danger',
+      position: 'bottom',
+      mode: 'md',
+    });
+    toast.present();
   }
 
   /**

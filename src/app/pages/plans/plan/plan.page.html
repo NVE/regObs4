@@ -35,7 +35,7 @@
           [label]="'PLANS.COMMENT' | translate"
         ></nve-textarea>
         <div class="button-group">
-          <nve-button variant="primary" type="submit" (click)="onSave()">Lagre</nve-button>
+          <nve-button variant="primary" type="submit" (click)="onSave()">{{ "PLANS.SAVE" | translate }}</nve-button>
           <nve-button variant="danger" type="button" (click)="onRemove()">
             <nve-icon slot="prefix" src="assets/icon/delete_white.svg"></nve-icon>
             {{ "PLANS.DELETE" | translate }}
