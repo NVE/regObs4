@@ -48,15 +48,16 @@
                 <nve-icon src="/assets/icon/visibility.svg"></nve-icon>
               </nve-button>
             </a>
-
-            <nve-button
-              variant="text"
-              title="Vis i kart"
-              (click)="onDetailClick($event, item)"
-              [aria-label]="'PLANS.SHOW_PLAN_ON_MAP_ARIA_LABEL' | translate"
-            >
-              <nve-icon src="/assets/icon/map.svg"></nve-icon>
-            </nve-button>
+            @if (item.visibleOnMap) {
+              <nve-button
+                variant="text"
+                title="Vis i kart"
+                (click)="onDetailClick($event, item)"
+                [aria-label]="'PLANS.SHOW_PLAN_ON_MAP_ARIA_LABEL' | translate"
+              >
+                <nve-icon src="/assets/icon/map.svg"></nve-icon>
+              </nve-button>
+            }
           </div>
         </li>
         @if (!last) {

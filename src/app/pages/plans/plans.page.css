@@ -7,7 +7,6 @@
   max-width: var(--desktop-max-width);
   margin: 0 auto;
   margin-bottom: var(--spacing-large);
-  overflow: auto;
   padding: 0px var(--spacing-medium);
 }
 svg {
@@ -44,9 +43,15 @@ nve-select {
 
 .label {
   display: flex;
+  flex: 1 1 0;
   gap: 10px;
   align-items: center;
   font: var(--label-medium);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  nve-badge {
+    flex: 0 0 auto;
+  }
 }
 
 .button-group {
@@ -94,10 +99,15 @@ li {
   list-style: none;
   display: flex;
   align-items: center;
+  padding: var(--spacing-xx-small, 0);
   gap: var(--spacing-medium);
   color: inherit;
 }
 
 li > nve-icon {
   --icon-size: 26px;
+}
+
+nve-button::part(base) {
+  min-width: 40px;
 }

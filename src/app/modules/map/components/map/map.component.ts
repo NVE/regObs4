@@ -849,7 +849,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.isDoingMoveAction = true;
-    this.map.fitBounds(bounds, { padding: [5, 5] });
+    this.map.fitBounds(bounds, { padding: [10, 10] });
     //sikre at kart ikke skriver om bounds i home.page
     this.mapService.hadStartupMapView.set(true);
     this.isDoingMoveAction = false;
