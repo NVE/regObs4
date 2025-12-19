@@ -82,7 +82,7 @@ export class GeoJSONService {
       this.logger.error(error, DEBUG_TAG, 'Error in cleaning process, but object may be mutated - half cleaned');
     }
 
-    const metdataToSave = metadata;
+    const metdataToSave = { ...metadata };
 
     try {
       const lineFeatures = geojson.features.filter((f) => f.geometry.type === 'LineString');
