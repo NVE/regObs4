@@ -362,6 +362,7 @@
     "MISSING_COMMENT": "Description/comment missing",
     "MISSING_NAME": "Track without name",
     "NAME": "Name",
+    "SAVE": "Save",
     "SORT_TITLE": " Sort by",
     "SORT_BY_NAME": "Name",
     "SORT_BY_TIME": "Last saved",
