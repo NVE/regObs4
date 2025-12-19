@@ -291,11 +291,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Click handler for this geojson
-    const setMetadata = () => {
+    // Obsturer har navn og beskrivelse i properties i geoJSON-objektet, og ikke i metadata-objektet
+    const setMetadata = (e: L.LeafletMouseEvent) => {
       const missingName = this.translateService.instant('PLANS.MISSING_NAME');
       const missingDescription = this.translateService.instant('PLANS.MISSING_COMMENT');
-      const name = metadata?.name || missingName;
-      const description = metadata?.comment || missingDescription;
+      const name = metadata?.name || e.propagatedFrom?.feature?.properties?.navn || missingName;
+      const description = metadata?.comment || e.propagatedFrom?.feature?.properties?.beskrivelse || missingDescription;
       this.metadataName.set(name);
       this.metadataDescription.set(description);
     };
