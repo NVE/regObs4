@@ -48,7 +48,7 @@ export class PlansPage {
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
 
-  private allowedFileExtensions = ['gpx', 'geojson', 'json'];
+  private allowedFileExtensions = ['.gpx', '.geojson', '.json'];
 
   // Ikke alle Android-telefoner håndterer spesifikke filtyper, så vi tillater alle på mobile plattformer
   acceptFileTypes = Capacitor.isNativePlatform() ? '*' : this.allowedFileExtensions.join(',');
@@ -92,7 +92,7 @@ export class PlansPage {
   }
 
   private validateFileExtension(filename: string): boolean {
-    const extMatch = filename.toLowerCase().match(/\.([a-z0-9]+)$/);
+    const extMatch = filename.toLowerCase().match(/(\.[a-z0-9]+)$/);
     const ext = extMatch ? extMatch[1] : '';
     return this.allowedFileExtensions.includes(ext);
   }
