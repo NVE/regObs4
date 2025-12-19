@@ -59,26 +59,6 @@
             </nve-button>
           </div>
         </li>
-        <!--<a [routerLink]="item.id" routerDirection="forward">
-          <nve-menu-item>
-            <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon>
-            <div class="text-wrapper">
-              <span class="label"
-                >{{ item.name }}
-                @if (item.visibleOnMap) {
-                  <nve-badge variant="success">{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
-                }
-              </span>
-              <span
-                >{{ item.date | date }}
-                @if (item.lengthKm !== undefined && item.lengthKm !== null) {
-                  , {{ item.lengthKm.toFixed(2) }} km
-                }
-              </span>
-            </div>
-            <nve-icon slot="suffix" name="chevron_forward"></nve-icon
-          ></nve-menu-item>
-        </a>-->
         @if (!last) {
           <nve-divider></nve-divider>
         }
