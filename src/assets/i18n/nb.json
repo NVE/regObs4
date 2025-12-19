@@ -370,7 +370,8 @@
     "SHOW_ALL": "Alle",
     "FILE_NAME": "Filnavn",
     "COMMENT": "Kommentar",
-    "VISIBLE_ON_MAP": "Vises i kart"
+    "VISIBLE_ON_MAP": "Vises i kart",
+    "WRONG_FILE_TYPE": "Filen(e) '{{filenames}}' har feil type og ble avvist. Tillatte filtyper: {{allowedFileExtensions}}"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

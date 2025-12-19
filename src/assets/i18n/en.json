@@ -371,7 +371,8 @@
     "SHOW_ALL": "All",
     "FILE_NAME": "File name",
     "COMMENT": "Comment",
-    "VISIBLE_ON_MAP": "Visible on map"
+    "VISIBLE_ON_MAP": "Visible on map",
+    "WRONG_FILE_TYPE": "The file(s) '{{filenames}}' have an incorrect type and were rejected. Allowed file types: {{allowedFileExtensions}}"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
