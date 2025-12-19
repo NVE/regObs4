@@ -1,5 +1,4 @@
 @if (itemMetadata(); as info) {
-  <!--<app-static-map-image [location]="location()"></app-static-map-image>-->
   <ion-header>
     <ion-toolbar appHeaderColor>
       <ion-buttons slot="start">
@@ -13,15 +12,15 @@
     <div class="content">
       <div class="tag-row">
         <nve-tag saturation="default" variant="neutral">
-          <nve-icon slot="prefix" src="assets\icon\calendar_today.svg" />
+          <nve-icon slot="prefix" src="assets/icon/calendar_today.svg" />
           <span>{{ "PLANS.DATE_EDITED" | translate }}</span> <span slot="extra">{{ info.date | date: "short" }}</span>
         </nve-tag>
         <nve-tag saturation="default" variant="neutral">
-          <nve-icon slot="prefix" src="assets\icon\altitude.svg" />
+          <nve-icon slot="prefix" src="assets/icon/altitude.svg" />
           <span slot="extra">-- {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</span>
         </nve-tag>
         <nve-tag saturation="default" variant="neutral">
-          <nve-icon slot="prefix" src="assets\icon\arrow_range.svg" />
+          <nve-icon slot="prefix" src="assets/icon/arrow_range.svg" />
           <span slot="extra">{{ info.lengthKm ? `${info.lengthKm.toFixed(2)} km` : '-- km' }}</span>
         </nve-tag>
       </div>
