@@ -100,6 +100,7 @@ stages:
               customCommand: 'run sentry:sourcemaps'
             env:
               RELEASE: $(json.version)
+              DIST: $(json.revision)
 
           - task: CopyFiles@2
             displayName: 'copy files to $(Build.ArtifactStagingDirectory)'

@@ -35,7 +35,7 @@
     "translations:add-nn-app-fallback": "ts-node --project tsconfig.npm-script.json translations/addNynorskFallback.ts",
     "prettier:fix": "prettier --write src",
     "update-headers": "ts-node --project tsconfig.npm-script.json headers-update-scripts/update-csp-and-pp-headers.ts",
-    "sentry:sourcemaps": "cross-env-shell sentry-cli sourcemaps inject --org nve --project regobs-app ./www/browser && sentry-cli sourcemaps upload --release=$RELEASE --org nve --project regobs-app ./www/browser"
+    "sentry:sourcemaps": "cross-env-shell sentry-cli sourcemaps inject --org nve --project regobs-app ./www/browser && sentry-cli sourcemaps upload --release=$RELEASE -dist=$DIST --org nve --project regobs-app ./www/browser"
   },
   "private": true,
   "dependencies": {
