@@ -193,8 +193,4 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     }
     this.contact('MENU.CONTACT_REGOBS_ERROR', 'MENU.ERROR_REPORT_DESCRIPTION', additionalSubjectText);
   }
-
-  test() {
-    throw new Error('Test error from side menu');
-  }
 }
