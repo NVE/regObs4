@@ -23,7 +23,7 @@ export class SentryService implements LoggingService {
 
   private getDistWithPlatform(): string {
     const platform = Capacitor.getPlatform();
-    return platform === 'web' ? `${version.revision}-web` : `${version.revision}-mobile`;
+    return platform === 'web' ? `${version.revision}-web` : `${version.revision}-app`;
   }
 
   // Protected wrapper methods for easier testing
