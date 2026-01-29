@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import * as Sentry from '@sentry/browser';
+import { Capacitor } from '@capacitor/core';
 import version from '../../../../../environments/version.json';
 import { settings } from '../../../../../settings';
 import { environment } from '../../../../../environments/environment';
@@ -19,6 +20,11 @@ import type { CaptureContext } from '@sentry/types';
 })
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
+
+  private getDistWithPlatform(): string {
+    const platform = Capacitor.getPlatform();
+    return platform === 'web' ? `${version.revision}-web` : `${version.revision}-mobile`;
+  }
 
   // Protected wrapper methods for easier testing
   protected sentryAddBreadcrumb(breadcrumb: Sentry.Breadcrumb): void {
@@ -49,7 +55,7 @@ export class SentryService implements LoggingService {
       environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
       enabled: environment.production,
       release: version.version,
-      dist: version.revision,
+      dist: this.getDistWithPlatform(),
     });
   }
 

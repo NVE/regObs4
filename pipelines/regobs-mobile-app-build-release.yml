@@ -133,7 +133,7 @@ steps:
       customCommand: 'run sentry:sourcemaps'
       env:
         RELEASE: $(json.version)
-        DIST: $(json.revision)
+        DIST: $(json.revision)-mobile
 
   # TODO: Create ipa
   - task: Xcode@5
