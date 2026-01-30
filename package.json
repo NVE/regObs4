@@ -24,18 +24,14 @@
     "update-packages": "ncu -u & npm install",
     "create-version-file": "ts-node --project tsconfig.npm-script.json git.version.ts",
     "strip-source-map-url": "ts-node --project tsconfig.npm-script.json strip-source-map-urls.ts",
-    "sentry:upload-sourcemaps": "cross-env-shell sentry-cli releases files $npm_package_version upload-sourcemaps www/browser -x .js -x .map --validate --verbose --rewrite --strip-common-prefix --url-prefix=~",
-    "sentry:upload-release-and-commits": "cross-env-shell sentry-cli releases new $npm_package_version && sentry-cli releases set-commits --auto $npm_package_version",
-    "sentry:create-release": "cross-env-shell sentry-cli releases new $npm_package_version",
-    "sentry:finalize-release": "cross-env-shell sentry-cli releases finalize $npm_package_version",
-    "sentry:create-release-and-upload-sourcemaps": "npm run sentry:create-release && npm run sentry:upload-sourcemaps && npm run sentry:finalize-release",
+    "sentry:sourcemaps": "cross-env-shell sentry-cli sourcemaps inject --org nve --project regobs-app ./www/browser && sentry-cli sourcemaps upload --release=$RELEASE --dist=$DIST --org nve --project regobs-app ./www/browser",
+    "sentry:finalize": "cross-env-shell sentry-cli releases finalize $RELEASE --org nve --project regobs-app",
     "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts",
     "translations:pr": "ts-node --project tsconfig.npm-script.json translations/triggerPRs.ts",
     "translations:update-fallback": "ts-node --project tsconfig.npm-script.json translations/updateDbFallback.ts",
     "translations:add-nn-app-fallback": "ts-node --project tsconfig.npm-script.json translations/addNynorskFallback.ts",
     "prettier:fix": "prettier --write src",
-    "update-headers": "ts-node --project tsconfig.npm-script.json headers-update-scripts/update-csp-and-pp-headers.ts",
-    "sentry:sourcemaps": "cross-env-shell sentry-cli sourcemaps inject --org nve --project regobs-app ./www/browser && sentry-cli sourcemaps upload --release=$RELEASE --dist=$DIST --org nve --project regobs-app ./www/browser"
+    "update-headers": "ts-node --project tsconfig.npm-script.json headers-update-scripts/update-csp-and-pp-headers.ts"
   },
   "private": true,
   "dependencies": {

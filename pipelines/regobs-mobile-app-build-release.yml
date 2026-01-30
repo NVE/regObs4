@@ -131,9 +131,9 @@ steps:
     inputs:
       command: custom
       customCommand: 'run sentry:sourcemaps'
-      env:
-        RELEASE: $(json.version)
-        DIST: $(json.revision)-app
+    env:
+      RELEASE: $(json.version)
+      DIST: $(json.revision)-app
 
   # TODO: Create ipa
   - task: Xcode@5

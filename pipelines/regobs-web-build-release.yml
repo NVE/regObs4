@@ -78,6 +78,7 @@ stages:
             inputs:
               jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
               shouldPrefixVariables: true
+            name: versionVars
 
           - task: CopyFiles@2
             displayName: 'Ta med sentry.properties i bygget. Trengs for å lage release i Sentry'
@@ -106,9 +107,18 @@ stages:
             displayName: 'copy files to $(Build.ArtifactStagingDirectory)'
             inputs:
               sourceFolder: 'www'
-              contents: '**/*'
+              contents: |
+                **/*
+                !**/*.map
               targetFolder: '$(Build.ArtifactStagingDirectory)'
               cleanTargetFolder: true
+
+          - task: CopyFiles@2
+            displayName: 'Copy sentry.properties to artifacts for Prod stage'
+            inputs:
+              sourceFolder: '$(Build.SourcesDirectory)'
+              contents: 'sentry.properties'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
 
           - task: PublishBuildArtifacts@1
             displayName: 'Publish BuildArtifact'
@@ -153,6 +163,27 @@ stages:
                     AppPoolName: '$(appName)'
                     AppPoolNameForWebsite: '$(appName)'
                     AppPoolNameForApplication: '$(appName)'
+
+                - task: NodeTool@0
+                  displayName: 'Use Node 20.x'
+                  inputs:
+                    versionSource: 'spec'
+                    versionSpec: 20.x
+
+                - task: CopyFiles@2
+                  displayName: 'Download sentry.properties'
+                  inputs:
+                    SourceFolder: '$(Pipeline.Workspace)/drop'
+                    Contents: 'sentry.properties'
+                    TargetFolder: '$(System.DefaultWorkingDirectory)'
+
+                - task: Npm@1
+                  displayName: 'Finalize Sentry release after successful test deployment'
+                  inputs:
+                    command: custom
+                    customCommand: 'run sentry:finalize'
+                  env:
+                    RELEASE: $(stageDependencies.Build.Job1.outputs['versionVars.json.version'])
 
   - stage: Prod
     displayName: 'Deploy to Prod'
