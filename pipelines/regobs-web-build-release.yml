@@ -95,13 +95,35 @@ stages:
               customCommand: 'run build:prod'
 
           - task: Npm@1
-            displayName: 'npm run sentry:sourcemaps'
+            displayName: 'Create Sentry release'
             inputs:
               command: custom
-              customCommand: 'run sentry:sourcemaps'
+              customCommand: 'run sentry:release:new'
             env:
-              RELEASE: $(json.version)
-              DIST: $(json.revision)-web
+              RELEASE: web@$(json.version)
+
+          - task: Npm@1
+            displayName: 'Set commits on Sentry release'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:release:commits'
+            env:
+              RELEASE: web@$(json.version)
+
+          - task: Npm@1
+            displayName: 'Inject source maps'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:sourcemaps:inject'
+
+          - task: Npm@1
+            displayName: 'Upload source maps to Sentry'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:sourcemaps:upload'
+            env:
+              RELEASE: web@$(json.version)
+              DIST: $(json.revision)
 
           - task: CopyFiles@2
             displayName: 'copy files to $(Build.ArtifactStagingDirectory)'
@@ -164,27 +186,6 @@ stages:
                     AppPoolNameForWebsite: '$(appName)'
                     AppPoolNameForApplication: '$(appName)'
 
-                - task: NodeTool@0
-                  displayName: 'Use Node 20.x'
-                  inputs:
-                    versionSource: 'spec'
-                    versionSpec: 20.x
-
-                - task: CopyFiles@2
-                  displayName: 'Download sentry.properties'
-                  inputs:
-                    SourceFolder: '$(Pipeline.Workspace)/drop'
-                    Contents: 'sentry.properties'
-                    TargetFolder: '$(System.DefaultWorkingDirectory)'
-
-                - task: Npm@1
-                  displayName: 'Finalize Sentry release after successful test deployment'
-                  inputs:
-                    command: custom
-                    customCommand: 'run sentry:finalize'
-                  env:
-                    RELEASE: $(stageDependencies.Build.Job1.outputs['versionVars.json.version'])
-
   - stage: Prod
     displayName: 'Deploy to Prod'
     dependsOn: Test
@@ -222,3 +223,24 @@ stages:
                     AppPoolName: '$(appName)'
                     AppPoolNameForWebsite: '$(appName)'
                     AppPoolNameForApplication: '$(appName)'
+
+                - task: NodeTool@0
+                  displayName: 'Use Node 20.x'
+                  inputs:
+                    versionSource: 'spec'
+                    versionSpec: 20.x
+
+                - task: CopyFiles@2
+                  displayName: 'Download sentry.properties'
+                  inputs:
+                    SourceFolder: '$(Pipeline.Workspace)/drop'
+                    Contents: 'sentry.properties'
+                    TargetFolder: '$(System.DefaultWorkingDirectory)'
+
+                - task: Npm@1
+                  displayName: 'Finalize Sentry release after prod deployment'
+                  inputs:
+                    command: custom
+                    customCommand: 'run sentry:release:finalize'
+                  env:
+                    RELEASE: web@$(stageDependencies.Build.Job1.outputs['versionVars.json.version'])

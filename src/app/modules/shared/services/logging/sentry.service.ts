@@ -21,9 +21,10 @@ import type { CaptureContext } from '@sentry/types';
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
 
-  private getDistWithPlatform(): string {
+  private getReleaseWithPlatform(): string {
     const platform = Capacitor.getPlatform();
-    return platform === 'web' ? `${version.revision}-web` : `${version.revision}-app`;
+    const prefix = platform === 'web' ? 'web' : 'app';
+    return `${prefix}@${version.version}`;
   }
 
   // Protected wrapper methods for easier testing
@@ -54,8 +55,8 @@ export class SentryService implements LoggingService {
       transport: makeFetchTransport,
       environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
       enabled: environment.production,
-      release: version.version,
-      dist: this.getDistWithPlatform(),
+      release: this.getReleaseWithPlatform(),
+      dist: version.revision,
     });
   }
 
