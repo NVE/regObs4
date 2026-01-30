@@ -113,13 +113,6 @@ steps:
       verbose: false
       customCommand: 'run build:prod'
 
-  - task: Npm@1
-    displayName: 'Capacitor sync to native folders'
-    inputs:
-      command: custom
-      verbose: false
-      customCommand: 'run cap:sync'
-
   - task: oneLuckiDevJson2Variable@1
     displayName: 'Create environment variables from version.json file'
     inputs:
@@ -164,6 +157,19 @@ steps:
       customCommand: 'run sentry:release:finalize'
     env:
       RELEASE: app@$(json.version)
+
+  - task: Npm@1
+    displayName: 'Delete source maps before copying to native apps'
+    inputs:
+      command: custom
+      customCommand: 'run sourcemaps:clean'
+
+  - task: Npm@1
+    displayName: 'Capacitor sync to native folders'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run cap:sync'
 
   # TODO: Create ipa
   - task: Xcode@5

@@ -29,6 +29,7 @@
     "sentry:sourcemaps:inject": "cross-env-shell sentry-cli sourcemaps inject --org nve --project regobs-app ./www/browser",
     "sentry:sourcemaps:upload": "cross-env-shell sentry-cli sourcemaps upload --release=$RELEASE --dist=$DIST --org nve --project regobs-app ./www/browser",
     "sentry:release:finalize": "cross-env-shell sentry-cli releases finalize $RELEASE --org nve --project regobs-app",
+    "sourcemaps:clean": "cross-env-shell rm -f ./www/browser/*.map",
     "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts",
     "translations:pr": "ts-node --project tsconfig.npm-script.json translations/triggerPRs.ts",
     "translations:update-fallback": "ts-node --project tsconfig.npm-script.json translations/updateDbFallback.ts",
