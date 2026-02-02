@@ -134,13 +134,16 @@ stages:
             env:
               RELEASE: web@$(json.version)
 
+          - task: Npm@1
+            displayName: 'Delete source maps'
+            inputs:
+              command: custom
+              customCommand: 'run sourcemaps:clean'
+
           - task: CopyFiles@2
             displayName: 'copy files to $(Build.ArtifactStagingDirectory)'
             inputs:
               sourceFolder: 'www'
-              contents: |
-                **/*
-                !**/*.map
               targetFolder: '$(Build.ArtifactStagingDirectory)'
               cleanTargetFolder: true
 
