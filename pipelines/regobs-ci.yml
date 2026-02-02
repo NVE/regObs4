@@ -26,6 +26,8 @@ steps:
     displayName: Cache npm
 
   - script: npm ci
+    env:
+      npm_config_cache: $(npm_config_cache)
 
   - task: DownloadSecureFile@1
     displayName: 'Download secure file'
