@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
 import * as Sentry from '@sentry/browser';
+import { Capacitor } from '@capacitor/core';
 import version from '../../../../../environments/version.json';
 import { settings } from '../../../../../settings';
 import { environment } from '../../../../../environments/environment';
@@ -19,6 +20,12 @@ import type { CaptureContext } from '@sentry/types';
 })
 export class SentryService implements LoggingService {
   private fileLoggingService = inject(FileLoggingService);
+
+  private getReleaseWithPlatform(): string {
+    const platform = Capacitor.getPlatform();
+    const prefix = platform === 'web' ? 'web' : 'app';
+    return `${prefix}@${version.version}`;
+  }
 
   // Protected wrapper methods for easier testing
   protected sentryAddBreadcrumb(breadcrumb: Sentry.Breadcrumb): void {
@@ -48,7 +55,7 @@ export class SentryService implements LoggingService {
       transport: makeFetchTransport,
       environment: appMode === AppMode.Prod ? 'regObs' : appMode === AppMode.Demo ? 'demo regObs' : 'test regObs',
       enabled: environment.production,
-      release: version.version,
+      release: this.getReleaseWithPlatform(),
       dist: version.revision,
     });
   }

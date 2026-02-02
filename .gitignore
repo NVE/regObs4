@@ -47,3 +47,5 @@ translations/lokalise-api-key.json
 
 resources/ios/**/*
 resources/android/**/*
+# Sentry Config File
+.sentryclirc

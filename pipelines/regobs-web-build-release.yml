@@ -35,7 +35,9 @@ stages:
               versionSpec: 20.x
 
           - task: Npm@1
-            displayName: 'npm install'
+            displayName: 'npm install (ci)'
+            inputs:
+              command: ci
 
           - task: Npm@1
             displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
@@ -87,29 +89,58 @@ stages:
                 sentry.properties
               TargetFolder: ./
 
-          - task: Bash@3
-            displayName: Install sentry-cli
-            inputs:
-              targetType: inline
-              script: curl -sL https://sentry.io/get-cli/ | sh
-
-          - script: |
-              sentry-cli releases new $(json.version)
-              sentry-cli releases set-commits $(json.version) --local --ignore-missing
-              sentry-cli releases files $(json.version) upload-sourcemaps www/browser -x .js -x .map --dist $(json.revision) --validate --verbose --rewrite --strip-common-prefix --url-prefix=~
-            displayName: 'Create Sentry release and upload sourcemaps to Sentry'
-
           - task: Npm@1
             displayName: 'npm run build:prod'
             inputs:
               command: custom
               customCommand: 'run build:prod'
 
+          - task: Npm@1
+            displayName: 'Create Sentry release'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:release:new'
+            env:
+              RELEASE: web@$(json.version)
+
+          - task: Npm@1
+            displayName: 'Set commits on Sentry release'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:release:commits'
+            env:
+              RELEASE: web@$(json.version)
+
+          - task: Npm@1
+            displayName: 'Inject source maps'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:sourcemaps:inject'
+
+          - task: Npm@1
+            displayName: 'Upload source maps to Sentry'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:sourcemaps:upload'
+            env:
+              RELEASE: web@$(json.version)
+              DIST: $(json.revision)
+
+          - task: Npm@1
+            displayName: 'Finalize Sentry release'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:release:finalize'
+            env:
+              RELEASE: web@$(json.version)
+
           - task: CopyFiles@2
             displayName: 'copy files to $(Build.ArtifactStagingDirectory)'
             inputs:
               sourceFolder: 'www'
-              contents: '**/*'
+              contents: |
+                **/*
+                !**/*.map
               targetFolder: '$(Build.ArtifactStagingDirectory)'
               cleanTargetFolder: true
 
