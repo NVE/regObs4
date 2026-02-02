@@ -21,14 +21,6 @@ stages:
           vmImage: 'ubuntu-latest'
 
         steps:
-          - task: Cache@2
-            displayName: Cache npm dependencies
-            inputs:
-              key: 'npm | "$(Agent.OS)" | package-lock.json'
-              restoreKeys: |
-                npm | "$(Agent.OS)"
-              path: node_modules
-
           - task: NodeTool@0
             displayName: 'Use Node 20.x'
             inputs:
