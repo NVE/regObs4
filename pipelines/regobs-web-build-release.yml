@@ -80,8 +80,6 @@ stages:
             inputs:
               jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
               shouldPrefixVariables: true
-            # For å kunne hente ut versjonsnr i senere steg, se "Deploy to Prod"-steg
-            name: versionVars
 
           - task: CopyFiles@2
             displayName: 'Ta med sentry.properties i bygget. Trengs for å lage release i Sentry'
@@ -128,6 +126,14 @@ stages:
               RELEASE: web@$(json.version)
               DIST: $(json.revision)
 
+          - task: Npm@1
+            displayName: 'Finalize Sentry release'
+            inputs:
+              command: custom
+              customCommand: 'run sentry:release:finalize'
+            env:
+              RELEASE: web@$(json.version)
+
           - task: CopyFiles@2
             displayName: 'copy files to $(Build.ArtifactStagingDirectory)'
             inputs:
@@ -137,13 +143,6 @@ stages:
                 !**/*.map
               targetFolder: '$(Build.ArtifactStagingDirectory)'
               cleanTargetFolder: true
-
-          - task: CopyFiles@2
-            displayName: 'Copy sentry.properties to artifacts for Prod stage'
-            inputs:
-              sourceFolder: '$(Build.SourcesDirectory)'
-              contents: 'sentry.properties'
-              targetFolder: '$(Build.ArtifactStagingDirectory)'
 
           - task: PublishBuildArtifacts@1
             displayName: 'Publish BuildArtifact'
@@ -226,24 +225,3 @@ stages:
                     AppPoolName: '$(appName)'
                     AppPoolNameForWebsite: '$(appName)'
                     AppPoolNameForApplication: '$(appName)'
-
-                - task: NodeTool@0
-                  displayName: 'Use Node 20.x'
-                  inputs:
-                    versionSource: 'spec'
-                    versionSpec: 20.x
-
-                - task: CopyFiles@2
-                  displayName: 'Download sentry.properties'
-                  inputs:
-                    SourceFolder: '$(Pipeline.Workspace)/drop'
-                    Contents: 'sentry.properties'
-                    TargetFolder: '$(System.DefaultWorkingDirectory)'
-
-                - task: Npm@1
-                  displayName: 'Finalize Sentry release after prod deployment'
-                  inputs:
-                    command: custom
-                    customCommand: 'run sentry:release:finalize'
-                  env:
-                    RELEASE: web@$(stageDependencies.Build.Job1.outputs['versionVars.json.version'])
