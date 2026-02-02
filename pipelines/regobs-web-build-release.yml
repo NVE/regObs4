@@ -78,6 +78,7 @@ stages:
             inputs:
               jsonFile: '$(Build.SourcesDirectory)/src/environments/version.json'
               shouldPrefixVariables: true
+            # For å kunne hente ut versjonsnr i senere steg, se "Deploy to Prod"-steg
             name: versionVars
 
           - task: CopyFiles@2
