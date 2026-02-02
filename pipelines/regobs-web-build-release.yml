@@ -35,7 +35,9 @@ stages:
               versionSpec: 20.x
 
           - task: Npm@1
-            displayName: 'npm install'
+            displayName: 'npm install (ci)'
+            inputs:
+              command: ci
 
           - task: Npm@1
             displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
