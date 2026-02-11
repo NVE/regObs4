@@ -54,6 +54,7 @@ module.exports = function (config) {
         require('karma-jasmine'),
         require('karma-chrome-launcher'),
         require('karma-jasmine-html-reporter'),
+        require('karma-coverage'),
         require('@angular-devkit/build-angular/plugins/karma'),
       ],
       client: {
@@ -64,6 +65,11 @@ module.exports = function (config) {
       },
       jasmineHtmlReporter: {
         suppressAll: true, // removes the duplicated traces
+      },
+      coverageReporter: {
+        dir: '../coverage',
+        subdir: '.',
+        reporters: [{ type: 'html' }],
       },
       reporters: ['progress', 'kjhtml'],
       colors: true,
