@@ -138,6 +138,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
+            "codeCoverageExclude": ["src/app/modules/common-regobs-api/**"],
             "scripts": [],
             "assets": [
               {
