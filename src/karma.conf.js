@@ -30,6 +30,7 @@ module.exports = function (config) {
         reporters: [{ type: 'html' }, { type: 'lcovonly' }, { type: 'cobertura' }],
         includeAllSources: true,
         fixWebpackSourcePaths: true,
+        exclude: ['**/app/modules/common-regobs-api/**'],
         // check: {
         //   global: {
         //     statements: 50,
