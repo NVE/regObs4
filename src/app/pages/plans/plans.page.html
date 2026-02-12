@@ -1,12 +1,12 @@
 <!-- Side som viser planer og sporfiler -->
-<app-header>
-  <!-- Høyremeny -->
-  <ion-buttons slot="end">
-    <ion-menu-button color="light"> </ion-menu-button>
-  </ion-buttons>
-
-  <ion-title>{{ "PLANS.TITLE" | translate }}</ion-title>
-</app-header>
+<ion-header>
+  <ion-toolbar appHeaderColor>
+    <ion-title>{{ "PLANS.TITLE" | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
   <div class="content">
     <div class="filter-panel">

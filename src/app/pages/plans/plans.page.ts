@@ -1,9 +1,16 @@
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
-import { IonButtons, IonMenuButton, IonRouterLinkWithHref, IonTitle, IonContent } from '@ionic/angular/standalone';
+import {
+  IonButtons,
+  IonRouterLinkWithHref,
+  IonTitle,
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonBackButton,
+} from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import 'nve-designsystem/components/nve-menu/nve-menu.component.js';
 import 'nve-designsystem/components/nve-menu-item/nve-menu-item.component.js';
@@ -20,6 +27,7 @@ import { generateShortRandomId } from './utils';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
 
 @Component({
   selector: 'app-plans',
@@ -28,16 +36,18 @@ import { Capacitor } from '@capacitor/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    HeaderComponent,
-    IonButtons,
     DatePipe,
-    IonMenuButton,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonRouterLinkWithHref,
     IonTitle,
-    TranslatePipe,
+    IonToolbar,
     NgxFileDropModule,
     RouterLink,
-    IonRouterLinkWithHref,
-    IonContent,
+    TranslatePipe,
   ],
 })
 /** Side som viser planer og sporfiler */
