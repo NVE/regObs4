@@ -45,7 +45,13 @@
             <ion-label>{{ "TABS.WARNINGS" | translate }}</ion-label>
           </ion-tab-button>
         }
-        <ion-tab-button
+        <!--
+          Foreløpig viser vi bare knapp til planer i sidemenyen.
+          På sikt kan det bli aktuelt å vise knapp til planer igjen her.
+          I så fall bør kanskje routinga til planer flyttes til tabs.routes.ts.
+          Oversettelsen må også flyttes tilbake til det som er brukt her.
+        -->
+        <!-- <ion-tab-button
           [class.tab-button--active]="selectedTab() === 'plans'"
           tab="plans"
           [selected]="selectedTab() === 'plans'"
@@ -53,7 +59,7 @@
         >
           <ion-icon src="/assets/icon/tour.svg" aria-hidden="true"></ion-icon>
           <ion-label>{{ "TABS.PLANS" | translate }}</ion-label>
-        </ion-tab-button>
+        </ion-tab-button> -->
       }
     </ion-tab-bar>
   }

@@ -1039,8 +1039,7 @@
     "LIST": "List",
     "MAP": "Map",
     "TRIPS": "Trips",
-    "WARNINGS": "Warnings",
-    "PLANS": "Plans"
+    "WARNINGS": "Warnings"
   },
   "TRIP": {
     "COMMENT_CAPTION": "Description (required)",

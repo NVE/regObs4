@@ -1037,8 +1037,7 @@
   "TABS": {
     "LIST": "Liste",
     "MAP": "Kart",
-    "WARNINGS": "Varsler",
-    "PLANS": "Planer"
+    "WARNINGS": "Varsler"
   },
   "TRIP": {
     "COMMENT_CAPTION": "Beskrivelse (obligatorisk)",

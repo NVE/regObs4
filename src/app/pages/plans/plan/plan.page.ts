@@ -11,12 +11,23 @@ import 'nve-designsystem/components/nve-checkbox/nve-checkbox.component.js';
 import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
 
 @Component({
   selector: 'app-plan.page',
   templateUrl: './plan.page.html',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [DatePipe, IonContent, IonToolbar, IonBackButton, IonTitle, IonHeader, IonButtons, TranslatePipe],
+  imports: [
+    DatePipe,
+    HeaderColorDirective,
+    IonBackButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    TranslatePipe,
+  ],
   styleUrl: './plan.page.css',
 })
 export class PlanPage {
