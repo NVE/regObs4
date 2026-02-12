@@ -1,5 +1,13 @@
 import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal } from '@angular/core';
-import { IonToolbar, IonContent, IonBackButton, IonTitle, IonHeader, IonButtons } from '@ionic/angular/standalone';
+import {
+  IonToolbar,
+  IonContent,
+  IonBackButton,
+  IonTitle,
+  IonHeader,
+  IonButtons,
+  isPlatform,
+} from '@ionic/angular/standalone';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { DatePipe } from '@angular/common';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
@@ -12,6 +20,13 @@ import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
+import L from 'leaflet';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
+import { settings } from 'src/settings';
+import {
+  MapLayersService,
+  OfflineCapableMapLayersService,
+} from 'src/app/modules/static-map-image/static-tiles.service';
 
 @Component({
   selector: 'app-plan.page',
@@ -26,12 +41,20 @@ import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-c
     IonHeader,
     IonTitle,
     IonToolbar,
+    LeafletModule,
     TranslatePipe,
+  ],
+  providers: [
+    {
+      provide: MapLayersService,
+      useClass: isPlatform('hybrid') ? OfflineCapableMapLayersService : MapLayersService,
+    },
   ],
   styleUrl: './plan.page.css',
 })
 export class PlanPage {
   geoJSON = inject(GeoJSONService);
+  private mapLayersService = inject(MapLayersService);
   router = inject(Router);
   id = input.required<string>();
 
@@ -40,6 +63,45 @@ export class PlanPage {
   name = linkedSignal<string>(() => this.itemMetadata()?.name || '');
   comment = linkedSignal<string>(() => this.itemMetadata()?.comment || '');
   visibleOnMap = linkedSignal<boolean>(() => this.itemMetadata()?.visibleOnMap || false);
+
+  mapOptions = computed(() => {
+    const mapConfig = this.mapLayersService.mapConfig();
+    const layersConfig = mapConfig.map((map) => ({
+      layerId: map.layer,
+      layerConfig: settings.map.tiles.topoMapLayers[map.layer],
+    }));
+    const layers = layersConfig.map((x) =>
+      L.tileLayer(x.layerConfig.url, {
+        minZoom: settings.map.tiles.minZoom,
+        maxZoom: settings.map.tiles.maxZoom,
+        updateWhenIdle: settings.map.tiles.updateWhenIdle,
+        ...x.layerConfig.options,
+      })
+    );
+    const mapSettings: L.MapOptions = {
+      zoom: settings.map.tiles.zoomLevelObservationList,
+      maxZoom: settings.map.tiles.maxZoom,
+      minZoom: 8,
+      bounceAtZoomLimits: false,
+      attributionControl: false,
+      zoomControl: false,
+      layers,
+    };
+    return mapSettings;
+  });
+
+  async calculateAndCenterMap(map: L.Map) {
+    const geoJSON = await this.geoJSON.get(this.id());
+    if (!geoJSON) return;
+
+    const geoJsonLayer = L.geoJSON(geoJSON);
+    geoJsonLayer.addTo(map);
+    map.fitBounds(geoJsonLayer.getBounds(), { padding: [5, 5] });
+  }
+
+  onMapReady(map: L.Map) {
+    this.calculateAndCenterMap(map);
+  }
 
   onNameChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
@@ -50,6 +112,7 @@ export class PlanPage {
     const value = (event.target as HTMLInputElement).value;
     this.comment.set(value);
   }
+
   onVisibleOnMapChange(event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
     this.visibleOnMap.set(checked);
