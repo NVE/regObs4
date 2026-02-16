@@ -193,6 +193,21 @@ export class MapService {
     this.showUserLocation = true;
   }
 
+  private mapViewChangeRequested = new Subject<IMapView>();
+  mapViewChangeRequested$ = this.mapViewChangeRequested.asObservable();
+
+  /**
+   * Oppdater mapView og si fra til alle kart som eventuelt lytter at kartutsnitt skal endre seg.
+   */
+  requestMapViewChange(mapView: IMapView) {
+    this.updateMapView(mapView);
+    this.mapViewChangeRequested.next(mapView);
+  }
+
+  /**
+   * Oppdater lagret/cachet mapview i denne servicen.
+   * Kall til denne påvirker IKKE hva kartutsnittet i kart i appen er (feks på forsiden).
+   */
   updateMapView(mapView: IMapView): void {
     if (mapView) {
       this._mapViewSubject.next(mapView);

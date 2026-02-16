@@ -9,14 +9,21 @@
   ></app-map-controls>
 }
 
-<!-- TODO: I stedet for dette, få opp detaljside for en tur som modal? -->
 @if (showObserverTrips() && metadataName()) {
   <div class="observer-trip-backdrop" (click)="removeObserverTripDescription()">
     <div class="observer-trip-desc">
       <div>
-        <strong>Obsturbeskrivelse{{ metadataName() ? " " + metadataName() : "" }}:</strong>
+        <strong>{{ metadataName() }}</strong>
       </div>
+      @if (metadataTripLength()) {
+        <div>Lengde: {{ metadataTripLength() | number: "1.0-2" }} km</div>
+      }
       <div>{{ metadataDescription() }}</div>
+      @if (metadataId()) {
+        <div>
+          <a [routerLink]="['/plans', metadataId()]">Gå til detaljer</a>
+        </div>
+      }
     </div>
   </div>
 }

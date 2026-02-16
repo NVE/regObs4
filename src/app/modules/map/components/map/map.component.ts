@@ -46,6 +46,10 @@ import type { FeatureCollection } from 'geojson';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { TranslateService } from '@ngx-translate/core';
+import { observerTripsGeoJsonId } from 'src/app/core/services/observer-trips/observer-trips.service';
+import { length } from '@turf/turf';
+import { RouterLink } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -81,7 +85,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  imports: [LeafletModule, MapControlsComponent],
+  imports: [LeafletModule, MapControlsComponent, RouterLink, DecimalPipe],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private userSettingService = inject(UserSettingService);
@@ -137,6 +141,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly metadataName = signal<string | undefined>(undefined);
   readonly metadataDescription = signal<string | undefined>(undefined);
+  readonly metadataTripLength = signal<number | undefined>(undefined);
+  readonly metadataId = signal<string | undefined>(undefined);
 
   /**
    * Holds all active geojson layers and handler info, keyed by unique id (e.g. trip id)
@@ -169,6 +175,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private bounds?: L.LatLngBounds;
 
   options = signal<L.MapOptions | undefined>(undefined);
+  clickedLayer?: L.GeoJSON;
 
   constructor() {
     // Update map view when map center input changes
@@ -251,6 +258,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   removeObserverTripDescription() {
     this.metadataName.set(undefined);
     this.metadataDescription.set(undefined);
+    this.metadataTripLength.set(undefined);
+    this.metadataId.set(undefined);
+    this.clickedLayer?.resetStyle();
+    this.clickedLayer = undefined;
   }
 
   /**
@@ -261,6 +272,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param metadata Metadata associated with the geojson layer
    */
   private async addGeojsonLayer(map: L.Map, id: string, geojson: FeatureCollection, metadata?: GeoJSONItem) {
+    const defaultGeoJsonStyle: L.PathOptions = { dashArray: '4', color: 'red', stroke: true, weight: 3 };
+    const hoverGeoJsonStyle: L.PathOptions = { ...defaultGeoJsonStyle, weight: 5, dashArray: '7' };
+    const highlightedGeoJsonStyle: L.PathOptions = { ...defaultGeoJsonStyle, weight: 5, dashArray: '7' };
+
     const pointIcon = L.icon({
       iconUrl: '/assets/icon/map/prev-used-place.svg',
       iconSize: [25, 41],
@@ -269,7 +284,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       shadowSize: [41, 41],
     });
     const geojsonLayer = L.geoJSON(geojson, {
-      style: { dashArray: '4', color: 'red', stroke: true, weight: 3 },
+      style: defaultGeoJsonStyle,
       pointToLayer: (_, latlng) => {
         return L.marker(latlng, { icon: pointIcon });
       },
@@ -287,15 +302,73 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       layer.addTo(map);
     }
 
+    const applyStyleToFeature = (feature: unknown, style: L.PathOptions) => {
+      geojsonLayer.eachLayer((candidateLayer) => {
+        const layerFeature = (candidateLayer as L.Layer & { feature?: unknown }).feature;
+        if (layerFeature === feature && candidateLayer instanceof L.Path) {
+          candidateLayer.setStyle(style);
+        }
+      });
+    };
+
     // Click handler for this geojson
     // Obsturer har navn og beskrivelse i properties i geoJSON-objektet, og ikke i metadata-objektet
+    const highlightClickedFeature = (e: L.LeafletMouseEvent) => {
+      const clickedFeature = e.propagatedFrom?.feature;
+      if (!clickedFeature) {
+        return;
+      }
+
+      applyStyleToFeature(clickedFeature, highlightedGeoJsonStyle);
+    };
+
     const setMetadata = (e: L.LeafletMouseEvent) => {
       const missingName = this.translateService.instant('PLANS.MISSING_NAME');
       const missingDescription = this.translateService.instant('PLANS.MISSING_COMMENT');
-      const name = metadata?.name || e.propagatedFrom?.feature?.properties?.navn || missingName;
-      const description = metadata?.comment || e.propagatedFrom?.feature?.properties?.beskrivelse || missingDescription;
+      const feature = e.propagatedFrom?.feature;
+      let name;
+      let description;
+      if (metadata?.id === observerTripsGeoJsonId) {
+        name = feature.properties?.navn || missingName;
+        description = feature.properties?.beskrivelse || missingDescription;
+      } else {
+        name = metadata?.name || missingName;
+        description = metadata?.comment || missingDescription;
+      }
       this.metadataName.set(name);
       this.metadataDescription.set(description);
+      if (metadata?.id === observerTripsGeoJsonId && feature) {
+        try {
+          this.metadataTripLength.set(length(feature, { units: 'kilometers' }));
+        } catch (error) {
+          this.loggingService.error(error, DEBUG_TAG, 'Fikk ikke beregnet lengde på obstur');
+        }
+      } else {
+        this.metadataId.set(metadata?.id);
+        this.metadataTripLength.set(metadata?.lengthKm);
+      }
+    };
+
+    const onClick = (e: L.LeafletMouseEvent) => {
+      this.clickedLayer = geojsonLayer;
+      highlightClickedFeature(e);
+      setMetadata(e);
+    };
+
+    const onMouseOut = () => {
+      if (!this.clickedLayer) {
+        geojsonLayer.resetStyle();
+      }
+    };
+
+    const onMouseOver = (e: L.LeafletMouseEvent) => {
+      const hoveredFeature = e.propagatedFrom?.feature;
+      if (!hoveredFeature) {
+        return;
+      }
+
+      // resetStylesWithSelection();
+      applyStyleToFeature(hoveredFeature, hoverGeoJsonStyle);
     };
 
     // Zoom handler for this geojson
@@ -308,7 +381,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     };
 
-    layer.on('click', setMetadata);
+    layer.on('click', onClick);
+    layer.on('mouseover', onMouseOver);
+    layer.on('mouseout', onMouseOut);
     map.on('zoomend', showGeojsonLayerWhenZoomedIn);
 
     // Store layer and event handler info for this id
@@ -477,6 +552,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         takeUntil(this.ngDestroy$)
       )
       .subscribe(() => this.redrawMap());
+
+    // MapService kan forespørre en endring av mapView for alle mapComponents som lytter
+    this.mapService.mapViewChangeRequested$.pipe(takeUntil(this.ngDestroy$)).subscribe((mapView) => {
+      map.fitBounds(mapView.bounds);
+    });
 
     this.mapReady.emit(map);
   }

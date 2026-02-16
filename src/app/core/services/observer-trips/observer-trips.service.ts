@@ -19,10 +19,7 @@ const shouldUpdate = (mTime: number) => {
 const DEBUG_TAG = 'ObserverTrips';
 
 /**
- * Provides geojson data for observer trips, and a toggle mechanism that can be used to show/hide data.
- * If data is toggled off, geojson will be null.
- * If user does not have access (401 is returned from API), geojson will be null.
- * If user logs out, cached geojson data will be deleted and geojson will be null.
+ * Downloads observer trips geojson data, if you have access.
  */
 @Injectable({
   providedIn: 'root',
@@ -35,7 +32,7 @@ export class ObserverTripsService {
   private network = inject(NetworkStatusService);
 
   init() {
-    this.logger.debug('Initialize observer trips service');
+    this.logger.debug('Initialize observer trips service', DEBUG_TAG);
     combineLatest([this.authService.loggedInUser$, this.network.connected$])
       .pipe(debounceTime(4000))
       .subscribe(([user, connected]) => {
@@ -68,7 +65,7 @@ export class ObserverTripsService {
   private async fetchData(): Promise<void> {
     const metadata = this.geojson.metadata().find((x) => x.id === observerTripsGeoJsonId);
     if (metadata && !shouldUpdate(metadata.date)) {
-      this.logger.debug('Data is fresh, no update needed');
+      this.logger.debug('Data is fresh, no update needed', DEBUG_TAG);
       return;
     }
 

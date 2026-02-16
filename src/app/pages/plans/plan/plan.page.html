@@ -57,7 +57,7 @@
         <nve-button variant="neutral" size="small" (click)="isEditMode.set(true)">Rediger</nve-button>
       }
 
-      <nve-button variant="neutral" size="small">Gå til kartutsnitt</nve-button>
+      <nve-button variant="neutral" size="small" (click)="goToExtent()">Gå til kartutsnitt</nve-button>
 
       <p class="saved">{{ "PLANS.DATE_EDITED" | translate }}: {{ info.date | date: "short" }}</p>
     </div>

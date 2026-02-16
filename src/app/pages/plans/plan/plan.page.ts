@@ -18,7 +18,7 @@ import 'nve-designsystem/components/nve-textarea/nve-textarea.component.js';
 import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
 import 'nve-designsystem/components/nve-switch/nve-switch.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
 import L from 'leaflet';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
@@ -28,7 +28,9 @@ import {
   OfflineCapableMapLayersService,
 } from 'src/app/modules/static-map-image/static-tiles.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
-import { bbox } from '@turf/turf';
+import { MapService } from 'src/app/modules/map/services/map/map.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { delay, filter } from 'rxjs';
 
 @Component({
   selector: 'app-plan.page',
@@ -58,6 +60,7 @@ export class PlanPage {
   geoJSON = inject(GeoJSONService);
   private mapLayersService = inject(MapLayersService);
   router = inject(Router);
+  private mapService = inject(MapService);
   id = input.required<string>();
 
   itemMetadata = computed<GeoJSONItem>(
@@ -69,6 +72,8 @@ export class PlanPage {
   visibleOnMap = computed(() => this.itemMetadata().visibleOnMap || false);
   isEditMode = signal(false);
   isEditable = computed(() => !this.isEditMode());
+
+  bounds?: L.LatLngBounds;
 
   mapOptions = computed(() => {
     const mapConfig = this.mapLayersService.mapConfig();
@@ -96,16 +101,37 @@ export class PlanPage {
     return mapSettings;
   });
 
+  map?: L.Map;
+
+  constructor() {
+    // Hvis man har hatt denne siden åpen og navigert bort feks med "Gå til kartutsnitt"-knappen,
+    // deretter bruker browser til å navigere tilbake til plan-siden igjen, så vises ikke kartet riktig.
+    // Ved å kalle invalidateSize oppdateres kartutsnittet til å vises riktig igjen.
+    this.router.events
+      .pipe(
+        takeUntilDestroyed(),
+        filter((e) => e instanceof NavigationEnd),
+        delay(100)
+      )
+      .subscribe(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      });
+  }
+
   async calculateAndCenterMap(map: L.Map) {
     const geoJSON = await this.geoJSON.get(this.id());
     if (!geoJSON) return;
 
     const geoJsonLayer = L.geoJSON(geoJSON);
+    this.bounds = geoJsonLayer.getBounds();
     geoJsonLayer.addTo(map);
-    map.fitBounds(geoJsonLayer.getBounds(), { padding: [5, 5] });
+    map.fitBounds(this.bounds, { padding: [5, 5] });
   }
 
   onMapReady(map: L.Map) {
+    this.map = map;
     this.calculateAndCenterMap(map);
   }
 
@@ -142,8 +168,12 @@ export class PlanPage {
     this.isEditMode.set(false);
   }
 
-  async goToExtent() {
-    const geoJson = await this.geoJSON.get(this.id());
-    const bounds = bbox(geoJson);
+  goToExtent() {
+    if (!this.bounds) return;
+    this.mapService.requestMapViewChange({ bounds: this.bounds, center: this.bounds.getCenter() });
+    // La kartet få mulighet til å lytte og oppdatere kartutsnittet før vi navigerer
+    setTimeout(() => {
+      this.router.navigate(['/']);
+    }, 200);
   }
 }
