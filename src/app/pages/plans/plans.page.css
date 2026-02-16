@@ -1,6 +1,7 @@
 :host {
   justify-content: unset;
 }
+
 .content {
   height: 100%;
   width: 100%;
@@ -10,13 +11,17 @@
   overflow: auto;
   padding: 0px var(--spacing-medium);
 }
-svg {
-  fill: currentColor;
+
+.content > * {
+  margin-top: var(--spacing-large);
 }
+
+/* svg {
+  fill: currentColor;
+} */
 
 .filter-panel {
   display: flex;
-  justify-content: flex-end;
   align-items: flex-end;
   gap: var(--spacing-medium);
   padding: var(--spacing-small) 0px;
@@ -49,6 +54,16 @@ nve-select {
   font: var(--label-medium);
 }
 
+nve-menu {
+  background: transparent;
+  box-shadow: none;
+}
+
+nve-menu > * {
+  margin-bottom: var(--spacing-small, 8px);
+  display: block;
+}
+
 nve-menu-item {
   nve-icon {
     --icon-size: 30px;
@@ -56,11 +71,22 @@ nve-menu-item {
 }
 
 nve-menu-item::part(base) {
+  padding: var(--spacing-medium);
+  padding-left: var(--spacing-large);
   height: fit-content;
+}
+
+nve-menu-item::part(submenu-icon) {
+  display: none;
 }
 
 nve-badge::part(base) {
   line-height: 1;
+  border-radius: 4px;
+}
+
+nve-label {
+  margin-bottom: var(--spacing-small, 8px);
 }
 
 .drop-zone-wrapper {
@@ -69,4 +95,8 @@ nve-badge::part(base) {
 
 a {
   text-decoration: none;
+}
+
+nve-alert {
+  display: block;
 }

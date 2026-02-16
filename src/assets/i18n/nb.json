@@ -354,8 +354,8 @@
     "TITLE": "Planer og spor",
     "IMPORT_BUTTON": {
       "CAPTION": "Importer GPX/GeoJSON-filer",
-      "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til",
-      "DROP_LABEL_MOBILE": "Trykk for å legge til filer"
+      "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til GPX/GeoJSON-filer",
+      "DROP_LABEL_MOBILE": "Trykk for å legge til GPX/GeoJSON-filer"
     },
     "DELETE": "Slett",
     "MISSING_COMMENT": "Beskrivelse/kommentar mangler",

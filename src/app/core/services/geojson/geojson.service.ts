@@ -77,7 +77,9 @@ export class GeoJSONService {
   async save(metadata: GeoJSONItem, geojson: FeatureCollection): Promise<void> {
     this.logger.debug('Save', DEBUG_TAG, { metadata });
     try {
-      cleanFeatureCollection(geojson);
+      cleanFeatureCollection(geojson, (error, feature) => {
+        this.logger.error(error, DEBUG_TAG, 'Failed to clean feature. Feature may be mutated.', { feature });
+      });
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Error in cleaning process, but object may be mutated - half cleaned');
     }
@@ -97,8 +99,7 @@ export class GeoJSONService {
       }
 
       await this.db.set(`geojson:${metdataToSave.id}`, geojson);
-      this.metadata_.update((items) => [...items, metdataToSave]);
-      this.changedMetadataItem.next(metdataToSave);
+      this.updateMetadata(metdataToSave);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Could not save', { metadata, geojson });
       throw error;

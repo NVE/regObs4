@@ -53,3 +53,28 @@ form {
     height: 200px;
   }
 }
+
+.saved {
+  color: var(--color-neutrals-foreground-subtle, #60656c);
+  /* typography/body/small */
+  font-family: var(--font-family-source-sans-pro, 'Source Sans Pro');
+  font-size: var(--font-size-x-small, 16px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 24px */
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+.comment {
+  color: var(--color-neutrals-foreground-primary, #00070a);
+  /* typography/lead/small-regular */
+  font-family: var(--font-family-source-sans-pro, 'Source Sans Pro');
+  font-size: var(--font-size-small, 18px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 27px */
+}

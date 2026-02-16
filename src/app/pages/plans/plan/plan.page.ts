@@ -1,4 +1,4 @@
-import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal } from '@angular/core';
+import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal, signal } from '@angular/core';
 import {
   IonToolbar,
   IonContent,
@@ -15,8 +15,8 @@ import 'nve-designsystem/components/nve-menu-item/nve-menu-item.component.js';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import 'nve-designsystem/components/nve-input/nve-input.component.js';
 import 'nve-designsystem/components/nve-textarea/nve-textarea.component.js';
-import 'nve-designsystem/components/nve-checkbox/nve-checkbox.component.js';
 import 'nve-designsystem/components/nve-tag/nve-tag.component.js';
+import 'nve-designsystem/components/nve-switch/nve-switch.component.js';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
@@ -27,6 +27,8 @@ import {
   MapLayersService,
   OfflineCapableMapLayersService,
 } from 'src/app/modules/static-map-image/static-tiles.service';
+import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
+import { bbox } from '@turf/turf';
 
 @Component({
   selector: 'app-plan.page',
@@ -58,11 +60,15 @@ export class PlanPage {
   router = inject(Router);
   id = input.required<string>();
 
-  itemMetadata = computed(() => this.geoJSON.metadata().find((m) => m.id === this.id()));
+  itemMetadata = computed<GeoJSONItem>(
+    () => this.geoJSON.metadata().find((m) => m.id === this.id()) || { id: this.id(), date: Date.now(), name: '' }
+  );
 
-  name = linkedSignal<string>(() => this.itemMetadata()?.name || '');
-  comment = linkedSignal<string>(() => this.itemMetadata()?.comment || '');
-  visibleOnMap = linkedSignal<boolean>(() => this.itemMetadata()?.visibleOnMap || false);
+  name = linkedSignal<string>(() => this.itemMetadata().name);
+  comment = linkedSignal<string>(() => this.itemMetadata().comment || '');
+  visibleOnMap = computed(() => this.itemMetadata().visibleOnMap || false);
+  isEditMode = signal(false);
+  isEditable = computed(() => !this.isEditMode());
 
   mapOptions = computed(() => {
     const mapConfig = this.mapLayersService.mapConfig();
@@ -81,7 +87,7 @@ export class PlanPage {
     const mapSettings: L.MapOptions = {
       zoom: settings.map.tiles.zoomLevelObservationList,
       maxZoom: settings.map.tiles.maxZoom,
-      minZoom: 8,
+      minZoom: 2,
       bounceAtZoomLimits: false,
       attributionControl: false,
       zoomControl: false,
@@ -115,7 +121,7 @@ export class PlanPage {
 
   onVisibleOnMapChange(event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    this.visibleOnMap.set(checked);
+    this.geoJSON.updateMetadata({ ...this.itemMetadata(), visibleOnMap: checked });
   }
 
   async onRemove() {
@@ -133,6 +139,11 @@ export class PlanPage {
       date: Date.now(),
     };
     this.geoJSON.updateMetadata(itemToUpdate);
-    this.router.navigate(['/plans']);
+    this.isEditMode.set(false);
+  }
+
+  async goToExtent() {
+    const geoJson = await this.geoJSON.get(this.id());
+    const bounds = bbox(geoJson);
   }
 }

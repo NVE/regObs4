@@ -49,6 +49,7 @@ import { settings } from 'src/settings';
 import { Observable } from 'rxjs';
 import { AppMode } from './modules/common-core/models';
 import { provideWarningService } from './core/services/warning/provide-warning-service';
+import { ObserverTripsService } from './core/services/observer-trips/observer-trips.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -143,6 +144,11 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   provideAppInitializer(() => {
     const analyticsService = inject(AnalyticService);
     analyticsService.init();
+  }),
+
+  provideAppInitializer(() => {
+    const observerTripsService = inject(ObserverTripsService);
+    observerTripsService.init();
   }),
 
   // @varsom-regobs-common providers

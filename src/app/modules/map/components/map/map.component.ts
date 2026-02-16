@@ -22,7 +22,6 @@ import { concatMap, distinctUntilChanged, filter, take, takeUntil, withLatestFro
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
-import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
 import { settings } from '../../../../../settings';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
@@ -94,7 +93,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private geoPositionService = inject(GeoPositionService);
   private platform = inject(Platform);
   private mapZoomService = inject(MapZoomService);
-  private observerTripsService = inject(ObserverTripsService);
   private geoJSONService = inject(GeoJSONService);
   private translateService = inject(TranslateService);
 
@@ -358,17 +356,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         // Si fra til map service hva oppdatert extent er etter at kartet er tegnet.
         this.updateMapView();
       });
-
-    if (this.showObserverTrips()) {
-      // For backward compatibility, use a single id if only one geojson is provided
-      this.observerTripsService.geojson$.pipe(takeUntil(this.ngDestroy$)).subscribe((geojson) => {
-        if (geojson) {
-          this.addGeojsonLayer(map, 'obsturer', geojson);
-        } else {
-          this.removeGeojsonLayer(map, 'obsturer');
-        }
-      });
-    }
 
     this.offlineTopoLayerGroup.addTo(map);
     this.layerGroup.addTo(map);

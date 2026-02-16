@@ -2,13 +2,14 @@ import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import {
+  IonBackButton,
   IonButtons,
-  IonRouterLinkWithHref,
-  IonTitle,
   IonContent,
   IonHeader,
+  IonIcon,
+  IonRouterLinkWithHref,
+  IonTitle,
   IonToolbar,
-  IonBackButton,
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
@@ -19,6 +20,8 @@ import 'nve-designsystem/components/nve-badge/nve-badge.component.js';
 import 'nve-designsystem/components/nve-select/nve-select.component.js';
 import 'nve-designsystem/components/nve-option/nve-option.component.js';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';
+import 'nve-designsystem/components/nve-label/nve-label.component.js';
+import 'nve-designsystem/components/nve-alert/nve-alert.component.js';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { toGeoJSON } from './utils';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
@@ -28,6 +31,10 @@ import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
+import { attachOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
+
+const alertDismissedKey = 'regobs-plans-alert-dismissed';
 
 @Component({
   selector: 'app-plans',
@@ -42,6 +49,7 @@ import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-c
     IonButtons,
     IonContent,
     IonHeader,
+    IonIcon,
     IonRouterLinkWithHref,
     IonTitle,
     IonToolbar,
@@ -64,6 +72,7 @@ export class PlansPage {
   acceptFileTypes = Capacitor.isNativePlatform() ? '*' : this.allowedFileExtensions.join(',');
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
+  showAlert = signal(!localStorage.getItem(alertDismissedKey));
 
   sortValue = signal<'name' | 'date'>('date');
   visibilityFilter = signal<'all' | 'onlyVisibleOnMap'>('all');
@@ -75,6 +84,14 @@ export class PlansPage {
     }
     return sortedItems;
   });
+
+  constructor() {
+    addIcons({ attachOutline });
+  }
+
+  dismissAlert() {
+    localStorage.setItem(alertDismissedKey, 'true');
+  }
 
   /**
    * Importerer og lagrer sporfiler som GeoJSON-objekter i lokal database

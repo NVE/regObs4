@@ -819,6 +819,28 @@ ion-toast {
   }
 }
 
+.drop-zone-plans {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  border-radius: var(--border-radius-small, 4px);
+  border: var(--border-width-default, 1px) dashed var(--color-interactive-links-default, #1e6fdc);
+  background: var(--color-feedback-background-subtle-info, #d6ecff);
+
+  button {
+    background: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+.drop-zone-plans:hover {
+  filter: brightness(0.9);
+}
+
 ion-select-popover ion-list ion-item ion-radio {
   --color: transparent;
   --color-checked: transparent;

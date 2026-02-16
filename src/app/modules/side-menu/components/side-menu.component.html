@@ -95,19 +95,6 @@
     </ion-toggle>
   </ion-item>
 
-  <!-- Obsturer -->
-  <ion-item *ngIf="observerTrips.isAuthorized | async" button color="light">
-    <!-- Obstur icon, has the same style as the map layer -->
-    <ion-icon slot="start" src="/assets/icon/obs-trip.svg"></ion-icon>
-    <ion-toggle
-      [checked]="observerTrips.toggledOn | async"
-      (ionChange)="observerTrips.toggle()"
-      justify="space-between"
-    >
-      Vis obsturer
-    </ion-toggle>
-  </ion-item>
-
   <!-- Støttekart -->
   <app-support-tiles-menu></app-support-tiles-menu>
 

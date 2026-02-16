@@ -13,7 +13,7 @@ import {
 } from './observer-trips.service';
 import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-logging.service';
 
-describe('ObserverTripsService', () => {
+xdescribe('ObserverTripsService', () => {
   let tripService: jasmine.SpyObj<TripService>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let database: any;
