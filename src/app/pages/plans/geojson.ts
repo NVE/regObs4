@@ -48,7 +48,7 @@ function cleanCoordinates(geometry: Geometry) {
  */
 export function cleanFeatureCollection(
   fc: FeatureCollection,
-  errClb: (error: unknown, feature: Feature<Geometry, GeoJsonProperties>) => void
+  errClb?: (error: unknown, feature: Feature<Geometry, GeoJsonProperties>) => void
 ) {
   // NB: coordinates: 2 fjerner høydekoordinat.
   // Vi bruker ikke høyde til noe enda, derfor fjernes den.
@@ -58,7 +58,9 @@ export function cleanFeatureCollection(
     try {
       cleanCoordinates(feature.geometry);
     } catch (error) {
-      errClb(error, feature);
+      if (errClb) {
+        errClb(error, feature);
+      }
     }
   }
   removeProperties(fc);
