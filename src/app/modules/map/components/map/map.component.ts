@@ -42,7 +42,7 @@ import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapService } from '../../services/map/map.service';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import { MapControlsComponent } from '../map-controls/map-controls.component';
-import type { FeatureCollection } from 'geojson';
+import type { Feature, FeatureCollection } from 'geojson';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,6 +50,12 @@ import { observerTripsGeoJsonId } from 'src/app/core/services/observer-trips/obs
 import { length } from '@turf/turf';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
+import {
+  getGeoJsonFeatureStyle,
+  createGeoJsonPointMarker,
+  highlightedPointStyle,
+  hoverGeoJsonLineStyle,
+} from 'src/app/pages/plans/geojson-styles';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -272,27 +278,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param metadata Metadata associated with the geojson layer
    */
   private async addGeojsonLayer(map: L.Map, id: string, geojson: FeatureCollection, metadata?: GeoJSONItem) {
-    const defaultGeoJsonStyle: L.PathOptions = { dashArray: '4', color: 'red', stroke: true, weight: 3 };
-    const hoverGeoJsonStyle: L.PathOptions = { ...defaultGeoJsonStyle, weight: 5, dashArray: '7' };
-    const highlightedGeoJsonStyle: L.PathOptions = { ...defaultGeoJsonStyle, weight: 5, dashArray: '7' };
-
-    const pointIcon = L.icon({
-      iconUrl: '/assets/icon/map/prev-used-place.svg',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
-    });
     const geojsonLayer = L.geoJSON(geojson, {
-      style: defaultGeoJsonStyle,
-      pointToLayer: (_, latlng) => {
-        return L.marker(latlng, { icon: pointIcon });
-      },
+      bubblingMouseEvents: false,
+      style: getGeoJsonFeatureStyle,
+      pointToLayer: (_, latlng) => createGeoJsonPointMarker(latlng),
     });
 
-    // Add an invisible layer with wider stroke for easier interaction
+    // Add an invisible layer with wider stroke for easier interaction.
+    // Legges ikke til for punkter - fordi det da dukker opp en marker vi ikke vil vise.
+    // Går helt sikkert an å lage en circleMarker for punkter i skyggelaget også, hvis det trengs.
     const extraTapRadiusLayer = L.geoJSON(geojson, {
+      bubblingMouseEvents: false,
       style: { color: 'rgba(0,0,0,0)', weight: 30, stroke: true },
+      filter: (feature) => {
+        switch (feature.geometry.type) {
+          case 'Point':
+          case 'MultiPoint':
+            return false;
+          default:
+            return true;
+        }
+      },
     });
 
     const layer: L.Layer = L.featureGroup([geojsonLayer, extraTapRadiusLayer]);
@@ -302,57 +308,41 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       layer.addTo(map);
     }
 
-    const applyStyleToFeature = (feature: unknown, style: L.PathOptions) => {
+    const applyStyleToFeature = (feature: Feature, style: L.PathOptions) => {
       geojsonLayer.eachLayer((candidateLayer) => {
-        const layerFeature = (candidateLayer as L.Layer & { feature?: unknown }).feature;
+        const layerFeature = (candidateLayer as L.Layer & { feature?: Feature }).feature;
         if (layerFeature === feature && candidateLayer instanceof L.Path) {
           candidateLayer.setStyle(style);
         }
       });
     };
 
-    // Click handler for this geojson
-    // Obsturer har navn og beskrivelse i properties i geoJSON-objektet, og ikke i metadata-objektet
-    const highlightClickedFeature = (e: L.LeafletMouseEvent) => {
-      const clickedFeature = e.propagatedFrom?.feature;
-      if (!clickedFeature) {
+    const highlightFeature = (feature: Feature | undefined) => {
+      if (!feature) {
         return;
       }
 
-      applyStyleToFeature(clickedFeature, highlightedGeoJsonStyle);
-    };
+      let style: L.PathOptions;
+      switch (feature.geometry.type) {
+        case 'Point':
+        case 'MultiPoint':
+          // Ikke gjør noe for punkter enda, hør evt med designer, fant ikke noe bra måte å fremheve de på
+          style = highlightedPointStyle;
+          break;
+        default:
+          // Øk tykkelsen på linjer
+          style = hoverGeoJsonLineStyle;
+          break;
+      }
 
-    const setMetadata = (e: L.LeafletMouseEvent) => {
-      const missingName = this.translateService.instant('PLANS.MISSING_NAME');
-      const missingDescription = this.translateService.instant('PLANS.MISSING_COMMENT');
-      const feature = e.propagatedFrom?.feature;
-      let name;
-      let description;
-      if (metadata?.id === observerTripsGeoJsonId) {
-        name = feature.properties?.navn || missingName;
-        description = feature.properties?.beskrivelse || missingDescription;
-      } else {
-        name = metadata?.name || missingName;
-        description = metadata?.comment || missingDescription;
-      }
-      this.metadataName.set(name);
-      this.metadataDescription.set(description);
-      if (metadata?.id === observerTripsGeoJsonId && feature) {
-        try {
-          this.metadataTripLength.set(length(feature, { units: 'kilometers' }));
-        } catch (error) {
-          this.loggingService.error(error, DEBUG_TAG, 'Fikk ikke beregnet lengde på obstur');
-        }
-      } else {
-        this.metadataId.set(metadata?.id);
-        this.metadataTripLength.set(metadata?.lengthKm);
-      }
+      applyStyleToFeature(feature, style);
     };
 
     const onClick = (e: L.LeafletMouseEvent) => {
       this.clickedLayer = geojsonLayer;
-      highlightClickedFeature(e);
-      setMetadata(e);
+      const feature = e.propagatedFrom?.feature;
+      highlightFeature(feature);
+      this.getFeatureMetadata(feature, metadata);
     };
 
     const onMouseOut = () => {
@@ -362,22 +352,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     const onMouseOver = (e: L.LeafletMouseEvent) => {
-      const hoveredFeature = e.propagatedFrom?.feature;
-      if (!hoveredFeature) {
-        return;
-      }
-
-      // resetStylesWithSelection();
-      applyStyleToFeature(hoveredFeature, hoverGeoJsonStyle);
+      const feature = e.propagatedFrom?.feature;
+      highlightFeature(feature);
     };
 
-    // Zoom handler for this geojson
     const showGeojsonLayerWhenZoomedIn = () => {
-      const zoomLevel = map.getZoom();
-      if (zoomLevel < observerTripsMinZoom) {
-        if (map.hasLayer(layer)) map.removeLayer(layer);
-      } else {
-        if (!map.hasLayer(layer)) map.addLayer(layer);
+      const shouldShow = map.getZoom() >= observerTripsMinZoom;
+      const isShowing = map.hasLayer(layer);
+
+      if (shouldShow && !isShowing) {
+        map.addLayer(layer);
+      } else if (!shouldShow && isShowing) {
+        map.removeLayer(layer);
       }
     };
 
@@ -391,6 +377,40 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       layer,
       showGeojsonWhenZoomedIn: showGeojsonLayerWhenZoomedIn,
     });
+  }
+
+  /**
+   * Henter metadata fra feature eller GeoJSONItem og setter signals
+   * Obsturer har navn og beskrivelse i properties, mens andre bruker metadata-objektet
+   */
+  private getFeatureMetadata(feature: Feature | undefined, metadata: GeoJSONItem | undefined) {
+    const missingName = this.translateService.instant('PLANS.MISSING_NAME');
+    const missingDescription = this.translateService.instant('PLANS.MISSING_COMMENT');
+
+    let name: string;
+    let description: string;
+
+    if (metadata?.id === observerTripsGeoJsonId) {
+      name = feature?.properties?.['navn'] || missingName;
+      description = feature?.properties?.['beskrivelse'] || missingDescription;
+    } else {
+      name = metadata?.name || missingName;
+      description = metadata?.comment || missingDescription;
+    }
+
+    this.metadataName.set(name);
+    this.metadataDescription.set(description);
+
+    if (metadata?.id === observerTripsGeoJsonId && feature) {
+      try {
+        this.metadataTripLength.set(length(feature, { units: 'kilometers' }));
+      } catch (error) {
+        this.loggingService.error(error, DEBUG_TAG, 'Fikk ikke beregnet lengde på obstur');
+      }
+    } else {
+      this.metadataId.set(metadata?.id);
+      this.metadataTripLength.set(metadata?.lengthKm);
+    }
   }
 
   /**

@@ -31,6 +31,7 @@ import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
 import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay, filter } from 'rxjs';
+import { getGeoJsonFeatureStyle, createGeoJsonPointMarker } from '../geojson-styles';
 
 @Component({
   selector: 'app-plan.page',
@@ -124,7 +125,10 @@ export class PlanPage {
     const geoJSON = await this.geoJSON.get(this.id());
     if (!geoJSON) return;
 
-    const geoJsonLayer = L.geoJSON(geoJSON);
+    const geoJsonLayer = L.geoJSON(geoJSON, {
+      style: getGeoJsonFeatureStyle,
+      pointToLayer: (_, latlng) => createGeoJsonPointMarker(latlng),
+    });
     this.bounds = geoJsonLayer.getBounds();
     geoJsonLayer.addTo(map);
     map.fitBounds(this.bounds, { padding: [5, 5] });
