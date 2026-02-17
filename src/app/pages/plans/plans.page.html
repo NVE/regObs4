@@ -36,7 +36,12 @@
       </div>
     }
 
-    <nve-menu>
+    <!--
+      Her ble det opprinnelig brukt <nve-menu>, men den komponenten er ikke beregnet på slik bruk.
+      Den blokkerer scrolling, som gjør at hvis man har lagt til mange planer, er det vanskelig å
+      scrolle nedover.
+    -->
+    <div class="plans">
       @for (item of items(); track item.id; let last = $last) {
         <a [routerLink]="item.id" routerDirection="forward">
           <nve-menu-item>
@@ -62,7 +67,7 @@
           <nve-divider></nve-divider>
         } -->
       }
-    </nve-menu>
+    </div>
 
     <div class="drop-zone-wrapper">
       <nve-label size="medium">Legg til plan</nve-label>

@@ -3,12 +3,10 @@
 }
 
 .content {
-  height: 100%;
   width: 100%;
   max-width: var(--desktop-max-width);
   margin: 0 auto;
   margin-bottom: var(--spacing-large);
-  overflow: auto;
   padding: 0px var(--spacing-medium);
 }
 
@@ -54,13 +52,17 @@ nve-select {
   font: var(--label-medium);
 }
 
-nve-menu {
+.plans {
   background: transparent;
   box-shadow: none;
 }
 
-nve-menu > * {
+.plans > * {
   margin-bottom: var(--spacing-small, 8px);
+  display: block;
+}
+
+.plans a {
   display: block;
 }
 
