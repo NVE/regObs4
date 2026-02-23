@@ -80,7 +80,16 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
-  savedTime = computed(() => this.registration().DtChangeTime || this.registration().DtRegTime);
+  showChangedTime = computed(() => {
+    const changed = this.registration().DtChangeTime;
+    if (changed == null) {
+      return false;
+    }
+    if (changed === this.registration().DtRegTime) {
+      return false;
+    }
+    return true;
+  });
   attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
 
   constructor() {

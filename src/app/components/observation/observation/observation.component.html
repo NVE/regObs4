@@ -50,16 +50,22 @@
       </ion-label>
     </ion-chip>
 
-    @if (savedTime() != registration().DtRegTime) {
-      <ion-chip color="primary" disabled>
-        <ion-icon name="create-outline"></ion-icon>
+    <ion-chip color="primary" disabled>
+      <ion-icon name="create-outline"></ion-icon>
+      @if (showChangedTime()) {
         <ion-label
           ><b> {{ "REGISTRATION.CARD.TIME.UPDATED" | translate }}</b
           >:</ion-label
         >
-        <ion-label> {{ savedTime() | date: "short" }}</ion-label>
-      </ion-chip>
-    }
+        <ion-label> {{ registration().DtChangeTime | date: "short" }}</ion-label>
+      } @else {
+        <ion-label
+          ><b> {{ "REGISTRATION.CARD.TIME.REGISTERED" | translate }}</b
+          >:</ion-label
+        >
+        <ion-label> {{ registration().DtRegTime | date: "short" }}</ion-label>
+      }
+    </ion-chip>
 
     <app-geohazard-chip [registration]="registration()"></app-geohazard-chip>
 
