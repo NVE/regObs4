@@ -15,6 +15,7 @@ import { addIcons } from 'ionicons';
 import {
   calendarNumberOutline,
   chatbubbleEllipses,
+  createOutline,
   locationOutline,
   peopleCircleOutline,
   personCircleOutline,
@@ -81,11 +82,11 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
 
   readonly registration = input.required<RegistrationViewModel>();
   showChangedTime = computed(() => {
-    const changed = this.registration().DtChangeTime;
-    if (changed == null) {
+    const { DtChangeTime, DtRegTime } = this.registration();
+    if (DtChangeTime == null) {
       return false;
     }
-    if (changed === this.registration().DtRegTime) {
+    if (DtChangeTime === DtRegTime) {
       return false;
     }
     return true;
@@ -99,6 +100,7 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
+      createOutline,
     });
   }
 
