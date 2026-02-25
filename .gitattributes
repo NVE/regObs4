@@ -18,3 +18,7 @@ src/assets/i18n/*.json text eol=lf
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# Mark iOS and Android native code as generated/vendored to exclude from code analysis
+ios/** linguist-generated=true linguist-vendored=true
+android/** linguist-generated=true linguist-vendored=true
