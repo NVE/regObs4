@@ -16,7 +16,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../components/numeric-input/numeric-input.component';
@@ -43,7 +43,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,

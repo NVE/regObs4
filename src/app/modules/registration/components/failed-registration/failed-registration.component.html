@@ -4,42 +4,58 @@
       {{ "REGISTRATION.FAILED.TITLE" | translate }}
     </ion-label>
   </ion-list-header>
-  <app-version-conflict *ngIf="conflictError" [draft]="draft()"></app-version-conflict>
-  <app-gone-registration *ngIf="goneError" [draft]="draft()"></app-gone-registration>
-  <ng-container *ngIf="!(conflictError || goneError)">
+  @if (conflictError) {
+    <app-version-conflict [draft]="draft()"></app-version-conflict>
+  }
+  @if (goneError) {
+    <app-gone-registration [draft]="draft()"></app-gone-registration>
+  }
+  @if (!(conflictError || goneError)) {
     <ion-item>
-      <ion-label class="ion-text-wrap" *ngIf="networkError">
-        {{ "REGISTRATION.FAILED.SUBTITLE" | translate }}
-      </ion-label>
+      @if (networkError) {
+        <ion-label class="ion-text-wrap">
+          {{ "REGISTRATION.FAILED.SUBTITLE" | translate }}
+        </ion-label>
+      }
       <!-- TODO: Handle attachment error? -->
-      <ion-label class="ion-text-wrap" *ngIf="unknownError">
-        {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
-      </ion-label>
-      <ion-label class="ion-text-wrap" *ngIf="unauthorizedError">
-        {{ "REGISTRATION.FAILED.UNAUTHORIZED" | translate }}
-      </ion-label>
-      <ion-label class="ion-text-wrap" *ngIf="registrationError">
-        {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
-        @if (draft().error.message) {
-          :
-          <div class="error-message">
-            {{ draft().error.message }}
-          </div>
-        }
-      </ion-label>
-      <ion-label class="ion-text-wrap" *ngIf="serverError">
-        {{ "REGISTRATION.FAILED.PROBLEM" | translate }}. {{ "REGISTRATION.FAILED.LOGGED" | translate }}
-        <!-- Ta skjermbilde og
-        <app-external-link src="http://www.regobs.no/Home/About">kontakt oss</app-external-link>
-        , så hjelper du oss med å finne en løsning.  -->
-        {{ "REGISTRATION.FAILED.PROBLEM_HELP_TEXT" | translate }}
-      </ion-label>
+      @if (unknownError) {
+        <ion-label class="ion-text-wrap">
+          {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
+        </ion-label>
+      }
+      @if (unauthorizedError) {
+        <ion-label class="ion-text-wrap">
+          {{ "REGISTRATION.FAILED.UNAUTHORIZED" | translate }}
+        </ion-label>
+      }
+      @if (registrationError) {
+        <ion-label class="ion-text-wrap">
+          {{ "REGISTRATION.FAILED.PROBLEM" | translate }}
+          @if (draft().error.message) {
+            :
+            <div class="error-message">
+              {{ draft().error.message }}
+            </div>
+          }
+        </ion-label>
+      }
+      @if (serverError) {
+        <ion-label class="ion-text-wrap">
+          {{ "REGISTRATION.FAILED.PROBLEM" | translate }}. {{ "REGISTRATION.FAILED.LOGGED" | translate }}
+          <!-- Ta skjermbilde og
+          <app-external-link src="http://www.regobs.no/Home/About">kontakt oss</app-external-link>
+          , så hjelper du oss med å finne en løsning.  -->
+          {{ "REGISTRATION.FAILED.PROBLEM_HELP_TEXT" | translate }}
+        </ion-label>
+      }
     </ion-item>
-    <ion-item *ngIf="registrationError || serverError || unknownError">
-      <ion-label class="ion-text-wrap">
-        {{ "REGISTRATION.FAILED.REFERENCE" | translate }} ID: {{ draft().uuid }}
-      </ion-label>
-    </ion-item>
+    @if (registrationError || serverError || unknownError) {
+      <ion-item>
+        <ion-label class="ion-text-wrap">
+          {{ "REGISTRATION.FAILED.REFERENCE" | translate }} ID: {{ draft().uuid }}
+        </ion-label>
+      </ion-item>
+    }
     <ion-item (click)="sendEmail()" button>
       <ion-icon slot="start" name="mail"></ion-icon>
       <ion-label class="ion-text-wrap">
@@ -52,5 +68,5 @@
         {{ "REGISTRATION.FAILED.EDIT_OBSERVATION" | translate }}
       </ion-label>
     </ion-item>
-  </ng-container>
+  }
 </ion-list>

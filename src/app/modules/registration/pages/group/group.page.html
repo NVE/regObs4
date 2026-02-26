@@ -8,29 +8,36 @@
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper *ngIf="draft" [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.GROUP.SUBTITLE" | translate }} </ion-label>
-      </ion-list-header>
-      <ion-radio-group
-        *ngIf="groups.length > 1"
-        [ngModel]="draft.registration.ObserverGroupID"
-        (ngModelChange)="groupChanged($event)"
-      >
-        @for (group of groups; track group.Id) {
+  @if (draft) {
+    <app-registration-content-wrapper [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.GROUP.SUBTITLE" | translate }} </ion-label>
+        </ion-list-header>
+        @if (groups.length > 1) {
+          <ion-radio-group [ngModel]="draft.registration.ObserverGroupID" (ngModelChange)="groupChanged($event)">
+            @for (group of groups; track group.Id) {
+              <ion-item>
+                <ion-radio [value]="group.Id" labelPlacement="end" justify="start">
+                  {{ group.Name }}
+                </ion-radio>
+              </ion-item>
+            }
+          </ion-radio-group>
+        }
+        @if (groups.length === 1) {
           <ion-item>
-            <ion-radio [value]="group.Id" labelPlacement="end" justify="start">
-              {{ group.Name }}
-            </ion-radio>
+            <ion-checkbox
+              [checked]="isSelected"
+              (ionChange)="checkedChanged($event)"
+              labelPlacement="end"
+              justify="start"
+            >
+              {{ firstGroup.Name }}
+            </ion-checkbox>
           </ion-item>
         }
-      </ion-radio-group>
-      <ion-item *ngIf="groups.length === 1">
-        <ion-checkbox [checked]="isSelected" (ionChange)="checkedChanged($event)" labelPlacement="end" justify="start">
-          {{ firstGroup.Name }}
-        </ion-checkbox>
-      </ion-item>
-    </ion-list>
-  </app-registration-content-wrapper>
+      </ion-list>
+    </app-registration-content-wrapper>
+  }
 </ion-content>

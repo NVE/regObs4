@@ -29,7 +29,7 @@ import { isPackageOutdated } from '../../core/services/offline-map/utils';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { chevronDownCircle, chevronUpCircle, refresh, warningOutline, trashOutline } from 'ionicons/icons';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
@@ -77,8 +77,6 @@ const DEBUG_TAG = 'OfflineMapPage';
     IonTitle,
     IonToolbar,
     MapComponent,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

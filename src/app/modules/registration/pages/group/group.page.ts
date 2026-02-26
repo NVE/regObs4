@@ -18,7 +18,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -43,7 +43,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonRadioGroup,
     IonTitle,
     IonToolbar,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
   ],

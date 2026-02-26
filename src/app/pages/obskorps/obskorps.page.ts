@@ -24,7 +24,7 @@ import {
   IonRouterLink,
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 const toDateInputValue = (date: Date) => {
@@ -52,7 +52,6 @@ const toDateInputValue = (date: Date) => {
     IonRouterLink,
     IonSpinner,
     IonTitle,
-    NgIf,
     RouterLink,
   ],
 })

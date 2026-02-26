@@ -7,7 +7,7 @@ import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
 import { takeUntil } from 'rxjs/operators';
 import { Capacitor } from '@capacitor/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupportTileLegendLoaderComponent } from './legends/support-tile-legend-loader/support-tile-legend-loader.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -34,8 +34,6 @@ interface PopupSubscription {
     IonSelect,
     IonSelectOption,
     IonToggle,
-    NgFor,
-    NgIf,
     SupportTileLegendLoaderComponent,
     TranslatePipe,
   ],

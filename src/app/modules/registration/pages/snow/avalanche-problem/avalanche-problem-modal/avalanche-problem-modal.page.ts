@@ -17,7 +17,7 @@ import {
 import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { ExposedHeightComponent } from '../../../../components/snow/exposed-height/exposed-height.component';
@@ -71,7 +71,6 @@ const noopFilter = (_: number) => true;
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgIf,
     TextCommentComponent,
     TranslatePipe,
     ValidExpositionComponent,

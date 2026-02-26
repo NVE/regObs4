@@ -14,7 +14,7 @@ import {
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { EditImagesPage } from '../../../edit-images/edit-images.page';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { EditImagesComponent } from '../../../edit-images/edit-images.component';
 import { ThumbnailsComponent } from '../../../thumbnails/thumbnails.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -33,7 +33,7 @@ const DEBUG_TAG = 'EditImagesBarComponent';
   templateUrl: './edit-images-bar.component.html',
   styleUrls: ['./edit-images-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, NgIf, ThumbnailsComponent, TranslatePipe],
+  imports: [AsyncPipe, EditImagesComponent, IonIcon, IonItem, IonLabel, ThumbnailsComponent, TranslatePipe],
 })
 export class EditImagesBarComponent implements OnInit {
   private modalController = inject(ModalController);

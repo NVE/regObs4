@@ -1,31 +1,36 @@
-<ion-fab *ngIf="userSettings$ | async as userSettings" #geoSelectorFab vertical="top" horizontal="start" slot="fixed">
-  <ion-fab-button class="toggle-button" *ngIf="!isOpen" color="light" (click)="toggle()">
-    <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
-  </ion-fab-button>
-  <div class="geo-selector-items" *ngIf="isOpen">
-    <div class="geo-selector-wrapper" (click)="toggle()"></div>
-    <ion-list lines="none" class="ion-no-margin">
-      <ion-item (click)="toggle()">
-        <ion-fab-button slot="start" color="light">
-          <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
-        </ion-fab-button>
-        <ion-label>
-          <app-geo-name [geoHazards]="userSettings.currentGeoHazard"></app-geo-name>
-        </ion-label>
-      </ion-item>
-      <ng-container *ngFor="let geoHazards of geoHazardTypes">
-        <ion-item
-          *ngIf="geoHazards.join('-') !== userSettings.currentGeoHazard.join('-')"
-          (click)="changeGeoHazard(geoHazards)"
-        >
-          <ion-fab-button slot="start" color="light">
-            <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
-          </ion-fab-button>
-          <ion-label>
-            <app-geo-name [geoHazards]="geoHazards"></app-geo-name>
-          </ion-label>
-        </ion-item>
-      </ng-container>
-    </ion-list>
-  </div>
-</ion-fab>
+@if (userSettings$ | async; as userSettings) {
+  <ion-fab #geoSelectorFab vertical="top" horizontal="start" slot="fixed">
+    @if (!isOpen) {
+      <ion-fab-button class="toggle-button" color="light" (click)="toggle()">
+        <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
+      </ion-fab-button>
+    }
+    @if (isOpen) {
+      <div class="geo-selector-items">
+        <div class="geo-selector-wrapper" (click)="toggle()"></div>
+        <ion-list lines="none" class="ion-no-margin">
+          <ion-item (click)="toggle()">
+            <ion-fab-button slot="start" color="light">
+              <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
+            </ion-fab-button>
+            <ion-label>
+              <app-geo-name [geoHazards]="userSettings.currentGeoHazard"></app-geo-name>
+            </ion-label>
+          </ion-item>
+          @for (geoHazards of geoHazardTypes; track geoHazards) {
+            @if (geoHazards.join("-") !== userSettings.currentGeoHazard.join("-")) {
+              <ion-item (click)="changeGeoHazard(geoHazards)">
+                <ion-fab-button slot="start" color="light">
+                  <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
+                </ion-fab-button>
+                <ion-label>
+                  <app-geo-name [geoHazards]="geoHazards"></app-geo-name>
+                </ion-label>
+              </ion-item>
+            }
+          }
+        </ion-list>
+      </div>
+    }
+  </ion-fab>
+}

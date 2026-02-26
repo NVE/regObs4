@@ -24,7 +24,7 @@ import { FormsModule } from '@angular/forms';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
 import { KdvSelectComponent } from '../../../../../../../components/kdv-select/kdv-select.component';
 import { SelectComponent } from '../../../../../../shared/components/input/select/select.component';
-import { NgIf, LowerCasePipe } from '@angular/common';
+import { LowerCasePipe } from '@angular/common';
 import { TextCommentComponent } from '../../../../text-comment/text-comment.component';
 import { addIcons } from 'ionicons';
 import { chevronUp, chevronDown, arrowBack, arrowForward, trash } from 'ionicons/icons';
@@ -62,7 +62,6 @@ type FilterFunc = (id: number) => boolean;
     IonToolbar,
     KdvSelectComponent,
     LowerCasePipe,
-    NgIf,
     NumericInputComponent,
     SelectComponent,
     TextCommentComponent,

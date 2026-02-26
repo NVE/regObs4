@@ -8,7 +8,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvElement } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -24,7 +24,7 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
   templateUrl: './kdv-icon-select.component.html',
   styleUrls: ['./kdv-icon-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonButton, IonItem, IonLabel, NgClass, NgFor, NgIf, SvgIconComponent, TranslatePipe],
+  imports: [AsyncPipe, IonButton, IonItem, IonLabel, NgClass, SvgIconComponent, TranslatePipe],
 })
 export class KdvIconSelectComponent<T extends number | number[]> {
   private userSettings = inject(UserSettingService);

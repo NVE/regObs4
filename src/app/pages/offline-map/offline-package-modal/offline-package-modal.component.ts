@@ -21,7 +21,7 @@ import { takeUntil, tap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 import { getDownloadCompleteDate, isPackageOutdated } from '../../../core/services/offline-map/utils';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { NgIf, NgStyle, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { NgStyle, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { MapComponent } from '../../../modules/map/components/map/map.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -60,7 +60,6 @@ const DEBUG_TAG = 'OfflinePackageModalComponent';
     IonTitle,
     IonToolbar,
     MapComponent,
-    NgIf,
     NgStyle,
     TranslatePipe,
   ],

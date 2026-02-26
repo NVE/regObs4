@@ -8,80 +8,75 @@
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper
-    *ngIf="draft && snowProfile"
-    [draft]="draft"
-    [registrationTid]="registrationTid"
-    (reset)="reset()"
-  >
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SUPERIOR" | translate }} </ion-label>
-      </ion-list-header>
-      <app-yes-no-select
-        [(value)]="snowProfile.IsProfileToGround"
-        title="REGISTRATION.SNOW.SNOW_PROFILE.IS_PROFILE_TO_GROUND"
-      >
-      </app-yes-no-select>
-      <app-select
-        [(selectedValue)]="snowProfile.Exposition"
-        [options]="expositionOptions"
-        label="REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION"
-      ></app-select>
-      <app-numeric-input
-        [(value)]="snowProfile.SlopeAngle"
-        label="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE"
-        [min]="0"
-        [max]="59"
-        suffix="°"
-        placeholder="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE_PLACEHOLDER"
-        [decimalPlaces]="0"
-      ></app-numeric-input>
-      <app-text-comment label="DIALOGS.COMMENT" [(value)]="snowProfile.Comment"> </app-text-comment>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS" | translate }} </ion-label>
-      </ion-list-header>
-      <app-strat-profile [draft]="draft"></app-strat-profile>
-      <app-snow-temp [draft]="draft"></app-snow-temp>
-      <app-snow-density [draft]="draft"></app-snow-density>
-      <app-compression-test [draft]="draft"> </app-compression-test>
-
-      <!-- Snow profile preview -->
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }} </ion-label>
-      </ion-list-header>
-      <ion-item [disabled]="noLayersInSnowProfile()" (click)="openPreview()" button detail="false">
-        <ion-icon name="eye" color="dark" slot="start"></ion-icon>
-        <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM" | translate }}</ion-label>
-      </ion-item>
-      <ion-modal [isOpen]="showPreview()" (ionModalDidDismiss)="showPreview.set(false)">
-        <ng-template>
-          <ion-header>
-            <ion-toolbar appHeaderColor>
-              <ion-title>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }}</ion-title>
-              <ion-buttons slot="end">
-                <ion-button (click)="showPreview.set(false)">{{ "DIALOGS.OK" | translate }}</ion-button>
-              </ion-buttons>
-            </ion-toolbar>
-          </ion-header>
-          <ion-content>
-            <div class="img-container">
-              <img [src]="previewUrl()" />
-            </div>
-          </ion-content>
-        </ng-template>
-      </ion-modal>
-
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.IMAGES" | translate }} </ion-label>
-      </ion-list-header>
-      <app-edit-images
-        [registrationTid]="registrationTid"
-        [geoHazard]="draft.registration.GeoHazardTID"
-        [draftUuid]="draft.uuid"
-        [(existingAttachments)]="draft.registration.Attachments"
-        [onBeforeAdd]="getSaveFunc()"
-      ></app-edit-images>
-    </ion-list>
-  </app-registration-content-wrapper>
+  @if (draft && snowProfile) {
+    <app-registration-content-wrapper [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SUPERIOR" | translate }} </ion-label>
+        </ion-list-header>
+        <app-yes-no-select
+          [(value)]="snowProfile.IsProfileToGround"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.IS_PROFILE_TO_GROUND"
+        >
+        </app-yes-no-select>
+        <app-select
+          [(selectedValue)]="snowProfile.Exposition"
+          [options]="expositionOptions"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION"
+        ></app-select>
+        <app-numeric-input
+          [(value)]="snowProfile.SlopeAngle"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE"
+          [min]="0"
+          [max]="59"
+          suffix="°"
+          placeholder="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE_PLACEHOLDER"
+          [decimalPlaces]="0"
+        ></app-numeric-input>
+        <app-text-comment label="DIALOGS.COMMENT" [(value)]="snowProfile.Comment"> </app-text-comment>
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS" | translate }} </ion-label>
+        </ion-list-header>
+        <app-strat-profile [draft]="draft"></app-strat-profile>
+        <app-snow-temp [draft]="draft"></app-snow-temp>
+        <app-snow-density [draft]="draft"></app-snow-density>
+        <app-compression-test [draft]="draft"> </app-compression-test>
+        <!-- Snow profile preview -->
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }} </ion-label>
+        </ion-list-header>
+        <ion-item [disabled]="noLayersInSnowProfile()" (click)="openPreview()" button detail="false">
+          <ion-icon name="eye" color="dark" slot="start"></ion-icon>
+          <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM" | translate }}</ion-label>
+        </ion-item>
+        <ion-modal [isOpen]="showPreview()" (ionModalDidDismiss)="showPreview.set(false)">
+          <ng-template>
+            <ion-header>
+              <ion-toolbar appHeaderColor>
+                <ion-title>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }}</ion-title>
+                <ion-buttons slot="end">
+                  <ion-button (click)="showPreview.set(false)">{{ "DIALOGS.OK" | translate }}</ion-button>
+                </ion-buttons>
+              </ion-toolbar>
+            </ion-header>
+            <ion-content>
+              <div class="img-container">
+                <img [src]="previewUrl()" />
+              </div>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.IMAGES" | translate }} </ion-label>
+        </ion-list-header>
+        <app-edit-images
+          [registrationTid]="registrationTid"
+          [geoHazard]="draft.registration.GeoHazardTID"
+          [draftUuid]="draft.uuid"
+          [(existingAttachments)]="draft.registration.Attachments"
+          [onBeforeAdd]="getSaveFunc()"
+        ></app-edit-images>
+      </ion-list>
+    </app-registration-content-wrapper>
+  }
 </ion-content>

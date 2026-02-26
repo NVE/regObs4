@@ -40,7 +40,9 @@
       <app-geo-fab></app-geo-fab>
 
       @defer {
-        <app-map-center-info *ngIf="userSettingService.showMapCenter$ | async"></app-map-center-info>
+        @if (userSettingService.showMapCenter$ | async) {
+          <app-map-center-info></app-map-center-info>
+        }
 
         @if (clickedRegistration()) {
           <app-map-item-bar

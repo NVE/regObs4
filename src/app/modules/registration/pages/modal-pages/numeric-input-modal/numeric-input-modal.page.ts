@@ -13,7 +13,7 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';
-import { NgIf, NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -31,8 +31,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonText,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

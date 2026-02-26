@@ -7,7 +7,7 @@ import { GeoHazard, LangKey } from '../../modules/common-core/models';
 import { SearchCriteriaService } from '../../core/services/search-criteria/search-criteria.service';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { mapOutline, list, warning, openOutline } from 'ionicons/icons';
@@ -20,7 +20,7 @@ import { settings } from 'src/settings';
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [AsyncPipe, IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, NgIf, TranslatePipe],
+  imports: [AsyncPipe, IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, TranslatePipe],
 })
 export class TabsPage {
   private fullscreenService = inject(FullscreenService);

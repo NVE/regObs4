@@ -22,7 +22,7 @@ import {
 } from '../../components/set-location-in-map/set-location-in-map.component';
 import { IPolygon, PolygonArea } from '../../models/polygon';
 import { constructPolygon, makePolygons } from 'src/app/modules/common-registration/helpers/polygon.helper';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 
 @Component({
@@ -38,7 +38,6 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
     IonHeader,
     IonTitle,
     IonToolbar,
-    NgIf,
     SetLocationInMapComponent,
     TranslatePipe,
   ],

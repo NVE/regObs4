@@ -27,7 +27,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/format-date.pipe';
 
@@ -50,8 +50,6 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/forma
     IonSkeletonText,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

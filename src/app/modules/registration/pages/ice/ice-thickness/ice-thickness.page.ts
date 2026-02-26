@@ -21,7 +21,7 @@ import {
 import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessEditModel, IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
 import { YesNoSelectComponent } from '../../../components/yes-no-select/yes-no-select.component';
@@ -57,8 +57,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonToolbar,
     KdvDescriptionPipe,
     MetersToCmPipe,
-    NgFor,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,

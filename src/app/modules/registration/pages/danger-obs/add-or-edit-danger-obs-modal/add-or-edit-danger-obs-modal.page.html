@@ -12,19 +12,22 @@
     <ion-list-header class="ion-text-uppercase">
       <ion-label> {{ "REGISTRATION.DANGER_OBS.TITLE" | translate }} </ion-label>
     </ion-list-header>
-    <ion-item *ngIf="showNoDangerSignCheckbox()">
-      <ion-checkbox slot="start" [checked]="isNoDangerSign()" labelPlacement="end" (ionChange)="toggleNoDangerSign()">
-        {{ "REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN" | translate }}
-      </ion-checkbox>
-    </ion-item>
-    <app-kdv-select
-      label="REGISTRATION.DANGER_OBS.DROPDOWN_TITLE"
-      *ngIf="showDangerSignSelect()"
-      [kdvKey]="kdvKey()"
-      [(value)]="dangerSignTid"
-      [showResetButton]="false"
-    >
-    </app-kdv-select>
+    @if (showNoDangerSignCheckbox()) {
+      <ion-item>
+        <ion-checkbox slot="start" [checked]="isNoDangerSign()" labelPlacement="end" (ionChange)="toggleNoDangerSign()">
+          {{ "REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN" | translate }}
+        </ion-checkbox>
+      </ion-item>
+    }
+    @if (showDangerSignSelect()) {
+      <app-kdv-select
+        label="REGISTRATION.DANGER_OBS.DROPDOWN_TITLE"
+        [kdvKey]="kdvKey()"
+        [(value)]="dangerSignTid"
+        [showResetButton]="false"
+      >
+      </app-kdv-select>
+    }
     <app-select
       label="{{ 'REGISTRATION.DANGER_OBS.AREA' | translate }}"
       [(selectedValue)]="area"

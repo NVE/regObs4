@@ -39,7 +39,7 @@ import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/dr
 import { ALLOWED_ATTACHMENT_FILE_TYPES, DropZoneService } from './drop-zone.service';
 import { NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { AddAttachmentState } from 'src/app/modules/common-registration/services/add-new-attachment/new-attachment.service';
-import { NgFor, NgIf, NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { RemoteImageComponent } from '../../../shared/components/remote-image/remote-image.component';
 import { TextCommentComponent } from '../text-comment/text-comment.component';
 import { BlobImageComponent } from '../blob-image/blob-image.component';
@@ -83,8 +83,6 @@ interface NewAttachment extends AttachmentUploadEditModelWithBlob, AddAttachment
     IonLabel,
     IonProgressBar,
     NgClass,
-    NgFor,
-    NgIf,
     NgxFileDropModule,
     RemoteImageComponent,
     TextCommentComponent,

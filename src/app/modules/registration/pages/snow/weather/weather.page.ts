@@ -23,7 +23,6 @@ import { TextCommentComponent } from '../../../components/text-comment/text-comm
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { WeatherEditModel } from 'src/app/modules/common-regobs-api';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-weather',
@@ -48,7 +47,6 @@ import { NgIf } from '@angular/common';
     SelectComponent,
     TextCommentComponent,
     TranslatePipe,
-    NgIf,
   ],
 })
 export class WeatherPage extends BasePage {

@@ -15,7 +15,7 @@ import { SentListComponent } from './components/sent-list/sent-list.component';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
 import { DraftListComponent } from './components/draft-list/draft-list.component';
-import { NgIf } from '@angular/common';
+
 import { SvgIconComponent } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -38,7 +38,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonRow,
     IonTitle,
     IonToolbar,
-    NgIf,
     RefreshWithCancelComponent,
     SentListComponent,
     SvgIconComponent,

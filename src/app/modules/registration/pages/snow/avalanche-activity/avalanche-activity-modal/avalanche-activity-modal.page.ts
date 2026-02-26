@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatetimePickerComponent } from '../../../../../../components/datetime-picker/datetime-picker.component';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
@@ -51,8 +51,6 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgFor,
-    NgIf,
     TextCommentComponent,
     TranslatePipe,
     ValidExpositionComponent,

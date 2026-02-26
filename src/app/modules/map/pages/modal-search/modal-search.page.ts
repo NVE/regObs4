@@ -19,7 +19,7 @@ import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/f
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
-import { NgIf, NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
 import { addIcons } from 'ionicons';
@@ -42,8 +42,6 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
     IonListHeader,
     IonText,
     IonToolbar,
-    NgFor,
-    NgIf,
     ReactiveFormsModule,
     StartsWithHighlightPipe,
     TranslatePipe,

@@ -32,7 +32,7 @@ import { getUniqueRegistrations } from '../../../../modules/common-registration/
 import { RegistrationViewModel, SearchCriteriaRequestDto } from '../../../../modules/common-regobs-api';
 import { LogLevel } from '../../../../modules/shared/services/logging/log-level.model';
 import { LoggingService } from '../../../../modules/shared/services/logging/logging.service';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
 import { ObservationSkeletonComponent } from '../../../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -58,7 +58,6 @@ const DEBUG_TAG = 'SentListComponent';
     IonLabel,
     IonList,
     IonRow,
-    NgIf,
     ObservationComponent,
     ObservationSkeletonComponent,
     SvgIconComponent,

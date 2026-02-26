@@ -21,7 +21,7 @@ import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avala
 import L from 'leaflet';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgClass, DecimalPipe } from '@angular/common';
+import { NgClass, DecimalPipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { DatetimePickerComponent } from '../../../../../components/datetime-picker/datetime-picker.component';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
@@ -61,7 +61,6 @@ import { LandslideEditModel } from 'src/app/modules/common-regobs-api';
     IonToolbar,
     KdvSelectComponent,
     NgClass,
-    NgIf,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
     TranslatePipe,

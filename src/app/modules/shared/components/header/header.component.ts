@@ -4,7 +4,7 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { AppMode } from 'src/app/modules/common-core/models';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { optionsOutline } from 'ionicons/icons';
@@ -16,17 +16,7 @@ import { Capacitor } from '@capacitor/core';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  imports: [
-    HeaderColorDirective,
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    NgIf,
-    TranslatePipe,
-  ],
+  imports: [HeaderColorDirective, IonBackButton, IonButton, IonButtons, IonHeader, IonTitle, IonToolbar, TranslatePipe],
 })
 export class HeaderComponent {
   private fullscreenService = inject(FullscreenService);

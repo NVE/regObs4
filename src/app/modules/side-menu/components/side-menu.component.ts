@@ -26,7 +26,7 @@ import { ObserverTripsService } from 'src/app/core/services/observer-trips/obser
 import { PopoverOptions, SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
-import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -62,8 +62,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     IonSelect,
     IonSelectOption,
     IonToggle,
-    NgFor,
-    NgIf,
     RouterLink,
     SupportTilesMenuComponent,
     TranslatePipe,

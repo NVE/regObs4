@@ -16,7 +16,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 import { CompressionTestListComponent } from '../../../compression-test-list/compression-test-list.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler';
@@ -38,7 +38,6 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
     IonRow,
     IonTitle,
     IonToolbar,
-    NgIf,
     TranslatePipe,
   ],
 })

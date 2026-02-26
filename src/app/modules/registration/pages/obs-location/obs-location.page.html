@@ -1,24 +1,27 @@
-<ion-header *ngIf="!(fullscreen$ | async)">
-  <ion-toolbar appHeaderColor>
-    <ion-buttons slot="start">
-      <ion-back-button text="" defaultHref="/"></ion-back-button>
-    </ion-buttons>
-    <ion-title> {{ "REGISTRATION.OBS_LOCATION.TITLE" | translate }} </ion-title>
-  </ion-toolbar>
-</ion-header>
+@if (!(fullscreen$ | async)) {
+  <ion-header>
+    <ion-toolbar appHeaderColor>
+      <ion-buttons slot="start">
+        <ion-back-button text="" defaultHref="/"></ion-back-button>
+      </ion-buttons>
+      <ion-title> {{ "REGISTRATION.OBS_LOCATION.TITLE" | translate }} </ion-title>
+    </ion-toolbar>
+  </ion-header>
+}
 <ion-content>
-  <app-set-location-in-map
-    *ngIf="isLoaded"
-    [geoHazard]="geoHazard"
-    [locationMarker]="locationMarker"
-    (locationTimeSet)="onLocationTimeSet($event)"
-    [selectedLocation]="selectedLocation"
-    [allowEditLocationName]="allowEditLocationName"
-    [setObsTime]="true"
-    [localDate]="localDate"
-    [sourceTid]="draft?.registration?.SourceTID"
-    [spatialAccuracy]="draft?.registration?.ObsLocation?.Uncertainty"
-    [minStartupZoom]="initialMinZoom"
-  >
-  </app-set-location-in-map>
+  @if (isLoaded) {
+    <app-set-location-in-map
+      [geoHazard]="geoHazard"
+      [locationMarker]="locationMarker"
+      (locationTimeSet)="onLocationTimeSet($event)"
+      [selectedLocation]="selectedLocation"
+      [allowEditLocationName]="allowEditLocationName"
+      [setObsTime]="true"
+      [localDate]="localDate"
+      [sourceTid]="draft?.registration?.SourceTID"
+      [spatialAccuracy]="draft?.registration?.ObsLocation?.Uncertainty"
+      [minStartupZoom]="initialMinZoom"
+    >
+    </app-set-location-in-map>
+  }
 </ion-content>

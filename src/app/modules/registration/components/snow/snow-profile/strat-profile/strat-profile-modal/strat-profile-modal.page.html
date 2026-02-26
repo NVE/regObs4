@@ -25,43 +25,46 @@
       <ion-list-header class="ion-text-uppercase">
         <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE" | translate }} </ion-label>
       </ion-list-header>
-      <ng-container *ngIf="hasLayers(); else noLayers">
+      @if (hasLayers()) {
         <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()" button>
           <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
           <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP" | translate }}</ion-label>
         </ion-item>
         <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
-          <ion-item
-            tabindex="0"
-            (click)="addOrEditLayer(i)"
-            (keyup.enter)="addOrEditLayer(i)"
-            *ngFor="let layer of layers(); let i = index"
-            button
-          >
-            <ion-label [color]="(layer.CriticalLayerTID || 0) > 0 ? 'danger' : 'dark'">
-              <ng-container *ngIf="layer.Thickness !== undefined"> {{ layer.Thickness | metersToCm }}cm </ng-container>
-              <ng-container *ngIf="layer.HardnessTID !== undefined">
-                {{ layer.HardnessTID | kdvDescription: "Snow_HardnessKDV" | async }}
-              </ng-container>
-              <ng-container *ngIf="layer.GrainFormPrimaryTID !== undefined">
-                {{ layer.GrainFormPrimaryTID | kdvDescription: "Snow_GrainFormKDV" | async }}
-              </ng-container>
-              <ng-container *ngIf="layer.GrainSizeAvg !== undefined">
-                {{ layer.GrainSizeAvg * 100 | number: "1.0-2" }}mm
-              </ng-container>
-              <ng-container *ngIf="layer.WetnessTID !== undefined">
-                {{ layer.WetnessTID | kdvDescription: "Snow_WetnessKDV" | async }}
-              </ng-container>
-            </ion-label>
-            <ion-reorder slot="end"></ion-reorder>
-          </ion-item>
+          @for (layer of layers(); track layer; let i = $index) {
+            <ion-item tabindex="0" (click)="addOrEditLayer(i)" (keyup.enter)="addOrEditLayer(i)" button>
+              <ion-label [color]="(layer.CriticalLayerTID || 0) > 0 ? 'danger' : 'dark'">
+                @if (layer.Thickness !== undefined) {
+                  {{ layer.Thickness | metersToCm }}cm
+                }
+                @if (layer.HardnessTID !== undefined) {
+                  {{ layer.HardnessTID | kdvDescription: "Snow_HardnessKDV" | async }}
+                }
+                @if (layer.GrainFormPrimaryTID !== undefined) {
+                  {{ layer.GrainFormPrimaryTID | kdvDescription: "Snow_GrainFormKDV" | async }}
+                }
+                @if (layer.GrainSizeAvg !== undefined) {
+                  {{ layer.GrainSizeAvg * 100 | number: "1.0-2" }}mm
+                }
+                @if (layer.WetnessTID !== undefined) {
+                  {{ layer.WetnessTID | kdvDescription: "Snow_WetnessKDV" | async }}
+                }
+              </ion-label>
+              <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+          }
         </ion-reorder-group>
         <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()" button>
           <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
           <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM" | translate }}</ion-label>
         </ion-item>
-      </ng-container>
-      <ng-container *ngIf="hasLayers()">
+      } @else {
+        <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()" button>
+          <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+          <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER" | translate }}</ion-label>
+        </ion-item>
+      }
+      @if (hasLayers()) {
         <ion-list-header class="ion-text-uppercase">
           <ion-label> {{ "REGISTRATION.SUMMARY" | translate }} </ion-label>
         </ion-list-header>
@@ -70,10 +73,12 @@
             {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS" | translate }}</ion-label
           >
           <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
-            <p class="ion-no-margin" *ngIf="totalThickness() as sum">{{ sum | metersToCm }} cm</p>
+            @if (totalThickness(); as sum) {
+              <p class="ion-no-margin">{{ sum | metersToCm }} cm</p>
+            }
           </ion-text>
         </ion-item>
-      </ng-container>
+      }
     </ion-list>
     <ion-grid class="ion-no-padding">
       <ion-row>
@@ -86,9 +91,3 @@
     </ion-grid>
   </form>
 </ion-content>
-<ng-template #noLayers>
-  <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()" button>
-    <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-    <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER" | translate }}</ion-label>
-  </ion-item>
-</ng-template>

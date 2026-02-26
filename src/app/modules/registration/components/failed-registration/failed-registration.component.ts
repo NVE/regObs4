@@ -9,7 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { firstValueFrom } from 'rxjs';
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
-import { NgIf } from '@angular/common';
+
 import { VersionConflictComponent } from '../version-conflict/version-conflict.component';
 import { GoneRegistrationComponent } from '../gone-registration/gone-registration.component';
 import { addIcons } from 'ionicons';
@@ -30,7 +30,6 @@ interface RegistrationDraftWithError extends RegistrationDraft {
     IonLabel,
     IonList,
     IonListHeader,
-    NgIf,
     TranslatePipe,
     VersionConflictComponent,
   ],

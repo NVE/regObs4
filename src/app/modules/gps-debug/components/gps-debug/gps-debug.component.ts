@@ -7,7 +7,7 @@ import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
-import { NgIf, NgClass, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { NgClass, AsyncPipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
@@ -16,7 +16,7 @@ import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
   selector: 'app-gps-debug',
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
-  imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, NgFor, NgIf, TranslatePipe],
+  imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, TranslatePipe],
 })
 export class GpsDebugComponent implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);

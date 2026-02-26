@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { RegistrationDraft } from '../../../../core/services/draft/draft-model';
 import { DraftRepositoryService } from '../../../../core/services/draft/draft-repository.service';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SyncItemComponent } from '../sync-item/sync-item.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,18 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './draft-list.component.html',
   styleUrls: ['./draft-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    AsyncPipe,
-    IonGrid,
-    IonItemDivider,
-    IonLabel,
-    IonList,
-    IonRow,
-    NgFor,
-    NgIf,
-    SyncItemComponent,
-    TranslatePipe,
-  ],
+  imports: [AsyncPipe, IonGrid, IonItemDivider, IonLabel, IonList, IonRow, SyncItemComponent, TranslatePipe],
 })
 export class DraftListComponent implements OnInit {
   @Output() isEmpty = new EventEmitter<boolean>();

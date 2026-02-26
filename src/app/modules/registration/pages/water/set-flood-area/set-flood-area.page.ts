@@ -10,7 +10,7 @@ import { IPolygon, PolygonArea } from '../../../models/polygon';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { Location, NgIf, AsyncPipe } from '@angular/common';
+import { Location, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { SetLocationInMapComponent } from '../../../components/set-location-in-map/set-location-in-map.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -27,7 +27,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonHeader,
     IonTitle,
     IonToolbar,
-    NgIf,
     SetLocationInMapComponent,
     TranslatePipe,
   ],

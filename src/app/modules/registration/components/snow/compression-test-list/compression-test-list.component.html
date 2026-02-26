@@ -10,7 +10,8 @@
       tabindex="0"
       detail="true"
       (click)="addOrEditCompressionTest(i)"
-      (keyup.enter)="addOrEditCompressionTest(i)" button
+      (keyup.enter)="addOrEditCompressionTest(i)"
+      button
     >
       <ion-label>
         @if (test.PropagationTID) {
@@ -27,7 +28,9 @@
         }
       </ion-label>
       @if (test.IncludeInSnowProfile) {
-        <ion-icon slot="end" name="link" *ngIf="test.IncludeInSnowProfile"></ion-icon>
+        @if (test.IncludeInSnowProfile) {
+          <ion-icon slot="end" name="link"></ion-icon>
+        }
       }
     </ion-item>
   }
