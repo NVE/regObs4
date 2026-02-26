@@ -100,7 +100,7 @@ brew link --overwrite cocoapods
 #### Ved vanlig kjøring / debugging
 
 ```
-npm run build   # eller ionic build, eventuelt npm run build:prod for å teste prod-bygg
+npm run build   # eventuelt npm run build:prod for å teste prod-bygg
 npx cap sync ios
 npx cap open ios  # For å åpne prosjektet i xcode
 ```
@@ -111,61 +111,29 @@ Kjør appen fra XCode.
 
 [Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
 
-## Build and release
+## Opprette iOS / android release
 
-### 1. Use npm to make a release build:
-
-```bash
-npm run build --production --device
-```
-
-TIP! if you run into "ERROR maximum call stack size exceeded" it's most probably a circular module dependency.
-If you build without aot, you might get a better error message:
-
-```bash
-ng build --aot=false
-```
-
-### 2. Create release branch
-
-1. For a release to trigger, the branch has to follow the naming convention `release/vx.x.x`. For
-   example `release/v4.0.0`.
-   Switch 4.0.0 with the version number you want to release.
+Pipelinen `pipelines/regobs-mobile-app-build-release.yml` håndterer bygging og pushing av appen til [App Store Connect](https://appstoreconnect.apple.com/) for iOS og
+[Google Play Console](https://play.google.com/console) for android.
+For at pipelinen skal trigges må det pushes en ny release-branch med navn `release/vx.x.x`.
+For eksempel `release/v4.0.0`.
 
 ```bash
 git switch develop
 git pull
 git switch -c release/v4.0.0
-```
-
-2. Commit changed files and push relase-branch.
-
-```bash
-git add .
-git commit -m "Release v4.0.0"
 git push release/v4.0.0
 ```
 
-The build will be published to internal testers in Testflight and Google Play automatically.
+Nytt bygg vil publiseres til interne testere via Testflight-appen på iOS og via Google Play automatisk.
 
-You need to add release notes / what to test manually in Appstore connect and Google Play console after the build is
-published.
+**Du må selv legge til release-notes og beskrive hva som skal testes manuelt i App Store Connect / Google Play Console
+etter at ny versjon har blitt opprettet.**
 
-### 3. Update version number
-
-After the release is published, you need to update the version number in `package.json` and `package-lock.json` to the
-next version, and merge the release branch to develop.
-
-```bash
-git switch develop
-git pull
-git merge release/v4.0.0
-git switch -c task/update-version-to-4.0.1
-npm run create-version-file
-git add .
-git commit -m "Update version to 4.0.1"
-git push
-```
+Etter den nye versjonen har blitt rullet ut til produksjon, eller ved behov, må versjonsnummer i develop
+jekkes opp. Du må selv oppdatere versjonsnummer i `package.json`
+og kjøre npm install for å oppdatere versjonsnr i `package-lock.json`.
+Disse endringene pushes deretter til develop (via PR).
 
 ## Fornye sertifikater og provisioning profiles
 
@@ -302,6 +270,9 @@ NB! Cordova plugins må oppdateres ved å først slette dem og legge dem til på
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
 ```
+
+> NB: Vi fjerna @ionic/cli som avhengighet i prosjektet siden det brukes så sjeldent, så du må installere @ionic/cli
+> globalt på din maskin for å kjøre disse kommandoene
 
 ## 4. Oppgrader Angular, hvis det trengs
 
