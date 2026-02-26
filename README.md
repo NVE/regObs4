@@ -113,7 +113,7 @@ Kjør appen fra XCode.
 
 ## Opprette iOS / android release
 
-Pipelinen `pipelines/regobs-ci.yml` håndterer bygging og pushing av appen til [App Store Connect](https://appstoreconnect.apple.com/) for iOS og
+Pipelinen `pipelines/regobs-mobile-app-build-release.yml` håndterer bygging og pushing av appen til [App Store Connect](https://appstoreconnect.apple.com/) for iOS og
 [Google Play Console](https://play.google.com/console) for android.
 For at pipelinen skal trigges må det pushes en ny release-branch med navn `release/vx.x.x`.
 For eksempel `release/v4.0.0`.
