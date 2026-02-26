@@ -111,7 +111,7 @@ Kjør appen fra XCode.
 
 [Mer info om ionic utvikling for ios.](https://ionicframework.com/docs/developing/ios)
 
-## Create iOS / android release
+## Opprette iOS / android release
 
 Pipelinen `pipelines/regobs-ci.yml` håndterer bygging og pushing av appen til [App Store Connect](https://appstoreconnect.apple.com/) for iOS og
 [Google Play Console](https://play.google.com/console) for android.
