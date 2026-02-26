@@ -66,8 +66,10 @@ export class DangerObsPage extends BasePage {
   private dangerSignKdvSubscription?: Subscription;
 
   get dangerObs(): DangerObsEditModel[] {
-    if (!Array.isArray(this.draft.registration.DangerObs)) {
-      this.draft.registration.DangerObs = [] as DangerObsEditModel[];
+    if (this.draft.registration.DangerObs == null) {
+      this.draft.registration.DangerObs = [];
+    } else if (!Array.isArray(this.draft.registration.DangerObs)) {
+      this.draft.registration.DangerObs = [];
     }
     return this.draft.registration.DangerObs;
   }

@@ -1,10 +1,10 @@
-@if (!subTitle) {
+@if (!subTitle()) {
   <ion-grid class="header-grid ion-no-padding ion-no-margin">
     <ion-row>
       <ion-col size="6" class="ion-no-padding">
         <h3 class="ion-text-uppercase">{{ title() | translate }}</h3>
       </ion-col>
-      @if (showDayNames) {
+      @if (showDayNames()) {
         <ion-col size="6" class="ion-no-padding ion-align-self-end">
           <div *ngTemplateOutlet="dayNames"></div>
         </ion-col>
@@ -12,7 +12,7 @@
     </ion-row>
   </ion-grid>
 }
-@if (subTitle) {
+@if (subTitle()) {
   <ion-grid class="header-grid ion-no-margin ion-no-padding">
     <ion-row>
       <h3 class="ion-text-uppercase">{{ title() | translate }}</h3>
@@ -23,7 +23,7 @@
       </ion-label>
     </ion-row>
     <ion-row>
-      @if (showDayNames) {
+      @if (showDayNames()) {
         <ion-col offset="6" size="6" class="ion-no-padding ion-align-self-end">
           <div *ngTemplateOutlet="dayNames"></div>
         </ion-col>

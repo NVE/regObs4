@@ -5,15 +5,16 @@
         <h3 class="ion-text-uppercase">{{ "MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate }}</h3>
       </ion-row>
       <ion-row>
-        @if (myRegistrations?.length) {
+        @if (myRegistrations.length > 0) {
           <ion-label class="ion-text-wrap" color="medium">
             {{ "MY_OBSERVATIONS.SENT_SUBTITLE" | translate }}
           </ion-label>
-        }
-        @if (!myRegistrations?.length && (isOffline$ | async)) {
-          <ion-label class="ion-text-wrap" color="medium">
-            {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
-          </ion-label>
+        } @else {
+          @if (isOffline$ | async) {
+            <ion-label class="ion-text-wrap" color="medium">
+              {{ "MY_OBSERVATIONS.OFFLINE" | translate }}
+            </ion-label>
+          }
         }
         @if (error$ | async) {
           <ion-label class="ion-text-wrap" color="medium">

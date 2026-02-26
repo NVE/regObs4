@@ -65,7 +65,7 @@
                 "input": "node_modules/source-sans-pro/source-sans-pro.css"
               }
             ],
-            "scripts": ["node_modules/marked/marked.min.js"],
+            "scripts": [],
             "webWorkerTsConfig": "tsconfig.worker.json",
             "extractLicenses": false,
             "sourceMap": true,

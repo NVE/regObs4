@@ -25,7 +25,6 @@ import {
   ChangeDetectionStrategy,
   AfterViewInit,
   ElementRef,
-  HostListener,
   inject,
   viewChild,
   input,
@@ -146,6 +145,9 @@ const createGeojsonBounds = ({ minLng, minLat, maxLng, maxLat }: LatLngBounds): 
   templateUrl: './static-map-image.component.html',
   styleUrls: ['./static-map-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:resize)': 'onResize()',
+  },
   providers: [
     {
       provide: MapLayersService,
@@ -161,7 +163,6 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
   readonly location = input.required<ImageLocation>();
   readonly container = viewChild.required<ElementRef<HTMLDivElement>>('container');
 
-  @HostListener('window:resize', ['$event'])
   onResize() {
     this.componentCreatedOrResized.next();
   }

@@ -7,14 +7,14 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  @if (draft?.registration?.AvalancheEvalProblem2) {
+  @if (draft) {
     <app-registration-content-wrapper [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
       <ion-list lines="full">
         <ion-list-header class="ion-text-uppercase">
           <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE" | translate }} </ion-label>
         </ion-list-header>
         <ion-reorder-group disabled="false" (ionItemReorder)="onProblemReorder($event)">
-          @for (ap of draft.registration.AvalancheEvalProblem2; track $index) {
+          @for (ap of AvalancheEvalProblem2; track $index) {
             <ion-item detail="true" (click)="addOrEditAvalancheProblem($index)" button>
               <ion-label>{{ getDescription(ap) | translate }}</ion-label>
               <ion-reorder slot="end"></ion-reorder>

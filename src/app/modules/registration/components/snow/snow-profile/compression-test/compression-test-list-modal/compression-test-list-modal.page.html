@@ -8,7 +8,7 @@
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
-    @if (draft) {
+    @if (draft()) {
       <app-compression-test-list
         [tests]="tests()"
         (testsChange)="save($event)"

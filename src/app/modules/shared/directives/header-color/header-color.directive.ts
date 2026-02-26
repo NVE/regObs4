@@ -6,7 +6,7 @@ import { getHeaderThemeColor } from 'src/app/utils/color-utils';
 @Directive({
   selector: '[appHeaderColor]',
   host: {
-    '[color]': 'color()',
+    '[attr.color]': 'color()', // Sett color attributt på ion-header
   },
 })
 export class HeaderColorDirective {

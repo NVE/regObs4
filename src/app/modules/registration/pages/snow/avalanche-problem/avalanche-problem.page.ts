@@ -74,6 +74,10 @@ export class AvalancheProblemPage extends BasePage {
     addIcons({ addCircleOutline });
   }
 
+  get AvalancheEvalProblem2(): AvalancheEvalProblem2EditModel[] {
+    return this.draft?.registration?.AvalancheEvalProblem2 ?? [];
+  }
+
   override onInit() {
     this.kdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseKDV').subscribe((val) => {
       this.avalancheCause = val;
