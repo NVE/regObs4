@@ -100,7 +100,7 @@ brew link --overwrite cocoapods
 #### Ved vanlig kjøring / debugging
 
 ```
-npm run build   # eller ionic build, eventuelt npm run build:prod for å teste prod-bygg
+npm run build   # eventuelt npm run build:prod for å teste prod-bygg
 npx cap sync ios
 npx cap open ios  # For å åpne prosjektet i xcode
 ```
@@ -302,6 +302,9 @@ NB! Cordova plugins må oppdateres ved å først slette dem og legge dem til på
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
 ```
+
+> NB: Vi fjerna @ionic/cli som avhengighet i prosjektet siden det brukes så sjeldent, så du må installere @ionic/cli
+> globalt på din maskin for å kjøre disse kommandoene
 
 ## 4. Oppgrader Angular, hvis det trengs
 
