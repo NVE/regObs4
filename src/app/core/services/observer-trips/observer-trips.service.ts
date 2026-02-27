@@ -50,7 +50,7 @@ export class ObserverTripsService {
         id: observerTripsGeoJsonId,
         name: 'Observatørturer',
         comment:
-          'Fullstendig info om turene finnes kun på web (gravepunkt, riktige farger i henhold til terrengklasse osv). Vi håper å kunne vise også dette i appen etter hvert.',
+          'Fullstendig info om turene (gravepunkt, riktige farger i henhold til terrengklasse osv) finnes kun via NVE Temakart. Vi håper å kunne vise også dette i appen etter hvert.',
         date: Date.now(),
         visibleOnMap: true,
       },
