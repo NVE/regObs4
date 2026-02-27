@@ -29,7 +29,6 @@ import { EditImagesComponent } from '../../../components/edit-images/edit-images
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
-import { NgIf } from '@angular/common';
 
 /**
  * Start page / CRUD page for avalanche problems.
@@ -58,7 +57,6 @@ import { NgIf } from '@angular/common';
     IonToolbar,
     RegistrationContentWrapperComponent,
     TranslatePipe,
-    NgIf,
   ],
 })
 export class AvalancheProblemPage extends BasePage {
@@ -86,6 +84,13 @@ export class AvalancheProblemPage extends BasePage {
     if (this.kdvSubscription) {
       this.kdvSubscription.unsubscribe();
     }
+  }
+
+  get avalancheProblems(): AvalancheEvalProblem2EditModel[] {
+    if (this.draft.registration.AvalancheEvalProblem2 == null) {
+      this.draft.registration.AvalancheEvalProblem2 = [];
+    }
+    return this.draft.registration.AvalancheEvalProblem2;
   }
 
   async addOrEditAvalancheProblem(index?: number) {

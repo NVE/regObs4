@@ -43,7 +43,6 @@ import { addIcons } from 'ionicons';
 import { eye } from 'ionicons/icons';
 import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-import { NgIf } from '@angular/common';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -86,7 +85,6 @@ const DEBUG_TAG = 'SnowProfilePage';
     TextCommentComponent,
     TranslatePipe,
     YesNoSelectComponent,
-    NgIf,
   ],
 })
 export class SnowProfilePage extends BasePage {

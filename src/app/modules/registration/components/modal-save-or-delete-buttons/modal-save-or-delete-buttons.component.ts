@@ -5,7 +5,7 @@ import {
   ConfirmationModalService,
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
-import { NgIf } from '@angular/common';
+
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
 
@@ -13,7 +13,7 @@ import { trash } from 'ionicons/icons';
   selector: 'app-modal-save-or-delete-buttons',
   templateUrl: './modal-save-or-delete-buttons.component.html',
   styleUrls: ['./modal-save-or-delete-buttons.component.scss'],
-  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, NgIf, TranslatePipe],
+  imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, TranslatePipe],
 })
 export class ModalSaveOrDeleteButtonsComponent {
   private confirmationModalService = inject(ConfirmationModalService);

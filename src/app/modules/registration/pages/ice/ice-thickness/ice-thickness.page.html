@@ -7,122 +7,123 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper
-    *ngIf="draft && iceThickness"
-    [draft]="draft"
-    [registrationTid]="registrationTid"
-    (reset)="reset()"
-  >
-    <ion-list lines="full" reorder="true">
-      <app-numeric-input
-        [(value)]="iceThickness.SnowDepth"
-        label="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL"
-        [min]="0"
-        [max]="999"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-        placeholder="REGISTRATION.IN_CM"
-        suffix="cm"
-      ></app-numeric-input>
-      <app-numeric-input
-        [(value)]="iceThickness.SlushSnow"
-        label="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL"
-        [min]="0"
-        [max]="999"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-        placeholder="REGISTRATION.IN_CM"
-        suffix="cm"
-      ></app-numeric-input>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER" | translate }} </ion-label>
-      </ion-list-header>
-      <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
-        <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of layers; let i = index" button>
-          <ion-label>
-            {{ layer.IceLayerTID | kdvDescription: "Ice_IceLayerKDV" | async }} -
-            {{ layer.IceLayerThickness | metersToCm }} cm</ion-label
-          >
-          <ion-reorder slot="end"></ion-reorder>
-        </ion-item>
-      </ion-reorder-group>
-      <ion-item (click)="addOrEditThicknessLayer()" button>
-        <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-        <ion-label>{{ "REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER" | translate }}</ion-label>
-      </ion-item>
-      <ion-item color="light">
-        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
-          {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" | translate }}</ion-label
-        >
-        <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
-          @if (iceThickness.IceThicknessSum != null) {
-            {{ iceThickness.IceThicknessSum | metersToCm }} cm
-          } @else {
-            {{ "REGISTRATION.ICE.ICE_THICKNESS.UNKNOWN_SHORT" | translate }}
+  @if (draft && iceThickness) {
+    <app-registration-content-wrapper [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
+      <ion-list lines="full" reorder="true">
+        <app-numeric-input
+          [(value)]="iceThickness.SnowDepth"
+          label="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL"
+          [min]="0"
+          [max]="999"
+          [decimalPlaces]="2"
+          [convertRatio]="100"
+          placeholder="REGISTRATION.IN_CM"
+          suffix="cm"
+        ></app-numeric-input>
+        <app-numeric-input
+          [(value)]="iceThickness.SlushSnow"
+          label="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL"
+          [min]="0"
+          [max]="999"
+          [decimalPlaces]="2"
+          [convertRatio]="100"
+          placeholder="REGISTRATION.IN_CM"
+          suffix="cm"
+        ></app-numeric-input>
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER" | translate }} </ion-label>
+        </ion-list-header>
+        <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
+          @for (layer of layers; track layer; let i = $index) {
+            <ion-item (click)="addOrEditThicknessLayer(i)" button>
+              <ion-label>
+                {{ layer.IceLayerTID | kdvDescription: "Ice_IceLayerKDV" | async }} -
+                {{ layer.IceLayerThickness | metersToCm }} cm</ion-label
+              >
+              <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
           }
-        </ion-text>
-      </ion-item>
-
-      <app-yes-no-select [(value)]="isWaterBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
-      </app-yes-no-select>
-      <app-numeric-input
-        *ngIf="isWaterBefore"
-        [color]="!waterHeightBefore ? 'danger' : 'medium'"
-        [(value)]="waterHeightBefore"
-        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
-        [min]="0.01"
-        [max]="999"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-        placeholder="REGISTRATION.IN_CM"
-        suffix="cm"
-      >
-      </app-numeric-input>
-      <app-yes-no-select [(value)]="isWaterAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE">
-      </app-yes-no-select>
-      <app-numeric-input
-        *ngIf="isWaterAfter === true"
-        [color]="!waterHeightAfter ? 'danger' : 'medium'"
-        [(value)]="waterHeightAfter"
-        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
-        [min]="0.01"
-        [max]="999"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-        suffix="cm"
-        placeholder="REGISTRATION.IN_CM"
-      >
-      </app-numeric-input>
-      <app-numeric-input
-        *ngIf="isWaterAfter === false"
-        [color]="waterDepthAfter === undefined ? 'danger' : 'medium'"
-        [(value)]="waterDepthAfter"
-        label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO"
-        [min]="0"
-        [max]="999"
-        [decimalPlaces]="2"
-        [convertRatio]="100"
-        suffix="cm"
-        placeholder="REGISTRATION.IN_CM"
-      >
-      </app-numeric-input>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" | translate }} </ion-label>
-      </ion-list-header>
-      <app-text-comment
-        [(value)]="iceThickness.Comment"
-        placeholder="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
-      ></app-text-comment>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
-      </ion-list-header>
-      <app-edit-images
-        [registrationTid]="registrationTid"
-        [geoHazard]="draft.registration.GeoHazardTID"
-        [draftUuid]="draft.uuid"
-        [(existingAttachments)]="draft.registration.Attachments"
-        [onBeforeAdd]="getSaveFunc()"
-      ></app-edit-images>
-    </ion-list>
-  </app-registration-content-wrapper>
+        </ion-reorder-group>
+        <ion-item (click)="addOrEditThicknessLayer()" button>
+          <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+          <ion-label>{{ "REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER" | translate }}</ion-label>
+        </ion-item>
+        <ion-item color="light">
+          <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+            {{ "REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" | translate }}</ion-label
+          >
+          <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
+            @if (iceThickness.IceThicknessSum != null) {
+              {{ iceThickness.IceThicknessSum | metersToCm }} cm
+            } @else {
+              {{ "REGISTRATION.ICE.ICE_THICKNESS.UNKNOWN_SHORT" | translate }}
+            }
+          </ion-text>
+        </ion-item>
+        <app-yes-no-select [(value)]="isWaterBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
+        </app-yes-no-select>
+        @if (isWaterBefore) {
+          <app-numeric-input
+            [color]="!waterHeightBefore ? 'danger' : 'medium'"
+            [(value)]="waterHeightBefore"
+            label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
+            [min]="0.01"
+            [max]="999"
+            [decimalPlaces]="2"
+            [convertRatio]="100"
+            placeholder="REGISTRATION.IN_CM"
+            suffix="cm"
+          >
+          </app-numeric-input>
+        }
+        <app-yes-no-select [(value)]="isWaterAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE">
+        </app-yes-no-select>
+        @if (isWaterAfter === true) {
+          <app-numeric-input
+            [color]="!waterHeightAfter ? 'danger' : 'medium'"
+            [(value)]="waterHeightAfter"
+            label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
+            [min]="0.01"
+            [max]="999"
+            [decimalPlaces]="2"
+            [convertRatio]="100"
+            suffix="cm"
+            placeholder="REGISTRATION.IN_CM"
+          >
+          </app-numeric-input>
+        }
+        @if (isWaterAfter === false) {
+          <app-numeric-input
+            [color]="waterDepthAfter === undefined ? 'danger' : 'medium'"
+            [(value)]="waterDepthAfter"
+            label="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO"
+            [min]="0"
+            [max]="999"
+            [decimalPlaces]="2"
+            [convertRatio]="100"
+            suffix="cm"
+            placeholder="REGISTRATION.IN_CM"
+          >
+          </app-numeric-input>
+        }
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" | translate }} </ion-label>
+        </ion-list-header>
+        <app-text-comment
+          [(value)]="iceThickness.Comment"
+          placeholder="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
+        ></app-text-comment>
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.ADD_IMAGES" | translate }} </ion-label>
+        </ion-list-header>
+        <app-edit-images
+          [registrationTid]="registrationTid"
+          [geoHazard]="draft.registration.GeoHazardTID"
+          [draftUuid]="draft.uuid"
+          [(existingAttachments)]="draft.registration.Attachments"
+          [onBeforeAdd]="getSaveFunc()"
+        ></app-edit-images>
+      </ion-list>
+    </app-registration-content-wrapper>
+  }
 </ion-content>

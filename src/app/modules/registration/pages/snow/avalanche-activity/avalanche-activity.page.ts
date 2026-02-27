@@ -20,7 +20,7 @@ import { AvalancheActivityObs2EditModel, KdvElement } from 'src/app/modules/comm
 import { Subscription, combineLatest } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, LowerCasePipe } from '@angular/common';
+import { LowerCasePipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -46,8 +46,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonTitle,
     IonToolbar,
     LowerCasePipe,
-    NgFor,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
   ],

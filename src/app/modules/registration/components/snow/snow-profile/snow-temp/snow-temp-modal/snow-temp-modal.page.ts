@@ -20,7 +20,7 @@ import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
@@ -49,7 +49,6 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
     IonTitle,
     IonToolbar,
     MetersToCmPipe,
-    NgIf,
     TranslatePipe,
   ],
 })

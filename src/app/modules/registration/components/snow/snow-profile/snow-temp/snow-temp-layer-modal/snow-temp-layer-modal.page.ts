@@ -22,7 +22,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward, trash } from 'ionicons/icons';
@@ -50,7 +50,6 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
     IonText,
     IonTitle,
     IonToolbar,
-    NgIf,
     NumericInputComponent,
     TranslatePipe,
   ],

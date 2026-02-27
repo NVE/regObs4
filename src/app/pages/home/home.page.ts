@@ -1,4 +1,4 @@
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   AfterViewChecked,
   Component,
@@ -116,7 +116,6 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
     MapCenterInfoComponent_1,
     MapComponent,
     MapItemBarComponent,
-    NgIf,
     TranslatePipe,
   ],
 })

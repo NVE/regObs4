@@ -1,4 +1,4 @@
-import { Component, HostListener, Injector, inject } from '@angular/core';
+import { Component, Injector, inject } from '@angular/core';
 import { IonApp, IonMenu, IonRouterOutlet, Platform, isPlatform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
@@ -50,6 +50,9 @@ const DEBUG_TAG = 'AppComponent';
       margin-top: var(--header-height);
     }
   `,
+  host: {
+    '(window:resize)': 'onResize($event)',
+  },
 })
 export class AppComponent {
   private platform = inject(Platform);
@@ -108,8 +111,7 @@ export class AppComponent {
     SplashScreen.hide();
   }
 
-  @HostListener('window:resize', ['$event'])
-  private onResize(event: UIEvent) {
+  onResize(event: UIEvent) {
     this.breakpointService.onResizeEvent(event);
   }
 

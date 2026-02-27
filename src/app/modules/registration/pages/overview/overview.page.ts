@@ -36,7 +36,7 @@ import {
   PopupResponse,
 } from '../../../../core/services/confirmation-modal/confirmation-modal.service';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
 import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
@@ -80,8 +80,6 @@ const DEBUG_TAG = 'OverviewPage';
     IonTitle,
     IonToggle,
     IonToolbar,
-    NgFor,
-    NgIf,
     SendButtonComponent,
     SimpleSnowObsComponent,
     SimpleWaterObsComponent,

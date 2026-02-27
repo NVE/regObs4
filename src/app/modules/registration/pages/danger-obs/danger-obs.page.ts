@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -52,8 +52,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonListHeader,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
   ],

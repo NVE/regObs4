@@ -10,7 +10,7 @@ import {
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
-import { NgIf, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ThumbnailsComponent } from '../thumbnails/thumbnails.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -21,7 +21,7 @@ import { checkmarkCircle } from 'ionicons/icons';
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonIcon, IonItem, IonLabel, NgClass, NgIf, ThumbnailsComponent, TranslatePipe],
+  imports: [IonIcon, IonItem, IonLabel, NgClass, ThumbnailsComponent, TranslatePipe],
 })
 export class SummaryItemComponent implements OnChanges, OnInit {
   private navController = inject(NavController);

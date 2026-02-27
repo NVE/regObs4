@@ -3,10 +3,13 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { toSignal } from '@angular/core/rxjs-interop';
 import { getHeaderThemeColor } from 'src/app/utils/color-utils';
 
+/**
+ * Directive som kan brukes på ion-header for å sette farge etter miljø (prod, demo, test)
+ */
 @Directive({
   selector: '[appHeaderColor]',
   host: {
-    '[color]': 'color()',
+    '[attr.color]': 'color()', // Setter color attributt på ion-header
   },
 })
 export class HeaderColorDirective {

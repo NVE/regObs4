@@ -4,7 +4,7 @@ import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angu
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
 import { HelpTextService } from 'src/app/modules/common-registration/registration.services';
 import { firstValueFrom, Observable } from 'rxjs';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 /**
@@ -16,7 +16,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './help-text.component.html',
   styleUrls: ['./help-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, IonButton, IonCol, IonGrid, IonRow, NgIf, TranslatePipe],
+  imports: [AsyncPipe, IonButton, IonCol, IonGrid, IonRow, TranslatePipe],
 })
 export class HelpTextComponent implements OnInit {
   private helpTextService = inject(HelpTextService);

@@ -8,12 +8,13 @@
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
-    <app-compression-test-list
-      *ngIf="draft"
-      [tests]="tests()"
-      (testsChange)="save($event)"
-      [includeInSnowProfileAsDefault]="true"
-    ></app-compression-test-list>
+    @if (draft()) {
+      <app-compression-test-list
+        [tests]="tests()"
+        (testsChange)="save($event)"
+        [includeInSnowProfileAsDefault]="true"
+      ></app-compression-test-list>
+    }
     <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col size="6" offset="3">

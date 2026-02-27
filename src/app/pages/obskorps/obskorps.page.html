@@ -13,8 +13,8 @@
 
 <ion-content [fullscreen]="true" color="light">
   <div class="form">
-    <ng-container *ngIf="isLoggedIn$ | async; else needToLogIn">
-      <ng-container *ngIf="hasAccess$ | async as hasAccess; else noAccess">
+    @if (isLoggedIn$ | async) {
+      @if (hasAccess$ | async; as hasAccess) {
         <!-- Felles input -->
         <h1>Generer rapport</h1>
         <p>Det kan hende du må tillatte popup-vinduer for å få lastet ned rapportene.</p>
@@ -45,9 +45,8 @@
             ></ion-input>
           </ion-item>
         </ion-list>
-
         <!-- Grupperapport -->
-        <ng-container *ngIf="hasAccessToGroupReports$ | async">
+        @if (hasAccessToGroupReports$ | async) {
           <h2>Grupperapport</h2>
           <ion-list>
             <ion-item>
@@ -63,30 +62,31 @@
               ></ion-input>
             </ion-item>
           </ion-list>
-
           <ion-button
             class="margin-top"
             (click)="generateGroupReport()"
             [disabled]="!(startDate && endDate && groupId) || (isWaitingForGroupReport$ | async)"
           >
             Lag grupperapport
-            <ion-spinner class="margin-left" *ngIf="isWaitingForGroupReport$ | async"></ion-spinner>
+            @if (isWaitingForGroupReport$ | async) {
+              <ion-spinner class="margin-left"></ion-spinner>
+            }
           </ion-button>
-
           <div>
-            <ion-note color="danger" *ngIf="groupErr$ | async as err">{{ err }}</ion-note>
+            @if (groupErr$ | async; as err) {
+              <ion-note color="danger">{{ err }}</ion-note>
+            }
           </div>
-        </ng-container>
-
+        }
         <!-- Observatørrapporter -->
-        <ng-container *ngIf="hasAccessToObserverReports$ | async">
+        @if (hasAccessToObserverReports$ | async) {
           <h2>Observatørrapport</h2>
           <!--
-            Kun de med full tilgang / gruppetilgang har tilgang til å lage observatørrapporter
-            for andre brukere. Skjul derfor denne inputen for alle andre, for å ikke forvirre.
-            Innlogget brukers id er uansett forhåndsvalgt.
+          Kun de med full tilgang / gruppetilgang har tilgang til å lage observatørrapporter
+          for andre brukere. Skjul derfor denne inputen for alle andre, for å ikke forvirre.
+          Innlogget brukers id er uansett forhåndsvalgt.
           -->
-          <ng-container *ngIf="hasAccessToGroupReports$ | async">
+          @if (hasAccessToGroupReports$ | async) {
             <ion-item>
               <ion-label position="stacked">ObservatørID</ion-label>
               <ion-input
@@ -101,30 +101,29 @@
                 helperText="Innlogget brukers id er forhåndsvalgt"
               ></ion-input>
             </ion-item>
-          </ng-container>
+          }
           <ion-button
             class="margin-top"
             (click)="generateObserverReport()"
             [disabled]="!(startDate && endDate && observerId) || (isWaitingForObserverReport$ | async)"
           >
             Lag observatørrapport
-            <ion-spinner class="margin-left" *ngIf="isWaitingForObserverReport$ | async"></ion-spinner>
+            @if (isWaitingForObserverReport$ | async) {
+              <ion-spinner class="margin-left"></ion-spinner>
+            }
           </ion-button>
-
           <div>
-            <ion-note color="danger" *ngIf="observerErr$ | async as err">{{ err }}</ion-note>
+            @if (observerErr$ | async; as err) {
+              <ion-note color="danger">{{ err }}</ion-note>
+            }
           </div>
-        </ng-container>
-      </ng-container>
-    </ng-container>
+        }
+      } @else {
+        <h1>Du har ikke tilgang til å lage rapporter</h1>
+      }
+    } @else {
+      <h1>Du må logge inn for å lage rapporter</h1>
+      <p>Du kan logge inn fra menyen oppe til høyre</p>
+    }
   </div>
 </ion-content>
-
-<ng-template #needToLogIn>
-  <h1>Du må logge inn for å lage rapporter</h1>
-  <p>Du kan logge inn fra menyen oppe til høyre</p>
-</ng-template>
-
-<ng-template #noAccess>
-  <h1>Du har ikke tilgang til å lage rapporter</h1>
-</ng-template>

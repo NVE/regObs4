@@ -29,7 +29,7 @@ import {
 } from '@ionic/angular/standalone';
 import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/edit-picture-info-modal.component';
 import { Router } from '@angular/router';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { EditUserNicknameModalComponent } from 'src/app/modules/edit-user-nickname-modal/edit-user-nickname-modal.component';
@@ -55,8 +55,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     IonText,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

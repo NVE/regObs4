@@ -16,7 +16,7 @@ import { SelectOption } from '../../../../../shared/components/input/select/sele
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
-import { NgIf } from '@angular/common';
+
 import { SelectComponent } from '../../../../../shared/components/input/select/select.component';
 import { NumericInputComponent } from '../../../numeric-input/numeric-input.component';
 import { TextCommentComponent } from '../../../text-comment/text-comment.component';
@@ -67,7 +67,6 @@ enum Propagation {
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgIf,
     NumericInputComponent,
     SelectComponent,
     TextCommentComponent,

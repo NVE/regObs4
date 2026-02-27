@@ -32,7 +32,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
@@ -66,8 +66,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonToggle,
     IonToolbar,
     MetersToCmPipe,
-    NgFor,
-    NgIf,
     NumericInputComponent,
     TranslatePipe,
   ],

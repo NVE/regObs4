@@ -7,30 +7,32 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="draft" [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate }} </ion-label>
-      </ion-list-header>
-      <app-text-comment
-        [(value)]="edit.ObsComment"
-        label="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
-        placeholder="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
-      ></app-text-comment>
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate }} </ion-label>
-      </ion-list-header>
-      <app-edit-images
-        [registrationTid]="registrationTid"
-        [geoHazard]="draft.registration.GeoHazardTID"
-        [draftUuid]="draft.uuid"
-        [(existingAttachments)]="draft.registration.Attachments"
-        [onBeforeAdd]="getSaveFunc()"
-      ></app-edit-images>
-      <ion-item-divider>
-        <ion-label class="ion-text-wrap"> {{ "REGISTRATION.GENERAL_COMMENT.DESCRIPTION" | translate }} </ion-label>
-      </ion-item-divider>
-      <app-add-web-url-item [(weburls)]="edit.Urls"></app-add-web-url-item>
-    </ion-list>
-  </app-registration-content-wrapper>
+  @if (draft) {
+    <app-registration-content-wrapper [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate }} </ion-label>
+        </ion-list-header>
+        <app-text-comment
+          [(value)]="edit.ObsComment"
+          label="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
+          placeholder="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"
+        ></app-text-comment>
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate }} </ion-label>
+        </ion-list-header>
+        <app-edit-images
+          [registrationTid]="registrationTid"
+          [geoHazard]="draft.registration.GeoHazardTID"
+          [draftUuid]="draft.uuid"
+          [(existingAttachments)]="draft.registration.Attachments"
+          [onBeforeAdd]="getSaveFunc()"
+        ></app-edit-images>
+        <ion-item-divider>
+          <ion-label class="ion-text-wrap"> {{ "REGISTRATION.GENERAL_COMMENT.DESCRIPTION" | translate }} </ion-label>
+        </ion-item-divider>
+        <app-add-web-url-item [(weburls)]="edit.Urls"></app-add-web-url-item>
+      </ion-list>
+    </app-registration-content-wrapper>
+  }
 </ion-content>

@@ -25,59 +25,69 @@
     ></app-map>
   </div>
 </ion-content>
-<ion-footer *ngIf="packageTotals$ | async as packageTotals">
-  <ion-list>
-    <ion-item (click)="expanded = !expanded" lines="full">
-      <ion-label *ngIf="packageTotals.numPackages === 1" class="package-count">
-        {{ "OFFLINE_MAP.PACKAGE_COUNT_SINGLE" | translate: { packageCount: packageTotals.numPackages } }}
-      </ion-label>
-      <ion-label *ngIf="packageTotals.numPackages !== 1" class="package-count">
-        {{ "OFFLINE_MAP.PACKAGE_COUNT_MULTIPLE" | translate: { packageCount: packageTotals.numPackages } }}
-      </ion-label>
-
-      <ion-label class="packages-size">{{ packageTotals.spaceUsed }}</ion-label>
-
-      <ion-icon
-        *ngIf="packageTotals.numPackages > 0"
-        slot="end"
-        [name]="expanded ? 'chevron-down-circle' : 'chevron-up-circle'"
-        class="expand-icon"
-      ></ion-icon>
-    </ion-item>
-    @if (nPackagesToUpdate() > 0) {
-      <ion-item lines="full" color="warning" (click)="expanded = !expanded">
-        <ion-label>{{ "OFFLINE_MAP.N_PACKAGES_TO_UPDATE" | translate: { n: nPackagesToUpdate() } }}</ion-label>
+@if (packageTotals$ | async; as packageTotals) {
+  <ion-footer>
+    <ion-list>
+      <ion-item (click)="expanded = !expanded" lines="full">
+        @if (packageTotals.numPackages === 1) {
+          <ion-label class="package-count">
+            {{ "OFFLINE_MAP.PACKAGE_COUNT_SINGLE" | translate: { packageCount: packageTotals.numPackages } }}
+          </ion-label>
+        }
+        @if (packageTotals.numPackages !== 1) {
+          <ion-label class="package-count">
+            {{ "OFFLINE_MAP.PACKAGE_COUNT_MULTIPLE" | translate: { packageCount: packageTotals.numPackages } }}
+          </ion-label>
+        }
+        <ion-label class="packages-size">{{ packageTotals.spaceUsed }}</ion-label>
+        @if (packageTotals.numPackages > 0) {
+          <ion-icon
+            slot="end"
+            [name]="expanded ? 'chevron-down-circle' : 'chevron-up-circle'"
+            class="expand-icon"
+          ></ion-icon>
+        }
       </ion-item>
-    }
-    <div class="footer">
-      <ng-container *ngIf="expanded">
-        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of allPackages$ | async" lines="full">
-          <!-- Kolonne 1 -->
-          <ion-label>{{ item.name }}</ion-label>
-
-          <!-- Kolonne 2 -->
-          <ion-label>{{ humanReadableByteSize(item.size || 0) }}</ion-label>
-
-          <!-- Kolonne 3 -->
-          <ion-label>{{ formatProgressIfDownloading(item) }}</ion-label>
-
-          <!-- Kolonne 4 -->
-          <div class="buttons" slot="end">
-            <div class="button" *ngIf="isPackageOutdated(item)" (click)="update(item, $event)">
-              <ion-icon name="refresh"></ion-icon>
-              <ion-label>{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON" | translate }}</ion-label>
-            </div>
-            <div class="button" *ngIf="item.error">
-              <ion-icon name="warning-outline"></ion-icon>
-              <ion-label>{{ "OFFLINE_MAP.ERROR_ICON_LABEL" | translate }}</ion-label>
-            </div>
-            <div class="button" *ngIf="!item.error" (click)="cancelOrDelete(item, $event)">
-              <ion-icon name="trash-outline"></ion-icon>
-              <ion-label>{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate }}</ion-label>
-            </div>
-          </div>
+      @if (nPackagesToUpdate() > 0) {
+        <ion-item lines="full" color="warning" (click)="expanded = !expanded">
+          <ion-label>{{ "OFFLINE_MAP.N_PACKAGES_TO_UPDATE" | translate: { n: nPackagesToUpdate() } }}</ion-label>
         </ion-item>
-      </ng-container>
-    </div>
-  </ion-list>
-</ion-footer>
+      }
+      <div class="footer">
+        @if (expanded) {
+          @for (item of allPackages$ | async; track item) {
+            <ion-item (click)="showPackageModalForPackage(item)" lines="full">
+              <!-- Kolonne 1 -->
+              <ion-label>{{ item.name }}</ion-label>
+              <!-- Kolonne 2 -->
+              <ion-label>{{ humanReadableByteSize(item.size || 0) }}</ion-label>
+              <!-- Kolonne 3 -->
+              <ion-label>{{ formatProgressIfDownloading(item) }}</ion-label>
+              <!-- Kolonne 4 -->
+              <div class="buttons" slot="end">
+                @if (isPackageOutdated(item)) {
+                  <div class="button" (click)="update(item, $event)">
+                    <ion-icon name="refresh"></ion-icon>
+                    <ion-label>{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.UPDATE_BUTTON" | translate }}</ion-label>
+                  </div>
+                }
+                @if (item.error) {
+                  <div class="button">
+                    <ion-icon name="warning-outline"></ion-icon>
+                    <ion-label>{{ "OFFLINE_MAP.ERROR_ICON_LABEL" | translate }}</ion-label>
+                  </div>
+                }
+                @if (!item.error) {
+                  <div class="button" (click)="cancelOrDelete(item, $event)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                    <ion-label>{{ "OFFLINE_MAP.MAP_PACKAGE_DETAILS_PAGE.DELETE_BUTTON" | translate }}</ion-label>
+                  </div>
+                }
+              </div>
+            </ion-item>
+          }
+        }
+      </div>
+    </ion-list>
+  </ion-footer>
+}

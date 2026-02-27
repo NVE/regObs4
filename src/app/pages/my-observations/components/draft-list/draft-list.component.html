@@ -1,19 +1,25 @@
 <!-- shows list of registrations not saved on server (both drafts and registrations in sync)-->
-<div class="draft-list" *ngIf="drafts$ | async as drafts">
-  <ion-item-divider *ngIf="(drafts?.length || 0) > 0" no-border>
-    <ion-grid class="ion-no-padding ion-no-margin">
-      <ion-row>
-        <h3 class="ion-text-uppercase">{{ "REGISTRATION.DRAFTS" | translate }}</h3>
-      </ion-row>
-      <ion-row>
-        <ion-label class="ion-text-wrap" color="medium">
-          {{ "REGISTRATION.DRAFTS_DESCRIPTION" | translate }}
-        </ion-label>
-      </ion-row>
-    </ion-grid>
-  </ion-item-divider>
-  <ion-list>
-    <!-- Create an app-sync-item for each draft -->
-    <app-sync-item *ngFor="let draft of drafts; trackBy: trackByIdFunc" [draft]="draft"></app-sync-item>
-  </ion-list>
-</div>
+@if (drafts$ | async; as drafts) {
+  <div class="draft-list">
+    @if ((drafts?.length || 0) > 0) {
+      <ion-item-divider no-border>
+        <ion-grid class="ion-no-padding ion-no-margin">
+          <ion-row>
+            <h3 class="ion-text-uppercase">{{ "REGISTRATION.DRAFTS" | translate }}</h3>
+          </ion-row>
+          <ion-row>
+            <ion-label class="ion-text-wrap" color="medium">
+              {{ "REGISTRATION.DRAFTS_DESCRIPTION" | translate }}
+            </ion-label>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider>
+    }
+    <ion-list>
+      <!-- Create an app-sync-item for each draft -->
+      @for (draft of drafts; track trackByIdFunc($index, draft)) {
+        <app-sync-item [draft]="draft"></app-sync-item>
+      }
+    </ion-list>
+  </div>
+}

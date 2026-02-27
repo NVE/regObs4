@@ -30,7 +30,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 import { BasePage } from '../../base.page';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgClass, DecimalPipe } from '@angular/common';
+import { NgClass, DecimalPipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { DatetimePickerComponent } from '../../../../../components/datetime-picker/datetime-picker.component';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
@@ -76,7 +76,6 @@ import { time, location, chevronForward } from 'ionicons/icons';
     IonToolbar,
     KdvSelectComponent,
     NgClass,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     SelectComponent,

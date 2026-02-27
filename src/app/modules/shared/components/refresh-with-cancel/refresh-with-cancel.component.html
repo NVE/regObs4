@@ -1,11 +1,13 @@
 <ion-refresher slot="fixed" (ionRefresh)="doRefresh()" [disabled]="disabled()">
   <ion-refresher-content pullingIcon="arrow-down-circle" [refreshingSpinner]="spinner" pullingText="">
   </ion-refresher-content>
-  <ion-grid *ngIf="showCancel">
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-button fill="clear" size="small" (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  @if (showCancel) {
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-button fill="clear" size="small" (click)="cancel()">{{ "DIALOGS.CANCEL" | translate }}</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  }
 </ion-refresher>

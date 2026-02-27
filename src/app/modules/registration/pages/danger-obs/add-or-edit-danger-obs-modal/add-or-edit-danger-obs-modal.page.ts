@@ -18,7 +18,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService, TranslatePipe, TranslationObject } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
@@ -51,7 +51,6 @@ const COMMENT_SEPARATOR = ': ';
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgIf,
     SelectComponent,
     TextCommentComponent,
     TranslatePipe,

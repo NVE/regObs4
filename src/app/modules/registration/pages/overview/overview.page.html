@@ -8,18 +8,20 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ng-container *ngIf="draft$ | async as draft">
+@if (draft$ | async; as draft) {
   <ion-content>
     <!-- Simple snow obs header-->
     <div class="content-wrapper">
-      <ng-container *ngIf="showSnowObsModeSelector$ | async">
+      @if (showSnowObsModeSelector$ | async) {
         <ion-grid class="header">
           <ion-row>
-            <ion-col *ngIf="draft.simpleMode" class="question">
-              <ion-item>
-                <ion-label> {{ "REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate }} </ion-label>
-              </ion-item>
-            </ion-col>
+            @if (draft.simpleMode) {
+              <ion-col class="question">
+                <ion-item>
+                  <ion-label> {{ "REGISTRATION.OVERVIEW.SIMPLE.HEADER_QUESTION" | translate }} </ion-label>
+                </ion-item>
+              </ion-col>
+            }
             <ion-col class="simple-obs-toggle">
               <ion-item>
                 <ion-label>{{ "REGISTRATION.OVERVIEW.SIMPLE.TOGGLE" | translate }}</ion-label>
@@ -28,26 +30,33 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-      </ng-container>
-
+      }
       <!-- Error info if posting the registration failed -->
-      <app-failed-registration *ngIf="draft.error && draftHasStatusSync(draft)" [draft]="draft">
-      </app-failed-registration>
-
-      <app-simple-snow-obs *ngIf="showSimpleSnowMode(draft)" [draft]="draft"></app-simple-snow-obs>
-      <app-simple-water-obs *ngIf="showSimpleWaterMode(draft)" [draft]="draft"></app-simple-water-obs>
-
+      @if (draft.error && draftHasStatusSync(draft)) {
+        <app-failed-registration [draft]="draft"> </app-failed-registration>
+      }
+      @if (showSimpleSnowMode(draft)) {
+        <app-simple-snow-obs [draft]="draft"></app-simple-snow-obs>
+      }
+      @if (showSimpleWaterMode(draft)) {
+        <app-simple-water-obs [draft]="draft"></app-simple-water-obs>
+      }
       <ion-list lines="full">
         <!-- "Summary" items for each form -->
-        <app-summary-item
-          [readonly]="draftHasStatusSync(draft)"
-          *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction"
-          [simpleObsMode]="draft.simpleMode"
-          [item]="item"
-        ></app-summary-item>
+        @for (item of summaryItems$ | async; track trackByFunction($index, item)) {
+          <app-summary-item
+            [readonly]="draftHasStatusSync(draft)"
+            [simpleObsMode]="draft.simpleMode"
+            [item]="item"
+          ></app-summary-item>
+        }
       </ion-list>
     </div>
   </ion-content>
-  <app-send-button *ngIf="!hideSendButton(draft)" [draft]="draft"></app-send-button>
-  <app-coach-marks-simple-obs *ngIf="showSimpleSnowMode(draft)"></app-coach-marks-simple-obs>
-</ng-container>
+  @if (!hideSendButton(draft)) {
+    <app-send-button [draft]="draft"></app-send-button>
+  }
+  @if (showSimpleSnowMode(draft)) {
+    <app-coach-marks-simple-obs></app-coach-marks-simple-obs>
+  }
+}

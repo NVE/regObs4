@@ -3,7 +3,7 @@ import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
-import { NgIf } from '@angular/common';
+
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { IonItemOption, IonList } from '@ionic/angular/standalone';
@@ -19,7 +19,7 @@ type FilterFunc = (value: number) => boolean;
   templateUrl: './kdv-select.component.html',
   styleUrls: ['./kdv-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, SelectComponent],
+  imports: [SelectComponent],
 })
 export class KdvSelectComponent {
   private kdvService = inject(KdvService);

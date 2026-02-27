@@ -9,7 +9,7 @@ import {
   IonRow,
   Platform,
 } from '@ionic/angular/standalone';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,7 +19,7 @@ export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
   selector: 'app-refresh-with-cancel',
   templateUrl: './refresh-with-cancel.component.html',
   styleUrls: ['./refresh-with-cancel.component.scss'],
-  imports: [IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, NgIf, TranslatePipe],
+  imports: [IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, TranslatePipe],
 })
 export class RefreshWithCancelComponent {
   private ngZone = inject(NgZone);
