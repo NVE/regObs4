@@ -92,7 +92,7 @@ nve-label {
 }
 
 .drop-zone-wrapper {
-  height: 200px;
+  margin-bottom: var(--spacing-large);
 }
 
 a {
