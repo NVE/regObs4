@@ -55,7 +55,6 @@ export class DatabaseService {
    * @returns Returns a promise with the value of the given key
    */
   async get<T>(key: string): Promise<T> {
-    // TODO: Legg til null på type
     await firstValueFrom(this.ready$);
     return this.database.get(key);
   }

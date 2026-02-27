@@ -33,8 +33,10 @@ import { Capacitor } from '@capacitor/core';
 import { HeaderColorDirective } from 'src/app/modules/shared/directives/header-color/header-color.directive';
 import { attachOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const alertDismissedKey = 'regobs-plans-alert-dismissed';
+const DEBUG_TAG = 'plans';
 
 @Component({
   selector: 'app-plans',
@@ -65,6 +67,7 @@ export class PlansPage {
   private geoJSON = inject(GeoJSONService);
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
+  private logger = inject(LoggingService);
 
   private allowedFileExtensions = ['.gpx', '.geojson', '.json'];
 
@@ -76,6 +79,7 @@ export class PlansPage {
 
   sortValue = signal<'name' | 'date'>('date');
   visibilityFilter = signal<'all' | 'onlyVisibleOnMap'>('all');
+  numberOfPlans = computed(() => this.geoJSON.metadata().length);
   items = computed(() => {
     const sorter = sortFunctions[this.sortValue()];
     const sortedItems = sorter(this.geoJSON.metadata());
@@ -91,30 +95,46 @@ export class PlansPage {
 
   dismissAlert() {
     localStorage.setItem(alertDismissedKey, 'true');
+    this.showAlert.set(false);
   }
 
   /**
    * Importerer og lagrer sporfiler som GeoJSON-objekter i lokal database
    */
   async onFileDrop(files: NgxFileDropEntry[]) {
-    const ignoredFiles: string[] = [];
+    const ignoredOrFailedFiles: string[] = [];
 
+    let lastId: string | undefined;
     for (const { fileEntry, relativePath } of files) {
       if (fileEntry.isFile && this.validateFileExtension(relativePath)) {
-        const geojson = await toGeoJSON(fileEntry);
+        let geojson;
+        try {
+          geojson = await toGeoJSON(fileEntry);
+        } catch (error) {
+          this.logger.error(error, DEBUG_TAG, 'Parse file error', { relativePath });
+          ignoredOrFailedFiles.push(relativePath);
+          continue;
+        }
+
         const id = generateShortRandomId();
+        lastId = id;
         const metadata: GeoJSONItem = { id, name: relativePath, date: Date.now(), visibleOnMap: true };
-        await this.geoJSON.save(metadata, geojson);
-        // Åpne detaljsiden kun når en fil er lastet opp.
-        if (files.length === 1) {
-          this.router.navigate(['/plans', id]);
+        try {
+          await this.geoJSON.save(metadata, geojson);
+        } catch (error) {
+          this.logger.error(error, DEBUG_TAG, 'Save error', { metadata });
+          ignoredOrFailedFiles.push(relativePath);
         }
       } else {
-        ignoredFiles.push(relativePath);
+        ignoredOrFailedFiles.push(relativePath);
       }
     }
-    if (ignoredFiles.length > 0) {
-      this.showFileTypeError(ignoredFiles);
+
+    if (ignoredOrFailedFiles.length > 0) {
+      this.showUploadError(ignoredOrFailedFiles);
+    } else if (files.length === 1 && lastId) {
+      // Åpne detaljsiden kun når kun EN fil er lastet opp.
+      this.router.navigate(['/plans', lastId]);
     }
   }
 
@@ -127,8 +147,8 @@ export class PlansPage {
   /**
    * Viser feilmelding til brukeren når filtype ikke er tillatt
    */
-  private async showFileTypeError(filenames: string[]): Promise<void> {
-    const message = this.translateService.instant('PLANS.WRONG_FILE_TYPE', {
+  private async showUploadError(filenames: string[]): Promise<void> {
+    const message = this.translateService.instant('PLANS.UPLOAD_FAILED', {
       filenames: filenames.join(', '),
       allowedFileExtensions: this.allowedFileExtensions.join(', '),
     });

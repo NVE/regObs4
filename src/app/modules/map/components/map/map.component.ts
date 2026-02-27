@@ -45,7 +45,7 @@ import { MapControlsComponent } from '../map-controls/map-controls.component';
 import type { Feature, FeatureCollection } from 'geojson';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { GeoJSONItem } from 'src/app/core/services/geojson/geojson-item.model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { observerTripsGeoJsonId } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { length } from '@turf/turf';
 import { RouterLink } from '@angular/router';
@@ -91,7 +91,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  imports: [LeafletModule, MapControlsComponent, RouterLink, DecimalPipe],
+  imports: [LeafletModule, MapControlsComponent, RouterLink, DecimalPipe, TranslatePipe],
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private userSettingService = inject(UserSettingService);

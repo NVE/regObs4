@@ -1,4 +1,13 @@
-import { Component, inject, input, CUSTOM_ELEMENTS_SCHEMA, computed, linkedSignal, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  CUSTOM_ELEMENTS_SCHEMA,
+  computed,
+  linkedSignal,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   IonToolbar,
   IonContent,
@@ -56,6 +65,7 @@ import { getGeoJsonFeatureStyle, createGeoJsonPointMarker } from '../geojson-sty
     },
   ],
   styleUrl: './plan.page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanPage {
   geoJSON = inject(GeoJSONService);
@@ -159,7 +169,9 @@ export class PlanPage {
     this.router.navigate(['/plans']);
   }
 
-  onSave() {
+  onSave(event: SubmitEvent) {
+    event.preventDefault();
+
     const itemToUpdate = {
       id: this.id(),
       name: this.name(),

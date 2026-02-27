@@ -51,7 +51,7 @@ function replaceOldParamsWithNew() {
 function registerNveDesignsystemIcons() {
   registerIconLibrary('system', {
     resolver: (name) => {
-      return `data:image/svg+xml, ${encodeURIComponent(icons[name])}`;
+      return `data:image/svg+xml,${encodeURIComponent(icons[name])}`;
     },
   });
 }

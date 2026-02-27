@@ -372,7 +372,13 @@
     "FILE_NAME": "Filnavn",
     "COMMENT": "Kommentar",
     "VISIBLE_ON_MAP": "Vises i kart",
-    "WRONG_FILE_TYPE": "Filen(e) '{{filenames}}' har feil type og ble avvist. Tillatte filtyper: {{allowedFileExtensions}}"
+    "UPLOAD_FAILED": "Filen(e) '{{filenames}}' kunne ikke lastes opp. Sjekk at filene er i korrekt format ({{allowedFileExtensions}}) og at innholdet er gyldig.",
+    "EDIT": "Rediger",
+    "GO_TO_MAP_EXTENT": "Gå til kartutsnitt",
+    "ADD_PLAN": "Legg til plan",
+    "LENGTH": "Lengde",
+    "GO_TO_DETAILS": "Gå til detaljer",
+    "ALERT_INFO": "Dette er en ny side for dine planleggingskart. Foreløpig kan du importere steder og spor fra GPX/GeoJSON-filer og vises disse i kartet. Vi planlegger mer funksjonalitet etter hvert, slik at du kan tegne dine egne steder og spor i kartet. Enn så lenge kan du bruke for eksempel https://gpx.studio/app eller https://geojson.io og så importere filene her. Send oss gjerne innspill på hvordan du syns planleggingssiden fungerer til regobs@nve.no."
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {

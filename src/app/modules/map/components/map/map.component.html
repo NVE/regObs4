@@ -11,17 +11,18 @@
 
 @if (showObserverTrips() && metadataName()) {
   <div class="observer-trip-backdrop" (click)="removeObserverTripDescription()">
-    <div class="observer-trip-desc">
+    <!-- event.stopPropagation er for å hindre at backdrop click trigges ved klikk på tittel / beskrivelse -->
+    <div class="observer-trip-desc" (click)="$event.stopPropagation()">
       <div>
         <strong>{{ metadataName() }}</strong>
       </div>
       @if (metadataTripLength()) {
-        <div>Lengde: {{ metadataTripLength() | number: "1.0-2" }} km</div>
+        <div>{{ "PLANS.LENGTH" | translate }}: {{ metadataTripLength() | number: "1.0-2" }} km</div>
       }
       <div>{{ metadataDescription() }}</div>
       @if (metadataId()) {
         <div>
-          <a [routerLink]="['/plans', metadataId()]">Gå til detaljer</a>
+          <a [routerLink]="['/plans', metadataId()]">{{ "PLANS.GO_TO_DETAILS" | translate }}</a>
         </div>
       }
     </div>

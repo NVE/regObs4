@@ -11,15 +11,11 @@
   <div class="content">
     @if (showAlert()) {
       <nve-alert open closable showIcon="false" (sl-after-hide)="dismissAlert()">
-        Dette er en ny side for dine planleggingskart.
-        Foreløpig kan du importere steder og spor fra GPX/GeoJSON-filer og vises disse i kartet.
-        Vi planlegger mer funksjonalitet etter hvert, slik at du kan tegne dine egne steder og spor i kartet.
-        Enn så lenge kan du bruke for eksempel https://gpx.studio/app eller https://geojson.io og så importere
-        filene her. Send oss gjerne innspill på hvordan du syns planleggingssiden fungerer til regobs@nve.no.
+        {{ "PLANS.ALERT_INFO" | translate }}
       </nve-alert>
     }
 
-    @if (items().length > 1) {
+    @if (numberOfPlans() > 1) {
       <div class="filter-panel">
         <nve-select
           [label]="'PLANS.SHOW' | translate"
@@ -47,30 +43,27 @@
           <nve-menu-item>
             <!-- <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon> -->
             <div class="text-wrapper">
-              <span class="label"
-                >{{ item.name }}
+              <span class="label">
+                {{ item.name }}
                 @if (item.visibleOnMap) {
                   <nve-badge>{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
                 }
               </span>
-              <span
-                >{{ item.date | date }}
+              <span>
+                {{ item.date | date }}
                 @if (item.lengthKm !== undefined && item.lengthKm !== null) {
                   , {{ item.lengthKm.toFixed(2) }} km
                 }
               </span>
             </div>
-            <nve-icon slot="suffix" name="chevron_forward"></nve-icon
-          ></nve-menu-item>
+            <nve-icon slot="suffix" name="chevron_forward"></nve-icon>
+          </nve-menu-item>
         </a>
-        <!-- @if (!last) {
-          <nve-divider></nve-divider>
-        } -->
       }
     </div>
 
     <div class="drop-zone-wrapper">
-      <nve-label size="medium">Legg til plan</nve-label>
+      <nve-label size="medium">{{ "PLANS.ADD_PLAN" | translate }}</nve-label>
       <ngx-file-drop dropZoneClassName="drop-zone-plans" [accept]="acceptFileTypes" (onFileDrop)="onFileDrop($event)">
         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
           <button type="button" (click)="openFileSelector()">

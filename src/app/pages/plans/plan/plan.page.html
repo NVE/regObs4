@@ -28,7 +28,7 @@
       </nve-switch>
 
       @if (isEditMode()) {
-        <form>
+        <form (submit)="onSave($event)">
           <nve-input [value]="name()" [label]="'PLANS.NAME' | translate" (sl-change)="onNameChange($event)"></nve-input>
           <nve-textarea
             [value]="comment()"
@@ -36,7 +36,7 @@
             [label]="'PLANS.COMMENT' | translate"
           ></nve-textarea>
           <div class="button-group">
-            <nve-button variant="primary" type="submit" (click)="onSave()">{{ "PLANS.SAVE" | translate }}</nve-button>
+            <nve-button variant="primary" type="submit">{{ "PLANS.SAVE" | translate }}</nve-button>
             <nve-button variant="danger" type="button" (click)="onRemove()">
               <nve-icon slot="prefix" src="assets/icon/delete_white.svg"></nve-icon>
               {{ "PLANS.DELETE" | translate }}
@@ -54,10 +54,14 @@
       }
 
       @if (isEditable()) {
-        <nve-button variant="neutral" size="small" (click)="isEditMode.set(true)">Rediger</nve-button>
+        <nve-button variant="neutral" size="small" type="button" (click)="isEditMode.set(true)">
+          {{ "PLANS.EDIT" | translate }}
+        </nve-button>
       }
 
-      <nve-button variant="neutral" size="small" (click)="goToExtent()">Gå til kartutsnitt</nve-button>
+      <nve-button variant="neutral" size="small" type="button" (click)="goToExtent()">
+        {{ "PLANS.GO_TO_MAP_EXTENT" | translate }}
+      </nve-button>
 
       <p class="saved">{{ "PLANS.DATE_EDITED" | translate }}: {{ info.date | date: "short" }}</p>
     </div>
