@@ -22,7 +22,6 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import version from '../../../../environments/version.json';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
-import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 import { PopoverOptions, SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
@@ -110,14 +109,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     return {};
   });
 
-  observerTrips: ObserverTripsService;
-
   private userSettingSubscription?: Subscription;
 
   constructor() {
-    const observerTrips = inject(ObserverTripsService);
-
-    this.observerTrips = observerTrips;
     addIcons({
       settingsOutline,
       globeOutline,

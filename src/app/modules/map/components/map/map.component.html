@@ -9,18 +9,22 @@
   ></app-map-controls>
 }
 
-@if (showObserverTrips()) {
-  <div
-    #observerTripsContainer
-    class="observer-trip-backdrop"
-    style="display: none"
-    (click)="removeObserverTripDescription()"
-  >
-    <div class="observer-trip-desc">
+@if (showObserverTrips() && metadataName()) {
+  <div class="observer-trip-backdrop" (click)="removeObserverTripDescription()">
+    <!-- event.stopPropagation er for å hindre at backdrop click trigges ved klikk på tittel / beskrivelse -->
+    <div class="observer-trip-desc" (click)="$event.stopPropagation()">
       <div>
-        <strong>Obsturbeskrivelse{{ observationTripName ? " " + observationTripName : "" }}:</strong>
+        <strong>{{ metadataName() }}</strong>
       </div>
-      <div>{{ observationTripDescription }}</div>
+      @if (metadataTripLength()) {
+        <div>{{ "PLANS.LENGTH" | translate }}: {{ metadataTripLength() | number: "1.0-2" }} km</div>
+      }
+      <div>{{ metadataDescription() }}</div>
+      @if (metadataId()) {
+        <div>
+          <a [routerLink]="['/plans', metadataId()]">{{ "PLANS.GO_TO_DETAILS" | translate }}</a>
+        </div>
+      }
     </div>
   </div>
 }

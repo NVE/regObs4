@@ -3,6 +3,9 @@ import { TabsPage } from './tabs.page';
 import { canActivateStartWizard } from '../../core/guards/start-wizard.guard';
 import { desktopBlockGuard } from 'src/app/core/guards/desktop-block.guard';
 
+/**
+ * Ruter for navigasjon mellom faner nederst på skjermen
+ */
 export const routes: Routes = [
   {
     path: '',

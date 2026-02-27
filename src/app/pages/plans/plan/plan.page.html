@@ -1,0 +1,69 @@
+@if (itemMetadata(); as info) {
+  <ion-header>
+    <ion-toolbar appHeaderColor>
+      <ion-buttons slot="start">
+        <ion-back-button text="" defaultHref="/plans"></ion-back-button>
+      </ion-buttons>
+      <ion-title> {{ info.name }} </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="content">
+      <div class="map" leaflet [leafletOptions]="mapOptions()" (leafletMapReady)="onMapReady($event)"></div>
+      <div class="tag-row">
+        <!-- Vi har ikke høyder enda -->
+        <!-- <nve-tag saturation="default" variant="neutral">
+          <nve-icon slot="prefix" src="assets/icon/altitude.svg" />
+          <span slot="extra">-- {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}</span>
+        </nve-tag> -->
+        <nve-tag saturation="default" variant="neutral">
+          <nve-icon slot="prefix" src="assets/icon/arrow_range.svg" />
+          <span slot="extra">{{ info.lengthKm ? `${info.lengthKm.toFixed(2)} km` : '-- km' }}</span>
+        </nve-tag>
+      </div>
+
+      <nve-switch variant="primary" [checked]="visibleOnMap()" (change)="onVisibleOnMapChange($event)">
+        {{ "PLANS.VISIBLE_ON_MAP" | translate }}
+      </nve-switch>
+
+      @if (isEditMode()) {
+        <form (submit)="onSave($event)">
+          <nve-input [value]="name()" [label]="'PLANS.NAME' | translate" (sl-change)="onNameChange($event)"></nve-input>
+          <nve-textarea
+            [value]="comment()"
+            (sl-change)="onCommentChange($event)"
+            [label]="'PLANS.COMMENT' | translate"
+          ></nve-textarea>
+          <div class="button-group">
+            <nve-button variant="primary" type="submit">{{ "PLANS.SAVE" | translate }}</nve-button>
+            <nve-button variant="danger" type="button" (click)="onRemove()">
+              <nve-icon slot="prefix" src="assets/icon/delete_white.svg"></nve-icon>
+              {{ "PLANS.DELETE" | translate }}
+            </nve-button>
+          </div>
+        </form>
+      } @else {
+        <h1>{{ name() }}</h1>
+
+        @if (comment()) {
+          <p class="comment">
+            {{ comment() }}
+          </p>
+        }
+      }
+
+      @if (isEditable()) {
+        <nve-button variant="neutral" size="small" type="button" (click)="isEditMode.set(true)">
+          {{ "PLANS.EDIT" | translate }}
+        </nve-button>
+      }
+
+      <nve-button variant="neutral" size="small" type="button" (click)="goToExtent()">
+        {{ "PLANS.GO_TO_MAP_EXTENT" | translate }}
+      </nve-button>
+
+      <p class="saved">{{ "PLANS.DATE_EDITED" | translate }}: {{ info.date | date: "short" }}</p>
+    </div>
+  </ion-content>
+}

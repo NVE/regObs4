@@ -1,0 +1,84 @@
+<!-- Side som viser planer og sporfiler -->
+<ion-header>
+  <ion-toolbar appHeaderColor>
+    <ion-title>{{ "PLANS.TITLE" | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="content">
+    @if (showAlert()) {
+      <nve-alert open closable showIcon="false" (sl-after-hide)="dismissAlert()">
+        {{ "PLANS.ALERT_INFO" | translate }}
+      </nve-alert>
+    }
+
+    @if (numberOfPlans() > 1) {
+      <div class="filter-panel">
+        <nve-select
+          [label]="'PLANS.SHOW' | translate"
+          [value]="visibilityFilter()"
+          (sl-change)="onVisibilityFilterChange($event)"
+        >
+          <nve-option value="all">{{ "PLANS.SHOW_ALL" | translate }}</nve-option>
+          <nve-option value="onlyVisibleOnMap">{{ "PLANS.SHOW_ONLY_VISIBLE_ON_MAP" | translate }}</nve-option>
+        </nve-select>
+        <nve-select [label]="'PLANS.SORT_TITLE' | translate" [value]="sortValue()" (sl-change)="onSortChange($event)">
+          <nve-option value="name">{{ "PLANS.SORT_BY_NAME" | translate }}</nve-option>
+          <nve-option value="date">{{ "PLANS.SORT_BY_TIME" | translate }}</nve-option>
+        </nve-select>
+      </div>
+    }
+
+    <!--
+      Her ble det opprinnelig brukt <nve-menu>, men den komponenten er ikke beregnet på slik bruk.
+      Den blokkerer scrolling, som gjør at hvis man har lagt til mange planer, er det vanskelig å
+      scrolle nedover.
+    -->
+    <div class="plans">
+      @for (item of items(); track item.id; let last = $last) {
+        <a [routerLink]="item.id" routerDirection="forward">
+          <nve-menu-item>
+            <!-- <nve-icon slot="prefix" src="/assets/icon/tour.svg"></nve-icon> -->
+            <div class="text-wrapper">
+              <span class="label">
+                {{ item.name }}
+                @if (item.visibleOnMap) {
+                  <nve-badge>{{ "PLANS.VISIBLE_ON_MAP" | translate }}</nve-badge>
+                }
+              </span>
+              <span>
+                {{ item.date | date }}
+                @if (item.lengthKm !== undefined && item.lengthKm !== null) {
+                  , {{ item.lengthKm.toFixed(2) }} km
+                }
+              </span>
+            </div>
+            <nve-icon slot="suffix" name="chevron_forward"></nve-icon>
+          </nve-menu-item>
+        </a>
+      }
+    </div>
+
+    <div class="drop-zone-wrapper">
+      <nve-label size="medium">{{ "PLANS.ADD_PLAN" | translate }}</nve-label>
+      <ngx-file-drop dropZoneClassName="drop-zone-plans" [accept]="acceptFileTypes" (onFileDrop)="onFileDrop($event)">
+        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+          <button type="button" (click)="openFileSelector()">
+            <!-- TODO: Fjern oversettelse: {{ "PLANS.IMPORT_BUTTON.CAPTION" | translate }} -->
+            <ion-icon name="attach-outline" size="large"></ion-icon>
+            <p>
+              @if (!isMobile) {
+                {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_DESKTOP" | translate }}
+              } @else {
+                {{ "PLANS.IMPORT_BUTTON.DROP_LABEL_MOBILE" | translate }}
+              }
+            </p>
+          </button>
+        </ng-template>
+      </ngx-file-drop>
+    </div>
+  </div>
+</ion-content>

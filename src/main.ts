@@ -27,8 +27,9 @@ import { httpFactory } from './app/modules/auth/factories/http-factory';
 import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 import { authFactory } from './app/modules/auth/factories/auth-factory';
-import { register } from 'swiper/element/bundle';
+import { register as registerSwiperWebComponents } from 'swiper/element/bundle';
 import { mapOldParamsToNew } from './app/core/services/search-criteria/url-params';
+import { icons, registerIconLibrary } from 'nve-designsystem/registerIcons/systemLibraryCustomization.js';
 
 if (environment.production) {
   enableProdMode();
@@ -46,8 +47,18 @@ function replaceOldParamsWithNew() {
   }
 }
 
+// fordi vi overstyrer Shoelace sine system-ikoner i NVE designsystem må vi registrere disse ikonene manuelt
+function registerNveDesignsystemIcons() {
+  registerIconLibrary('system', {
+    resolver: (name) => {
+      return `data:image/svg+xml,${encodeURIComponent(icons[name])}`;
+    },
+  });
+}
+
 function startApp() {
-  register();
+  registerSwiperWebComponents();
+  registerNveDesignsystemIcons();
   replaceOldParamsWithNew();
 
   console.log('starting app');

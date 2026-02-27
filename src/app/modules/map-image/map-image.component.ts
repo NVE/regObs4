@@ -50,6 +50,7 @@ export class MapImageComponent {
         ...x.layerConfig.options,
       })
     );
+
     const mapSettings: L.MapOptions = {
       zoom: settings.map.tiles.zoomLevelObservationList,
       maxZoom: settings.map.tiles.maxZoom,

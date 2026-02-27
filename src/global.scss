@@ -25,6 +25,10 @@
 @import '@ionic/angular/css/flex-utils.css';
 @import './app/core/helpers/leaflet/user-marker/user-marker.css';
 @import '@ionic/angular/css/text-transformation.css';
+
+/* Varsom-tema for NVE designsystem */
+@import 'nve-designsystem/css/varsom.css';
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -779,6 +783,28 @@ ion-toast {
       cursor: pointer;
     }
   }
+}
+
+.drop-zone-plans {
+  height: 200px;
+  width: 100%;
+  position: relative;
+  border-radius: var(--border-radius-small, 4px);
+  border: var(--border-width-default, 1px) dashed var(--color-interactive-links-default, #1e6fdc);
+  background: var(--color-feedback-background-subtle-info, #d6ecff);
+
+  button {
+    background: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+.drop-zone-plans:hover {
+  filter: brightness(0.9);
 }
 
 ion-select-popover ion-list ion-item ion-radio {
