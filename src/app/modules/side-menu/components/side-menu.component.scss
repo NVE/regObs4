@@ -1,6 +1,6 @@
 ion-list {
   width: 100%;
-  padding-bottom: var(--ion-safe-area-bottom, 0);
+  padding-bottom: max(var(--ion-safe-area-bottom, 0px), 100px);
   padding-top: 0;
   overflow: auto;
   max-height: 100vh;
