@@ -1,3 +1,4 @@
+import type { Mock, MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SentryService } from './sentry.service';
@@ -6,13 +7,15 @@ import { LogLevel } from './log-level.model';
 
 describe('SentryService', () => {
   let service: SentryService;
-  let fileLoggingService: jasmine.SpyObj<FileLoggingService>;
-  let addBreadcrumbSpy: jasmine.Spy;
-  let captureMessageSpy: jasmine.Spy;
-  let captureExceptionSpy: jasmine.Spy;
+  let fileLoggingService: MockedObject<FileLoggingService>;
+  let addBreadcrumbSpy: Mock;
+  let captureMessageSpy: Mock;
+  let captureExceptionSpy: Mock;
 
   beforeEach(() => {
-    fileLoggingService = jasmine.createSpyObj('FileLoggingService', ['log']);
+    fileLoggingService = {
+      log: vi.fn().mockName('FileLoggingService.log'),
+    };
 
     TestBed.configureTestingModule({
       providers: [SentryService, { provide: FileLoggingService, useValue: fileLoggingService }],
@@ -21,9 +24,9 @@ describe('SentryService', () => {
     service = TestBed.inject(SentryService);
 
     // Spy on the protected Sentry wrapper methods
-    addBreadcrumbSpy = spyOn<any>(service, 'sentryAddBreadcrumb');
-    captureMessageSpy = spyOn<any>(service, 'sentryCaptureMessage');
-    captureExceptionSpy = spyOn<any>(service, 'sentryCaptureException');
+    addBreadcrumbSpy = vi.spyOn<any>(service, 'sentryAddBreadcrumb');
+    captureMessageSpy = vi.spyOn<any>(service, 'sentryCaptureMessage');
+    captureExceptionSpy = vi.spyOn<any>(service, 'sentryCaptureException');
   });
 
   it('should be created', () => {
@@ -42,10 +45,10 @@ describe('SentryService', () => {
       service.log('Test error', httpError, LogLevel.Error, 'TEST_TAG');
 
       expect(captureMessageSpy).toHaveBeenCalledWith(
-        jasmine.any(String),
-        jasmine.objectContaining({
+        expect.any(String),
+        expect.objectContaining({
           level: 'error',
-          extra: jasmine.objectContaining({
+          extra: expect.objectContaining({
             status: 404,
             statusText: 'Not Found',
             url: '/api/test',
@@ -65,10 +68,10 @@ describe('SentryService', () => {
       service.log('Server issue', httpError, LogLevel.Warning, 'TEST_TAG');
 
       expect(captureMessageSpy).toHaveBeenCalledWith(
-        jasmine.any(String),
-        jasmine.objectContaining({
+        expect.any(String),
+        expect.objectContaining({
           level: 'warning',
-          extra: jasmine.objectContaining({
+          extra: expect.objectContaining({
             status: 500,
             statusText: 'Server Error',
             url: '/api/data',
@@ -90,9 +93,9 @@ describe('SentryService', () => {
 
       expect(captureExceptionSpy).toHaveBeenCalledWith(
         innerError,
-        jasmine.objectContaining({
+        expect.objectContaining({
           level: 'error',
-          extra: jasmine.objectContaining({
+          extra: expect.objectContaining({
             status: 500,
             statusText: 'Internal Server Error',
             url: '/api/crash',
@@ -113,9 +116,9 @@ describe('SentryService', () => {
       service.log('Network timeout', httpError, LogLevel.Error, 'TEST_TAG');
 
       expect(captureMessageSpy).toHaveBeenCalledWith(
-        jasmine.any(String),
-        jasmine.objectContaining({
-          level: jasmine.stringMatching(/warning|error/),
+        expect.any(String),
+        expect.objectContaining({
+          level: expect.stringMatching(/warning|error/),
         })
       );
     });
@@ -157,7 +160,7 @@ describe('SentryService', () => {
       service.log('Test message', null, LogLevel.Error, 'TEST_TAG');
 
       expect(addBreadcrumbSpy).toHaveBeenCalledWith(
-        jasmine.objectContaining({
+        expect.objectContaining({
           category: 'TEST_TAG',
           message: 'Test message',
           level: 'error',
@@ -171,7 +174,7 @@ describe('SentryService', () => {
       service.log('User action', null, LogLevel.Info, 'TEST_TAG', params);
 
       expect(addBreadcrumbSpy).toHaveBeenCalledWith(
-        jasmine.objectContaining({
+        expect.objectContaining({
           category: 'TEST_TAG',
           message: 'User action',
           level: 'info',

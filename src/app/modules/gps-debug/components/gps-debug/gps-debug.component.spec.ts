@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { GpsDebugComponent } from './gps-debug.component';
 
-xdescribe('GpsDebugComponent', () => {
+describe.skip('GpsDebugComponent', () => {
   let component: GpsDebugComponent;
   let fixture: ComponentFixture<GpsDebugComponent>;
 

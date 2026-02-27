@@ -18,18 +18,16 @@ describe('OfflineMapService', () => {
   let packageIndexServiceSpy: PackageIndexService;
 
   beforeEach(() => {
-    platformSpy = jasmine.createSpyObj('Platform', {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      is: (platformName: Platforms) => false,
-    });
+    platformSpy = {
+      is: vi
+        .fn()
+        .mockName('Platform.is')
+        .mockReturnValue((platformName: Platforms) => false),
+    };
     const packages = new ReplaySubject<Map<string, CompoundPackage>>();
-    packageIndexServiceSpy = jasmine.createSpyObj(
-      'PackageIndexService',
-      {},
-      {
-        map$: packages,
-      }
-    );
+    packageIndexServiceSpy = {
+      map$: packages,
+    };
 
     TestBed.configureTestingModule({
       providers: [

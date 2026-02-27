@@ -50,9 +50,9 @@ describe('SummaryItemService', () => {
       },
     };
 
-    expect(draftHasNotChanged(draftV1, draftV1Copy)).toBeTrue();
-    expect(draftHasNotChanged(draftV1, draftV2)).toBeFalse();
-    expect(draftHasNotChanged(draftV1, draftV3)).toBeFalse();
-    expect(draftHasNotChanged(draftV1, draftV4)).toBeFalse(); //same number of schemas, but schemas are different
+    expect(draftHasNotChanged(draftV1, draftV1Copy)).toBe(true);
+    expect(draftHasNotChanged(draftV1, draftV2)).toBe(false);
+    expect(draftHasNotChanged(draftV1, draftV3)).toBe(false);
+    expect(draftHasNotChanged(draftV1, draftV4)).toBe(false); //same number of schemas, but schemas are different
   });
 });

@@ -121,9 +121,9 @@ describe('RegobsAuthService', () => {
   it('token age check should work', () => {
     const nowInSeconds = Date.now() / 1000;
     const tokenIssuedAt = nowInSeconds - 300; //5 minutes ago
-    expect(service.isTokenOlderThan(tokenIssuedAt, 0)).toBeTrue();
-    expect(service.isTokenOlderThan(tokenIssuedAt, 60)).toBeTrue();
-    expect(service.isTokenOlderThan(tokenIssuedAt, 600)).toBeFalse();
+    expect(service.isTokenOlderThan(tokenIssuedAt, 0)).toBe(true);
+    expect(service.isTokenOlderThan(tokenIssuedAt, 60)).toBe(true);
+    expect(service.isTokenOlderThan(tokenIssuedAt, 600)).toBe(false);
   });
 
   it('auth service has token on startup', async () => {
@@ -138,7 +138,7 @@ describe('RegobsAuthService', () => {
 
   it('http response 401 during tokenRefresh resets token', fakeAsync(async () => {
     // Returner testconfig for get authService.configuration
-    spyOnProperty(authService, 'configuration', 'get').and.callFake(
+    vi.spyOn(authService, 'configuration', 'get').mockImplementation(
       async () =>
         new AuthorizationServiceConfiguration({
           authorization_endpoint: '',
@@ -157,7 +157,7 @@ describe('RegobsAuthService', () => {
     httpTesting.expectOne('/token').flush({}, { status: 401, statusText: 'Unauthorized' });
 
     // Vent på refreshToken
-    await expectAsync(refreshTokenPromise).toBeRejected();
+    await expect(refreshTokenPromise).rejects.toThrow();
 
     // Sjekk at alle relevante token-håndterings-ting er nullstilt
     expect(await storage.getItem(TOKEN_RESPONSE_KEY)).toBe(undefined);
@@ -177,7 +177,7 @@ describe('RegobsAuthService', () => {
       req.error(new ProgressEvent('network error!'));
     }
 
-    await expectAsync(refreshTokenPromise).toBeRejected();
+    await expect(refreshTokenPromise).rejects.toThrow();
 
     // Sjekk at innlogging fortsatt er gyldig
     expect(await storage.getItem(TOKEN_RESPONSE_KEY)).toBeDefined();

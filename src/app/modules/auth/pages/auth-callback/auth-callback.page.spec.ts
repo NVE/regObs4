@@ -1,3 +1,4 @@
+import type { MockedObject } from 'vitest';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RegobsAuthService } from '../../services/regobs-auth.service';
@@ -7,10 +8,12 @@ import { AuthCallbackPage } from './auth-callback.page';
 describe('AuthCallbackPage', () => {
   let component: AuthCallbackPage;
   let fixture: ComponentFixture<AuthCallbackPage>;
-  let regobsAuthService: jasmine.SpyObj<RegobsAuthService>;
+  let regobsAuthService: MockedObject<RegobsAuthService>;
 
   beforeEach(waitForAsync(() => {
-    regobsAuthService = jasmine.createSpyObj(['authorizationCallback']);
+    regobsAuthService = {
+      authorizationCallback: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [

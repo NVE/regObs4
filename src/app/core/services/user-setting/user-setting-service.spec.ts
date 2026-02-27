@@ -12,7 +12,7 @@ describe('UserSettingService', () => {
     photographer: 'Hestejente3000',
   };
 
-  const saveSpy = jasmine.createSpy('saveUserSettingsToDb').and.callFake((us) => {
+  const saveSpy = vi.fn().mockImplementation((us) => {
     db = { ...us };
     return of(db);
   });
@@ -24,7 +24,10 @@ describe('UserSettingService', () => {
       return of(db as unknown as UserSetting).pipe(delay(1000));
     }
 
-    protected override parseUrlParameters(): { geoHazards: GeoHazard[] | null; daysBack: number | null } {
+    protected override parseUrlParameters(): {
+      geoHazards: GeoHazard[] | null;
+      daysBack: number | null;
+    } {
       return { geoHazards: null, daysBack: null };
     }
 
@@ -72,7 +75,7 @@ describe('UserSettingService', () => {
 
     // Sjekk at public usersettings også stemmer
     const userSettings = firstValueFrom(service.userSetting$);
-    expectAsync(userSettings).toBeResolvedTo({
+    expect(userSettings).resolves.toEqual({
       photographer: 'Hestejente3000',
       copyright: 'Kantkorn48',
     } as unknown as UserSetting);

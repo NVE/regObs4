@@ -13,16 +13,28 @@ describe('AppResetService', () => {
   let service: AppResetService;
 
   beforeEach(() => {
-    dbHelperService = jasmine.createSpyObj('DbHelperService', {
-      resetDb: () => Promise.resolve(),
-    });
-    loggingService = jasmine.createSpyObj('LoggingService', {
-      log: () => {
-        return;
-      },
-    });
-    firstResetService = jasmine.createSpyObj('OnReset', ['appOnReset', 'appOnResetComplete']);
-    secondResetService = jasmine.createSpyObj('OnReset', ['appOnReset', 'appOnResetComplete']);
+    dbHelperService = {
+      resetDb: vi
+        .fn()
+        .mockName('DbHelperService.resetDb')
+        .mockReturnValue(() => Promise.resolve()),
+    };
+    loggingService = {
+      log: vi
+        .fn()
+        .mockName('LoggingService.log')
+        .mockReturnValue(() => {
+          return;
+        }),
+    };
+    firstResetService = {
+      appOnReset: vi.fn().mockName('OnReset.appOnReset'),
+      appOnResetComplete: vi.fn().mockName('OnReset.appOnResetComplete'),
+    };
+    secondResetService = {
+      appOnReset: vi.fn().mockName('OnReset.appOnReset'),
+      appOnResetComplete: vi.fn().mockName('OnReset.appOnResetComplete'),
+    };
 
     TestBed.configureTestingModule({
       providers: [

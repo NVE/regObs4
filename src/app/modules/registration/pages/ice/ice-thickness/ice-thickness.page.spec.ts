@@ -44,17 +44,17 @@ describe('IceThicknessPage', () => {
   });
 
   it('empty icethickness is valid', () => {
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
   });
 
   it('isWaterBefore without waterheightbefore should be invalid', () => {
     component.isWaterBefore = true;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('isWaterAfter without waterheightafter should be invalid', () => {
     component.isWaterAfter = true;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it("validity check shouldn't modify values", () => {
@@ -62,7 +62,7 @@ describe('IceThicknessPage', () => {
     component.isWaterAfter = true;
     component.waterHeightBefore = 6;
     component.waterHeightAfter = 10;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
     expect(component.waterHeightBefore).toEqual(6);
     expect(component.waterHeightAfter).toEqual(10);
   });
@@ -74,19 +74,19 @@ describe('IceThicknessPage', () => {
     component.isWaterAfter = undefined;
     component.waterHeightAfter = 12;
     component.waterDepthAfter = 15;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
     expect(iceThickness.IceHeightBefore).toBeUndefined();
     expect(iceThickness.IceHeightAfter).toBeUndefined();
 
     component.isWaterBefore = true;
     component.isWaterAfter = true;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
     expect(iceThickness.IceHeightBefore).toEqual(-10);
     expect(iceThickness.IceHeightAfter).toEqual(-12);
 
     component.isWaterBefore = false;
     component.isWaterAfter = false;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
     expect(iceThickness.IceHeightBefore).toEqual(0);
     expect(iceThickness.IceHeightAfter).toEqual(15);
   });

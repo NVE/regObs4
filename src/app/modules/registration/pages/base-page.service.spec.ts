@@ -1,3 +1,4 @@
+import type { Mock, MockedObject } from 'vitest';
 import {
   AttachmentUploadEditModel,
   RegistrationTid,
@@ -14,10 +15,10 @@ import { provideTestLogger } from '../../shared/services/logging/test-logging.se
 
 describe('BasePageService', () => {
   let service: BasePageService;
-  let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
+  let newAttachmentService: MockedObject<NewAttachmentService>;
 
   let draftRepository: {
-    save: jasmine.Spy<DraftRepositoryService['save']>;
+    save: Mock;
   };
 
   const avalancheObsDraft: RegistrationDraft = {
@@ -68,10 +69,13 @@ describe('BasePageService', () => {
     TestBed.configureTestingModule({});
 
     draftRepository = {
-      save: jasmine.createSpy('DraftService.save'),
+      save: vi.fn(),
     };
 
-    newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['getAttachments', 'removeAttachment']);
+    newAttachmentService = {
+      getAttachments: vi.fn().mockName('NewAttachmentService.getAttachments'),
+      removeAttachment: vi.fn().mockName('NewAttachmentService.removeAttachment'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -95,13 +99,14 @@ describe('BasePageService', () => {
         //No AvalancheObs or Incident anymore
       },
     };
-    newAttachmentService.getAttachments.and.returnValue(of(attachments));
+    newAttachmentService.getAttachments.mockReturnValue(of(attachments));
     const registrationTids = [RegistrationTid.AvalancheObs, RegistrationTid.Incident];
 
     const actualDraft = await service.delete(avalancheObsDraft, registrationTids);
 
     expect(actualDraft).toEqual(expectedEmptyDraft);
-    expect(newAttachmentService.getAttachments).toHaveBeenCalledOnceWith('draft');
+    expect(newAttachmentService.getAttachments).toHaveBeenCalledTimes(1);
+    expect(newAttachmentService.getAttachments).toHaveBeenCalledWith('draft');
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledTimes(3);
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '1');
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '2');

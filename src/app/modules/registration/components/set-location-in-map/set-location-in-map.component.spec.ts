@@ -26,19 +26,19 @@ describe('SetLocationInMapComponent', () => {
     };
 
     // current map center is not available
-    expect(mapCenterIsStableOrNotAvailable(null, null)).toBeTrue();
-    expect(mapCenterIsStableOrNotAvailable(noCenter, noCenter)).toBeTrue();
-    expect(mapCenterIsStableOrNotAvailable(null, noCenter)).toBeTrue();
-    expect(mapCenterIsStableOrNotAvailable(london, null)).toBeTrue();
-    expect(mapCenterIsStableOrNotAvailable(london, noCenter)).toBeTrue();
+    expect(mapCenterIsStableOrNotAvailable(null, null)).toBe(true);
+    expect(mapCenterIsStableOrNotAvailable(noCenter, noCenter)).toBe(true);
+    expect(mapCenterIsStableOrNotAvailable(null, noCenter)).toBe(true);
+    expect(mapCenterIsStableOrNotAvailable(london, null)).toBe(true);
+    expect(mapCenterIsStableOrNotAvailable(london, noCenter)).toBe(true);
 
     // current map center has not changed
-    expect(mapCenterIsStableOrNotAvailable(london, london)).toBeTrue();
-    expect(mapCenterIsStableOrNotAvailable(london, nearLondon)).toBeTrue();
+    expect(mapCenterIsStableOrNotAvailable(london, london)).toBe(true);
+    expect(mapCenterIsStableOrNotAvailable(london, nearLondon)).toBe(true);
 
     // current map center has changed
-    expect(mapCenterIsStableOrNotAvailable(noCenter, london)).toBeFalse();
-    expect(mapCenterIsStableOrNotAvailable(null, london)).toBeFalse();
-    expect(mapCenterIsStableOrNotAvailable(london, nve)).toBeFalse();
+    expect(mapCenterIsStableOrNotAvailable(noCenter, london)).toBe(false);
+    expect(mapCenterIsStableOrNotAvailable(null, london)).toBe(false);
+    expect(mapCenterIsStableOrNotAvailable(london, nve)).toBe(false);
   });
 });

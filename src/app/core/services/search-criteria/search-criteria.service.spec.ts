@@ -38,7 +38,11 @@ describe('SearchCriteriaService', () => {
     userSettings,
     queryPath,
     langKey,
-  }: { userSettings?: Partial<UserSetting>; queryPath?: string; langKey?: LangKey } = {}) => {
+  }: {
+    userSettings?: Partial<UserSetting>;
+    queryPath?: string;
+    langKey?: LangKey;
+  } = {}) => {
     const mapService = createTestMapService();
     const userSetting$ = new BehaviorSubject<UserSetting>({
       ...DEFAULT_USER_SETTINGS(langKey || LangKey.nb),
@@ -78,12 +82,12 @@ describe('SearchCriteriaService', () => {
   };
 
   beforeEach(() => {
-    jasmine.clock().install();
+    vi.useFakeTimers();
     moment.tz.setDefault('Europe/Oslo');
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
+    vi.useRealTimers();
     moment.tz.setDefault();
   });
 
@@ -144,7 +148,7 @@ describe('SearchCriteriaService', () => {
   });
 
   it('daysBack from userSettings should be used to set FromDtObsTime', () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     const { service, userSettings } = init({
       userSettings: {
         currentGeoHazard: [GeoHazard.Snow],
@@ -269,7 +273,7 @@ describe('SearchCriteriaService', () => {
     // Sjekk at ikke extent legges til om det kommer et nytt mapView
     mapService.mapView$.next(createMapView(70.7978, 21.4343, 67.5715, 34.1458));
     tick(51);
-    expect(service.isExtentCriteriaActive()).toBeFalse();
+    expect(service.isExtentCriteriaActive()).toBe(false);
     expect(service.criteria().Extent).toBeUndefined();
 
     // Sjekk at man kan skru det på igjen
@@ -326,21 +330,21 @@ describe('SearchCriteriaService', () => {
   }));
 
   it('FromDtObsTime should be set or updated', () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     const { service } = init();
     service.setFromDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true), false);
     expect(service.criteria().FromDtObsTime).toEqual('2000-12-24T00:00:00.000+01:00');
   });
 
   it('ToDtObsTime should be set or updated', () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     const { service } = init();
     service.setToDate(moment(new Date('2000-12-24T00:00:00+01:00')).toISOString(true));
     expect(service.criteria().ToDtObsTime).toEqual('2000-12-24T23:59:59.999+01:00');
   });
 
   it('ToDtObsTime and FromDtObsTime should be possible to update when daysBack initially is used', () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     const { service } = init({
       userSettings: {
         currentGeoHazard: [GeoHazard.Snow],
@@ -360,7 +364,7 @@ describe('SearchCriteriaService', () => {
   });
 
   it('ToDtObsTime should be removed when updating fromDate with true', () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     const { service } = init({ queryPath: 'fromDate=2025-10-21&toDate=2025-11-04' });
     expect(service.fromDate()).toBeDefined();
     expect(service.toDate()).toBeDefined();
@@ -401,7 +405,7 @@ describe('SearchCriteriaService', () => {
   // basert på geoHazard. Eller at vi bruker en effect for å resette disse når geoHazard endres.
   // Jeg tror koden blir enklere å forstå hvis vi heller bruker reset-metoden til å
   // nullstille filterne når geoHazard har blitt endret i appen.
-  xit('slush flow filter should be removed from criteria when we change geo hazard', () => {
+  it.skip('slush flow filter should be removed from criteria when we change geo hazard', () => {
     const { service, userSettings } = init();
     service.setSlushFlow(); //turn filter by slush flow on
     expectSlushFlowCriteriaToExist(service.criteria());
@@ -434,13 +438,13 @@ describe('SearchCriteriaService url parsing', () => {
   };
 
   beforeEach(() => {
-    jasmine.clock().install();
+    vi.useFakeTimers();
     moment.tz.setDefault('Europe/Oslo');
   });
 
   afterEach(function () {
     moment.tz.setDefault();
-    jasmine.clock().uninstall();
+    vi.useRealTimers();
   });
 
   it('parsing of query parameter arrays should work', () => {
@@ -506,8 +510,9 @@ describe('SearchCriteriaService url parsing', () => {
   // TODO: Flytt test til test suite for userSettings, siden det er der denne parses fra url.
   // Det finnes allerede en test som sjekker at riktig GeoHazard settes på søkekriterene basert på det userSettings
   // tilbyr, og det er dette som er relevant å teste for søkekritere-servicen.
-  it('geo hazard url filter should work', () => {
-    pending('Flytt test til userSettings-tester');
+  it.skip('geo hazard url filter should work', () => {
+    // TODO: vitest-migration: The pending() function was converted to a skipped test (`it.skip`). See: https://vitest.dev/api/vi.html#it-skip
+    // pending('Flytt test til userSettings-tester');
     const service = getService('hazard=70');
     const criteria = service.criteria();
     expect(criteria.SelectedGeoHazards).toEqual([70]);
@@ -516,8 +521,9 @@ describe('SearchCriteriaService url parsing', () => {
   // TODO: Flytt test til test suite for userSettings, siden det er der denne parses fra url.
   // Det finnes allerede en test som sjekker at riktig GeoHazard settes på søkekriterene basert på det userSettings
   // tilbyr, og det er dette som er relevant å teste for søkekritere-servicen.
-  it('illegal geo hazard in url should return 10', () => {
-    pending('Flytt test til userSettings-tester');
+  it.skip('illegal geo hazard in url should return 10', () => {
+    // TODO: vitest-migration: The pending() function was converted to a skipped test (`it.skip`). See: https://vitest.dev/api/vi.html#it-skip
+    // pending('Flytt test til userSettings-tester');
     const service = getService('hazard=illegal');
     const criteria = service.criteria();
     //check that current criteria contains expected geo hazard
@@ -526,10 +532,11 @@ describe('SearchCriteriaService url parsing', () => {
 
   // TODO: Flytt test til test suite for userSettings, siden det er der denne parses fra url.
   // Det finnes allerede tester som sjekker at daysBack fra usersettings brukes riktig.
-  it('days back url filter should work', () => {
-    pending('Flytt test til userSettings-tester');
+  it.skip('days back url filter should work', () => {
+    // TODO: vitest-migration: The pending() function was converted to a skipped test (`it.skip`). See: https://vitest.dev/api/vi.html#it-skip
+    // pending('Flytt test til userSettings-tester');
     const queryPath = 'daysBack=1';
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
     const service = getService(queryPath);
     const criteria = service.criteria();
     //check that criteria contains correct from time. Should be 1 day earlier at midnight

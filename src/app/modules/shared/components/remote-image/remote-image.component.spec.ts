@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RemoteImageComponent } from './remote-image.component';
 
-xdescribe('BlobImageComponent', () => {
+describe.skip('BlobImageComponent', () => {
   let component: RemoteImageComponent;
 
   beforeEach(() => {

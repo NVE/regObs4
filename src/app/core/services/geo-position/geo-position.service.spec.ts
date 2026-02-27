@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { GeoPositionService } from './geo-position.service';
 
-xdescribe('GeoPositionService', () => {
+describe.skip('GeoPositionService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {

@@ -15,10 +15,10 @@ describe('getHttpErrorResponseMessageAndCode', () => {
       status: HttpStatusCode.BadRequest,
       statusText: 'Bad Request',
       error: {
-        Message: 'Invalid input', 
-        ModelState: { field1: 'Field1 is required', field2: ['Field2 is invalid'] }
+        Message: 'Invalid input',
+        ModelState: { field1: 'Field1 is required', field2: ['Field2 is invalid'] },
       },
-      url: 'dummy-url'
+      url: 'dummy-url',
     });
     const result = getHttpErrorResponseMessageAndCode(error);
     expect(result.code).toBe(RegistrationDraftErrorCode.RegistrationError);
@@ -32,7 +32,7 @@ describe('getHttpErrorResponseMessageAndCode', () => {
       status: HttpStatusCode.BadRequest,
       statusText: 'Bad Request',
       error: {},
-      url: 'dummy-url'
+      url: 'dummy-url',
     });
     const result = getHttpErrorResponseMessageAndCode(error);
     expect(result.code).toBe(RegistrationDraftErrorCode.RegistrationError);
@@ -40,32 +40,47 @@ describe('getHttpErrorResponseMessageAndCode', () => {
   });
 
   it('should handle Conflict', () => {
-    const error = new HttpErrorResponse({ status: HttpStatusCode.Conflict, statusText: 'Conflict', error: null, url: 'dummy-url' });
+    const error = new HttpErrorResponse({
+      status: HttpStatusCode.Conflict,
+      statusText: 'Conflict',
+      error: null,
+      url: 'dummy-url',
+    });
     const result = getHttpErrorResponseMessageAndCode(error);
     expect(result.code).toBe(RegistrationDraftErrorCode.ConflictError);
     expect(result.message).toEqual('Http failure response for dummy-url: 409 Conflict');
   });
 
   it('should handle Gone', () => {
-    const error = new HttpErrorResponse({ status: HttpStatusCode.Gone, statusText: 'Gone', error: null, url: 'dummy-url' });
+    const error = new HttpErrorResponse({
+      status: HttpStatusCode.Gone,
+      statusText: 'Gone',
+      error: null,
+      url: 'dummy-url',
+    });
     const result = getHttpErrorResponseMessageAndCode(error);
     expect(result.code).toBe(RegistrationDraftErrorCode.GoneError);
     expect(result.message).toEqual('Http failure response for dummy-url: 410 Gone');
   });
 
   it('should handle Unauthorized', () => {
-    const error = new HttpErrorResponse({ status: HttpStatusCode.Unauthorized, statusText: 'Unauthorized', error: null, url: 'dummy-url' });
+    const error = new HttpErrorResponse({
+      status: HttpStatusCode.Unauthorized,
+      statusText: 'Unauthorized',
+      error: null,
+      url: 'dummy-url',
+    });
     const result = getHttpErrorResponseMessageAndCode(error);
     expect(result.code).toBe(RegistrationDraftErrorCode.Unauthorized);
     expect(result.message).toEqual('Http failure response for dummy-url: 401 Unauthorized');
   });
 
   it('should handle server error (status >= 500)', () => {
-    const error = new HttpErrorResponse({ 
-      status: 500, 
-      statusText: 'Internal Server Error', 
-      error: null, 
-      url: 'dummy-url'
+    const error = new HttpErrorResponse({
+      status: 500,
+      statusText: 'Internal Server Error',
+      error: null,
+      url: 'dummy-url',
     });
     const result = getHttpErrorResponseMessageAndCode(error);
     expect(result.code).toBe(RegistrationDraftErrorCode.ServerError);
@@ -79,4 +94,3 @@ describe('getHttpErrorResponseMessageAndCode', () => {
     expect(result.message).toEqual('Http failure response for dummy-url: 123 Unknown');
   });
 });
-

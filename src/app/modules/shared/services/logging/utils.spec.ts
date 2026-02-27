@@ -29,7 +29,7 @@ describe('toSafeString', () => {
     expect(result).toContain('"code": "E_CUSTOM"');
     expect(parsed.name).toBe(error.name);
     expect(parsed.message).toBe('Something went wrong');
-    expect(typeof parsed.stack === 'string' || parsed.stack === undefined).toBeTrue();
+    expect(typeof parsed.stack === 'string' || parsed.stack === undefined).toBe(true);
     expect(parsed.code).toBe('E_CUSTOM');
   });
 

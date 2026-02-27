@@ -14,14 +14,14 @@ describe('QueryParamsService', () => {
   const expectQueryParameterToHaveBeenApplied = (key: string, value: any) => {
     const url = new URL(document.location.href + router.url);
     if (!value) {
-      expect(url.searchParams.has(key)).toBeFalse();
+      expect(url.searchParams.has(key)).toBe(false);
     } else {
       expect(url.searchParams.get(key)).toBe(value);
     }
   };
 
   beforeEach(() => {
-    jasmine.clock().install();
+    vi.useFakeTimers();
     moment.tz.setDefault('Europe/Oslo');
 
     TestBed.configureTestingModule({
@@ -32,7 +32,7 @@ describe('QueryParamsService', () => {
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
+    vi.useRealTimers();
     moment.tz.setDefault();
   });
 
@@ -51,7 +51,7 @@ describe('QueryParamsService', () => {
   });
 
   it('should apply dates', async () => {
-    jasmine.clock().mockDate(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
+    vi.setSystemTime(moment.tz('2000-12-24 08:00:00', 'Europe/Oslo').toDate());
 
     await service.apply({
       criteria: { FromDtObsTime: '2000-12-24T00:00:00.000+01:00' },

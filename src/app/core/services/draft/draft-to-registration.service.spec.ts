@@ -1,3 +1,4 @@
+import type { Mock, MockedObject } from 'vitest';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { Observable, ReplaySubject } from 'rxjs';
@@ -13,7 +14,7 @@ import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-
 
 describe('DraftToRegistrationService', () => {
   let service: DraftToRegistrationService;
-  let addUpdateDeleteRegService: jasmine.SpyObj<AddUpdateDeleteRegistrationService>;
+  let addUpdateDeleteRegService: MockedObject<AddUpdateDeleteRegistrationService>;
   let connected: ReplaySubject<boolean>;
   let networkService: NetworkStatusService;
 
@@ -30,8 +31,8 @@ describe('DraftToRegistrationService', () => {
   let drafts: ReplaySubject<RegistrationDraft[]>;
   let draftService: {
     drafts$: Observable<RegistrationDraft[]>;
-    delete: jasmine.Spy<DraftRepositoryService['delete']>;
-    save: jasmine.Spy<DraftRepositoryService['save']>;
+    delete: Mock;
+    save: Mock;
   };
 
   let loggerService: LoggingService;
@@ -40,11 +41,14 @@ describe('DraftToRegistrationService', () => {
     drafts = new ReplaySubject<RegistrationDraft[]>();
     draftService = {
       drafts$: drafts.asObservable(),
-      delete: jasmine.createSpy('DraftService.delete'),
-      save: jasmine.createSpy('DraftService.save'),
+      delete: vi.fn(),
+      save: vi.fn(),
     };
 
-    addUpdateDeleteRegService = jasmine.createSpyObj('AddUpdateDeleteRegistrationService', ['add', 'update']);
+    addUpdateDeleteRegService = {
+      add: vi.fn().mockName('AddUpdateDeleteRegistrationService.add'),
+      update: vi.fn().mockName('AddUpdateDeleteRegistrationService.update'),
+    };
 
     connected = new ReplaySubject<boolean>();
     networkService = {
@@ -70,7 +74,7 @@ describe('DraftToRegistrationService', () => {
       { ...draft, uuid: 'b' },
     ];
 
-    draftService.save.and.callFake((draftToSave) => {
+    draftService.save.mockImplementation((draftToSave) => {
       return new Promise((resolve) => {
         setTimeout(() => {
           testDrafts = [...testDrafts.filter((d) => d.uuid !== draftToSave.uuid), draftToSave];
@@ -96,11 +100,11 @@ describe('DraftToRegistrationService', () => {
     flush();
 
     // The drafts should have been saved with an error object on it
-    const error = jasmine.objectContaining({
+    const error = expect.objectContaining({
       code: RegistrationDraftErrorCode.NoNetworkOrTimedOut,
     });
     expect(draftService.save).toHaveBeenCalledTimes(3);
-    expect(draftService.save.calls.allArgs()).toEqual([
+    expect(vi.mocked(draftService.save).mock.calls).toEqual([
       [{ ...draft, uuid: 'a', error }],
       [{ ...draft, uuid: 'b', error }],
       [{ ...draft, uuid: 'c', error }],
@@ -113,10 +117,10 @@ describe('DraftToRegistrationService', () => {
   }));
 
   it('Handles errors while uploading registrations', fakeAsync(() => {
-    spyOn(loggerService, 'error').and.callThrough();
+    vi.spyOn(loggerService, 'error');
 
     const error = new HttpErrorResponse({ status: HttpStatusCode.InternalServerError });
-    addUpdateDeleteRegService.add.and.rejectWith(error);
+    addUpdateDeleteRegService.add.mockRejectedValue(error);
 
     // Start connected to internet and with one draft to upload
     connected.next(true);
@@ -133,8 +137,8 @@ describe('DraftToRegistrationService', () => {
       ...draft,
       error: {
         code: RegistrationDraftErrorCode.ServerError,
-        message: jasmine.any(String),
-        timestamp: jasmine.any(Number),
+        message: expect.any(String),
+        timestamp: expect.any(Number),
       },
     });
 
@@ -173,14 +177,14 @@ describe('DraftToRegistrationService', () => {
 
     // We expect that draftService.save have been called two times with each draft with network error, a and b
     expect(draftService.save).toHaveBeenCalledTimes(2);
-    expect(draftService.save.calls.allArgs()).toEqual([[{ ...draft, uuid: 'a' }], [{ ...draft, uuid: 'b' }]]);
+    expect(vi.mocked(draftService.save).mock.calls).toEqual([[{ ...draft, uuid: 'a' }], [{ ...draft, uuid: 'b' }]]);
 
     discardPeriodicTasks();
   }));
 
   it('Remove network errors handles that drafts$ is updated', fakeAsync(() => {
     // Simulate save taking some time
-    draftService.save.and.callFake(() => {
+    draftService.save.mockImplementation(() => {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve();
@@ -243,7 +247,7 @@ describe('DraftToRegistrationService', () => {
 
     // We expect that draftService.save have been called two times with each draft with network error, a and b
     expect(draftService.save).toHaveBeenCalledTimes(2);
-    expect(draftService.save.calls.allArgs()).toEqual([[{ ...draft, uuid: 'a' }], [{ ...draft, uuid: 'b' }]]);
+    expect(vi.mocked(draftService.save).mock.calls).toEqual([[{ ...draft, uuid: 'a' }], [{ ...draft, uuid: 'b' }]]);
 
     discardPeriodicTasks();
   }));
@@ -257,7 +261,7 @@ describe('DraftToRegistrationService', () => {
         GeoHazardTID: 10,
         DtObsTime: 'Test',
       } as RegistrationViewModel;
-      addUpdateDeleteRegService.add.and.callFake(() => {
+      addUpdateDeleteRegService.add.mockImplementation(() => {
         return new Promise((resolve) => {
           setTimeout(() => resolve(registration), 500);
         });
@@ -277,7 +281,11 @@ describe('DraftToRegistrationService', () => {
 
       // After 100 ms, we expect addUpdateDeleteRegService.add to have been called,
       // but as the request has not been finished yet, the draft should not have been deleted
-      expect(addUpdateDeleteRegService.add).toHaveBeenCalledOnceWith(draft);
+      expect(addUpdateDeleteRegService.add).toHaveBeenCalledTimes(1);
+
+      // After 100 ms, we expect addUpdateDeleteRegService.add to have been called,
+      // but as the request has not been finished yet, the draft should not have been deleted
+      expect(addUpdateDeleteRegService.add).toHaveBeenCalledWith(draft);
       expect(draftService.delete).toHaveBeenCalledTimes(0);
 
       // Drafts is updated, we are editing another draft while the draft is being submitted
@@ -286,7 +294,10 @@ describe('DraftToRegistrationService', () => {
       flush();
 
       // Even though drafts$ updates, we should only upload the draft a single time
-      expect(addUpdateDeleteRegService.add).toHaveBeenCalledOnceWith(draft);
+      expect(addUpdateDeleteRegService.add).toHaveBeenCalledTimes(1);
+
+      // Even though drafts$ updates, we should only upload the draft a single time
+      expect(addUpdateDeleteRegService.add).toHaveBeenCalledWith(draft);
 
       // Check that we try to delete the uploaded draft after a successful upload
       expect(draftService.delete).toHaveBeenCalledTimes(1);

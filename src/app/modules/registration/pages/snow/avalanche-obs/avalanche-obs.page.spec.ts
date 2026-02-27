@@ -48,43 +48,43 @@ describe('AvalancheObsPage', () => {
     };
   });
   it('empty incident is valid', () => {
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
   });
 
   it('Number of casualties is given without number involved, is valid', () => {
     getIncident().CasualtiesNum = 7;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
   });
 
   it('Number of dead is given without number casualties or involved, is valid', () => {
     getIncident().DeadNum = 7;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
   });
 
   it('Number of casualties higher than number involved, is not valid', () => {
     getIncident().InvolvedNum = 5;
     getIncident().CasualtiesNum = 7;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of dead higher than number of casualties, is not valid', () => {
     getIncident().InvolvedNum = 6;
     getIncident().CasualtiesNum = 4;
     getIncident().DeadNum = 5;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of dead higher than number of involved without casualties, is not valid', () => {
     getIncident().InvolvedNum = 6;
     getIncident().DeadNum = 7;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of harmed is higher than number of involved, is not valid', () => {
     getIncident().InvolvedNum = 6;
     getIncident().CasualtiesNum = 3;
     getIncident().HarmedNum = 7;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of harmed and dead is higher than number of casualties, is not valid', () => {
@@ -92,27 +92,27 @@ describe('AvalancheObsPage', () => {
     getIncident().CasualtiesNum = 4;
     getIncident().DeadNum = 3;
     getIncident().HarmedNum = 3;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of harmed and dead is higher than number of involved without casualties specified, is not valid', () => {
     getIncident().InvolvedNum = 6;
     getIncident().DeadNum = 4;
     getIncident().HarmedNum = 3;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of harmed and dead is higher than number of casualties without involved specified, is not valid', () => {
     getIncident().CasualtiesNum = 4;
     getIncident().DeadNum = 3;
     getIncident().HarmedNum = 3;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBe(false);
   });
 
   it('Number of harmed and dead without casualties and involved, is valid', () => {
     getIncident().DeadNum = 3;
     getIncident().HarmedNum = 3;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
   });
 
   it('Form is valid', () => {
@@ -120,6 +120,6 @@ describe('AvalancheObsPage', () => {
     getIncident().CasualtiesNum = 5;
     getIncident().DeadNum = 3;
     getIncident().HarmedNum = 2;
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBe(true);
   });
 });
