@@ -412,18 +412,18 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
       this.createStartStopLine(start, stop, x0, y0);
     }
     if (polygons.totalPolygon) {
-      this.createPolygons(polygons.totalPolygon, x0, y0, zoom, '#3344bb');
+      this.createPolygons('total-polygon', polygons.totalPolygon, x0, y0, zoom, '#3344bb');
     }
     if (polygons.startPolygon) {
-      this.createPolygons(polygons.startPolygon, x0, y0, zoom, '#33bb44');
+      this.createPolygons('start-polygon', polygons.startPolygon, x0, y0, zoom, '#33bb44');
     }
     if (polygons.endPolygon) {
-      this.createPolygons(polygons.endPolygon, x0, y0, zoom, '#bb3344');
+      this.createPolygons('end-polygon', polygons.endPolygon, x0, y0, zoom, '#bb3344');
     }
   }
 
-  private createPolygons(polygons: LatLng[], w: number, n: number, zoom: number, fill: string) {
-    const mercatorPoints = this.getMercatorPointsFromPolygonsLtLng(polygons, zoom);
+  private createPolygons(id: string, polygons: LatLng[], w: number, n: number, zoom: number, fill: string) {
+    const mercatorPoints = this.getMercatorPointsFromPolygonsLatLng(polygons, zoom);
     const listOfXPoints = mercatorPoints.map((l) => l.lat);
     const listOfYPoints = mercatorPoints.map((l) => l.lng);
     // find lowest x point
@@ -431,15 +431,15 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     //find lowest y point
     const svg_y0 = Math.min(...listOfYPoints) - SVG_PADDING;
     // get width and height to set viewBox size
-    const width = Math.max(...listOfXPoints);
-    const height = Math.max(...listOfYPoints);
+    const width = Math.max(...listOfXPoints) - svg_x0 + SVG_PADDING;
+    const height = Math.max(...listOfYPoints) - svg_y0 + SVG_PADDING;
     const polylinesPointsToString = this.createPolylinesPointsFromMercatorPoints(mercatorPoints, svg_x0, svg_y0)
       .flat()
       .join(',');
 
     this.graphics.update((graphics) => [
       {
-        id: 'start-stop-line',
+        id,
         svg: this.sanitizer.bypassSecurityTrustHtml(`
       <svg pointer-events="none" viewBox="0 0 ${width} ${height}" width=${width} height=${height}>
         <polyline points="${polylinesPointsToString}"
@@ -459,7 +459,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     ]);
   }
 
-  private getMercatorPointsFromPolygonsLtLng(polygons: LatLng[], zoom: number): LatLng[] {
+  private getMercatorPointsFromPolygonsLatLng(polygons: LatLng[], zoom: number): LatLng[] {
     const points: LatLng[] = [];
     for (let i = 0; i < polygons.length; i++) {
       const [xA, yA] = this.mercator.px([polygons[i].lng, polygons[i].lat], zoom);
@@ -495,7 +495,7 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
       ...graphics,
       {
         id: 'start',
-        svg: `<img src="${START_ICON}">`,
+        svg: this.sanitizer.bypassSecurityTrustHtml(`<img src="${START_ICON}">`),
         left: leftPx - w / 2,
         top: topPx - h,
       },
@@ -508,8 +508,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     this.graphics.update((graphics) => [
       ...graphics,
       {
-        id: 'start',
-        svg: `<img src="${END_ICON}">`,
+        id: 'stop',
+        svg: this.sanitizer.bypassSecurityTrustHtml(`<img src="${END_ICON}">`),
         left: leftPx - w / 2,
         top: topPx - h,
       },
