@@ -27,6 +27,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
 
+// TODO: Kan ikke bruke OnPush ennå. onInit() abonnerer på KDV-observables og setter
+// this.avalancheCause og this.estimatedNumber uten å kalle cdr.markForCheck().
+// Disse brukes av getCause() og getEstimatedNumber() i templaten.
+// Fiks: Legg til cdr.markForCheck() i subscribe-callbacken, eller konverter til toSignal().
 @Component({
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',

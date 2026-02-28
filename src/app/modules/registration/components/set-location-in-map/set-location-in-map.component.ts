@@ -219,6 +219,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   });
 
   isDesktop = this.platform.is('desktop');
+  // TODO: Kan ikke bruke OnPush ennå. setTranslatedAccuracies() (kalt i constructor) abonnerer
+  // på translateService.get() og setter spatialAccuracyOptions uten markForCheck().
+  // Brukes i templaten for <app-select [options]>.
+  // Fiks: Kall markForCheck() i subscribe, eller konverter til toSignal().
   spatialAccuracyOptions: SelectOption[] = [];
   locationPolygons: IPolygon[] = [];
   locationPolygonEditIdx = -1;

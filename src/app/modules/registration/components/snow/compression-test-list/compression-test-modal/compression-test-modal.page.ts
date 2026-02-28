@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -51,6 +51,7 @@ enum Propagation {
 
 @Component({
   selector: 'app-compression-test-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compression-test-modal.page.html',
   styleUrls: ['./compression-test-modal.page.scss'],
   imports: [

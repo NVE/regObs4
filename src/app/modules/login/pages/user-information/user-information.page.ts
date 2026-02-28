@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed , ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
@@ -37,6 +37,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-information',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-information.page.html',
   styleUrls: ['./user-information.page.scss'],
   imports: [

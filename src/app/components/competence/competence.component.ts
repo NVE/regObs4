@@ -1,5 +1,5 @@
 import { IonLabel } from '@ionic/angular/standalone';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
 
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 
 @Component({
   selector: 'app-competence',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './competence.component.html',
   styleUrls: ['./competence.component.scss'],
   imports: [IonLabel, SvgIconComponent, TranslatePipe],

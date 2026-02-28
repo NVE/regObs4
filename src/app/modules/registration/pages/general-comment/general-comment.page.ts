@@ -10,7 +10,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
@@ -24,6 +24,7 @@ import { GeneralObservationEditModel, GeneralObservationViewModel } from 'src/ap
 
 @Component({
   selector: 'app-general-comment',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './general-comment.page.html',
   styleUrls: ['./general-comment.page.scss'],
   imports: [

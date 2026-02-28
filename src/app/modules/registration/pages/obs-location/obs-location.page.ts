@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
 import {
   IonBackButton,
@@ -40,6 +40,7 @@ const DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION = 15;
 
 @Component({
   selector: 'app-obs-location',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './obs-location.page.html',
   styleUrls: ['./obs-location.page.scss'],
   imports: [

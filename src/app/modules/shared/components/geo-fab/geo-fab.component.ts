@@ -1,5 +1,5 @@
 import { IonItem, IonIcon, IonList, IonLabel, IonFab, IonFabButton } from '@ionic/angular/standalone';
-import { Component, inject, input, model, computed } from '@angular/core';
+import { Component, inject, input, model, computed , ChangeDetectionStrategy } from '@angular/core';
 import { state, trigger, style, transition, animate, stagger, query } from '@angular/animations';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -17,6 +17,7 @@ const GEOHAZARD_CONFIG = [
 
 @Component({
   selector: 'app-geo-fab',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './geo-fab.component.html',
   styleUrls: ['./geo-fab.component.scss'],
   animations: [

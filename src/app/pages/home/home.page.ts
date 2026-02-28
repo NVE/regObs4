@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, OnDestroy, OnInit, inject, signal, viewChild, DOCUMENT } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, inject, signal, viewChild, DOCUMENT , ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -85,6 +85,7 @@ function positionDtoToLatLng(position: PositionDto): L.LatLng {
 
 @Component({
   selector: 'app-home',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [

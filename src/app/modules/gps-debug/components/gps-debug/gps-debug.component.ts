@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, viewChild, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, viewChild, signal , ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
@@ -13,6 +13,7 @@ import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-gps-debug',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
   imports: [AsyncPipe, DecimalPipe, IonContent, IonFab, IonFabButton, IonIcon, NgClass, TranslatePipe],

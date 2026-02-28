@@ -9,6 +9,7 @@ import {
   linkedSignal,
   model,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { IonFabButton, IonIcon, ModalController, IonChip } from '@ionic/angular/standalone';
 import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -29,6 +30,7 @@ const DEBUG_TAG = 'ImageCarousel';
 
 @Component({
   selector: 'app-observation-image-carousel',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

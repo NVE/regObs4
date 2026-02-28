@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, computed, Signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, computed, Signal , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -45,6 +45,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-side-menu',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
   imports: [

@@ -1,4 +1,4 @@
-import { Component, inject, viewChild, input, signal } from '@angular/core';
+import { Component, inject, viewChild, input, signal , ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import {
   IonButton,
@@ -16,6 +16,7 @@ export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
 
 @Component({
   selector: 'app-refresh-with-cancel',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './refresh-with-cancel.component.html',
   styleUrls: ['./refresh-with-cancel.component.scss'],
   imports: [IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, TranslatePipe],

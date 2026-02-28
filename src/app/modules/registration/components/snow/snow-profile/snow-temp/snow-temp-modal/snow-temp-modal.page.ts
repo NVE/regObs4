@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -29,6 +29,7 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
 
 @Component({
   selector: 'app-snow-temp-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-temp-modal.page.html',
   styleUrls: ['./snow-temp-modal.page.scss'],
   imports: [

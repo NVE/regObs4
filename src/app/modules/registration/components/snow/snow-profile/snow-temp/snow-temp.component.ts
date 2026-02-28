@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
@@ -10,6 +10,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-snow-temp',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-temp.component.html',
   styleUrls: ['./snow-temp.component.scss'],
   imports: [IonIcon, IonItem, IonLabel, IonText, TranslatePipe],

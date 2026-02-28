@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import {
@@ -44,6 +44,7 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 
 @Component({
   selector: 'app-user-settings',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-settings.page.html',
   styleUrls: ['./user-settings.page.scss'],
   imports: [

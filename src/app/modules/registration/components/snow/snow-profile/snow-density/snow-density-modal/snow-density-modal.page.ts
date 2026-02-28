@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -41,6 +41,7 @@ import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-density-modal.page.html',
   styleUrls: ['./snow-density-modal.page.scss'],
   imports: [

@@ -1,5 +1,5 @@
 import { IonListHeader, IonItem, IonRadioGroup, IonRadio, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject , ChangeDetectionStrategy } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
@@ -12,6 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-kdv-radiobutton-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './kdv-radiobutton-list.component.html',
   styleUrls: ['./kdv-radiobutton-list.component.scss'],
   imports: [

@@ -1,4 +1,4 @@
-import { Component, inject, viewChild, input, model, effect, untracked, computed } from '@angular/core';
+import { Component, inject, viewChild, input, model, effect, untracked, computed , ChangeDetectionStrategy } from '@angular/core';
 import { IonDatetime, IonDatetimeButton, IonModal, Platform } from '@ionic/angular/standalone';
 import { DatetimePresentation } from '@ionic/core/components';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,6 +10,7 @@ let counter = 0;
 
 @Component({
   selector: 'app-datetime-picker',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './datetime-picker.component.html',
   styleUrls: ['./datetime-picker.component.scss'],
   imports: [IonDatetime, IonModal, TranslatePipe, IonDatetimeButton, FormsModule],

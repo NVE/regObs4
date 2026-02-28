@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -21,6 +21,7 @@ interface RegistrationDraftWithError extends RegistrationDraft {
 
 @Component({
   selector: 'app-failed-registration',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './failed-registration.component.html',
   styleUrls: ['./failed-registration.component.scss'],
   imports: [

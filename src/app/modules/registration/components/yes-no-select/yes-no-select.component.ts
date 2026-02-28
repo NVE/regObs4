@@ -1,9 +1,10 @@
-import { Component, input, model } from '@angular/core';
+import { Component, input, model , ChangeDetectionStrategy } from '@angular/core';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';
 import { SelectComponent } from '../../../shared/components/input/select/select.component';
 
 @Component({
   selector: 'app-yes-no-select',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './yes-no-select.component.html',
   styleUrls: ['./yes-no-select.component.scss'],
   imports: [SelectComponent],

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
 
@@ -17,6 +17,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
  */
 @Component({
   selector: 'app-strat-profile',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile.component.html',
   styleUrls: ['./strat-profile.component.scss'],
   imports: [IonIcon, IonItem, IonLabel, IonText, TranslatePipe],

@@ -35,6 +35,10 @@ import { addCircleOutline } from 'ionicons/icons';
  * Shows list of registered problems and offers to add new problems, edit exising problems or delete problems.
  * You can also add pictures connected to avalanche problems.
  */
+// TODO: Kan ikke bruke OnPush ennå. onInit() abonnerer på KDV-observable og setter
+// this.avalancheCause uten å kalle cdr.markForCheck().
+// Denne brukes av getDescription() i templaten.
+// Fiks: Legg til cdr.markForCheck() i subscribe-callbacken, eller konverter til toSignal().
 @Component({
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',

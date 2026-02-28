@@ -11,13 +11,14 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map, chevronForward, walk } from 'ionicons/icons';
 
 @Component({
   selector: 'app-trip',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './trip.page.html',
   styleUrls: ['./trip.page.scss'],
   imports: [

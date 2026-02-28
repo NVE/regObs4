@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, viewChild } from '@angular/core';
+import { Component, computed, inject, viewChild , ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonFab,
@@ -28,6 +28,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-add-menu',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-menu.component.html',
   styleUrls: ['./add-menu.component.scss'],
   imports: [

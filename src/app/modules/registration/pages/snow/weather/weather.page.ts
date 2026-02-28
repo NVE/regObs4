@@ -10,7 +10,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
@@ -26,6 +26,7 @@ import { WeatherEditModel } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-weather',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './weather.page.html',
   styleUrls: ['./weather.page.scss'],
   imports: [

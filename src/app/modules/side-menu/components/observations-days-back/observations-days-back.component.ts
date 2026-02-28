@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
@@ -12,6 +12,7 @@ import { SearchCriteriaService } from 'src/app/core/services/search-criteria/sea
 
 @Component({
   selector: 'app-observations-days-back',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './observations-days-back.component.html',
   styleUrls: ['./observations-days-back.component.scss'],
   imports: [CheckDaysOrWeeksBackComponent, IonSelect, IonSelectOption, TranslatePipe],

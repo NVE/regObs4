@@ -11,6 +11,7 @@ import {
   effect,
   untracked,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -88,6 +89,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
 
 @Component({
   selector: 'app-map',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
   imports: [LeafletModule, MapControlsComponent, RouterLink, DecimalPipe, TranslatePipe],

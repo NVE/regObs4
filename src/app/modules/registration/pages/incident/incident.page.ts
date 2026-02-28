@@ -9,7 +9,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
@@ -27,6 +27,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-incident',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './incident.page.html',
   styleUrls: ['./incident.page.scss'],
   imports: [

@@ -1,10 +1,11 @@
 import { IonButton } from '@ionic/angular/standalone';
-import { Component, inject } from '@angular/core';
+import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-abonner-banner',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './abonner-banner.component.html',
   styleUrls: ['./abonner-banner.component.scss'],
   imports: [IonButton, TranslatePipe],

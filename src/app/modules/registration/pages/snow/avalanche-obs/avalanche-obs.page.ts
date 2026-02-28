@@ -123,6 +123,10 @@ export class AvalancheObsPage extends BasePage {
     },
   ];
 
+  // TODO: Kan ikke bruke OnPush ennå. isValid() setter this.showWarning = true, men
+  // kalles fra canLeave() (navigasjonsguard i BasePage) utenfor templatens event-kontekst.
+  // Med OnPush vil ikke templaten oppdateres med showWarning etter mislykket validering.
+  // Fiks: Kall cdr.markForCheck() i isValid(), eller konverter showWarning til signal().
   showWarning = false;
   maxDate = this.getMaxDateForNow();
 

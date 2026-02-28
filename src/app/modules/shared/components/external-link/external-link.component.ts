@@ -1,8 +1,9 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 
 @Component({
   selector: 'app-external-link',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './external-link.component.html',
   styleUrls: ['./external-link.component.scss'],
 })

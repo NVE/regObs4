@@ -1,4 +1,4 @@
-import { Component, inject, input, model, computed, Signal } from '@angular/core';
+import { Component, inject, input, model, computed, Signal , ChangeDetectionStrategy } from '@angular/core';
 import {
   ActionSheetController,
   IonIcon,
@@ -29,6 +29,7 @@ const CSS_RESET_CLASS = 'app-select-with-reset';
  */
 @Component({
   selector: 'app-select',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
   imports: [IonItem, FormsModule, IonIcon, IonSelect, IonSelectOption, IonText, TranslatePipe, IonLabel, UpperCasePipe],

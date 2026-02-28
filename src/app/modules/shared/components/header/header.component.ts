@@ -1,5 +1,5 @@
 import { IonToolbar, IonBackButton, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed , ChangeDetectionStrategy } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -14,6 +14,7 @@ import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-header',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   imports: [HeaderColorDirective, IonBackButton, IonButton, IonButtons, IonHeader, IonTitle, IonToolbar, TranslatePipe],

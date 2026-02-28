@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import {
@@ -38,6 +38,7 @@ import { LandslideEditModel } from 'src/app/modules/common-regobs-api';
  */
 @Component({
   selector: 'app-landslide-obs',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './landslide-obs.page.html',
   styleUrls: ['./landslide-obs.page.scss'],
   imports: [
@@ -185,6 +186,7 @@ export class LandslideObsPage extends BasePage {
       this.edit.Extent = result.data.totalPolygon;
       this.edit.StartExtent = result.data.startPolygon;
       this.edit.StopExtent = result.data.endPolygon;
+      this.cdr.markForCheck();
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal, computed } from '@angular/core';
+import { Component, inject, input, linkedSignal, computed , ChangeDetectionStrategy } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -33,6 +33,7 @@ interface AreaSelectOption extends SelectOption {
 const COMMENT_SEPARATOR = ': ';
 @Component({
   selector: 'app-add-or-edit-danger-obs-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-or-edit-danger-obs-modal.page.html',
   styleUrls: ['./add-or-edit-danger-obs-modal.page.scss'],
   imports: [

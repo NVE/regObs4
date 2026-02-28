@@ -1,4 +1,4 @@
-import { Component, inject, input, computed, linkedSignal } from '@angular/core';
+import { Component, inject, input, computed, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import { AvalancheEvalProblem2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -52,6 +52,7 @@ const noopFilter = (_: number) => true;
  */
 @Component({
   selector: 'app-avalanche-problem-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avalanche-problem-modal.page.html',
   styleUrls: ['./avalanche-problem-modal.page.scss'],
   imports: [

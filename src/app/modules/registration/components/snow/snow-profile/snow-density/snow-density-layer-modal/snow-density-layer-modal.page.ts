@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -32,6 +32,7 @@ import { arrowBack, arrowForward, trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density-layer-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-density-layer-modal.page.html',
   styleUrls: ['./snow-density-layer-modal.page.scss'],
   imports: [

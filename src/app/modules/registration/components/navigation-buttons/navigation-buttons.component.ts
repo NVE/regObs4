@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonIcon, IonText, IonButton } from '@ionic/angular/standalone';
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnInit, inject, input, signal , ChangeDetectionStrategy } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { arrowBack, arrowForward } from 'ionicons/icons';
  */
 @Component({
   selector: 'app-navigation-buttons',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './navigation-buttons.component.html',
   styleUrls: ['./navigation-buttons.component.scss'],
   imports: [IonButton, IonCol, IonGrid, IonIcon, IonRow, IonText, TranslatePipe],

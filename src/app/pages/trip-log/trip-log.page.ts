@@ -20,6 +20,10 @@ import { Subscription } from 'rxjs';
 import { TripLogSummaryComponent } from '../../components/trip-log-summary/trip-log-summary.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
+// TODO: Kan ikke bruke OnPush ennå. ngOnInit() abonnerer på getTripLogStateAsObservable()
+// og setter this.state uten å kalle cdr.markForCheck().
+// state brukes i templaten for å vise/skjule trip-kontrollknapper.
+// Fiks: Injiser ChangeDetectorRef og kall markForCheck() i subscribe, eller konverter til toSignal().
 @Component({
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',

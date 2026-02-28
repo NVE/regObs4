@@ -1,4 +1,4 @@
-import { Component, OnInit, Signal, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, OnInit, Signal, computed, inject, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -41,6 +41,7 @@ type FilterFunc = (id: number) => boolean;
 
 @Component({
   selector: 'app-strat-profile-layer-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile-layer-modal.page.html',
   styleUrls: ['./strat-profile-layer-modal.page.scss'],
   imports: [

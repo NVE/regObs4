@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input , ChangeDetectionStrategy } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,
@@ -27,6 +27,7 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
 
 @Component({
   selector: 'app-set-avalanche-position',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './set-avalanche-position.page.html',
   styleUrls: ['./set-avalanche-position.page.scss'],
   imports: [

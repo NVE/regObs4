@@ -9,7 +9,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
@@ -22,6 +22,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-evaluation',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avalanche-evaluation.page.html',
   styleUrls: ['./avalanche-evaluation.page.scss'],
   imports: [

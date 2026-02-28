@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal, Signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, Signal , ChangeDetectionStrategy } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,
@@ -31,6 +31,7 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
 
 @Component({
   selector: 'app-snow-temp-layer-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-temp-layer-modal.page.html',
   styleUrls: ['./snow-temp-layer-modal.page.scss'],
   imports: [

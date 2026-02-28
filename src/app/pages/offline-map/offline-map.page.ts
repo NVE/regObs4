@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -60,6 +60,7 @@ const DEBUG_TAG = 'OfflineMapPage';
 
 @Component({
   selector: 'app-offline-map',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './offline-map.page.html',
   styleUrls: ['./offline-map.page.scss'],
   imports: [

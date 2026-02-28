@@ -1,5 +1,5 @@
 import { IonToggle, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import { CustomAnimation, EASE_IN_OUT, EASE_IN_OUT_BACK } from 'src/app/core/animations/custom.animation';
@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-coach-marks-simple-obs',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './coach-marks-simple-obs.component.html',
   styleUrls: ['./coach-marks-simple-obs.component.scss', '../coachmark-backdrop.scss'],
   animations: [

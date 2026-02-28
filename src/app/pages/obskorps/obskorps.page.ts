@@ -33,6 +33,10 @@ const toDateInputValue = (date: Date) => {
   return s;
 };
 
+// TODO: Kan ikke bruke OnPush ennå. ngOnInit() abonnerer på authService.myPageData$ og
+// setter this.observerId uten å kalle cdr.markForCheck().
+// observerId er bundet som initial value i et ion-input i templaten.
+// Fiks: Injiser ChangeDetectorRef og kall markForCheck() i subscribe, eller konverter til toSignal().
 @Component({
   selector: 'app-obskorps',
   templateUrl: './obskorps.page.html',

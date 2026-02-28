@@ -1,4 +1,4 @@
-import { Component, inject, computed, input, linkedSignal } from '@angular/core';
+import { Component, inject, computed, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -43,6 +43,7 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
  */
 @Component({
   selector: 'app-strat-profile-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile-modal.page.html',
   styleUrls: ['./strat-profile-modal.page.scss'],
   imports: [

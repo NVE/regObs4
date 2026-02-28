@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -13,6 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-support-map-info',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './support-map-info.page.html',
   styleUrls: ['./support-map-info.page.scss'],
   imports: [HeaderColorDirective, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, TranslatePipe],

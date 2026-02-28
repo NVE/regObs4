@@ -34,6 +34,10 @@ import { addCircleOutline } from 'ionicons/icons';
  * You may click an observation to open the specific observation in a form.
  * Contains also a button to add new observations and a function to upload images.
  */
+// TODO: Kan ikke bruke OnPush ennå. onInit() abonnerer på KDV-observable og setter
+// this.dangerSignKdv uten å kalle cdr.markForCheck().
+// Denne brukes av getSummaryText() i templaten.
+// Fiks: Legg til cdr.markForCheck() i subscribe-callbacken, eller konverter til toSignal().
 @Component({
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',

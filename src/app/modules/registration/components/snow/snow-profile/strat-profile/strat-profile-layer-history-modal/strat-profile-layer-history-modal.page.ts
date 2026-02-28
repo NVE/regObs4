@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -33,6 +33,7 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/forma
 
 @Component({
   selector: 'app-strat-profile-layer-history-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile-layer-history-modal.page.html',
   styleUrls: ['./strat-profile-layer-history-modal.page.scss'],
   imports: [

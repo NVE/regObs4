@@ -8,6 +8,7 @@ import {
   viewChild,
   input,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
@@ -20,6 +21,7 @@ import { star } from 'ionicons/icons';
 
 @Component({
   selector: 'app-warning-group-favourite-toggle',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss'],
   imports: [IonIcon, NgClass],

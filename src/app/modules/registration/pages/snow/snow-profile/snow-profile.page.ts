@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
@@ -57,6 +57,7 @@ const DEBUG_TAG = 'SnowProfilePage';
  */
 @Component({
   selector: 'app-snow-profile',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-profile.page.html',
   styleUrls: ['./snow-profile.page.scss'],
   imports: [

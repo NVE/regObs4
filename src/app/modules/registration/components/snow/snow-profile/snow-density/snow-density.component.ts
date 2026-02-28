@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
@@ -10,6 +10,7 @@ import { checkmarkCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-density.component.html',
   styleUrls: ['./snow-density.component.scss'],
   imports: [IonIcon, IonItem, IonLabel, IonText, TranslatePipe],

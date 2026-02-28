@@ -1,4 +1,4 @@
-import { Component, inject, input, model } from '@angular/core';
+import { Component, inject, input, model , ChangeDetectionStrategy } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, ModalController } from '@ionic/angular/standalone';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
@@ -11,6 +11,7 @@ import { link, addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-compression-test-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compression-test-list.component.html',
   styleUrls: ['./compression-test-list.component.scss'],
   imports: [

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import {
@@ -35,6 +35,7 @@ import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-ice-thickness',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
   imports: [

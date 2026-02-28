@@ -1,4 +1,4 @@
-import { Component, inject, viewChild, computed, Signal } from '@angular/core';
+import { Component, inject, viewChild, computed, Signal , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonContent,
   IonHeader,
@@ -28,6 +28,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-modal-search',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
   imports: [

@@ -1,4 +1,4 @@
-import { Component, inject, model, signal } from '@angular/core';
+import { Component, inject, model, signal , ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonButton,
@@ -18,6 +18,7 @@ import { close } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-user-nickname-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-user-nickname-modal.component.html',
   styleUrls: ['./edit-user-nickname-modal.component.scss'],
   imports: [

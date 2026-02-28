@@ -1,5 +1,5 @@
 import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
-import { ChangeDetectorRef, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';
@@ -17,6 +17,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-set-flood-area',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './set-flood-area.page.html',
   imports: [
     AsyncPipe,
