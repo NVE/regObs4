@@ -1,9 +1,8 @@
-import { Component, OnInit, NgZone, OnDestroy, inject, viewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, viewChild, signal } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
@@ -21,12 +20,11 @@ import { arrowDownCircle, arrowUpCircle } from 'ionicons/icons';
 export class GpsDebugComponent implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
   private geoPositionService = inject(GeoPositionService);
-  private ngZone = inject(NgZone);
 
   showLog$!: Observable<boolean>;
-  geoPositionLog!: GeoPositionLog[];
-  isOpen!: boolean;
-  isTracking!: boolean;
+  geoPositionLog = signal<GeoPositionLog[]>([]);
+  isOpen = signal(false);
+  isTracking = signal(false);
   private ngDestroy$ = new Subject<void>();
 
   readonly panel = viewChild<IonContent>('GpsLogPanel');
@@ -36,12 +34,9 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isOpen = false;
-    this.isTracking = false;
     this.showLog$ = this.userSettingService.userSetting$.pipe(
       map((us) => us.featureToggeGpsDebug),
-      distinctUntilChanged(),
-      enterZone(this.ngZone)
+      distinctUntilChanged()
     );
     this.showLog$
       .pipe(
@@ -59,12 +54,8 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
         takeUntil(this.ngDestroy$)
       )
       .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.geoPositionLog = val;
-        });
-        this.ngZone.run(() => {
-          this.scrollToBottom();
-        });
+        this.geoPositionLog.set(val);
+        this.scrollToBottom();
       });
     this.geoPositionService.log$
       .pipe(
@@ -74,9 +65,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
         takeUntil(this.ngDestroy$)
       )
       .subscribe((val) => {
-        setTimeout(() => {
-          this.isTracking = val;
-        });
+        this.isTracking.set(val);
       });
   }
 
@@ -86,7 +75,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   toggle() {
-    this.isOpen = !this.isOpen;
+    this.isOpen.update((v) => !v);
   }
 
   scrollToBottom() {

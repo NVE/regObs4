@@ -1,5 +1,5 @@
 import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
-import { Component, NgZone, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
@@ -19,11 +19,10 @@ import { personCircleOutline, eyeOutline } from 'ionicons/icons';
 export class UserLoginComponent implements OnInit, OnDestroy {
   private regobsauthService = inject(RegobsAuthService);
   private router = inject(Router);
-  private ngZone = inject(NgZone);
 
-  loggedInUser: LoggedInUser = { isLoggedIn: false };
+  loggedInUser = signal<LoggedInUser>({ isLoggedIn: false });
   private ngDestroy$ = new Subject<void>();
-  isLoggingIn = false;
+  isLoggingIn = signal(false);
 
   constructor() {
     addIcons({ personCircleOutline, eyeOutline });
@@ -31,14 +30,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.regobsauthService.loggedInUser$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.loggedInUser = val;
-      });
+      this.loggedInUser.set(val);
     });
     this.regobsauthService.isLoggingIn$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.isLoggingIn = val;
-      });
+      this.isLoggingIn.set(val);
     });
   }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, inject, viewChild, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,
@@ -45,7 +45,6 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
 export class SetAvalanchePositionPage implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private translateService = inject(TranslateService);
-  private ngZone = inject(NgZone);
   private fullscreenService = inject(FullscreenService);
   private swipeBackService = inject(SwipeBackService);
   private modalController = inject(ModalController);
@@ -187,10 +186,8 @@ export class SetAvalanchePositionPage implements OnInit {
   onMapReady(map: L.Map) {
     this.map = map;
     this.updateMarkers();
-    this.ngZone.runOutsideAngular(() => {
-      this.map.on('drag', () => this.updatePolyline());
-      this.updatePolyline();
-    });
+    this.map.on('drag', () => this.updatePolyline());
+    this.updatePolyline();
   }
 
   ionViewDidEnter() {

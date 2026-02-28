@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, inject, computed, Signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, computed, Signal } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -73,9 +73,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
   private translateService = inject(TranslateService);
   private navController = inject(NavController);
-  private ngZone = inject(NgZone);
   private externalLinkService = inject(ExternalLinkService);
   private fileLoggingService = inject(FileLoggingService);
+  private cdr = inject(ChangeDetectorRef);
   legalUrl = toSignal(this.userSettingService.legalUrl$, { initialValue: '' });
   userSettings?: UserSetting;
   settings = settings;
@@ -123,9 +123,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
-      });
+      this.userSettings = val;
+      this.cdr.markForCheck();
     });
     this.offlineMapsAvailable = this.isNativePlatform();
     this.selectLanguageLabel$ = this.getSelectLanguageLabel$();

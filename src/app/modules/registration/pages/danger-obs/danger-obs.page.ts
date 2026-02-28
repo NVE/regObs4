@@ -1,4 +1,4 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import {
@@ -59,7 +59,6 @@ import { addCircleOutline } from 'ionicons/icons';
 export class DangerObsPage extends BasePage {
   override registrationTid = RegistrationTid.DangerObs;
   private modalController = inject(ModalController);
-  private zone = inject(NgZone);
   private kdvService = inject(KdvService);
 
   private dangerSignKdv?: KdvElement[];
@@ -86,9 +85,7 @@ export class DangerObsPage extends BasePage {
   override onInit() {
     const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
-      this.zone.run(() => {
-        this.dangerSignKdv = val;
-      });
+      this.dangerSignKdv = val;
     });
   }
 
@@ -110,27 +107,22 @@ export class DangerObsPage extends BasePage {
           this.addDangerObs(result.data);
         }
       }
+      this.cdr.markForCheck();
     }
   }
 
   setDangerObs(index: number, dangerObs: DangerObsEditModel) {
-    this.zone.run(() => {
-      this.dangerObs[index] = dangerObs;
-    });
+    this.dangerObs[index] = dangerObs;
   }
 
   addDangerObs(dangerObs: DangerObsEditModel) {
-    this.zone.run(() => {
-      this.dangerObs.push(dangerObs);
-    });
+    this.dangerObs.push(dangerObs);
   }
 
   removeAtIndex(index: number) {
-    this.zone.run(() => {
-      if (this.dangerObs.length > 0) {
-        this.dangerObs.splice(index, 1);
-      }
-    });
+    if (this.dangerObs.length > 0) {
+      this.dangerObs.splice(index, 1);
+    }
   }
 
   getSummaryText(dangerObs: DangerObsEditModel) {

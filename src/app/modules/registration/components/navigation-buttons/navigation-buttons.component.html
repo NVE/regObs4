@@ -1,18 +1,18 @@
 <ion-grid>
   <ion-row>
     <ion-col size="6">
-      @if (previous) {
+      @if (previous(); as prev) {
         <ion-button class="left-button" (click)="goBack()" color="primary" fill="outline" expand="block">
           <ion-icon slot="start" name="arrow-back"></ion-icon>
-          <ion-text>{{ previous.title | translate }}</ion-text>
+          <ion-text>{{ prev.title | translate }}</ion-text>
         </ion-button>
       }
     </ion-col>
     <ion-col size="6">
-      @if (next) {
+      @if (next(); as nxt) {
         <ion-button class="right-button" (click)="goForward()" color="primary" fill="outline" expand="block">
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
-          <ion-text>{{ next.title | translate }}</ion-text>
+          <ion-text>{{ nxt.title | translate }}</ion-text>
         </ion-button>
       }
     </ion-col>

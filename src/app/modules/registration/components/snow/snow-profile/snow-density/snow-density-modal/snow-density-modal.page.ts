@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, input } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -73,7 +73,7 @@ import { addCircleOutline } from 'ionicons/icons';
 export class SnowDensityModalPage implements OnInit, OnDestroy {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
-  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
 
   uuid = input.required<string>();
   useCylinder?: boolean;
@@ -107,33 +107,32 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     this.draftRepository
       .getDraft$(this.uuid())
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((reg) => {
-        this.ngZone.run(async () => {
-          if (!this.initialDraftClone) {
-            this.initialDraftClone = cloneDeep(reg);
-          }
-          this.draft = reg;
-          if (!this.draft.registration.SnowProfile2) {
-            this.draft.registration.SnowProfile2 = {};
-          }
-          if (!this.draft.registration.SnowProfile2.SnowDensity) {
-            this.draft.registration.SnowProfile2.SnowDensity = [];
-          }
-          if (!this.draft.registration.SnowProfile2.SnowDensity[0]) {
-            this.draft.registration.SnowProfile2.SnowDensity[0] = {};
-          }
-          if (!this.draft.registration.SnowProfile2.SnowDensity[0].Layers) {
-            this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
-          }
-          if (this.useCylinder === undefined) {
-            this.useCylinder =
-              !!this.draft.registration.SnowProfile2.SnowDensity[0].CylinderDiameter ||
-              !!this.draft.registration.SnowProfile2.SnowDensity[0].TareWeight ||
-              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
-              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
-          }
-          this.recalculateLayers();
-        });
+      .subscribe(async (reg) => {
+        if (!this.initialDraftClone) {
+          this.initialDraftClone = cloneDeep(reg);
+        }
+        this.draft = reg;
+        if (!this.draft.registration.SnowProfile2) {
+          this.draft.registration.SnowProfile2 = {};
+        }
+        if (!this.draft.registration.SnowProfile2.SnowDensity) {
+          this.draft.registration.SnowProfile2.SnowDensity = [];
+        }
+        if (!this.draft.registration.SnowProfile2.SnowDensity[0]) {
+          this.draft.registration.SnowProfile2.SnowDensity[0] = {};
+        }
+        if (!this.draft.registration.SnowProfile2.SnowDensity[0].Layers) {
+          this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
+        }
+        if (this.useCylinder === undefined) {
+          this.useCylinder =
+            !!this.draft.registration.SnowProfile2.SnowDensity[0].CylinderDiameter ||
+            !!this.draft.registration.SnowProfile2.SnowDensity[0].TareWeight ||
+            this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
+            this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
+        }
+        this.recalculateLayers();
+        this.cdr.markForCheck();
       });
   }
 

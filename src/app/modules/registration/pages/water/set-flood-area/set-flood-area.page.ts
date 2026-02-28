@@ -1,5 +1,5 @@
 import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
-import { ChangeDetectorRef, Component, NgZone, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, signal } from '@angular/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';
@@ -37,12 +37,11 @@ export class SetFloodAreaPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private draftService = inject(DraftRepositoryService);
   private location = inject(Location);
-  private ngZone = inject(NgZone);
   private draftRepository = inject(DraftRepositoryService);
 
   fullscreen$: Observable<boolean>;
   fromMarker?: L.Marker;
-  isLoaded = false;
+  isLoaded = signal(false);
   draft!: RegistrationDraft;
   relativeToLatLng?: L.LatLng;
   totalPolygon!: IPolygon;
@@ -85,9 +84,7 @@ export class SetFloodAreaPage implements OnInit {
         });
       }
     }
-    this.ngZone.run(() => {
-      this.isLoaded = true;
-    });
+    this.isLoaded.set(true);
   }
 
   private updateMarkers(map: L.Map) {

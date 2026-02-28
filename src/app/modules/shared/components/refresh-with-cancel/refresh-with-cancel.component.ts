@@ -1,4 +1,4 @@
-import { Component, NgZone, inject, viewChild, input } from '@angular/core';
+import { Component, inject, viewChild, input, signal } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import {
   IonButton,
@@ -12,7 +12,6 @@ import {
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
 
 @Component({
@@ -22,10 +21,9 @@ export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
   imports: [IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, TranslatePipe],
 })
 export class RefreshWithCancelComponent {
-  private ngZone = inject(NgZone);
   private platform = inject(Platform);
 
-  showCancel = false;
+  showCancel = signal(false);
 
   readonly refresher = viewChild.required(IonRefresher);
   readonly refreshFunc = input<RefreshFunc>(() => Promise.resolve());
@@ -48,9 +46,7 @@ export class RefreshWithCancelComponent {
       const cancelPromise = this.getCancelPromise();
       cancelPromise.then(() => this.complete());
       // It takes to long to wait for function to complete (even when cancelled), so hide refresher on cancel.
-      this.ngZone.run(() => {
-        this.showCancel = true;
-      });
+      this.showCancel.set(true);
       try {
         await refreshFunc(cancelPromise);
       } finally {
@@ -60,11 +56,7 @@ export class RefreshWithCancelComponent {
   }
 
   private complete() {
-    this.ngZone.run(() => {
-      this.refresher().complete();
-    });
-    this.ngZone.run(() => {
-      this.showCancel = false;
-    });
+    this.refresher().complete();
+    this.showCancel.set(false);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, NgZone } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePage } from '../../base.page';
 import {
   IonBackButton,
@@ -63,7 +63,6 @@ export class AvalancheProblemPage extends BasePage {
   override registrationTid = RegistrationTid.AvalancheEvalProblem2;
 
   private modalController = inject(ModalController);
-  private ngZone = inject(NgZone);
   private kdvService = inject(KdvService);
 
   private avalancheCause: KdvElement[] = [];
@@ -103,22 +102,21 @@ export class AvalancheProblemPage extends BasePage {
       });
       modal.present();
       const result = await modal.onDidDismiss();
-      this.ngZone.run(() => {
-        if (this.draft?.registration?.AvalancheEvalProblem2) {
-          if (result.data) {
-            if (result.data.delete && index != null) {
-              this.draft.registration.AvalancheEvalProblem2.splice(index, 1);
+      if (this.draft?.registration?.AvalancheEvalProblem2) {
+        if (result.data) {
+          if (result.data.delete && index != null) {
+            this.draft.registration.AvalancheEvalProblem2.splice(index, 1);
+          } else {
+            const avalancheEvalProblem: AvalancheEvalProblem2EditModel = result.data;
+            if (index !== undefined) {
+              this.draft.registration.AvalancheEvalProblem2[index] = avalancheEvalProblem;
             } else {
-              const avalancheEvalProblem: AvalancheEvalProblem2EditModel = result.data;
-              if (index !== undefined) {
-                this.draft.registration.AvalancheEvalProblem2[index] = avalancheEvalProblem;
-              } else {
-                this.draft.registration.AvalancheEvalProblem2.push(avalancheEvalProblem);
-              }
+              this.draft.registration.AvalancheEvalProblem2.push(avalancheEvalProblem);
             }
           }
+          this.cdr.markForCheck();
         }
-      });
+      }
     }
   }
 

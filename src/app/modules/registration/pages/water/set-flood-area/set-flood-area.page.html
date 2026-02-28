@@ -9,7 +9,7 @@
   </ion-header>
 }
 <ion-content>
-  @if (isLoaded) {
+  @if (isLoaded()) {
     <app-set-location-in-map
       [geoHazard]="geoHazard"
       (mapReady)="onMapReady($event)"

@@ -1,15 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  AfterViewChecked,
-  Component,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  inject,
-  signal,
-  viewChild,
-  DOCUMENT,
-} from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, inject, signal, viewChild, DOCUMENT } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -60,7 +50,6 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
-import { enterZone } from '../../core/helpers/observable-helper';
 import { RouterPage } from '../../core/helpers/routed-page';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -125,7 +114,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
   private tabsService = inject(TabsService);
   private fullscreenService = inject(FullscreenService);
   userSettingService = inject(UserSettingService);
-  private ngZone = inject(NgZone);
   private searchCriteriaService = inject(SearchCriteriaService);
   private loggingService = inject(LoggingService);
   private mapService = inject(MapService);
@@ -143,7 +131,7 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
 
   spinnerLabel = 'DATA_LOAD.SPINNER_FETCH_OBSERVATIONS';
   fullscreen$?: Observable<boolean>;
-  showGeoSelectInfo = false;
+  showGeoSelectInfo = signal(false);
   showObservations$: Observable<boolean>; // Show observations when this is true
   private lastFetched: Date | null = null;
   private lastSearchBounds: L.LatLngBounds | null = null;
@@ -342,11 +330,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
       .pipe(
         map((us) => us.showGeoSelectInfo),
         distinctUntilChanged(),
-        takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject)),
-        enterZone(this.ngZone)
+        takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject))
       )
       .subscribe((showGeoSelectInfo) => {
-        this.showGeoSelectInfo = showGeoSelectInfo;
+        this.showGeoSelectInfo.set(showGeoSelectInfo);
         if (!showGeoSelectInfo) {
           this.geoCoachMarksClosedSubject.next();
           this.geoCoachMarksClosedSubject.complete();

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import L from 'leaflet';
 import {
   IonBackButton,
@@ -58,7 +58,6 @@ const DEFAULT_MIN_ZOOM_FOR_KNOWN_LOCATION = 15;
 export class ObsLocationPage implements OnInit, OnDestroy {
   private draftService = inject(DraftRepositoryService);
   private activatedRoute = inject(ActivatedRoute);
-  private ngZone = inject(NgZone);
   private locationService = inject(LocationService);
   private navController = inject(NavController);
   private fullscreenService = inject(FullscreenService);
@@ -74,7 +73,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   initialMinZoom = 1;
 
   locationMarker!: L.Marker;
-  isLoaded = false;
+  isLoaded = signal(false);
   allowEditLocationName = true;
   selectedLocation?: ObsLocationsResponseDtoV2;
   draft?: RegistrationDraft;
@@ -156,9 +155,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       }
     }
 
-    this.ngZone.run(() => {
-      this.isLoaded = true;
-    });
+    this.isLoaded.set(true);
   }
 
   ngOnDestroy(): void {

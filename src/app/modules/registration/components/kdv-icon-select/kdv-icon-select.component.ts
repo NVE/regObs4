@@ -1,7 +1,6 @@
 import { IonItem, IonButton, IonLabel } from '@ionic/angular/standalone';
-import { ChangeDetectionStrategy, Component, NgZone, inject, input, model, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model, effect } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { enterZone } from 'src/app/core/helpers/observable-helper';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { KdvKey } from 'src/app/modules/common-registration/registration.models';
@@ -29,7 +28,6 @@ const DEBUG_TAG = 'KdvIconSelectComponent';
 export class KdvIconSelectComponent<T extends number | number[]> {
   private userSettings = inject(UserSettingService);
   private kdvService = inject(KdvService);
-  private ngZone = inject(NgZone);
   private logger = inject(LoggingService);
 
   readonly label = input<string>();
@@ -61,10 +59,9 @@ export class KdvIconSelectComponent<T extends number | number[]> {
 
   ngOnInit() {
     this.lang$ = this.userSettings.language$.pipe(map((langKey) => LangKey[langKey]));
-    this.kdvElements$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey()).pipe(
-      map((elements) => elements.filter((element) => this.isVisible(element))),
-      enterZone(this.ngZone)
-    );
+    this.kdvElements$ = this.kdvService
+      .getKdvRepositoryByKeyObservable(this.kdvKey())
+      .pipe(map((elements) => elements.filter((element) => this.isVisible(element))));
   }
 
   private isVisible(item: KdvElement): boolean {

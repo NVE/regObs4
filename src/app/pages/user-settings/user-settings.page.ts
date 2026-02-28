@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import {
@@ -70,7 +70,6 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 export class UserSettingsPage implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
   private kdvService = inject(KdvService);
-  private ngZone = inject(NgZone);
   private loggingService = inject(LoggingService);
   private translateService = inject(TranslateService);
   private loadingController = inject(LoadingController);
@@ -78,10 +77,11 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   private navController = inject(NavController);
   private fileLoggingService = inject(FileLoggingService);
   private confirmationModalService = inject(ConfirmationModalService);
+  private cdr = inject(ChangeDetectorRef);
 
   isNativePlatform = Capacitor.isNativePlatform();
   userSettings!: UserSetting;
-  isUpdating = false;
+  isUpdating = signal(false);
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
   version: AppVersion = version;
@@ -92,7 +92,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     {
       id: 'TEST',
       text: 'Test Regobs',
-      // disabled: this.userSettings ? !this.userSettings.featureToggleDeveloperMode : true,
     },
   ];
 
@@ -104,9 +103,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.versionClicks = 0;
     this.subscriptions.push(
       this.userSettingService.userSetting$.subscribe((val) => {
-        this.ngZone.run(() => {
-          this.userSettings = val;
-        });
+        this.userSettings = val;
+        this.cdr.markForCheck();
       })
     );
   }
@@ -135,12 +133,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async updateDropdowns() {
-    this.isUpdating = true;
+    this.isUpdating.set(true);
     this.kdvService.update();
     await this.showKdvElementsUpdated(true);
-    this.ngZone.run(() => {
-      this.isUpdating = false;
-    });
+    this.isUpdating.set(false);
   }
 
   async sendLogs() {
@@ -182,7 +178,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       message,
     });
     loading.present();
-    this.isUpdating = true;
+    this.isUpdating.set(true);
     // TODO: Implement some kind of subscription manager to stop all subscriptions and resubscribe when complete
     try {
       await this.doReset();
@@ -195,11 +191,9 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       }
       this.loggingService.log('Could not reset db', e, LogLevel.Warning, DEBUG_TAG);
     }
-    this.ngZone.run(() => {
-      this.isUpdating = false;
-      loading.dismiss();
-      this.navController.navigateRoot('start-wizard');
-    });
+    this.isUpdating.set(false);
+    loading.dismiss();
+    this.navController.navigateRoot('start-wizard');
   }
 
   private async doReset() {

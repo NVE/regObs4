@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { enableProdMode, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { enableProdMode, importProvidersFrom, provideCheckNoChangesConfig } from '@angular/core';
 import { environment } from './environments/environment';
 import { NanoSql } from './nanosql';
 import '@angular/compiler';
@@ -64,7 +64,8 @@ function startApp() {
   console.log('starting app');
   bootstrapApplication(AppComponent, {
     providers: [
-      provideZoneChangeDetection(),
+      // provideZoneChangeDetection(),
+      provideCheckNoChangesConfig({ exhaustive: true, interval: 1000 }), // TODO: Remove after zoneless migration
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       // TODO: Gjør det mulig å aktivere deaktivere ios mode via en knapp i headeren hvis på appMode er test
       provideIonicAngular({ useSetInputAPI: true }), // mode: 'ios'

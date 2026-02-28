@@ -1,12 +1,12 @@
 @if (showLog$ | async) {
   <div>
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" [ngClass]="{ open: isOpen }">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" [ngClass]="{ open: isOpen() }">
       <ion-fab-button (click)="toggle()">
-        <ion-icon [name]="isOpen ? 'arrow-down-circle' : 'arrow-up-circle'"></ion-icon>
+        <ion-icon [name]="isOpen() ? 'arrow-down-circle' : 'arrow-up-circle'"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <ion-content #GpsLogPanel class="gpsLogPanel" [ngClass]="{ open: isOpen, tracking: isTracking }">
-      @for (item of geoPositionLog; track item) {
+    <ion-content #GpsLogPanel class="gpsLogPanel" [ngClass]="{ open: isOpen(), tracking: isTracking() }">
+      @for (item of geoPositionLog(); track item) {
         <div>
           {{ timestampToString(item.timestamp) }} -
           @if (item.status !== "PositionUpdate") {

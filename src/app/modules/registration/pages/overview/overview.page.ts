@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnInit, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { firstValueFrom, map, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
@@ -93,7 +93,6 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   private summaryItemService = inject(SummaryItemService);
   private userGroupService = inject(UserGroupService);
   private userSettingService = inject(UserSettingService);
-  private ngZone = inject(NgZone);
   private logger = inject(LoggingService);
   private draftRepository = inject(DraftRepositoryService);
   private confirmationModalService = inject(ConfirmationModalService);
@@ -135,9 +134,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   ngOnInit() {
     this.userGroupService.updateUserGroups();
     this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((setting) => {
-      this.ngZone.run(() => {
-        this.userSetting = setting;
-      });
+      this.userSetting = setting;
     });
   }
 

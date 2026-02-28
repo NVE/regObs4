@@ -1,13 +1,5 @@
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {
-  EnvironmentProviders,
-  ErrorHandler,
-  LOCALE_ID,
-  NgZone,
-  Provider,
-  inject,
-  provideAppInitializer,
-} from '@angular/core';
+import { EnvironmentProviders, ErrorHandler, LOCALE_ID, Provider, inject, provideAppInitializer } from '@angular/core';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
@@ -131,13 +123,7 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   }),
 
   provideAppInitializer(() => {
-    const initializerFn = initDeepLinks(
-      inject(Platform),
-      inject(NgZone),
-      inject(AuthService),
-      inject(NavController),
-      inject(Router)
-    );
+    const initializerFn = initDeepLinks(inject(Platform), inject(AuthService), inject(NavController), inject(Router));
     return initializerFn();
   }),
 

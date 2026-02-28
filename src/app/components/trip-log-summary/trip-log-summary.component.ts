@@ -22,7 +22,7 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
   private tripLogActivitySubscription!: Subscription;
 
   lengthString?: string;
-  interval?: NodeJS.Timer;
+  interval?: number;
   tripLog?: TripLogItem[];
   tripLogActivity?: TripLogActivity[];
 
@@ -36,7 +36,7 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
         this.tripLogActivity = tripLogActivity;
       });
 
-    this.interval = setInterval(async () => {
+    this.interval = window.setInterval(() => {
       if (this.tripLogActivity) {
         const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
         this.lengthString = this.helperService.formatMsToTime(lengthMs);

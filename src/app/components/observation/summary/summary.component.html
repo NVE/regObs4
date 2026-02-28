@@ -1,8 +1,8 @@
 <!-- TODO: Rydd opp her..  -->
-@for (summary of summaries(); track summary; let i = $index) {
+@for (summary of summaries(); track $index; let i = $index) {
   <div class="summaries">
     @if ((summary.Summaries || []).length > 0) {
-      @for (genericValue of summary.Summaries; track genericValue; let i = $index) {
+      @for (genericValue of summary.Summaries; track $index; let i = $index) {
         @if (i > 0) {
           <span class="bullet"> &bull; </span>
         }

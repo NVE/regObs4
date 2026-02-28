@@ -1,4 +1,4 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';
@@ -49,7 +49,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class GroupPage extends BasePage {
   private userGroupService = inject(UserGroupService);
-  private ngZone = inject(NgZone);
 
   registrationTid = undefined;
 
@@ -69,9 +68,8 @@ export class GroupPage extends BasePage {
 
   override async onInit(): Promise<void> {
     const groups = await this.userGroupService.getUserGroups();
-    this.ngZone.run(() => {
-      this.groups = groups;
-    });
+    this.groups = groups;
+    this.cdr.markForCheck();
   }
 
   override async reset() {

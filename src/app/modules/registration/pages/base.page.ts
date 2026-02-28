@@ -1,4 +1,4 @@
-import { Directive, inject } from '@angular/core';
+import { ChangeDetectorRef, Directive, inject } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
 import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
@@ -15,6 +15,7 @@ import { createEmptyRegistration } from '../../common-registration/registration.
 export abstract class BasePage extends NgDestoryBase {
   basePageService = inject(BasePageService);
   activatedRoute = inject(ActivatedRoute);
+  protected cdr = inject(ChangeDetectorRef);
   draft!: RegistrationDraft;
 
   abstract registrationTid?: RegistrationTid;
@@ -42,6 +43,7 @@ export abstract class BasePage extends NgDestoryBase {
         }),
         tap((reg) => {
           this.draft = reg;
+          this.cdr.markForCheck();
         }),
         switchMap(() => this.createInitObservable())
       )
@@ -50,6 +52,7 @@ export abstract class BasePage extends NgDestoryBase {
     // Update registration data eg. when navigating back from subforms
     draft$.pipe(skip(1), takeUntil(this.ngDestroy$)).subscribe((draft) => {
       this.draft = draft;
+      this.cdr.markForCheck();
     });
   }
 
@@ -143,6 +146,7 @@ export abstract class BasePage extends NgDestoryBase {
 
       // Create a new empty form / registration
       this.draft = createEmptyRegistration(this.draft, this.registrationTid);
+      this.cdr.markForCheck();
     }
 
     return pleaseReset;

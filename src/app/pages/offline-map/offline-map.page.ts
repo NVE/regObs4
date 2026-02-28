@@ -1,4 +1,4 @@
-import { Component, NgZone, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -87,7 +87,6 @@ export class OfflineMapPage extends NgDestoryBase {
   private alertController = inject(AlertController);
   private translateService = inject(TranslateService);
   private packageIndex = inject(PackageIndexService);
-  private zone = inject(NgZone);
   private logger = inject(LoggingService);
 
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
@@ -195,11 +194,9 @@ export class OfflineMapPage extends NgDestoryBase {
         })
       )
       .subscribe((itemsWithProgress) => {
-        this.zone.runOutsideAngular(() => {
-          for (const item of itemsWithProgress) {
-            this.setStyleForProgressOrDownloadedPackage(item);
-          }
-        });
+        for (const item of itemsWithProgress) {
+          this.setStyleForProgressOrDownloadedPackage(item);
+        }
       });
 
     this.showModal

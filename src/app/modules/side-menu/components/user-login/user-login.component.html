@@ -1,5 +1,5 @@
-@if (!isLoggingIn) {
-  @if (!loggedInUser.isLoggedIn) {
+@if (!isLoggingIn()) {
+  @if (!loggedInUser().isLoggedIn) {
     <ion-item (click)="login()" detail="true" button="true" color="light">
       <ion-icon slot="start" name="person-circle-outline" color="primary"></ion-icon>
       <ion-label class="menu-label">
@@ -7,11 +7,11 @@
       </ion-label>
     </ion-item>
   }
-  @if (loggedInUser.isLoggedIn) {
+  @if (loggedInUser().isLoggedIn) {
     <ion-item (click)="storeCurLocation()" routerLink="/login" routerDirection="forward" detail="true" color="light">
       <ion-icon slot="start" name="person-circle-outline" color="primary"></ion-icon>
       <ion-label class="menu-label">
-        {{ loggedInUser.email }}
+        {{ loggedInUser().email }}
       </ion-label>
     </ion-item>
     <ion-item routerLink="/my-observations" routerDirection="forward" detail="true" color="light">
