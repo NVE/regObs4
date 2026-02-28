@@ -282,6 +282,7 @@ export class AvalancheObsPage extends BasePage {
       this.avalancheObs.Extent = result.data.totalPolygon;
       this.avalancheObs.StartExtent = result.data.startPolygon;
       this.avalancheObs.StopExtent = result.data.endPolygon;
+      this.cdr.markForCheck();
     }
   }
 }
