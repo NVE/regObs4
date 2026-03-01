@@ -10,8 +10,10 @@
       "schematics": {},
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "preserveSymlinks": true,
+            "progress": false,
             "outputPath": {
               "base": "www"
             },
@@ -62,7 +64,12 @@
                 "input": "node_modules/source-sans-pro/source-sans-pro.css"
               }
             ],
+            "scripts": [],
             "webWorkerTsConfig": "tsconfig.worker.json",
+            "extractLicenses": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true,
             "browser": "src/main.ts"
           },
           "configurations": {
@@ -73,12 +80,15 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "optimization": true,
               "outputHashing": "all",
               "sourceMap": {
                 "hidden": true,
                 "scripts": true,
                 "styles": true
               },
+              "namedChunks": false,
+              "extractLicenses": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -91,25 +101,28 @@
                 }
               ]
             },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+            "ci": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "10kb"
+                }
+              ],
+              "progress": false
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "app:build"
+          },
           "configurations": {
             "production": {
               "buildTarget": "app:build:production"
-            },
-            "development": {
-              "buildTarget": "app:build:development"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
