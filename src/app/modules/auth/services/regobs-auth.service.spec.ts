@@ -20,7 +20,10 @@ const TOKEN_RESPONSE: Partial<TokenResponseJson> = {
   scope: 'offline_access openid',
   // NB! I Response fra b2c er token_type Bearer med stor B
   token_type: 'bearer',
-  issued_at: 1764750552,
+  // Use current time so token appears fresh. A stale issued_at triggers
+  // initRefreshTokenOnStartup() which fetches OpenID config and logs
+  // "Unable To Obtain Server Configuration" errors during tests.
+  issued_at: Math.floor(Date.now() / 1000),
 };
 const TOKEN_RESPONSE_FULL: Partial<TokenResponseFullJson> = {
   id_token: TOKEN,

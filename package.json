@@ -171,7 +171,8 @@
     "plist": "^3.0.5",
     "prettier": "^3.4.2",
     "ts-node": "^10.9.1",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "zone.js": "^0.15.1"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.40.2"
