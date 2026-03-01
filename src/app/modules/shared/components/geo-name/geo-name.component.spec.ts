@@ -18,7 +18,7 @@ describe('GeoNameComponent', () => {
     });
 
     geoHelperService = TestBed.inject(GeoHelperService) as unknown as Spied<GeoHelperService>;
-    geoHelperService.getName$.mockReturnValue(of(dummyname));
+    geoHelperService.getName$.and.returnValue(of(dummyname));
 
     fixture = TestBed.createComponent(GeoNameComponent);
     fixture.componentRef.setInput('geoHazards', [GeoHazard.Snow]);

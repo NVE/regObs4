@@ -66,8 +66,8 @@ describe('UploadAttachmentsService', () => {
       { id: '5678', type: 'Attachment', AttachmentUploadId: responseAttachmentUploadId },
     ];
 
-    const saveAttachmentMeta$ = vi.fn();
-    saveAttachmentMeta$.mockReturnValue(of(true));
+    const saveAttachmentMeta$ = jasmine.createSpy();
+    saveAttachmentMeta$.and.returnValue(of(true));
 
     const uploadSingleAttachmentService = {
       upload: async () => {
@@ -119,8 +119,8 @@ describe('UploadAttachmentsService', () => {
       { id: attachmentIdThatFails, type: 'Attachment' },
     ];
 
-    const saveAttachmentMeta$ = vi.fn();
-    saveAttachmentMeta$.mockReturnValue(of(true));
+    const saveAttachmentMeta$ = jasmine.createSpy();
+    saveAttachmentMeta$.and.returnValue(of(true));
 
     const newAttachmentService = {
       getAttachments: (): Observable<AttachmentUploadEditModel[]> => {
@@ -142,7 +142,7 @@ describe('UploadAttachmentsService', () => {
     });
     const service = TestBed.inject(UploadAttachmentsService);
     const logger = TestBed.inject(LoggingService);
-    vi.spyOn(logger, 'error');
+    spyOn(logger, 'error').and.callThrough();
 
     const regUuid = '12345-abc';
     const draft: RegistrationDraft = {
@@ -157,7 +157,7 @@ describe('UploadAttachmentsService', () => {
 
     const expected: AttachmentUploadEditModel[] = [{ id: '1-abc', type: 'Attachment', AttachmentUploadId: '1234' }];
     // Test that uploadAllAttachments returns one fulfilled promise without value
-    await expect(service.uploadAllAttachments(draft)).resolves.toEqual(expected);
+    await expectAsync(service.uploadAllAttachments(draft)).toBeResolvedTo(expected);
 
     expect(logger.error).toHaveBeenCalled();
   });

@@ -132,9 +132,9 @@ describe('OfflineTilesRegistry with overlapping packages', () => {
 
   it('finds one of the packages inside the overlap', () => {
     const url = registry.getUrl('map-type-1', 200, 200, 5);
-    expect(['path-to-offline-tiles-1/{z}/{x}/{y}.png', 'path-to-offline-tiles-2/{z}/{x}/{y}.png'].includes(url)).toBe(
-      true
-    );
+    expect(
+      ['path-to-offline-tiles-1/{z}/{x}/{y}.png', 'path-to-offline-tiles-2/{z}/{x}/{y}.png'].includes(url)
+    ).toBeTrue();
   });
 
   it('finds the correct url below the overlap', () => {

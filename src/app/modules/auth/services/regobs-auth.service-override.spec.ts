@@ -1,4 +1,3 @@
-import type { MockedObject } from 'vitest';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Requestor, StorageBackend, TokenType } from '@openid/appauth';
 import { Browser } from 'ionic-appauth';
@@ -7,7 +6,7 @@ import { TokenResponseFullJson } from './token-response-full';
 
 describe('RegobsAuthServiceOverride', () => {
   let service: RegobsAuthServiceOverride;
-  let storageBackend: MockedObject<StorageBackend>;
+  let storageBackend: jasmine.SpyObj<StorageBackend>;
 
   //contains valid tokens
   const validTokenResponse: TokenResponseFullJson = {
@@ -32,9 +31,7 @@ describe('RegobsAuthServiceOverride', () => {
   };
 
   beforeEach(() => {
-    storageBackend = {
-      getItem: vi.fn().mockName('StorageBackend.getItem'),
-    };
+    storageBackend = jasmine.createSpyObj('StorageBackend', ['getItem']);
 
     service = new RegobsAuthServiceOverride({} as Browser, storageBackend as StorageBackend, {} as Requestor);
   });
@@ -44,36 +41,36 @@ describe('RegobsAuthServiceOverride', () => {
   });
 
   it('should clear token if we get HTTP 400 or 401 even if token is not expired', async () => {
-    storageBackend.getItem.mockReturnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
+    storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
 
     const badRequest = new HttpErrorResponse({ status: HttpStatusCode.BadRequest });
-    expect(await service.shouldTokensBeCleared(badRequest)).toBe(true);
+    expect(await service.shouldTokensBeCleared(badRequest)).toBeTrue();
 
     const unauthorized = new HttpErrorResponse({ status: HttpStatusCode.Unauthorized });
-    expect(await service.shouldTokensBeCleared(unauthorized)).toBe(true);
+    expect(await service.shouldTokensBeCleared(unauthorized)).toBeTrue();
   });
 
   it('should clear token if we get any HTTP error if token is expired', async () => {
-    storageBackend.getItem.mockReturnValue(Promise.resolve(JSON.stringify(expiredTokenResponse)));
+    storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(expiredTokenResponse)));
 
     const randomError = new HttpErrorResponse({ status: HttpStatusCode.ImATeapot });
-    expect(await service.shouldTokensBeCleared(randomError)).toBe(true);
+    expect(await service.shouldTokensBeCleared(randomError)).toBeTrue();
   });
 
   it('should not clear token if we get HTTP error (except 400 and 401) if token is not expired', async () => {
-    storageBackend.getItem.mockReturnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
+    storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
 
     const randomError = new HttpErrorResponse({ status: HttpStatusCode.ImATeapot });
-    expect(await service.shouldTokensBeCleared(randomError)).toBe(false);
+    expect(await service.shouldTokensBeCleared(randomError)).toBeFalse();
   });
 
   it('should not clear token if no network', async () => {
-    storageBackend.getItem.mockReturnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
+    storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
 
     const error: Error = {
       name: 'Error',
       message: 'Unable To Obtain Server Configuration',
     };
-    expect(await service.shouldTokensBeCleared(error)).toBe(false);
+    expect(await service.shouldTokensBeCleared(error)).toBeFalse();
   });
 });

@@ -1,4 +1,3 @@
-import type { MockedObject } from 'vitest';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { GeoJSONService } from './geojson.service';
 import { DatabaseService } from '../database/database.service';
@@ -8,8 +7,8 @@ import { GeoJSONItem } from './geojson-item.model';
 
 describe('GeoJSONService', () => {
   let service: GeoJSONService;
-  let databaseService: MockedObject<DatabaseService>;
-  let loggingService: MockedObject<LoggingService>;
+  let databaseService: jasmine.SpyObj<DatabaseService>;
+  let loggingService: jasmine.SpyObj<LoggingService>;
 
   const mockGeoJSON: FeatureCollection = {
     type: 'FeatureCollection',
@@ -34,15 +33,8 @@ describe('GeoJSONService', () => {
   };
 
   beforeEach(() => {
-    const databaseServiceSpy = {
-      get: vi.fn().mockName('DatabaseService.get'),
-      set: vi.fn().mockName('DatabaseService.set'),
-      remove: vi.fn().mockName('DatabaseService.remove'),
-    };
-    const loggingServiceSpy = {
-      debug: vi.fn().mockName('LoggingService.debug'),
-      error: vi.fn().mockName('LoggingService.error'),
-    };
+    const databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['get', 'set', 'remove']);
+    const loggingServiceSpy = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -52,13 +44,13 @@ describe('GeoJSONService', () => {
       ],
     });
 
-    databaseService = TestBed.inject(DatabaseService) as MockedObject<DatabaseService>;
-    loggingService = TestBed.inject(LoggingService) as MockedObject<LoggingService>;
+    databaseService = TestBed.inject(DatabaseService) as jasmine.SpyObj<DatabaseService>;
+    loggingService = TestBed.inject(LoggingService) as jasmine.SpyObj<LoggingService>;
 
     // Default spy returns
-    databaseService.get.mockReturnValue(Promise.resolve([]));
-    databaseService.set.mockReturnValue(Promise.resolve());
-    databaseService.remove.mockReturnValue(Promise.resolve());
+    databaseService.get.and.returnValue(Promise.resolve([]));
+    databaseService.set.and.returnValue(Promise.resolve());
+    databaseService.remove.and.returnValue(Promise.resolve());
   });
 
   it('should be created', () => {
@@ -69,7 +61,7 @@ describe('GeoJSONService', () => {
   describe('init', () => {
     it('should load metadata from database on initialization', fakeAsync(() => {
       const existingMetadata: GeoJSONItem[] = [mockMetadataItem];
-      databaseService.get.mockReturnValue(Promise.resolve(existingMetadata));
+      databaseService.get.and.returnValue(Promise.resolve(existingMetadata));
 
       service = TestBed.inject(GeoJSONService);
       tick();
@@ -79,7 +71,7 @@ describe('GeoJSONService', () => {
     }));
 
     it('should initialize with empty metadata if none exists', fakeAsync(() => {
-      databaseService.get.mockReturnValue(Promise.resolve(null));
+      databaseService.get.and.returnValue(Promise.resolve(null));
 
       service = TestBed.inject(GeoJSONService);
       tick();
@@ -93,7 +85,7 @@ describe('GeoJSONService', () => {
       service = TestBed.inject(GeoJSONService);
       tick(); // Complete initialization
       tick(); // Allow effect to run
-      databaseService.set.mockClear();
+      databaseService.set.calls.reset();
     }));
 
     it('should save geojson and update metadata', fakeAsync(() => {
@@ -124,9 +116,9 @@ describe('GeoJSONService', () => {
 
     it('should throw error if save fails', fakeAsync(() => {
       const error = new Error('Save failed');
-      databaseService.set.mockReturnValue(Promise.reject(error));
+      databaseService.set.and.returnValue(Promise.reject(error));
 
-      expect(service.save(mockMetadataItem, mockGeoJSON)).rejects.toEqual(error);
+      expectAsync(service.save(mockMetadataItem, mockGeoJSON)).toBeRejectedWith(error);
       tick();
 
       expect(loggingService.error).toHaveBeenCalled();
@@ -140,7 +132,7 @@ describe('GeoJSONService', () => {
     }));
 
     it('should retrieve geojson by id', fakeAsync(() => {
-      databaseService.get.mockReturnValue(Promise.resolve(mockGeoJSON));
+      databaseService.get.and.returnValue(Promise.resolve(mockGeoJSON));
 
       service.get(mockMetadataItem.id).then((result) => {
         expect(result).toEqual(mockGeoJSON);
@@ -158,7 +150,7 @@ describe('GeoJSONService', () => {
       // Add an item first
       service.save(mockMetadataItem, mockGeoJSON);
       tick();
-      databaseService.set.mockClear();
+      databaseService.set.calls.reset();
     }));
 
     it('should remove geojson and update metadata', fakeAsync(() => {

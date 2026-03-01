@@ -13,7 +13,7 @@ describe('isTripFromToday', () => {
 
     const result = isTripFromToday(trip);
 
-    expect(result).toBe(true);
+    expect(result).toBeTrue();
   });
 
   it('Should return false if trip is from yesterday', () => {
@@ -24,7 +24,7 @@ describe('isTripFromToday', () => {
     };
 
     const result = isTripFromToday(trip);
-    expect(result).toBe(false);
+    expect(result).toBeFalse();
   });
 
   it('Should return false if timestamp is zero', () => {
@@ -35,7 +35,7 @@ describe('isTripFromToday', () => {
     };
 
     const result = isTripFromToday(trip);
-    expect(result).toBe(false);
+    expect(result).toBeFalse();
   });
 
   it('Should return false if timestamp is null', () => {
@@ -46,17 +46,17 @@ describe('isTripFromToday', () => {
     };
 
     const result = isTripFromToday(trip);
-    expect(result).toBe(false);
+    expect(result).toBeFalse();
   });
 
   it('Should return false if trip is null', () => {
     const result = isTripFromToday(null);
-    expect(result).toBe(false);
+    expect(result).toBeFalse();
   });
 
   it('Should return false if trip is undefined', () => {
     const result = isTripFromToday(undefined);
-    expect(result).toBe(false);
+    expect(result).toBeFalse();
   });
 });
 
@@ -78,7 +78,7 @@ describe('isTripNotFoundError', () => {
       statusText: 'OK',
     });
 
-    expect(isTripNotFoundError(err)).toBe(true);
+    expect(isTripNotFoundError(err)).toBeTrue();
   });
 
   it('should be case insensitive', () => {
@@ -96,7 +96,7 @@ describe('isTripNotFoundError', () => {
       statusText: 'OK',
     });
 
-    expect(isTripNotFoundError(err)).toBe(true);
+    expect(isTripNotFoundError(err)).toBeTrue();
   });
 
   it('should handle trip error message null', () => {
@@ -114,7 +114,7 @@ describe('isTripNotFoundError', () => {
       statusText: 'OK',
     });
 
-    expect(isTripNotFoundError(err)).toBe(false);
+    expect(isTripNotFoundError(err)).toBeFalse();
   });
 
   it('should handle trip error message numbers', () => {
@@ -132,18 +132,18 @@ describe('isTripNotFoundError', () => {
       statusText: 'OK',
     });
 
-    expect(isTripNotFoundError(err)).toBe(false);
+    expect(isTripNotFoundError(err)).toBeFalse();
   });
 
   it('should return false if not error', () => {
-    expect(isTripNotFoundError(undefined)).toBe(false);
-    expect(isTripNotFoundError(null)).toBe(false);
-    expect(isTripNotFoundError(12345)).toBe(false);
-    expect(isTripNotFoundError('Hello')).toBe(false);
-    expect(isTripNotFoundError({ foo: 'bar' })).toBe(false);
+    expect(isTripNotFoundError(undefined)).toBeFalse();
+    expect(isTripNotFoundError(null)).toBeFalse();
+    expect(isTripNotFoundError(12345)).toBeFalse();
+    expect(isTripNotFoundError('Hello')).toBeFalse();
+    expect(isTripNotFoundError({ foo: 'bar' })).toBeFalse();
   });
 
   it('should return false if not HttpErrorResponse', () => {
-    expect(isTripNotFoundError(new Error('Some other error'))).toBe(false);
+    expect(isTripNotFoundError(new Error('Some other error'))).toBeFalse();
   });
 });

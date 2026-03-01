@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CompetenceComponent } from './competence.component';
 import { TranslateService } from '@ngx-translate/core';
 
-describe.skip('CompetenceComponent', () => {
+xdescribe('CompetenceComponent', () => {
   let component: CompetenceComponent;
   let fixture: ComponentFixture<CompetenceComponent>;
   let translate: TranslateService;
@@ -46,7 +46,7 @@ describe.skip('CompetenceComponent', () => {
     }
   });
 
-  it('when competence is undefined, return unknown competence EN', async () => {
+  it('when competence is undefined, return unknown competence EN', async (done) => {
     fixture.componentRef.setInput('starCount', undefined);
     await translate.use('en').toPromise(); // Waits for translation file to load
     fixture.detectChanges();
@@ -56,6 +56,7 @@ describe.skip('CompetenceComponent', () => {
     if (text && text.textContent) {
       expect(text.textContent).toEqual(unknownCopetenceEN);
     }
+    done();
   });
 
   it('when competence is 0, return unknown competence', () => {

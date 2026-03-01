@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { KdvService } from './kdv.service';
 
-describe.skip('KdvService', () => {
+xdescribe('KdvService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {

@@ -1,4 +1,3 @@
-import type { MockedObject } from 'vitest';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import {
@@ -55,7 +54,7 @@ class TestDatabaseService {
 
 describe('DraftRepositoryService', () => {
   let database: TestDatabaseService;
-  let newAttachmentService: MockedObject<NewAttachmentService>;
+  let newAttachmentService: jasmine.SpyObj<NewAttachmentService>;
   let userSettingService: UserSettingService;
 
   beforeEach(() => {
@@ -67,10 +66,7 @@ describe('DraftRepositoryService', () => {
         provideTranslateService(),
         {
           provide: NewAttachmentService,
-          useValue: {
-            removeAttachments: vi.fn().mockName('NewAttachmentService.removeAttachments'),
-            getAttachments: vi.fn().mockName('NewAttachmentService.getAttachments'),
-          },
+          useValue: jasmine.createSpyObj('NewAttachmentService', ['removeAttachments', 'getAttachments']),
         },
         {
           provide: DatabaseService,
@@ -78,7 +74,7 @@ describe('DraftRepositoryService', () => {
         },
       ],
     });
-    newAttachmentService = TestBed.inject(NewAttachmentService) as MockedObject<NewAttachmentService>;
+    newAttachmentService = TestBed.inject(NewAttachmentService) as jasmine.SpyObj<NewAttachmentService>;
     userSettingService = TestBed.inject(UserSettingService);
     userSettingService.updateUserSettings({ appMode: AppMode.Test });
   });
@@ -99,15 +95,15 @@ describe('DraftRepositoryService', () => {
   it('create() should choose simple mode for snow registrations if simple mode setting is set', async () => {
     const service = TestBed.inject(DraftRepositoryService);
     const snowDraft = await service.create(GeoHazard.Snow);
-    expect(snowDraft.simpleMode).toBe(true);
+    expect(snowDraft.simpleMode).toBeTrue();
 
     //verify that drafts for other geo hazards don't have simple mode
     const iceDraft = await service.create(GeoHazard.Ice);
-    expect(iceDraft.simpleMode).toBe(false);
+    expect(iceDraft.simpleMode).toBeFalse();
     const soilDraft = await service.create(GeoHazard.Soil);
-    expect(soilDraft.simpleMode).toBe(false);
+    expect(soilDraft.simpleMode).toBeFalse();
     const waterDraft = await service.create(GeoHazard.Water);
-    expect(waterDraft.simpleMode).toBe(false);
+    expect(waterDraft.simpleMode).toBeFalse();
 
     //deselect simple mode setting => snow drafts should now be created with complete mode, not simple
     userSettingService.saveUserSettings({
@@ -116,7 +112,7 @@ describe('DraftRepositoryService', () => {
       preferCompleteSnowObservations: true,
     });
     const completeSnowDraft = await service.create(GeoHazard.Snow);
-    expect(completeSnowDraft.simpleMode).toBe(false);
+    expect(completeSnowDraft.simpleMode).toBeFalse();
   });
 
   it('load() should be backward compatible with database model before simpleMode was added', async () => {
@@ -155,7 +151,7 @@ describe('DraftRepositoryService', () => {
     const savedDraft = await database.get(`drafts.TEST.${draft.uuid}`);
     expect(savedDraft.uuid).toEqual(draft.uuid);
     expect(savedDraft.syncStatus).toBe(SyncStatus.Draft);
-    expect(savedDraft.simpleMode).toBe(true);
+    expect(savedDraft.simpleMode).toBeTrue();
     expect(savedDraft.registration.GeoHazardTID).toBe(GeoHazard.Snow);
     expect(savedDraft.registration.DtObsTime).toBe('2022-02-13 08:00');
     expect(savedDraft.registration.ObsLocation).toEqual(undefined);
@@ -174,8 +170,8 @@ describe('DraftRepositoryService', () => {
     const draft2 = await service.create(GeoHazard.Snow);
     await service.save(draft2 as RegistrationDraft);
     expect(database.store.size).toEqual(2);
-    expect(database.store.has(`drafts.TEST.${draft.uuid}`)).toBe(true);
-    expect(database.store.has(`drafts.TEST.${draft2.uuid}`)).toBe(true);
+    expect(database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
+    expect(database.store.has(`drafts.TEST.${draft2.uuid}`)).toBeTrue();
   });
 
   it('we can change a registration, save it and load the changed registration', async () => {
@@ -197,11 +193,11 @@ describe('DraftRepositoryService', () => {
     //irreleant registrations are not changed
     expect(await service.load(irrelevantDraft1.uuid)).toEqual({
       ...(irrelevantDraft1 as RegistrationDraft),
-      lastSavedTime: expect.any(Number),
+      lastSavedTime: jasmine.any(Number),
     });
     expect(await service.load(irrelevantDraft2.uuid)).toEqual({
       ...(irrelevantDraft2 as RegistrationDraft),
-      lastSavedTime: expect.any(Number),
+      lastSavedTime: jasmine.any(Number),
     });
   });
 
@@ -288,7 +284,7 @@ describe('DraftRepositoryService', () => {
 
     //verify that we have no drafts left
     expect(draftChanges.length).toBe(0);
-    expect(!database.store.has(`drafts.TEST.${draft.uuid}`)).toBe(true);
+    expect(!database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
     expect(await service.load(draft.uuid)).toBeUndefined();
     // Check that draftService requests newAttachmentService to delete draft images
     expect(newAttachmentService.removeAttachments).toHaveBeenCalledWith(draft.uuid);
@@ -320,9 +316,9 @@ describe('DraftRepositoryService', () => {
     expect(await service.load(draft1inTest.uuid)).toBe(undefined);
 
     //but all drafts exists in database regardsless of environment
-    expect(database.store.has(`drafts.TEST.${draft1inTest.uuid}`)).toBe(true);
-    expect(database.store.has(`drafts.TEST.${draft2inTest.uuid}`)).toBe(true);
-    expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBe(true);
+    expect(database.store.has(`drafts.TEST.${draft1inTest.uuid}`)).toBeTrue();
+    expect(database.store.has(`drafts.TEST.${draft2inTest.uuid}`)).toBeTrue();
+    expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBeTrue();
 
     userSettingService.saveUserSettings({
       ...(await firstValueFrom(userSettingService.userSetting$)),
@@ -335,11 +331,11 @@ describe('DraftRepositoryService', () => {
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
     expect(await service.load(draft1inTest.uuid)).toEqual({
       ...(draft1inTest as RegistrationDraft),
-      lastSavedTime: expect.any(Number),
+      lastSavedTime: jasmine.any(Number),
     });
     expect(await service.load(draft2inTest.uuid)).toEqual({
       ...(draft2inTest as RegistrationDraft),
-      lastSavedTime: expect.any(Number),
+      lastSavedTime: jasmine.any(Number),
     });
 
     //drafts in demo database not available when in environment test
@@ -357,7 +353,7 @@ describe('DraftRepositoryService', () => {
     let completed = false;
     const sub = service.getDraft$('test').subscribe({
       next: (d) => {
-        expect(d).toEqual({ ...(draft as RegistrationDraft), lastSavedTime: expect.any(Number) });
+        expect(d).toEqual({ ...(draft as RegistrationDraft), lastSavedTime: jasmine.any(Number) });
         i += 1;
       },
       complete: () => {
@@ -385,7 +381,7 @@ describe('DraftRepositoryService', () => {
     expect(i).toBe(2);
 
     // It should also have completed the observable when the draft was deleted
-    expect(completed).toBe(true);
+    expect(completed).toBeTrue();
 
     // As we deleted the draft, the subscription should be closed
     expect(sub.closed).toBe(true);
@@ -407,7 +403,7 @@ describe('DraftRepositoryService', () => {
 
     //the copy should be saved in the database
     expect(database.store.size).toBe(1);
-    expect(database.store.has('drafts.TEST.externalReferenceId')).toBe(true);
+    expect(database.store.has('drafts.TEST.externalReferenceId')).toBeTrue();
 
     //check that the draft contains a copy of the viewModel
     const draft = await service.load('externalReferenceId');
@@ -439,7 +435,7 @@ describe('DraftRepositoryService', () => {
 
     //the copy should be saved in the database
     expect(database.store.size).toBe(1);
-    expect(database.store.has(`drafts.TEST.${newUuid}`)).toBe(true);
+    expect(database.store.has(`drafts.TEST.${newUuid}`)).toBeTrue();
 
     const newDraft = await service.load(newUuid);
 
@@ -481,19 +477,19 @@ describe('DraftRepositoryService', () => {
     };
 
     // no new attachments yet
-    newAttachmentService.getAttachments.mockReturnValue(of([]));
-    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBe(false);
+    newAttachmentService.getAttachments.and.returnValue(of([]));
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeFalse();
 
     // fake that we have a new attachment
-    newAttachmentService.getAttachments.mockReturnValue(of(attachments));
-    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBe(true);
+    newAttachmentService.getAttachments.and.returnValue(of(attachments));
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeTrue();
 
     // remove the new attachment
-    newAttachmentService.getAttachments.mockReturnValue(of([]));
-    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBe(false);
+    newAttachmentService.getAttachments.and.returnValue(of([]));
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeFalse();
 
     // fake that we have a remote attachment
     draft.registration.Attachments = [{ RegistrationTID: RegistrationTid.SnowSurfaceObservation }];
-    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBe(true);
+    expect(await service.hasAttachments(draft, RegistrationTid.SnowSurfaceObservation)).toBeTrue();
   });
 });
