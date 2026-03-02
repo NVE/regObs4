@@ -126,6 +126,7 @@
     "@lokalise/node-api": "^8.5.1",
     "@sentry/cli": "^2.58.4",
     "@types/clone-deep": "^4.0.1",
+    "@types/cordova": "^11.0.3",
     "@types/geojson": "^7946.0.8",
     "@types/jasmine": "^3.8.2",
     "@types/json-stringify-safe": "^5.0.0",
