@@ -1,5 +1,5 @@
 import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
-import { ChangeDetectorRef, Component, NgZone, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';
@@ -10,13 +10,14 @@ import { IPolygon, PolygonArea } from '../../../models/polygon';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { Location, NgIf, AsyncPipe } from '@angular/common';
+import { Location, AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
 import { SetLocationInMapComponent } from '../../../components/set-location-in-map/set-location-in-map.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-set-flood-area',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './set-flood-area.page.html',
   imports: [
     AsyncPipe,
@@ -27,7 +28,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonHeader,
     IonTitle,
     IonToolbar,
-    NgIf,
     SetLocationInMapComponent,
     TranslatePipe,
   ],
@@ -38,12 +38,11 @@ export class SetFloodAreaPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private draftService = inject(DraftRepositoryService);
   private location = inject(Location);
-  private ngZone = inject(NgZone);
   private draftRepository = inject(DraftRepositoryService);
 
   fullscreen$: Observable<boolean>;
   fromMarker?: L.Marker;
-  isLoaded = false;
+  isLoaded = signal(false);
   draft!: RegistrationDraft;
   relativeToLatLng?: L.LatLng;
   totalPolygon!: IPolygon;
@@ -86,9 +85,7 @@ export class SetFloodAreaPage implements OnInit {
         });
       }
     }
-    this.ngZone.run(() => {
-      this.isLoaded = true;
-    });
+    this.isLoaded.set(true);
   }
 
   private updateMarkers(map: L.Map) {

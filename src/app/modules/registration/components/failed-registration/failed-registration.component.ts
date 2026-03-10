@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { firstValueFrom } from 'rxjs';
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
-import { NgIf } from '@angular/common';
+
 import { VersionConflictComponent } from '../version-conflict/version-conflict.component';
 import { GoneRegistrationComponent } from '../gone-registration/gone-registration.component';
 import { addIcons } from 'ionicons';
@@ -21,6 +21,7 @@ interface RegistrationDraftWithError extends RegistrationDraft {
 
 @Component({
   selector: 'app-failed-registration',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './failed-registration.component.html',
   styleUrls: ['./failed-registration.component.scss'],
   imports: [
@@ -30,7 +31,6 @@ interface RegistrationDraftWithError extends RegistrationDraft {
     IonLabel,
     IonList,
     IonListHeader,
-    NgIf,
     TranslatePipe,
     VersionConflictComponent,
   ],

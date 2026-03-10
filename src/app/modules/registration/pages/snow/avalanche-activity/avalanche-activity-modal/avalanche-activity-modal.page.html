@@ -28,11 +28,13 @@
         presentation="date"
       ></app-datetime-picker>
     </ion-item>
-    <ion-item *ngIf="dateIsDifferentThanObsTime()">
-      <ion-label color="danger" class="ion-text-wrap">
-        {{ "ALERT.WARNING" | translate }}! {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING" | translate }}
-      </ion-label>
-    </ion-item>
+    @if (dateIsDifferentThanObsTime()) {
+      <ion-item>
+        <ion-label color="danger" class="ion-text-wrap">
+          {{ "ALERT.WARNING" | translate }}! {{ "REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING" | translate }}
+        </ion-label>
+      </ion-item>
+    }
     <ion-item>
       <ion-select
         cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
@@ -41,12 +43,14 @@
         [label]="'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME' | translate | uppercase"
         labelPlacement="stacked"
       >
-        <ion-select-option [value]="timeFrame.id" *ngFor="let timeFrame of timeFrames">
-          {{ timeFrame.text | translate }}
-        </ion-select-option>
+        @for (timeFrame of timeFrames; track timeFrame) {
+          <ion-select-option [value]="timeFrame.id">
+            {{ timeFrame.text | translate }}
+          </ion-select-option>
+        }
       </ion-select>
     </ion-item>
-    <ng-container *ngIf="!noAvalancheActivity()">
+    @if (!noAvalancheActivity()) {
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES"
         kdvKey="Snow_EstimatedNumKDV"
@@ -78,7 +82,7 @@
         [(exposedHeight2)]="exposedHeight2"
       ></app-exposed-height>
       <app-valid-exposition [(validExposition)]="validExposition"></app-valid-exposition>
-    </ng-container>
+    }
     <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="comment"> </app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew()">

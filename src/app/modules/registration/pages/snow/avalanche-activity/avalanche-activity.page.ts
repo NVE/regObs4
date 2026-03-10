@@ -1,4 +1,4 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import {
@@ -20,13 +20,17 @@ import { AvalancheActivityObs2EditModel, KdvElement } from 'src/app/modules/comm
 import { Subscription, combineLatest } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, LowerCasePipe } from '@angular/common';
+import { LowerCasePipe } from '@angular/common';
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
 
+// TODO: Kan ikke bruke OnPush ennå. onInit() abonnerer på KDV-observables og setter
+// this.avalancheCause og this.estimatedNumber uten å kalle cdr.markForCheck().
+// Disse brukes av getCause() og getEstimatedNumber() i templaten.
+// Fiks: Legg til cdr.markForCheck() i subscribe-callbacken, eller konverter til toSignal().
 @Component({
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',
@@ -46,8 +50,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonTitle,
     IonToolbar,
     LowerCasePipe,
-    NgFor,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
   ],
@@ -56,7 +58,6 @@ export class AvalancheActivityPage extends BasePage {
   override registrationTid = RegistrationTid.AvalancheActivityObs2;
 
   private modalController = inject(ModalController);
-  private ngZone = inject(NgZone);
   private kdvService = inject(KdvService);
 
   private avalancheCause: KdvElement[];
@@ -103,20 +104,19 @@ export class AvalancheActivityPage extends BasePage {
     });
     modal.present();
     const result = await modal.onDidDismiss();
-    this.ngZone.run(() => {
-      if (result.data) {
-        if (result.data.delete && index != null) {
-          this.avalancheActivities.splice(index, 1);
+    if (result.data) {
+      if (result.data.delete && index != null) {
+        this.avalancheActivities.splice(index, 1);
+      } else {
+        const avalancheActivityObs: AvalancheActivityObs2EditModel = result.data;
+        if (index !== undefined) {
+          this.avalancheActivities[index] = avalancheActivityObs;
         } else {
-          const avalancheActivityObs: AvalancheActivityObs2EditModel = result.data;
-          if (index !== undefined) {
-            this.avalancheActivities[index] = avalancheActivityObs;
-          } else {
-            this.avalancheActivities.push(avalancheActivityObs);
-          }
+          this.avalancheActivities.push(avalancheActivityObs);
         }
       }
-    });
+      this.cdr.markForCheck();
+    }
   }
 
   getCause(avalancheActivityObs: AvalancheActivityObs2EditModel) {

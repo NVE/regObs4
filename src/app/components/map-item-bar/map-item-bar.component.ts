@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
-import { Component, inject, input, signal, computed, output, linkedSignal } from '@angular/core';
+import { Component, inject, input, signal, computed, output, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MapItem } from '../../core/models/map-item.model';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { FormatDatePipe } from '../../modules/shared/pipes/format-date/format-da
 
 @Component({
   selector: 'app-map-item-bar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss'],
   imports: [

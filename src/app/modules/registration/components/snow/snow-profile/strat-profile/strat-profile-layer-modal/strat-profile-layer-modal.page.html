@@ -53,41 +53,43 @@
     </ion-list>
     <ion-button (click)="toggleShowMore()" fill="clear" expand="full">
       <ion-icon slot="start" [name]="showMore() ? 'chevron-up' : 'chevron-down'"></ion-icon>
-      <ng-container *ngIf="showMore()"
-        >{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS" | translate }}
-      </ng-container>
-      <ng-container *ngIf="!showMore()"
-        >{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}
-      </ng-container>
+      @if (showMore()) {
+        {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS" | translate }}
+      }
+      @if (!showMore()) {
+        {{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}
+      }
     </ion-button>
-    <ion-list lines="full" *ngIf="showMore()">
-      <app-kdv-select
-        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM"
-        kdvKey="Snow_HardnessKDV"
-        [(value)]="hardnessBottomTid"
-      >
-      </app-kdv-select>
-      <app-kdv-select
-        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
-        kdvKey="Snow_GrainFormKDV"
-        [(value)]="grainFormSecondaryTid"
-        [getIconFunc]="getIconFunc"
-      >
-      </app-kdv-select>
-      <app-select
-        [(selectedValue)]="grainSizeAvgMax"
-        [options]="grainSizeOptions"
-        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE"
-      >
-      </app-select>
-      <app-kdv-select
-        label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
-        kdvKey="Snow_CriticalLayerKDV"
-        [(value)]="criticalLayerTid"
-      >
-      </app-kdv-select>
-      <app-text-comment label="DIALOGS.COMMENT" [(value)]="comment"></app-text-comment>
-    </ion-list>
+    @if (showMore()) {
+      <ion-list lines="full">
+        <app-kdv-select
+          label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM"
+          kdvKey="Snow_HardnessKDV"
+          [(value)]="hardnessBottomTid"
+        >
+        </app-kdv-select>
+        <app-kdv-select
+          label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
+          kdvKey="Snow_GrainFormKDV"
+          [(value)]="grainFormSecondaryTid"
+          [getIconFunc]="getIconFunc"
+        >
+        </app-kdv-select>
+        <app-select
+          [(selectedValue)]="grainSizeAvgMax"
+          [options]="grainSizeOptions"
+          label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE"
+        >
+        </app-select>
+        <app-kdv-select
+          label="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
+          kdvKey="Snow_CriticalLayerKDV"
+          [(value)]="criticalLayerTid"
+        >
+        </app-kdv-select>
+        <app-text-comment label="DIALOGS.COMMENT" [(value)]="comment"></app-text-comment>
+      </ion-list>
+    }
     <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col size="6">
@@ -116,14 +118,16 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="!isNewLayer()">
-        <ion-col size="6" offset="3">
-          <ion-button (click)="delete()" size="small" fill="clear" expand="block">
-            <ion-icon slot="start" name="trash"></ion-icon>
-            {{ "DIALOGS.DELETE" | translate }}
-          </ion-button>
-        </ion-col>
-      </ion-row>
+      @if (!isNewLayer()) {
+        <ion-row>
+          <ion-col size="6" offset="3">
+            <ion-button (click)="delete()" size="small" fill="clear" expand="block">
+              <ion-icon slot="start" name="trash"></ion-icon>
+              {{ "DIALOGS.DELETE" | translate }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      }
     </ion-grid>
   </form>
 </ion-content>

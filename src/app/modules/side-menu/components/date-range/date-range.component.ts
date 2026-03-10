@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject , ChangeDetectionStrategy } from '@angular/core';
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import moment from 'moment';
@@ -12,6 +12,7 @@ import { HeaderWithSelectedItemsComponent } from '../header-with-selected-items/
 
 @Component({
   selector: 'app-date-range',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
   imports: [

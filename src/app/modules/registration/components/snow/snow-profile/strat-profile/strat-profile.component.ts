@@ -1,7 +1,7 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
@@ -17,9 +17,10 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
  */
 @Component({
   selector: 'app-strat-profile',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile.component.html',
   styleUrls: ['./strat-profile.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonText, NgIf, TranslatePipe],
+  imports: [IonIcon, IonItem, IonLabel, IonText, TranslatePipe],
 })
 export class StratProfileComponent {
   private modalContoller = inject(ModalController);

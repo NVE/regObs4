@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -14,6 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-help-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './help-modal.page.html',
   styleUrls: ['./help-modal.page.scss'],
   imports: [

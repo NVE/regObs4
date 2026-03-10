@@ -27,7 +27,7 @@ import { ExternalLinkService } from 'src/app/core/services/external-link/externa
 import { HttpClient } from '@angular/common/http';
 import { booleanPointInPolygon } from '@turf/turf';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
-import { NgIf, NgStyle, DecimalPipe } from '@angular/common';
+import { NgStyle, DecimalPipe } from '@angular/common';
 import { AbsPipe } from '../../../shared/pipes/abs.pipe';
 import { addIcons } from 'ionicons';
 import { arrowUp, arrowDown } from 'ionicons/icons';
@@ -40,7 +40,7 @@ const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
   templateUrl: './map-center-info.component.html',
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AbsPipe, DecimalPipe, IonGrid, IonIcon, IonRow, IonSpinner, NgIf, NgStyle, TranslatePipe],
+  imports: [AbsPipe, DecimalPipe, IonGrid, IonIcon, IonRow, IonSpinner, NgStyle, TranslatePipe],
 })
 export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private mapService = inject(MapService);

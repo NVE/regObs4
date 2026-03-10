@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject , ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-base64-image',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './base64-image.component.html',
   styleUrls: ['./base64-image.component.scss'],
 })

@@ -3,7 +3,6 @@ import {
   Component,
   EventEmitter,
   Injector,
-  NgZone,
   OnDestroy,
   OnInit,
   Output,
@@ -12,6 +11,7 @@ import {
   effect,
   untracked,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -89,6 +89,7 @@ const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
 
 @Component({
   selector: 'app-map',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
   imports: [LeafletModule, MapControlsComponent, RouterLink, DecimalPipe, TranslatePipe],
@@ -97,7 +98,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private userSettingService = inject(UserSettingService);
   private mapService = inject(MapService);
   private mapSearchService = inject(MapSearchService);
-  private zone = inject(NgZone);
   private fullscreenService = inject(FullscreenService);
   private loggingService = inject(LoggingService);
   private geoPositionService = inject(GeoPositionService);
@@ -483,34 +483,28 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
       this.disableFollowMode();
-      this.zone.runOutsideAngular(() => {
-        const latLng = item instanceof L.LatLng ? item : item.latlng;
-        this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
-      });
+      const latLng = item instanceof L.LatLng ? item : item.latlng;
+      this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
     });
     this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.geoPositionService.choosePositionMethod(DEBUG_TAG);
 
-      this.zone.runOutsideAngular(() => {
-        if (this.userMarker) {
-          const currentPosition = this.userMarker.getPosition();
-          const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-          if (this.followMode || this.firstClickOnZoomToUser) {
-            // Follow mode is allready true or first click, zoom in
-            this.flyToMaxZoom(latLng);
-          } else {
-            // Use existing zoom
-            this.flyTo(latLng, map.getZoom());
-          }
-          this.firstClickOnZoomToUser = false;
+      if (this.userMarker) {
+        const currentPosition = this.userMarker.getPosition();
+        const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+        if (this.followMode || this.firstClickOnZoomToUser) {
+          // Follow mode is allready true or first click, zoom in
+          this.flyToMaxZoom(latLng);
+        } else {
+          // Use existing zoom
+          this.flyTo(latLng, map.getZoom());
         }
-      });
+        this.firstClickOnZoomToUser = false;
+      }
     });
 
-    this.zone.runOutsideAngular(() => {
-      map.on('movestart', () => this.onMapMove());
-      map.on('zoomstart', () => this.onMapMove());
-    });
+    map.on('movestart', () => this.onMapMove());
+    map.on('zoomstart', () => this.onMapMove());
 
     this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.redrawMap();
@@ -540,22 +534,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
     this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
 
-    this.zone.runOutsideAngular(() => {
-      this.startInvalidateSizeMapTimer();
+    this.startInvalidateSizeMapTimer();
 
-      // this.updateMapViewOnExtentChange er en input, og kan i prinsippet endre seg.
-      // Tror ikke vi bruker dette i dag, men hvis vi starter med det, så bør denne if-sjekken fjernes..
-      if (this.updateMapViewOnExtentChange()) {
-        fromEventPattern(
-          (handler) => map.on('resize moveend zoomend', handler),
-          (handler) => map.off('resize moveend zoomend', handler)
-        )
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe(() => {
-            this.updateMapView();
-          });
-      }
-    });
+    // this.updateMapViewOnExtentChange er en input, og kan i prinsippet endre seg.
+    // Tror ikke vi bruker dette i dag, men hvis vi starter med det, så bør denne if-sjekken fjernes..
+    if (this.updateMapViewOnExtentChange()) {
+      fromEventPattern(
+        (handler) => map.on('resize moveend zoomend', handler),
+        (handler) => map.off('resize moveend zoomend', handler)
+      )
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe(() => {
+          this.updateMapView();
+        });
+    }
 
     this.addGeoJsonLayers(map);
 
@@ -639,16 +631,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     combineLatest([this.offlineMapService.packages$, this.userSettingService.userSetting$])
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([packages, userSettings]) => {
-        this.zone.runOutsideAngular(() => {
-          this.createOfflineLayers(packages, userSettings);
+        this.createOfflineLayers(packages, userSettings);
 
-          // When starting offline, offline map packages are
-          // registered after the map initially loads.
-          // By redrawing here, we can see offline tiles without
-          // zooming in/out etc.
-          redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
-          redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
-        });
+        // When starting offline, offline map packages are
+        // registered after the map initially loads.
+        // By redrawing here, we can see offline tiles without
+        // zooming in/out etc.
+        redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
+        redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
       });
   }
 
@@ -777,47 +767,45 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private configureTileLayers(userSetting: UserSetting, map: L.Map) {
     const useRetinaMap = userSetting.useRetinaMap && L.Browser.retina;
 
-    this.zone.runOutsideAngular(() => {
-      this.layerGroup.clearLayers();
-      map.setMaxZoom(useRetinaMap ? settings.map.tiles.maxZoom - 1 : settings.map.tiles.maxZoom);
+    this.layerGroup.clearLayers();
+    map.setMaxZoom(useRetinaMap ? settings.map.tiles.maxZoom - 1 : settings.map.tiles.maxZoom);
 
-      for (const layer of this.getTopoMapLayers(userSetting.topoMap, useRetinaMap)) {
-        layer.addTo(this.layerGroup);
+    for (const layer of this.getTopoMapLayers(userSetting.topoMap, useRetinaMap)) {
+      layer.addTo(this.layerGroup);
+    }
+
+    for (const supportMap of this.userSettingService.getSupportTilesOptions(userSetting)) {
+      if (!supportMap.enabled) {
+        continue;
       }
 
-      for (const supportMap of this.userSettingService.getSupportTilesOptions(userSetting)) {
-        if (!supportMap.enabled) {
-          continue;
+      const options: L.TileLayerOptions = {
+        ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+        zIndex: MapLayerZIndex.OnlineSupportLayer,
+        updateInterval: 600,
+        keepBuffer: 0,
+        updateWhenIdle: true,
+        minZoom: settings.map.tiles.minZoomSupportMaps,
+        bounds: supportMap.bounds,
+        zoomOffset: supportMap.zoomOffset || 0, // zoomOffset is not required, so set it to 0 if it is undefined
+      };
+
+      if (supportMap.maxNativeZoom) {
+        let maxNativeZoom = supportMap.maxNativeZoom;
+
+        if (useRetinaMap) {
+          // https://github.com/Leaflet/Leaflet/issues/8850
+          maxNativeZoom = maxNativeZoom - 1;
         }
 
-        const options: L.TileLayerOptions = {
-          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
-          zIndex: MapLayerZIndex.OnlineSupportLayer,
-          updateInterval: 600,
-          keepBuffer: 0,
-          updateWhenIdle: true,
-          minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: supportMap.bounds,
-          zoomOffset: supportMap.zoomOffset || 0, // zoomOffset is not required, so set it to 0 if it is undefined
-        };
-
-        if (supportMap.maxNativeZoom) {
-          let maxNativeZoom = supportMap.maxNativeZoom;
-
-          if (useRetinaMap) {
-            // https://github.com/Leaflet/Leaflet/issues/8850
-            maxNativeZoom = maxNativeZoom - 1;
-          }
-
-          options.maxNativeZoom = maxNativeZoom;
-        }
-
-        const layer = this.createSupportMapTileLayer(supportMap.name, supportMap.url, options);
-        const opacity = supportMap.opacity != null ? supportMap.opacity : 1;
-        layer.setOpacity(opacity);
-        layer.addTo(this.layerGroup);
+        options.maxNativeZoom = maxNativeZoom;
       }
-    });
+
+      const layer = this.createSupportMapTileLayer(supportMap.name, supportMap.url, options);
+      const opacity = supportMap.opacity != null ? supportMap.opacity : 1;
+      layer.setOpacity(opacity);
+      layer.addTo(this.layerGroup);
+    }
   }
 
   private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsTileLayer {
@@ -897,22 +885,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onPositionUpdate(data: Position) {
-    this.zone.runOutsideAngular(() => {
-      if (this.map) {
-        const latLng = L.latLng({
-          lat: data.coords.latitude,
-          lng: data.coords.longitude,
-        });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.map, data);
-        } else {
-          this.userMarker.updatePosition(data);
-        }
-        if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng);
-        }
+    if (this.map) {
+      const latLng = L.latLng({
+        lat: data.coords.latitude,
+        lng: data.coords.longitude,
+      });
+      if (!this.userMarker) {
+        this.userMarker = new UserMarker(this.map, data);
+      } else {
+        this.userMarker.updatePosition(data);
       }
-    });
+      if (this.followMode && !this.isDoingMoveAction) {
+        this.flyToMaxZoom(latLng);
+      }
+    }
   }
 
   private flyToMaxZoom(latLng: L.LatLng) {

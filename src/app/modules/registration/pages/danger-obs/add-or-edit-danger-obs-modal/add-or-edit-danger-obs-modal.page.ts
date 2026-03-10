@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal, computed } from '@angular/core';
+import { Component, inject, input, linkedSignal, computed , ChangeDetectionStrategy } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -18,7 +18,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService, TranslatePipe, TranslationObject } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
 import { SelectComponent } from '../../../../shared/components/input/select/select.component';
@@ -33,6 +33,7 @@ interface AreaSelectOption extends SelectOption {
 const COMMENT_SEPARATOR = ': ';
 @Component({
   selector: 'app-add-or-edit-danger-obs-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-or-edit-danger-obs-modal.page.html',
   styleUrls: ['./add-or-edit-danger-obs-modal.page.scss'],
   imports: [
@@ -51,7 +52,6 @@ const COMMENT_SEPARATOR = ': ';
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgIf,
     SelectComponent,
     TextCommentComponent,
     TranslatePipe,

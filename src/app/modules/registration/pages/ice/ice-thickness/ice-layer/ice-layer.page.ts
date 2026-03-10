@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal, computed } from '@angular/core';
+import { Component, inject, input, linkedSignal, computed , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -22,6 +22,7 @@ import { arrowBack, arrowForward, chevronDown, chevronUp, trash } from 'ionicons
 
 @Component({
   selector: 'app-ice-layer',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ice-layer.page.html',
   styleUrls: ['./ice-layer.page.scss'],
   imports: [

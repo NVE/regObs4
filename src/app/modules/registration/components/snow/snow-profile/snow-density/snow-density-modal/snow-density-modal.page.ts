@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -32,7 +32,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
@@ -41,6 +41,7 @@ import { addCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-snow-density-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-density-modal.page.html',
   styleUrls: ['./snow-density-modal.page.scss'],
   imports: [
@@ -66,8 +67,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonToggle,
     IonToolbar,
     MetersToCmPipe,
-    NgFor,
-    NgIf,
     NumericInputComponent,
     TranslatePipe,
   ],
@@ -75,7 +74,7 @@ import { addCircleOutline } from 'ionicons/icons';
 export class SnowDensityModalPage implements OnInit, OnDestroy {
   private modalController = inject(ModalController);
   private draftRepository = inject(DraftRepositoryService);
-  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
 
   uuid = input.required<string>();
   useCylinder?: boolean;
@@ -109,33 +108,32 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     this.draftRepository
       .getDraft$(this.uuid())
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((reg) => {
-        this.ngZone.run(async () => {
-          if (!this.initialDraftClone) {
-            this.initialDraftClone = cloneDeep(reg);
-          }
-          this.draft = reg;
-          if (!this.draft.registration.SnowProfile2) {
-            this.draft.registration.SnowProfile2 = {};
-          }
-          if (!this.draft.registration.SnowProfile2.SnowDensity) {
-            this.draft.registration.SnowProfile2.SnowDensity = [];
-          }
-          if (!this.draft.registration.SnowProfile2.SnowDensity[0]) {
-            this.draft.registration.SnowProfile2.SnowDensity[0] = {};
-          }
-          if (!this.draft.registration.SnowProfile2.SnowDensity[0].Layers) {
-            this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
-          }
-          if (this.useCylinder === undefined) {
-            this.useCylinder =
-              !!this.draft.registration.SnowProfile2.SnowDensity[0].CylinderDiameter ||
-              !!this.draft.registration.SnowProfile2.SnowDensity[0].TareWeight ||
-              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
-              this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
-          }
-          this.recalculateLayers();
-        });
+      .subscribe(async (reg) => {
+        if (!this.initialDraftClone) {
+          this.initialDraftClone = cloneDeep(reg);
+        }
+        this.draft = reg;
+        if (!this.draft.registration.SnowProfile2) {
+          this.draft.registration.SnowProfile2 = {};
+        }
+        if (!this.draft.registration.SnowProfile2.SnowDensity) {
+          this.draft.registration.SnowProfile2.SnowDensity = [];
+        }
+        if (!this.draft.registration.SnowProfile2.SnowDensity[0]) {
+          this.draft.registration.SnowProfile2.SnowDensity[0] = {};
+        }
+        if (!this.draft.registration.SnowProfile2.SnowDensity[0].Layers) {
+          this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
+        }
+        if (this.useCylinder === undefined) {
+          this.useCylinder =
+            !!this.draft.registration.SnowProfile2.SnowDensity[0].CylinderDiameter ||
+            !!this.draft.registration.SnowProfile2.SnowDensity[0].TareWeight ||
+            this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
+            this.draft.registration.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
+        }
+        this.recalculateLayers();
+        this.cdr.markForCheck();
       });
   }
 

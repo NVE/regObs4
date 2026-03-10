@@ -10,11 +10,11 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
@@ -24,6 +24,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-snow-surface',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-surface.page.html',
   styleUrls: ['./snow-surface.page.scss'],
   imports: [
@@ -40,7 +41,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,

@@ -8,6 +8,10 @@ import { TripLogActivity } from '../../core/services/trip-logger/trip-log-activi
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
 import { Subscription } from 'rxjs';
 
+// TODO: Kan ikke bruke OnPush ennå. ngOnInit() abonnerer på getTripLogAsObservable() og
+// getTripLogActivityAsObservable() og setter this.tripLog/this.tripLogActivity uten markForCheck().
+// Bruker også setInterval() for å oppdatere this.lengthString uten markForCheck().
+// Fiks: Injiser ChangeDetectorRef og kall markForCheck() i subscribe + setInterval, eller konverter til signals.
 @Component({
   selector: 'app-trip-log-summary',
   templateUrl: './trip-log-summary.component.html',
@@ -22,7 +26,7 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
   private tripLogActivitySubscription!: Subscription;
 
   lengthString?: string;
-  interval?: NodeJS.Timer;
+  interval?: number;
   tripLog?: TripLogItem[];
   tripLogActivity?: TripLogActivity[];
 
@@ -36,7 +40,7 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
         this.tripLogActivity = tripLogActivity;
       });
 
-    this.interval = setInterval(async () => {
+    this.interval = window.setInterval(() => {
       if (this.tripLogActivity) {
         const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
         this.lengthString = this.helperService.formatMsToTime(lengthMs);

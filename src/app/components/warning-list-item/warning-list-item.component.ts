@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, inject, viewChild, input, computed } from '@angular/core';
+import { Component, OnInit, Renderer2, inject, viewChild, input, computed , ChangeDetectionStrategy } from '@angular/core';
 import {
   DomController,
   IonBadge,
@@ -32,6 +32,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-warning-list-item',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './warning-list-item.component.html',
   styleUrls: ['./warning-list-item.component.scss'],
   imports: [

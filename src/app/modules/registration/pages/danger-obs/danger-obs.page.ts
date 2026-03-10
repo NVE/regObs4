@@ -1,4 +1,4 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import {
@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { EditImagesComponent } from '../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -34,6 +34,10 @@ import { addCircleOutline } from 'ionicons/icons';
  * You may click an observation to open the specific observation in a form.
  * Contains also a button to add new observations and a function to upload images.
  */
+// TODO: Kan ikke bruke OnPush ennå. onInit() abonnerer på KDV-observable og setter
+// this.dangerSignKdv uten å kalle cdr.markForCheck().
+// Denne brukes av getSummaryText() i templaten.
+// Fiks: Legg til cdr.markForCheck() i subscribe-callbacken, eller konverter til toSignal().
 @Component({
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
@@ -52,8 +56,6 @@ import { addCircleOutline } from 'ionicons/icons';
     IonListHeader,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
   ],
@@ -61,7 +63,6 @@ import { addCircleOutline } from 'ionicons/icons';
 export class DangerObsPage extends BasePage {
   override registrationTid = RegistrationTid.DangerObs;
   private modalController = inject(ModalController);
-  private zone = inject(NgZone);
   private kdvService = inject(KdvService);
 
   private dangerSignKdv?: KdvElement[];
@@ -88,9 +89,7 @@ export class DangerObsPage extends BasePage {
   override onInit() {
     const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
-      this.zone.run(() => {
-        this.dangerSignKdv = val;
-      });
+      this.dangerSignKdv = val;
     });
   }
 
@@ -112,27 +111,22 @@ export class DangerObsPage extends BasePage {
           this.addDangerObs(result.data);
         }
       }
+      this.cdr.markForCheck();
     }
   }
 
   setDangerObs(index: number, dangerObs: DangerObsEditModel) {
-    this.zone.run(() => {
-      this.dangerObs[index] = dangerObs;
-    });
+    this.dangerObs[index] = dangerObs;
   }
 
   addDangerObs(dangerObs: DangerObsEditModel) {
-    this.zone.run(() => {
-      this.dangerObs.push(dangerObs);
-    });
+    this.dangerObs.push(dangerObs);
   }
 
   removeAtIndex(index: number) {
-    this.zone.run(() => {
-      if (this.dangerObs.length > 0) {
-        this.dangerObs.splice(index, 1);
-      }
-    });
+    if (this.dangerObs.length > 0) {
+      this.dangerObs.splice(index, 1);
+    }
   }
 
   getSummaryText(dangerObs: DangerObsEditModel) {

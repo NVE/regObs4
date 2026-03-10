@@ -2,9 +2,7 @@
   "i18n-ally.localesPaths": "src/assets/i18n",
   "i18n-ally.keystyle": "nested",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.rulers": [
-    120
-  ],
+  "editor.rulers": [120],
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
@@ -31,7 +29,7 @@
     "angular-*": {
       "externalTemplate": true
     }
-  },
+  }
   // Ionic foreslo å legge til disse, men da finner ikke VSCode en eneste
   // ionic import av seg selv. Kommenterer ut dette, men pass på å alltid
   // importere fra @Ionic/*/standalone nå som vi har gått over til standalone.

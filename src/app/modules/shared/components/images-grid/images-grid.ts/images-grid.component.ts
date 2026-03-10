@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject , ChangeDetectionStrategy } from '@angular/core';
 import { LoggingService } from '../../../services/logging/logging.service';
 import { SearchRegistrationsWithAttachments } from 'src/app/modules/common-regobs-api/models/search-registrations-with-attachments';
 import { ModalController } from '@ionic/angular/standalone';
@@ -9,6 +9,7 @@ import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-images-grid',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './images-grid.component.html',
   styleUrls: ['./images-grid.component.scss'],
   imports: [NgFor],

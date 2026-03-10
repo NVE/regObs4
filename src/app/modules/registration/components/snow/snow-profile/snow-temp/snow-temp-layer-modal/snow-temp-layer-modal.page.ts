@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal, Signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, Signal , ChangeDetectionStrategy } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,
@@ -22,7 +22,7 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
 import { NumericInputComponent } from '../../../../numeric-input/numeric-input.component';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, arrowForward, trash } from 'ionicons/icons';
@@ -31,6 +31,7 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
 
 @Component({
   selector: 'app-snow-temp-layer-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-temp-layer-modal.page.html',
   styleUrls: ['./snow-temp-layer-modal.page.scss'],
   imports: [
@@ -50,7 +51,6 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
     IonText,
     IonTitle,
     IonToolbar,
-    NgIf,
     NumericInputComponent,
     TranslatePipe,
   ],

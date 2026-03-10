@@ -1,4 +1,4 @@
-import { Component, inject, viewChildren, signal, computed } from '@angular/core';
+import { Component, inject, viewChildren, signal, computed , ChangeDetectionStrategy } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -34,6 +34,7 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
 @Component({
   selector: 'app-warning-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './warning-list.page.html',
   styleUrls: ['./warning-list.page.scss'],
   imports: [

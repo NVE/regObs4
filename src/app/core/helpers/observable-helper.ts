@@ -1,5 +1,5 @@
 import { Observable, Subject, Subscription } from 'rxjs';
-import { NgZone, OnDestroy, Injectable } from '@angular/core';
+import { OnDestroy, Injectable } from '@angular/core';
 import { timeout } from 'rxjs/operators';
 
 export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promise<void>, timeoutInMs?: number) {
@@ -28,17 +28,6 @@ export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promi
       });
     }
   });
-}
-
-export function enterZone(zone: NgZone) {
-  return <T>(source: Observable<T>) =>
-    new Observable<T>((observer) =>
-      source.subscribe({
-        next: (x) => zone.run(() => observer.next(x)),
-        error: (err) => observer.error(err),
-        complete: () => observer.complete(),
-      })
-    );
 }
 
 export function setObservableTimeout() {

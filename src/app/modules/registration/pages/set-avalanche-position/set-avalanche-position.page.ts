@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, inject, viewChild, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input , ChangeDetectionStrategy } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,
@@ -22,11 +22,12 @@ import {
 } from '../../components/set-location-in-map/set-location-in-map.component';
 import { IPolygon, PolygonArea } from '../../models/polygon';
 import { constructPolygon, makePolygons } from 'src/app/modules/common-registration/helpers/polygon.helper';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 
 @Component({
   selector: 'app-set-avalanche-position',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './set-avalanche-position.page.html',
   styleUrls: ['./set-avalanche-position.page.scss'],
   imports: [
@@ -38,7 +39,6 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
     IonHeader,
     IonTitle,
     IonToolbar,
-    NgIf,
     SetLocationInMapComponent,
     TranslatePipe,
   ],
@@ -46,7 +46,6 @@ import { HeaderColorDirective } from '../../../shared/directives/header-color/he
 export class SetAvalanchePositionPage implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private translateService = inject(TranslateService);
-  private ngZone = inject(NgZone);
   private fullscreenService = inject(FullscreenService);
   private swipeBackService = inject(SwipeBackService);
   private modalController = inject(ModalController);
@@ -188,10 +187,8 @@ export class SetAvalanchePositionPage implements OnInit {
   onMapReady(map: L.Map) {
     this.map = map;
     this.updateMarkers();
-    this.ngZone.runOutsideAngular(() => {
-      this.map.on('drag', () => this.updatePolyline());
-      this.updatePolyline();
-    });
+    this.map.on('drag', () => this.updatePolyline());
+    this.updatePolyline();
   }
 
   ionViewDidEnter() {

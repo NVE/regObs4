@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
 import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/support-map-info.page';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './steepness-common-legend.component.html',
   styleUrls: ['./steepness-common-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonButton, IonCol, IonGrid, IonRow, NgIf, TranslatePipe],
+  imports: [IonButton, IonCol, IonGrid, IonRow, TranslatePipe],
 })
 export class SteepnessCommonLegendComponent {
   private modalController = inject(ModalController);

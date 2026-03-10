@@ -1,40 +1,44 @@
-<ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
-  <ng-container *ngFor="let supportTile of supportTiles; trackBy: trackByMethod">
+@if (supportTilesWithSubTiles$ | async; as supportTiles) {
+  @for (supportTile of supportTiles; track trackByMethod($index, supportTile)) {
     <ion-item button color="light" [detail]="false">
       <ion-icon slot="start" name="map-outline" color="primary"></ion-icon>
       <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)" justify="space-between">
         {{ "SUPPORT_MAP." + supportTile.description | translate }}
       </ion-toggle>
     </ion-item>
-    <div class="inner-list-panel" *ngIf="isTileActive(supportTile)">
-      <ion-item *ngIf="supportTile.subTile" button [detail]="false">
-        <ion-toggle
-          [(ngModel)]="supportTile.subTile.checked"
-          (ionChange)="onSubTileChanged(supportTile)"
-          justify="space-between"
-        >
-          {{ "SUPPORT_MAP." + supportTile.subTile.description | translate }}
-        </ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-select
-          [interface]="isWeb ? 'popover' : 'action-sheet'"
-          cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
-          [(ngModel)]="supportTile.opacity"
-          (ionChange)="onTileChanged(supportTile)"
-          label="{{ 'MENU.OPACITY' | translate }}"
-          labelPlacement="stacked"
-        >
-          <ion-select-option *ngFor="let option of opacityValues" [value]="option.value"
-            >{{ option.name | translate }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label class="ion-text-wrap">
-          <app-support-tile-legend-loader [name]="supportTile.name"></app-support-tile-legend-loader>
-        </ion-label>
-      </ion-item>
-    </div>
-  </ng-container>
-</ng-container>
+    @if (isTileActive(supportTile)) {
+      <div class="inner-list-panel">
+        @if (supportTile.subTile) {
+          <ion-item button [detail]="false">
+            <ion-toggle
+              [(ngModel)]="supportTile.subTile.checked"
+              (ionChange)="onSubTileChanged(supportTile)"
+              justify="space-between"
+            >
+              {{ "SUPPORT_MAP." + supportTile.subTile.description | translate }}
+            </ion-toggle>
+          </ion-item>
+        }
+        <ion-item>
+          <ion-select
+            [interface]="isWeb ? 'popover' : 'action-sheet'"
+            cancelText="{{ 'DIALOGS.CANCEL' | translate }}"
+            [(ngModel)]="supportTile.opacity"
+            (ionChange)="onTileChanged(supportTile)"
+            label="{{ 'MENU.OPACITY' | translate }}"
+            labelPlacement="stacked"
+          >
+            @for (option of opacityValues; track option) {
+              <ion-select-option [value]="option.value">{{ option.name | translate }} </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            <app-support-tile-legend-loader [name]="supportTile.name"></app-support-tile-legend-loader>
+          </ion-label>
+        </ion-item>
+      </div>
+    }
+  }
+}

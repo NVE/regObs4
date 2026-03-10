@@ -9,14 +9,14 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
 import { NumericInputComponent } from '../../components/numeric-input/numeric-input.component';
@@ -27,6 +27,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-incident',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './incident.page.html',
   styleUrls: ['./incident.page.scss'],
   imports: [
@@ -43,7 +44,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    NgIf,
     NumericInputComponent,
     RegistrationContentWrapperComponent,
     TextCommentComponent,

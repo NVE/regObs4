@@ -1,27 +1,17 @@
 import { IonItem, IonFab, IonFabButton, IonList, IonLabel } from '@ionic/angular/standalone';
-import { Component, inject } from '@angular/core';
+import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { GeoIconComponent } from '../geo-icon/geo-icon.component';
 import { GeoNameComponent } from '../geo-name/geo-name.component';
 
 @Component({
   selector: 'app-geo-select',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './geo-select.component.html',
   styleUrls: ['./geo-select.component.scss'],
-  imports: [
-    AsyncPipe,
-    GeoIconComponent,
-    GeoNameComponent,
-    IonFab,
-    IonFabButton,
-    IonItem,
-    IonLabel,
-    IonList,
-    NgFor,
-    NgIf,
-  ],
+  imports: [AsyncPipe, GeoIconComponent, GeoNameComponent, IonFab, IonFabButton, IonItem, IonLabel, IonList],
 })
 export class GeoSelectComponent {
   private userSettingService = inject(UserSettingService);

@@ -1,11 +1,12 @@
 import { IonItem, IonTextarea } from '@ionic/angular/standalone';
-import { Component, input, model, output } from '@angular/core';
+import { Component, input, model, output , ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-text-comment',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './text-comment.component.html',
   styleUrls: ['./text-comment.component.scss'],
   imports: [FormsModule, IonItem, IonTextarea, TranslatePipe, UpperCasePipe],

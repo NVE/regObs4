@@ -1,4 +1,4 @@
-import { Component, inject, NgZone } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePage } from '../../base.page';
 import {
   IonBackButton,
@@ -29,13 +29,16 @@ import { EditImagesComponent } from '../../../components/edit-images/edit-images
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
-import { NgIf } from '@angular/common';
 
 /**
  * Start page / CRUD page for avalanche problems.
  * Shows list of registered problems and offers to add new problems, edit exising problems or delete problems.
  * You can also add pictures connected to avalanche problems.
  */
+// TODO: Kan ikke bruke OnPush ennå. onInit() abonnerer på KDV-observable og setter
+// this.avalancheCause uten å kalle cdr.markForCheck().
+// Denne brukes av getDescription() i templaten.
+// Fiks: Legg til cdr.markForCheck() i subscribe-callbacken, eller konverter til toSignal().
 @Component({
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',
@@ -58,14 +61,12 @@ import { NgIf } from '@angular/common';
     IonToolbar,
     RegistrationContentWrapperComponent,
     TranslatePipe,
-    NgIf,
   ],
 })
 export class AvalancheProblemPage extends BasePage {
   override registrationTid = RegistrationTid.AvalancheEvalProblem2;
 
   private modalController = inject(ModalController);
-  private ngZone = inject(NgZone);
   private kdvService = inject(KdvService);
 
   private avalancheCause: KdvElement[] = [];
@@ -88,6 +89,13 @@ export class AvalancheProblemPage extends BasePage {
     }
   }
 
+  get avalancheProblems(): AvalancheEvalProblem2EditModel[] {
+    if (this.draft.registration.AvalancheEvalProblem2 == null) {
+      this.draft.registration.AvalancheEvalProblem2 = [];
+    }
+    return this.draft.registration.AvalancheEvalProblem2;
+  }
+
   async addOrEditAvalancheProblem(index?: number) {
     if (this.draft?.registration?.AvalancheEvalProblem2) {
       const modal = await this.modalController.create({
@@ -98,22 +106,21 @@ export class AvalancheProblemPage extends BasePage {
       });
       modal.present();
       const result = await modal.onDidDismiss();
-      this.ngZone.run(() => {
-        if (this.draft?.registration?.AvalancheEvalProblem2) {
-          if (result.data) {
-            if (result.data.delete && index != null) {
-              this.draft.registration.AvalancheEvalProblem2.splice(index, 1);
+      if (this.draft?.registration?.AvalancheEvalProblem2) {
+        if (result.data) {
+          if (result.data.delete && index != null) {
+            this.draft.registration.AvalancheEvalProblem2.splice(index, 1);
+          } else {
+            const avalancheEvalProblem: AvalancheEvalProblem2EditModel = result.data;
+            if (index !== undefined) {
+              this.draft.registration.AvalancheEvalProblem2[index] = avalancheEvalProblem;
             } else {
-              const avalancheEvalProblem: AvalancheEvalProblem2EditModel = result.data;
-              if (index !== undefined) {
-                this.draft.registration.AvalancheEvalProblem2[index] = avalancheEvalProblem;
-              } else {
-                this.draft.registration.AvalancheEvalProblem2.push(avalancheEvalProblem);
-              }
+              this.draft.registration.AvalancheEvalProblem2.push(avalancheEvalProblem);
             }
           }
+          this.cdr.markForCheck();
         }
-      });
+      }
     }
   }
 

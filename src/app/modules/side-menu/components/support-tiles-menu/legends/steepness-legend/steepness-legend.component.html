@@ -1,7 +1,7 @@
 <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_MAP_DISCLAMER' | translate"></p>
 <br />
-<ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
-  <ng-container *ngIf="isOutletsActive(supportTiles)">
+@if (supportTilesWithSubTiles$ | async; as supportTiles) {
+  @if (isOutletsActive(supportTiles)) {
     <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TITLE' | translate"></p>
     <div class="tile-legend-row">
       <img
@@ -25,11 +25,11 @@
       {{ "SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TEXT_3" | translate }}
     </div>
     <br />
-  </ng-container>
-  <ng-container *ngIf="!isOutletsActive(supportTiles)">
+  }
+  @if (!isOutletsActive(supportTiles)) {
     <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OFFLINE_DISCLAMER' | translate"></p>
     <br />
-  </ng-container>
+  }
   <!-- Bratthetskart MED utløpssoner markerer ikke høyde 27-30 med grønn farge -->
   <app-steepness-common-legend [show27to30]="!isOutletsActive(supportTiles)"></app-steepness-common-legend>
-</ng-container>
+}

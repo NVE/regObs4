@@ -1,4 +1,4 @@
-import { Component, inject, computed, input, linkedSignal } from '@angular/core';
+import { Component, inject, computed, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -26,7 +26,7 @@ import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-histor
 import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { KdvDescriptionPipe } from '../../../../../pipes/kdv-description.pipe';
 import { MetersToCmPipe } from '../../../../../pipes/meters-to-cm.pipe';
@@ -43,6 +43,7 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
  */
 @Component({
   selector: 'app-strat-profile-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile-modal.page.html',
   styleUrls: ['./strat-profile-modal.page.scss'],
   imports: [
@@ -70,8 +71,6 @@ import { injectBackupHandler } from 'src/app/core/helpers/inject-backup-handler'
     IonToolbar,
     KdvDescriptionPipe,
     MetersToCmPipe,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

@@ -48,17 +48,17 @@
     </ion-list>
 
     <ion-list lines="none">
-      <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">
+      <ion-button expand="block" [disabled]="isUpdating()" (click)="updateDropdowns()">
         <ion-icon slot="start" name="refresh"></ion-icon>
         {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
       </ion-button>
       @if (isNativePlatform) {
-        <ion-button expand="block" [disabled]="isUpdating" (click)="sendLogs()">
+        <ion-button expand="block" [disabled]="isUpdating()" (click)="sendLogs()">
           <ion-icon slot="start" name="mail-outline"></ion-icon>
           {{ "SETTINGS.SEND_LOGS" | translate }}
         </ion-button>
       }
-      <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="confirmReset()">
+      <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating()" (click)="confirmReset()">
         <ion-icon slot="start" name="medkit"></ion-icon>
         {{ "SETTINGS.RESET" | translate }}
       </ion-button>

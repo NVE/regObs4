@@ -1,29 +1,29 @@
 import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
-import { Component, NgZone, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { Router, RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { personCircleOutline, eyeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-user-login',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss'],
-  imports: [IonIcon, IonItem, IonLabel, IonSpinner, IonText, NgIf, RouterLink, TranslatePipe, IonRouterLink],
+  imports: [IonIcon, IonItem, IonLabel, IonSpinner, IonText, RouterLink, TranslatePipe, IonRouterLink],
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   private regobsauthService = inject(RegobsAuthService);
   private router = inject(Router);
-  private ngZone = inject(NgZone);
 
-  loggedInUser: LoggedInUser = { isLoggedIn: false };
+  loggedInUser = signal<LoggedInUser>({ isLoggedIn: false });
   private ngDestroy$ = new Subject<void>();
-  isLoggingIn = false;
+  isLoggingIn = signal(false);
 
   constructor() {
     addIcons({ personCircleOutline, eyeOutline });
@@ -31,14 +31,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.regobsauthService.loggedInUser$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.loggedInUser = val;
-      });
+      this.loggedInUser.set(val);
     });
     this.regobsauthService.isLoggingIn$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.isLoggingIn = val;
-      });
+      this.isLoggingIn.set(val);
     });
   }
 

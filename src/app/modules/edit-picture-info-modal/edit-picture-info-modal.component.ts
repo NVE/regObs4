@@ -1,4 +1,4 @@
-import { Component, inject, model } from '@angular/core';
+import { Component, inject, model , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonInput,
@@ -18,6 +18,7 @@ import { close } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-picture-info-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-picture-info-modal.component.html',
   styleUrls: ['./edit-picture-info-modal.component.scss'],
   imports: [

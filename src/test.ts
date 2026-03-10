@@ -1,6 +1,6 @@
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
-import 'zone.js/testing';
+// zone.js and zone.js/testing are loaded via polyfills in angular.json (before Jasmine initializes)
 import { getTestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { NanoSql } from './nanosql';
@@ -16,7 +16,7 @@ import { NanoSql } from './nanosql';
 // See https://github.com/only-cliches/Nano-SQL/blob/af74705e3fc4be6e65c0e4044f7dc7c5b745886c/website/src/adapters/built-in-adapters.md#built-in-adapters
 NanoSql.init('test-db', 'LS').then(() => {
   getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
-    teardown: { destroyAfterEach: false },
+    teardown: { destroyAfterEach: true },
   });
   // // Then we find all the tests.
   // const context = require.context('./', true, /\.spec\.ts$/);

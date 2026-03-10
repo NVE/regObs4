@@ -1,4 +1,4 @@
-import { Component, inject, input, computed, linkedSignal } from '@angular/core';
+import { Component, inject, input, computed, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import { AvalancheEvalProblem2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -17,7 +17,7 @@ import {
 import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
 import { ExposedHeightComponent } from '../../../../components/snow/exposed-height/exposed-height.component';
@@ -52,6 +52,7 @@ const noopFilter = (_: number) => true;
  */
 @Component({
   selector: 'app-avalanche-problem-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avalanche-problem-modal.page.html',
   styleUrls: ['./avalanche-problem-modal.page.scss'],
   imports: [
@@ -71,7 +72,6 @@ const noopFilter = (_: number) => true;
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgIf,
     TextCommentComponent,
     TranslatePipe,
     ValidExpositionComponent,

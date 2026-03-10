@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -27,12 +27,13 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/format-date.pipe';
 
 @Component({
   selector: 'app-strat-profile-layer-history-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './strat-profile-layer-history-modal.page.html',
   styleUrls: ['./strat-profile-layer-history-modal.page.scss'],
   imports: [
@@ -50,8 +51,6 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date/forma
     IonSkeletonText,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

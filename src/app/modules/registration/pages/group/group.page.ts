@@ -1,4 +1,4 @@
-import { Component, NgZone, inject } from '@angular/core';
+import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';
@@ -18,13 +18,14 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-group',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './group.page.html',
   styleUrls: ['./group.page.scss'],
   imports: [
@@ -43,14 +44,12 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonRadioGroup,
     IonTitle,
     IonToolbar,
-    NgIf,
     RegistrationContentWrapperComponent,
     TranslatePipe,
   ],
 })
 export class GroupPage extends BasePage {
   private userGroupService = inject(UserGroupService);
-  private ngZone = inject(NgZone);
 
   registrationTid = undefined;
 
@@ -70,9 +69,8 @@ export class GroupPage extends BasePage {
 
   override async onInit(): Promise<void> {
     const groups = await this.userGroupService.getUserGroups();
-    this.ngZone.run(() => {
-      this.groups = groups;
-    });
+    this.groups = groups;
+    this.cdr.markForCheck();
   }
 
   override async reset() {

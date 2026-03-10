@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
@@ -43,7 +43,6 @@ import { addIcons } from 'ionicons';
 import { eye } from 'ionicons/icons';
 import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-import { NgIf } from '@angular/common';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -58,6 +57,7 @@ const DEBUG_TAG = 'SnowProfilePage';
  */
 @Component({
   selector: 'app-snow-profile',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './snow-profile.page.html',
   styleUrls: ['./snow-profile.page.scss'],
   imports: [
@@ -86,7 +86,6 @@ const DEBUG_TAG = 'SnowProfilePage';
     TextCommentComponent,
     TranslatePipe,
     YesNoSelectComponent,
-    NgIf,
   ],
 })
 export class SnowProfilePage extends BasePage {

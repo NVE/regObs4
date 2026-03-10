@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
 import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
 import { IonFab, IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -6,6 +6,7 @@ import { search } from 'ionicons/icons';
 
 @Component({
   selector: 'app-map-search',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './map-search.component.html',
   styleUrls: ['./map-search.component.scss'],
   imports: [IonFab, IonFabButton, IonIcon],

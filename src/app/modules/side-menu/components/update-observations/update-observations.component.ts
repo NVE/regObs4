@@ -2,7 +2,7 @@ import { IonItem, IonSpinner, IonText, IonLabel, IonIcon } from '@ionic/angular/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';
-import { NgIf, AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { refresh } from 'ionicons/icons';
@@ -12,7 +12,7 @@ import { refresh } from 'ionicons/icons';
   templateUrl: './update-observations.component.html',
   styleUrls: ['./update-observations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonIcon, AsyncPipe, DatePipe, IonItem, IonLabel, IonSpinner, IonText, NgIf, TranslatePipe],
+  imports: [IonIcon, AsyncPipe, DatePipe, IonItem, IonLabel, IonSpinner, IonText, TranslatePipe],
 })
 export class UpdateObservationsComponent {
   private updateObservationsService = inject(UpdateObservationsService);

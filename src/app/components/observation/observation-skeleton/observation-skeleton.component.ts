@@ -10,7 +10,7 @@ import {
   IonCard,
   IonButton,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -18,6 +18,7 @@ import { shareSocial } from 'ionicons/icons';
 
 @Component({
   selector: 'app-observation-skeleton',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './observation-skeleton.component.html',
   styleUrls: ['./observation-skeleton.component.scss'],
   imports: [

@@ -9,28 +9,25 @@
     <!-- Slot to add extra filter or buttons -->
     <ng-content></ng-content>
 
-    <ng-container *ngIf="showObservations$ | async">
+    @if (showObservations$ | async) {
       <app-update-observations></app-update-observations>
       <ion-item lines="full" button (click)="onResetFilters()" detail="false" color="light">
         {{ "OBSERVATION_FILTER.RESET_FILTER_BUTTON_TITLE" | translate }}
         <ion-icon slot="end" name="close-circle-outline"></ion-icon>
       </ion-item>
-
       @if (!isWebPlatform) {
         <!--
-          På mobil ønsker vi bare å kunne velge maks 2 uker tilbake, det er kun det vi støtter offline.
-          På web brukes <app-date-range>, som også bruker <app-observations-days-back>
+        På mobil ønsker vi bare å kunne velge maks 2 uker tilbake, det er kun det vi støtter offline.
+        På web brukes <app-date-range>, som også bruker <app-observations-days-back>
         -->
         <ion-item lines="full" color="light">
           <app-observations-days-back (daysBackChange)="setUseDaysBack($event)"></app-observations-days-back>
         </ion-item>
       }
-
       <ion-accordion-group>
         @if (isWebPlatform) {
           <app-date-range></app-date-range>
         }
-
         @if (isWebPlatform) {
           <ion-accordion>
             <ion-item slot="header" color="light">
@@ -78,11 +75,9 @@
             </div>
           </ion-accordion>
         }
-
         @if (isWebPlatform && isGeohazardSnow()) {
           <app-region-filter></app-region-filter>
         }
-
         <ion-accordion value="competence">
           <ion-item slot="header" color="light">
             <app-header-with-selected-items
@@ -91,7 +86,6 @@
             >
             </app-header-with-selected-items>
           </ion-item>
-
           <div slot="content">
             <ion-list lines="none">
               <ion-list-header>
@@ -138,6 +132,6 @@
           </div>
         </ion-accordion>
       </ion-accordion-group>
-    </ng-container>
+    }
   </ion-list>
 </ion-content>

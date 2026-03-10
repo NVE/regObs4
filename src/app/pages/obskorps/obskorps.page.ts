@@ -24,7 +24,7 @@ import {
   IonRouterLink,
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 const toDateInputValue = (date: Date) => {
@@ -33,6 +33,10 @@ const toDateInputValue = (date: Date) => {
   return s;
 };
 
+// TODO: Kan ikke bruke OnPush ennå. ngOnInit() abonnerer på authService.myPageData$ og
+// setter this.observerId uten å kalle cdr.markForCheck().
+// observerId er bundet som initial value i et ion-input i templaten.
+// Fiks: Injiser ChangeDetectorRef og kall markForCheck() i subscribe, eller konverter til toSignal().
 @Component({
   selector: 'app-obskorps',
   templateUrl: './obskorps.page.html',
@@ -52,7 +56,6 @@ const toDateInputValue = (date: Date) => {
     IonRouterLink,
     IonSpinner,
     IonTitle,
-    NgIf,
     RouterLink,
   ],
 })

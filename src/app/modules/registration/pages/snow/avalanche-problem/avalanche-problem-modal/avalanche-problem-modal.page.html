@@ -22,7 +22,7 @@
         {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS" | translate }}
       </ion-checkbox>
     </ion-item>
-    <ng-container *ngIf="!noWeakLayers()">
+    @if (!noWeakLayers()) {
       <app-kdv-select
         label="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
         kdvKey="Snow_AvalCauseKDV"
@@ -48,7 +48,7 @@
           {{ largeCrystalLabel() }}
         </ion-checkbox>
       </ion-item>
-    </ng-container>
+    }
     <ion-list-header class="ion-text-uppercase">
       <ion-label> {{ "REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY" | translate }} </ion-label>
     </ion-list-header>

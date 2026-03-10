@@ -1,4 +1,4 @@
-import { Component, computed, model, signal } from '@angular/core';
+import { Component, computed, model, signal , ChangeDetectionStrategy } from '@angular/core';
 import { IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
@@ -24,6 +24,7 @@ type HeightsState = Record<ExposedHeightPosition, boolean>;
 
 @Component({
   selector: 'app-exposed-height',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './exposed-height.component.html',
   styleUrls: ['./exposed-height.component.scss'],
   imports: [IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText, SelectComponent, TranslatePipe],

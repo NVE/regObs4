@@ -15,8 +15,12 @@
       @for (layer of layers(); let i = $index; track $index) {
         <ion-item tabindex="0" (click)="addOrEditLayer(i)" (keyup.enter)="addOrEditLayer(i)" button>
           <ion-label>
-            <ng-container *ngIf="layer.Depth !== undefined"> {{ layer.Depth | metersToCm }}cm </ng-container>
-            <ng-container *ngIf="layer.SnowTemp !== undefined"> {{ layer.SnowTemp }}°C </ng-container>
+            @if (layer.Depth !== undefined) {
+              {{ layer.Depth | metersToCm }}cm
+            }
+            @if (layer.SnowTemp !== undefined) {
+              {{ layer.SnowTemp }}°C
+            }
           </ion-label>
         </ion-item>
       }

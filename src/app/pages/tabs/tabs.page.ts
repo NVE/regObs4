@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject , ChangeDetectionStrategy } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
 import { auditTime, combineLatest, concatMap, Observable } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
@@ -17,6 +17,7 @@ import { settings } from 'src/settings';
 
 @Component({
   selector: 'app-tabs',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
   imports: [IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, TranslatePipe],

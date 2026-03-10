@@ -1,4 +1,4 @@
-import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, viewChild } from '@angular/core';
+import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, viewChild , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import {
   IonButton,
@@ -19,6 +19,7 @@ import { SwiperContainer } from 'swiper/element';
 
 @Component({
   selector: 'app-start-wizard',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
   imports: [IonButton, IonFooter, IonToolbar, TranslatePipe, IonLabel, IonSelect, IonSelectOption],

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -22,6 +22,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-web-url-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-web-url-modal.page.html',
   styleUrls: ['./add-web-url-modal.page.scss'],
   imports: [

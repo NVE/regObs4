@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, input, linkedSignal, computed } from '@angular/core';
+import { Component, HostListener, inject, input, linkedSignal, computed , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -13,11 +13,12 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';
-import { NgIf, NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-numeric-input-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './numeric-input-modal.page.html',
   styleUrls: ['./numeric-input-modal.page.scss'],
   imports: [
@@ -31,8 +32,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonText,
     IonTitle,
     IonToolbar,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })

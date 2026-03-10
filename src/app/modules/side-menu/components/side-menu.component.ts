@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, inject, computed, Signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, computed, Signal , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
@@ -25,7 +25,7 @@ import { ExternalLinkService } from 'src/app/core/services/external-link/externa
 import { PopoverOptions, SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
-import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -45,6 +45,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-side-menu',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
   imports: [
@@ -61,8 +62,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     IonSelect,
     IonSelectOption,
     IonToggle,
-    NgFor,
-    NgIf,
     RouterLink,
     SupportTilesMenuComponent,
     TranslatePipe,
@@ -75,9 +74,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
   private translateService = inject(TranslateService);
   private navController = inject(NavController);
-  private ngZone = inject(NgZone);
   private externalLinkService = inject(ExternalLinkService);
   private fileLoggingService = inject(FileLoggingService);
+  private cdr = inject(ChangeDetectorRef);
   legalUrl = toSignal(this.userSettingService.legalUrl$, { initialValue: '' });
   userSettings?: UserSetting;
   settings = settings;
@@ -125,9 +124,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
-      });
+      this.userSettings = val;
+      this.cdr.markForCheck();
     });
     this.offlineMapsAvailable = this.isNativePlatform();
     this.selectLanguageLabel$ = this.getSelectLanguageLabel$();

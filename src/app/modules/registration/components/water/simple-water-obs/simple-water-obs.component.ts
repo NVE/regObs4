@@ -19,7 +19,7 @@ import { UrlEditModel } from 'src/app/modules/common-regobs-api';
 import { EditImagesBarComponent } from '../../snow/simple-snow-obs/edit-images-bar/edit-images-bar.component';
 import { TextCommentComponent } from '../../text-comment/text-comment.component';
 import { AddWebUrlItemComponent } from '../../add-web-url-item/add-web-url-item.component';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, chevronForward } from 'ionicons/icons';
@@ -41,7 +41,6 @@ import { checkmarkCircle, chevronForward } from 'ionicons/icons';
     IonLabel,
     IonList,
     IonText,
-    NgIf,
     TextCommentComponent,
     TranslatePipe,
   ],

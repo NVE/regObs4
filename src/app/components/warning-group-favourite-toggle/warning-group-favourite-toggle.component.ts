@@ -1,6 +1,5 @@
 import {
   Component,
-  NgZone,
   OnDestroy,
   Renderer2,
   OnChanges,
@@ -8,6 +7,8 @@ import {
   inject,
   viewChild,
   input,
+  signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
@@ -20,6 +21,7 @@ import { star } from 'ionicons/icons';
 
 @Component({
   selector: 'app-warning-group-favourite-toggle',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss'],
   imports: [IonIcon, NgClass],
@@ -27,7 +29,6 @@ import { star } from 'ionicons/icons';
 export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChanges {
   private warningService = inject(WarningService);
   private translateService = inject(TranslateService);
-  private ngZone = inject(NgZone);
   private domCtrl = inject(DomController);
   private renderer = inject(Renderer2);
   private toastController = inject(ToastController);
@@ -36,7 +37,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
   readonly ionIcon = viewChild.required(IonIcon);
 
   private warningIsFavouriteSubscription?: Subscription;
-  isFavourite?: boolean;
+  isFavourite = signal<boolean | undefined>(undefined);
   private _lastKey?: WarningGroupKey;
 
   constructor() {
@@ -55,9 +56,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
     this.warningIsFavouriteSubscription = this.warningService
       .getIsFavouriteObservable(key.groupId, key.geoHazard)
       .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.isFavourite = val;
-        });
+        this.isFavourite.set(val);
       });
   }
 
@@ -78,7 +77,7 @@ export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChange
 
   toggle() {
     const key = this.key();
-    if (this.isFavourite) {
+    if (this.isFavourite()) {
       this.warningService.removeFromFavourite(key.groupId, key.geoHazard).then(() => this.presentToast(false));
     } else {
       this.warningService.addToFavourite(key.groupId, key.geoHazard).then(() => this.presentToast(true));

@@ -1,10 +1,11 @@
 import { IonIcon } from '@ionic/angular/standalone';
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input , ChangeDetectionStrategy } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { getGeohazardsId, getIconForGeohazards } from './get-geo-icon';
 
 @Component({
   selector: 'app-geo-icon',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './geo-icon.component.html',
   styleUrls: ['./geo-icon.component.scss'],
   imports: [IonIcon],

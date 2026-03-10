@@ -46,7 +46,7 @@ import { MapService } from '../../../map/services/map/map.service';
 import { IPolygon } from '../../models/polygon';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { settings } from 'src/settings';
-import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { MapComponent } from '../../../map/components/map/map.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { KdvSelectComponent } from '../../../../components/kdv-select/kdv-select.component';
@@ -127,8 +127,6 @@ const DEBUG_TAG = 'SetLocationInMap';
     IonToggle,
     KdvSelectComponent,
     MapComponent,
-    NgFor,
-    NgIf,
     SelectComponent,
     SvgIconComponent,
     TranslatePipe,
@@ -221,6 +219,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   });
 
   isDesktop = this.platform.is('desktop');
+  // TODO: Kan ikke bruke OnPush ennå. setTranslatedAccuracies() (kalt i constructor) abonnerer
+  // på translateService.get() og setter spatialAccuracyOptions uten markForCheck().
+  // Brukes i templaten for <app-select [options]>.
+  // Fiks: Kall markForCheck() i subscribe, eller konverter til toSignal().
   spatialAccuracyOptions: SelectOption[] = [];
   locationPolygons: IPolygon[] = [];
   locationPolygonEditIdx = -1;

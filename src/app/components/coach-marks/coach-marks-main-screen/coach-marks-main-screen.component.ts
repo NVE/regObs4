@@ -1,5 +1,5 @@
 import { IonTabBar, IonLabel, IonTabButton, IonIcon, IonFabButton, IonText, IonFab } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject , ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, merge } from 'rxjs';
 import { map, distinctUntilChanged, takeUntil, filter, delay } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { add, map as mapIcon, list, warning } from 'ionicons/icons';
 
 @Component({
   selector: 'app-coach-marks-main-screen',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './coach-marks-main-screen.component.html',
   styleUrls: ['./coach-marks-main-screen.component.scss', '../coachmark-backdrop.scss'],
   animations: [

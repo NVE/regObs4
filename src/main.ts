@@ -64,6 +64,10 @@ function startApp() {
   console.log('starting app');
   bootstrapApplication(AppComponent, {
     providers: [
+      // Debug-mode for å sjekke at applikasjonen oppdateres på en zoneless-kompatibel måte
+      // https://angular.dev/guide/zoneless#debug-mode-check-to-ensure-updates-are-detected
+      // provideCheckNoChangesConfig({ exhaustive: true, interval: 100 }),
+
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       // TODO: Gjør det mulig å aktivere deaktivere ios mode via en knapp i headeren hvis på appMode er test
       provideIonicAngular({ useSetInputAPI: true }), // mode: 'ios'

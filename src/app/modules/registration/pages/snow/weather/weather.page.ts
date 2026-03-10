@@ -10,7 +10,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
@@ -23,10 +23,10 @@ import { TextCommentComponent } from '../../../components/text-comment/text-comm
 import { EditImagesComponent } from '../../../components/edit-images/edit-images.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { WeatherEditModel } from 'src/app/modules/common-regobs-api';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-weather',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './weather.page.html',
   styleUrls: ['./weather.page.scss'],
   imports: [
@@ -48,7 +48,6 @@ import { NgIf } from '@angular/common';
     SelectComponent,
     TextCommentComponent,
     TranslatePipe,
-    NgIf,
   ],
 })
 export class WeatherPage extends BasePage {

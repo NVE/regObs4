@@ -9,11 +9,11 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
+import { Component , ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';
-import { NgIf } from '@angular/common';
+
 import { RegistrationContentWrapperComponent } from '../../../components/registration-content-wrapper/registration-content-wrapper.component';
 import { TextCommentComponent } from '../../../components/text-comment/text-comment.component';
 import { KdvSelectComponent } from '../../../../../components/kdv-select/kdv-select.component';
@@ -22,6 +22,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-evaluation',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avalanche-evaluation.page.html',
   styleUrls: ['./avalanche-evaluation.page.scss'],
   imports: [
@@ -37,7 +38,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     IonTitle,
     IonToolbar,
     KdvSelectComponent,
-    NgIf,
     RegistrationContentWrapperComponent,
     TextCommentComponent,
     TranslatePipe,

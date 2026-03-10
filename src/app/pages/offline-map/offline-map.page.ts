@@ -1,4 +1,4 @@
-import { Component, NgZone, inject, signal } from '@angular/core';
+import { Component, inject, signal , ChangeDetectionStrategy } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -29,7 +29,7 @@ import { isPackageOutdated } from '../../core/services/offline-map/utils';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { chevronDownCircle, chevronUpCircle, refresh, warningOutline, trashOutline } from 'ionicons/icons';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
@@ -60,6 +60,7 @@ const DEBUG_TAG = 'OfflineMapPage';
 
 @Component({
   selector: 'app-offline-map',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './offline-map.page.html',
   styleUrls: ['./offline-map.page.scss'],
   imports: [
@@ -77,8 +78,6 @@ const DEBUG_TAG = 'OfflineMapPage';
     IonTitle,
     IonToolbar,
     MapComponent,
-    NgFor,
-    NgIf,
     TranslatePipe,
   ],
 })
@@ -89,7 +88,6 @@ export class OfflineMapPage extends NgDestoryBase {
   private alertController = inject(AlertController);
   private translateService = inject(TranslateService);
   private packageIndex = inject(PackageIndexService);
-  private zone = inject(NgZone);
   private logger = inject(LoggingService);
 
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
@@ -197,11 +195,9 @@ export class OfflineMapPage extends NgDestoryBase {
         })
       )
       .subscribe((itemsWithProgress) => {
-        this.zone.runOutsideAngular(() => {
-          for (const item of itemsWithProgress) {
-            this.setStyleForProgressOrDownloadedPackage(item);
-          }
-        });
+        for (const item of itemsWithProgress) {
+          this.setStyleForProgressOrDownloadedPackage(item);
+        }
       });
 
     this.showModal

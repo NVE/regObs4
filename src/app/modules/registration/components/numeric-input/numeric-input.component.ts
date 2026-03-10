@@ -1,4 +1,4 @@
-import { Component, inject, input, model, computed } from '@angular/core';
+import { Component, inject, input, model, computed , ChangeDetectionStrategy } from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
 import { IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { NgClass } from '@angular/common';
@@ -13,6 +13,7 @@ const convert = (direction: 'from' | 'to', convertRatio?: number, val?: number) 
 
 @Component({
   selector: 'app-numeric-input',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss'],
   imports: [IonItem, IonLabel, IonText, NgClass, TranslatePipe],

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, inject , ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -22,6 +22,7 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
 
 @Component({
   selector: 'app-set-damage-location',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar],
   templateUrl: './set-damage-location.page.html',
   styleUrls: ['./set-damage-location.page.scss'],

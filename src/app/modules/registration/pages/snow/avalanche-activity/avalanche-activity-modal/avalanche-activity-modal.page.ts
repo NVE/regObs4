@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
 import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,
@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
-import { NgIf, NgFor, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatetimePickerComponent } from '../../../../../../components/datetime-picker/datetime-picker.component';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';
@@ -30,6 +30,7 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avalanche-activity-modal.page.html',
   styleUrls: ['./avalanche-activity-modal.page.scss'],
   imports: [
@@ -51,8 +52,6 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
     IonToolbar,
     KdvSelectComponent,
     ModalSaveOrDeleteButtonsComponent,
-    NgFor,
-    NgIf,
     TextCommentComponent,
     TranslatePipe,
     ValidExpositionComponent,

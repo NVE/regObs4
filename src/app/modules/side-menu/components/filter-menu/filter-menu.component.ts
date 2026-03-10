@@ -24,7 +24,7 @@ import { SearchCriteriaModelService } from 'src/app/core/services/search-criteri
 import { CompetenceOption, CompetenceOptions } from './competenceOptions';
 import { Immutable } from 'src/app/core/models/immutable';
 import { ObservationTypeView } from './observationTypeOptions';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DateRangeComponent } from '../date-range/date-range.component';
 import { UpdateObservationsComponent } from '../update-observations/update-observations.component';
@@ -74,7 +74,6 @@ export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable
     IonSearchbar,
     IonTitle,
     IonToolbar,
-    NgIf,
     ObservationsDaysBackComponent,
     RegionFilterComponent,
     SlushFlowFilterComponent,
