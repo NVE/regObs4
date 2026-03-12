@@ -1,0 +1,91 @@
+@font-face {
+  font-family: 'SnowSymbols';
+  src: url('/assets/fonts/SnowSymbolsIACS.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:host {
+  display: contents;
+}
+
+svg {
+  display: inline-block;
+  user-select: none;
+  background-color: white;
+}
+
+text {
+  font-size: 14px;
+  /* font-family: Helvetica, Arial, sans-serif; */
+  fill: #000000;
+  stroke-width: 0px;
+}
+
+.temp circle {
+  fill: red;
+}
+
+.layers {
+  stroke-width: 1;
+  stroke: black;
+
+  polyline {
+    fill: #cccbea;
+  }
+
+  polyline:hover {
+    opacity: 0.7;
+  }
+}
+
+.axis {
+  stroke-width: 1;
+  stroke: black;
+
+  .axis-x {
+    text-anchor: middle;
+  }
+
+  .axis-y {
+    dominant-baseline: middle;
+  }
+}
+
+.label-axis {
+  text-anchor: middle;
+}
+
+.gf-labels,
+.gs-labels,
+.lwc-labels {
+  dominant-baseline: middle;
+  text-anchor: end;
+}
+
+.gf-labels {
+  text {
+    font-family: 'SnowSymbols';
+  }
+}
+
+.ground {
+  stroke: brown;
+  stroke-width: 2;
+
+  rect {
+    fill: white;
+  }
+
+  text {
+    dominant-baseline: middle;
+    text-anchor: start;
+    fill: brown;
+  }
+}
+
+/* TODO: Remove? */
+.table {
+  display: inline-block;
+  position: absolute;
+}

@@ -44,6 +44,7 @@ import { AvalancheActivitesViewComponent } from '../registrations/avalanche-acti
 import { ObservationActionsComponent } from '../observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from '../observation-location-map/observation-location-map.component';
 import { GeohazardChipComponent } from '../geohazard-chip/geohazard-chip.component';
+import { SnowProfileComponent } from '../../snow-profile/snow-profile.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 
@@ -65,6 +66,7 @@ const DEBUG_TAG = 'ObservationComponent';
     AvalancheProblemsViewComponent,
     AvalancheEvaluationViewComponent,
     ObservationActionsComponent,
+    SnowProfileComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -81,6 +83,13 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
+  snowProfile = computed(() => {
+    const data = this.registration().SnowProfile2;
+    if (data?.StratProfile?.Layers?.at(0)) {
+      return data;
+    }
+    return undefined;
+  });
   showChangedTime = computed(() => {
     const { DtChangeTime, DtRegTime } = this.registration();
     if (DtChangeTime == null) {

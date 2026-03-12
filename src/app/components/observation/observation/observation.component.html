@@ -18,6 +18,12 @@
         <app-observation-location-map [registration]="reg"></app-observation-location-map>
       </swiper-slide>
 
+      @if (snowProfile(); as data) {
+        <swiper-slide>
+          <app-snow-profile [data]="data" [width]="250" [height]="400" [showLabelAxis]="false"></app-snow-profile>
+        </swiper-slide>
+      }
+
       <!-- lazy-preload-prev-next="2" -->
       @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
         <swiper-slide (click)="openImageCarousel(index)" lazy="true">

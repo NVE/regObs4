@@ -1,1 +1,148 @@
-<p>snow-profile works!</p>
+<!-- <p>snow-profile works!</p>
+<pre>{{ hardness() | json }}</pre>
+<pre>{{ grainForm() | json }}</pre> -->
+<svg
+  [attr.viewBox]="viewBox()"
+  preserveAspectRatio="none"
+  aria-label="Tom snøprofil"
+  role="img"
+  [style.width]="width()"
+  [style.height]="height()"
+>
+  <!-- <rect
+    x=".5"
+    y=".5"
+    [attr.width]="width() - 1"
+    [attr.height]="height() - 1"
+    fill="none"
+    stroke="black"
+    stroke-width="1"
+  /> -->
+
+  <rect
+    [attr.x]="x0()"
+    [attr.y]="y0()"
+    [attr.width]="availableWidth()"
+    [attr.height]="availableHeight()"
+    fill="none"
+    stroke="black"
+    stroke-width="1"
+  />
+
+  <!-- Layers -->
+  <g class="layers">
+    @for (layer of layerPolylines(); track $index) {
+      <polyline [attr.points]="layer.points">
+        <title>{{ layer.tooltip }}</title>
+      </polyline>
+    }
+  </g>
+
+  @if (showLabels()) {
+    @if (grainFormLabels(); as labels) {
+      <g class="gf-labels">
+        @for (label of labels; track $index) {
+          @if (hardnessAxis().get("F"); as h) {
+            <text [attr.x]="h.x1" [attr.y]="label.y">
+              {{ label.value }}
+            </text>
+          }
+        }
+      </g>
+    }
+
+    @if (grainSizeLabels(); as labels) {
+      <g class="gs-labels">
+        @for (label of labels; track $index) {
+          @if (hardnessAxis().get("4F"); as h) {
+            <text [attr.x]="h.x1" [attr.y]="label.y">
+              {{ label.value }}
+            </text>
+          }
+        }
+      </g>
+    }
+
+    @if (lwcLabels(); as labels) {
+      <g class="lwc-labels">
+        @for (label of labels; track $index) {
+          @if (hardnessAxis().get("1F"); as h) {
+            <text [attr.x]="h.x1" [attr.y]="label.y">
+              {{ label.value }}
+            </text>
+          }
+        }
+      </g>
+    }
+  }
+
+  <!-- Temp -->
+  <g class="temp">
+    <path [attr.d]="tempPath()" fill="none" stroke="red" />
+    @if (showLabels()) {
+      @for (tempPoint of tempPoints(); track tempPoint) {
+        <circle [attr.cx]="tempPoint.x" [attr.cy]="tempPoint.y" r="2">
+          <title>{{ tempPoint.temp }}&deg;</title>
+        </circle>
+      }
+    }
+  </g>
+
+  @if (showAxis()) {
+    <g class="axis">
+      <g class="axis-x">
+        <text [attr.x]="x0() + availableWidth() / 2" [attr.y]="y0() - 35">Temperatur [C&deg;]</text>
+        @let x = x0() + availableWidth() + 50;
+        @let y = y0() + availableHeight() / 2;
+        <text [attr.x]="x" [attr.y]="y" [attr.transform]="'rotate(-90 ' + x + ' ' + y + ')'">Dybde [cm]</text>
+        @for (axis of tempAxis(); track axis) {
+          <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
+          <text [attr.x]="axis.x1" [attr.y]="axis.y1 - axisLabelOffset">{{ axis.temp }}</text>
+        }
+        @for (axis of hardnessAxis().entries(); track axis[0]) {
+          @let hardness = axis[0];
+          @let value = axis[1];
+          <line [attr.x1]="value.x1" [attr.y1]="value.y1" [attr.x2]="value.x2" [attr.y2]="value.y2" />
+          <text [attr.x]="value.x1" [attr.y]="value.y2 + axisLabelOffset">{{ hardness }}</text>
+        }
+      </g>
+      <g class="axis-y">
+        @for (axis of depthAxis(); track axis) {
+          <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
+          <text [attr.x]="axis.x1 + axisLabelOffset" [attr.y]="axis.y2">
+            {{ axis.depth * 100 }}
+          </text>
+        }
+      </g>
+    </g>
+
+    @if (showLabelAxis() && showLabels()) {
+      @let y = y0() + availableHeight() + 45;
+      <g class="label-axis">
+        @if (hardnessAxis().get("F"); as h) {
+          <text [attr.x]="h.x1" [attr.y]="y">Kornform</text>
+        }
+
+        @if (hardnessAxis().get("4F"); as h) {
+          <text [attr.x]="h.x1" [attr.y]="y">Kornstørrelse</text>
+        }
+
+        @if (hardnessAxis().get("1F"); as h) {
+          <text [attr.x]="h.x1" [attr.y]="y">LWC</text>
+        }
+      </g>
+    }
+  }
+
+  @if (showAxis() && toGround()) {
+    <g class="ground">
+      @let xEnd = x0() + availableWidth();
+      <line [attr.x1]="xEnd - 30" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd + 10" [attr.y2]="groundSymbolY()" />
+      <line [attr.x1]="xEnd - 29" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd - 19" [attr.y2]="groundSymbolY() + 10" />
+      <line [attr.x1]="xEnd - 19" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd - 9" [attr.y2]="groundSymbolY() + 10" />
+      <line [attr.x1]="xEnd - 9" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd + 1" [attr.y2]="groundSymbolY() + 10" />
+      <rect [attr.x]="xEnd + 10" [attr.y]="groundSymbolY() - 10" [attr.width]="33" [attr.height]="20" [attr.rx]="0" />
+      <text [attr.x]="xEnd + 13" [attr.y]="groundSymbolY() + 1">GND</text>
+    </g>
+  }
+</svg>

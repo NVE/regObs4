@@ -23,6 +23,8 @@ import {
   numberAttribute,
   computed,
   signal,
+  viewChild,
+  ElementRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
@@ -68,6 +70,7 @@ import { ObservationLocationMapComponent } from 'src/app/components/observation/
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { SnowProfileComponent } from 'src/app/components/snow-profile/snow-profile.component';
 
 const DEBUG_TAG = 'ViewObservationPage';
 
@@ -114,6 +117,7 @@ type RegistrationTypesV = { [geoHazardId: string]: RegistrationType[] };
     RegistrationViewComponent,
     TranslatePipe,
     SummaryComponent,
+    SnowProfileComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -189,6 +193,9 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private registrationTypesV = toSignal<RegistrationTypesV>(
     this.kdvService.getViewRepositoryByKeyObservable('RegistrationTypesV') as Observable<RegistrationTypesV>
   );
+
+  snowProfileContainer = viewChild<ElementRef<HTMLElement>>('sp');
+  snowProfileWidth = computed(() => this.snowProfileContainer()?.nativeElement.offsetWidth);
 
   constructor() {
     super();

@@ -270,6 +270,14 @@
             @if (snowProfileUrl()) {
               <img [src]="snowProfileUrl()" alt="Snow Profile" />
             }
+            @if (reg.SnowProfile2) {
+              <div class="snow-profile-container" #sp>
+                @if (snowProfileWidth(); as width) {
+                  <p>Test</p>
+                  <app-snow-profile [data]="reg.SnowProfile2" [height]="800" [width]="width"></app-snow-profile>
+                }
+              </div>
+            }
             <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
           </app-registration-view>
         }
