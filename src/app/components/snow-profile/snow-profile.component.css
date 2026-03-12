@@ -89,3 +89,14 @@ text {
   display: inline-block;
   position: absolute;
 }
+
+.tests {
+  text {
+    text-anchor: start;
+  }
+  line {
+    stroke: gray;
+    stroke-width: 1;
+    stroke-dasharray: 2;
+  }
+}

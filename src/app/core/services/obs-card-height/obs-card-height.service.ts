@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { LRUCache } from 'lru-fast';
 
+/**
+ * TODO: Remove and remove dependency (lru-fast);
+ */
 @Injectable({
   providedIn: 'root',
 })

@@ -1,4 +1,9 @@
-import { SnowTempObsModel, StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api';
+import {
+  CompressionTestEditModel,
+  KdvElement,
+  SnowTempObsModel,
+  StratProfileLayerEditModel,
+} from 'src/app/modules/common-regobs-api';
 import {
   Hardness,
   HardnessProjectorConfig,
@@ -11,6 +16,7 @@ import {
   TempPoint,
 } from './models';
 import { GrainForm, grainFormTidToSnowSymbolKey } from './grainforms';
+import { formatCompressionTest } from './compression-test';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -66,7 +72,7 @@ export function createDepthProjector(frame: PlotFrame, maxDepth: number): (depth
     }
 
     const normalizedY = depth / maxDepth;
-    return clamp(normalizedY, 0, 1) * frame.height;
+    return frame.y0 + clamp(normalizedY, 0, 1) * frame.height;
   };
 }
 
@@ -154,7 +160,7 @@ export function createLayerPolygons(
     return [];
   }
 
-  const { x0, y0, width } = frame;
+  const { x0, width } = frame;
   const rightEdgeX = fmt(x0 + width);
 
   let currentDepth = 0;
@@ -171,8 +177,8 @@ export function createLayerPolygons(
 
     const leftTopX = fmt(x0 + width - topWidth);
     const leftBottomX = fmt(x0 + width - bottomWidth);
-    const topY = fmt(y0 + depthProjector(topDepth));
-    const bottomY = fmt(y0 + depthProjector(bottomDepth));
+    const topY = fmt(depthProjector(topDepth));
+    const bottomY = fmt(depthProjector(bottomDepth));
 
     currentDepth = bottomDepth;
 
@@ -192,13 +198,20 @@ export function createLayerPolygons(
 export function createLayerTooltip(layer: StratProfileLayerEditModel): string {
   const items = [] as string[];
   const thickness = fmt((layer.Thickness || 0) * 100, 1);
-  items.push(`${thickness}cm`);
+  items.push(`Tykkelse: ${thickness}cm`);
   if (layer.GrainFormPrimaryTID) {
-    items.push(GrainForm[layer.GrainFormPrimaryTID]);
-
     if (layer.GrainFormSecondaryTID) {
-      items.push(`(${GrainForm[layer.GrainFormSecondaryTID]})`);
+      items.push(`Korntype: ${GrainForm[layer.GrainFormPrimaryTID]} (${GrainForm[layer.GrainFormSecondaryTID]})`);
+    } else {
+      items.push(`Korntype: ${GrainForm[layer.GrainFormPrimaryTID]}`);
     }
+  }
+  if (layer.GrainSizeAvg) {
+    let grainSize = fmt(layer.GrainSizeAvg * 100, 1).toString();
+    if (layer.GrainSizeAvgMax) {
+      grainSize += `-${fmt(layer.GrainSizeAvgMax * 100, 1)}`;
+    }
+    items.push(`Kornstørrelse: ${grainSize}mm`);
   }
   if (layer.HardnessTID) {
     let hardness = Hardness[layer.HardnessTID];
@@ -206,13 +219,16 @@ export function createLayerTooltip(layer: StratProfileLayerEditModel): string {
     if (layer.HardnessBottomTID) {
       hardness += `-${Hardness[layer.HardnessBottomTID]}`;
     }
-    items.push(hardness);
+    items.push(`Hardhet: ${hardness}`);
   }
+  // if (layer.WetnessTID) {
+  //   items.push(`LWC: ${LWC layer.WetnessTID}`)
+  // }
   if (layer.Comment) {
     items.push('"' + layer.Comment + '"');
   }
 
-  return items.join(' ');
+  return items.join('\n');
 }
 
 export function layerPolygonDataToPoints(l: LayerPolygonData): PlotPoint[] {
@@ -466,13 +482,13 @@ export function createDepthAxis(frame: PlotFrame, maxDepth: number, depthProject
   const x1 = frame.x0 + frame.width;
   const x2 = x1 + frame.axisSize;
   return steps.map((depth) => {
-    const y = fmt(frame.y0 + depthProjector(depth));
+    const y = fmt(depthProjector(depth));
     return {
       x1,
       x2,
       y1: y,
       y2: y,
-      depth,
+      depth: (depth * 100).toFixed(0),
     };
   });
 }
@@ -514,7 +530,7 @@ export function createLayerLabels(
 ) {
   const labels = {
     gf: [] as Label<string>[],
-    gs: [] as Label<number>[],
+    gs: [] as Label<string>[],
     lwc: [] as Label<number>[],
   };
 
@@ -539,8 +555,12 @@ export function createLayerLabels(
     if (GrainFormPrimaryTID != null) {
       // TODO: GrainformSecondary
       let value = grainFormTidToSnowSymbolKey(GrainFormPrimaryTID);
-      if (GrainFormSecondaryTID != null) {
-        value += grainFormTidToSnowSymbolKey(GrainFormSecondaryTID);
+      if (GrainFormSecondaryTID != null && GrainFormSecondaryTID !== GrainFormPrimaryTID) {
+        if (GrainFormPrimaryTID === GrainForm.MFcr) {
+          value += grainFormTidToSnowSymbolKey(GrainFormSecondaryTID);
+        } else {
+          value += '(' + grainFormTidToSnowSymbolKey(GrainFormSecondaryTID) + ')';
+        }
       } else if (GrainFormPrimaryTID === GrainForm.MFcr) {
         value += grainFormTidToSnowSymbolKey(GrainForm.MF);
       }
@@ -552,9 +572,37 @@ export function createLayerLabels(
     }
 
     if (GrainSizeAvg != null) {
-      labels.gs.push({ y, value: fmt(GrainSizeAvg * 100, 1) });
+      let value = fmt(GrainSizeAvg * 100, 1).toString();
+      if (GrainSizeAvgMax) {
+        value += '-';
+        value += fmt(GrainSizeAvgMax * 100, 1);
+      }
+      labels.gs.push({ y, value });
     }
   }
 
   return labels;
+}
+
+export function createCompressionTestPlots(
+  tests: CompressionTestEditModel[],
+  testFormatter: (test: CompressionTestEditModel) => string,
+  depthProjector: (depth: number) => number
+) {
+  return tests
+    .filter((x) => x.FractureDepth != null)
+    .filter((x) => x.IncludeInSnowProfile)
+    .map((test) => {
+      const label = testFormatter(test);
+      const y = depthProjector(test.FractureDepth as number);
+      let tooltip = label;
+      if (test.Comment) {
+        tooltip += ` "${test.Comment}"`;
+      }
+      return {
+        label,
+        y,
+        tooltip,
+      };
+    });
 }

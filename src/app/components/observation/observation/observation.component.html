@@ -20,7 +20,13 @@
 
       @if (snowProfile(); as data) {
         <swiper-slide>
-          <app-snow-profile [data]="data" [width]="250" [height]="400" [showLabelAxis]="false"></app-snow-profile>
+          <app-snow-profile
+            [data]="data"
+            [tests]="reg.CompressionTest"
+            [width]="250"
+            [height]="400"
+            [showLabelAxis]="false"
+          ></app-snow-profile>
         </swiper-slide>
       }
 

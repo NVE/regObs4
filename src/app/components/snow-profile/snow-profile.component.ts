@@ -1,8 +1,7 @@
-import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
+import { CompressionTestEditModel, SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
 import { HardnessScaleMode, LayerPolygon, PlotFrame } from './models';
 import {
   createTempProjector,
@@ -19,14 +18,16 @@ import {
   createHardnessAxis,
   createDepthProjector,
   createDepthAxis,
+  createCompressionTestPlots,
 } from './plot';
+import { formatCompressionTest } from './compression-test';
 
 @Component({
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.component.html',
   styleUrls: ['./snow-profile.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [JsonPipe],
+  // imports: [JsonPipe],
 })
 export class SnowProfileComponent {
   private kdv = inject(KdvService);
@@ -34,15 +35,41 @@ export class SnowProfileComponent {
   grainForm = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_GrainFormKDV'), { initialValue: [] });
   hardness = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_HardnessKDV'), { initialValue: [] });
   lwc = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_WetnessKDV'), { initialValue: [] });
+  propagationKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_PropagationKDV'), { initialValue: [] });
+  fractureKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_ComprTestFractureKDV'), { initialValue: [] });
+
+  //   Snow_PropagationKDV
+  // Snow_ComprTestFractureKDV
 
   data = input.required<SnowProfileEditModel>();
-  width = input(0);
-  height = input(0);
+  tests = input<CompressionTestEditModel[]>();
+  inputWidth = input(0, { alias: 'width' });
+  inputHeight = input(0, { alias: 'height' });
   hardnessScaleMode = input<HardnessScaleMode>('linear');
   hardnessScaleExponent = input(2);
   minHardnessWidthPx = input(24);
   useRamResistance = input(false);
   showLabelAxis = input(true);
+
+  width = computed(() => {
+    if (this.inputWidth() > 0) {
+      return this.inputWidth();
+    }
+    if (this.inputHeight()) {
+      return (this.inputHeight() * 7) / 10;
+    }
+    return 0;
+  });
+
+  height = computed(() => {
+    if (this.inputHeight() > 0) {
+      return this.inputHeight();
+    }
+    if (this.inputWidth()) {
+      return (this.inputWidth() * 10) / 7;
+    }
+    return 0;
+  });
 
   scaleFactor = computed(() => {
     const width = this.width();
@@ -69,7 +96,6 @@ export class SnowProfileComponent {
 
   showAxis = computed(() => this.width() > 100 && this.height() > 200);
   showLabels = computed(() => this.width() > 200);
-  // showLabels = signal(false);
 
   minLayerHeight = 20;
 
@@ -181,7 +207,18 @@ export class SnowProfileComponent {
   depthProjector = computed(() => createDepthProjector(this.frame(), this.maxDepth()));
   depthAxis = computed(() => createDepthAxis(this.frame(), this.maxDepth(), this.depthProjector()));
 
-  // constructor() {
-  //   afterNextRender(() => {});
-  // }
+  testFormatter = computed(() => {
+    const propagationKdv = this.propagationKdv();
+    const fractureKdv = this.fractureKdv();
+    return (test: CompressionTestEditModel) => {
+      return formatCompressionTest(test, propagationKdv, fractureKdv, { includeDepth: false });
+    };
+  });
+  testPlots = computed(() => {
+    const tests = this.tests();
+    if (tests) {
+      return createCompressionTestPlots(tests, this.testFormatter(), this.depthProjector());
+    }
+    return [];
+  });
 }
