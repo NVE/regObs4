@@ -10,9 +10,14 @@ import {
   model,
   viewChild,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import { IonFabButton, IonIcon, ModalController, IonChip } from '@ionic/angular/standalone';
-import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import {
+  AttachmentViewModel,
+  RegistrationViewModel,
+  StratProfileLayerEditModel,
+} from 'src/app/modules/common-regobs-api';
 import { SwiperContainer } from 'swiper/element';
 import { addIcons } from 'ionicons';
 import { close, downloadOutline, openOutline, eyeOutline } from 'ionicons/icons';
@@ -130,5 +135,21 @@ export class ObservationImageCarouselComponent {
 
     attachment.Url = 'assets/images/broken-image-w-bg.svg';
     attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
+  }
+
+  private snowProfile = viewChild(SnowProfileComponent);
+  showsComments = computed(() => !!this.snowProfile()?.showComments());
+  snowProfileLayer = signal<StratProfileLayerEditModel | undefined>(undefined);
+  nComments = computed(() =>
+    (this.registration().SnowProfile2?.StratProfile?.Layers || []).reduce((n, layer) => (layer.Comment ? n + 1 : n), 0)
+  );
+
+  setLayerInfo($event: number) {
+    const layer = this.registration().SnowProfile2?.StratProfile?.Layers?.at($event);
+    if (layer) {
+      this.snowProfileLayer.set(layer);
+    } else {
+      this.snowProfileLayer.set(undefined);
+    }
   }
 }

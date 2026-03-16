@@ -11,7 +11,11 @@
     @if (item.type === "SnowProfile") {
       @let reg = registration();
       <swiper-slide>
-        <app-snow-profile [data]="reg.SnowProfile2!" [tests]="reg.CompressionTest"></app-snow-profile>
+        <app-snow-profile
+          [data]="reg.SnowProfile2!"
+          [tests]="reg.CompressionTest"
+          (layerClick)="setLayerInfo($event)"
+        ></app-snow-profile>
       </swiper-slide>
     } @else {
       @let attachment = item.data;
@@ -30,16 +34,35 @@
 <div class="image-description">
   <div class="image-description__content">
     @let item = currentItem();
+    @let isSnowProfile = item.type === "SnowProfile";
     @let attachment = item.type === "Attachment" ? item.data : null;
 
     <!-- tittel -->
     @if (attachment?.RegistrationName; as regName) {
-      <ion-chip color="primary"> {{ regName }}</ion-chip>
+      <ion-chip color="primary">{{ regName }}</ion-chip>
     }
+
     <!-- kommentar -->
+    @if (isSnowProfile) {
+      @if (!showsComments()) {
+        @if (snowProfileLayer()?.Comment; as comment) {
+          <app-key-value [key]="'Lagkommentar'" [value]="comment"></app-key-value>
+        } @else {
+          @if (nComments() > 0) {
+            <app-key-value
+              >{{ nComments() }} lag har kommentarer. Klikk på et lag med 💬 for å se kommentar.</app-key-value
+            >
+          }
+        }
+      }
+      @if (registration().SnowProfile2?.Comment; as comment) {
+        <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment"></app-key-value>
+      }
+    }
     @if (attachment?.Comment; as comment) {
       <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment"></app-key-value>
     }
+
     <div class="image-description__params">
       <!-- region -->
       @if (registration().ObsLocation.ForecastRegionName) {

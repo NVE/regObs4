@@ -19,7 +19,7 @@
     <!-- Layers -->
     <g class="layers">
       @for (layer of layerPolylines(); track $index) {
-        <polyline [attr.points]="layer.points">
+        <polyline [attr.points]="layer.points" (click)="layerClick.emit($index)">
           @if (showTitles) {
             <title>{{ layer.tooltip }}</title>
           }
@@ -28,6 +28,21 @@
     </g>
 
     @if (showLabels()) {
+      @if (!showComments()) {
+        @let comments = commentLabels();
+        @if (comments.length > 0) {
+          <g class="c-labels">
+            @let x = x0() + availableWidth() + 10;
+            @for (comment of comments; track $index) {
+              <text [attr.x]="x" [attr.y]="comment.y">
+                <title>{{ comment.value }}</title>
+                💬
+              </text>
+            }
+          </g>
+        }
+      }
+
       @if (grainFormLabels(); as labels) {
         <g class="gf-labels">
           @for (label of labels; track $index) {

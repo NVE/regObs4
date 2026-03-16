@@ -8,6 +8,7 @@ import {
   ElementRef,
   inject,
   input,
+  output,
   signal,
   Signal,
   viewChildren,
@@ -65,6 +66,9 @@ export class SnowProfileComponent {
   minHardnessWidthPx = input(24);
   useRamResistance = input(false);
   showLabelAxis = input(false);
+  showPopovers = input(false);
+
+  layerClick = output<number>();
 
   showTitles = !this.platform.is('mobile');
 
@@ -214,6 +218,7 @@ export class SnowProfileComponent {
       };
     });
   });
+  commentLabels = computed(() => this.layerLabels().c);
 
   layerPolylines = computed(() =>
     this.layerPolylinePoints().map((l) => ({ points: pointsToPolyline(l.points), tooltip: l.tooltip }))
@@ -317,17 +322,6 @@ export class SnowProfileComponent {
   });
 
   constructor() {
-    effect(() => {
-      console.log('SNOW PROFILE', {
-        w: this.width(),
-        h: this.height(),
-        vb: this.viewBox(),
-        comments: this.commentRefs(),
-        commentHeights: this.commentHeights(),
-        yPositions: this.commentYPositions(),
-      });
-    });
-
     afterNextRender(() => {
       const observer = new ResizeObserver(([entry]) => {
         const { width, height } = entry.contentRect;

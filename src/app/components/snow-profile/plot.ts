@@ -532,6 +532,7 @@ export function createLayerLabels(
     gf: [] as Label<string>[],
     gs: [] as Label<string>[],
     lwc: [] as Label<number>[],
+    c: [] as Label<string>[],
   };
 
   // Grain form, grain size, wetness, density?
@@ -551,6 +552,10 @@ export function createLayerLabels(
 
     const polygon = polygons[i];
     const y = getLabelPositionY(polygon.points);
+
+    if (layer.Comment) {
+      labels.c.push({ y, value: layer.Comment });
+    }
 
     if (GrainFormPrimaryTID != null) {
       // TODO: GrainformSecondary
