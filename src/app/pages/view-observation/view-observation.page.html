@@ -274,11 +274,7 @@
               <div class="snow-profile-container" #sp>
                 @if (snowProfileWidth(); as width) {
                   <p>Test</p>
-                  <app-snow-profile
-                    [data]="reg.SnowProfile2"
-                    [tests]="reg.CompressionTest"
-                    [width]="width"
-                  ></app-snow-profile>
+                  <app-snow-profile [data]="reg.SnowProfile2" [tests]="reg.CompressionTest"></app-snow-profile>
                 }
               </div>
             }

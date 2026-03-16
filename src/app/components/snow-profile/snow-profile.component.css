@@ -6,13 +6,21 @@
 }
 
 :host {
-  display: contents;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  justify-content: center;
+
+  --lwc-color: blue;
+  --gs-color: brown;
+  --temp-color: red;
+  --layer-color: #cccbea;
 }
 
 svg {
-  display: inline-block;
   user-select: none;
-  background-color: white;
+  flex-shrink: 0;
 }
 
 text {
@@ -23,7 +31,7 @@ text {
 }
 
 .temp circle {
-  fill: red;
+  fill: var(--temp-color, red);
 }
 
 .layers {
@@ -31,7 +39,7 @@ text {
   stroke: black;
 
   polyline {
-    fill: #cccbea;
+    fill: var(--layer-color);
   }
 
   polyline:hover {
@@ -63,6 +71,16 @@ text {
   text-anchor: end;
 }
 
+.gs-labels text,
+.gs-axis {
+  fill: var(--gs-color, black);
+}
+
+.lwc-labels text,
+.lwc-axis {
+  fill: var(--lwc-color, black);
+}
+
 .gf-labels {
   text {
     font-family: 'SnowSymbols';
@@ -84,10 +102,30 @@ text {
   }
 }
 
-/* TODO: Remove? */
-.table {
-  display: inline-block;
-  position: absolute;
+.comments {
+  position: relative;
+  flex-grow: 1;
+  overflow: hidden;
+  max-width: 500px;
+
+  .comment {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: 2px 4px;
+    font-size: 14px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.annotation-lines {
+  line {
+    stroke: #888;
+    stroke-width: 1;
+    stroke-dasharray: 3 2;
+  }
 }
 
 .tests {

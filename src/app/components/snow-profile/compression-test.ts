@@ -4,7 +4,7 @@ export function formatCompressionTest(
   test: CompressionTestEditModel,
   propagationKdv: KdvElement[],
   fractureKdv: KdvElement[],
-  opts: { includeDepth: boolean } = { includeDepth: true }
+  opts: { includeDepth?: boolean; includeFracture?: boolean } = { includeDepth: true, includeFracture: true }
 ) {
   const parts = [];
   if (test.PropagationTID) {
@@ -13,9 +13,11 @@ export function formatCompressionTest(
   if (test.TapsFracture) {
     parts.push(test.TapsFracture);
   }
-  if (test.ComprTestFractureTID) {
-    const name = fractureKdv.find((x) => x.Id === test.ComprTestFractureTID)?.Name;
-    parts.push(`(${name})`);
+  if (opts.includeFracture) {
+    if (test.ComprTestFractureTID) {
+      const name = fractureKdv.find((x) => x.Id === test.ComprTestFractureTID)?.Name;
+      parts.push(`(${name})`);
+    }
   }
   if (opts.includeDepth && test.FractureDepth && test.FractureDepth > 0) {
     const depth = (test.FractureDepth * 100).toFixed(0);

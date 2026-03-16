@@ -25,6 +25,8 @@ import { PlotService } from 'src/app/core/services/plot.service';
 import { Router, RouterLink } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { CarouselItems } from './models';
+import { SnowProfileComponent } from '../../snow-profile/snow-profile.component';
 
 const DEBUG_TAG = 'ImageCarousel';
 
@@ -34,7 +36,16 @@ const DEBUG_TAG = 'ImageCarousel';
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent, RouterLink, IonChip],
+  imports: [
+    IonIcon,
+    IonFabButton,
+    TranslatePipe,
+    DatePipe,
+    KeyValueComponent,
+    RouterLink,
+    IonChip,
+    SnowProfileComponent,
+  ],
 })
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
@@ -42,23 +53,27 @@ export class ObservationImageCarouselComponent {
   private router = inject(Router);
   private plotService = inject(PlotService);
   private logger = inject(LoggingService);
-
-  isImageListView = computed(() => this.router.url.includes('search/pictures'));
-  attachments = input<AttachmentViewModel[]>([]);
   translateService = inject(TranslateService);
 
   registration = input.required<RegistrationViewModel>();
-  attachmentIndex = model<number>(0);
+  items = input<CarouselItems>([]);
+  index = model<number>(0);
 
+  isImageListView = computed(() => this.router.url.includes('search/pictures'));
   roundedDownOrientationValue = computed(() => {
-    const aspectValue = this.currentAttachmentData().Aspect; //256
+    const item = this.currentItem();
+    if (item.type === 'SnowProfile') {
+      return '';
+    }
+    const aspectValue = item.data.Aspect; //256
     if (!aspectValue) return '';
     const roundedDownOrientation = getRoundedDownOrientationValue(aspectValue);
     if (!roundedDownOrientation) return '';
     return settings.orientation[roundedDownOrientation];
   });
 
-  currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
+  currentItem = computed(() => this.items()[this.index()]);
+  currentAttachmentData = computed(() => this.items()?.[this.index()]);
 
   snowProfileUrl = linkedSignal(() => {
     const reg = this.registration();
@@ -86,12 +101,12 @@ export class ObservationImageCarouselComponent {
   setCurrentSlideIndex(e: Event) {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
-    this.attachmentIndex.set(activeIndex);
+    this.index.set(activeIndex);
     this;
   }
 
   ngAfterViewInit() {
-    this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
+    this.swiper()?.nativeElement.swiper.slideTo(this.index());
   }
 
   setFallbackImage(attachment: AttachmentViewModel) {

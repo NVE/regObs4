@@ -1,4 +1,17 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal, Signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  Signal,
+  viewChildren,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { CompressionTestEditModel, SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
@@ -21,16 +34,21 @@ import {
   createCompressionTestPlots,
 } from './plot';
 import { formatCompressionTest } from './compression-test';
+import { Platform } from '@ionic/angular';
+
+const PLOT_MAX_WIDTH = 700;
 
 @Component({
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.component.html',
   styleUrls: ['./snow-profile.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // imports: [JsonPipe],
 })
 export class SnowProfileComponent {
   private kdv = inject(KdvService);
+  private elementRef = inject(ElementRef);
+  private destroyRef = inject(DestroyRef);
+  private platform = inject(Platform);
 
   grainForm = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_GrainFormKDV'), { initialValue: [] });
   hardness = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_HardnessKDV'), { initialValue: [] });
@@ -38,38 +56,41 @@ export class SnowProfileComponent {
   propagationKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_PropagationKDV'), { initialValue: [] });
   fractureKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_ComprTestFractureKDV'), { initialValue: [] });
 
-  //   Snow_PropagationKDV
-  // Snow_ComprTestFractureKDV
-
   data = input.required<SnowProfileEditModel>();
   tests = input<CompressionTestEditModel[]>();
-  inputWidth = input(0, { alias: 'width' });
-  inputHeight = input(0, { alias: 'height' });
+  // inputWidth = input(0, { alias: 'width' });
+  // inputHeight = input(0, { alias: 'height' });
   hardnessScaleMode = input<HardnessScaleMode>('linear');
   hardnessScaleExponent = input(2);
   minHardnessWidthPx = input(24);
   useRamResistance = input(false);
-  showLabelAxis = input(true);
+  showLabelAxis = input(false);
 
-  width = computed(() => {
-    if (this.inputWidth() > 0) {
-      return this.inputWidth();
-    }
-    if (this.inputHeight()) {
-      return (this.inputHeight() * 7) / 10;
-    }
-    return 0;
-  });
+  showTitles = !this.platform.is('mobile');
 
-  height = computed(() => {
-    if (this.inputHeight() > 0) {
-      return this.inputHeight();
-    }
-    if (this.inputWidth()) {
-      return (this.inputWidth() * 10) / 7;
-    }
-    return 0;
-  });
+  // width = computed(() => {
+  //   let width = this.inputWidth();
+  //   if (!width) {
+  //     width = (this.inputHeight() * 7) / 10;
+  //   }
+  //   return Math.min(width, PLOT_MAX_WIDTH);
+  // });
+
+  // height = computed(() => {
+  //   if (this.inputHeight() > 0) {
+  //     return this.inputHeight();
+  //   }
+  //   if (this.inputWidth()) {
+  //     const height = (this.inputWidth() * 10) / 7;
+  //     if (height > window.innerHeight) {
+  //       return window.innerHeight;
+  //     }
+  //     return height;
+  //   }
+  //   return 0;
+  // });
+  width = signal(0);
+  height = signal(0);
 
   scaleFactor = computed(() => {
     const width = this.width();
@@ -90,7 +111,14 @@ export class SnowProfileComponent {
     return scaleFactor;
   });
 
-  svgWidth = computed(() => this.width() * this.scaleFactor());
+  showComments = computed(() => this.width() > 700);
+  svgWidth = computed(() => {
+    let width = this.width();
+    if (this.showComments()) {
+      width = Math.min(width * 0.7, PLOT_MAX_WIDTH);
+    }
+    return width * this.scaleFactor();
+  });
   svgHeight = computed(() => this.height() * this.scaleFactor());
   viewBox = computed(() => `0 0 ${this.svgWidth()} ${this.svgHeight()}`);
 
@@ -103,7 +131,7 @@ export class SnowProfileComponent {
   transitionWidth = 20;
   axisLabelOffset = 15;
   x0 = computed(() => (this.showAxis() ? 20 : 0));
-  y0 = computed(() => (this.showAxis() ? 60 : 0));
+  y0 = computed(() => (this.showTemp() ? 60 : 16));
   xMargin = computed(() => (this.showAxis() ? 70 : 0));
   availableWidth = computed(() => {
     const width = this.svgWidth();
@@ -128,6 +156,7 @@ export class SnowProfileComponent {
   }));
 
   temperatures = computed(() => this.data()?.SnowTemp?.Layers || []);
+  showTemp = computed(() => this.showAxis() && this.temperatures().length > 1);
   tempMin = computed(() => {
     const minTemp = this.temperatures().reduce((min, x) => Math.min(min, x.SnowTemp || 0), 0);
     if (minTemp > -10) {
@@ -177,9 +206,10 @@ export class SnowProfileComponent {
   grainSizeLabels = computed(() => this.layerLabels().gs);
   lwcLabels = computed(() => {
     return this.layerLabels().lwc.map(({ value, y }) => {
-      const name = this.lwc().find((x) => x.Id === value)?.Name ?? value.toString();
+      const kdv = this.lwc().find((x) => x.Id === value);
       return {
-        value: name,
+        value: kdv?.Name ?? value.toString(),
+        desc: kdv?.Description,
         y,
       };
     });
@@ -210,8 +240,8 @@ export class SnowProfileComponent {
   testFormatter = computed(() => {
     const propagationKdv = this.propagationKdv();
     const fractureKdv = this.fractureKdv();
-    return (test: CompressionTestEditModel) => {
-      return formatCompressionTest(test, propagationKdv, fractureKdv, { includeDepth: false });
+    return (test: CompressionTestEditModel, opts: { includeDepth: boolean; includeFracture: boolean }) => {
+      return formatCompressionTest(test, propagationKdv, fractureKdv, opts);
     };
   });
   testPlots = computed(() => {
@@ -221,4 +251,145 @@ export class SnowProfileComponent {
     }
     return [];
   });
+
+  commentRefs = viewChildren<ElementRef<HTMLDivElement>>('comment');
+  commentHeights = signal<number[]>([]);
+  commentYPositions = signal<number[]>([]);
+
+  commentTargetYPositions = computed(() => {
+    const rows = this.comments();
+    const raw = this.rawLayerPolygons();
+    return rows.map((row) => {
+      const layer = raw[row.i];
+      return (layer.topY + layer.bottomY) / 2;
+    });
+  });
+
+  annotationLines = computed(() => {
+    const positions = this.commentYPositions();
+    const heights = this.commentHeights();
+    if (positions.length === 0) return [];
+
+    const targetYs = this.commentTargetYPositions();
+    const frame = this.frame();
+    const svgW = this.svgWidth();
+    const scaleFactor = this.scaleFactor();
+
+    const x1 = frame.x0 + frame.width;
+    const x2 = svgW;
+
+    return positions.map((pos, i) => {
+      const commentCenterY = (pos + (heights[i] || 0) / 2) * scaleFactor;
+      return {
+        x1,
+        y1: targetYs[i],
+        x2,
+        y2: commentCenterY,
+      };
+    });
+  });
+
+  comments = computed(() => {
+    // const heights = this.layerHeightsExpanded();
+    const layers = this.layers();
+    // const points = this.layerPolylinePoints();
+
+    const rows = [];
+    for (let i = 0; i < layers.length; i++) {
+      const layer = layers[i];
+      // const height = heights[i];
+      // let gf;
+      // if (layer.GrainFormPrimaryTID) {
+      //   gf = GrainForm[layer.GrainFormPrimaryTID];
+      // }
+
+      if (layer.Comment) {
+        rows.push({
+          i,
+          // height,
+          comment: layer.Comment,
+          // gf,
+        });
+      }
+    }
+
+    return rows;
+  });
+
+  constructor() {
+    effect(() => {
+      console.log('SNOW PROFILE', {
+        w: this.width(),
+        h: this.height(),
+        vb: this.viewBox(),
+        comments: this.commentRefs(),
+        commentHeights: this.commentHeights(),
+        yPositions: this.commentYPositions(),
+      });
+    });
+
+    afterNextRender(() => {
+      const observer = new ResizeObserver(([entry]) => {
+        const { width, height } = entry.contentRect;
+        this.width.set(width);
+        this.height.set(height);
+
+        // Update comment heights
+        const heights = this.commentRefs().map((ref) => ref.nativeElement.offsetHeight);
+        this.commentHeights.set(heights);
+        this.setCommentPositions(heights);
+      });
+
+      observer.observe(this.elementRef.nativeElement);
+      this.destroyRef.onDestroy(() => observer.disconnect());
+    });
+  }
+
+  private setCommentPositions(heights: number[]) {
+    const targetYsSvg = this.commentTargetYPositions();
+    const scaleFactor = this.scaleFactor();
+    const targetYsDisplay = targetYsSvg.map((y) => y / scaleFactor);
+    const availableHeight = this.height();
+    const gap = 4;
+    const n = heights.length;
+    if (n === 0) return;
+
+    // Ideal top position: center each comment on its target y
+    const positions = targetYsDisplay.map((target, i) => target - heights[i] / 2);
+
+    // Forward pass: push down to prevent overlap
+    for (let i = 1; i < n; i++) {
+      const minTop = positions[i - 1] + heights[i - 1] + gap;
+      if (positions[i] < minTop) {
+        positions[i] = minTop;
+      }
+    }
+
+    // Clamp last comment to bottom
+    const lastIdx = n - 1;
+    if (positions[lastIdx] + heights[lastIdx] > availableHeight) {
+      positions[lastIdx] = availableHeight - heights[lastIdx];
+    }
+
+    // Backward pass: push up to prevent overlap
+    for (let i = n - 2; i >= 0; i--) {
+      const maxTop = positions[i + 1] - heights[i] - gap;
+      if (positions[i] > maxTop) {
+        positions[i] = maxTop;
+      }
+    }
+
+    // Clamp first comment to top and re-do forward pass if needed
+    if (positions[0] < 0) {
+      positions[0] = 0;
+      for (let i = 1; i < n; i++) {
+        const minTop = positions[i - 1] + heights[i - 1] + gap;
+        if (positions[i] < minTop) {
+          positions[i] = minTop;
+        }
+      }
+    }
+
+    this.commentYPositions.set(positions);
+  }
 }

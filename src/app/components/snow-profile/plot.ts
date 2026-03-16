@@ -514,7 +514,7 @@ export function generateStepList(min: number, max: number, step: number): number
   return result;
 }
 
-function getLabelPositionY(polygon: PlotPoint[]): number {
+export function getLabelPositionY(polygon: PlotPoint[]): number {
   // TODO! Hvis laget ikke har hardhet / HardnessTID, så kan polygonet være en strek. Da feiler denne.
   // Se http://localhost:8100/registration/454886
   const sortedY = [...polygon].sort((a, b) => a.x - b.x || a.y - b.y).map(({ y }) => y);
@@ -586,18 +586,19 @@ export function createLayerLabels(
 
 export function createCompressionTestPlots(
   tests: CompressionTestEditModel[],
-  testFormatter: (test: CompressionTestEditModel) => string,
+  testFormatter: (test: CompressionTestEditModel, opts: { includeDepth: boolean; includeFracture: boolean }) => string,
   depthProjector: (depth: number) => number
 ) {
   return tests
     .filter((x) => x.FractureDepth != null)
     .filter((x) => x.IncludeInSnowProfile)
     .map((test) => {
-      const label = testFormatter(test);
+      let label = testFormatter(test, { includeDepth: false, includeFracture: false });
       const y = depthProjector(test.FractureDepth as number);
-      let tooltip = label;
+      let tooltip = testFormatter(test, { includeDepth: true, includeFracture: true });
       if (test.Comment) {
         tooltip += ` "${test.Comment}"`;
+        label += '*';
       }
       return {
         label,
